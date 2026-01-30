@@ -27,6 +27,7 @@ import '../theme/app_theme.dart';
 import 'onboarding_screen.dart';
 import 'shop_street_screen.dart';
 import 'dosing_calculator_screen.dart';
+import 'cost_tracker_screen.dart';
 import 'emergency_guide_screen.dart';
 import 'tank_volume_calculator_screen.dart';
 import 'vacation_guide_screen.dart';
@@ -117,6 +118,16 @@ class SettingsScreen extends ConsumerWidget {
             onTap: () => Navigator.push(
               context,
               MaterialPageRoute(builder: (_) => const TankVolumeCalculatorScreen()),
+            ),
+          ),
+          ListTile(
+            leading: const Icon(Icons.account_balance_wallet),
+            title: const Text('Cost Tracker'),
+            subtitle: const Text('Track aquarium expenses'),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const CostTrackerScreen()),
             ),
           ),
 
