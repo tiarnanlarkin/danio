@@ -6,6 +6,7 @@ import 'dart:io';
 import '../services/onboarding_service.dart';
 import '../theme/app_theme.dart';
 import 'onboarding_screen.dart';
+import 'shop_street_screen.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -18,6 +19,21 @@ class SettingsScreen extends ConsumerWidget {
       ),
       body: ListView(
         children: [
+          // Shop Street
+          _SectionHeader(title: 'Shop'),
+          ListTile(
+            leading: const Icon(Icons.storefront),
+            title: const Text('Shop Street'),
+            subtitle: const Text('Find aquarium supplies online'),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const ShopStreetScreen()),
+            ),
+          ),
+
+          const Divider(),
+
           // About section
           _SectionHeader(title: 'About'),
           ListTile(
