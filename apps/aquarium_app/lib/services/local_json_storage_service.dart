@@ -429,6 +429,7 @@ class LocalJsonStorageService implements StorageService {
         'photoUrls': l.photoUrls,
         'relatedEquipmentId': l.relatedEquipmentId,
         'relatedLivestockId': l.relatedLivestockId,
+        'relatedTaskId': l.relatedTaskId,
         'createdAt': l.createdAt.toIso8601String(),
       };
 
@@ -449,6 +450,7 @@ class LocalJsonStorageService implements StorageService {
       photoUrls: (m['photoUrls'] as List?)?.map((e) => e.toString()).toList(),
       relatedEquipmentId: m['relatedEquipmentId'] as String?,
       relatedLivestockId: m['relatedLivestockId'] as String?,
+      relatedTaskId: m['relatedTaskId'] as String?,
       createdAt: DateTime.parse(m['createdAt'] as String),
     );
   }

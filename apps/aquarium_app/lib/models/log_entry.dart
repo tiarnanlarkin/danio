@@ -8,6 +8,7 @@ enum LogType {
   livestockAdded,
   livestockRemoved,
   equipmentMaintenance,
+  taskCompleted,
   other,
 }
 
@@ -85,6 +86,7 @@ class LogEntry {
   final List<String>? photoUrls; // Local paths or URLs
   final String? relatedEquipmentId; // For equipment maintenance logs
   final String? relatedLivestockId; // For livestock events
+  final String? relatedTaskId; // For task-completion logs
   final DateTime createdAt;
 
   LogEntry({
@@ -99,6 +101,7 @@ class LogEntry {
     this.photoUrls,
     this.relatedEquipmentId,
     this.relatedLivestockId,
+    this.relatedTaskId,
     required this.createdAt,
   });
 
@@ -113,6 +116,7 @@ class LogEntry {
       case LogType.livestockAdded: return 'Livestock Added';
       case LogType.livestockRemoved: return 'Livestock Removed';
       case LogType.equipmentMaintenance: return 'Equipment Maintenance';
+      case LogType.taskCompleted: return 'Task Completed';
       case LogType.other: return 'Other';
     }
   }
@@ -129,6 +133,7 @@ class LogEntry {
     List<String>? photoUrls,
     String? relatedEquipmentId,
     String? relatedLivestockId,
+    String? relatedTaskId,
     DateTime? createdAt,
   }) {
     return LogEntry(
@@ -143,6 +148,7 @@ class LogEntry {
       photoUrls: photoUrls ?? this.photoUrls,
       relatedEquipmentId: relatedEquipmentId ?? this.relatedEquipmentId,
       relatedLivestockId: relatedLivestockId ?? this.relatedLivestockId,
+      relatedTaskId: relatedTaskId ?? this.relatedTaskId,
       createdAt: createdAt ?? this.createdAt,
     );
   }

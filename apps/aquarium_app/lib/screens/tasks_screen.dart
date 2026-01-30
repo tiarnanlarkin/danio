@@ -67,6 +67,7 @@ class TasksScreen extends ConsumerWidget {
                   onSnooze: () => _showSnoozeDialog(context, ref, t),
                   onEdit: () => _showEditDialog(context, ref, t),
                   onDelete: () => _confirmDelete(context, ref, t),
+                  onHistory: () => _showTaskHistoryDialog(context, t),
                 )),
                 const SizedBox(height: 16),
               ],
@@ -82,6 +83,7 @@ class TasksScreen extends ConsumerWidget {
                   onSnooze: () => _showSnoozeDialog(context, ref, t),
                   onEdit: () => _showEditDialog(context, ref, t),
                   onDelete: () => _confirmDelete(context, ref, t),
+                  onHistory: () => _showTaskHistoryDialog(context, t),
                 )),
                 const SizedBox(height: 16),
               ],
@@ -97,6 +99,7 @@ class TasksScreen extends ConsumerWidget {
                   onSnooze: () => _showSnoozeDialog(context, ref, t),
                   onEdit: () => _showEditDialog(context, ref, t),
                   onDelete: () => _confirmDelete(context, ref, t),
+                  onHistory: () => _showTaskHistoryDialog(context, t),
                 )),
                 const SizedBox(height: 16),
               ],
@@ -112,6 +115,7 @@ class TasksScreen extends ConsumerWidget {
                   onSnooze: () => _showSnoozeDialog(context, ref, t),
                   onEdit: () => _showEditDialog(context, ref, t),
                   onDelete: () => _confirmDelete(context, ref, t),
+                  onHistory: () => _showTaskHistoryDialog(context, t),
                 )),
               ],
             ],
@@ -127,9 +131,58 @@ class TasksScreen extends ConsumerWidget {
 
   Future<void> _completeTask(WidgetRef ref, Task task) async {
     final storage = ref.read(storageServiceProvider);
+    final now = DateTime.now();
+
     final completed = task.complete();
     await storage.saveTask(completed);
+
+    // Also add a log entry so completions show up in Recent Activity.
+    await storage.saveLog(
+      LogEntry(
+        id: _uuid.v4(),
+        tankId: tankId,
+        type: LogType.taskCompleted,
+        timestamp: now,
+        title: task.title,
+        notes: task.description,
+        relatedTaskId: task.id,
+        relatedEquipmentId: task.relatedEquipmentId,
+        createdAt: now,
+      ),
+    );
+
+    // If this task is tied to equipment maintenance, update equipment + log it.
+    if (task.relatedEquipmentId != null) {
+      final equipment = await storage.getEquipmentForTank(tankId);
+      Equipment? e;
+      for (final x in equipment) {
+        if (x.id == task.relatedEquipmentId) {
+          e = x;
+          break;
+        }
+      }
+      if (e != null) {
+        await storage.saveEquipment(e.copyWith(lastServiced: now, updatedAt: now));
+        await storage.saveLog(
+          LogEntry(
+            id: _uuid.v4(),
+            tankId: tankId,
+            type: LogType.equipmentMaintenance,
+            timestamp: now,
+            title: 'Serviced ${e.name}',
+            notes: e.typeName,
+            relatedEquipmentId: e.id,
+            relatedTaskId: task.id,
+            createdAt: now,
+          ),
+        );
+      }
+    }
+
     ref.invalidate(tasksProvider(tankId));
+    ref.invalidate(equipmentProvider(tankId));
+    ref.invalidate(logsProvider(tankId));
+    ref.invalidate(allLogsProvider(tankId));
   }
 
   void _showSnoozeDialog(BuildContext context, WidgetRef ref, Task task) {
@@ -213,6 +266,91 @@ class TasksScreen extends ConsumerWidget {
       ),
     );
   }
+
+  void _showTaskHistoryDialog(BuildContext context, Task task) {
+    showDialog(
+      context: context,
+      builder: (_) => _TaskHistoryDialog(tankId: tankId, task: task),
+    );
+  }
+}
+
+class _TaskHistoryDialog extends ConsumerWidget {
+  final String tankId;
+  final Task task;
+
+  const _TaskHistoryDialog({required this.tankId, required this.task});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final logsAsync = ref.watch(allLogsProvider(tankId));
+
+    return AlertDialog(
+      title: Text('History — ${task.title}'),
+      content: SizedBox(
+        width: double.maxFinite,
+        child: logsAsync.when(
+          loading: () => const Padding(
+            padding: EdgeInsets.all(12),
+            child: Center(child: CircularProgressIndicator()),
+          ),
+          error: (err, _) => Text('Error loading history: $err'),
+          data: (logs) {
+            final completions = logs
+                .where((l) => l.type == LogType.taskCompleted)
+                .where((l) {
+                  // Prefer ID match. Fall back to title match for older entries.
+                  if (l.relatedTaskId != null) return l.relatedTaskId == task.id;
+                  return (l.title ?? '') == task.title;
+                })
+                .toList()
+              ..sort((a, b) => b.timestamp.compareTo(a.timestamp));
+
+            if (completions.isEmpty) {
+              return Text(
+                'No completions logged yet.\n\nTip: when you complete the task, it will appear here and in Recent Activity.',
+                style: AppTypography.bodyMedium,
+              );
+            }
+
+            return Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Completed ${task.completionCount} time${task.completionCount == 1 ? '' : 's'}',
+                  style: AppTypography.bodySmall,
+                ),
+                const SizedBox(height: 12),
+                Flexible(
+                  child: ListView.separated(
+                    shrinkWrap: true,
+                    itemCount: completions.length.clamp(0, 25),
+                    separatorBuilder: (_, __) => const Divider(height: 1),
+                    itemBuilder: (context, i) {
+                      final log = completions[i];
+                      return ListTile(
+                        contentPadding: EdgeInsets.zero,
+                        leading: const Icon(Icons.check_circle, color: AppColors.success, size: 18),
+                        title: Text(DateFormat('MMM d, yyyy').format(log.timestamp)),
+                        subtitle: Text(DateFormat('h:mm a').format(log.timestamp)),
+                      );
+                    },
+                  ),
+                ),
+              ],
+            );
+          },
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: const Text('Close'),
+        ),
+      ],
+    );
+  }
 }
 
 class _SectionHeader extends StatelessWidget {
@@ -262,6 +400,7 @@ class _TaskCard extends StatelessWidget {
   final VoidCallback onSnooze;
   final VoidCallback onEdit;
   final VoidCallback onDelete;
+  final VoidCallback onHistory;
 
   const _TaskCard({
     required this.task,
@@ -269,6 +408,7 @@ class _TaskCard extends StatelessWidget {
     required this.onSnooze,
     required this.onEdit,
     required this.onDelete,
+    required this.onHistory,
   });
 
   @override
@@ -319,11 +459,13 @@ class _TaskCard extends StatelessWidget {
           itemBuilder: (_) => [
             if (task.isEnabled)
               const PopupMenuItem(value: 'snooze', child: Text('Snooze')),
+            const PopupMenuItem(value: 'history', child: Text('History')),
             const PopupMenuItem(value: 'edit', child: Text('Edit')),
             const PopupMenuItem(value: 'delete', child: Text('Delete')),
           ],
           onSelected: (value) {
             if (value == 'snooze') onSnooze();
+            if (value == 'history') onHistory();
             if (value == 'edit') onEdit();
             if (value == 'delete') onDelete();
           },

@@ -172,6 +172,8 @@ class _LogsScreenState extends ConsumerState<LogsScreen> {
         return 'Livestock Removed';
       case LogType.equipmentMaintenance:
         return 'Equipment Maintenance';
+      case LogType.taskCompleted:
+        return 'Task Completed';
       case LogType.other:
         return 'Other';
     }
@@ -195,6 +197,8 @@ class _LogsScreenState extends ConsumerState<LogsScreen> {
         return Icons.remove_circle;
       case LogType.equipmentMaintenance:
         return Icons.build;
+      case LogType.taskCompleted:
+        return Icons.task_alt;
       case LogType.other:
         return Icons.note;
     }
@@ -218,6 +222,8 @@ class _LogsScreenState extends ConsumerState<LogsScreen> {
         return AppColors.error;
       case LogType.equipmentMaintenance:
         return Colors.brown;
+      case LogType.taskCompleted:
+        return AppColors.success;
       case LogType.other:
         return AppColors.textHint;
     }
@@ -238,6 +244,8 @@ class _LogsScreenState extends ConsumerState<LogsScreen> {
         return 'Water Test';
       case LogType.waterChange:
         return 'Water Change${log.waterChangePercent != null ? ' (${log.waterChangePercent}%)' : ''}';
+      case LogType.taskCompleted:
+        return log.title != null ? 'Completed: ${log.title}' : 'Task completed';
       default:
         return log.title ?? log.typeName;
     }

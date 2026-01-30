@@ -3,7 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:collection/collection.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:uuid/uuid.dart';
 import '../models/models.dart';
+import '../providers/storage_provider.dart';
 import '../providers/tank_provider.dart';
 import '../theme/app_theme.dart';
 import 'add_log_screen.dart';
@@ -13,11 +15,70 @@ import 'tasks_screen.dart';
 import 'charts_screen.dart';
 import 'logs_screen.dart';
 import 'log_detail_screen.dart';
+import 'tank_settings_screen.dart';
+
+const _uuid = Uuid();
 
 class TankDetailScreen extends ConsumerWidget {
   final String tankId;
 
   const TankDetailScreen({super.key, required this.tankId});
+
+  Future<void> _completeTask(WidgetRef ref, Task task) async {
+    final storage = ref.read(storageServiceProvider);
+    final now = DateTime.now();
+
+    final completed = task.complete();
+    await storage.saveTask(completed);
+
+    // Also add a log entry so completions show up in Recent Activity.
+    await storage.saveLog(
+      LogEntry(
+        id: _uuid.v4(),
+        tankId: tankId,
+        type: LogType.taskCompleted,
+        timestamp: now,
+        title: task.title,
+        notes: task.description,
+        relatedTaskId: task.id,
+        relatedEquipmentId: task.relatedEquipmentId,
+        createdAt: now,
+      ),
+    );
+
+    // If this task is tied to equipment maintenance, update equipment + log it.
+    if (task.relatedEquipmentId != null) {
+      final equipment = await storage.getEquipmentForTank(tankId);
+      Equipment? e;
+      for (final x in equipment) {
+        if (x.id == task.relatedEquipmentId) {
+          e = x;
+          break;
+        }
+      }
+      if (e != null) {
+        await storage.saveEquipment(e.copyWith(lastServiced: now, updatedAt: now));
+        await storage.saveLog(
+          LogEntry(
+            id: _uuid.v4(),
+            tankId: tankId,
+            type: LogType.equipmentMaintenance,
+            timestamp: now,
+            title: 'Serviced ${e.name}',
+            notes: e.typeName,
+            relatedEquipmentId: e.id,
+            relatedTaskId: task.id,
+            createdAt: now,
+          ),
+        );
+      }
+    }
+
+    ref.invalidate(tasksProvider(tankId));
+    ref.invalidate(equipmentProvider(tankId));
+    ref.invalidate(logsProvider(tankId));
+    ref.invalidate(allLogsProvider(tankId));
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -92,9 +153,13 @@ class TankDetailScreen extends ConsumerWidget {
                   ),
                   IconButton(
                     icon: const Icon(Icons.settings, color: Colors.white),
-                    onPressed: () {
-                      // TODO: Tank settings
-                    },
+                    tooltip: 'Tank settings',
+                    onPressed: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => TankSettingsScreen(tankId: tankId),
+                      ),
+                    ),
                   ),
                 ],
               ),
@@ -231,7 +296,10 @@ class TankDetailScreen extends ConsumerWidget {
                 child: tasksAsync.when(
                   loading: () => const Center(child: CircularProgressIndicator()),
                   error: (_, __) => const SizedBox.shrink(),
-                  data: (tasks) => _TaskPreview(tasks: tasks.take(3).toList()),
+                  data: (tasks) => _TaskPreview(
+                    tasks: tasks.take(3).toList(),
+                    onComplete: (t) => _completeTask(ref, t),
+                  ),
                 ),
               ),
 
@@ -495,8 +563,9 @@ class _SectionHeader extends StatelessWidget {
 
 class _TaskPreview extends StatelessWidget {
   final List<Task> tasks;
+  final ValueChanged<Task> onComplete;
 
-  const _TaskPreview({required this.tasks});
+  const _TaskPreview({required this.tasks, required this.onComplete});
 
   @override
   Widget build(BuildContext context) {
@@ -520,7 +589,9 @@ class _TaskPreview extends StatelessWidget {
       child: Card(
         margin: EdgeInsets.zero,
         child: Column(
-          children: tasks.map((task) => _TaskTile(task: task)).toList(),
+          children: tasks
+              .map((task) => _TaskTile(task: task, onComplete: () => onComplete(task)))
+              .toList(),
         ),
       ),
     );
@@ -529,8 +600,9 @@ class _TaskPreview extends StatelessWidget {
 
 class _TaskTile extends StatelessWidget {
   final Task task;
+  final VoidCallback onComplete;
 
-  const _TaskTile({required this.task});
+  const _TaskTile({required this.task, required this.onComplete});
 
   @override
   Widget build(BuildContext context) {
@@ -551,10 +623,8 @@ class _TaskTile extends StatelessWidget {
       ),
       trailing: IconButton(
         icon: const Icon(Icons.check_circle_outline),
-        color: AppColors.success,
-        onPressed: () {
-          // TODO: Complete task
-        },
+        color: task.isEnabled ? AppColors.success : AppColors.textHint,
+        onPressed: task.isEnabled ? onComplete : null,
       ),
     );
   }
@@ -625,29 +695,51 @@ class _LogTile extends StatelessWidget {
 
   IconData _getLogIcon(LogType type) {
     switch (type) {
-      case LogType.waterTest: return Icons.science;
-      case LogType.waterChange: return Icons.water_drop;
-      case LogType.feeding: return Icons.restaurant;
-      case LogType.medication: return Icons.medication;
-      case LogType.observation: return Icons.visibility;
-      case LogType.livestockAdded: return Icons.add_circle;
-      case LogType.livestockRemoved: return Icons.remove_circle;
-      case LogType.equipmentMaintenance: return Icons.build;
-      case LogType.other: return Icons.note;
+      case LogType.waterTest:
+        return Icons.science;
+      case LogType.waterChange:
+        return Icons.water_drop;
+      case LogType.feeding:
+        return Icons.restaurant;
+      case LogType.medication:
+        return Icons.medication;
+      case LogType.observation:
+        return Icons.visibility;
+      case LogType.livestockAdded:
+        return Icons.add_circle;
+      case LogType.livestockRemoved:
+        return Icons.remove_circle;
+      case LogType.equipmentMaintenance:
+        return Icons.build;
+      case LogType.taskCompleted:
+        return Icons.task_alt;
+      case LogType.other:
+        return Icons.note;
     }
   }
 
   Color _getLogColor(LogType type) {
     switch (type) {
-      case LogType.waterTest: return AppColors.primary;
-      case LogType.waterChange: return AppColors.secondary;
-      case LogType.feeding: return Colors.orange;
-      case LogType.medication: return Colors.red;
-      case LogType.observation: return Colors.purple;
-      case LogType.livestockAdded: return AppColors.success;
-      case LogType.livestockRemoved: return AppColors.error;
-      case LogType.equipmentMaintenance: return Colors.brown;
-      case LogType.other: return AppColors.textHint;
+      case LogType.waterTest:
+        return AppColors.primary;
+      case LogType.waterChange:
+        return AppColors.secondary;
+      case LogType.feeding:
+        return Colors.orange;
+      case LogType.medication:
+        return Colors.red;
+      case LogType.observation:
+        return Colors.purple;
+      case LogType.livestockAdded:
+        return AppColors.success;
+      case LogType.livestockRemoved:
+        return AppColors.error;
+      case LogType.equipmentMaintenance:
+        return Colors.brown;
+      case LogType.taskCompleted:
+        return AppColors.success;
+      case LogType.other:
+        return AppColors.textHint;
     }
   }
 
@@ -666,6 +758,8 @@ class _LogTile extends StatelessWidget {
         return 'Water Test';
       case LogType.waterChange:
         return 'Water Change${log.waterChangePercent != null ? ' (${log.waterChangePercent}%)' : ''}';
+      case LogType.taskCompleted:
+        return log.title != null ? 'Completed: ${log.title}' : 'Task completed';
       default:
         return log.title ?? log.typeName;
     }

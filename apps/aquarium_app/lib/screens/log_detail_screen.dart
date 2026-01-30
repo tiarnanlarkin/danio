@@ -178,6 +178,8 @@ class LogDetailScreen extends ConsumerWidget {
         return Icons.remove_circle;
       case LogType.equipmentMaintenance:
         return Icons.build;
+      case LogType.taskCompleted:
+        return Icons.task_alt;
       case LogType.other:
         return Icons.note;
     }
@@ -197,6 +199,10 @@ class LogDetailScreen extends ConsumerWidget {
 
     if (log.type == LogType.waterChange) {
       return 'Water Change${log.waterChangePercent != null ? ' (${log.waterChangePercent}%)' : ''}';
+    }
+
+    if (log.type == LogType.taskCompleted) {
+      return log.title != null ? 'Completed: ${log.title}' : 'Task completed';
     }
 
     return log.title ?? log.typeName;
