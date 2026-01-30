@@ -19,6 +19,7 @@ import '../theme/app_theme.dart';
 import 'onboarding_screen.dart';
 import 'shop_street_screen.dart';
 import 'dosing_calculator_screen.dart';
+import 'unit_converter_screen.dart';
 import 'water_change_calculator_screen.dart';
 
 class SettingsScreen extends ConsumerWidget {
@@ -85,6 +86,16 @@ class SettingsScreen extends ConsumerWidget {
             onTap: () => Navigator.push(
               context,
               MaterialPageRoute(builder: (_) => const DosingCalculatorScreen()),
+            ),
+          ),
+          ListTile(
+            leading: const Icon(Icons.straighten),
+            title: const Text('Unit Converter'),
+            subtitle: const Text('Volume, temperature, length, hardness'),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const UnitConverterScreen()),
             ),
           ),
 
