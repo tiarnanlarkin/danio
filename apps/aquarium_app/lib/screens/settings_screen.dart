@@ -8,6 +8,7 @@ import '../providers/settings_provider.dart';
 import 'about_screen.dart';
 import 'acclimation_guide_screen.dart';
 import 'algae_guide_screen.dart';
+import 'breeding_guide_screen.dart';
 import 'quarantine_guide_screen.dart';
 import 'equipment_guide_screen.dart';
 import 'nitrogen_cycle_guide_screen.dart';
@@ -257,6 +258,16 @@ class SettingsScreen extends ConsumerWidget {
             onTap: () => Navigator.push(
               context,
               MaterialPageRoute(builder: (_) => const QuarantineGuideScreen()),
+            ),
+          ),
+          ListTile(
+            leading: const Icon(Icons.favorite),
+            title: const Text('Breeding Guide'),
+            subtitle: const Text('Methods, conditioning, raising fry'),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const BreedingGuideScreen()),
             ),
           ),
           ListTile(
