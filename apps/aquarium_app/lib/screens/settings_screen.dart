@@ -9,6 +9,7 @@ import 'about_screen.dart';
 import 'acclimation_guide_screen.dart';
 import 'algae_guide_screen.dart';
 import 'breeding_guide_screen.dart';
+import 'glossary_screen.dart';
 import 'hardscape_guide_screen.dart';
 import 'quarantine_guide_screen.dart';
 import 'substrate_guide_screen.dart';
@@ -290,6 +291,16 @@ class SettingsScreen extends ConsumerWidget {
             onTap: () => Navigator.push(
               context,
               MaterialPageRoute(builder: (_) => const HardscapeGuideScreen()),
+            ),
+          ),
+          ListTile(
+            leading: const Icon(Icons.menu_book),
+            title: const Text('Glossary'),
+            subtitle: const Text('50+ aquarium terms explained'),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const GlossaryScreen()),
             ),
           ),
           ListTile(
