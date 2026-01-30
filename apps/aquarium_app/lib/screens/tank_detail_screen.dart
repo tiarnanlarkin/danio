@@ -19,6 +19,7 @@ import 'log_detail_screen.dart';
 import 'tank_settings_screen.dart';
 import 'journal_screen.dart';
 import 'maintenance_checklist_screen.dart';
+import 'photo_gallery_screen.dart';
 import '../widgets/cycling_status_card.dart';
 
 const _uuid = Uuid();
@@ -155,6 +156,16 @@ class TankDetailScreen extends ConsumerWidget {
                           tankId: tankId,
                           tankName: tank.name,
                         ),
+                      ),
+                    ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.photo_library_outlined, color: Colors.white),
+                    tooltip: 'Gallery',
+                    onPressed: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => PhotoGalleryScreen(tankId: tankId, tankName: tank.name),
                       ),
                     ),
                   ),
