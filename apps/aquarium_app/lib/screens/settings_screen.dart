@@ -10,6 +10,7 @@ import '../services/onboarding_service.dart';
 import '../theme/app_theme.dart';
 import 'onboarding_screen.dart';
 import 'shop_street_screen.dart';
+import 'water_change_calculator_screen.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -52,6 +53,21 @@ class SettingsScreen extends ConsumerWidget {
               subtitle: const Text('Send a test notification'),
               onTap: () => _testNotification(context),
             ),
+
+          const Divider(),
+
+          // Tools
+          _SectionHeader(title: 'Tools'),
+          ListTile(
+            leading: const Icon(Icons.calculate_outlined),
+            title: const Text('Water Change Calculator'),
+            subtitle: const Text('Calculate how much water to change'),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const WaterChangeCalculatorScreen()),
+            ),
+          ),
 
           const Divider(),
 
