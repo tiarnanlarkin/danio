@@ -7,6 +7,7 @@ import 'dart:io';
 import '../providers/settings_provider.dart';
 import 'about_screen.dart';
 import 'nitrogen_cycle_guide_screen.dart';
+import 'parameter_guide_screen.dart';
 import '../services/notification_service.dart';
 import '../services/onboarding_service.dart';
 import '../theme/app_theme.dart';
@@ -147,6 +148,16 @@ class SettingsScreen extends ConsumerWidget {
             onTap: () => Navigator.push(
               context,
               MaterialPageRoute(builder: (_) => const NitrogenCycleGuideScreen()),
+            ),
+          ),
+          ListTile(
+            leading: const Icon(Icons.analytics_outlined),
+            title: const Text('Water Parameters Guide'),
+            subtitle: const Text('Ideal ranges for common fish'),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const ParameterGuideScreen()),
             ),
           ),
           ListTile(
