@@ -280,7 +280,7 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
       );
     }
 
-    final xMax = (logs.length - 1).toDouble().clamp(0, double.infinity);
+    final xMax = (logs.length <= 1) ? 0.0 : (logs.length - 1).toDouble();
 
     // Optional target lines (min/max), where relevant.
     final List<LineChartBarData> bars = [];
