@@ -29,6 +29,7 @@ import 'shop_street_screen.dart';
 import 'dosing_calculator_screen.dart';
 import 'emergency_guide_screen.dart';
 import 'tank_volume_calculator_screen.dart';
+import 'vacation_guide_screen.dart';
 import 'unit_converter_screen.dart';
 import 'water_change_calculator_screen.dart';
 
@@ -334,6 +335,16 @@ class SettingsScreen extends ConsumerWidget {
             onTap: () => Navigator.push(
               context,
               MaterialPageRoute(builder: (_) => const TroubleshootingScreen()),
+            ),
+          ),
+          ListTile(
+            leading: const Icon(Icons.flight),
+            title: const Text('Vacation Planning'),
+            subtitle: const Text('Prepare your tank for time away'),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const VacationGuideScreen()),
             ),
           ),
           ListTile(
