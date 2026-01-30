@@ -5,6 +5,7 @@ import 'package:share_plus/share_plus.dart';
 import 'package:file_picker/file_picker.dart';
 import 'dart:io';
 import '../providers/settings_provider.dart';
+import 'about_screen.dart';
 import '../services/notification_service.dart';
 import '../services/onboarding_service.dart';
 import '../theme/app_theme.dart';
@@ -142,6 +143,16 @@ class SettingsScreen extends ConsumerWidget {
             title: const Text('Replay Onboarding'),
             subtitle: const Text('See the intro screens again'),
             onTap: () => _replayOnboarding(context),
+          ),
+          ListTile(
+            leading: const Icon(Icons.info_outline),
+            title: const Text('About'),
+            subtitle: const Text('Version info and features'),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const AboutScreen()),
+            ),
           ),
 
           const Divider(),
