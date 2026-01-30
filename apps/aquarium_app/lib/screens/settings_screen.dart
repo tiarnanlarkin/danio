@@ -27,6 +27,7 @@ import '../theme/app_theme.dart';
 import 'onboarding_screen.dart';
 import 'shop_street_screen.dart';
 import 'dosing_calculator_screen.dart';
+import 'emergency_guide_screen.dart';
 import 'tank_volume_calculator_screen.dart';
 import 'unit_converter_screen.dart';
 import 'water_change_calculator_screen.dart';
@@ -183,6 +184,16 @@ class SettingsScreen extends ConsumerWidget {
             onTap: () => Navigator.push(
               context,
               MaterialPageRoute(builder: (_) => const QuickStartGuideScreen()),
+            ),
+          ),
+          ListTile(
+            leading: Icon(Icons.emergency, color: AppColors.error),
+            title: const Text('Emergency Guide'),
+            subtitle: const Text('Urgent problems & immediate actions'),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const EmergencyGuideScreen()),
             ),
           ),
           ListTile(
