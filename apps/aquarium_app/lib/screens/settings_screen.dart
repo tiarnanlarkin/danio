@@ -11,6 +11,7 @@ import 'algae_guide_screen.dart';
 import 'breeding_guide_screen.dart';
 import 'glossary_screen.dart';
 import 'hardscape_guide_screen.dart';
+import 'troubleshooting_screen.dart';
 import 'quarantine_guide_screen.dart';
 import 'substrate_guide_screen.dart';
 import 'equipment_guide_screen.dart';
@@ -301,6 +302,16 @@ class SettingsScreen extends ConsumerWidget {
             onTap: () => Navigator.push(
               context,
               MaterialPageRoute(builder: (_) => const GlossaryScreen()),
+            ),
+          ),
+          ListTile(
+            leading: const Icon(Icons.build_circle),
+            title: const Text('Troubleshooting'),
+            subtitle: const Text('Common problems & solutions'),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const TroubleshootingScreen()),
             ),
           ),
           ListTile(
