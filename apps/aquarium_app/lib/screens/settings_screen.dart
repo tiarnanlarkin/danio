@@ -8,6 +8,7 @@ import '../providers/settings_provider.dart';
 import 'about_screen.dart';
 import 'nitrogen_cycle_guide_screen.dart';
 import 'disease_guide_screen.dart';
+import 'plant_browser_screen.dart';
 import 'feeding_guide_screen.dart';
 import 'parameter_guide_screen.dart';
 import '../services/notification_service.dart';
@@ -180,6 +181,16 @@ class SettingsScreen extends ConsumerWidget {
             onTap: () => Navigator.push(
               context,
               MaterialPageRoute(builder: (_) => const DiseaseGuideScreen()),
+            ),
+          ),
+          ListTile(
+            leading: const Icon(Icons.eco),
+            title: const Text('Plant Database'),
+            subtitle: const Text('20+ aquarium plants with care info'),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const PlantBrowserScreen()),
             ),
           ),
           ListTile(
