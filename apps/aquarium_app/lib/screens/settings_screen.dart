@@ -10,6 +10,7 @@ import 'acclimation_guide_screen.dart';
 import 'algae_guide_screen.dart';
 import 'breeding_guide_screen.dart';
 import 'quarantine_guide_screen.dart';
+import 'substrate_guide_screen.dart';
 import 'equipment_guide_screen.dart';
 import 'nitrogen_cycle_guide_screen.dart';
 import 'disease_guide_screen.dart';
@@ -268,6 +269,16 @@ class SettingsScreen extends ConsumerWidget {
             onTap: () => Navigator.push(
               context,
               MaterialPageRoute(builder: (_) => const BreedingGuideScreen()),
+            ),
+          ),
+          ListTile(
+            leading: const Icon(Icons.layers),
+            title: const Text('Substrate Guide'),
+            subtitle: const Text('Types, recommendations, layering'),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const SubstrateGuideScreen()),
             ),
           ),
           ListTile(
