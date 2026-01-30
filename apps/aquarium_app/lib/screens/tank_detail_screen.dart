@@ -17,6 +17,7 @@ import 'charts_screen.dart';
 import 'logs_screen.dart';
 import 'log_detail_screen.dart';
 import 'tank_settings_screen.dart';
+import 'journal_screen.dart';
 import '../widgets/cycling_status_card.dart';
 
 const _uuid = Uuid();
@@ -143,6 +144,16 @@ class TankDetailScreen extends ConsumerWidget {
                   ),
                 ),
                 actions: [
+                  IconButton(
+                    icon: const Icon(Icons.book_outlined, color: Colors.white),
+                    tooltip: 'Journal',
+                    onPressed: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => JournalScreen(tankId: tankId),
+                      ),
+                    ),
+                  ),
                   IconButton(
                     icon: const Icon(Icons.show_chart, color: Colors.white),
                     tooltip: 'Charts',
