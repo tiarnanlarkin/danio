@@ -11,6 +11,7 @@ import 'algae_guide_screen.dart';
 import 'breeding_guide_screen.dart';
 import 'glossary_screen.dart';
 import 'hardscape_guide_screen.dart';
+import 'quick_start_guide_screen.dart';
 import 'troubleshooting_screen.dart';
 import 'quarantine_guide_screen.dart';
 import 'substrate_guide_screen.dart';
@@ -174,6 +175,16 @@ class SettingsScreen extends ConsumerWidget {
 
           // Help section
           _SectionHeader(title: 'Help'),
+          ListTile(
+            leading: const Icon(Icons.rocket_launch),
+            title: const Text('Quick Start Guide'),
+            subtitle: const Text('Setting up your first aquarium'),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const QuickStartGuideScreen()),
+            ),
+          ),
           ListTile(
             leading: const Icon(Icons.autorenew),
             title: const Text('Nitrogen Cycle Guide'),
