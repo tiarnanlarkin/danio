@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
 import '../models/models.dart';
 import '../services/storage_service.dart';
+import '../services/sample_data.dart';
 import 'storage_provider.dart';
 
 const _uuid = Uuid();
@@ -27,6 +28,22 @@ class TankActions {
   TankActions(this._ref);
   
   StorageService get _storage => _ref.read(storageServiceProvider);
+
+  /// Seed a demo tank (only if the user has no tanks yet)
+  Future<Tank> seedDemoTankIfEmpty() async {
+    final tank = await SampleData.seedFreshwaterDemo(_storage);
+
+    // Invalidate relevant providers.
+    _ref.invalidate(tanksProvider);
+    _ref.invalidate(tankProvider(tank.id));
+    _ref.invalidate(livestockProvider(tank.id));
+    _ref.invalidate(equipmentProvider(tank.id));
+    _ref.invalidate(logsProvider(tank.id));
+    _ref.invalidate(allLogsProvider(tank.id));
+    _ref.invalidate(tasksProvider(tank.id));
+
+    return tank;
+  }
 
   /// Create a new tank
   Future<Tank> createTank({
@@ -97,10 +114,16 @@ final equipmentProvider = FutureProvider.family<List<Equipment>, String>((ref, t
   return storage.getEquipmentForTank(tankId);
 });
 
-/// Logs for a tank
+/// Logs for a tank (recent only; used for previews / activity lists)
 final logsProvider = FutureProvider.family<List<LogEntry>, String>((ref, tankId) async {
   final storage = ref.watch(storageServiceProvider);
   return storage.getLogsForTank(tankId, limit: 50);
+});
+
+/// All logs for a tank (used for charts/exports)
+final allLogsProvider = FutureProvider.family<List<LogEntry>, String>((ref, tankId) async {
+  final storage = ref.watch(storageServiceProvider);
+  return storage.getLogsForTank(tankId);
 });
 
 /// Tasks for a tank (null = all tasks)

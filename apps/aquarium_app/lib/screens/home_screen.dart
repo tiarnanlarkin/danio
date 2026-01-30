@@ -72,6 +72,13 @@ class HomeScreen extends ConsumerWidget {
                 return SliverFillRemaining(
                   child: _EmptyState(
                     onCreateTank: () => _navigateToCreateTank(context),
+                    onLoadDemo: () async {
+                      final actions = ref.read(tankActionsProvider);
+                      final demoTank = await actions.seedDemoTankIfEmpty();
+                      if (context.mounted) {
+                        _navigateToTankDetail(context, demoTank);
+                      }
+                    },
                   ),
                 );
               }
@@ -97,10 +104,10 @@ class HomeScreen extends ConsumerWidget {
       ),
       
       // FAB to add new tank
-      floatingActionButton: FloatingActionButton.extended(
+      floatingActionButton: FloatingActionButton(
         onPressed: () => _navigateToCreateTank(context),
-        icon: const Icon(Icons.add),
-        label: const Text('Add Tank'),
+        tooltip: 'Add Tank',
+        child: const Icon(Icons.add),
       ),
     );
   }
@@ -122,8 +129,9 @@ class HomeScreen extends ConsumerWidget {
 
 class _EmptyState extends StatelessWidget {
   final VoidCallback onCreateTank;
+  final VoidCallback onLoadDemo;
 
-  const _EmptyState({required this.onCreateTank});
+  const _EmptyState({required this.onCreateTank, required this.onLoadDemo});
 
   @override
   Widget build(BuildContext context) {
@@ -166,6 +174,11 @@ class _EmptyState extends StatelessWidget {
             onPressed: onCreateTank,
             icon: const Icon(Icons.add),
             label: const Text('Create Your First Tank'),
+          ),
+          const SizedBox(height: 12),
+          TextButton(
+            onPressed: onLoadDemo,
+            child: const Text('Load a sample tank'),
           ),
         ],
       ),

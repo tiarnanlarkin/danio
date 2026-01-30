@@ -17,11 +17,13 @@ const _uuid = Uuid();
 class AddLogScreen extends ConsumerStatefulWidget {
   final String tankId;
   final LogType initialType;
+  final LogEntry? existingLog;
 
   const AddLogScreen({
     super.key,
     required this.tankId,
     this.initialType = LogType.waterTest,
+    this.existingLog,
   });
 
   @override
@@ -46,6 +48,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
   double? _nitrate;
   double? _gh;
   double? _kh;
+  double? _phosphate;
 
   // Water change
   int? _waterChangePercent;
@@ -57,14 +60,41 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
   @override
   void initState() {
     super.initState();
-    _type = widget.initialType;
+
+    final existing = widget.existingLog;
+    if (existing != null) {
+      _type = existing.type;
+      _timestamp = existing.timestamp;
+      _notes = existing.notes ?? '';
+      if (existing.photoUrls != null) {
+        _photoPaths.addAll(existing.photoUrls!);
+      }
+
+      if (existing.type == LogType.waterTest && existing.waterTest != null) {
+        final t = existing.waterTest!;
+        _temperature = t.temperature;
+        _ph = t.ph;
+        _ammonia = t.ammonia;
+        _nitrite = t.nitrite;
+        _nitrate = t.nitrate;
+        _gh = t.gh;
+        _kh = t.kh;
+        _phosphate = t.phosphate;
+      }
+
+      if (existing.type == LogType.waterChange) {
+        _waterChangePercent = existing.waterChangePercent;
+      }
+    } else {
+      _type = widget.initialType;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(_getTitle()),
+        title: Text(widget.existingLog != null ? 'Edit Log' : _getTitle()),
         actions: [
           TextButton(
             onPressed: _isSaving ? null : _save,
@@ -304,6 +334,28 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
             ),
           ],
         ),
+
+        const SizedBox(height: 16),
+        const Divider(),
+        const SizedBox(height: 16),
+
+        // Other
+        Text('Other', style: AppTypography.labelLarge),
+        const SizedBox(height: 12),
+        Row(
+          children: [
+            Expanded(
+              child: _ParameterField(
+                label: 'Phosphate (PO₄)',
+                unit: 'ppm',
+                value: _phosphate,
+                onChanged: (v) => setState(() => _phosphate = v),
+                decimal: true,
+              ),
+            ),
+            const Expanded(child: SizedBox()),
+          ],
+        ),
       ],
     );
   }
@@ -484,8 +536,10 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
     try {
       final storage = ref.read(storageServiceProvider);
 
+      final existing = widget.existingLog;
+
       final log = LogEntry(
-        id: _uuid.v4(),
+        id: existing?.id ?? _uuid.v4(),
         tankId: widget.tankId,
         type: _type,
         timestamp: _timestamp,
@@ -498,18 +552,20 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
                 nitrate: _nitrate,
                 gh: _gh,
                 kh: _kh,
+                phosphate: _phosphate,
               )
             : null,
         waterChangePercent: _type == LogType.waterChange ? _waterChangePercent : null,
         notes: _notes.isNotEmpty ? _notes : null,
         photoUrls: _photoPaths.isNotEmpty ? List.unmodifiable(_photoPaths) : null,
-        createdAt: DateTime.now(),
+        createdAt: existing?.createdAt ?? DateTime.now(),
       );
 
       await storage.saveLog(log);
 
-      // Invalidate logs provider
+      // Invalidate logs providers
       ref.invalidate(logsProvider(widget.tankId));
+      ref.invalidate(allLogsProvider(widget.tankId));
 
       if (mounted) {
         Navigator.pop(context);

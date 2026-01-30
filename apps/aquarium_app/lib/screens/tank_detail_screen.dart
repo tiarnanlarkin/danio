@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:collection/collection.dart';
+import 'package:fl_chart/fl_chart.dart';
 import '../models/models.dart';
 import '../providers/tank_provider.dart';
 import '../theme/app_theme.dart';
@@ -9,6 +11,8 @@ import 'livestock_screen.dart';
 import 'equipment_screen.dart';
 import 'tasks_screen.dart';
 import 'charts_screen.dart';
+import 'logs_screen.dart';
+import 'log_detail_screen.dart';
 
 class TankDetailScreen extends ConsumerWidget {
   final String tankId;
@@ -18,7 +22,8 @@ class TankDetailScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tankAsync = ref.watch(tankProvider(tankId));
-    final logsAsync = ref.watch(logsProvider(tankId));
+    final logsRecentAsync = ref.watch(logsProvider(tankId));
+    final logsAllAsync = ref.watch(allLogsProvider(tankId));
     final livestockAsync = ref.watch(livestockProvider(tankId));
     final equipmentAsync = ref.watch(equipmentProvider(tankId));
     final tasksAsync = ref.watch(tasksProvider(tankId));
@@ -98,7 +103,7 @@ class TankDetailScreen extends ConsumerWidget {
               SliverToBoxAdapter(
                 child: Padding(
                   padding: const EdgeInsets.all(16),
-                  child: _QuickStats(tank: tank, logsAsync: logsAsync),
+                  child: _QuickStats(tank: tank, logsAsync: logsAllAsync),
                 ),
               ),
 
@@ -135,6 +140,57 @@ class TankDetailScreen extends ConsumerWidget {
                         ),
                       ),
                     ],
+                  ),
+                ),
+              ),
+
+              const SliverToBoxAdapter(child: SizedBox(height: 16)),
+
+              // Dashboard: latest snapshot
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: logsAllAsync.when(
+                    loading: () => const _DashboardLoadingCard(title: 'Latest Water Snapshot'),
+                    error: (_, __) => const SizedBox.shrink(),
+                    data: (logs) => _LatestSnapshotCard(tank: tank, logs: logs),
+                  ),
+                ),
+              ),
+
+              const SliverToBoxAdapter(child: SizedBox(height: 12)),
+
+              // Dashboard: trends
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: logsAllAsync.when(
+                    loading: () => const _DashboardLoadingCard(title: 'Trends'),
+                    error: (_, __) => const SizedBox.shrink(),
+                    data: (logs) => _TrendsRow(
+                      tank: tank,
+                      logs: logs,
+                      onOpenCharts: (param) => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => ChartsScreen(tankId: tankId, initialParam: param),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+
+              const SliverToBoxAdapter(child: SizedBox(height: 12)),
+
+              // Dashboard: alerts
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: logsAllAsync.when(
+                    loading: () => const _DashboardLoadingCard(title: 'Alerts'),
+                    error: (_, __) => const SizedBox.shrink(),
+                    data: (logs) => _AlertsCard(tank: tank, logs: logs),
                   ),
                 ),
               ),
@@ -185,17 +241,26 @@ class TankDetailScreen extends ConsumerWidget {
               SliverToBoxAdapter(
                 child: _SectionHeader(
                   title: 'Recent Activity',
-                  onViewAll: () {
-                    // TODO: Full logs screen
-                  },
+                  onViewAll: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => LogsScreen(tankId: tankId)),
+                  ),
                 ),
               ),
               
               SliverToBoxAdapter(
-                child: logsAsync.when(
+                child: logsRecentAsync.when(
                   loading: () => const Center(child: CircularProgressIndicator()),
                   error: (_, __) => const SizedBox.shrink(),
-                  data: (logs) => _LogsList(logs: logs.take(5).toList()),
+                  data: (logs) => _LogsList(
+                    logs: logs.take(5).toList(),
+                    onTap: (log) => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => LogDetailScreen(tankId: tankId, logId: log.id),
+                      ),
+                    ),
+                  ),
                 ),
               ),
 
@@ -506,8 +571,9 @@ class _TaskTile extends StatelessWidget {
 
 class _LogsList extends StatelessWidget {
   final List<LogEntry> logs;
+  final ValueChanged<LogEntry>? onTap;
 
-  const _LogsList({required this.logs});
+  const _LogsList({required this.logs, this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -531,7 +597,7 @@ class _LogsList extends StatelessWidget {
       child: Card(
         margin: EdgeInsets.zero,
         child: Column(
-          children: logs.map((log) => _LogTile(log: log)).toList(),
+          children: logs.map((log) => _LogTile(log: log, onTap: onTap)).toList(),
         ),
       ),
     );
@@ -540,8 +606,9 @@ class _LogsList extends StatelessWidget {
 
 class _LogTile extends StatelessWidget {
   final LogEntry log;
+  final ValueChanged<LogEntry>? onTap;
 
-  const _LogTile({required this.log});
+  const _LogTile({required this.log, this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -552,9 +619,7 @@ class _LogTile extends StatelessWidget {
       ),
       title: Text(_getLogTitle(log)),
       subtitle: Text(DateFormat('MMM d, h:mm a').format(log.timestamp)),
-      onTap: () {
-        // TODO: Log detail
-      },
+      onTap: () => onTap?.call(log),
     );
   }
 
@@ -744,5 +809,776 @@ class _EquipmentPreview extends StatelessWidget {
       case EquipmentType.skimmer: return Icons.filter_drama;
       case EquipmentType.other: return Icons.settings;
     }
+  }
+}
+
+class _DashboardLoadingCard extends StatelessWidget {
+  final String title;
+
+  const _DashboardLoadingCard({required this.title});
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      margin: EdgeInsets.zero,
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Row(
+          children: [
+            Text(title, style: AppTypography.headlineSmall),
+            const Spacer(),
+            const SizedBox(
+              width: 18,
+              height: 18,
+              child: CircularProgressIndicator(strokeWidth: 2),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _LatestSnapshotCard extends StatelessWidget {
+  final Tank tank;
+  final List<LogEntry> logs;
+
+  const _LatestSnapshotCard({required this.tank, required this.logs});
+
+  @override
+  Widget build(BuildContext context) {
+    final latest = logs.firstWhereOrNull(
+      (l) => l.type == LogType.waterTest && l.waterTest != null && l.waterTest!.hasValues,
+    );
+
+    if (latest == null) {
+      return Card(
+        margin: EdgeInsets.zero,
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Latest Water Snapshot', style: AppTypography.headlineSmall),
+              const SizedBox(height: 8),
+              Text('No water tests logged yet.', style: AppTypography.bodyMedium),
+            ],
+          ),
+        ),
+      );
+    }
+
+    final t = latest.waterTest!;
+
+    return Card(
+      margin: EdgeInsets.zero,
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Text('Latest Water Snapshot', style: AppTypography.headlineSmall),
+                const Spacer(),
+                Text(
+                  DateFormat('MMM d').format(latest.timestamp),
+                  style: AppTypography.bodySmall,
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+
+            Wrap(
+              spacing: 10,
+              runSpacing: 10,
+              children: [
+                _ParamPill(
+                  label: 'Temp',
+                  value: _fmt(t.temperature, decimals: 1),
+                  unit: '°C',
+                  status: _rangeStatus(
+                    value: t.temperature,
+                    min: tank.targets.tempMin,
+                    max: tank.targets.tempMax,
+                  ),
+                ),
+                _ParamPill(
+                  label: 'pH',
+                  value: _fmt(t.ph, decimals: 1),
+                  status: _rangeStatus(
+                    value: t.ph,
+                    min: tank.targets.phMin,
+                    max: tank.targets.phMax,
+                  ),
+                ),
+                _ParamPill(
+                  label: 'NH₃',
+                  value: _fmt(t.ammonia, decimals: 2),
+                  unit: 'ppm',
+                  status: _thresholdStatus(value: t.ammonia, warn: 0.25, danger: 0.5),
+                ),
+                _ParamPill(
+                  label: 'NO₂',
+                  value: _fmt(t.nitrite, decimals: 2),
+                  unit: 'ppm',
+                  status: _thresholdStatus(value: t.nitrite, warn: 0.25, danger: 0.5),
+                ),
+                _ParamPill(
+                  label: 'NO₃',
+                  value: _fmt(t.nitrate, decimals: 0),
+                  unit: 'ppm',
+                  status: _thresholdStatus(value: t.nitrate, warn: 20, danger: 40),
+                ),
+                _ParamPill(
+                  label: 'GH',
+                  value: _fmt(t.gh, decimals: 0),
+                  unit: 'dGH',
+                  status: _rangeStatus(
+                    value: t.gh,
+                    min: tank.targets.ghMin,
+                    max: tank.targets.ghMax,
+                  ),
+                ),
+                _ParamPill(
+                  label: 'KH',
+                  value: _fmt(t.kh, decimals: 0),
+                  unit: 'dKH',
+                  status: _rangeStatus(
+                    value: t.kh,
+                    min: tank.targets.khMin,
+                    max: tank.targets.khMax,
+                  ),
+                ),
+                _ParamPill(
+                  label: 'PO₄',
+                  value: _fmt(t.phosphate, decimals: 2),
+                  unit: 'ppm',
+                  status: _thresholdStatus(value: t.phosphate, warn: 1.0, danger: 2.0),
+                ),
+              ],
+            ),
+
+            const SizedBox(height: 8),
+            Text(
+              'Tip: tap a trend below to jump straight to charts.',
+              style: AppTypography.bodySmall,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  String _fmt(double? v, {required int decimals}) {
+    if (v == null) return '—';
+    return v.toStringAsFixed(decimals);
+  }
+
+  _ParamStatus _thresholdStatus({required double? value, required double warn, required double danger}) {
+    if (value == null) return _ParamStatus.unknown;
+    if (value >= danger) return _ParamStatus.danger;
+    if (value >= warn) return _ParamStatus.warning;
+    return _ParamStatus.safe;
+  }
+
+  _ParamStatus _rangeStatus({required double? value, required double? min, required double? max}) {
+    if (value == null) return _ParamStatus.unknown;
+    if (min == null && max == null) return _ParamStatus.unknown;
+
+    final below = min != null && value < min;
+    final above = max != null && value > max;
+
+    if (below || above) return _ParamStatus.warning;
+    return _ParamStatus.safe;
+  }
+}
+
+enum _ParamStatus {
+  unknown,
+  safe,
+  warning,
+  danger,
+}
+
+class _ParamPill extends StatelessWidget {
+  final String label;
+  final String value;
+  final String? unit;
+  final _ParamStatus status;
+
+  const _ParamPill({
+    required this.label,
+    required this.value,
+    this.unit,
+    required this.status,
+  });
+
+  Color _statusColor() {
+    switch (status) {
+      case _ParamStatus.safe:
+        return AppColors.paramSafe;
+      case _ParamStatus.warning:
+        return AppColors.paramWarning;
+      case _ParamStatus.danger:
+        return AppColors.paramDanger;
+      case _ParamStatus.unknown:
+        return AppColors.textHint;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final c = _statusColor();
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      decoration: BoxDecoration(
+        color: c.withOpacity(0.14),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: c.withOpacity(0.35)),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 8,
+            height: 8,
+            decoration: BoxDecoration(color: c, shape: BoxShape.circle),
+          ),
+          const SizedBox(width: 8),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(label, style: AppTypography.bodySmall),
+              const SizedBox(height: 2),
+              Text(
+                unit == null ? value : '$value $unit',
+                style: AppTypography.labelLarge,
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _TrendsRow extends StatelessWidget {
+  final Tank tank;
+  final List<LogEntry> logs;
+  final ValueChanged<String> onOpenCharts;
+
+  const _TrendsRow({required this.tank, required this.logs, required this.onOpenCharts});
+
+  @override
+  Widget build(BuildContext context) {
+    final tests = logs
+        .where((l) => l.type == LogType.waterTest && l.waterTest != null)
+        .toList()
+      ..sort((a, b) => a.timestamp.compareTo(b.timestamp));
+
+    if (tests.isEmpty) {
+      return Card(
+        margin: EdgeInsets.zero,
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Trends', style: AppTypography.headlineSmall),
+              const SizedBox(height: 8),
+              Text('No trend data yet — log a few water tests.', style: AppTypography.bodyMedium),
+            ],
+          ),
+        ),
+      );
+    }
+
+    const params = <String>[
+      'temp',
+      'ph',
+      'ammonia',
+      'nitrite',
+      'nitrate',
+      'gh',
+      'kh',
+      'phosphate',
+    ];
+
+    return Card(
+      margin: EdgeInsets.zero,
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Text('Trends', style: AppTypography.headlineSmall),
+                const Spacer(),
+                Text('last ${tests.length.clamp(0, 50)} tests', style: AppTypography.bodySmall),
+              ],
+            ),
+            const SizedBox(height: 12),
+            SizedBox(
+              height: 110,
+              child: ListView.separated(
+                scrollDirection: Axis.horizontal,
+                itemCount: params.length,
+                separatorBuilder: (_, __) => const SizedBox(width: 10),
+                itemBuilder: (context, index) {
+                  final p = params[index];
+                  return _SparklineCard(
+                    param: p,
+                    tests: tests,
+                    onTap: () => onOpenCharts(p),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _SparklineCard extends StatelessWidget {
+  final String param;
+  final List<LogEntry> tests;
+  final VoidCallback onTap;
+
+  const _SparklineCard({required this.param, required this.tests, required this.onTap});
+
+  String _label() {
+    switch (param) {
+      case 'temp':
+        return 'Temp';
+      case 'ph':
+        return 'pH';
+      case 'ammonia':
+        return 'NH₃';
+      case 'nitrite':
+        return 'NO₂';
+      case 'nitrate':
+        return 'NO₃';
+      case 'gh':
+        return 'GH';
+      case 'kh':
+        return 'KH';
+      case 'phosphate':
+        return 'PO₄';
+      default:
+        return param;
+    }
+  }
+
+  Color _color() {
+    switch (param) {
+      case 'nitrate':
+        return Colors.orange;
+      case 'nitrite':
+        return Colors.red;
+      case 'ammonia':
+        return Colors.purple;
+      case 'ph':
+        return AppColors.primary;
+      case 'temp':
+        return AppColors.secondary;
+      case 'gh':
+        return Colors.brown;
+      case 'kh':
+        return Colors.indigo;
+      case 'phosphate':
+        return Colors.green;
+      default:
+        return AppColors.primary;
+    }
+  }
+
+  double? _value(WaterTestResults t) {
+    switch (param) {
+      case 'temp':
+        return t.temperature;
+      case 'ph':
+        return t.ph;
+      case 'ammonia':
+        return t.ammonia;
+      case 'nitrite':
+        return t.nitrite;
+      case 'nitrate':
+        return t.nitrate;
+      case 'gh':
+        return t.gh;
+      case 'kh':
+        return t.kh;
+      case 'phosphate':
+        return t.phosphate;
+      default:
+        return null;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final values = <double>[];
+    for (final l in tests) {
+      final v = _value(l.waterTest!);
+      if (v != null) values.add(v);
+    }
+
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(12),
+      child: Container(
+        width: 110,
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: AppColors.surfaceVariant,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: AppColors.surfaceVariant.withOpacity(0.6)),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(_label(), style: AppTypography.labelLarge),
+            const SizedBox(height: 8),
+            Expanded(
+              child: values.length < 2
+                  ? Center(
+                      child: Text('—', style: AppTypography.bodySmall),
+                    )
+                  : _MiniSparkline(values: values, color: _color()),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _MiniSparkline extends StatelessWidget {
+  final List<double> values;
+  final Color color;
+
+  const _MiniSparkline({required this.values, required this.color});
+
+  @override
+  Widget build(BuildContext context) {
+    final spots = <FlSpot>[];
+    for (int i = 0; i < values.length; i++) {
+      spots.add(FlSpot(i.toDouble(), values[i]));
+    }
+
+    return LineChart(
+      LineChartData(
+        minX: 0,
+        maxX: (values.length - 1).toDouble(),
+        gridData: const FlGridData(show: false),
+        titlesData: const FlTitlesData(show: false),
+        borderData: FlBorderData(show: false),
+        lineBarsData: [
+          LineChartBarData(
+            spots: spots,
+            isCurved: true,
+            color: color,
+            barWidth: 2,
+            dotData: const FlDotData(show: false),
+            belowBarData: BarAreaData(show: true, color: color.withOpacity(0.10)),
+          ),
+        ],
+        lineTouchData: const LineTouchData(enabled: false),
+      ),
+    );
+  }
+}
+
+enum _AlertSeverity {
+  info,
+  warning,
+  danger,
+}
+
+class _AlertItem {
+  final _AlertSeverity severity;
+  final String title;
+  final String? detail;
+
+  const _AlertItem({required this.severity, required this.title, this.detail});
+}
+
+class _AlertsCard extends StatelessWidget {
+  final Tank tank;
+  final List<LogEntry> logs;
+
+  const _AlertsCard({required this.tank, required this.logs});
+
+  @override
+  Widget build(BuildContext context) {
+    final tests = logs
+        .where((l) => l.type == LogType.waterTest && l.waterTest != null)
+        .toList()
+      ..sort((a, b) => b.timestamp.compareTo(a.timestamp));
+
+    final latest = tests.firstOrNull;
+    if (latest == null) {
+      return Card(
+        margin: EdgeInsets.zero,
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Alerts', style: AppTypography.headlineSmall),
+              const SizedBox(height: 8),
+              Text('No water tests yet — nothing to flag.', style: AppTypography.bodyMedium),
+            ],
+          ),
+        ),
+      );
+    }
+
+    final latestTest = latest.waterTest!;
+    final alerts = <_AlertItem>[];
+
+    // Recency
+    final daysSince = DateTime.now().difference(latest.timestamp).inDays;
+    if (daysSince >= 14) {
+      alerts.add(
+        _AlertItem(
+          severity: _AlertSeverity.info,
+          title: 'No water test in $daysSince days',
+          detail: 'Consider logging a quick test to keep trends accurate.',
+        ),
+      );
+    }
+
+    // Targets (range)
+    void rangeAlert({
+      required String label,
+      required double? value,
+      required double? min,
+      required double? max,
+      String? unit,
+    }) {
+      if (value == null) return;
+      if (min == null && max == null) return;
+
+      final below = min != null && value < min;
+      final above = max != null && value > max;
+      if (!below && !above) return;
+
+      final targetText = [
+        if (min != null) 'min ${min.toStringAsFixed(1)}',
+        if (max != null) 'max ${max.toStringAsFixed(1)}',
+      ].join(' / ');
+
+      alerts.add(
+        _AlertItem(
+          severity: _AlertSeverity.warning,
+          title: '$label out of target range',
+          detail: 'Latest: ${value.toStringAsFixed(2)}${unit != null ? ' $unit' : ''} (targets: $targetText)',
+        ),
+      );
+    }
+
+    rangeAlert(
+      label: 'Temperature',
+      value: latestTest.temperature,
+      min: tank.targets.tempMin,
+      max: tank.targets.tempMax,
+      unit: '°C',
+    );
+    rangeAlert(
+      label: 'pH',
+      value: latestTest.ph,
+      min: tank.targets.phMin,
+      max: tank.targets.phMax,
+    );
+    rangeAlert(
+      label: 'GH',
+      value: latestTest.gh,
+      min: tank.targets.ghMin,
+      max: tank.targets.ghMax,
+      unit: 'dGH',
+    );
+    rangeAlert(
+      label: 'KH',
+      value: latestTest.kh,
+      min: tank.targets.khMin,
+      max: tank.targets.khMax,
+      unit: 'dKH',
+    );
+
+    // Threshold parameters
+    void thresholdAlert({
+      required String label,
+      required double? value,
+      required double warn,
+      required double danger,
+      required int decimals,
+      String unit = 'ppm',
+    }) {
+      if (value == null) return;
+      if (value >= danger) {
+        alerts.add(
+          _AlertItem(
+            severity: _AlertSeverity.danger,
+            title: '$label is high',
+            detail: 'Latest: ${value.toStringAsFixed(decimals)} $unit',
+          ),
+        );
+      } else if (value >= warn) {
+        alerts.add(
+          _AlertItem(
+            severity: _AlertSeverity.warning,
+            title: '$label is elevated',
+            detail: 'Latest: ${value.toStringAsFixed(decimals)} $unit',
+          ),
+        );
+      }
+    }
+
+    thresholdAlert(label: 'Ammonia (NH₃)', value: latestTest.ammonia, warn: 0.25, danger: 0.5, decimals: 2);
+    thresholdAlert(label: 'Nitrite (NO₂)', value: latestTest.nitrite, warn: 0.25, danger: 0.5, decimals: 2);
+    thresholdAlert(label: 'Nitrate (NO₃)', value: latestTest.nitrate, warn: 40, danger: 80, decimals: 0);
+    thresholdAlert(label: 'Phosphate (PO₄)', value: latestTest.phosphate, warn: 1.0, danger: 2.0, decimals: 2);
+
+    // Simple delta trend (nitrate)
+    final recentNitrateTests = tests
+        .where((l) => l.waterTest?.nitrate != null)
+        .take(2)
+        .toList();
+    if (recentNitrateTests.length == 2) {
+      final a = recentNitrateTests[0];
+      final b = recentNitrateTests[1];
+      final delta = (a.waterTest!.nitrate! - b.waterTest!.nitrate!);
+      final gapDays = a.timestamp.difference(b.timestamp).inDays.abs();
+
+      if (gapDays <= 7 && delta >= 10) {
+        alerts.add(
+          _AlertItem(
+            severity: _AlertSeverity.warning,
+            title: 'Nitrate jumped +${delta.toStringAsFixed(0)} ppm',
+            detail: 'Since the previous test (${DateFormat('MMM d').format(b.timestamp)}).',
+          ),
+        );
+      }
+    }
+
+    // If nothing, celebrate stability.
+    if (alerts.isEmpty) {
+      return Card(
+        margin: EdgeInsets.zero,
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Row(
+            children: [
+              const Icon(Icons.check_circle, color: AppColors.success),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Alerts', style: AppTypography.headlineSmall),
+                    const SizedBox(height: 6),
+                    Text('All looks stable based on your latest test.', style: AppTypography.bodyMedium),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    // Sort so danger shows first.
+    alerts.sort((x, y) => y.severity.index.compareTo(x.severity.index));
+
+    return Card(
+      margin: EdgeInsets.zero,
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Text('Alerts', style: AppTypography.headlineSmall),
+                const Spacer(),
+                Text('${alerts.length}', style: AppTypography.bodySmall),
+              ],
+            ),
+            const SizedBox(height: 12),
+            ...alerts.map((a) => _AlertRow(item: a)),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _AlertRow extends StatelessWidget {
+  final _AlertItem item;
+
+  const _AlertRow({required this.item});
+
+  Color _color() {
+    switch (item.severity) {
+      case _AlertSeverity.danger:
+        return AppColors.paramDanger;
+      case _AlertSeverity.warning:
+        return AppColors.paramWarning;
+      case _AlertSeverity.info:
+        return AppColors.info;
+    }
+  }
+
+  IconData _icon() {
+    switch (item.severity) {
+      case _AlertSeverity.danger:
+        return Icons.error_outline;
+      case _AlertSeverity.warning:
+        return Icons.warning_amber_rounded;
+      case _AlertSeverity.info:
+        return Icons.info_outline;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final c = _color();
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 10),
+      child: Container(
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: c.withOpacity(0.10),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: c.withOpacity(0.25)),
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Icon(_icon(), color: c),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(item.title, style: AppTypography.labelLarge),
+                  if (item.detail != null) ...[
+                    const SizedBox(height: 4),
+                    Text(item.detail!, style: AppTypography.bodySmall),
+                  ],
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }

@@ -1,29 +1,44 @@
 import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
+
 import '../models/models.dart';
 import '../providers/tank_provider.dart';
 import '../theme/app_theme.dart';
 
 class ChartsScreen extends ConsumerStatefulWidget {
   final String tankId;
+  final String initialParam;
 
-  const ChartsScreen({super.key, required this.tankId});
+  const ChartsScreen({
+    super.key,
+    required this.tankId,
+    this.initialParam = 'nitrate',
+  });
 
   @override
   ConsumerState<ChartsScreen> createState() => _ChartsScreenState();
 }
 
 class _ChartsScreenState extends ConsumerState<ChartsScreen> {
-  String _selectedParam = 'nitrate';
+  late String _selectedParam;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedParam = widget.initialParam;
+  }
 
   @override
   Widget build(BuildContext context) {
-    final logsAsync = ref.watch(logsProvider(widget.tankId));
+    final tankAsync = ref.watch(tankProvider(widget.tankId));
+    final logsAsync = ref.watch(allLogsProvider(widget.tankId));
+    final tank = tankAsync.asData?.value;
 
     return Scaffold(
       appBar: AppBar(
@@ -99,6 +114,24 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
                         isSelected: _selectedParam == 'temp',
                         onTap: () => setState(() => _selectedParam = 'temp'),
                       ),
+                      const SizedBox(width: 8),
+                      _ParamChip(
+                        label: 'GH',
+                        isSelected: _selectedParam == 'gh',
+                        onTap: () => setState(() => _selectedParam = 'gh'),
+                      ),
+                      const SizedBox(width: 8),
+                      _ParamChip(
+                        label: 'KH',
+                        isSelected: _selectedParam == 'kh',
+                        onTap: () => setState(() => _selectedParam = 'kh'),
+                      ),
+                      const SizedBox(width: 8),
+                      _ParamChip(
+                        label: 'Phosphate',
+                        isSelected: _selectedParam == 'phosphate',
+                        onTap: () => setState(() => _selectedParam = 'phosphate'),
+                      ),
                     ],
                   ),
                 ),
@@ -113,7 +146,10 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
                 const SizedBox(height: 8),
                 SizedBox(
                   height: 250,
-                  child: _buildChart(waterTests),
+                  child: _buildChart(
+                    waterTests,
+                    targets: tank?.targets,
+                  ),
                 ),
 
                 const SizedBox(height: 32),
@@ -142,38 +178,89 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
 
   String _getParamTitle(String param) {
     switch (param) {
-      case 'nitrate': return 'Nitrate (NO₃) ppm';
-      case 'nitrite': return 'Nitrite (NO₂) ppm';
-      case 'ammonia': return 'Ammonia (NH₃) ppm';
-      case 'ph': return 'pH Level';
-      case 'temp': return 'Temperature °C';
-      default: return param;
+      case 'nitrate':
+        return 'Nitrate (NO₃) ppm';
+      case 'nitrite':
+        return 'Nitrite (NO₂) ppm';
+      case 'ammonia':
+        return 'Ammonia (NH₃) ppm';
+      case 'ph':
+        return 'pH Level';
+      case 'temp':
+        return 'Temperature °C';
+      case 'gh':
+        return 'GH (dGH)';
+      case 'kh':
+        return 'KH (dKH)';
+      case 'phosphate':
+        return 'Phosphate (PO₄) ppm';
+      default:
+        return param;
     }
   }
 
   double? _getValue(WaterTestResults test, String param) {
     switch (param) {
-      case 'nitrate': return test.nitrate;
-      case 'nitrite': return test.nitrite;
-      case 'ammonia': return test.ammonia;
-      case 'ph': return test.ph;
-      case 'temp': return test.temperature;
-      default: return null;
+      case 'nitrate':
+        return test.nitrate;
+      case 'nitrite':
+        return test.nitrite;
+      case 'ammonia':
+        return test.ammonia;
+      case 'ph':
+        return test.ph;
+      case 'temp':
+        return test.temperature;
+      case 'gh':
+        return test.gh;
+      case 'kh':
+        return test.kh;
+      case 'phosphate':
+        return test.phosphate;
+      default:
+        return null;
+    }
+  }
+
+  ({double? min, double? max}) _getTargetRange(WaterTargets targets, String param) {
+    switch (param) {
+      case 'temp':
+        return (min: targets.tempMin, max: targets.tempMax);
+      case 'ph':
+        return (min: targets.phMin, max: targets.phMax);
+      case 'gh':
+        return (min: targets.ghMin, max: targets.ghMax);
+      case 'kh':
+        return (min: targets.khMin, max: targets.khMax);
+      default:
+        return (min: null, max: null);
     }
   }
 
   Color _getParamColor(String param) {
     switch (param) {
-      case 'nitrate': return Colors.orange;
-      case 'nitrite': return Colors.red;
-      case 'ammonia': return Colors.purple;
-      case 'ph': return AppColors.primary;
-      case 'temp': return AppColors.secondary;
-      default: return AppColors.primary;
+      case 'nitrate':
+        return Colors.orange;
+      case 'nitrite':
+        return Colors.red;
+      case 'ammonia':
+        return Colors.purple;
+      case 'ph':
+        return AppColors.primary;
+      case 'temp':
+        return AppColors.secondary;
+      case 'gh':
+        return Colors.brown;
+      case 'kh':
+        return Colors.indigo;
+      case 'phosphate':
+        return Colors.green;
+      default:
+        return AppColors.primary;
     }
   }
 
-  Widget _buildChart(List<LogEntry> logs) {
+  Widget _buildChart(List<LogEntry> logs, {WaterTargets? targets}) {
     final color = _getParamColor(_selectedParam);
     final spots = <FlSpot>[];
 
@@ -193,6 +280,66 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
       );
     }
 
+    final xMax = (logs.length - 1).toDouble().clamp(0, double.infinity);
+
+    // Optional target lines (min/max), where relevant.
+    final List<LineChartBarData> bars = [];
+
+    bars.add(
+      LineChartBarData(
+        spots: spots,
+        isCurved: true,
+        color: color,
+        barWidth: 3,
+        dotData: FlDotData(
+          show: true,
+          getDotPainter: (spot, percent, bar, index) => FlDotCirclePainter(
+            radius: 4,
+            color: color,
+            strokeWidth: 2,
+            strokeColor: Colors.white,
+          ),
+        ),
+        belowBarData: BarAreaData(
+          show: true,
+          color: color.withOpacity(0.1),
+        ),
+      ),
+    );
+
+    if (targets != null) {
+      final range = _getTargetRange(targets, _selectedParam);
+      final targetColor = AppColors.textHint.withOpacity(0.8);
+
+      if (range.min != null) {
+        bars.add(
+          LineChartBarData(
+            spots: [FlSpot(0, range.min!), FlSpot(xMax, range.min!)],
+            isCurved: false,
+            color: targetColor,
+            barWidth: 1,
+            dashArray: [6, 4],
+            dotData: const FlDotData(show: false),
+            belowBarData: BarAreaData(show: false),
+          ),
+        );
+      }
+
+      if (range.max != null) {
+        bars.add(
+          LineChartBarData(
+            spots: [FlSpot(0, range.max!), FlSpot(xMax, range.max!)],
+            isCurved: false,
+            color: targetColor,
+            barWidth: 1,
+            dashArray: [6, 4],
+            dotData: const FlDotData(show: false),
+            belowBarData: BarAreaData(show: false),
+          ),
+        );
+      }
+    }
+
     return LineChart(
       LineChartData(
         gridData: FlGridData(
@@ -208,7 +355,7 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
           leftTitles: AxisTitles(
             sideTitles: SideTitles(
               showTitles: true,
-              reservedSize: 40,
+              reservedSize: 44,
               getTitlesWidget: (value, meta) => Text(
                 value.toStringAsFixed(_selectedParam == 'ph' ? 1 : 0),
                 style: AppTypography.bodySmall,
@@ -236,27 +383,7 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
           topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
         ),
         borderData: FlBorderData(show: false),
-        lineBarsData: [
-          LineChartBarData(
-            spots: spots,
-            isCurved: true,
-            color: color,
-            barWidth: 3,
-            dotData: FlDotData(
-              show: true,
-              getDotPainter: (spot, percent, bar, index) => FlDotCirclePainter(
-                radius: 4,
-                color: color,
-                strokeWidth: 2,
-                strokeColor: Colors.white,
-              ),
-            ),
-            belowBarData: BarAreaData(
-              show: true,
-              color: color.withOpacity(0.1),
-            ),
-          ),
-        ],
+        lineBarsData: bars,
         lineTouchData: LineTouchData(
           touchTooltipData: LineTouchTooltipData(
             getTooltipItems: (touchedSpots) {
@@ -266,7 +393,7 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
                     ? DateFormat('MMM d').format(logs[index].timestamp)
                     : '';
                 return LineTooltipItem(
-                  '${spot.y.toStringAsFixed(1)}\n$date',
+                  '${spot.y.toStringAsFixed(2)}\n$date',
                   TextStyle(color: color, fontWeight: FontWeight.bold),
                 );
               }).toList();
@@ -279,12 +406,24 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
 
   double _getInterval(String param) {
     switch (param) {
-      case 'nitrate': return 10;
-      case 'nitrite': return 0.5;
-      case 'ammonia': return 0.5;
-      case 'ph': return 0.5;
-      case 'temp': return 2;
-      default: return 5;
+      case 'nitrate':
+        return 10;
+      case 'nitrite':
+        return 0.5;
+      case 'ammonia':
+        return 0.5;
+      case 'ph':
+        return 0.5;
+      case 'temp':
+        return 2;
+      case 'gh':
+        return 2;
+      case 'kh':
+        return 2;
+      case 'phosphate':
+        return 0.5;
+      default:
+        return 5;
     }
   }
 
@@ -311,7 +450,9 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
 
     // Build CSV
     final buffer = StringBuffer();
-    buffer.writeln('Date,Time,Temp (°C),pH,Ammonia (ppm),Nitrite (ppm),Nitrate (ppm),GH (dGH),KH (dKH),Notes');
+    buffer.writeln(
+      'Date,Time,Temp (°C),pH,Ammonia (ppm),Nitrite (ppm),Nitrate (ppm),GH (dGH),KH (dKH),Phosphate (ppm),CO2 (mg/L),Notes',
+    );
 
     for (final log in waterTests) {
       final test = log.waterTest!;
@@ -327,6 +468,8 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
         test.nitrate?.toString() ?? '',
         test.gh?.toString() ?? '',
         test.kh?.toString() ?? '',
+        test.phosphate?.toString() ?? '',
+        test.co2?.toString() ?? '',
         (log.notes ?? '').replaceAll(',', ';').replaceAll('\n', ' '),
       ].join(','));
     }
@@ -375,12 +518,24 @@ class _SummaryCard extends StatelessWidget {
 
   double? _getValue(WaterTestResults test) {
     switch (param) {
-      case 'nitrate': return test.nitrate;
-      case 'nitrite': return test.nitrite;
-      case 'ammonia': return test.ammonia;
-      case 'ph': return test.ph;
-      case 'temp': return test.temperature;
-      default: return null;
+      case 'nitrate':
+        return test.nitrate;
+      case 'nitrite':
+        return test.nitrite;
+      case 'ammonia':
+        return test.ammonia;
+      case 'ph':
+        return test.ph;
+      case 'temp':
+        return test.temperature;
+      case 'gh':
+        return test.gh;
+      case 'kh':
+        return test.kh;
+      case 'phosphate':
+        return test.phosphate;
+      default:
+        return null;
     }
   }
 
@@ -405,16 +560,23 @@ class _SummaryCard extends StatelessWidget {
     final avg = values.reduce((a, b) => a + b) / values.length;
     final latest = values.last;
 
+    String fmt(double v) {
+      if (param == 'nitrate') return v.toStringAsFixed(0);
+      if (param == 'temp') return v.toStringAsFixed(1);
+      if (param == 'ph') return v.toStringAsFixed(1);
+      return v.toStringAsFixed(2);
+    }
+
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            _StatColumn(label: 'Latest', value: latest.toStringAsFixed(1)),
-            _StatColumn(label: 'Average', value: avg.toStringAsFixed(1)),
-            _StatColumn(label: 'Min', value: min.toStringAsFixed(1)),
-            _StatColumn(label: 'Max', value: max.toStringAsFixed(1)),
+            _StatColumn(label: 'Latest', value: fmt(latest)),
+            _StatColumn(label: 'Average', value: fmt(avg)),
+            _StatColumn(label: 'Min', value: fmt(min)),
+            _StatColumn(label: 'Max', value: fmt(max)),
           ],
         ),
       ),
@@ -457,6 +619,9 @@ class _ValuesTable extends StatelessWidget {
             DataColumn(label: Text('NH₃'), numeric: true),
             DataColumn(label: Text('NO₂'), numeric: true),
             DataColumn(label: Text('NO₃'), numeric: true),
+            DataColumn(label: Text('GH'), numeric: true),
+            DataColumn(label: Text('KH'), numeric: true),
+            DataColumn(label: Text('PO₄'), numeric: true),
           ],
           rows: logs.map((log) {
             final test = log.waterTest!;
@@ -467,6 +632,9 @@ class _ValuesTable extends StatelessWidget {
               DataCell(Text(test.ammonia?.toStringAsFixed(2) ?? '-')),
               DataCell(Text(test.nitrite?.toStringAsFixed(2) ?? '-')),
               DataCell(Text(test.nitrate?.toStringAsFixed(0) ?? '-')),
+              DataCell(Text(test.gh?.toStringAsFixed(0) ?? '-')),
+              DataCell(Text(test.kh?.toStringAsFixed(0) ?? '-')),
+              DataCell(Text(test.phosphate?.toStringAsFixed(2) ?? '-')),
             ]);
           }).toList(),
         ),
