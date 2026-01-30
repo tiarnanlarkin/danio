@@ -385,9 +385,44 @@ class TankDetailScreen extends ConsumerWidget {
               const SliverToBoxAdapter(child: SizedBox(height: 100)),
             ],
           ),
+          floatingActionButton: _QuickAddFab(
+            onWaterTest: () => _navigateToAddLog(context, LogType.waterTest),
+            onWaterChange: () => _navigateToAddLog(context, LogType.waterChange),
+            onObservation: () => _navigateToAddLog(context, LogType.observation),
+            onFeeding: () => _quickLogFeeding(context, ref),
+          ),
         );
       },
     );
+  }
+
+  Future<void> _quickLogFeeding(BuildContext context, WidgetRef ref) async {
+    final storage = ref.read(storageServiceProvider);
+    final now = DateTime.now();
+
+    await storage.saveLog(
+      LogEntry(
+        id: _uuid.v4(),
+        tankId: tankId,
+        type: LogType.feeding,
+        timestamp: now,
+        title: 'Fed fish',
+        createdAt: now,
+      ),
+    );
+
+    ref.invalidate(logsProvider(tankId));
+    ref.invalidate(allLogsProvider(tankId));
+
+    if (context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('Feeding logged! 🐟'),
+          backgroundColor: AppColors.success,
+          duration: const Duration(seconds: 2),
+        ),
+      );
+    }
   }
 
   void _navigateToAddLog(BuildContext context, LogType type) {
@@ -1673,6 +1708,170 @@ class _AlertRow extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+/// Quick-add FAB with expandable options
+class _QuickAddFab extends StatefulWidget {
+  final VoidCallback onWaterTest;
+  final VoidCallback onWaterChange;
+  final VoidCallback onObservation;
+  final VoidCallback onFeeding;
+
+  const _QuickAddFab({
+    required this.onWaterTest,
+    required this.onWaterChange,
+    required this.onObservation,
+    required this.onFeeding,
+  });
+
+  @override
+  State<_QuickAddFab> createState() => _QuickAddFabState();
+}
+
+class _QuickAddFabState extends State<_QuickAddFab> with SingleTickerProviderStateMixin {
+  bool _isExpanded = false;
+  late AnimationController _controller;
+  late Animation<double> _expandAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 200),
+      vsync: this,
+    );
+    _expandAnimation = CurvedAnimation(
+      parent: _controller,
+      curve: Curves.easeOut,
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  void _toggle() {
+    setState(() {
+      _isExpanded = !_isExpanded;
+      if (_isExpanded) {
+        _controller.forward();
+      } else {
+        _controller.reverse();
+      }
+    });
+  }
+
+  void _handleAction(VoidCallback action) {
+    _toggle();
+    action();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        // Mini FABs
+        ScaleTransition(
+          scale: _expandAnimation,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              _MiniFabOption(
+                icon: Icons.science,
+                label: 'Water Test',
+                color: AppColors.primary,
+                onTap: () => _handleAction(widget.onWaterTest),
+              ),
+              const SizedBox(height: 8),
+              _MiniFabOption(
+                icon: Icons.water_drop,
+                label: 'Water Change',
+                color: AppColors.secondary,
+                onTap: () => _handleAction(widget.onWaterChange),
+              ),
+              const SizedBox(height: 8),
+              _MiniFabOption(
+                icon: Icons.restaurant,
+                label: 'Log Feeding',
+                color: Colors.orange,
+                onTap: () => _handleAction(widget.onFeeding),
+              ),
+              const SizedBox(height: 8),
+              _MiniFabOption(
+                icon: Icons.edit_note,
+                label: 'Observation',
+                color: Colors.purple,
+                onTap: () => _handleAction(widget.onObservation),
+              ),
+              const SizedBox(height: 12),
+            ],
+          ),
+        ),
+        // Main FAB
+        FloatingActionButton(
+          onPressed: _toggle,
+          child: AnimatedRotation(
+            turns: _isExpanded ? 0.125 : 0,
+            duration: const Duration(milliseconds: 200),
+            child: const Icon(Icons.add),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _MiniFabOption extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final Color color;
+  final VoidCallback onTap;
+
+  const _MiniFabOption({
+    required this.icon,
+    required this.label,
+    required this.color,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(4),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.1),
+                blurRadius: 4,
+                offset: const Offset(0, 2),
+              ),
+            ],
+          ),
+          child: Text(
+            label,
+            style: AppTypography.bodySmall.copyWith(fontWeight: FontWeight.w500),
+          ),
+        ),
+        const SizedBox(width: 8),
+        FloatingActionButton.small(
+          heroTag: label,
+          backgroundColor: color,
+          onPressed: onTap,
+          child: Icon(icon, size: 20),
+        ),
+      ],
     );
   }
 }
