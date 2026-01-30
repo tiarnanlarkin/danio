@@ -7,6 +7,7 @@ import 'dart:io';
 import '../providers/settings_provider.dart';
 import 'about_screen.dart';
 import 'nitrogen_cycle_guide_screen.dart';
+import 'feeding_guide_screen.dart';
 import 'parameter_guide_screen.dart';
 import '../services/notification_service.dart';
 import '../services/onboarding_service.dart';
@@ -158,6 +159,16 @@ class SettingsScreen extends ConsumerWidget {
             onTap: () => Navigator.push(
               context,
               MaterialPageRoute(builder: (_) => const ParameterGuideScreen()),
+            ),
+          ),
+          ListTile(
+            leading: const Icon(Icons.restaurant),
+            title: const Text('Feeding Guide'),
+            subtitle: const Text('How much, how often, what types'),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const FeedingGuideScreen()),
             ),
           ),
           ListTile(
