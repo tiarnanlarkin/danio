@@ -8,6 +8,7 @@ import '../providers/settings_provider.dart';
 import 'about_screen.dart';
 import 'acclimation_guide_screen.dart';
 import 'algae_guide_screen.dart';
+import 'quarantine_guide_screen.dart';
 import 'equipment_guide_screen.dart';
 import 'nitrogen_cycle_guide_screen.dart';
 import 'disease_guide_screen.dart';
@@ -246,6 +247,16 @@ class SettingsScreen extends ConsumerWidget {
             onTap: () => Navigator.push(
               context,
               MaterialPageRoute(builder: (_) => const AlgaeGuideScreen()),
+            ),
+          ),
+          ListTile(
+            leading: const Icon(Icons.local_hospital),
+            title: const Text('Quarantine Guide'),
+            subtitle: const Text('Setup, protocol, medications'),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const QuarantineGuideScreen()),
             ),
           ),
           ListTile(
