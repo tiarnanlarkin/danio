@@ -19,6 +19,7 @@ import '../theme/app_theme.dart';
 import 'onboarding_screen.dart';
 import 'shop_street_screen.dart';
 import 'dosing_calculator_screen.dart';
+import 'tank_volume_calculator_screen.dart';
 import 'unit_converter_screen.dart';
 import 'water_change_calculator_screen.dart';
 
@@ -96,6 +97,16 @@ class SettingsScreen extends ConsumerWidget {
             onTap: () => Navigator.push(
               context,
               MaterialPageRoute(builder: (_) => const UnitConverterScreen()),
+            ),
+          ),
+          ListTile(
+            leading: const Icon(Icons.view_in_ar),
+            title: const Text('Tank Volume Calculator'),
+            subtitle: const Text('Calculate volume for any tank shape'),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const TankVolumeCalculatorScreen()),
             ),
           ),
 
