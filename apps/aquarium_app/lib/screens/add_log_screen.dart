@@ -1,0 +1,573 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:uuid/uuid.dart';
+import '../models/models.dart';
+import '../providers/storage_provider.dart';
+import '../providers/tank_provider.dart';
+import '../theme/app_theme.dart';
+
+const _uuid = Uuid();
+
+class AddLogScreen extends ConsumerStatefulWidget {
+  final String tankId;
+  final LogType initialType;
+
+  const AddLogScreen({
+    super.key,
+    required this.tankId,
+    this.initialType = LogType.waterTest,
+  });
+
+  @override
+  ConsumerState<AddLogScreen> createState() => _AddLogScreenState();
+}
+
+class _AddLogScreenState extends ConsumerState<AddLogScreen> {
+  late LogType _type;
+  bool _isSaving = false;
+
+  // Water test values
+  double? _temperature;
+  double? _ph;
+  double? _ammonia;
+  double? _nitrite;
+  double? _nitrate;
+  double? _gh;
+  double? _kh;
+
+  // Water change
+  int? _waterChangePercent;
+
+  // General
+  String _notes = '';
+  DateTime _timestamp = DateTime.now();
+
+  @override
+  void initState() {
+    super.initState();
+    _type = widget.initialType;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(_getTitle()),
+        actions: [
+          TextButton(
+            onPressed: _isSaving ? null : _save,
+            child: _isSaving
+                ? const SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  )
+                : const Text('Save'),
+          ),
+        ],
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Type selector
+            _TypeSelector(
+              selected: _type,
+              onChanged: (type) => setState(() => _type = type),
+            ),
+
+            const SizedBox(height: 24),
+
+            // Type-specific form
+            if (_type == LogType.waterTest) _buildWaterTestForm(),
+            if (_type == LogType.waterChange) _buildWaterChangeForm(),
+            if (_type == LogType.observation) _buildObservationForm(),
+            if (_type == LogType.medication) _buildMedicationForm(),
+
+            const SizedBox(height: 24),
+
+            // Timestamp
+            Text('Date & Time', style: AppTypography.headlineSmall),
+            const SizedBox(height: 8),
+            InkWell(
+              onTap: _pickDateTime,
+              borderRadius: BorderRadius.circular(12),
+              child: Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: AppColors.surfaceVariant,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Row(
+                  children: [
+                    const Icon(Icons.calendar_today, color: AppColors.textSecondary),
+                    const SizedBox(width: 12),
+                    Text(
+                      '${_timestamp.day}/${_timestamp.month}/${_timestamp.year} at ${_timestamp.hour}:${_timestamp.minute.toString().padLeft(2, '0')}',
+                      style: AppTypography.bodyLarge,
+                    ),
+                    const Spacer(),
+                    TextButton(
+                      onPressed: () => setState(() => _timestamp = DateTime.now()),
+                      child: const Text('Now'),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+
+            const SizedBox(height: 24),
+
+            // Notes (always shown)
+            Text('Notes (optional)', style: AppTypography.headlineSmall),
+            const SizedBox(height: 8),
+            TextFormField(
+              initialValue: _notes,
+              decoration: const InputDecoration(
+                hintText: 'Any observations or notes...',
+              ),
+              maxLines: 3,
+              onChanged: (v) => _notes = v,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  String _getTitle() {
+    switch (_type) {
+      case LogType.waterTest: return 'Log Water Test';
+      case LogType.waterChange: return 'Log Water Change';
+      case LogType.observation: return 'Add Observation';
+      case LogType.medication: return 'Log Medication';
+      default: return 'Add Log';
+    }
+  }
+
+  Widget _buildWaterTestForm() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text('Water Parameters', style: AppTypography.headlineSmall),
+        const SizedBox(height: 4),
+        Text(
+          'Enter the values you tested. Leave blank if not tested.',
+          style: AppTypography.bodySmall,
+        ),
+        const SizedBox(height: 16),
+
+        // Temperature & pH row
+        Row(
+          children: [
+            Expanded(
+              child: _ParameterField(
+                label: 'Temperature',
+                unit: '°C',
+                value: _temperature,
+                onChanged: (v) => setState(() => _temperature = v),
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: _ParameterField(
+                label: 'pH',
+                value: _ph,
+                onChanged: (v) => setState(() => _ph = v),
+                decimal: true,
+              ),
+            ),
+          ],
+        ),
+
+        const SizedBox(height: 16),
+        const Divider(),
+        const SizedBox(height: 16),
+
+        // Nitrogen cycle
+        Text('Nitrogen Cycle', style: AppTypography.labelLarge),
+        const SizedBox(height: 12),
+        Row(
+          children: [
+            Expanded(
+              child: _ParameterField(
+                label: 'Ammonia (NH₃)',
+                unit: 'ppm',
+                value: _ammonia,
+                onChanged: (v) => setState(() => _ammonia = v),
+                warningThreshold: 0.25,
+                dangerThreshold: 0.5,
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: _ParameterField(
+                label: 'Nitrite (NO₂)',
+                unit: 'ppm',
+                value: _nitrite,
+                onChanged: (v) => setState(() => _nitrite = v),
+                warningThreshold: 0.25,
+                dangerThreshold: 0.5,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 12),
+        Row(
+          children: [
+            Expanded(
+              child: _ParameterField(
+                label: 'Nitrate (NO₃)',
+                unit: 'ppm',
+                value: _nitrate,
+                onChanged: (v) => setState(() => _nitrate = v),
+                warningThreshold: 20,
+                dangerThreshold: 40,
+              ),
+            ),
+            const Expanded(child: SizedBox()), // Placeholder for alignment
+          ],
+        ),
+
+        const SizedBox(height: 16),
+        const Divider(),
+        const SizedBox(height: 16),
+
+        // Hardness
+        Text('Hardness', style: AppTypography.labelLarge),
+        const SizedBox(height: 12),
+        Row(
+          children: [
+            Expanded(
+              child: _ParameterField(
+                label: 'GH',
+                unit: 'dGH',
+                value: _gh,
+                onChanged: (v) => setState(() => _gh = v),
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: _ParameterField(
+                label: 'KH',
+                unit: 'dKH',
+                value: _kh,
+                onChanged: (v) => setState(() => _kh = v),
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildWaterChangeForm() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text('Water Change', style: AppTypography.headlineSmall),
+        const SizedBox(height: 16),
+
+        Text('How much water did you change?', style: AppTypography.bodyMedium),
+        const SizedBox(height: 12),
+
+        // Preset buttons
+        Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          children: [10, 20, 25, 30, 40, 50].map((percent) {
+            final isSelected = _waterChangePercent == percent;
+            return ChoiceChip(
+              label: Text('$percent%'),
+              selected: isSelected,
+              onSelected: (_) => setState(() => _waterChangePercent = percent),
+              selectedColor: AppColors.secondary.withOpacity(0.3),
+            );
+          }).toList(),
+        ),
+
+        const SizedBox(height: 16),
+
+        // Custom input
+        Row(
+          children: [
+            Expanded(
+              child: TextFormField(
+                initialValue: _waterChangePercent?.toString() ?? '',
+                decoration: const InputDecoration(
+                  labelText: 'Custom %',
+                  suffixText: '%',
+                ),
+                keyboardType: TextInputType.number,
+                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                onChanged: (v) {
+                  final value = int.tryParse(v);
+                  if (value != null && value > 0 && value <= 100) {
+                    setState(() => _waterChangePercent = value);
+                  }
+                },
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildObservationForm() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text('Observation', style: AppTypography.headlineSmall),
+        const SizedBox(height: 8),
+        Text(
+          'Record anything you notice — fish behavior, algae, plant growth, etc.',
+          style: AppTypography.bodyMedium,
+        ),
+        // Notes field is shown below
+      ],
+    );
+  }
+
+  Widget _buildMedicationForm() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text('Medication', style: AppTypography.headlineSmall),
+        const SizedBox(height: 8),
+        Text(
+          'Record what medication you added and dosage in the notes.',
+          style: AppTypography.bodyMedium,
+        ),
+        // Notes field is shown below
+      ],
+    );
+  }
+
+  Future<void> _pickDateTime() async {
+    final date = await showDatePicker(
+      context: context,
+      initialDate: _timestamp,
+      firstDate: DateTime(2020),
+      lastDate: DateTime.now(),
+    );
+    if (date != null && mounted) {
+      final time = await showTimePicker(
+        context: context,
+        initialTime: TimeOfDay.fromDateTime(_timestamp),
+      );
+      if (time != null && mounted) {
+        setState(() {
+          _timestamp = DateTime(date.year, date.month, date.day, time.hour, time.minute);
+        });
+      }
+    }
+  }
+
+  Future<void> _save() async {
+    // Validate based on type
+    if (_type == LogType.waterChange && _waterChangePercent == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please enter water change percentage')),
+      );
+      return;
+    }
+
+    setState(() => _isSaving = true);
+
+    try {
+      final storage = ref.read(storageServiceProvider);
+
+      final log = LogEntry(
+        id: _uuid.v4(),
+        tankId: widget.tankId,
+        type: _type,
+        timestamp: _timestamp,
+        waterTest: _type == LogType.waterTest
+            ? WaterTestResults(
+                temperature: _temperature,
+                ph: _ph,
+                ammonia: _ammonia,
+                nitrite: _nitrite,
+                nitrate: _nitrate,
+                gh: _gh,
+                kh: _kh,
+              )
+            : null,
+        waterChangePercent: _type == LogType.waterChange ? _waterChangePercent : null,
+        notes: _notes.isNotEmpty ? _notes : null,
+        createdAt: DateTime.now(),
+      );
+
+      await storage.saveLog(log);
+
+      // Invalidate logs provider
+      ref.invalidate(logsProvider(widget.tankId));
+
+      if (mounted) {
+        Navigator.pop(context);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('${log.typeName} logged!'),
+            backgroundColor: AppColors.success,
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to save: $e'),
+            backgroundColor: AppColors.error,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isSaving = false);
+      }
+    }
+  }
+}
+
+class _TypeSelector extends StatelessWidget {
+  final LogType selected;
+  final ValueChanged<LogType> onChanged;
+
+  const _TypeSelector({required this.selected, required this.onChanged});
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        children: [
+          _TypeChip(
+            icon: Icons.science,
+            label: 'Water Test',
+            isSelected: selected == LogType.waterTest,
+            onTap: () => onChanged(LogType.waterTest),
+          ),
+          const SizedBox(width: 8),
+          _TypeChip(
+            icon: Icons.water_drop,
+            label: 'Water Change',
+            isSelected: selected == LogType.waterChange,
+            onTap: () => onChanged(LogType.waterChange),
+          ),
+          const SizedBox(width: 8),
+          _TypeChip(
+            icon: Icons.visibility,
+            label: 'Observation',
+            isSelected: selected == LogType.observation,
+            onTap: () => onChanged(LogType.observation),
+          ),
+          const SizedBox(width: 8),
+          _TypeChip(
+            icon: Icons.medication,
+            label: 'Medication',
+            isSelected: selected == LogType.medication,
+            onTap: () => onChanged(LogType.medication),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _TypeChip extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final bool isSelected;
+  final VoidCallback onTap;
+
+  const _TypeChip({
+    required this.icon,
+    required this.label,
+    required this.isSelected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(20),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        decoration: BoxDecoration(
+          color: isSelected ? AppColors.primary : AppColors.surfaceVariant,
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              icon,
+              size: 18,
+              color: isSelected ? Colors.white : AppColors.textSecondary,
+            ),
+            const SizedBox(width: 6),
+            Text(
+              label,
+              style: TextStyle(
+                color: isSelected ? Colors.white : AppColors.textSecondary,
+                fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _ParameterField extends StatelessWidget {
+  final String label;
+  final String? unit;
+  final double? value;
+  final ValueChanged<double?> onChanged;
+  final bool decimal;
+  final double? warningThreshold;
+  final double? dangerThreshold;
+
+  const _ParameterField({
+    required this.label,
+    this.unit,
+    required this.value,
+    required this.onChanged,
+    this.decimal = false,
+    this.warningThreshold,
+    this.dangerThreshold,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    Color? statusColor;
+    if (value != null) {
+      if (dangerThreshold != null && value! >= dangerThreshold!) {
+        statusColor = AppColors.paramDanger;
+      } else if (warningThreshold != null && value! >= warningThreshold!) {
+        statusColor = AppColors.paramWarning;
+      } else if (warningThreshold != null || dangerThreshold != null) {
+        statusColor = AppColors.paramSafe;
+      }
+    }
+
+    return TextFormField(
+      initialValue: value?.toString() ?? '',
+      decoration: InputDecoration(
+        labelText: label,
+        suffixText: unit,
+        suffixIcon: statusColor != null
+            ? Icon(Icons.circle, color: statusColor, size: 12)
+            : null,
+      ),
+      keyboardType: TextInputType.numberWithOptions(decimal: decimal),
+      inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[\d.]'))],
+      onChanged: (v) => onChanged(double.tryParse(v)),
+    );
+  }
+}

@@ -5,6 +5,7 @@ import '../providers/tank_provider.dart';
 import '../theme/app_theme.dart';
 import '../widgets/tank_card.dart';
 import 'create_tank_screen.dart';
+import 'tank_detail_screen.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -111,9 +112,10 @@ class HomeScreen extends ConsumerWidget {
   }
 
   void _navigateToTankDetail(BuildContext context, Tank tank) {
-    // TODO: Navigate to tank detail screen
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Opening ${tank.name}...')),
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => TankDetailScreen(tankId: tank.id),
+      ),
     );
   }
 }
