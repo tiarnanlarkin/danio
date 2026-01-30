@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'dart:io';
+import '../providers/settings_provider.dart';
 import '../services/onboarding_service.dart';
 import '../theme/app_theme.dart';
 import 'onboarding_screen.dart';
@@ -13,12 +14,26 @@ class SettingsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final settings = ref.watch(settingsProvider);
+    
     return Scaffold(
       appBar: AppBar(
         title: const Text('Settings'),
       ),
       body: ListView(
         children: [
+          // Appearance
+          _SectionHeader(title: 'Appearance'),
+          ListTile(
+            leading: const Icon(Icons.palette_outlined),
+            title: const Text('Theme'),
+            subtitle: Text(_themeModeLabel(settings.themeMode)),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => _showThemePicker(context, ref, settings.themeMode),
+          ),
+
+          const Divider(),
+
           // Shop Street
           _SectionHeader(title: 'Shop'),
           ListTile(
@@ -89,6 +104,69 @@ class SettingsScreen extends ConsumerWidget {
             onTap: () => _confirmClearData(context),
           ),
         ],
+      ),
+    );
+  }
+
+  String _themeModeLabel(AppThemeMode mode) {
+    switch (mode) {
+      case AppThemeMode.system:
+        return 'System default';
+      case AppThemeMode.light:
+        return 'Light';
+      case AppThemeMode.dark:
+        return 'Dark';
+    }
+  }
+
+  void _showThemePicker(BuildContext context, WidgetRef ref, AppThemeMode current) {
+    showModalBottomSheet(
+      context: context,
+      builder: (ctx) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Text('Choose Theme', style: Theme.of(context).textTheme.titleLarge),
+            ),
+            ListTile(
+              leading: const Icon(Icons.brightness_auto),
+              title: const Text('System default'),
+              subtitle: const Text('Follow device settings'),
+              trailing: current == AppThemeMode.system 
+                  ? const Icon(Icons.check, color: AppColors.primary) 
+                  : null,
+              onTap: () {
+                ref.read(settingsProvider.notifier).setThemeMode(AppThemeMode.system);
+                Navigator.pop(ctx);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.light_mode),
+              title: const Text('Light'),
+              trailing: current == AppThemeMode.light 
+                  ? const Icon(Icons.check, color: AppColors.primary) 
+                  : null,
+              onTap: () {
+                ref.read(settingsProvider.notifier).setThemeMode(AppThemeMode.light);
+                Navigator.pop(ctx);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.dark_mode),
+              title: const Text('Dark'),
+              trailing: current == AppThemeMode.dark 
+                  ? const Icon(Icons.check, color: AppColors.primary) 
+                  : null,
+              onTap: () {
+                ref.read(settingsProvider.notifier).setThemeMode(AppThemeMode.dark);
+                Navigator.pop(ctx);
+              },
+            ),
+            const SizedBox(height: 16),
+          ],
+        ),
       ),
     );
   }

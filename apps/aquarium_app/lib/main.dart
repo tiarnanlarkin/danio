@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'providers/settings_provider.dart';
 import 'screens/home_screen.dart';
 import 'screens/onboarding_screen.dart';
 import 'services/onboarding_service.dart';
@@ -15,15 +16,19 @@ void main() {
   );
 }
 
-class AquariumApp extends StatelessWidget {
+class AquariumApp extends ConsumerWidget {
   const AquariumApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final settings = ref.watch(settingsProvider);
+    
     return MaterialApp(
       title: 'Aquarium',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light,
+      darkTheme: AppTheme.dark,
+      themeMode: settings.flutterThemeMode,
       home: const _AppRouter(),
     );
   }
@@ -59,27 +64,30 @@ class _AppRouterState extends State<_AppRouter> {
   Widget build(BuildContext context) {
     if (_isLoading) {
       // Splash screen while checking onboarding state
+      final isDark = Theme.of(context).brightness == Brightness.dark;
       return Scaffold(
         body: Container(
-          decoration: const BoxDecoration(
+          decoration: BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
-              colors: [AppColors.primary, AppColors.secondary],
+              colors: isDark 
+                  ? [AppColorsDark.primary, AppColorsDark.secondary]
+                  : [AppColors.primary, AppColors.secondary],
             ),
           ),
-          child: const Center(
+          child: Center(
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(Icons.water_drop, size: 80, color: Colors.white),
-                SizedBox(height: 16),
+                Icon(Icons.water_drop, size: 80, color: isDark ? Colors.black : Colors.white),
+                const SizedBox(height: 16),
                 Text(
                   'Aquarium',
                   style: TextStyle(
                     fontSize: 32,
                     fontWeight: FontWeight.bold,
-                    color: Colors.white,
+                    color: isDark ? Colors.black : Colors.white,
                   ),
                 ),
               ],
