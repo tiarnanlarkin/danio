@@ -10,6 +10,7 @@ import '../services/onboarding_service.dart';
 import '../theme/app_theme.dart';
 import 'onboarding_screen.dart';
 import 'shop_street_screen.dart';
+import 'dosing_calculator_screen.dart';
 import 'water_change_calculator_screen.dart';
 
 class SettingsScreen extends ConsumerWidget {
@@ -66,6 +67,16 @@ class SettingsScreen extends ConsumerWidget {
             onTap: () => Navigator.push(
               context,
               MaterialPageRoute(builder: (_) => const WaterChangeCalculatorScreen()),
+            ),
+          ),
+          ListTile(
+            leading: const Icon(Icons.science_outlined),
+            title: const Text('Dosing Calculator'),
+            subtitle: const Text('Calculate fertilizer & medication doses'),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const DosingCalculatorScreen()),
             ),
           ),
 
