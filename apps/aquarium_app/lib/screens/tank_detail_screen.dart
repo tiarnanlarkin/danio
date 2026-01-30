@@ -17,6 +17,7 @@ import 'charts_screen.dart';
 import 'logs_screen.dart';
 import 'log_detail_screen.dart';
 import 'tank_settings_screen.dart';
+import '../widgets/cycling_status_card.dart';
 
 const _uuid = Uuid();
 
@@ -262,6 +263,18 @@ class TankDetailScreen extends ConsumerWidget {
               ),
 
               const SliverToBoxAdapter(child: SizedBox(height: 24)),
+
+              // Cycling status (for tanks < 90 days old)
+              SliverToBoxAdapter(
+                child: logsAllAsync.when(
+                  loading: () => const SizedBox.shrink(),
+                  error: (_, __) => const SizedBox.shrink(),
+                  data: (logs) => Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                    child: CyclingStatusCard(tank: tank, logs: logs),
+                  ),
+                ),
+              ),
 
               // Sections
               SliverToBoxAdapter(
