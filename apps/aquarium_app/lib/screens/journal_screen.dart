@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import '../models/models.dart';
+import '../providers/storage_provider.dart';
 import '../providers/tank_provider.dart';
 import '../theme/app_theme.dart';
 
@@ -12,7 +13,6 @@ class JournalScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final tankAsync = ref.watch(tankProvider(tankId));
     final logsAsync = ref.watch(allLogsProvider(tankId));
 
     return Scaffold(
@@ -83,11 +83,13 @@ class JournalScreen extends ConsumerWidget {
       builder: (ctx) => _NewJournalEntrySheet(
         tankId: tankId,
         onSave: (notes) async {
+          final now = DateTime.now();
           final entry = LogEntry(
-            id: DateTime.now().millisecondsSinceEpoch.toString(),
+            id: now.millisecondsSinceEpoch.toString(),
             tankId: tankId,
             type: LogType.observation,
-            timestamp: DateTime.now(),
+            timestamp: now,
+            createdAt: now,
             notes: notes,
           );
           
@@ -185,13 +187,13 @@ class _JournalEntryCard extends StatelessWidget {
               entry.notes ?? '',
               style: AppTypography.bodyMedium,
             ),
-            if (entry.photoPath != null) ...[
+            if (entry.photoUrls != null && entry.photoUrls!.isNotEmpty) ...[
               const SizedBox(height: 12),
               Row(
                 children: [
                   Icon(Icons.image, size: 16, color: AppColors.textSecondary),
                   const SizedBox(width: 4),
-                  Text('Photo attached', style: AppTypography.bodySmall),
+                  Text('${entry.photoUrls!.length} photo(s) attached', style: AppTypography.bodySmall),
                 ],
               ),
             ],
