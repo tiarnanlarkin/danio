@@ -7,6 +7,7 @@ import 'dart:io';
 import '../providers/settings_provider.dart';
 import 'about_screen.dart';
 import 'nitrogen_cycle_guide_screen.dart';
+import 'disease_guide_screen.dart';
 import 'feeding_guide_screen.dart';
 import 'parameter_guide_screen.dart';
 import '../services/notification_service.dart';
@@ -169,6 +170,16 @@ class SettingsScreen extends ConsumerWidget {
             onTap: () => Navigator.push(
               context,
               MaterialPageRoute(builder: (_) => const FeedingGuideScreen()),
+            ),
+          ),
+          ListTile(
+            leading: const Icon(Icons.healing),
+            title: const Text('Fish Disease Guide'),
+            subtitle: const Text('Identify and treat common diseases'),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const DiseaseGuideScreen()),
             ),
           ),
           ListTile(
