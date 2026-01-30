@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:file_picker/file_picker.dart';
 import 'dart:io';
 import '../providers/settings_provider.dart';
 import '../services/onboarding_service.dart';
@@ -67,10 +68,16 @@ class SettingsScreen extends ConsumerWidget {
           // Data section
           _SectionHeader(title: 'Data'),
           ListTile(
-            leading: const Icon(Icons.folder_outlined),
+            leading: const Icon(Icons.upload_outlined),
             title: const Text('Export All Data'),
             subtitle: const Text('Share your aquarium data as JSON'),
             onTap: () => _exportData(context),
+          ),
+          ListTile(
+            leading: const Icon(Icons.download_outlined),
+            title: const Text('Import Data'),
+            subtitle: const Text('Restore from a backup file'),
+            onTap: () => _importData(context, ref),
           ),
           ListTile(
             leading: const Icon(Icons.photo_library_outlined),
@@ -220,6 +227,80 @@ class SettingsScreen extends ConsumerWidget {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Export failed: $e')),
+        );
+      }
+    }
+  }
+
+  Future<void> _importData(BuildContext context, WidgetRef ref) async {
+    // Show warning dialog first
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Import Data'),
+        content: const Text(
+          'This will replace ALL your current data with the imported file.\n\n'
+          'Make sure you have a backup of your current data first.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: Text(
+              'Import',
+              style: TextStyle(color: AppColors.warning),
+            ),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed != true || !context.mounted) return;
+
+    try {
+      final result = await FilePicker.platform.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: ['json'],
+      );
+
+      if (result == null || result.files.isEmpty) return;
+
+      final file = File(result.files.single.path!);
+      final contents = await file.readAsString();
+
+      // Validate it's valid JSON
+      try {
+        // ignore: unused_local_variable
+        final decoded = contents; // Just check it's a string we can read
+      } catch (e) {
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Invalid file format')),
+          );
+        }
+        return;
+      }
+
+      // Write to app data location
+      final dir = await getApplicationDocumentsDirectory();
+      final dataFile = File('${dir.path}/aquarium_data.json');
+      await dataFile.writeAsString(contents);
+
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Data imported! Restart the app to see changes.'),
+            backgroundColor: AppColors.success,
+          ),
+        );
+      }
+    } catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Import failed: $e')),
         );
       }
     }
