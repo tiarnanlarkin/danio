@@ -19,6 +19,7 @@ import 'equipment_guide_screen.dart';
 import 'nitrogen_cycle_guide_screen.dart';
 import 'disease_guide_screen.dart';
 import 'plant_browser_screen.dart';
+import 'species_browser_screen.dart';
 import 'feeding_guide_screen.dart';
 import 'parameter_guide_screen.dart';
 import '../services/notification_service.dart';
@@ -246,6 +247,16 @@ class SettingsScreen extends ConsumerWidget {
             onTap: () => Navigator.push(
               context,
               MaterialPageRoute(builder: (_) => const DiseaseGuideScreen()),
+            ),
+          ),
+          ListTile(
+            leading: const Icon(Icons.set_meal),
+            title: const Text('Fish Database'),
+            subtitle: const Text('45+ species with care info'),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const SpeciesBrowserScreen()),
             ),
           ),
           ListTile(
