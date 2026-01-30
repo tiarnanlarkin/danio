@@ -1,6 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:path/path.dart' as p;
+import 'package:path_provider/path_provider.dart';
 import 'package:uuid/uuid.dart';
 import '../models/models.dart';
 import '../providers/storage_provider.dart';
@@ -24,8 +29,14 @@ class AddLogScreen extends ConsumerStatefulWidget {
 }
 
 class _AddLogScreenState extends ConsumerState<AddLogScreen> {
+  final _picker = ImagePicker();
+
   late LogType _type;
   bool _isSaving = false;
+  bool _isPickingImages = false;
+
+  // Photos
+  final List<String> _photoPaths = [];
 
   // Water test values
   double? _temperature;
@@ -85,6 +96,40 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
             if (_type == LogType.waterChange) _buildWaterChangeForm(),
             if (_type == LogType.observation) _buildObservationForm(),
             if (_type == LogType.medication) _buildMedicationForm(),
+
+            const SizedBox(height: 24),
+
+            // Photos
+            Text('Photos (optional)', style: AppTypography.headlineSmall),
+            const SizedBox(height: 8),
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    'Attach up to 5 photos to this log.',
+                    style: AppTypography.bodySmall,
+                  ),
+                ),
+                TextButton.icon(
+                  onPressed: (_isSaving || _isPickingImages) ? null : _pickImages,
+                  icon: _isPickingImages
+                      ? const SizedBox(
+                          width: 14,
+                          height: 14,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        )
+                      : const Icon(Icons.add_photo_alternate_outlined, size: 18),
+                  label: const Text('Add'),
+                ),
+              ],
+            ),
+            if (_photoPaths.isNotEmpty) ...[
+              const SizedBox(height: 8),
+              _PhotoGrid(
+                paths: _photoPaths,
+                onRemove: (path) => setState(() => _photoPaths.remove(path)),
+              ),
+            ],
 
             const SizedBox(height: 24),
 
@@ -366,6 +411,65 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
     }
   }
 
+  Future<void> _pickImages() async {
+    if (_photoPaths.length >= 5) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Maximum 5 photos per log')), 
+      );
+      return;
+    }
+
+    setState(() => _isPickingImages = true);
+
+    try {
+      final remaining = 5 - _photoPaths.length;
+      final picked = await _picker.pickMultiImage(
+        imageQuality: 85,
+        maxWidth: 1600,
+      );
+
+      if (picked.isEmpty) return;
+
+      final toAdd = picked.take(remaining);
+      final savedPaths = <String>[];
+      for (final file in toAdd) {
+        savedPaths.add(await _persistPickedImage(file));
+      }
+
+      if (!mounted) return;
+      setState(() => _photoPaths.addAll(savedPaths));
+
+      if (picked.length > remaining && mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Added $remaining photos (max 5)')),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Could not add photos: $e')),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _isPickingImages = false);
+    }
+  }
+
+  Future<String> _persistPickedImage(XFile file) async {
+    final docs = await getApplicationDocumentsDirectory();
+    final dir = Directory(p.join(docs.path, 'photos'));
+    if (!await dir.exists()) {
+      await dir.create(recursive: true);
+    }
+
+    final ext = p.extension(file.path).isNotEmpty ? p.extension(file.path) : '.jpg';
+    final filename = '${_uuid.v4()}$ext';
+    final destPath = p.join(dir.path, filename);
+
+    await File(file.path).copy(destPath);
+    return destPath;
+  }
+
   Future<void> _save() async {
     // Validate based on type
     if (_type == LogType.waterChange && _waterChangePercent == null) {
@@ -398,6 +502,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
             : null,
         waterChangePercent: _type == LogType.waterChange ? _waterChangePercent : null,
         notes: _notes.isNotEmpty ? _notes : null,
+        photoUrls: _photoPaths.isNotEmpty ? List.unmodifiable(_photoPaths) : null,
         createdAt: DateTime.now(),
       );
 
@@ -568,6 +673,57 @@ class _ParameterField extends StatelessWidget {
       keyboardType: TextInputType.numberWithOptions(decimal: decimal),
       inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[\d.]'))],
       onChanged: (v) => onChanged(double.tryParse(v)),
+    );
+  }
+}
+
+class _PhotoGrid extends StatelessWidget {
+  final List<String> paths;
+  final ValueChanged<String> onRemove;
+
+  const _PhotoGrid({required this.paths, required this.onRemove});
+
+  @override
+  Widget build(BuildContext context) {
+    return Wrap(
+      spacing: 8,
+      runSpacing: 8,
+      children: paths.map((path) {
+        return Stack(
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(12),
+              child: Image.file(
+                File(path),
+                width: 96,
+                height: 96,
+                fit: BoxFit.cover,
+                errorBuilder: (_, __, ___) => Container(
+                  width: 96,
+                  height: 96,
+                  color: AppColors.surfaceVariant,
+                  child: const Icon(Icons.broken_image_outlined),
+                ),
+              ),
+            ),
+            Positioned(
+              top: 4,
+              right: 4,
+              child: InkWell(
+                onTap: () => onRemove(path),
+                child: Container(
+                  padding: const EdgeInsets.all(4),
+                  decoration: BoxDecoration(
+                    color: Colors.black.withOpacity(0.6),
+                    borderRadius: BorderRadius.circular(999),
+                  ),
+                  child: const Icon(Icons.close, size: 16, color: Colors.white),
+                ),
+              ),
+            ),
+          ],
+        );
+      }).toList(),
     );
   }
 }
