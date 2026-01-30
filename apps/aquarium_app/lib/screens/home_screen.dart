@@ -5,6 +5,7 @@ import '../providers/tank_provider.dart';
 import '../theme/app_theme.dart';
 import '../widgets/tank_card.dart';
 import 'create_tank_screen.dart';
+import 'search_screen.dart';
 import 'settings_screen.dart';
 import 'tank_detail_screen.dart';
 
@@ -24,6 +25,14 @@ class HomeScreen extends ConsumerWidget {
             floating: false,
             pinned: true,
             actions: [
+              IconButton(
+                icon: const Icon(Icons.search),
+                tooltip: 'Search',
+                onPressed: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const SearchScreen()),
+                ),
+              ),
               IconButton(
                 icon: const Icon(Icons.settings_outlined),
                 tooltip: 'Settings',
