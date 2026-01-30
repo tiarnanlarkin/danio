@@ -5,6 +5,7 @@ import 'package:share_plus/share_plus.dart';
 import 'package:file_picker/file_picker.dart';
 import 'dart:io';
 import '../providers/settings_provider.dart';
+import '../services/notification_service.dart';
 import '../services/onboarding_service.dart';
 import '../theme/app_theme.dart';
 import 'onboarding_screen.dart';
@@ -32,6 +33,25 @@ class SettingsScreen extends ConsumerWidget {
             trailing: const Icon(Icons.chevron_right),
             onTap: () => _showThemePicker(context, ref, settings.themeMode),
           ),
+
+          const Divider(),
+
+          // Notifications
+          _SectionHeader(title: 'Notifications'),
+          SwitchListTile(
+            secondary: const Icon(Icons.notifications_outlined),
+            title: const Text('Task Reminders'),
+            subtitle: const Text('Get notified when tasks are due'),
+            value: settings.notificationsEnabled,
+            onChanged: (value) => _toggleNotifications(context, ref, value),
+          ),
+          if (settings.notificationsEnabled)
+            ListTile(
+              leading: const SizedBox(width: 24),
+              title: const Text('Test Notification'),
+              subtitle: const Text('Send a test notification'),
+              onTap: () => _testNotification(context),
+            ),
 
           const Divider(),
 
@@ -113,6 +133,54 @@ class SettingsScreen extends ConsumerWidget {
         ],
       ),
     );
+  }
+
+  Future<void> _toggleNotifications(BuildContext context, WidgetRef ref, bool enable) async {
+    if (enable) {
+      final service = NotificationService();
+      await service.initialize();
+      final granted = await service.requestPermissions();
+      
+      if (!granted) {
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Notification permission denied')),
+          );
+        }
+        return;
+      }
+    }
+    
+    await ref.read(settingsProvider.notifier).setNotificationsEnabled(enable);
+    
+    if (context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(enable ? 'Notifications enabled!' : 'Notifications disabled'),
+          backgroundColor: enable ? AppColors.success : null,
+        ),
+      );
+    }
+  }
+
+  Future<void> _testNotification(BuildContext context) async {
+    try {
+      final service = NotificationService();
+      await service.initialize();
+      await service.showTestNotification();
+      
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Test notification sent!')),
+        );
+      }
+    } catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed: $e')),
+        );
+      }
+    }
   }
 
   String _themeModeLabel(AppThemeMode mode) {
