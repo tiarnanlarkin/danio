@@ -6,6 +6,7 @@ import 'package:file_picker/file_picker.dart';
 import 'dart:io';
 import '../providers/settings_provider.dart';
 import 'about_screen.dart';
+import 'nitrogen_cycle_guide_screen.dart';
 import '../services/notification_service.dart';
 import '../services/onboarding_service.dart';
 import '../theme/app_theme.dart';
@@ -138,6 +139,16 @@ class SettingsScreen extends ConsumerWidget {
 
           // Help section
           _SectionHeader(title: 'Help'),
+          ListTile(
+            leading: const Icon(Icons.autorenew),
+            title: const Text('Nitrogen Cycle Guide'),
+            subtitle: const Text('Learn how to cycle your tank'),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const NitrogenCycleGuideScreen()),
+            ),
+          ),
           ListTile(
             leading: const Icon(Icons.replay_outlined),
             title: const Text('Replay Onboarding'),
