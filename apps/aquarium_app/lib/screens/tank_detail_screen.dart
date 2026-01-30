@@ -8,6 +8,7 @@ import 'add_log_screen.dart';
 import 'livestock_screen.dart';
 import 'equipment_screen.dart';
 import 'tasks_screen.dart';
+import 'charts_screen.dart';
 
 class TankDetailScreen extends ConsumerWidget {
   final String tankId;
@@ -74,6 +75,16 @@ class TankDetailScreen extends ConsumerWidget {
                   ),
                 ),
                 actions: [
+                  IconButton(
+                    icon: const Icon(Icons.show_chart, color: Colors.white),
+                    tooltip: 'Charts',
+                    onPressed: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => ChartsScreen(tankId: tankId),
+                      ),
+                    ),
+                  ),
                   IconButton(
                     icon: const Icon(Icons.settings, color: Colors.white),
                     onPressed: () {
