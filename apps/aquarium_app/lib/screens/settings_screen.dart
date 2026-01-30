@@ -9,6 +9,7 @@ import 'about_screen.dart';
 import 'acclimation_guide_screen.dart';
 import 'algae_guide_screen.dart';
 import 'breeding_guide_screen.dart';
+import 'hardscape_guide_screen.dart';
 import 'quarantine_guide_screen.dart';
 import 'substrate_guide_screen.dart';
 import 'equipment_guide_screen.dart';
@@ -279,6 +280,16 @@ class SettingsScreen extends ConsumerWidget {
             onTap: () => Navigator.push(
               context,
               MaterialPageRoute(builder: (_) => const SubstrateGuideScreen()),
+            ),
+          ),
+          ListTile(
+            leading: const Icon(Icons.landscape),
+            title: const Text('Hardscape Guide'),
+            subtitle: const Text('Rocks, driftwood, aquascaping tips'),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const HardscapeGuideScreen()),
             ),
           ),
           ListTile(
