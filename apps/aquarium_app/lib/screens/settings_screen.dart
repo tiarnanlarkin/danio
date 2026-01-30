@@ -6,6 +6,7 @@ import 'package:file_picker/file_picker.dart';
 import 'dart:io';
 import '../providers/settings_provider.dart';
 import 'about_screen.dart';
+import 'acclimation_guide_screen.dart';
 import 'nitrogen_cycle_guide_screen.dart';
 import 'disease_guide_screen.dart';
 import 'plant_browser_screen.dart';
@@ -191,6 +192,16 @@ class SettingsScreen extends ConsumerWidget {
             onTap: () => Navigator.push(
               context,
               MaterialPageRoute(builder: (_) => const PlantBrowserScreen()),
+            ),
+          ),
+          ListTile(
+            leading: const Icon(Icons.sync_alt),
+            title: const Text('Acclimation Guide'),
+            subtitle: const Text('How to safely add new fish'),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const AcclimationGuideScreen()),
             ),
           ),
           ListTile(
