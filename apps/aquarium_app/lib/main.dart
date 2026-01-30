@@ -4,13 +4,9 @@ import 'screens/home_screen.dart';
 import 'services/storage_service.dart';
 import 'theme/app_theme.dart';
 
-void main() async {
+void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  
-  // Add demo data for testing
-  final storage = InMemoryStorageService();
-  await storage.addDemoData();
-  
+
   runApp(
     const ProviderScope(
       child: AquariumApp(),

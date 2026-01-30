@@ -9,16 +9,21 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:aquarium_app/main.dart';
+import 'package:aquarium_app/providers/storage_provider.dart';
+import 'package:aquarium_app/services/storage_service.dart';
 
 void main() {
   testWidgets('App boots and shows home screen', (WidgetTester tester) async {
+    // Use in-memory storage for tests to avoid filesystem/platform channel deps.
     await tester.pumpWidget(
-      const ProviderScope(
-        child: AquariumApp(),
+      ProviderScope(
+        overrides: [
+          storageServiceProvider.overrideWithValue(InMemoryStorageService()),
+        ],
+        child: const AquariumApp(),
       ),
     );
 
-    // Let first frame settle.
     await tester.pumpAndSettle();
 
     expect(find.text('My Aquariums'), findsOneWidget);
