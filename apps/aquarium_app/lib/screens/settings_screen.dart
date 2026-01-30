@@ -7,6 +7,7 @@ import 'dart:io';
 import '../providers/settings_provider.dart';
 import 'about_screen.dart';
 import 'acclimation_guide_screen.dart';
+import 'equipment_guide_screen.dart';
 import 'nitrogen_cycle_guide_screen.dart';
 import 'disease_guide_screen.dart';
 import 'plant_browser_screen.dart';
@@ -202,6 +203,16 @@ class SettingsScreen extends ConsumerWidget {
             onTap: () => Navigator.push(
               context,
               MaterialPageRoute(builder: (_) => const AcclimationGuideScreen()),
+            ),
+          ),
+          ListTile(
+            leading: const Icon(Icons.build),
+            title: const Text('Equipment Guide'),
+            subtitle: const Text('Filters, heaters, lights, CO2, testing'),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const EquipmentGuideScreen()),
             ),
           ),
           ListTile(
