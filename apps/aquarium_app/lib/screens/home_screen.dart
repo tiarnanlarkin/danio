@@ -74,7 +74,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   onThermometerTap: () => _showTemperatureDetail(context),
                   onTestKitTap: () => _showWaterParams(context),
                   onFoodTap: () => _showFeedingInfo(context),
-                  onShelfTap: () => _showShelfContents(context),
+                  onBookTap: () => _showGuideInfo(context),
+                  onTeaTap: () => _showRelaxMessage(context),
+                  onPlantTap: () => _showPlantInfo(context),
                 ),
               ),
 
@@ -238,17 +240,44 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 
-  void _showShelfContents(BuildContext context) {
+  void _showGuideInfo(BuildContext context) {
     _showItemSheet(
       context,
-      title: 'Supply Shelf',
-      icon: Icons.shelves,
-      color: const Color(0xFF8B7355),
+      title: 'Fishkeeping Guide',
+      icon: Icons.menu_book,
+      color: const Color(0xFF8B4513),
       rows: [
-        const ItemDetailRow(label: 'Fish food', value: 'In stock'),
-        const ItemDetailRow(label: 'Dechlorinator', value: 'In stock'),
-        const ItemDetailRow(label: 'Test kit', value: 'On side table'),
-        const ItemDetailRow(label: 'Tip', value: 'Tap tank to see livestock'),
+        const ItemDetailRow(label: 'Topic', value: 'Water Chemistry'),
+        const ItemDetailRow(label: 'Tip', value: 'Test weekly!'),
+        const ItemDetailRow(label: 'Reading', value: 'Nitrogen Cycle basics'),
+      ],
+    );
+  }
+
+  void _showRelaxMessage(BuildContext context) {
+    _showItemSheet(
+      context,
+      title: '☕ Tea Time',
+      icon: Icons.coffee,
+      color: const Color(0xFFCD853F),
+      rows: [
+        const ItemDetailRow(label: 'Mood', value: 'Relaxing 🧘'),
+        const ItemDetailRow(label: 'Activity', value: 'Watching fish'),
+        const ItemDetailRow(label: 'Stress', value: '-50%', color: AppColors.success),
+      ],
+    );
+  }
+
+  void _showPlantInfo(BuildContext context) {
+    _showItemSheet(
+      context,
+      title: 'Houseplants',
+      icon: Icons.eco,
+      color: const Color(0xFF4CAF50),
+      rows: [
+        const ItemDetailRow(label: 'Monstera', value: 'Happy 🌿'),
+        const ItemDetailRow(label: 'Pothos', value: 'Thriving'),
+        const ItemDetailRow(label: 'Tip', value: 'Use old tank water!'),
       ],
     );
   }
