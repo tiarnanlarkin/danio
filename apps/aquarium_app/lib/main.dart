@@ -72,7 +72,7 @@ class _AppRouterState extends State<_AppRouter> {
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
               colors: isDark 
-                  ? [AppColorsDark.primary, AppColorsDark.secondary]
+                  ? [AppColors.primaryDark, AppColors.backgroundDark]
                   : [AppColors.primary, AppColors.secondary],
             ),
           ),
