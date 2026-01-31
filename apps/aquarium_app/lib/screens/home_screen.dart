@@ -6,128 +6,176 @@ import '../theme/app_theme.dart';
 import '../widgets/decorative_elements.dart';
 import '../widgets/hobby_items.dart';
 import '../widgets/hobby_desk.dart';
+import '../widgets/room_scene.dart';
 import 'create_tank_screen.dart';
 import 'search_screen.dart';
 import 'settings_screen.dart';
 import 'tank_detail_screen.dart';
 
-class HomeScreen extends ConsumerWidget {
+class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends ConsumerState<HomeScreen> {
+  int _currentTankIndex = 0;
+
+  @override
+  Widget build(BuildContext context) {
     final tanksAsync = ref.watch(tanksProvider);
 
     return Scaffold(
-      body: Stack(
-        children: [
-          // Room background with more elements
-          const _RoomBackground(),
-          
-          // Main content
-          CustomScrollView(
-            slivers: [
-              // Simple app bar
-              SliverAppBar(
-                expandedHeight: 80,
-                floating: true,
-                pinned: true,
-                backgroundColor: AppColors.background.withOpacity(0.9),
-                elevation: 0,
-                actions: [
-                  IconButton(
-                    icon: const Icon(Icons.search),
-                    tooltip: 'Search',
-                    onPressed: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (_) => const SearchScreen()),
-                    ),
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.settings_outlined),
-                    tooltip: 'Settings',
-                    onPressed: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (_) => const SettingsScreen()),
-                    ),
-                  ),
-                ],
-                flexibleSpace: FlexibleSpaceBar(
-                  title: Text(
-                    'My Fish Room',
-                    style: AppTypography.headlineSmall.copyWith(
-                      color: AppColors.textPrimary,
-                    ),
-                  ),
-                  centerTitle: false,
-                  titlePadding: const EdgeInsets.only(left: 20, bottom: 12),
+      body: tanksAsync.when(
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (err, stack) => Center(
+          child: NotebookCard(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Icon(Icons.error_outline, size: 48, color: AppColors.error),
+                const SizedBox(height: 16),
+                Text('Something went wrong', style: AppTypography.bodyLarge),
+                const SizedBox(height: 8),
+                TextButton(
+                  onPressed: () => ref.invalidate(tanksProvider),
+                  child: const Text('Try again'),
                 ),
-              ),
-              
-              // Content
-              tanksAsync.when(
-                loading: () => const SliverFillRemaining(
-                  child: Center(child: CircularProgressIndicator()),
-                ),
-                error: (err, stack) => SliverFillRemaining(
-                  child: Center(
-                    child: NotebookCard(
-                      padding: const EdgeInsets.all(24),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const Icon(Icons.error_outline, size: 48, color: AppColors.error),
-                          const SizedBox(height: 16),
-                          Text('Something went wrong', style: AppTypography.bodyLarge),
-                          const SizedBox(height: 8),
-                          TextButton(
-                            onPressed: () => ref.invalidate(tanksProvider),
-                            child: const Text('Try again'),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-                data: (tanks) {
-                  if (tanks.isEmpty) {
-                    return SliverFillRemaining(
-                      child: _EmptyRoom(
-                        onCreateTank: () => _navigateToCreateTank(context),
-                        onLoadDemo: () async {
-                          final actions = ref.read(tankActionsProvider);
-                          final demoTank = await actions.seedDemoTankIfEmpty();
-                          if (context.mounted) {
-                            _navigateToTankDetail(context, demoTank);
-                          }
-                        },
-                      ),
-                    );
-                  }
-                  
-                  return SliverPadding(
-                    padding: const EdgeInsets.all(16),
-                    sliver: SliverToBoxAdapter(
-                      child: _FishRoomView(
-                        tanks: tanks,
-                        onTankTap: (tank) => _navigateToTankDetail(context, tank),
-                      ),
-                    ),
-                  );
-                },
-              ),
-              
-              // Bottom padding
-              const SliverPadding(padding: EdgeInsets.only(bottom: 100)),
-            ],
+              ],
+            ),
           ),
-        ],
+        ),
+        data: (tanks) {
+          if (tanks.isEmpty) {
+            return _EmptyRoomScene(
+              onCreateTank: () => _navigateToCreateTank(context),
+              onLoadDemo: () async {
+                final actions = ref.read(tankActionsProvider);
+                final demoTank = await actions.seedDemoTankIfEmpty();
+                if (context.mounted) {
+                  _navigateToTankDetail(context, demoTank);
+                }
+              },
+            );
+          }
+
+          final currentTank = tanks[_currentTankIndex % tanks.length];
+
+          return Stack(
+            children: [
+              // The room scene
+              Positioned.fill(
+                child: LivingRoomScene(
+                  tankName: currentTank.name,
+                  tankVolume: currentTank.volumeLitres,
+                  onTankTap: () => _navigateToTankDetail(context, currentTank),
+                  onThermometerTap: () => _showTemperatureDetail(context),
+                  onTestKitTap: () => _showWaterParams(context),
+                  onFoodTap: () => _showFeedingInfo(context),
+                  onShelfTap: () => _showShelfContents(context),
+                ),
+              ),
+
+              // Top bar overlay
+              Positioned(
+                top: 0,
+                left: 0,
+                right: 0,
+                child: Container(
+                  padding: EdgeInsets.only(
+                    top: MediaQuery.of(context).padding.top + 8,
+                    left: 16,
+                    right: 8,
+                    bottom: 8,
+                  ),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        Colors.black.withOpacity(0.3),
+                        Colors.transparent,
+                      ],
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      Text(
+                        'Living Room',
+                        style: AppTypography.headlineSmall.copyWith(
+                          color: Colors.white,
+                          shadows: [
+                            Shadow(
+                              color: Colors.black.withOpacity(0.5),
+                              blurRadius: 4,
+                            ),
+                          ],
+                        ),
+                      ),
+                      const Spacer(),
+                      IconButton(
+                        icon: Icon(Icons.search, color: Colors.white.withOpacity(0.9)),
+                        onPressed: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (_) => const SearchScreen()),
+                        ),
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.settings_outlined, color: Colors.white.withOpacity(0.9)),
+                        onPressed: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (_) => const SettingsScreen()),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+
+              // Tank switcher (if multiple tanks)
+              if (tanks.length > 1)
+                Positioned(
+                  bottom: 100,
+                  left: 0,
+                  right: 0,
+                  child: _TankSwitcher(
+                    tanks: tanks,
+                    currentIndex: _currentTankIndex,
+                    onChanged: (index) {
+                      setState(() => _currentTankIndex = index);
+                    },
+                  ),
+                ),
+
+              // Bottom hint
+              Positioned(
+                bottom: 20,
+                left: 0,
+                right: 0,
+                child: Center(
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    decoration: BoxDecoration(
+                      color: Colors.black.withOpacity(0.5),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Text(
+                      'Tap items to interact',
+                      style: AppTypography.bodySmall.copyWith(color: Colors.white70),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          );
+        },
       ),
-      
-      floatingActionButton: FloatingActionButton.extended(
+      floatingActionButton: FloatingActionButton(
         onPressed: () => _navigateToCreateTank(context),
-        icon: const Icon(Icons.add),
-        label: const Text('New Tank'),
+        tooltip: 'Add Tank',
+        child: const Icon(Icons.add),
       ),
     );
   }
@@ -145,263 +193,134 @@ class HomeScreen extends ConsumerWidget {
       ),
     );
   }
-}
 
-/// Room background with window, plants, and decorative items
-class _RoomBackground extends StatelessWidget {
-  const _RoomBackground();
-
-  @override
-  Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        // Base wall color
-        Container(color: AppColors.background),
-        
-        // Window on the wall
-        const Positioned(
-          top: 60,
-          right: 20,
-          child: Opacity(
-            opacity: 0.5,
-            child: WindowDecoration(width: 70, height: 90),
-          ),
-        ),
-        
-        // Soft blobs
-        Positioned(
-          top: -30,
-          left: -40,
-          child: SoftBlob(size: 150, color: AppColors.primary, seed: 1),
-        ),
-        Positioned(
-          bottom: 150,
-          right: -50,
-          child: SoftBlob(size: 120, color: AppColors.secondary, seed: 2),
-        ),
-        
-        // Floor area
-        Positioned(
-          bottom: 0,
-          left: 0,
-          right: 0,
-          child: Container(
-            height: 100,
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  AppColors.background,
-                  const Color(0xFFE8DDD0),
-                ],
-              ),
-            ),
-          ),
-        ),
-        
-        // Plants in corners
-        Positioned(
-          bottom: 0,
-          left: 0,
-          child: PlantDecoration(height: 120, color: AppColors.success),
-        ),
-        Positioned(
-          bottom: 0,
-          right: 8,
-          child: PlantDecoration(height: 90, color: AppColors.primary, flip: true),
-        ),
-      ],
-    );
-  }
-}
-
-/// Main fish room view showing tanks on shelves and hobby items
-class _FishRoomView extends StatelessWidget {
-  final List<Tank> tanks;
-  final Function(Tank) onTankTap;
-
-  const _FishRoomView({required this.tanks, required this.onTankTap});
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // Shelf unit with tanks
-        _ShelfUnit(tanks: tanks, onTankTap: onTankTap),
-        
-        const SizedBox(height: 24),
-        
-        // Hobby desk with equipment
-        Text(
-          'My Equipment',
-          style: AppTypography.labelLarge.copyWith(color: AppColors.textSecondary),
-        ),
-        const SizedBox(height: 12),
-        
-        HobbyDesk(
-          filterMedia: ['sponge', 'ceramic', 'carbon'],
-          filterRunning: true,
-          heaterOn: true,
-          lightOn: true,
-          onItemTap: (item) {
-            _showItemDetail(context, item);
-          },
-        ),
-        
-        const SizedBox(height: 24),
-        
-        // Scattered hobby items
-        Text(
-          'Around the Room',
-          style: AppTypography.labelLarge.copyWith(color: AppColors.textSecondary),
-        ),
-        const SizedBox(height: 12),
-        
-        _ScatteredItems(),
+  void _showTemperatureDetail(BuildContext context) {
+    _showItemSheet(
+      context,
+      title: 'Temperature',
+      icon: Icons.thermostat,
+      color: AppColors.warning,
+      rows: [
+        const ItemDetailRow(label: 'Current', value: '-- °C'),
+        const ItemDetailRow(label: 'Target', value: '25 °C'),
+        const ItemDetailRow(label: 'Heater', value: 'On', color: AppColors.success),
       ],
     );
   }
 
-  void _showItemDetail(BuildContext context, String item) {
+  void _showWaterParams(BuildContext context) {
+    _showItemSheet(
+      context,
+      title: 'Water Tests',
+      icon: Icons.science,
+      color: AppColors.primary,
+      rows: [
+        const ItemDetailRow(label: 'pH', value: '--'),
+        const ItemDetailRow(label: 'Ammonia', value: '-- ppm'),
+        const ItemDetailRow(label: 'Nitrite', value: '-- ppm'),
+        const ItemDetailRow(label: 'Nitrate', value: '-- ppm'),
+        const ItemDetailRow(label: 'Last tested', value: 'Tap tank for details'),
+      ],
+    );
+  }
+
+  void _showFeedingInfo(BuildContext context) {
+    _showItemSheet(
+      context,
+      title: 'Fish Food',
+      icon: Icons.restaurant,
+      color: AppColors.secondary,
+      rows: [
+        const ItemDetailRow(label: 'Type', value: 'Tropical Flakes'),
+        const ItemDetailRow(label: 'Last fed', value: '--'),
+        const ItemDetailRow(label: 'Schedule', value: '2x daily'),
+      ],
+    );
+  }
+
+  void _showShelfContents(BuildContext context) {
+    _showItemSheet(
+      context,
+      title: 'Supply Shelf',
+      icon: Icons.shelves,
+      color: const Color(0xFF8B7355),
+      rows: [
+        const ItemDetailRow(label: 'Fish food', value: 'In stock'),
+        const ItemDetailRow(label: 'Dechlorinator', value: 'In stock'),
+        const ItemDetailRow(label: 'Test kit', value: 'On side table'),
+        const ItemDetailRow(label: 'Tip', value: 'Tap tank to see livestock'),
+      ],
+    );
+  }
+
+  void _showItemSheet(
+    BuildContext context, {
+    required String title,
+    required IconData icon,
+    required Color color,
+    required List<ItemDetailRow> rows,
+  }) {
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
       builder: (ctx) => Container(
         margin: const EdgeInsets.all(16),
         child: ItemDetailPopup(
-          title: _getItemTitle(item),
-          icon: _getItemIcon(item),
-          accentColor: _getItemColor(item),
-          rows: _getItemRows(item),
+          title: title,
+          icon: icon,
+          accentColor: color,
+          rows: rows,
           onClose: () => Navigator.pop(ctx),
         ),
       ),
     );
   }
-
-  String _getItemTitle(String item) {
-    switch (item) {
-      case 'filter': return 'Canister Filter';
-      case 'heater': return 'Aquarium Heater';
-      case 'temperature': return 'Temperature';
-      case 'light': return 'LED Light';
-      case 'tests': return 'Water Tests';
-      case 'food': return 'Fish Food';
-      default: return item;
-    }
-  }
-
-  IconData _getItemIcon(String item) {
-    switch (item) {
-      case 'filter': return Icons.filter_alt;
-      case 'heater': return Icons.whatshot;
-      case 'temperature': return Icons.thermostat;
-      case 'light': return Icons.lightbulb;
-      case 'tests': return Icons.science;
-      case 'food': return Icons.restaurant;
-      default: return Icons.info;
-    }
-  }
-
-  Color _getItemColor(String item) {
-    switch (item) {
-      case 'filter': return AppColors.info;
-      case 'heater': return AppColors.error;
-      case 'temperature': return AppColors.warning;
-      case 'light': return Colors.amber;
-      case 'tests': return AppColors.primary;
-      case 'food': return AppColors.secondary;
-      default: return AppColors.primary;
-    }
-  }
-
-  List<ItemDetailRow> _getItemRows(String item) {
-    switch (item) {
-      case 'filter':
-        return [
-          const ItemDetailRow(label: 'Status', value: 'Running', color: AppColors.success),
-          const ItemDetailRow(label: 'Flow Rate', value: '800 L/h'),
-          const ItemDetailRow(label: 'Media', value: 'Sponge, Ceramic, Carbon'),
-          const ItemDetailRow(label: 'Last Cleaned', value: '2 weeks ago'),
-        ];
-      case 'heater':
-        return [
-          const ItemDetailRow(label: 'Status', value: 'Heating', color: AppColors.warning),
-          const ItemDetailRow(label: 'Set Temp', value: '25°C'),
-          const ItemDetailRow(label: 'Power', value: '100W'),
-        ];
-      case 'tests':
-        return [
-          const ItemDetailRow(label: 'pH', value: '7.2', color: AppColors.success),
-          const ItemDetailRow(label: 'Ammonia', value: '0 ppm', color: AppColors.success),
-          const ItemDetailRow(label: 'Nitrite', value: '0 ppm', color: AppColors.success),
-          const ItemDetailRow(label: 'Nitrate', value: '15 ppm', color: AppColors.success),
-          const ItemDetailRow(label: 'Last Test', value: '2 days ago'),
-        ];
-      default:
-        return [const ItemDetailRow(label: 'Tap for details', value: '→')];
-    }
-  }
 }
 
-/// Shelf unit displaying tanks
-class _ShelfUnit extends StatelessWidget {
+class _TankSwitcher extends StatelessWidget {
   final List<Tank> tanks;
-  final Function(Tank) onTankTap;
+  final int currentIndex;
+  final Function(int) onChanged;
 
-  const _ShelfUnit({required this.tanks, required this.onTankTap});
+  const _TankSwitcher({
+    required this.tanks,
+    required this.currentIndex,
+    required this.onChanged,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(12),
+      height: 50,
+      margin: const EdgeInsets.symmetric(horizontal: 32),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
-        color: const Color(0xFFC49A6C).withOpacity(0.2),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: const Color(0xFFD4A574).withOpacity(0.5),
-          width: 2,
-        ),
+        color: Colors.black.withOpacity(0.4),
+        borderRadius: BorderRadius.circular(25),
       ),
-      child: Column(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          // Title
-          Row(
-            children: [
-              Icon(Icons.shelves, size: 16, color: AppColors.textSecondary),
-              const SizedBox(width: 8),
-              Text(
-                'Tank Shelf',
-                style: AppTypography.labelMedium.copyWith(color: AppColors.textSecondary),
-              ),
-              const Spacer(),
-              Text(
-                '${tanks.length} tank${tanks.length == 1 ? '' : 's'}',
-                style: AppTypography.bodySmall.copyWith(color: AppColors.textHint),
-              ),
-            ],
+          IconButton(
+            icon: const Icon(Icons.chevron_left, color: Colors.white70),
+            onPressed: currentIndex > 0
+                ? () => onChanged(currentIndex - 1)
+                : null,
           ),
-          const SizedBox(height: 12),
-          
-          // Tanks in a horizontal scroll
-          SizedBox(
-            height: 180,
-            child: ListView.separated(
-              scrollDirection: Axis.horizontal,
-              itemCount: tanks.length,
-              separatorBuilder: (_, __) => const SizedBox(width: 16),
-              itemBuilder: (ctx, i) {
-                final tank = tanks[i];
-                return MiniTankScene(
-                  name: tank.name,
-                  volumeLitres: tank.volumeLitres,
-                  width: 140,
-                  onTap: () => onTankTap(tank),
-                );
-              },
+          Expanded(
+            child: Center(
+              child: Text(
+                tanks[currentIndex].name,
+                style: AppTypography.labelLarge.copyWith(color: Colors.white),
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
+          ),
+          IconButton(
+            icon: const Icon(Icons.chevron_right, color: Colors.white70),
+            onPressed: currentIndex < tanks.length - 1
+                ? () => onChanged(currentIndex + 1)
+                : null,
           ),
         ],
       ),
@@ -409,181 +328,197 @@ class _ShelfUnit extends StatelessWidget {
   }
 }
 
-/// Random scattered hobby items for visual interest
-class _ScatteredItems extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Wrap(
-      spacing: 16,
-      runSpacing: 16,
-      children: [
-        // More notebook cards with stats
-        NotebookCard(
-          rotation: -1.5,
-          padding: const EdgeInsets.all(12),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text('📋 Maintenance', style: AppTypography.labelMedium),
-              const SizedBox(height: 8),
-              Text('Water change: 3 days ago', style: AppTypography.bodySmall),
-              Text('Filter clean: 2 weeks ago', style: AppTypography.bodySmall),
-            ],
-          ),
-        ),
-        
-        NotebookCard(
-          rotation: 2,
-          padding: const EdgeInsets.all(12),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text('🐟 Fish Count', style: AppTypography.labelMedium),
-              const SizedBox(height: 8),
-              Text('Total: -- fish', style: AppTypography.bodySmall),
-              Text('Species: -- types', style: AppTypography.bodySmall),
-            ],
-          ),
-        ),
-        
-        // Tablet showing quick stats
-        TabletCard(
-          padding: const EdgeInsets.all(12),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text('Quick Stats', style: AppTypography.labelMedium.copyWith(color: AppColors.primary)),
-              const SizedBox(height: 8),
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  StatBubble(value: '--', label: '°C', size: 45, color: AppColors.info),
-                  const SizedBox(width: 8),
-                  StatBubble(value: '--', label: 'pH', size: 45, color: AppColors.success),
-                ],
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-/// Empty room when no tanks exist
-class _EmptyRoom extends StatelessWidget {
+class _EmptyRoomScene extends StatelessWidget {
   final VoidCallback onCreateTank;
   final VoidCallback onLoadDemo;
 
-  const _EmptyRoom({required this.onCreateTank, required this.onLoadDemo});
+  const _EmptyRoomScene({
+    required this.onCreateTank,
+    required this.onLoadDemo,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(24),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          // Empty shelf
-          Container(
-            padding: const EdgeInsets.all(24),
+    return Stack(
+      children: [
+        // Empty room background
+        Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                Color(0xFFF5EDE3),
+                Color(0xFFEDE5DA),
+              ],
+            ),
+          ),
+        ),
+
+        // Window
+        Positioned(
+          top: 80,
+          right: 30,
+          child: Container(
+            width: 80,
+            height: 100,
             decoration: BoxDecoration(
-              color: const Color(0xFFC49A6C).withOpacity(0.2),
-              borderRadius: BorderRadius.circular(12),
+              gradient: const LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [Color(0xFF87CEEB), Color(0xFFB8E0F0)],
+              ),
+              border: Border.all(color: const Color(0xFF8B7355), width: 6),
+              borderRadius: BorderRadius.circular(4),
+            ),
+          ),
+        ),
+
+        // Floor
+        Positioned(
+          bottom: 0,
+          left: 0,
+          right: 0,
+          child: Container(
+            height: 120,
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [Color(0xFFD4A574), Color(0xFFC49664)],
+              ),
+            ),
+          ),
+        ),
+
+        // Empty stand where tank should go
+        Positioned(
+          bottom: 100,
+          left: 40,
+          child: Container(
+            width: 200,
+            height: 50,
+            decoration: BoxDecoration(
+              gradient: const LinearGradient(
+                colors: [Color(0xFF5D4037), Color(0xFF4E342E)],
+              ),
+              borderRadius: BorderRadius.circular(4),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.3),
+                  blurRadius: 8,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
+          ),
+        ),
+
+        // "Tank goes here" placeholder
+        Positioned(
+          bottom: 160,
+          left: 50,
+          child: Container(
+            width: 180,
+            height: 120,
+            decoration: BoxDecoration(
+              color: AppColors.surfaceVariant.withOpacity(0.3),
+              borderRadius: BorderRadius.circular(8),
               border: Border.all(
-                color: const Color(0xFFD4A574).withOpacity(0.5),
+                color: AppColors.textHint.withOpacity(0.5),
                 width: 2,
+                style: BorderStyle.solid,
               ),
             ),
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Container(
-                  width: 120,
-                  height: 80,
-                  decoration: BoxDecoration(
-                    color: AppColors.surfaceVariant.withOpacity(0.5),
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(
-                      color: AppColors.textHint.withOpacity(0.3),
-                      width: 2,
-                    ),
-                  ),
-                  child: Icon(
-                    Icons.water_drop_outlined,
-                    size: 40,
-                    color: AppColors.textHint.withOpacity(0.4),
-                  ),
+                Icon(
+                  Icons.water_drop_outlined,
+                  size: 40,
+                  color: AppColors.textHint.withOpacity(0.5),
                 ),
                 const SizedBox(height: 8),
-                Container(
-                  height: 8,
-                  width: 140,
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFD4A574),
-                    borderRadius: BorderRadius.circular(2),
+                Text(
+                  'Your tank here',
+                  style: AppTypography.bodySmall.copyWith(
+                    color: AppColors.textHint,
                   ),
                 ),
               ],
             ),
           ),
-          
-          const SizedBox(height: 24),
-          
-          NotebookCard(
+        ),
+
+        // Floor plant (waiting)
+        Positioned(
+          bottom: 80,
+          right: 20,
+          child: Opacity(
+            opacity: 0.5,
+            child: Container(
+              width: 40,
+              height: 80,
+              child: Column(
+                children: [
+                  Container(
+                    width: 30,
+                    height: 50,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF228B22).withOpacity(0.5),
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                  ),
+                  Container(
+                    width: 25,
+                    height: 20,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFCD853F).withOpacity(0.5),
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+
+        // Call to action
+        Center(
+          child: NotebookCard(
             rotation: 1.5,
-            padding: const EdgeInsets.all(20),
+            padding: const EdgeInsets.all(24),
             child: Column(
+              mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  'Your fish room is empty!',
+                  '🐠 Welcome!',
                   style: AppTypography.headlineSmall,
-                  textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 12),
                 Text(
-                  'Add your first tank to start tracking your aquarium hobby.',
-                  style: AppTypography.bodyMedium.copyWith(color: AppColors.textSecondary),
+                  'This room is waiting for\nyour first aquarium.',
+                  style: AppTypography.bodyMedium.copyWith(
+                    color: AppColors.textSecondary,
+                  ),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 20),
                 ElevatedButton.icon(
                   onPressed: onCreateTank,
                   icon: const Icon(Icons.add),
-                  label: const Text('Create Tank'),
+                  label: const Text('Add Your Tank'),
                 ),
                 const SizedBox(height: 8),
                 TextButton(
                   onPressed: onLoadDemo,
-                  child: const Text('Load sample tank'),
+                  child: const Text('Try a sample tank'),
                 ),
               ],
             ),
           ),
-          
-          const SizedBox(height: 24),
-          
-          // Scattered empty items
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Opacity(
-                opacity: 0.4,
-                child: BucketItem(fillLevel: 0, height: 40),
-              ),
-              const SizedBox(width: 16),
-              Opacity(
-                opacity: 0.4,
-                child: NetItem(size: 30),
-              ),
-              const SizedBox(width: 16),
-              Opacity(
-                opacity: 0.4,
-                child: FoodJarItem(fillLevel: 0.2, height: 45),
-              ),
-            ],
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
