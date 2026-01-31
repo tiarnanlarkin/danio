@@ -28,8 +28,10 @@ import '../theme/app_theme.dart';
 import 'onboarding_screen.dart';
 import 'shop_street_screen.dart';
 import 'dosing_calculator_screen.dart';
+import 'compatibility_checker_screen.dart';
 import 'cost_tracker_screen.dart';
 import 'emergency_guide_screen.dart';
+import 'water_change_calculator_screen.dart';
 import 'tank_volume_calculator_screen.dart';
 import 'vacation_guide_screen.dart';
 import 'unit_converter_screen.dart';
@@ -129,6 +131,26 @@ class SettingsScreen extends ConsumerWidget {
             onTap: () => Navigator.push(
               context,
               MaterialPageRoute(builder: (_) => const CostTrackerScreen()),
+            ),
+          ),
+          ListTile(
+            leading: const Icon(Icons.water_drop),
+            title: const Text('Water Change Calculator'),
+            subtitle: const Text('Calculate changes to hit target nitrate'),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const WaterChangeCalculatorScreen()),
+            ),
+          ),
+          ListTile(
+            leading: const Icon(Icons.compare_arrows),
+            title: const Text('Compatibility Checker'),
+            subtitle: const Text('Check if fish work together'),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const CompatibilityCheckerScreen()),
             ),
           ),
 

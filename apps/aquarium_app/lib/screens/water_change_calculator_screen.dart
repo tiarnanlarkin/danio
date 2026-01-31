@@ -3,219 +3,305 @@ import 'package:flutter/services.dart';
 import '../theme/app_theme.dart';
 
 class WaterChangeCalculatorScreen extends StatefulWidget {
-  final double? tankVolumeLitres;
-
-  const WaterChangeCalculatorScreen({super.key, this.tankVolumeLitres});
+  const WaterChangeCalculatorScreen({super.key});
 
   @override
   State<WaterChangeCalculatorScreen> createState() => _WaterChangeCalculatorScreenState();
 }
 
 class _WaterChangeCalculatorScreenState extends State<WaterChangeCalculatorScreen> {
-  late TextEditingController _volumeController;
-  double _percentage = 25;
+  final _tankVolumeController = TextEditingController(text: '100');
+  final _currentNitrateController = TextEditingController(text: '40');
+  final _targetNitrateController = TextEditingController(text: '20');
+  final _tapNitrateController = TextEditingController(text: '5');
+  
+  double? _changePercent;
+  double? _changeVolume;
+  String? _recommendation;
 
-  @override
-  void initState() {
-    super.initState();
-    _volumeController = TextEditingController(
-      text: widget.tankVolumeLitres?.toStringAsFixed(0) ?? '',
-    );
-  }
+  void _calculate() {
+    final tankVolume = double.tryParse(_tankVolumeController.text);
+    final currentNitrate = double.tryParse(_currentNitrateController.text);
+    final targetNitrate = double.tryParse(_targetNitrateController.text);
+    final tapNitrate = double.tryParse(_tapNitrateController.text) ?? 0;
 
-  @override
-  void dispose() {
-    _volumeController.dispose();
-    super.dispose();
-  }
+    if (tankVolume == null || currentNitrate == null || targetNitrate == null) {
+      setState(() {
+        _changePercent = null;
+        _changeVolume = null;
+        _recommendation = 'Please fill in all fields';
+      });
+      return;
+    }
 
-  double? get _tankVolume => double.tryParse(_volumeController.text);
+    if (currentNitrate <= targetNitrate) {
+      setState(() {
+        _changePercent = 0;
+        _changeVolume = 0;
+        _recommendation = 'Your nitrates are already at or below target! No water change needed.';
+      });
+      return;
+    }
 
-  double? get _waterToChange {
-    final volume = _tankVolume;
-    if (volume == null) return null;
-    return volume * (_percentage / 100);
+    if (tapNitrate >= targetNitrate) {
+      setState(() {
+        _changePercent = null;
+        _changeVolume = null;
+        _recommendation = 'Your tap water nitrate (${tapNitrate.toStringAsFixed(0)} ppm) is higher than your target. '
+            'Consider using RO water or a nitrate-removing filter.';
+      });
+      return;
+    }
+
+    // Formula: changePercent = (current - target) / (current - tap)
+    final changePercent = ((currentNitrate - targetNitrate) / (currentNitrate - tapNitrate)) * 100;
+    final changeVolume = tankVolume * (changePercent / 100);
+
+    String recommendation;
+    if (changePercent > 50) {
+      recommendation = 'This requires a large water change (${changePercent.toStringAsFixed(0)}%). '
+          'Consider splitting into 2-3 smaller changes over a few days to reduce stress.';
+    } else if (changePercent > 30) {
+      recommendation = 'A ${changePercent.toStringAsFixed(0)}% water change should do the trick. '
+          'Make sure new water is temperature-matched and dechlorinated.';
+    } else {
+      recommendation = 'A modest ${changePercent.toStringAsFixed(0)}% change will bring nitrates to target. '
+          'This is a routine maintenance level.';
+    }
+
+    setState(() {
+      _changePercent = changePercent;
+      _changeVolume = changeVolume;
+      _recommendation = recommendation;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Water Change Calculator'),
-      ),
-      body: SingleChildScrollView(
+      appBar: AppBar(title: const Text('Water Change Calculator')),
+      body: ListView(
         padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Tank volume input
-            Text('Tank Volume', style: AppTypography.headlineSmall),
-            const SizedBox(height: 8),
-            TextFormField(
-              controller: _volumeController,
-              decoration: const InputDecoration(
-                hintText: 'Enter tank volume',
-                suffixText: 'L',
+        children: [
+          Card(
+            color: AppColors.info.withOpacity(0.1),
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Row(
+                children: [
+                  Icon(Icons.calculate, size: 32, color: AppColors.info),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      'Calculate exactly how much water to change to reach your target nitrate level.',
+                      style: AppTypography.bodyMedium,
+                    ),
+                  ),
+                ],
               ),
-              keyboardType: const TextInputType.numberWithOptions(decimal: true),
-              inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[\d.]'))],
-              onChanged: (_) => setState(() {}),
             ),
+          ),
 
-            const SizedBox(height: 24),
+          const SizedBox(height: 24),
 
-            // Percentage slider
-            Text('Water Change Percentage', style: AppTypography.headlineSmall),
-            const SizedBox(height: 8),
-            Row(
-              children: [
-                Expanded(
-                  child: Slider(
-                    value: _percentage,
-                    min: 5,
-                    max: 90,
-                    divisions: 17,
-                    label: '${_percentage.toStringAsFixed(0)}%',
-                    onChanged: (value) => setState(() => _percentage = value),
-                  ),
-                ),
-                SizedBox(
-                  width: 50,
-                  child: Text(
-                    '${_percentage.toStringAsFixed(0)}%',
-                    style: AppTypography.headlineSmall,
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-              ],
+          Text('Tank Info', style: AppTypography.headlineSmall),
+          const SizedBox(height: 12),
+
+          TextField(
+            controller: _tankVolumeController,
+            decoration: const InputDecoration(
+              labelText: 'Tank Volume',
+              suffixText: 'litres',
+              border: OutlineInputBorder(),
             ),
+            keyboardType: TextInputType.number,
+            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+            onChanged: (_) => _calculate(),
+          ),
 
-            // Quick presets
-            const SizedBox(height: 8),
-            Wrap(
-              spacing: 8,
-              children: [10, 20, 25, 30, 50].map((p) {
-                return ChoiceChip(
-                  label: Text('$p%'),
-                  selected: _percentage == p,
-                  onSelected: (_) => setState(() => _percentage = p.toDouble()),
-                );
-              }).toList(),
+          const SizedBox(height: 24),
+
+          Text('Nitrate Levels', style: AppTypography.headlineSmall),
+          const SizedBox(height: 12),
+
+          TextField(
+            controller: _currentNitrateController,
+            decoration: const InputDecoration(
+              labelText: 'Current Nitrate',
+              suffixText: 'ppm',
+              border: OutlineInputBorder(),
+              helperText: 'What your test kit shows now',
             ),
+            keyboardType: TextInputType.number,
+            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+            onChanged: (_) => _calculate(),
+          ),
 
-            const SizedBox(height: 32),
+          const SizedBox(height: 12),
 
-            // Result card
-            if (_tankVolume != null && _waterToChange != null) ...[
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: Column(
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(Icons.water_drop, color: AppColors.secondary, size: 32),
-                          const SizedBox(width: 12),
-                          Text(
-                            '${_waterToChange!.toStringAsFixed(1)} L',
-                            style: AppTypography.headlineLarge.copyWith(
-                              color: AppColors.secondary,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        'Water to remove/replace',
-                        style: AppTypography.bodyMedium,
-                      ),
-                      const SizedBox(height: 16),
-                      const Divider(),
-                      const SizedBox(height: 16),
-                      _ResultRow(
-                        label: 'Tank volume',
-                        value: '${_tankVolume!.toStringAsFixed(0)} L',
-                      ),
-                      _ResultRow(
-                        label: 'Change percentage',
-                        value: '${_percentage.toStringAsFixed(0)}%',
-                      ),
-                      _ResultRow(
-                        label: 'Remaining water',
-                        value: '${(_tankVolume! - _waterToChange!).toStringAsFixed(1)} L',
-                      ),
-                    ],
-                  ),
-                ),
-              ),
+          TextField(
+            controller: _targetNitrateController,
+            decoration: const InputDecoration(
+              labelText: 'Target Nitrate',
+              suffixText: 'ppm',
+              border: OutlineInputBorder(),
+              helperText: 'Usually 10-20 ppm for most tanks',
+            ),
+            keyboardType: TextInputType.number,
+            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+            onChanged: (_) => _calculate(),
+          ),
 
-              const SizedBox(height: 24),
+          const SizedBox(height: 12),
 
-              // Tips
-              Card(
-                color: AppColors.info.withOpacity(0.1),
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Icon(Icons.lightbulb_outline, color: AppColors.info, size: 20),
-                          const SizedBox(width: 8),
-                          Text('Tips', style: AppTypography.labelLarge.copyWith(color: AppColors.info)),
-                        ],
-                      ),
-                      const SizedBox(height: 12),
-                      _TipItem(text: 'Match temperature of new water to tank (±2°C)'),
-                      _TipItem(text: 'Use dechlorinator for tap water'),
-                      _TipItem(text: '10-25% weekly is typical for most tanks'),
-                      _TipItem(text: 'Larger changes (50%+) for emergencies only'),
-                    ],
-                  ),
-                ),
-              ),
-            ] else ...[
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(32),
-                  child: Center(
-                    child: Column(
+          TextField(
+            controller: _tapNitrateController,
+            decoration: const InputDecoration(
+              labelText: 'Tap Water Nitrate',
+              suffixText: 'ppm',
+              border: OutlineInputBorder(),
+              helperText: 'Test your tap water! Often 0-10 ppm',
+            ),
+            keyboardType: TextInputType.number,
+            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+            onChanged: (_) => _calculate(),
+          ),
+
+          const SizedBox(height: 24),
+
+          if (_changePercent != null && _changeVolume != null) ...[
+            Card(
+              color: AppColors.success.withOpacity(0.1),
+              child: Padding(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  children: [
+                    Text('Water Change Needed', style: AppTypography.labelLarge),
+                    const SizedBox(height: 12),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        Icon(Icons.calculate_outlined, size: 48, color: AppColors.textHint),
-                        const SizedBox(height: 16),
-                        Text(
-                          'Enter your tank volume to calculate',
-                          style: AppTypography.bodyMedium,
+                        Column(
+                          children: [
+                            Text(
+                              '${_changePercent!.toStringAsFixed(0)}%',
+                              style: AppTypography.headlineLarge.copyWith(color: AppColors.success),
+                            ),
+                            Text('of tank', style: AppTypography.bodySmall),
+                          ],
+                        ),
+                        Container(width: 1, height: 40, color: AppColors.textHint),
+                        Column(
+                          children: [
+                            Text(
+                              '${_changeVolume!.toStringAsFixed(0)}L',
+                              style: AppTypography.headlineLarge.copyWith(color: AppColors.success),
+                            ),
+                            Text('to remove', style: AppTypography.bodySmall),
+                          ],
                         ),
                       ],
                     ),
-                  ),
+                  ],
                 ),
               ),
-            ],
+            ),
           ],
-        ),
+
+          if (_recommendation != null) ...[
+            const SizedBox(height: 16),
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Icon(Icons.lightbulb, color: AppColors.warning, size: 20),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Text(_recommendation!, style: AppTypography.bodyMedium),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+
+          const SizedBox(height: 24),
+
+          Text('Quick Reference', style: AppTypography.headlineSmall),
+          const SizedBox(height: 12),
+
+          Card(
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _RefRow(label: 'Ideal nitrate', value: '< 20 ppm'),
+                  _RefRow(label: 'Acceptable', value: '20-40 ppm'),
+                  _RefRow(label: 'High (act soon)', value: '40-80 ppm'),
+                  _RefRow(label: 'Dangerous', value: '> 80 ppm'),
+                  const Divider(height: 24),
+                  Text(
+                    'Tip: Regular 20-25% weekly water changes usually keep nitrates in check without needing to calculate.',
+                    style: AppTypography.bodySmall,
+                  ),
+                ],
+              ),
+            ),
+          ),
+
+          const SizedBox(height: 24),
+
+          Text('Multi-Change Strategy', style: AppTypography.headlineSmall),
+          const SizedBox(height: 12),
+
+          Card(
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'For very high nitrates (>60 ppm), don\'t do one massive change. Instead:',
+                    style: AppTypography.bodyMedium,
+                  ),
+                  const SizedBox(height: 12),
+                  _StepRow(num: 1, text: 'Day 1: 30% water change'),
+                  _StepRow(num: 2, text: 'Day 3: 25% water change'),
+                  _StepRow(num: 3, text: 'Day 5: 20% water change'),
+                  _StepRow(num: 4, text: 'Test and repeat if needed'),
+                  const SizedBox(height: 8),
+                  Text(
+                    'This gradual approach prevents osmotic shock to fish.',
+                    style: AppTypography.bodySmall.copyWith(fontStyle: FontStyle.italic),
+                  ),
+                ],
+              ),
+            ),
+          ),
+
+          const SizedBox(height: 48),
+        ],
       ),
     );
   }
 }
 
-class _ResultRow extends StatelessWidget {
+class _RefRow extends StatelessWidget {
   final String label;
   final String value;
 
-  const _ResultRow({required this.label, required this.value});
+  const _RefRow({required this.label, required this.value});
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(label, style: AppTypography.bodyMedium),
+          Expanded(child: Text(label, style: AppTypography.bodyMedium)),
           Text(value, style: AppTypography.labelLarge),
         ],
       ),
@@ -223,20 +309,31 @@ class _ResultRow extends StatelessWidget {
   }
 }
 
-class _TipItem extends StatelessWidget {
+class _StepRow extends StatelessWidget {
+  final int num;
   final String text;
 
-  const _TipItem({required this.text});
+  const _StepRow({required this.num, required this.text});
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 6),
+      padding: const EdgeInsets.only(bottom: 4),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('• ', style: AppTypography.bodySmall),
-          Expanded(child: Text(text, style: AppTypography.bodySmall)),
+          Container(
+            width: 20,
+            height: 20,
+            decoration: BoxDecoration(
+              color: AppColors.primary.withOpacity(0.1),
+              shape: BoxShape.circle,
+            ),
+            child: Center(
+              child: Text('$num', style: AppTypography.bodySmall.copyWith(color: AppColors.primary, fontSize: 11)),
+            ),
+          ),
+          const SizedBox(width: 8),
+          Text(text, style: AppTypography.bodyMedium),
         ],
       ),
     );
