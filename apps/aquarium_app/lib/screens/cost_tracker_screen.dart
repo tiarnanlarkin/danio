@@ -160,8 +160,8 @@ class _CostTrackerScreenState extends ConsumerState<CostTrackerScreen> {
                 if (_byCategory.isNotEmpty) ...[
                   Text('By Category', style: AppTypography.headlineSmall),
                   const SizedBox(height: 12),
-                  ..._byCategory.entries.toList()
-                    ..sort((a, b) => b.value.compareTo(a.value))
+                  ...(_byCategory.entries.toList()
+                    ..sort((a, b) => b.value.compareTo(a.value)))
                     .map((e) => _CategoryBar(
                       category: e.key,
                       amount: e.value,

@@ -53,6 +53,12 @@ class SpeciesDatabase {
   static final Map<String, SpeciesInfo> _byScientificName = {};
   static bool _initialized = false;
 
+  /// Get all species in the database.
+  static List<SpeciesInfo> get species {
+    _ensureInitialized();
+    return List.unmodifiable(_allSpecies);
+  }
+
   static void _ensureInitialized() {
     if (_initialized) return;
     for (final species in _allSpecies) {

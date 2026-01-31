@@ -364,13 +364,13 @@ class _SpeciesDetailSheet extends StatelessWidget {
               const SizedBox(height: 16),
             ],
 
-            if (species.incompatibleWith.isNotEmpty) ...[
+            if (species.avoidWith.isNotEmpty) ...[
               Text('Avoid With', style: AppTypography.headlineSmall),
               const SizedBox(height: 8),
               Wrap(
                 spacing: 6,
                 runSpacing: 6,
-                children: species.incompatibleWith.map((c) => Chip(
+                children: species.avoidWith.map((c) => Chip(
                   label: Text(c, style: AppTypography.bodySmall),
                   backgroundColor: AppColors.error.withOpacity(0.1),
                   side: BorderSide.none,

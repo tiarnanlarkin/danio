@@ -43,7 +43,7 @@ class _CompatibilityCheckerScreenState extends State<CompatibilityCheckerScreen>
         final b = _selectedSpecies[j];
 
         // Check explicit incompatibility
-        if (a.incompatibleWith.any((name) => 
+        if (a.avoidWith.any((name) => 
             b.commonName.toLowerCase().contains(name.toLowerCase()) ||
             b.family.toLowerCase().contains(name.toLowerCase()))) {
           issues.add(_CompatibilityIssue(
@@ -52,7 +52,7 @@ class _CompatibilityCheckerScreenState extends State<CompatibilityCheckerScreen>
             severity: _Severity.bad,
             reason: '${a.commonName} is known to be incompatible with ${b.commonName}',
           ));
-        } else if (b.incompatibleWith.any((name) => 
+        } else if (b.avoidWith.any((name) => 
             a.commonName.toLowerCase().contains(name.toLowerCase()) ||
             a.family.toLowerCase().contains(name.toLowerCase()))) {
           issues.add(_CompatibilityIssue(
