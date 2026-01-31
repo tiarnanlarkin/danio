@@ -9,6 +9,7 @@ import 'about_screen.dart';
 import 'acclimation_guide_screen.dart';
 import 'backup_restore_screen.dart';
 import 'reminders_screen.dart';
+import 'wishlist_screen.dart';
 import 'algae_guide_screen.dart';
 import 'breeding_guide_screen.dart';
 import 'glossary_screen.dart';
@@ -95,6 +96,16 @@ class SettingsScreen extends ConsumerWidget {
             onTap: () => Navigator.push(
               context,
               MaterialPageRoute(builder: (_) => const RemindersScreen()),
+            ),
+          ),
+          ListTile(
+            leading: const Icon(Icons.favorite),
+            title: const Text('Fish Wishlist'),
+            subtitle: const Text('Track fish you want to keep'),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const WishlistScreen()),
             ),
           ),
           ListTile(
