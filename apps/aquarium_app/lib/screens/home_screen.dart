@@ -73,9 +73,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   onTankTap: () => _navigateToTankDetail(context, currentTank),
                   onTestKitTap: () => _showWaterParams(context),
                   onFoodTap: () => _showFeedingInfo(context),
-                  onBookTap: () => _showGuideInfo(context),
                   onPlantTap: () => _showPlantInfo(context),
-                  onLampTap: () => _showLampInfo(context),
+                  onStatsTap: () => _showStatsInfo(context),
                 ),
               ),
 
@@ -195,16 +194,16 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 
-  void _showLampInfo(BuildContext context) {
+  void _showStatsInfo(BuildContext context) {
     _showItemSheet(
       context,
-      title: 'Cozy Vibes',
-      icon: Icons.lightbulb,
-      color: const Color(0xFFFFD54F),
+      title: 'Tank Stats',
+      icon: Icons.auto_graph,
+      color: const Color(0xFFBA68C8),
       rows: [
-        const ItemDetailRow(label: 'Mood', value: 'Relaxed ✨'),
-        const ItemDetailRow(label: 'Lighting', value: 'Warm glow'),
-        const ItemDetailRow(label: 'Ambience', value: 'Perfect'),
+        const ItemDetailRow(label: 'Temperature', value: '-- °C'),
+        const ItemDetailRow(label: 'Last fed', value: '--'),
+        const ItemDetailRow(label: 'Water change', value: 'Due soon'),
       ],
     );
   }
@@ -235,20 +234,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         const ItemDetailRow(label: 'Type', value: 'Tropical Flakes'),
         const ItemDetailRow(label: 'Last fed', value: '--'),
         const ItemDetailRow(label: 'Schedule', value: '2x daily'),
-      ],
-    );
-  }
-
-  void _showGuideInfo(BuildContext context) {
-    _showItemSheet(
-      context,
-      title: 'Fishkeeping Guide',
-      icon: Icons.menu_book,
-      color: const Color(0xFF8B4513),
-      rows: [
-        const ItemDetailRow(label: 'Topic', value: 'Water Chemistry'),
-        const ItemDetailRow(label: 'Tip', value: 'Test weekly!'),
-        const ItemDetailRow(label: 'Reading', value: 'Nitrogen Cycle basics'),
       ],
     );
   }
