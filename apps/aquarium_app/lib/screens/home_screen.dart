@@ -71,12 +71,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   tankName: currentTank.name,
                   tankVolume: currentTank.volumeLitres,
                   onTankTap: () => _navigateToTankDetail(context, currentTank),
-                  onThermometerTap: () => _showTemperatureDetail(context),
                   onTestKitTap: () => _showWaterParams(context),
                   onFoodTap: () => _showFeedingInfo(context),
                   onBookTap: () => _showGuideInfo(context),
-                  onTeaTap: () => _showRelaxMessage(context),
                   onPlantTap: () => _showPlantInfo(context),
+                  onLampTap: () => _showLampInfo(context),
                 ),
               ),
 
@@ -196,16 +195,16 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 
-  void _showTemperatureDetail(BuildContext context) {
+  void _showLampInfo(BuildContext context) {
     _showItemSheet(
       context,
-      title: 'Temperature',
-      icon: Icons.thermostat,
-      color: AppColors.warning,
+      title: 'Cozy Vibes',
+      icon: Icons.lightbulb,
+      color: const Color(0xFFFFD54F),
       rows: [
-        const ItemDetailRow(label: 'Current', value: '-- °C'),
-        const ItemDetailRow(label: 'Target', value: '25 °C'),
-        const ItemDetailRow(label: 'Heater', value: 'On', color: AppColors.success),
+        const ItemDetailRow(label: 'Mood', value: 'Relaxed ✨'),
+        const ItemDetailRow(label: 'Lighting', value: 'Warm glow'),
+        const ItemDetailRow(label: 'Ambience', value: 'Perfect'),
       ],
     );
   }
@@ -250,20 +249,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         const ItemDetailRow(label: 'Topic', value: 'Water Chemistry'),
         const ItemDetailRow(label: 'Tip', value: 'Test weekly!'),
         const ItemDetailRow(label: 'Reading', value: 'Nitrogen Cycle basics'),
-      ],
-    );
-  }
-
-  void _showRelaxMessage(BuildContext context) {
-    _showItemSheet(
-      context,
-      title: '☕ Tea Time',
-      icon: Icons.coffee,
-      color: const Color(0xFFCD853F),
-      rows: [
-        const ItemDetailRow(label: 'Mood', value: 'Relaxing 🧘'),
-        const ItemDetailRow(label: 'Activity', value: 'Watching fish'),
-        const ItemDetailRow(label: 'Stress', value: '-50%', color: AppColors.success),
       ],
     );
   }
