@@ -8,6 +8,7 @@ import '../providers/settings_provider.dart';
 import 'about_screen.dart';
 import 'acclimation_guide_screen.dart';
 import 'backup_restore_screen.dart';
+import 'co2_calculator_screen.dart';
 import 'reminders_screen.dart';
 import 'tank_comparison_screen.dart';
 import 'wishlist_screen.dart';
@@ -127,6 +128,16 @@ class SettingsScreen extends ConsumerWidget {
             onTap: () => Navigator.push(
               context,
               MaterialPageRoute(builder: (_) => const WaterChangeCalculatorScreen()),
+            ),
+          ),
+          ListTile(
+            leading: const Icon(Icons.bubble_chart),
+            title: const Text('CO2 Calculator'),
+            subtitle: const Text('Calculate CO2 from pH and KH'),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const Co2CalculatorScreen()),
             ),
           ),
           ListTile(
