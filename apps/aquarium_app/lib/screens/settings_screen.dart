@@ -9,6 +9,7 @@ import 'about_screen.dart';
 import 'acclimation_guide_screen.dart';
 import 'backup_restore_screen.dart';
 import 'reminders_screen.dart';
+import 'tank_comparison_screen.dart';
 import 'wishlist_screen.dart';
 import 'algae_guide_screen.dart';
 import 'breeding_guide_screen.dart';
@@ -106,6 +107,16 @@ class SettingsScreen extends ConsumerWidget {
             onTap: () => Navigator.push(
               context,
               MaterialPageRoute(builder: (_) => const WishlistScreen()),
+            ),
+          ),
+          ListTile(
+            leading: const Icon(Icons.compare),
+            title: const Text('Compare Tanks'),
+            subtitle: const Text('Side-by-side tank comparison'),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const TankComparisonScreen()),
             ),
           ),
           ListTile(
