@@ -36,6 +36,7 @@ import 'dosing_calculator_screen.dart';
 import 'compatibility_checker_screen.dart';
 import 'cost_tracker_screen.dart';
 import 'emergency_guide_screen.dart';
+import 'faq_screen.dart';
 import 'lighting_schedule_screen.dart';
 import 'stocking_calculator_screen.dart';
 import 'water_change_calculator_screen.dart';
@@ -436,6 +437,16 @@ class SettingsScreen extends ConsumerWidget {
             onTap: () => Navigator.push(
               context,
               MaterialPageRoute(builder: (_) => const GlossaryScreen()),
+            ),
+          ),
+          ListTile(
+            leading: const Icon(Icons.quiz),
+            title: const Text('FAQ'),
+            subtitle: const Text('Frequently asked questions'),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const FaqScreen()),
             ),
           ),
           ListTile(
