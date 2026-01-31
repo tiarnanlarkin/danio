@@ -20,6 +20,7 @@ import 'tank_settings_screen.dart';
 import 'journal_screen.dart';
 import 'maintenance_checklist_screen.dart';
 import 'photo_gallery_screen.dart';
+import 'livestock_value_screen.dart';
 import '../widgets/cycling_status_card.dart';
 
 const _uuid = Uuid();
@@ -189,15 +190,32 @@ class TankDetailScreen extends ConsumerWidget {
                       ),
                     ),
                   ),
-                  IconButton(
-                    icon: const Icon(Icons.settings, color: Colors.white),
-                    tooltip: 'Tank settings',
-                    onPressed: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => TankSettingsScreen(tankId: tankId),
-                      ),
-                    ),
+                  PopupMenuButton<String>(
+                    icon: const Icon(Icons.more_vert, color: Colors.white),
+                    onSelected: (value) {
+                      switch (value) {
+                        case 'settings':
+                          Navigator.push(context, MaterialPageRoute(
+                            builder: (_) => TankSettingsScreen(tankId: tankId),
+                          ));
+                        case 'value':
+                          Navigator.push(context, MaterialPageRoute(
+                            builder: (_) => LivestockValueScreen(tankId: tankId, tankName: tank.name),
+                          ));
+                      }
+                    },
+                    itemBuilder: (_) => [
+                      const PopupMenuItem(value: 'value', child: ListTile(
+                        leading: Icon(Icons.attach_money),
+                        title: Text('Estimate Value'),
+                        contentPadding: EdgeInsets.zero,
+                      )),
+                      const PopupMenuItem(value: 'settings', child: ListTile(
+                        leading: Icon(Icons.settings),
+                        title: Text('Tank Settings'),
+                        contentPadding: EdgeInsets.zero,
+                      )),
+                    ],
                   ),
                 ],
               ),
