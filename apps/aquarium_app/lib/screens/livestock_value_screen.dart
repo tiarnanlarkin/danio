@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../models/models.dart';
 import '../providers/tank_provider.dart';
 import '../theme/app_theme.dart';
 
@@ -22,21 +23,18 @@ class _LivestockValueScreenState extends ConsumerState<LivestockValueScreen> {
   final Map<String, double> _prices = {};
   String _currency = '£';
 
-  double get _totalValue {
-    final tank = ref.read(tanksProvider).value?.firstWhere((t) => t.id == widget.tankId);
-    if (tank == null) return 0;
-
+  double _calculateTotal(List<Livestock> livestock) {
     double total = 0;
-    for (final livestock in tank.livestock) {
-      final price = _prices[livestock.id] ?? 0;
-      total += price * livestock.quantity;
+    for (final item in livestock) {
+      final price = _prices[item.id] ?? 0;
+      total += price * item.count;
     }
     return total;
   }
 
   @override
   Widget build(BuildContext context) {
-    final tankAsync = ref.watch(tanksProvider);
+    final livestockAsync = ref.watch(livestockProvider(widget.tankId));
 
     return Scaffold(
       appBar: AppBar(
@@ -52,13 +50,11 @@ class _LivestockValueScreenState extends ConsumerState<LivestockValueScreen> {
           ),
         ],
       ),
-      body: tankAsync.when(
+      body: livestockAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (e, _) => Center(child: Text('Error: $e')),
-        data: (tanks) {
-          final tank = tanks.firstWhere((t) => t.id == widget.tankId);
-
-          if (tank.livestock.isEmpty) {
+        data: (livestock) {
+          if (livestock.isEmpty) {
             return Center(
               child: Padding(
                 padding: const EdgeInsets.all(32),
@@ -80,6 +76,9 @@ class _LivestockValueScreenState extends ConsumerState<LivestockValueScreen> {
             );
           }
 
+          final totalValue = _calculateTotal(livestock);
+          final totalAnimals = livestock.fold(0, (sum, l) => sum + l.count);
+
           return ListView(
             padding: const EdgeInsets.all(16),
             children: [
@@ -93,12 +92,12 @@ class _LivestockValueScreenState extends ConsumerState<LivestockValueScreen> {
                       Text('Estimated Total Value', style: AppTypography.labelLarge),
                       const SizedBox(height: 8),
                       Text(
-                        '$_currency${_totalValue.toStringAsFixed(2)}',
+                        '$_currency${totalValue.toStringAsFixed(2)}',
                         style: AppTypography.headlineLarge.copyWith(color: AppColors.primary),
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        '${tank.livestock.fold(0, (sum, l) => sum + l.quantity)} animals',
+                        '$totalAnimals animals',
                         style: AppTypography.bodySmall,
                       ),
                     ],
@@ -132,7 +131,7 @@ class _LivestockValueScreenState extends ConsumerState<LivestockValueScreen> {
               Text('Livestock Prices', style: AppTypography.headlineSmall),
               const SizedBox(height: 12),
 
-              ...tank.livestock.map((livestock) => Card(
+              ...livestock.map((item) => Card(
                 margin: const EdgeInsets.only(bottom: 8),
                 child: Padding(
                   padding: const EdgeInsets.all(12),
@@ -146,7 +145,7 @@ class _LivestockValueScreenState extends ConsumerState<LivestockValueScreen> {
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Icon(
-                          livestock.type == 'fish' ? Icons.set_meal : Icons.bug_report,
+                          true ? Icons.set_meal : Icons.bug_report,
                           color: AppColors.primary,
                           size: 20,
                         ),
@@ -156,9 +155,9 @@ class _LivestockValueScreenState extends ConsumerState<LivestockValueScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(livestock.species, style: AppTypography.labelLarge),
+                            Text(item.commonName, style: AppTypography.labelLarge),
                             Text(
-                              '× ${livestock.quantity}',
+                              '× ${item.count}',
                               style: AppTypography.bodySmall,
                             ),
                           ],
@@ -178,7 +177,7 @@ class _LivestockValueScreenState extends ConsumerState<LivestockValueScreen> {
                           inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[\d.]'))],
                           onChanged: (v) {
                             setState(() {
-                              _prices[livestock.id] = double.tryParse(v) ?? 0;
+                              _prices[item.id] = double.tryParse(v) ?? 0;
                             });
                           },
                         ),
@@ -187,7 +186,7 @@ class _LivestockValueScreenState extends ConsumerState<LivestockValueScreen> {
                       SizedBox(
                         width: 70,
                         child: Text(
-                          '$_currency${((_prices[livestock.id] ?? 0) * livestock.quantity).toStringAsFixed(2)}',
+                          '$_currency${((_prices[item.id] ?? 0) * item.count).toStringAsFixed(2)}',
                           style: AppTypography.labelLarge,
                           textAlign: TextAlign.right,
                         ),
