@@ -7,6 +7,7 @@ import 'dart:io';
 import '../providers/settings_provider.dart';
 import 'about_screen.dart';
 import 'acclimation_guide_screen.dart';
+import 'backup_restore_screen.dart';
 import 'algae_guide_screen.dart';
 import 'breeding_guide_screen.dart';
 import 'glossary_screen.dart';
@@ -418,6 +419,16 @@ class SettingsScreen extends ConsumerWidget {
             title: const Text('Replay Onboarding'),
             subtitle: const Text('See the intro screens again'),
             onTap: () => _replayOnboarding(context),
+          ),
+          ListTile(
+            leading: const Icon(Icons.backup),
+            title: const Text('Backup & Restore'),
+            subtitle: const Text('Export or import your tank data'),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const BackupRestoreScreen()),
+            ),
           ),
           ListTile(
             leading: const Icon(Icons.info_outline),
