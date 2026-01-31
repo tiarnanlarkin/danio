@@ -31,6 +31,7 @@ import 'dosing_calculator_screen.dart';
 import 'compatibility_checker_screen.dart';
 import 'cost_tracker_screen.dart';
 import 'emergency_guide_screen.dart';
+import 'lighting_schedule_screen.dart';
 import 'water_change_calculator_screen.dart';
 import 'tank_volume_calculator_screen.dart';
 import 'vacation_guide_screen.dart';
@@ -151,6 +152,16 @@ class SettingsScreen extends ConsumerWidget {
             onTap: () => Navigator.push(
               context,
               MaterialPageRoute(builder: (_) => const CompatibilityCheckerScreen()),
+            ),
+          ),
+          ListTile(
+            leading: const Icon(Icons.lightbulb),
+            title: const Text('Lighting Schedule'),
+            subtitle: const Text('Optimize light duration for your setup'),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const LightingScheduleScreen()),
             ),
           ),
 
