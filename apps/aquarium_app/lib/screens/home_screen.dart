@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/models.dart';
 import '../providers/tank_provider.dart';
+import '../providers/room_theme_provider.dart';
 import '../theme/app_theme.dart';
+import '../theme/room_themes.dart';
 import '../widgets/decorative_elements.dart';
 import '../widgets/hobby_items.dart';
 import '../widgets/hobby_desk.dart';
@@ -70,11 +72,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 child: LivingRoomScene(
                   tankName: currentTank.name,
                   tankVolume: currentTank.volumeLitres,
+                  theme: ref.watch(currentRoomThemeProvider),
                   onTankTap: () => _navigateToTankDetail(context, currentTank),
                   onTestKitTap: () => _showWaterParams(context),
                   onFoodTap: () => _showFeedingInfo(context),
                   onPlantTap: () => _showPlantInfo(context),
                   onStatsTap: () => _showStatsInfo(context),
+                  onThemeTap: () => _showThemePicker(context, ref),
                 ),
               ),
 
@@ -249,6 +253,101 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         const ItemDetailRow(label: 'Pothos', value: 'Thriving'),
         const ItemDetailRow(label: 'Tip', value: 'Use old tank water!'),
       ],
+    );
+  }
+
+  void _showThemePicker(BuildContext context, WidgetRef ref) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) => Container(
+        margin: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          color: Theme.of(context).scaffoldBackgroundColor,
+          borderRadius: BorderRadius.circular(24),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                const Icon(Icons.palette, size: 24),
+                const SizedBox(width: 12),
+                Text('Room Theme', style: AppTypography.headlineSmall),
+              ],
+            ),
+            const SizedBox(height: 20),
+            Wrap(
+              spacing: 12,
+              runSpacing: 12,
+              children: RoomThemeType.values.map((type) {
+                final theme = RoomTheme.fromType(type);
+                final isSelected = ref.watch(roomThemeProvider) == type;
+                return GestureDetector(
+                  onTap: () {
+                    ref.read(roomThemeProvider.notifier).setTheme(type);
+                    Navigator.pop(ctx);
+                  },
+                  child: Container(
+                    width: 100,
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(
+                        color: isSelected ? theme.accentBlob : Colors.grey.shade300,
+                        width: isSelected ? 3 : 1,
+                      ),
+                      gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [
+                          theme.background1,
+                          theme.background2,
+                        ],
+                      ),
+                    ),
+                    child: Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            CircleAvatar(radius: 8, backgroundColor: theme.accentBlob),
+                            const SizedBox(width: 4),
+                            CircleAvatar(radius: 8, backgroundColor: theme.waterMid),
+                            const SizedBox(width: 4),
+                            CircleAvatar(radius: 8, backgroundColor: theme.plantPrimary),
+                          ],
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          theme.name,
+                          style: TextStyle(
+                            color: theme.textPrimary,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 12,
+                          ),
+                        ),
+                        Text(
+                          theme.description,
+                          style: TextStyle(
+                            color: theme.textSecondary,
+                            fontSize: 9,
+                          ),
+                          textAlign: TextAlign.center,
+                          maxLines: 2,
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              }).toList(),
+            ),
+            const SizedBox(height: 16),
+          ],
+        ),
+      ),
     );
   }
 

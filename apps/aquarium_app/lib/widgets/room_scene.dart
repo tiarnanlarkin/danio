@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
 import 'dart:ui';
+import '../theme/room_themes.dart';
 
-/// New UI design: Organic abstract background + Glassmorphic dashboard
-/// Based on Nano Banana generated mockups
+/// Themeable room scene - supports multiple visual styles
 class LivingRoomScene extends StatelessWidget {
   final String tankName;
   final double tankVolume;
@@ -11,16 +11,19 @@ class LivingRoomScene extends StatelessWidget {
   final double? ph;
   final double? ammonia;
   final double? nitrate;
+  final RoomTheme theme;
   final VoidCallback? onTankTap;
   final VoidCallback? onTestKitTap;
   final VoidCallback? onFoodTap;
   final VoidCallback? onPlantTap;
   final VoidCallback? onStatsTap;
+  final VoidCallback? onThemeTap;
 
   const LivingRoomScene({
     super.key,
     required this.tankName,
     required this.tankVolume,
+    required this.theme,
     this.temperature,
     this.ph,
     this.ammonia,
@@ -30,6 +33,7 @@ class LivingRoomScene extends StatelessWidget {
     this.onFoodTap,
     this.onPlantTap,
     this.onStatsTap,
+    this.onThemeTap,
   });
 
   @override
@@ -48,24 +52,50 @@ class LivingRoomScene extends StatelessWidget {
             children: [
               // === LAYER 1: Organic abstract background ===
               Positioned.fill(
-                child: _OrganicBackground(),
+                child: _OrganicBackground(theme: theme),
               ),
 
-              // === LAYER 2: 3D Aquarium illustration (center) ===
+              // === LAYER 2: Decorative elements ===
+              // Stars/sparkles for whimsical themes
+              if (theme.name == 'Whimsical') ...[
+                Positioned(
+                  top: h * 0.15,
+                  left: w * 0.1,
+                  child: _Sparkle(size: 12, color: theme.accentCircles[0]),
+                ),
+                Positioned(
+                  top: h * 0.25,
+                  right: w * 0.15,
+                  child: _Sparkle(size: 8, color: theme.accentCircles[1]),
+                ),
+                Positioned(
+                  top: h * 0.45,
+                  left: w * 0.05,
+                  child: _Sparkle(size: 10, color: theme.accentCircles[2]),
+                ),
+                Positioned(
+                  bottom: h * 0.35,
+                  right: w * 0.08,
+                  child: _Sparkle(size: 14, color: theme.accentCircles[0]),
+                ),
+              ],
+
+              // === LAYER 3: 3D Aquarium illustration (center) ===
               Positioned(
                 top: h * 0.28,
                 left: w * 0.1,
                 right: w * 0.1,
                 child: GestureDetector(
                   onTap: onTankTap,
-                  child: _Soft3DAquarium(
+                  child: _ThemedAquarium(
                     width: w * 0.8,
                     height: h * 0.32,
+                    theme: theme,
                   ),
                 ),
               ),
 
-              // === LAYER 3: Glassmorphic UI cards ===
+              // === LAYER 4: Glassmorphic UI cards ===
               
               // Temperature gauge (top left)
               Positioned(
@@ -76,6 +106,7 @@ class LivingRoomScene extends StatelessWidget {
                   child: _CircularTempGauge(
                     size: w * 0.28,
                     temperature: temperature ?? 25,
+                    theme: theme,
                   ),
                 ),
               ),
@@ -91,6 +122,7 @@ class LivingRoomScene extends StatelessWidget {
                     ph: ph,
                     ammonia: ammonia,
                     nitrate: nitrate,
+                    theme: theme,
                   ),
                 ),
               ),
@@ -104,6 +136,7 @@ class LivingRoomScene extends StatelessWidget {
                   child: _GlassBadge(
                     text: tankName,
                     subtext: '${tankVolume.toStringAsFixed(0)}L',
+                    theme: theme,
                   ),
                 ),
               ),
@@ -116,6 +149,7 @@ class LivingRoomScene extends StatelessWidget {
                 child: _WaveGraphCard(
                   width: w * 0.84,
                   height: 80,
+                  theme: theme,
                 ),
               ),
 
@@ -125,10 +159,44 @@ class LivingRoomScene extends StatelessWidget {
                 left: 0,
                 right: 0,
                 child: _CircularActionButtons(
+                  theme: theme,
                   onFeed: onFoodTap,
                   onTest: onTestKitTap,
                   onWater: onPlantTap,
                   onStats: onStatsTap,
+                ),
+              ),
+
+              // Theme switcher hint (top center)
+              Positioned(
+                top: 8,
+                left: 0,
+                right: 0,
+                child: Center(
+                  child: GestureDetector(
+                    onTap: onThemeTap,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: theme.glassCard,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(Icons.palette, size: 14, color: theme.textSecondary),
+                          const SizedBox(width: 4),
+                          Text(
+                            theme.name,
+                            style: TextStyle(
+                              color: theme.textSecondary,
+                              fontSize: 11,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                 ),
               ),
             ],
@@ -139,25 +207,78 @@ class LivingRoomScene extends StatelessWidget {
   }
 }
 
+// === SPARKLE (for whimsical theme) ===
+
+class _Sparkle extends StatelessWidget {
+  final double size;
+  final Color color;
+
+  const _Sparkle({required this.size, required this.color});
+
+  @override
+  Widget build(BuildContext context) {
+    return CustomPaint(
+      size: Size(size, size),
+      painter: _SparklePainter(color: color),
+    );
+  }
+}
+
+class _SparklePainter extends CustomPainter {
+  final Color color;
+
+  _SparklePainter({required this.color});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = color.withOpacity(0.6)
+      ..style = PaintingStyle.fill;
+
+    final center = Offset(size.width / 2, size.height / 2);
+    final r = size.width / 2;
+
+    // 4-point star
+    final path = Path()
+      ..moveTo(center.dx, center.dy - r)
+      ..quadraticBezierTo(center.dx + r * 0.2, center.dy - r * 0.2, center.dx + r, center.dy)
+      ..quadraticBezierTo(center.dx + r * 0.2, center.dy + r * 0.2, center.dx, center.dy + r)
+      ..quadraticBezierTo(center.dx - r * 0.2, center.dy + r * 0.2, center.dx - r, center.dy)
+      ..quadraticBezierTo(center.dx - r * 0.2, center.dy - r * 0.2, center.dx, center.dy - r);
+
+    canvas.drawPath(path, paint);
+
+    // Inner glow
+    canvas.drawCircle(center, r * 0.3, Paint()..color = Colors.white.withOpacity(0.5));
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
+
 // === ORGANIC ABSTRACT BACKGROUND ===
 
 class _OrganicBackground extends StatelessWidget {
+  final RoomTheme theme;
+
+  const _OrganicBackground({required this.theme});
+
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            Color(0xFF5B9A8B), // Sage teal
-            Color(0xFF4A8B7C), // Deeper teal
-            Color(0xFF3D7A6C), // Dark teal
+            theme.background1,
+            theme.background2,
+            theme.background3,
           ],
         ),
       ),
       child: CustomPaint(
-        painter: _OrganicShapesPainter(),
+        painter: _OrganicShapesPainter(theme: theme),
         size: Size.infinite,
       ),
     );
@@ -165,81 +286,85 @@ class _OrganicBackground extends StatelessWidget {
 }
 
 class _OrganicShapesPainter extends CustomPainter {
+  final RoomTheme theme;
+
+  _OrganicShapesPainter({required this.theme});
+
   @override
   void paint(Canvas canvas, Size size) {
-    // Large teal wave (top)
+    // Large wave (top)
     final wave1Paint = Paint()
-      ..color = const Color(0xFF6BABA0).withOpacity(0.6)
+      ..color = theme.primaryWave.withOpacity(0.5)
       ..style = PaintingStyle.fill;
 
     final wave1 = Path()
       ..moveTo(0, 0)
       ..lineTo(0, size.height * 0.2)
       ..quadraticBezierTo(
-        size.width * 0.25, size.height * 0.15,
-        size.width * 0.5, size.height * 0.22,
+        size.width * 0.25, size.height * 0.12,
+        size.width * 0.5, size.height * 0.2,
       )
       ..quadraticBezierTo(
-        size.width * 0.75, size.height * 0.3,
-        size.width, size.height * 0.18,
+        size.width * 0.75, size.height * 0.28,
+        size.width, size.height * 0.15,
       )
       ..lineTo(size.width, 0)
       ..close();
 
     canvas.drawPath(wave1, wave1Paint);
 
-    // Coral blob (right side)
-    final coralPaint = Paint()
-      ..color = const Color(0xFFE8A87C).withOpacity(0.5)
+    // Accent blob (right side)
+    final blobPaint = Paint()
+      ..color = theme.accentBlob.withOpacity(0.4)
       ..style = PaintingStyle.fill;
 
-    final coral = Path()
-      ..moveTo(size.width * 0.7, size.height * 0.15)
+    final blob = Path()
+      ..moveTo(size.width * 0.7, size.height * 0.12)
       ..quadraticBezierTo(
-        size.width * 1.1, size.height * 0.25,
-        size.width * 0.95, size.height * 0.45,
+        size.width * 1.1, size.height * 0.22,
+        size.width * 0.95, size.height * 0.42,
       )
       ..quadraticBezierTo(
-        size.width * 0.8, size.height * 0.5,
-        size.width * 0.85, size.height * 0.35,
+        size.width * 0.8, size.height * 0.48,
+        size.width * 0.85, size.height * 0.32,
       )
       ..quadraticBezierTo(
-        size.width * 0.65, size.height * 0.25,
-        size.width * 0.7, size.height * 0.15,
+        size.width * 0.65, size.height * 0.22,
+        size.width * 0.7, size.height * 0.12,
       );
 
-    canvas.drawPath(coral, coralPaint);
+    canvas.drawPath(blob, blobPaint);
 
-    // Second coral blob (bottom left)
-    final coral2 = Path()
-      ..moveTo(0, size.height * 0.6)
+    // Second blob (bottom left)
+    final blob2 = Path()
+      ..moveTo(0, size.height * 0.55)
       ..quadraticBezierTo(
-        size.width * 0.15, size.height * 0.55,
-        size.width * 0.2, size.height * 0.7,
+        size.width * 0.18, size.height * 0.5,
+        size.width * 0.22, size.height * 0.68,
       )
       ..quadraticBezierTo(
-        size.width * 0.1, size.height * 0.85,
-        0, size.height * 0.8,
+        size.width * 0.12, size.height * 0.82,
+        0, size.height * 0.78,
       )
       ..close();
 
-    canvas.drawPath(coral2, coralPaint..color = const Color(0xFFD4956C).withOpacity(0.4));
+    canvas.drawPath(blob2, Paint()..color = theme.accentBlob2.withOpacity(0.35));
 
-    // Bottom wave (darker)
+    // Bottom wave
     final wave2Paint = Paint()
-      ..color = const Color(0xFF3A6B5C).withOpacity(0.5)
+      ..color = theme.secondaryWave.withOpacity(0.4)
       ..style = PaintingStyle.fill;
 
     final wave2 = Path()
       ..moveTo(0, size.height)
-      ..lineTo(0, size.height * 0.85)
+      ..lineTo(0, size.height * 0.82)
       ..quadraticBezierTo(
-        size.width * 0.3, size.height * 0.8,
-        size.width * 0.5, size.height * 0.88,
+        size.width * 0.3, size.height * 0.78,
+        size.width * 0.5, size.height * 0.85,
       )
       ..quadraticBezierTo(
-        size.width * 0.7, size.height * 0.95,
-        size.width, size.height * 0.85,
+        size.width * 0.7, size.height * 0.92,
+        size.width, size.height * 0.82,
       )
       ..lineTo(size.width, size.height)
       ..close();
@@ -247,25 +372,26 @@ class _OrganicShapesPainter extends CustomPainter {
     canvas.drawPath(wave2, wave2Paint);
 
     // Accent circles
-    canvas.drawCircle(
-      Offset(size.width * 0.15, size.height * 0.35),
-      25,
-      Paint()..color = const Color(0xFF7FCDCD).withOpacity(0.25),
-    );
-    canvas.drawCircle(
-      Offset(size.width * 0.88, size.height * 0.7),
-      18,
-      Paint()..color = const Color(0xFFE8A87C).withOpacity(0.3),
-    );
-    canvas.drawCircle(
-      Offset(size.width * 0.6, size.height * 0.12),
-      12,
-      Paint()..color = Colors.white.withOpacity(0.15),
-    );
+    for (var i = 0; i < theme.accentCircles.length; i++) {
+      final positions = [
+        Offset(size.width * 0.15, size.height * 0.32),
+        Offset(size.width * 0.88, size.height * 0.68),
+        Offset(size.width * 0.6, size.height * 0.1),
+      ];
+      final sizes = [22.0, 16.0, 10.0];
+      
+      if (i < positions.length) {
+        canvas.drawCircle(
+          positions[i],
+          sizes[i],
+          Paint()..color = theme.accentCircles[i].withOpacity(0.25),
+        );
+      }
+    }
   }
 
   @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+  bool shouldRepaint(covariant _OrganicShapesPainter old) => old.theme != theme;
 }
 
 // === CIRCULAR TEMPERATURE GAUGE ===
@@ -273,8 +399,13 @@ class _OrganicShapesPainter extends CustomPainter {
 class _CircularTempGauge extends StatelessWidget {
   final double size;
   final double temperature;
+  final RoomTheme theme;
 
-  const _CircularTempGauge({required this.size, required this.temperature});
+  const _CircularTempGauge({
+    required this.size,
+    required this.temperature,
+    required this.theme,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -287,9 +418,9 @@ class _CircularTempGauge extends StatelessWidget {
           height: size,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: Colors.white.withOpacity(0.15),
+            color: theme.glassCard,
             border: Border.all(
-              color: Colors.white.withOpacity(0.25),
+              color: theme.glassBorder,
               width: 2,
             ),
             boxShadow: [
@@ -301,7 +432,7 @@ class _CircularTempGauge extends StatelessWidget {
             ],
           ),
           child: CustomPaint(
-            painter: _TempGaugePainter(temperature: temperature),
+            painter: _TempGaugePainter(temperature: temperature, theme: theme),
             child: Center(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -314,7 +445,7 @@ class _CircularTempGauge extends StatelessWidget {
                   Text(
                     '${temperature.toStringAsFixed(1)}°',
                     style: TextStyle(
-                      color: Colors.white,
+                      color: theme.textPrimary,
                       fontSize: size * 0.22,
                       fontWeight: FontWeight.bold,
                     ),
@@ -322,7 +453,7 @@ class _CircularTempGauge extends StatelessWidget {
                   Text(
                     'Celsius',
                     style: TextStyle(
-                      color: Colors.white.withOpacity(0.7),
+                      color: theme.textSecondary,
                       fontSize: size * 0.1,
                     ),
                   ),
@@ -336,17 +467,18 @@ class _CircularTempGauge extends StatelessWidget {
   }
 
   Color _getTempColor(double temp) {
-    if (temp < 22) return const Color(0xFF64B5F6);
-    if (temp < 26) return const Color(0xFF81C784);
-    if (temp < 28) return const Color(0xFFFFB74D);
-    return const Color(0xFFE57373);
+    if (temp < 22) return theme.gaugeColor1;
+    if (temp < 26) return theme.gaugeColor2;
+    if (temp < 28) return theme.gaugeColor3;
+    return theme.buttonFeed;
   }
 }
 
 class _TempGaugePainter extends CustomPainter {
   final double temperature;
+  final RoomTheme theme;
 
-  _TempGaugePainter({required this.temperature});
+  _TempGaugePainter({required this.temperature, required this.theme});
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -354,48 +486,45 @@ class _TempGaugePainter extends CustomPainter {
     final radius = size.width / 2 - 8;
 
     // Background arc
-    final bgPaint = Paint()
-      ..color = Colors.white.withOpacity(0.1)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 8
-      ..strokeCap = StrokeCap.round;
-
     canvas.drawArc(
       Rect.fromCircle(center: center, radius: radius),
       math.pi * 0.75,
       math.pi * 1.5,
       false,
-      bgPaint,
+      Paint()
+        ..color = theme.textSecondary.withOpacity(0.15)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 8
+        ..strokeCap = StrokeCap.round,
     );
 
     // Progress arc
     final progress = ((temperature - 15) / 20).clamp(0.0, 1.0);
-    final progressPaint = Paint()
-      ..shader = SweepGradient(
-        startAngle: math.pi * 0.75,
-        endAngle: math.pi * 2.25,
-        colors: const [
-          Color(0xFF64B5F6),
-          Color(0xFF81C784),
-          Color(0xFFFFB74D),
-          Color(0xFFE57373),
-        ],
-      ).createShader(Rect.fromCircle(center: center, radius: radius))
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 8
-      ..strokeCap = StrokeCap.round;
-
     canvas.drawArc(
       Rect.fromCircle(center: center, radius: radius),
       math.pi * 0.75,
       math.pi * 1.5 * progress,
       false,
-      progressPaint,
+      Paint()
+        ..shader = SweepGradient(
+          startAngle: math.pi * 0.75,
+          endAngle: math.pi * 2.25,
+          colors: [
+            theme.gaugeColor1,
+            theme.gaugeColor2,
+            theme.gaugeColor3,
+            theme.buttonFeed,
+          ],
+        ).createShader(Rect.fromCircle(center: center, radius: radius))
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 8
+        ..strokeCap = StrokeCap.round,
     );
   }
 
   @override
-  bool shouldRepaint(covariant _TempGaugePainter old) => old.temperature != temperature;
+  bool shouldRepaint(covariant _TempGaugePainter old) => 
+      old.temperature != temperature || old.theme != theme;
 }
 
 // === WATER QUALITY CARD ===
@@ -405,9 +534,11 @@ class _WaterQualityCard extends StatelessWidget {
   final double? ph;
   final double? ammonia;
   final double? nitrate;
+  final RoomTheme theme;
 
   const _WaterQualityCard({
     required this.width,
+    required this.theme,
     this.ph,
     this.ammonia,
     this.nitrate,
@@ -423,31 +554,21 @@ class _WaterQualityCard extends StatelessWidget {
           width: width,
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.15),
+            color: theme.glassCard,
             borderRadius: BorderRadius.circular(20),
-            border: Border.all(
-              color: Colors.white.withOpacity(0.25),
-              width: 1.5,
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.1),
-                blurRadius: 20,
-                offset: const Offset(0, 8),
-              ),
-            ],
+            border: Border.all(color: theme.glassBorder, width: 1.5),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
                 children: [
-                  Icon(Icons.water_drop, color: Colors.white.withOpacity(0.8), size: 16),
+                  Icon(Icons.water_drop, color: theme.textSecondary, size: 16),
                   const SizedBox(width: 6),
                   Text(
                     'Water Quality',
                     style: TextStyle(
-                      color: Colors.white.withOpacity(0.9),
+                      color: theme.textPrimary,
                       fontSize: 13,
                       fontWeight: FontWeight.w600,
                     ),
@@ -462,21 +583,24 @@ class _WaterQualityCard extends StatelessWidget {
                     value: ph ?? 7.0,
                     maxValue: 14,
                     label: 'pH',
-                    color: const Color(0xFF81C784),
+                    color: theme.gaugeColor2,
+                    theme: theme,
                     size: 45,
                   ),
                   _MiniPieChart(
                     value: ammonia ?? 0,
                     maxValue: 4,
                     label: 'NH₃',
-                    color: const Color(0xFFFFD54F),
+                    color: theme.gaugeColor3,
+                    theme: theme,
                     size: 45,
                   ),
                   _MiniPieChart(
                     value: nitrate ?? 10,
                     maxValue: 80,
                     label: 'NO₃',
-                    color: const Color(0xFFFFB74D),
+                    color: theme.buttonFeed,
+                    theme: theme,
                     size: 45,
                   ),
                 ],
@@ -494,6 +618,7 @@ class _MiniPieChart extends StatelessWidget {
   final double maxValue;
   final String label;
   final Color color;
+  final RoomTheme theme;
   final double size;
 
   const _MiniPieChart({
@@ -501,6 +626,7 @@ class _MiniPieChart extends StatelessWidget {
     required this.maxValue,
     required this.label,
     required this.color,
+    required this.theme,
     required this.size,
   });
 
@@ -516,12 +642,13 @@ class _MiniPieChart extends StatelessWidget {
               value: value,
               maxValue: maxValue,
               color: color,
+              theme: theme,
             ),
             child: Center(
               child: Text(
                 value.toStringAsFixed(1),
                 style: TextStyle(
-                  color: Colors.white,
+                  color: theme.textPrimary,
                   fontSize: size * 0.28,
                   fontWeight: FontWeight.bold,
                 ),
@@ -533,7 +660,7 @@ class _MiniPieChart extends StatelessWidget {
         Text(
           label,
           style: TextStyle(
-            color: Colors.white.withOpacity(0.7),
+            color: theme.textSecondary,
             fontSize: 10,
           ),
         ),
@@ -546,11 +673,13 @@ class _PieChartPainter extends CustomPainter {
   final double value;
   final double maxValue;
   final Color color;
+  final RoomTheme theme;
 
   _PieChartPainter({
     required this.value,
     required this.maxValue,
     required this.color,
+    required this.theme,
   });
 
   @override
@@ -562,7 +691,7 @@ class _PieChartPainter extends CustomPainter {
     canvas.drawCircle(
       center,
       radius,
-      Paint()..color = Colors.white.withOpacity(0.1),
+      Paint()..color = theme.textSecondary.withOpacity(0.1),
     );
 
     // Progress
@@ -579,7 +708,7 @@ class _PieChartPainter extends CustomPainter {
     canvas.drawCircle(
       center,
       radius * 0.6,
-      Paint()..color = const Color(0xFF4A8B7C),
+      Paint()..color = theme.background2,
     );
   }
 
@@ -593,8 +722,13 @@ class _PieChartPainter extends CustomPainter {
 class _GlassBadge extends StatelessWidget {
   final String text;
   final String subtext;
+  final RoomTheme theme;
 
-  const _GlassBadge({required this.text, required this.subtext});
+  const _GlassBadge({
+    required this.text,
+    required this.subtext,
+    required this.theme,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -605,20 +739,17 @@ class _GlassBadge extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
           decoration: BoxDecoration(
-            color: Colors.black.withOpacity(0.2),
+            color: Colors.black.withOpacity(0.15),
             borderRadius: BorderRadius.circular(25),
-            border: Border.all(
-              color: Colors.white.withOpacity(0.15),
-              width: 1,
-            ),
+            border: Border.all(color: theme.glassBorder, width: 1),
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
                 text,
-                style: const TextStyle(
-                  color: Colors.white,
+                style: TextStyle(
+                  color: theme.textPrimary,
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
                 ),
@@ -627,13 +758,13 @@ class _GlassBadge extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFE8A87C).withOpacity(0.4),
+                  color: theme.accentBlob.withOpacity(0.4),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Text(
                   subtext,
-                  style: const TextStyle(
-                    color: Colors.white,
+                  style: TextStyle(
+                    color: theme.textPrimary,
                     fontSize: 12,
                     fontWeight: FontWeight.w500,
                   ),
@@ -647,13 +778,18 @@ class _GlassBadge extends StatelessWidget {
   }
 }
 
-// === SOFT 3D AQUARIUM ===
+// === THEMED AQUARIUM ===
 
-class _Soft3DAquarium extends StatelessWidget {
+class _ThemedAquarium extends StatelessWidget {
   final double width;
   final double height;
+  final RoomTheme theme;
 
-  const _Soft3DAquarium({required this.width, required this.height});
+  const _ThemedAquarium({
+    required this.width,
+    required this.height,
+    required this.theme,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -663,14 +799,13 @@ class _Soft3DAquarium extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
-          // Glow effect
           BoxShadow(
-            color: const Color(0xFF7FCDCD).withOpacity(0.4),
+            color: theme.waterMid.withOpacity(0.4),
             blurRadius: 30,
             spreadRadius: 5,
           ),
           BoxShadow(
-            color: Colors.black.withOpacity(0.2),
+            color: Colors.black.withOpacity(0.15),
             blurRadius: 20,
             offset: const Offset(0, 10),
           ),
@@ -682,20 +817,20 @@ class _Soft3DAquarium extends StatelessWidget {
           children: [
             // Water gradient
             Container(
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                   colors: [
-                    Color(0xFF8ED8D8),
-                    Color(0xFF6BC4C4),
-                    Color(0xFF5AB5B5),
+                    theme.waterTop,
+                    theme.waterMid,
+                    theme.waterBottom,
                   ],
                 ),
               ),
             ),
 
-            // Glass frame effect
+            // Glass frame
             Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(24),
@@ -714,14 +849,7 @@ class _Soft3DAquarium extends StatelessWidget {
               child: Container(
                 height: height * 0.18,
                 decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      const Color(0xFFD4B896),
-                      const Color(0xFFC4A886),
-                    ],
-                  ),
+                  color: theme.sand,
                   borderRadius: const BorderRadius.only(
                     bottomLeft: Radius.circular(20),
                     bottomRight: Radius.circular(20),
@@ -734,39 +862,39 @@ class _Soft3DAquarium extends StatelessWidget {
             Positioned(
               bottom: height * 0.15,
               left: width * 0.08,
-              child: _SoftPlant(height: height * 0.5, color: const Color(0xFF4CAF50)),
+              child: _SoftPlant(height: height * 0.5, color: theme.plantPrimary),
             ),
             Positioned(
               bottom: height * 0.15,
               left: width * 0.22,
-              child: _SoftPlant(height: height * 0.35, color: const Color(0xFF66BB6A)),
+              child: _SoftPlant(height: height * 0.35, color: theme.plantSecondary),
             ),
             Positioned(
               bottom: height * 0.15,
               right: width * 0.1,
-              child: _SoftPlant(height: height * 0.55, color: const Color(0xFF43A047)),
+              child: _SoftPlant(height: height * 0.55, color: theme.plantPrimary),
             ),
             Positioned(
               bottom: height * 0.15,
               right: width * 0.28,
-              child: _SoftPlant(height: height * 0.4, color: const Color(0xFF81C784)),
+              child: _SoftPlant(height: height * 0.4, color: theme.plantSecondary),
             ),
 
             // Fish
             Positioned(
               top: height * 0.22,
               left: width * 0.2,
-              child: _SoftFish(size: 28, color: const Color(0xFFFF8A65)),
+              child: _SoftFish(size: 28, color: theme.fish1),
             ),
             Positioned(
               top: height * 0.4,
               right: width * 0.18,
-              child: _SoftFish(size: 24, color: const Color(0xFFEF5350), flip: true),
+              child: _SoftFish(size: 24, color: theme.fish2, flip: true),
             ),
             Positioned(
               top: height * 0.55,
               left: width * 0.45,
-              child: _SoftFish(size: 20, color: const Color(0xFF42A5F5)),
+              child: _SoftFish(size: 20, color: theme.fish3),
             ),
 
             // Bubbles
@@ -915,7 +1043,7 @@ class _FishPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final paint = Paint()..color = color;
 
-    // Body (soft oval)
+    // Body
     final bodyPath = Path()
       ..addOval(Rect.fromLTWH(0, size.height * 0.15, size.width * 0.65, size.height * 0.7));
     canvas.drawPath(bodyPath, paint);
@@ -1003,8 +1131,13 @@ class _Bubble extends StatelessWidget {
 class _WaveGraphCard extends StatelessWidget {
   final double width;
   final double height;
+  final RoomTheme theme;
 
-  const _WaveGraphCard({required this.width, required this.height});
+  const _WaveGraphCard({
+    required this.width,
+    required this.height,
+    required this.theme,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -1017,12 +1150,9 @@ class _WaveGraphCard extends StatelessWidget {
           height: height,
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.12),
+            color: theme.glassCard,
             borderRadius: BorderRadius.circular(20),
-            border: Border.all(
-              color: Colors.white.withOpacity(0.2),
-              width: 1.5,
-            ),
+            border: Border.all(color: theme.glassBorder, width: 1.5),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -1030,7 +1160,7 @@ class _WaveGraphCard extends StatelessWidget {
               Text(
                 'Weekly Trends',
                 style: TextStyle(
-                  color: Colors.white.withOpacity(0.8),
+                  color: theme.textSecondary,
                   fontSize: 12,
                   fontWeight: FontWeight.w500,
                 ),
@@ -1038,7 +1168,7 @@ class _WaveGraphCard extends StatelessWidget {
               const SizedBox(height: 8),
               Expanded(
                 child: CustomPaint(
-                  painter: _WaveGraphPainter(),
+                  painter: _WaveGraphPainter(theme: theme),
                   size: Size.infinite,
                 ),
               ),
@@ -1051,9 +1181,13 @@ class _WaveGraphCard extends StatelessWidget {
 }
 
 class _WaveGraphPainter extends CustomPainter {
+  final RoomTheme theme;
+
+  _WaveGraphPainter({required this.theme});
+
   @override
   void paint(Canvas canvas, Size size) {
-    // Wave line 1 (temperature - coral)
+    // Wave line 1 (coral)
     final wave1 = Path()
       ..moveTo(0, size.height * 0.6)
       ..quadraticBezierTo(size.width * 0.15, size.height * 0.4, size.width * 0.25, size.height * 0.5)
@@ -1064,13 +1198,13 @@ class _WaveGraphPainter extends CustomPainter {
     canvas.drawPath(
       wave1,
       Paint()
-        ..color = const Color(0xFFE8A87C)
+        ..color = theme.accentBlob
         ..style = PaintingStyle.stroke
         ..strokeWidth = 3
         ..strokeCap = StrokeCap.round,
     );
 
-    // Wave line 2 (pH - teal)
+    // Wave line 2 (teal)
     final wave2 = Path()
       ..moveTo(0, size.height * 0.4)
       ..quadraticBezierTo(size.width * 0.2, size.height * 0.5, size.width * 0.3, size.height * 0.35)
@@ -1081,32 +1215,34 @@ class _WaveGraphPainter extends CustomPainter {
     canvas.drawPath(
       wave2,
       Paint()
-        ..color = const Color(0xFF7FCDCD)
+        ..color = theme.waterMid
         ..style = PaintingStyle.stroke
         ..strokeWidth = 3
         ..strokeCap = StrokeCap.round,
     );
 
     // Dots
-    final dotPaint = Paint()..color = Colors.white;
+    final dotPaint = Paint()..color = theme.textPrimary;
     canvas.drawCircle(Offset(size.width * 0.25, size.height * 0.5), 4, dotPaint);
     canvas.drawCircle(Offset(size.width * 0.5, size.height * 0.45), 4, dotPaint);
     canvas.drawCircle(Offset(size.width * 0.75, size.height * 0.4), 4, dotPaint);
   }
 
   @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+  bool shouldRepaint(covariant _WaveGraphPainter old) => old.theme != theme;
 }
 
 // === CIRCULAR ACTION BUTTONS ===
 
 class _CircularActionButtons extends StatelessWidget {
+  final RoomTheme theme;
   final VoidCallback? onFeed;
   final VoidCallback? onTest;
   final VoidCallback? onWater;
   final VoidCallback? onStats;
 
   const _CircularActionButtons({
+    required this.theme,
     this.onFeed,
     this.onTest,
     this.onWater,
@@ -1121,25 +1257,29 @@ class _CircularActionButtons extends StatelessWidget {
         _ActionButton(
           icon: Icons.restaurant,
           label: 'Feed',
-          color: const Color(0xFFE8A87C),
+          color: theme.buttonFeed,
+          textColor: theme.textPrimary,
           onTap: onFeed,
         ),
         _ActionButton(
           icon: Icons.science,
           label: 'Test',
-          color: const Color(0xFF81C784),
+          color: theme.buttonTest,
+          textColor: theme.textPrimary,
           onTap: onTest,
         ),
         _ActionButton(
           icon: Icons.water_drop,
           label: 'Water',
-          color: const Color(0xFF64B5F6),
+          color: theme.buttonWater,
+          textColor: theme.textPrimary,
           onTap: onWater,
         ),
         _ActionButton(
           icon: Icons.insights,
           label: 'Stats',
-          color: const Color(0xFFBA68C8),
+          color: theme.buttonStats,
+          textColor: theme.textPrimary,
           onTap: onStats,
         ),
       ],
@@ -1151,12 +1291,14 @@ class _ActionButton extends StatelessWidget {
   final IconData icon;
   final String label;
   final Color color;
+  final Color textColor;
   final VoidCallback? onTap;
 
   const _ActionButton({
     required this.icon,
     required this.label,
     required this.color,
+    required this.textColor,
     this.onTap,
   });
 
@@ -1185,13 +1327,13 @@ class _ActionButton extends StatelessWidget {
                 ),
               ],
             ),
-            child: Icon(icon, color: Colors.white, size: 26),
+            child: Icon(icon, color: textColor, size: 26),
           ),
           const SizedBox(height: 6),
           Text(
             label,
             style: TextStyle(
-              color: Colors.white.withOpacity(0.9),
+              color: textColor.withOpacity(0.9),
               fontSize: 11,
               fontWeight: FontWeight.w500,
             ),
