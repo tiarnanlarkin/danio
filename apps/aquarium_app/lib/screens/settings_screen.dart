@@ -8,6 +8,7 @@ import '../providers/settings_provider.dart';
 import 'about_screen.dart';
 import 'acclimation_guide_screen.dart';
 import 'backup_restore_screen.dart';
+import 'reminders_screen.dart';
 import 'algae_guide_screen.dart';
 import 'breeding_guide_screen.dart';
 import 'glossary_screen.dart';
@@ -86,6 +87,16 @@ class SettingsScreen extends ConsumerWidget {
 
           // Tools
           _SectionHeader(title: 'Tools'),
+          ListTile(
+            leading: const Icon(Icons.notifications_active),
+            title: const Text('Reminders'),
+            subtitle: const Text('Schedule maintenance tasks'),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const RemindersScreen()),
+            ),
+          ),
           ListTile(
             leading: const Icon(Icons.calculate_outlined),
             title: const Text('Water Change Calculator'),
