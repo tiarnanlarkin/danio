@@ -2,7 +2,7 @@ name: aquarium_app
 description: "Personal aquarium management — track tanks, livestock, equipment & maintenance."
 publish_to: 'none'
 
-version: 0.1.0+1
+version: 1.0.0+1
 
 environment:
   sdk: ^3.10.8
@@ -26,6 +26,7 @@ dependencies:
   uuid: ^4.5.1
   intl: ^0.20.2
   collection: ^1.19.1
+  synchronized: ^3.3.0+3
   
   # Charts
   fl_chart: ^0.69.2
@@ -40,6 +41,7 @@ dependencies:
   file_picker: ^8.1.7
   flutter_local_notifications: ^18.0.1
   timezone: ^0.10.0
+  archive: ^3.6.1
 
 dev_dependencies:
   flutter_test:

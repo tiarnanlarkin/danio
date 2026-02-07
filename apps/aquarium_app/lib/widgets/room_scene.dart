@@ -141,31 +141,19 @@ class LivingRoomScene extends StatelessWidget {
                 ),
               ),
 
-              // Wave graph card (bottom center)
+              // Wave graph card (bottom center) - moved up since actions are in speed dial
               Positioned(
-                bottom: h * 0.18,
+                bottom: h * 0.12,
                 left: w * 0.08,
                 right: w * 0.08,
                 child: _WaveGraphCard(
                   width: w * 0.84,
-                  height: 80,
+                  height: 70,
                   theme: theme,
                 ),
               ),
 
-              // Quick action buttons (bottom)
-              Positioned(
-                bottom: h * 0.04,
-                left: 0,
-                right: 0,
-                child: _CircularActionButtons(
-                  theme: theme,
-                  onFeed: onFoodTap,
-                  onTest: onTestKitTap,
-                  onWater: onPlantTap,
-                  onStats: onStatsTap,
-                ),
-              ),
+              // Action buttons removed - now using SpeedDialFAB in home_screen
 
               // Theme switcher hint (top center)
               Positioned(
@@ -577,31 +565,37 @@ class _WaterQualityCard extends StatelessWidget {
               ),
               const SizedBox(height: 12),
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  _MiniPieChart(
-                    value: ph ?? 7.0,
-                    maxValue: 14,
-                    label: 'pH',
-                    color: theme.gaugeColor2,
-                    theme: theme,
-                    size: 45,
+                  Flexible(
+                    child: _MiniPieChart(
+                      value: ph ?? 7.0,
+                      maxValue: 14,
+                      label: 'pH',
+                      color: theme.gaugeColor2,
+                      theme: theme,
+                      size: 40,
+                    ),
                   ),
-                  _MiniPieChart(
-                    value: ammonia ?? 0,
-                    maxValue: 4,
-                    label: 'NH₃',
-                    color: theme.gaugeColor3,
-                    theme: theme,
-                    size: 45,
+                  Flexible(
+                    child: _MiniPieChart(
+                      value: ammonia ?? 0,
+                      maxValue: 4,
+                      label: 'NH₃',
+                      color: theme.gaugeColor3,
+                      theme: theme,
+                      size: 40,
+                    ),
                   ),
-                  _MiniPieChart(
-                    value: nitrate ?? 10,
-                    maxValue: 80,
-                    label: 'NO₃',
-                    color: theme.buttonFeed,
-                    theme: theme,
-                    size: 45,
+                  Flexible(
+                    child: _MiniPieChart(
+                      value: nitrate ?? 10,
+                      maxValue: 80,
+                      label: 'NO₃',
+                      color: theme.buttonFeed,
+                      theme: theme,
+                      size: 40,
+                    ),
                   ),
                 ],
               ),
@@ -1230,116 +1224,4 @@ class _WaveGraphPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant _WaveGraphPainter old) => old.theme != theme;
-}
-
-// === CIRCULAR ACTION BUTTONS ===
-
-class _CircularActionButtons extends StatelessWidget {
-  final RoomTheme theme;
-  final VoidCallback? onFeed;
-  final VoidCallback? onTest;
-  final VoidCallback? onWater;
-  final VoidCallback? onStats;
-
-  const _CircularActionButtons({
-    required this.theme,
-    this.onFeed,
-    this.onTest,
-    this.onWater,
-    this.onStats,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        _ActionButton(
-          icon: Icons.restaurant,
-          label: 'Feed',
-          color: theme.buttonFeed,
-          textColor: theme.textPrimary,
-          onTap: onFeed,
-        ),
-        _ActionButton(
-          icon: Icons.science,
-          label: 'Test',
-          color: theme.buttonTest,
-          textColor: theme.textPrimary,
-          onTap: onTest,
-        ),
-        _ActionButton(
-          icon: Icons.water_drop,
-          label: 'Water',
-          color: theme.buttonWater,
-          textColor: theme.textPrimary,
-          onTap: onWater,
-        ),
-        _ActionButton(
-          icon: Icons.insights,
-          label: 'Stats',
-          color: theme.buttonStats,
-          textColor: theme.textPrimary,
-          onTap: onStats,
-        ),
-      ],
-    );
-  }
-}
-
-class _ActionButton extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  final Color color;
-  final Color textColor;
-  final VoidCallback? onTap;
-
-  const _ActionButton({
-    required this.icon,
-    required this.label,
-    required this.color,
-    required this.textColor,
-    this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            width: 56,
-            height: 56,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: color.withOpacity(0.25),
-              border: Border.all(
-                color: color.withOpacity(0.5),
-                width: 2,
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: color.withOpacity(0.3),
-                  blurRadius: 12,
-                  spreadRadius: 2,
-                ),
-              ],
-            ),
-            child: Icon(icon, color: textColor, size: 26),
-          ),
-          const SizedBox(height: 6),
-          Text(
-            label,
-            style: TextStyle(
-              color: textColor.withOpacity(0.9),
-              fontSize: 11,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 }

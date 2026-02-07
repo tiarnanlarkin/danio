@@ -139,4 +139,62 @@ class Tank {
       updatedAt: updatedAt ?? this.updatedAt,
     );
   }
+
+  /// Serialize to JSON for export/backup
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    'name': name,
+    'type': type.name,
+    'volumeLitres': volumeLitres,
+    'lengthCm': lengthCm,
+    'widthCm': widthCm,
+    'heightCm': heightCm,
+    'startDate': startDate.toIso8601String(),
+    'targets': {
+      'tempMin': targets.tempMin,
+      'tempMax': targets.tempMax,
+      'phMin': targets.phMin,
+      'phMax': targets.phMax,
+      'ghMin': targets.ghMin,
+      'ghMax': targets.ghMax,
+      'khMin': targets.khMin,
+      'khMax': targets.khMax,
+    },
+    'notes': notes,
+    'imageUrl': imageUrl,
+    'createdAt': createdAt.toIso8601String(),
+    'updatedAt': updatedAt.toIso8601String(),
+  };
+
+  /// Create from JSON (for import/restore)
+  factory Tank.fromJson(Map<String, dynamic> json) {
+    final targetsJson = json['targets'] as Map<String, dynamic>?;
+    return Tank(
+      id: json['id'] as String,
+      name: json['name'] as String,
+      type: TankType.values.firstWhere(
+        (e) => e.name == (json['type'] ?? 'freshwater'),
+        orElse: () => TankType.freshwater,
+      ),
+      volumeLitres: (json['volumeLitres'] as num?)?.toDouble() ?? 0,
+      lengthCm: (json['lengthCm'] as num?)?.toDouble(),
+      widthCm: (json['widthCm'] as num?)?.toDouble(),
+      heightCm: (json['heightCm'] as num?)?.toDouble(),
+      startDate: DateTime.parse(json['startDate'] as String),
+      targets: targetsJson != null ? WaterTargets(
+        tempMin: (targetsJson['tempMin'] as num?)?.toDouble(),
+        tempMax: (targetsJson['tempMax'] as num?)?.toDouble(),
+        phMin: (targetsJson['phMin'] as num?)?.toDouble(),
+        phMax: (targetsJson['phMax'] as num?)?.toDouble(),
+        ghMin: (targetsJson['ghMin'] as num?)?.toDouble(),
+        ghMax: (targetsJson['ghMax'] as num?)?.toDouble(),
+        khMin: (targetsJson['khMin'] as num?)?.toDouble(),
+        khMax: (targetsJson['khMax'] as num?)?.toDouble(),
+      ) : WaterTargets.freshwaterTropical(),
+      notes: json['notes'] as String?,
+      imageUrl: json['imageUrl'] as String?,
+      createdAt: DateTime.parse(json['createdAt'] as String),
+      updatedAt: DateTime.parse(json['updatedAt'] as String),
+    );
+  }
 }

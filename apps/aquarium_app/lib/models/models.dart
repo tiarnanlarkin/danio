@@ -4,3 +4,4 @@ export 'livestock.dart';
 export 'equipment.dart';
 export 'log_entry.dart';
 export 'task.dart';
+export 'wishlist.dart';
