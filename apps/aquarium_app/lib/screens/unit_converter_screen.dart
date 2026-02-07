@@ -10,6 +10,7 @@ class UnitConverterScreen extends StatefulWidget {
 }
 
 class _UnitConverterScreenState extends State<UnitConverterScreen> {
+  // ignore: unused_field - used by onTap callback for future state tracking
   int _selectedTab = 0;
 
   @override

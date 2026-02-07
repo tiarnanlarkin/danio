@@ -9,6 +9,7 @@ import '../widgets/decorative_elements.dart';
 import '../widgets/hobby_items.dart';
 import '../widgets/hobby_desk.dart';
 import '../widgets/room_scene.dart';
+import '../widgets/speed_dial_fab.dart';
 import 'create_tank_screen.dart';
 import 'search_screen.dart';
 import 'settings_screen.dart';
@@ -121,6 +122,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       const Spacer(),
                       IconButton(
                         icon: Icon(Icons.search, color: Colors.white.withOpacity(0.9)),
+                        tooltip: 'Search',
                         onPressed: () => Navigator.push(
                           context,
                           MaterialPageRoute(builder: (_) => const SearchScreen()),
@@ -128,6 +130,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       ),
                       IconButton(
                         icon: Icon(Icons.settings_outlined, color: Colors.white.withOpacity(0.9)),
+                        tooltip: 'Settings',
                         onPressed: () => Navigator.push(
                           context,
                           MaterialPageRoute(builder: (_) => const SettingsScreen()),
@@ -138,49 +141,72 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 ),
               ),
 
-              // Tank switcher (if multiple tanks)
-              if (tanks.length > 1)
-                Positioned(
-                  bottom: 100,
-                  left: 0,
-                  right: 0,
-                  child: _TankSwitcher(
-                    tanks: tanks,
-                    currentIndex: _currentTankIndex,
-                    onChanged: (index) {
-                      setState(() => _currentTankIndex = index);
-                    },
-                  ),
-                ),
-
-              // Bottom hint
+              // Tank switcher - clean card between tank and graph
               Positioned(
-                bottom: 20,
-                left: 0,
-                right: 0,
-                child: Center(
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    decoration: BoxDecoration(
-                      color: Colors.black.withOpacity(0.5),
-                      borderRadius: BorderRadius.circular(20),
+                bottom: 240, // Between tank illustration and wave graph
+                left: 16,
+                right: 80, // Leave room for speed dial
+                child: _TankSwitcher(
+                  tanks: tanks,
+                  currentIndex: _currentTankIndex,
+                  onChanged: (index) {
+                    setState(() => _currentTankIndex = index);
+                  },
+                  onAddTank: () => _navigateToCreateTank(context),
+                ),
+              ),
+
+              // Speed Dial FAB - radial menu for quick actions
+              Positioned(
+                bottom: 230,
+                right: 16,
+                child: SpeedDialFAB(
+                  closedIcon: Icons.water_drop_rounded,
+                  openIcon: Icons.close_rounded,
+                  actions: [
+                    SpeedDialAction(
+                      icon: Icons.add_rounded,
+                      label: 'Add Tank',
+                      backgroundColor: AppColors.primary,
+                      foregroundColor: Colors.white,
+                      onPressed: () => _navigateToCreateTank(context),
                     ),
-                    child: Text(
-                      'Tap items to interact',
-                      style: AppTypography.bodySmall.copyWith(color: Colors.white70),
+                    SpeedDialAction(
+                      icon: Icons.restaurant_rounded,
+                      label: 'Feed',
+                      backgroundColor: const Color(0xFFFFF3E0),
+                      foregroundColor: const Color(0xFFE65100),
+                      onPressed: () => _showFeedingInfo(context),
                     ),
-                  ),
+                    SpeedDialAction(
+                      icon: Icons.science_rounded,
+                      label: 'Test',
+                      backgroundColor: const Color(0xFFE8F5E9),
+                      foregroundColor: const Color(0xFF2E7D32),
+                      onPressed: () => _showWaterParams(context),
+                    ),
+                    SpeedDialAction(
+                      icon: Icons.water_drop_rounded,
+                      label: 'Water',
+                      backgroundColor: const Color(0xFFE3F2FD),
+                      foregroundColor: const Color(0xFF1565C0),
+                      onPressed: () => _showPlantInfo(context),
+                    ),
+                    SpeedDialAction(
+                      icon: Icons.insights_rounded,
+                      label: 'Stats',
+                      backgroundColor: const Color(0xFFF3E5F5),
+                      foregroundColor: const Color(0xFF7B1FA2),
+                      onPressed: () => _showStatsInfo(context),
+                    ),
+                  ],
                 ),
               ),
             ],
           );
         },
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => _navigateToCreateTank(context),
-        tooltip: 'Add Tank',
-        child: const Icon(Icons.add),
-      ),
+      // FAB removed - add button integrated into tank switcher for cleaner UX
     );
   }
 
@@ -285,12 +311,16 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               children: RoomThemeType.values.map((type) {
                 final theme = RoomTheme.fromType(type);
                 final isSelected = ref.watch(roomThemeProvider) == type;
-                return GestureDetector(
-                  onTap: () {
-                    ref.read(roomThemeProvider.notifier).setTheme(type);
-                    Navigator.pop(ctx);
-                  },
-                  child: Container(
+                return Semantics(
+                  label: '${theme.name} theme${isSelected ? ', selected' : ''}',
+                  button: true,
+                  selected: isSelected,
+                  child: GestureDetector(
+                    onTap: () {
+                      ref.read(roomThemeProvider.notifier).setTheme(type);
+                      Navigator.pop(ctx);
+                    },
+                    child: Container(
                     width: 100,
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
@@ -341,6 +371,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       ],
                     ),
                   ),
+                ),
                 );
               }).toList(),
             ),
@@ -379,47 +410,260 @@ class _TankSwitcher extends StatelessWidget {
   final List<Tank> tanks;
   final int currentIndex;
   final Function(int) onChanged;
+  final VoidCallback onAddTank;
 
   const _TankSwitcher({
     required this.tanks,
     required this.currentIndex,
     required this.onChanged,
+    required this.onAddTank,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final hasMultipleTanks = tanks.length > 1;
+    
+    // Clean card-only design - tap to open picker
+    return Container(
+      height: 56,
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Colors.white.withOpacity(0.95),
+            Colors.white.withOpacity(0.88),
+          ],
+        ),
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.12),
+            blurRadius: 16,
+            offset: const Offset(0, 6),
+          ),
+        ],
+        border: Border.all(
+          color: Colors.white.withOpacity(0.6),
+          width: 1.5,
+        ),
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: hasMultipleTanks ? () => _showTankPicker(context) : null,
+          borderRadius: BorderRadius.circular(16),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 14),
+            child: Row(
+              children: [
+                // Fish icon
+                Container(
+                  width: 36,
+                  height: 36,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        AppColors.primary.withOpacity(0.15),
+                        AppColors.primary.withOpacity(0.08),
+                      ],
+                    ),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: const Icon(
+                    Icons.set_meal_rounded, // Fish icon
+                    color: AppColors.primary,
+                    size: 20,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                
+                // Tank info
+                Expanded(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        tanks[currentIndex].name,
+                        style: AppTypography.labelLarge.copyWith(
+                          color: AppColors.textPrimary,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 14,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      Text(
+                        '${tanks[currentIndex].volumeLitres.toStringAsFixed(0)}L${hasMultipleTanks ? ' • ${currentIndex + 1}/${tanks.length}' : ''}',
+                        style: AppTypography.bodySmall.copyWith(
+                          color: AppColors.textSecondary,
+                          fontSize: 11,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                
+                // Picker indicator (only if multiple tanks)
+                if (hasMultipleTanks)
+                  Icon(
+                    Icons.unfold_more_rounded,
+                    color: AppColors.textHint,
+                    size: 18,
+                  ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _showTankPicker(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (ctx) => _TankPickerSheet(
+        tanks: tanks,
+        currentIndex: currentIndex,
+        onSelected: (index) {
+          onChanged(index);
+          Navigator.pop(ctx);
+        },
+        onAddTank: () {
+          Navigator.pop(ctx);
+          onAddTank();
+        },
+      ),
+    );
+  }
+}
+
+class _TankPickerSheet extends StatelessWidget {
+  final List<Tank> tanks;
+  final int currentIndex;
+  final Function(int) onSelected;
+  final VoidCallback onAddTank;
+
+  const _TankPickerSheet({
+    required this.tanks,
+    required this.currentIndex,
+    required this.onSelected,
+    required this.onAddTank,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 50,
-      margin: const EdgeInsets.symmetric(horizontal: 32),
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      margin: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.black.withOpacity(0.4),
-        borderRadius: BorderRadius.circular(25),
+        color: Theme.of(context).scaffoldBackgroundColor,
+        borderRadius: BorderRadius.circular(24),
       ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
-          IconButton(
-            icon: const Icon(Icons.chevron_left, color: Colors.white70),
-            onPressed: currentIndex > 0
-                ? () => onChanged(currentIndex - 1)
-                : null,
-          ),
-          Expanded(
-            child: Center(
-              child: Text(
-                tanks[currentIndex].name,
-                style: AppTypography.labelLarge.copyWith(color: Colors.white),
-                overflow: TextOverflow.ellipsis,
-              ),
+          // Handle
+          Container(
+            margin: const EdgeInsets.only(top: 12),
+            width: 40,
+            height: 4,
+            decoration: BoxDecoration(
+              color: AppColors.textHint.withOpacity(0.3),
+              borderRadius: BorderRadius.circular(2),
             ),
           ),
-          IconButton(
-            icon: const Icon(Icons.chevron_right, color: Colors.white70),
-            onPressed: currentIndex < tanks.length - 1
-                ? () => onChanged(currentIndex + 1)
-                : null,
+          
+          // Header
+          Padding(
+            padding: const EdgeInsets.all(20),
+            child: Row(
+              children: [
+                Icon(Icons.water_drop, color: AppColors.primary),
+                const SizedBox(width: 12),
+                Text('Your Tanks', style: AppTypography.headlineSmall),
+                const Spacer(),
+                TextButton.icon(
+                  onPressed: onAddTank,
+                  icon: const Icon(Icons.add, size: 18),
+                  label: const Text('Add'),
+                ),
+              ],
+            ),
           ),
+          
+          // Tank list
+          ConstrainedBox(
+            constraints: BoxConstraints(
+              maxHeight: MediaQuery.of(context).size.height * 0.4,
+            ),
+            child: ListView.builder(
+              shrinkWrap: true,
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+              itemCount: tanks.length,
+              itemBuilder: (context, index) {
+                final tank = tanks[index];
+                final isSelected = index == currentIndex;
+                
+                return Container(
+                  margin: const EdgeInsets.only(bottom: 8),
+                  decoration: BoxDecoration(
+                    color: isSelected 
+                        ? AppColors.primary.withOpacity(0.1)
+                        : AppColors.surfaceVariant,
+                    borderRadius: BorderRadius.circular(16),
+                    border: isSelected 
+                        ? Border.all(color: AppColors.primary, width: 2)
+                        : null,
+                  ),
+                  child: ListTile(
+                    onTap: () => onSelected(index),
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 8,
+                    ),
+                    leading: Container(
+                      width: 48,
+                      height: 48,
+                      decoration: BoxDecoration(
+                        color: isSelected
+                            ? AppColors.primary.withOpacity(0.2)
+                            : Colors.white,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Icon(
+                        Icons.water,
+                        color: isSelected 
+                            ? AppColors.primary 
+                            : AppColors.textSecondary,
+                      ),
+                    ),
+                    title: Text(
+                      tank.name,
+                      style: AppTypography.labelLarge.copyWith(
+                        color: isSelected 
+                            ? AppColors.primary 
+                            : AppColors.textPrimary,
+                        fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+                      ),
+                    ),
+                    subtitle: Text(
+                      '${tank.volumeLitres.toStringAsFixed(0)}L • ${tank.type.name}',
+                      style: AppTypography.bodySmall,
+                    ),
+                    trailing: isSelected
+                        ? Icon(Icons.check_circle, color: AppColors.primary)
+                        : null,
+                  ),
+                );
+              },
+            ),
+          ),
+          
+          SizedBox(height: MediaQuery.of(context).padding.bottom + 8),
         ],
       ),
     );

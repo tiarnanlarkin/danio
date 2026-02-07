@@ -1,3 +1,4 @@
+import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../theme/app_theme.dart';
@@ -36,9 +37,7 @@ class _Co2CalculatorScreenState extends State<Co2CalculatorScreen> {
   }
 
   double _pow10(double exp) {
-    return exp >= 0 
-        ? List.filled(exp.toInt(), 10.0).fold(1.0, (a, b) => a * b) * (1 + (exp - exp.toInt()) * 2.3)
-        : 1 / _pow10(-exp);
+    return math.pow(10, exp).toDouble();
   }
 
   String get _co2Status {

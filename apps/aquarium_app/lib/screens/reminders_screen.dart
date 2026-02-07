@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
 import 'dart:convert';
 import '../theme/app_theme.dart';
+import '../utils/app_feedback.dart';
 
 class RemindersScreen extends ConsumerStatefulWidget {
   const RemindersScreen({super.key});
@@ -537,9 +538,7 @@ class _AddReminderSheetState extends State<_AddReminderSheet> {
               child: FilledButton(
                 onPressed: () {
                   if (_titleController.text.isEmpty) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Please enter a title')),
-                    );
+                    AppFeedback.showWarning(context, 'Please enter a title');
                     return;
                   }
 

@@ -1,224 +1,273 @@
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
-import '../data/shop_directory.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'dart:ui';
+import '../models/wishlist.dart';
+import '../providers/wishlist_provider.dart';
 import '../theme/app_theme.dart';
+import 'wishlist_screen.dart';
 
-class ShopStreetScreen extends StatefulWidget {
+/// Shop Street colors - fresh outdoor market theme
+class ShopColors {
+  static const background1 = Color(0xFF4A7C59);  // Forest green
+  static const background2 = Color(0xFF3D6B4A);  // Darker green
+  static const background3 = Color(0xFF2F5A3B);  // Deep green
+  static const accent = Color(0xFFF0C040);       // Sunny yellow
+  static const accentLight = Color(0xFFFFF3C4); // Light yellow
+  static const wood = Color(0xFF8B7355);         // Market stall wood
+  static const awning = Color(0xFFE74C3C);       // Red awning
+  static const glassCard = Color(0x20FFFFFF);
+  static const glassBorder = Color(0x30FFFFFF);
+  static const textPrimary = Color(0xFFF5F5F5);
+  static const textSecondary = Color(0xFFB8D4B8);
+}
+
+/// Shop Street Room - Wishlist & Shopping
+class ShopStreetScreen extends ConsumerWidget {
   const ShopStreetScreen({super.key});
 
   @override
-  State<ShopStreetScreen> createState() => _ShopStreetScreenState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final fishCount = ref.watch(fishWishlistProvider).length;
+    final plantCount = ref.watch(plantWishlistProvider).length;
+    final equipmentCount = ref.watch(equipmentWishlistProvider).length;
+    final budget = ref.watch(budgetProvider);
+    final shops = ref.watch(localShopsProvider);
 
-class _ShopStreetScreenState extends State<ShopStreetScreen> {
-  String? _selectedRegion;
-  String? _selectedCategory;
+    return Container(
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            ShopColors.background1,
+            ShopColors.background2,
+            ShopColors.background3,
+          ],
+        ),
+      ),
+      child: SafeArea(
+        bottom: false,
+        child: CustomScrollView(
+          slivers: [
+            // Header
+            SliverToBoxAdapter(
+              child: _ShopHeader(),
+            ),
 
-  List<ShopEntry> get _filteredShops {
-    var shops = ShopDirectory.all;
-    
-    if (_selectedRegion != null) {
-      shops = shops.where((s) => s.region == _selectedRegion).toList();
-    }
-    
-    if (_selectedCategory != null) {
-      shops = shops.where((s) => 
-          s.categories.any((c) => c == _selectedCategory)).toList();
-    }
-    
-    return shops;
+            // Shop sections
+            SliverPadding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              sliver: SliverList(
+                delegate: SliverChildListDelegate([
+                  _ShopSection(
+                    title: '🐟 Fish Wishlist',
+                    subtitle: 'Species you want to keep',
+                    icon: Icons.favorite,
+                    color: Colors.pink.shade300,
+                    itemCount: fishCount,
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const WishlistScreen(
+                          category: WishlistCategory.fish,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  _ShopSection(
+                    title: '🌿 Plant Wishlist',
+                    subtitle: 'Plants to add to your tank',
+                    icon: Icons.eco,
+                    color: Colors.green.shade400,
+                    itemCount: plantCount,
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const WishlistScreen(
+                          category: WishlistCategory.plant,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  _ShopSection(
+                    title: '🛠️ Equipment Wishlist',
+                    subtitle: 'Gear upgrades planned',
+                    icon: Icons.build,
+                    color: Colors.blue.shade400,
+                    itemCount: equipmentCount,
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const WishlistScreen(
+                          category: WishlistCategory.equipment,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  _BudgetCard(
+                    budget: budget,
+                    onEdit: () => _showBudgetDialog(context, ref, budget),
+                  ),
+                  const SizedBox(height: 24),
+                  _LocalShopsCard(
+                    shops: shops,
+                    onAddShop: () => _showAddShopDialog(context, ref),
+                    onEditShop: (shop) => _showEditShopDialog(context, ref, shop),
+                    onDeleteShop: (shop) => _deleteShop(context, ref, shop),
+                  ),
+                ]),
+              ),
+            ),
+
+            // Bottom padding
+            const SliverToBoxAdapter(
+              child: SizedBox(height: 100),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final shops = _filteredShops;
-    
-    // Group by region
-    final grouped = <String, List<ShopEntry>>{};
-    for (final shop in shops) {
-      grouped.putIfAbsent(shop.region, () => []).add(shop);
-    }
+  void _showBudgetDialog(BuildContext context, WidgetRef ref, ShopBudget budget) {
+    final controller = TextEditingController(
+      text: budget.monthlyBudget.toStringAsFixed(0),
+    );
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Shop Street'),
-      ),
-      body: Column(
-        children: [
-          // Disclosure banner
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.all(12),
-            color: AppColors.info.withOpacity(0.1),
-            child: Row(
-              children: [
-                Icon(Icons.info_outline, size: 16, color: AppColors.info),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Text(
-                    'External links to aquarium shops. We don\'t receive commissions unless marked.',
-                    style: AppTypography.bodySmall.copyWith(color: AppColors.info),
-                  ),
-                ),
-              ],
-            ),
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Set Monthly Budget'),
+        content: TextField(
+          controller: controller,
+          keyboardType: const TextInputType.numberWithOptions(decimal: true),
+          decoration: const InputDecoration(
+            labelText: 'Budget amount',
+            prefixText: '£ ',
           ),
-          
-          // Filters
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.all(12),
-            child: Row(
-              children: [
-                // Region filter
-                _FilterChip(
-                  label: _selectedRegion ?? 'All Regions',
-                  isActive: _selectedRegion != null,
-                  onTap: () => _showRegionPicker(),
-                ),
-                const SizedBox(width: 8),
-                // Category filter
-                _FilterChip(
-                  label: _selectedCategory ?? 'All Categories',
-                  isActive: _selectedCategory != null,
-                  onTap: () => _showCategoryPicker(),
-                ),
-                if (_selectedRegion != null || _selectedCategory != null) ...[
-                  const SizedBox(width: 8),
-                  TextButton(
-                    onPressed: () => setState(() {
-                      _selectedRegion = null;
-                      _selectedCategory = null;
-                    }),
-                    child: const Text('Clear'),
-                  ),
-                ],
-              ],
-            ),
+          inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[\d.]'))],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('Cancel'),
           ),
-          
-          // Results count
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Row(
-              children: [
-                Text(
-                  '${shops.length} ${shops.length == 1 ? 'shop' : 'shops'}',
-                  style: AppTypography.bodySmall,
-                ),
-              ],
-            ),
-          ),
-          
-          const SizedBox(height: 8),
-          
-          // Shop list
-          Expanded(
-            child: shops.isEmpty
-                ? Center(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(Icons.store_outlined, size: 64, color: AppColors.textHint),
-                        const SizedBox(height: 16),
-                        Text('No shops match your filters', style: AppTypography.bodyMedium),
-                        const SizedBox(height: 8),
-                        TextButton(
-                          onPressed: () => setState(() {
-                            _selectedRegion = null;
-                            _selectedCategory = null;
-                          }),
-                          child: const Text('Clear filters'),
-                        ),
-                      ],
-                    ),
-                  )
-                : ListView.builder(
-                    padding: const EdgeInsets.all(16),
-                    itemCount: grouped.keys.length,
-                    itemBuilder: (context, index) {
-                      final region = grouped.keys.elementAt(index);
-                      final regionShops = grouped[region]!;
-                      
-                      return Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          if (index > 0) const SizedBox(height: 16),
-                          _RegionHeader(region: region),
-                          const SizedBox(height: 8),
-                          ...regionShops.map((shop) => _ShopCard(shop: shop)),
-                        ],
-                      );
-                    },
-                  ),
+          TextButton(
+            onPressed: () {
+              final amount = double.tryParse(controller.text) ?? 100;
+              ref.read(budgetProvider.notifier).setMonthlyBudget(amount);
+              Navigator.pop(ctx);
+            },
+            child: const Text('Save'),
           ),
         ],
       ),
     );
   }
 
-  void _showRegionPicker() {
-    showModalBottomSheet(
-      context: context,
-      builder: (ctx) => SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ListTile(
-              title: const Text('All Regions'),
-              trailing: _selectedRegion == null 
-                  ? const Icon(Icons.check, color: AppColors.primary) 
-                  : null,
-              onTap: () {
-                setState(() => _selectedRegion = null);
-                Navigator.pop(ctx);
-              },
-            ),
-            ...ShopDirectory.regions.map((region) => ListTile(
-              title: Text(region),
-              trailing: _selectedRegion == region 
-                  ? const Icon(Icons.check, color: AppColors.primary) 
-                  : null,
-              onTap: () {
-                setState(() => _selectedRegion = region);
-                Navigator.pop(ctx);
-              },
-            )),
-          ],
-        ),
-      ),
-    );
+  void _showAddShopDialog(BuildContext context, WidgetRef ref) {
+    _showShopDialog(context, ref, null);
   }
 
-  void _showCategoryPicker() {
+  void _showEditShopDialog(BuildContext context, WidgetRef ref, LocalShop shop) {
+    _showShopDialog(context, ref, shop);
+  }
+
+  void _showShopDialog(BuildContext context, WidgetRef ref, LocalShop? existingShop) {
+    final nameController = TextEditingController(text: existingShop?.name ?? '');
+    final addressController = TextEditingController(text: existingShop?.address ?? '');
+    final distanceController = TextEditingController(
+      text: existingShop?.distanceMiles?.toStringAsFixed(1) ?? '',
+    );
+    final notesController = TextEditingController(text: existingShop?.notes ?? '');
+
     showModalBottomSheet(
       context: context,
-      builder: (ctx) => SafeArea(
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) => Container(
+        margin: const EdgeInsets.all(16),
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.of(ctx).viewInsets.bottom,
+        ),
+        decoration: BoxDecoration(
+          color: Theme.of(context).scaffoldBackgroundColor,
+          borderRadius: BorderRadius.circular(24),
+        ),
         child: SingleChildScrollView(
+          padding: const EdgeInsets.all(24),
           child: Column(
             mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              ListTile(
-                title: const Text('All Categories'),
-                trailing: _selectedCategory == null 
-                    ? const Icon(Icons.check, color: AppColors.primary) 
-                    : null,
-                onTap: () {
-                  setState(() => _selectedCategory = null);
-                  Navigator.pop(ctx);
-                },
+              Text(
+                existingShop == null ? 'Add Local Shop' : 'Edit Shop',
+                style: AppTypography.headlineSmall,
               ),
-              ...ShopDirectory.categories.map((category) => ListTile(
-                leading: Icon(_categoryIcon(category), color: AppColors.textSecondary),
-                title: Text(category),
-                trailing: _selectedCategory == category 
-                    ? const Icon(Icons.check, color: AppColors.primary) 
-                    : null,
-                onTap: () {
-                  setState(() => _selectedCategory = category);
-                  Navigator.pop(ctx);
-                },
-              )),
+              const SizedBox(height: 24),
+              TextField(
+                controller: nameController,
+                decoration: const InputDecoration(
+                  labelText: 'Shop name',
+                  hintText: 'e.g., Aquatic World',
+                ),
+              ),
+              const SizedBox(height: 16),
+              TextField(
+                controller: addressController,
+                decoration: const InputDecoration(
+                  labelText: 'Address (optional)',
+                ),
+              ),
+              const SizedBox(height: 16),
+              TextField(
+                controller: distanceController,
+                decoration: const InputDecoration(
+                  labelText: 'Distance (miles)',
+                ),
+                keyboardType: const TextInputType.numberWithOptions(decimal: true),
+              ),
+              const SizedBox(height: 16),
+              TextField(
+                controller: notesController,
+                decoration: const InputDecoration(
+                  labelText: 'Notes (optional)',
+                ),
+                maxLines: 2,
+              ),
+              const SizedBox(height: 24),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: nameController.text.trim().isNotEmpty
+                      ? () {
+                          final shop = LocalShop(
+                            id: existingShop?.id,
+                            name: nameController.text.trim(),
+                            address: addressController.text.trim().isEmpty
+                                ? null
+                                : addressController.text.trim(),
+                            distanceMiles: double.tryParse(distanceController.text),
+                            notes: notesController.text.trim().isEmpty
+                                ? null
+                                : notesController.text.trim(),
+                          );
+
+                          if (existingShop == null) {
+                            ref.read(localShopsProvider.notifier).addShop(shop);
+                          } else {
+                            ref.read(localShopsProvider.notifier).updateShop(shop);
+                          }
+                          Navigator.pop(ctx);
+                        }
+                      : null,
+                  child: Text(existingShop == null ? 'Add Shop' : 'Save Changes'),
+                ),
+              ),
             ],
           ),
         ),
@@ -226,184 +275,439 @@ class _ShopStreetScreenState extends State<ShopStreetScreen> {
     );
   }
 
-  IconData _categoryIcon(String category) {
-    switch (category.toLowerCase()) {
-      case 'fish': return Icons.set_meal;
-      case 'plants': return Icons.grass;
-      case 'shrimp': return Icons.pest_control;
-      case 'equipment': return Icons.build;
-      case 'food': return Icons.restaurant;
-      case 'medication': return Icons.medication;
-      case 'tanks': return Icons.crop_square;
-      case 'hardscape': return Icons.landscape;
-      case 'co2': return Icons.bubble_chart;
-      case 'aquascaping': return Icons.park;
-      case 'information': return Icons.info;
-      default: return Icons.store;
-    }
+  void _deleteShop(BuildContext context, WidgetRef ref, LocalShop shop) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Delete Shop?'),
+        content: Text('Remove "${shop.name}" from your list?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () {
+              ref.read(localShopsProvider.notifier).removeShop(shop.id);
+              Navigator.pop(ctx);
+            },
+            style: TextButton.styleFrom(foregroundColor: AppColors.error),
+            child: const Text('Delete'),
+          ),
+        ],
+      ),
+    );
   }
 }
 
-class _FilterChip extends StatelessWidget {
-  final String label;
-  final bool isActive;
+class _ShopHeader extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(20),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: ShopColors.glassCard,
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(color: ShopColors.glassBorder),
+            ),
+            child: const Icon(
+              Icons.storefront,
+              color: ShopColors.accent,
+              size: 28,
+            ),
+          ),
+          const SizedBox(width: 16),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: const [
+              Text(
+                '🏪 Shop Street',
+                style: TextStyle(
+                  color: ShopColors.textPrimary,
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              SizedBox(height: 4),
+              Text(
+                'Wishlists & shopping',
+                style: TextStyle(
+                  color: ShopColors.textSecondary,
+                  fontSize: 14,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ShopSection extends StatelessWidget {
+  final String title;
+  final String subtitle;
+  final IconData icon;
+  final Color color;
+  final int itemCount;
   final VoidCallback onTap;
 
-  const _FilterChip({
-    required this.label,
-    required this.isActive,
+  const _ShopSection({
+    required this.title,
+    required this.subtitle,
+    required this.icon,
+    required this.color,
+    required this.itemCount,
     required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
+    return GestureDetector(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(20),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-        decoration: BoxDecoration(
-          color: isActive ? AppColors.primary : AppColors.surfaceVariant,
-          borderRadius: BorderRadius.circular(20),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              label,
-              style: TextStyle(
-                color: isActive ? Colors.white : AppColors.textPrimary,
-                fontWeight: isActive ? FontWeight.w500 : FontWeight.normal,
-              ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(20),
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+          child: Container(
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: ShopColors.glassCard,
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(color: ShopColors.glassBorder),
             ),
-            const SizedBox(width: 4),
-            Icon(
-              Icons.arrow_drop_down,
-              size: 18,
-              color: isActive ? Colors.white : AppColors.textSecondary,
+            child: Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: color.withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                  child: Icon(icon, color: color, size: 28),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        title,
+                        style: const TextStyle(
+                          color: ShopColors.textPrimary,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        subtitle,
+                        style: const TextStyle(
+                          color: ShopColors.textSecondary,
+                          fontSize: 13,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: itemCount > 0
+                        ? ShopColors.accent.withOpacity(0.2)
+                        : ShopColors.glassCard,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Text(
+                    '$itemCount',
+                    style: TextStyle(
+                      color: itemCount > 0 ? ShopColors.accent : ShopColors.textSecondary,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                const Icon(
+                  Icons.chevron_right,
+                  color: ShopColors.textSecondary,
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );
   }
 }
 
-class _RegionHeader extends StatelessWidget {
-  final String region;
+class _BudgetCard extends StatelessWidget {
+  final ShopBudget budget;
+  final VoidCallback onEdit;
 
-  const _RegionHeader({required this.region});
-
-  String get _flag {
-    switch (region) {
-      case 'UK': return '🇬🇧';
-      case 'US': return '🇺🇸';
-      case 'EU': return '🇪🇺';
-      case 'Global': return '🌍';
-      default: return '🏪';
-    }
-  }
+  const _BudgetCard({required this.budget, required this.onEdit});
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Text(_flag, style: const TextStyle(fontSize: 20)),
-        const SizedBox(width: 8),
-        Text(region, style: AppTypography.headlineSmall),
-      ],
+    return GestureDetector(
+      onTap: onEdit,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(20),
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+          child: Container(
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: ShopColors.glassCard,
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(color: ShopColors.glassBorder),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    const Icon(Icons.account_balance_wallet, color: ShopColors.accent),
+                    const SizedBox(width: 12),
+                    const Text(
+                      'Monthly Budget',
+                      style: TextStyle(
+                        color: ShopColors.textPrimary,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const Spacer(),
+                    Icon(
+                      Icons.edit,
+                      color: ShopColors.textSecondary.withOpacity(0.5),
+                      size: 18,
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          '£${budget.spentThisMonth.toStringAsFixed(2)}',
+                          style: const TextStyle(
+                            color: ShopColors.accent,
+                            fontSize: 32,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const Text(
+                          'spent this month',
+                          style: TextStyle(
+                            color: ShopColors.textSecondary,
+                            fontSize: 13,
+                          ),
+                        ),
+                      ],
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Text(
+                          '£${budget.remaining.toStringAsFixed(2)}',
+                          style: const TextStyle(
+                            color: ShopColors.textPrimary,
+                            fontSize: 20,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        const Text(
+                          'remaining',
+                          style: TextStyle(
+                            color: ShopColors.textSecondary,
+                            fontSize: 13,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(4),
+                  child: LinearProgressIndicator(
+                    value: budget.percentUsed,
+                    backgroundColor: ShopColors.background3,
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                      budget.percentUsed > 0.9 ? Colors.red : ShopColors.accent,
+                    ),
+                    minHeight: 8,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
 
-class _ShopCard extends StatelessWidget {
-  final ShopEntry shop;
+class _LocalShopsCard extends StatelessWidget {
+  final List<LocalShop> shops;
+  final VoidCallback onAddShop;
+  final Function(LocalShop) onEditShop;
+  final Function(LocalShop) onDeleteShop;
 
-  const _ShopCard({required this.shop});
+  const _LocalShopsCard({
+    required this.shops,
+    required this.onAddShop,
+    required this.onEditShop,
+    required this.onDeleteShop,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      margin: const EdgeInsets.only(bottom: 8),
-      child: InkWell(
-        onTap: () => _launchUrl(shop.url),
-        borderRadius: BorderRadius.circular(12),
-        child: Padding(
-          padding: const EdgeInsets.all(16),
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(20),
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+        child: Container(
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            color: ShopColors.glassCard,
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(color: ShopColors.glassBorder),
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
-                children: [
-                  Expanded(
-                    child: Text(shop.name, style: AppTypography.labelLarge),
+                children: const [
+                  Icon(Icons.location_on, color: ShopColors.awning),
+                  SizedBox(width: 12),
+                  Text(
+                    'Local Fish Shops',
+                    style: TextStyle(
+                      color: ShopColors.textPrimary,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
-                  Icon(Icons.open_in_new, size: 16, color: AppColors.textHint),
                 ],
               ),
-              if (shop.description != null) ...[
-                const SizedBox(height: 4),
-                Text(
-                  shop.description!,
-                  style: AppTypography.bodySmall,
-                ),
-              ],
-              const SizedBox(height: 8),
-              Wrap(
-                spacing: 6,
-                runSpacing: 6,
-                children: shop.categories.map((cat) => _CategoryTag(category: cat)).toList(),
-              ),
-              if (shop.isAffiliate) ...[
-                const SizedBox(height: 8),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: AppColors.warning.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(Icons.handshake, size: 12, color: AppColors.warning),
-                      const SizedBox(width: 4),
-                      Text(
-                        'Affiliate link',
-                        style: AppTypography.bodySmall.copyWith(color: AppColors.warning),
+              const SizedBox(height: 16),
+              if (shops.isEmpty)
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  child: Center(
+                    child: Text(
+                      'No shops added yet',
+                      style: TextStyle(
+                        color: ShopColors.textSecondary.withOpacity(0.7),
                       ),
-                    ],
+                    ),
+                  ),
+                )
+              else
+                ...shops.map((shop) => _ShopTile(
+                      shop: shop,
+                      onTap: () => onEditShop(shop),
+                      onDelete: () => onDeleteShop(shop),
+                    )),
+              const SizedBox(height: 12),
+              Center(
+                child: TextButton.icon(
+                  onPressed: onAddShop,
+                  icon: const Icon(Icons.add, size: 18),
+                  label: const Text('Add a shop'),
+                  style: TextButton.styleFrom(
+                    foregroundColor: ShopColors.accent,
                   ),
                 ),
-              ],
+              ),
             ],
           ),
         ),
       ),
     );
   }
-
-  Future<void> _launchUrl(String url) async {
-    final uri = Uri.parse(url);
-    if (await canLaunchUrl(uri)) {
-      await launchUrl(uri, mode: LaunchMode.externalApplication);
-    }
-  }
 }
 
-class _CategoryTag extends StatelessWidget {
-  final String category;
+class _ShopTile extends StatelessWidget {
+  final LocalShop shop;
+  final VoidCallback onTap;
+  final VoidCallback onDelete;
 
-  const _CategoryTag({required this.category});
+  const _ShopTile({
+    required this.shop,
+    required this.onTap,
+    required this.onDelete,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-      decoration: BoxDecoration(
-        color: AppColors.surfaceVariant,
-        borderRadius: BorderRadius.circular(10),
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(12),
+        child: Row(
+          children: [
+            Container(
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                color: ShopColors.background3,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: const Icon(
+                Icons.store,
+                color: ShopColors.textSecondary,
+                size: 20,
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    shop.name,
+                    style: const TextStyle(
+                      color: ShopColors.textPrimary,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  if (shop.distanceMiles != null)
+                    Text(
+                      '${shop.distanceMiles!.toStringAsFixed(1)} miles',
+                      style: const TextStyle(
+                        color: ShopColors.textSecondary,
+                        fontSize: 12,
+                      ),
+                    ),
+                ],
+              ),
+            ),
+            if (shop.rating != null)
+              Text(
+                '⭐ ${shop.rating!.toStringAsFixed(1)}',
+                style: const TextStyle(
+                  color: ShopColors.accentLight,
+                  fontSize: 13,
+                ),
+              ),
+            IconButton(
+              icon: const Icon(Icons.close, size: 18),
+              color: ShopColors.textSecondary.withOpacity(0.5),
+              onPressed: onDelete,
+            ),
+          ],
+        ),
       ),
-      child: Text(category, style: AppTypography.bodySmall),
     );
   }
 }

@@ -10,6 +10,7 @@ import 'package:share_plus/share_plus.dart';
 import '../models/models.dart';
 import '../providers/tank_provider.dart';
 import '../theme/app_theme.dart';
+import '../utils/app_feedback.dart';
 
 class ChartsScreen extends ConsumerStatefulWidget {
   final String tankId;
@@ -430,9 +431,7 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
   Future<void> _exportCsv(BuildContext context, AsyncValue<List<LogEntry>> logsAsync) async {
     final logs = logsAsync.value;
     if (logs == null || logs.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('No data to export')),
-      );
+      AppFeedback.showInfo(context, 'No data to export');
       return;
     }
 
@@ -442,9 +441,7 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
       ..sort((a, b) => a.timestamp.compareTo(b.timestamp));
 
     if (waterTests.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('No water tests to export')),
-      );
+      AppFeedback.showInfo(context, 'No water tests to export');
       return;
     }
 
@@ -474,6 +471,10 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
       ].join(','));
     }
 
+    if (!context.mounted) return;
+    AppFeedback.showLoading(context, 'Preparing export…');
+    var dismissLoadingInFinally = true;
+
     try {
       final dir = await getTemporaryDirectory();
       final file = File('${dir.path}/water_tests_export.csv');
@@ -485,9 +486,13 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
       );
     } catch (e) {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Export failed: $e')),
-        );
+        AppFeedback.dismiss(context);
+        dismissLoadingInFinally = false;
+        AppFeedback.showError(context, 'Export failed: $e');
+      }
+    } finally {
+      if (context.mounted && dismissLoadingInFinally) {
+        AppFeedback.dismiss(context);
       }
     }
   }

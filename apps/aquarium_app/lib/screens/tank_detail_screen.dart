@@ -22,6 +22,7 @@ import 'maintenance_checklist_screen.dart';
 import 'photo_gallery_screen.dart';
 import 'livestock_value_screen.dart';
 import '../widgets/cycling_status_card.dart';
+import '../utils/app_feedback.dart';
 
 const _uuid = Uuid();
 
@@ -30,7 +31,7 @@ class TankDetailScreen extends ConsumerWidget {
 
   const TankDetailScreen({super.key, required this.tankId});
 
-  Future<void> _completeTask(WidgetRef ref, Task task) async {
+  Future<void> _completeTask(BuildContext context, WidgetRef ref, Task task) async {
     final storage = ref.read(storageServiceProvider);
     final now = DateTime.now();
 
@@ -84,6 +85,11 @@ class TankDetailScreen extends ConsumerWidget {
     ref.invalidate(equipmentProvider(tankId));
     ref.invalidate(logsProvider(tankId));
     ref.invalidate(allLogsProvider(tankId));
+    
+    // Show success feedback
+    if (context.mounted) {
+      AppFeedback.showSuccess(context, '${task.title} completed!');
+    }
   }
 
   @override
@@ -366,7 +372,7 @@ class TankDetailScreen extends ConsumerWidget {
                   error: (_, __) => const SizedBox.shrink(),
                   data: (tasks) => _TaskPreview(
                     tasks: tasks.take(3).toList(),
-                    onComplete: (t) => _completeTask(ref, t),
+                    onComplete: (t) => _completeTask(context, ref, t),
                   ),
                 ),
               ),
@@ -499,13 +505,7 @@ class TankDetailScreen extends ConsumerWidget {
     ref.invalidate(allLogsProvider(tankId));
 
     if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: const Text('Feeding logged! 🐟'),
-          backgroundColor: AppColors.success,
-          duration: const Duration(seconds: 2),
-        ),
-      );
+      AppFeedback.showSuccess(context, 'Feeding logged! 🐟');
     }
   }
 
@@ -622,28 +622,33 @@ class _ActionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(12),
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 16),
-        decoration: BoxDecoration(
-          color: color.withOpacity(0.1),
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: color.withOpacity(0.3)),
-        ),
-        child: Column(
-          children: [
-            Icon(icon, color: color, size: 28),
-            const SizedBox(height: 8),
-            Text(
-              label,
-              style: AppTypography.bodySmall.copyWith(
-                color: color,
-                fontWeight: FontWeight.w500,
+    return Semantics(
+      label: label,
+      button: true,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(12),
+        child: Container(
+          constraints: const BoxConstraints(minHeight: 44),
+          padding: const EdgeInsets.symmetric(vertical: 16),
+          decoration: BoxDecoration(
+            color: color.withOpacity(0.1),
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: color.withOpacity(0.3)),
+          ),
+          child: Column(
+            children: [
+              Icon(icon, color: color, size: 28),
+              const SizedBox(height: 8),
+              Text(
+                label,
+                style: AppTypography.bodySmall.copyWith(
+                  color: color,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

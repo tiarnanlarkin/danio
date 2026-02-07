@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/models.dart';
 import '../providers/tank_provider.dart';
 import '../theme/app_theme.dart';
+import '../utils/app_feedback.dart';
 
 class CreateTankScreen extends ConsumerStatefulWidget {
   const CreateTankScreen({super.key});
@@ -187,21 +188,11 @@ class _CreateTankScreenState extends ConsumerState<CreateTankScreen> {
 
       if (mounted) {
         Navigator.of(context).pop();
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('${_name.trim()} created!'),
-            backgroundColor: AppColors.success,
-          ),
-        );
+        AppFeedback.showSuccess(context, '${_name.trim()} created!');
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Failed to create tank: $e'),
-            backgroundColor: AppColors.error,
-          ),
-        );
+        AppFeedback.showError(context, 'Failed to create tank: $e');
       }
     } finally {
       if (mounted) {

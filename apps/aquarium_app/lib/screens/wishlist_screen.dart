@@ -1,260 +1,248 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'dart:convert';
-import '../data/species_database.dart';
+import '../models/wishlist.dart';
+import '../providers/wishlist_provider.dart';
 import '../theme/app_theme.dart';
+import '../utils/app_feedback.dart';
 
-class WishlistScreen extends ConsumerStatefulWidget {
-  const WishlistScreen({super.key});
+/// Screen to view and manage wishlist items for a category
+class WishlistScreen extends ConsumerWidget {
+  final WishlistCategory category;
 
-  @override
-  ConsumerState<WishlistScreen> createState() => _WishlistScreenState();
-}
+  const WishlistScreen({super.key, required this.category});
 
-class _WishlistScreenState extends ConsumerState<WishlistScreen> {
-  List<_WishlistItem> _items = [];
-  String _searchQuery = '';
-
-  @override
-  void initState() {
-    super.initState();
-    _loadWishlist();
-  }
-
-  Future<void> _loadWishlist() async {
-    final prefs = await SharedPreferences.getInstance();
-    final json = prefs.getString('fish_wishlist');
-    if (json != null) {
-      final list = jsonDecode(json) as List;
-      setState(() {
-        _items = list.map((e) => _WishlistItem.fromJson(e)).toList();
-      });
+  String get _title {
+    switch (category) {
+      case WishlistCategory.fish:
+        return '🐟 Fish Wishlist';
+      case WishlistCategory.plant:
+        return '🌿 Plant Wishlist';
+      case WishlistCategory.equipment:
+        return '🛠️ Equipment Wishlist';
     }
   }
 
-  Future<void> _saveWishlist() async {
-    final prefs = await SharedPreferences.getInstance();
-    final json = jsonEncode(_items.map((i) => i.toJson()).toList());
-    await prefs.setString('fish_wishlist', json);
+  Color get _accentColor {
+    switch (category) {
+      case WishlistCategory.fish:
+        return Colors.pink.shade400;
+      case WishlistCategory.plant:
+        return Colors.green.shade500;
+      case WishlistCategory.equipment:
+        return Colors.blue.shade500;
+    }
   }
 
-  List<SpeciesInfo> get _searchResults {
-    if (_searchQuery.length < 2) return [];
-    return SpeciesDatabase.search(_searchQuery)
-        .where((s) => !_items.any((i) => i.speciesName == s.commonName))
-        .take(8)
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final allItems = ref.watch(wishlistProvider);
+    final items = allItems
+        .where((item) => item.category == category && !item.purchased)
+        .toList()
+      ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
+
+    final purchasedItems = allItems
+        .where((item) => item.category == category && item.purchased)
         .toList();
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(_title),
+        actions: [
+          if (purchasedItems.isNotEmpty)
+            IconButton(
+              icon: const Icon(Icons.history),
+              tooltip: 'Purchased items',
+              onPressed: () => _showPurchasedItems(context, ref, purchasedItems),
+            ),
+        ],
+      ),
+      body: items.isEmpty
+          ? _EmptyState(category: category, onAdd: () => _showAddDialog(context, ref))
+          : ListView.builder(
+              padding: const EdgeInsets.all(16),
+              itemCount: items.length,
+              itemBuilder: (context, index) {
+                final item = items[index];
+                return _WishlistItemCard(
+                  item: item,
+                  accentColor: _accentColor,
+                  onTap: () => _showEditDialog(context, ref, item),
+                  onPurchased: () => _markPurchased(context, ref, item),
+                  onDelete: () => _deleteItem(context, ref, item),
+                );
+              },
+            ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () => _showAddDialog(context, ref),
+        icon: const Icon(Icons.add),
+        label: const Text('Add Item'),
+        backgroundColor: _accentColor,
+      ),
+    );
   }
 
-  void _addToWishlist(SpeciesInfo species) {
-    setState(() {
-      _items.add(_WishlistItem(
-        id: DateTime.now().millisecondsSinceEpoch.toString(),
-        speciesName: species.commonName,
-        notes: '',
-        priority: 'medium',
-        addedDate: DateTime.now(),
-      ));
-      _searchQuery = '';
-    });
-    _saveWishlist();
+  void _showAddDialog(BuildContext context, WidgetRef ref) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) => _AddEditItemSheet(
+        category: category,
+        accentColor: _accentColor,
+        onSave: (item) {
+          ref.read(wishlistProvider.notifier).addItem(item);
+          Navigator.pop(ctx);
+        },
+      ),
+    );
   }
 
-  void _removeItem(int index) {
-    final item = _items[index];
-    setState(() {
-      _items.removeAt(index);
-    });
-    _saveWishlist();
+  void _showEditDialog(BuildContext context, WidgetRef ref, WishlistItem item) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) => _AddEditItemSheet(
+        category: category,
+        accentColor: _accentColor,
+        existingItem: item,
+        onSave: (updated) {
+          ref.read(wishlistProvider.notifier).updateItem(updated);
+          Navigator.pop(ctx);
+        },
+      ),
+    );
+  }
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Removed ${item.speciesName}'),
-        action: SnackBarAction(
-          label: 'Undo',
-          onPressed: () {
-            setState(() {
-              _items.insert(index, item);
-            });
-            _saveWishlist();
-          },
+  void _markPurchased(BuildContext context, WidgetRef ref, WishlistItem item) {
+    ref.read(wishlistProvider.notifier).markPurchased(item.id);
+    
+    // Add to budget if price is set
+    if (item.estimatedPrice != null) {
+      ref.read(budgetProvider.notifier).addPurchase(item.estimatedPrice! * item.quantity);
+    }
+
+    AppFeedback.showSuccess(context, '${item.name} marked as purchased!');
+  }
+
+  void _deleteItem(BuildContext context, WidgetRef ref, WishlistItem item) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Delete Item?'),
+        content: Text('Remove "${item.name}" from your wishlist?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () {
+              ref.read(wishlistProvider.notifier).removeItem(item.id);
+              Navigator.pop(ctx);
+            },
+            style: TextButton.styleFrom(foregroundColor: AppColors.error),
+            child: const Text('Delete'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showPurchasedItems(BuildContext context, WidgetRef ref, List<WishlistItem> items) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) => Container(
+        margin: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Theme.of(context).scaffoldBackgroundColor,
+          borderRadius: BorderRadius.circular(24),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(20),
+              child: Row(
+                children: [
+                  const Icon(Icons.check_circle, color: AppColors.success),
+                  const SizedBox(width: 12),
+                  Text('Purchased Items', style: AppTypography.headlineSmall),
+                ],
+              ),
+            ),
+            ConstrainedBox(
+              constraints: BoxConstraints(
+                maxHeight: MediaQuery.of(context).size.height * 0.4,
+              ),
+              child: ListView.builder(
+                shrinkWrap: true,
+                padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                itemCount: items.length,
+                itemBuilder: (context, index) {
+                  final item = items[index];
+                  return ListTile(
+                    leading: Icon(Icons.check_circle, color: _accentColor),
+                    title: Text(item.name),
+                    subtitle: item.purchasedAt != null
+                        ? Text('Purchased ${_formatDate(item.purchasedAt!)}')
+                        : null,
+                  );
+                },
+              ),
+            ),
+          ],
         ),
       ),
     );
   }
 
-  void _updatePriority(int index, String priority) {
-    setState(() {
-      _items[index] = _items[index].copyWith(priority: priority);
-    });
-    _saveWishlist();
+  String _formatDate(DateTime date) {
+    return '${date.day}/${date.month}/${date.year}';
   }
-
-  @override
-  Widget build(BuildContext context) {
-    final highPriority = _items.where((i) => i.priority == 'high').toList();
-    final mediumPriority = _items.where((i) => i.priority == 'medium').toList();
-    final lowPriority = _items.where((i) => i.priority == 'low').toList();
-
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Fish Wishlist'),
-        actions: [
-          if (_items.isNotEmpty)
-            Center(
-              child: Padding(
-                padding: const EdgeInsets.only(right: 16),
-                child: Text(
-                  '${_items.length} fish',
-                  style: AppTypography.bodySmall,
-                ),
-              ),
-            ),
-        ],
-      ),
-      body: Column(
-        children: [
-          // Search bar
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: TextField(
-              decoration: InputDecoration(
-                hintText: 'Search fish to add...',
-                prefixIcon: const Icon(Icons.search),
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-                filled: true,
-              ),
-              onChanged: (v) => setState(() => _searchQuery = v),
-            ),
-          ),
-
-          // Search results
-          if (_searchResults.isNotEmpty)
-            Container(
-              margin: const EdgeInsets.symmetric(horizontal: 16),
-              decoration: BoxDecoration(
-                color: Theme.of(context).cardColor,
-                borderRadius: BorderRadius.circular(12),
-                boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 8)],
-              ),
-              child: ListView.builder(
-                shrinkWrap: true,
-                itemCount: _searchResults.length,
-                itemBuilder: (ctx, i) {
-                  final species = _searchResults[i];
-                  return ListTile(
-                    dense: true,
-                    leading: const Icon(Icons.add_circle_outline, size: 20),
-                    title: Text(species.commonName),
-                    subtitle: Text('${species.careLevel} • ${species.temperament}'),
-                    onTap: () => _addToWishlist(species),
-                  );
-                },
-              ),
-            ),
-
-          // Wishlist
-          Expanded(
-            child: _items.isEmpty
-                ? _EmptyState()
-                : ListView(
-                    padding: const EdgeInsets.all(16),
-                    children: [
-                      if (highPriority.isNotEmpty) ...[
-                        _SectionHeader(title: '🔥 Must Have', count: highPriority.length),
-                        ...highPriority.map((item) => _WishlistTile(
-                          item: item,
-                          onDelete: () => _removeItem(_items.indexOf(item)),
-                          onPriorityChanged: (p) => _updatePriority(_items.indexOf(item), p),
-                        )),
-                        const SizedBox(height: 16),
-                      ],
-                      if (mediumPriority.isNotEmpty) ...[
-                        _SectionHeader(title: '⭐ Want', count: mediumPriority.length),
-                        ...mediumPriority.map((item) => _WishlistTile(
-                          item: item,
-                          onDelete: () => _removeItem(_items.indexOf(item)),
-                          onPriorityChanged: (p) => _updatePriority(_items.indexOf(item), p),
-                        )),
-                        const SizedBox(height: 16),
-                      ],
-                      if (lowPriority.isNotEmpty) ...[
-                        _SectionHeader(title: '💭 Maybe Someday', count: lowPriority.length),
-                        ...lowPriority.map((item) => _WishlistTile(
-                          item: item,
-                          onDelete: () => _removeItem(_items.indexOf(item)),
-                          onPriorityChanged: (p) => _updatePriority(_items.indexOf(item), p),
-                        )),
-                      ],
-                    ],
-                  ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _WishlistItem {
-  final String id;
-  final String speciesName;
-  final String notes;
-  final String priority; // high, medium, low
-  final DateTime addedDate;
-
-  const _WishlistItem({
-    required this.id,
-    required this.speciesName,
-    required this.notes,
-    required this.priority,
-    required this.addedDate,
-  });
-
-  _WishlistItem copyWith({String? notes, String? priority}) {
-    return _WishlistItem(
-      id: id,
-      speciesName: speciesName,
-      notes: notes ?? this.notes,
-      priority: priority ?? this.priority,
-      addedDate: addedDate,
-    );
-  }
-
-  Map<String, dynamic> toJson() => {
-    'id': id,
-    'speciesName': speciesName,
-    'notes': notes,
-    'priority': priority,
-    'addedDate': addedDate.toIso8601String(),
-  };
-
-  factory _WishlistItem.fromJson(Map<String, dynamic> json) => _WishlistItem(
-    id: json['id'],
-    speciesName: json['speciesName'],
-    notes: json['notes'] ?? '',
-    priority: json['priority'] ?? 'medium',
-    addedDate: DateTime.parse(json['addedDate']),
-  );
 }
 
 class _EmptyState extends StatelessWidget {
+  final WishlistCategory category;
+  final VoidCallback onAdd;
+
+  const _EmptyState({required this.category, required this.onAdd});
+
   @override
   Widget build(BuildContext context) {
+    final emoji = switch (category) {
+      WishlistCategory.fish => '🐠',
+      WishlistCategory.plant => '🌱',
+      WishlistCategory.equipment => '🔧',
+    };
+
+    final text = switch (category) {
+      WishlistCategory.fish => 'No fish on your wishlist yet',
+      WishlistCategory.plant => 'No plants on your wishlist yet',
+      WishlistCategory.equipment => 'No equipment on your wishlist yet',
+    };
+
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(32),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.favorite_border, size: 64, color: AppColors.textHint),
+            Text(emoji, style: const TextStyle(fontSize: 64)),
             const SizedBox(height: 16),
-            Text('Your Wishlist is Empty', style: AppTypography.headlineSmall),
-            const SizedBox(height: 8),
             Text(
-              'Search and add fish you\'d love to keep someday!',
-              style: AppTypography.bodyMedium,
+              text,
+              style: AppTypography.bodyLarge.copyWith(color: AppColors.textSecondary),
               textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 24),
+            ElevatedButton.icon(
+              onPressed: onAdd,
+              icon: const Icon(Icons.add),
+              label: const Text('Add your first item'),
             ),
           ],
         ),
@@ -263,109 +251,330 @@ class _EmptyState extends StatelessWidget {
   }
 }
 
-class _SectionHeader extends StatelessWidget {
-  final String title;
-  final int count;
-
-  const _SectionHeader({required this.title, required this.count});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
-      child: Row(
-        children: [
-          Text(title, style: AppTypography.labelLarge),
-          const SizedBox(width: 8),
-          Text('($count)', style: AppTypography.bodySmall),
-        ],
-      ),
-    );
-  }
-}
-
-class _WishlistTile extends StatelessWidget {
-  final _WishlistItem item;
+class _WishlistItemCard extends StatelessWidget {
+  final WishlistItem item;
+  final Color accentColor;
+  final VoidCallback onTap;
+  final VoidCallback onPurchased;
   final VoidCallback onDelete;
-  final Function(String) onPriorityChanged;
 
-  const _WishlistTile({
+  const _WishlistItemCard({
     required this.item,
+    required this.accentColor,
+    required this.onTap,
+    required this.onPurchased,
     required this.onDelete,
-    required this.onPriorityChanged,
   });
 
   @override
   Widget build(BuildContext context) {
-    final species = SpeciesDatabase.lookup(item.speciesName);
-
-    return Dismissible(
-      key: Key(item.id),
-      direction: DismissDirection.endToStart,
-      onDismissed: (_) => onDelete(),
-      background: Container(
-        alignment: Alignment.centerRight,
-        padding: const EdgeInsets.only(right: 16),
-        color: AppColors.error,
-        child: const Icon(Icons.delete, color: Colors.white),
-      ),
-      child: Card(
-        margin: const EdgeInsets.only(bottom: 8),
-        child: ListTile(
-          leading: Container(
-            width: 40,
-            height: 40,
-            decoration: BoxDecoration(
-              color: AppColors.primary.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: const Icon(Icons.set_meal, color: AppColors.primary, size: 20),
-          ),
-          title: Text(item.speciesName, style: AppTypography.labelLarge),
-          subtitle: species != null
-              ? Text(
-                  '${species.careLevel} • ${species.temperament} • ${species.adultSizeCm.toStringAsFixed(0)}cm',
-                  style: AppTypography.bodySmall,
-                )
-              : null,
-          trailing: PopupMenuButton<String>(
-            initialValue: item.priority,
-            onSelected: onPriorityChanged,
-            itemBuilder: (ctx) => [
-              const PopupMenuItem(value: 'high', child: Text('🔥 Must Have')),
-              const PopupMenuItem(value: 'medium', child: Text('⭐ Want')),
-              const PopupMenuItem(value: 'low', child: Text('💭 Maybe')),
+    return Card(
+      margin: const EdgeInsets.only(bottom: 12),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(12),
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Row(
+            children: [
+              Container(
+                width: 48,
+                height: 48,
+                decoration: BoxDecoration(
+                  color: accentColor.withOpacity(0.15),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Icon(
+                  _getCategoryIcon(),
+                  color: accentColor,
+                ),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      item.name,
+                      style: AppTypography.labelLarge,
+                    ),
+                    if (item.species != null)
+                      Text(
+                        item.species!,
+                        style: AppTypography.bodySmall.copyWith(
+                          fontStyle: FontStyle.italic,
+                          color: AppColors.textSecondary,
+                        ),
+                      ),
+                    if (item.estimatedPrice != null || item.quantity > 1)
+                      Row(
+                        children: [
+                          if (item.estimatedPrice != null)
+                            Text(
+                              '£${item.estimatedPrice!.toStringAsFixed(2)}',
+                              style: AppTypography.bodySmall.copyWith(
+                                color: accentColor,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          if (item.estimatedPrice != null && item.quantity > 1)
+                            Text(' × ', style: AppTypography.bodySmall),
+                          if (item.quantity > 1)
+                            Text(
+                              '${item.quantity}',
+                              style: AppTypography.bodySmall,
+                            ),
+                        ],
+                      ),
+                  ],
+                ),
+              ),
+              IconButton(
+                icon: const Icon(Icons.check_circle_outline),
+                color: AppColors.success,
+                tooltip: 'Mark as purchased',
+                onPressed: onPurchased,
+              ),
+              IconButton(
+                icon: const Icon(Icons.delete_outline),
+                color: AppColors.textHint,
+                tooltip: 'Delete',
+                onPressed: onDelete,
+              ),
             ],
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              decoration: BoxDecoration(
-                color: _priorityColor(item.priority).withOpacity(0.1),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Text(
-                _priorityEmoji(item.priority),
-                style: const TextStyle(fontSize: 16),
-              ),
-            ),
           ),
         ),
       ),
     );
   }
 
-  Color _priorityColor(String priority) {
-    switch (priority) {
-      case 'high': return AppColors.error;
-      case 'medium': return AppColors.warning;
-      default: return AppColors.textHint;
+  IconData _getCategoryIcon() {
+    switch (item.category) {
+      case WishlistCategory.fish:
+        return Icons.set_meal;
+      case WishlistCategory.plant:
+        return Icons.eco;
+      case WishlistCategory.equipment:
+        return Icons.build;
+    }
+  }
+}
+
+class _AddEditItemSheet extends StatefulWidget {
+  final WishlistCategory category;
+  final Color accentColor;
+  final WishlistItem? existingItem;
+  final Function(WishlistItem) onSave;
+
+  const _AddEditItemSheet({
+    required this.category,
+    required this.accentColor,
+    this.existingItem,
+    required this.onSave,
+  });
+
+  @override
+  State<_AddEditItemSheet> createState() => _AddEditItemSheetState();
+}
+
+class _AddEditItemSheetState extends State<_AddEditItemSheet> {
+  late TextEditingController _nameController;
+  late TextEditingController _speciesController;
+  late TextEditingController _priceController;
+  late TextEditingController _notesController;
+  late int _quantity;
+
+  bool get _isEditing => widget.existingItem != null;
+
+  @override
+  void initState() {
+    super.initState();
+    final item = widget.existingItem;
+    _nameController = TextEditingController(text: item?.name ?? '');
+    _speciesController = TextEditingController(text: item?.species ?? '');
+    _priceController = TextEditingController(
+      text: item?.estimatedPrice?.toStringAsFixed(2) ?? '',
+    );
+    _notesController = TextEditingController(text: item?.notes ?? '');
+    _quantity = item?.quantity ?? 1;
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _speciesController.dispose();
+    _priceController.dispose();
+    _notesController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.all(16),
+      padding: EdgeInsets.only(
+        bottom: MediaQuery.of(context).viewInsets.bottom,
+      ),
+      decoration: BoxDecoration(
+        color: Theme.of(context).scaffoldBackgroundColor,
+        borderRadius: BorderRadius.circular(24),
+      ),
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(
+                  _isEditing ? Icons.edit : Icons.add_circle,
+                  color: widget.accentColor,
+                ),
+                const SizedBox(width: 12),
+                Text(
+                  _isEditing ? 'Edit Item' : 'Add to Wishlist',
+                  style: AppTypography.headlineSmall,
+                ),
+              ],
+            ),
+            const SizedBox(height: 24),
+
+            // Name field
+            TextField(
+              controller: _nameController,
+              decoration: InputDecoration(
+                labelText: _getNameLabel(),
+                hintText: _getNameHint(),
+              ),
+              textCapitalization: TextCapitalization.words,
+            ),
+            const SizedBox(height: 16),
+
+            // Species field (for fish and plants)
+            if (widget.category != WishlistCategory.equipment) ...[
+              TextField(
+                controller: _speciesController,
+                decoration: const InputDecoration(
+                  labelText: 'Scientific name (optional)',
+                  hintText: 'e.g., Paracheirodon innesi',
+                ),
+              ),
+              const SizedBox(height: 16),
+            ],
+
+            // Price and quantity row
+            Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    controller: _priceController,
+                    decoration: const InputDecoration(
+                      labelText: 'Est. price (£)',
+                      prefixText: '£ ',
+                    ),
+                    keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                    inputFormatters: [
+                      FilteringTextInputFormatter.allow(RegExp(r'[\d.]')),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Quantity', style: AppTypography.bodySmall),
+                    const SizedBox(height: 4),
+                    Row(
+                      children: [
+                        IconButton(
+                          icon: const Icon(Icons.remove_circle_outline),
+                          onPressed: _quantity > 1
+                              ? () => setState(() => _quantity--)
+                              : null,
+                        ),
+                        Text(
+                          '$_quantity',
+                          style: AppTypography.labelLarge,
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.add_circle_outline),
+                          onPressed: () => setState(() => _quantity++),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+
+            // Notes
+            TextField(
+              controller: _notesController,
+              decoration: const InputDecoration(
+                labelText: 'Notes (optional)',
+                hintText: 'Any details to remember...',
+              ),
+              maxLines: 2,
+            ),
+            const SizedBox(height: 24),
+
+            // Save button
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: _nameController.text.trim().isNotEmpty ? _save : null,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: widget.accentColor,
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                ),
+                child: Text(_isEditing ? 'Save Changes' : 'Add to Wishlist'),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  String _getNameLabel() {
+    switch (widget.category) {
+      case WishlistCategory.fish:
+        return 'Fish name';
+      case WishlistCategory.plant:
+        return 'Plant name';
+      case WishlistCategory.equipment:
+        return 'Equipment name';
     }
   }
 
-  String _priorityEmoji(String priority) {
-    switch (priority) {
-      case 'high': return '🔥';
-      case 'medium': return '⭐';
-      default: return '💭';
+  String _getNameHint() {
+    switch (widget.category) {
+      case WishlistCategory.fish:
+        return 'e.g., Neon Tetra';
+      case WishlistCategory.plant:
+        return 'e.g., Java Fern';
+      case WishlistCategory.equipment:
+        return 'e.g., Fluval 207 Filter';
     }
+  }
+
+  void _save() {
+    final item = WishlistItem(
+      id: widget.existingItem?.id,
+      category: widget.category,
+      name: _nameController.text.trim(),
+      species: _speciesController.text.trim().isEmpty
+          ? null
+          : _speciesController.text.trim(),
+      estimatedPrice: double.tryParse(_priceController.text),
+      notes: _notesController.text.trim().isEmpty
+          ? null
+          : _notesController.text.trim(),
+      quantity: _quantity,
+      createdAt: widget.existingItem?.createdAt,
+    );
+    widget.onSave(item);
   }
 }

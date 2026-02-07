@@ -21,7 +21,9 @@ class MaintenanceChecklistScreen extends ConsumerStatefulWidget {
 class _MaintenanceChecklistScreenState extends ConsumerState<MaintenanceChecklistScreen> {
   Map<String, bool> _weeklyChecks = {};
   Map<String, bool> _monthlyChecks = {};
+  // ignore: unused_field - reserved for future weekly reset logic
   String? _lastResetWeek;
+  // ignore: unused_field - reserved for future monthly reset logic  
   String? _lastResetMonth;
 
   final _weeklyItems = [

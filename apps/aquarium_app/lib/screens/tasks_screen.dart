@@ -6,6 +6,7 @@ import '../models/models.dart';
 import '../providers/storage_provider.dart';
 import '../providers/tank_provider.dart';
 import '../theme/app_theme.dart';
+import '../utils/app_feedback.dart';
 
 const _uuid = Uuid();
 
@@ -654,9 +655,7 @@ class _AddTaskSheetState extends State<_AddTaskSheet> {
   Future<void> _save() async {
     final title = _titleController.text.trim();
     if (title.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please enter a title')),
-      );
+      AppFeedback.showWarning(context, 'Please enter a title');
       return;
     }
 
@@ -687,9 +686,7 @@ class _AddTaskSheetState extends State<_AddTaskSheet> {
       if (mounted) Navigator.pop(context);
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: $e')),
-        );
+        AppFeedback.showError(context, 'Error: $e');
       }
     } finally {
       if (mounted) setState(() => _isSaving = false);

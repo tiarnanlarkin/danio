@@ -4,8 +4,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
 import '../data/species_database.dart';
 import '../models/models.dart';
+import '../models/learning.dart';
 import '../providers/storage_provider.dart';
 import '../providers/tank_provider.dart';
+import '../providers/user_profile_provider.dart';
 import '../services/compatibility_service.dart';
 import '../theme/app_theme.dart';
 import 'livestock_detail_screen.dart';
@@ -25,6 +27,19 @@ class LivestockScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Livestock'),
+        actions: [
+          PopupMenuButton<String>(
+            icon: const Icon(Icons.more_vert),
+            onSelected: (value) {
+              if (value == 'add') _showAddDialog(context, ref);
+              if (value == 'bulk') _showBulkAddDialog(context, ref);
+            },
+            itemBuilder: (context) => const [
+              PopupMenuItem(value: 'add', child: Text('Add livestock')),
+              PopupMenuItem(value: 'bulk', child: Text('Bulk add')),
+            ],
+          ),
+        ],
       ),
       body: livestockAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
@@ -45,6 +60,12 @@ class LivestockScreen extends ConsumerWidget {
                     onPressed: () => _showAddDialog(context, ref),
                     icon: const Icon(Icons.add),
                     label: const Text('Add Livestock'),
+                  ),
+                  const SizedBox(height: 8),
+                  TextButton.icon(
+                    onPressed: () => _showBulkAddDialog(context, ref),
+                    icon: const Icon(Icons.playlist_add),
+                    label: const Text('Bulk add'),
                   ),
                 ],
               ),
@@ -111,6 +132,14 @@ class LivestockScreen extends ConsumerWidget {
     );
   }
 
+  void _showBulkAddDialog(BuildContext context, WidgetRef ref) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (_) => _BulkAddLivestockSheet(tankId: tankId, ref: ref),
+    );
+  }
+
   void _showEditDialog(BuildContext context, WidgetRef ref, Livestock livestock) {
     showModalBottomSheet(
       context: context,
@@ -133,8 +162,27 @@ class LivestockScreen extends ConsumerWidget {
           TextButton(
             onPressed: () async {
               Navigator.pop(ctx);
-              await ref.read(storageServiceProvider).deleteLivestock(livestock.id);
+              final storage = ref.read(storageServiceProvider);
+              final now = DateTime.now();
+
+              await storage.deleteLivestock(livestock.id);
+
+              // Auto-create an activity log entry.
+              await storage.saveLog(
+                LogEntry(
+                  id: _uuid.v4(),
+                  tankId: tankId,
+                  type: LogType.livestockRemoved,
+                  timestamp: now,
+                  title: 'Removed ${livestock.count}× ${livestock.commonName}',
+                  relatedLivestockId: livestock.id,
+                  createdAt: now,
+                ),
+              );
+
               ref.invalidate(livestockProvider(tankId));
+              ref.invalidate(logsProvider(tankId));
+              ref.invalidate(allLogsProvider(tankId));
             },
             child: const Text('Remove', style: TextStyle(color: AppColors.error)),
           ),
@@ -524,6 +572,29 @@ class _AddLivestockSheetState extends State<_AddLivestockSheet> {
       );
 
       await storage.saveLivestock(livestock);
+
+      // If this is a brand new livestock entry, also create a log entry + XP.
+      if (widget.existing == null) {
+        await storage.saveLog(
+          LogEntry(
+            id: _uuid.v4(),
+            tankId: widget.tankId,
+            type: LogType.livestockAdded,
+            timestamp: now,
+            title: 'Added ${livestock.count}× ${livestock.commonName}',
+            relatedLivestockId: livestock.id,
+            createdAt: now,
+          ),
+        );
+
+        widget.ref.invalidate(logsProvider(widget.tankId));
+        widget.ref.invalidate(allLogsProvider(widget.tankId));
+
+        await widget.ref
+            .read(userProfileProvider.notifier)
+            .recordActivity(xp: XpRewards.addLivestock);
+      }
+
       widget.ref.invalidate(livestockProvider(widget.tankId));
 
       if (mounted) Navigator.pop(context);
@@ -537,4 +608,261 @@ class _AddLivestockSheetState extends State<_AddLivestockSheet> {
       if (mounted) setState(() => _isSaving = false);
     }
   }
+}
+
+class _BulkAddLivestockSheet extends StatefulWidget {
+  final String tankId;
+  final WidgetRef ref;
+
+  const _BulkAddLivestockSheet({required this.tankId, required this.ref});
+
+  @override
+  State<_BulkAddLivestockSheet> createState() => _BulkAddLivestockSheetState();
+}
+
+class _BulkAddLivestockSheetState extends State<_BulkAddLivestockSheet> {
+  final _controller = TextEditingController();
+  bool _isSaving = false;
+  List<_BulkLivestockItem> _items = const [];
+  String? _parseError;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller.addListener(_rebuildPreview);
+    _rebuildPreview();
+  }
+
+  @override
+  void dispose() {
+    _controller.removeListener(_rebuildPreview);
+    _controller.dispose();
+    super.dispose();
+  }
+
+  void _rebuildPreview() {
+    final parsed = _parseItems(_controller.text);
+    setState(() {
+      _items = parsed.items;
+      _parseError = parsed.error;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.only(
+        left: 16,
+        right: 16,
+        top: 16,
+        bottom: MediaQuery.of(context).viewInsets.bottom + 16,
+      ),
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text('Bulk add livestock', style: AppTypography.headlineMedium),
+            const SizedBox(height: 8),
+            Text(
+              'One per line. Formats supported: “Neon Tetra, 10”, “10 Neon Tetra”, “Neon Tetra x10”.',
+              style: AppTypography.bodySmall.copyWith(color: AppColors.textSecondary),
+            ),
+            const SizedBox(height: 12),
+            TextField(
+              controller: _controller,
+              maxLines: 8,
+              decoration: InputDecoration(
+                labelText: 'List',
+                hintText: 'Neon Tetra, 12\nCorydoras x6\n2 Mystery Snail',
+                errorText: _parseError,
+              ),
+              textCapitalization: TextCapitalization.words,
+            ),
+            const SizedBox(height: 12),
+            if (_items.isNotEmpty) ...[
+              Text('Preview (${_items.length})', style: AppTypography.labelLarge),
+              const SizedBox(height: 8),
+              ..._items.map(
+                (i) => Padding(
+                  padding: const EdgeInsets.only(bottom: 6),
+                  child: Row(
+                    children: [
+                      Expanded(child: Text(i.name, style: AppTypography.bodyMedium)),
+                      const SizedBox(width: 12),
+                      Text('×${i.count}', style: AppTypography.bodyMedium),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 4),
+            ],
+            const SizedBox(height: 16),
+            ElevatedButton.icon(
+              onPressed: _isSaving ? null : _save,
+              icon: _isSaving
+                  ? const SizedBox(
+                      width: 18,
+                      height: 18,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : const Icon(Icons.playlist_add),
+              label: Text(_isSaving ? 'Adding…' : 'Add ${_items.isEmpty ? '' : '(${_items.length}) '}livestock'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<void> _save() async {
+    if (_items.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Add at least one line to continue')),
+      );
+      return;
+    }
+
+    setState(() => _isSaving = true);
+
+    try {
+      final storage = widget.ref.read(storageServiceProvider);
+      final now = DateTime.now();
+
+      for (final item in _items) {
+        final livestock = Livestock(
+          id: _uuid.v4(),
+          tankId: widget.tankId,
+          commonName: item.name,
+          scientificName: null,
+          count: item.count,
+          dateAdded: now,
+          createdAt: now,
+          updatedAt: now,
+        );
+
+        await storage.saveLivestock(livestock);
+        await storage.saveLog(
+          LogEntry(
+            id: _uuid.v4(),
+            tankId: widget.tankId,
+            type: LogType.livestockAdded,
+            timestamp: now,
+            title: 'Added ${livestock.count}× ${livestock.commonName}',
+            relatedLivestockId: livestock.id,
+            createdAt: now,
+          ),
+        );
+      }
+
+      widget.ref.invalidate(livestockProvider(widget.tankId));
+      widget.ref.invalidate(logsProvider(widget.tankId));
+      widget.ref.invalidate(allLogsProvider(widget.tankId));
+
+      await widget.ref.read(userProfileProvider.notifier).recordActivity(
+            xp: _items.length * XpRewards.addLivestock,
+          );
+
+      if (mounted) {
+        Navigator.pop(context);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Added ${_items.length} livestock entries'),
+            backgroundColor: AppColors.success,
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error: $e'),
+            backgroundColor: AppColors.error,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _isSaving = false);
+    }
+  }
+
+  _ParseResult _parseItems(String raw) {
+    final lines = raw
+        .split(RegExp(r'\r?\n'))
+        .map((l) => l.trim())
+        .where((l) => l.isNotEmpty)
+        .toList();
+
+    final items = <_BulkLivestockItem>[];
+
+    for (final line in lines) {
+      final item = _parseLine(line);
+      if (item == null) {
+        return _ParseResult(
+          items: items,
+          error: 'Could not parse: “$line”',
+        );
+      }
+      items.add(item);
+    }
+
+    return _ParseResult(items: items);
+  }
+
+  _BulkLivestockItem? _parseLine(String line) {
+    // 1) comma format: Name, 10
+    if (line.contains(',')) {
+      final parts = line.split(',');
+      if (parts.length >= 2) {
+        final name = parts[0].trim();
+        final count = int.tryParse(parts.sublist(1).join(',').trim());
+        if (name.isNotEmpty && count != null && count > 0) {
+          return _BulkLivestockItem(name: name, count: count);
+        }
+      }
+    }
+
+    // 2) Name x10 / Name ×10 / Name x 10
+    final mult = RegExp(r'^(.*?)(?:\s*[x×]\s*)(\d+)$', caseSensitive: false);
+    final multMatch = mult.firstMatch(line);
+    if (multMatch != null) {
+      final name = (multMatch.group(1) ?? '').trim();
+      final count = int.tryParse(multMatch.group(2) ?? '');
+      if (name.isNotEmpty && count != null && count > 0) {
+        return _BulkLivestockItem(name: name, count: count);
+      }
+    }
+
+    // 3) 10 Name
+    final leading = RegExp(r'^(\d+)\s+(.*)$');
+    final leadingMatch = leading.firstMatch(line);
+    if (leadingMatch != null) {
+      final count = int.tryParse(leadingMatch.group(1) ?? '');
+      final name = (leadingMatch.group(2) ?? '').trim();
+      if (name.isNotEmpty && count != null && count > 0) {
+        return _BulkLivestockItem(name: name, count: count);
+      }
+    }
+
+    // 4) fallback: just a name = count 1
+    if (line.isNotEmpty) {
+      return _BulkLivestockItem(name: line, count: 1);
+    }
+
+    return null;
+  }
+}
+
+class _BulkLivestockItem {
+  final String name;
+  final int count;
+
+  const _BulkLivestockItem({required this.name, required this.count});
+}
+
+class _ParseResult {
+  final List<_BulkLivestockItem> items;
+  final String? error;
+
+  const _ParseResult({required this.items, this.error});
 }

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../theme/app_theme.dart';
+import 'privacy_policy_screen.dart';
+import 'terms_of_service_screen.dart';
 
 class AboutScreen extends StatelessWidget {
   const AboutScreen({super.key});
@@ -94,13 +96,25 @@ class AboutScreen extends StatelessWidget {
             
             const SizedBox(height: 24),
             
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+            Wrap(
+              alignment: WrapAlignment.center,
+              spacing: 8,
+              runSpacing: 8,
               children: [
                 TextButton.icon(
                   icon: const Icon(Icons.privacy_tip_outlined, size: 18),
                   label: const Text('Privacy'),
                   onPressed: () => _showPrivacyInfo(context),
+                ),
+                TextButton.icon(
+                  icon: const Icon(Icons.gavel, size: 18),
+                  label: const Text('Terms'),
+                  onPressed: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const TermsOfServiceScreen(),
+                    ),
+                  ),
                 ),
                 TextButton.icon(
                   icon: const Icon(Icons.code, size: 18),
@@ -122,23 +136,9 @@ class AboutScreen extends StatelessWidget {
   }
 
   void _showPrivacyInfo(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Privacy'),
-        content: const Text(
-          'This app stores all data locally on your device. '
-          'No data is sent to external servers. '
-          'Your aquarium data, photos, and settings remain private.\n\n'
-          'Backups you export are stored wherever you choose to save them.',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: const Text('OK'),
-          ),
-        ],
-      ),
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const PrivacyPolicyScreen()),
     );
   }
 }

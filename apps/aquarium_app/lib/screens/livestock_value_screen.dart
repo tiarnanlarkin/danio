@@ -145,7 +145,7 @@ class _LivestockValueScreenState extends ConsumerState<LivestockValueScreen> {
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Icon(
-                          true ? Icons.set_meal : Icons.bug_report,
+                          Icons.set_meal,
                           color: AppColors.primary,
                           size: 20,
                         ),
