@@ -1,5 +1,7 @@
 /// Review Queue Service
 /// Implements intelligent review scheduling and prioritization algorithms
+library;
+
 
 import 'dart:math' as math;
 import '../models/spaced_repetition.dart';

@@ -1,5 +1,7 @@
 /// User profile model for personalized experience
 /// This powers the "Duolingo for fishkeeping" learning journey
+library;
+
 
 import 'package:flutter/foundation.dart';
 import 'lesson_progress.dart';

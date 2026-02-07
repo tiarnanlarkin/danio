@@ -1,5 +1,7 @@
 /// Hearts/Lives system service
 /// Manages heart deduction, auto-refill, and practice mode rewards
+library;
+
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/user_profile.dart';

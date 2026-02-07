@@ -1,5 +1,7 @@
 /// Model for tracking individual lesson progress with spaced repetition
 /// Implements a forgetting curve algorithm to help users review forgotten lessons
+library;
+
 
 import 'package:flutter/foundation.dart';
 

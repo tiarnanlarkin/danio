@@ -1,5 +1,7 @@
 /// Difficulty settings screen - View skill levels and manage difficulty preferences
 /// Shows performance charts, skill levels by topic, and manual overrides
+library;
+
 
 import 'package:flutter/material.dart';
 import '../models/adaptive_difficulty.dart';

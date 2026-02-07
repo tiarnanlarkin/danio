@@ -1,4 +1,6 @@
 /// Leaderboard and competitive ranking models
+library;
+
 
 /// League tier for competitive ranking
 enum League {

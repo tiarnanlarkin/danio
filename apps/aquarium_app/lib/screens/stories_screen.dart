@@ -9,6 +9,8 @@ import '../models/story.dart';
 import '../models/user_profile.dart';
 import '../data/stories.dart';
 import '../providers/user_profile_provider.dart';
+import '../widgets/skeleton_loader.dart';
+import '../widgets/error_state.dart';
 import 'story_player_screen.dart';
 
 enum StorySortOrder {
@@ -105,12 +107,17 @@ class _StoriesScreenState extends ConsumerState<StoriesScreen> {
 
           // Story list
           profileAsync.when(
-            loading: () => const SliverFillRemaining(
-              child: Center(child: CircularProgressIndicator()),
+            loading: () => SliverList(
+              delegate: SliverChildBuilderDelegate(
+                (context, index) => const SkeletonStoryCard(),
+                childCount: 5,
+              ),
             ),
             error: (err, stack) => SliverFillRemaining(
-              child: Center(
-                child: Text('Error loading stories: $err'),
+              child: ErrorState(
+                message: 'Unable to load stories',
+                details: 'Please check your connection and try again.',
+                onRetry: () => ref.invalidate(userProfileProvider),
               ),
             ),
             data: (profile) => _buildStoryList(profile),

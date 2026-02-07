@@ -1,5 +1,7 @@
 /// Achievements Screen - Trophy Case Gallery
 /// Displays all achievements with filtering, sorting, and progress tracking
+library;
+
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

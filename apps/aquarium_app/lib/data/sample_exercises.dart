@@ -1,5 +1,7 @@
 /// Sample exercises demonstrating all exercise types
 /// Use these as templates for creating new lessons
+library;
+
 
 import '../models/exercises.dart';
 

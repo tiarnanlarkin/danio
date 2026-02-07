@@ -1,5 +1,7 @@
 /// Beautiful, animated UI widgets for all exercise types
 /// Duolingo-style interactive learning experiences
+library;
+
 
 import 'package:flutter/material.dart';
 import '../models/exercises.dart';

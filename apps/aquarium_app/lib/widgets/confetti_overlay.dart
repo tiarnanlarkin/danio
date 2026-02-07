@@ -1,5 +1,7 @@
 /// Confetti Overlay Widget
 /// Shows celebration animation when completing sessions
+library;
+
 
 import 'package:flutter/material.dart';
 import 'dart:math' as math;

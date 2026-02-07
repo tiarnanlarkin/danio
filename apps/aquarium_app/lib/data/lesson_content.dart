@@ -1,5 +1,7 @@
 /// Lesson content for the learning system
 /// The "Duolingo for fishkeeping" curriculum
+library;
+
 
 import '../models/tank.dart'; // For TankType enum
 import '../models/learning.dart';

@@ -70,7 +70,7 @@ class LivestockSection extends ConsumerWidget {
                     backgroundColor: AppColors.primary.withOpacity(0.1),
                     child: const Icon(Icons.pets, color: AppColors.primary, size: 20),
                   ),
-                  title: Text(item.species),
+                  title: Text(item.commonName),
                   subtitle: item.count > 1 ? Text('Quantity: ${item.count}') : null,
                   trailing: const Icon(Icons.chevron_right),
                 );
@@ -157,7 +157,7 @@ class TasksSection extends ConsumerWidget {
       error: (err, _) => _SectionError(title: 'Tasks', error: err.toString()),
       data: (tasks) {
         // Filter for incomplete tasks
-        final incompleteTasks = tasks.where((t) => !t.completed).toList();
+        final incompleteTasks = tasks.where((t) => t.isEnabled && t.dueDate != null).toList();
         
         if (incompleteTasks.isEmpty) {
           return const _SectionEmpty(
@@ -194,7 +194,7 @@ class TasksSection extends ConsumerWidget {
                     },
                   ),
                   title: Text(task.title),
-                  subtitle: task.description.isNotEmpty ? Text(task.description) : null,
+                  subtitle: task.description != null && task.description!.isNotEmpty ? Text(task.description!) : null,
                 );
               },
             ),
@@ -380,7 +380,7 @@ class _SectionEmpty extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(icon, size: 64, color: AppColors.onSurfaceVariant),
+                Icon(icon, size: 64, color: AppColors.textHint),
                 const SizedBox(height: 12),
                 Text(message, style: AppTypography.bodyMedium),
               ],

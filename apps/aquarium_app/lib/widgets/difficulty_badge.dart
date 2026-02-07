@@ -1,5 +1,7 @@
 /// Reusable difficulty badge widget
 /// Shows difficulty level with color-coded styling
+library;
+
 
 import 'package:flutter/material.dart';
 import '../models/adaptive_difficulty.dart';

@@ -1,5 +1,7 @@
 /// Streak calendar widget - GitHub-style activity visualization
 /// Shows daily goal completion with color-coded squares
+library;
+
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

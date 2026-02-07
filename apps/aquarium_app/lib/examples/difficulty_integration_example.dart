@@ -1,5 +1,7 @@
 /// Example integration of adaptive difficulty with existing lesson/quiz screens
 /// This shows how to integrate the difficulty system into your app
+library;
+
 
 import 'package:flutter/material.dart';
 import '../models/adaptive_difficulty.dart';

@@ -4,8 +4,10 @@ import '../models/friend.dart';
 import '../providers/friends_provider.dart';
 import '../theme/app_theme.dart';
 import '../utils/app_feedback.dart';
+import '../utils/debouncer.dart';
 import '../widgets/empty_state.dart';
 import '../widgets/error_state.dart';
+import '../widgets/skeleton_loader.dart';
 import 'friend_comparison_screen.dart';
 
 /// Social features screen - friends list and activity feed
@@ -16,21 +18,28 @@ class FriendsScreen extends ConsumerStatefulWidget {
   ConsumerState<FriendsScreen> createState() => _FriendsScreenState();
 }
 
-class _FriendsScreenState extends ConsumerState<FriendsScreen> with SingleTickerProviderStateMixin {
+class _FriendsScreenState extends ConsumerState<FriendsScreen> 
+    with SingleTickerProviderStateMixin, DebounceMixin {
   late TabController _tabController;
   final _searchController = TextEditingController();
   String _searchQuery = '';
+  late TextDebouncer _searchDebouncer;
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
+    _searchDebouncer = TextDebouncer(
+      delay: const Duration(milliseconds: 300),
+      onChanged: (value) => setState(() => _searchQuery = value),
+    );
   }
 
   @override
   void dispose() {
     _tabController.dispose();
     _searchController.dispose();
+    _searchDebouncer.dispose();
     super.dispose();
   }
 
@@ -63,24 +72,26 @@ class _FriendsScreenState extends ConsumerState<FriendsScreen> with SingleTicker
         children: [
           // Friends Tab
           friendsAsync.when(
-            loading: () => const Center(child: CircularProgressIndicator()),
+            loading: () => const SkeletonList(itemCount: 5, itemHeight: 80),
             error: (e, _) => ErrorState(
-              message: 'Error loading friends',
+              message: 'Unable to load friends',
+              details: 'Please check your connection and try again.',
               onRetry: () => ref.read(friendsProvider.notifier).reload(),
             ),
             data: (friends) => _FriendsListView(
               friends: friends,
               searchQuery: _searchQuery,
-              onSearchChanged: (query) => setState(() => _searchQuery = query),
+              onSearchChanged: (query) => _searchDebouncer.update(query),
               searchController: _searchController,
             ),
           ),
 
           // Activity Feed Tab
           activitiesAsync.when(
-            loading: () => const Center(child: CircularProgressIndicator()),
+            loading: () => const SkeletonList(itemCount: 6, itemHeight: 100),
             error: (e, _) => ErrorState(
-              message: 'Error loading activities',
+              message: 'Unable to load activity feed',
+              details: 'Please check your connection and try again.',
               onRetry: () => ref.read(friendActivitiesProvider.notifier).reload(),
             ),
             data: (activities) => _ActivityFeedView(activities: activities),

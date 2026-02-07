@@ -1,5 +1,7 @@
 /// Enhanced Practice Screen with full Spaced Repetition System
 /// Implements review sessions, adaptive difficulty, and progress tracking
+library;
+
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

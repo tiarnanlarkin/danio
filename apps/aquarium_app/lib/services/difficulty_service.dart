@@ -1,5 +1,7 @@
 /// Service for adaptive difficulty adjustment based on user performance
 /// Implements AI-powered difficulty recommendations
+library;
+
 
 import 'dart:math';
 import '../models/adaptive_difficulty.dart';

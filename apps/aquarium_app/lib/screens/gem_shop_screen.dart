@@ -8,22 +8,23 @@ import '../providers/gems_provider.dart';
 import '../services/shop_service.dart';
 import '../data/shop_catalog.dart';
 import '../theme/app_theme.dart';
+import '../widgets/empty_state.dart';
 
-/// Gem Shop colors - jewel/treasure theme
+/// Gem Shop colors - jewel/treasure theme (WCAG AA compliant)
 class GemShopColors {
   static const background1 = Color(0xFF1A1A2E);  // Deep navy
   static const background2 = Color(0xFF16213E);  // Dark blue
   static const background3 = Color(0xFF0F1A2E);  // Darker blue
-  static const gemPrimary = Color(0xFF4ECDC4);   // Turquoise (gem color)
+  static const gemPrimary = Color(0xFF5FD9CF);   // Turquoise (gem color) - Lightened for better contrast
   static const gemGlow = Color(0xFF95E1D3);      // Light turquoise
   static const goldAccent = Color(0xFFFFD700);   // Gold
   static const silverAccent = Color(0xFFC0C0C0); // Silver
   static const glassCard = Color(0x15FFFFFF);
   static const glassBorder = Color(0x30FFFFFF);
-  static const textPrimary = Color(0xFFF5F5F5);
-  static const textSecondary = Color(0xFFB8B8C8);
-  static const powerUpColor = Color(0xFFFF6B6B);    // Red
-  static const extrasColor = Color(0xFF4ECDC4);     // Turquoise
+  static const textPrimary = Color(0xFFF5F5F5);  // High contrast white
+  static const textSecondary = Color(0xFFC5C5D5); // Improved contrast - lightened from B8B8C8
+  static const powerUpColor = Color(0xFFFF7B7B);    // Red - Lightened slightly
+  static const extrasColor = Color(0xFF5FD9CF);     // Turquoise - matches gemPrimary
   static const cosmeticsColor = Color(0xFFFFD700);  // Gold
 }
 
@@ -94,9 +95,18 @@ class _GemShopScreenState extends ConsumerState<GemShopScreen>
             labelColor: GemShopColors.gemPrimary,
             unselectedLabelColor: GemShopColors.textSecondary,
             tabs: const [
-              Tab(icon: Icon(Icons.flash_on), text: 'Power-ups'),
-              Tab(icon: Icon(Icons.card_giftcard), text: 'Extras'),
-              Tab(icon: Icon(Icons.palette), text: 'Cosmetics'),
+              Tab(
+                icon: Icon(Icons.flash_on, semanticLabel: 'Power-ups category'),
+                text: 'Power-ups',
+              ),
+              Tab(
+                icon: Icon(Icons.card_giftcard, semanticLabel: 'Extras category'),
+                text: 'Extras',
+              ),
+              Tab(
+                icon: Icon(Icons.palette, semanticLabel: 'Cosmetics category'),
+                text: 'Cosmetics',
+              ),
             ],
           ),
         ),
@@ -353,11 +363,10 @@ class _ShopItemGrid extends ConsumerWidget {
     final items = ShopCatalog.getByCategory(category);
 
     if (items.isEmpty) {
-      return const Center(
-        child: Text(
-          'No items available',
-          style: TextStyle(color: GemShopColors.textSecondary),
-        ),
+      return const EmptyState(
+        icon: Icons.shopping_bag_outlined,
+        title: 'No items available',
+        message: 'Check back later for new items in this category!',
       );
     }
 
@@ -408,9 +417,16 @@ class _ShopItemCard extends ConsumerWidget {
     final quantity = ref.watch(itemQuantityProvider(item.id));
     final categoryColor = _getCategoryColor();
 
-    return GestureDetector(
-      onTap: onTap,
-      child: ClipRRect(
+    final semanticLabel = '${item.name}, ${item.gemCost} gems. ${item.description}'
+        '${owned ? '. Already owned${item.isConsumable && quantity > 0 ? ', quantity $quantity' : ''}' : ''}';
+
+    return Semantics(
+      button: true,
+      label: semanticLabel,
+      enabled: true,
+      child: GestureDetector(
+        onTap: onTap,
+        child: ClipRRect(
         borderRadius: BorderRadius.circular(20),
         child: BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
@@ -537,6 +553,7 @@ class _ShopItemCard extends ConsumerWidget {
           ),
         ),
       ),
+    ),
     );
   }
 }
@@ -549,42 +566,46 @@ class _GemBalanceChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            GemShopColors.gemPrimary.withOpacity(0.3),
-            GemShopColors.gemGlow.withOpacity(0.2),
+    return Semantics(
+      label: 'Gem balance: $balance gems',
+      readOnly: true,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              GemShopColors.gemPrimary.withOpacity(0.3),
+              GemShopColors.gemGlow.withOpacity(0.2),
+            ],
+          ),
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(
+            color: GemShopColors.gemPrimary.withOpacity(0.5),
+            width: 2,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: GemShopColors.gemPrimary.withOpacity(0.3),
+              blurRadius: 10,
+              spreadRadius: 1,
+            ),
           ],
         ),
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: GemShopColors.gemPrimary.withOpacity(0.5),
-          width: 2,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: GemShopColors.gemPrimary.withOpacity(0.3),
-            blurRadius: 10,
-            spreadRadius: 1,
-          ),
-        ],
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const Text('💎', style: TextStyle(fontSize: 20)),
-          const SizedBox(width: 8),
-          Text(
-            '$balance',
-            style: const TextStyle(
-              color: GemShopColors.textPrimary,
-              fontWeight: FontWeight.bold,
-              fontSize: 18,
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text('💎', style: TextStyle(fontSize: 20)),
+            const SizedBox(width: 8),
+            Text(
+              '$balance',
+              style: const TextStyle(
+                color: GemShopColors.textPrimary,
+                fontWeight: FontWeight.bold,
+                fontSize: 18,
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

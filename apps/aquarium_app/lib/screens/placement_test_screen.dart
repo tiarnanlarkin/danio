@@ -1,5 +1,7 @@
 /// Placement test screen for assessing user knowledge
 /// Duolingo-style onboarding experience
+library;
+
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

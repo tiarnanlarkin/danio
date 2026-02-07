@@ -1,5 +1,7 @@
 /// Enhanced quiz screen supporting all exercise types
 /// Replaces the basic quiz functionality with multi-type support
+library;
+
 
 import 'package:flutter/material.dart';
 import '../models/exercises.dart';

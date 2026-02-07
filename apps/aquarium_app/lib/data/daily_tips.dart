@@ -1,7 +1,9 @@
 /// Daily tips for the learning system
 /// Personalized based on user experience and tank type
+library;
 
 import '../models/learning.dart';
+import '../models/tank.dart';
 import '../models/user_profile.dart';
 
 class DailyTips {
@@ -66,20 +68,20 @@ class DailyTips {
       id: 'tip_plant_timer',
       title: 'Use a Light Timer',
       content: 'Consistent 6-8 hours of light daily prevents algae. A timer removes the guesswork and human error.',
-      targetTankTypes: [TankType.planted],
+      targetTankTypes: [TankType.freshwater],
       relatedLessonId: 'planted_light',
     ),
     DailyTip(
       id: 'tip_plant_ferts',
       title: 'Start Low, Go Slow',
       content: 'With fertilizers, less is more at first. It\'s easier to add more than to fight algae from overdosing.',
-      targetTankTypes: [TankType.planted],
+      targetTankTypes: [TankType.freshwater],
     ),
     DailyTip(
       id: 'tip_trim_plants',
       title: 'Trim Dead Leaves',
       content: 'Remove yellowing or dying plant leaves promptly. They decay and add ammonia to your water.',
-      targetTankTypes: [TankType.planted],
+      targetTankTypes: [TankType.freshwater],
     ),
     
     // Intermediate tips

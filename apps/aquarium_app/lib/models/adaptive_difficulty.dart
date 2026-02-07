@@ -1,5 +1,7 @@
 /// Adaptive difficulty models for AI-powered difficulty adjustment
 /// Tracks user performance and provides dynamic difficulty recommendations
+library;
+
 
 import 'package:flutter/foundation.dart';
 

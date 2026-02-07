@@ -1,5 +1,7 @@
 /// Learning system models for the "Duolingo for fishkeeping" experience
 /// Lessons, quizzes, achievements, and learning paths
+library;
+
 
 import 'package:flutter/foundation.dart';
 import 'tank.dart'; // For TankType enum

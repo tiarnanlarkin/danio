@@ -13,6 +13,8 @@ import '../models/user_profile.dart';
 import '../models/learning.dart';
 import '../services/analytics_service.dart';
 import '../data/lesson_content.dart';
+import '../widgets/skeleton_loader.dart';
+import '../widgets/error_state.dart';
 
 class AnalyticsScreen extends StatefulWidget {
   const AnalyticsScreen({super.key});
@@ -43,25 +45,23 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
         future: _loadAnalytics(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
+            return _buildSkeletonLoader();
           }
 
           if (snapshot.hasError) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Icon(Icons.error_outline, size: 64, color: Colors.red),
-                  const SizedBox(height: 16),
-                  Text('Error loading analytics: ${snapshot.error}'),
-                ],
-              ),
+            return ErrorState(
+              message: 'Unable to load analytics data',
+              details: 'Please check your connection and try again.',
+              onRetry: () => setState(() {}), // Trigger rebuild to reload
             );
           }
 
           final summary = snapshot.data;
           if (summary == null) {
-            return const Center(child: Text('No analytics data available'));
+            return const ErrorState(
+              message: 'No analytics data available',
+              details: 'Complete some lessons to see your progress analytics.',
+            );
           }
 
           return SingleChildScrollView(
@@ -106,6 +106,55 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
       timeRange: _selectedRange,
       customStart: _customStart,
       customEnd: _customEnd,
+    );
+  }
+
+  /// Skeleton loader for analytics
+  Widget _buildSkeletonLoader() {
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildTimeRangeSelector(),
+          const SizedBox(height: 16),
+          // Overview skeleton
+          const Padding(
+            padding: EdgeInsets.all(16),
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    Expanded(child: SkeletonCard(height: 80)),
+                    SizedBox(width: 12),
+                    Expanded(child: SkeletonCard(height: 80)),
+                  ],
+                ),
+                SizedBox(height: 12),
+                Row(
+                  children: [
+                    Expanded(child: SkeletonCard(height: 80)),
+                    SizedBox(width: 12),
+                    Expanded(child: SkeletonCard(height: 80)),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          const SkeletonChart(height: 250),
+          const SkeletonChart(height: 200),
+          const SkeletonChart(height: 200),
+          const Padding(
+            padding: EdgeInsets.all(16),
+            child: Column(
+              children: [
+                SkeletonCard(height: 60),
+                SkeletonCard(height: 60),
+                SkeletonCard(height: 60),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 

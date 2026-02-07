@@ -1,5 +1,7 @@
 /// UI widgets for the hearts/lives system
 /// Includes hearts indicator, animations, and "out of hearts" modal
+library;
+
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

@@ -1,5 +1,7 @@
 /// Achievement system models for gamification
 /// Tracks user accomplishments across learning, streaks, XP, and engagement
+library;
+
 
 import 'package:flutter/foundation.dart';
 

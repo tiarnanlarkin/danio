@@ -1,5 +1,7 @@
 /// Achievement Notification Widget - Popup with confetti when unlocking
 /// Shows achievement details with celebration animation
+library;
+
 
 import 'package:flutter/material.dart';
 import 'package:confetti/confetti.dart';

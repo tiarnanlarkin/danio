@@ -1,5 +1,7 @@
 /// Achievement Detail Modal - Detailed view when tapping achievement
 /// Shows full description, progress, unlock date, and XP reward
+library;
+
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';

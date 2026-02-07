@@ -1,5 +1,7 @@
 /// Achievement definitions - Trophy case with 40+ achievements
 /// Organized by category: Learning, Streaks, XP, Special, Engagement
+library;
+
 
 import '../models/achievements.dart';
 

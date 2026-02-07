@@ -1,5 +1,7 @@
 /// Daily goal tracking for habit formation
 /// Tracks progress toward daily XP goals and manages streak logic
+library;
+
 
 import 'package:flutter/foundation.dart';
 

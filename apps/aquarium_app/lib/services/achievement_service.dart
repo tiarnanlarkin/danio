@@ -1,5 +1,7 @@
 /// Achievement service - Handles checking and unlocking achievements
 /// Integrates with user actions to award achievements automatically
+library;
+
 
 import 'package:flutter/foundation.dart';
 import '../models/achievements.dart';

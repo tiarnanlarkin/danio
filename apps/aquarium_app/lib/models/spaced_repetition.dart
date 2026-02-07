@@ -1,5 +1,7 @@
 /// Comprehensive Spaced Repetition System Models
 /// Implements forgetting curve algorithm with review cards and intelligent scheduling
+library;
+
 
 import 'package:flutter/foundation.dart';
 import 'dart:math' as math;

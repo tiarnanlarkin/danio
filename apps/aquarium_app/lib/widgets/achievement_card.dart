@@ -1,5 +1,7 @@
 /// Achievement Card Widget - Displays achievement in grid
 /// Shows locked/unlocked state with progress bar
+library;
+
 
 import 'package:flutter/material.dart';
 import '../models/achievements.dart';

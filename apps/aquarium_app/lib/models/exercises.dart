@@ -1,5 +1,7 @@
 /// Interactive exercise types for Duolingo-style learning
 /// Supports multiple choice, fill-in-blank, true/false, matching, and ordering exercises
+library;
+
 
 import 'package:flutter/foundation.dart';
 

@@ -1,5 +1,7 @@
 /// Placement test content - 20 questions across all learning paths
 /// Used to assess user knowledge and skip appropriate lessons
+library;
+
 
 import '../models/placement_test.dart';
 

@@ -1,5 +1,7 @@
 /// Gem economy configuration and reward values
 /// Defines how many gems users earn for different actions
+library;
+
 
 import 'learning.dart';
 

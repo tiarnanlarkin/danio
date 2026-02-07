@@ -1,10 +1,12 @@
 /// Placement test result screen showing score and recommendations
 /// Displays what lessons will be skipped and where to start
+library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/placement_test.dart';
 import '../models/learning.dart';
+import '../models/user_profile.dart';
 import '../data/lesson_content.dart';
 import '../theme/app_theme.dart';
 

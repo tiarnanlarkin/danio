@@ -1,5 +1,6 @@
 /// Placement test system for assessing user knowledge and skipping lessons
 /// Duolingo-style onboarding to personalize the learning journey
+library;
 
 import 'package:flutter/foundation.dart';
 import 'learning.dart';
@@ -85,7 +86,7 @@ class PlacementQuestion {
     required this.options,
     required this.correctIndex,
     this.explanation,
-    this.difficulty = QuestionDifficulty.medium,
+    this.difficulty = QuestionDifficulty.intermediate,
   });
 
   bool validateAnswer(int selectedIndex) {

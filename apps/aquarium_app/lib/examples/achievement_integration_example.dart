@@ -1,5 +1,7 @@
 /// Achievement Integration Example
 /// Shows how to integrate achievements into existing app flows
+library;
+
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

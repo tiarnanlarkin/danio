@@ -1,5 +1,7 @@
 /// Achievement provider - Manages achievement state and checking
 /// Integrates with user profile to track and unlock achievements
+library;
+
 
 import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

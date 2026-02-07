@@ -1,5 +1,7 @@
 /// Streak display widget with fire emoji and pulsing animation
 /// Shows current streak count with engaging animations
+library;
+
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
