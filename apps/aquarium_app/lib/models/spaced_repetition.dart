@@ -115,10 +115,11 @@ class ReviewCard {
     }
 
     // Progressive intervals based on strength
+    // Thresholds based on mastery levels
     if (strength >= 0.9) return ReviewInterval.day30;
     if (strength >= 0.8) return ReviewInterval.day14;
-    if (strength >= 0.7) return ReviewInterval.day7;
-    if (strength >= 0.5) return ReviewInterval.day3;
+    if (strength >= 0.6) return ReviewInterval.day7;
+    // Below 0.6 stays at day1 until mastery improves
     return ReviewInterval.day1;
   }
 
