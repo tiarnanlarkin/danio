@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/user_profile_provider.dart';
 import '../services/notification_service.dart';
 import '../theme/app_theme.dart';
+import '../utils/app_feedback.dart';
 
 /// Screen for configuring streak reminder notifications
 class NotificationSettingsScreen extends ConsumerWidget {
@@ -70,12 +71,7 @@ class NotificationSettingsScreen extends ConsumerWidget {
                     
                     if (!granted) {
                       if (context.mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Notification permission denied. Please enable in settings.'),
-                            duration: Duration(seconds: 4),
-                          ),
-                        );
+                        AppFeedback.showWarning(context, 'Notification permission denied. Please enable in settings.');
                       }
                       return;
                     }
@@ -89,16 +85,11 @@ class NotificationSettingsScreen extends ConsumerWidget {
                   await _updateNotifications(ref);
                   
                   if (context.mounted) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(
-                          value 
-                              ? '✅ Streak reminders enabled!' 
-                              : 'Streak reminders disabled',
-                        ),
-                        backgroundColor: value ? AppColors.success : null,
-                      ),
-                    );
+                    if (value) {
+                      AppFeedback.showSuccess(context, 'Streak reminders enabled!');
+                    } else {
+                      AppFeedback.showInfo(context, 'Streak reminders disabled');
+                    }
                   }
                 },
               ),
@@ -216,11 +207,7 @@ class NotificationSettingsScreen extends ConsumerWidget {
                       await service.showTestNotification();
                       
                       if (context.mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('📬 Test notification sent!'),
-                          ),
-                        );
+                        AppFeedback.showSuccess(context, 'Test notification sent!');
                       }
                     },
                   ),
@@ -294,11 +281,7 @@ class NotificationSettingsScreen extends ConsumerWidget {
     await _updateNotifications(ref);
     
     if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('$title updated to $timeString'),
-        ),
-      );
+      AppFeedback.showInfo(context, '$title updated to $timeString');
     }
   }
   

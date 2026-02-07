@@ -8,6 +8,7 @@ import '../providers/storage_provider.dart';
 import '../providers/tank_provider.dart';
 import '../services/storage_service.dart';
 import '../theme/app_theme.dart';
+import '../utils/app_feedback.dart';
 
 const _uuid = Uuid();
 
@@ -235,12 +236,7 @@ class EquipmentScreen extends ConsumerWidget {
     ref.invalidate(allLogsProvider(tankId));
 
     if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('${equipment.name} marked as serviced'),
-          backgroundColor: AppColors.success,
-        ),
-      );
+      AppFeedback.showSuccess(context, '${equipment.name} marked as serviced');
     }
   }
 
@@ -590,9 +586,7 @@ class _AddEquipmentSheetState extends State<_AddEquipmentSheet> {
   Future<void> _save() async {
     final name = _nameController.text.trim();
     if (name.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please enter a name')),
-      );
+      AppFeedback.showWarning(context, 'Please enter a name');
       return;
     }
 
@@ -627,9 +621,7 @@ class _AddEquipmentSheetState extends State<_AddEquipmentSheet> {
       if (mounted) Navigator.pop(context);
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: $e')),
-        );
+        AppFeedback.showError(context, 'Error: $e');
       }
     } finally {
       if (mounted) setState(() => _isSaving = false);

@@ -98,6 +98,7 @@ class _RemindersScreenState extends ConsumerState<RemindersScreen> {
     });
     _saveReminders();
 
+    // Use native snackbar for undo functionality (AppFeedback doesn't support actions yet)
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text('Deleted: ${reminder.title}'),
@@ -111,6 +112,8 @@ class _RemindersScreenState extends ConsumerState<RemindersScreen> {
             _saveReminders();
           },
         ),
+        behavior: SnackBarBehavior.floating,
+        duration: const Duration(seconds: 4),
       ),
     );
   }

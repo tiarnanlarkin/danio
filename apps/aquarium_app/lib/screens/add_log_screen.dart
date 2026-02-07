@@ -13,6 +13,7 @@ import '../providers/storage_provider.dart';
 import '../providers/tank_provider.dart';
 import '../providers/user_profile_provider.dart';
 import '../theme/app_theme.dart';
+import '../utils/app_feedback.dart';
 
 const _uuid = Uuid();
 
@@ -467,9 +468,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
 
   Future<void> _pickImages() async {
     if (_photoPaths.length >= 5) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Maximum 5 photos per log')), 
-      );
+      AppFeedback.showWarning(context, 'Maximum 5 photos per log');
       return;
     }
 
@@ -494,15 +493,11 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
       setState(() => _photoPaths.addAll(savedPaths));
 
       if (picked.length > remaining && mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Added $remaining photos (max 5)')),
-        );
+        AppFeedback.showInfo(context, 'Added $remaining photos (max 5)');
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Could not add photos: $e')),
-        );
+        AppFeedback.showError(context, 'Could not add photos: $e');
       }
     } finally {
       if (mounted) setState(() => _isPickingImages = false);
@@ -527,9 +522,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
   Future<void> _save() async {
     // Validate based on type
     if (_type == LogType.waterChange && _waterChangePercent == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please enter water change percentage')),
-      );
+      AppFeedback.showWarning(context, 'Please enter water change percentage');
       return;
     }
 
@@ -587,21 +580,11 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
 
       if (mounted) {
         Navigator.pop(context);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('${log.typeName} logged!'),
-            backgroundColor: AppColors.success,
-          ),
-        );
+        AppFeedback.showSuccess(context, '${log.typeName} logged!');
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Failed to save: $e'),
-            backgroundColor: AppColors.error,
-          ),
-        );
+        AppFeedback.showError(context, 'Failed to save: $e');
       }
     } finally {
       if (mounted) {

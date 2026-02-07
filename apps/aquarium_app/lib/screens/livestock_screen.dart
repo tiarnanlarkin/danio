@@ -10,6 +10,7 @@ import '../providers/tank_provider.dart';
 import '../providers/user_profile_provider.dart';
 import '../services/compatibility_service.dart';
 import '../theme/app_theme.dart';
+import '../utils/app_feedback.dart';
 import '../widgets/empty_state.dart';
 import '../widgets/error_state.dart';
 import 'livestock_detail_screen.dart';
@@ -529,15 +530,11 @@ class _AddLivestockSheetState extends State<_AddLivestockSheet> {
     final count = int.tryParse(_countController.text) ?? 0;
 
     if (name.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please enter a name')),
-      );
+      AppFeedback.showWarning(context, 'Please enter a name');
       return;
     }
     if (count <= 0) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Count must be at least 1')),
-      );
+      AppFeedback.showWarning(context, 'Count must be at least 1');
       return;
     }
 
@@ -589,9 +586,7 @@ class _AddLivestockSheetState extends State<_AddLivestockSheet> {
       if (mounted) Navigator.pop(context);
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: $e')),
-        );
+        AppFeedback.showError(context, 'Error: $e');
       }
     } finally {
       if (mounted) setState(() => _isSaving = false);
@@ -706,9 +701,7 @@ class _BulkAddLivestockSheetState extends State<_BulkAddLivestockSheet> {
 
   Future<void> _save() async {
     if (_items.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Add at least one line to continue')),
-      );
+      AppFeedback.showWarning(context, 'Add at least one line to continue');
       return;
     }
 
@@ -754,21 +747,11 @@ class _BulkAddLivestockSheetState extends State<_BulkAddLivestockSheet> {
 
       if (mounted) {
         Navigator.pop(context);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Added ${_items.length} livestock entries'),
-            backgroundColor: AppColors.success,
-          ),
-        );
+        AppFeedback.showSuccess(context, 'Added ${_items.length} livestock entries');
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Error: $e'),
-            backgroundColor: AppColors.error,
-          ),
-        );
+        AppFeedback.showError(context, 'Error: $e');
       }
     } finally {
       if (mounted) setState(() => _isSaving = false);

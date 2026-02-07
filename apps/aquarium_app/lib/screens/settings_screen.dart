@@ -529,9 +529,7 @@ class SettingsScreen extends ConsumerWidget {
               final actions = ref.read(tankActionsProvider);
               final demoTank = await actions.addDemoTank();
               if (context.mounted) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Sample tank added!')),
-                );
+                AppFeedback.showSuccess(context, 'Sample tank added!');
                 Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -588,9 +586,7 @@ class SettingsScreen extends ConsumerWidget {
       
       if (!granted) {
         if (context.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Notification permission denied')),
-          );
+          AppFeedback.showWarning(context, 'Notification permission denied');
         }
         return;
       }
@@ -599,12 +595,11 @@ class SettingsScreen extends ConsumerWidget {
     await ref.read(settingsProvider.notifier).setNotificationsEnabled(enable);
     
     if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(enable ? 'Notifications enabled!' : 'Notifications disabled'),
-          backgroundColor: enable ? AppColors.success : null,
-        ),
-      );
+      if (enable) {
+        AppFeedback.showSuccess(context, 'Notifications enabled!');
+      } else {
+        AppFeedback.showInfo(context, 'Notifications disabled');
+      }
     }
   }
 
@@ -615,15 +610,11 @@ class SettingsScreen extends ConsumerWidget {
       await service.showTestNotification();
       
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Test notification sent!')),
-        );
+        AppFeedback.showSuccess(context, 'Test notification sent!');
       }
     } catch (e) {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed: $e')),
-        );
+        AppFeedback.showError(context, 'Failed: $e');
       }
     }
   }
@@ -1031,9 +1022,7 @@ class SettingsScreen extends ConsumerWidget {
       }
     } catch (e) {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to clear data: $e')),
-        );
+        AppFeedback.showError(context, 'Failed to clear data: $e');
       }
     }
   }

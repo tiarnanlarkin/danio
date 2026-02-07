@@ -9,6 +9,7 @@ import '../models/daily_goal.dart';
 import '../models/lesson_progress.dart';
 import '../models/gem_economy.dart';
 import '../models/gem_transaction.dart';
+import '../models/leaderboard.dart'; // For League and WeekPeriod
 import 'gems_provider.dart';
 
 const _uuid = Uuid();
@@ -235,6 +236,24 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
     final current = state.value;
     if (current == null) return;
 
+    // Check and reset weekly XP if needed
+    final currentWeek = WeekPeriod.current();
+    final weekStart = current.weekStartDate;
+    int weeklyXP = current.weeklyXP;
+    DateTime? newWeekStart = weekStart;
+
+    if (weekStart == null || !_isSameWeek(weekStart, currentWeek.start)) {
+      // Week changed - reset weekly XP
+      weeklyXP = 0;
+      newWeekStart = currentWeek.start;
+    }
+
+    // Add to weekly XP
+    weeklyXP += amount;
+
+    // Determine league based on weekly XP
+    final newLeague = _calculateLeagueFromXP(weeklyXP);
+
     // Update today's XP in history
     final todayKey = getTodayKey();
     final updatedHistory = Map<String, int>.from(current.dailyXpHistory);
@@ -242,6 +261,9 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
 
     final updated = current.copyWith(
       totalXp: current.totalXp + amount,
+      weeklyXP: weeklyXP,
+      weekStartDate: newWeekStart,
+      league: newLeague,
       dailyXpHistory: updatedHistory,
       updatedAt: DateTime.now(),
     );
@@ -251,6 +273,32 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
 
     // Record activity for streak tracking
     await recordActivity(xp: 0); // XP already added above
+  }
+
+  /// Check if two dates are in the same week (Monday-Sunday)
+  bool _isSameWeek(DateTime date1, DateTime date2) {
+    final monday1 = _getMondayOfWeek(date1);
+    final monday2 = _getMondayOfWeek(date2);
+    
+    return monday1.year == monday2.year &&
+           monday1.month == monday2.month &&
+           monday1.day == monday2.day;
+  }
+
+  /// Get the Monday of the week containing the given date
+  DateTime _getMondayOfWeek(DateTime date) {
+    final daysFromMonday = date.weekday - 1;
+    return DateTime(date.year, date.month, date.day).subtract(
+      Duration(days: daysFromMonday),
+    );
+  }
+
+  /// Determine league based on weekly XP
+  League _calculateLeagueFromXP(int weeklyXP) {
+    if (weeklyXP >= League.diamond.minWeeklyXP) return League.diamond;
+    if (weeklyXP >= League.gold.minWeeklyXP) return League.gold;
+    if (weeklyXP >= League.silver.minWeeklyXP) return League.silver;
+    return League.bronze;
   }
 
   /// Mark a lesson as completed
@@ -487,6 +535,24 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
         customReason: 'Achievement: ${achievement.title}',
       );
     }
+  }
+
+  /// Update hearts count (for hearts/lives system)
+  Future<void> updateHearts({
+    required int hearts,
+    DateTime? lastHeartRefill,
+  }) async {
+    final current = state.value;
+    if (current == null) return;
+
+    final updated = current.copyWith(
+      hearts: hearts,
+      lastHeartRefill: lastHeartRefill ?? current.lastHeartRefill,
+      updatedAt: DateTime.now(),
+    );
+
+    await _save(updated);
+    state = AsyncValue.data(updated);
   }
 
   /// Check if profile exists (for routing)

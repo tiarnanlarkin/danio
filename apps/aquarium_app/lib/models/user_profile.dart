@@ -4,6 +4,7 @@
 import 'package:flutter/foundation.dart';
 import 'lesson_progress.dart';
 import 'tank.dart'; // For TankType enum
+import 'leaderboard.dart'; // For League enum
 
 enum ExperienceLevel {
   beginner,
@@ -50,6 +51,15 @@ class UserProfile {
   final DateTime? streakFreezeUsedDate; // When was it last used
   final DateTime? streakFreezeGrantedDate; // When was it granted (weekly reset)
   
+  // Hearts/Lives System (Duolingo-style)
+  final int hearts;               // Current hearts (0-5)
+  final DateTime? lastHeartRefill; // Last time hearts auto-refilled
+  
+  // Leaderboard/Competition
+  final League league;            // Current competitive league (Bronze/Silver/Gold/Diamond)
+  final int weeklyXP;             // XP earned this week (Monday-Sunday)
+  final DateTime? weekStartDate;  // When current week started (for reset tracking)
+  
   // Preferences
   final bool dailyTipsEnabled;
   final bool streakRemindersEnabled;
@@ -82,6 +92,11 @@ class UserProfile {
     this.hasStreakFreeze = true,
     this.streakFreezeUsedDate,
     this.streakFreezeGrantedDate,
+    this.hearts = 5,
+    this.lastHeartRefill,
+    this.league = League.bronze,
+    this.weeklyXP = 0,
+    this.weekStartDate,
     this.dailyTipsEnabled = true,
     this.streakRemindersEnabled = true,
     this.reminderTime,
@@ -219,6 +234,11 @@ class UserProfile {
     bool? hasStreakFreeze,
     DateTime? streakFreezeUsedDate,
     DateTime? streakFreezeGrantedDate,
+    int? hearts,
+    DateTime? lastHeartRefill,
+    League? league,
+    int? weeklyXP,
+    DateTime? weekStartDate,
     bool? dailyTipsEnabled,
     bool? streakRemindersEnabled,
     String? reminderTime,
@@ -249,6 +269,11 @@ class UserProfile {
       hasStreakFreeze: hasStreakFreeze ?? this.hasStreakFreeze,
       streakFreezeUsedDate: streakFreezeUsedDate ?? this.streakFreezeUsedDate,
       streakFreezeGrantedDate: streakFreezeGrantedDate ?? this.streakFreezeGrantedDate,
+      hearts: hearts ?? this.hearts,
+      lastHeartRefill: lastHeartRefill ?? this.lastHeartRefill,
+      league: league ?? this.league,
+      weeklyXP: weeklyXP ?? this.weeklyXP,
+      weekStartDate: weekStartDate ?? this.weekStartDate,
       dailyTipsEnabled: dailyTipsEnabled ?? this.dailyTipsEnabled,
       streakRemindersEnabled: streakRemindersEnabled ?? this.streakRemindersEnabled,
       reminderTime: reminderTime ?? this.reminderTime,
@@ -281,6 +306,11 @@ class UserProfile {
     'hasStreakFreeze': hasStreakFreeze,
     'streakFreezeUsedDate': streakFreezeUsedDate?.toIso8601String(),
     'streakFreezeGrantedDate': streakFreezeGrantedDate?.toIso8601String(),
+    'hearts': hearts,
+    'lastHeartRefill': lastHeartRefill?.toIso8601String(),
+    'league': league.toJson(),
+    'weeklyXP': weeklyXP,
+    'weekStartDate': weekStartDate?.toIso8601String(),
     'dailyTipsEnabled': dailyTipsEnabled,
     'streakRemindersEnabled': streakRemindersEnabled,
     'reminderTime': reminderTime,
@@ -339,6 +369,17 @@ class UserProfile {
           : null,
       streakFreezeGrantedDate: json['streakFreezeGrantedDate'] != null
           ? DateTime.parse(json['streakFreezeGrantedDate'] as String)
+          : null,
+      hearts: json['hearts'] as int? ?? 5,
+      lastHeartRefill: json['lastHeartRefill'] != null
+          ? DateTime.parse(json['lastHeartRefill'] as String)
+          : null,
+      league: json['league'] != null
+          ? League.fromJson(json['league'] as String)
+          : League.bronze,
+      weeklyXP: json['weeklyXP'] as int? ?? 0,
+      weekStartDate: json['weekStartDate'] != null
+          ? DateTime.parse(json['weekStartDate'] as String)
           : null,
       dailyTipsEnabled: json['dailyTipsEnabled'] as bool? ?? true,
       streakRemindersEnabled: json['streakRemindersEnabled'] as bool? ?? true,

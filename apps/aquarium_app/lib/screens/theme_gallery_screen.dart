@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/room_theme_provider.dart';
 import '../theme/app_theme.dart';
 import '../theme/room_themes.dart';
+import '../utils/app_feedback.dart';
 
 /// Theme Gallery Screen - Browse and select room visual themes
 /// Supports free and premium (locked) themes for future monetization
@@ -95,14 +96,7 @@ class ThemeGalleryScreen extends ConsumerWidget {
                     isLocked: false,
                     onTap: () {
                       ref.read(roomThemeProvider.notifier).setTheme(themeType);
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text('Switched to ${theme.name} theme'),
-                          backgroundColor: theme.accentBlob,
-                          behavior: SnackBarBehavior.floating,
-                          duration: const Duration(seconds: 1),
-                        ),
-                      );
+                      AppFeedback.showSuccess(context, 'Switched to ${theme.name} theme');
                     },
                   );
                 },

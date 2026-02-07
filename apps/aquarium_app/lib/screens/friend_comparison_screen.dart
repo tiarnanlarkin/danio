@@ -6,6 +6,7 @@ import '../models/user_profile.dart';
 import '../providers/user_profile_provider.dart';
 import '../providers/friends_provider.dart';
 import '../theme/app_theme.dart';
+import '../utils/app_feedback.dart';
 import 'dart:math';
 
 /// Friend comparison screen - side-by-side stats and encouragement
@@ -143,12 +144,7 @@ class _FriendComparisonScreenState extends ConsumerState<FriendComparisonScreen>
                       emoji: selectedEmoji,
                     );
                 Navigator.pop(context);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text('Sent $selectedEmoji to ${widget.friend.displayName}!'),
-                    backgroundColor: Colors.green,
-                  ),
-                );
+                AppFeedback.showSuccess(context, 'Sent $selectedEmoji to ${widget.friend.displayName}!');
               },
               child: const Text('Send'),
             ),
@@ -175,12 +171,7 @@ class _FriendComparisonScreenState extends ConsumerState<FriendComparisonScreen>
               ref.read(friendsProvider.notifier).removeFriend(widget.friend.id);
               Navigator.pop(context); // Close dialog
               Navigator.pop(context); // Return to friends list
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text('Removed ${widget.friend.displayName} from friends'),
-                  backgroundColor: Colors.orange,
-                ),
-              );
+              AppFeedback.showInfo(context, 'Removed ${widget.friend.displayName} from friends');
             },
             child: const Text('Remove'),
           ),

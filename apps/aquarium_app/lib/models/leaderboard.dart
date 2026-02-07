@@ -1,10 +1,6 @@
-/// Leaderboard models for weekly competition system
-/// Duolingo-style social competition to boost engagement
-library;
+/// Leaderboard and competitive ranking models
 
-import 'package:flutter/foundation.dart';
-
-/// League tiers (Bronze → Silver → Gold → Diamond)
+/// League tier for competitive ranking
 enum League {
   bronze,
   silver,
@@ -14,290 +10,167 @@ enum League {
   String get displayName {
     switch (this) {
       case League.bronze:
-        return 'Bronze League';
+        return 'Bronze';
       case League.silver:
-        return 'Silver League';
+        return 'Silver';
       case League.gold:
-        return 'Gold League';
+        return 'Gold';
       case League.diamond:
-        return 'Diamond League';
+        return 'Diamond';
     }
   }
 
-  String get emoji {
+  /// XP threshold to enter this league
+  int get minWeeklyXP {
     switch (this) {
       case League.bronze:
-        return '🥉';
+        return 0;
       case League.silver:
-        return '🥈';
+        return 300;
       case League.gold:
-        return '🥇';
+        return 800;
       case League.diamond:
-        return '💎';
+        return 1500;
     }
   }
 
-  /// Color for league badge
-  String get colorHex {
-    switch (this) {
-      case League.bronze:
-        return '#CD7F32'; // Bronze
-      case League.silver:
-        return '#C0C0C0'; // Silver
-      case League.gold:
-        return '#FFD700'; // Gold
-      case League.diamond:
-        return '#B9F2FF'; // Diamond blue
-    }
+  String toJson() => name;
+  
+  static League fromJson(String value) {
+    return League.values.firstWhere((e) => e.name == value);
   }
-
-  /// XP reward for promotion to this league
-  int get promotionXp {
-    switch (this) {
-      case League.bronze:
-        return 0; // Starting league
-      case League.silver:
-        return 50;
-      case League.gold:
-        return 100;
-      case League.diamond:
-        return 200;
-    }
-  }
-
-  /// Minimum rank needed to promote (top 10)
-  static const int promotionThreshold = 10;
-
-  /// Minimum rank to stay safe (top 15)
-  static const int relegationSafeZone = 15;
 }
 
-/// Individual entry in the leaderboard
-@immutable
+/// Entry in the weekly leaderboard
 class LeaderboardEntry {
   final String userId;
-  final String displayName;
-  final String? avatarEmoji; // Optional emoji avatar (e.g., '🐠', '🦈')
-  final int weeklyXp;
+  final String username;
+  final int weeklyXP;
   final int rank;
+  final League league;
+  final String? avatarUrl;
   final bool isCurrentUser;
 
   const LeaderboardEntry({
     required this.userId,
-    required this.displayName,
-    this.avatarEmoji,
-    required this.weeklyXp,
+    required this.username,
+    required this.weeklyXP,
     required this.rank,
+    required this.league,
+    this.avatarUrl,
     this.isCurrentUser = false,
   });
 
   LeaderboardEntry copyWith({
     String? userId,
-    String? displayName,
-    String? avatarEmoji,
-    int? weeklyXp,
+    String? username,
+    int? weeklyXP,
     int? rank,
+    League? league,
+    String? avatarUrl,
     bool? isCurrentUser,
   }) {
     return LeaderboardEntry(
       userId: userId ?? this.userId,
-      displayName: displayName ?? this.displayName,
-      avatarEmoji: avatarEmoji ?? this.avatarEmoji,
-      weeklyXp: weeklyXp ?? this.weeklyXp,
+      username: username ?? this.username,
+      weeklyXP: weeklyXP ?? this.weeklyXP,
       rank: rank ?? this.rank,
+      league: league ?? this.league,
+      avatarUrl: avatarUrl ?? this.avatarUrl,
       isCurrentUser: isCurrentUser ?? this.isCurrentUser,
     );
   }
 
   Map<String, dynamic> toJson() => {
         'userId': userId,
-        'displayName': displayName,
-        'avatarEmoji': avatarEmoji,
-        'weeklyXp': weeklyXp,
+        'username': username,
+        'weeklyXP': weeklyXP,
         'rank': rank,
+        'league': league.toJson(),
+        'avatarUrl': avatarUrl,
         'isCurrentUser': isCurrentUser,
       };
 
   factory LeaderboardEntry.fromJson(Map<String, dynamic> json) {
     return LeaderboardEntry(
       userId: json['userId'] as String,
-      displayName: json['displayName'] as String,
-      avatarEmoji: json['avatarEmoji'] as String?,
-      weeklyXp: json['weeklyXp'] as int,
+      username: json['username'] as String,
+      weeklyXP: json['weeklyXP'] as int,
       rank: json['rank'] as int,
+      league: League.fromJson(json['league'] as String),
+      avatarUrl: json['avatarUrl'] as String?,
       isCurrentUser: json['isCurrentUser'] as bool? ?? false,
     );
   }
 }
 
-/// Weekly leaderboard state
-@immutable
-class WeeklyLeaderboard {
-  final League league;
-  final List<LeaderboardEntry> entries;
-  final DateTime weekStartDate;
-  final DateTime weekEndDate;
-  final int currentUserRank;
-  final int currentUserWeeklyXp;
+/// Weekly competition period
+class WeekPeriod {
+  final DateTime start;
+  final DateTime end;
 
-  const WeeklyLeaderboard({
-    required this.league,
-    required this.entries,
-    required this.weekStartDate,
-    required this.weekEndDate,
-    required this.currentUserRank,
-    required this.currentUserWeeklyXp,
+  const WeekPeriod({
+    required this.start,
+    required this.end,
   });
 
-  /// Check if current user is in promotion zone (top 10)
-  bool get isInPromotionZone => currentUserRank <= League.promotionThreshold;
-
-  /// Check if current user is in relegation danger zone (below 15)
-  bool get isInRelegationZone => currentUserRank > League.relegationSafeZone;
-
-  /// Check if current user is safe (11-15)
-  bool get isSafe => !isInPromotionZone && !isInRelegationZone;
-
-  /// Days until weekly reset
-  int get daysUntilReset {
+  /// Get current week period (Monday 00:00 to Sunday 23:59)
+  static WeekPeriod current() {
     final now = DateTime.now();
-    return weekEndDate.difference(now).inDays;
+    final monday = now.subtract(Duration(days: now.weekday - 1));
+    final start = DateTime(monday.year, monday.month, monday.day);
+    final end = start.add(const Duration(days: 7)).subtract(const Duration(microseconds: 1));
+    return WeekPeriod(start: start, end: end);
   }
 
-  /// Hours until weekly reset
-  int get hoursUntilReset {
+  /// Time remaining until week ends
+  Duration get timeRemaining => end.difference(DateTime.now());
+
+  /// Whether this period is the current week
+  bool get isCurrent {
     final now = DateTime.now();
-    final diff = weekEndDate.difference(now);
-    return diff.inHours;
-  }
-
-  /// Get status message for current user
-  String get statusMessage {
-    if (currentUserRank == 1) {
-      return '🏆 You\'re in 1st place!';
-    } else if (isInPromotionZone) {
-      return '🔥 On track for promotion!';
-    } else if (isSafe) {
-      return '✅ You\'re safe this week';
-    } else {
-      return '⚠️ Keep practicing to stay up';
-    }
-  }
-
-  WeeklyLeaderboard copyWith({
-    League? league,
-    List<LeaderboardEntry>? entries,
-    DateTime? weekStartDate,
-    DateTime? weekEndDate,
-    int? currentUserRank,
-    int? currentUserWeeklyXp,
-  }) {
-    return WeeklyLeaderboard(
-      league: league ?? this.league,
-      entries: entries ?? this.entries,
-      weekStartDate: weekStartDate ?? this.weekStartDate,
-      weekEndDate: weekEndDate ?? this.weekEndDate,
-      currentUserRank: currentUserRank ?? this.currentUserRank,
-      currentUserWeeklyXp: currentUserWeeklyXp ?? this.currentUserWeeklyXp,
-    );
+    return now.isAfter(start) && now.isBefore(end);
   }
 
   Map<String, dynamic> toJson() => {
-        'league': league.name,
-        'entries': entries.map((e) => e.toJson()).toList(),
-        'weekStartDate': weekStartDate.toIso8601String(),
-        'weekEndDate': weekEndDate.toIso8601String(),
-        'currentUserRank': currentUserRank,
-        'currentUserWeeklyXp': currentUserWeeklyXp,
+        'start': start.toIso8601String(),
+        'end': end.toIso8601String(),
       };
 
-  factory WeeklyLeaderboard.fromJson(Map<String, dynamic> json) {
-    return WeeklyLeaderboard(
-      league: League.values.firstWhere(
-        (e) => e.name == json['league'],
-        orElse: () => League.bronze,
-      ),
-      entries: (json['entries'] as List<dynamic>)
-          .map((e) => LeaderboardEntry.fromJson(e as Map<String, dynamic>))
-          .toList(),
-      weekStartDate: DateTime.parse(json['weekStartDate'] as String),
-      weekEndDate: DateTime.parse(json['weekEndDate'] as String),
-      currentUserRank: json['currentUserRank'] as int,
-      currentUserWeeklyXp: json['currentUserWeeklyXp'] as int,
+  factory WeekPeriod.fromJson(Map<String, dynamic> json) {
+    return WeekPeriod(
+      start: DateTime.parse(json['start'] as String),
+      end: DateTime.parse(json['end'] as String),
     );
   }
 }
 
-/// Leaderboard user data (stored locally)
-@immutable
-class LeaderboardUserData {
-  final League currentLeague;
-  final int weeklyXpTotal;
-  final DateTime lastResetDate;
-  final Map<String, int> dailyXpThisWeek; // 'YYYY-MM-DD' -> XP
-  final League? previousLeague; // For tracking promotions/relegations
-  final bool justPromoted; // Did user just get promoted this week
-  final bool justRelegated; // Did user just get relegated this week
+/// Promotion/demotion thresholds
+class LeagueThresholds {
+  static const int topPromotion = 3; // Top 3 users get promoted
+  static const int bottomDemotion = 3; // Bottom 3 users get demoted
 
-  const LeaderboardUserData({
-    this.currentLeague = League.bronze,
-    this.weeklyXpTotal = 0,
-    required this.lastResetDate,
-    this.dailyXpThisWeek = const {},
-    this.previousLeague,
-    this.justPromoted = false,
-    this.justRelegated = false,
-  });
+  /// Calculate new league based on rank and current league
+  static League? calculateNewLeague(int rank, int totalUsers, League currentLeague) {
+    // Promote top 3 (unless already in Diamond)
+    if (rank <= topPromotion && currentLeague != League.diamond) {
+      final leagues = League.values;
+      final currentIndex = leagues.indexOf(currentLeague);
+      if (currentIndex < leagues.length - 1) {
+        return leagues[currentIndex + 1];
+      }
+    }
 
-  LeaderboardUserData copyWith({
-    League? currentLeague,
-    int? weeklyXpTotal,
-    DateTime? lastResetDate,
-    Map<String, int>? dailyXpThisWeek,
-    League? previousLeague,
-    bool? justPromoted,
-    bool? justRelegated,
-  }) {
-    return LeaderboardUserData(
-      currentLeague: currentLeague ?? this.currentLeague,
-      weeklyXpTotal: weeklyXpTotal ?? this.weeklyXpTotal,
-      lastResetDate: lastResetDate ?? this.lastResetDate,
-      dailyXpThisWeek: dailyXpThisWeek ?? this.dailyXpThisWeek,
-      previousLeague: previousLeague ?? this.previousLeague,
-      justPromoted: justPromoted ?? this.justPromoted,
-      justRelegated: justRelegated ?? this.justRelegated,
-    );
-  }
+    // Demote bottom 3 (unless already in Bronze)
+    if (rank > totalUsers - bottomDemotion && currentLeague != League.bronze) {
+      final leagues = League.values;
+      final currentIndex = leagues.indexOf(currentLeague);
+      if (currentIndex > 0) {
+        return leagues[currentIndex - 1];
+      }
+    }
 
-  Map<String, dynamic> toJson() => {
-        'currentLeague': currentLeague.name,
-        'weeklyXpTotal': weeklyXpTotal,
-        'lastResetDate': lastResetDate.toIso8601String(),
-        'dailyXpThisWeek': dailyXpThisWeek,
-        'previousLeague': previousLeague?.name,
-        'justPromoted': justPromoted,
-        'justRelegated': justRelegated,
-      };
-
-  factory LeaderboardUserData.fromJson(Map<String, dynamic> json) {
-    return LeaderboardUserData(
-      currentLeague: League.values.firstWhere(
-        (e) => e.name == json['currentLeague'],
-        orElse: () => League.bronze,
-      ),
-      weeklyXpTotal: json['weeklyXpTotal'] as int? ?? 0,
-      lastResetDate: DateTime.parse(json['lastResetDate'] as String),
-      dailyXpThisWeek: (json['dailyXpThisWeek'] as Map<String, dynamic>?)
-              ?.map((key, value) => MapEntry(key, value as int)) ??
-          {},
-      previousLeague: json['previousLeague'] != null
-          ? League.values.firstWhere(
-              (e) => e.name == json['previousLeague'],
-              orElse: () => League.bronze,
-            )
-          : null,
-      justPromoted: json['justPromoted'] as bool? ?? false,
-      justRelegated: json['justRelegated'] as bool? ?? false,
-    );
+    // No change
+    return null;
   }
 }

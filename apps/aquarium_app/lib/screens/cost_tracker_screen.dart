@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
 import 'dart:convert';
 import '../theme/app_theme.dart';
+import '../utils/app_feedback.dart';
 
 class CostTrackerScreen extends ConsumerStatefulWidget {
   const CostTrackerScreen({super.key});
@@ -67,6 +68,7 @@ class _CostTrackerScreenState extends ConsumerState<CostTrackerScreen> {
     });
     _saveExpenses();
 
+    // Use native snackbar for undo functionality (AppFeedback doesn't support actions yet)
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text('Deleted: ${expense.description}'),
@@ -79,6 +81,8 @@ class _CostTrackerScreenState extends ConsumerState<CostTrackerScreen> {
             _saveExpenses();
           },
         ),
+        behavior: SnackBarBehavior.floating,
+        duration: const Duration(seconds: 4),
       ),
     );
   }
@@ -563,9 +567,7 @@ class _AddExpenseSheetState extends State<_AddExpenseSheet> {
               onPressed: () {
                 final amount = double.tryParse(_amountController.text);
                 if (_descController.text.isEmpty || amount == null) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Please fill in all fields')),
-                  );
+                  AppFeedback.showWarning(context, 'Please fill in all fields');
                   return;
                 }
 

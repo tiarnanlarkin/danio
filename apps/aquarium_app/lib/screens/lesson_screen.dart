@@ -2,17 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/learning.dart';
 import '../providers/user_profile_provider.dart';
+import '../services/hearts_service.dart';
+import '../widgets/hearts_widgets.dart';
 import '../theme/app_theme.dart';
+import '../utils/app_feedback.dart';
 
 /// Screen for viewing a single lesson and taking quizzes
 class LessonScreen extends ConsumerStatefulWidget {
   final Lesson lesson;
   final String pathTitle;
+  final bool isPracticeMode;
 
   const LessonScreen({
     super.key,
     required this.lesson,
     required this.pathTitle,
+    this.isPracticeMode = false,
   });
 
   @override
@@ -26,13 +31,42 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
   int? _selectedAnswer;
   bool _answered = false;
   bool _quizComplete = false;
+  bool _showHeartAnimation = false;
+  bool _heartGained = false;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.pathTitle),
+        title: Row(
+          children: [
+            Text(widget.pathTitle),
+            if (widget.isPracticeMode) ...[
+              const SizedBox(width: 8),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(
+                  color: AppColors.info.withOpacity(0.2),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Text(
+                  'PRACTICE',
+                  style: AppTypography.labelSmall.copyWith(
+                    color: AppColors.info,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ],
+          ],
+        ),
         actions: [
+          if (!widget.isPracticeMode) ...[
+            const Padding(
+              padding: EdgeInsets.only(right: 8),
+              child: Center(child: HeartIndicator(compact: true)),
+            ),
+          ],
           Padding(
             padding: const EdgeInsets.only(right: 16),
             child: Center(
@@ -60,7 +94,21 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
           ),
         ],
       ),
-      body: _showQuiz ? _buildQuiz() : _buildLesson(),
+      body: Stack(
+        children: [
+          _showQuiz ? _buildQuiz() : _buildLesson(),
+          // Heart animation overlay
+          if (_showHeartAnimation)
+            Center(
+              child: HeartAnimation(
+                gained: _heartGained,
+                onComplete: () {
+                  setState(() => _showHeartAnimation = false);
+                },
+              ),
+            ),
+        ],
+      ),
     );
   }
 
@@ -515,15 +563,46 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
             child: ElevatedButton(
               onPressed: _selectedAnswer == null
                   ? null
-                  : () {
+                  : () async {
                       if (!_answered) {
                         // Check answer
+                        final isCorrect = _selectedAnswer == question.correctIndex;
                         setState(() {
                           _answered = true;
-                          if (_selectedAnswer == question.correctIndex) {
+                          if (isCorrect) {
                             _correctAnswers++;
                           }
                         });
+                        
+                        // Handle hearts (only in non-practice mode)
+                        if (!widget.isPracticeMode && !isCorrect) {
+                          final heartsService = ref.read(heartsServiceProvider);
+                          final lostHeart = await heartsService.loseHeart();
+                          
+                          if (lostHeart) {
+                            // Show heart loss animation
+                            setState(() {
+                              _showHeartAnimation = true;
+                              _heartGained = false;
+                            });
+                            
+                            // Check if out of hearts
+                            if (!heartsService.hasHeartsAvailable) {
+                              // Wait for animation to finish
+                              await Future.delayed(const Duration(milliseconds: 1200));
+                              if (mounted) {
+                                final result = await showOutOfHeartsModal(context);
+                                if (result == 'practice' && mounted) {
+                                  // Navigate to practice mode - pop and push again with practice flag
+                                  Navigator.of(context).pop();
+                                } else {
+                                  // Wait or go back
+                                  Navigator.of(context).pop();
+                                }
+                              }
+                            }
+                          }
+                        }
                       } else {
                         // Next question or finish
                         if (_currentQuizQuestion < quiz.questions.length - 1) {
@@ -656,7 +735,33 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
   Future<void> _completeLesson({int bonusXp = 0}) async {
     final totalXp = widget.lesson.xpReward + bonusXp;
 
-    // Calculate gem rewards
+    // Handle practice mode rewards
+    if (widget.isPracticeMode) {
+      final heartsService = ref.read(heartsServiceProvider);
+      final gainedHeart = await heartsService.gainHeart();
+      
+      if (gainedHeart && mounted) {
+        // Show heart gain animation
+        setState(() {
+          _showHeartAnimation = true;
+          _heartGained = true;
+        });
+        await Future.delayed(const Duration(milliseconds: 1200));
+      }
+      
+      if (mounted) {
+        AppFeedback.showSuccess(
+          context, 
+          gainedHeart 
+            ? 'Practice complete! +1 heart ❤️' 
+            : 'Practice complete! (hearts full)'
+        );
+        Navigator.of(context).pop();
+      }
+      return; // Don't record progress for practice mode
+    }
+
+    // Calculate gem rewards (non-practice mode only)
     int totalGems = 5; // Base lesson gems
     if (widget.lesson.quiz != null) {
       final quiz = widget.lesson.quiz!;
@@ -696,24 +801,8 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
     }
 
     if (mounted) {
-      // Show success snackbar with XP and gems
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Row(
-            children: [
-              const Icon(Icons.check_circle, color: Colors.white),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Text('Lesson complete! +$totalXp XP, +$totalGems gems'),
-              ),
-            ],
-          ),
-          backgroundColor: AppColors.success,
-          behavior: SnackBarBehavior.floating,
-          duration: const Duration(seconds: 4),
-        ),
-      );
-
+      // Show success message with XP and gems
+      AppFeedback.showSuccess(context, 'Lesson complete! +$totalXp XP, +$totalGems gems');
       Navigator.of(context).pop();
     }
   }

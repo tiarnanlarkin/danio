@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import '../models/models.dart';
 import '../providers/tank_provider.dart';
 import '../theme/app_theme.dart';
+import '../utils/app_feedback.dart';
 
 class TankSettingsScreen extends ConsumerStatefulWidget {
   final String tankId;
@@ -116,9 +117,7 @@ class _TankSettingsScreenState extends ConsumerState<TankSettingsScreen> {
                     if (v == null) return;
                     // Keep MVP simple: prevent switching to marine for now.
                     if (v == TankType.marine) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Marine is coming soon.')),
-                      );
+                      AppFeedback.showInfo(context, 'Marine is coming soon.');
                       return;
                     }
                     setState(() => _type = v);
@@ -312,16 +311,12 @@ class _TankSettingsScreenState extends ConsumerState<TankSettingsScreen> {
 
       await actions.updateTank(updated);
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Tank updated.')),
-        );
+        AppFeedback.showSuccess(context, 'Tank updated.');
         Navigator.pop(context);
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to save: $e'), backgroundColor: AppColors.error),
-        );
+        AppFeedback.showError(context, 'Failed to save: $e');
       }
     } finally {
       if (mounted) setState(() => _isSaving = false);
@@ -355,9 +350,7 @@ class _TankSettingsScreenState extends ConsumerState<TankSettingsScreen> {
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to delete: $e'), backgroundColor: AppColors.error),
-        );
+        AppFeedback.showError(context, 'Failed to delete: $e');
       }
     } finally {
       if (mounted) setState(() => _isSaving = false);

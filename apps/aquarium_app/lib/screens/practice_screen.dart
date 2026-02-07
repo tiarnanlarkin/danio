@@ -5,6 +5,7 @@ import '../models/lesson_progress.dart';
 import '../data/lesson_content.dart';
 import '../providers/user_profile_provider.dart';
 import '../theme/app_theme.dart';
+import '../utils/app_feedback.dart';
 import 'lesson_screen.dart';
 
 /// Practice screen showing lessons that need review based on spaced repetition
@@ -210,10 +211,10 @@ class PracticeScreen extends ConsumerWidget {
       onTap: () {
         Navigator.of(context).push(
           MaterialPageRoute(
-            builder: (context) => PracticeLessonScreen(
+            builder: (context) => LessonScreen(
               lesson: lesson,
               pathTitle: pathTitle,
-              isReview: true,
+              isPracticeMode: true,
             ),
           ),
         );
@@ -748,25 +749,11 @@ class _PracticeLessonScreenState extends ConsumerState<PracticeLessonScreen> {
     await ref.read(userProfileProvider.notifier).recordActivity();
 
     if (mounted) {
-      // Show success snackbar
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Row(
-            children: [
-              const Icon(Icons.check_circle, color: Colors.white),
-              const SizedBox(width: 12),
-              Text(
-                widget.isReview
-                    ? 'Review complete! +$xpReward XP'
-                    : 'Lesson complete! +$xpReward XP',
-              ),
-            ],
-          ),
-          backgroundColor: AppColors.success,
-          behavior: SnackBarBehavior.floating,
-        ),
-      );
-
+      // Show success message
+      final message = widget.isReview
+          ? 'Review complete! +$xpReward XP'
+          : 'Lesson complete! +$xpReward XP';
+      AppFeedback.showSuccess(context, message);
       Navigator.of(context).pop();
     }
   }

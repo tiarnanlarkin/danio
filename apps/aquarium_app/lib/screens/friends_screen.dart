@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/friend.dart';
 import '../providers/friends_provider.dart';
 import '../theme/app_theme.dart';
+import '../utils/app_feedback.dart';
 import '../widgets/empty_state.dart';
 import '../widgets/error_state.dart';
 import 'friend_comparison_screen.dart';
@@ -161,21 +162,11 @@ class _FriendsScreenState extends ConsumerState<FriendsScreen> with SingleTicker
       if (!context.mounted) return;
       
       Navigator.pop(context);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Added $username as friend!'),
-          backgroundColor: Colors.green,
-        ),
-      );
+      AppFeedback.showSuccess(context, 'Added $username as friend!');
     } catch (error) {
       if (!context.mounted) return;
       
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(error.toString()),
-          backgroundColor: Colors.red,
-        ),
-      );
+      AppFeedback.showError(context, error.toString());
     }
   }
 }
@@ -203,12 +194,7 @@ class _FriendsListView extends ConsumerWidget {
         message: 'Add friends to compare progress and share your aquarium journey!',
         actionLabel: 'Tap + above to add friends',
         onAction: () {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Tap the + icon above to add friends'),
-              duration: Duration(seconds: 2),
-            ),
-          );
+          AppFeedback.showInfo(context, 'Tap the + icon above to add friends');
         },
       );
     }
