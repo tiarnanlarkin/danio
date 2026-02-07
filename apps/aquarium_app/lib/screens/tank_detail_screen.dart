@@ -31,7 +31,7 @@ class TankDetailScreen extends ConsumerWidget {
 
   const TankDetailScreen({super.key, required this.tankId});
 
-  Future<void> _completeTask(BuildContext context, WidgetRef ref, Task task) async {
+  static Future<void> _completeTask(BuildContext context, WidgetRef ref, Task task, String tankId) async {
     final storage = ref.read(storageServiceProvider);
     final now = DateTime.now();
 
@@ -90,6 +90,40 @@ class TankDetailScreen extends ConsumerWidget {
     if (context.mounted) {
       AppFeedback.showSuccess(context, '${task.title} completed!');
     }
+  }
+
+  void _deleteTank(BuildContext context, WidgetRef ref, Tank tank) {
+    final actions = ref.read(tankActionsProvider);
+    final navigator = Navigator.of(context);
+    final messenger = ScaffoldMessenger.of(context);
+    
+    // Soft delete the tank (marks for deletion, starts 5s timer)
+    actions.softDeleteTank(
+      tankId,
+      onUndoExpired: () {
+        // Called after 5 seconds if user doesn't undo
+        // Tank is already permanently deleted by the timer
+      },
+    );
+
+    // Pop back to home screen immediately
+    navigator.pop();
+
+    // Show SnackBar with undo action (5 seconds)
+    messenger.showSnackBar(
+      SnackBar(
+        content: Text('${tank.name} deleted'),
+        duration: const Duration(seconds: 5),
+        action: SnackBarAction(
+          label: 'Undo',
+          onPressed: () {
+            // Restore the tank
+            actions.undoDeleteTank(tankId);
+            AppFeedback.showSuccess(context, '${tank.name} restored');
+          },
+        ),
+      ),
+    );
   }
 
   @override
@@ -208,6 +242,8 @@ class TankDetailScreen extends ConsumerWidget {
                           Navigator.push(context, MaterialPageRoute(
                             builder: (_) => LivestockValueScreen(tankId: tankId, tankName: tank.name),
                           ));
+                        case 'delete':
+                          _deleteTank(context, ref, tank);
                       }
                     },
                     itemBuilder: (_) => [
@@ -219,6 +255,11 @@ class TankDetailScreen extends ConsumerWidget {
                       const PopupMenuItem(value: 'settings', child: ListTile(
                         leading: Icon(Icons.settings),
                         title: Text('Tank Settings'),
+                        contentPadding: EdgeInsets.zero,
+                      )),
+                      const PopupMenuItem(value: 'delete', child: ListTile(
+                        leading: Icon(Icons.delete_outline, color: AppColors.error),
+                        title: Text('Delete Tank', style: TextStyle(color: AppColors.error)),
                         contentPadding: EdgeInsets.zero,
                       )),
                     ],
@@ -372,7 +413,7 @@ class TankDetailScreen extends ConsumerWidget {
                   error: (_, __) => const SizedBox.shrink(),
                   data: (tasks) => _TaskPreview(
                     tasks: tasks.take(3).toList(),
-                    onComplete: (t) => _completeTask(context, ref, t),
+                    onComplete: (t) => _completeTask(context, ref, t, tankId),
                   ),
                 ),
               ),
@@ -1906,6 +1947,7 @@ class _QuickAddFabState extends State<_QuickAddFab> with SingleTickerProviderSta
         // Main FAB
         FloatingActionButton(
           onPressed: _toggle,
+          tooltip: 'Quick actions menu',
           child: AnimatedRotation(
             turns: _isExpanded ? 0.125 : 0,
             duration: const Duration(milliseconds: 200),
@@ -1957,6 +1999,7 @@ class _MiniFabOption extends StatelessWidget {
         FloatingActionButton.small(
           heroTag: label,
           backgroundColor: color,
+          tooltip: label,
           onPressed: onTap,
           child: Icon(icon, size: 20),
         ),
