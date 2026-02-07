@@ -1,0 +1,491 @@
+/// Streak calendar widget - GitHub-style activity visualization
+/// Shows daily goal completion with color-coded squares
+
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
+import '../models/daily_goal.dart';
+import '../providers/user_profile_provider.dart';
+import '../theme/app_theme.dart';
+
+class StreakCalendar extends ConsumerWidget {
+  final int weeks;
+  final double cellSize;
+  final double spacing;
+
+  const StreakCalendar({
+    super.key,
+    this.weeks = 12,
+    this.cellSize = 12,
+    this.spacing = 3,
+  });
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final profile = ref.watch(userProfileProvider).value;
+    
+    if (profile == null) {
+      return const SizedBox.shrink();
+    }
+
+    final recentGoals = DailyGoal.getRecentDays(
+      days: weeks * 7,
+      dailyXpGoal: profile.dailyXpGoal,
+      dailyXpHistory: profile.dailyXpHistory,
+    );
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Title and legend
+        Row(
+          children: [
+            Text(
+              'Activity',
+              style: AppTypography.labelLarge.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            const Spacer(),
+            _Legend(cellSize: cellSize),
+          ],
+        ),
+        const SizedBox(height: 12),
+        
+        // Calendar grid
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: _CalendarGrid(
+            goals: recentGoals,
+            cellSize: cellSize,
+            spacing: spacing,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _CalendarGrid extends StatelessWidget {
+  final List<DailyGoal> goals;
+  final double cellSize;
+  final double spacing;
+
+  const _CalendarGrid({
+    required this.goals,
+    required this.cellSize,
+    required this.spacing,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    // Group by week (Sunday-Saturday)
+    final weeks = <List<DailyGoal>>[];
+    var currentWeek = <DailyGoal>[];
+    
+    for (final goal in goals) {
+      currentWeek.add(goal);
+      
+      // Sunday is end of week (weekday = 7)
+      if (goal.date.weekday == DateTime.sunday || goal == goals.last) {
+        weeks.add(List.from(currentWeek));
+        currentWeek.clear();
+      }
+    }
+
+    // Ensure first week starts on Sunday
+    if (weeks.isNotEmpty && weeks.first.first.date.weekday != DateTime.sunday) {
+      final firstWeek = weeks.first;
+      final daysToAdd = firstWeek.first.date.weekday % 7;
+      for (int i = 0; i < daysToAdd; i++) {
+        firstWeek.insert(0, DailyGoal(
+          date: firstWeek.first.date.subtract(Duration(days: 1)),
+          targetXp: 0,
+          earnedXp: 0,
+          isCompleted: false,
+          isToday: false,
+        ));
+      }
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Week day labels (M W F)
+        Padding(
+          padding: EdgeInsets.only(left: cellSize + spacing),
+          child: Row(
+            children: [
+              SizedBox(
+                width: cellSize,
+                child: Text(
+                  'M',
+                  style: TextStyle(
+                    fontSize: 10,
+                    color: AppColors.textHint,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+              SizedBox(width: spacing),
+              SizedBox(width: cellSize + spacing), // Tuesday
+              SizedBox(
+                width: cellSize,
+                child: Text(
+                  'W',
+                  style: TextStyle(
+                    fontSize: 10,
+                    color: AppColors.textHint,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+              SizedBox(width: spacing),
+              SizedBox(width: cellSize + spacing), // Thursday
+              SizedBox(
+                width: cellSize,
+                child: Text(
+                  'F',
+                  style: TextStyle(
+                    fontSize: 10,
+                    color: AppColors.textHint,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 4),
+        
+        // Calendar cells
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Month labels (vertical)
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: _buildMonthLabels(weeks),
+            ),
+            SizedBox(width: spacing),
+            
+            // Week columns
+            ...weeks.map((week) => _WeekColumn(
+              goals: week,
+              cellSize: cellSize,
+              spacing: spacing,
+            )),
+          ],
+        ),
+      ],
+    );
+  }
+
+  List<Widget> _buildMonthLabels(List<List<DailyGoal>> weeks) {
+    final labels = <Widget>[];
+    String? lastMonth;
+    
+    for (int i = 0; i < 7; i++) {
+      String? monthLabel;
+      
+      for (final week in weeks) {
+        if (week.length > i) {
+          final goal = week[i];
+          final month = DateFormat('MMM').format(goal.date);
+          
+          if (month != lastMonth && (lastMonth == null || i == 0)) {
+            monthLabel = month;
+            lastMonth = month;
+            break;
+          }
+        }
+      }
+      
+      labels.add(
+        SizedBox(
+          height: cellSize,
+          child: monthLabel != null
+              ? Text(
+                  monthLabel,
+                  style: TextStyle(
+                    fontSize: 10,
+                    color: AppColors.textHint,
+                  ),
+                )
+              : null,
+        ),
+      );
+      
+      if (i < 6) {
+        labels.add(SizedBox(height: spacing));
+      }
+    }
+    
+    return labels;
+  }
+}
+
+class _WeekColumn extends StatelessWidget {
+  final List<DailyGoal> goals;
+  final double cellSize;
+  final double spacing;
+
+  const _WeekColumn({
+    required this.goals,
+    required this.cellSize,
+    required this.spacing,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        for (int i = 0; i < 7; i++) ...[
+          if (i < goals.length)
+            _DayCell(
+              goal: goals[i],
+              size: cellSize,
+            )
+          else
+            SizedBox(
+              width: cellSize,
+              height: cellSize,
+            ),
+          if (i < 6) SizedBox(height: spacing),
+        ],
+      ],
+    );
+  }
+}
+
+class _DayCell extends StatelessWidget {
+  final DailyGoal goal;
+  final double size;
+
+  const _DayCell({
+    required this.goal,
+    required this.size,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final intensity = StreakCalculator.getIntensityLevel(
+      earnedXp: goal.earnedXp,
+      dailyXpGoal: goal.targetXp,
+    );
+
+    final color = _getColorForIntensity(intensity);
+    
+    return Tooltip(
+      message: _getTooltipText(),
+      child: Container(
+        width: size,
+        height: size,
+        decoration: BoxDecoration(
+          color: color,
+          borderRadius: BorderRadius.circular(2),
+          border: goal.isToday
+              ? Border.all(
+                  color: AppColors.primary,
+                  width: 2,
+                )
+              : null,
+        ),
+      ),
+    );
+  }
+
+  Color _getColorForIntensity(int intensity) {
+    switch (intensity) {
+      case 0:
+        return AppColors.surfaceVariant;
+      case 1:
+        return const Color(0xFFC6E7C6); // Light green
+      case 2:
+        return const Color(0xFF9CD89C); // Medium-light green
+      case 3:
+        return const Color(0xFF66BB6A); // Medium green
+      case 4:
+        return const Color(0xFF43A047); // Dark green
+      default:
+        return AppColors.surfaceVariant;
+    }
+  }
+
+  String _getTooltipText() {
+    final dateStr = DateFormat('MMM d, yyyy').format(goal.date);
+    
+    if (goal.earnedXp == 0) {
+      return '$dateStr\nNo activity';
+    }
+    
+    return '$dateStr\n${goal.earnedXp} XP earned\n${goal.progressPercent}% of goal';
+  }
+}
+
+class _Legend extends StatelessWidget {
+  final double cellSize;
+
+  const _Legend({
+    required this.cellSize,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(
+          'Less',
+          style: TextStyle(
+            fontSize: 10,
+            color: AppColors.textHint,
+          ),
+        ),
+        const SizedBox(width: 4),
+        _LegendCell(color: AppColors.surfaceVariant, size: cellSize),
+        const SizedBox(width: 2),
+        _LegendCell(color: const Color(0xFFC6E7C6), size: cellSize),
+        const SizedBox(width: 2),
+        _LegendCell(color: const Color(0xFF9CD89C), size: cellSize),
+        const SizedBox(width: 2),
+        _LegendCell(color: const Color(0xFF66BB6A), size: cellSize),
+        const SizedBox(width: 2),
+        _LegendCell(color: const Color(0xFF43A047), size: cellSize),
+        const SizedBox(width: 4),
+        Text(
+          'More',
+          style: TextStyle(
+            fontSize: 10,
+            color: AppColors.textHint,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _LegendCell extends StatelessWidget {
+  final Color color;
+  final double size;
+
+  const _LegendCell({
+    required this.color,
+    required this.size,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: size,
+      height: size,
+      decoration: BoxDecoration(
+        color: color,
+        borderRadius: BorderRadius.circular(2),
+      ),
+    );
+  }
+}
+
+/// Full-page streak calendar view
+class StreakCalendarScreen extends ConsumerWidget {
+  const StreakCalendarScreen({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final profile = ref.watch(userProfileProvider).value;
+    
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Activity Calendar'),
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Stats cards
+            Row(
+              children: [
+                Expanded(
+                  child: _StatCard(
+                    label: 'Current Streak',
+                    value: '${profile?.currentStreak ?? 0}',
+                    icon: Icons.local_fire_department,
+                    color: const Color(0xFFFF6B35),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: _StatCard(
+                    label: 'Longest Streak',
+                    value: '${profile?.longestStreak ?? 0}',
+                    icon: Icons.emoji_events,
+                    color: AppColors.secondary,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 24),
+            
+            // Calendar
+            const StreakCalendar(
+              weeks: 52, // Full year
+              cellSize: 14,
+              spacing: 4,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _StatCard extends StatelessWidget {
+  final String label;
+  final String value;
+  final IconData icon;
+  final Color color;
+
+  const _StatCard({
+    required this.label,
+    required this.value,
+    required this.icon,
+    required this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: AppColors.surfaceVariant,
+        ),
+      ),
+      child: Column(
+        children: [
+          Icon(icon, color: color, size: 32),
+          const SizedBox(height: 8),
+          Text(
+            value,
+            style: AppTypography.headlineMedium.copyWith(
+              color: color,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            label,
+            style: AppTypography.bodySmall.copyWith(
+              color: AppColors.textSecondary,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
+    );
+  }
+}

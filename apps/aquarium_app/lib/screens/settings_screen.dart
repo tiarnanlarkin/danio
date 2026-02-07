@@ -8,6 +8,7 @@ import 'dart:io';
 import '../models/wishlist.dart';
 import '../providers/settings_provider.dart';
 import 'about_screen.dart';
+import 'notification_settings_screen.dart';
 import 'acclimation_guide_screen.dart';
 import 'backup_restore_screen.dart';
 import 'co2_calculator_screen.dart';
@@ -70,6 +71,15 @@ class SettingsScreen extends ConsumerWidget {
           _SectionHeader(title: 'Learn'),
           _LearnCard(ref: ref),
           
+          // Daily Goal Settings
+          ListTile(
+            leading: const Icon(Icons.flag),
+            title: const Text('Daily Goal'),
+            subtitle: Text('Set your daily XP target'),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => _showDailyGoalPicker(context, ref),
+          ),
+          
           // House Navigation (Rooms)
           _SectionHeader(title: 'Explore'),
           const RoomNavigation(),
@@ -98,6 +108,16 @@ class SettingsScreen extends ConsumerWidget {
 
           // Notifications
           _SectionHeader(title: 'Notifications'),
+          ListTile(
+            leading: const Icon(Icons.notifications_active),
+            title: const Text('Streak Reminders'),
+            subtitle: const Text('Daily notifications to maintain your streak'),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const NotificationSettingsScreen()),
+            ),
+          ),
           SwitchListTile(
             secondary: const Icon(Icons.notifications_outlined),
             title: const Text('Task Reminders'),
@@ -671,6 +691,71 @@ class SettingsScreen extends ConsumerWidget {
     );
   }
 
+  void _showDailyGoalPicker(BuildContext context, WidgetRef ref) {
+    final profile = ref.read(userProfileProvider).value;
+    final currentGoal = profile?.dailyXpGoal ?? 50;
+
+    showModalBottomSheet(
+      context: context,
+      builder: (ctx) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                children: [
+                  Text('Daily XP Goal', style: Theme.of(context).textTheme.titleLarge),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Complete your goal every day to maintain your streak',
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: AppColors.textSecondary,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
+            ),
+            _GoalOption(
+              ref: ref,
+              goal: 25,
+              label: 'Casual',
+              description: 'Just a few minutes',
+              current: currentGoal,
+              icon: '🐢',
+            ),
+            _GoalOption(
+              ref: ref,
+              goal: 50,
+              label: 'Regular',
+              description: 'One lesson per day',
+              current: currentGoal,
+              icon: '🐟',
+            ),
+            _GoalOption(
+              ref: ref,
+              goal: 100,
+              label: 'Serious',
+              description: 'Multiple lessons',
+              current: currentGoal,
+              icon: '🦈',
+            ),
+            _GoalOption(
+              ref: ref,
+              goal: 200,
+              label: 'Intense',
+              description: 'Max dedication',
+              current: currentGoal,
+              icon: '🐋',
+            ),
+            const SizedBox(height: 16),
+          ],
+        ),
+      ),
+    );
+  }
+
   void _showAboutDialog(BuildContext context) {
     showAboutDialog(
       context: context,
@@ -1071,6 +1156,47 @@ class _LearnCard extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+class _GoalOption extends StatelessWidget {
+  final WidgetRef ref;
+  final int goal;
+  final String label;
+  final String description;
+  final int current;
+  final String icon;
+
+  const _GoalOption({
+    required this.ref,
+    required this.goal,
+    required this.label,
+    required this.description,
+    required this.current,
+    required this.icon,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final isSelected = goal == current;
+
+    return ListTile(
+      leading: Text(
+        icon,
+        style: const TextStyle(fontSize: 32),
+      ),
+      title: Text('$goal XP/day'),
+      subtitle: Text('$label • $description'),
+      trailing: isSelected 
+          ? const Icon(Icons.check_circle, color: AppColors.primary)
+          : null,
+      selected: isSelected,
+      onTap: () {
+        ref.read(userProfileProvider.notifier).setDailyGoal(goal);
+        Navigator.pop(context);
+        AppFeedback.showSuccess(context, 'Daily goal updated to $goal XP');
+      },
     );
   }
 }

@@ -3,7 +3,12 @@ import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest.dart' as tz_data;
 import '../models/models.dart';
 
-/// Service for managing local notifications for task reminders.
+// Notification IDs for streak reminders
+const int _morningNotificationId = 1000;
+const int _eveningNotificationId = 1001;
+const int _nightNotificationId = 1002;
+
+/// Service for managing local notifications for task reminders and streak reminders.
 class NotificationService {
   static final NotificationService _instance = NotificationService._internal();
   factory NotificationService() => _instance;
@@ -11,12 +16,20 @@ class NotificationService {
 
   final FlutterLocalNotificationsPlugin _plugin = FlutterLocalNotificationsPlugin();
   bool _initialized = false;
+  
+  // Callback for handling notification taps
+  Function(String?)? onNotificationTap;
 
   /// Initialize the notification service.
-  Future<void> initialize() async {
+  Future<void> initialize({Function(String?)? onSelectNotification}) async {
     if (_initialized) return;
 
     tz_data.initializeTimeZones();
+    
+    // Store callback for notification taps
+    if (onSelectNotification != null) {
+      onNotificationTap = onSelectNotification;
+    }
 
     const androidSettings = AndroidInitializationSettings('@mipmap/ic_launcher');
     const iosSettings = DarwinInitializationSettings(
@@ -30,7 +43,15 @@ class NotificationService {
       iOS: iosSettings,
     );
 
-    await _plugin.initialize(settings);
+    await _plugin.initialize(
+      settings,
+      onDidReceiveNotificationResponse: (details) {
+        // Handle notification tap
+        if (details.payload != null && onNotificationTap != null) {
+          onNotificationTap!(details.payload);
+        }
+      },
+    );
     _initialized = true;
   }
 
@@ -152,6 +173,208 @@ class NotificationService {
       if (task.isEnabled && task.dueDate != null) {
         await scheduleTaskReminder(task);
       }
+    }
+  }
+  
+  // ==================== STREAK NOTIFICATIONS ====================
+  
+  /// Schedule daily morning streak reminder (9 AM)
+  Future<void> scheduleMorningStreakReminder({
+    required int currentStreak,
+    required TimeOfDay time,
+  }) async {
+    if (!_initialized) await initialize();
+    
+    final now = DateTime.now();
+    var scheduledDate = DateTime(
+      now.year,
+      now.month,
+      now.day,
+      time.hour,
+      time.minute,
+    );
+    
+    // If time has passed today, schedule for tomorrow
+    if (scheduledDate.isBefore(now)) {
+      scheduledDate = scheduledDate.add(const Duration(days: 1));
+    }
+    
+    final tzScheduledDate = tz.TZDateTime.from(scheduledDate, tz.local);
+    
+    await _plugin.zonedSchedule(
+      _morningNotificationId,
+      '🔥 Good morning!',
+      'Start your $currentStreak-day streak with today\'s lesson',
+      tzScheduledDate,
+      const NotificationDetails(
+        android: AndroidNotificationDetails(
+          'streak_reminders',
+          'Streak Reminders',
+          channelDescription: 'Daily reminders to maintain your learning streak',
+          importance: Importance.high,
+          priority: Priority.high,
+          icon: '@mipmap/ic_launcher',
+        ),
+        iOS: DarwinNotificationDetails(
+          presentAlert: true,
+          presentBadge: true,
+          presentSound: true,
+        ),
+      ),
+      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+      uiLocalNotificationDateInterpretation:
+          UILocalNotificationDateInterpretation.absoluteTime,
+      matchDateTimeComponents: DateTimeComponents.time, // Repeat daily
+      payload: 'learn', // Navigate to learn screen
+    );
+  }
+  
+  /// Schedule evening streak reminder if goal not met (7 PM)
+  Future<void> scheduleEveningStreakReminder({
+    required int currentStreak,
+    required int xpNeeded,
+    required TimeOfDay time,
+  }) async {
+    if (!_initialized) await initialize();
+    
+    final now = DateTime.now();
+    var scheduledDate = DateTime(
+      now.year,
+      now.month,
+      now.day,
+      time.hour,
+      time.minute,
+    );
+    
+    // If time has passed today, schedule for tomorrow
+    if (scheduledDate.isBefore(now)) {
+      scheduledDate = scheduledDate.add(const Duration(days: 1));
+    }
+    
+    final tzScheduledDate = tz.TZDateTime.from(scheduledDate, tz.local);
+    
+    await _plugin.zonedSchedule(
+      _eveningNotificationId,
+      '⏰ Keep your streak alive!',
+      'Just $xpNeeded XP to keep your $currentStreak-day streak!',
+      tzScheduledDate,
+      const NotificationDetails(
+        android: AndroidNotificationDetails(
+          'streak_reminders',
+          'Streak Reminders',
+          channelDescription: 'Daily reminders to maintain your learning streak',
+          importance: Importance.high,
+          priority: Priority.high,
+          icon: '@mipmap/ic_launcher',
+        ),
+        iOS: DarwinNotificationDetails(
+          presentAlert: true,
+          presentBadge: true,
+          presentSound: true,
+        ),
+      ),
+      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+      uiLocalNotificationDateInterpretation:
+          UILocalNotificationDateInterpretation.absoluteTime,
+      matchDateTimeComponents: DateTimeComponents.time, // Repeat daily
+      payload: 'learn', // Navigate to learn screen
+    );
+  }
+  
+  /// Schedule late night streak reminder if goal not met (11 PM)
+  Future<void> scheduleNightStreakReminder({
+    required int currentStreak,
+    required TimeOfDay time,
+  }) async {
+    if (!_initialized) await initialize();
+    
+    final now = DateTime.now();
+    var scheduledDate = DateTime(
+      now.year,
+      now.month,
+      now.day,
+      time.hour,
+      time.minute,
+    );
+    
+    // If time has passed today, schedule for tomorrow
+    if (scheduledDate.isBefore(now)) {
+      scheduledDate = scheduledDate.add(const Duration(days: 1));
+    }
+    
+    final tzScheduledDate = tz.TZDateTime.from(scheduledDate, tz.local);
+    
+    await _plugin.zonedSchedule(
+      _nightNotificationId,
+      '⚠️ Don\'t lose your streak!',
+      'Only 5 minutes left to save your $currentStreak-day streak!',
+      tzScheduledDate,
+      const NotificationDetails(
+        android: AndroidNotificationDetails(
+          'streak_reminders',
+          'Streak Reminders',
+          channelDescription: 'Daily reminders to maintain your learning streak',
+          importance: Importance.max,
+          priority: Priority.max,
+          icon: '@mipmap/ic_launcher',
+          sound: RawResourceAndroidNotificationSound('notification'),
+        ),
+        iOS: DarwinNotificationDetails(
+          presentAlert: true,
+          presentBadge: true,
+          presentSound: true,
+        ),
+      ),
+      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+      uiLocalNotificationDateInterpretation:
+          UILocalNotificationDateInterpretation.absoluteTime,
+      matchDateTimeComponents: DateTimeComponents.time, // Repeat daily
+      payload: 'learn', // Navigate to learn screen
+    );
+  }
+  
+  /// Cancel all streak notifications
+  Future<void> cancelStreakNotifications() async {
+    if (!_initialized) await initialize();
+    await _plugin.cancel(_morningNotificationId);
+    await _plugin.cancel(_eveningNotificationId);
+    await _plugin.cancel(_nightNotificationId);
+  }
+  
+  /// Schedule all streak notifications based on user preferences
+  /// This should be called when streak reminders are enabled or settings change
+  Future<void> scheduleAllStreakNotifications({
+    required int currentStreak,
+    required int dailyXpGoal,
+    required int todayXp,
+    TimeOfDay? morningTime,
+    TimeOfDay? eveningTime,
+    TimeOfDay? nightTime,
+  }) async {
+    if (!_initialized) await initialize();
+    
+    // Cancel existing streak notifications
+    await cancelStreakNotifications();
+    
+    // Schedule morning notification
+    await scheduleMorningStreakReminder(
+      currentStreak: currentStreak,
+      time: morningTime ?? const TimeOfDay(hour: 9, minute: 0),
+    );
+    
+    // Only schedule evening/night notifications if goal not met today
+    final xpNeeded = dailyXpGoal - todayXp;
+    if (xpNeeded > 0) {
+      await scheduleEveningStreakReminder(
+        currentStreak: currentStreak,
+        xpNeeded: xpNeeded,
+        time: eveningTime ?? const TimeOfDay(hour: 19, minute: 0),
+      );
+      
+      await scheduleNightStreakReminder(
+        currentStreak: currentStreak,
+        time: nightTime ?? const TimeOfDay(hour: 23, minute: 0),
+      );
     }
   }
 }

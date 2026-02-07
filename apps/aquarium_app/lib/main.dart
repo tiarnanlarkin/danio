@@ -3,11 +3,29 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'providers/settings_provider.dart';
 import 'screens/house_navigator.dart';
 import 'screens/onboarding_screen.dart';
+import 'screens/learn_screen.dart';
 import 'services/onboarding_service.dart';
+import 'services/notification_service.dart';
 import 'theme/app_theme.dart';
 
-void main() {
+// Global navigator key for notification navigation
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  
+  // Initialize notifications with navigation callback
+  final notificationService = NotificationService();
+  await notificationService.initialize(
+    onSelectNotification: (payload) {
+      // Navigate to learn screen when notification is tapped
+      if (payload == 'learn') {
+        navigatorKey.currentState?.push(
+          MaterialPageRoute(builder: (_) => const LearnScreen()),
+        );
+      }
+    },
+  );
 
   runApp(
     const ProviderScope(
@@ -24,6 +42,7 @@ class AquariumApp extends ConsumerWidget {
     final settings = ref.watch(settingsProvider);
     
     return MaterialApp(
+      navigatorKey: navigatorKey,
       title: 'Aquarium',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light,

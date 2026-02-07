@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/models.dart';
 import '../providers/tank_provider.dart';
 import '../providers/room_theme_provider.dart';
+import '../providers/user_profile_provider.dart';
 import '../theme/app_theme.dart';
 import '../theme/room_themes.dart';
 import '../widgets/decorative_elements.dart';
@@ -10,6 +11,9 @@ import '../widgets/hobby_items.dart';
 import '../widgets/hobby_desk.dart';
 import '../widgets/room_scene.dart';
 import '../widgets/speed_dial_fab.dart';
+import '../widgets/daily_goal_progress.dart';
+import '../widgets/streak_display.dart';
+import '../widgets/streak_calendar.dart';
 import 'create_tank_screen.dart';
 import 'search_screen.dart';
 import 'settings_screen.dart';
@@ -153,6 +157,33 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     setState(() => _currentTankIndex = index);
                   },
                   onAddTank: () => _navigateToCreateTank(context),
+                ),
+              ),
+
+              // Learning Progress Cards
+              Positioned(
+                bottom: 80,
+                left: 16,
+                right: 16,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(
+                          child: DailyGoalCard(
+                            onTap: () => _showDailyGoalDetails(context),
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: StreakCard(
+                            onTap: () => _showStreakCalendar(context),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
               ),
 
@@ -402,6 +433,60 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           onClose: () => Navigator.pop(ctx),
         ),
       ),
+    );
+  }
+
+  void _showDailyGoalDetails(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (ctx) => Container(
+        margin: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          color: Theme.of(context).scaffoldBackgroundColor,
+          borderRadius: BorderRadius.circular(24),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Row(
+              children: [
+                const Icon(Icons.flag, color: AppColors.primary),
+                const SizedBox(width: 12),
+                Text('Daily Goal', style: AppTypography.headlineSmall),
+                const Spacer(),
+                IconButton(
+                  icon: const Icon(Icons.close),
+                  onPressed: () => Navigator.pop(ctx),
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
+            const DailyGoalProgress(size: 120),
+            const SizedBox(height: 20),
+            Text(
+              'Ways to earn XP:',
+              style: AppTypography.labelLarge,
+            ),
+            const SizedBox(height: 12),
+            _XpSourceRow(icon: Icons.school, label: 'Complete lesson', xp: 50),
+            _XpSourceRow(icon: Icons.quiz, label: 'Pass quiz', xp: 25),
+            _XpSourceRow(icon: Icons.science, label: 'Log water test', xp: 10),
+            _XpSourceRow(icon: Icons.water_drop, label: 'Water change', xp: 10),
+            _XpSourceRow(icon: Icons.task_alt, label: 'Complete task', xp: 15),
+            const SizedBox(height: 20),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showStreakCalendar(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => const StreakCalendarScreen()),
     );
   }
 }
@@ -664,6 +749,51 @@ class _TankPickerSheet extends StatelessWidget {
           ),
           
           SizedBox(height: MediaQuery.of(context).padding.bottom + 8),
+        ],
+      ),
+    );
+  }
+}
+
+class _XpSourceRow extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final int xp;
+
+  const _XpSourceRow({
+    required this.icon,
+    required this.label,
+    required this.xp,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 6),
+      child: Row(
+        children: [
+          Icon(icon, size: 20, color: AppColors.textSecondary),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(
+              label,
+              style: AppTypography.bodyMedium,
+            ),
+          ),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            decoration: BoxDecoration(
+              color: AppColors.primary.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Text(
+              '+$xp XP',
+              style: AppTypography.labelSmall.copyWith(
+                color: AppColors.primary,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
         ],
       ),
     );

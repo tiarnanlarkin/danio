@@ -4,6 +4,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 import '../models/user_profile.dart';
 import '../models/learning.dart';
+import '../models/daily_goal.dart';
+import '../models/lesson_progress.dart';
 
 const _uuid = Uuid();
 
@@ -68,9 +70,13 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
     ExperienceLevel? experienceLevel,
     TankType? primaryTankType,
     List<UserGoal>? goals,
+    int? dailyXpGoal,
     bool? dailyTipsEnabled,
     bool? streakRemindersEnabled,
     String? reminderTime,
+    String? morningReminderTime,
+    String? eveningReminderTime,
+    String? nightReminderTime,
   }) async {
     final current = state.value;
     if (current == null) return;
@@ -80,14 +86,37 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
       experienceLevel: experienceLevel ?? current.experienceLevel,
       primaryTankType: primaryTankType ?? current.primaryTankType,
       goals: goals ?? current.goals,
+      dailyXpGoal: dailyXpGoal ?? current.dailyXpGoal,
       dailyTipsEnabled: dailyTipsEnabled ?? current.dailyTipsEnabled,
       streakRemindersEnabled: streakRemindersEnabled ?? current.streakRemindersEnabled,
       reminderTime: reminderTime ?? current.reminderTime,
+      morningReminderTime: morningReminderTime ?? current.morningReminderTime,
+      eveningReminderTime: eveningReminderTime ?? current.eveningReminderTime,
+      nightReminderTime: nightReminderTime ?? current.nightReminderTime,
       updatedAt: DateTime.now(),
     );
 
     await _save(updated);
     state = AsyncValue.data(updated);
+  }
+  
+  /// Get today's XP progress
+  int getTodayXp() {
+    final current = state.value;
+    if (current == null) return 0;
+    
+    final today = _formatDate(DateTime.now());
+    return current.dailyXpHistory[today] ?? 0;
+  }
+  
+  /// Format date as YYYY-MM-DD for dailyXpHistory key
+  String _formatDate(DateTime date) {
+    return '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
+  }
+
+  /// Set daily XP goal (25, 50, 100, or 200)
+  Future<void> setDailyGoal(int goal) async {
+    await updateProfile(dailyXpGoal: goal);
   }
 
   /// Award XP and handle streak logic (with streak freeze support)
@@ -143,12 +172,18 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
     if (newStreak > current.currentStreak) {
       bonusXp = XpRewards.dailyStreak;
     }
+    
+    // Update daily XP history
+    final todayKey = _formatDate(today);
+    final todayXp = (current.dailyXpHistory[todayKey] ?? 0) + xp + bonusXp;
+    final updatedHistory = {...current.dailyXpHistory, todayKey: todayXp};
 
     final updated = current.copyWith(
       totalXp: current.totalXp + xp + bonusXp,
       currentStreak: newStreak,
       longestStreak: longestStreak,
       lastActivityDate: now,
+      dailyXpHistory: updatedHistory,
       hasStreakFreeze: usedFreeze ? false : current.hasStreakFreeze,
       streakFreezeUsedDate: usedFreeze ? now : current.streakFreezeUsedDate,
       updatedAt: now,
@@ -164,18 +199,29 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
     return DateTime(dateTime.year, dateTime.month, dateTime.day);
   }
 
-  /// Add XP without streak update (for lesson completion, etc.)
+  /// Add XP and update daily progress
   Future<void> addXp(int amount) async {
+    if (amount <= 0) return;
+    
     final current = state.value;
     if (current == null) return;
 
+    // Update today's XP in history
+    final todayKey = getTodayKey();
+    final updatedHistory = Map<String, int>.from(current.dailyXpHistory);
+    updatedHistory[todayKey] = (updatedHistory[todayKey] ?? 0) + amount;
+
     final updated = current.copyWith(
       totalXp: current.totalXp + amount,
+      dailyXpHistory: updatedHistory,
       updatedAt: DateTime.now(),
     );
 
     await _save(updated);
     state = AsyncValue.data(updated);
+
+    // Record activity for streak tracking
+    await recordActivity(xp: 0); // XP already added above
   }
 
   /// Mark a lesson as completed
@@ -183,17 +229,145 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
     final current = state.value;
     if (current == null) return;
 
-    // Don't double-count
+    // Don't double-count if already completed
     if (current.completedLessons.contains(lessonId)) return;
+
+    // Create new lesson progress entry
+    final now = DateTime.now();
+    final progress = LessonProgress(
+      lessonId: lessonId,
+      completedDate: now,
+      lastReviewDate: null,
+      reviewCount: 0,
+      strength: 100.0,
+    );
+
+    // Update lesson progress map
+    final updatedProgress = Map<String, LessonProgress>.from(current.lessonProgress);
+    updatedProgress[lessonId] = progress;
+
+    // Update today's XP in history
+    final todayKey = getTodayKey();
+    final updatedHistory = Map<String, int>.from(current.dailyXpHistory);
+    updatedHistory[todayKey] = (updatedHistory[todayKey] ?? 0) + xpReward;
 
     final updated = current.copyWith(
       completedLessons: [...current.completedLessons, lessonId],
+      lessonProgress: updatedProgress,
       totalXp: current.totalXp + xpReward,
-      updatedAt: DateTime.now(),
+      dailyXpHistory: updatedHistory,
+      updatedAt: now,
     );
 
     await _save(updated);
     state = AsyncValue.data(updated);
+
+    // Record activity for streak tracking
+    await recordActivity(xp: 0); // XP already added above
+  }
+
+  /// Complete placement test and apply results
+  Future<void> completePlacementTest({
+    required String resultId,
+    required List<String> lessonsToSkip,
+    required int xpToAward,
+  }) async {
+    final current = state.value;
+    if (current == null) return;
+
+    // Mark lessons as completed (tested out)
+    final now = DateTime.now();
+    final updatedCompletedLessons = [
+      ...current.completedLessons,
+      ...lessonsToSkip.where((id) => !current.completedLessons.contains(id)),
+    ];
+
+    // Create lesson progress entries for skipped lessons
+    final updatedProgress = Map<String, LessonProgress>.from(current.lessonProgress);
+    for (final lessonId in lessonsToSkip) {
+      if (!updatedProgress.containsKey(lessonId)) {
+        updatedProgress[lessonId] = LessonProgress(
+          lessonId: lessonId,
+          completedDate: now,
+          lastReviewDate: null,
+          reviewCount: 0,
+          strength: 75.0, // Lower strength since they tested out
+        );
+      }
+    }
+
+    // Update today's XP in history
+    final todayKey = getTodayKey();
+    final updatedHistory = Map<String, int>.from(current.dailyXpHistory);
+    updatedHistory[todayKey] = (updatedHistory[todayKey] ?? 0) + xpToAward;
+
+    final updated = current.copyWith(
+      hasCompletedPlacementTest: true,
+      placementResultId: resultId,
+      placementTestDate: now,
+      completedLessons: updatedCompletedLessons,
+      lessonProgress: updatedProgress,
+      totalXp: current.totalXp + xpToAward,
+      dailyXpHistory: updatedHistory,
+      updatedAt: now,
+    );
+
+    await _save(updated);
+    state = AsyncValue.data(updated);
+
+    // Record activity for streak tracking
+    await recordActivity(xp: 0); // XP already added above
+  }
+
+  /// Mark a lesson as reviewed (for spaced repetition)
+  Future<void> reviewLesson(String lessonId, int xpReward) async {
+    final current = state.value;
+    if (current == null) return;
+
+    // Check if lesson exists in progress
+    final progress = current.lessonProgress[lessonId];
+    if (progress == null) return; // Can't review if never completed
+
+    // Update lesson progress with review
+    final updatedProgressEntry = progress.reviewed();
+    final updatedProgress = Map<String, LessonProgress>.from(current.lessonProgress);
+    updatedProgress[lessonId] = updatedProgressEntry;
+
+    // Update today's XP in history
+    final todayKey = getTodayKey();
+    final updatedHistory = Map<String, int>.from(current.dailyXpHistory);
+    updatedHistory[todayKey] = (updatedHistory[todayKey] ?? 0) + xpReward;
+
+    final now = DateTime.now();
+    final updated = current.copyWith(
+      lessonProgress: updatedProgress,
+      totalXp: current.totalXp + xpReward,
+      dailyXpHistory: updatedHistory,
+      updatedAt: now,
+    );
+
+    await _save(updated);
+    state = AsyncValue.data(updated);
+
+    // Record activity for streak tracking
+    await recordActivity(xp: 0); // XP already added above
+  }
+
+  /// Get lessons that need review (strength < 50)
+  List<LessonProgress> getLessonsNeedingReview() {
+    final current = state.value;
+    if (current == null) return [];
+
+    return current.lessonProgress.values
+        .where((progress) => progress.needsReview)
+        .toList()
+      ..sort((a, b) => a.currentStrength.compareTo(b.currentStrength));
+  }
+
+  /// Get the 5 weakest lessons for review
+  List<LessonProgress> getWeakestLessons({int count = 5}) {
+    final needingReview = getLessonsNeedingReview();
+    return needingReview.take(count).toList();
   }
 
   /// Award an achievement
@@ -254,6 +428,29 @@ final learningStatsProvider = Provider<LearningStats?>((ref) {
     longestStreak: profile.longestStreak,
     lessonsCompleted: profile.completedLessons.length,
     achievementsUnlocked: profile.achievements.length,
+  );
+});
+
+/// Provider for today's daily goal
+final todaysDailyGoalProvider = Provider<DailyGoal?>((ref) {
+  final profile = ref.watch(userProfileProvider).value;
+  if (profile == null) return null;
+
+  return DailyGoal.today(
+    dailyXpGoal: profile.dailyXpGoal,
+    dailyXpHistory: profile.dailyXpHistory,
+  );
+});
+
+/// Provider for recent daily goals (for streak calendar)
+final recentDailyGoalsProvider = Provider<List<DailyGoal>>((ref) {
+  final profile = ref.watch(userProfileProvider).value;
+  if (profile == null) return [];
+
+  return DailyGoal.getRecentDays(
+    days: 90, // Last 3 months
+    dailyXpGoal: profile.dailyXpGoal,
+    dailyXpHistory: profile.dailyXpHistory,
   );
 });
 

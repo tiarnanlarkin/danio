@@ -2,6 +2,7 @@
 /// This powers the "Duolingo for fishkeeping" learning journey
 
 import 'package:flutter/foundation.dart';
+import 'lesson_progress.dart';
 
 enum ExperienceLevel {
   beginner,
@@ -39,7 +40,17 @@ class UserProfile {
   final int longestStreak;
   final DateTime? lastActivityDate;
   final List<String> achievements; // Achievement IDs
-  final List<String> completedLessons;
+  final List<String> completedLessons; // Legacy - kept for backward compatibility
+  final Map<String, LessonProgress> lessonProgress; // Spaced repetition tracking
+  
+  // Placement Test
+  final bool hasCompletedPlacementTest;
+  final String? placementResultId; // Reference to PlacementResult
+  final DateTime? placementTestDate;
+  
+  // Daily Goals
+  final int dailyXpGoal;          // Target XP per day (default 50)
+  final Map<String, int> dailyXpHistory; // 'YYYY-MM-DD' -> XP earned that day
   
   // Streak Freeze (1 free skip per week)
   final bool hasStreakFreeze;     // Currently has a freeze available
@@ -49,7 +60,10 @@ class UserProfile {
   // Preferences
   final bool dailyTipsEnabled;
   final bool streakRemindersEnabled;
-  final String? reminderTime;     // "09:00" format
+  final String? reminderTime;     // "09:00" format (deprecated - use morningReminderTime)
+  final String? morningReminderTime;  // "09:00" format
+  final String? eveningReminderTime;  // "19:00" format
+  final String? nightReminderTime;    // "23:00" format
   
   final DateTime createdAt;
   final DateTime updatedAt;
@@ -66,12 +80,21 @@ class UserProfile {
     this.lastActivityDate,
     this.achievements = const [],
     this.completedLessons = const [],
+    this.lessonProgress = const {},
+    this.hasCompletedPlacementTest = false,
+    this.placementResultId,
+    this.placementTestDate,
+    this.dailyXpGoal = 50,
+    this.dailyXpHistory = const {},
     this.hasStreakFreeze = true,
     this.streakFreezeUsedDate,
     this.streakFreezeGrantedDate,
     this.dailyTipsEnabled = true,
     this.streakRemindersEnabled = true,
     this.reminderTime,
+    this.morningReminderTime = '09:00',
+    this.eveningReminderTime = '19:00',
+    this.nightReminderTime = '23:00',
     required this.createdAt,
     required this.updatedAt,
   });
@@ -194,12 +217,21 @@ class UserProfile {
     DateTime? lastActivityDate,
     List<String>? achievements,
     List<String>? completedLessons,
+    Map<String, LessonProgress>? lessonProgress,
+    bool? hasCompletedPlacementTest,
+    String? placementResultId,
+    DateTime? placementTestDate,
+    int? dailyXpGoal,
+    Map<String, int>? dailyXpHistory,
     bool? hasStreakFreeze,
     DateTime? streakFreezeUsedDate,
     DateTime? streakFreezeGrantedDate,
     bool? dailyTipsEnabled,
     bool? streakRemindersEnabled,
     String? reminderTime,
+    String? morningReminderTime,
+    String? eveningReminderTime,
+    String? nightReminderTime,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) {
@@ -215,12 +247,21 @@ class UserProfile {
       lastActivityDate: lastActivityDate ?? this.lastActivityDate,
       achievements: achievements ?? this.achievements,
       completedLessons: completedLessons ?? this.completedLessons,
+      lessonProgress: lessonProgress ?? this.lessonProgress,
+      hasCompletedPlacementTest: hasCompletedPlacementTest ?? this.hasCompletedPlacementTest,
+      placementResultId: placementResultId ?? this.placementResultId,
+      placementTestDate: placementTestDate ?? this.placementTestDate,
+      dailyXpGoal: dailyXpGoal ?? this.dailyXpGoal,
+      dailyXpHistory: dailyXpHistory ?? this.dailyXpHistory,
       hasStreakFreeze: hasStreakFreeze ?? this.hasStreakFreeze,
       streakFreezeUsedDate: streakFreezeUsedDate ?? this.streakFreezeUsedDate,
       streakFreezeGrantedDate: streakFreezeGrantedDate ?? this.streakFreezeGrantedDate,
       dailyTipsEnabled: dailyTipsEnabled ?? this.dailyTipsEnabled,
       streakRemindersEnabled: streakRemindersEnabled ?? this.streakRemindersEnabled,
       reminderTime: reminderTime ?? this.reminderTime,
+      morningReminderTime: morningReminderTime ?? this.morningReminderTime,
+      eveningReminderTime: eveningReminderTime ?? this.eveningReminderTime,
+      nightReminderTime: nightReminderTime ?? this.nightReminderTime,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );
@@ -238,12 +279,21 @@ class UserProfile {
     'lastActivityDate': lastActivityDate?.toIso8601String(),
     'achievements': achievements,
     'completedLessons': completedLessons,
+    'lessonProgress': lessonProgress.map((key, value) => MapEntry(key, value.toJson())),
+    'hasCompletedPlacementTest': hasCompletedPlacementTest,
+    'placementResultId': placementResultId,
+    'placementTestDate': placementTestDate?.toIso8601String(),
+    'dailyXpGoal': dailyXpGoal,
+    'dailyXpHistory': dailyXpHistory,
     'hasStreakFreeze': hasStreakFreeze,
     'streakFreezeUsedDate': streakFreezeUsedDate?.toIso8601String(),
     'streakFreezeGrantedDate': streakFreezeGrantedDate?.toIso8601String(),
     'dailyTipsEnabled': dailyTipsEnabled,
     'streakRemindersEnabled': streakRemindersEnabled,
     'reminderTime': reminderTime,
+    'morningReminderTime': morningReminderTime,
+    'eveningReminderTime': eveningReminderTime,
+    'nightReminderTime': nightReminderTime,
     'createdAt': createdAt.toIso8601String(),
     'updatedAt': updatedAt.toIso8601String(),
   };
@@ -278,6 +328,18 @@ class UserProfile {
       completedLessons: (json['completedLessons'] as List<dynamic>?)
           ?.map((e) => e as String)
           .toList() ?? [],
+      lessonProgress: (json['lessonProgress'] as Map<String, dynamic>?)
+          ?.map((key, value) => MapEntry(key, LessonProgress.fromJson(value as Map<String, dynamic>)))
+          ?? {},
+      hasCompletedPlacementTest: json['hasCompletedPlacementTest'] as bool? ?? false,
+      placementResultId: json['placementResultId'] as String?,
+      placementTestDate: json['placementTestDate'] != null
+          ? DateTime.parse(json['placementTestDate'] as String)
+          : null,
+      dailyXpGoal: json['dailyXpGoal'] as int? ?? 50,
+      dailyXpHistory: (json['dailyXpHistory'] as Map<String, dynamic>?)
+          ?.map((key, value) => MapEntry(key, value as int))
+          ?? {},
       hasStreakFreeze: json['hasStreakFreeze'] as bool? ?? true,
       streakFreezeUsedDate: json['streakFreezeUsedDate'] != null
           ? DateTime.parse(json['streakFreezeUsedDate'] as String)
@@ -288,6 +350,9 @@ class UserProfile {
       dailyTipsEnabled: json['dailyTipsEnabled'] as bool? ?? true,
       streakRemindersEnabled: json['streakRemindersEnabled'] as bool? ?? true,
       reminderTime: json['reminderTime'] as String?,
+      morningReminderTime: json['morningReminderTime'] as String? ?? '09:00',
+      eveningReminderTime: json['eveningReminderTime'] as String? ?? '19:00',
+      nightReminderTime: json['nightReminderTime'] as String? ?? '23:00',
       createdAt: DateTime.parse(json['createdAt'] as String),
       updatedAt: DateTime.parse(json['updatedAt'] as String),
     );
