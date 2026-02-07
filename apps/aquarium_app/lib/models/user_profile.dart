@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'lesson_progress.dart';
 import 'tank.dart'; // For TankType enum
 import 'leaderboard.dart'; // For League enum
+import 'shop_item.dart'; // For InventoryItem
 
 enum ExperienceLevel {
   beginner,
@@ -37,6 +38,10 @@ class UserProfile {
   final List<String> completedLessons; // Legacy - kept for backward compatibility
   final Map<String, LessonProgress> lessonProgress; // Spaced repetition tracking
   
+  // Story Mode
+  final List<String> completedStories; // Story IDs
+  final Map<String, dynamic> storyProgress; // Story ID -> StoryProgress JSON
+  
   // Placement Test
   final bool hasCompletedPlacementTest;
   final String? placementResultId; // Reference to PlacementResult
@@ -59,6 +64,9 @@ class UserProfile {
   final League league;            // Current competitive league (Bronze/Silver/Gold/Diamond)
   final int weeklyXP;             // XP earned this week (Monday-Sunday)
   final DateTime? weekStartDate;  // When current week started (for reset tracking)
+  
+  // Shop & Inventory
+  final List<InventoryItem> inventory; // Purchased shop items
   
   // Preferences
   final bool dailyTipsEnabled;
@@ -84,6 +92,8 @@ class UserProfile {
     this.achievements = const [],
     this.completedLessons = const [],
     this.lessonProgress = const {},
+    this.completedStories = const [],
+    this.storyProgress = const {},
     this.hasCompletedPlacementTest = false,
     this.placementResultId,
     this.placementTestDate,
@@ -97,6 +107,7 @@ class UserProfile {
     this.league = League.bronze,
     this.weeklyXP = 0,
     this.weekStartDate,
+    this.inventory = const [],
     this.dailyTipsEnabled = true,
     this.streakRemindersEnabled = true,
     this.reminderTime,
@@ -226,6 +237,8 @@ class UserProfile {
     List<String>? achievements,
     List<String>? completedLessons,
     Map<String, LessonProgress>? lessonProgress,
+    List<String>? completedStories,
+    Map<String, dynamic>? storyProgress,
     bool? hasCompletedPlacementTest,
     String? placementResultId,
     DateTime? placementTestDate,
@@ -239,6 +252,7 @@ class UserProfile {
     League? league,
     int? weeklyXP,
     DateTime? weekStartDate,
+    List<InventoryItem>? inventory,
     bool? dailyTipsEnabled,
     bool? streakRemindersEnabled,
     String? reminderTime,
@@ -261,6 +275,8 @@ class UserProfile {
       achievements: achievements ?? this.achievements,
       completedLessons: completedLessons ?? this.completedLessons,
       lessonProgress: lessonProgress ?? this.lessonProgress,
+      completedStories: completedStories ?? this.completedStories,
+      storyProgress: storyProgress ?? this.storyProgress,
       hasCompletedPlacementTest: hasCompletedPlacementTest ?? this.hasCompletedPlacementTest,
       placementResultId: placementResultId ?? this.placementResultId,
       placementTestDate: placementTestDate ?? this.placementTestDate,
@@ -274,6 +290,7 @@ class UserProfile {
       league: league ?? this.league,
       weeklyXP: weeklyXP ?? this.weeklyXP,
       weekStartDate: weekStartDate ?? this.weekStartDate,
+      inventory: inventory ?? this.inventory,
       dailyTipsEnabled: dailyTipsEnabled ?? this.dailyTipsEnabled,
       streakRemindersEnabled: streakRemindersEnabled ?? this.streakRemindersEnabled,
       reminderTime: reminderTime ?? this.reminderTime,
@@ -298,6 +315,8 @@ class UserProfile {
     'achievements': achievements,
     'completedLessons': completedLessons,
     'lessonProgress': lessonProgress.map((key, value) => MapEntry(key, value.toJson())),
+    'completedStories': completedStories,
+    'storyProgress': storyProgress,
     'hasCompletedPlacementTest': hasCompletedPlacementTest,
     'placementResultId': placementResultId,
     'placementTestDate': placementTestDate?.toIso8601String(),
@@ -311,6 +330,7 @@ class UserProfile {
     'league': league.toJson(),
     'weeklyXP': weeklyXP,
     'weekStartDate': weekStartDate?.toIso8601String(),
+    'inventory': inventory.map((item) => item.toJson()).toList(),
     'dailyTipsEnabled': dailyTipsEnabled,
     'streakRemindersEnabled': streakRemindersEnabled,
     'reminderTime': reminderTime,
@@ -354,6 +374,10 @@ class UserProfile {
       lessonProgress: (json['lessonProgress'] as Map<String, dynamic>?)
           ?.map((key, value) => MapEntry(key, LessonProgress.fromJson(value as Map<String, dynamic>)))
           ?? {},
+      completedStories: (json['completedStories'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList() ?? [],
+      storyProgress: (json['storyProgress'] as Map<String, dynamic>?) ?? {},
       hasCompletedPlacementTest: json['hasCompletedPlacementTest'] as bool? ?? false,
       placementResultId: json['placementResultId'] as String?,
       placementTestDate: json['placementTestDate'] != null
@@ -381,6 +405,9 @@ class UserProfile {
       weekStartDate: json['weekStartDate'] != null
           ? DateTime.parse(json['weekStartDate'] as String)
           : null,
+      inventory: (json['inventory'] as List<dynamic>?)
+          ?.map((e) => InventoryItem.fromJson(e as Map<String, dynamic>))
+          .toList() ?? [],
       dailyTipsEnabled: json['dailyTipsEnabled'] as bool? ?? true,
       streakRemindersEnabled: json['streakRemindersEnabled'] as bool? ?? true,
       reminderTime: json['reminderTime'] as String?,

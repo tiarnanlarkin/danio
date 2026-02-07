@@ -10,6 +10,7 @@ import '../models/lesson_progress.dart';
 import '../models/gem_economy.dart';
 import '../models/gem_transaction.dart';
 import '../models/leaderboard.dart'; // For League and WeekPeriod
+import '../models/shop_item.dart'; // For InventoryItem
 import 'gems_provider.dart';
 
 const _uuid = Uuid();
@@ -77,6 +78,7 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
     TankType? primaryTankType,
     List<UserGoal>? goals,
     int? dailyXpGoal,
+    List<InventoryItem>? inventory,
     bool? dailyTipsEnabled,
     bool? streakRemindersEnabled,
     String? reminderTime,
@@ -93,6 +95,7 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
       primaryTankType: primaryTankType ?? current.primaryTankType,
       goals: goals ?? current.goals,
       dailyXpGoal: dailyXpGoal ?? current.dailyXpGoal,
+      inventory: inventory ?? current.inventory,
       dailyTipsEnabled: dailyTipsEnabled ?? current.dailyTipsEnabled,
       streakRemindersEnabled: streakRemindersEnabled ?? current.streakRemindersEnabled,
       reminderTime: reminderTime ?? current.reminderTime,
@@ -537,6 +540,24 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
     }
   }
 
+  /// Update achievements list and award XP (for new achievement system)
+  Future<void> updateAchievements({
+    required List<String> achievements,
+    int xpToAdd = 0,
+  }) async {
+    final current = state.value;
+    if (current == null) return;
+
+    final updated = current.copyWith(
+      achievements: achievements,
+      totalXp: current.totalXp + xpToAdd,
+      updatedAt: DateTime.now(),
+    );
+
+    await _save(updated);
+    state = AsyncValue.data(updated);
+  }
+
   /// Update hearts count (for hearts/lives system)
   Future<void> updateHearts({
     required int hearts,
@@ -557,6 +578,45 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
 
   /// Check if profile exists (for routing)
   bool get hasProfile => state.value != null;
+
+  /// Update story progress
+  Future<void> updateStoryProgress({
+    required String storyId,
+    required Map<String, dynamic> progressData,
+    bool isCompleted = false,
+    int xpReward = 0,
+  }) async {
+    final current = state.value;
+    if (current == null) return;
+
+    // Update story progress map
+    final updatedProgress = Map<String, dynamic>.from(current.storyProgress);
+    updatedProgress[storyId] = progressData;
+
+    // Add to completed stories if newly completed
+    List<String> completedStories = List.from(current.completedStories);
+    bool newlyCompleted = false;
+    
+    if (isCompleted && !completedStories.contains(storyId)) {
+      completedStories.add(storyId);
+      newlyCompleted = true;
+    }
+
+    // Update profile
+    final updated = current.copyWith(
+      storyProgress: updatedProgress,
+      completedStories: completedStories,
+      updatedAt: DateTime.now(),
+    );
+
+    await _save(updated);
+    state = AsyncValue.data(updated);
+
+    // Award XP if newly completed
+    if (newlyCompleted && xpReward > 0) {
+      await recordActivity(xp: xpReward);
+    }
+  }
 
   /// Reset profile (for testing/debugging)
   Future<void> resetProfile() async {

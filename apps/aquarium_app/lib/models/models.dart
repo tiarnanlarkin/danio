@@ -9,3 +9,4 @@ export 'user_profile.dart';
 export 'learning.dart';
 export 'lesson_progress.dart';
 export 'daily_goal.dart';
+export 'story.dart';

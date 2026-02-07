@@ -1,10 +1,24 @@
 import '../models/shop_item.dart';
 
-/// All shop items available in the game
+/// All shop items available in the gem shop
+/// Duolingo-inspired virtual currency economy
 class ShopCatalog {
   static final List<ShopItem> allItems = [
     // ==================== POWER-UPS ====================
     
+    ShopItem(
+      id: 'timer_boost',
+      name: 'Timer Boost',
+      description: '+30 seconds on your next timed lesson. Beat the clock!',
+      emoji: '⏱️',
+      category: ShopItemCategory.powerUps,
+      type: ShopItemType.lessonHelper,
+      gemCost: 5,
+      isConsumable: true,
+      quantity: 1,
+      orderIndex: 1,
+    ),
+
     ShopItem(
       id: 'xp_boost_1h',
       name: '2x XP Boost',
@@ -15,7 +29,7 @@ class ShopCatalog {
       gemCost: 25,
       isConsumable: true,
       durationHours: 1,
-      orderIndex: 1,
+      orderIndex: 2,
     ),
 
     ShopItem(
@@ -28,7 +42,7 @@ class ShopCatalog {
       gemCost: 15,
       isConsumable: true,
       quantity: 1,
-      orderIndex: 2,
+      orderIndex: 3,
     ),
 
     ShopItem(
@@ -41,7 +55,19 @@ class ShopCatalog {
       gemCost: 20,
       isConsumable: true,
       quantity: 1,
-      orderIndex: 3,
+      orderIndex: 4,
+    ),
+
+    ShopItem(
+      id: 'bonus_skill',
+      name: 'Bonus Skill Unlock',
+      description: 'Unlock advanced content and bonus lessons',
+      emoji: '🎓',
+      category: ShopItemCategory.powerUps,
+      type: ShopItemType.lessonHelper,
+      gemCost: 15,
+      isConsumable: false,
+      orderIndex: 5,
     ),
 
     // ==================== EXTRAS ====================
@@ -49,27 +75,40 @@ class ShopCatalog {
     ShopItem(
       id: 'streak_freeze',
       name: 'Streak Freeze',
-      description: 'Protect your streak for 1 missed day. Stacks with free weekly freeze.',
+      description: 'Protect your streak for 1 missed day. One free skip!',
       emoji: '🧊',
       category: ShopItemCategory.extras,
       type: ShopItemType.streakFreeze,
-      gemCost: 30,
+      gemCost: 10,
       isConsumable: true,
       quantity: 1,
       orderIndex: 10,
     ),
 
     ShopItem(
-      id: 'weekend_pass',
-      name: 'Weekend Pass',
-      description: 'Reduce your daily goal by 50% for the weekend',
+      id: 'weekend_amulet',
+      name: 'Weekend Amulet',
+      description: "Weekend doesn't break your streak. Relax on Saturdays & Sundays!",
       emoji: '🏖️',
       category: ShopItemCategory.extras,
       type: ShopItemType.goalAdjust,
-      gemCost: 40,
+      gemCost: 20,
       isConsumable: true,
       durationHours: 48,
       orderIndex: 11,
+    ),
+
+    ShopItem(
+      id: 'hearts_refill',
+      name: 'Hearts Refill',
+      description: 'Instantly restore all hearts to full',
+      emoji: '❤️',
+      category: ShopItemCategory.extras,
+      type: ShopItemType.heartsRefill,
+      gemCost: 30,
+      isConsumable: true,
+      quantity: 1,
+      orderIndex: 12,
     ),
 
     ShopItem(
@@ -82,7 +121,20 @@ class ShopCatalog {
       gemCost: 35,
       isConsumable: true,
       quantity: 1,
-      orderIndex: 12,
+      orderIndex: 13,
+    ),
+
+    ShopItem(
+      id: 'progress_protector',
+      name: 'Progress Protector',
+      description: 'Wrong answers won\'t affect your lesson progress (1 lesson)',
+      emoji: '🔒',
+      category: ShopItemCategory.extras,
+      type: ShopItemType.lessonHelper,
+      gemCost: 40,
+      isConsumable: true,
+      quantity: 1,
+      orderIndex: 14,
     ),
 
     // ==================== COSMETICS ====================
@@ -94,7 +146,7 @@ class ShopCatalog {
       emoji: '🐦',
       category: ShopItemCategory.cosmetics,
       type: ShopItemType.profileBadge,
-      gemCost: 50,
+      gemCost: 10,
       isConsumable: false,
       orderIndex: 20,
     ),
@@ -106,9 +158,21 @@ class ShopCatalog {
       emoji: '🦉',
       category: ShopItemCategory.cosmetics,
       type: ShopItemType.profileBadge,
-      gemCost: 50,
+      gemCost: 10,
       isConsumable: false,
       orderIndex: 21,
+    ),
+
+    ShopItem(
+      id: 'badge_perfectionist',
+      name: 'Perfectionist Badge',
+      description: 'For those who ace every quiz',
+      emoji: '💯',
+      category: ShopItemCategory.cosmetics,
+      type: ShopItemType.profileBadge,
+      gemCost: 25,
+      isConsumable: false,
+      orderIndex: 22,
     ),
 
     ShopItem(
@@ -118,9 +182,9 @@ class ShopCatalog {
       emoji: '🎉',
       category: ShopItemCategory.cosmetics,
       type: ShopItemType.celebrationEffect,
-      gemCost: 75,
+      gemCost: 30,
       isConsumable: false,
-      orderIndex: 22,
+      orderIndex: 23,
     ),
 
     ShopItem(
@@ -130,9 +194,9 @@ class ShopCatalog {
       emoji: '🎆',
       category: ShopItemCategory.cosmetics,
       type: ShopItemType.celebrationEffect,
-      gemCost: 100,
+      gemCost: 50,
       isConsumable: false,
-      orderIndex: 23,
+      orderIndex: 24,
     ),
 
     ShopItem(
@@ -142,9 +206,9 @@ class ShopCatalog {
       emoji: '🌊',
       category: ShopItemCategory.cosmetics,
       type: ShopItemType.tankTheme,
-      gemCost: 150,
+      gemCost: 50,
       isConsumable: false,
-      orderIndex: 24,
+      orderIndex: 25,
     ),
 
     ShopItem(
@@ -154,9 +218,9 @@ class ShopCatalog {
       emoji: '🪸',
       category: ShopItemCategory.cosmetics,
       type: ShopItemType.tankTheme,
-      gemCost: 150,
+      gemCost: 50,
       isConsumable: false,
-      orderIndex: 25,
+      orderIndex: 26,
     ),
 
     ShopItem(
@@ -166,9 +230,33 @@ class ShopCatalog {
       emoji: '🌿',
       category: ShopItemCategory.cosmetics,
       type: ShopItemType.tankTheme,
-      gemCost: 150,
+      gemCost: 40,
       isConsumable: false,
-      orderIndex: 26,
+      orderIndex: 27,
+    ),
+
+    ShopItem(
+      id: 'theme_rainbow',
+      name: 'Rainbow Paradise Theme',
+      description: 'Colorful rainbow theme for your profile',
+      emoji: '🌈',
+      category: ShopItemCategory.cosmetics,
+      type: ShopItemType.tankTheme,
+      gemCost: 45,
+      isConsumable: false,
+      orderIndex: 28,
+    ),
+
+    ShopItem(
+      id: 'theme_night_mode',
+      name: 'Night Mode Theme',
+      description: 'Sleek dark theme with bioluminescent effects',
+      emoji: '🌙',
+      category: ShopItemCategory.cosmetics,
+      type: ShopItemType.tankTheme,
+      gemCost: 50,
+      isConsumable: false,
+      orderIndex: 29,
     ),
   ];
 

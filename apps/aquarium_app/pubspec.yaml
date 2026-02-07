@@ -31,6 +31,9 @@ dependencies:
   # Charts
   fl_chart: ^0.69.2
   
+  # Animations
+  confetti: ^0.7.0
+  
   # File handling
   path_provider: ^2.1.5
   share_plus: ^10.1.4
