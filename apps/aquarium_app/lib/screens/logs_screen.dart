@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -18,7 +19,9 @@ class LogsScreen extends ConsumerStatefulWidget {
 }
 
 class _LogsScreenState extends ConsumerState<LogsScreen> {
-  LogType? _filter; // null = all
+  /// Empty = all types.
+  Set<LogType> _typeFilters = <LogType>{};
+  DateTimeRange? _dateRange;
 
   @override
   Widget build(BuildContext context) {
@@ -28,16 +31,10 @@ class _LogsScreenState extends ConsumerState<LogsScreen> {
       appBar: AppBar(
         title: const Text('Activity Log'),
         actions: [
-          PopupMenuButton<LogType?>(
+          IconButton(
             icon: const Icon(Icons.filter_list),
-            tooltip: 'Filter',
-            onSelected: (v) => setState(() => _filter = v),
-            itemBuilder: (_) => [
-              const PopupMenuItem(value: null, child: Text('All')),
-              ...LogType.values.map(
-                (t) => PopupMenuItem(value: t, child: Text(_typeName(t))),
-              ),
-            ],
+            tooltip: 'Filters',
+            onPressed: () => _openFilters(context),
           ),
         ],
       ),
@@ -45,51 +42,90 @@ class _LogsScreenState extends ConsumerState<LogsScreen> {
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (err, _) => Center(child: Text('Error: $err')),
         data: (logs) {
-          final filtered = _filter == null
-              ? logs
-              : logs.where((l) => l.type == _filter).toList();
+          final filtered = logs.where(_matchesFilters).toList();
+
+          final hasAnyFilters = _typeFilters.isNotEmpty || _dateRange != null;
 
           if (filtered.isEmpty) {
             return Center(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(Icons.list_alt, size: 64, color: AppColors.textHint),
-                  const SizedBox(height: 16),
-                  Text('No logs yet', style: AppTypography.headlineSmall),
-                  const SizedBox(height: 8),
-                  Text('Start logging tests and events', style: AppTypography.bodyMedium),
-                ],
+              child: Padding(
+                padding: const EdgeInsets.all(24),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.list_alt, size: 64, color: AppColors.textHint),
+                    const SizedBox(height: 16),
+                    Text(
+                      logs.isEmpty
+                          ? 'No logs yet'
+                          : (hasAnyFilters ? 'No matching logs' : 'No logs yet'),
+                      style: AppTypography.headlineSmall,
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      logs.isEmpty
+                          ? 'Start logging tests and events'
+                          : (hasAnyFilters
+                              ? 'Try clearing filters'
+                              : 'Start logging tests and events'),
+                      style: AppTypography.bodyMedium,
+                      textAlign: TextAlign.center,
+                    ),
+                    if (hasAnyFilters) ...[
+                      const SizedBox(height: 16),
+                      OutlinedButton.icon(
+                        onPressed: _clearFilters,
+                        icon: const Icon(Icons.clear),
+                        label: const Text('Clear filters'),
+                      ),
+                    ],
+                  ],
+                ),
               ),
             );
           }
 
-          // Already returned descending by storage; keep that order.
-          return ListView.separated(
-            padding: const EdgeInsets.all(16),
-            itemCount: filtered.length,
-            separatorBuilder: (_, __) => const SizedBox(height: 8),
-            itemBuilder: (context, index) {
-              final log = filtered[index];
-              return Card(
-                margin: EdgeInsets.zero,
-                child: ListTile(
-                  leading: CircleAvatar(
-                    backgroundColor: _getLogColor(log.type).withOpacity(0.2),
-                    child: Icon(_getLogIcon(log.type), color: _getLogColor(log.type), size: 20),
-                  ),
-                  title: Text(_titleFor(log)),
-                  subtitle: Text(DateFormat('MMM d, yyyy  •  h:mm a').format(log.timestamp)),
-                  trailing: const Icon(Icons.chevron_right),
-                  onTap: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => LogDetailScreen(tankId: widget.tankId, logId: log.id),
-                    ),
-                  ),
+          return Column(
+            children: [
+              _FiltersSummaryBar(
+                typeFilters: _typeFilters,
+                dateRange: _dateRange,
+                onClear: hasAnyFilters ? _clearFilters : null,
+                onEdit: () => _openFilters(context),
+              ),
+              Expanded(
+                child: ListView.separated(
+                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+                  itemCount: filtered.length,
+                  separatorBuilder: (_, __) => const SizedBox(height: 8),
+                  itemBuilder: (context, index) {
+                    final log = filtered[index];
+                    return Card(
+                      margin: EdgeInsets.zero,
+                      child: ListTile(
+                        leading: CircleAvatar(
+                          backgroundColor: _getLogColor(log.type).withOpacity(0.2),
+                          child: Icon(
+                            _getLogIcon(log.type),
+                            color: _getLogColor(log.type),
+                            size: 20,
+                          ),
+                        ),
+                        title: Text(_titleFor(log)),
+                        subtitle: Text(DateFormat('MMM d, yyyy  •  h:mm a').format(log.timestamp)),
+                        trailing: const Icon(Icons.chevron_right),
+                        onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => LogDetailScreen(tankId: widget.tankId, logId: log.id),
+                          ),
+                        ),
+                      ),
+                    );
+                  },
                 ),
-              );
-            },
+              ),
+            ],
           );
         },
       ),
@@ -98,6 +134,139 @@ class _LogsScreenState extends ConsumerState<LogsScreen> {
         child: const Icon(Icons.add),
         onPressed: () => _showAddLogSheet(context),
       ),
+    );
+  }
+
+  bool _matchesFilters(LogEntry log) {
+    if (_typeFilters.isNotEmpty && !_typeFilters.contains(log.type)) {
+      return false;
+    }
+
+    final range = _dateRange;
+    if (range != null) {
+      // Inclusive end (by extending to end-of-day).
+      final start = DateTime(range.start.year, range.start.month, range.start.day);
+      final end = DateTime(range.end.year, range.end.month, range.end.day, 23, 59, 59, 999);
+      if (log.timestamp.isBefore(start) || log.timestamp.isAfter(end)) return false;
+    }
+
+    return true;
+  }
+
+  void _clearFilters() {
+    setState(() {
+      _typeFilters = <LogType>{};
+      _dateRange = null;
+    });
+  }
+
+  Future<void> _openFilters(BuildContext context) async {
+    final initialTypes = Set<LogType>.from(_typeFilters);
+    final initialRange = _dateRange;
+
+    Set<LogType> workingTypes = Set<LogType>.from(initialTypes);
+    DateTimeRange? workingRange = initialRange;
+
+    await showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      builder: (ctx) {
+        return StatefulBuilder(
+          builder: (ctx, setModalState) {
+            final hasChanges =
+                workingRange != initialRange || !setEquals(workingTypes, initialTypes);
+
+            return SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text('Filters', style: AppTypography.headlineSmall),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            setModalState(() {
+                              workingTypes = <LogType>{};
+                              workingRange = null;
+                            });
+                          },
+                          child: const Text('Clear'),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+
+                    Text('Type', style: AppTypography.labelLarge),
+                    const SizedBox(height: 8),
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 8,
+                      children: LogType.values.map((t) {
+                        final selected = workingTypes.contains(t);
+                        return FilterChip(
+                          label: Text(_typeName(t)),
+                          selected: selected,
+                          onSelected: (v) {
+                            setModalState(() {
+                              if (v) {
+                                workingTypes.add(t);
+                              } else {
+                                workingTypes.remove(t);
+                              }
+                            });
+                          },
+                        );
+                      }).toList(),
+                    ),
+
+                    const SizedBox(height: 16),
+                    Text('Date', style: AppTypography.labelLarge),
+                    const SizedBox(height: 8),
+                    OutlinedButton.icon(
+                      onPressed: () async {
+                        final picked = await showDateRangePicker(
+                          context: ctx,
+                          firstDate: DateTime(2000),
+                          lastDate: DateTime.now().add(const Duration(days: 365)),
+                          initialDateRange: workingRange,
+                        );
+                        if (picked != null) {
+                          setModalState(() => workingRange = picked);
+                        }
+                      },
+                      icon: const Icon(Icons.date_range),
+                      label: Text(
+                        workingRange == null
+                            ? 'Any date'
+                            : '${DateFormat('MMM d').format(workingRange!.start)} – ${DateFormat('MMM d').format(workingRange!.end)}',
+                      ),
+                    ),
+
+                    const SizedBox(height: 16),
+                    ElevatedButton(
+                      onPressed: hasChanges
+                          ? () {
+                              setState(() {
+                                _typeFilters = Set<LogType>.from(workingTypes);
+                                _dateRange = workingRange;
+                              });
+                              Navigator.pop(ctx);
+                            }
+                          : () => Navigator.pop(ctx),
+                      child: Text(hasChanges ? 'Apply' : 'Done'),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
     );
   }
 
@@ -249,5 +418,83 @@ class _LogsScreenState extends ConsumerState<LogsScreen> {
       default:
         return log.title ?? log.typeName;
     }
+  }
+}
+
+class _FiltersSummaryBar extends StatelessWidget {
+  final Set<LogType> typeFilters;
+  final DateTimeRange? dateRange;
+  final VoidCallback? onClear;
+  final VoidCallback onEdit;
+
+  const _FiltersSummaryBar({
+    required this.typeFilters,
+    required this.dateRange,
+    required this.onClear,
+    required this.onEdit,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final chips = <Widget>[];
+
+    if (typeFilters.isNotEmpty) {
+      final label = typeFilters.length == 1
+          ? _LogsScreenState._typeName(typeFilters.first)
+          : '${typeFilters.length} types';
+      chips.add(_Chip(label: label));
+    }
+
+    if (dateRange != null) {
+      chips.add(
+        _Chip(
+          label:
+              '${DateFormat('MMM d').format(dateRange!.start)}–${DateFormat('MMM d').format(dateRange!.end)}',
+        ),
+      );
+    }
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
+      child: Row(
+        children: [
+          Expanded(
+            child: chips.isEmpty
+                ? Text('All activity', style: AppTypography.bodySmall)
+                : Wrap(spacing: 8, runSpacing: 8, children: chips),
+          ),
+          TextButton.icon(
+            onPressed: onEdit,
+            icon: const Icon(Icons.tune, size: 18),
+            label: const Text('Edit'),
+          ),
+          if (onClear != null)
+            IconButton(
+              tooltip: 'Clear',
+              onPressed: onClear,
+              icon: const Icon(Icons.clear),
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+class _Chip extends StatelessWidget {
+  final String label;
+
+  const _Chip({required this.label});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      decoration: BoxDecoration(
+        color: AppColors.surfaceVariant,
+        borderRadius: BorderRadius.circular(999),
+      ),
+      child: Text(label, style: AppTypography.bodySmall),
+    );
   }
 }

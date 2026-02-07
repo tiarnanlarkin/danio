@@ -8,8 +8,10 @@ import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:uuid/uuid.dart';
 import '../models/models.dart';
+import '../models/learning.dart';
 import '../providers/storage_provider.dart';
 import '../providers/tank_provider.dart';
+import '../providers/user_profile_provider.dart';
 import '../theme/app_theme.dart';
 
 const _uuid = Uuid();
@@ -566,6 +568,22 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
       // Invalidate logs providers
       ref.invalidate(logsProvider(widget.tankId));
       ref.invalidate(allLogsProvider(widget.tankId));
+
+      // Engagement: count any log as "activity" (and award small XP).
+      final xp = switch (log.type) {
+        LogType.waterTest => XpRewards.waterTest,
+        LogType.waterChange => XpRewards.waterChange,
+        LogType.taskCompleted => XpRewards.taskComplete,
+        LogType.observation => XpRewards.journalEntry,
+        LogType.medication => XpRewards.journalEntry,
+        LogType.feeding => XpRewards.journalEntry,
+        LogType.livestockAdded => XpRewards.addLivestock,
+        LogType.livestockRemoved => 0,
+        LogType.equipmentMaintenance => XpRewards.taskComplete,
+        LogType.other => XpRewards.journalEntry,
+      };
+
+      await ref.read(userProfileProvider.notifier).recordActivity(xp: xp);
 
       if (mounted) {
         Navigator.pop(context);

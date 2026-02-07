@@ -3,7 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:file_picker/file_picker.dart';
+import 'dart:convert';
 import 'dart:io';
+import '../models/wishlist.dart';
 import '../providers/settings_provider.dart';
 import 'about_screen.dart';
 import 'acclimation_guide_screen.dart';
@@ -30,8 +32,10 @@ import 'parameter_guide_screen.dart';
 import '../services/notification_service.dart';
 import '../services/onboarding_service.dart';
 import '../theme/app_theme.dart';
+import '../utils/app_feedback.dart';
 import 'onboarding_screen.dart';
 import 'shop_street_screen.dart';
+import 'theme_gallery_screen.dart';
 import 'dosing_calculator_screen.dart';
 import 'compatibility_checker_screen.dart';
 import 'cost_tracker_screen.dart';
@@ -43,7 +47,11 @@ import 'water_change_calculator_screen.dart';
 import 'tank_volume_calculator_screen.dart';
 import 'vacation_guide_screen.dart';
 import 'unit_converter_screen.dart';
-import 'water_change_calculator_screen.dart';
+import 'learn_screen.dart';
+import 'tank_detail_screen.dart';
+import '../providers/tank_provider.dart';
+import '../providers/user_profile_provider.dart';
+import '../widgets/room_navigation.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -58,14 +66,32 @@ class SettingsScreen extends ConsumerWidget {
       ),
       body: ListView(
         children: [
+          // Learning System (Duolingo-style)
+          _SectionHeader(title: 'Learn'),
+          _LearnCard(ref: ref),
+          
+          // House Navigation (Rooms)
+          _SectionHeader(title: 'Explore'),
+          const RoomNavigation(),
+          
           // Appearance
           _SectionHeader(title: 'Appearance'),
           ListTile(
             leading: const Icon(Icons.palette_outlined),
-            title: const Text('Theme'),
+            title: const Text('Light/Dark Mode'),
             subtitle: Text(_themeModeLabel(settings.themeMode)),
             trailing: const Icon(Icons.chevron_right),
             onTap: () => _showThemePicker(context, ref, settings.themeMode),
+          ),
+          ListTile(
+            leading: const Icon(Icons.color_lens_outlined),
+            title: const Text('Room Themes'),
+            subtitle: const Text('Customize your living room style'),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const ThemeGalleryScreen()),
+            ),
           ),
 
           const Divider(),
@@ -108,7 +134,7 @@ class SettingsScreen extends ConsumerWidget {
             trailing: const Icon(Icons.chevron_right),
             onTap: () => Navigator.push(
               context,
-              MaterialPageRoute(builder: (_) => const WishlistScreen()),
+              MaterialPageRoute(builder: (_) => const WishlistScreen(category: WishlistCategory.fish)),
             ),
           ),
           ListTile(
@@ -266,7 +292,7 @@ class SettingsScreen extends ConsumerWidget {
             leading: const Icon(Icons.download_outlined),
             title: const Text('Import Data'),
             subtitle: const Text('Restore from a backup file'),
-            onTap: () => _importData(context, ref),
+            onTap: () => _importData(context),
           ),
           ListTile(
             leading: const Icon(Icons.photo_library_outlined),
@@ -476,6 +502,26 @@ class SettingsScreen extends ConsumerWidget {
             onTap: () => _replayOnboarding(context),
           ),
           ListTile(
+            leading: const Icon(Icons.auto_awesome),
+            title: const Text('Add Sample Tank'),
+            subtitle: const Text('Explore the app with demo data'),
+            onTap: () async {
+              final actions = ref.read(tankActionsProvider);
+              final demoTank = await actions.addDemoTank();
+              if (context.mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Sample tank added!')),
+                );
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => TankDetailScreen(tankId: demoTank.id),
+                  ),
+                );
+              }
+            },
+          ),
+          ListTile(
             leading: const Icon(Icons.backup),
             title: const Text('Backup & Restore'),
             subtitle: const Text('Export or import your tank data'),
@@ -653,15 +699,20 @@ class SettingsScreen extends ConsumerWidget {
   }
 
   Future<void> _exportData(BuildContext context) async {
+    if (!context.mounted) return;
+
+    AppFeedback.showLoading(context, 'Preparing export…');
+    var dismissLoadingInFinally = true;
+
     try {
       final dir = await getApplicationDocumentsDirectory();
       final dataFile = File('${dir.path}/aquarium_data.json');
 
       if (!await dataFile.exists()) {
         if (context.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('No data to export')),
-          );
+          AppFeedback.dismiss(context);
+          dismissLoadingInFinally = false;
+          AppFeedback.showInfo(context, 'No data to export');
         }
         return;
       }
@@ -672,14 +723,18 @@ class SettingsScreen extends ConsumerWidget {
       );
     } catch (e) {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Export failed: $e')),
-        );
+        AppFeedback.dismiss(context);
+        dismissLoadingInFinally = false;
+        AppFeedback.showError(context, 'Export failed: $e');
+      }
+    } finally {
+      if (context.mounted && dismissLoadingInFinally) {
+        AppFeedback.dismiss(context);
       }
     }
   }
 
-  Future<void> _importData(BuildContext context, WidgetRef ref) async {
+  Future<void> _importData(BuildContext context) async {
     // Show warning dialog first
     final confirmed = await showDialog<bool>(
       context: context,
@@ -707,26 +762,34 @@ class SettingsScreen extends ConsumerWidget {
 
     if (confirmed != true || !context.mounted) return;
 
+    final result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['json'],
+    );
+
+    if (result == null || result.files.isEmpty || !context.mounted) return;
+
+    final filePath = result.files.single.path;
+    if (filePath == null) {
+      AppFeedback.showError(context, 'Could not access selected file');
+      return;
+    }
+
+    AppFeedback.showLoading(context, 'Importing data…');
+    var dismissLoadingInFinally = true;
+
     try {
-      final result = await FilePicker.platform.pickFiles(
-        type: FileType.custom,
-        allowedExtensions: ['json'],
-      );
-
-      if (result == null || result.files.isEmpty) return;
-
-      final file = File(result.files.single.path!);
+      final file = File(filePath);
       final contents = await file.readAsString();
 
       // Validate it's valid JSON
       try {
-        // ignore: unused_local_variable
-        final decoded = contents; // Just check it's a string we can read
-      } catch (e) {
+        jsonDecode(contents);
+      } on FormatException {
         if (context.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Invalid file format')),
-          );
+          AppFeedback.dismiss(context);
+          dismissLoadingInFinally = false;
+          AppFeedback.showError(context, 'Invalid file format (not valid JSON)');
         }
         return;
       }
@@ -737,18 +800,19 @@ class SettingsScreen extends ConsumerWidget {
       await dataFile.writeAsString(contents);
 
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Data imported! Restart the app to see changes.'),
-            backgroundColor: AppColors.success,
-          ),
-        );
+        AppFeedback.dismiss(context);
+        dismissLoadingInFinally = false;
+        AppFeedback.showSuccess(context, 'Data imported! Restart the app to see changes.');
       }
     } catch (e) {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Import failed: $e')),
-        );
+        AppFeedback.dismiss(context);
+        dismissLoadingInFinally = false;
+        AppFeedback.showError(context, 'Import failed: $e');
+      }
+    } finally {
+      if (context.mounted && dismissLoadingInFinally) {
+        AppFeedback.dismiss(context);
       }
     }
   }
@@ -904,6 +968,107 @@ class _SectionHeader extends StatelessWidget {
         title,
         style: AppTypography.labelLarge.copyWith(
           color: color ?? AppColors.textSecondary,
+        ),
+      ),
+    );
+  }
+}
+
+/// Learning system card - shows XP progress and links to Learn screen
+class _LearnCard extends StatelessWidget {
+  final WidgetRef ref;
+
+  const _LearnCard({required this.ref});
+
+  @override
+  Widget build(BuildContext context) {
+    final stats = ref.watch(learningStatsProvider);
+    final profile = ref.watch(userProfileProvider).asData?.value;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: InkWell(
+        onTap: () => Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => const LearnScreen()),
+        ),
+        borderRadius: BorderRadius.circular(16),
+        child: Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            gradient: AppColors.primaryGradient,
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Row(
+            children: [
+              Container(
+                width: 56,
+                height: 56,
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.2),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: const Icon(
+                  Icons.school,
+                  color: Colors.white,
+                  size: 28,
+                ),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Learn Fishkeeping',
+                      style: AppTypography.labelLarge.copyWith(
+                        color: Colors.white,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    if (stats != null) ...[
+                      Text(
+                        '${stats.levelTitle} • ${stats.totalXp} XP',
+                        style: AppTypography.bodySmall.copyWith(
+                          color: Colors.white70,
+                        ),
+                      ),
+                      if (stats.currentStreak > 0) ...[
+                        const SizedBox(height: 2),
+                        Text(
+                          '🔥 ${stats.currentStreak} day streak',
+                          style: AppTypography.bodySmall.copyWith(
+                            color: Colors.white70,
+                          ),
+                        ),
+                        if (profile != null && (profile.hasStreakFreeze || profile.streakFreezeUsedThisWeek)) ...[
+                          const SizedBox(height: 2),
+                          Text(
+                            profile.hasStreakFreeze
+                                ? '🧊 Streak freeze available'
+                                : '🧊 Streak freeze used this week',
+                            style: AppTypography.bodySmall.copyWith(
+                              color: Colors.white70,
+                            ),
+                          ),
+                        ],
+                      ],
+                    ] else
+                      Text(
+                        'Start your learning journey',
+                        style: AppTypography.bodySmall.copyWith(
+                          color: Colors.white70,
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+              const Icon(
+                Icons.chevron_right,
+                color: Colors.white70,
+              ),
+            ],
+          ),
         ),
       ),
     );

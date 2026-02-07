@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'providers/settings_provider.dart';
-import 'screens/home_screen.dart';
+import 'screens/house_navigator.dart';
 import 'screens/onboarding_screen.dart';
 import 'services/onboarding_service.dart';
 import 'theme/app_theme.dart';
@@ -97,6 +97,6 @@ class _AppRouterState extends State<_AppRouter> {
       );
     }
 
-    return _showOnboarding ? const OnboardingScreen() : const HomeScreen();
+    return _showOnboarding ? const OnboardingScreen() : const HouseNavigator();
   }
 }
