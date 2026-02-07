@@ -7,6 +7,8 @@ import '../providers/storage_provider.dart';
 import '../providers/tank_provider.dart';
 import '../theme/app_theme.dart';
 import '../utils/app_feedback.dart';
+import '../widgets/empty_state.dart';
+import '../widgets/error_state.dart';
 
 const _uuid = Uuid();
 
@@ -25,26 +27,18 @@ class TasksScreen extends ConsumerWidget {
       ),
       body: tasksAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (err, _) => Center(child: Text('Error: $err')),
+        error: (err, _) => ErrorState(
+          message: 'Failed to load tasks',
+          onRetry: () => ref.invalidate(tasksProvider(tankId)),
+        ),
         data: (tasks) {
           if (tasks.isEmpty) {
-            return Center(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(Icons.task_alt, size: 64, color: AppColors.textHint),
-                  const SizedBox(height: 16),
-                  Text('No tasks yet', style: AppTypography.headlineSmall),
-                  const SizedBox(height: 8),
-                  Text('Add reminders for maintenance', style: AppTypography.bodyMedium),
-                  const SizedBox(height: 24),
-                  ElevatedButton.icon(
-                    onPressed: () => _showAddDialog(context, ref),
-                    icon: const Icon(Icons.add),
-                    label: const Text('Add Task'),
-                  ),
-                ],
-              ),
+            return EmptyState(
+              icon: Icons.task_alt,
+              title: 'No tasks yet',
+              message: 'Set up reminders for water changes, testing, and maintenance to keep your tank healthy',
+              actionLabel: 'Add Task',
+              onAction: () => _showAddDialog(context, ref),
             );
           }
 

@@ -2,23 +2,28 @@ import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
+import '../models/tank.dart'; // For TankType enum
 import '../models/user_profile.dart';
 import '../models/learning.dart';
 import '../models/daily_goal.dart';
 import '../models/lesson_progress.dart';
+import '../models/gem_economy.dart';
+import '../models/gem_transaction.dart';
+import 'gems_provider.dart';
 
 const _uuid = Uuid();
 
 /// Provider for user profile management
 final userProfileProvider = StateNotifierProvider<UserProfileNotifier, AsyncValue<UserProfile?>>((ref) {
-  return UserProfileNotifier();
+  return UserProfileNotifier(ref);
 });
 
 class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
-  UserProfileNotifier() : super(const AsyncValue.loading()) {
+  UserProfileNotifier(this.ref) : super(const AsyncValue.loading()) {
     _load();
   }
 
+  final Ref ref;
   static const _key = 'user_profile';
 
   Future<void> _load() async {
@@ -175,7 +180,8 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
     
     // Update daily XP history
     final todayKey = _formatDate(today);
-    final todayXp = (current.dailyXpHistory[todayKey] ?? 0) + xp + bonusXp;
+    final previousTodayXp = current.dailyXpHistory[todayKey] ?? 0;
+    final todayXp = previousTodayXp + xp + bonusXp;
     final updatedHistory = {...current.dailyXpHistory, todayKey: todayXp};
 
     final updated = current.copyWith(
@@ -191,6 +197,29 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
 
     await _save(updated);
     state = AsyncValue.data(updated);
+
+    // Award gems for milestones
+    final gemsNotifier = ref.read(gemsProvider.notifier);
+
+    // Streak milestone gems (7, 14, 30, 50, 100 days)
+    if (newStreak > current.currentStreak) {
+      final streakGems = GemRewards.getStreakMilestoneReward(newStreak);
+      if (streakGems > 0) {
+        await gemsNotifier.addGems(
+          amount: streakGems,
+          reason: GemEarnReason.streakMilestone,
+          customReason: '$newStreak day streak!',
+        );
+      }
+    }
+
+    // Daily goal completion gems (first time reaching goal today)
+    if (previousTodayXp < current.dailyXpGoal && todayXp >= current.dailyXpGoal) {
+      await gemsNotifier.addGems(
+        amount: GemRewards.dailyGoalMet,
+        reason: GemEarnReason.dailyGoalMet,
+      );
+    }
   }
 
   /// Normalize a DateTime to midnight local time for consistent date comparisons
@@ -251,6 +280,9 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
     final updatedHistory = Map<String, int>.from(current.dailyXpHistory);
     updatedHistory[todayKey] = (updatedHistory[todayKey] ?? 0) + xpReward;
 
+    // Track previous level for level-up detection
+    final previousLevel = current.currentLevel;
+
     final updated = current.copyWith(
       completedLessons: [...current.completedLessons, lessonId],
       lessonProgress: updatedProgress,
@@ -261,6 +293,23 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
 
     await _save(updated);
     state = AsyncValue.data(updated);
+
+    // Award gems for lesson completion
+    final gemsNotifier = ref.read(gemsProvider.notifier);
+    await gemsNotifier.addGems(
+      amount: GemRewards.lessonComplete,
+      reason: GemEarnReason.lessonComplete,
+    );
+
+    // Check for level up and award bonus gems
+    if (updated.currentLevel > previousLevel) {
+      final levelUpGems = GemRewards.getLevelUpReward(updated.currentLevel);
+      await gemsNotifier.addGems(
+        amount: levelUpGems,
+        reason: GemEarnReason.levelUp,
+        customReason: 'Level up to ${updated.levelTitle}',
+      );
+    }
 
     // Record activity for streak tracking
     await recordActivity(xp: 0); // XP already added above
@@ -315,6 +364,13 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
     await _save(updated);
     state = AsyncValue.data(updated);
 
+    // Award gems for placement test
+    final gemsNotifier = ref.read(gemsProvider.notifier);
+    await gemsNotifier.addGems(
+      amount: GemRewards.placementTest,
+      reason: GemEarnReason.placementTest,
+    );
+
     // Record activity for streak tracking
     await recordActivity(xp: 0); // XP already added above
   }
@@ -349,8 +405,38 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
     await _save(updated);
     state = AsyncValue.data(updated);
 
+    // Award gems for review
+    final gemsNotifier = ref.read(gemsProvider.notifier);
+    await gemsNotifier.addGems(
+      amount: GemRewards.reviewLesson,
+      reason: GemEarnReason.lessonComplete,
+      customReason: 'Lesson review',
+    );
+
     // Record activity for streak tracking
     await recordActivity(xp: 0); // XP already added above
+  }
+
+  /// Award gems for quiz performance
+  Future<void> awardQuizGems({required bool isPerfect}) async {
+    final gemsNotifier = ref.read(gemsProvider.notifier);
+    if (isPerfect) {
+      await gemsNotifier.addGems(
+        amount: GemRewards.quizPerfect,
+        reason: GemEarnReason.quizPerfect,
+      );
+    } else {
+      await gemsNotifier.addGems(
+        amount: GemRewards.quizPass,
+        reason: GemEarnReason.quizPass,
+      );
+    }
+  }
+
+  /// Get today's date key for dailyXpHistory
+  String getTodayKey() {
+    final now = DateTime.now();
+    return '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}';
   }
 
   /// Get lessons that need review (strength < 50)
@@ -390,6 +476,17 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
 
     await _save(updated);
     state = AsyncValue.data(updated);
+
+    // Award gems for achievement
+    if (achievement != null) {
+      final gemsNotifier = ref.read(gemsProvider.notifier);
+      final gemReward = GemRewards.getAchievementReward(achievement.tier);
+      await gemsNotifier.addGems(
+        amount: gemReward,
+        reason: GemEarnReason.achievementUnlock,
+        customReason: 'Achievement: ${achievement.title}',
+      );
+    }
   }
 
   /// Check if profile exists (for routing)

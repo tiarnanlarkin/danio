@@ -7,6 +7,7 @@ import 'learn_screen.dart';
 import 'workshop_screen.dart';
 import 'shop_street_screen.dart';
 import 'leaderboard_screen.dart';
+import 'friends_screen.dart';
 
 /// Provider for current room index
 final currentRoomProvider = StateProvider<int>((ref) => 1); // Start at Living Room
@@ -35,6 +36,12 @@ class _HouseNavigatorState extends ConsumerState<HouseNavigator> {
       icon: Icons.weekend,
       emoji: '🛋️',
       color: Color(0xFF5B9A8B), // Teal
+    ),
+    RoomInfo(
+      name: 'Friends',
+      icon: Icons.people,
+      emoji: '👥',
+      color: Color(0xFF9C27B0), // Purple
     ),
     RoomInfo(
       name: 'Leaderboard',
@@ -104,13 +111,16 @@ class _HouseNavigatorState extends ConsumerState<HouseNavigator> {
               // Room 1: Living Room (Home/Tanks)
               _LivingRoomWrapper(),
               
-              // Room 2: Leaderboard (Competition)
+              // Room 2: Friends (Social)
+              FriendsScreen(),
+              
+              // Room 3: Leaderboard (Competition)
               LeaderboardScreen(),
               
-              // Room 3: Workshop (Tools)
+              // Room 4: Workshop (Tools)
               WorkshopScreen(),
               
-              // Room 4: Shop Street
+              // Room 5: Shop Street
               ShopStreetScreen(),
             ],
           ),

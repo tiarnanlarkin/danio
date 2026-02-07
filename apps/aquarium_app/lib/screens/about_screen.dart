@@ -59,27 +59,27 @@ class AboutScreen extends StatelessWidget {
             
             const SizedBox(height: 16),
             
-            _FeatureItem(
+            const _FeatureItem(
               icon: Icons.water,
               title: 'Multi-Tank Management',
               description: 'Track unlimited aquariums with individual settings',
             ),
-            _FeatureItem(
+            const _FeatureItem(
               icon: Icons.science,
               title: 'Water Testing',
               description: 'Log parameters and visualize trends over time',
             ),
-            _FeatureItem(
+            const _FeatureItem(
               icon: Icons.task_alt,
               title: 'Smart Reminders',
               description: 'Never miss a water change or filter maintenance',
             ),
-            _FeatureItem(
+            const _FeatureItem(
               icon: Icons.pets,
               title: 'Species Database',
               description: '45+ freshwater species with care requirements',
             ),
-            _FeatureItem(
+            const _FeatureItem(
               icon: Icons.shield,
               title: 'Local-First',
               description: 'Your data stays on your device',

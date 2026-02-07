@@ -3,19 +3,12 @@
 
 import 'package:flutter/foundation.dart';
 import 'lesson_progress.dart';
+import 'tank.dart'; // For TankType enum
 
 enum ExperienceLevel {
   beginner,
   intermediate,
   expert,
-}
-
-enum TankType {
-  freshwater,
-  planted,
-  saltwater,
-  reef,
-  brackish,
 }
 
 enum UserGoal {
@@ -400,29 +393,17 @@ extension TankTypeExt on TankType {
     switch (this) {
       case TankType.freshwater:
         return 'Freshwater';
-      case TankType.planted:
-        return 'Planted';
-      case TankType.saltwater:
-        return 'Saltwater';
-      case TankType.reef:
-        return 'Reef';
-      case TankType.brackish:
-        return 'Brackish';
+      case TankType.marine:
+        return 'Marine';
     }
   }
 
   String get description {
     switch (this) {
       case TankType.freshwater:
-        return 'Tropical or coldwater fish without live plants';
-      case TankType.planted:
-        return 'Freshwater with live aquatic plants';
-      case TankType.saltwater:
-        return 'Marine fish only';
-      case TankType.reef:
-        return 'Saltwater with corals and invertebrates';
-      case TankType.brackish:
-        return 'Mixture of fresh and saltwater';
+        return 'Tropical or coldwater fish';
+      case TankType.marine:
+        return 'Saltwater fish (coming soon)';
     }
   }
 
@@ -430,14 +411,8 @@ extension TankTypeExt on TankType {
     switch (this) {
       case TankType.freshwater:
         return '🐠';
-      case TankType.planted:
-        return '🌿';
-      case TankType.saltwater:
+      case TankType.marine:
         return '🐡';
-      case TankType.reef:
-        return '🪸';
-      case TankType.brackish:
-        return '🦐';
     }
   }
 }

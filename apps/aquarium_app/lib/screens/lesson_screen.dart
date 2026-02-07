@@ -656,7 +656,18 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
   Future<void> _completeLesson({int bonusXp = 0}) async {
     final totalXp = widget.lesson.xpReward + bonusXp;
 
-    // Record completion and XP
+    // Calculate gem rewards
+    int totalGems = 5; // Base lesson gems
+    if (widget.lesson.quiz != null) {
+      final quiz = widget.lesson.quiz!;
+      final isPerfect = _correctAnswers == quiz.questions.length;
+      totalGems += isPerfect ? 5 : 3; // Quiz gems
+      
+      // Award quiz gems
+      await ref.read(userProfileProvider.notifier).awardQuizGems(isPerfect: isPerfect);
+    }
+
+    // Record completion and XP (also awards lesson gems automatically)
     await ref.read(userProfileProvider.notifier).completeLesson(
       widget.lesson.id,
       totalXp,
@@ -685,18 +696,21 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
     }
 
     if (mounted) {
-      // Show success snackbar
+      // Show success snackbar with XP and gems
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Row(
             children: [
               const Icon(Icons.check_circle, color: Colors.white),
               const SizedBox(width: 12),
-              Text('Lesson complete! +$totalXp XP'),
+              Expanded(
+                child: Text('Lesson complete! +$totalXp XP, +$totalGems gems'),
+              ),
             ],
           ),
           backgroundColor: AppColors.success,
           behavior: SnackBarBehavior.floating,
+          duration: const Duration(seconds: 4),
         ),
       );
 

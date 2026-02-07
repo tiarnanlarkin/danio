@@ -2,6 +2,7 @@
 /// Lessons, quizzes, achievements, and learning paths
 
 import 'package:flutter/foundation.dart';
+import 'tank.dart'; // For TankType enum
 import 'user_profile.dart';
 
 /// A learning path is a collection of related lessons

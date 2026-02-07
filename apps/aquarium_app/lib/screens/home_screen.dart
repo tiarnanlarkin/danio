@@ -14,6 +14,7 @@ import '../widgets/speed_dial_fab.dart';
 import '../widgets/daily_goal_progress.dart';
 import '../widgets/streak_display.dart';
 import '../widgets/streak_calendar.dart';
+import '../widgets/error_state.dart';
 import 'create_tank_screen.dart';
 import 'search_screen.dart';
 import 'settings_screen.dart';
@@ -36,23 +37,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     return Scaffold(
       body: tanksAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (err, stack) => Center(
-          child: NotebookCard(
-            padding: const EdgeInsets.all(24),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Icon(Icons.error_outline, size: 48, color: AppColors.error),
-                const SizedBox(height: 16),
-                Text('Something went wrong', style: AppTypography.bodyLarge),
-                const SizedBox(height: 8),
-                TextButton(
-                  onPressed: () => ref.invalidate(tanksProvider),
-                  child: const Text('Try again'),
-                ),
-              ],
-            ),
-          ),
+        error: (err, stack) => ErrorState(
+          message: 'Failed to load tanks',
+          details: 'Please check your connection and try again',
+          onRetry: () => ref.invalidate(tanksProvider),
         ),
         data: (tanks) {
           if (tanks.isEmpty) {

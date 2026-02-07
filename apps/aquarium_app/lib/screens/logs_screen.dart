@@ -6,6 +6,8 @@ import 'package:intl/intl.dart';
 import '../models/models.dart';
 import '../providers/tank_provider.dart';
 import '../theme/app_theme.dart';
+import '../widgets/empty_state.dart';
+import '../widgets/error_state.dart';
 import 'add_log_screen.dart';
 import 'log_detail_screen.dart';
 
@@ -40,49 +42,39 @@ class _LogsScreenState extends ConsumerState<LogsScreen> {
       ),
       body: logsAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (err, _) => Center(child: Text('Error: $err')),
+        error: (err, _) => ErrorState(
+          message: 'Failed to load logs',
+          onRetry: () => ref.invalidate(allLogsProvider(widget.tankId)),
+        ),
         data: (logs) {
           final filtered = logs.where(_matchesFilters).toList();
 
           final hasAnyFilters = _typeFilters.isNotEmpty || _dateRange != null;
 
           if (filtered.isEmpty) {
-            return Center(
-              child: Padding(
-                padding: const EdgeInsets.all(24),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(Icons.list_alt, size: 64, color: AppColors.textHint),
-                    const SizedBox(height: 16),
-                    Text(
-                      logs.isEmpty
-                          ? 'No logs yet'
-                          : (hasAnyFilters ? 'No matching logs' : 'No logs yet'),
-                      style: AppTypography.headlineSmall,
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      logs.isEmpty
-                          ? 'Start logging tests and events'
-                          : (hasAnyFilters
-                              ? 'Try clearing filters'
-                              : 'Start logging tests and events'),
-                      style: AppTypography.bodyMedium,
-                      textAlign: TextAlign.center,
-                    ),
-                    if (hasAnyFilters) ...[
-                      const SizedBox(height: 16),
-                      OutlinedButton.icon(
-                        onPressed: _clearFilters,
-                        icon: const Icon(Icons.clear),
-                        label: const Text('Clear filters'),
-                      ),
-                    ],
-                  ],
+            if (logs.isEmpty) {
+              return EmptyState(
+                icon: Icons.list_alt,
+                title: 'No logs yet',
+                message: 'Start logging water tests, maintenance, and events to track your tank\'s history',
+                actionLabel: 'Add Log Entry',
+                onAction: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => AddLogScreen(tankId: widget.tankId),
+                  ),
                 ),
-              ),
-            );
+              );
+            } else {
+              // Has logs but filtered out
+              return EmptyState(
+                icon: Icons.filter_list_off,
+                title: 'No matching logs',
+                message: 'Try adjusting or clearing your filters',
+                actionLabel: 'Clear Filters',
+                onAction: _clearFilters,
+              );
+            }
           }
 
           return Column(

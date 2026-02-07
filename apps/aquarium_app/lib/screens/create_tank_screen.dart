@@ -5,6 +5,7 @@ import '../models/models.dart';
 import '../providers/tank_provider.dart';
 import '../theme/app_theme.dart';
 import '../utils/app_feedback.dart';
+import '../utils/haptic_feedback.dart';
 
 class CreateTankScreen extends ConsumerStatefulWidget {
   const CreateTankScreen({super.key});
@@ -152,6 +153,7 @@ class _CreateTankScreenState extends ConsumerState<CreateTankScreen> {
 
   void _nextPage() {
     if (_currentPage < 2) {
+      AppHaptics.light();
       _pageController.nextPage(
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeInOut,
@@ -161,6 +163,7 @@ class _CreateTankScreenState extends ConsumerState<CreateTankScreen> {
 
   void _previousPage() {
     if (_currentPage > 0) {
+      AppHaptics.light();
       _pageController.previousPage(
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeInOut,
@@ -171,6 +174,7 @@ class _CreateTankScreenState extends ConsumerState<CreateTankScreen> {
   Future<void> _createTank() async {
     if (!_canProceed()) return;
 
+    AppHaptics.medium();
     setState(() => _isCreating = true);
 
     try {
@@ -187,11 +191,13 @@ class _CreateTankScreenState extends ConsumerState<CreateTankScreen> {
       );
 
       if (mounted) {
+        AppHaptics.success();
         Navigator.of(context).pop();
         AppFeedback.showSuccess(context, '${_name.trim()} created!');
       }
     } catch (e) {
       if (mounted) {
+        AppHaptics.error();
         AppFeedback.showError(context, 'Failed to create tank: $e');
       }
     } finally {

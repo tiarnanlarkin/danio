@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'dart:convert';
 import '../theme/app_theme.dart';
 import '../utils/app_feedback.dart';
+import '../widgets/empty_state.dart';
 
 class RemindersScreen extends ConsumerStatefulWidget {
   const RemindersScreen({super.key});
@@ -123,7 +124,13 @@ class _RemindersScreenState extends ConsumerState<RemindersScreen> {
     return Scaffold(
       appBar: AppBar(title: const Text('Reminders')),
       body: _reminders.isEmpty
-          ? _EmptyState(onAdd: _addReminder)
+          ? EmptyState(
+              icon: Icons.notifications_none,
+              title: 'No reminders set',
+              message: 'Set up reminders for feeding, water changes, and maintenance tasks',
+              actionLabel: 'Add Reminder',
+              onAction: _addReminder,
+            )
           : ListView(
               padding: const EdgeInsets.all(16),
               children: [

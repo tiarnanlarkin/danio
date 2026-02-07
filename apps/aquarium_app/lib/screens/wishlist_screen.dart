@@ -5,6 +5,7 @@ import '../models/wishlist.dart';
 import '../providers/wishlist_provider.dart';
 import '../theme/app_theme.dart';
 import '../utils/app_feedback.dart';
+import '../widgets/empty_state.dart';
 
 /// Screen to view and manage wishlist items for a category
 class WishlistScreen extends ConsumerWidget {
@@ -59,7 +60,17 @@ class WishlistScreen extends ConsumerWidget {
         ],
       ),
       body: items.isEmpty
-          ? _EmptyState(category: category, onAdd: () => _showAddDialog(context, ref))
+          ? EmptyState(
+              icon: category == WishlistCategory.fish
+                  ? Icons.set_meal
+                  : category == WishlistCategory.plant
+                      ? Icons.grass
+                      : Icons.shopping_cart,
+              title: 'No items in wishlist',
+              message: 'Add ${category == WishlistCategory.fish ? 'fish' : category == WishlistCategory.plant ? 'plants' : 'equipment'} you want to get for your aquarium',
+              actionLabel: 'Add Item',
+              onAction: () => _showAddDialog(context, ref),
+            )
           : ListView.builder(
               padding: const EdgeInsets.all(16),
               itemCount: items.length,

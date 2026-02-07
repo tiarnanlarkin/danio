@@ -161,7 +161,7 @@ class PracticeScreen extends ConsumerWidget {
         // Lessons to review
         Text(
           'Lessons needing review (${weakLessons.length})',
-          style: AppTypography.titleMedium,
+          style: AppTypography.headlineSmall,
         ),
         const SizedBox(height: 12),
 
@@ -237,7 +237,9 @@ class PracticeScreen extends ConsumerWidget {
                     children: [
                       Text(
                         lesson.title,
-                        style: AppTypography.titleMedium,
+                        style: AppTypography.bodyLarge.copyWith(
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                       const SizedBox(height: 4),
                       Text(

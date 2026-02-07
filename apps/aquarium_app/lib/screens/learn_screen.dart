@@ -238,7 +238,7 @@ class _PracticeCard extends ConsumerWidget {
                       children: [
                         Text(
                           'Practice Mode',
-                          style: AppTypography.titleMedium.copyWith(
+                          style: AppTypography.headlineSmall.copyWith(
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
                           ),

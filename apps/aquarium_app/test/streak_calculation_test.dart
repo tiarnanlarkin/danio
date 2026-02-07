@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:aquarium_app/models/user_profile.dart';
 import 'package:aquarium_app/models/learning.dart';
+import 'package:aquarium_app/models/tank.dart';
 import 'package:aquarium_app/providers/user_profile_provider.dart';
 
 void main() {

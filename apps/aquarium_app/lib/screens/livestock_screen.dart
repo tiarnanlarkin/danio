@@ -10,6 +10,8 @@ import '../providers/tank_provider.dart';
 import '../providers/user_profile_provider.dart';
 import '../services/compatibility_service.dart';
 import '../theme/app_theme.dart';
+import '../widgets/empty_state.dart';
+import '../widgets/error_state.dart';
 import 'livestock_detail_screen.dart';
 
 const _uuid = Uuid();
@@ -43,32 +45,19 @@ class LivestockScreen extends ConsumerWidget {
       ),
       body: livestockAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (err, _) => Center(child: Text('Error: $err')),
+        error: (err, _) => ErrorState(
+          message: 'Failed to load livestock',
+          details: 'Please check your connection and try again',
+          onRetry: () => ref.invalidate(livestockProvider(tankId)),
+        ),
         data: (livestock) {
           if (livestock.isEmpty) {
-            return Center(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(Icons.set_meal, size: 64, color: AppColors.textHint),
-                  const SizedBox(height: 16),
-                  Text('No livestock yet', style: AppTypography.headlineSmall),
-                  const SizedBox(height: 8),
-                  Text('Add fish, shrimp, or snails', style: AppTypography.bodyMedium),
-                  const SizedBox(height: 24),
-                  ElevatedButton.icon(
-                    onPressed: () => _showAddDialog(context, ref),
-                    icon: const Icon(Icons.add),
-                    label: const Text('Add Livestock'),
-                  ),
-                  const SizedBox(height: 8),
-                  TextButton.icon(
-                    onPressed: () => _showBulkAddDialog(context, ref),
-                    icon: const Icon(Icons.playlist_add),
-                    label: const Text('Bulk add'),
-                  ),
-                ],
-              ),
+            return EmptyState(
+              icon: Icons.set_meal,
+              title: 'No livestock yet',
+              message: 'Add fish, shrimp, or snails to track your aquatic friends',
+              actionLabel: 'Add Livestock',
+              onAction: () => _showAddDialog(context, ref),
             );
           }
 

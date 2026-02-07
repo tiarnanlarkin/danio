@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
+import 'haptic_feedback.dart';
 
-/// Standardized user feedback (snackbars, toasts)
+/// Standardized user feedback (snackbars, toasts, haptics)
 /// 
 /// Usage:
 /// ```dart
@@ -9,8 +10,9 @@ import '../theme/app_theme.dart';
 /// AppFeedback.showError(context, 'Failed to save');
 /// ```
 class AppFeedback {
-  /// Show success message with green background
+  /// Show success message with green background + haptic
   static void showSuccess(BuildContext context, String message) {
+    AppHaptics.success();
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Row(
@@ -36,8 +38,9 @@ class AppFeedback {
     );
   }
 
-  /// Show error message with red background
+  /// Show error message with red background + haptic
   static void showError(BuildContext context, String message) {
+    AppHaptics.error();
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Row(
@@ -63,8 +66,9 @@ class AppFeedback {
     );
   }
 
-  /// Show warning message with amber background
+  /// Show warning message with amber background + haptic
   static void showWarning(BuildContext context, String message) {
+    AppHaptics.medium();
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Row(

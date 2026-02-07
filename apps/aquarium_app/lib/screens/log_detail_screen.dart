@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -8,6 +6,7 @@ import 'package:collection/collection.dart';
 import '../models/models.dart';
 import '../providers/storage_provider.dart';
 import '../providers/tank_provider.dart';
+import '../services/image_cache_service.dart';
 import '../theme/app_theme.dart';
 import 'add_log_screen.dart';
 
@@ -109,12 +108,13 @@ class LogDetailScreen extends ConsumerWidget {
                     children: log.photoUrls!.map((path) {
                       return ClipRRect(
                         borderRadius: BorderRadius.circular(12),
-                        child: Image.file(
-                          File(path),
+                        child: CachedImage(
+                          imagePath: path,
+                          thumbnail: true,
                           width: 120,
                           height: 120,
                           fit: BoxFit.cover,
-                          errorBuilder: (_, __, ___) => Container(
+                          errorWidget: Container(
                             width: 120,
                             height: 120,
                             color: AppColors.surfaceVariant,
