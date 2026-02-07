@@ -24,9 +24,9 @@ final tankActionsProvider = Provider((ref) => TankActions(ref));
 
 class TankActions {
   final Ref _ref;
-  
+
   TankActions(this._ref);
-  
+
   StorageService get _storage => _ref.read(storageServiceProvider);
 
   /// Seed a demo tank (only if the user has no tanks yet)
@@ -34,6 +34,23 @@ class TankActions {
     final tank = await SampleData.seedFreshwaterDemo(_storage);
 
     // Invalidate relevant providers.
+    _ref.invalidate(tanksProvider);
+    _ref.invalidate(tankProvider(tank.id));
+    _ref.invalidate(livestockProvider(tank.id));
+    _ref.invalidate(equipmentProvider(tank.id));
+    _ref.invalidate(logsProvider(tank.id));
+    _ref.invalidate(allLogsProvider(tank.id));
+    _ref.invalidate(tasksProvider(tank.id));
+
+    return tank;
+  }
+
+  /// Add a sample/demo tank even if the user already has existing tanks.
+  ///
+  /// Used by Settings → "Add Sample Tank".
+  Future<Tank> addDemoTank() async {
+    final tank = await SampleData.addFreshwaterDemoTank(_storage);
+
     _ref.invalidate(tanksProvider);
     _ref.invalidate(tankProvider(tank.id));
     _ref.invalidate(livestockProvider(tank.id));
@@ -72,18 +89,18 @@ class TankActions {
       createdAt: now,
       updatedAt: now,
     );
-    
+
     await _storage.saveTank(tank);
-    
+
     // Create default tasks for the new tank
     final defaultTasks = DefaultTasks.forNewTank(tank.id);
     for (final task in defaultTasks) {
       await _storage.saveTask(task);
     }
-    
+
     // Invalidate tanks list to refresh
     _ref.invalidate(tanksProvider);
-    
+
     return tank;
   }
 
@@ -99,6 +116,44 @@ class TankActions {
   Future<void> deleteTank(String id) async {
     await _storage.deleteTank(id);
     _ref.invalidate(tanksProvider);
+  }
+
+  /// Import tanks from JSON backup data
+  /// Returns the number of tanks successfully imported
+  Future<int> importTanks(List<dynamic> tanksJson) async {
+    int imported = 0;
+    final now = DateTime.now();
+
+    for (final tankJson in tanksJson) {
+      try {
+        if (tankJson is! Map<String, dynamic>) continue;
+
+        // Create tank from JSON with a new ID to avoid collisions
+        final newId = _uuid.v4();
+
+        final tank = Tank.fromJson({
+          ...tankJson,
+          'id': newId,
+          'createdAt': now.toIso8601String(),
+          'updatedAt': now.toIso8601String(),
+        });
+
+        await _storage.saveTank(tank);
+        imported++;
+
+        // Note: livestock, equipment, logs would need separate handling
+        // with updated tankId references if we wanted full import
+      } catch (_) {
+        // Skip tanks that fail to parse
+        continue;
+      }
+    }
+
+    if (imported > 0) {
+      _ref.invalidate(tanksProvider);
+    }
+
+    return imported;
   }
 }
 

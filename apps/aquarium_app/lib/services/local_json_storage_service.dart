@@ -1,11 +1,29 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
+import 'package:synchronized/synchronized.dart';
 
 import '../models/models.dart';
 import 'storage_service.dart';
+
+/// Custom exception for storage corruption/parse failures
+class StorageCorruptionException implements Exception {
+  final String message;
+  final String? corruptedFilePath;
+  final Object? originalError;
+  
+  StorageCorruptionException(
+    this.message, {
+    this.corruptedFilePath,
+    this.originalError,
+  });
+  
+  @override
+  String toString() => 'StorageCorruptionException: $message';
+}
 
 /// Local JSON-file persistence for MVP.
 ///
@@ -20,6 +38,9 @@ class LocalJsonStorageService implements StorageService {
 
   static const int _schemaVersion = 1;
   static const String _fileName = 'aquarium_data.json';
+
+  // P0-1 FIX: Lock to prevent race conditions during concurrent saves
+  final Lock _persistLock = Lock();
 
   bool _loaded = false;
   Future<void>? _loadFuture;
@@ -41,6 +62,7 @@ class LocalJsonStorageService implements StorageService {
     return File(p.join(dir.path, _fileName));
   }
 
+  // P0-2 FIX: Enhanced error handling with backup/recovery
   Future<void> _loadFromDisk() async {
     try {
       final file = await _dataFile();
@@ -55,61 +77,133 @@ class LocalJsonStorageService implements StorageService {
         return;
       }
 
-      final json = jsonDecode(raw);
-      if (json is! Map<String, dynamic>) {
-        _loaded = true;
-        return;
+      // Attempt to parse JSON
+      Map<String, dynamic> json;
+      try {
+        final decoded = jsonDecode(raw);
+        if (decoded is! Map<String, dynamic>) {
+          throw FormatException('Root JSON is not a Map');
+        }
+        json = decoded;
+      } catch (parseError) {
+        // P0-2: Save corrupted file as backup
+        final corruptedPath = '${file.path}.corrupted';
+        await file.copy(corruptedPath);
+        
+        // Log error for debugging
+        debugPrint('❌ STORAGE ERROR: Failed to parse JSON');
+        debugPrint('   Error: $parseError');
+        debugPrint('   Corrupted file saved to: $corruptedPath');
+        debugPrint('   Timestamp: ${DateTime.now().toIso8601String()}');
+        
+        // Throw custom exception with recovery options
+        throw StorageCorruptionException(
+          'Failed to load aquarium data. The storage file appears to be corrupted.',
+          corruptedFilePath: corruptedPath,
+          originalError: parseError,
+        );
       }
 
-      final tanks = (json['tanks'] as Map?)?.cast<String, dynamic>() ?? const {};
-      final livestock = (json['livestock'] as Map?)?.cast<String, dynamic>() ?? const {};
-      final equipment = (json['equipment'] as Map?)?.cast<String, dynamic>() ?? const {};
-      final logs = (json['logs'] as Map?)?.cast<String, dynamic>() ?? const {};
-      final tasks = (json['tasks'] as Map?)?.cast<String, dynamic>() ?? const {};
+      // Parse entities with error handling
+      try {
+        final tanks = (json['tanks'] as Map?)?.cast<String, dynamic>() ?? const {};
+        final livestock = (json['livestock'] as Map?)?.cast<String, dynamic>() ?? const {};
+        final equipment = (json['equipment'] as Map?)?.cast<String, dynamic>() ?? const {};
+        final logs = (json['logs'] as Map?)?.cast<String, dynamic>() ?? const {};
+        final tasks = (json['tasks'] as Map?)?.cast<String, dynamic>() ?? const {};
 
-      _tanks
-        ..clear()
-        ..addEntries(tanks.entries.map((e) => MapEntry(e.key, _tankFromJson(e.value))));
+        _tanks
+          ..clear()
+          ..addEntries(tanks.entries.map((e) => MapEntry(e.key, _tankFromJson(e.value))));
 
-      _livestock
-        ..clear()
-        ..addEntries(livestock.entries.map((e) => MapEntry(e.key, _livestockFromJson(e.value))));
+        _livestock
+          ..clear()
+          ..addEntries(livestock.entries.map((e) => MapEntry(e.key, _livestockFromJson(e.value))));
 
-      _equipment
-        ..clear()
-        ..addEntries(equipment.entries.map((e) => MapEntry(e.key, _equipmentFromJson(e.value))));
+        _equipment
+          ..clear()
+          ..addEntries(equipment.entries.map((e) => MapEntry(e.key, _equipmentFromJson(e.value))));
 
-      _logs
-        ..clear()
-        ..addEntries(logs.entries.map((e) => MapEntry(e.key, _logFromJson(e.value))));
+        _logs
+          ..clear()
+          ..addEntries(logs.entries.map((e) => MapEntry(e.key, _logFromJson(e.value))));
 
-      _tasks
-        ..clear()
-        ..addEntries(tasks.entries.map((e) => MapEntry(e.key, _taskFromJson(e.value))));
+        _tasks
+          ..clear()
+          ..addEntries(tasks.entries.map((e) => MapEntry(e.key, _taskFromJson(e.value))));
 
-      _loaded = true;
-    } catch (_) {
-      // If parsing fails, we fail soft and keep app usable.
+        _loaded = true;
+        debugPrint('✅ Storage loaded successfully: ${_tanks.length} tanks, ${_livestock.length} livestock');
+      } catch (entityError) {
+        // Error during entity parsing (malformed data structure)
+        final corruptedPath = '${file.path}.corrupted';
+        await file.copy(corruptedPath);
+        
+        debugPrint('❌ STORAGE ERROR: Failed to parse entities');
+        debugPrint('   Error: $entityError');
+        debugPrint('   Corrupted file saved to: $corruptedPath');
+        debugPrint('   Timestamp: ${DateTime.now().toIso8601String()}');
+        
+        throw StorageCorruptionException(
+          'Failed to load aquarium data. Data structure is corrupted.',
+          corruptedFilePath: corruptedPath,
+          originalError: entityError,
+        );
+      }
+    } catch (e) {
+      // Re-throw StorageCorruptionException as-is
+      if (e is StorageCorruptionException) {
+        rethrow;
+      }
+      
+      // For other errors (file I/O, etc.), log and mark as loaded (soft fail)
+      debugPrint('⚠️  STORAGE WARNING: Unexpected error during load: $e');
       _loaded = true;
     }
   }
 
+  // P0-1 FIX: Synchronized persist to prevent race conditions
   Future<void> _persist() async {
+    // Use lock to ensure only one save operation happens at a time
+    return _persistLock.synchronized(() async {
+      final file = await _dataFile();
+
+      final payload = <String, dynamic>{
+        'version': _schemaVersion,
+        'updatedAt': DateTime.now().toIso8601String(),
+        'tanks': _tanks.map((k, v) => MapEntry(k, _tankToJson(v))),
+        'livestock': _livestock.map((k, v) => MapEntry(k, _livestockToJson(v))),
+        'equipment': _equipment.map((k, v) => MapEntry(k, _equipmentToJson(v))),
+        'logs': _logs.map((k, v) => MapEntry(k, _logToJson(v))),
+        'tasks': _tasks.map((k, v) => MapEntry(k, _taskToJson(v))),
+      };
+
+      // Atomic write using temp file
+      final tmp = File('${file.path}.tmp');
+      await tmp.writeAsString(jsonEncode(payload));
+      await tmp.rename(file.path);
+      
+      // Log successful saves (can be removed in production)
+      debugPrint('💾 Storage persisted: ${_tanks.length} tanks, ${_livestock.length} livestock');
+    });
+  }
+
+  /// Recovery method: Clear all data and start fresh
+  /// This should be called from the UI when user chooses "Start Fresh"
+  Future<void> clearAllData() async {
+    _tanks.clear();
+    _livestock.clear();
+    _equipment.clear();
+    _logs.clear();
+    _tasks.clear();
+    
     final file = await _dataFile();
-
-    final payload = <String, dynamic>{
-      'version': _schemaVersion,
-      'updatedAt': DateTime.now().toIso8601String(),
-      'tanks': _tanks.map((k, v) => MapEntry(k, _tankToJson(v))),
-      'livestock': _livestock.map((k, v) => MapEntry(k, _livestockToJson(v))),
-      'equipment': _equipment.map((k, v) => MapEntry(k, _equipmentToJson(v))),
-      'logs': _logs.map((k, v) => MapEntry(k, _logToJson(v))),
-      'tasks': _tasks.map((k, v) => MapEntry(k, _taskToJson(v))),
-    };
-
-    final tmp = File('${file.path}.tmp');
-    await tmp.writeAsString(jsonEncode(payload));
-    await tmp.rename(file.path);
+    if (await file.exists()) {
+      await file.delete();
+    }
+    
+    _loaded = true;
+    debugPrint('🗑️  All storage data cleared');
   }
 
   // --- Tanks ---
