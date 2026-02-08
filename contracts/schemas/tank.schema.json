@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.local/schemas/tank.schema.json",
+  "title": "Tank",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "name", "createdAt", "type", "volumeLitres"],
+  "properties": {
+    "id": { "type": "string", "description": "UUID" },
+    "name": { "type": "string", "minLength": 1 },
+    "createdAt": { "type": "string", "format": "date-time" },
+    "type": { "type": "string", "enum": ["freshwater"] },
+    "volumeLitres": { "type": "number", "exclusiveMinimum": 0 },
+    "dimensionsCm": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["length", "width", "height"],
+      "properties": {
+        "length": { "type": "number", "exclusiveMinimum": 0 },
+        "width": { "type": "number", "exclusiveMinimum": 0 },
+        "height": { "type": "number", "exclusiveMinimum": 0 }
+      }
+    },
+    "targets": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "tempC": { "type": "object", "properties": { "min": {"type":"number"}, "max": {"type":"number"} }, "additionalProperties": false },
+        "ph": { "type": "object", "properties": { "min": {"type":"number"}, "max": {"type":"number"} }, "additionalProperties": false },
+        "gh": { "type": "object", "properties": { "min": {"type":"number"}, "max": {"type":"number"} }, "additionalProperties": false },
+        "kh": { "type": "object", "properties": { "min": {"type":"number"}, "max": {"type":"number"} }, "additionalProperties": false }
+      }
+    }
+  }
+}
