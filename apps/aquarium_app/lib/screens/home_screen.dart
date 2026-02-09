@@ -21,6 +21,9 @@ import 'create_tank_screen.dart';
 import 'search_screen.dart';
 import 'settings_screen.dart';
 import 'tank_detail_screen.dart';
+import 'rooms/study_screen.dart';
+import 'workshop_screen.dart';
+import 'shop_street_screen.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -30,6 +33,7 @@ class HomeScreen extends ConsumerStatefulWidget {
 }
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
+  int _currentNavIndex = 0;
   int _currentTankIndex = 0;
   bool _isSelectMode = false;
   final Set<String> _selectedTankIds = {};
@@ -53,12 +57,24 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     });
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final tanksAsync = ref.watch(tanksProvider);
+  Widget _getCurrentScreen() {
+    switch (_currentNavIndex) {
+      case 1:
+        return const StudyScreen();
+      case 2:
+        return const WorkshopScreen();
+      case 3:
+        return const ShopStreetScreen();
+      case 0:
+      default:
+        return _buildLivingRoomScreen();
+    }
+  }
 
-    return Scaffold(
-      body: tanksAsync.when(
+  Widget _buildLivingRoomScreen() {
+    final tanksAsync = ref.watch(tanksProvider);
+    
+    return tanksAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (err, stack) => ErrorState(
           message: 'Failed to load tanks',
@@ -270,6 +286,37 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             ],
           );
         },
+      );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: _getCurrentScreen(),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _currentNavIndex,
+        onTap: (index) => setState(() => _currentNavIndex = index),
+        type: BottomNavigationBarType.fixed,
+        selectedItemColor: AppColors.primary,
+        unselectedItemColor: AppColors.textSecondary,
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home_rounded),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.school_rounded),
+            label: 'Learn',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.build_rounded),
+            label: 'Tools',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.shopping_bag_rounded),
+            label: 'Shop',
+          ),
+        ],
       ),
       // FAB removed - add button integrated into tank switcher for cleaner UX
     );

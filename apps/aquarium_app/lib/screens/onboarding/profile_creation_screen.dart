@@ -10,6 +10,7 @@ import '../../providers/user_profile_provider.dart';
 import '../../theme/app_theme.dart';
 import '../placement_test_screen.dart';
 import '../../utils/accessibility_utils.dart';
+import '../home_screen.dart';
 
 class ProfileCreationScreen extends ConsumerStatefulWidget {
   const ProfileCreationScreen({super.key});
@@ -40,6 +41,42 @@ class _ProfileCreationScreenState extends ConsumerState<ProfileCreationScreen> {
     return _selectedExperience != null && 
            _selectedTankType != null &&
            _selectedGoals.isNotEmpty;
+  }
+
+  Future<void> _skipToHome() async {
+    setState(() => _isSubmitting = true);
+
+    try {
+      final profileNotifier = ref.read(userProfileProvider.notifier);
+      
+      // Create default profile for dev/testing
+      await profileNotifier.createProfile(
+        name: 'Dev User',
+        experienceLevel: ExperienceLevel.beginner,
+        primaryTankType: TankType.freshwater,
+        goals: [UserGoal.keepFishAlive],
+      );
+
+      if (!mounted) return;
+
+      // Skip directly to HomeScreen
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (context) => const HomeScreen(),
+        ),
+      );
+    } catch (e) {
+      if (!mounted) return;
+      
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error skipping: $e'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      
+      setState(() => _isSubmitting = false);
+    }
   }
 
   Future<void> _createProfile() async {
@@ -93,6 +130,17 @@ class _ProfileCreationScreenState extends ConsumerState<ProfileCreationScreen> {
       appBar: AppBar(
         title: const Text('Create Your Profile'),
         automaticallyImplyLeading: false, // No back button - must complete onboarding
+        actions: [
+          TextButton(
+            onPressed: _isSubmitting ? null : _skipToHome,
+            child: Text(
+              'Skip',
+              style: TextStyle(
+                color: _isSubmitting ? Colors.grey : AppColors.textSecondary,
+              ),
+            ),
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(24),
@@ -361,8 +409,7 @@ class _ProfileCreationScreenState extends ConsumerState<ProfileCreationScreen> {
         onTap: () => setState(() => _selectedTankType = type),
         borderRadius: BorderRadius.circular(12),
         child: Container(
-          padding: const EdgeInsets.all(16),
-          height: 140,
+          padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
             color: isSelected ? AppColors.primary.withOpacity(0.1) : null,
             borderRadius: BorderRadius.circular(12),
@@ -373,39 +420,42 @@ class _ProfileCreationScreenState extends ConsumerState<ProfileCreationScreen> {
           ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
             children: [
               ExcludeSemantics(
                 child: Text(
                   type.emoji,
-                  style: const TextStyle(fontSize: 48),
+                  style: const TextStyle(fontSize: 40),
                 ),
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: 6),
               ExcludeSemantics(
                 child: Text(
                   type.displayName,
                   style: const TextStyle(
-                    fontSize: 16,
+                    fontSize: 15,
                     fontWeight: FontWeight.w600,
                   ),
                   textAlign: TextAlign.center,
                 ),
               ),
-              const SizedBox(height: 4),
+              const SizedBox(height: 3),
               ExcludeSemantics(
                 child: Text(
                   type.description,
                   style: TextStyle(
-                    fontSize: 12,
+                    fontSize: 11,
                     color: AppColors.textSecondary,
                   ),
                   textAlign: TextAlign.center,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
               if (isSelected) ...[
-                const SizedBox(height: 8),
+                const SizedBox(height: 6),
                 const ExcludeSemantics(
-                  child: Icon(Icons.check_circle, color: AppColors.primary, size: 20),
+                  child: Icon(Icons.check_circle, color: AppColors.primary, size: 18),
                 ),
               ],
             ],

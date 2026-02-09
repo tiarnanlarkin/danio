@@ -25,6 +25,35 @@ class StorageCorruptionException implements Exception {
   String toString() => 'StorageCorruptionException: $message';
 }
 
+/// Storage service loading state
+enum StorageState {
+  idle,       // Not yet loaded
+  loading,    // Currently loading
+  loaded,     // Successfully loaded
+  corrupted,  // Failed to load due to corruption
+  ioError,    // Failed to load due to I/O error
+}
+
+/// Information about a storage error
+class StorageError {
+  final StorageState state;
+  final String message;
+  final String? corruptedFilePath;
+  final DateTime timestamp;
+  final Object? originalError;
+  
+  StorageError({
+    required this.state,
+    required this.message,
+    this.corruptedFilePath,
+    required this.timestamp,
+    this.originalError,
+  });
+  
+  @override
+  String toString() => 'StorageError[$state]: $message';
+}
+
 /// Local JSON-file persistence for MVP.
 ///
 /// Stores all entities in a single JSON file under app documents.
@@ -42,8 +71,16 @@ class LocalJsonStorageService implements StorageService {
   // P0-1 FIX: Lock to prevent race conditions during concurrent saves
   final Lock _persistLock = Lock();
 
-  bool _loaded = false;
+  // P0-2 FIX: Enhanced state tracking for error handling
+  StorageState _state = StorageState.idle;
+  StorageError? _lastError;
   Future<void>? _loadFuture;
+
+  /// Public getters for UI to check service state
+  StorageState get state => _state;
+  StorageError? get lastError => _lastError;
+  bool get isHealthy => _state == StorageState.loaded;
+  bool get hasError => _state == StorageState.corrupted || _state == StorageState.ioError;
 
   final Map<String, Tank> _tanks = {};
   final Map<String, Livestock> _livestock = {};
@@ -51,9 +88,26 @@ class LocalJsonStorageService implements StorageService {
   final Map<String, LogEntry> _logs = {};
   final Map<String, Task> _tasks = {};
 
+  /// Ensures data is loaded, handles errors gracefully
+  /// Throws StorageCorruptionException if data is corrupted and can't be recovered
   Future<void> _ensureLoaded() async {
-    if (_loaded) return;
-    _loadFuture ??= _loadFromDisk();
+    // If already loaded successfully, return
+    if (_state == StorageState.loaded) return;
+    
+    // If already in error state, throw the stored error
+    if (_state == StorageState.corrupted) {
+      throw _lastError!.originalError ?? 
+        StorageCorruptionException(_lastError!.message);
+    }
+    
+    // If loading is in progress, wait for it
+    if (_loadFuture != null) {
+      await _loadFuture;
+      return;
+    }
+    
+    // Start loading
+    _loadFuture = _loadFromDisk();
     await _loadFuture;
   }
 
@@ -62,18 +116,26 @@ class LocalJsonStorageService implements StorageService {
     return File(p.join(dir.path, _fileName));
   }
 
-  // P0-2 FIX: Enhanced error handling with backup/recovery
+  // P0-2 FIX: Enhanced error handling with backup/recovery and proper state management
   Future<void> _loadFromDisk() async {
+    _state = StorageState.loading;
+    _lastError = null;
+    
     try {
       final file = await _dataFile();
+      
+      // File doesn't exist - this is a fresh install
       if (!await file.exists()) {
-        _loaded = true;
+        debugPrint('📦 Storage: No data file found, starting fresh');
+        _state = StorageState.loaded;
         return;
       }
 
+      // File exists but is empty - treat as fresh start
       final raw = await file.readAsString();
       if (raw.trim().isEmpty) {
-        _loaded = true;
+        debugPrint('📦 Storage: Empty data file, starting fresh');
+        _state = StorageState.loaded;
         return;
       }
 
@@ -82,128 +144,284 @@ class LocalJsonStorageService implements StorageService {
       try {
         final decoded = jsonDecode(raw);
         if (decoded is! Map<String, dynamic>) {
-          throw FormatException('Root JSON is not a Map');
+          throw FormatException('Root JSON is not a Map, got: ${decoded.runtimeType}');
         }
         json = decoded;
       } catch (parseError) {
-        // P0-2: Save corrupted file as backup
-        final corruptedPath = '${file.path}.corrupted';
-        await file.copy(corruptedPath);
+        // P0-2: Save corrupted file as backup before handling error
+        final timestamp = DateTime.now().millisecondsSinceEpoch;
+        final corruptedPath = '${file.path}.corrupted.$timestamp';
         
-        // Log error for debugging
-        debugPrint('❌ STORAGE ERROR: Failed to parse JSON');
+        try {
+          await file.copy(corruptedPath);
+          debugPrint('💾 Corrupted file backed up to: $corruptedPath');
+        } catch (backupError) {
+          debugPrint('⚠️  Failed to backup corrupted file: $backupError');
+        }
+        
+        // Log detailed error for debugging
+        debugPrint('❌ STORAGE ERROR: JSON Parsing Failed');
         debugPrint('   Error: $parseError');
-        debugPrint('   Corrupted file saved to: $corruptedPath');
+        debugPrint('   File: ${file.path}');
+        debugPrint('   Backup: $corruptedPath');
         debugPrint('   Timestamp: ${DateTime.now().toIso8601String()}');
         
-        // Throw custom exception with recovery options
-        throw StorageCorruptionException(
+        // Store error state
+        final error = StorageCorruptionException(
           'Failed to load aquarium data. The storage file appears to be corrupted.',
           corruptedFilePath: corruptedPath,
           originalError: parseError,
         );
+        
+        _lastError = StorageError(
+          state: StorageState.corrupted,
+          message: 'JSON parsing failed: ${parseError.toString()}',
+          corruptedFilePath: corruptedPath,
+          timestamp: DateTime.now(),
+          originalError: error,
+        );
+        
+        _state = StorageState.corrupted;
+        throw error;
       }
 
-      // Parse entities with error handling
+      // Parse entities with robust error handling
       try {
-        final tanks = (json['tanks'] as Map?)?.cast<String, dynamic>() ?? const {};
-        final livestock = (json['livestock'] as Map?)?.cast<String, dynamic>() ?? const {};
-        final equipment = (json['equipment'] as Map?)?.cast<String, dynamic>() ?? const {};
-        final logs = (json['logs'] as Map?)?.cast<String, dynamic>() ?? const {};
-        final tasks = (json['tasks'] as Map?)?.cast<String, dynamic>() ?? const {};
-
-        _tanks
-          ..clear()
-          ..addEntries(tanks.entries.map((e) => MapEntry(e.key, _tankFromJson(e.value))));
-
-        _livestock
-          ..clear()
-          ..addEntries(livestock.entries.map((e) => MapEntry(e.key, _livestockFromJson(e.value))));
-
-        _equipment
-          ..clear()
-          ..addEntries(equipment.entries.map((e) => MapEntry(e.key, _equipmentFromJson(e.value))));
-
-        _logs
-          ..clear()
-          ..addEntries(logs.entries.map((e) => MapEntry(e.key, _logFromJson(e.value))));
-
-        _tasks
-          ..clear()
-          ..addEntries(tasks.entries.map((e) => MapEntry(e.key, _taskFromJson(e.value))));
-
-        _loaded = true;
-        debugPrint('✅ Storage loaded successfully: ${_tanks.length} tanks, ${_livestock.length} livestock');
+        _parseAndLoadEntities(json);
+        
+        _state = StorageState.loaded;
+        debugPrint('✅ Storage loaded successfully: ${_tanks.length} tanks, ${_livestock.length} livestock, ${_equipment.length} equipment');
+        
       } catch (entityError) {
         // Error during entity parsing (malformed data structure)
-        final corruptedPath = '${file.path}.corrupted';
-        await file.copy(corruptedPath);
+        final timestamp = DateTime.now().millisecondsSinceEpoch;
+        final corruptedPath = '${file.path}.corrupted.$timestamp';
         
-        debugPrint('❌ STORAGE ERROR: Failed to parse entities');
+        try {
+          await file.copy(corruptedPath);
+          debugPrint('💾 Corrupted file backed up to: $corruptedPath');
+        } catch (backupError) {
+          debugPrint('⚠️  Failed to backup corrupted file: $backupError');
+        }
+        
+        debugPrint('❌ STORAGE ERROR: Entity Parsing Failed');
         debugPrint('   Error: $entityError');
-        debugPrint('   Corrupted file saved to: $corruptedPath');
+        debugPrint('   File: ${file.path}');
+        debugPrint('   Backup: $corruptedPath');
         debugPrint('   Timestamp: ${DateTime.now().toIso8601String()}');
         
-        throw StorageCorruptionException(
+        // Store error state
+        final error = StorageCorruptionException(
           'Failed to load aquarium data. Data structure is corrupted.',
           corruptedFilePath: corruptedPath,
           originalError: entityError,
         );
-      }
-    } catch (e) {
-      // Re-throw StorageCorruptionException as-is
-      if (e is StorageCorruptionException) {
-        rethrow;
+        
+        _lastError = StorageError(
+          state: StorageState.corrupted,
+          message: 'Entity parsing failed: ${entityError.toString()}',
+          corruptedFilePath: corruptedPath,
+          timestamp: DateTime.now(),
+          originalError: error,
+        );
+        
+        _state = StorageState.corrupted;
+        throw error;
       }
       
-      // For other errors (file I/O, etc.), log and mark as loaded (soft fail)
-      debugPrint('⚠️  STORAGE WARNING: Unexpected error during load: $e');
-      _loaded = true;
+    } on StorageCorruptionException {
+      // Already handled above, just rethrow
+      rethrow;
+      
+    } catch (e, stackTrace) {
+      // Unexpected errors (file I/O, permissions, etc.)
+      debugPrint('⚠️  STORAGE ERROR: Unexpected error during load');
+      debugPrint('   Error: $e');
+      debugPrint('   Stack: $stackTrace');
+      
+      // Store error but allow service to continue with empty data
+      _lastError = StorageError(
+        state: StorageState.ioError,
+        message: 'I/O error: ${e.toString()}',
+        timestamp: DateTime.now(),
+        originalError: e,
+      );
+      
+      // Mark as loaded with empty data (soft fail for I/O errors)
+      _state = StorageState.loaded;
+      debugPrint('⚠️  Continuing with empty data due to I/O error');
     }
   }
-
-  // P0-1 FIX: Synchronized persist to prevent race conditions
-  Future<void> _persist() async {
-    // Use lock to ensure only one save operation happens at a time
-    return _persistLock.synchronized(() async {
-      final file = await _dataFile();
-
-      final payload = <String, dynamic>{
-        'version': _schemaVersion,
-        'updatedAt': DateTime.now().toIso8601String(),
-        'tanks': _tanks.map((k, v) => MapEntry(k, _tankToJson(v))),
-        'livestock': _livestock.map((k, v) => MapEntry(k, _livestockToJson(v))),
-        'equipment': _equipment.map((k, v) => MapEntry(k, _equipmentToJson(v))),
-        'logs': _logs.map((k, v) => MapEntry(k, _logToJson(v))),
-        'tasks': _tasks.map((k, v) => MapEntry(k, _taskToJson(v))),
-      };
-
-      // Atomic write using temp file
-      final tmp = File('${file.path}.tmp');
-      await tmp.writeAsString(jsonEncode(payload));
-      await tmp.rename(file.path);
-      
-      // Log successful saves (can be removed in production)
-      debugPrint('💾 Storage persisted: ${_tanks.length} tanks, ${_livestock.length} livestock');
-    });
-  }
-
-  /// Recovery method: Clear all data and start fresh
-  /// This should be called from the UI when user chooses "Start Fresh"
-  Future<void> clearAllData() async {
+  
+  /// Parse and load all entities from JSON, with error recovery
+  void _parseAndLoadEntities(Map<String, dynamic> json) {
+    // Clear existing data
     _tanks.clear();
     _livestock.clear();
     _equipment.clear();
     _logs.clear();
     _tasks.clear();
     
+    // Track parsing errors for partial recovery
+    final errors = <String>[];
+    
+    // Parse tanks with individual error handling
+    final tanksJson = (json['tanks'] as Map?)?.cast<String, dynamic>() ?? const {};
+    for (final entry in tanksJson.entries) {
+      try {
+        _tanks[entry.key] = _tankFromJson(entry.value);
+      } catch (e) {
+        errors.add('Tank ${entry.key}: $e');
+        debugPrint('⚠️  Skipping corrupted tank: ${entry.key} - $e');
+      }
+    }
+    
+    // Parse livestock with individual error handling
+    final livestockJson = (json['livestock'] as Map?)?.cast<String, dynamic>() ?? const {};
+    for (final entry in livestockJson.entries) {
+      try {
+        _livestock[entry.key] = _livestockFromJson(entry.value);
+      } catch (e) {
+        errors.add('Livestock ${entry.key}: $e');
+        debugPrint('⚠️  Skipping corrupted livestock: ${entry.key} - $e');
+      }
+    }
+    
+    // Parse equipment with individual error handling
+    final equipmentJson = (json['equipment'] as Map?)?.cast<String, dynamic>() ?? const {};
+    for (final entry in equipmentJson.entries) {
+      try {
+        _equipment[entry.key] = _equipmentFromJson(entry.value);
+      } catch (e) {
+        errors.add('Equipment ${entry.key}: $e');
+        debugPrint('⚠️  Skipping corrupted equipment: ${entry.key} - $e');
+      }
+    }
+    
+    // Parse logs with individual error handling
+    final logsJson = (json['logs'] as Map?)?.cast<String, dynamic>() ?? const {};
+    for (final entry in logsJson.entries) {
+      try {
+        _logs[entry.key] = _logFromJson(entry.value);
+      } catch (e) {
+        errors.add('Log ${entry.key}: $e');
+        debugPrint('⚠️  Skipping corrupted log: ${entry.key} - $e');
+      }
+    }
+    
+    // Parse tasks with individual error handling
+    final tasksJson = (json['tasks'] as Map?)?.cast<String, dynamic>() ?? const {};
+    for (final entry in tasksJson.entries) {
+      try {
+        _tasks[entry.key] = _taskFromJson(entry.value);
+      } catch (e) {
+        errors.add('Task ${entry.key}: $e');
+        debugPrint('⚠️  Skipping corrupted task: ${entry.key} - $e');
+      }
+    }
+    
+    // If too many errors occurred, this might indicate a serious problem
+    if (errors.length > 10) {
+      throw FormatException('Too many entity parsing errors (${errors.length}). Data may be severely corrupted.');
+    }
+    
+    if (errors.isNotEmpty) {
+      debugPrint('⚠️  Loaded with ${errors.length} corrupted entities skipped');
+    }
+  }
+
+  // P0-1 FIX: Private persistence method WITHOUT lock
+  // This is called from within synchronized blocks in public methods
+  Future<void> _persistUnlocked() async {
+    final file = await _dataFile();
+
+    final payload = <String, dynamic>{
+      'version': _schemaVersion,
+      'updatedAt': DateTime.now().toIso8601String(),
+      'tanks': _tanks.map((k, v) => MapEntry(k, _tankToJson(v))),
+      'livestock': _livestock.map((k, v) => MapEntry(k, _livestockToJson(v))),
+      'equipment': _equipment.map((k, v) => MapEntry(k, _equipmentToJson(v))),
+      'logs': _logs.map((k, v) => MapEntry(k, _logToJson(v))),
+      'tasks': _tasks.map((k, v) => MapEntry(k, _taskToJson(v))),
+    };
+
+    // Atomic write using temp file
+    final tmp = File('${file.path}.tmp');
+    await tmp.writeAsString(jsonEncode(payload));
+    await tmp.rename(file.path);
+    
+    // Log successful saves (can be removed in production)
+    debugPrint('💾 Storage persisted: ${_tanks.length} tanks, ${_livestock.length} livestock');
+  }
+
+  /// Recovery method: Clear all data and start fresh
+  /// This should be called from the UI when user chooses "Start Fresh"
+  Future<void> clearAllData() async {
+    // P0-1 FIX: Wrap modify+persist in lock to prevent race conditions
+    await _persistLock.synchronized(() async {
+      _tanks.clear();
+      _livestock.clear();
+      _equipment.clear();
+      _logs.clear();
+      _tasks.clear();
+      
+      final file = await _dataFile();
+      if (await file.exists()) {
+        await file.delete();
+      }
+      
+      // P0-2: Reset error state
+      _state = StorageState.loaded;
+      _lastError = null;
+      _loadFuture = null;
+      
+      debugPrint('🗑️  All storage data cleared, service reset to healthy state');
+    });
+  }
+  
+  /// Recovery method: Attempt to reload data from disk
+  /// Useful if corruption was temporary or file was manually fixed
+  Future<void> retryLoad() async {
+    debugPrint('🔄 Attempting to reload storage data...');
+    
+    // Reset state
+    _state = StorageState.idle;
+    _lastError = null;
+    _loadFuture = null;
+    
+    // Clear existing data
+    _tanks.clear();
+    _livestock.clear();
+    _equipment.clear();
+    _logs.clear();
+    _tasks.clear();
+    
+    // Attempt reload
+    try {
+      await _ensureLoaded();
+      debugPrint('✅ Reload successful');
+    } catch (e) {
+      debugPrint('❌ Reload failed: $e');
+      rethrow;
+    }
+  }
+  
+  /// Recovery method: Delete corrupted file and start fresh
+  /// This preserves the backup but allows the app to continue
+  Future<void> recoverFromCorruption() async {
+    debugPrint('🔧 Recovering from storage corruption...');
+    
+    // Delete the main data file
     final file = await _dataFile();
     if (await file.exists()) {
       await file.delete();
+      debugPrint('🗑️  Deleted corrupted data file');
     }
     
-    _loaded = true;
-    debugPrint('🗑️  All storage data cleared');
+    // Clear all data and reset state
+    await clearAllData();
+    
+    debugPrint('✅ Recovery complete - starting with fresh data');
   }
 
   // --- Tanks ---
@@ -222,19 +440,25 @@ class LocalJsonStorageService implements StorageService {
   @override
   Future<void> saveTank(Tank tank) async {
     await _ensureLoaded();
-    _tanks[tank.id] = tank;
-    await _persist();
+    // P0-1 FIX: Wrap modify+persist in lock to prevent race conditions
+    await _persistLock.synchronized(() async {
+      _tanks[tank.id] = tank;
+      await _persistUnlocked();
+    });
   }
 
   @override
   Future<void> deleteTank(String id) async {
     await _ensureLoaded();
-    _tanks.remove(id);
-    _livestock.removeWhere((_, v) => v.tankId == id);
-    _equipment.removeWhere((_, v) => v.tankId == id);
-    _logs.removeWhere((_, v) => v.tankId == id);
-    _tasks.removeWhere((_, v) => v.tankId == id);
-    await _persist();
+    // P0-1 FIX: Wrap modify+persist in lock to prevent race conditions
+    await _persistLock.synchronized(() async {
+      _tanks.remove(id);
+      _livestock.removeWhere((_, v) => v.tankId == id);
+      _equipment.removeWhere((_, v) => v.tankId == id);
+      _logs.removeWhere((_, v) => v.tankId == id);
+      _tasks.removeWhere((_, v) => v.tankId == id);
+      await _persistUnlocked();
+    });
   }
 
   // --- Livestock ---
@@ -248,15 +472,21 @@ class LocalJsonStorageService implements StorageService {
   @override
   Future<void> saveLivestock(Livestock livestock) async {
     await _ensureLoaded();
-    _livestock[livestock.id] = livestock;
-    await _persist();
+    // P0-1 FIX: Wrap modify+persist in lock to prevent race conditions
+    await _persistLock.synchronized(() async {
+      _livestock[livestock.id] = livestock;
+      await _persistUnlocked();
+    });
   }
 
   @override
   Future<void> deleteLivestock(String id) async {
     await _ensureLoaded();
-    _livestock.remove(id);
-    await _persist();
+    // P0-1 FIX: Wrap modify+persist in lock to prevent race conditions
+    await _persistLock.synchronized(() async {
+      _livestock.remove(id);
+      await _persistUnlocked();
+    });
   }
 
   // --- Equipment ---
@@ -270,15 +500,21 @@ class LocalJsonStorageService implements StorageService {
   @override
   Future<void> saveEquipment(Equipment equipment) async {
     await _ensureLoaded();
-    _equipment[equipment.id] = equipment;
-    await _persist();
+    // P0-1 FIX: Wrap modify+persist in lock to prevent race conditions
+    await _persistLock.synchronized(() async {
+      _equipment[equipment.id] = equipment;
+      await _persistUnlocked();
+    });
   }
 
   @override
   Future<void> deleteEquipment(String id) async {
     await _ensureLoaded();
-    _equipment.remove(id);
-    await _persist();
+    // P0-1 FIX: Wrap modify+persist in lock to prevent race conditions
+    await _persistLock.synchronized(() async {
+      _equipment.remove(id);
+      await _persistUnlocked();
+    });
   }
 
   // --- Logs ---
@@ -294,15 +530,21 @@ class LocalJsonStorageService implements StorageService {
   @override
   Future<void> saveLog(LogEntry log) async {
     await _ensureLoaded();
-    _logs[log.id] = log;
-    await _persist();
+    // P0-1 FIX: Wrap modify+persist in lock to prevent race conditions
+    await _persistLock.synchronized(() async {
+      _logs[log.id] = log;
+      await _persistUnlocked();
+    });
   }
 
   @override
   Future<void> deleteLog(String id) async {
     await _ensureLoaded();
-    _logs.remove(id);
-    await _persist();
+    // P0-1 FIX: Wrap modify+persist in lock to prevent race conditions
+    await _persistLock.synchronized(() async {
+      _logs.remove(id);
+      await _persistUnlocked();
+    });
   }
 
   // --- Tasks ---
@@ -327,15 +569,21 @@ class LocalJsonStorageService implements StorageService {
   @override
   Future<void> saveTask(Task task) async {
     await _ensureLoaded();
-    _tasks[task.id] = task;
-    await _persist();
+    // P0-1 FIX: Wrap modify+persist in lock to prevent race conditions
+    await _persistLock.synchronized(() async {
+      _tasks[task.id] = task;
+      await _persistUnlocked();
+    });
   }
 
   @override
   Future<void> deleteTask(String id) async {
     await _ensureLoaded();
-    _tasks.remove(id);
-    await _persist();
+    // P0-1 FIX: Wrap modify+persist in lock to prevent race conditions
+    await _persistLock.synchronized(() async {
+      _tasks.remove(id);
+      await _persistUnlocked();
+    });
   }
 
   // ---- Serialization helpers ----

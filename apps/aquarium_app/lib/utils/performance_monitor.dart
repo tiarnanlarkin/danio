@@ -1,5 +1,12 @@
 /// Performance Monitoring Utility
 /// Tracks FPS, memory usage, and widget rebuilds
+/// 
+/// Resource Management:
+/// - Uses SchedulerBinding callback for frame timing (must be removed on cleanup)
+/// - Uses periodic Timer for memory sampling (must be cancelled on cleanup)
+/// - Tracks collections with size limits to prevent unbounded growth
+/// - Provides dispose() for complete resource cleanup
+/// - stopMonitoring() pauses monitoring, dispose() releases all resources
 library;
 
 import 'dart:async';
@@ -15,6 +22,7 @@ final performanceMonitor = PerformanceMonitor();
 class PerformanceMonitor {
   static const _targetFrameTime = Duration(microseconds: 16667); // 60 FPS
   static const _sampleWindow = Duration(seconds: 1);
+  static const _maxRebuildEntries = 100; // Prevent unbounded growth
 
   final List<Duration> _frameTimes = [];
   DateTime? _lastSampleTime;
@@ -29,16 +37,21 @@ class PerformanceMonitor {
   final Map<String, int> _rebuildCounts = {};
 
   bool _isMonitoring = false;
+  bool _isDisposed = false;
 
   /// Start monitoring performance
+  /// Throws StateError if monitor has been disposed
   void startMonitoring() {
+    if (_isDisposed) {
+      throw StateError('Cannot start monitoring on a disposed PerformanceMonitor');
+    }
     if (_isMonitoring) return;
     _isMonitoring = true;
 
-    // Frame timing
+    // Frame timing callback - MUST be removed in stopMonitoring/dispose
     SchedulerBinding.instance.addTimingsCallback(_onFrameTimings);
 
-    // Memory sampling every 5 seconds
+    // Memory sampling every 5 seconds - MUST be cancelled in stopMonitoring/dispose
     _memoryTimer = Timer.periodic(const Duration(seconds: 5), (_) {
       _sampleMemory();
     });
@@ -46,26 +59,75 @@ class PerformanceMonitor {
     developer.log('Performance monitoring started', name: 'PerformanceMonitor');
   }
 
-  /// Stop monitoring
+  /// Stop monitoring (pauses monitoring but keeps data)
+  /// Resources are cleaned up but can be restarted with startMonitoring()
+  /// For complete cleanup, use dispose()
   void stopMonitoring() {
     if (!_isMonitoring) return;
     _isMonitoring = false;
 
-    SchedulerBinding.instance.removeTimingsCallback(_onFrameTimings);
+    // Remove frame timing callback to prevent memory leak
+    try {
+      SchedulerBinding.instance.removeTimingsCallback(_onFrameTimings);
+    } catch (e) {
+      developer.log('Error removing timings callback: $e', name: 'PerformanceMonitor');
+    }
+
+    // Cancel and nullify timer to prevent memory leak
     _memoryTimer?.cancel();
     _memoryTimer = null;
 
     developer.log('Performance monitoring stopped', name: 'PerformanceMonitor');
   }
 
-  /// Reset all metrics
+  /// Dispose of all resources and cleanup
+  /// After calling dispose(), this monitor cannot be reused
+  /// Call stopMonitoring() first if you want to preserve data
+  void dispose() {
+    if (_isDisposed) return;
+
+    developer.log('Disposing PerformanceMonitor', name: 'PerformanceMonitor');
+
+    // Stop monitoring if active (cleans up callback and timer)
+    if (_isMonitoring) {
+      stopMonitoring();
+    }
+
+    // Double-check timer cleanup (defensive programming)
+    _memoryTimer?.cancel();
+    _memoryTimer = null;
+
+    // Clear all collections to free memory
+    _frameTimes.clear();
+    _memorySamples.clear();
+    _rebuildCounts.clear();
+
+    // Reset counters
+    _droppedFrames = 0;
+    _totalFrames = 0;
+    _lastSampleTime = null;
+
+    // Mark as disposed
+    _isDisposed = true;
+
+    developer.log('PerformanceMonitor disposed', name: 'PerformanceMonitor');
+  }
+
+  /// Reset all metrics (clears data but keeps monitor active)
   void reset() {
+    if (_isDisposed) {
+      developer.log('Cannot reset disposed monitor', name: 'PerformanceMonitor');
+      return;
+    }
+
     _frameTimes.clear();
     _memorySamples.clear();
     _rebuildCounts.clear();
     _droppedFrames = 0;
     _totalFrames = 0;
     _lastSampleTime = null;
+
+    developer.log('Metrics reset', name: 'PerformanceMonitor');
   }
 
   /// Frame timing callback
@@ -128,9 +190,25 @@ class PerformanceMonitor {
   }
 
   /// Track widget rebuild
+  /// Maintains a maximum of _maxRebuildEntries to prevent unbounded growth
   void trackRebuild(String widgetName) {
+    if (_isDisposed) return; // Ignore if disposed
+
     _rebuildCounts[widgetName] = (_rebuildCounts[widgetName] ?? 0) + 1;
+
+    // Prevent unbounded growth: if we exceed max entries, remove the least rebuilt widget
+    if (_rebuildCounts.length > _maxRebuildEntries) {
+      final entries = _rebuildCounts.entries.toList()
+        ..sort((a, b) => a.value.compareTo(b.value)); // Sort ascending
+      _rebuildCounts.remove(entries.first.key); // Remove widget with fewest rebuilds
+    }
   }
+
+  /// Check if monitor is currently active
+  bool get isMonitoring => _isMonitoring && !_isDisposed;
+
+  /// Check if monitor has been disposed
+  bool get isDisposed => _isDisposed;
 
   /// Get current FPS
   double get currentFPS {

@@ -92,30 +92,75 @@ class _EnhancedOnboardingScreenState extends ConsumerState<EnhancedOnboardingScr
     }
   }
 
+  Future<void> _skipOnboarding() async {
+    try {
+      // Create default profile
+      await ref.read(userProfileProvider.notifier).createProfile(
+        experienceLevel: ExperienceLevel.beginner,
+        primaryTankType: TankType.freshwater,
+        goals: [UserGoal.keepFishAlive],
+      );
+
+      if (mounted) {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (_) => const HomeScreen()),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        AppFeedback.showError(
+          context,
+          'Failed to skip onboarding. Please try again.',
+          onRetry: _skipOnboarding,
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
         child: Column(
           children: [
-            // Progress indicator
+            // Progress indicator with skip button
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
               child: Row(
-                children: List.generate(4, (index) {
-                  return Expanded(
-                    child: Container(
-                      height: 4,
-                      margin: EdgeInsets.only(right: index < 3 ? 8 : 0),
-                      decoration: BoxDecoration(
-                        color: index <= _currentPage
-                            ? AppColors.primary
-                            : AppColors.surfaceVariant,
-                        borderRadius: BorderRadius.circular(2),
+                children: [
+                  // Progress bars
+                  Expanded(
+                    child: Row(
+                      children: List.generate(4, (index) {
+                        return Expanded(
+                          child: Container(
+                            height: 4,
+                            margin: EdgeInsets.only(right: index < 3 ? 8 : 0),
+                            decoration: BoxDecoration(
+                              color: index <= _currentPage
+                                  ? AppColors.primary
+                                  : AppColors.surfaceVariant,
+                              borderRadius: BorderRadius.circular(2),
+                            ),
+                          ),
+                        );
+                      }),
+                    ),
+                  ),
+                  // Skip button (only on welcome page)
+                  if (_currentPage == 0) ...[
+                    const SizedBox(width: 16),
+                    TextButton(
+                      onPressed: _skipOnboarding,
+                      child: Text(
+                        'Skip',
+                        style: AppTypography.labelLarge.copyWith(
+                          color: AppColors.textSecondary,
+                        ),
                       ),
                     ),
-                  );
-                }),
+                  ],
+                ],
               ),
             ),
 
