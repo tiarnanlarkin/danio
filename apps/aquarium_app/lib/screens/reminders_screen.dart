@@ -79,13 +79,37 @@ class _RemindersScreenState extends ConsumerState<RemindersScreen> {
     final now = DateTime.now();
     switch (reminder.frequency) {
       case 'daily':
-        return DateTime(now.year, now.month, now.day + 1, reminder.nextDue.hour, reminder.nextDue.minute);
+        return DateTime(
+          now.year,
+          now.month,
+          now.day + 1,
+          reminder.nextDue.hour,
+          reminder.nextDue.minute,
+        );
       case 'weekly':
-        return DateTime(now.year, now.month, now.day + 7, reminder.nextDue.hour, reminder.nextDue.minute);
+        return DateTime(
+          now.year,
+          now.month,
+          now.day + 7,
+          reminder.nextDue.hour,
+          reminder.nextDue.minute,
+        );
       case 'biweekly':
-        return DateTime(now.year, now.month, now.day + 14, reminder.nextDue.hour, reminder.nextDue.minute);
+        return DateTime(
+          now.year,
+          now.month,
+          now.day + 14,
+          reminder.nextDue.hour,
+          reminder.nextDue.minute,
+        );
       case 'monthly':
-        return DateTime(now.year, now.month + 1, now.day, reminder.nextDue.hour, reminder.nextDue.minute);
+        return DateTime(
+          now.year,
+          now.month + 1,
+          now.day,
+          reminder.nextDue.hour,
+          reminder.nextDue.minute,
+        );
       default:
         return reminder.nextDue;
     }
@@ -130,7 +154,8 @@ class _RemindersScreenState extends ConsumerState<RemindersScreen> {
           ? EmptyState(
               icon: Icons.notifications_none,
               title: 'No reminders set',
-              message: 'Set up reminders for feeding, water changes, and maintenance tasks',
+              message:
+                  'Set up reminders for feeding, water changes, and maintenance tasks',
               actionLabel: 'Add Reminder',
               onAction: _addReminder,
             )
@@ -143,26 +168,27 @@ class _RemindersScreenState extends ConsumerState<RemindersScreen> {
                     count: overdue.length,
                     color: AppColors.error,
                   ),
-                  ...overdue.map((r) => _ReminderTile(
-                    reminder: r,
-                    isOverdue: true,
-                    onComplete: () => _toggleReminder(_reminders.indexOf(r)),
-                    onDelete: () => _deleteReminder(_reminders.indexOf(r)),
-                  )),
+                  ...overdue.map(
+                    (r) => _ReminderTile(
+                      reminder: r,
+                      isOverdue: true,
+                      onComplete: () => _toggleReminder(_reminders.indexOf(r)),
+                      onDelete: () => _deleteReminder(_reminders.indexOf(r)),
+                    ),
+                  ),
                   const SizedBox(height: 24),
                 ],
 
                 if (upcoming.isNotEmpty) ...[
-                  _SectionHeader(
-                    title: 'Upcoming',
-                    count: upcoming.length,
+                  _SectionHeader(title: 'Upcoming', count: upcoming.length),
+                  ...upcoming.map(
+                    (r) => _ReminderTile(
+                      reminder: r,
+                      isOverdue: false,
+                      onComplete: () => _toggleReminder(_reminders.indexOf(r)),
+                      onDelete: () => _deleteReminder(_reminders.indexOf(r)),
+                    ),
                   ),
-                  ...upcoming.map((r) => _ReminderTile(
-                    reminder: r,
-                    isOverdue: false,
-                    onComplete: () => _toggleReminder(_reminders.indexOf(r)),
-                    onDelete: () => _deleteReminder(_reminders.indexOf(r)),
-                  )),
                 ],
               ],
             ),
@@ -234,12 +260,16 @@ class _Reminder {
     notes: json['notes'],
     category: json['category'],
     nextDue: DateTime.parse(json['nextDue']),
-    lastCompleted: json['lastCompleted'] != null ? DateTime.parse(json['lastCompleted']) : null,
+    lastCompleted: json['lastCompleted'] != null
+        ? DateTime.parse(json['lastCompleted'])
+        : null,
     isRecurring: json['isRecurring'] ?? false,
     frequency: json['frequency'] ?? 'once',
   );
 }
 
+/// Empty state widget (UNUSED - Kept for reference)
+/*
 class _EmptyState extends StatelessWidget {
   final VoidCallback onAdd;
 
@@ -274,6 +304,7 @@ class _EmptyState extends StatelessWidget {
     );
   }
 }
+*/
 
 class _SectionHeader extends StatelessWidget {
   final String title;
@@ -288,7 +319,10 @@ class _SectionHeader extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 8),
       child: Row(
         children: [
-          Text(title, style: AppTypography.headlineSmall.copyWith(color: color)),
+          Text(
+            title,
+            style: AppTypography.headlineSmall.copyWith(color: color),
+          ),
           const SizedBox(width: 8),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
@@ -298,7 +332,9 @@ class _SectionHeader extends StatelessWidget {
             ),
             child: Text(
               '$count',
-              style: AppTypography.bodySmall.copyWith(color: color ?? AppColors.primary),
+              style: AppTypography.bodySmall.copyWith(
+                color: color ?? AppColors.primary,
+              ),
             ),
           ),
         ],
@@ -380,7 +416,8 @@ class _ReminderTile extends StatelessWidget {
             width: 40,
             height: 40,
             decoration: BoxDecoration(
-              color: (isOverdue ? AppColors.error : AppColors.primary).withOpacity(0.1),
+              color: (isOverdue ? AppColors.error : AppColors.primary)
+                  .withOpacity(0.1),
               borderRadius: BorderRadius.circular(8),
             ),
             child: Icon(
@@ -395,9 +432,12 @@ class _ReminderTile extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  Text(_formatDue(), style: AppTypography.bodySmall.copyWith(
-                    color: isOverdue ? AppColors.error : null,
-                  )),
+                  Text(
+                    _formatDue(),
+                    style: AppTypography.bodySmall.copyWith(
+                      color: isOverdue ? AppColors.error : null,
+                    ),
+                  ),
                   if (reminder.isRecurring) ...[
                     const SizedBox(width: 8),
                     Icon(Icons.repeat, size: 12, color: AppColors.textHint),
@@ -407,7 +447,12 @@ class _ReminderTile extends StatelessWidget {
                 ],
               ),
               if (reminder.notes != null && reminder.notes!.isNotEmpty)
-                Text(reminder.notes!, style: AppTypography.bodySmall, maxLines: 1, overflow: TextOverflow.ellipsis),
+                Text(
+                  reminder.notes!,
+                  style: AppTypography.bodySmall,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
             ],
           ),
           trailing: IconButton(
@@ -441,21 +486,99 @@ class _AddReminderSheetState extends State<_AddReminderSheet> {
   bool _isRecurring = true;
   String _frequency = 'weekly';
 
-  final _categories = ['Water Change', 'Filter', 'Feeding', 'Testing', 'Medication', 'Plants', 'Other'];
+  final _categories = [
+    'Water Change',
+    'Filter',
+    'Feeding',
+    'Testing',
+    'Medication',
+    'Plants',
+    'Other',
+  ];
   final _frequencies = ['daily', 'weekly', 'biweekly', 'monthly'];
+
+  void _applyPreset(String preset) {
+    switch (preset) {
+      case 'water_change':
+        _titleController.text = 'Weekly water change';
+        _category = 'Water Change';
+        _isRecurring = true;
+        _frequency = 'weekly';
+        _notesController.text = 'Change 25-30% of tank water';
+        break;
+      case 'filter':
+        _titleController.text = 'Clean filter';
+        _category = 'Filter';
+        _isRecurring = true;
+        _frequency = 'monthly';
+        _notesController.text = 'Rinse filter media in old tank water';
+        break;
+      case 'test':
+        _titleController.text = 'Test water parameters';
+        _category = 'Testing';
+        _isRecurring = true;
+        _frequency = 'weekly';
+        _notesController.text = 'Check ammonia, nitrite, nitrate, pH';
+        break;
+      case 'feed':
+        _titleController.text = 'Daily feeding';
+        _category = 'Feeding';
+        _isRecurring = true;
+        _frequency = 'daily';
+        _dueTime = const TimeOfDay(hour: 9, minute: 0);
+        break;
+    }
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.fromLTRB(16, 16, 16, 16 + MediaQuery.of(context).viewInsets.bottom),
+      padding: EdgeInsets.fromLTRB(
+        16,
+        16,
+        16,
+        16 + MediaQuery.of(context).viewInsets.bottom,
+      ),
       child: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text('Add Reminder', style: AppTypography.headlineSmall),
+            const SizedBox(height: 12),
+
+            // Quick presets
+            Text('Quick Presets', style: AppTypography.labelMedium),
+            const SizedBox(height: 8),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: [
+                _PresetChip(
+                  icon: Icons.water_drop,
+                  label: 'Water Change',
+                  onTap: () => _applyPreset('water_change'),
+                ),
+                _PresetChip(
+                  icon: Icons.filter_alt,
+                  label: 'Filter Clean',
+                  onTap: () => _applyPreset('filter'),
+                ),
+                _PresetChip(
+                  icon: Icons.science,
+                  label: 'Water Test',
+                  onTap: () => _applyPreset('test'),
+                ),
+                _PresetChip(
+                  icon: Icons.restaurant,
+                  label: 'Feeding',
+                  onTap: () => _applyPreset('feed'),
+                ),
+              ],
+            ),
             const SizedBox(height: 16),
-            
+
             TextField(
               controller: _titleController,
               decoration: const InputDecoration(
@@ -473,7 +596,9 @@ class _AddReminderSheetState extends State<_AddReminderSheet> {
                 labelText: 'Category',
                 border: OutlineInputBorder(),
               ),
-              items: _categories.map((c) => DropdownMenuItem(value: c, child: Text(c))).toList(),
+              items: _categories
+                  .map((c) => DropdownMenuItem(value: c, child: Text(c)))
+                  .toList(),
               onChanged: (v) => setState(() => _category = v ?? 'Other'),
             ),
             const SizedBox(height: 12),
@@ -522,10 +647,14 @@ class _AddReminderSheetState extends State<_AddReminderSheet> {
 
             if (_isRecurring)
               SegmentedButton<String>(
-                segments: _frequencies.map((f) => ButtonSegment(
-                  value: f,
-                  label: Text(f[0].toUpperCase() + f.substring(1)),
-                )).toList(),
+                segments: _frequencies
+                    .map(
+                      (f) => ButtonSegment(
+                        value: f,
+                        label: Text(f[0].toUpperCase() + f.substring(1)),
+                      ),
+                    )
+                    .toList(),
                 selected: {_frequency},
                 onSelectionChanged: (v) => setState(() => _frequency = v.first),
               ),
@@ -560,18 +689,65 @@ class _AddReminderSheetState extends State<_AddReminderSheet> {
                     _dueTime.minute,
                   );
 
-                  widget.onSave(_Reminder(
-                    id: DateTime.now().millisecondsSinceEpoch.toString(),
-                    title: _titleController.text,
-                    notes: _notesController.text.isNotEmpty ? _notesController.text : null,
-                    category: _category,
-                    nextDue: nextDue,
-                    isRecurring: _isRecurring,
-                    frequency: _isRecurring ? _frequency : 'once',
-                  ));
+                  widget.onSave(
+                    _Reminder(
+                      id: DateTime.now().millisecondsSinceEpoch.toString(),
+                      title: _titleController.text,
+                      notes: _notesController.text.isNotEmpty
+                          ? _notesController.text
+                          : null,
+                      category: _category,
+                      nextDue: nextDue,
+                      isRecurring: _isRecurring,
+                      frequency: _isRecurring ? _frequency : 'once',
+                    ),
+                  );
                   Navigator.pop(context);
                 },
                 child: const Text('Save Reminder'),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _PresetChip extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final VoidCallback onTap;
+
+  const _PresetChip({
+    required this.icon,
+    required this.label,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(20),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        decoration: BoxDecoration(
+          color: AppColors.primary.withOpacity(0.1),
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: AppColors.primary.withOpacity(0.3)),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icon, size: 16, color: AppColors.primary),
+            const SizedBox(width: 6),
+            Text(
+              label,
+              style: TextStyle(
+                color: AppColors.primary,
+                fontWeight: FontWeight.w500,
+                fontSize: 13,
               ),
             ),
           ],

@@ -39,6 +39,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
   late LogType _type;
   bool _isSaving = false;
   bool _isPickingImages = false;
+  bool _bulkEntryMode = false;
 
   // Photos
   final List<String> _photoPaths = [];
@@ -90,6 +91,61 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
       }
     } else {
       _type = widget.initialType;
+      // Pre-fill last values for new logs
+      _loadLastValues();
+    }
+  }
+
+  Future<void> _loadLastValues() async {
+    try {
+      final storage = ref.read(storageServiceProvider);
+      final logs = await storage.getLogsForTank(widget.tankId);
+
+      // Find the most recent water test
+      final lastWaterTest = logs
+          .where((l) => l.type == LogType.waterTest && l.waterTest != null)
+          .fold<LogEntry?>(null, (prev, curr) {
+            if (prev == null) return curr;
+            return curr.timestamp.isAfter(prev.timestamp) ? curr : prev;
+          });
+
+      if (lastWaterTest != null && lastWaterTest.waterTest != null && mounted) {
+        final t = lastWaterTest.waterTest!;
+        setState(() {
+          _temperature = t.temperature;
+          _ph = t.ph;
+          _ammonia = t.ammonia;
+          _nitrite = t.nitrite;
+          _nitrate = t.nitrate;
+          _gh = t.gh;
+          _kh = t.kh;
+          _phosphate = t.phosphate;
+        });
+      }
+
+      // Pre-fill last water change percentage
+      if (_type == LogType.waterChange) {
+        final lastWaterChange = logs
+            .where(
+              (l) =>
+                  l.type == LogType.waterChange && l.waterChangePercent != null,
+            )
+            .fold<LogEntry?>(null, (prev, curr) {
+              if (prev == null) return curr;
+              return curr.timestamp.isAfter(prev.timestamp) ? curr : prev;
+            });
+
+        if (lastWaterChange != null &&
+            lastWaterChange.waterChangePercent != null &&
+            mounted) {
+          setState(() {
+            _waterChangePercent = lastWaterChange.waterChangePercent;
+          });
+        }
+      }
+    } catch (e) {
+      // Silently fail - pre-fill is optional
+      debugPrint('Could not pre-fill last values: $e');
     }
   }
 
@@ -144,14 +200,19 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
                   ),
                 ),
                 TextButton.icon(
-                  onPressed: (_isSaving || _isPickingImages) ? null : _pickImages,
+                  onPressed: (_isSaving || _isPickingImages)
+                      ? null
+                      : _pickImages,
                   icon: _isPickingImages
                       ? const SizedBox(
                           width: 14,
                           height: 14,
                           child: CircularProgressIndicator(strokeWidth: 2),
                         )
-                      : const Icon(Icons.add_photo_alternate_outlined, size: 18),
+                      : const Icon(
+                          Icons.add_photo_alternate_outlined,
+                          size: 18,
+                        ),
                   label: const Text('Add'),
                 ),
               ],
@@ -180,7 +241,10 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
                 ),
                 child: Row(
                   children: [
-                    const Icon(Icons.calendar_today, color: AppColors.textSecondary),
+                    const Icon(
+                      Icons.calendar_today,
+                      color: AppColors.textSecondary,
+                    ),
                     const SizedBox(width: 12),
                     Text(
                       '${_timestamp.day}/${_timestamp.month}/${_timestamp.year} at ${_timestamp.hour}:${_timestamp.minute.toString().padLeft(2, '0')}',
@@ -188,7 +252,8 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
                     ),
                     const Spacer(),
                     TextButton(
-                      onPressed: () => setState(() => _timestamp = DateTime.now()),
+                      onPressed: () =>
+                          setState(() => _timestamp = DateTime.now()),
                       child: const Text('Now'),
                     ),
                   ],
@@ -217,148 +282,368 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
 
   String _getTitle() {
     switch (_type) {
-      case LogType.waterTest: return 'Log Water Test';
-      case LogType.waterChange: return 'Log Water Change';
-      case LogType.observation: return 'Add Observation';
-      case LogType.medication: return 'Log Medication';
-      default: return 'Add Log';
+      case LogType.waterTest:
+        return 'Log Water Test';
+      case LogType.waterChange:
+        return 'Log Water Change';
+      case LogType.observation:
+        return 'Add Observation';
+      case LogType.medication:
+        return 'Log Medication';
+      default:
+        return 'Add Log';
     }
   }
 
   Widget _buildWaterTestForm() {
+    final hasPrefilledValues =
+        _temperature != null ||
+        _ph != null ||
+        _ammonia != null ||
+        _nitrite != null ||
+        _nitrate != null;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Water Parameters', style: AppTypography.headlineSmall),
-        const SizedBox(height: 4),
-        Text(
-          'Enter the values you tested. Leave blank if not tested.',
-          style: AppTypography.bodySmall,
-        ),
-        const SizedBox(height: 16),
-
-        // Temperature & pH row
         Row(
           children: [
             Expanded(
-              child: _ParameterField(
-                label: 'Temperature',
-                unit: '°C',
-                value: _temperature,
-                onChanged: (v) => setState(() => _temperature = v),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('Water Parameters', style: AppTypography.headlineSmall),
+                  const SizedBox(height: 4),
+                  Text(
+                    'Enter the values you tested. Leave blank if not tested.',
+                    style: AppTypography.bodySmall,
+                  ),
+                ],
               ),
             ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: _ParameterField(
-                label: 'pH',
-                value: _ph,
-                onChanged: (v) => setState(() => _ph = v),
-                decimal: true,
+            const SizedBox(width: 8),
+            // Bulk entry toggle
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              decoration: BoxDecoration(
+                color: _bulkEntryMode
+                    ? AppColors.primary.withOpacity(0.1)
+                    : AppColors.surfaceVariant,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    Icons.dashboard_outlined,
+                    size: 16,
+                    color: _bulkEntryMode
+                        ? AppColors.primary
+                        : AppColors.textSecondary,
+                  ),
+                  const SizedBox(width: 4),
+                  Text(
+                    'Quick',
+                    style: AppTypography.bodySmall.copyWith(
+                      color: _bulkEntryMode
+                          ? AppColors.primary
+                          : AppColors.textSecondary,
+                      fontWeight: _bulkEntryMode
+                          ? FontWeight.w600
+                          : FontWeight.normal,
+                    ),
+                  ),
+                  const SizedBox(width: 4),
+                  Switch(
+                    value: _bulkEntryMode,
+                    onChanged: (v) => setState(() => _bulkEntryMode = v),
+                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  ),
+                ],
               ),
             ),
           ],
         ),
 
-        const SizedBox(height: 16),
-        const Divider(),
-        const SizedBox(height: 16),
-
-        // Nitrogen cycle
-        Text('Nitrogen Cycle', style: AppTypography.labelLarge),
-        const SizedBox(height: 12),
-        Row(
-          children: [
-            Expanded(
-              child: _ParameterField(
-                label: 'Ammonia (NH₃)',
-                unit: 'ppm',
-                value: _ammonia,
-                onChanged: (v) => setState(() => _ammonia = v),
-                warningThreshold: 0.25,
-                dangerThreshold: 0.5,
-              ),
+        // Pre-fill indicator
+        if (hasPrefilledValues && widget.existingLog == null) ...[
+          const SizedBox(height: 12),
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: AppColors.info.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: AppColors.info.withOpacity(0.3)),
             ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: _ParameterField(
-                label: 'Nitrite (NO₂)',
-                unit: 'ppm',
-                value: _nitrite,
-                onChanged: (v) => setState(() => _nitrite = v),
-                warningThreshold: 0.25,
-                dangerThreshold: 0.5,
-              ),
+            child: Row(
+              children: [
+                Icon(Icons.history, size: 16, color: AppColors.info),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    'Pre-filled with last test values',
+                    style: AppTypography.bodySmall.copyWith(
+                      color: AppColors.info,
+                    ),
+                  ),
+                ),
+                TextButton(
+                  onPressed: () {
+                    setState(() {
+                      _temperature = null;
+                      _ph = null;
+                      _ammonia = null;
+                      _nitrite = null;
+                      _nitrate = null;
+                      _gh = null;
+                      _kh = null;
+                      _phosphate = null;
+                    });
+                  },
+                  style: TextButton.styleFrom(
+                    foregroundColor: AppColors.info,
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                  ),
+                  child: const Text('Clear'),
+                ),
+              ],
             ),
-          ],
-        ),
-        const SizedBox(height: 12),
-        Row(
-          children: [
-            Expanded(
-              child: _ParameterField(
-                label: 'Nitrate (NO₃)',
-                unit: 'ppm',
-                value: _nitrate,
-                onChanged: (v) => setState(() => _nitrate = v),
-                warningThreshold: 20,
-                dangerThreshold: 40,
-              ),
-            ),
-            const Expanded(child: SizedBox()), // Placeholder for alignment
-          ],
-        ),
-
-        const SizedBox(height: 16),
-        const Divider(),
+          ),
+        ],
         const SizedBox(height: 16),
 
-        // Hardness
-        Text('Hardness', style: AppTypography.labelLarge),
-        const SizedBox(height: 12),
-        Row(
-          children: [
-            Expanded(
-              child: _ParameterField(
-                label: 'GH',
-                unit: 'dGH',
-                value: _gh,
-                onChanged: (v) => setState(() => _gh = v),
-              ),
+        // Bulk entry mode - compact grid
+        if (_bulkEntryMode) ...[
+          Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: AppColors.surfaceVariant,
+              borderRadius: BorderRadius.circular(12),
             ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: _ParameterField(
-                label: 'KH',
-                unit: 'dKH',
-                value: _kh,
-                onChanged: (v) => setState(() => _kh = v),
-              ),
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: _CompactParamField(
+                        label: 'Temp',
+                        unit: '°C',
+                        value: _temperature,
+                        onChanged: (v) => setState(() => _temperature = v),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: _CompactParamField(
+                        label: 'pH',
+                        value: _ph,
+                        onChanged: (v) => setState(() => _ph = v),
+                        decimal: true,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: _CompactParamField(
+                        label: 'NH₃',
+                        unit: 'ppm',
+                        value: _ammonia,
+                        onChanged: (v) => setState(() => _ammonia = v),
+                        decimal: true,
+                        warningThreshold: 0.25,
+                        dangerThreshold: 0.5,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                Row(
+                  children: [
+                    Expanded(
+                      child: _CompactParamField(
+                        label: 'NO₂',
+                        unit: 'ppm',
+                        value: _nitrite,
+                        onChanged: (v) => setState(() => _nitrite = v),
+                        decimal: true,
+                        warningThreshold: 0.25,
+                        dangerThreshold: 0.5,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: _CompactParamField(
+                        label: 'NO₃',
+                        unit: 'ppm',
+                        value: _nitrate,
+                        onChanged: (v) => setState(() => _nitrate = v),
+                        warningThreshold: 20,
+                        dangerThreshold: 40,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: _CompactParamField(
+                        label: 'GH',
+                        unit: 'dGH',
+                        value: _gh,
+                        onChanged: (v) => setState(() => _gh = v),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                Row(
+                  children: [
+                    Expanded(
+                      child: _CompactParamField(
+                        label: 'KH',
+                        unit: 'dKH',
+                        value: _kh,
+                        onChanged: (v) => setState(() => _kh = v),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: _CompactParamField(
+                        label: 'PO₄',
+                        unit: 'ppm',
+                        value: _phosphate,
+                        onChanged: (v) => setState(() => _phosphate = v),
+                        decimal: true,
+                      ),
+                    ),
+                    const Expanded(child: SizedBox()), // Spacer for alignment
+                  ],
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ]
+        // Standard entry mode - detailed form
+        else ...[
+          // Temperature & pH row
+          Row(
+            children: [
+              Expanded(
+                child: _ParameterField(
+                  label: 'Temperature',
+                  unit: '°C',
+                  value: _temperature,
+                  onChanged: (v) => setState(() => _temperature = v),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: _ParameterField(
+                  label: 'pH',
+                  value: _ph,
+                  onChanged: (v) => setState(() => _ph = v),
+                  decimal: true,
+                ),
+              ),
+            ],
+          ),
 
-        const SizedBox(height: 16),
-        const Divider(),
-        const SizedBox(height: 16),
+          const SizedBox(height: 16),
+          const Divider(),
+          const SizedBox(height: 16),
 
-        // Other
-        Text('Other', style: AppTypography.labelLarge),
-        const SizedBox(height: 12),
-        Row(
-          children: [
-            Expanded(
-              child: _ParameterField(
-                label: 'Phosphate (PO₄)',
-                unit: 'ppm',
-                value: _phosphate,
-                onChanged: (v) => setState(() => _phosphate = v),
-                decimal: true,
+          // Nitrogen cycle
+          Text('Nitrogen Cycle', style: AppTypography.labelLarge),
+          const SizedBox(height: 12),
+          Row(
+            children: [
+              Expanded(
+                child: _ParameterField(
+                  label: 'Ammonia (NH₃)',
+                  unit: 'ppm',
+                  value: _ammonia,
+                  onChanged: (v) => setState(() => _ammonia = v),
+                  warningThreshold: 0.25,
+                  dangerThreshold: 0.5,
+                ),
               ),
-            ),
-            const Expanded(child: SizedBox()),
-          ],
-        ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: _ParameterField(
+                  label: 'Nitrite (NO₂)',
+                  unit: 'ppm',
+                  value: _nitrite,
+                  onChanged: (v) => setState(() => _nitrite = v),
+                  warningThreshold: 0.25,
+                  dangerThreshold: 0.5,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Row(
+            children: [
+              Expanded(
+                child: _ParameterField(
+                  label: 'Nitrate (NO₃)',
+                  unit: 'ppm',
+                  value: _nitrate,
+                  onChanged: (v) => setState(() => _nitrate = v),
+                  warningThreshold: 20,
+                  dangerThreshold: 40,
+                ),
+              ),
+              const Expanded(child: SizedBox()), // Placeholder for alignment
+            ],
+          ),
+
+          const SizedBox(height: 16),
+          const Divider(),
+          const SizedBox(height: 16),
+
+          // Hardness
+          Text('Hardness', style: AppTypography.labelLarge),
+          const SizedBox(height: 12),
+          Row(
+            children: [
+              Expanded(
+                child: _ParameterField(
+                  label: 'GH',
+                  unit: 'dGH',
+                  value: _gh,
+                  onChanged: (v) => setState(() => _gh = v),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: _ParameterField(
+                  label: 'KH',
+                  unit: 'dKH',
+                  value: _kh,
+                  onChanged: (v) => setState(() => _kh = v),
+                ),
+              ),
+            ],
+          ),
+
+          const SizedBox(height: 16),
+          const Divider(),
+          const SizedBox(height: 16),
+
+          // Other
+          Text('Other', style: AppTypography.labelLarge),
+          const SizedBox(height: 12),
+          Row(
+            children: [
+              Expanded(
+                child: _ParameterField(
+                  label: 'Phosphate (PO₄)',
+                  unit: 'ppm',
+                  value: _phosphate,
+                  onChanged: (v) => setState(() => _phosphate = v),
+                  decimal: true,
+                ),
+              ),
+              const Expanded(child: SizedBox()),
+            ],
+          ),
+        ],
       ],
     );
   }
@@ -460,7 +745,13 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
       );
       if (time != null && mounted) {
         setState(() {
-          _timestamp = DateTime(date.year, date.month, date.day, time.hour, time.minute);
+          _timestamp = DateTime(
+            date.year,
+            date.month,
+            date.day,
+            time.hour,
+            time.minute,
+          );
         });
       }
     }
@@ -511,7 +802,9 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
       await dir.create(recursive: true);
     }
 
-    final ext = p.extension(file.path).isNotEmpty ? p.extension(file.path) : '.jpg';
+    final ext = p.extension(file.path).isNotEmpty
+        ? p.extension(file.path)
+        : '.jpg';
     final filename = '${_uuid.v4()}$ext';
     final destPath = p.join(dir.path, filename);
 
@@ -550,9 +843,13 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
                 phosphate: _phosphate,
               )
             : null,
-        waterChangePercent: _type == LogType.waterChange ? _waterChangePercent : null,
+        waterChangePercent: _type == LogType.waterChange
+            ? _waterChangePercent
+            : null,
         notes: _notes.isNotEmpty ? _notes : null,
-        photoUrls: _photoPaths.isNotEmpty ? List.unmodifiable(_photoPaths) : null,
+        photoUrls: _photoPaths.isNotEmpty
+            ? List.unmodifiable(_photoPaths)
+            : null,
         createdAt: existing?.createdAt ?? DateTime.now(),
       );
 
@@ -759,8 +1056,10 @@ class _PhotoGrid extends StatelessWidget {
                 width: 96,
                 height: 96,
                 fit: BoxFit.cover,
-                cacheWidth: (96 * MediaQuery.of(context).devicePixelRatio).round(),
-                cacheHeight: (96 * MediaQuery.of(context).devicePixelRatio).round(),
+                cacheWidth: (96 * MediaQuery.of(context).devicePixelRatio)
+                    .round(),
+                cacheHeight: (96 * MediaQuery.of(context).devicePixelRatio)
+                    .round(),
                 errorBuilder: (_, __, ___) => Container(
                   width: 96,
                   height: 96,
@@ -787,6 +1086,81 @@ class _PhotoGrid extends StatelessWidget {
           ],
         );
       }).toList(),
+    );
+  }
+}
+
+class _CompactParamField extends StatelessWidget {
+  final String label;
+  final String? unit;
+  final double? value;
+  final ValueChanged<double?> onChanged;
+  final bool decimal;
+  final double? warningThreshold;
+  final double? dangerThreshold;
+
+  const _CompactParamField({
+    required this.label,
+    this.unit,
+    required this.value,
+    required this.onChanged,
+    this.decimal = false,
+    this.warningThreshold,
+    this.dangerThreshold,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    Color? statusColor;
+    if (value != null) {
+      if (dangerThreshold != null && value! >= dangerThreshold!) {
+        statusColor = AppColors.paramDanger;
+      } else if (warningThreshold != null && value! >= warningThreshold!) {
+        statusColor = AppColors.paramWarning;
+      } else if (warningThreshold != null || dangerThreshold != null) {
+        statusColor = AppColors.paramSafe;
+      }
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Row(
+          children: [
+            Expanded(
+              child: Text(
+                label,
+                style: AppTypography.bodySmall.copyWith(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 11,
+                ),
+              ),
+            ),
+            if (statusColor != null)
+              Icon(Icons.circle, color: statusColor, size: 8),
+          ],
+        ),
+        const SizedBox(height: 4),
+        TextFormField(
+          initialValue: value?.toString() ?? '',
+          decoration: InputDecoration(
+            hintText: unit ?? '--',
+            isDense: true,
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 8,
+              vertical: 8,
+            ),
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+          ),
+          style: AppTypography.bodySmall.copyWith(fontSize: 13),
+          keyboardType: TextInputType.numberWithOptions(decimal: decimal),
+          inputFormatters: [
+            FilteringTextInputFormatter.allow(RegExp(r'[\d.]')),
+          ],
+          onChanged: (v) => onChanged(double.tryParse(v)),
+        ),
+      ],
     );
   }
 }

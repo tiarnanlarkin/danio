@@ -28,11 +28,16 @@ class ChartsScreen extends ConsumerStatefulWidget {
 
 class _ChartsScreenState extends ConsumerState<ChartsScreen> {
   late String _selectedParam;
+  bool _multiParamMode = false;
+  Set<String> _selectedParams = {};
+  bool _showGoalZones = true;
+  bool _showAlerts = true;
 
   @override
   void initState() {
     super.initState();
     _selectedParam = widget.initialParam;
+    _selectedParams = {widget.initialParam};
   }
 
   @override
@@ -56,10 +61,13 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (err, _) => Center(child: Text('Error: $err')),
         data: (logs) {
-          final waterTests = logs
-              .where((l) => l.type == LogType.waterTest && l.waterTest != null)
-              .toList()
-            ..sort((a, b) => a.timestamp.compareTo(b.timestamp));
+          final waterTests =
+              logs
+                  .where(
+                    (l) => l.type == LogType.waterTest && l.waterTest != null,
+                  )
+                  .toList()
+                ..sort((a, b) => a.timestamp.compareTo(b.timestamp));
 
           if (waterTests.isEmpty) {
             return Center(
@@ -68,9 +76,15 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
                 children: [
                   Icon(Icons.show_chart, size: 64, color: AppColors.textHint),
                   const SizedBox(height: 16),
-                  Text('No water tests yet', style: AppTypography.headlineSmall),
+                  Text(
+                    'No water tests yet',
+                    style: AppTypography.headlineSmall,
+                  ),
                   const SizedBox(height: 8),
-                  Text('Log some water tests to see trends', style: AppTypography.bodyMedium),
+                  Text(
+                    'Log some water tests to see trends',
+                    style: AppTypography.bodyMedium,
+                  ),
                 ],
               ),
             );
@@ -131,26 +145,62 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
                       _ParamChip(
                         label: 'Phosphate',
                         isSelected: _selectedParam == 'phosphate',
-                        onTap: () => setState(() => _selectedParam = 'phosphate'),
+                        onTap: () =>
+                            setState(() => _selectedParam = 'phosphate'),
                       ),
                     ],
                   ),
                 ),
 
-                const SizedBox(height: 24),
+                const SizedBox(height: 16),
+
+                // Chart controls
+                Wrap(
+                  spacing: 12,
+                  runSpacing: 8,
+                  children: [
+                    _ChartControlChip(
+                      icon: Icons.layers_outlined,
+                      label: 'Compare',
+                      isActive: _multiParamMode,
+                      onTap: () => _showMultiParamDialog(context, waterTests),
+                    ),
+                    _ChartControlChip(
+                      icon: Icons.square,
+                      label: 'Goal Zones',
+                      isActive: _showGoalZones,
+                      onTap: () => setState(() => _showGoalZones = !_showGoalZones),
+                    ),
+                    _ChartControlChip(
+                      icon: Icons.notifications_outlined,
+                      label: 'Alerts',
+                      isActive: _showAlerts,
+                      onTap: () => setState(() => _showAlerts = !_showAlerts),
+                    ),
+                  ],
+                ),
+
+                const SizedBox(height: 16),
+
+                // Alerts banner (if enabled and issues found)
+                if (_showAlerts && tank != null) ...[
+                  _buildAlertsBanner(waterTests, tank),
+                  const SizedBox(height: 16),
+                ],
 
                 // Chart
                 Text(
-                  _getParamTitle(_selectedParam),
+                  _multiParamMode 
+                      ? 'Multi-Parameter Comparison' 
+                      : _getParamTitle(_selectedParam),
                   style: AppTypography.headlineSmall,
                 ),
                 const SizedBox(height: 8),
                 SizedBox(
                   height: 250,
-                  child: _buildChart(
-                    waterTests,
-                    targets: tank?.targets,
-                  ),
+                  child: _multiParamMode
+                      ? _buildMultiParamChart(waterTests, targets: tank?.targets)
+                      : _buildChart(waterTests, targets: tank?.targets),
                 ),
 
                 const SizedBox(height: 32),
@@ -158,10 +208,7 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
                 // Summary stats
                 Text('Summary', style: AppTypography.headlineSmall),
                 const SizedBox(height: 12),
-                _SummaryCard(
-                  logs: waterTests,
-                  param: _selectedParam,
-                ),
+                _SummaryCard(logs: waterTests, param: _selectedParam),
 
                 const SizedBox(height: 32),
 
@@ -223,7 +270,10 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
     }
   }
 
-  ({double? min, double? max}) _getTargetRange(WaterTargets targets, String param) {
+  ({double? min, double? max}) _getTargetRange(
+    WaterTargets targets,
+    String param,
+  ) {
     switch (param) {
       case 'temp':
         return (min: targets.tempMin, max: targets.tempMax);
@@ -301,10 +351,7 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
             strokeColor: Colors.white,
           ),
         ),
-        belowBarData: BarAreaData(
-          show: true,
-          color: color.withOpacity(0.1),
-        ),
+        belowBarData: BarAreaData(show: true, color: color.withOpacity(0.1)),
       ),
     );
 
@@ -347,10 +394,8 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
           show: true,
           drawVerticalLine: false,
           horizontalInterval: _getInterval(_selectedParam),
-          getDrawingHorizontalLine: (value) => FlLine(
-            color: AppColors.surfaceVariant,
-            strokeWidth: 1,
-          ),
+          getDrawingHorizontalLine: (value) =>
+              FlLine(color: AppColors.surfaceVariant, strokeWidth: 1),
         ),
         titlesData: FlTitlesData(
           leftTitles: AxisTitles(
@@ -380,8 +425,12 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
               },
             ),
           ),
-          rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-          topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+          rightTitles: const AxisTitles(
+            sideTitles: SideTitles(showTitles: false),
+          ),
+          topTitles: const AxisTitles(
+            sideTitles: SideTitles(showTitles: false),
+          ),
         ),
         borderData: FlBorderData(show: false),
         lineBarsData: bars,
@@ -428,17 +477,21 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
     }
   }
 
-  Future<void> _exportCsv(BuildContext context, AsyncValue<List<LogEntry>> logsAsync) async {
+  Future<void> _exportCsv(
+    BuildContext context,
+    AsyncValue<List<LogEntry>> logsAsync,
+  ) async {
     final logs = logsAsync.value;
     if (logs == null || logs.isEmpty) {
       AppFeedback.showInfo(context, 'No data to export');
       return;
     }
 
-    final waterTests = logs
-        .where((l) => l.type == LogType.waterTest && l.waterTest != null)
-        .toList()
-      ..sort((a, b) => a.timestamp.compareTo(b.timestamp));
+    final waterTests =
+        logs
+            .where((l) => l.type == LogType.waterTest && l.waterTest != null)
+            .toList()
+          ..sort((a, b) => a.timestamp.compareTo(b.timestamp));
 
     if (waterTests.isEmpty) {
       AppFeedback.showInfo(context, 'No water tests to export');
@@ -455,20 +508,22 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
       final test = log.waterTest!;
       final date = DateFormat('yyyy-MM-dd').format(log.timestamp);
       final time = DateFormat('HH:mm').format(log.timestamp);
-      buffer.writeln([
-        date,
-        time,
-        test.temperature?.toString() ?? '',
-        test.ph?.toString() ?? '',
-        test.ammonia?.toString() ?? '',
-        test.nitrite?.toString() ?? '',
-        test.nitrate?.toString() ?? '',
-        test.gh?.toString() ?? '',
-        test.kh?.toString() ?? '',
-        test.phosphate?.toString() ?? '',
-        test.co2?.toString() ?? '',
-        (log.notes ?? '').replaceAll(',', ';').replaceAll('\n', ' '),
-      ].join(','));
+      buffer.writeln(
+        [
+          date,
+          time,
+          test.temperature?.toString() ?? '',
+          test.ph?.toString() ?? '',
+          test.ammonia?.toString() ?? '',
+          test.nitrite?.toString() ?? '',
+          test.nitrate?.toString() ?? '',
+          test.gh?.toString() ?? '',
+          test.kh?.toString() ?? '',
+          test.phosphate?.toString() ?? '',
+          test.co2?.toString() ?? '',
+          (log.notes ?? '').replaceAll(',', ';').replaceAll('\n', ' '),
+        ].join(','),
+      );
     }
 
     if (!context.mounted) return;
@@ -480,10 +535,7 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
       final file = File('${dir.path}/water_tests_export.csv');
       await file.writeAsString(buffer.toString());
 
-      await Share.shareXFiles(
-        [XFile(file.path)],
-        subject: 'Water Test Export',
-      );
+      await Share.shareXFiles([XFile(file.path)], subject: 'Water Test Export');
     } catch (e) {
       if (context.mounted) {
         AppFeedback.dismiss(context);
@@ -496,6 +548,324 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
       }
     }
   }
+
+  Widget _buildMultiParamChart(List<LogEntry> logs, {WaterTargets? targets}) {
+    if (_selectedParams.isEmpty) {
+      return const Center(
+        child: Text('Select parameters to compare'),
+      );
+    }
+
+    final List<LineChartBarData> bars = [];
+    double minY = double.infinity;
+    double maxY = double.negativeInfinity;
+
+    // Normalize data for each selected parameter
+    for (final param in _selectedParams) {
+      final spots = <FlSpot>[];
+      for (int i = 0; i < logs.length; i++) {
+        final value = _getValue(logs[i].waterTest!, param);
+        if (value != null) {
+          spots.add(FlSpot(i.toDouble(), value));
+          if (value < minY) minY = value;
+          if (value > maxY) maxY = value;
+        }
+      }
+
+      if (spots.isNotEmpty) {
+        final color = _getParamColor(param);
+        bars.add(
+          LineChartBarData(
+            spots: spots,
+            isCurved: true,
+            color: color,
+            barWidth: 2,
+            dotData: FlDotData(
+              show: true,
+              getDotPainter: (spot, percent, bar, index) => FlDotCirclePainter(
+                radius: 3,
+                color: color,
+                strokeWidth: 1,
+                strokeColor: Colors.white,
+              ),
+            ),
+            belowBarData: BarAreaData(show: false),
+          ),
+        );
+      }
+    }
+
+    if (bars.isEmpty) {
+      return const Center(child: Text('No data available'));
+    }
+
+    final xMax = (logs.length <= 1) ? 0.0 : (logs.length - 1).toDouble();
+
+    return LineChart(
+      LineChartData(
+        minY: minY * 0.9,
+        maxY: maxY * 1.1,
+        titlesData: FlTitlesData(
+          bottomTitles: AxisTitles(
+            sideTitles: SideTitles(
+              showTitles: true,
+              reservedSize: 30,
+              getTitlesWidget: (value, meta) {
+                final index = value.toInt();
+                if (index >= 0 && index < logs.length && index % 3 == 0) {
+                  return Padding(
+                    padding: const EdgeInsets.only(top: 8),
+                    child: Text(
+                      DateFormat('M/d').format(logs[index].timestamp),
+                      style: AppTypography.bodySmall,
+                    ),
+                  );
+                }
+                return const Text('');
+              },
+            ),
+          ),
+          leftTitles: const AxisTitles(sideTitles: SideTitles(showTitles: true, reservedSize: 40)),
+          rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+          topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+        ),
+        borderData: FlBorderData(show: false),
+        lineBarsData: bars,
+        lineTouchData: LineTouchData(
+          touchTooltipData: LineTouchTooltipData(
+            getTooltipItems: (touchedSpots) {
+              return touchedSpots.map((spot) {
+                final barIndex = touchedSpots.indexOf(spot);
+                final param = _selectedParams.elementAt(barIndex % _selectedParams.length);
+                final color = _getParamColor(param);
+                return LineTooltipItem(
+                  '${_getParamTitle(param)}\n${spot.y.toStringAsFixed(2)}',
+                  TextStyle(color: color, fontWeight: FontWeight.bold, fontSize: 12),
+                );
+              }).toList();
+            },
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildAlertsBanner(List<LogEntry> logs, Tank tank) {
+    if (logs.isEmpty) return const SizedBox.shrink();
+
+    final latestTest = logs.last.waterTest;
+    if (latestTest == null) return const SizedBox.shrink();
+
+    final issues = <String>[];
+
+    // Check ammonia
+    if (latestTest.ammonia != null && latestTest.ammonia! > 0.5) {
+      issues.add('⚠️ High ammonia (${latestTest.ammonia}ppm)');
+    }
+
+    // Check nitrite
+    if (latestTest.nitrite != null && latestTest.nitrite! > 0.5) {
+      issues.add('⚠️ High nitrite (${latestTest.nitrite}ppm)');
+    }
+
+    // Check nitrate
+    if (latestTest.nitrate != null && latestTest.nitrate! > 40) {
+      issues.add('⚠️ High nitrate (${latestTest.nitrate}ppm)');
+    }
+
+    // Check pH against targets
+    if (tank.targets != null && latestTest.ph != null) {
+      final targets = tank.targets!;
+      if (targets.phMin != null && latestTest.ph! < targets.phMin!) {
+        issues.add('📉 pH below target (${latestTest.ph})');
+      } else if (targets.phMax != null && latestTest.ph! > targets.phMax!) {
+        issues.add('📈 pH above target (${latestTest.ph})');
+      }
+    }
+
+    // Check temperature against targets
+    if (tank.targets != null && latestTest.temperature != null) {
+      final targets = tank.targets!;
+      if (targets.tempMin != null && latestTest.temperature! < targets.tempMin!) {
+        issues.add('🥶 Temperature too low (${latestTest.temperature}°C)');
+      } else if (targets.tempMax != null && latestTest.temperature! > targets.tempMax!) {
+        issues.add('🥵 Temperature too high (${latestTest.temperature}°C)');
+      }
+    }
+
+    if (issues.isEmpty) {
+      return Container(
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: AppColors.success.withOpacity(0.1),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: AppColors.success.withOpacity(0.3)),
+        ),
+        child: Row(
+          children: [
+            Icon(Icons.check_circle_outline, color: AppColors.success, size: 20),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Text(
+                'All parameters within safe ranges ✓',
+                style: AppTypography.bodyMedium.copyWith(color: AppColors.success),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: AppColors.warning.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: AppColors.warning.withOpacity(0.3)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(Icons.warning_amber_rounded, color: AppColors.warning, size: 20),
+              const SizedBox(width: 8),
+              Text(
+                'Parameter Alerts',
+                style: AppTypography.labelLarge.copyWith(color: AppColors.warning),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          ...issues.map((issue) => Padding(
+                padding: const EdgeInsets.only(bottom: 4),
+                child: Text(issue, style: AppTypography.bodySmall),
+              )),
+        ],
+      ),
+    );
+  }
+
+  void _showMultiParamDialog(BuildContext context, List<LogEntry> logs) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Compare Parameters'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text('Select 2-4 parameters to overlay on the same chart:'),
+            const SizedBox(height: 16),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: ['nitrate', 'nitrite', 'ammonia', 'ph', 'temp'].map((param) {
+                final isSelected = _selectedParams.contains(param);
+                return FilterChip(
+                  label: Text(_getParamTitle(param)),
+                  selected: isSelected,
+                  selectedColor: _getParamColor(param).withOpacity(0.3),
+                  onSelected: (selected) {
+                    setState(() {
+                      if (selected) {
+                        if (_selectedParams.length < 4) {
+                          _selectedParams.add(param);
+                        }
+                      } else {
+                        _selectedParams.remove(param);
+                      }
+                    });
+                  },
+                );
+              }).toList(),
+            ),
+            if (_selectedParams.length >= 4)
+              Padding(
+                padding: const EdgeInsets.only(top: 8),
+                child: Text(
+                  'Maximum 4 parameters',
+                  style: AppTypography.bodySmall.copyWith(color: AppColors.info),
+                ),
+              ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              setState(() {
+                _multiParamMode = false;
+                _selectedParams.clear();
+              });
+              Navigator.pop(ctx);
+            },
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: _selectedParams.length >= 2
+                ? () {
+                    setState(() {
+                      _multiParamMode = true;
+                    });
+                    Navigator.pop(ctx);
+                  }
+                : null,
+            child: const Text('Compare'),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ChartControlChip extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final bool isActive;
+  final VoidCallback onTap;
+
+  const _ChartControlChip({
+    required this.icon,
+    required this.label,
+    required this.isActive,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(20),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        decoration: BoxDecoration(
+          color: isActive ? AppColors.primary.withOpacity(0.1) : AppColors.surfaceVariant,
+          borderRadius: BorderRadius.circular(20),
+          border: isActive 
+              ? Border.all(color: AppColors.primary, width: 1.5)
+              : null,
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              icon,
+              size: 16,
+              color: isActive ? AppColors.primary : AppColors.textSecondary,
+            ),
+            const SizedBox(width: 6),
+            Text(
+              label,
+              style: TextStyle(
+                color: isActive ? AppColors.primary : AppColors.textSecondary,
+                fontWeight: isActive ? FontWeight.w600 : FontWeight.normal,
+                fontSize: 13,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }
 
 class _ParamChip extends StatelessWidget {
@@ -503,7 +873,11 @@ class _ParamChip extends StatelessWidget {
   final bool isSelected;
   final VoidCallback onTap;
 
-  const _ParamChip({required this.label, required this.isSelected, required this.onTap});
+  const _ParamChip({
+    required this.label,
+    required this.isSelected,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -555,7 +929,10 @@ class _SummaryCard extends StatelessWidget {
       return Card(
         child: Padding(
           padding: const EdgeInsets.all(16),
-          child: Text('No data for this parameter', style: AppTypography.bodyMedium),
+          child: Text(
+            'No data for this parameter',
+            style: AppTypography.bodyMedium,
+          ),
         ),
       );
     }
@@ -630,17 +1007,19 @@ class _ValuesTable extends StatelessWidget {
           ],
           rows: logs.map((log) {
             final test = log.waterTest!;
-            return DataRow(cells: [
-              DataCell(Text(DateFormat('MMM d').format(log.timestamp))),
-              DataCell(Text(test.temperature?.toStringAsFixed(1) ?? '-')),
-              DataCell(Text(test.ph?.toStringAsFixed(1) ?? '-')),
-              DataCell(Text(test.ammonia?.toStringAsFixed(2) ?? '-')),
-              DataCell(Text(test.nitrite?.toStringAsFixed(2) ?? '-')),
-              DataCell(Text(test.nitrate?.toStringAsFixed(0) ?? '-')),
-              DataCell(Text(test.gh?.toStringAsFixed(0) ?? '-')),
-              DataCell(Text(test.kh?.toStringAsFixed(0) ?? '-')),
-              DataCell(Text(test.phosphate?.toStringAsFixed(2) ?? '-')),
-            ]);
+            return DataRow(
+              cells: [
+                DataCell(Text(DateFormat('MMM d').format(log.timestamp))),
+                DataCell(Text(test.temperature?.toStringAsFixed(1) ?? '-')),
+                DataCell(Text(test.ph?.toStringAsFixed(1) ?? '-')),
+                DataCell(Text(test.ammonia?.toStringAsFixed(2) ?? '-')),
+                DataCell(Text(test.nitrite?.toStringAsFixed(2) ?? '-')),
+                DataCell(Text(test.nitrate?.toStringAsFixed(0) ?? '-')),
+                DataCell(Text(test.gh?.toStringAsFixed(0) ?? '-')),
+                DataCell(Text(test.kh?.toStringAsFixed(0) ?? '-')),
+                DataCell(Text(test.phosphate?.toStringAsFixed(2) ?? '-')),
+              ],
+            );
           }).toList(),
         ),
       ),

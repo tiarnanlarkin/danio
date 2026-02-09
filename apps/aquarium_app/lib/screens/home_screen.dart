@@ -17,6 +17,7 @@ import '../widgets/streak_calendar.dart';
 import '../widgets/error_state.dart';
 import '../widgets/hearts_widgets.dart';
 import '../utils/app_feedback.dart';
+import 'add_log_screen.dart';
 import 'create_tank_screen.dart';
 import 'search_screen.dart';
 import 'settings_screen.dart';
@@ -73,220 +74,226 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   Widget _buildLivingRoomScreen() {
     final tanksAsync = ref.watch(tanksProvider);
-    
+
     return tanksAsync.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (err, stack) => ErrorState(
-          message: 'Failed to load tanks',
-          details: 'Please check your connection and try again',
-          onRetry: () => ref.invalidate(tanksProvider),
-        ),
-        data: (tanks) {
-          if (tanks.isEmpty) {
-            return _EmptyRoomScene(
-              onCreateTank: () => _navigateToCreateTank(context),
-              onLoadDemo: () async {
-                final actions = ref.read(tankActionsProvider);
-                final demoTank = await actions.seedDemoTankIfEmpty();
-                if (context.mounted) {
-                  _navigateToTankDetail(context, demoTank);
-                }
-              },
-            );
-          }
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (err, stack) => ErrorState(
+        message: 'Failed to load tanks',
+        details: 'Please check your connection and try again',
+        onRetry: () => ref.invalidate(tanksProvider),
+      ),
+      data: (tanks) {
+        if (tanks.isEmpty) {
+          return _EmptyRoomScene(
+            onCreateTank: () => _navigateToCreateTank(context),
+            onLoadDemo: () async {
+              final actions = ref.read(tankActionsProvider);
+              final demoTank = await actions.seedDemoTankIfEmpty();
+              if (context.mounted) {
+                _navigateToTankDetail(context, demoTank);
+              }
+            },
+          );
+        }
 
-          final currentTank = tanks[_currentTankIndex % tanks.length];
+        final currentTank = tanks[_currentTankIndex % tanks.length];
 
-          return Stack(
-            children: [
-              // The room scene
-              Positioned.fill(
-                child: LivingRoomScene(
-                  tankName: currentTank.name,
-                  tankVolume: currentTank.volumeLitres,
-                  theme: ref.watch(currentRoomThemeProvider),
-                  onTankTap: () => _navigateToTankDetail(context, currentTank),
-                  onTestKitTap: () => _showWaterParams(context),
-                  onFoodTap: () => _showFeedingInfo(context),
-                  onPlantTap: () => _showPlantInfo(context),
-                  onStatsTap: () => _showStatsInfo(context),
-                  onThemeTap: () => _showThemePicker(context, ref),
+        return Stack(
+          children: [
+            // The room scene
+            Positioned.fill(
+              child: LivingRoomScene(
+                tankName: currentTank.name,
+                tankVolume: currentTank.volumeLitres,
+                theme: ref.watch(currentRoomThemeProvider),
+                onTankTap: () => _navigateToTankDetail(context, currentTank),
+                onTestKitTap: () => _showWaterParams(context),
+                onFoodTap: () => _showFeedingInfo(context),
+                onPlantTap: () => _showPlantInfo(context),
+                onStatsTap: () => _showStatsInfo(context),
+                onThemeTap: () => _showThemePicker(context, ref),
+              ),
+            ),
+
+            // Top bar overlay
+            Positioned(
+              top: 0,
+              left: 0,
+              right: 0,
+              child: Container(
+                padding: EdgeInsets.only(
+                  top: MediaQuery.of(context).padding.top + 8,
+                  left: 16,
+                  right: 8,
+                  bottom: 8,
+                ),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [Colors.black.withOpacity(0.3), Colors.transparent],
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    Text(
+                      'Living Room',
+                      style: AppTypography.headlineSmall.copyWith(
+                        color: Colors.white,
+                        shadows: [
+                          Shadow(
+                            color: Colors.black.withOpacity(0.5),
+                            blurRadius: 4,
+                          ),
+                        ],
+                      ),
+                    ),
+                    const Spacer(),
+                    // Hearts indicator
+                    const Padding(
+                      padding: EdgeInsets.only(right: 8),
+                      child: HeartIndicator(compact: true),
+                    ),
+                    IconButton(
+                      icon: Icon(
+                        Icons.search,
+                        color: Colors.white.withOpacity(0.9),
+                      ),
+                      tooltip: 'Search',
+                      onPressed: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => const SearchScreen()),
+                      ),
+                    ),
+                    IconButton(
+                      icon: Icon(
+                        Icons.settings_outlined,
+                        color: Colors.white.withOpacity(0.9),
+                      ),
+                      tooltip: 'Settings',
+                      onPressed: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const SettingsScreen(),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+
+            // Tank switcher - clean card between tank and graph
+            if (!_isSelectMode)
+              Positioned(
+                bottom: 240, // Between tank illustration and wave graph
+                left: 16,
+                right: 80, // Leave room for speed dial
+                child: _TankSwitcher(
+                  tanks: tanks,
+                  currentIndex: _currentTankIndex,
+                  onChanged: (index) {
+                    setState(() => _currentTankIndex = index);
+                  },
+                  onAddTank: () => _navigateToCreateTank(context),
+                  onLongPress: tanks.length > 1 ? _toggleSelectMode : null,
                 ),
               ),
 
-              // Top bar overlay
+            // Selection mode UI
+            if (_isSelectMode)
               Positioned(
-                top: 0,
-                left: 0,
-                right: 0,
-                child: Container(
-                  padding: EdgeInsets.only(
-                    top: MediaQuery.of(context).padding.top + 8,
-                    left: 16,
-                    right: 8,
-                    bottom: 8,
-                  ),
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [
-                        Colors.black.withOpacity(0.3),
-                        Colors.transparent,
-                      ],
-                    ),
-                  ),
-                  child: Row(
+                bottom: 240,
+                left: 16,
+                right: 16,
+                child: _SelectionModePanel(
+                  tanks: tanks,
+                  selectedIds: _selectedTankIds,
+                  onToggleSelection: _toggleTankSelection,
+                  onCancel: _toggleSelectMode,
+                  onDeleteSelected: () => _bulkDelete(context, tanks),
+                  onExportSelected: () => _bulkExport(context, tanks),
+                ),
+              ),
+
+            // Learning Progress Cards
+            Positioned(
+              bottom: 80,
+              left: 16,
+              right: 16,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Row(
                     children: [
-                      Text(
-                        'Living Room',
-                        style: AppTypography.headlineSmall.copyWith(
-                          color: Colors.white,
-                          shadows: [
-                            Shadow(
-                              color: Colors.black.withOpacity(0.5),
-                              blurRadius: 4,
-                            ),
-                          ],
+                      Expanded(
+                        child: DailyGoalCard(
+                          onPressed: () => _showDailyGoalDetails(context),
                         ),
                       ),
-                      const Spacer(),
-                      // Hearts indicator
-                      const Padding(
-                        padding: EdgeInsets.only(right: 8),
-                        child: HeartIndicator(compact: true),
-                      ),
-                      IconButton(
-                        icon: Icon(Icons.search, color: Colors.white.withOpacity(0.9)),
-                        tooltip: 'Search',
-                        onPressed: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (_) => const SearchScreen()),
-                        ),
-                      ),
-                      IconButton(
-                        icon: Icon(Icons.settings_outlined, color: Colors.white.withOpacity(0.9)),
-                        tooltip: 'Settings',
-                        onPressed: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (_) => const SettingsScreen()),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: StreakCard(
+                          onPressed: () => _showStreakCalendar(context),
                         ),
                       ),
                     ],
                   ),
-                ),
+                ],
               ),
+            ),
 
-              // Tank switcher - clean card between tank and graph
-              if (!_isSelectMode)
-                Positioned(
-                  bottom: 240, // Between tank illustration and wave graph
-                  left: 16,
-                  right: 80, // Leave room for speed dial
-                  child: _TankSwitcher(
-                    tanks: tanks,
-                    currentIndex: _currentTankIndex,
-                    onChanged: (index) {
-                      setState(() => _currentTankIndex = index);
-                    },
-                    onAddTank: () => _navigateToCreateTank(context),
-                    onLongPress: tanks.length > 1 ? _toggleSelectMode : null,
+            // Speed Dial FAB - radial menu for quick actions
+            Positioned(
+              bottom: 230,
+              right: 16,
+              child: SpeedDialFAB(
+                closedIcon: Icons.water_drop_rounded,
+                openIcon: Icons.close_rounded,
+                actions: [
+                  SpeedDialAction(
+                    icon: Icons.add_rounded,
+                    label: 'Add Tank',
+                    backgroundColor: AppColors.primary,
+                    foregroundColor: Colors.white,
+                    onPressed: () => _navigateToCreateTank(context),
                   ),
-                ),
-
-              // Selection mode UI
-              if (_isSelectMode)
-                Positioned(
-                  bottom: 240,
-                  left: 16,
-                  right: 16,
-                  child: _SelectionModePanel(
-                    tanks: tanks,
-                    selectedIds: _selectedTankIds,
-                    onToggleSelection: _toggleTankSelection,
-                    onCancel: _toggleSelectMode,
-                    onDeleteSelected: () => _bulkDelete(context, tanks),
-                    onExportSelected: () => _bulkExport(context, tanks),
+                  SpeedDialAction(
+                    icon: Icons.restaurant_rounded,
+                    label: 'Feed',
+                    backgroundColor: const Color(0xFFFFF3E0),
+                    foregroundColor: const Color(0xFFE65100),
+                    onPressed: () => _showFeedingInfo(context),
                   ),
-                ),
-
-              // Learning Progress Cards
-              Positioned(
-                bottom: 80,
-                left: 16,
-                right: 16,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Row(
-                      children: [
-                        Expanded(
-                          child: DailyGoalCard(
-                            onTap: () => _showDailyGoalDetails(context),
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: StreakCard(
-                            onTap: () => _showStreakCalendar(context),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
+                  SpeedDialAction(
+                    icon: Icons.science_rounded,
+                    label: 'Quick Test',
+                    backgroundColor: const Color(0xFFE8F5E9),
+                    foregroundColor: const Color(0xFF2E7D32),
+                    onPressed: () => _navigateToQuickTest(context, currentTank),
+                  ),
+                  SpeedDialAction(
+                    icon: Icons.water_drop_rounded,
+                    label: 'Water Change',
+                    backgroundColor: const Color(0xFFE3F2FD),
+                    foregroundColor: const Color(0xFF1565C0),
+                    onPressed: () =>
+                        _navigateToWaterChange(context, currentTank),
+                  ),
+                  SpeedDialAction(
+                    icon: Icons.insights_rounded,
+                    label: 'Stats',
+                    backgroundColor: const Color(0xFFF3E5F5),
+                    foregroundColor: const Color(0xFF7B1FA2),
+                    onPressed: () => _showStatsInfo(context),
+                  ),
+                ],
               ),
-
-              // Speed Dial FAB - radial menu for quick actions
-              Positioned(
-                bottom: 230,
-                right: 16,
-                child: SpeedDialFAB(
-                  closedIcon: Icons.water_drop_rounded,
-                  openIcon: Icons.close_rounded,
-                  actions: [
-                    SpeedDialAction(
-                      icon: Icons.add_rounded,
-                      label: 'Add Tank',
-                      backgroundColor: AppColors.primary,
-                      foregroundColor: Colors.white,
-                      onPressed: () => _navigateToCreateTank(context),
-                    ),
-                    SpeedDialAction(
-                      icon: Icons.restaurant_rounded,
-                      label: 'Feed',
-                      backgroundColor: const Color(0xFFFFF3E0),
-                      foregroundColor: const Color(0xFFE65100),
-                      onPressed: () => _showFeedingInfo(context),
-                    ),
-                    SpeedDialAction(
-                      icon: Icons.science_rounded,
-                      label: 'Test',
-                      backgroundColor: const Color(0xFFE8F5E9),
-                      foregroundColor: const Color(0xFF2E7D32),
-                      onPressed: () => _showWaterParams(context),
-                    ),
-                    SpeedDialAction(
-                      icon: Icons.water_drop_rounded,
-                      label: 'Water',
-                      backgroundColor: const Color(0xFFE3F2FD),
-                      foregroundColor: const Color(0xFF1565C0),
-                      onPressed: () => _showPlantInfo(context),
-                    ),
-                    SpeedDialAction(
-                      icon: Icons.insights_rounded,
-                      label: 'Stats',
-                      backgroundColor: const Color(0xFFF3E5F5),
-                      foregroundColor: const Color(0xFF7B1FA2),
-                      onPressed: () => _showStatsInfo(context),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          );
-        },
-      );
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -318,20 +325,36 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           ),
         ],
       ),
-      // FAB removed - add button integrated into tank switcher for cleaner UX
+      floatingActionButton: _currentNavIndex == 0 ? _buildQuickAddFAB() : null,
     );
   }
 
   void _navigateToCreateTank(BuildContext context) {
-    Navigator.of(context).push(
-      MaterialPageRoute(builder: (_) => const CreateTankScreen()),
-    );
+    Navigator.of(
+      context,
+    ).push(MaterialPageRoute(builder: (_) => const CreateTankScreen()));
   }
 
   void _navigateToTankDetail(BuildContext context, Tank tank) {
     Navigator.of(context).push(
+      MaterialPageRoute(builder: (_) => TankDetailScreen(tankId: tank.id)),
+    );
+  }
+
+  void _navigateToQuickTest(BuildContext context, Tank tank) {
+    Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (_) => TankDetailScreen(tankId: tank.id),
+        builder: (_) =>
+            AddLogScreen(tankId: tank.id, initialType: LogType.waterTest),
+      ),
+    );
+  }
+
+  void _navigateToWaterChange(BuildContext context, Tank tank) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) =>
+            AddLogScreen(tankId: tank.id, initialType: LogType.waterChange),
       ),
     );
   }
@@ -361,7 +384,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         const ItemDetailRow(label: 'Ammonia', value: '-- ppm'),
         const ItemDetailRow(label: 'Nitrite', value: '-- ppm'),
         const ItemDetailRow(label: 'Nitrate', value: '-- ppm'),
-        const ItemDetailRow(label: 'Last tested', value: 'Tap tank for details'),
+        const ItemDetailRow(
+          label: 'Last tested',
+          value: 'Tap tank for details',
+        ),
       ],
     );
   }
@@ -428,62 +454,70 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   button: true,
                   selected: isSelected,
                   child: GestureDetector(
-                    onTap: () {
+                    onPressed: () {
                       ref.read(roomThemeProvider.notifier).setTheme(type);
                       Navigator.pop(ctx);
                     },
                     child: Container(
-                    width: 100,
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(16),
-                      border: Border.all(
-                        color: isSelected ? theme.accentBlob : Colors.grey.shade300,
-                        width: isSelected ? 3 : 1,
+                      width: 100,
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(
+                          color: isSelected
+                              ? theme.accentBlob
+                              : Colors.grey.shade300,
+                          width: isSelected ? 3 : 1,
+                        ),
+                        gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [theme.background1, theme.background2],
+                        ),
                       ),
-                      gradient: LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        colors: [
-                          theme.background1,
-                          theme.background2,
+                      child: Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              CircleAvatar(
+                                radius: 8,
+                                backgroundColor: theme.accentBlob,
+                              ),
+                              const SizedBox(width: 4),
+                              CircleAvatar(
+                                radius: 8,
+                                backgroundColor: theme.waterMid,
+                              ),
+                              const SizedBox(width: 4),
+                              CircleAvatar(
+                                radius: 8,
+                                backgroundColor: theme.plantPrimary,
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            theme.name,
+                            style: TextStyle(
+                              color: theme.textPrimary,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 12,
+                            ),
+                          ),
+                          Text(
+                            theme.description,
+                            style: TextStyle(
+                              color: theme.textSecondary,
+                              fontSize: 9,
+                            ),
+                            textAlign: TextAlign.center,
+                            maxLines: 2,
+                          ),
                         ],
                       ),
                     ),
-                    child: Column(
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            CircleAvatar(radius: 8, backgroundColor: theme.accentBlob),
-                            const SizedBox(width: 4),
-                            CircleAvatar(radius: 8, backgroundColor: theme.waterMid),
-                            const SizedBox(width: 4),
-                            CircleAvatar(radius: 8, backgroundColor: theme.plantPrimary),
-                          ],
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          theme.name,
-                          style: TextStyle(
-                            color: theme.textPrimary,
-                            fontWeight: FontWeight.w600,
-                            fontSize: 12,
-                          ),
-                        ),
-                        Text(
-                          theme.description,
-                          style: TextStyle(
-                            color: theme.textSecondary,
-                            fontSize: 9,
-                          ),
-                          textAlign: TextAlign.center,
-                          maxLines: 2,
-                        ),
-                      ],
-                    ),
                   ),
-                ),
                 );
               }).toList(),
             ),
@@ -548,10 +582,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             const SizedBox(height: 20),
             const DailyGoalProgress(size: 120),
             const SizedBox(height: 20),
-            Text(
-              'Ways to earn XP:',
-              style: AppTypography.labelLarge,
-            ),
+            Text('Ways to earn XP:', style: AppTypography.labelLarge),
             const SizedBox(height: 12),
             _XpSourceRow(icon: Icons.school, label: 'Complete lesson', xp: 50),
             _XpSourceRow(icon: Icons.quiz, label: 'Pass quiz', xp: 25),
@@ -575,22 +606,28 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   Future<void> _bulkDelete(BuildContext context, List<Tank> allTanks) async {
     if (_selectedTankIds.isEmpty) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('No tanks selected')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('No tanks selected')));
       }
       return;
     }
 
-    final selectedTanks = allTanks.where((t) => _selectedTankIds.contains(t.id)).toList();
+    final selectedTanks = allTanks
+        .where((t) => _selectedTankIds.contains(t.id))
+        .toList();
     final tankNames = selectedTanks.map((t) => t.name).join(', ');
     final messenger = ScaffoldMessenger.of(context);
 
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: Text('Delete ${_selectedTankIds.length} tank${_selectedTankIds.length > 1 ? 's' : ''}?'),
-        content: Text('Tanks to delete:\n\n$tankNames\n\nThis will remove all livestock, equipment, logs, and tasks for these tanks.'),
+        title: Text(
+          'Delete ${_selectedTankIds.length} tank${_selectedTankIds.length > 1 ? 's' : ''}?',
+        ),
+        content: Text(
+          'Tanks to delete:\n\n$tankNames\n\nThis will remove all livestock, equipment, logs, and tasks for these tanks.',
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
@@ -598,7 +635,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           ),
           TextButton(
             onPressed: () => Navigator.pop(ctx, true),
-            child: const Text('Delete', style: TextStyle(color: AppColors.error)),
+            child: const Text(
+              'Delete',
+              style: TextStyle(color: AppColors.error),
+            ),
           ),
         ],
       ),
@@ -609,7 +649,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     try {
       final actions = ref.read(tankActionsProvider);
       await actions.bulkDeleteTanks(_selectedTankIds.toList());
-      
+
       if (mounted) {
         setState(() {
           _isSelectMode = false;
@@ -617,13 +657,19 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           _currentTankIndex = 0;
         });
         messenger.showSnackBar(
-          SnackBar(content: Text('${selectedTanks.length} tank${selectedTanks.length > 1 ? 's' : ''} deleted')),
+          SnackBar(
+            content: Text(
+              '${selectedTanks.length} tank${selectedTanks.length > 1 ? 's' : ''} deleted',
+            ),
+          ),
         );
       }
     } catch (e) {
       if (mounted) {
         messenger.showSnackBar(
-          const SnackBar(content: Text('Failed to delete tanks. Please try again.')),
+          const SnackBar(
+            content: Text('Failed to delete tanks. Please try again.'),
+          ),
         );
       }
     }
@@ -632,9 +678,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   Future<void> _bulkExport(BuildContext context, List<Tank> allTanks) async {
     if (_selectedTankIds.isEmpty) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('No tanks selected')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('No tanks selected')));
       }
       return;
     }
@@ -666,7 +712,7 @@ class _TankSwitcher extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final hasMultipleTanks = tanks.length > 1;
-    
+
     // Clean card-only design - tap to open picker
     return Container(
       height: 56,
@@ -687,15 +733,12 @@ class _TankSwitcher extends StatelessWidget {
             offset: const Offset(0, 6),
           ),
         ],
-        border: Border.all(
-          color: Colors.white.withOpacity(0.6),
-          width: 1.5,
-        ),
+        border: Border.all(color: Colors.white.withOpacity(0.6), width: 1.5),
       ),
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          onTap: hasMultipleTanks ? () => _showTankPicker(context) : null,
+          onPressed: hasMultipleTanks ? () => _showTankPicker(context) : null,
           onLongPress: onLongPress,
           borderRadius: BorderRadius.circular(16),
           child: Padding(
@@ -724,7 +767,7 @@ class _TankSwitcher extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: 12),
-                
+
                 // Tank info
                 Expanded(
                   child: Column(
@@ -750,7 +793,7 @@ class _TankSwitcher extends StatelessWidget {
                     ],
                   ),
                 ),
-                
+
                 // Picker indicator (only if multiple tanks)
                 if (hasMultipleTanks)
                   Icon(
@@ -835,7 +878,7 @@ class _TankPickerSheetState extends ConsumerState<_TankPickerSheet> {
               borderRadius: BorderRadius.circular(2),
             ),
           ),
-          
+
           // Header
           Padding(
             padding: const EdgeInsets.all(20),
@@ -860,7 +903,7 @@ class _TankPickerSheetState extends ConsumerState<_TankPickerSheet> {
               ],
             ),
           ),
-          
+
           // Tank list (reorderable)
           ConstrainedBox(
             constraints: BoxConstraints(
@@ -882,22 +925,23 @@ class _TankPickerSheetState extends ConsumerState<_TankPickerSheet> {
               },
               itemBuilder: (context, index) {
                 final tank = _tanks[index];
-                final isSelected = tank.id == widget.tanks[widget.currentIndex].id;
-                
+                final isSelected =
+                    tank.id == widget.tanks[widget.currentIndex].id;
+
                 return Container(
                   key: ValueKey(tank.id),
                   margin: const EdgeInsets.only(bottom: 8),
                   decoration: BoxDecoration(
-                    color: isSelected 
+                    color: isSelected
                         ? AppColors.primary.withOpacity(0.1)
                         : AppColors.surfaceVariant,
                     borderRadius: BorderRadius.circular(16),
-                    border: isSelected 
+                    border: isSelected
                         ? Border.all(color: AppColors.primary, width: 2)
                         : null,
                   ),
                   child: ListTile(
-                    onTap: () => widget.onSelected(_tanks.indexOf(tank)),
+                    onPressed: () => widget.onSelected(_tanks.indexOf(tank)),
                     contentPadding: const EdgeInsets.symmetric(
                       horizontal: 16,
                       vertical: 8,
@@ -913,18 +957,20 @@ class _TankPickerSheetState extends ConsumerState<_TankPickerSheet> {
                       ),
                       child: Icon(
                         Icons.water,
-                        color: isSelected 
-                            ? AppColors.primary 
+                        color: isSelected
+                            ? AppColors.primary
                             : AppColors.textSecondary,
                       ),
                     ),
                     title: Text(
                       tank.name,
                       style: AppTypography.labelLarge.copyWith(
-                        color: isSelected 
-                            ? AppColors.primary 
+                        color: isSelected
+                            ? AppColors.primary
                             : AppColors.textPrimary,
-                        fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+                        fontWeight: isSelected
+                            ? FontWeight.w600
+                            : FontWeight.w500,
                       ),
                     ),
                     subtitle: Text(
@@ -945,7 +991,7 @@ class _TankPickerSheetState extends ConsumerState<_TankPickerSheet> {
               },
             ),
           ),
-          
+
           // Hint
           if (_hasReordered)
             Padding(
@@ -957,13 +1003,15 @@ class _TankPickerSheetState extends ConsumerState<_TankPickerSheet> {
                   Expanded(
                     child: Text(
                       'Tap "Save" to keep this order',
-                      style: AppTypography.bodySmall.copyWith(color: AppColors.info),
+                      style: AppTypography.bodySmall.copyWith(
+                        color: AppColors.info,
+                      ),
                     ),
                   ),
                 ],
               ),
             ),
-          
+
           SizedBox(height: MediaQuery.of(context).padding.bottom + 8),
         ],
       ),
@@ -974,14 +1022,17 @@ class _TankPickerSheetState extends ConsumerState<_TankPickerSheet> {
     try {
       final actions = ref.read(tankActionsProvider);
       await actions.reorderTanks(_tanks);
-      
+
       if (mounted) {
         Navigator.pop(context);
         AppFeedback.showSuccess(context, 'Tank order saved');
       }
     } catch (e) {
       if (mounted) {
-        AppFeedback.showError(context, 'Failed to save order. Please try again.');
+        AppFeedback.showError(
+          context,
+          'Failed to save order. Please try again.',
+        );
       }
     }
   }
@@ -1006,12 +1057,7 @@ class _XpSourceRow extends StatelessWidget {
         children: [
           Icon(icon, size: 20, color: AppColors.textSecondary),
           const SizedBox(width: 12),
-          Expanded(
-            child: Text(
-              label,
-              style: AppTypography.bodyMedium,
-            ),
-          ),
+          Expanded(child: Text(label, style: AppTypography.bodyMedium)),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
             decoration: BoxDecoration(
@@ -1125,7 +1171,7 @@ class _SelectionModePanel extends StatelessWidget {
                     final isSelected = selectedIds.contains(tank.id);
 
                     return ListTile(
-                      onTap: () => onToggleSelection(tank.id),
+                      onPressed: () => onToggleSelection(tank.id),
                       leading: Checkbox(
                         value: isSelected,
                         onChanged: (_) => onToggleSelection(tank.id),
@@ -1133,7 +1179,9 @@ class _SelectionModePanel extends StatelessWidget {
                       title: Text(
                         tank.name,
                         style: AppTypography.labelLarge.copyWith(
-                          fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+                          fontWeight: isSelected
+                              ? FontWeight.w600
+                              : FontWeight.w500,
                         ),
                       ),
                       subtitle: Text(
@@ -1142,7 +1190,9 @@ class _SelectionModePanel extends StatelessWidget {
                       ),
                       trailing: Icon(
                         Icons.water,
-                        color: isSelected ? AppColors.primary : AppColors.textHint,
+                        color: isSelected
+                            ? AppColors.primary
+                            : AppColors.textHint,
                       ),
                     );
                   },
@@ -1193,16 +1243,70 @@ class _SelectionModePanel extends StatelessWidget {
       ],
     );
   }
+
+  /// Quick-add floating action button for fast parameter logging
+  Widget _buildQuickAddFAB() {
+    final tanksAsync = ref.watch(tanksProvider);
+    
+    return tanksAsync.when(
+      loading: () => const SizedBox.shrink(),
+      error: (_, __) => const SizedBox.shrink(),
+      data: (tanks) {
+        if (tanks.isEmpty) return const SizedBox.shrink();
+        
+        final currentTank = tanks.length > _currentTankIndex ? tanks[_currentTankIndex] : tanks.first;
+        
+        return SpeedDialFAB(
+          closedIcon: Icons.add_rounded,
+          openIcon: Icons.close_rounded,
+          actions: [
+            SpeedDialAction(
+              icon: Icons.water_drop,
+              label: 'Log Parameters',
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => AddLogScreen(
+                      tankId: currentTank.id,
+                      initialType: LogType.waterTest,
+                    ),
+                  ),
+                );
+              },
+            ),
+            SpeedDialAction(
+              icon: Icons.note_add,
+              label: 'Quick Note',
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => AddLogScreen(
+                      tankId: currentTank.id,
+                      initialType: LogType.observation,
+                    ),
+                  ),
+                );
+              },
+            ),
+            SpeedDialAction(
+              icon: Icons.add_circle_outline,
+              label: 'Add Tank',
+              onPressed: () => _navigateToCreateTank(context),
+            ),
+          ],
+        );
+      },
+    );
+  }
 }
 
 class _EmptyRoomScene extends StatelessWidget {
   final VoidCallback onCreateTank;
   final VoidCallback onLoadDemo;
 
-  const _EmptyRoomScene({
-    required this.onCreateTank,
-    required this.onLoadDemo,
-  });
+  const _EmptyRoomScene({required this.onCreateTank, required this.onLoadDemo});
 
   @override
   Widget build(BuildContext context) {
@@ -1214,10 +1318,7 @@ class _EmptyRoomScene extends StatelessWidget {
             gradient: LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
-              colors: [
-                Color(0xFFF5EDE3),
-                Color(0xFFEDE5DA),
-              ],
+              colors: [Color(0xFFF5EDE3), Color(0xFFEDE5DA)],
             ),
           ),
         ),
@@ -1358,10 +1459,7 @@ class _EmptyRoomScene extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text(
-                  '🐠 Welcome!',
-                  style: AppTypography.headlineSmall,
-                ),
+                Text('🐠 Welcome!', style: AppTypography.headlineSmall),
                 const SizedBox(height: 12),
                 Text(
                   'This room is waiting for\nyour first aquarium.',

@@ -21,10 +21,13 @@ class Equipment {
   final String name; // e.g., "Fluval 307"
   final String? brand;
   final String? model;
-  final Map<String, dynamic>? settings; // Type-specific settings (e.g., temp for heater)
+  final Map<String, dynamic>?
+  settings; // Type-specific settings (e.g., temp for heater)
   final int? maintenanceIntervalDays; // How often to service
   final DateTime? lastServiced;
   final DateTime? installedDate;
+  final DateTime? purchaseDate; // When equipment was purchased
+  final int? expectedLifespanMonths; // Expected lifespan in months
   final String? notes;
   final DateTime createdAt;
   final DateTime updatedAt;
@@ -40,6 +43,8 @@ class Equipment {
     this.maintenanceIntervalDays,
     this.lastServiced,
     this.installedDate,
+    this.purchaseDate,
+    this.expectedLifespanMonths,
     this.notes,
     required this.createdAt,
     required this.updatedAt,
@@ -59,19 +64,93 @@ class Equipment {
     return dueDate.difference(DateTime.now()).inDays;
   }
 
+  /// Age of equipment in months
+  int? get ageInMonths {
+    final date = purchaseDate ?? installedDate;
+    if (date == null) return null;
+    final diff = DateTime.now().difference(date);
+    return (diff.inDays / 30).floor();
+  }
+
+  /// Percentage of lifespan used (0-100+)
+  double? get lifespanUsedPercent {
+    if (expectedLifespanMonths == null || ageInMonths == null) return null;
+    return (ageInMonths! / expectedLifespanMonths!) * 100;
+  }
+
+  /// Is equipment nearing end of lifespan (>80%)
+  bool get isNearingReplacement {
+    final percent = lifespanUsedPercent;
+    return percent != null && percent >= 80;
+  }
+
+  /// Is equipment past expected lifespan
+  bool get isPastLifespan {
+    final percent = lifespanUsedPercent;
+    return percent != null && percent >= 100;
+  }
+
+  /// Expected replacement date
+  DateTime? get expectedReplacementDate {
+    if (expectedLifespanMonths == null) return null;
+    final date = purchaseDate ?? installedDate;
+    if (date == null) return null;
+    return DateTime(
+      date.year,
+      date.month + expectedLifespanMonths!,
+      date.day,
+    );
+  }
+
+  /// Default lifespan for equipment type (in months)
+  static int defaultLifespanMonths(EquipmentType type) {
+    switch (type) {
+      case EquipmentType.filter:
+        return 60; // 5 years
+      case EquipmentType.heater:
+        return 36; // 3 years
+      case EquipmentType.light:
+        return 24; // 2 years (LED degradation)
+      case EquipmentType.airPump:
+        return 36; // 3 years
+      case EquipmentType.co2System:
+        return 60; // 5 years
+      case EquipmentType.autoFeeder:
+        return 24; // 2 years
+      case EquipmentType.thermometer:
+        return 24; // 2 years
+      case EquipmentType.wavemaker:
+        return 48; // 4 years
+      case EquipmentType.skimmer:
+        return 48; // 4 years
+      case EquipmentType.other:
+        return 36; // 3 years default
+    }
+  }
+
   /// Friendly type name
   String get typeName {
     switch (type) {
-      case EquipmentType.filter: return 'Filter';
-      case EquipmentType.heater: return 'Heater';
-      case EquipmentType.light: return 'Light';
-      case EquipmentType.airPump: return 'Air Pump';
-      case EquipmentType.co2System: return 'CO₂ System';
-      case EquipmentType.autoFeeder: return 'Auto Feeder';
-      case EquipmentType.thermometer: return 'Thermometer';
-      case EquipmentType.wavemaker: return 'Wavemaker';
-      case EquipmentType.skimmer: return 'Skimmer';
-      case EquipmentType.other: return 'Other';
+      case EquipmentType.filter:
+        return 'Filter';
+      case EquipmentType.heater:
+        return 'Heater';
+      case EquipmentType.light:
+        return 'Light';
+      case EquipmentType.airPump:
+        return 'Air Pump';
+      case EquipmentType.co2System:
+        return 'CO₂ System';
+      case EquipmentType.autoFeeder:
+        return 'Auto Feeder';
+      case EquipmentType.thermometer:
+        return 'Thermometer';
+      case EquipmentType.wavemaker:
+        return 'Wavemaker';
+      case EquipmentType.skimmer:
+        return 'Skimmer';
+      case EquipmentType.other:
+        return 'Other';
     }
   }
 
@@ -86,6 +165,8 @@ class Equipment {
     int? maintenanceIntervalDays,
     DateTime? lastServiced,
     DateTime? installedDate,
+    DateTime? purchaseDate,
+    int? expectedLifespanMonths,
     String? notes,
     DateTime? createdAt,
     DateTime? updatedAt,
@@ -98,9 +179,12 @@ class Equipment {
       brand: brand ?? this.brand,
       model: model ?? this.model,
       settings: settings ?? this.settings,
-      maintenanceIntervalDays: maintenanceIntervalDays ?? this.maintenanceIntervalDays,
+      maintenanceIntervalDays:
+          maintenanceIntervalDays ?? this.maintenanceIntervalDays,
       lastServiced: lastServiced ?? this.lastServiced,
       installedDate: installedDate ?? this.installedDate,
+      purchaseDate: purchaseDate ?? this.purchaseDate,
+      expectedLifespanMonths: expectedLifespanMonths ?? this.expectedLifespanMonths,
       notes: notes ?? this.notes,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
