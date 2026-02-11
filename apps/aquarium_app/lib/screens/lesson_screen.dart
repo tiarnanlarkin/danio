@@ -91,7 +91,10 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
             padding: const EdgeInsets.only(right: 16),
             child: Center(
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 6,
+                ),
                 decoration: BoxDecoration(
                   color: AppColors.accent.withOpacity(0.2),
                   borderRadius: BorderRadius.circular(16),
@@ -140,10 +143,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
             padding: const EdgeInsets.all(20),
             children: [
               // Lesson title
-              Text(
-                widget.lesson.title,
-                style: AppTypography.headlineLarge,
-              ),
+              Text(widget.lesson.title, style: AppTypography.headlineLarge),
               const SizedBox(height: 8),
               Row(
                 children: [
@@ -208,7 +208,9 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
                           height: 20,
                           child: CircularProgressIndicator(
                             strokeWidth: 2,
-                            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                              Colors.white,
+                            ),
                           ),
                         ),
                         SizedBox(width: 12),
@@ -230,17 +232,12 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
   Widget _buildSection(LessonSection section) {
     switch (section.type) {
       case LessonSectionType.heading:
-        return Text(
-          section.content,
-          style: AppTypography.headlineMedium,
-        );
+        return Text(section.content, style: AppTypography.headlineMedium);
 
       case LessonSectionType.text:
         return Text(
           section.content,
-          style: AppTypography.bodyLarge.copyWith(
-            height: 1.6,
-          ),
+          style: AppTypography.bodyLarge.copyWith(height: 1.6),
         );
 
       case LessonSectionType.keyPoint:
@@ -403,11 +400,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
             borderRadius: BorderRadius.circular(12),
           ),
           child: Center(
-            child: Icon(
-              Icons.image,
-              size: 48,
-              color: AppColors.textHint,
-            ),
+            child: Icon(Icons.image, size: 48, color: AppColors.textHint),
           ),
         );
     }
@@ -463,10 +456,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 20),
             children: [
               const SizedBox(height: 20),
-              Text(
-                question.question,
-                style: AppTypography.headlineMedium,
-              ),
+              Text(question.question, style: AppTypography.headlineMedium),
               const SizedBox(height: 24),
 
               // Answer options
@@ -544,10 +534,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
                           ),
                           const SizedBox(width: 12),
                           Expanded(
-                            child: Text(
-                              option,
-                              style: AppTypography.bodyLarge,
-                            ),
+                            child: Text(option, style: AppTypography.bodyLarge),
                           ),
                         ],
                       ),
@@ -604,32 +591,37 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
                   : () async {
                       if (!_answered) {
                         // Check answer
-                        final isCorrect = _selectedAnswer == question.correctIndex;
+                        final isCorrect =
+                            _selectedAnswer == question.correctIndex;
                         setState(() {
                           _answered = true;
                           if (isCorrect) {
                             _correctAnswers++;
                           }
                         });
-                        
+
                         // Handle hearts (only in non-practice mode)
                         if (!widget.isPracticeMode && !isCorrect) {
                           final heartsService = ref.read(heartsServiceProvider);
                           final lostHeart = await heartsService.loseHeart();
-                          
+
                           if (lostHeart) {
                             // Show heart loss animation
                             setState(() {
                               _showHeartAnimation = true;
                               _heartGained = false;
                             });
-                            
+
                             // Check if out of hearts
                             if (!heartsService.hasHeartsAvailable) {
                               // Wait for animation to finish
-                              await Future.delayed(const Duration(milliseconds: 1200));
+                              await Future.delayed(
+                                const Duration(milliseconds: 1200),
+                              );
                               if (mounted) {
-                                final result = await showOutOfHeartsModal(context);
+                                final result = await showOutOfHeartsModal(
+                                  context,
+                                );
                                 if (result == 'practice' && mounted) {
                                   // Navigate to practice mode - pop and push again with practice flag
                                   Navigator.of(context).pop();
@@ -660,9 +652,10 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
               child: Text(
                 !_answered
                     ? 'Check Answer'
-                    : _currentQuizQuestion < widget.lesson.quiz!.questions.length - 1
-                        ? 'Next Question'
-                        : 'See Results',
+                    : _currentQuizQuestion <
+                          widget.lesson.quiz!.questions.length - 1
+                    ? 'Next Question'
+                    : 'See Results',
               ),
             ),
           ),
@@ -773,7 +766,9 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
                           height: 20,
                           child: CircularProgressIndicator(
                             strokeWidth: 2,
-                            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                              Colors.white,
+                            ),
                           ),
                         ),
                         SizedBox(width: 12),
@@ -791,19 +786,19 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
   /// Show XP animation and check for level-up
   void _showXpAnimation(int xpAmount) {
     if (!mounted) return;
-    
+
     // Show XP animation overlay
     XpAwardOverlay.show(
       context,
       xpAmount: xpAmount,
       onComplete: () async {
         if (!mounted) return;
-        
+
         // Check for level up after XP animation
         final profile = ref.read(userProfileProvider).value;
         if (profile != null && _levelBeforeLesson != null) {
           final currentLevel = profile.currentLevel;
-          
+
           if (currentLevel > _levelBeforeLesson!) {
             // Level up detected! Show celebration
             await _showLevelUpCelebration(
@@ -813,7 +808,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
             );
           }
         }
-        
+
         // Navigate back after all animations complete
         if (mounted) {
           Navigator.of(context).pop();
@@ -821,7 +816,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
       },
     );
   }
-  
+
   /// Show level-up celebration dialog
   Future<void> _showLevelUpCelebration(
     int newLevel,
@@ -829,7 +824,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
     int totalXp,
   ) async {
     if (!mounted) return;
-    
+
     await LevelUpDialog.show(
       context,
       newLevel: newLevel,
@@ -838,7 +833,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
       unlockMessage: _getUnlockMessage(newLevel),
     );
   }
-  
+
   /// Get unlock message for level milestone
   String? _getUnlockMessage(int level) {
     switch (level) {
@@ -871,7 +866,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
       if (widget.isPracticeMode) {
         final heartsService = ref.read(heartsServiceProvider);
         final gainedHeart = await heartsService.gainHeart();
-        
+
         if (gainedHeart && mounted) {
           // Show heart gain animation
           setState(() {
@@ -880,13 +875,13 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
           });
           await Future.delayed(const Duration(milliseconds: 1200));
         }
-        
+
         if (mounted) {
           AppFeedback.showSuccess(
-            context, 
-            gainedHeart 
-              ? 'Practice complete! +1 heart ❤️' 
-              : 'Practice complete! (hearts full)'
+            context,
+            gainedHeart
+                ? 'Practice complete! +1 heart ❤️'
+                : 'Practice complete! (hearts full)',
           );
           Navigator.of(context).pop();
         }
@@ -894,28 +889,32 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
       }
 
       // Calculate gem rewards (non-practice mode only)
-      int totalGems = 5; // Base lesson gems
+      // Note: Gems are awarded by completeLesson() and awardQuizGems() automatically
+      // int totalGems = 5; // Base lesson gems
       if (widget.lesson.quiz != null) {
         final quiz = widget.lesson.quiz!;
         final isPerfect = _correctAnswers == quiz.questions.length;
-        totalGems += isPerfect ? 5 : 3; // Quiz gems
-        
+        // totalGems += isPerfect ? 5 : 3; // Quiz gems
+
         // Award quiz gems
-        await ref.read(userProfileProvider.notifier).awardQuizGems(isPerfect: isPerfect);
+        await ref
+            .read(userProfileProvider.notifier)
+            .awardQuizGems(isPerfect: isPerfect);
       }
 
       // Record completion and XP (also awards lesson gems automatically)
-      await ref.read(userProfileProvider.notifier).completeLesson(
-        widget.lesson.id,
-        totalXp,
-      );
+      await ref
+          .read(userProfileProvider.notifier)
+          .completeLesson(widget.lesson.id, totalXp);
 
       // Auto-seed spaced repetition cards from lesson content
-      await ref.read(spacedRepetitionProvider.notifier).autoSeedFromLesson(
-        lessonId: widget.lesson.id,
-        lessonSections: widget.lesson.sections,
-        quizQuestions: widget.lesson.quiz?.questions,
-      );
+      await ref
+          .read(spacedRepetitionProvider.notifier)
+          .autoSeedFromLesson(
+            lessonId: widget.lesson.id,
+            lessonSections: widget.lesson.sections,
+            quizQuestions: widget.lesson.quiz?.questions,
+          );
 
       // Record activity for streak
       await ref.read(userProfileProvider.notifier).recordActivity();
@@ -935,7 +934,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
       final profile = ref.read(userProfileProvider).value;
       if (profile != null) {
         final notifier = ref.read(userProfileProvider.notifier);
-        
+
         // First lesson achievement
         if (profile.completedLessons.isEmpty) {
           await notifier.unlockAchievement('first_lesson');

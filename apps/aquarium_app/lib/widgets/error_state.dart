@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
 
 /// Beautiful error state widget with retry functionality
-/// 
+///
 /// Usage:
 /// ```dart
 /// ErrorState(
@@ -40,15 +40,11 @@ class ErrorState extends StatelessWidget {
                 color: AppColors.error.withOpacity(0.1),
                 shape: BoxShape.circle,
               ),
-              child: Icon(
-                icon,
-                size: 50,
-                color: AppColors.error,
-              ),
+              child: Icon(icon, size: 50, color: AppColors.error),
             ),
-            
+
             const SizedBox(height: AppSpacing.lg),
-            
+
             // Error message
             Text(
               message,
@@ -57,7 +53,7 @@ class ErrorState extends StatelessWidget {
               ),
               textAlign: TextAlign.center,
             ),
-            
+
             // Details (if provided)
             if (details != null) ...[
               const SizedBox(height: AppSpacing.sm),
@@ -69,7 +65,7 @@ class ErrorState extends StatelessWidget {
                 textAlign: TextAlign.center,
               ),
             ],
-            
+
             // Retry button
             if (onRetry != null) ...[
               const SizedBox(height: AppSpacing.lg),
@@ -97,11 +93,7 @@ class CompactErrorState extends StatelessWidget {
   final String message;
   final VoidCallback? onRetry;
 
-  const CompactErrorState({
-    super.key,
-    required this.message,
-    this.onRetry,
-  });
+  const CompactErrorState({super.key, required this.message, this.onRetry});
 
   @override
   Widget build(BuildContext context) {
@@ -156,10 +148,7 @@ class ErrorBanner extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.error.withOpacity(0.1),
         borderRadius: AppRadius.mediumRadius,
-        border: Border.all(
-          color: AppColors.error.withOpacity(0.3),
-          width: 1,
-        ),
+        border: Border.all(color: AppColors.error.withOpacity(0.3), width: 1),
       ),
       child: Row(
         children: [
@@ -174,10 +163,7 @@ class ErrorBanner extends StatelessWidget {
             ),
           ),
           if (onAction != null && actionLabel != null)
-            TextButton(
-              onPressed: onAction,
-              child: Text(actionLabel!),
-            ),
+            TextButton(onPressed: onAction, child: Text(actionLabel!)),
           if (onDismiss != null)
             IconButton(
               icon: const Icon(Icons.close, size: 18),

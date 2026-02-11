@@ -186,16 +186,18 @@ class Tank {
       widthCm: (json['widthCm'] as num?)?.toDouble(),
       heightCm: (json['heightCm'] as num?)?.toDouble(),
       startDate: DateTime.parse(json['startDate'] as String),
-      targets: targetsJson != null ? WaterTargets(
-        tempMin: (targetsJson['tempMin'] as num?)?.toDouble(),
-        tempMax: (targetsJson['tempMax'] as num?)?.toDouble(),
-        phMin: (targetsJson['phMin'] as num?)?.toDouble(),
-        phMax: (targetsJson['phMax'] as num?)?.toDouble(),
-        ghMin: (targetsJson['ghMin'] as num?)?.toDouble(),
-        ghMax: (targetsJson['ghMax'] as num?)?.toDouble(),
-        khMin: (targetsJson['khMin'] as num?)?.toDouble(),
-        khMax: (targetsJson['khMax'] as num?)?.toDouble(),
-      ) : WaterTargets.freshwaterTropical(),
+      targets: targetsJson != null
+          ? WaterTargets(
+              tempMin: (targetsJson['tempMin'] as num?)?.toDouble(),
+              tempMax: (targetsJson['tempMax'] as num?)?.toDouble(),
+              phMin: (targetsJson['phMin'] as num?)?.toDouble(),
+              phMax: (targetsJson['phMax'] as num?)?.toDouble(),
+              ghMin: (targetsJson['ghMin'] as num?)?.toDouble(),
+              ghMax: (targetsJson['ghMax'] as num?)?.toDouble(),
+              khMin: (targetsJson['khMin'] as num?)?.toDouble(),
+              khMax: (targetsJson['khMax'] as num?)?.toDouble(),
+            )
+          : WaterTargets.freshwaterTropical(),
       notes: json['notes'] as String?,
       imageUrl: json['imageUrl'] as String?,
       sortOrder: (json['sortOrder'] as int?) ?? 0,

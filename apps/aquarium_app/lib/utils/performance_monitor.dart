@@ -1,6 +1,6 @@
 /// Performance Monitoring Utility
 /// Tracks FPS, memory usage, and widget rebuilds
-/// 
+///
 /// Resource Management:
 /// - Uses SchedulerBinding callback for frame timing (must be removed on cleanup)
 /// - Uses periodic Timer for memory sampling (must be cancelled on cleanup)
@@ -43,7 +43,9 @@ class PerformanceMonitor {
   /// Throws StateError if monitor has been disposed
   void startMonitoring() {
     if (_isDisposed) {
-      throw StateError('Cannot start monitoring on a disposed PerformanceMonitor');
+      throw StateError(
+        'Cannot start monitoring on a disposed PerformanceMonitor',
+      );
     }
     if (_isMonitoring) return;
     _isMonitoring = true;
@@ -70,7 +72,10 @@ class PerformanceMonitor {
     try {
       SchedulerBinding.instance.removeTimingsCallback(_onFrameTimings);
     } catch (e) {
-      developer.log('Error removing timings callback: $e', name: 'PerformanceMonitor');
+      developer.log(
+        'Error removing timings callback: $e',
+        name: 'PerformanceMonitor',
+      );
     }
 
     // Cancel and nullify timer to prevent memory leak
@@ -116,7 +121,10 @@ class PerformanceMonitor {
   /// Reset all metrics (clears data but keeps monitor active)
   void reset() {
     if (_isDisposed) {
-      developer.log('Cannot reset disposed monitor', name: 'PerformanceMonitor');
+      developer.log(
+        'Cannot reset disposed monitor',
+        name: 'PerformanceMonitor',
+      );
       return;
     }
 
@@ -148,7 +156,8 @@ class PerformanceMonitor {
 
     // Clean old samples
     final now = DateTime.now();
-    if (_lastSampleTime == null || now.difference(_lastSampleTime!) > _sampleWindow) {
+    if (_lastSampleTime == null ||
+        now.difference(_lastSampleTime!) > _sampleWindow) {
       _cleanOldSamples();
       _lastSampleTime = now;
     }
@@ -200,7 +209,9 @@ class PerformanceMonitor {
     if (_rebuildCounts.length > _maxRebuildEntries) {
       final entries = _rebuildCounts.entries.toList()
         ..sort((a, b) => a.value.compareTo(b.value)); // Sort ascending
-      _rebuildCounts.remove(entries.first.key); // Remove widget with fewest rebuilds
+      _rebuildCounts.remove(
+        entries.first.key,
+      ); // Remove widget with fewest rebuilds
     }
   }
 
@@ -213,11 +224,10 @@ class PerformanceMonitor {
   /// Get current FPS
   double get currentFPS {
     if (_frameTimes.isEmpty) return 60.0;
-    
-    final avgFrameTime = _frameTimes.fold<Duration>(
-      Duration.zero,
-      (sum, time) => sum + time,
-    ) ~/ _frameTimes.length;
+
+    final avgFrameTime =
+        _frameTimes.fold<Duration>(Duration.zero, (sum, time) => sum + time) ~/
+        _frameTimes.length;
 
     return avgFrameTime.inMicroseconds > 0
         ? 1000000.0 / avgFrameTime.inMicroseconds
@@ -232,20 +242,17 @@ class PerformanceMonitor {
   /// Get average frame time in milliseconds
   double get avgFrameTimeMs {
     if (_frameTimes.isEmpty) return 0.0;
-    
-    final avgDuration = _frameTimes.fold<Duration>(
-      Duration.zero,
-      (sum, time) => sum + time,
-    ) ~/ _frameTimes.length;
+
+    final avgDuration =
+        _frameTimes.fold<Duration>(Duration.zero, (sum, time) => sum + time) ~/
+        _frameTimes.length;
 
     return avgDuration.inMicroseconds / 1000.0;
   }
 
   /// Get current memory estimate
   double get currentMemoryMB {
-    return _memorySamples.isNotEmpty 
-        ? _memorySamples.last.estimatedMB 
-        : 0.0;
+    return _memorySamples.isNotEmpty ? _memorySamples.last.estimatedMB : 0.0;
   }
 
   /// Get rebuild count for a widget
@@ -268,7 +275,7 @@ class PerformanceMonitor {
     if (_rebuildCounts.isNotEmpty) {
       final topRebuilders = _rebuildCounts.entries.toList()
         ..sort((a, b) => b.value.compareTo(a.value));
-      
+
       developer.log(
         'Top rebuilders: ${topRebuilders.take(5).map((e) => '${e.key}:${e.value}').join(', ')}',
         name: 'PerformanceMonitor',
@@ -295,10 +302,7 @@ class MemorySample {
   final DateTime timestamp;
   final double estimatedMB;
 
-  MemorySample({
-    required this.timestamp,
-    required this.estimatedMB,
-  });
+  MemorySample({required this.timestamp, required this.estimatedMB});
 }
 
 /// Performance report
@@ -324,8 +328,8 @@ class PerformanceReport {
   /// Check if performance meets targets
   bool get meetsTarget {
     return fps >= 55 && // Allow slight variance from 60 FPS
-           avgFrameTimeMs <= 16.67 &&
-           droppedFramePercentage <= 5.0;
+        avgFrameTimeMs <= 16.67 &&
+        droppedFramePercentage <= 5.0;
   }
 
   @override
@@ -359,11 +363,7 @@ class RebuildTracker extends StatefulWidget {
   final String label;
   final Widget child;
 
-  const RebuildTracker({
-    super.key,
-    required this.label,
-    required this.child,
-  });
+  const RebuildTracker({super.key, required this.label, required this.child});
 
   @override
   State<RebuildTracker> createState() => _RebuildTrackerState();

@@ -2,7 +2,6 @@
 /// Tracks user accomplishments across learning, streaks, XP, and engagement
 library;
 
-
 import 'package:flutter/foundation.dart';
 
 /// Rarity levels for achievements
@@ -103,11 +102,11 @@ class Achievement {
   final String icon; // Emoji or icon name
   final AchievementRarity rarity;
   final AchievementCategory category;
-  
+
   /// For incremental achievements (e.g., complete 10 lessons)
   /// null means it's a one-time achievement
   final int? targetCount;
-  
+
   /// Hidden achievements (revealed when unlocked)
   final bool isHidden;
 

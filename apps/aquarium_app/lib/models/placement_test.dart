@@ -97,7 +97,7 @@ class PlacementQuestion {
 }
 
 enum QuestionDifficulty {
-  beginner,  // Tests basic concepts (should know if completed beginner lessons)
+  beginner, // Tests basic concepts (should know if completed beginner lessons)
   intermediate, // Tests deeper understanding
   advanced, // Tests expert knowledge
 }
@@ -111,7 +111,8 @@ class PlacementResult {
   final Map<String, bool> answers; // questionId -> isCorrect
   final double overallScore;
   final Map<String, double> pathScores; // pathId -> score (0-100)
-  final Map<String, SkipRecommendation> recommendations; // pathId -> recommendation
+  final Map<String, SkipRecommendation>
+  recommendations; // pathId -> recommendation
 
   const PlacementResult({
     required this.id,
@@ -156,7 +157,7 @@ class PlacementResult {
         (p) => p.id == entry.key,
         orElse: () => throw Exception('Path not found: ${entry.key}'),
       );
-      
+
       for (final lessonId in entry.value.lessonsToSkip) {
         final lesson = path.lessons.firstWhere(
           (l) => l.id == lessonId,
@@ -170,16 +171,14 @@ class PlacementResult {
   }
 
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'testId': testId,
-        'completedAt': completedAt.toIso8601String(),
-        'answers': answers,
-        'overallScore': overallScore,
-        'pathScores': pathScores,
-        'recommendations': recommendations.map(
-          (k, v) => MapEntry(k, v.toJson()),
-        ),
-      };
+    'id': id,
+    'testId': testId,
+    'completedAt': completedAt.toIso8601String(),
+    'answers': answers,
+    'overallScore': overallScore,
+    'pathScores': pathScores,
+    'recommendations': recommendations.map((k, v) => MapEntry(k, v.toJson())),
+  };
 
   factory PlacementResult.fromJson(Map<String, dynamic> json) {
     return PlacementResult(
@@ -240,12 +239,12 @@ class SkipRecommendation {
   }
 
   Map<String, dynamic> toJson() => {
-        'pathId': pathId,
-        'score': score,
-        'skipLevel': skipLevel.name,
-        'lessonsToSkip': lessonsToSkip,
-        'startFromLessonId': startFromLessonId,
-      };
+    'pathId': pathId,
+    'score': score,
+    'skipLevel': skipLevel.name,
+    'lessonsToSkip': lessonsToSkip,
+    'startFromLessonId': startFromLessonId,
+  };
 
   factory SkipRecommendation.fromJson(Map<String, dynamic> json) {
     return SkipRecommendation(
@@ -261,10 +260,10 @@ class SkipRecommendation {
 }
 
 enum SkipLevel {
-  none,      // < 50% - Start from beginning
-  beginner,  // 50-79% - Skip beginner lessons
-  advanced,  // 80-94% - Skip to advanced lessons
-  complete,  // 95%+ - Mark entire path complete
+  none, // < 50% - Start from beginning
+  beginner, // 50-79% - Skip beginner lessons
+  advanced, // 80-94% - Skip to advanced lessons
+  complete, // 95%+ - Mark entire path complete
 }
 
 /// Algorithm to generate recommendations based on path scores

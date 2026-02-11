@@ -228,13 +228,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     children: [
                       Expanded(
                         child: DailyGoalCard(
-                          onPressed: () => _showDailyGoalDetails(context),
+                          onTap: () => _showDailyGoalDetails(context),
                         ),
                       ),
                       const SizedBox(width: 12),
                       Expanded(
                         child: StreakCard(
-                          onPressed: () => _showStreakCalendar(context),
+                          onTap: () => _showStreakCalendar(context),
                         ),
                       ),
                     ],
@@ -454,7 +454,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   button: true,
                   selected: isSelected,
                   child: GestureDetector(
-                    onPressed: () {
+                    onTap: () {
                       ref.read(roomThemeProvider.notifier).setTheme(type);
                       Navigator.pop(ctx);
                     },
@@ -692,6 +692,63 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       );
     }
   }
+
+  /// Quick-add floating action button for fast parameter logging
+  Widget _buildQuickAddFAB() {
+    final tanksAsync = ref.watch(tanksProvider);
+    
+    return tanksAsync.when(
+      loading: () => const SizedBox.shrink(),
+      error: (_, __) => const SizedBox.shrink(),
+      data: (tanks) {
+        if (tanks.isEmpty) return const SizedBox.shrink();
+        
+        final currentTank = tanks.length > _currentTankIndex ? tanks[_currentTankIndex] : tanks.first;
+        
+        return SpeedDialFAB(
+          closedIcon: Icons.add_rounded,
+          openIcon: Icons.close_rounded,
+          actions: [
+            SpeedDialAction(
+              icon: Icons.water_drop,
+              label: 'Log Parameters',
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => AddLogScreen(
+                      tankId: currentTank.id,
+                      initialType: LogType.waterTest,
+                    ),
+                  ),
+                );
+              },
+            ),
+            SpeedDialAction(
+              icon: Icons.note_add,
+              label: 'Quick Note',
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => AddLogScreen(
+                      tankId: currentTank.id,
+                      initialType: LogType.observation,
+                    ),
+                  ),
+                );
+              },
+            ),
+            SpeedDialAction(
+              icon: Icons.add_circle_outline,
+              label: 'Add Tank',
+              onPressed: () => _navigateToCreateTank(context),
+            ),
+          ],
+        );
+      },
+    );
+  }
 }
 
 class _TankSwitcher extends StatelessWidget {
@@ -738,7 +795,7 @@ class _TankSwitcher extends StatelessWidget {
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          onPressed: hasMultipleTanks ? () => _showTankPicker(context) : null,
+          onTap: hasMultipleTanks ? () => _showTankPicker(context) : null,
           onLongPress: onLongPress,
           borderRadius: BorderRadius.circular(16),
           child: Padding(
@@ -941,7 +998,7 @@ class _TankPickerSheetState extends ConsumerState<_TankPickerSheet> {
                         : null,
                   ),
                   child: ListTile(
-                    onPressed: () => widget.onSelected(_tanks.indexOf(tank)),
+                    onTap: () => widget.onSelected(_tanks.indexOf(tank)),
                     contentPadding: const EdgeInsets.symmetric(
                       horizontal: 16,
                       vertical: 8,
@@ -1171,7 +1228,7 @@ class _SelectionModePanel extends StatelessWidget {
                     final isSelected = selectedIds.contains(tank.id);
 
                     return ListTile(
-                      onPressed: () => onToggleSelection(tank.id),
+                      onTap: () => onToggleSelection(tank.id),
                       leading: Checkbox(
                         value: isSelected,
                         onChanged: (_) => onToggleSelection(tank.id),
@@ -1241,63 +1298,6 @@ class _SelectionModePanel extends StatelessWidget {
           ],
         ),
       ],
-    );
-  }
-
-  /// Quick-add floating action button for fast parameter logging
-  Widget _buildQuickAddFAB() {
-    final tanksAsync = ref.watch(tanksProvider);
-    
-    return tanksAsync.when(
-      loading: () => const SizedBox.shrink(),
-      error: (_, __) => const SizedBox.shrink(),
-      data: (tanks) {
-        if (tanks.isEmpty) return const SizedBox.shrink();
-        
-        final currentTank = tanks.length > _currentTankIndex ? tanks[_currentTankIndex] : tanks.first;
-        
-        return SpeedDialFAB(
-          closedIcon: Icons.add_rounded,
-          openIcon: Icons.close_rounded,
-          actions: [
-            SpeedDialAction(
-              icon: Icons.water_drop,
-              label: 'Log Parameters',
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => AddLogScreen(
-                      tankId: currentTank.id,
-                      initialType: LogType.waterTest,
-                    ),
-                  ),
-                );
-              },
-            ),
-            SpeedDialAction(
-              icon: Icons.note_add,
-              label: 'Quick Note',
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => AddLogScreen(
-                      tankId: currentTank.id,
-                      initialType: LogType.observation,
-                    ),
-                  ),
-                );
-              },
-            ),
-            SpeedDialAction(
-              icon: Icons.add_circle_outline,
-              label: 'Add Tank',
-              onPressed: () => _navigateToCreateTank(context),
-            ),
-          ],
-        );
-      },
     );
   }
 }

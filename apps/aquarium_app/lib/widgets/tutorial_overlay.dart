@@ -85,25 +85,26 @@ class _TutorialOverlayState extends ConsumerState<TutorialOverlay>
     // Mark tutorial as seen in user profile
     final profile = ref.read(userProfileProvider).value;
     if (profile != null) {
-      await ref.read(userProfileProvider.notifier).updateProfile(
-        hasSeenTutorial: true,
-      );
+      await ref
+          .read(userProfileProvider.notifier)
+          .updateProfile(hasSeenTutorial: true);
     }
-    
+
     widget.onComplete();
   }
 
   @override
   Widget build(BuildContext context) {
     final step = widget.steps[_currentStep];
-    
+
     // Get target widget position
     RenderBox? renderBox;
     Offset? targetPosition;
     Size? targetSize;
-    
+
     try {
-      renderBox = step.targetKey.currentContext?.findRenderObject() as RenderBox?;
+      renderBox =
+          step.targetKey.currentContext?.findRenderObject() as RenderBox?;
       if (renderBox != null && renderBox.hasSize) {
         targetPosition = renderBox.localToGlobal(Offset.zero);
         targetSize = renderBox.size;
@@ -161,19 +162,18 @@ class _TutorialOverlayState extends ConsumerState<TutorialOverlay>
             _buildTooltip(step, targetPosition, targetSize),
 
             // Navigation controls
-            Positioned(
-              left: 0,
-              right: 0,
-              bottom: 40,
-              child: _buildControls(),
-            ),
+            Positioned(left: 0, right: 0, bottom: 40, child: _buildControls()),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildTooltip(TutorialStep step, Offset? targetPosition, Size? targetSize) {
+  Widget _buildTooltip(
+    TutorialStep step,
+    Offset? targetPosition,
+    Size? targetSize,
+  ) {
     // Calculate tooltip position
     double? top;
     double? bottom;
@@ -183,7 +183,7 @@ class _TutorialOverlayState extends ConsumerState<TutorialOverlay>
     if (targetPosition != null && targetSize != null) {
       final screenHeight = MediaQuery.of(context).size.height;
       final targetBottom = targetPosition.dy + targetSize.height;
-      
+
       // Position tooltip below target if there's room, otherwise above
       if (targetBottom + 200 < screenHeight) {
         top = targetBottom + 20;
@@ -275,9 +275,7 @@ class _TutorialOverlayState extends ConsumerState<TutorialOverlay>
             // Skip button
             TextButton(
               onPressed: _skipTutorial,
-              style: TextButton.styleFrom(
-                foregroundColor: Colors.white,
-              ),
+              style: TextButton.styleFrom(foregroundColor: Colors.white),
               child: const Text('Skip Tutorial'),
             ),
 

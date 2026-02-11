@@ -6,9 +6,12 @@ import '../data/shop_catalog.dart';
 import 'gems_provider.dart';
 
 /// Provider for user's shop inventory
-final inventoryProvider = StateNotifierProvider<InventoryNotifier, AsyncValue<List<InventoryItem>>>((ref) {
-  return InventoryNotifier(ref);
-});
+final inventoryProvider =
+    StateNotifierProvider<InventoryNotifier, AsyncValue<List<InventoryItem>>>((
+      ref,
+    ) {
+      return InventoryNotifier(ref);
+    });
 
 class InventoryNotifier extends StateNotifier<AsyncValue<List<InventoryItem>>> {
   InventoryNotifier(this.ref) : super(const AsyncValue.loading()) {
@@ -67,15 +70,17 @@ class InventoryNotifier extends StateNotifier<AsyncValue<List<InventoryItem>>> {
 
     if (item.isConsumable) {
       // Check if item already exists (stack quantities)
-      final existingIndex = currentInventory.indexWhere((i) => i.itemId == item.id);
-      
+      final existingIndex = currentInventory.indexWhere(
+        (i) => i.itemId == item.id,
+      );
+
       if (existingIndex >= 0) {
         // Increase quantity
         final existing = currentInventory[existingIndex];
         inventoryItem = existing.copyWith(
           quantity: existing.quantity + (item.quantity ?? 1),
         );
-        
+
         final updated = List<InventoryItem>.from(currentInventory);
         updated[existingIndex] = inventoryItem;
         await _save(updated);
@@ -87,7 +92,7 @@ class InventoryNotifier extends StateNotifier<AsyncValue<List<InventoryItem>>> {
           quantity: item.quantity ?? 1,
           purchasedAt: now,
         );
-        
+
         final updated = [...currentInventory, inventoryItem];
         await _save(updated);
         state = AsyncValue.data(updated);
@@ -134,7 +139,8 @@ class InventoryNotifier extends StateNotifier<AsyncValue<List<InventoryItem>>> {
       // Decrease quantity
       if (item.quantity <= 1) {
         // Remove item entirely
-        final updated = List<InventoryItem>.from(currentInventory)..removeAt(itemIndex);
+        final updated = List<InventoryItem>.from(currentInventory)
+          ..removeAt(itemIndex);
         await _save(updated);
         state = AsyncValue.data(updated);
       } else {
@@ -150,11 +156,10 @@ class InventoryNotifier extends StateNotifier<AsyncValue<List<InventoryItem>>> {
       // Permanent items can't be "used" in the traditional sense
       // But we can activate time-based effects
       if (shopItem.durationHours != null) {
-        final expiresAt = DateTime.now().add(Duration(hours: shopItem.durationHours!));
-        final updatedItem = item.copyWith(
-          isActive: true,
-          expiresAt: expiresAt,
+        final expiresAt = DateTime.now().add(
+          Duration(hours: shopItem.durationHours!),
         );
+        final updatedItem = item.copyWith(isActive: true, expiresAt: expiresAt);
         final updated = List<InventoryItem>.from(currentInventory);
         updated[itemIndex] = updatedItem;
         await _save(updated);
@@ -177,11 +182,10 @@ class InventoryNotifier extends StateNotifier<AsyncValue<List<InventoryItem>>> {
     if (shopItem == null || shopItem.durationHours == null) return false;
 
     // Set expiry time and mark as active
-    final expiresAt = DateTime.now().add(Duration(hours: shopItem.durationHours!));
-    final updatedItem = item.copyWith(
-      isActive: true,
-      expiresAt: expiresAt,
+    final expiresAt = DateTime.now().add(
+      Duration(hours: shopItem.durationHours!),
     );
+    final updatedItem = item.copyWith(isActive: true, expiresAt: expiresAt);
 
     final updated = List<InventoryItem>.from(currentInventory);
     updated[itemIndex] = updatedItem;
@@ -207,11 +211,8 @@ class InventoryNotifier extends StateNotifier<AsyncValue<List<InventoryItem>>> {
     final currentInventory = state.valueOrNull ?? [];
     final item = currentInventory.firstWhere(
       (i) => i.itemId == itemId,
-      orElse: () => InventoryItem(
-        itemId: '',
-        quantity: 0,
-        purchasedAt: DateTime.now(),
-      ),
+      orElse: () =>
+          InventoryItem(itemId: '', quantity: 0, purchasedAt: DateTime.now()),
     );
     return item.quantity;
   }
@@ -221,10 +222,7 @@ class InventoryNotifier extends StateNotifier<AsyncValue<List<InventoryItem>>> {
     final currentInventory = state.valueOrNull ?? [];
     final item = currentInventory.firstWhere(
       (i) => i.itemId == itemId,
-      orElse: () => InventoryItem(
-        itemId: '',
-        purchasedAt: DateTime.now(),
-      ),
+      orElse: () => InventoryItem(itemId: '', purchasedAt: DateTime.now()),
     );
     return item.isActive && !item.isExpired;
   }
@@ -240,7 +238,7 @@ class InventoryNotifier extends StateNotifier<AsyncValue<List<InventoryItem>>> {
   /// Clean up expired items
   Future<void> cleanupExpiredItems() async {
     final currentInventory = state.valueOrNull ?? [];
-    
+
     bool hasChanges = false;
     final updated = currentInventory.map((item) {
       if (item.isExpired && item.isActive) {

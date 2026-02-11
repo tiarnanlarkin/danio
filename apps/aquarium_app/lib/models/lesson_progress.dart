@@ -2,16 +2,15 @@
 /// Implements a forgetting curve algorithm to help users review forgotten lessons
 library;
 
-
 import 'package:flutter/foundation.dart';
 
 @immutable
 class LessonProgress {
   final String lessonId;
-  final DateTime completedDate;      // When first completed
-  final DateTime? lastReviewDate;    // Most recent review (null if never reviewed)
-  final int reviewCount;             // Number of times reviewed
-  final double strength;             // 0-100, decays over time based on forgetting curve
+  final DateTime completedDate; // When first completed
+  final DateTime? lastReviewDate; // Most recent review (null if never reviewed)
+  final int reviewCount; // Number of times reviewed
+  final double strength; // 0-100, decays over time based on forgetting curve
 
   const LessonProgress({
     required this.lessonId,
@@ -26,13 +25,13 @@ class LessonProgress {
   double get currentStrength {
     final referenceDate = lastReviewDate ?? completedDate;
     final daysSinceReview = DateTime.now().difference(referenceDate).inDays;
-    
+
     // Forgetting curve decay algorithm
     // - 0 days: 100%
     // - 1 day: 70%
     // - 7 days: 40%
     // - 30 days: 0%
-    
+
     if (daysSinceReview == 0) {
       return strength;
     } else if (daysSinceReview == 1) {

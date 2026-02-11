@@ -17,20 +17,17 @@ class CyclingStatusCard extends StatelessWidget {
   final Tank tank;
   final List<LogEntry> logs;
 
-  const CyclingStatusCard({
-    super.key,
-    required this.tank,
-    required this.logs,
-  });
+  const CyclingStatusCard({super.key, required this.tank, required this.logs});
 
   CyclingStatus _calculateStatus() {
     final tankAgeDays = DateTime.now().difference(tank.startDate).inDays;
 
     // Get water tests sorted by date
-    final waterTests = logs
-        .where((l) => l.type == LogType.waterTest && l.waterTest != null)
-        .toList()
-      ..sort((a, b) => b.timestamp.compareTo(a.timestamp));
+    final waterTests =
+        logs
+            .where((l) => l.type == LogType.waterTest && l.waterTest != null)
+            .toList()
+          ..sort((a, b) => b.timestamp.compareTo(a.timestamp));
 
     if (waterTests.isEmpty) {
       // No tests - estimate by tank age
@@ -106,7 +103,10 @@ class CyclingStatusCard extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(_statusTitle(status), style: AppTypography.labelLarge),
+                      Text(
+                        _statusTitle(status),
+                        style: AppTypography.labelLarge,
+                      ),
                       Text(
                         _statusSubtitle(status, tankAgeDays),
                         style: AppTypography.bodySmall,
@@ -119,10 +119,7 @@ class CyclingStatusCard extends StatelessWidget {
             const SizedBox(height: 12),
             _CyclingProgressBar(status: status),
             const SizedBox(height: 12),
-            Text(
-              _statusAdvice(status),
-              style: AppTypography.bodySmall,
-            ),
+            Text(_statusAdvice(status), style: AppTypography.bodySmall),
           ],
         ),
       ),
@@ -266,7 +263,9 @@ class _CyclingProgressBar extends StatelessWidget {
             value: _progress,
             backgroundColor: AppColors.surfaceVariant,
             valueColor: AlwaysStoppedAnimation(
-              status == CyclingStatus.cycled ? AppColors.success : AppColors.primary,
+              status == CyclingStatus.cycled
+                  ? AppColors.success
+                  : AppColors.primary,
             ),
             minHeight: 8,
           ),

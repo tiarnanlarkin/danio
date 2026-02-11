@@ -47,7 +47,8 @@ class EmergencyGuideScreen extends StatelessWidget {
               'Stop feeding',
               'Don\'t clean filter',
             ],
-            followUp: 'Daily 25-50% water changes until 0. Add bottled bacteria.',
+            followUp:
+                'Daily 25-50% water changes until 0. Add bottled bacteria.',
           ),
 
           _EmergencyCard(
@@ -88,7 +89,8 @@ class EmergencyGuideScreen extends StatelessWidget {
               'Battery-powered air pump if available',
               'Keep filter media wet (put in tank water)',
             ],
-            followUp: 'When power returns: restart slowly, test water, small water change.',
+            followUp:
+                'When power returns: restart slowly, test water, small water change.',
           ),
 
           _EmergencyCard(
@@ -101,7 +103,8 @@ class EmergencyGuideScreen extends StatelessWidget {
               'Heavy dechlorinator dose',
               'Identify source (cleaning products, sprays, hands)',
             ],
-            followUp: 'Multiple large water changes over next 24 hours. Consider complete restart if severe.',
+            followUp:
+                'Multiple large water changes over next 24 hours. Consider complete restart if severe.',
           ),
 
           _EmergencyCard(
@@ -115,7 +118,8 @@ class EmergencyGuideScreen extends StatelessWidget {
               'Lower water level below leak if possible',
               'Unplug equipment before water reaches outlets',
             ],
-            followUp: 'Small crack: may be repairable with aquarium silicone when empty. Large crack: new tank needed.',
+            followUp:
+                'Small crack: may be repairable with aquarium silicone when empty. Large crack: new tank needed.',
           ),
 
           _EmergencyCard(
@@ -129,7 +133,8 @@ class EmergencyGuideScreen extends StatelessWidget {
               'Raise temperature slightly (speeds up ich lifecycle)',
               'Add appropriate medication',
             ],
-            followUp: 'Complete full treatment course. Quarantine new additions in future.',
+            followUp:
+                'Complete full treatment course. Quarantine new additions in future.',
           ),
 
           _EmergencyCard(
@@ -149,14 +154,16 @@ class EmergencyGuideScreen extends StatelessWidget {
           _EmergencyCard(
             title: '🌊 Chlorine Accident',
             urgency: 'CRITICAL',
-            symptoms: 'Fish gasping, erratic behavior immediately after water change',
+            symptoms:
+                'Fish gasping, erratic behavior immediately after water change',
             immediateActions: [
               'Add dechlorinator immediately (double dose)',
               'Add another dose of Prime or similar',
               'Increase aeration',
               'If severe: 50% water change with treated water',
             ],
-            followUp: 'Always add dechlorinator BEFORE adding fish or to water BEFORE adding to tank.',
+            followUp:
+                'Always add dechlorinator BEFORE adding fish or to water BEFORE adding to tank.',
           ),
 
           _EmergencyCard(
@@ -171,7 +178,8 @@ class EmergencyGuideScreen extends StatelessWidget {
               'Check heater and filter functioning',
               'Move survivors to quarantine if possible',
             ],
-            followUp: 'Investigate cause before adding new fish. May need to restart cycle.',
+            followUp:
+                'Investigate cause before adding new fish. May need to restart cycle.',
           ),
 
           const SizedBox(height: 24),
@@ -182,13 +190,20 @@ class EmergencyGuideScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Emergency Kit Checklist', style: AppTypography.headlineSmall),
+                  Text(
+                    'Emergency Kit Checklist',
+                    style: AppTypography.headlineSmall,
+                  ),
                   const SizedBox(height: 12),
-                  _CheckItem(text: 'Extra dechlorinator (Seachem Prime recommended)'),
+                  _CheckItem(
+                    text: 'Extra dechlorinator (Seachem Prime recommended)',
+                  ),
                   _CheckItem(text: 'Spare heater'),
                   _CheckItem(text: 'Battery-powered air pump'),
                   _CheckItem(text: 'Hospital/quarantine tank'),
-                  _CheckItem(text: 'Basic medications (ich treatment, antibacterial)'),
+                  _CheckItem(
+                    text: 'Basic medications (ich treatment, antibacterial)',
+                  ),
                   _CheckItem(text: 'Activated carbon'),
                   _CheckItem(text: 'Clean buckets'),
                   _CheckItem(text: 'Test kit'),
@@ -245,11 +260,19 @@ class _EmergencyCard extends StatelessWidget {
           ),
           child: Text(
             urgency,
-            style: AppTypography.bodySmall.copyWith(color: Colors.white, fontSize: 10),
+            style: AppTypography.bodySmall.copyWith(
+              color: Colors.white,
+              fontSize: 10,
+            ),
           ),
         ),
         title: Text(title, style: AppTypography.labelLarge),
-        subtitle: Text('Symptoms: $symptoms', style: AppTypography.bodySmall, maxLines: 1, overflow: TextOverflow.ellipsis),
+        subtitle: Text(
+          'Symptoms: $symptoms',
+          style: AppTypography.bodySmall,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
         children: [
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
@@ -259,32 +282,44 @@ class _EmergencyCard extends StatelessWidget {
                 Text('Symptoms:', style: AppTypography.labelLarge),
                 Text(symptoms, style: AppTypography.bodySmall),
                 const SizedBox(height: 12),
-                Text('IMMEDIATE ACTIONS:', style: AppTypography.labelLarge.copyWith(color: AppColors.error)),
+                Text(
+                  'IMMEDIATE ACTIONS:',
+                  style: AppTypography.labelLarge.copyWith(
+                    color: AppColors.error,
+                  ),
+                ),
                 const SizedBox(height: 4),
-                ...immediateActions.asMap().entries.map((e) => Padding(
-                  padding: const EdgeInsets.only(bottom: 4),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        width: 18,
-                        height: 18,
-                        decoration: BoxDecoration(
-                          color: AppColors.error.withOpacity(0.1),
-                          shape: BoxShape.circle,
-                        ),
-                        child: Center(
-                          child: Text(
-                            '${e.key + 1}',
-                            style: AppTypography.bodySmall.copyWith(color: AppColors.error, fontSize: 10),
+                ...immediateActions.asMap().entries.map(
+                  (e) => Padding(
+                    padding: const EdgeInsets.only(bottom: 4),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          width: 18,
+                          height: 18,
+                          decoration: BoxDecoration(
+                            color: AppColors.error.withOpacity(0.1),
+                            shape: BoxShape.circle,
+                          ),
+                          child: Center(
+                            child: Text(
+                              '${e.key + 1}',
+                              style: AppTypography.bodySmall.copyWith(
+                                color: AppColors.error,
+                                fontSize: 10,
+                              ),
+                            ),
                           ),
                         ),
-                      ),
-                      const SizedBox(width: 8),
-                      Expanded(child: Text(e.value, style: AppTypography.bodyMedium)),
-                    ],
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(e.value, style: AppTypography.bodyMedium),
+                        ),
+                      ],
+                    ),
                   ),
-                )),
+                ),
                 const SizedBox(height: 12),
                 Container(
                   padding: const EdgeInsets.all(10),
@@ -326,7 +361,11 @@ class _CheckItem extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 6),
       child: Row(
         children: [
-          Icon(Icons.check_box_outline_blank, size: 18, color: AppColors.primary),
+          Icon(
+            Icons.check_box_outline_blank,
+            size: 18,
+            color: AppColors.primary,
+          ),
           const SizedBox(width: 8),
           Expanded(child: Text(text, style: AppTypography.bodyMedium)),
         ],

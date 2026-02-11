@@ -7,27 +7,29 @@ class TankVolumeCalculatorScreen extends StatefulWidget {
   const TankVolumeCalculatorScreen({super.key});
 
   @override
-  State<TankVolumeCalculatorScreen> createState() => _TankVolumeCalculatorScreenState();
+  State<TankVolumeCalculatorScreen> createState() =>
+      _TankVolumeCalculatorScreenState();
 }
 
-class _TankVolumeCalculatorScreenState extends State<TankVolumeCalculatorScreen> {
+class _TankVolumeCalculatorScreenState
+    extends State<TankVolumeCalculatorScreen> {
   _TankShape _shape = _TankShape.rectangular;
-  
+
   // Rectangular
   double? _length;
   double? _width;
   double? _height;
-  
+
   // Cylindrical
   double? _diameter;
   double? _cylinderHeight;
-  
+
   // Bow front
   double? _bowLength;
   double? _bowWidth;
   double? _bowHeight;
   double? _bowDepth; // How far the bow extends
-  
+
   bool _useMetric = true;
 
   double? get _volume {
@@ -36,7 +38,9 @@ class _TankVolumeCalculatorScreenState extends State<TankVolumeCalculatorScreen>
         if (_length != null && _width != null && _height != null) {
           var l = _length!, w = _width!, h = _height!;
           if (!_useMetric) {
-            l *= 2.54; w *= 2.54; h *= 2.54;
+            l *= 2.54;
+            w *= 2.54;
+            h *= 2.54;
           }
           return (l * w * h) / 1000; // cm³ to litres
         }
@@ -45,16 +49,23 @@ class _TankVolumeCalculatorScreenState extends State<TankVolumeCalculatorScreen>
         if (_diameter != null && _cylinderHeight != null) {
           var d = _diameter!, h = _cylinderHeight!;
           if (!_useMetric) {
-            d *= 2.54; h *= 2.54;
+            d *= 2.54;
+            h *= 2.54;
           }
           return (pi * pow(d / 2, 2) * h) / 1000;
         }
         break;
       case _TankShape.bowFront:
-        if (_bowLength != null && _bowWidth != null && _bowHeight != null && _bowDepth != null) {
+        if (_bowLength != null &&
+            _bowWidth != null &&
+            _bowHeight != null &&
+            _bowDepth != null) {
           var l = _bowLength!, w = _bowWidth!, h = _bowHeight!, d = _bowDepth!;
           if (!_useMetric) {
-            l *= 2.54; w *= 2.54; h *= 2.54; d *= 2.54;
+            l *= 2.54;
+            w *= 2.54;
+            h *= 2.54;
+            d *= 2.54;
           }
           // Approximate: rectangular base + half cylinder for bow
           final rectVolume = l * w * h;
@@ -66,7 +77,8 @@ class _TankVolumeCalculatorScreenState extends State<TankVolumeCalculatorScreen>
         if (_length != null && _height != null) {
           var s = _length!, h = _height!; // s = side length
           if (!_useMetric) {
-            s *= 2.54; h *= 2.54;
+            s *= 2.54;
+            h *= 2.54;
           }
           // Area of regular hexagon = (3√3/2) × s²
           final area = (3 * sqrt(3) / 2) * pow(s, 2);
@@ -77,7 +89,8 @@ class _TankVolumeCalculatorScreenState extends State<TankVolumeCalculatorScreen>
         if (_length != null && _height != null) {
           var l = _length!, h = _height!;
           if (!_useMetric) {
-            l *= 2.54; h *= 2.54;
+            l *= 2.54;
+            h *= 2.54;
           }
           // Quarter cylinder approximation
           return (pi * pow(l, 2) * h / 4) / 1000;
@@ -123,11 +136,15 @@ class _TankVolumeCalculatorScreenState extends State<TankVolumeCalculatorScreen>
             Wrap(
               spacing: 8,
               runSpacing: 8,
-              children: _TankShape.values.map((s) => ChoiceChip(
-                label: Text(s.label),
-                selected: _shape == s,
-                onSelected: (_) => setState(() => _shape = s),
-              )).toList(),
+              children: _TankShape.values
+                  .map(
+                    (s) => ChoiceChip(
+                      label: Text(s.label),
+                      selected: _shape == s,
+                      onSelected: (_) => setState(() => _shape = s),
+                    ),
+                  )
+                  .toList(),
             ),
 
             const SizedBox(height: 24),
@@ -154,7 +171,9 @@ class _TankVolumeCalculatorScreenState extends State<TankVolumeCalculatorScreen>
                         children: [
                           Text(
                             '${_volume!.toStringAsFixed(1)} L',
-                            style: AppTypography.headlineLarge.copyWith(color: AppColors.primary),
+                            style: AppTypography.headlineLarge.copyWith(
+                              color: AppColors.primary,
+                            ),
                           ),
                         ],
                       ),
@@ -196,14 +215,22 @@ class _TankVolumeCalculatorScreenState extends State<TankVolumeCalculatorScreen>
                   children: [
                     Text('Tips', style: AppTypography.labelLarge),
                     const SizedBox(height: 8),
-                    Text('• Actual water volume is ~90% of total (substrate, decor)', 
-                      style: AppTypography.bodySmall),
-                    Text('• 1 litre of water weighs 1 kg', 
-                      style: AppTypography.bodySmall),
-                    Text('• Add tank weight + stand capacity when planning placement', 
-                      style: AppTypography.bodySmall),
-                    Text('• Internal dimensions give more accurate results', 
-                      style: AppTypography.bodySmall),
+                    Text(
+                      '• Actual water volume is ~90% of total (substrate, decor)',
+                      style: AppTypography.bodySmall,
+                    ),
+                    Text(
+                      '• 1 litre of water weighs 1 kg',
+                      style: AppTypography.bodySmall,
+                    ),
+                    Text(
+                      '• Add tank weight + stand capacity when planning placement',
+                      style: AppTypography.bodySmall,
+                    ),
+                    Text(
+                      '• Internal dimensions give more accurate results',
+                      style: AppTypography.bodySmall,
+                    ),
                   ],
                 ),
               ),
@@ -216,7 +243,7 @@ class _TankVolumeCalculatorScreenState extends State<TankVolumeCalculatorScreen>
 
   Widget _buildDimensionInputs() {
     final unit = _useMetric ? 'cm' : 'in';
-    
+
     switch (_shape) {
       case _TankShape.rectangular:
         return Column(
@@ -240,7 +267,7 @@ class _TankVolumeCalculatorScreenState extends State<TankVolumeCalculatorScreen>
             ),
           ],
         );
-      
+
       case _TankShape.cylindrical:
         return Column(
           children: [
@@ -257,7 +284,7 @@ class _TankVolumeCalculatorScreenState extends State<TankVolumeCalculatorScreen>
             ),
           ],
         );
-      
+
       case _TankShape.bowFront:
         return Column(
           children: [
@@ -287,7 +314,7 @@ class _TankVolumeCalculatorScreenState extends State<TankVolumeCalculatorScreen>
             ),
           ],
         );
-      
+
       case _TankShape.hexagonal:
         return Column(
           children: [
@@ -304,7 +331,7 @@ class _TankVolumeCalculatorScreenState extends State<TankVolumeCalculatorScreen>
             ),
           ],
         );
-      
+
       case _TankShape.corner:
         return Column(
           children: [

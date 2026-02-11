@@ -1,7 +1,6 @@
 /// Leaderboard and competitive ranking models
 library;
 
-
 /// League tier for competitive ranking
 enum League {
   bronze,
@@ -80,7 +79,7 @@ enum League {
   }
 
   String toJson() => name;
-  
+
   static League fromJson(String value) {
     return League.values.firstWhere((e) => e.name == value);
   }
@@ -123,13 +122,13 @@ class LeaderboardEntry {
   }
 
   Map<String, dynamic> toJson() => {
-        'userId': userId,
-        'displayName': displayName,
-        'weeklyXp': weeklyXp,
-        'rank': rank,
-        'avatarEmoji': avatarEmoji,
-        'isCurrentUser': isCurrentUser,
-      };
+    'userId': userId,
+    'displayName': displayName,
+    'weeklyXp': weeklyXp,
+    'rank': rank,
+    'avatarEmoji': avatarEmoji,
+    'isCurrentUser': isCurrentUser,
+  };
 
   factory LeaderboardEntry.fromJson(Map<String, dynamic> json) {
     return LeaderboardEntry(
@@ -207,13 +206,13 @@ class WeeklyLeaderboard {
   }
 
   Map<String, dynamic> toJson() => {
-        'league': league.toJson(),
-        'entries': entries.map((e) => e.toJson()).toList(),
-        'weekStartDate': weekStartDate.toIso8601String(),
-        'weekEndDate': weekEndDate.toIso8601String(),
-        'currentUserRank': currentUserRank,
-        'currentUserWeeklyXp': currentUserWeeklyXp,
-      };
+    'league': league.toJson(),
+    'entries': entries.map((e) => e.toJson()).toList(),
+    'weekStartDate': weekStartDate.toIso8601String(),
+    'weekEndDate': weekEndDate.toIso8601String(),
+    'currentUserRank': currentUserRank,
+    'currentUserWeeklyXp': currentUserWeeklyXp,
+  };
 
   factory WeeklyLeaderboard.fromJson(Map<String, dynamic> json) {
     return WeeklyLeaderboard(
@@ -270,14 +269,14 @@ class LeaderboardUserData {
   }
 
   Map<String, dynamic> toJson() => {
-        'currentLeague': currentLeague.toJson(),
-        'weeklyXpTotal': weeklyXpTotal,
-        'lastResetDate': lastResetDate.toIso8601String(),
-        'dailyXpThisWeek': dailyXpThisWeek,
-        'previousLeague': previousLeague?.toJson(),
-        'justPromoted': justPromoted,
-        'justRelegated': justRelegated,
-      };
+    'currentLeague': currentLeague.toJson(),
+    'weeklyXpTotal': weeklyXpTotal,
+    'lastResetDate': lastResetDate.toIso8601String(),
+    'dailyXpThisWeek': dailyXpThisWeek,
+    'previousLeague': previousLeague?.toJson(),
+    'justPromoted': justPromoted,
+    'justRelegated': justRelegated,
+  };
 
   factory LeaderboardUserData.fromJson(Map<String, dynamic> json) {
     League? parseLeague(String? value) {
@@ -290,7 +289,8 @@ class LeaderboardUserData {
     }
 
     return LeaderboardUserData(
-      currentLeague: parseLeague(json['currentLeague'] as String?) ?? League.bronze,
+      currentLeague:
+          parseLeague(json['currentLeague'] as String?) ?? League.bronze,
       weeklyXpTotal: json['weeklyXpTotal'] as int? ?? 0,
       lastResetDate: DateTime.parse(json['lastResetDate'] as String),
       dailyXpThisWeek: json['dailyXpThisWeek'] != null
@@ -308,17 +308,16 @@ class WeekPeriod {
   final DateTime start;
   final DateTime end;
 
-  const WeekPeriod({
-    required this.start,
-    required this.end,
-  });
+  const WeekPeriod({required this.start, required this.end});
 
   /// Get current week period (Monday 00:00 to Sunday 23:59)
   static WeekPeriod current() {
     final now = DateTime.now();
     final monday = now.subtract(Duration(days: now.weekday - 1));
     final start = DateTime(monday.year, monday.month, monday.day);
-    final end = start.add(const Duration(days: 7)).subtract(const Duration(microseconds: 1));
+    final end = start
+        .add(const Duration(days: 7))
+        .subtract(const Duration(microseconds: 1));
     return WeekPeriod(start: start, end: end);
   }
 
@@ -332,9 +331,9 @@ class WeekPeriod {
   }
 
   Map<String, dynamic> toJson() => {
-        'start': start.toIso8601String(),
-        'end': end.toIso8601String(),
-      };
+    'start': start.toIso8601String(),
+    'end': end.toIso8601String(),
+  };
 
   factory WeekPeriod.fromJson(Map<String, dynamic> json) {
     return WeekPeriod(
@@ -350,7 +349,11 @@ class LeagueThresholds {
   static const int bottomDemotion = 3; // Bottom 3 users get demoted
 
   /// Calculate new league based on rank and current league
-  static League? calculateNewLeague(int rank, int totalUsers, League currentLeague) {
+  static League? calculateNewLeague(
+    int rank,
+    int totalUsers,
+    League currentLeague,
+  ) {
     // Promote top 3 (unless already in Diamond)
     if (rank <= topPromotion && currentLeague != League.diamond) {
       final leagues = League.values;

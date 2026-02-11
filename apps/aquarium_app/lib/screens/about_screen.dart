@@ -16,7 +16,7 @@ class AboutScreen extends StatelessWidget {
         child: Column(
           children: [
             const SizedBox(height: 24),
-            
+
             // App icon placeholder
             Container(
               width: 100,
@@ -36,29 +36,33 @@ class AboutScreen extends StatelessWidget {
                   ),
                 ],
               ),
-              child: const Icon(Icons.water_drop, size: 50, color: Colors.white),
+              child: const Icon(
+                Icons.water_drop,
+                size: 50,
+                color: Colors.white,
+              ),
             ),
-            
+
             const SizedBox(height: 24),
-            
+
             Text('Aquarium Hobby App', style: AppTypography.headlineMedium),
             const SizedBox(height: 4),
             Text('Version 1.0.0', style: AppTypography.bodyMedium),
-            
+
             const SizedBox(height: 32),
-            
+
             Text(
               'Track your tanks, livestock, equipment, and maintenance in one calm, organized place.',
               style: AppTypography.bodyLarge,
               textAlign: TextAlign.center,
             ),
-            
+
             const SizedBox(height: 32),
-            
+
             const Divider(),
-            
+
             const SizedBox(height: 16),
-            
+
             const _FeatureItem(
               icon: Icons.water,
               title: 'Multi-Tank Management',
@@ -84,18 +88,20 @@ class AboutScreen extends StatelessWidget {
               title: 'Local-First',
               description: 'Your data stays on your device',
             ),
-            
+
             const SizedBox(height: 32),
-            
+
             const Divider(),
-            
+
             const SizedBox(height: 16),
-            
-            Text('Made with ❤️ for the fishkeeping community', 
-              style: AppTypography.bodySmall),
-            
+
+            Text(
+              'Made with ❤️ for the fishkeeping community',
+              style: AppTypography.bodySmall,
+            ),
+
             const SizedBox(height: 24),
-            
+
             Wrap(
               alignment: WrapAlignment.center,
               spacing: 8,
@@ -127,7 +133,7 @@ class AboutScreen extends StatelessWidget {
                 ),
               ],
             ),
-            
+
             const SizedBox(height: 48),
           ],
         ),

@@ -34,7 +34,16 @@ List<Friend> generateMockFriends({int count = 15}) {
   return selectedProfiles.asMap().entries.map((entry) {
     final index = entry.key;
     final data = entry.value;
-    final (username, displayName, emoji, xp, streak, longestStreak, level, levelNum) = data;
+    final (
+      username,
+      displayName,
+      emoji,
+      xp,
+      streak,
+      longestStreak,
+      level,
+      levelNum,
+    ) = data;
 
     // Vary last active times realistically
     final lastActive = _generateLastActive(index, random, now);
@@ -71,7 +80,10 @@ List<Friend> generateMockFriends({int count = 15}) {
 }
 
 /// Generate mock friend activities from a list of friends
-List<FriendActivity> generateMockActivities(List<Friend> friends, {int activitiesPerFriend = 4}) {
+List<FriendActivity> generateMockActivities(
+  List<Friend> friends, {
+  int activitiesPerFriend = 4,
+}) {
   if (friends.isEmpty) return [];
 
   final random = Random();
@@ -84,29 +96,35 @@ List<FriendActivity> generateMockActivities(List<Friend> friends, {int activitie
 
     for (int i = 0; i < activityCount; i++) {
       // Spread activities over last 7 days
-      final timestamp = now.subtract(Duration(
-        hours: random.nextInt(168), // 7 days = 168 hours
-        minutes: random.nextInt(60),
-      ));
+      final timestamp = now.subtract(
+        Duration(
+          hours: random.nextInt(168), // 7 days = 168 hours
+          minutes: random.nextInt(60),
+        ),
+      );
 
       // Random activity type
-      final activityType = FriendActivityType.values[
-        random.nextInt(FriendActivityType.values.length)
-      ];
+      final activityType = FriendActivityType
+          .values[random.nextInt(FriendActivityType.values.length)];
 
-      final (description, xpEarned) = _generateActivityDetails(activityType, random);
+      final (description, xpEarned) = _generateActivityDetails(
+        activityType,
+        random,
+      );
 
-      activities.add(FriendActivity(
-        id: 'activity_${friend.id}_${timestamp.millisecondsSinceEpoch}_$i',
-        friendId: friend.id,
-        friendUsername: friend.username,
-        friendDisplayName: friend.displayName,
-        friendAvatarEmoji: friend.avatarEmoji,
-        type: activityType,
-        description: description,
-        xpEarned: xpEarned,
-        timestamp: timestamp,
-      ));
+      activities.add(
+        FriendActivity(
+          id: 'activity_${friend.id}_${timestamp.millisecondsSinceEpoch}_$i',
+          friendId: friend.id,
+          friendUsername: friend.username,
+          friendDisplayName: friend.displayName,
+          friendAvatarEmoji: friend.avatarEmoji,
+          type: activityType,
+          description: description,
+          xpEarned: xpEarned,
+          timestamp: timestamp,
+        ),
+      );
     }
   }
 
@@ -137,18 +155,20 @@ List<FriendRequest> generateMockFriendRequests({
     final (username, displayName, emoji) = potentialFriends[i];
     final createdAt = now.subtract(Duration(hours: random.nextInt(48)));
 
-    requests.add(FriendRequest(
-      id: 'request_$i',
-      fromUserId: 'user_$i',
-      fromUsername: username,
-      fromDisplayName: displayName,
-      fromAvatarEmoji: emoji,
-      toUserId: currentUserId,
-      toUsername: 'you',
-      status: FriendRequestStatus.pending,
-      createdAt: createdAt,
-      message: i == 0 ? 'Hey! Let\'s be aquarium buddies!' : null,
-    ));
+    requests.add(
+      FriendRequest(
+        id: 'request_$i',
+        fromUserId: 'user_$i',
+        fromUsername: username,
+        fromDisplayName: displayName,
+        fromAvatarEmoji: emoji,
+        toUserId: currentUserId,
+        toUsername: 'you',
+        status: FriendRequestStatus.pending,
+        createdAt: createdAt,
+        message: i == 0 ? 'Hey! Let\'s be aquarium buddies!' : null,
+      ),
+    );
   }
 
   return requests;
@@ -199,7 +219,10 @@ List<String> _generateAchievementIds(int count, Random random) {
 }
 
 /// Generate activity description and XP based on type
-(String, int?) _generateActivityDetails(FriendActivityType type, Random random) {
+(String, int?) _generateActivityDetails(
+  FriendActivityType type,
+  Random random,
+) {
   switch (type) {
     case FriendActivityType.levelUp:
       final level = random.nextInt(7) + 1;
@@ -298,14 +321,40 @@ Friend createMockFriend({
 
 String _getRandomEmoji(Random random) {
   const emojis = [
-    '🐠', '🐡', '🐟', '🦈', '🐙', '🦑', '🦞', '🦀', '🦐', '🐚',
-    '🪸', '🌊', '🐬', '🐳', '🐋', '🦭', '🦦', '🪼', '🐢', '🦎',
+    '🐠',
+    '🐡',
+    '🐟',
+    '🦈',
+    '🐙',
+    '🦑',
+    '🦞',
+    '🦀',
+    '🦐',
+    '🐚',
+    '🪸',
+    '🌊',
+    '🐬',
+    '🐳',
+    '🐋',
+    '🦭',
+    '🦦',
+    '🪼',
+    '🐢',
+    '🦎',
   ];
   return emojis[random.nextInt(emojis.length)];
 }
 
 String _getRandomLevel(Random random) {
-  const levels = ['Beginner', 'Novice', 'Hobbyist', 'Aquarist', 'Expert', 'Master', 'Guru'];
+  const levels = [
+    'Beginner',
+    'Novice',
+    'Hobbyist',
+    'Aquarist',
+    'Expert',
+    'Master',
+    'Guru',
+  ];
   return levels[random.nextInt(levels.length)];
 }
 
@@ -314,9 +363,11 @@ extension StringExtension on String {
   String titleCase() {
     if (isEmpty) return this;
     return split(' ')
-        .map((word) => word.isEmpty
-            ? word
-            : '${word[0].toUpperCase()}${word.substring(1).toLowerCase()}')
+        .map(
+          (word) => word.isEmpty
+              ? word
+              : '${word[0].toUpperCase()}${word.substring(1).toLowerCase()}',
+        )
         .join(' ');
   }
 }

@@ -87,7 +87,7 @@ class A11yLabels {
   // Quiz/exercise specific
   static String quizQuestion(int number, int total) =>
       'Question $number of $total';
-  
+
   static String answer(String text, bool isCorrect, bool answered) {
     if (!answered) return text;
     return isCorrect ? '$text, correct answer' : '$text, incorrect answer';
@@ -123,10 +123,7 @@ class A11yFocus {
     required double order,
     required Widget child,
   }) {
-    return FocusTraversalOrder(
-      order: NumericFocusOrder(order),
-      child: child,
-    );
+    return FocusTraversalOrder(order: NumericFocusOrder(order), child: child);
   }
 }
 
@@ -184,7 +181,9 @@ class A11ySemantics extends StatelessWidget {
       readOnly: readOnly,
       onTap: onTap,
       onLongPress: onLongPress,
-      excludeSemantics: label != null || hint != null, // Exclude child semantics if we provide our own
+      excludeSemantics:
+          label != null ||
+          hint != null, // Exclude child semantics if we provide our own
       child: child,
     );
   }
@@ -194,10 +193,7 @@ class A11ySemantics extends StatelessWidget {
 class A11yMerge extends StatelessWidget {
   final Widget child;
 
-  const A11yMerge({
-    super.key,
-    required this.child,
-  });
+  const A11yMerge({super.key, required this.child});
 
   @override
   Widget build(BuildContext context) {
@@ -210,17 +206,10 @@ class A11yExclude extends StatelessWidget {
   final Widget child;
   final bool excluding;
 
-  const A11yExclude({
-    super.key,
-    required this.child,
-    this.excluding = true,
-  });
+  const A11yExclude({super.key, required this.child, this.excluding = true});
 
   @override
   Widget build(BuildContext context) {
-    return ExcludeSemantics(
-      excluding: excluding,
-      child: child,
-    );
+    return ExcludeSemantics(excluding: excluding, child: child);
   }
 }

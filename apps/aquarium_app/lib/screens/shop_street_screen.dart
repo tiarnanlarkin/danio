@@ -9,13 +9,13 @@ import 'wishlist_screen.dart';
 
 /// Shop Street colors - fresh outdoor market theme
 class ShopColors {
-  static const background1 = Color(0xFF4A7C59);  // Forest green
-  static const background2 = Color(0xFF3D6B4A);  // Darker green
-  static const background3 = Color(0xFF2F5A3B);  // Deep green
-  static const accent = Color(0xFFF0C040);       // Sunny yellow
+  static const background1 = Color(0xFF4A7C59); // Forest green
+  static const background2 = Color(0xFF3D6B4A); // Darker green
+  static const background3 = Color(0xFF2F5A3B); // Deep green
+  static const accent = Color(0xFFF0C040); // Sunny yellow
   static const accentLight = Color(0xFFFFF3C4); // Light yellow
-  static const wood = Color(0xFF8B7355);         // Market stall wood
-  static const awning = Color(0xFFE74C3C);       // Red awning
+  static const wood = Color(0xFF8B7355); // Market stall wood
+  static const awning = Color(0xFFE74C3C); // Red awning
   static const glassCard = Color(0x20FFFFFF);
   static const glassBorder = Color(0x30FFFFFF);
   static const textPrimary = Color(0xFFF5F5F5);
@@ -51,9 +51,7 @@ class ShopStreetScreen extends ConsumerWidget {
         child: CustomScrollView(
           slivers: [
             // Header
-            SliverToBoxAdapter(
-              child: _ShopHeader(),
-            ),
+            SliverToBoxAdapter(child: _ShopHeader()),
 
             // Shop sections
             SliverPadding(
@@ -116,7 +114,8 @@ class ShopStreetScreen extends ConsumerWidget {
                   _LocalShopsCard(
                     shops: shops,
                     onAddShop: () => _showAddShopDialog(context, ref),
-                    onEditShop: (shop) => _showEditShopDialog(context, ref, shop),
+                    onEditShop: (shop) =>
+                        _showEditShopDialog(context, ref, shop),
                     onDeleteShop: (shop) => _deleteShop(context, ref, shop),
                   ),
                 ]),
@@ -124,16 +123,18 @@ class ShopStreetScreen extends ConsumerWidget {
             ),
 
             // Bottom padding
-            const SliverToBoxAdapter(
-              child: SizedBox(height: 100),
-            ),
+            const SliverToBoxAdapter(child: SizedBox(height: 100)),
           ],
         ),
       ),
     );
   }
 
-  void _showBudgetDialog(BuildContext context, WidgetRef ref, ShopBudget budget) {
+  void _showBudgetDialog(
+    BuildContext context,
+    WidgetRef ref,
+    ShopBudget budget,
+  ) {
     final controller = TextEditingController(
       text: budget.monthlyBudget.toStringAsFixed(0),
     );
@@ -149,7 +150,9 @@ class ShopStreetScreen extends ConsumerWidget {
             labelText: 'Budget amount',
             prefixText: '£ ',
           ),
-          inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[\d.]'))],
+          inputFormatters: [
+            FilteringTextInputFormatter.allow(RegExp(r'[\d.]')),
+          ],
         ),
         actions: [
           TextButton(
@@ -173,17 +176,31 @@ class ShopStreetScreen extends ConsumerWidget {
     _showShopDialog(context, ref, null);
   }
 
-  void _showEditShopDialog(BuildContext context, WidgetRef ref, LocalShop shop) {
+  void _showEditShopDialog(
+    BuildContext context,
+    WidgetRef ref,
+    LocalShop shop,
+  ) {
     _showShopDialog(context, ref, shop);
   }
 
-  void _showShopDialog(BuildContext context, WidgetRef ref, LocalShop? existingShop) {
-    final nameController = TextEditingController(text: existingShop?.name ?? '');
-    final addressController = TextEditingController(text: existingShop?.address ?? '');
+  void _showShopDialog(
+    BuildContext context,
+    WidgetRef ref,
+    LocalShop? existingShop,
+  ) {
+    final nameController = TextEditingController(
+      text: existingShop?.name ?? '',
+    );
+    final addressController = TextEditingController(
+      text: existingShop?.address ?? '',
+    );
     final distanceController = TextEditingController(
       text: existingShop?.distanceMiles?.toStringAsFixed(1) ?? '',
     );
-    final notesController = TextEditingController(text: existingShop?.notes ?? '');
+    final notesController = TextEditingController(
+      text: existingShop?.notes ?? '',
+    );
 
     showModalBottomSheet(
       context: context,
@@ -191,9 +208,7 @@ class ShopStreetScreen extends ConsumerWidget {
       backgroundColor: Colors.transparent,
       builder: (ctx) => Container(
         margin: const EdgeInsets.all(16),
-        padding: EdgeInsets.only(
-          bottom: MediaQuery.of(ctx).viewInsets.bottom,
-        ),
+        padding: EdgeInsets.only(bottom: MediaQuery.of(ctx).viewInsets.bottom),
         decoration: BoxDecoration(
           color: Theme.of(context).scaffoldBackgroundColor,
           borderRadius: BorderRadius.circular(24),
@@ -229,7 +244,9 @@ class ShopStreetScreen extends ConsumerWidget {
                 decoration: const InputDecoration(
                   labelText: 'Distance (miles)',
                 ),
-                keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                keyboardType: const TextInputType.numberWithOptions(
+                  decimal: true,
+                ),
               ),
               const SizedBox(height: 16),
               TextField(
@@ -251,7 +268,9 @@ class ShopStreetScreen extends ConsumerWidget {
                             address: addressController.text.trim().isEmpty
                                 ? null
                                 : addressController.text.trim(),
-                            distanceMiles: double.tryParse(distanceController.text),
+                            distanceMiles: double.tryParse(
+                              distanceController.text,
+                            ),
                             notes: notesController.text.trim().isEmpty
                                 ? null
                                 : notesController.text.trim(),
@@ -260,12 +279,16 @@ class ShopStreetScreen extends ConsumerWidget {
                           if (existingShop == null) {
                             ref.read(localShopsProvider.notifier).addShop(shop);
                           } else {
-                            ref.read(localShopsProvider.notifier).updateShop(shop);
+                            ref
+                                .read(localShopsProvider.notifier)
+                                .updateShop(shop);
                           }
                           Navigator.pop(ctx);
                         }
                       : null,
-                  child: Text(existingShop == null ? 'Add Shop' : 'Save Changes'),
+                  child: Text(
+                    existingShop == null ? 'Add Shop' : 'Save Changes',
+                  ),
                 ),
               ),
             ],
@@ -335,10 +358,7 @@ class _ShopHeader extends StatelessWidget {
               SizedBox(height: 4),
               Text(
                 'Wishlists & shopping',
-                style: TextStyle(
-                  color: ShopColors.textSecondary,
-                  fontSize: 14,
-                ),
+                style: TextStyle(color: ShopColors.textSecondary, fontSize: 14),
               ),
             ],
           ),
@@ -415,7 +435,10 @@ class _ShopSection extends StatelessWidget {
                   ),
                 ),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 6,
+                  ),
                   decoration: BoxDecoration(
                     color: itemCount > 0
                         ? ShopColors.accent.withOpacity(0.2)
@@ -425,7 +448,9 @@ class _ShopSection extends StatelessWidget {
                   child: Text(
                     '$itemCount',
                     style: TextStyle(
-                      color: itemCount > 0 ? ShopColors.accent : ShopColors.textSecondary,
+                      color: itemCount > 0
+                          ? ShopColors.accent
+                          : ShopColors.textSecondary,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -470,7 +495,10 @@ class _BudgetCard extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    const Icon(Icons.account_balance_wallet, color: ShopColors.accent),
+                    const Icon(
+                      Icons.account_balance_wallet,
+                      color: ShopColors.accent,
+                    ),
                     const SizedBox(width: 12),
                     const Text(
                       'Monthly Budget',
@@ -612,11 +640,13 @@ class _LocalShopsCard extends StatelessWidget {
                   ),
                 )
               else
-                ...shops.map((shop) => _ShopTile(
-                      shop: shop,
-                      onTap: () => onEditShop(shop),
-                      onDelete: () => onDeleteShop(shop),
-                    )),
+                ...shops.map(
+                  (shop) => _ShopTile(
+                    shop: shop,
+                    onTap: () => onEditShop(shop),
+                    onDelete: () => onDeleteShop(shop),
+                  ),
+                ),
               const SizedBox(height: 12),
               Center(
                 child: TextButton.icon(

@@ -49,11 +49,7 @@ class AccessibleImage extends StatelessWidget {
     if (isDecorative) {
       return ExcludeSemantics(child: child);
     }
-    return Semantics(
-      label: label,
-      image: true,
-      child: child,
-    );
+    return Semantics(label: label, image: true, child: child);
   }
 }
 
@@ -107,12 +103,8 @@ class AccessibleNavigation extends StatelessWidget {
     if (currentIndex != null && totalItems != null) {
       label += ', item ${currentIndex! + 1} of $totalItems';
     }
-    
-    return Semantics(
-      label: label,
-      header: true,
-      child: child,
-    );
+
+    return Semantics(label: label, header: true, child: child);
   }
 }
 

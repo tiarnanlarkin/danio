@@ -31,17 +31,20 @@ class ImageCacheService {
 
     // Create optimized image provider
     final provider = _createOptimizedProvider(imagePath, thumbnail: thumbnail);
-    
+
     // Add to cache
     _addToCache(cacheKey, provider);
-    
+
     return provider;
   }
 
   /// Create an optimized image provider
-  ImageProvider _createOptimizedProvider(String imagePath, {bool thumbnail = false}) {
+  ImageProvider _createOptimizedProvider(
+    String imagePath, {
+    bool thumbnail = false,
+  }) {
     final file = File(imagePath);
-    
+
     if (!file.existsSync()) {
       // Return a placeholder if file doesn't exist
       return const AssetImage('assets/images/placeholder.png');
@@ -130,14 +133,12 @@ class ImageCacheService {
 
       // Write to file
       final outputFile = File(outputPath);
-      await outputFile.writeAsBytes(
-        byteData.buffer.asUint8List(),
-      );
+      await outputFile.writeAsBytes(byteData.buffer.asUint8List());
 
       return outputPath;
     } catch (e) {
       if (kDebugMode) {
-        print('Error compressing image: $e');
+        debugPrint('Error compressing image: $e');
       }
       // Fallback: just copy the original file
       final directory = await getApplicationDocumentsDirectory();
@@ -145,18 +146,21 @@ class ImageCacheService {
       if (!tankDir.existsSync()) {
         tankDir.createSync(recursive: true);
       }
-      
+
       final timestamp = DateTime.now().millisecondsSinceEpoch;
       final extension = path.extension(sourceFile.path);
       final outputPath = '${tankDir.path}/photo_$timestamp$extension';
-      
+
       await sourceFile.copy(outputPath);
       return outputPath;
     }
   }
 
   /// Preload images for better performance
-  Future<void> preloadImages(BuildContext context, List<String> imagePaths) async {
+  Future<void> preloadImages(
+    BuildContext context,
+    List<String> imagePaths,
+  ) async {
     for (final imagePath in imagePaths) {
       final provider = getCachedImage(imagePath);
       await precacheImage(provider, context);
@@ -201,18 +205,17 @@ class CachedImage extends StatelessWidget {
         if (wasSynchronouslyLoaded) {
           return child;
         }
-        
+
         if (frame == null) {
-          return placeholder ?? const Center(child: CircularProgressIndicator());
+          return placeholder ??
+              const Center(child: CircularProgressIndicator());
         }
-        
+
         return child;
       },
       errorBuilder: (context, error, stackTrace) {
-        return errorWidget ?? 
-          const Center(
-            child: Icon(Icons.broken_image, color: Colors.grey),
-          );
+        return errorWidget ??
+            const Center(child: Icon(Icons.broken_image, color: Colors.grey));
       },
     );
   }

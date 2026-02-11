@@ -8,7 +8,8 @@ class TankComparisonScreen extends ConsumerStatefulWidget {
   const TankComparisonScreen({super.key});
 
   @override
-  ConsumerState<TankComparisonScreen> createState() => _TankComparisonScreenState();
+  ConsumerState<TankComparisonScreen> createState() =>
+      _TankComparisonScreenState();
 }
 
 class _TankComparisonScreenState extends ConsumerState<TankComparisonScreen> {
@@ -34,7 +35,10 @@ class _TankComparisonScreenState extends ConsumerState<TankComparisonScreen> {
                   children: [
                     Icon(Icons.compare, size: 64, color: AppColors.textHint),
                     const SizedBox(height: 16),
-                    Text('Need at Least 2 Tanks', style: AppTypography.headlineSmall),
+                    Text(
+                      'Need at Least 2 Tanks',
+                      style: AppTypography.headlineSmall,
+                    ),
                     const SizedBox(height: 8),
                     Text(
                       'Add another tank to compare them side by side.',
@@ -47,8 +51,18 @@ class _TankComparisonScreenState extends ConsumerState<TankComparisonScreen> {
             );
           }
 
-          final tank1 = _tank1Id != null ? tanks.firstWhere((t) => t.id == _tank1Id, orElse: () => tanks[0]) : tanks[0];
-          final tank2 = _tank2Id != null ? tanks.firstWhere((t) => t.id == _tank2Id, orElse: () => tanks[1]) : tanks[1];
+          final tank1 = _tank1Id != null
+              ? tanks.firstWhere(
+                  (t) => t.id == _tank1Id,
+                  orElse: () => tanks[0],
+                )
+              : tanks[0];
+          final tank2 = _tank2Id != null
+              ? tanks.firstWhere(
+                  (t) => t.id == _tank2Id,
+                  orElse: () => tanks[1],
+                )
+              : tanks[1];
 
           return ListView(
             padding: const EdgeInsets.all(16),
@@ -85,9 +99,21 @@ class _TankComparisonScreenState extends ConsumerState<TankComparisonScreen> {
               _ComparisonSection(
                 title: 'Basic Info',
                 rows: [
-                  _ComparisonRow(label: 'Name', value1: tank1.name, value2: tank2.name),
-                  _ComparisonRow(label: 'Volume', value1: '${tank1.volumeLitres.toStringAsFixed(0)} L', value2: '${tank2.volumeLitres.toStringAsFixed(0)} L'),
-                  _ComparisonRow(label: 'Type', value1: tank1.type.name, value2: tank2.type.name),
+                  _ComparisonRow(
+                    label: 'Name',
+                    value1: tank1.name,
+                    value2: tank2.name,
+                  ),
+                  _ComparisonRow(
+                    label: 'Volume',
+                    value1: '${tank1.volumeLitres.toStringAsFixed(0)} L',
+                    value2: '${tank2.volumeLitres.toStringAsFixed(0)} L',
+                  ),
+                  _ComparisonRow(
+                    label: 'Type',
+                    value1: tank1.type.name,
+                    value2: tank2.type.name,
+                  ),
                 ],
               ),
 
@@ -123,7 +149,12 @@ class _TankSelector extends StatelessWidget {
       ),
       items: tanks
           .where((t) => t.id != excludeId)
-          .map((t) => DropdownMenuItem(value: t.id, child: Text(t.name, overflow: TextOverflow.ellipsis)))
+          .map(
+            (t) => DropdownMenuItem(
+              value: t.id,
+              child: Text(t.name, overflow: TextOverflow.ellipsis),
+            ),
+          )
           .toList(),
       onChanged: (v) => v != null ? onChanged(v) : null,
     );

@@ -15,15 +15,17 @@ class MaintenanceChecklistScreen extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<MaintenanceChecklistScreen> createState() => _MaintenanceChecklistScreenState();
+  ConsumerState<MaintenanceChecklistScreen> createState() =>
+      _MaintenanceChecklistScreenState();
 }
 
-class _MaintenanceChecklistScreenState extends ConsumerState<MaintenanceChecklistScreen> {
+class _MaintenanceChecklistScreenState
+    extends ConsumerState<MaintenanceChecklistScreen> {
   Map<String, bool> _weeklyChecks = {};
   Map<String, bool> _monthlyChecks = {};
   // ignore: unused_field - reserved for future weekly reset logic
   String? _lastResetWeek;
-  // ignore: unused_field - reserved for future monthly reset logic  
+  // ignore: unused_field - reserved for future monthly reset logic
   String? _lastResetMonth;
 
   final _weeklyItems = [
@@ -54,7 +56,8 @@ class _MaintenanceChecklistScreenState extends ConsumerState<MaintenanceChecklis
 
   String get _currentWeek {
     final now = DateTime.now();
-    final weekNumber = ((now.difference(DateTime(now.year, 1, 1)).inDays) / 7).ceil();
+    final weekNumber = ((now.difference(DateTime(now.year, 1, 1)).inDays) / 7)
+        .ceil();
     return '${now.year}-W$weekNumber';
   }
 
@@ -79,7 +82,8 @@ class _MaintenanceChecklistScreenState extends ConsumerState<MaintenanceChecklis
         _weeklyChecks = {};
       } else {
         for (final item in _weeklyItems) {
-          _weeklyChecks[item.id] = prefs.getBool('${prefix}_weekly_${item.id}') ?? false;
+          _weeklyChecks[item.id] =
+              prefs.getBool('${prefix}_weekly_${item.id}') ?? false;
         }
       }
 
@@ -88,7 +92,8 @@ class _MaintenanceChecklistScreenState extends ConsumerState<MaintenanceChecklis
         _monthlyChecks = {};
       } else {
         for (final item in _monthlyItems) {
-          _monthlyChecks[item.id] = prefs.getBool('${prefix}_monthly_${item.id}') ?? false;
+          _monthlyChecks[item.id] =
+              prefs.getBool('${prefix}_monthly_${item.id}') ?? false;
         }
       }
     });
@@ -102,11 +107,17 @@ class _MaintenanceChecklistScreenState extends ConsumerState<MaintenanceChecklis
     await prefs.setString('${prefix}_month', _currentMonth);
 
     for (final item in _weeklyItems) {
-      await prefs.setBool('${prefix}_weekly_${item.id}', _weeklyChecks[item.id] ?? false);
+      await prefs.setBool(
+        '${prefix}_weekly_${item.id}',
+        _weeklyChecks[item.id] ?? false,
+      );
     }
 
     for (final item in _monthlyItems) {
-      await prefs.setBool('${prefix}_monthly_${item.id}', _monthlyChecks[item.id] ?? false);
+      await prefs.setBool(
+        '${prefix}_monthly_${item.id}',
+        _monthlyChecks[item.id] ?? false,
+      );
     }
   }
 
@@ -189,25 +200,32 @@ class _MaintenanceChecklistScreenState extends ConsumerState<MaintenanceChecklis
               const Spacer(),
               if (_weeklyComplete == _weeklyItems.length)
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
                   decoration: BoxDecoration(
                     color: AppColors.success,
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Text(
                     '✓ Complete!',
-                    style: AppTypography.bodySmall.copyWith(color: Colors.white),
+                    style: AppTypography.bodySmall.copyWith(
+                      color: Colors.white,
+                    ),
                   ),
                 ),
             ],
           ),
           const SizedBox(height: 12),
 
-          ..._weeklyItems.map((item) => _TaskTile(
-            item: item,
-            checked: _weeklyChecks[item.id] ?? false,
-            onTap: () => _toggleWeekly(item.id),
-          )),
+          ..._weeklyItems.map(
+            (item) => _TaskTile(
+              item: item,
+              checked: _weeklyChecks[item.id] ?? false,
+              onTap: () => _toggleWeekly(item.id),
+            ),
+          ),
 
           const SizedBox(height: 24),
 
@@ -218,25 +236,32 @@ class _MaintenanceChecklistScreenState extends ConsumerState<MaintenanceChecklis
               const Spacer(),
               if (_monthlyComplete == _monthlyItems.length)
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
                   decoration: BoxDecoration(
                     color: AppColors.success,
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Text(
                     '✓ Complete!',
-                    style: AppTypography.bodySmall.copyWith(color: Colors.white),
+                    style: AppTypography.bodySmall.copyWith(
+                      color: Colors.white,
+                    ),
                   ),
                 ),
             ],
           ),
           const SizedBox(height: 12),
 
-          ..._monthlyItems.map((item) => _TaskTile(
-            item: item,
-            checked: _monthlyChecks[item.id] ?? false,
-            onTap: () => _toggleMonthly(item.id),
-          )),
+          ..._monthlyItems.map(
+            (item) => _TaskTile(
+              item: item,
+              checked: _monthlyChecks[item.id] ?? false,
+              onTap: () => _toggleMonthly(item.id),
+            ),
+          ),
 
           const SizedBox(height: 48),
         ],

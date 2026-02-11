@@ -41,8 +41,8 @@ class LivingRoomScene extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         final w = constraints.maxWidth;
-        final h = constraints.maxHeight.isFinite 
-            ? constraints.maxHeight 
+        final h = constraints.maxHeight.isFinite
+            ? constraints.maxHeight
             : w * 1.4;
 
         return SizedBox(
@@ -51,9 +51,7 @@ class LivingRoomScene extends StatelessWidget {
           child: Stack(
             children: [
               // === LAYER 1: Organic abstract background ===
-              Positioned.fill(
-                child: _OrganicBackground(theme: theme),
-              ),
+              Positioned.fill(child: _OrganicBackground(theme: theme)),
 
               // === LAYER 2: Decorative elements ===
               // Stars/sparkles for whimsical themes
@@ -96,7 +94,7 @@ class LivingRoomScene extends StatelessWidget {
               ),
 
               // === LAYER 4: Glassmorphic UI cards ===
-              
+
               // Temperature gauge (top left)
               Positioned(
                 top: h * 0.06,
@@ -164,7 +162,10 @@ class LivingRoomScene extends StatelessWidget {
                   child: GestureDetector(
                     onTap: onThemeTap,
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 4,
+                      ),
                       decoration: BoxDecoration(
                         color: theme.glassCard,
                         borderRadius: BorderRadius.circular(12),
@@ -172,7 +173,11 @@ class LivingRoomScene extends StatelessWidget {
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Icon(Icons.palette, size: 14, color: theme.textSecondary),
+                          Icon(
+                            Icons.palette,
+                            size: 14,
+                            color: theme.textSecondary,
+                          ),
                           const SizedBox(width: 4),
                           Text(
                             theme.name,
@@ -229,15 +234,39 @@ class _SparklePainter extends CustomPainter {
     // 4-point star
     final path = Path()
       ..moveTo(center.dx, center.dy - r)
-      ..quadraticBezierTo(center.dx + r * 0.2, center.dy - r * 0.2, center.dx + r, center.dy)
-      ..quadraticBezierTo(center.dx + r * 0.2, center.dy + r * 0.2, center.dx, center.dy + r)
-      ..quadraticBezierTo(center.dx - r * 0.2, center.dy + r * 0.2, center.dx - r, center.dy)
-      ..quadraticBezierTo(center.dx - r * 0.2, center.dy - r * 0.2, center.dx, center.dy - r);
+      ..quadraticBezierTo(
+        center.dx + r * 0.2,
+        center.dy - r * 0.2,
+        center.dx + r,
+        center.dy,
+      )
+      ..quadraticBezierTo(
+        center.dx + r * 0.2,
+        center.dy + r * 0.2,
+        center.dx,
+        center.dy + r,
+      )
+      ..quadraticBezierTo(
+        center.dx - r * 0.2,
+        center.dy + r * 0.2,
+        center.dx - r,
+        center.dy,
+      )
+      ..quadraticBezierTo(
+        center.dx - r * 0.2,
+        center.dy - r * 0.2,
+        center.dx,
+        center.dy - r,
+      );
 
     canvas.drawPath(path, paint);
 
     // Inner glow
-    canvas.drawCircle(center, r * 0.3, Paint()..color = Colors.white.withOpacity(0.5));
+    canvas.drawCircle(
+      center,
+      r * 0.3,
+      Paint()..color = Colors.white.withOpacity(0.5),
+    );
   }
 
   @override
@@ -258,11 +287,7 @@ class _OrganicBackground extends StatelessWidget {
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [
-            theme.background1,
-            theme.background2,
-            theme.background3,
-          ],
+          colors: [theme.background1, theme.background2, theme.background3],
         ),
       ),
       child: CustomPaint(
@@ -289,12 +314,16 @@ class _OrganicShapesPainter extends CustomPainter {
       ..moveTo(0, 0)
       ..lineTo(0, size.height * 0.2)
       ..quadraticBezierTo(
-        size.width * 0.25, size.height * 0.12,
-        size.width * 0.5, size.height * 0.2,
+        size.width * 0.25,
+        size.height * 0.12,
+        size.width * 0.5,
+        size.height * 0.2,
       )
       ..quadraticBezierTo(
-        size.width * 0.75, size.height * 0.28,
-        size.width, size.height * 0.15,
+        size.width * 0.75,
+        size.height * 0.28,
+        size.width,
+        size.height * 0.15,
       )
       ..lineTo(size.width, 0)
       ..close();
@@ -309,16 +338,22 @@ class _OrganicShapesPainter extends CustomPainter {
     final blob = Path()
       ..moveTo(size.width * 0.7, size.height * 0.12)
       ..quadraticBezierTo(
-        size.width * 1.1, size.height * 0.22,
-        size.width * 0.95, size.height * 0.42,
+        size.width * 1.1,
+        size.height * 0.22,
+        size.width * 0.95,
+        size.height * 0.42,
       )
       ..quadraticBezierTo(
-        size.width * 0.8, size.height * 0.48,
-        size.width * 0.85, size.height * 0.32,
+        size.width * 0.8,
+        size.height * 0.48,
+        size.width * 0.85,
+        size.height * 0.32,
       )
       ..quadraticBezierTo(
-        size.width * 0.65, size.height * 0.22,
-        size.width * 0.7, size.height * 0.12,
+        size.width * 0.65,
+        size.height * 0.22,
+        size.width * 0.7,
+        size.height * 0.12,
       );
 
     canvas.drawPath(blob, blobPaint);
@@ -327,16 +362,23 @@ class _OrganicShapesPainter extends CustomPainter {
     final blob2 = Path()
       ..moveTo(0, size.height * 0.55)
       ..quadraticBezierTo(
-        size.width * 0.18, size.height * 0.5,
-        size.width * 0.22, size.height * 0.68,
+        size.width * 0.18,
+        size.height * 0.5,
+        size.width * 0.22,
+        size.height * 0.68,
       )
       ..quadraticBezierTo(
-        size.width * 0.12, size.height * 0.82,
-        0, size.height * 0.78,
+        size.width * 0.12,
+        size.height * 0.82,
+        0,
+        size.height * 0.78,
       )
       ..close();
 
-    canvas.drawPath(blob2, Paint()..color = theme.accentBlob2.withOpacity(0.35));
+    canvas.drawPath(
+      blob2,
+      Paint()..color = theme.accentBlob2.withOpacity(0.35),
+    );
 
     // Bottom wave
     final wave2Paint = Paint()
@@ -347,12 +389,16 @@ class _OrganicShapesPainter extends CustomPainter {
       ..moveTo(0, size.height)
       ..lineTo(0, size.height * 0.82)
       ..quadraticBezierTo(
-        size.width * 0.3, size.height * 0.78,
-        size.width * 0.5, size.height * 0.85,
+        size.width * 0.3,
+        size.height * 0.78,
+        size.width * 0.5,
+        size.height * 0.85,
       )
       ..quadraticBezierTo(
-        size.width * 0.7, size.height * 0.92,
-        size.width, size.height * 0.82,
+        size.width * 0.7,
+        size.height * 0.92,
+        size.width,
+        size.height * 0.82,
       )
       ..lineTo(size.width, size.height)
       ..close();
@@ -367,7 +413,7 @@ class _OrganicShapesPainter extends CustomPainter {
         Offset(size.width * 0.6, size.height * 0.1),
       ];
       final sizes = [22.0, 16.0, 10.0];
-      
+
       if (i < positions.length) {
         canvas.drawCircle(
           positions[i],
@@ -407,10 +453,7 @@ class _CircularTempGauge extends StatelessWidget {
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             color: theme.glassCard,
-            border: Border.all(
-              color: theme.glassBorder,
-              width: 2,
-            ),
+            border: Border.all(color: theme.glassBorder, width: 2),
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withOpacity(0.1),
@@ -511,7 +554,7 @@ class _TempGaugePainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant _TempGaugePainter old) => 
+  bool shouldRepaint(covariant _TempGaugePainter old) =>
       old.temperature != temperature || old.theme != theme;
 }
 
@@ -651,13 +694,7 @@ class _MiniPieChart extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 4),
-        Text(
-          label,
-          style: TextStyle(
-            color: theme.textSecondary,
-            fontSize: 10,
-          ),
-        ),
+        Text(label, style: TextStyle(color: theme.textSecondary, fontSize: 10)),
       ],
     );
   }
@@ -699,15 +736,11 @@ class _PieChartPainter extends CustomPainter {
     );
 
     // Inner circle (donut effect)
-    canvas.drawCircle(
-      center,
-      radius * 0.6,
-      Paint()..color = theme.background2,
-    );
+    canvas.drawCircle(center, radius * 0.6, Paint()..color = theme.background2);
   }
 
   @override
-  bool shouldRepaint(covariant _PieChartPainter old) => 
+  bool shouldRepaint(covariant _PieChartPainter old) =>
       old.value != value || old.color != color;
 }
 
@@ -750,7 +783,10 @@ class _GlassBadge extends StatelessWidget {
               ),
               const SizedBox(width: 10),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 4,
+                ),
                 decoration: BoxDecoration(
                   color: theme.accentBlob.withOpacity(0.4),
                   borderRadius: BorderRadius.circular(12),
@@ -815,11 +851,7 @@ class _ThemedAquarium extends StatelessWidget {
                 gradient: LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
-                  colors: [
-                    theme.waterTop,
-                    theme.waterMid,
-                    theme.waterBottom,
-                  ],
+                  colors: [theme.waterTop, theme.waterMid, theme.waterBottom],
                 ),
               ),
             ),
@@ -856,22 +888,34 @@ class _ThemedAquarium extends StatelessWidget {
             Positioned(
               bottom: height * 0.15,
               left: width * 0.08,
-              child: _SoftPlant(height: height * 0.5, color: theme.plantPrimary),
+              child: _SoftPlant(
+                height: height * 0.5,
+                color: theme.plantPrimary,
+              ),
             ),
             Positioned(
               bottom: height * 0.15,
               left: width * 0.22,
-              child: _SoftPlant(height: height * 0.35, color: theme.plantSecondary),
+              child: _SoftPlant(
+                height: height * 0.35,
+                color: theme.plantSecondary,
+              ),
             ),
             Positioned(
               bottom: height * 0.15,
               right: width * 0.1,
-              child: _SoftPlant(height: height * 0.55, color: theme.plantPrimary),
+              child: _SoftPlant(
+                height: height * 0.55,
+                color: theme.plantPrimary,
+              ),
             ),
             Positioned(
               bottom: height * 0.15,
               right: width * 0.28,
-              child: _SoftPlant(height: height * 0.4, color: theme.plantSecondary),
+              child: _SoftPlant(
+                height: height * 0.4,
+                color: theme.plantSecondary,
+              ),
             ),
 
             // Fish
@@ -913,7 +957,9 @@ class _ThemedAquarium extends StatelessWidget {
                       Colors.white.withOpacity(0.0),
                     ],
                   ),
-                  borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+                  borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(20),
+                  ),
                 ),
               ),
             ),
@@ -957,9 +1003,7 @@ class _SoftPlant extends StatelessWidget {
     return SizedBox(
       width: height * 0.4,
       height: height,
-      child: CustomPaint(
-        painter: _PlantPainter(color: color),
-      ),
+      child: CustomPaint(painter: _PlantPainter(color: color)),
     );
   }
 }
@@ -1007,11 +1051,7 @@ class _SoftFish extends StatelessWidget {
   final Color color;
   final bool flip;
 
-  const _SoftFish({
-    required this.size,
-    required this.color,
-    this.flip = false,
-  });
+  const _SoftFish({required this.size, required this.color, this.flip = false});
 
   @override
   Widget build(BuildContext context) {
@@ -1020,9 +1060,7 @@ class _SoftFish extends StatelessWidget {
       child: SizedBox(
         width: size * 2,
         height: size,
-        child: CustomPaint(
-          painter: _FishPainter(color: color),
-        ),
+        child: CustomPaint(painter: _FishPainter(color: color)),
       ),
     );
   }
@@ -1039,21 +1077,38 @@ class _FishPainter extends CustomPainter {
 
     // Body
     final bodyPath = Path()
-      ..addOval(Rect.fromLTWH(0, size.height * 0.15, size.width * 0.65, size.height * 0.7));
+      ..addOval(
+        Rect.fromLTWH(
+          0,
+          size.height * 0.15,
+          size.width * 0.65,
+          size.height * 0.7,
+        ),
+      );
     canvas.drawPath(bodyPath, paint);
 
     // Tail
     final tailPath = Path()
       ..moveTo(size.width * 0.55, size.height * 0.5)
       ..lineTo(size.width, size.height * 0.15)
-      ..quadraticBezierTo(size.width * 0.75, size.height * 0.5, size.width, size.height * 0.85)
+      ..quadraticBezierTo(
+        size.width * 0.75,
+        size.height * 0.5,
+        size.width,
+        size.height * 0.85,
+      )
       ..close();
     canvas.drawPath(tailPath, paint);
 
     // Fin
     final finPath = Path()
       ..moveTo(size.width * 0.25, size.height * 0.2)
-      ..quadraticBezierTo(size.width * 0.35, 0, size.width * 0.45, size.height * 0.15)
+      ..quadraticBezierTo(
+        size.width * 0.35,
+        0,
+        size.width * 0.45,
+        size.height * 0.15,
+      )
       ..close();
     canvas.drawPath(finPath, paint..color = color.withOpacity(0.8));
 
@@ -1111,10 +1166,7 @@ class _Bubble extends StatelessWidget {
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         color: Colors.white.withOpacity(0.4),
-        border: Border.all(
-          color: Colors.white.withOpacity(0.6),
-          width: 1,
-        ),
+        border: Border.all(color: Colors.white.withOpacity(0.6), width: 1),
       ),
     );
   }
@@ -1184,10 +1236,30 @@ class _WaveGraphPainter extends CustomPainter {
     // Wave line 1 (coral)
     final wave1 = Path()
       ..moveTo(0, size.height * 0.6)
-      ..quadraticBezierTo(size.width * 0.15, size.height * 0.4, size.width * 0.25, size.height * 0.5)
-      ..quadraticBezierTo(size.width * 0.4, size.height * 0.7, size.width * 0.5, size.height * 0.45)
-      ..quadraticBezierTo(size.width * 0.65, size.height * 0.2, size.width * 0.75, size.height * 0.4)
-      ..quadraticBezierTo(size.width * 0.9, size.height * 0.6, size.width, size.height * 0.35);
+      ..quadraticBezierTo(
+        size.width * 0.15,
+        size.height * 0.4,
+        size.width * 0.25,
+        size.height * 0.5,
+      )
+      ..quadraticBezierTo(
+        size.width * 0.4,
+        size.height * 0.7,
+        size.width * 0.5,
+        size.height * 0.45,
+      )
+      ..quadraticBezierTo(
+        size.width * 0.65,
+        size.height * 0.2,
+        size.width * 0.75,
+        size.height * 0.4,
+      )
+      ..quadraticBezierTo(
+        size.width * 0.9,
+        size.height * 0.6,
+        size.width,
+        size.height * 0.35,
+      );
 
     canvas.drawPath(
       wave1,
@@ -1201,10 +1273,30 @@ class _WaveGraphPainter extends CustomPainter {
     // Wave line 2 (teal)
     final wave2 = Path()
       ..moveTo(0, size.height * 0.4)
-      ..quadraticBezierTo(size.width * 0.2, size.height * 0.5, size.width * 0.3, size.height * 0.35)
-      ..quadraticBezierTo(size.width * 0.45, size.height * 0.15, size.width * 0.55, size.height * 0.3)
-      ..quadraticBezierTo(size.width * 0.7, size.height * 0.5, size.width * 0.8, size.height * 0.25)
-      ..quadraticBezierTo(size.width * 0.95, size.height * 0.1, size.width, size.height * 0.2);
+      ..quadraticBezierTo(
+        size.width * 0.2,
+        size.height * 0.5,
+        size.width * 0.3,
+        size.height * 0.35,
+      )
+      ..quadraticBezierTo(
+        size.width * 0.45,
+        size.height * 0.15,
+        size.width * 0.55,
+        size.height * 0.3,
+      )
+      ..quadraticBezierTo(
+        size.width * 0.7,
+        size.height * 0.5,
+        size.width * 0.8,
+        size.height * 0.25,
+      )
+      ..quadraticBezierTo(
+        size.width * 0.95,
+        size.height * 0.1,
+        size.width,
+        size.height * 0.2,
+      );
 
     canvas.drawPath(
       wave2,
@@ -1217,9 +1309,21 @@ class _WaveGraphPainter extends CustomPainter {
 
     // Dots
     final dotPaint = Paint()..color = theme.textPrimary;
-    canvas.drawCircle(Offset(size.width * 0.25, size.height * 0.5), 4, dotPaint);
-    canvas.drawCircle(Offset(size.width * 0.5, size.height * 0.45), 4, dotPaint);
-    canvas.drawCircle(Offset(size.width * 0.75, size.height * 0.4), 4, dotPaint);
+    canvas.drawCircle(
+      Offset(size.width * 0.25, size.height * 0.5),
+      4,
+      dotPaint,
+    );
+    canvas.drawCircle(
+      Offset(size.width * 0.5, size.height * 0.45),
+      4,
+      dotPaint,
+    );
+    canvas.drawCircle(
+      Offset(size.width * 0.75, size.height * 0.4),
+      4,
+      dotPaint,
+    );
   }
 
   @override

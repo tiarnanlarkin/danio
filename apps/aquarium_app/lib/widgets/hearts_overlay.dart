@@ -19,12 +19,10 @@ Future<void> showHeartsChangeOverlay(
   Duration duration = const Duration(milliseconds: 1500),
 }) async {
   final overlay = Overlay.of(context);
-  
+
   final overlayEntry = OverlayEntry(
-    builder: (context) => HeartsChangeOverlay(
-      gained: gained,
-      duration: duration,
-    ),
+    builder: (context) =>
+        HeartsChangeOverlay(gained: gained, duration: duration),
   );
 
   overlay.insert(overlayEntry);
@@ -60,65 +58,39 @@ class _HeartsChangeOverlayState extends State<HeartsChangeOverlay>
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      duration: widget.duration,
-      vsync: this,
-    );
+    _controller = AnimationController(duration: widget.duration, vsync: this);
 
     // Scale up quickly, then down
     _scaleAnimation = TweenSequence<double>([
       TweenSequenceItem(
-        tween: Tween<double>(begin: 0.0, end: 1.5)
-            .chain(CurveTween(curve: Curves.elasticOut)),
+        tween: Tween<double>(
+          begin: 0.0,
+          end: 1.5,
+        ).chain(CurveTween(curve: Curves.elasticOut)),
         weight: 50,
       ),
-      TweenSequenceItem(
-        tween: Tween<double>(begin: 1.5, end: 1.0),
-        weight: 20,
-      ),
-      TweenSequenceItem(
-        tween: Tween<double>(begin: 1.0, end: 0.5),
-        weight: 30,
-      ),
+      TweenSequenceItem(tween: Tween<double>(begin: 1.5, end: 1.0), weight: 20),
+      TweenSequenceItem(tween: Tween<double>(begin: 1.0, end: 0.5), weight: 30),
     ]).animate(_controller);
 
     // Fade in and out
     _fadeAnimation = TweenSequence<double>([
-      TweenSequenceItem(
-        tween: Tween<double>(begin: 0.0, end: 1.0),
-        weight: 20,
-      ),
-      TweenSequenceItem(
-        tween: Tween<double>(begin: 1.0, end: 1.0),
-        weight: 60,
-      ),
-      TweenSequenceItem(
-        tween: Tween<double>(begin: 1.0, end: 0.0),
-        weight: 20,
-      ),
+      TweenSequenceItem(tween: Tween<double>(begin: 0.0, end: 1.0), weight: 20),
+      TweenSequenceItem(tween: Tween<double>(begin: 1.0, end: 1.0), weight: 60),
+      TweenSequenceItem(tween: Tween<double>(begin: 1.0, end: 0.0), weight: 20),
     ]).animate(_controller);
 
     // Slide up or down based on gained/lost
     _slideAnimation = Tween<Offset>(
       begin: Offset.zero,
       end: Offset(0, widget.gained ? -0.3 : 0.3),
-    ).animate(
-      CurvedAnimation(
-        parent: _controller,
-        curve: Curves.easeOutCubic,
-      ),
-    );
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic));
 
     // Slight rotation for drama
     _rotationAnimation = Tween<double>(
       begin: 0.0,
       end: widget.gained ? 0.1 : -0.1,
-    ).animate(
-      CurvedAnimation(
-        parent: _controller,
-        curve: Curves.elasticOut,
-      ),
-    );
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.elasticOut));
 
     _controller.forward();
   }
@@ -157,8 +129,11 @@ class _HeartsChangeOverlayState extends State<HeartsChangeOverlay>
                         borderRadius: BorderRadius.circular(24),
                         boxShadow: [
                           BoxShadow(
-                            color: (widget.gained ? AppColors.success : AppColors.error)
-                                .withOpacity(0.5),
+                            color:
+                                (widget.gained
+                                        ? AppColors.success
+                                        : AppColors.error)
+                                    .withOpacity(0.5),
                             blurRadius: 30,
                             spreadRadius: 10,
                           ),
@@ -183,9 +158,7 @@ class _HeartsChangeOverlayState extends State<HeartsChangeOverlay>
                           ),
                           const SizedBox(height: 8),
                           Text(
-                            widget.gained
-                                ? 'Great job! 🎉'
-                                : 'Keep trying! 💪',
+                            widget.gained ? 'Great job! 🎉' : 'Keep trying! 💪',
                             style: const TextStyle(
                               fontSize: 16,
                               color: Colors.white70,
@@ -243,13 +216,14 @@ class _HeartsStatusBannerState extends ConsumerState<HeartsStatusBanner> {
   Widget build(BuildContext context) {
     final profile = ref.watch(userProfileProvider).value;
     final heartsService = ref.watch(heartsServiceProvider);
-    
+
     if (profile == null) return widget.child;
 
     final timeUntilRefill = heartsService.getTimeUntilNextRefill(profile);
-    final showBanner = profile.hearts < HeartsConfig.maxHearts && 
-                       timeUntilRefill != null && 
-                       widget.showTimer;
+    final showBanner =
+        profile.hearts < HeartsConfig.maxHearts &&
+        timeUntilRefill != null &&
+        widget.showTimer;
 
     return Stack(
       children: [
@@ -269,11 +243,7 @@ class _HeartsStatusBannerState extends ConsumerState<HeartsStatusBanner> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Icon(
-                      Icons.favorite,
-                      color: Colors.white,
-                      size: 16,
-                    ),
+                    const Icon(Icons.favorite, color: Colors.white, size: 16),
                     const SizedBox(width: 8),
                     Text(
                       'Next heart in ${heartsService.formatTimeRemaining(timeUntilRefill)}',
@@ -299,11 +269,11 @@ mixin HeartsScreenMixin<T extends ConsumerStatefulWidget> on ConsumerState<T> {
   Future<bool> consumeHeart() async {
     final heartsService = ref.read(heartsServiceProvider);
     final success = await heartsService.loseHeart();
-    
+
     if (success && mounted) {
       await showHeartsChangeOverlay(context, gained: false);
     }
-    
+
     return success;
   }
 
@@ -311,11 +281,11 @@ mixin HeartsScreenMixin<T extends ConsumerStatefulWidget> on ConsumerState<T> {
   Future<bool> awardHeart() async {
     final heartsService = ref.read(heartsServiceProvider);
     final success = await heartsService.gainHeart();
-    
+
     if (success && mounted) {
       await showHeartsChangeOverlay(context, gained: true);
     }
-    
+
     return success;
   }
 

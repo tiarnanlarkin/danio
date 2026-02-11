@@ -16,10 +16,13 @@ class _GlossaryScreenState extends State<GlossaryScreen> {
     var results = _allTerms;
 
     if (_searchQuery.isNotEmpty) {
-      results = results.where((t) =>
-        t.term.toLowerCase().contains(_searchQuery.toLowerCase()) ||
-        t.definition.toLowerCase().contains(_searchQuery.toLowerCase())
-      ).toList();
+      results = results
+          .where(
+            (t) =>
+                t.term.toLowerCase().contains(_searchQuery.toLowerCase()) ||
+                t.definition.toLowerCase().contains(_searchQuery.toLowerCase()),
+          )
+          .toList();
     }
 
     if (_selectedCategory != null) {
@@ -32,7 +35,8 @@ class _GlossaryScreenState extends State<GlossaryScreen> {
   @override
   Widget build(BuildContext context) {
     final terms = _filteredTerms;
-    final categories = _allTerms.map((t) => t.category).toSet().toList()..sort();
+    final categories = _allTerms.map((t) => t.category).toSet().toList()
+      ..sort();
 
     return Scaffold(
       appBar: AppBar(title: const Text('Glossary')),
@@ -44,7 +48,9 @@ class _GlossaryScreenState extends State<GlossaryScreen> {
               decoration: InputDecoration(
                 hintText: 'Search terms...',
                 prefixIcon: const Icon(Icons.search),
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
                 filled: true,
               ),
               onChanged: (v) => setState(() => _searchQuery = v),
@@ -62,16 +68,20 @@ class _GlossaryScreenState extends State<GlossaryScreen> {
                   onSelected: (_) => setState(() => _selectedCategory = null),
                 ),
                 const SizedBox(width: 8),
-                ...categories.map((c) => Padding(
-                  padding: const EdgeInsets.only(right: 8),
-                  child: FilterChip(
-                    label: Text(c),
-                    selected: _selectedCategory == c,
-                    onSelected: (_) => setState(() => 
-                      _selectedCategory = _selectedCategory == c ? null : c
+                ...categories.map(
+                  (c) => Padding(
+                    padding: const EdgeInsets.only(right: 8),
+                    child: FilterChip(
+                      label: Text(c),
+                      selected: _selectedCategory == c,
+                      onSelected: (_) => setState(
+                        () => _selectedCategory = _selectedCategory == c
+                            ? null
+                            : c,
+                      ),
                     ),
                   ),
-                )),
+                ),
               ],
             ),
           ),
@@ -80,7 +90,10 @@ class _GlossaryScreenState extends State<GlossaryScreen> {
 
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Text('${terms.length} terms', style: AppTypography.bodySmall),
+            child: Text(
+              '${terms.length} terms',
+              style: AppTypography.bodySmall,
+            ),
           ),
 
           Expanded(
@@ -112,14 +125,24 @@ class _TermCard extends StatelessWidget {
           children: [
             Row(
               children: [
-                Expanded(child: Text(term.term, style: AppTypography.labelLarge)),
+                Expanded(
+                  child: Text(term.term, style: AppTypography.labelLarge),
+                ),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 2,
+                  ),
                   decoration: BoxDecoration(
                     color: AppColors.primary.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: Text(term.category, style: AppTypography.bodySmall.copyWith(color: AppColors.primary)),
+                  child: Text(
+                    term.category,
+                    style: AppTypography.bodySmall.copyWith(
+                      color: AppColors.primary,
+                    ),
+                  ),
                 ),
               ],
             ),
@@ -129,7 +152,9 @@ class _TermCard extends StatelessWidget {
               const SizedBox(height: 4),
               Text(
                 'Example: ${term.example}',
-                style: AppTypography.bodySmall.copyWith(fontStyle: FontStyle.italic),
+                style: AppTypography.bodySmall.copyWith(
+                  fontStyle: FontStyle.italic,
+                ),
               ),
             ],
           ],
@@ -157,61 +182,72 @@ final _allTerms = [
   // Water Chemistry
   const _GlossaryTerm(
     term: 'Ammonia (NH₃)',
-    definition: 'Toxic compound produced by fish waste, decaying matter, and uneaten food. Should always be 0 ppm in a cycled tank.',
+    definition:
+        'Toxic compound produced by fish waste, decaying matter, and uneaten food. Should always be 0 ppm in a cycled tank.',
     category: 'Chemistry',
   ),
   const _GlossaryTerm(
     term: 'Nitrite (NO₂)',
-    definition: 'Intermediate product in the nitrogen cycle. Produced when bacteria convert ammonia. Toxic — should be 0 ppm.',
+    definition:
+        'Intermediate product in the nitrogen cycle. Produced when bacteria convert ammonia. Toxic — should be 0 ppm.',
     category: 'Chemistry',
   ),
   const _GlossaryTerm(
     term: 'Nitrate (NO₃)',
-    definition: 'End product of nitrogen cycle. Less toxic but builds up over time. Removed by water changes and plants.',
+    definition:
+        'End product of nitrogen cycle. Less toxic but builds up over time. Removed by water changes and plants.',
     category: 'Chemistry',
     example: 'Keep below 40 ppm with regular water changes.',
   ),
   const _GlossaryTerm(
     term: 'pH',
-    definition: 'Measure of water acidity/alkalinity. Scale 0-14, with 7 neutral. Most fish prefer 6.5-7.5.',
+    definition:
+        'Measure of water acidity/alkalinity. Scale 0-14, with 7 neutral. Most fish prefer 6.5-7.5.',
     category: 'Chemistry',
   ),
   const _GlossaryTerm(
     term: 'GH (General Hardness)',
-    definition: 'Measure of dissolved minerals (calcium, magnesium). Affects fish osmoregulation and plant health.',
+    definition:
+        'Measure of dissolved minerals (calcium, magnesium). Affects fish osmoregulation and plant health.',
     category: 'Chemistry',
     example: 'Soft water: 0-8 dGH. Hard water: 12+ dGH.',
   ),
   const _GlossaryTerm(
     term: 'KH (Carbonate Hardness)',
-    definition: 'Buffering capacity of water. Prevents pH swings. Low KH can cause pH crashes.',
+    definition:
+        'Buffering capacity of water. Prevents pH swings. Low KH can cause pH crashes.',
     category: 'Chemistry',
   ),
   const _GlossaryTerm(
     term: 'TDS',
-    definition: 'Total Dissolved Solids. Measures all dissolved substances in water. Higher TDS = more minerals.',
+    definition:
+        'Total Dissolved Solids. Measures all dissolved substances in water. Higher TDS = more minerals.',
     category: 'Chemistry',
   ),
   const _GlossaryTerm(
     term: 'Buffering',
-    definition: 'Water\'s ability to resist pH changes. Higher KH = better buffering.',
+    definition:
+        'Water\'s ability to resist pH changes. Higher KH = better buffering.',
     category: 'Chemistry',
   ),
 
   // Nitrogen Cycle
   const _GlossaryTerm(
     term: 'Nitrogen Cycle',
-    definition: 'Process by which beneficial bacteria convert ammonia → nitrite → nitrate. Essential for healthy tanks.',
+    definition:
+        'Process by which beneficial bacteria convert ammonia → nitrite → nitrate. Essential for healthy tanks.',
     category: 'Cycling',
   ),
   const _GlossaryTerm(
     term: 'Cycling',
-    definition: 'Establishing beneficial bacteria in a new tank. Takes 4-8 weeks.',
+    definition:
+        'Establishing beneficial bacteria in a new tank. Takes 4-8 weeks.',
     category: 'Cycling',
   ),
   const _GlossaryTerm(
     term: 'Fishless Cycling',
-    definition: 'Cycling a tank using ammonia without fish. Safer and more reliable.',
+    definition:
+        'Cycling a tank using ammonia without fish. Safer and more reliable.',
     category: 'Cycling',
   ),
   const _GlossaryTerm(
@@ -221,34 +257,40 @@ final _allTerms = [
   ),
   const _GlossaryTerm(
     term: 'Mini Cycle',
-    definition: 'Temporary ammonia/nitrite spike after disturbing filter media or adding too many fish.',
+    definition:
+        'Temporary ammonia/nitrite spike after disturbing filter media or adding too many fish.',
     category: 'Cycling',
   ),
   const _GlossaryTerm(
     term: 'Beneficial Bacteria',
-    definition: 'Bacteria that convert ammonia to nitrite (Nitrosomonas) and nitrite to nitrate (Nitrobacter).',
+    definition:
+        'Bacteria that convert ammonia to nitrite (Nitrosomonas) and nitrite to nitrate (Nitrobacter).',
     category: 'Cycling',
   ),
 
   // Equipment
   const _GlossaryTerm(
     term: 'HOB Filter',
-    definition: 'Hang-On-Back filter. Hangs on tank rim, draws water up and returns via waterfall.',
+    definition:
+        'Hang-On-Back filter. Hangs on tank rim, draws water up and returns via waterfall.',
     category: 'Equipment',
   ),
   const _GlossaryTerm(
     term: 'Canister Filter',
-    definition: 'External filter with large media capacity. Connected via hoses.',
+    definition:
+        'External filter with large media capacity. Connected via hoses.',
     category: 'Equipment',
   ),
   const _GlossaryTerm(
     term: 'Sponge Filter',
-    definition: 'Air-driven filter using porous sponge. Great biological filtration, fry-safe.',
+    definition:
+        'Air-driven filter using porous sponge. Great biological filtration, fry-safe.',
     category: 'Equipment',
   ),
   const _GlossaryTerm(
     term: 'Bioload',
-    definition: 'Amount of waste produced by tank inhabitants. High bioload = more filtration needed.',
+    definition:
+        'Amount of waste produced by tank inhabitants. High bioload = more filtration needed.',
     category: 'Equipment',
   ),
   const _GlossaryTerm(
@@ -264,14 +306,16 @@ final _allTerms = [
   ),
   const _GlossaryTerm(
     term: 'Airstone',
-    definition: 'Porous stone that creates fine bubbles when connected to air pump.',
+    definition:
+        'Porous stone that creates fine bubbles when connected to air pump.',
     category: 'Equipment',
   ),
 
   // Fish
   const _GlossaryTerm(
     term: 'Livebearer',
-    definition: 'Fish that gives birth to free-swimming fry rather than laying eggs.',
+    definition:
+        'Fish that gives birth to free-swimming fry rather than laying eggs.',
     category: 'Fish',
     example: 'Guppies, mollies, platies.',
   ),
@@ -282,18 +326,21 @@ final _allTerms = [
   ),
   const _GlossaryTerm(
     term: 'Schooling Fish',
-    definition: 'Fish that naturally swim in coordinated groups. Need 6+ for proper behavior.',
+    definition:
+        'Fish that naturally swim in coordinated groups. Need 6+ for proper behavior.',
     category: 'Fish',
     example: 'Tetras, rasboras, corydoras.',
   ),
   const _GlossaryTerm(
     term: 'Shoaling Fish',
-    definition: 'Fish that prefer to be in groups but don\'t swim in tight formation.',
+    definition:
+        'Fish that prefer to be in groups but don\'t swim in tight formation.',
     category: 'Fish',
   ),
   const _GlossaryTerm(
     term: 'Bottom Dweller',
-    definition: 'Fish that spends most time at tank bottom. Often needs sand substrate.',
+    definition:
+        'Fish that spends most time at tank bottom. Often needs sand substrate.',
     category: 'Fish',
     example: 'Corydoras, loaches, plecos.',
   ),
@@ -309,7 +356,8 @@ final _allTerms = [
   ),
   const _GlossaryTerm(
     term: 'Fin Nipper',
-    definition: 'Fish that bites fins of other fish. Avoid with long-finned tankmates.',
+    definition:
+        'Fish that bites fins of other fish. Avoid with long-finned tankmates.',
     category: 'Fish',
     example: 'Tiger barbs, serpae tetras.',
   ),
@@ -317,25 +365,29 @@ final _allTerms = [
   // Plants
   const _GlossaryTerm(
     term: 'Rhizome',
-    definition: 'Horizontal stem from which roots and leaves grow. Never bury — attach to hardscape.',
+    definition:
+        'Horizontal stem from which roots and leaves grow. Never bury — attach to hardscape.',
     category: 'Plants',
     example: 'Java fern, anubias, bucephalandra.',
   ),
   const _GlossaryTerm(
     term: 'Carpet Plant',
-    definition: 'Low-growing plant that spreads horizontally to cover substrate.',
+    definition:
+        'Low-growing plant that spreads horizontally to cover substrate.',
     category: 'Plants',
     example: 'Monte Carlo, dwarf hairgrass, HC Cuba.',
   ),
   const _GlossaryTerm(
     term: 'Stem Plant',
-    definition: 'Fast-growing plant with leaves along a central stem. Propagated by cuttings.',
+    definition:
+        'Fast-growing plant with leaves along a central stem. Propagated by cuttings.',
     category: 'Plants',
     example: 'Rotala, Ludwigia, water wisteria.',
   ),
   const _GlossaryTerm(
     term: 'Root Tabs',
-    definition: 'Fertilizer capsules placed in substrate for root-feeding plants.',
+    definition:
+        'Fertilizer capsules placed in substrate for root-feeding plants.',
     category: 'Plants',
   ),
   const _GlossaryTerm(
@@ -345,49 +397,58 @@ final _allTerms = [
   ),
   const _GlossaryTerm(
     term: 'Emersed',
-    definition: 'Grown with leaves above water. Many aquarium plants are sold emersed.',
+    definition:
+        'Grown with leaves above water. Many aquarium plants are sold emersed.',
     category: 'Plants',
   ),
   const _GlossaryTerm(
     term: 'Submersed',
-    definition: 'Grown fully underwater. Plants often change form when transitioning.',
+    definition:
+        'Grown fully underwater. Plants often change form when transitioning.',
     category: 'Plants',
   ),
   const _GlossaryTerm(
     term: 'Melt',
-    definition: 'When plant leaves die off, often during transition from emersed to submersed.',
+    definition:
+        'When plant leaves die off, often during transition from emersed to submersed.',
     category: 'Plants',
   ),
 
   // Disease
   const _GlossaryTerm(
     term: 'Ich (White Spot)',
-    definition: 'Common parasite appearing as white salt-grain spots. Highly contagious.',
+    definition:
+        'Common parasite appearing as white salt-grain spots. Highly contagious.',
     category: 'Disease',
   ),
   const _GlossaryTerm(
     term: 'Velvet',
-    definition: 'Parasitic infection appearing as gold dust. Often fatal if untreated.',
+    definition:
+        'Parasitic infection appearing as gold dust. Often fatal if untreated.',
     category: 'Disease',
   ),
   const _GlossaryTerm(
     term: 'Dropsy',
-    definition: 'Symptom of organ failure — swollen body with raised scales (pinecone appearance).',
+    definition:
+        'Symptom of organ failure — swollen body with raised scales (pinecone appearance).',
     category: 'Disease',
   ),
   const _GlossaryTerm(
     term: 'Fin Rot',
-    definition: 'Bacterial infection causing frayed, rotting fins. Usually from poor water quality.',
+    definition:
+        'Bacterial infection causing frayed, rotting fins. Usually from poor water quality.',
     category: 'Disease',
   ),
   const _GlossaryTerm(
     term: 'Flashing',
-    definition: 'Fish rubbing against objects. Sign of irritation, often parasites.',
+    definition:
+        'Fish rubbing against objects. Sign of irritation, often parasites.',
     category: 'Disease',
   ),
   const _GlossaryTerm(
     term: 'Quarantine (QT)',
-    definition: 'Isolating new fish to observe for disease before adding to main tank.',
+    definition:
+        'Isolating new fish to observe for disease before adding to main tank.',
     category: 'Disease',
   ),
 
@@ -399,12 +460,14 @@ final _allTerms = [
   ),
   const _GlossaryTerm(
     term: 'Iwagumi',
-    definition: 'Japanese aquascaping style using rocks as primary focus with carpet plants.',
+    definition:
+        'Japanese aquascaping style using rocks as primary focus with carpet plants.',
     category: 'Aquascaping',
   ),
   const _GlossaryTerm(
     term: 'Nature Style',
-    definition: 'Aquascaping style recreating natural landscapes with plants, rocks, and wood.',
+    definition:
+        'Aquascaping style recreating natural landscapes with plants, rocks, and wood.',
     category: 'Aquascaping',
   ),
   const _GlossaryTerm(
@@ -415,29 +478,34 @@ final _allTerms = [
   ),
   const _GlossaryTerm(
     term: 'Dry Start Method',
-    definition: 'Growing carpet plants emersed before flooding. Promotes rooting.',
+    definition:
+        'Growing carpet plants emersed before flooding. Promotes rooting.',
     category: 'Aquascaping',
   ),
   const _GlossaryTerm(
     term: 'Tannins',
-    definition: 'Brown compounds released by driftwood. Lowers pH, tints water tea-colored.',
+    definition:
+        'Brown compounds released by driftwood. Lowers pH, tints water tea-colored.',
     category: 'Aquascaping',
   ),
 
   // General
   const _GlossaryTerm(
     term: 'Acclimation',
-    definition: 'Gradually adjusting fish to new water parameters when introducing to tank.',
+    definition:
+        'Gradually adjusting fish to new water parameters when introducing to tank.',
     category: 'General',
   ),
   const _GlossaryTerm(
     term: 'Stocking',
-    definition: 'Number and type of fish in a tank. Overstocking causes problems.',
+    definition:
+        'Number and type of fish in a tank. Overstocking causes problems.',
     category: 'General',
   ),
   const _GlossaryTerm(
     term: 'Water Change',
-    definition: 'Removing and replacing portion of tank water. Essential maintenance.',
+    definition:
+        'Removing and replacing portion of tank water. Essential maintenance.',
     category: 'General',
     example: 'Typically 20-30% weekly.',
   ),

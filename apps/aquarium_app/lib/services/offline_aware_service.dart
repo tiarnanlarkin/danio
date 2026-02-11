@@ -26,13 +26,12 @@ class OfflineAwareService {
       // Queue for later sync when offline
       // But also execute locally so the app still works
       await executeNow(); // Execute locally first
-      
+
       // Then queue for backend sync when connection returns
-      await ref.read(syncServiceProvider.notifier).queueAction(
-        type: actionType,
-        data: actionData,
-      );
-      
+      await ref
+          .read(syncServiceProvider.notifier)
+          .queueAction(type: actionType, data: actionData);
+
       return false;
     }
   }
@@ -109,10 +108,7 @@ class OfflineAwareService {
   }) async {
     await executeOrQueue(
       actionType: SyncActionType.profileUpdate,
-      actionData: {
-        ...updates,
-        'timestamp': DateTime.now().toIso8601String(),
-      },
+      actionData: {...updates, 'timestamp': DateTime.now().toIso8601String()},
       executeNow: localUpdate,
     );
   }

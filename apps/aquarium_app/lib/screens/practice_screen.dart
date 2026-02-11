@@ -14,12 +14,12 @@ class PracticeScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final weakLessons = ref.read(userProfileProvider.notifier).getWeakestLessons();
-    
+    final weakLessons = ref
+        .read(userProfileProvider.notifier)
+        .getWeakestLessons();
+
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Practice'),
-      ),
+      appBar: AppBar(title: const Text('Practice')),
       body: weakLessons.isEmpty
           ? _buildEmptyState(context)
           : _buildPracticeList(context, ref, weakLessons),
@@ -41,17 +41,11 @@ class PracticeScreen extends ConsumerWidget {
                 shape: BoxShape.circle,
               ),
               child: const Center(
-                child: Text(
-                  '🎯',
-                  style: TextStyle(fontSize: 56),
-                ),
+                child: Text('🎯', style: TextStyle(fontSize: 56)),
               ),
             ),
             const SizedBox(height: 24),
-            Text(
-              'All caught up!',
-              style: AppTypography.headlineLarge,
-            ),
+            Text('All caught up!', style: AppTypography.headlineLarge),
             const SizedBox(height: 8),
             Text(
               'No lessons need review right now. Your knowledge is fresh!',
@@ -94,7 +88,11 @@ class PracticeScreen extends ConsumerWidget {
             children: [
               Row(
                 children: [
-                  const Icon(Icons.fitness_center, color: Colors.white, size: 32),
+                  const Icon(
+                    Icons.fitness_center,
+                    color: Colors.white,
+                    size: 32,
+                  ),
                   const SizedBox(width: 12),
                   Expanded(
                     child: Column(
@@ -253,7 +251,10 @@ class PracticeScreen extends ConsumerWidget {
                   ),
                 ),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 6,
+                  ),
                   decoration: BoxDecoration(
                     color: AppColors.accent.withOpacity(0.2),
                     borderRadius: BorderRadius.circular(16),
@@ -307,7 +308,9 @@ class PracticeScreen extends ConsumerWidget {
                         child: LinearProgressIndicator(
                           value: strength / 100,
                           backgroundColor: AppColors.surfaceVariant,
-                          valueColor: AlwaysStoppedAnimation<Color>(strengthColor),
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                            strengthColor,
+                          ),
                           minHeight: 8,
                         ),
                       ),
@@ -349,7 +352,7 @@ class PracticeScreen extends ConsumerWidget {
   String _getTimeSinceReview(LessonProgress progress) {
     final referenceDate = progress.lastReviewDate ?? progress.completedDate;
     final daysSince = DateTime.now().difference(referenceDate).inDays;
-    
+
     if (daysSince == 0) return 'Today';
     if (daysSince == 1) return '1 day ago';
     if (daysSince < 7) return '$daysSince days ago';
@@ -397,11 +400,12 @@ class PracticeLessonScreen extends LessonScreen {
 
 class _PracticeLessonScreenState extends ConsumerState<PracticeLessonScreen> {
   bool _showQuiz = false;
-  int _currentQuizQuestion = 0;
-  int _correctAnswers = 0;
-  int? _selectedAnswer;
-  bool _answered = false;
-  bool _quizComplete = false;
+  // Unused quiz state variables - quiz functionality handled elsewhere
+  // int _currentQuizQuestion = 0;
+  // int _correctAnswers = 0;
+  // int? _selectedAnswer;
+  // bool _answered = false;
+  // bool _quizComplete = false;
 
   @override
   Widget build(BuildContext context) {
@@ -413,7 +417,10 @@ class _PracticeLessonScreenState extends ConsumerState<PracticeLessonScreen> {
             padding: const EdgeInsets.only(right: 16),
             child: Center(
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 6,
+                ),
                 decoration: BoxDecoration(
                   color: AppColors.accent.withOpacity(0.2),
                   borderRadius: BorderRadius.circular(16),
@@ -469,10 +476,7 @@ class _PracticeLessonScreenState extends ConsumerState<PracticeLessonScreen> {
             padding: const EdgeInsets.all(20),
             children: [
               // Lesson title
-              Text(
-                widget.lesson.title,
-                style: AppTypography.headlineLarge,
-              ),
+              Text(widget.lesson.title, style: AppTypography.headlineLarge),
               const SizedBox(height: 8),
               Row(
                 children: [
@@ -530,8 +534,8 @@ class _PracticeLessonScreenState extends ConsumerState<PracticeLessonScreen> {
                 widget.lesson.quiz != null
                     ? 'Take Quiz'
                     : widget.isReview
-                        ? 'Complete Review'
-                        : 'Complete Lesson',
+                    ? 'Complete Review'
+                    : 'Complete Lesson',
               ),
             ),
           ),
@@ -546,10 +550,7 @@ class _PracticeLessonScreenState extends ConsumerState<PracticeLessonScreen> {
     // Copying the implementation here for completeness
     switch (section.type) {
       case LessonSectionType.heading:
-        return Text(
-          section.content,
-          style: AppTypography.headlineMedium,
-        );
+        return Text(section.content, style: AppTypography.headlineMedium);
       case LessonSectionType.text:
         return Text(
           section.content,
@@ -708,11 +709,7 @@ class _PracticeLessonScreenState extends ConsumerState<PracticeLessonScreen> {
             borderRadius: BorderRadius.circular(12),
           ),
           child: Center(
-            child: Icon(
-              Icons.image,
-              size: 48,
-              color: AppColors.textHint,
-            ),
+            child: Icon(Icons.image, size: 48, color: AppColors.textHint),
           ),
         );
     }
@@ -734,16 +731,14 @@ class _PracticeLessonScreenState extends ConsumerState<PracticeLessonScreen> {
 
       if (widget.isReview) {
         // Review mode - update lesson progress
-        await ref.read(userProfileProvider.notifier).reviewLesson(
-          widget.lesson.id,
-          xpReward,
-        );
+        await ref
+            .read(userProfileProvider.notifier)
+            .reviewLesson(widget.lesson.id, xpReward);
       } else {
         // Initial completion
-        await ref.read(userProfileProvider.notifier).completeLesson(
-          widget.lesson.id,
-          xpReward,
-        );
+        await ref
+            .read(userProfileProvider.notifier)
+            .completeLesson(widget.lesson.id, xpReward);
       }
 
       // Record activity for streak

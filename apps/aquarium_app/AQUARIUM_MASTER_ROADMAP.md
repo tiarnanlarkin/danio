@@ -1,4 +1,4 @@
-# 🗺️ Aquarium App - Optimized Development Roadmap 2026
+# 🗺️ Aquarium Master Roadmap
 
 **Created:** 2026-02-09  
 **Status:** Active - Battle-Tested & Market-Validated  
@@ -71,190 +71,150 @@ Based on comprehensive analysis of:
 - ✅ Repository audit (93% complete)
 - ✅ Roadmap feasibility study
 - ✅ Competitive market research
+- ✅ **Offline-first architecture** (app works 100% without backend)
 
-### **Timeline:** 6-9 Months to Launch
+### **Timeline:** 4-6 Months to MVP Launch
 
-- **Phase 0.5** - Foundation & Infrastructure (4-8 weeks) **← NEW**
-- **Phase 1** - MVP Feature Polish (6-8 weeks) **← Revised**
-- **Phase 2** - Engagement & Tools (6-8 weeks) **← Revised**
-- **Phase 3** - Community & Social (6-8 weeks) **← Revised**
-- **Phase 3.5** - Monetization (4-6 weeks) **← NEW**
-- **Phase 4** - Advanced Features (Ongoing) **← Revised**
+**Ship faster by building backend only when needed:**
 
----
+- **Phase 1** - MVP Feature Polish (6-8 weeks) **← START HERE**
+- **Phase 2** - Engagement & Tools (6-8 weeks) **← No backend needed**
+- **Phase 2.5** - Backend Infrastructure (4-8 weeks) **← Only when needed for Phase 3**
+- **Phase 3** - Community & Social (6-8 weeks) **← Requires backend**
+- **Phase 3.5** - Monetization (4-6 weeks)
+- **Phase 4** - Advanced Features (Ongoing)
 
-## 🏗️ **PHASE 0.5: Foundation & Infrastructure** (4-8 Weeks)
+### **Why This Order?**
 
-**Priority:** 🔴 **CRITICAL** - Must complete before P1  
-**Why:** Backend, auth, and cloud infrastructure missing from original roadmap
+**✅ Faster MVP Launch:**
+- Ship core features in 12-16 weeks (Phases 1-2)
+- Validate market fit BEFORE infrastructure investment
+- Get users testing and giving feedback earlier
 
-### **Week 1-2: Backend Infrastructure**
+**✅ Backend Only When Needed:**
+- Phases 1-2 work 100% offline (no backend required)
+- Build backend right before Phase 3 (social features)
+- Informed by real user needs from Phases 1-2
 
-**Goal:** Set up cloud backend for sync, social, and image storage
-
-#### Tasks:
-1. **Choose Backend** (2 days)
-   - Options: Firebase, Supabase, AWS Amplify, or custom Node.js
-   - **Recommendation:** Firebase (fastest, well-documented, free tier generous)
-   
-2. **Authentication System** (3 days)
-   - Email/password signup/login
-   - Google Sign-In integration
-   - Apple Sign-In (required for iOS)
-   - Anonymous accounts (for privacy-focused users)
-   
-3. **Firestore Database Structure** (2 days)
-   - User profiles collection
-   - Tanks subcollection (per user)
-   - Livestock subcollection
-   - Logs subcollection
-   - Public data (species database, lessons)
-   
-4. **Cloud Storage Setup** (1 day)
-   - Photo uploads (tank photos, fish photos)
-   - 100MB free tier per user
-   - Image optimization pipeline
-   
-5. **Security Rules** (2 days)
-   - User can only read/write own data
-   - Public read for species database
-   - Rate limiting for API calls
-
-#### Deliverables:
-- ✅ Firebase project configured
-- ✅ Auth flows implemented in app
-- ✅ Firestore schema documented
-- ✅ Cloud Storage integrated
-- ✅ Security rules tested
+**✅ Lower Risk:**
+- Prove concept before infrastructure costs
+- Learn what users actually want
+- Avoid over-engineering
 
 ---
 
-### **Week 3-4: Cloud Sync Implementation**
+## 🔒 **QUALITY GATE SYSTEM** (MANDATORY)
 
-**Goal:** Bidirectional sync between local storage and cloud
+**No phase can be marked complete until all quality gates pass.**
 
-#### Tasks:
-1. **Sync Service Architecture** (3 days)
-   - Last-write-wins strategy (simple, reliable)
-   - Conflict resolution for simultaneous edits
-   - Offline queue for pending changes
-   
-2. **Data Migration** (2 days)
-   - Convert local JSON → Firestore documents
-   - Batch upload for existing users
-   - Rollback strategy if sync fails
-   
-3. **Sync UI Components** (3 days)
-   - "Syncing..." indicator
-   - "Last synced: 2 min ago"
-   - Manual "Sync Now" button
-   - Sync settings (auto-sync on/off, Wi-Fi only)
-   
-4. **Offline Mode Refinement** (2 days)
-   - Queue writes when offline
-   - Sync on reconnect
-   - "Offline mode" banner
-   - Handle sync conflicts gracefully
+### Quality Gate Process for Each Phase:
 
-#### Deliverables:
-- ✅ Bidirectional sync working
-- ✅ Offline queue implemented
-- ✅ Conflict resolution tested
-- ✅ Sync UI polished
+#### **1. Development Complete**
+- [ ] All tasks in phase completed
+- [ ] Code committed and pushed to repo
 
----
+#### **2. Automated Quality Checks** (Tier 1 - Blocking)
+- [ ] **Code Analysis:** `flutter analyze` (zero errors)
+- [ ] **Formatting:** `dart format --set-exit-if-changed` (100% formatted)
+- [ ] **Unit Tests:** All tests passing, ≥70% coverage
+- [ ] **Security Scan:** No vulnerabilities, secrets, or exposed credentials
+- [ ] **Clean Build:** `flutter build apk --debug` succeeds without errors
+- [ ] **Regression Tests:** All previous phase features still working
 
-### **Week 5-6: Notifications & Push Messaging**
+**Document:** `PHASE_[X]_AUTOMATED_CHECKS_REPORT.md`
 
-**Goal:** Reliable push notifications for reminders and engagement
+#### **3. Manual App Testing Workflow**
+- [ ] App built and installed on emulator
+- [ ] **Comprehensive testing:** All features, screens, flows tested
+- [ ] **Screenshots captured:** Evidence of all functionality
+- [ ] **Bugs documented:** Priority-based (P0/P1/P2/P3)
 
-#### Tasks:
-1. **FCM Integration** (2 days)
-   - Firebase Cloud Messaging setup
-   - iOS/Android configurations
-   - Permission requests
-   
-2. **Notification Types** (3 days)
-   - Maintenance reminders (water change, filter cleaning)
-   - Daily goal reminders ("Don't break your streak!")
-   - Heart regeneration ("Your hearts are full!")
-   - Achievement unlocks
-   - Friend activity (optional, opt-in)
-   
-3. **Scheduling System** (2 days)
-   - Cloud Functions for scheduled notifications
-   - User timezone handling
-   - Quiet hours (no notifications 10pm-8am)
-   
-4. **Notification Settings** (2 days)
-   - Enable/disable by type
-   - Quiet hours customization
-   - Frequency settings (daily, weekly, custom)
+**Documents Created:**
+- `PHASE_[X]_TEST_REPORT.md` - Full test results, UX analysis
+- `PHASE_[X]_FIXES_REQUIRED.md` - All bugs with priority, repro steps
 
-#### Deliverables:
-- ✅ Push notifications working (iOS + Android)
-- ✅ 5+ notification types implemented
-- ✅ Scheduling system deployed
-- ✅ User settings respected
+#### **4. Fix All Critical & High Priority Issues**
+- [ ] **P0 (Critical):** All blocking bugs MUST be fixed
+- [ ] **P1 (High Priority):** All important bugs MUST be fixed
+- [ ] **P2 (Medium):** Triaged (fix now or defer to backlog)
+- [ ] **P3 (Low):** Triaged (fix now or defer to backlog)
+
+#### **5. Verify Fixes**
+- [ ] App re-tested after fixes
+- [ ] All fixes verified working
+- [ ] No new bugs introduced
+- [ ] Updated test report confirms fixes
+
+#### **6. Phase Complete ✅**
+- All checkboxes above ticked
+- Phase status changed to 🟢 Complete
+- Ready to proceed to next phase
+
+### **Molt's Role in Quality Gates:**
+
+**Proactive Enforcement:**
+- Automatically runs quality checks at end of each phase
+- Creates all required documents (test reports, fixes lists)
+- Guides fix process by priority
+- **Blocks progression** if critical/high priority fixes incomplete
+- Updates all checkboxes when phase truly complete
+
+**Exception:** User explicitly decides to defer non-critical fixes to backlog (must document why)
 
 ---
 
-### **Week 7-8: Image Storage & Gallery Enhancement**
+## 📱 **APP TESTING WORKFLOW** (Reference)
 
-**Goal:** Reliable photo uploads, compression, and beautiful galleries
+**Full workflow documented in:** `/home/tiarnanlarkin/clawd/memory/APP_DEVELOPMENT_TESTING_WORKFLOW.md`
 
-#### Tasks:
-1. **Image Upload Flow** (3 days)
-   - Camera integration (take photo)
-   - Gallery picker (choose existing)
-   - Image compression (reduce file size)
-   - Upload to Cloud Storage
-   - Progress indicator
-   
-2. **Photo Gallery Fix** (2 days)
-   - Currently at 90% (audit finding)
-   - Load images from Cloud Storage URLs
-   - Thumbnail generation
-   - Full-size viewer with pinch-zoom
-   - Delete/reorder photos
-   
-3. **Before/After Feature** (2 days)
-   - Side-by-side comparison view
-   - Slider to compare
-   - Share feature (export as single image)
-   
-4. **Photo Timeline** (1 day)
-   - Chronological view of tank evolution
-   - Monthly grid layout
-   - "1 year ago today" memories
+### Quick Testing Process:
 
-#### Deliverables:
-- ✅ Photo uploads working reliably
-- ✅ Gallery fully functional (100%)
-- ✅ Before/after comparisons beautiful
-- ✅ Timeline view engaging
+1. **Build App**
+   ```bash
+   /home/tiarnanlarkin/flutter/bin/flutter build apk --debug
+   ```
 
----
+2. **Install on Emulator**
+   ```bash
+   adb install -r "path/to/app-debug.apk"
+   ```
 
-### **Phase 0.5 Summary**
+3. **Comprehensive Testing**
+   - Navigate through all tabs/screens
+   - Test all interactions (buttons, forms, gestures)
+   - Capture screenshots of every screen
+   - Document bugs, UX issues, performance notes
 
-**Duration:** 4-8 weeks (solo developer, full-time)  
-**Cost:** $0 (Firebase free tier sufficient for early users)  
-**Impact:** Unlocks all social, sync, and community features in later phases
+4. **Create Deliverables**
+   - Test report (comprehensive analysis)
+   - Fixes required (priority-based bug list)
+   - Screenshots (evidence of testing)
 
-**✅ Completion Criteria:**
-- Auth system working (3 providers)
-- Cloud sync bidirectional
-- Push notifications delivering
-- Photos uploading/displaying
-- 100% offline-capable with sync on reconnect
+5. **Fix → Verify → Complete**
+   - Work through fixes by priority
+   - Re-test to verify
+   - Update all checkboxes
+
+### Testing Checklist:
+- [ ] Onboarding flow
+- [ ] Main features (all tabs)
+- [ ] Forms & validation
+- [ ] Settings & configuration
+- [ ] Empty states
+- [ ] Error states
+- [ ] Edge cases
 
 ---
 
-## 🚀 **PHASE 1: MVP Feature Polish** (6-8 Weeks)
+## 🚀 **PHASE 1: MVP Feature Polish** (6-8 Weeks) **← START HERE**
 
-**Priority:** 🔴 High  
-**Goal:** Polish existing 93% complete codebase to 100% production-ready
+**Priority:** 🔴 **CRITICAL** - Ship core features first  
+**Why:** App works 100% offline - no backend needed yet!
+
+**Note:** Backend infrastructure (Firebase) moved to **Phase 2.5** (after Phase 2, before Phase 3).  
+We build it only when needed for social features.
+
+---
 
 ### **Week 1-2: Production Polish (Critical Gaps)**
 
@@ -407,6 +367,8 @@ Based on repository audit findings:
 **Features Delivered:** 20+ polish items + 18 new lessons  
 **Key Outcome:** Production-ready MVP that's **better than all competitors**
 
+**Status:** 🔴 Not Started
+
 **Competitive Position After Phase 1:**
 - ✅ Better UX than Aquarimate (modern, not spreadsheet)
 - ✅ More privacy than AquaHome (opt-in social)
@@ -414,7 +376,36 @@ Based on repository audit findings:
 - ✅ **UNIQUE:** Educational content (30 lessons vs 0 for all competitors)
 - ✅ **UNIQUE:** Gamification (XP, streaks, achievements)
 
-**Launch Readiness:** 🟢 **READY FOR BETA TESTING**
+### 🔒 Quality Gate Checkpoints
+
+#### Development Tasks Complete
+- [ ] Production polish (error states, forms, navigation)
+- [ ] Teaching system enhancement (18+ lessons, assessment tool)
+- [ ] Tank management refinement (quick-add, better UI)
+- [ ] Onboarding redesign (interactive, personalized)
+
+#### Automated Quality Checks (Tier 1 - Blocking)
+- [ ] Code analysis passing (`flutter analyze`)
+- [ ] All tests passing, ≥70% coverage
+- [ ] Security scan clean
+- [ ] Clean build succeeds
+- [ ] Regression tests passing
+- [ ] **Document:** `PHASE_1_AUTOMATED_CHECKS_REPORT.md`
+
+#### Manual App Testing
+- [ ] App testing workflow run
+- [ ] **Documents:** 
+  - `PHASE_1_TEST_REPORT.md`
+  - `PHASE_1_FIXES_REQUIRED.md`
+
+#### All Fixes Complete
+- [ ] All P0 (Critical) fixes completed
+- [ ] All P1 (High) fixes completed
+- [ ] P2/P3 fixes triaged
+- [ ] Fixes verified (app re-tested)
+
+**Phase Complete:** ❌ NO  
+**Launch Readiness:** 🔴 **PENDING QUALITY GATE**
 
 ---
 
@@ -583,17 +574,246 @@ Based on repository audit findings:
 **Features Delivered:** 30+ engagement features + tool enhancements  
 **Key Outcome:** Daily engagement on par with Duolingo (5+ sessions/week)
 
+**Status:** 🔴 Not Started
+
 **Competitive Position After Phase 2:**
 - ✅ **Engagement:** 60% 7-day retention (vs 20% industry, 55% Duolingo)
 - ✅ **Tools:** Most comprehensive calculator suite in market
 - ✅ **Gamification:** Only app with streaks, hearts, challenges
 - ✅ **Utility:** Better than Aquarimate for daily use
 
+### 🔒 Quality Gate Checkpoints
+
+#### Development Tasks Complete
+- [ ] Hearts system polish (animations, rewards, messaging)
+- [ ] XP system enhancement (multipliers, leaderboards, milestones)
+- [ ] Achievement system (100+ achievements, badges, tiers)
+- [ ] Streak system (freeze shop, daily goals, challenges)
+- [ ] Workshop & tools expansion (enhanced calculators)
+
+#### Automated Quality Checks (Tier 1 - Blocking)
+- [ ] Code analysis passing
+- [ ] All tests passing, ≥70% coverage
+- [ ] Security scan clean
+- [ ] Clean build succeeds
+- [ ] Regression tests passing
+- [ ] **Document:** `PHASE_2_AUTOMATED_CHECKS_REPORT.md`
+
+#### Manual App Testing
+- [ ] App testing workflow run
+- [ ] **Documents:** 
+  - `PHASE_2_TEST_REPORT.md`
+  - `PHASE_2_FIXES_REQUIRED.md`
+
+#### All Fixes Complete
+- [ ] All P0 (Critical) fixes completed
+- [ ] All P1 (High) fixes completed
+- [ ] P2/P3 fixes triaged
+- [ ] Fixes verified
+
+**Phase Complete:** ❌ NO
+
+---
+
+## 🏗️ **PHASE 2.5: Backend Infrastructure** (4-8 Weeks)
+
+**Priority:** 🟡 **Medium** - Build right before Phase 3  
+**Why:** Phases 1-2 work 100% offline. Backend only needed for social features (Phase 3).
+
+**When to Start:** After Phase 2 complete, before beginning Phase 3 work.
+
+### **Week 1-2: Backend Infrastructure**
+
+**Goal:** Set up cloud backend for sync, social, and image storage
+
+#### Tasks:
+1. **Choose Backend** (2 days)
+   - Options: Firebase, Supabase, AWS Amplify, or custom Node.js
+   - **Recommendation:** Firebase (fastest, well-documented, free tier generous)
+   
+2. **Authentication System** (3 days)
+   - Email/password signup/login
+   - Google Sign-In integration
+   - Apple Sign-In (required for iOS)
+   - Anonymous accounts (for privacy-focused users)
+   
+3. **Firestore Database Structure** (2 days)
+   - User profiles collection
+   - Tanks subcollection (per user)
+   - Livestock subcollection
+   - Logs subcollection
+   - Public data (species database, lessons)
+   
+4. **Cloud Storage Setup** (1 day)
+   - Photo uploads (tank photos, fish photos)
+   - 100MB free tier per user
+   - Image optimization pipeline
+   
+5. **Security Rules** (2 days)
+   - User can only read/write own data
+   - Public read for species database
+   - Rate limiting for API calls
+
+#### Deliverables:
+- ✅ Firebase project configured
+- ✅ Auth flows implemented in app
+- ✅ Firestore schema documented
+- ✅ Cloud Storage integrated
+- ✅ Security rules tested
+
+---
+
+### **Week 3-4: Cloud Sync Implementation**
+
+**Goal:** Bidirectional sync between local storage and cloud
+
+#### Tasks:
+1. **Sync Service Architecture** (3 days)
+   - Last-write-wins strategy (simple, reliable)
+   - Conflict resolution for simultaneous edits
+   - Offline queue for pending changes
+   
+2. **Data Migration** (2 days)
+   - Convert local JSON → Firestore documents
+   - Batch upload for existing users
+   - Rollback strategy if sync fails
+   
+3. **Sync UI Components** (3 days)
+   - "Syncing..." indicator
+   - "Last synced: 2 min ago"
+   - Manual "Sync Now" button
+   - Sync settings (auto-sync on/off, Wi-Fi only)
+   
+4. **Offline Mode Refinement** (2 days)
+   - Queue writes when offline
+   - Sync on reconnect
+   - "Offline mode" banner
+   - Handle sync conflicts gracefully
+
+#### Deliverables:
+- ✅ Bidirectional sync working
+- ✅ Offline queue implemented
+- ✅ Conflict resolution tested
+- ✅ Sync UI polished
+
+---
+
+### **Week 5-6: Notifications & Push Messaging**
+
+**Goal:** Reliable push notifications for reminders and engagement
+
+#### Tasks:
+1. **FCM Integration** (2 days)
+   - Firebase Cloud Messaging setup
+   - iOS/Android configurations
+   - Permission requests
+   
+2. **Notification Types** (3 days)
+   - Maintenance reminders (water change, filter cleaning)
+   - Daily goal reminders ("Don't break your streak!")
+   - Heart regeneration ("Your hearts are full!")
+   - Achievement unlocks
+   - Friend activity (optional, opt-in)
+   
+3. **Scheduling System** (2 days)
+   - Cloud Functions for scheduled notifications
+   - User timezone handling
+   - Quiet hours (no notifications 10pm-8am)
+   
+4. **Notification Settings** (2 days)
+   - Enable/disable by type
+   - Quiet hours customization
+   - Frequency settings (daily, weekly, custom)
+
+#### Deliverables:
+- ✅ Push notifications working (iOS + Android)
+- ✅ 5+ notification types implemented
+- ✅ Scheduling system deployed
+- ✅ User settings respected
+
+---
+
+### **Week 7-8: Image Storage & Gallery Enhancement**
+
+**Goal:** Reliable photo uploads, compression, and beautiful galleries
+
+#### Tasks:
+1. **Image Upload Flow** (3 days)
+   - Camera integration (take photo)
+   - Gallery picker (choose existing)
+   - Image compression (reduce file size)
+   - Upload to Cloud Storage
+   - Progress indicator
+   
+2. **Photo Gallery Fix** (2 days)
+   - Currently at 90% (audit finding)
+   - Load images from Cloud Storage URLs
+   - Thumbnail generation
+   - Full-size viewer with pinch-zoom
+   - Delete/reorder photos
+   
+3. **Before/After Feature** (2 days)
+   - Side-by-side comparison view
+   - Slider to compare
+   - Share feature (export as single image)
+   
+4. **Photo Timeline** (1 day)
+   - Chronological view of tank evolution
+   - Monthly grid layout
+   - "1 year ago today" memories
+
+#### Deliverables:
+- ✅ Photo uploads working reliably
+- ✅ Gallery fully functional (100%)
+- ✅ Before/after comparisons beautiful
+- ✅ Timeline view engaging
+
+---
+
+### **Phase 2.5 Summary**
+
+**Duration:** 4-8 weeks (solo developer, full-time)  
+**Cost:** $0 (Firebase free tier sufficient for early users)  
+**Impact:** Unlocks all social, sync, and community features in Phase 3
+
+**Status:** 🔴 Not Started
+
+### 🔒 Quality Gate Checkpoints
+
+#### Development Tasks Complete
+- [ ] Auth system working (3 providers)
+- [ ] Cloud sync bidirectional
+- [ ] Push notifications delivering
+- [ ] Photos uploading/displaying
+- [ ] 100% offline-capable with sync on reconnect
+
+#### Automated Quality Checks (Tier 1 - Blocking)
+- [ ] Code analysis passing (`flutter analyze`)
+- [ ] All tests passing, ≥70% coverage
+- [ ] Security scan clean (no vulnerabilities/secrets)
+- [ ] Clean build succeeds
+- [ ] Regression tests passing (previous features working)
+- [ ] **Document:** `PHASE_2.5_AUTOMATED_CHECKS_REPORT.md`
+
+#### Manual App Testing
+- [ ] App testing workflow run
+- [ ] **Documents:** 
+  - `PHASE_2.5_TEST_REPORT.md`
+  - `PHASE_2.5_FIXES_REQUIRED.md`
+
+#### All Fixes Complete
+- [ ] All P0 (Critical) fixes completed
+- [ ] All P1 (High) fixes completed
+- [ ] P2/P3 fixes triaged (fixed or deferred)
+- [ ] Fixes verified (app re-tested)
+
+**Phase Complete:** ❌ NO
+
 ---
 
 ## 👥 **PHASE 3: Community & Social** (6-8 Weeks)
 
-**Priority:** 🟡 Medium  
+**Priority:** 🟡 Medium - Requires Phase 2.5 backend complete  
 **Depends On:** Phase 0.5 (backend infrastructure)
 
 **Market Lesson:** AquaHome forced social features → user backlash  
@@ -729,11 +949,43 @@ Based on repository audit findings:
 **Features Delivered:** Full social system (friends, leaderboards, profiles, feed)  
 **Key Outcome:** Community features WITHOUT AquaHome's privacy issues
 
+**Status:** 🔴 Not Started
+
 **Differentiation:**
 - ✅ **Opt-in only** (AquaHome forced social → user backlash)
 - ✅ Privacy-first (default: private profile)
 - ✅ Friends, not strangers (focus on personal connections)
 - ✅ Competition, not comparison (healthy motivation)
+
+### 🔒 Quality Gate Checkpoints
+
+#### Development Tasks Complete
+- [ ] Friends system (add, remove, manage)
+- [ ] Leaderboards (XP, streaks, lessons)
+- [ ] Profile system (customization, privacy controls)
+- [ ] Activity feed (opt-in, curated, privacy-first)
+
+#### Automated Quality Checks (Tier 1 - Blocking)
+- [ ] Code analysis passing
+- [ ] All tests passing, ≥70% coverage
+- [ ] Security scan clean (privacy features verified)
+- [ ] Clean build succeeds
+- [ ] Regression tests passing
+- [ ] **Document:** `PHASE_3_AUTOMATED_CHECKS_REPORT.md`
+
+#### Manual App Testing
+- [ ] App testing workflow run
+- [ ] **Documents:** 
+  - `PHASE_3_TEST_REPORT.md`
+  - `PHASE_3_FIXES_REQUIRED.md`
+
+#### All Fixes Complete
+- [ ] All P0 (Critical) fixes completed
+- [ ] All P1 (High) fixes completed
+- [ ] P2/P3 fixes triaged
+- [ ] Fixes verified
+
+**Phase Complete:** ❌ NO
 
 ---
 
@@ -878,6 +1130,8 @@ Based on market research (competitors charge $9.99 upfront + $9.99/year):
 ### **Phase 3.5 Summary**
 
 **Duration:** 4-6 weeks  
+**Status:** 🔴 Not Started
+
 **Revenue Streams:**
 1. Premium subscriptions ($29.99/year)
 2. Gem packs ($0.99 - $19.99)
@@ -889,6 +1143,36 @@ Based on market research (competitors charge $9.99 upfront + $9.99/year):
 - 5% buy gem packs (50 users, avg $5) → $250/month
 - **Total: $700/month** at 1,000 users
 - **At 10,000 users:** $7,000/month sustainable revenue
+
+### 🔒 Quality Gate Checkpoints
+
+#### Development Tasks Complete
+- [ ] In-app purchases (gem packs, premium subscription)
+- [ ] Gems economy (earn/spend/purchase)
+- [ ] Subscription system (benefits, restore purchases)
+- [ ] Ads integration (free users, non-intrusive placement)
+
+#### Automated Quality Checks (Tier 1 - Blocking)
+- [ ] Code analysis passing
+- [ ] All tests passing, ≥70% coverage
+- [ ] Security scan clean (payment flows secure)
+- [ ] Clean build succeeds
+- [ ] Regression tests passing
+- [ ] **Document:** `PHASE_3.5_AUTOMATED_CHECKS_REPORT.md`
+
+#### Manual App Testing
+- [ ] App testing workflow run (test purchases in sandbox)
+- [ ] **Documents:** 
+  - `PHASE_3.5_TEST_REPORT.md`
+  - `PHASE_3.5_FIXES_REQUIRED.md`
+
+#### All Fixes Complete
+- [ ] All P0 (Critical) fixes completed
+- [ ] All P1 (High) fixes completed
+- [ ] P2/P3 fixes triaged
+- [ ] Fixes verified
+
+**Phase Complete:** ❌ NO
 
 ---
 
@@ -991,10 +1275,43 @@ Based on market research (competitors charge $9.99 upfront + $9.99/year):
 **Features:** Advanced, differentiating capabilities  
 **Investment:** Higher (AI, integrations, hardware)
 
+**Status:** 🔴 Not Started
+
 **When to Start Phase 4:**
 - After 10,000+ active users (market validation)
 - After revenue > $5,000/month (can fund development)
 - After feature requests show demand (user-driven roadmap)
+
+### 🔒 Quality Gate Checkpoints
+
+#### Development Tasks Complete
+- [ ] Selected Phase 4 features (user-driven)
+- [ ] AI features (photo ID, problem diagnosis)
+- [ ] Integrations (smart devices, e-commerce)
+- [ ] Advanced social features (video, live streams)
+
+#### Automated Quality Checks (Tier 1 - Blocking)
+- [ ] Code analysis passing
+- [ ] All tests passing, ≥70% coverage
+- [ ] Security scan clean
+- [ ] Clean build succeeds
+- [ ] Regression tests passing
+- [ ] **Document:** `PHASE_4_AUTOMATED_CHECKS_REPORT.md`
+
+#### Manual App Testing
+- [ ] App testing workflow run
+- [ ] **Documents:** 
+  - `PHASE_4_TEST_REPORT.md`
+  - `PHASE_4_FIXES_REQUIRED.md`
+
+#### All Fixes Complete
+- [ ] All P0 (Critical) fixes completed
+- [ ] All P1 (High) fixes completed
+- [ ] P2/P3 fixes triaged
+- [ ] Fixes verified
+
+**Phase Complete:** ❌ NO  
+**Note:** Phase 4 features are added iteratively based on user demand
 
 ---
 
@@ -1184,12 +1501,14 @@ Based on industry benchmarks + Duolingo comparison:
 
 ### **The Path Forward:**
 
-1. ✅ **Week 1:** Start Phase 0.5 (backend infrastructure)
-2. ✅ **Weeks 5-12:** Complete Phase 1 (MVP polish)
-3. ✅ **Weeks 13-20:** Ship Phase 2 (engagement)
-4. ✅ **Weeks 21-28:** Launch Phase 3 (community)
-5. ✅ **Weeks 29-34:** Enable Phase 3.5 (monetization)
-6. 🚀 **Launch & Iterate**
+1. ✅ **Weeks 1-8:** Phase 1 (MVP polish) - Ship core features first!
+2. ✅ **Weeks 9-16:** Phase 2 (engagement) - Add gamification depth
+3. ✅ **Weeks 17-24:** Phase 2.5 (backend) - Build infrastructure for social
+4. ✅ **Weeks 25-32:** Phase 3 (community) - Launch social features
+5. ✅ **Weeks 33-38:** Phase 3.5 (monetization) - Turn on revenue
+6. 🚀 **Launch & Iterate** (Phase 4 ongoing)
+
+**Key Insight:** By delaying backend until needed, we ship MVP in 12-16 weeks instead of 16-24 weeks. Validate demand first, then invest in infrastructure.
 
 ---
 
@@ -1200,6 +1519,21 @@ Based on industry benchmarks + Duolingo comparison:
 
 ---
 
-**Next Step:** Begin Phase 0.5 (Firebase setup + auth) — estimated 1-2 days for initial setup.
+**Next Step:** Begin Phase 1 (MVP Polish) — estimated 6-8 weeks to production-ready MVP.
 
-**Questions? Concerns? Let's discuss before diving in.**
+**Ready to start?**
+
+---
+
+## 📚 **Quality Gate Documentation**
+
+**Full testing workflow:** `/home/tiarnanlarkin/clawd/memory/APP_DEVELOPMENT_TESTING_WORKFLOW.md`  
+**Quality gate system:** `/home/tiarnanlarkin/clawd/memory/ROADMAP_QUALITY_GATE_SYSTEM.md`  
+**Automated checks:** `/home/tiarnanlarkin/clawd/memory/AUTOMATED_QUALITY_CHECKS_SYSTEM.md`
+
+**Remember:** No phase is complete until all quality gate checkboxes are ticked. This ensures we build with confidence and ship with quality.
+
+---
+
+**Last Updated:** 2026-02-09  
+**Maintained By:** Molt (AI Agent) + Tiarnan Larkin

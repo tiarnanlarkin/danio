@@ -2,7 +2,6 @@
 /// Shows full description, progress, unlock date, and XP reward
 library;
 
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../models/achievements.dart';
@@ -98,10 +97,7 @@ class AchievementDetailModal extends StatelessWidget {
 
             // Rarity badge
             Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 16,
-                vertical: 6,
-              ),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
               decoration: BoxDecoration(
                 color: rarityColor,
                 borderRadius: BorderRadius.circular(16),
@@ -121,13 +117,11 @@ class AchievementDetailModal extends StatelessWidget {
 
             // Name
             Text(
-              achievement.isHidden && isLocked
-                  ? '???'
-                  : achievement.name,
+              achievement.isHidden && isLocked ? '???' : achievement.name,
               style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: isLocked ? Colors.grey : null,
-                  ),
+                fontWeight: FontWeight.bold,
+                color: isLocked ? Colors.grey : null,
+              ),
               textAlign: TextAlign.center,
             ),
 
@@ -154,8 +148,8 @@ class AchievementDetailModal extends StatelessWidget {
                   ? 'This is a hidden achievement. Complete specific actions to reveal and unlock it!'
                   : achievement.description,
               style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    color: isLocked ? Colors.grey : Colors.black87,
-                  ),
+                color: isLocked ? Colors.grey : Colors.black87,
+              ),
               textAlign: TextAlign.center,
             ),
 
@@ -176,13 +170,13 @@ class AchievementDetailModal extends StatelessWidget {
                       children: [
                         Text(
                           'Progress',
-                          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                fontWeight: FontWeight.bold,
-                              ),
+                          style: Theme.of(context).textTheme.titleMedium
+                              ?.copyWith(fontWeight: FontWeight.bold),
                         ),
                         Text(
                           '${progress.currentCount} / ${achievement.targetCount}',
-                          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                          style: Theme.of(context).textTheme.titleMedium
+                              ?.copyWith(
                                 fontWeight: FontWeight.bold,
                                 color: rarityColor,
                               ),
@@ -202,9 +196,9 @@ class AchievementDetailModal extends StatelessWidget {
                     const SizedBox(height: 8),
                     Text(
                       '${(progressPercent * 100).toStringAsFixed(1)}% Complete',
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: Colors.grey,
-                          ),
+                      style: Theme.of(
+                        context,
+                      ).textTheme.bodySmall?.copyWith(color: Colors.grey),
                     ),
                   ],
                 ),
@@ -231,23 +225,18 @@ class AchievementDetailModal extends StatelessWidget {
                 children: [
                   Column(
                     children: [
-                      const Icon(
-                        Icons.star,
-                        color: Colors.amber,
-                        size: 32,
-                      ),
+                      const Icon(Icons.star, color: Colors.amber, size: 32),
                       const SizedBox(height: 4),
                       Text(
                         '${achievement.rarity.xpReward} XP',
-                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                              fontWeight: FontWeight.bold,
-                            ),
+                        style: Theme.of(context).textTheme.titleMedium
+                            ?.copyWith(fontWeight: FontWeight.bold),
                       ),
                       Text(
                         'Reward',
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                              color: Colors.grey,
-                            ),
+                        style: Theme.of(
+                          context,
+                        ).textTheme.bodySmall?.copyWith(color: Colors.grey),
                       ),
                     ],
                   ),
@@ -267,15 +256,14 @@ class AchievementDetailModal extends StatelessWidget {
                         const SizedBox(height: 4),
                         Text(
                           DateFormat('MMM d').format(progress.unlockedAt!),
-                          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                fontWeight: FontWeight.bold,
-                              ),
+                          style: Theme.of(context).textTheme.titleMedium
+                              ?.copyWith(fontWeight: FontWeight.bold),
                         ),
                         Text(
                           'Unlocked',
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                color: Colors.grey,
-                              ),
+                          style: Theme.of(
+                            context,
+                          ).textTheme.bodySmall?.copyWith(color: Colors.grey),
                         ),
                       ],
                     ),
@@ -297,10 +285,7 @@ class AchievementDetailModal extends StatelessWidget {
                 ),
                 child: Row(
                   children: [
-                    Icon(
-                      Icons.lock_outline,
-                      color: Colors.orange.shade700,
-                    ),
+                    Icon(Icons.lock_outline, color: Colors.orange.shade700),
                     const SizedBox(width: 12),
                     Expanded(
                       child: Text(
@@ -324,10 +309,7 @@ class AchievementDetailModal extends StatelessWidget {
                 ),
                 child: Row(
                   children: [
-                    Icon(
-                      Icons.check_circle,
-                      color: Colors.green.shade700,
-                    ),
+                    Icon(Icons.check_circle, color: Colors.green.shade700),
                     const SizedBox(width: 12),
                     Expanded(
                       child: Text(

@@ -14,24 +14,24 @@ class StorageCorruptionException implements Exception {
   final String message;
   final String? corruptedFilePath;
   final Object? originalError;
-  
+
   StorageCorruptionException(
     this.message, {
     this.corruptedFilePath,
     this.originalError,
   });
-  
+
   @override
   String toString() => 'StorageCorruptionException: $message';
 }
 
 /// Storage service loading state
 enum StorageState {
-  idle,       // Not yet loaded
-  loading,    // Currently loading
-  loaded,     // Successfully loaded
-  corrupted,  // Failed to load due to corruption
-  ioError,    // Failed to load due to I/O error
+  idle, // Not yet loaded
+  loading, // Currently loading
+  loaded, // Successfully loaded
+  corrupted, // Failed to load due to corruption
+  ioError, // Failed to load due to I/O error
 }
 
 /// Information about a storage error
@@ -41,7 +41,7 @@ class StorageError {
   final String? corruptedFilePath;
   final DateTime timestamp;
   final Object? originalError;
-  
+
   StorageError({
     required this.state,
     required this.message,
@@ -49,7 +49,7 @@ class StorageError {
     required this.timestamp,
     this.originalError,
   });
-  
+
   @override
   String toString() => 'StorageError[$state]: $message';
 }
@@ -80,7 +80,8 @@ class LocalJsonStorageService implements StorageService {
   StorageState get state => _state;
   StorageError? get lastError => _lastError;
   bool get isHealthy => _state == StorageState.loaded;
-  bool get hasError => _state == StorageState.corrupted || _state == StorageState.ioError;
+  bool get hasError =>
+      _state == StorageState.corrupted || _state == StorageState.ioError;
 
   final Map<String, Tank> _tanks = {};
   final Map<String, Livestock> _livestock = {};
@@ -93,19 +94,19 @@ class LocalJsonStorageService implements StorageService {
   Future<void> _ensureLoaded() async {
     // If already loaded successfully, return
     if (_state == StorageState.loaded) return;
-    
+
     // If already in error state, throw the stored error
     if (_state == StorageState.corrupted) {
-      throw _lastError!.originalError ?? 
-        StorageCorruptionException(_lastError!.message);
+      throw _lastError!.originalError ??
+          StorageCorruptionException(_lastError!.message);
     }
-    
+
     // If loading is in progress, wait for it
     if (_loadFuture != null) {
       await _loadFuture;
       return;
     }
-    
+
     // Start loading
     _loadFuture = _loadFromDisk();
     await _loadFuture;
@@ -120,10 +121,10 @@ class LocalJsonStorageService implements StorageService {
   Future<void> _loadFromDisk() async {
     _state = StorageState.loading;
     _lastError = null;
-    
+
     try {
       final file = await _dataFile();
-      
+
       // File doesn't exist - this is a fresh install
       if (!await file.exists()) {
         debugPrint('📦 Storage: No data file found, starting fresh');
@@ -144,35 +145,37 @@ class LocalJsonStorageService implements StorageService {
       try {
         final decoded = jsonDecode(raw);
         if (decoded is! Map<String, dynamic>) {
-          throw FormatException('Root JSON is not a Map, got: ${decoded.runtimeType}');
+          throw FormatException(
+            'Root JSON is not a Map, got: ${decoded.runtimeType}',
+          );
         }
         json = decoded;
       } catch (parseError) {
         // P0-2: Save corrupted file as backup before handling error
         final timestamp = DateTime.now().millisecondsSinceEpoch;
         final corruptedPath = '${file.path}.corrupted.$timestamp';
-        
+
         try {
           await file.copy(corruptedPath);
           debugPrint('💾 Corrupted file backed up to: $corruptedPath');
         } catch (backupError) {
           debugPrint('⚠️  Failed to backup corrupted file: $backupError');
         }
-        
+
         // Log detailed error for debugging
         debugPrint('❌ STORAGE ERROR: JSON Parsing Failed');
         debugPrint('   Error: $parseError');
         debugPrint('   File: ${file.path}');
         debugPrint('   Backup: $corruptedPath');
         debugPrint('   Timestamp: ${DateTime.now().toIso8601String()}');
-        
+
         // Store error state
         final error = StorageCorruptionException(
           'Failed to load aquarium data. The storage file appears to be corrupted.',
           corruptedFilePath: corruptedPath,
           originalError: parseError,
         );
-        
+
         _lastError = StorageError(
           state: StorageState.corrupted,
           message: 'JSON parsing failed: ${parseError.toString()}',
@@ -180,7 +183,7 @@ class LocalJsonStorageService implements StorageService {
           timestamp: DateTime.now(),
           originalError: error,
         );
-        
+
         _state = StorageState.corrupted;
         throw error;
       }
@@ -188,35 +191,36 @@ class LocalJsonStorageService implements StorageService {
       // Parse entities with robust error handling
       try {
         _parseAndLoadEntities(json);
-        
+
         _state = StorageState.loaded;
-        debugPrint('✅ Storage loaded successfully: ${_tanks.length} tanks, ${_livestock.length} livestock, ${_equipment.length} equipment');
-        
+        debugPrint(
+          '✅ Storage loaded successfully: ${_tanks.length} tanks, ${_livestock.length} livestock, ${_equipment.length} equipment',
+        );
       } catch (entityError) {
         // Error during entity parsing (malformed data structure)
         final timestamp = DateTime.now().millisecondsSinceEpoch;
         final corruptedPath = '${file.path}.corrupted.$timestamp';
-        
+
         try {
           await file.copy(corruptedPath);
           debugPrint('💾 Corrupted file backed up to: $corruptedPath');
         } catch (backupError) {
           debugPrint('⚠️  Failed to backup corrupted file: $backupError');
         }
-        
+
         debugPrint('❌ STORAGE ERROR: Entity Parsing Failed');
         debugPrint('   Error: $entityError');
         debugPrint('   File: ${file.path}');
         debugPrint('   Backup: $corruptedPath');
         debugPrint('   Timestamp: ${DateTime.now().toIso8601String()}');
-        
+
         // Store error state
         final error = StorageCorruptionException(
           'Failed to load aquarium data. Data structure is corrupted.',
           corruptedFilePath: corruptedPath,
           originalError: entityError,
         );
-        
+
         _lastError = StorageError(
           state: StorageState.corrupted,
           message: 'Entity parsing failed: ${entityError.toString()}',
@@ -224,21 +228,19 @@ class LocalJsonStorageService implements StorageService {
           timestamp: DateTime.now(),
           originalError: error,
         );
-        
+
         _state = StorageState.corrupted;
         throw error;
       }
-      
     } on StorageCorruptionException {
       // Already handled above, just rethrow
       rethrow;
-      
     } catch (e, stackTrace) {
       // Unexpected errors (file I/O, permissions, etc.)
       debugPrint('⚠️  STORAGE ERROR: Unexpected error during load');
       debugPrint('   Error: $e');
       debugPrint('   Stack: $stackTrace');
-      
+
       // Store error but allow service to continue with empty data
       _lastError = StorageError(
         state: StorageState.ioError,
@@ -246,13 +248,13 @@ class LocalJsonStorageService implements StorageService {
         timestamp: DateTime.now(),
         originalError: e,
       );
-      
+
       // Mark as loaded with empty data (soft fail for I/O errors)
       _state = StorageState.loaded;
       debugPrint('⚠️  Continuing with empty data due to I/O error');
     }
   }
-  
+
   /// Parse and load all entities from JSON, with error recovery
   void _parseAndLoadEntities(Map<String, dynamic> json) {
     // Clear existing data
@@ -261,12 +263,13 @@ class LocalJsonStorageService implements StorageService {
     _equipment.clear();
     _logs.clear();
     _tasks.clear();
-    
+
     // Track parsing errors for partial recovery
     final errors = <String>[];
-    
+
     // Parse tanks with individual error handling
-    final tanksJson = (json['tanks'] as Map?)?.cast<String, dynamic>() ?? const {};
+    final tanksJson =
+        (json['tanks'] as Map?)?.cast<String, dynamic>() ?? const {};
     for (final entry in tanksJson.entries) {
       try {
         _tanks[entry.key] = _tankFromJson(entry.value);
@@ -275,9 +278,10 @@ class LocalJsonStorageService implements StorageService {
         debugPrint('⚠️  Skipping corrupted tank: ${entry.key} - $e');
       }
     }
-    
+
     // Parse livestock with individual error handling
-    final livestockJson = (json['livestock'] as Map?)?.cast<String, dynamic>() ?? const {};
+    final livestockJson =
+        (json['livestock'] as Map?)?.cast<String, dynamic>() ?? const {};
     for (final entry in livestockJson.entries) {
       try {
         _livestock[entry.key] = _livestockFromJson(entry.value);
@@ -286,9 +290,10 @@ class LocalJsonStorageService implements StorageService {
         debugPrint('⚠️  Skipping corrupted livestock: ${entry.key} - $e');
       }
     }
-    
+
     // Parse equipment with individual error handling
-    final equipmentJson = (json['equipment'] as Map?)?.cast<String, dynamic>() ?? const {};
+    final equipmentJson =
+        (json['equipment'] as Map?)?.cast<String, dynamic>() ?? const {};
     for (final entry in equipmentJson.entries) {
       try {
         _equipment[entry.key] = _equipmentFromJson(entry.value);
@@ -297,9 +302,10 @@ class LocalJsonStorageService implements StorageService {
         debugPrint('⚠️  Skipping corrupted equipment: ${entry.key} - $e');
       }
     }
-    
+
     // Parse logs with individual error handling
-    final logsJson = (json['logs'] as Map?)?.cast<String, dynamic>() ?? const {};
+    final logsJson =
+        (json['logs'] as Map?)?.cast<String, dynamic>() ?? const {};
     for (final entry in logsJson.entries) {
       try {
         _logs[entry.key] = _logFromJson(entry.value);
@@ -308,9 +314,10 @@ class LocalJsonStorageService implements StorageService {
         debugPrint('⚠️  Skipping corrupted log: ${entry.key} - $e');
       }
     }
-    
+
     // Parse tasks with individual error handling
-    final tasksJson = (json['tasks'] as Map?)?.cast<String, dynamic>() ?? const {};
+    final tasksJson =
+        (json['tasks'] as Map?)?.cast<String, dynamic>() ?? const {};
     for (final entry in tasksJson.entries) {
       try {
         _tasks[entry.key] = _taskFromJson(entry.value);
@@ -319,12 +326,14 @@ class LocalJsonStorageService implements StorageService {
         debugPrint('⚠️  Skipping corrupted task: ${entry.key} - $e');
       }
     }
-    
+
     // If too many errors occurred, this might indicate a serious problem
     if (errors.length > 10) {
-      throw FormatException('Too many entity parsing errors (${errors.length}). Data may be severely corrupted.');
+      throw FormatException(
+        'Too many entity parsing errors (${errors.length}). Data may be severely corrupted.',
+      );
     }
-    
+
     if (errors.isNotEmpty) {
       debugPrint('⚠️  Loaded with ${errors.length} corrupted entities skipped');
     }
@@ -349,9 +358,11 @@ class LocalJsonStorageService implements StorageService {
     final tmp = File('${file.path}.tmp');
     await tmp.writeAsString(jsonEncode(payload));
     await tmp.rename(file.path);
-    
+
     // Log successful saves (can be removed in production)
-    debugPrint('💾 Storage persisted: ${_tanks.length} tanks, ${_livestock.length} livestock');
+    debugPrint(
+      '💾 Storage persisted: ${_tanks.length} tanks, ${_livestock.length} livestock',
+    );
   }
 
   /// Recovery method: Clear all data and start fresh
@@ -364,38 +375,40 @@ class LocalJsonStorageService implements StorageService {
       _equipment.clear();
       _logs.clear();
       _tasks.clear();
-      
+
       final file = await _dataFile();
       if (await file.exists()) {
         await file.delete();
       }
-      
+
       // P0-2: Reset error state
       _state = StorageState.loaded;
       _lastError = null;
       _loadFuture = null;
-      
-      debugPrint('🗑️  All storage data cleared, service reset to healthy state');
+
+      debugPrint(
+        '🗑️  All storage data cleared, service reset to healthy state',
+      );
     });
   }
-  
+
   /// Recovery method: Attempt to reload data from disk
   /// Useful if corruption was temporary or file was manually fixed
   Future<void> retryLoad() async {
     debugPrint('🔄 Attempting to reload storage data...');
-    
+
     // Reset state
     _state = StorageState.idle;
     _lastError = null;
     _loadFuture = null;
-    
+
     // Clear existing data
     _tanks.clear();
     _livestock.clear();
     _equipment.clear();
     _logs.clear();
     _tasks.clear();
-    
+
     // Attempt reload
     try {
       await _ensureLoaded();
@@ -405,22 +418,22 @@ class LocalJsonStorageService implements StorageService {
       rethrow;
     }
   }
-  
+
   /// Recovery method: Delete corrupted file and start fresh
   /// This preserves the backup but allows the app to continue
   Future<void> recoverFromCorruption() async {
     debugPrint('🔧 Recovering from storage corruption...');
-    
+
     // Delete the main data file
     final file = await _dataFile();
     if (await file.exists()) {
       await file.delete();
       debugPrint('🗑️  Deleted corrupted data file');
     }
-    
+
     // Clear all data and reset state
     await clearAllData();
-    
+
     debugPrint('✅ Recovery complete - starting with fresh data');
   }
 
@@ -428,7 +441,8 @@ class LocalJsonStorageService implements StorageService {
   @override
   Future<List<Tank>> getAllTanks() async {
     await _ensureLoaded();
-    return _tanks.values.toList()..sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
+    return _tanks.values.toList()
+      ..sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
   }
 
   @override
@@ -588,20 +602,20 @@ class LocalJsonStorageService implements StorageService {
 
   // ---- Serialization helpers ----
   Map<String, dynamic> _tankToJson(Tank t) => {
-        'id': t.id,
-        'name': t.name,
-        'type': t.type.name,
-        'volumeLitres': t.volumeLitres,
-        'lengthCm': t.lengthCm,
-        'widthCm': t.widthCm,
-        'heightCm': t.heightCm,
-        'startDate': t.startDate.toIso8601String(),
-        'targets': _targetsToJson(t.targets),
-        'notes': t.notes,
-        'imageUrl': t.imageUrl,
-        'createdAt': t.createdAt.toIso8601String(),
-        'updatedAt': t.updatedAt.toIso8601String(),
-      };
+    'id': t.id,
+    'name': t.name,
+    'type': t.type.name,
+    'volumeLitres': t.volumeLitres,
+    'lengthCm': t.lengthCm,
+    'widthCm': t.widthCm,
+    'heightCm': t.heightCm,
+    'startDate': t.startDate.toIso8601String(),
+    'targets': _targetsToJson(t.targets),
+    'notes': t.notes,
+    'imageUrl': t.imageUrl,
+    'createdAt': t.createdAt.toIso8601String(),
+    'updatedAt': t.updatedAt.toIso8601String(),
+  };
 
   Tank _tankFromJson(dynamic raw) {
     final m = (raw as Map).cast<String, dynamic>();
@@ -626,15 +640,15 @@ class LocalJsonStorageService implements StorageService {
   }
 
   Map<String, dynamic> _targetsToJson(WaterTargets t) => {
-        'tempMin': t.tempMin,
-        'tempMax': t.tempMax,
-        'phMin': t.phMin,
-        'phMax': t.phMax,
-        'ghMin': t.ghMin,
-        'ghMax': t.ghMax,
-        'khMin': t.khMin,
-        'khMax': t.khMax,
-      };
+    'tempMin': t.tempMin,
+    'tempMax': t.tempMax,
+    'phMin': t.phMin,
+    'phMax': t.phMax,
+    'ghMin': t.ghMin,
+    'ghMax': t.ghMax,
+    'khMin': t.khMin,
+    'khMax': t.khMax,
+  };
 
   WaterTargets _targetsFromJson(dynamic raw) {
     if (raw is! Map) return WaterTargets.freshwaterTropical();
@@ -652,21 +666,21 @@ class LocalJsonStorageService implements StorageService {
   }
 
   Map<String, dynamic> _livestockToJson(Livestock l) => {
-        'id': l.id,
-        'tankId': l.tankId,
-        'commonName': l.commonName,
-        'scientificName': l.scientificName,
-        'count': l.count,
-        'sizeCm': l.sizeCm,
-        'maxSizeCm': l.maxSizeCm,
-        'dateAdded': l.dateAdded.toIso8601String(),
-        'source': l.source,
-        'temperament': l.temperament?.name,
-        'notes': l.notes,
-        'imageUrl': l.imageUrl,
-        'createdAt': l.createdAt.toIso8601String(),
-        'updatedAt': l.updatedAt.toIso8601String(),
-      };
+    'id': l.id,
+    'tankId': l.tankId,
+    'commonName': l.commonName,
+    'scientificName': l.scientificName,
+    'count': l.count,
+    'sizeCm': l.sizeCm,
+    'maxSizeCm': l.maxSizeCm,
+    'dateAdded': l.dateAdded.toIso8601String(),
+    'source': l.source,
+    'temperament': l.temperament?.name,
+    'notes': l.notes,
+    'imageUrl': l.imageUrl,
+    'createdAt': l.createdAt.toIso8601String(),
+    'updatedAt': l.updatedAt.toIso8601String(),
+  };
 
   Livestock _livestockFromJson(dynamic raw) {
     final m = (raw as Map).cast<String, dynamic>();
@@ -694,20 +708,20 @@ class LocalJsonStorageService implements StorageService {
   }
 
   Map<String, dynamic> _equipmentToJson(Equipment e) => {
-        'id': e.id,
-        'tankId': e.tankId,
-        'type': e.type.name,
-        'name': e.name,
-        'brand': e.brand,
-        'model': e.model,
-        'settings': e.settings,
-        'maintenanceIntervalDays': e.maintenanceIntervalDays,
-        'lastServiced': e.lastServiced?.toIso8601String(),
-        'installedDate': e.installedDate?.toIso8601String(),
-        'notes': e.notes,
-        'createdAt': e.createdAt.toIso8601String(),
-        'updatedAt': e.updatedAt.toIso8601String(),
-      };
+    'id': e.id,
+    'tankId': e.tankId,
+    'type': e.type.name,
+    'name': e.name,
+    'brand': e.brand,
+    'model': e.model,
+    'settings': e.settings,
+    'maintenanceIntervalDays': e.maintenanceIntervalDays,
+    'lastServiced': e.lastServiced?.toIso8601String(),
+    'installedDate': e.installedDate?.toIso8601String(),
+    'notes': e.notes,
+    'createdAt': e.createdAt.toIso8601String(),
+    'updatedAt': e.updatedAt.toIso8601String(),
+  };
 
   Equipment _equipmentFromJson(dynamic raw) {
     final m = (raw as Map).cast<String, dynamic>();
@@ -723,8 +737,12 @@ class LocalJsonStorageService implements StorageService {
       model: m['model'] as String?,
       settings: (m['settings'] as Map?)?.cast<String, dynamic>(),
       maintenanceIntervalDays: (m['maintenanceIntervalDays'] as num?)?.toInt(),
-      lastServiced: m['lastServiced'] != null ? DateTime.parse(m['lastServiced'] as String) : null,
-      installedDate: m['installedDate'] != null ? DateTime.parse(m['installedDate'] as String) : null,
+      lastServiced: m['lastServiced'] != null
+          ? DateTime.parse(m['lastServiced'] as String)
+          : null,
+      installedDate: m['installedDate'] != null
+          ? DateTime.parse(m['installedDate'] as String)
+          : null,
       notes: m['notes'] as String?,
       createdAt: DateTime.parse(m['createdAt'] as String),
       updatedAt: DateTime.parse(m['updatedAt'] as String),
@@ -732,16 +750,16 @@ class LocalJsonStorageService implements StorageService {
   }
 
   Map<String, dynamic> _waterTestToJson(WaterTestResults t) => {
-        'temperature': t.temperature,
-        'ph': t.ph,
-        'ammonia': t.ammonia,
-        'nitrite': t.nitrite,
-        'nitrate': t.nitrate,
-        'gh': t.gh,
-        'kh': t.kh,
-        'phosphate': t.phosphate,
-        'co2': t.co2,
-      };
+    'temperature': t.temperature,
+    'ph': t.ph,
+    'ammonia': t.ammonia,
+    'nitrite': t.nitrite,
+    'nitrate': t.nitrate,
+    'gh': t.gh,
+    'kh': t.kh,
+    'phosphate': t.phosphate,
+    'co2': t.co2,
+  };
 
   WaterTestResults _waterTestFromJson(dynamic raw) {
     if (raw is! Map) return const WaterTestResults();
@@ -760,20 +778,20 @@ class LocalJsonStorageService implements StorageService {
   }
 
   Map<String, dynamic> _logToJson(LogEntry l) => {
-        'id': l.id,
-        'tankId': l.tankId,
-        'type': l.type.name,
-        'timestamp': l.timestamp.toIso8601String(),
-        'waterTest': l.waterTest != null ? _waterTestToJson(l.waterTest!) : null,
-        'waterChangePercent': l.waterChangePercent,
-        'title': l.title,
-        'notes': l.notes,
-        'photoUrls': l.photoUrls,
-        'relatedEquipmentId': l.relatedEquipmentId,
-        'relatedLivestockId': l.relatedLivestockId,
-        'relatedTaskId': l.relatedTaskId,
-        'createdAt': l.createdAt.toIso8601String(),
-      };
+    'id': l.id,
+    'tankId': l.tankId,
+    'type': l.type.name,
+    'timestamp': l.timestamp.toIso8601String(),
+    'waterTest': l.waterTest != null ? _waterTestToJson(l.waterTest!) : null,
+    'waterChangePercent': l.waterChangePercent,
+    'title': l.title,
+    'notes': l.notes,
+    'photoUrls': l.photoUrls,
+    'relatedEquipmentId': l.relatedEquipmentId,
+    'relatedLivestockId': l.relatedLivestockId,
+    'relatedTaskId': l.relatedTaskId,
+    'createdAt': l.createdAt.toIso8601String(),
+  };
 
   LogEntry _logFromJson(dynamic raw) {
     final m = (raw as Map).cast<String, dynamic>();
@@ -785,7 +803,9 @@ class LocalJsonStorageService implements StorageService {
         orElse: () => LogType.other,
       ),
       timestamp: DateTime.parse(m['timestamp'] as String),
-      waterTest: m['waterTest'] != null ? _waterTestFromJson(m['waterTest']) : null,
+      waterTest: m['waterTest'] != null
+          ? _waterTestFromJson(m['waterTest'])
+          : null,
       waterChangePercent: (m['waterChangePercent'] as num?)?.toInt(),
       title: m['title'] as String?,
       notes: m['notes'] as String?,
@@ -798,22 +818,22 @@ class LocalJsonStorageService implements StorageService {
   }
 
   Map<String, dynamic> _taskToJson(Task t) => {
-        'id': t.id,
-        'tankId': t.tankId,
-        'title': t.title,
-        'description': t.description,
-        'recurrence': t.recurrence.name,
-        'intervalDays': t.intervalDays,
-        'dueDate': t.dueDate?.toIso8601String(),
-        'priority': t.priority.name,
-        'isEnabled': t.isEnabled,
-        'isAutoGenerated': t.isAutoGenerated,
-        'lastCompletedAt': t.lastCompletedAt?.toIso8601String(),
-        'completionCount': t.completionCount,
-        'relatedEquipmentId': t.relatedEquipmentId,
-        'createdAt': t.createdAt.toIso8601String(),
-        'updatedAt': t.updatedAt.toIso8601String(),
-      };
+    'id': t.id,
+    'tankId': t.tankId,
+    'title': t.title,
+    'description': t.description,
+    'recurrence': t.recurrence.name,
+    'intervalDays': t.intervalDays,
+    'dueDate': t.dueDate?.toIso8601String(),
+    'priority': t.priority.name,
+    'isEnabled': t.isEnabled,
+    'isAutoGenerated': t.isAutoGenerated,
+    'lastCompletedAt': t.lastCompletedAt?.toIso8601String(),
+    'completionCount': t.completionCount,
+    'relatedEquipmentId': t.relatedEquipmentId,
+    'createdAt': t.createdAt.toIso8601String(),
+    'updatedAt': t.updatedAt.toIso8601String(),
+  };
 
   Task _taskFromJson(dynamic raw) {
     final m = (raw as Map).cast<String, dynamic>();
@@ -827,15 +847,18 @@ class LocalJsonStorageService implements StorageService {
         orElse: () => RecurrenceType.none,
       ),
       intervalDays: (m['intervalDays'] as num?)?.toInt(),
-      dueDate: m['dueDate'] != null ? DateTime.parse(m['dueDate'] as String) : null,
+      dueDate: m['dueDate'] != null
+          ? DateTime.parse(m['dueDate'] as String)
+          : null,
       priority: TaskPriority.values.firstWhere(
         (e) => e.name == (m['priority'] ?? 'normal'),
         orElse: () => TaskPriority.normal,
       ),
       isEnabled: (m['isEnabled'] as bool?) ?? true,
       isAutoGenerated: (m['isAutoGenerated'] as bool?) ?? false,
-      lastCompletedAt:
-          m['lastCompletedAt'] != null ? DateTime.parse(m['lastCompletedAt'] as String) : null,
+      lastCompletedAt: m['lastCompletedAt'] != null
+          ? DateTime.parse(m['lastCompletedAt'] as String)
+          : null,
       completionCount: (m['completionCount'] as num?)?.toInt() ?? 0,
       relatedEquipmentId: m['relatedEquipmentId'] as String?,
       createdAt: DateTime.parse(m['createdAt'] as String),

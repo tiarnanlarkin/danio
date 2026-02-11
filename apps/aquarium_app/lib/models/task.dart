@@ -9,11 +9,7 @@ enum RecurrenceType {
 }
 
 /// Task priority
-enum TaskPriority {
-  low,
-  normal,
-  high,
-}
+enum TaskPriority { low, normal, high }
 
 /// A task/reminder — can be auto-generated or user-created
 class Task {
@@ -104,19 +100,19 @@ class Task {
   DateTime _calculateNextMonthDate(DateTime current) {
     int targetYear = current.year;
     int targetMonth = current.month + 1;
-    
+
     // Handle year rollover
     if (targetMonth > 12) {
       targetMonth = 1;
       targetYear++;
     }
-    
+
     // Clamp day to valid range for target month
     final daysInTargetMonth = _getDaysInMonth(targetYear, targetMonth);
-    final targetDay = current.day > daysInTargetMonth 
-        ? daysInTargetMonth 
+    final targetDay = current.day > daysInTargetMonth
+        ? daysInTargetMonth
         : current.day;
-    
+
     return DateTime(targetYear, targetMonth, targetDay);
   }
 
@@ -157,7 +153,7 @@ class Task {
   Task complete() {
     final now = DateTime.now();
     final nextDue = calculateNextDueDate();
-    
+
     // For one-time tasks (none recurrence), explicitly set dueDate to null
     if (recurrence == RecurrenceType.none) {
       return Task(
@@ -178,7 +174,7 @@ class Task {
         updatedAt: now,
       );
     }
-    
+
     return copyWith(
       lastCompletedAt: now,
       completionCount: completionCount + 1,

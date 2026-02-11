@@ -40,7 +40,7 @@ class MockLeaderboard {
   ];
 
   /// Generate mock leaderboard entries
-  /// 
+  ///
   /// Creates 50 users with realistic XP distribution:
   /// - Current user placed in middle range
   /// - Top users have high XP (600-1200)
@@ -55,13 +55,15 @@ class MockLeaderboard {
     final entries = <LeaderboardEntry>[];
 
     // Add current user
-    entries.add(LeaderboardEntry(
-      userId: currentUserId,
-      displayName: currentUsername,
-      weeklyXp: currentUserXP,
-      rank: 0, // Will be calculated after sorting
-      isCurrentUser: true,
-    ));
+    entries.add(
+      LeaderboardEntry(
+        userId: currentUserId,
+        displayName: currentUsername,
+        weeklyXp: currentUserXP,
+        rank: 0, // Will be calculated after sorting
+        isCurrentUser: true,
+      ),
+    );
 
     // Generate 49 mock users
     final usedNames = {currentUsername};
@@ -86,12 +88,14 @@ class MockLeaderboard {
         xp = 50 + _random.nextInt(150);
       }
 
-      entries.add(LeaderboardEntry(
-        userId: 'mock_${i + 1}',
-        displayName: username,
-        weeklyXp: xp,
-        rank: 0,
-      ));
+      entries.add(
+        LeaderboardEntry(
+          userId: 'mock_${i + 1}',
+          displayName: username,
+          weeklyXp: xp,
+          rank: 0,
+        ),
+      );
     }
 
     // Sort by XP (descending) and assign ranks

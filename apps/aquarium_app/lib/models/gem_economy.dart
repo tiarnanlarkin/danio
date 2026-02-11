@@ -2,7 +2,6 @@
 /// Defines how many gems users earn for different actions
 library;
 
-
 import 'learning.dart';
 
 class GemRewards {
@@ -32,9 +31,9 @@ class GemRewards {
   static const int achievementPlatinum = 50;
 
   // Bonuses
-  static const int weeklyActive = 10;      // Logged in 5+ days this week
-  static const int perfectWeek = 25;       // Met daily goal all 7 days
-  static const int referralBonus = 50;     // Friend completes onboarding
+  static const int weeklyActive = 10; // Logged in 5+ days this week
+  static const int perfectWeek = 25; // Met daily goal all 7 days
+  static const int referralBonus = 50; // Friend completes onboarding
 
   /// Calculate gems for streak milestone
   static int getStreakMilestoneReward(int streakDays) {
@@ -50,10 +49,10 @@ class GemRewards {
   /// Calculate gems for level milestone
   static int getLevelUpReward(int newLevel) {
     // Levels from UserProfile.levels map
-    if (newLevel == 4) return levelUp;        // Aquarist
-    if (newLevel == 5) return reachExpert;    // Expert
-    if (newLevel == 6) return reachMaster;    // Master
-    if (newLevel == 7) return reachGuru;      // Guru
+    if (newLevel == 4) return levelUp; // Aquarist
+    if (newLevel == 5) return reachExpert; // Expert
+    if (newLevel == 6) return reachMaster; // Master
+    if (newLevel == 7) return reachGuru; // Guru
     return levelUp; // Default for other levels
   }
 

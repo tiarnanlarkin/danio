@@ -18,7 +18,7 @@ class CreateTankScreen extends ConsumerStatefulWidget {
 class _CreateTankScreenState extends ConsumerState<CreateTankScreen> {
   final _formKey = GlobalKey<FormState>();
   final _pageController = PageController();
-  
+
   int _currentPage = 0;
   bool _isCreating = false;
 
@@ -62,102 +62,113 @@ class _CreateTankScreenState extends ConsumerState<CreateTankScreen> {
             children: [
               // Progress indicator
               Semantics(
-                label: A11yLabels.progress(_currentPage + 1, 3, 'Tank creation'),
+                label: A11yLabels.progress(
+                  _currentPage + 1,
+                  3,
+                  'Tank creation',
+                ),
                 child: LinearProgressIndicator(
                   value: (_currentPage + 1) / 3,
                   backgroundColor: AppColors.surfaceVariant,
                   valueColor: const AlwaysStoppedAnimation(AppColors.primary),
                 ),
               ),
-            
-            // Page content
-            Expanded(
-              child: PageView(
-                controller: _pageController,
-                physics: const NeverScrollableScrollPhysics(),
-                onPageChanged: (page) => setState(() => _currentPage = page),
-                children: [
-                  _BasicInfoPage(
-                    name: _name,
-                    type: _type,
-                    onNameChanged: (v) => setState(() => _name = v),
-                    onTypeChanged: (v) => setState(() => _type = v),
-                  ),
-                  _SizePage(
-                    volumeLitres: _volumeLitres,
-                    lengthCm: _lengthCm,
-                    widthCm: _widthCm,
-                    heightCm: _heightCm,
-                    onVolumeChanged: (v) => setState(() => _volumeLitres = v),
-                    onLengthChanged: (v) => setState(() => _lengthCm = v),
-                    onWidthChanged: (v) => setState(() => _widthCm = v),
-                    onHeightChanged: (v) => setState(() => _heightCm = v),
-                  ),
-                  _WaterTypePage(
-                    waterType: _waterType,
-                    startDate: _startDate,
-                    onWaterTypeChanged: (v) {
-                      setState(() {
-                        _waterType = v;
-                        _targets = v == 'tropical'
-                            ? WaterTargets.freshwaterTropical()
-                            : WaterTargets.freshwaterColdwater();
-                      });
-                    },
-                    onStartDateChanged: (v) => setState(() => _startDate = v),
-                  ),
-                ],
-              ),
-            ),
-            
-            // Navigation buttons
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: Row(
-                children: [
-                  if (_currentPage > 0)
-                    Semantics(
-                      label: A11yLabels.button('Go back to previous step'),
-                      button: true,
-                      child: OutlinedButton(
-                        onPressed: _previousPage,
-                        child: const Text('Back'),
-                      ),
+
+              // Page content
+              Expanded(
+                child: PageView(
+                  controller: _pageController,
+                  physics: const NeverScrollableScrollPhysics(),
+                  onPageChanged: (page) => setState(() => _currentPage = page),
+                  children: [
+                    _BasicInfoPage(
+                      name: _name,
+                      type: _type,
+                      onNameChanged: (v) => setState(() => _name = v),
+                      onTypeChanged: (v) => setState(() => _type = v),
                     ),
-                  const Spacer(),
-                  if (_currentPage < 2)
-                    Semantics(
-                      label: A11yLabels.button('Continue to next step'),
-                      button: true,
-                      enabled: _canProceed(),
-                      child: ElevatedButton(
-                        onPressed: _canProceed() ? _nextPage : null,
-                        child: const Text('Next'),
-                      ),
-                    )
-                  else
-                    Semantics(
-                      label: A11yLabels.button('Create tank', _name.isNotEmpty ? _name : null),
-                      button: true,
-                      enabled: _canProceed() && !_isCreating,
-                      child: ElevatedButton(
-                        onPressed: _canProceed() && !_isCreating ? _createTank : null,
-                        child: _isCreating
-                            ? const SizedBox(
-                                width: 20,
-                                height: 20,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                  valueColor: AlwaysStoppedAnimation(Colors.white),
-                                ),
-                              )
-                            : const Text('Create Tank'),
-                      ),
+                    _SizePage(
+                      volumeLitres: _volumeLitres,
+                      lengthCm: _lengthCm,
+                      widthCm: _widthCm,
+                      heightCm: _heightCm,
+                      onVolumeChanged: (v) => setState(() => _volumeLitres = v),
+                      onLengthChanged: (v) => setState(() => _lengthCm = v),
+                      onWidthChanged: (v) => setState(() => _widthCm = v),
+                      onHeightChanged: (v) => setState(() => _heightCm = v),
                     ),
-                ],
+                    _WaterTypePage(
+                      waterType: _waterType,
+                      startDate: _startDate,
+                      onWaterTypeChanged: (v) {
+                        setState(() {
+                          _waterType = v;
+                          _targets = v == 'tropical'
+                              ? WaterTargets.freshwaterTropical()
+                              : WaterTargets.freshwaterColdwater();
+                        });
+                      },
+                      onStartDateChanged: (v) => setState(() => _startDate = v),
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
+
+              // Navigation buttons
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: Row(
+                  children: [
+                    if (_currentPage > 0)
+                      Semantics(
+                        label: A11yLabels.button('Go back to previous step'),
+                        button: true,
+                        child: OutlinedButton(
+                          onPressed: _previousPage,
+                          child: const Text('Back'),
+                        ),
+                      ),
+                    const Spacer(),
+                    if (_currentPage < 2)
+                      Semantics(
+                        label: A11yLabels.button('Continue to next step'),
+                        button: true,
+                        enabled: _canProceed(),
+                        child: ElevatedButton(
+                          onPressed: _canProceed() ? _nextPage : null,
+                          child: const Text('Next'),
+                        ),
+                      )
+                    else
+                      Semantics(
+                        label: A11yLabels.button(
+                          'Create tank',
+                          _name.isNotEmpty ? _name : null,
+                        ),
+                        button: true,
+                        enabled: _canProceed() && !_isCreating,
+                        child: ElevatedButton(
+                          onPressed: _canProceed() && !_isCreating
+                              ? _createTank
+                              : null,
+                          child: _isCreating
+                              ? const SizedBox(
+                                  width: 20,
+                                  height: 20,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    valueColor: AlwaysStoppedAnimation(
+                                      Colors.white,
+                                    ),
+                                  ),
+                                )
+                              : const Text('Create Tank'),
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+            ],
           ),
         ),
       ),
@@ -269,7 +280,7 @@ class _BasicInfoPage extends StatelessWidget {
             style: AppTypography.bodyMedium,
           ),
           const SizedBox(height: 24),
-          
+
           FocusTraversalOrder(
             order: const NumericFocusOrder(1.0),
             child: Semantics(
@@ -286,9 +297,9 @@ class _BasicInfoPage extends StatelessWidget {
               ),
             ),
           ),
-          
+
           const SizedBox(height: 32),
-          
+
           Semantics(
             header: true,
             child: Text('Tank type', style: AppTypography.headlineSmall),
@@ -299,13 +310,10 @@ class _BasicInfoPage extends StatelessWidget {
             style: AppTypography.bodyMedium,
           ),
           const SizedBox(height: 16),
-          
+
           FocusTraversalOrder(
             order: const NumericFocusOrder(2.0),
-            child: _TypeSelector(
-              selected: type,
-              onChanged: onTypeChanged,
-            ),
+            child: _TypeSelector(selected: type, onChanged: onTypeChanged),
           ),
         ],
       ),
@@ -317,10 +325,7 @@ class _TypeSelector extends StatelessWidget {
   final TankType selected;
   final ValueChanged<TankType> onChanged;
 
-  const _TypeSelector({
-    required this.selected,
-    required this.onChanged,
-  });
+  const _TypeSelector({required this.selected, required this.onChanged});
 
   @override
   Widget build(BuildContext context) {
@@ -385,7 +390,9 @@ class _TypeCard extends StatelessWidget {
           child: Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: isSelected ? AppColors.primary.withOpacity(0.1) : AppColors.surfaceVariant,
+              color: isSelected
+                  ? AppColors.primary.withOpacity(0.1)
+                  : AppColors.surfaceVariant,
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
                 color: isSelected ? AppColors.primary : Colors.transparent,
@@ -398,7 +405,9 @@ class _TypeCard extends StatelessWidget {
                   child: Icon(
                     icon,
                     size: 32,
-                    color: isSelected ? AppColors.primary : AppColors.textSecondary,
+                    color: isSelected
+                        ? AppColors.primary
+                        : AppColors.textSecondary,
                   ),
                 ),
                 const SizedBox(height: 8),
@@ -406,7 +415,9 @@ class _TypeCard extends StatelessWidget {
                   child: Text(
                     title,
                     style: AppTypography.labelLarge.copyWith(
-                      color: isSelected ? AppColors.primary : AppColors.textPrimary,
+                      color: isSelected
+                          ? AppColors.primary
+                          : AppColors.textPrimary,
                     ),
                   ),
                 ),
@@ -466,7 +477,7 @@ class _SizePage extends StatelessWidget {
             style: AppTypography.bodyMedium,
           ),
           const SizedBox(height: 24),
-          
+
           // Volume input
           FocusTraversalOrder(
             order: const NumericFocusOrder(1.0),
@@ -480,8 +491,12 @@ class _SizePage extends StatelessWidget {
                   hintText: 'e.g., 120',
                   suffixText: 'L',
                 ),
-                keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[\d.]'))],
+                keyboardType: const TextInputType.numberWithOptions(
+                  decimal: true,
+                ),
+                inputFormatters: [
+                  FilteringTextInputFormatter.allow(RegExp(r'[\d.]')),
+                ],
                 onChanged: (v) {
                   final value = double.tryParse(v);
                   if (value != null) onVolumeChanged(value);
@@ -489,12 +504,15 @@ class _SizePage extends StatelessWidget {
               ),
             ),
           ),
-          
+
           const SizedBox(height: 24),
-          
+
           Semantics(
             header: true,
-            child: Text('Dimensions (optional)', style: AppTypography.headlineSmall),
+            child: Text(
+              'Dimensions (optional)',
+              style: AppTypography.headlineSmall,
+            ),
           ),
           const SizedBox(height: 8),
           Text(
@@ -502,7 +520,7 @@ class _SizePage extends StatelessWidget {
             style: AppTypography.bodyMedium,
           ),
           const SizedBox(height: 16),
-          
+
           Row(
             children: [
               Expanded(
@@ -517,8 +535,12 @@ class _SizePage extends StatelessWidget {
                         labelText: 'Length',
                         suffixText: 'cm',
                       ),
-                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                      inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[\d.]'))],
+                      keyboardType: const TextInputType.numberWithOptions(
+                        decimal: true,
+                      ),
+                      inputFormatters: [
+                        FilteringTextInputFormatter.allow(RegExp(r'[\d.]')),
+                      ],
                       onChanged: (v) => onLengthChanged(double.tryParse(v)),
                     ),
                   ),
@@ -537,8 +559,12 @@ class _SizePage extends StatelessWidget {
                         labelText: 'Width',
                         suffixText: 'cm',
                       ),
-                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                      inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[\d.]'))],
+                      keyboardType: const TextInputType.numberWithOptions(
+                        decimal: true,
+                      ),
+                      inputFormatters: [
+                        FilteringTextInputFormatter.allow(RegExp(r'[\d.]')),
+                      ],
                       onChanged: (v) => onWidthChanged(double.tryParse(v)),
                     ),
                   ),
@@ -557,8 +583,12 @@ class _SizePage extends StatelessWidget {
                         labelText: 'Height',
                         suffixText: 'cm',
                       ),
-                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                      inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[\d.]'))],
+                      keyboardType: const TextInputType.numberWithOptions(
+                        decimal: true,
+                      ),
+                      inputFormatters: [
+                        FilteringTextInputFormatter.allow(RegExp(r'[\d.]')),
+                      ],
                       onChanged: (v) => onHeightChanged(double.tryParse(v)),
                     ),
                   ),
@@ -566,7 +596,7 @@ class _SizePage extends StatelessWidget {
               ),
             ],
           ),
-          
+
           // Quick size presets
           const SizedBox(height: 24),
           Text('Quick presets', style: AppTypography.bodySmall),
@@ -599,10 +629,7 @@ class _SizePreset extends StatelessWidget {
     return Semantics(
       label: A11yLabels.button('Set volume to $label'),
       button: true,
-      child: ActionChip(
-        label: Text(label),
-        onPressed: onTap,
-      ),
+      child: ActionChip(label: Text(label), onPressed: onTap),
     );
   }
 }
@@ -638,7 +665,7 @@ class _WaterTypePage extends StatelessWidget {
             style: AppTypography.bodyMedium,
           ),
           const SizedBox(height: 24),
-          
+
           FocusTraversalOrder(
             order: const NumericFocusOrder(1.0),
             child: _WaterTypeSelector(
@@ -646,12 +673,15 @@ class _WaterTypePage extends StatelessWidget {
               onChanged: onWaterTypeChanged,
             ),
           ),
-          
+
           const SizedBox(height: 32),
-          
+
           Semantics(
             header: true,
-            child: Text('When did you set up this tank?', style: AppTypography.headlineSmall),
+            child: Text(
+              'When did you set up this tank?',
+              style: AppTypography.headlineSmall,
+            ),
           ),
           const SizedBox(height: 8),
           Text(
@@ -659,11 +689,14 @@ class _WaterTypePage extends StatelessWidget {
             style: AppTypography.bodyMedium,
           ),
           const SizedBox(height: 16),
-          
+
           FocusTraversalOrder(
             order: const NumericFocusOrder(2.0),
             child: Semantics(
-              label: A11yLabels.button('Select start date', 'Currently ${startDate.day}/${startDate.month}/${startDate.year}'),
+              label: A11yLabels.button(
+                'Select start date',
+                'Currently ${startDate.day}/${startDate.month}/${startDate.year}',
+              ),
               button: true,
               child: InkWell(
                 onTap: () async {
@@ -679,7 +712,10 @@ class _WaterTypePage extends StatelessWidget {
                 },
                 borderRadius: BorderRadius.circular(12),
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 14,
+                  ),
                   decoration: BoxDecoration(
                     color: AppColors.surfaceVariant,
                     borderRadius: BorderRadius.circular(12),
@@ -687,7 +723,10 @@ class _WaterTypePage extends StatelessWidget {
                   child: Row(
                     children: [
                       const ExcludeSemantics(
-                        child: Icon(Icons.calendar_today, color: AppColors.textSecondary),
+                        child: Icon(
+                          Icons.calendar_today,
+                          color: AppColors.textSecondary,
+                        ),
                       ),
                       const SizedBox(width: 12),
                       ExcludeSemantics(
@@ -698,7 +737,11 @@ class _WaterTypePage extends StatelessWidget {
                       ),
                       const Spacer(),
                       const ExcludeSemantics(
-                        child: Icon(Icons.edit, color: AppColors.textHint, size: 18),
+                        child: Icon(
+                          Icons.edit,
+                          color: AppColors.textHint,
+                          size: 18,
+                        ),
                       ),
                     ],
                   ),
@@ -706,9 +749,9 @@ class _WaterTypePage extends StatelessWidget {
               ),
             ),
           ),
-          
+
           const SizedBox(height: 8),
-          
+
           FocusTraversalOrder(
             order: const NumericFocusOrder(3.0),
             child: Semantics(
@@ -730,10 +773,7 @@ class _WaterTypeSelector extends StatelessWidget {
   final String selected;
   final ValueChanged<String> onChanged;
 
-  const _WaterTypeSelector({
-    required this.selected,
-    required this.onChanged,
-  });
+  const _WaterTypeSelector({required this.selected, required this.onChanged});
 
   @override
   Widget build(BuildContext context) {
@@ -788,7 +828,9 @@ class _WaterTypeOption extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: isSelected ? AppColors.primary.withOpacity(0.1) : AppColors.surfaceVariant,
+            color: isSelected
+                ? AppColors.primary.withOpacity(0.1)
+                : AppColors.surfaceVariant,
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
               color: isSelected ? AppColors.primary : Colors.transparent,
@@ -809,7 +851,9 @@ class _WaterTypeOption extends StatelessWidget {
                       child: Text(
                         title,
                         style: AppTypography.labelLarge.copyWith(
-                          color: isSelected ? AppColors.primary : AppColors.textPrimary,
+                          color: isSelected
+                              ? AppColors.primary
+                              : AppColors.textPrimary,
                         ),
                       ),
                     ),

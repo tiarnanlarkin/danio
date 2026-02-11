@@ -11,7 +11,10 @@ class TroubleshootingScreen extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          Text('Common Problems & Solutions', style: AppTypography.headlineMedium),
+          Text(
+            'Common Problems & Solutions',
+            style: AppTypography.headlineMedium,
+          ),
           const SizedBox(height: 16),
 
           _ProblemCard(
@@ -196,10 +199,7 @@ class TroubleshootingScreen extends StatelessWidget {
           ),
           _ProblemCard(
             problem: 'Snail Infestation',
-            causes: [
-              'Hitchhiked on plants',
-              'Overfeeding',
-            ],
+            causes: ['Hitchhiked on plants', 'Overfeeding'],
             solutions: [
               'Reduce feeding (less food = fewer snails)',
               'Manual removal',
@@ -313,32 +313,50 @@ class _ProblemCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Possible Causes', style: AppTypography.labelLarge.copyWith(color: AppColors.error)),
-                const SizedBox(height: 4),
-                ...causes.map((c) => Padding(
-                  padding: const EdgeInsets.only(bottom: 2),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('• ', style: AppTypography.bodySmall),
-                      Expanded(child: Text(c, style: AppTypography.bodySmall)),
-                    ],
+                Text(
+                  'Possible Causes',
+                  style: AppTypography.labelLarge.copyWith(
+                    color: AppColors.error,
                   ),
-                )),
+                ),
+                const SizedBox(height: 4),
+                ...causes.map(
+                  (c) => Padding(
+                    padding: const EdgeInsets.only(bottom: 2),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('• ', style: AppTypography.bodySmall),
+                        Expanded(
+                          child: Text(c, style: AppTypography.bodySmall),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
                 const SizedBox(height: 12),
-                Text('Solutions', style: AppTypography.labelLarge.copyWith(color: AppColors.success)),
-                const SizedBox(height: 4),
-                ...solutions.map((s) => Padding(
-                  padding: const EdgeInsets.only(bottom: 2),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Icon(Icons.check, size: 14, color: AppColors.success),
-                      const SizedBox(width: 6),
-                      Expanded(child: Text(s, style: AppTypography.bodySmall)),
-                    ],
+                Text(
+                  'Solutions',
+                  style: AppTypography.labelLarge.copyWith(
+                    color: AppColors.success,
                   ),
-                )),
+                ),
+                const SizedBox(height: 4),
+                ...solutions.map(
+                  (s) => Padding(
+                    padding: const EdgeInsets.only(bottom: 2),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Icon(Icons.check, size: 14, color: AppColors.success),
+                        const SizedBox(width: 6),
+                        Expanded(
+                          child: Text(s, style: AppTypography.bodySmall),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
               ],
             ),
           ),

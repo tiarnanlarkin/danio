@@ -2,7 +2,6 @@
 /// Shows achievement details with celebration animation
 library;
 
-
 import 'package:flutter/material.dart';
 import 'package:confetti/confetti.dart';
 import 'dart:math';
@@ -53,7 +52,7 @@ class AchievementNotification {
     _confettiController?.stop();
     _confettiController?.dispose();
     _confettiController = null;
-    
+
     _currentOverlay?.remove();
     _currentOverlay = null;
   }
@@ -98,13 +97,13 @@ class _AchievementNotificationWidgetState
       curve: Curves.elasticOut,
     );
 
-    _slideAnimation = Tween<Offset>(
-      begin: const Offset(0, -1),
-      end: Offset.zero,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.easeOutCubic,
-    ));
+    _slideAnimation =
+        Tween<Offset>(begin: const Offset(0, -1), end: Offset.zero).animate(
+          CurvedAnimation(
+            parent: _animationController,
+            curve: Curves.easeOutCubic,
+          ),
+        );
 
     _animationController.forward();
   }
@@ -127,9 +126,7 @@ class _AchievementNotificationWidgetState
           Positioned.fill(
             child: GestureDetector(
               onTap: widget.onDismiss,
-              child: Container(
-                color: Colors.transparent,
-              ),
+              child: Container(color: Colors.transparent),
             ),
           ),
 
@@ -250,7 +247,8 @@ class _AchievementNotificationWidgetState
                                   borderRadius: BorderRadius.circular(16),
                                 ),
                                 child: Text(
-                                  widget.achievement.rarity.displayName.toUpperCase(),
+                                  widget.achievement.rarity.displayName
+                                      .toUpperCase(),
                                   style: const TextStyle(
                                     color: Colors.white,
                                     fontSize: 12,
@@ -324,9 +322,7 @@ class _AchievementNotificationWidgetState
                                 onPressed: widget.onDismiss,
                                 child: Text(
                                   'Tap anywhere to continue',
-                                  style: TextStyle(
-                                    color: Colors.grey.shade600,
-                                  ),
+                                  style: TextStyle(color: Colors.grey.shade600),
                                 ),
                               ),
                             ],

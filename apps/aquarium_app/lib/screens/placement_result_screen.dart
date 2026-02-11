@@ -10,15 +10,12 @@ import '../models/user_profile.dart';
 import '../data/lesson_content.dart';
 import '../providers/user_profile_provider.dart';
 import '../theme/app_theme.dart';
-import 'onboarding/tutorial_walkthrough_screen.dart';
+import 'onboarding/enhanced_tutorial_walkthrough_screen.dart';
 
 class PlacementResultScreen extends ConsumerWidget {
   final PlacementResult result;
 
-  const PlacementResultScreen({
-    super.key,
-    required this.result,
-  });
+  const PlacementResultScreen({super.key, required this.result});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -63,7 +60,11 @@ class PlacementResultScreen extends ConsumerWidget {
                   ...allPaths.map((path) {
                     final recommendation = result.recommendations[path.id];
                     if (recommendation == null) return const SizedBox.shrink();
-                    return _buildPathRecommendation(theme, path, recommendation);
+                    return _buildPathRecommendation(
+                      theme,
+                      path,
+                      recommendation,
+                    );
                   }).toList(),
                 ],
               ),
@@ -86,7 +87,7 @@ class PlacementResultScreen extends ConsumerWidget {
                     onPressed: () {
                       Navigator.of(context).pushReplacement(
                         MaterialPageRoute(
-                          builder: (_) => const TutorialWalkthroughScreen(),
+                          builder: (_) => const EnhancedTutorialWalkthroughScreen(),
                         ),
                       );
                     },
@@ -199,10 +200,7 @@ class PlacementResultScreen extends ConsumerWidget {
           children: [
             Row(
               children: [
-                Text(
-                  path.emoji,
-                  style: const TextStyle(fontSize: 32),
-                ),
+                Text(path.emoji, style: const TextStyle(fontSize: 32)),
                 const SizedBox(width: 12),
                 Expanded(
                   child: Column(
@@ -225,9 +223,14 @@ class PlacementResultScreen extends ConsumerWidget {
                   ),
                 ),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 6,
+                  ),
                   decoration: BoxDecoration(
-                    color: _getSkipLevelColor(recommendation.skipLevel).withOpacity(0.1),
+                    color: _getSkipLevelColor(
+                      recommendation.skipLevel,
+                    ).withOpacity(0.1),
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Row(
@@ -307,11 +310,7 @@ class PlacementResultScreen extends ConsumerWidget {
               color: AppColors.accent.withOpacity(0.2),
               shape: BoxShape.circle,
             ),
-            child: const Icon(
-              Icons.star,
-              color: AppColors.accent,
-              size: 32,
-            ),
+            child: const Icon(Icons.star, color: AppColors.accent, size: 32),
           ),
           const SizedBox(width: 16),
           Expanded(
@@ -369,7 +368,10 @@ class PlacementResultScreen extends ConsumerWidget {
                     return Card(
                       margin: const EdgeInsets.only(bottom: 12),
                       child: ListTile(
-                        leading: Text(path.emoji, style: const TextStyle(fontSize: 32)),
+                        leading: Text(
+                          path.emoji,
+                          style: const TextStyle(fontSize: 32),
+                        ),
                         title: Text(path.title),
                         subtitle: LinearProgressIndicator(
                           value: score / 100,

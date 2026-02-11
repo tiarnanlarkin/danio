@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
 
 /// Beautiful empty state widget for consistent UX
-/// 
+///
 /// Usage:
 /// ```dart
 /// EmptyState(
@@ -37,7 +37,8 @@ class EmptyState extends StatefulWidget {
   State<EmptyState> createState() => _EmptyStateState();
 }
 
-class _EmptyStateState extends State<EmptyState> with SingleTickerProviderStateMixin {
+class _EmptyStateState extends State<EmptyState>
+    with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _fadeAnimation;
   late Animation<double> _scaleAnimation;
@@ -50,13 +51,15 @@ class _EmptyStateState extends State<EmptyState> with SingleTickerProviderStateM
       vsync: this,
     );
 
-    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeIn),
-    );
+    _fadeAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeIn));
 
-    _scaleAnimation = Tween<double>(begin: 0.8, end: 1.0).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeOutBack),
-    );
+    _scaleAnimation = Tween<double>(
+      begin: 0.8,
+      end: 1.0,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOutBack));
 
     _controller.forward();
   }
@@ -110,9 +113,9 @@ class _EmptyStateState extends State<EmptyState> with SingleTickerProviderStateM
                       color: AppColors.primary,
                     ),
                   ),
-                
+
                 const SizedBox(height: AppSpacing.lg),
-                
+
                 // Title
                 Text(
                   widget.title,
@@ -121,9 +124,9 @@ class _EmptyStateState extends State<EmptyState> with SingleTickerProviderStateM
                   ),
                   textAlign: TextAlign.center,
                 ),
-                
+
                 const SizedBox(height: AppSpacing.sm),
-                
+
                 // Message
                 Text(
                   widget.message,
@@ -132,7 +135,7 @@ class _EmptyStateState extends State<EmptyState> with SingleTickerProviderStateM
                   ),
                   textAlign: TextAlign.center,
                 ),
-                
+
                 // Tips section
                 if (widget.tips != null && widget.tips!.isNotEmpty) ...[
                   const SizedBox(height: AppSpacing.lg),
@@ -151,9 +154,11 @@ class _EmptyStateState extends State<EmptyState> with SingleTickerProviderStateM
                       children: [
                         Row(
                           children: [
-                            Icon(Icons.lightbulb_outline, 
-                                size: 16, 
-                                color: AppColors.info),
+                            Icon(
+                              Icons.lightbulb_outline,
+                              size: 16,
+                              color: AppColors.info,
+                            ),
                             const SizedBox(width: 8),
                             Text(
                               'Quick Tips',
@@ -164,31 +169,35 @@ class _EmptyStateState extends State<EmptyState> with SingleTickerProviderStateM
                           ],
                         ),
                         const SizedBox(height: AppSpacing.sm),
-                        ...widget.tips!.map((tip) => Padding(
-                          padding: const EdgeInsets.only(bottom: 4),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text('• ', 
-                                  style: AppTypography.bodySmall.copyWith(
-                                    color: AppColors.textSecondary,
-                                  )),
-                              Expanded(
-                                child: Text(
-                                  tip,
+                        ...widget.tips!.map(
+                          (tip) => Padding(
+                            padding: const EdgeInsets.only(bottom: 4),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  '• ',
                                   style: AppTypography.bodySmall.copyWith(
                                     color: AppColors.textSecondary,
                                   ),
                                 ),
-                              ),
-                            ],
+                                Expanded(
+                                  child: Text(
+                                    tip,
+                                    style: AppTypography.bodySmall.copyWith(
+                                      color: AppColors.textSecondary,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
-                        )),
+                        ),
                       ],
                     ),
                   ),
                 ],
-                
+
                 // Action button
                 if (widget.actionLabel != null && widget.onAction != null) ...[
                   const SizedBox(height: AppSpacing.lg),

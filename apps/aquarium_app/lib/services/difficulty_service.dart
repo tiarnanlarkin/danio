@@ -2,7 +2,6 @@
 /// Implements AI-powered difficulty recommendations
 library;
 
-
 import 'dart:math';
 import '../models/adaptive_difficulty.dart';
 
@@ -23,7 +22,7 @@ class DifficultyService {
     final accuracy = history.averageAccuracy;
     final timeEfficiency = history.averageTimeEfficiency;
     final consistency = 1.0 - history.scoreStandardDeviation.clamp(0.0, 1.0);
-    
+
     // Improvement bonus
     double improvementFactor = 1.0;
     if (history.trend == PerformanceTrend.improving) {
@@ -33,12 +32,12 @@ class DifficultyService {
     }
 
     // Calculate weighted skill level
-    double skillLevel = (
-      accuracy * 0.4 +
-      timeEfficiency * 0.2 +
-      consistency * 0.2 +
-      (history.consecutiveCorrect / 10.0) * 0.2
-    ) * improvementFactor;
+    double skillLevel =
+        (accuracy * 0.4 +
+            timeEfficiency * 0.2 +
+            consistency * 0.2 +
+            (history.consecutiveCorrect / 10.0) * 0.2) *
+        improvementFactor;
 
     return skillLevel.clamp(0.0, 1.0);
   }
@@ -73,14 +72,14 @@ class DifficultyService {
     }
 
     final history = profile.getPerformanceHistory(topicId);
-    
+
     // If no history, start with easy/medium based on overall profile
     if (history == null || history.recentAttempts.isEmpty) {
       final overallSkill = profile.overallSkillLevel;
-      final suggestedLevel = overallSkill < 0.5 
-          ? DifficultyLevel.easy 
+      final suggestedLevel = overallSkill < 0.5
+          ? DifficultyLevel.easy
           : DifficultyLevel.medium;
-      
+
       return DifficultyRecommendation(
         suggestedLevel: suggestedLevel,
         confidence: 0.5,
@@ -200,7 +199,7 @@ class DifficultyService {
     required String topicName,
   }) {
     final change = newSkill - oldSkill;
-    
+
     if (change.abs() < 0.05) {
       return null; // No significant change
     }
@@ -273,7 +272,7 @@ class DifficultyService {
 
     final attempts = history.recentAttempts;
     final scores = attempts.map((a) => a.accuracy).toList();
-    
+
     return {
       'attempts': attempts.length,
       'averageScore': history.averageAccuracy,

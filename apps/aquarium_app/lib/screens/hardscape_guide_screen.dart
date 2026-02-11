@@ -23,7 +23,10 @@ class HardscapeGuideScreen extends StatelessWidget {
                     children: [
                       Icon(Icons.landscape, color: AppColors.info),
                       const SizedBox(width: 8),
-                      Text('What is Hardscape?', style: AppTypography.headlineSmall),
+                      Text(
+                        'What is Hardscape?',
+                        style: AppTypography.headlineSmall,
+                      ),
                     ],
                   ),
                   const SizedBox(height: 12),
@@ -46,31 +49,48 @@ class HardscapeGuideScreen extends StatelessWidget {
 
           _RockCard(
             name: 'Seiryu Stone',
-            description: 'Blue-grey limestone with dramatic texture and white veins.',
+            description:
+                'Blue-grey limestone with dramatic texture and white veins.',
             affectsWater: 'Raises pH and KH (calcium carbonate)',
             bestFor: 'Iwagumi, nature style, hard water tanks',
-            tips: ['Very popular for iwagumi', 'Sharp edges — handle carefully', 'Not for soft water fish without buffering'],
+            tips: [
+              'Very popular for iwagumi',
+              'Sharp edges — handle carefully',
+              'Not for soft water fish without buffering',
+            ],
           ),
           _RockCard(
             name: 'Dragon Stone (Ohko)',
             description: 'Clay-based stone with holes and weathered texture.',
             affectsWater: 'Inert — minimal effect',
             bestFor: 'Planted tanks, nature style',
-            tips: ['Lightweight', 'Soft — can be carved', 'Holes perfect for planting'],
+            tips: [
+              'Lightweight',
+              'Soft — can be carved',
+              'Holes perfect for planting',
+            ],
           ),
           _RockCard(
             name: 'Lava Rock',
             description: 'Porous volcanic rock, black or red.',
             affectsWater: 'Inert',
             bestFor: 'Biological filtration, planted tanks, cichlid caves',
-            tips: ['Excellent bacteria colonization', 'Very rough — can injure fish', 'Great for attaching plants'],
+            tips: [
+              'Excellent bacteria colonization',
+              'Very rough — can injure fish',
+              'Great for attaching plants',
+            ],
           ),
           _RockCard(
             name: 'River Rocks',
             description: 'Smooth, rounded stones in various colors.',
             affectsWater: 'Usually inert (test with vinegar first)',
             bestFor: 'Natural biotopes, riverbeds',
-            tips: ['Test for calcium — fizz = raises pH', 'Smooth is safer for bottom dwellers', 'Avoid collecting from polluted areas'],
+            tips: [
+              'Test for calcium — fizz = raises pH',
+              'Smooth is safer for bottom dwellers',
+              'Avoid collecting from polluted areas',
+            ],
           ),
           _RockCard(
             name: 'Slate',
@@ -84,7 +104,11 @@ class HardscapeGuideScreen extends StatelessWidget {
             description: 'Limestone with natural holes, beige/white.',
             affectsWater: 'Raises pH and hardness significantly',
             bestFor: 'African cichlids, hard water fish',
-            tips: ['Perfect for Malawi/Tanganyikan tanks', 'Provides lots of hiding spots', 'Heavy'],
+            tips: [
+              'Perfect for Malawi/Tanganyikan tanks',
+              'Provides lots of hiding spots',
+              'Heavy',
+            ],
           ),
 
           const SizedBox(height: 24),
@@ -95,38 +119,59 @@ class HardscapeGuideScreen extends StatelessWidget {
 
           _WoodCard(
             name: 'Mopani Wood',
-            description: 'Dense African hardwood, two-toned with interesting shapes.',
+            description:
+                'Dense African hardwood, two-toned with interesting shapes.',
             characteristics: 'Sinks immediately, releases tannins, very hard',
             bestFor: 'Blackwater tanks, plecos',
-            tips: ['Heavy tannin release — soak first', 'Very dense — sinks right away', 'Won\'t rot quickly'],
+            tips: [
+              'Heavy tannin release — soak first',
+              'Very dense — sinks right away',
+              'Won\'t rot quickly',
+            ],
           ),
           _WoodCard(
             name: 'Malaysian Driftwood',
             description: 'Gnarly, twisted shapes with bark-like texture.',
             characteristics: 'Usually sinks, releases moderate tannins',
             bestFor: 'Nature style, biotopes',
-            tips: ['Soak to remove tannins', 'May need weighing down initially', 'Great for attaching moss'],
+            tips: [
+              'Soak to remove tannins',
+              'May need weighing down initially',
+              'Great for attaching moss',
+            ],
           ),
           _WoodCard(
             name: 'Spider Wood',
             description: 'Thin, branching wood resembling tree roots.',
             characteristics: 'Lightweight, floats initially, releases tannins',
             bestFor: 'Nature style, iwagumi accent, nano tanks',
-            tips: ['WILL float — soak for weeks or weigh down', 'Delicate — handle carefully', 'Creates dramatic effect'],
+            tips: [
+              'WILL float — soak for weeks or weigh down',
+              'Delicate — handle carefully',
+              'Creates dramatic effect',
+            ],
           ),
           _WoodCard(
             name: 'Manzanita',
             description: 'Branching hardwood with smooth, twisted branches.',
             characteristics: 'Sinks eventually, minimal tannins',
             bestFor: 'Nature style, tall tanks',
-            tips: ['Very hard and durable', 'Often needs soaking', 'Beautiful natural branching'],
+            tips: [
+              'Very hard and durable',
+              'Often needs soaking',
+              'Beautiful natural branching',
+            ],
           ),
           _WoodCard(
             name: 'Cholla Wood',
             description: 'Hollow, tubular cactus skeleton.',
             characteristics: 'Sinks quickly, breaks down over time',
             bestFor: 'Shrimp tanks, fry hiding',
-            tips: ['Shrimp love it', 'Will decompose — replace every 6-12 months', 'Biofilm grows on it (food for shrimp)'],
+            tips: [
+              'Shrimp love it',
+              'Will decompose — replace every 6-12 months',
+              'Biofilm grows on it (food for shrimp)',
+            ],
           ),
 
           const SizedBox(height: 24),
@@ -143,20 +188,44 @@ class HardscapeGuideScreen extends StatelessWidget {
                 children: [
                   Text('Preparing Rocks', style: AppTypography.labelLarge),
                   const SizedBox(height: 8),
-                  _PrepStep(step: '1', text: 'Scrub with brush and water (no soap!)'),
-                  _PrepStep(step: '2', text: 'Boil small rocks for 10-15 minutes'),
-                  _PrepStep(step: '3', text: 'Pour boiling water over large rocks'),
-                  _PrepStep(step: '4', text: 'Test with vinegar — fizzing means calcium'),
-                  
+                  _PrepStep(
+                    step: '1',
+                    text: 'Scrub with brush and water (no soap!)',
+                  ),
+                  _PrepStep(
+                    step: '2',
+                    text: 'Boil small rocks for 10-15 minutes',
+                  ),
+                  _PrepStep(
+                    step: '3',
+                    text: 'Pour boiling water over large rocks',
+                  ),
+                  _PrepStep(
+                    step: '4',
+                    text: 'Test with vinegar — fizzing means calcium',
+                  ),
+
                   const SizedBox(height: 16),
-                  
+
                   Text('Preparing Driftwood', style: AppTypography.labelLarge),
                   const SizedBox(height: 8),
                   _PrepStep(step: '1', text: 'Scrub off any loose material'),
-                  _PrepStep(step: '2', text: 'Boil if small enough (removes tannins faster)'),
-                  _PrepStep(step: '3', text: 'Soak in bucket — change water daily'),
-                  _PrepStep(step: '4', text: 'Soak until it sinks (days to weeks)'),
-                  _PrepStep(step: '5', text: 'Or weigh down with rocks/suction cups'),
+                  _PrepStep(
+                    step: '2',
+                    text: 'Boil if small enough (removes tannins faster)',
+                  ),
+                  _PrepStep(
+                    step: '3',
+                    text: 'Soak in bucket — change water daily',
+                  ),
+                  _PrepStep(
+                    step: '4',
+                    text: 'Soak until it sinks (days to weeks)',
+                  ),
+                  _PrepStep(
+                    step: '5',
+                    text: 'Or weigh down with rocks/suction cups',
+                  ),
                 ],
               ),
             ),
@@ -175,17 +244,20 @@ class HardscapeGuideScreen extends StatelessWidget {
           ),
           _TipCard(
             title: 'Golden Ratio',
-            description: 'Main feature at ~62% from one side creates natural balance.',
+            description:
+                'Main feature at ~62% from one side creates natural balance.',
             icon: Icons.auto_awesome,
           ),
           _TipCard(
             title: 'Odd Numbers',
-            description: 'Use odd numbers of rocks/wood pieces (3, 5, 7) for natural look.',
+            description:
+                'Use odd numbers of rocks/wood pieces (3, 5, 7) for natural look.',
             icon: Icons.filter_3,
           ),
           _TipCard(
             title: 'Height Variation',
-            description: 'Vary heights — tall in back, short in front. Create depth.',
+            description:
+                'Vary heights — tall in back, short in front. Create depth.',
             icon: Icons.trending_up,
           ),
           _TipCard(
@@ -195,7 +267,8 @@ class HardscapeGuideScreen extends StatelessWidget {
           ),
           _TipCard(
             title: 'Single Type',
-            description: 'Use one type of rock for cohesive look. Mixing can look cluttered.',
+            description:
+                'Use one type of rock for cohesive look. Mixing can look cluttered.',
             icon: Icons.category,
           ),
 
@@ -268,7 +341,11 @@ class _RockCard extends StatelessWidget {
           child: const Icon(Icons.terrain, color: Colors.grey),
         ),
         title: Text(name, style: AppTypography.labelLarge),
-        subtitle: Text(description, style: AppTypography.bodySmall, maxLines: 2),
+        subtitle: Text(
+          description,
+          style: AppTypography.bodySmall,
+          maxLines: 2,
+        ),
         children: [
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
@@ -278,17 +355,21 @@ class _RockCard extends StatelessWidget {
                 _DetailRow(label: 'Water effect', value: affectsWater),
                 _DetailRow(label: 'Best for', value: bestFor),
                 const SizedBox(height: 8),
-                ...tips.map((t) => Padding(
-                  padding: const EdgeInsets.only(bottom: 4),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Icon(Icons.check, size: 16, color: AppColors.success),
-                      const SizedBox(width: 8),
-                      Expanded(child: Text(t, style: AppTypography.bodySmall)),
-                    ],
+                ...tips.map(
+                  (t) => Padding(
+                    padding: const EdgeInsets.only(bottom: 4),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Icon(Icons.check, size: 16, color: AppColors.success),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(t, style: AppTypography.bodySmall),
+                        ),
+                      ],
+                    ),
                   ),
-                )),
+                ),
               ],
             ),
           ),
@@ -328,7 +409,11 @@ class _WoodCard extends StatelessWidget {
           child: const Icon(Icons.park, color: Colors.brown),
         ),
         title: Text(name, style: AppTypography.labelLarge),
-        subtitle: Text(description, style: AppTypography.bodySmall, maxLines: 2),
+        subtitle: Text(
+          description,
+          style: AppTypography.bodySmall,
+          maxLines: 2,
+        ),
         children: [
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
@@ -338,17 +423,21 @@ class _WoodCard extends StatelessWidget {
                 _DetailRow(label: 'Characteristics', value: characteristics),
                 _DetailRow(label: 'Best for', value: bestFor),
                 const SizedBox(height: 8),
-                ...tips.map((t) => Padding(
-                  padding: const EdgeInsets.only(bottom: 4),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Icon(Icons.check, size: 16, color: AppColors.success),
-                      const SizedBox(width: 8),
-                      Expanded(child: Text(t, style: AppTypography.bodySmall)),
-                    ],
+                ...tips.map(
+                  (t) => Padding(
+                    padding: const EdgeInsets.only(bottom: 4),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Icon(Icons.check, size: 16, color: AppColors.success),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(t, style: AppTypography.bodySmall),
+                        ),
+                      ],
+                    ),
                   ),
-                )),
+                ),
               ],
             ),
           ),
@@ -373,7 +462,12 @@ class _DetailRow extends StatelessWidget {
         children: [
           SizedBox(
             width: 100,
-            child: Text('$label:', style: AppTypography.bodySmall.copyWith(color: AppColors.textSecondary)),
+            child: Text(
+              '$label:',
+              style: AppTypography.bodySmall.copyWith(
+                color: AppColors.textSecondary,
+              ),
+            ),
           ),
           Expanded(child: Text(value, style: AppTypography.bodySmall)),
         ],
@@ -403,7 +497,12 @@ class _PrepStep extends StatelessWidget {
               shape: BoxShape.circle,
             ),
             child: Center(
-              child: Text(step, style: AppTypography.bodySmall.copyWith(color: AppColors.primary)),
+              child: Text(
+                step,
+                style: AppTypography.bodySmall.copyWith(
+                  color: AppColors.primary,
+                ),
+              ),
             ),
           ),
           const SizedBox(width: 8),

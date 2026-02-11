@@ -79,7 +79,9 @@ class StudyScreen extends ConsumerWidget {
                     color: Colors.teal,
                     onTap: () => Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (_) => const NitrogenCycleGuideScreen()),
+                      MaterialPageRoute(
+                        builder: (_) => const NitrogenCycleGuideScreen(),
+                      ),
                     ),
                   ),
                   _StudyTile(
@@ -89,7 +91,9 @@ class StudyScreen extends ConsumerWidget {
                     color: Colors.blue,
                     onTap: () => Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (_) => const ParameterGuideScreen()),
+                      MaterialPageRoute(
+                        builder: (_) => const ParameterGuideScreen(),
+                      ),
                     ),
                   ),
                   _StudyTile(
@@ -99,7 +103,9 @@ class StudyScreen extends ConsumerWidget {
                     color: Colors.red,
                     onTap: () => Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (_) => const DiseaseGuideScreen()),
+                      MaterialPageRoute(
+                        builder: (_) => const DiseaseGuideScreen(),
+                      ),
                     ),
                   ),
                 ],
@@ -122,7 +128,9 @@ class StudyScreen extends ConsumerWidget {
                     color: Colors.orange,
                     onTap: () => Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (_) => const AcclimationGuideScreen()),
+                      MaterialPageRoute(
+                        builder: (_) => const AcclimationGuideScreen(),
+                      ),
                     ),
                   ),
                   _StudyTile(
@@ -132,7 +140,9 @@ class StudyScreen extends ConsumerWidget {
                     color: Colors.purple,
                     onTap: () => Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (_) => const QuarantineGuideScreen()),
+                      MaterialPageRoute(
+                        builder: (_) => const QuarantineGuideScreen(),
+                      ),
                     ),
                   ),
                   _StudyTile(
@@ -142,7 +152,9 @@ class StudyScreen extends ConsumerWidget {
                     color: Colors.amber,
                     onTap: () => Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (_) => const FeedingGuideScreen()),
+                      MaterialPageRoute(
+                        builder: (_) => const FeedingGuideScreen(),
+                      ),
                     ),
                   ),
                   _StudyTile(
@@ -152,7 +164,9 @@ class StudyScreen extends ConsumerWidget {
                     color: Colors.pink,
                     onTap: () => Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (_) => const BreedingGuideScreen()),
+                      MaterialPageRoute(
+                        builder: (_) => const BreedingGuideScreen(),
+                      ),
                     ),
                   ),
                 ],
@@ -175,7 +189,9 @@ class StudyScreen extends ConsumerWidget {
                     color: Colors.green,
                     onTap: () => Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (_) => const AlgaeGuideScreen()),
+                      MaterialPageRoute(
+                        builder: (_) => const AlgaeGuideScreen(),
+                      ),
                     ),
                   ),
                 ],
@@ -198,7 +214,9 @@ class StudyScreen extends ConsumerWidget {
                     color: Colors.cyan,
                     onTap: () => Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (_) => const SpeciesBrowserScreen()),
+                      MaterialPageRoute(
+                        builder: (_) => const SpeciesBrowserScreen(),
+                      ),
                     ),
                   ),
                   _StudyTile(
@@ -208,7 +226,9 @@ class StudyScreen extends ConsumerWidget {
                     color: Colors.green,
                     onTap: () => Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (_) => const PlantBrowserScreen()),
+                      MaterialPageRoute(
+                        builder: (_) => const PlantBrowserScreen(),
+                      ),
                     ),
                   ),
                   _StudyTile(
@@ -310,13 +330,12 @@ class _SectionCard extends StatelessWidget {
           const SizedBox(height: 4),
           Text(
             subtitle,
-            style: AppTypography.bodySmall.copyWith(color: AppColors.textSecondary),
+            style: AppTypography.bodySmall.copyWith(
+              color: AppColors.textSecondary,
+            ),
           ),
           const SizedBox(height: 12),
-          Card(
-            margin: EdgeInsets.zero,
-            child: child,
-          ),
+          Card(margin: EdgeInsets.zero, child: child),
         ],
       ),
     );

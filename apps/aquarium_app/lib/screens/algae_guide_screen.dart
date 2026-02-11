@@ -42,9 +42,14 @@ class AlgaeGuideScreen extends StatelessWidget {
           // Algae types
           _AlgaeCard(
             name: 'Green Spot Algae (GSA)',
-            appearance: 'Hard green spots on glass, slow-growing plants, and hardscape',
+            appearance:
+                'Hard green spots on glass, slow-growing plants, and hardscape',
             color: Colors.green,
-            causes: ['Low phosphate', 'High light', 'Old bulbs with shifted spectrum'],
+            causes: [
+              'Low phosphate',
+              'High light',
+              'Old bulbs with shifted spectrum',
+            ],
             solutions: [
               'Increase phosphate dosing',
               'Reduce light intensity or duration',
@@ -55,7 +60,8 @@ class AlgaeGuideScreen extends StatelessWidget {
           ),
           _AlgaeCard(
             name: 'Green Dust Algae (GDA)',
-            appearance: 'Soft green film on glass that wipes off easily, returns quickly',
+            appearance:
+                'Soft green film on glass that wipes off easily, returns quickly',
             color: Colors.lightGreen,
             causes: ['New tank syndrome', 'Unstable CO2', 'Nutrient imbalance'],
             solutions: [
@@ -69,7 +75,11 @@ class AlgaeGuideScreen extends StatelessWidget {
             name: 'Green Water',
             appearance: 'Cloudy green water, can\'t see through tank',
             color: Colors.green.shade300,
-            causes: ['Excess light (especially direct sunlight)', 'High ammonia/nutrients', 'New tank'],
+            causes: [
+              'Excess light (especially direct sunlight)',
+              'High ammonia/nutrients',
+              'New tank',
+            ],
             solutions: [
               'UV sterilizer (most effective)',
               'Complete blackout for 3-4 days',
@@ -77,13 +87,19 @@ class AlgaeGuideScreen extends StatelessWidget {
               'Daphnia (eat the algae)',
               'Fine filter floss or diatom filter',
             ],
-            prevention: 'Avoid direct sunlight, control nutrients, proper cycling',
+            prevention:
+                'Avoid direct sunlight, control nutrients, proper cycling',
           ),
           _AlgaeCard(
             name: 'Hair/Thread Algae',
             appearance: 'Long green filaments, looks like hair or threads',
             color: Colors.green.shade600,
-            causes: ['Excess light', 'Low CO2', 'Ammonia spikes', 'Nutrient imbalance'],
+            causes: [
+              'Excess light',
+              'Low CO2',
+              'Ammonia spikes',
+              'Nutrient imbalance',
+            ],
             solutions: [
               'Manually remove by twirling on toothbrush',
               'Reduce light period',
@@ -95,7 +111,8 @@ class AlgaeGuideScreen extends StatelessWidget {
           ),
           _AlgaeCard(
             name: 'Black Beard Algae (BBA)',
-            appearance: 'Dark fuzzy tufts on edges of plants, equipment, hardscape',
+            appearance:
+                'Dark fuzzy tufts on edges of plants, equipment, hardscape',
             color: Colors.grey.shade800,
             causes: ['Fluctuating CO2', 'Low/unstable CO2', 'Poor flow'],
             solutions: [
@@ -123,9 +140,15 @@ class AlgaeGuideScreen extends StatelessWidget {
           ),
           _AlgaeCard(
             name: 'Blue-Green Algae (Cyanobacteria)',
-            appearance: 'Slimy blue-green sheets, strong musty smell, peels off in sheets',
+            appearance:
+                'Slimy blue-green sheets, strong musty smell, peels off in sheets',
             color: Colors.teal,
-            causes: ['Low nitrate', 'Poor circulation', 'Dirty substrate', 'Excess organics'],
+            causes: [
+              'Low nitrate',
+              'Poor circulation',
+              'Dirty substrate',
+              'Excess organics',
+            ],
             solutions: [
               'Blackout for 3 days (cover tank completely)',
               'Erythromycin antibiotic treatment',
@@ -133,13 +156,19 @@ class AlgaeGuideScreen extends StatelessWidget {
               'Improve flow and gravel vacuum',
               'Manual removal before treatment',
             ],
-            prevention: 'Maintain nitrates >5ppm, good circulation, clean substrate',
+            prevention:
+                'Maintain nitrates >5ppm, good circulation, clean substrate',
           ),
           _AlgaeCard(
             name: 'Brown Diatoms',
-            appearance: 'Brown dusty coating on everything, common in new tanks',
+            appearance:
+                'Brown dusty coating on everything, common in new tanks',
             color: Colors.brown,
-            causes: ['New tank (silicates in water)', 'Low light', 'High silicates'],
+            causes: [
+              'New tank (silicates in water)',
+              'Low light',
+              'High silicates',
+            ],
             solutions: [
               'Usually resolves on its own in 4-8 weeks',
               'Otocinclus, nerite snails love it',
@@ -152,7 +181,11 @@ class AlgaeGuideScreen extends StatelessWidget {
             name: 'Green Fuzz Algae',
             appearance: 'Short fuzzy green carpet on plants and surfaces',
             color: Colors.lightGreen.shade400,
-            causes: ['Imbalanced nutrients', 'Inconsistent CO2', 'Excess light'],
+            causes: [
+              'Imbalanced nutrients',
+              'Inconsistent CO2',
+              'Excess light',
+            ],
             solutions: [
               'Balance nutrients (usually low nitrogen)',
               'Stabilize CO2',
@@ -183,22 +216,26 @@ class AlgaeGuideScreen extends StatelessWidget {
           _CrewCard(
             name: 'Amano Shrimp',
             eats: 'Hair algae, most soft algae',
-            notes: 'Best algae eaters. Need groups of 5+. Won\'t breed in freshwater.',
+            notes:
+                'Best algae eaters. Need groups of 5+. Won\'t breed in freshwater.',
           ),
           _CrewCard(
             name: 'Nerite Snails',
             eats: 'Green spot, diatoms, general film',
-            notes: 'Excellent cleaners. Leave white eggs on hardscape (won\'t hatch in freshwater).',
+            notes:
+                'Excellent cleaners. Leave white eggs on hardscape (won\'t hatch in freshwater).',
           ),
           _CrewCard(
             name: 'Otocinclus',
             eats: 'Diatoms, soft green algae',
-            notes: 'Peaceful, need groups of 6+. Sensitive — add to mature tanks only.',
+            notes:
+                'Peaceful, need groups of 6+. Sensitive — add to mature tanks only.',
           ),
           _CrewCard(
             name: 'Siamese Algae Eater',
             eats: 'BBA, hair algae (when young)',
-            notes: 'True SAE only. Gets large (15cm), may stop eating algae when older.',
+            notes:
+                'True SAE only. Gets large (15cm), may stop eating algae when older.',
           ),
           _CrewCard(
             name: 'Bristlenose Pleco',
@@ -221,7 +258,9 @@ class AlgaeGuideScreen extends StatelessWidget {
               padding: const EdgeInsets.all(16),
               child: Column(
                 children: [
-                  _ChecklistItem(text: 'Light: 6-8 hours max, no direct sunlight'),
+                  _ChecklistItem(
+                    text: 'Light: 6-8 hours max, no direct sunlight',
+                  ),
                   _ChecklistItem(text: 'CO2: Consistent levels if injecting'),
                   _ChecklistItem(text: 'Nutrients: Balanced N:P:K ratio'),
                   _ChecklistItem(text: 'Flow: No dead spots'),
@@ -279,18 +318,32 @@ class _AlgaeCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Causes', style: AppTypography.labelLarge.copyWith(color: AppColors.error)),
+                Text(
+                  'Causes',
+                  style: AppTypography.labelLarge.copyWith(
+                    color: AppColors.error,
+                  ),
+                ),
                 const SizedBox(height: 4),
-                ...causes.map((c) => Text('• $c', style: AppTypography.bodySmall)),
-                
+                ...causes.map(
+                  (c) => Text('• $c', style: AppTypography.bodySmall),
+                ),
+
                 const SizedBox(height: 12),
-                
-                Text('Solutions', style: AppTypography.labelLarge.copyWith(color: AppColors.success)),
+
+                Text(
+                  'Solutions',
+                  style: AppTypography.labelLarge.copyWith(
+                    color: AppColors.success,
+                  ),
+                ),
                 const SizedBox(height: 4),
-                ...solutions.map((s) => Text('• $s', style: AppTypography.bodySmall)),
-                
+                ...solutions.map(
+                  (s) => Text('• $s', style: AppTypography.bodySmall),
+                ),
+
                 const SizedBox(height: 12),
-                
+
                 Container(
                   padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
@@ -346,7 +399,11 @@ class _CrewCard extends StatelessWidget {
                 color: AppColors.success.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(8),
               ),
-              child: const Icon(Icons.pest_control, color: AppColors.success, size: 20),
+              child: const Icon(
+                Icons.pest_control,
+                color: AppColors.success,
+                size: 20,
+              ),
             ),
             const SizedBox(width: 12),
             Expanded(
@@ -354,7 +411,12 @@ class _CrewCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(name, style: AppTypography.labelLarge),
-                  Text('Eats: $eats', style: AppTypography.bodySmall.copyWith(color: AppColors.success)),
+                  Text(
+                    'Eats: $eats',
+                    style: AppTypography.bodySmall.copyWith(
+                      color: AppColors.success,
+                    ),
+                  ),
                   Text(notes, style: AppTypography.bodySmall),
                 ],
               ),

@@ -50,28 +50,31 @@ class SyncDebugDialog extends ConsumerWidget {
               const SizedBox(height: 8),
               const Text(
                 'Recent Conflicts:',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 14,
-                ),
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
               ),
               const SizedBox(height: 8),
-              ...syncState.recentConflicts.map((conflict) => Padding(
-                padding: const EdgeInsets.only(bottom: 4),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Icon(Icons.warning_amber, size: 16, color: Colors.orange),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: Text(
-                        conflict,
-                        style: const TextStyle(fontSize: 12),
+              ...syncState.recentConflicts.map(
+                (conflict) => Padding(
+                  padding: const EdgeInsets.only(bottom: 4),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Icon(
+                        Icons.warning_amber,
+                        size: 16,
+                        color: Colors.orange,
                       ),
-                    ),
-                  ],
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          conflict,
+                          style: const TextStyle(fontSize: 12),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              )),
+              ),
               const SizedBox(height: 12),
             ],
 
@@ -81,39 +84,38 @@ class SyncDebugDialog extends ConsumerWidget {
               const SizedBox(height: 8),
               const Text(
                 'Queued Actions:',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 14,
-                ),
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
               ),
               const SizedBox(height: 8),
-              ...syncState.queuedActions.map((action) => Padding(
-                padding: const EdgeInsets.only(bottom: 4),
-                child: Row(
-                  children: [
-                    Icon(_getActionIcon(action.type), size: 16),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            SyncService.getActionDescription(action),
-                            style: const TextStyle(fontSize: 12),
-                          ),
-                          Text(
-                            _formatDateTime(action.timestamp),
-                            style: TextStyle(
-                              fontSize: 10,
-                              color: Colors.grey[600],
+              ...syncState.queuedActions.map(
+                (action) => Padding(
+                  padding: const EdgeInsets.only(bottom: 4),
+                  child: Row(
+                    children: [
+                      Icon(_getActionIcon(action.type), size: 16),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              SyncService.getActionDescription(action),
+                              style: const TextStyle(fontSize: 12),
                             ),
-                          ),
-                        ],
+                            Text(
+                              _formatDateTime(action.timestamp),
+                              style: TextStyle(
+                                fontSize: 10,
+                                color: Colors.grey[600],
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              )),
+              ),
             ],
 
             // Error
@@ -229,10 +231,7 @@ class _InfoRow extends StatelessWidget {
         Expanded(
           child: Text(
             label,
-            style: const TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w500,
-            ),
+            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
           ),
         ),
         Text(

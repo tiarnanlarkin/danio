@@ -2,7 +2,6 @@
 /// Implements review sessions, adaptive difficulty, and progress tracking
 library;
 
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'dart:async';
@@ -18,20 +17,21 @@ class SpacedRepetitionPracticeScreen extends ConsumerStatefulWidget {
   const SpacedRepetitionPracticeScreen({super.key});
 
   @override
-  ConsumerState<SpacedRepetitionPracticeScreen> createState() => _SpacedRepetitionPracticeScreenState();
+  ConsumerState<SpacedRepetitionPracticeScreen> createState() =>
+      _SpacedRepetitionPracticeScreenState();
 }
 
-class _SpacedRepetitionPracticeScreenState extends ConsumerState<SpacedRepetitionPracticeScreen> {
-  ReviewSessionMode _selectedMode = ReviewSessionMode.standard;
+class _SpacedRepetitionPracticeScreenState
+    extends ConsumerState<SpacedRepetitionPracticeScreen> {
+  // Unused: Mode selection handled via navigation parameters
+  // ReviewSessionMode _selectedMode = ReviewSessionMode.standard;
 
   @override
   Widget build(BuildContext context) {
     final srState = ref.watch(spacedRepetitionProvider);
-    
+
     if (srState.isLoading) {
-      return const Scaffold(
-        body: Center(child: CircularProgressIndicator()),
-      );
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
     // If session is active, show session screen
@@ -40,8 +40,8 @@ class _SpacedRepetitionPracticeScreenState extends ConsumerState<SpacedRepetitio
     }
 
     final dueCount = srState.stats.dueCards;
-    final weakCount = srState.stats.weakCards;
-    
+    // final weakCount = srState.stats.weakCards; // TODO: Display weak cards count
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Practice'),
@@ -61,7 +61,7 @@ class _SpacedRepetitionPracticeScreenState extends ConsumerState<SpacedRepetitio
 
   Widget _buildEmptyState(BuildContext context) {
     final srState = ref.watch(spacedRepetitionProvider);
-    
+
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(32),
@@ -80,10 +80,7 @@ class _SpacedRepetitionPracticeScreenState extends ConsumerState<SpacedRepetitio
               ),
             ),
             const SizedBox(height: 24),
-            Text(
-              'All caught up!',
-              style: AppTypography.headlineLarge,
-            ),
+            Text('All caught up!', style: AppTypography.headlineLarge),
             const SizedBox(height: 8),
             Text(
               'No reviews due right now. Your knowledge is fresh!',
@@ -123,7 +120,10 @@ class _SpacedRepetitionPracticeScreenState extends ConsumerState<SpacedRepetitio
     );
   }
 
-  Widget _buildPracticeHome(BuildContext context, SpacedRepetitionState srState) {
+  Widget _buildPracticeHome(
+    BuildContext context,
+    SpacedRepetitionState srState,
+  ) {
     return ListView(
       padding: const EdgeInsets.all(20),
       children: [
@@ -132,10 +132,7 @@ class _SpacedRepetitionPracticeScreenState extends ConsumerState<SpacedRepetitio
         const SizedBox(height: 20),
 
         // Quick Start Section
-        Text(
-          'Quick Start',
-          style: AppTypography.headlineSmall,
-        ),
+        Text('Quick Start', style: AppTypography.headlineSmall),
         const SizedBox(height: 12),
         _buildModeCard(
           icon: Icons.fitness_center,
@@ -173,15 +170,12 @@ class _SpacedRepetitionPracticeScreenState extends ConsumerState<SpacedRepetitio
           mode: ReviewSessionMode.mixed,
           color: AppColors.secondary,
         ),
-        
+
         const SizedBox(height: 24),
 
         // Mastery Progress
         if (srState.stats.totalCards > 0) ...[
-          Text(
-            'Mastery Progress',
-            style: AppTypography.headlineSmall,
-          ),
+          Text('Mastery Progress', style: AppTypography.headlineSmall),
           const SizedBox(height: 12),
           _buildMasteryBreakdown(srState),
         ],
@@ -270,9 +264,7 @@ class _SpacedRepetitionPracticeScreenState extends ConsumerState<SpacedRepetitio
         ),
         Text(
           label,
-          style: AppTypography.labelSmall.copyWith(
-            color: Colors.white70,
-          ),
+          style: AppTypography.labelSmall.copyWith(color: Colors.white70),
         ),
       ],
     );
@@ -288,14 +280,14 @@ class _SpacedRepetitionPracticeScreenState extends ConsumerState<SpacedRepetitio
     bool enabled = true,
   }) {
     return InkWell(
-      onTap: enabled && count > 0
-          ? () => _startSession(mode)
-          : null,
+      onTap: enabled && count > 0 ? () => _startSession(mode) : null,
       borderRadius: BorderRadius.circular(16),
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: enabled ? AppColors.surface : AppColors.surface.withOpacity(0.5),
+          color: enabled
+              ? AppColors.surface
+              : AppColors.surface.withOpacity(0.5),
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
             color: enabled ? color.withOpacity(0.3) : AppColors.surfaceVariant,
@@ -306,7 +298,9 @@ class _SpacedRepetitionPracticeScreenState extends ConsumerState<SpacedRepetitio
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: enabled ? color.withOpacity(0.1) : AppColors.surfaceVariant,
+                color: enabled
+                    ? color.withOpacity(0.1)
+                    : AppColors.surfaceVariant,
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Icon(icon, color: enabled ? color : AppColors.textHint),
@@ -327,7 +321,9 @@ class _SpacedRepetitionPracticeScreenState extends ConsumerState<SpacedRepetitio
                   Text(
                     description,
                     style: AppTypography.bodySmall.copyWith(
-                      color: enabled ? AppColors.textSecondary : AppColors.textHint,
+                      color: enabled
+                          ? AppColors.textSecondary
+                          : AppColors.textHint,
                     ),
                   ),
                 ],
@@ -352,7 +348,9 @@ class _SpacedRepetitionPracticeScreenState extends ConsumerState<SpacedRepetitio
             const SizedBox(width: 8),
             Icon(
               Icons.chevron_right,
-              color: enabled && count > 0 ? AppColors.textSecondary : AppColors.textHint,
+              color: enabled && count > 0
+                  ? AppColors.textSecondary
+                  : AppColors.textHint,
             ),
           ],
         ),
@@ -451,10 +449,12 @@ class _SpacedRepetitionPracticeScreenState extends ConsumerState<SpacedRepetitio
 
   Future<void> _startSession(ReviewSessionMode mode) async {
     try {
-      await ref.read(spacedRepetitionProvider.notifier).startSession(mode: mode);
-    } catch (e, st) {
+      await ref
+          .read(spacedRepetitionProvider.notifier)
+          .startSession(mode: mode);
+    } catch (e) {
       if (!mounted) return;
-      
+
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Failed to start session: ${e.toString()}'),
@@ -472,7 +472,7 @@ class _SpacedRepetitionPracticeScreenState extends ConsumerState<SpacedRepetitio
 
   void _showStatsDialog() {
     final srState = ref.read(spacedRepetitionProvider);
-    
+
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -486,10 +486,18 @@ class _SpacedRepetitionPracticeScreenState extends ConsumerState<SpacedRepetitio
               _buildStatRow('Due Cards', srState.stats.dueCards.toString()),
               _buildStatRow('Weak Cards', srState.stats.weakCards.toString()),
               _buildStatRow('Mastered', srState.stats.masteredCards.toString()),
-              _buildStatRow('Average Strength', 
-                  '${(srState.stats.averageStrength * 100).round()}%'),
-              _buildStatRow('Reviews Today', srState.stats.reviewsToday.toString()),
-              _buildStatRow('Current Streak', '${srState.stats.currentStreak} days'),
+              _buildStatRow(
+                'Average Strength',
+                '${(srState.stats.averageStrength * 100).round()}%',
+              ),
+              _buildStatRow(
+                'Reviews Today',
+                srState.stats.reviewsToday.toString(),
+              ),
+              _buildStatRow(
+                'Current Streak',
+                '${srState.stats.currentStreak} days',
+              ),
             ],
           ),
         ),
@@ -512,7 +520,9 @@ class _SpacedRepetitionPracticeScreenState extends ConsumerState<SpacedRepetitio
           Text(label, style: AppTypography.bodyMedium),
           Text(
             value,
-            style: AppTypography.bodyMedium.copyWith(fontWeight: FontWeight.bold),
+            style: AppTypography.bodyMedium.copyWith(
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ],
       ),
@@ -527,13 +537,11 @@ class _SpacedRepetitionPracticeScreenState extends ConsumerState<SpacedRepetitio
 class ReviewSessionScreen extends ConsumerStatefulWidget {
   final ReviewSession session;
 
-  const ReviewSessionScreen({
-    super.key,
-    required this.session,
-  });
+  const ReviewSessionScreen({super.key, required this.session});
 
   @override
-  ConsumerState<ReviewSessionScreen> createState() => _ReviewSessionScreenState();
+  ConsumerState<ReviewSessionScreen> createState() =>
+      _ReviewSessionScreenState();
 }
 
 class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
@@ -556,8 +564,10 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
     final progress = (_currentCardIndex + 1) / widget.session.cards.length;
     final cardsReviewed = widget.session.results.length;
     final correctSoFar = widget.session.results.where((r) => r.correct).length;
-    final accuracy = cardsReviewed > 0 ? (correctSoFar / cardsReviewed * 100).round() : 0;
-    
+    final accuracy = cardsReviewed > 0
+        ? (correctSoFar / cardsReviewed * 100).round()
+        : 0;
+
     return WillPopScope(
       onWillPop: () async {
         final shouldPop = await _showExitDialog();
@@ -618,7 +628,9 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
                     child: LinearProgressIndicator(
                       value: progress,
                       backgroundColor: AppColors.surfaceVariant,
-                      valueColor: const AlwaysStoppedAnimation<Color>(AppColors.primary),
+                      valueColor: const AlwaysStoppedAnimation<Color>(
+                        AppColors.primary,
+                      ),
                       minHeight: 8,
                     ),
                   ),
@@ -640,11 +652,7 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
                           ),
                         ),
                         const SizedBox(width: 16),
-                        Icon(
-                          Icons.cancel,
-                          size: 16,
-                          color: AppColors.error,
-                        ),
+                        Icon(Icons.cancel, size: 16, color: AppColors.error),
                         const SizedBox(width: 4),
                         Text(
                           '${cardsReviewed - correctSoFar} incorrect',
@@ -668,13 +676,10 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
             ),
 
             // Card content
-            Expanded(
-              child: _buildCardContent(),
-            ),
+            Expanded(child: _buildCardContent()),
 
             // Answer buttons
-            if (!_showingAnswer)
-              _buildAnswerButtons(),
+            if (!_showingAnswer) _buildAnswerButtons(),
           ],
         ),
       ),
@@ -738,10 +743,7 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
                   ),
                 ),
                 const SizedBox(height: 12),
-                Text(
-                  _getQuestionText(),
-                  style: AppTypography.headlineMedium,
-                ),
+                Text(_getQuestionText(), style: AppTypography.headlineMedium),
               ],
             ),
           ),
@@ -756,15 +758,14 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
               ),
               child: Text(
                 _errorMessage!,
-                style: AppTypography.bodyMedium.copyWith(color: AppColors.error),
+                style: AppTypography.bodyMedium.copyWith(
+                  color: AppColors.error,
+                ),
               ),
             ),
           ],
 
-          if (_showingAnswer) ...[
-            const SizedBox(height: 20),
-            _buildFeedback(),
-          ],
+          if (_showingAnswer) ...[const SizedBox(height: 20), _buildFeedback()],
         ],
       ),
     );
@@ -852,16 +853,16 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
 
   Widget _buildFeedback() {
     final lastResult = widget.session.results.last;
-    
+
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: lastResult.correct 
+        color: lastResult.correct
             ? AppColors.success.withOpacity(0.1)
             : AppColors.error.withOpacity(0.1),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: lastResult.correct 
+          color: lastResult.correct
               ? AppColors.success.withOpacity(0.3)
               : AppColors.error.withOpacity(0.3),
         ),
@@ -884,7 +885,9 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
                     Text(
                       lastResult.correct ? 'Great job!' : 'Keep practicing!',
                       style: AppTypography.headlineSmall.copyWith(
-                        color: lastResult.correct ? AppColors.success : AppColors.error,
+                        color: lastResult.correct
+                            ? AppColors.success
+                            : AppColors.error,
                       ),
                     ),
                     const SizedBox(height: 4),
@@ -930,11 +933,13 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
     setState(() => _isSubmitting = true);
 
     try {
-      await ref.read(spacedRepetitionProvider.notifier).recordSessionResult(
-        cardId: _currentCard.id,
-        correct: correct,
-        timeSpent: timeSpent,
-      );
+      await ref
+          .read(spacedRepetitionProvider.notifier)
+          .recordSessionResult(
+            cardId: _currentCard.id,
+            correct: correct,
+            timeSpent: timeSpent,
+          );
 
       // Award XP to user profile
       final result = widget.session.results.last;
@@ -951,7 +956,7 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
         setState(() {
           _errorMessage = 'Error recording answer: $e';
         });
-        
+
         // Show SnackBar with retry option
         // Card scheduling errors will not break review flow (handled in provider)
         ScaffoldMessenger.of(context).showSnackBar(
@@ -989,7 +994,7 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
 
   Future<void> _completeSession() async {
     await ref.read(spacedRepetitionProvider.notifier).completeSession();
-    
+
     if (mounted) {
       // Show completion dialog
       showDialog(
@@ -1006,7 +1011,7 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
     final incorrectCards = totalCards - correctCards;
     final accuracy = (widget.session.score * 100).round();
     final totalXp = widget.session.totalXp;
-    
+
     return AlertDialog(
       title: Row(
         children: [
@@ -1024,11 +1029,11 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
             child: Container(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
-                color: accuracy >= 80 
+                color: accuracy >= 80
                     ? AppColors.success.withOpacity(0.1)
                     : accuracy >= 60
-                        ? AppColors.warning.withOpacity(0.1)
-                        : AppColors.error.withOpacity(0.1),
+                    ? AppColors.warning.withOpacity(0.1)
+                    : AppColors.error.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Column(
@@ -1036,11 +1041,11 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
                   Text(
                     '$accuracy%',
                     style: AppTypography.headlineLarge.copyWith(
-                      color: accuracy >= 80 
+                      color: accuracy >= 80
                           ? AppColors.success
                           : accuracy >= 60
-                              ? AppColors.warning
-                              : AppColors.error,
+                          ? AppColors.warning
+                          : AppColors.error,
                       fontWeight: FontWeight.bold,
                       fontSize: 48,
                     ),
@@ -1057,7 +1062,7 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
             ),
           ),
           const SizedBox(height: 20),
-          
+
           // Stats breakdown
           _buildStatRow('Cards Reviewed', '$totalCards'),
           const SizedBox(height: 8),
@@ -1103,7 +1108,7 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
       ],
     );
   }
-  
+
   Widget _buildStatRow(
     String label,
     String value, {
@@ -1130,9 +1135,9 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
         ),
         Text(
           value,
-          style: valueStyle ?? AppTypography.bodyLarge.copyWith(
-            fontWeight: FontWeight.bold,
-          ),
+          style:
+              valueStyle ??
+              AppTypography.bodyLarge.copyWith(fontWeight: FontWeight.bold),
         ),
       ],
     );
@@ -1141,7 +1146,7 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
   Future<bool?> _showExitDialog() {
     final cardsReviewed = widget.session.results.length;
     final cardsRemaining = widget.session.cards.length - cardsReviewed;
-    
+
     return showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
@@ -1171,7 +1176,11 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
                 children: [
                   Row(
                     children: [
-                      const Icon(Icons.check_circle, size: 16, color: AppColors.success),
+                      const Icon(
+                        Icons.check_circle,
+                        size: 16,
+                        color: AppColors.success,
+                      ),
                       const SizedBox(width: 6),
                       Text(
                         'Cards reviewed: $cardsReviewed',
@@ -1182,7 +1191,11 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
                   const SizedBox(height: 4),
                   Row(
                     children: [
-                      const Icon(Icons.pending, size: 16, color: AppColors.textSecondary),
+                      const Icon(
+                        Icons.pending,
+                        size: 16,
+                        color: AppColors.textSecondary,
+                      ),
                       const SizedBox(width: 6),
                       Text(
                         'Cards remaining: $cardsRemaining',
@@ -1202,9 +1215,7 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
           ),
           TextButton(
             onPressed: () => Navigator.of(context).pop(true),
-            style: TextButton.styleFrom(
-              foregroundColor: AppColors.error,
-            ),
+            style: TextButton.styleFrom(foregroundColor: AppColors.error),
             child: const Text('Exit'),
           ),
         ],

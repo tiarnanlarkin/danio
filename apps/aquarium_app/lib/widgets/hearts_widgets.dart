@@ -2,7 +2,6 @@
 /// Includes hearts indicator, animations, and "out of hearts" modal
 library;
 
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../services/hearts_service.dart';
@@ -14,10 +13,7 @@ import 'dart:async';
 class HeartIndicator extends ConsumerWidget {
   final bool compact;
 
-  const HeartIndicator({
-    super.key,
-    this.compact = false,
-  });
+  const HeartIndicator({super.key, this.compact = false});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -33,7 +29,7 @@ class HeartIndicator extends ConsumerWidget {
         vertical: compact ? 4 : 6,
       ),
       decoration: BoxDecoration(
-        color: hearts == 0 
+        color: hearts == 0
             ? AppColors.error.withOpacity(0.1)
             : AppColors.error.withOpacity(0.15),
         borderRadius: BorderRadius.circular(compact ? 12 : 16),
@@ -49,15 +45,19 @@ class HeartIndicator extends ConsumerWidget {
           Icon(
             hearts > 0 ? Icons.favorite : Icons.favorite_border,
             size: compact ? 14 : 16,
-            color: hearts > 0 ? AppColors.error : AppColors.error.withOpacity(0.5),
+            color: hearts > 0
+                ? AppColors.error
+                : AppColors.error.withOpacity(0.5),
           ),
           SizedBox(width: compact ? 4 : 6),
           Text(
             '$hearts/$maxHearts',
-            style: (compact ? AppTypography.labelSmall : AppTypography.labelMedium).copyWith(
-              color: hearts == 0 ? AppColors.error : AppColors.error,
-              fontWeight: FontWeight.bold,
-            ),
+            style:
+                (compact ? AppTypography.labelSmall : AppTypography.labelMedium)
+                    .copyWith(
+                      color: hearts == 0 ? AppColors.error : AppColors.error,
+                      fontWeight: FontWeight.bold,
+                    ),
           ),
         ],
       ),
@@ -70,7 +70,8 @@ class DetailedHeartsDisplay extends ConsumerStatefulWidget {
   const DetailedHeartsDisplay({super.key});
 
   @override
-  ConsumerState<DetailedHeartsDisplay> createState() => _DetailedHeartsDisplayState();
+  ConsumerState<DetailedHeartsDisplay> createState() =>
+      _DetailedHeartsDisplayState();
 }
 
 class _DetailedHeartsDisplayState extends ConsumerState<DetailedHeartsDisplay> {
@@ -117,14 +118,18 @@ class _DetailedHeartsDisplayState extends ConsumerState<DetailedHeartsDisplay> {
         children: [
           Row(
             children: [
-              ...heartsDisplay.map((filled) => Padding(
-                padding: const EdgeInsets.only(right: 8),
-                child: Icon(
-                  filled ? Icons.favorite : Icons.favorite_border,
-                  color: filled ? AppColors.error : AppColors.error.withOpacity(0.3),
-                  size: 32,
+              ...heartsDisplay.map(
+                (filled) => Padding(
+                  padding: const EdgeInsets.only(right: 8),
+                  child: Icon(
+                    filled ? Icons.favorite : Icons.favorite_border,
+                    color: filled
+                        ? AppColors.error
+                        : AppColors.error.withOpacity(0.3),
+                    size: 32,
+                  ),
                 ),
-              )),
+              ),
             ],
           ),
           const SizedBox(height: 12),
@@ -161,11 +166,7 @@ class HeartAnimation extends StatefulWidget {
   final bool gained; // true = gained heart, false = lost heart
   final VoidCallback? onComplete;
 
-  const HeartAnimation({
-    super.key,
-    required this.gained,
-    this.onComplete,
-  });
+  const HeartAnimation({super.key, required this.gained, this.onComplete});
 
   @override
   State<HeartAnimation> createState() => _HeartAnimationState();
@@ -188,19 +189,20 @@ class _HeartAnimationState extends State<HeartAnimation>
 
     _scaleAnimation = TweenSequence<double>([
       TweenSequenceItem(
-        tween: Tween<double>(begin: 0.0, end: 1.3)
-            .chain(CurveTween(curve: Curves.easeOut)),
+        tween: Tween<double>(
+          begin: 0.0,
+          end: 1.3,
+        ).chain(CurveTween(curve: Curves.easeOut)),
         weight: 40,
       ),
       TweenSequenceItem(
-        tween: Tween<double>(begin: 1.3, end: 1.0)
-            .chain(CurveTween(curve: Curves.easeIn)),
+        tween: Tween<double>(
+          begin: 1.3,
+          end: 1.0,
+        ).chain(CurveTween(curve: Curves.easeIn)),
         weight: 20,
       ),
-      TweenSequenceItem(
-        tween: Tween<double>(begin: 1.0, end: 0.8),
-        weight: 40,
-      ),
+      TweenSequenceItem(tween: Tween<double>(begin: 1.0, end: 0.8), weight: 40),
     ]).animate(_controller);
 
     _fadeAnimation = Tween<double>(begin: 1.0, end: 0.0).animate(
@@ -213,12 +215,7 @@ class _HeartAnimationState extends State<HeartAnimation>
     _slideAnimation = Tween<Offset>(
       begin: Offset.zero,
       end: Offset(0, widget.gained ? -0.5 : 0.5),
-    ).animate(
-      CurvedAnimation(
-        parent: _controller,
-        curve: Curves.easeOut,
-      ),
-    );
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
 
     _controller.forward().then((_) {
       widget.onComplete?.call();
@@ -254,7 +251,9 @@ class _HeartAnimationState extends State<HeartAnimation>
                   Text(
                     widget.gained ? '+1' : '-1',
                     style: AppTypography.headlineLarge.copyWith(
-                      color: widget.gained ? AppColors.success : AppColors.error,
+                      color: widget.gained
+                          ? AppColors.success
+                          : AppColors.error,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -306,9 +305,7 @@ class _OutOfHeartsModalState extends ConsumerState<OutOfHeartsModal> {
     final timeUntilRefill = heartsService.getTimeUntilNextRefill(profile);
 
     return Dialog(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(24),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
       child: Padding(
         padding: const EdgeInsets.all(24),
         child: Column(
@@ -323,10 +320,7 @@ class _OutOfHeartsModalState extends ConsumerState<OutOfHeartsModal> {
                 shape: BoxShape.circle,
               ),
               child: const Center(
-                child: Text(
-                  '💔',
-                  style: TextStyle(fontSize: 56),
-                ),
+                child: Text('💔', style: TextStyle(fontSize: 56)),
               ),
             ),
             const SizedBox(height: 20),
@@ -432,14 +426,20 @@ class CompactHeartsDisplay extends ConsumerWidget {
 
     return Row(
       mainAxisSize: MainAxisSize.min,
-      children: heartsDisplay.map((filled) => Padding(
-        padding: const EdgeInsets.only(right: 4),
-        child: Icon(
-          filled ? Icons.favorite : Icons.favorite_border,
-          color: filled ? AppColors.error : AppColors.error.withOpacity(0.3),
-          size: 20,
-        ),
-      )).toList(),
+      children: heartsDisplay
+          .map(
+            (filled) => Padding(
+              padding: const EdgeInsets.only(right: 4),
+              child: Icon(
+                filled ? Icons.favorite : Icons.favorite_border,
+                color: filled
+                    ? AppColors.error
+                    : AppColors.error.withOpacity(0.3),
+                size: 20,
+              ),
+            ),
+          )
+          .toList(),
     );
   }
 }

@@ -3,11 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// Theme mode preference
-enum AppThemeMode {
-  system,
-  light,
-  dark,
-}
+enum AppThemeMode { system, light, dark }
 
 /// Settings state
 class AppSettings {
@@ -57,13 +53,14 @@ class SettingsNotifier extends StateNotifier<AppSettings> {
 
   Future<void> _loadSettings() async {
     final prefs = await SharedPreferences.getInstance();
-    
+
     final themeModeIndex = prefs.getInt(_themeModeKey) ?? 0;
     final useMetric = prefs.getBool(_useMetricKey) ?? true;
     final notificationsEnabled = prefs.getBool(_notificationsKey) ?? false;
-    
+
     state = AppSettings(
-      themeMode: AppThemeMode.values[themeModeIndex.clamp(0, AppThemeMode.values.length - 1)],
+      themeMode: AppThemeMode
+          .values[themeModeIndex.clamp(0, AppThemeMode.values.length - 1)],
       useMetric: useMetric,
       notificationsEnabled: notificationsEnabled,
     );
@@ -89,6 +86,8 @@ class SettingsNotifier extends StateNotifier<AppSettings> {
 }
 
 /// Provider for app settings
-final settingsProvider = StateNotifierProvider<SettingsNotifier, AppSettings>((ref) {
+final settingsProvider = StateNotifierProvider<SettingsNotifier, AppSettings>((
+  ref,
+) {
   return SettingsNotifier();
 });

@@ -16,10 +16,12 @@ class FriendComparisonScreen extends ConsumerStatefulWidget {
   final Friend friend;
 
   @override
-  ConsumerState<FriendComparisonScreen> createState() => _FriendComparisonScreenState();
+  ConsumerState<FriendComparisonScreen> createState() =>
+      _FriendComparisonScreenState();
 }
 
-class _FriendComparisonScreenState extends ConsumerState<FriendComparisonScreen> {
+class _FriendComparisonScreenState
+    extends ConsumerState<FriendComparisonScreen> {
   @override
   Widget build(BuildContext context) {
     final userProfileAsync = ref.watch(userProfileProvider);
@@ -71,17 +73,26 @@ class _FriendComparisonScreenState extends ConsumerState<FriendComparisonScreen>
                 const SizedBox(height: 16),
 
                 // === Stats Comparison ===
-                _StatsComparisonSection(userProfile: userProfile, friend: widget.friend),
+                _StatsComparisonSection(
+                  userProfile: userProfile,
+                  friend: widget.friend,
+                ),
 
                 const SizedBox(height: 16),
 
                 // === Progress Chart ===
-                _ProgressChartSection(userProfile: userProfile, friend: widget.friend),
+                _ProgressChartSection(
+                  userProfile: userProfile,
+                  friend: widget.friend,
+                ),
 
                 const SizedBox(height: 16),
 
                 // === Achievements Comparison ===
-                _AchievementsSection(userProfile: userProfile, friend: widget.friend),
+                _AchievementsSection(
+                  userProfile: userProfile,
+                  friend: widget.friend,
+                ),
 
                 const SizedBox(height: 24),
               ],
@@ -117,14 +128,19 @@ class _FriendComparisonScreenState extends ConsumerState<FriendComparisonScreen>
                       width: 50,
                       height: 50,
                       decoration: BoxDecoration(
-                        color: isSelected ? AppColors.primary.withOpacity(0.2) : Colors.grey.shade100,
+                        color: isSelected
+                            ? AppColors.primary.withOpacity(0.2)
+                            : Colors.grey.shade100,
                         shape: BoxShape.circle,
                         border: isSelected
                             ? Border.all(color: AppColors.primary, width: 2)
                             : null,
                       ),
                       child: Center(
-                        child: Text(emoji, style: const TextStyle(fontSize: 28)),
+                        child: Text(
+                          emoji,
+                          style: const TextStyle(fontSize: 28),
+                        ),
                       ),
                     ),
                   );
@@ -139,12 +155,17 @@ class _FriendComparisonScreenState extends ConsumerState<FriendComparisonScreen>
             ),
             FilledButton(
               onPressed: () {
-                ref.read(encouragementsProvider.notifier).sendEncouragement(
+                ref
+                    .read(encouragementsProvider.notifier)
+                    .sendEncouragement(
                       toUserId: widget.friend.id,
                       emoji: selectedEmoji,
                     );
                 Navigator.pop(context);
-                AppFeedback.showSuccess(context, 'Sent $selectedEmoji to ${widget.friend.displayName}!');
+                AppFeedback.showSuccess(
+                  context,
+                  'Sent $selectedEmoji to ${widget.friend.displayName}!',
+                );
               },
               child: const Text('Send'),
             ),
@@ -159,7 +180,9 @@ class _FriendComparisonScreenState extends ConsumerState<FriendComparisonScreen>
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Remove Friend?'),
-        content: Text('Are you sure you want to remove ${widget.friend.displayName} from your friends?'),
+        content: Text(
+          'Are you sure you want to remove ${widget.friend.displayName} from your friends?',
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
@@ -171,7 +194,10 @@ class _FriendComparisonScreenState extends ConsumerState<FriendComparisonScreen>
               ref.read(friendsProvider.notifier).removeFriend(widget.friend.id);
               Navigator.pop(context); // Close dialog
               Navigator.pop(context); // Return to friends list
-              AppFeedback.showInfo(context, 'Removed ${widget.friend.displayName} from friends');
+              AppFeedback.showInfo(
+                context,
+                'Removed ${widget.friend.displayName} from friends',
+              );
             },
             child: const Text('Remove'),
           ),
@@ -204,7 +230,10 @@ class _HeaderSection extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 16),
-          const Text('VS', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+          const Text(
+            'VS',
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          ),
           const SizedBox(width: 16),
           Expanded(
             child: _UserCard(
@@ -246,7 +275,8 @@ class _UserCard extends StatelessWidget {
           children: [
             CircleAvatar(
               radius: 30,
-              backgroundColor: (isUser ? Colors.blue : AppColors.primary).withOpacity(0.2),
+              backgroundColor: (isUser ? Colors.blue : AppColors.primary)
+                  .withOpacity(0.2),
               child: Text(emoji, style: const TextStyle(fontSize: 32)),
             ),
             const SizedBox(height: 8),
@@ -264,7 +294,10 @@ class _UserCard extends StatelessWidget {
               ),
               child: Text(
                 level,
-                style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold),
+                style: const TextStyle(
+                  fontSize: 11,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
             const SizedBox(height: 8),
@@ -275,7 +308,10 @@ class _UserCard extends StatelessWidget {
                 const SizedBox(width: 4),
                 Text(
                   '$xp XP',
-                  style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ],
             ),
@@ -288,7 +324,10 @@ class _UserCard extends StatelessWidget {
 
 /// Stats comparison grid
 class _StatsComparisonSection extends StatelessWidget {
-  const _StatsComparisonSection({required this.userProfile, required this.friend});
+  const _StatsComparisonSection({
+    required this.userProfile,
+    required this.friend,
+  });
 
   final UserProfile userProfile;
   final Friend friend;
@@ -296,10 +335,34 @@ class _StatsComparisonSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final stats = [
-      ('Total XP', userProfile.totalXp, friend.totalXp, Icons.star, Colors.amber),
-      ('Current Streak', userProfile.currentStreak, friend.currentStreak, Icons.local_fire_department, Colors.orange),
-      ('Longest Streak', userProfile.longestStreak, friend.longestStreak, Icons.whatshot, Colors.red),
-      ('Level', userProfile.currentLevel, friend.currentLevel, Icons.trending_up, Colors.blue),
+      (
+        'Total XP',
+        userProfile.totalXp,
+        friend.totalXp,
+        Icons.star,
+        Colors.amber,
+      ),
+      (
+        'Current Streak',
+        userProfile.currentStreak,
+        friend.currentStreak,
+        Icons.local_fire_department,
+        Colors.orange,
+      ),
+      (
+        'Longest Streak',
+        userProfile.longestStreak,
+        friend.longestStreak,
+        Icons.whatshot,
+        Colors.red,
+      ),
+      (
+        'Level',
+        userProfile.currentLevel,
+        friend.currentLevel,
+        Icons.trending_up,
+        Colors.blue,
+      ),
     ];
 
     return Column(
@@ -347,7 +410,11 @@ class _StatComparisonRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final total = userValue + friendValue;
     final userPercentage = total > 0 ? userValue / total : 0.5;
-    final winner = userValue > friendValue ? 'user' : friendValue > userValue ? 'friend' : 'tie';
+    final winner = userValue > friendValue
+        ? 'user'
+        : friendValue > userValue
+        ? 'friend'
+        : 'tie';
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -360,7 +427,10 @@ class _StatComparisonRow extends StatelessWidget {
               const SizedBox(width: 8),
               Text(
                 label,
-                style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+                style: const TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ],
           ),
@@ -423,7 +493,10 @@ class _StatComparisonRow extends StatelessWidget {
 
 /// Progress chart comparing XP over time
 class _ProgressChartSection extends StatelessWidget {
-  const _ProgressChartSection({required this.userProfile, required this.friend});
+  const _ProgressChartSection({
+    required this.userProfile,
+    required this.friend,
+  });
 
   final UserProfile userProfile;
   final Friend friend;
@@ -465,8 +538,9 @@ class _ProgressChartSection extends StatelessWidget {
 
     for (int i = 6; i >= 0; i--) {
       final date = now.subtract(Duration(days: i));
-      final dateKey = '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
-      
+      final dateKey =
+          '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
+
       // Use real user data if available, otherwise mock
       final userXp = userProfile.dailyXpHistory[dateKey] ?? random.nextInt(100);
       final friendXp = 20 + random.nextInt(80); // Mock friend data
@@ -482,16 +556,17 @@ class _ProgressChartSection extends StatelessWidget {
           drawVerticalLine: false,
           horizontalInterval: 50,
           getDrawingHorizontalLine: (value) {
-            return FlLine(
-              color: Colors.grey.shade300,
-              strokeWidth: 1,
-            );
+            return FlLine(color: Colors.grey.shade300, strokeWidth: 1);
           },
         ),
         titlesData: FlTitlesData(
           show: true,
-          rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-          topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+          rightTitles: const AxisTitles(
+            sideTitles: SideTitles(showTitles: false),
+          ),
+          topTitles: const AxisTitles(
+            sideTitles: SideTitles(showTitles: false),
+          ),
           bottomTitles: AxisTitles(
             sideTitles: SideTitles(
               showTitles: true,

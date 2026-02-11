@@ -22,15 +22,14 @@ class LivestockDetailScreen extends ConsumerWidget {
     final allLivestockAsync = ref.watch(livestockProvider(tankId));
 
     // Try to find species info
-    final species = SpeciesDatabase.lookup(livestock.commonName) ??
+    final species =
+        SpeciesDatabase.lookup(livestock.commonName) ??
         (livestock.scientificName != null
             ? SpeciesDatabase.lookup(livestock.scientificName!)
             : null);
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(livestock.commonName),
-      ),
+      appBar: AppBar(title: Text(livestock.commonName)),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -47,31 +46,32 @@ class LivestockDetailScreen extends ConsumerWidget {
               error: (_, __) => const SizedBox.shrink(),
               data: (tank) {
                 if (tank == null) return const SizedBox.shrink();
-                
+
                 return allLivestockAsync.when(
                   loading: () => const SizedBox.shrink(),
                   error: (_, __) => const SizedBox.shrink(),
                   data: (allLivestock) {
-                    final issues = CompatibilityService.checkLivestockCompatibility(
-                      livestock: livestock,
-                      tank: tank,
-                      existingLivestock: allLivestock,
-                    );
-                    
+                    final issues =
+                        CompatibilityService.checkLivestockCompatibility(
+                          livestock: livestock,
+                          tank: tank,
+                          existingLivestock: allLivestock,
+                        );
+
                     if (issues.isEmpty && species != null) {
                       return _CompatibilityCard(
                         level: CompatibilityLevel.compatible,
                         issues: const [],
                       );
                     }
-                    
+
                     if (issues.isNotEmpty) {
                       return _CompatibilityCard(
                         level: CompatibilityService.overallLevel(issues),
                         issues: issues,
                       );
                     }
-                    
+
                     return const SizedBox.shrink();
                   },
                 );
@@ -82,10 +82,10 @@ class LivestockDetailScreen extends ConsumerWidget {
             if (species != null) ...[
               const SizedBox(height: 16),
               _CareGuideCard(species: species),
-              
+
               const SizedBox(height: 16),
               _ParametersCard(species: species),
-              
+
               const SizedBox(height: 16),
               _CompatibilityNotesCard(species: species),
             ] else ...[
@@ -118,17 +118,26 @@ class _HeaderCard extends StatelessWidget {
                 CircleAvatar(
                   radius: 32,
                   backgroundColor: AppColors.primary.withOpacity(0.1),
-                  child: const Icon(Icons.set_meal, size: 32, color: AppColors.primary),
+                  child: const Icon(
+                    Icons.set_meal,
+                    size: 32,
+                    color: AppColors.primary,
+                  ),
                 ),
                 const SizedBox(width: 16),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(livestock.commonName, style: AppTypography.headlineMedium),
+                      Text(
+                        livestock.commonName,
+                        style: AppTypography.headlineMedium,
+                      ),
                       if (livestock.scientificName != null || species != null)
                         Text(
-                          livestock.scientificName ?? species?.scientificName ?? '',
+                          livestock.scientificName ??
+                              species?.scientificName ??
+                              '',
                           style: AppTypography.bodyMedium.copyWith(
                             fontStyle: FontStyle.italic,
                             color: AppColors.textSecondary,
@@ -142,10 +151,7 @@ class _HeaderCard extends StatelessWidget {
             const SizedBox(height: 16),
             Row(
               children: [
-                _InfoChip(
-                  icon: Icons.tag,
-                  label: '×${livestock.count}',
-                ),
+                _InfoChip(icon: Icons.tag, label: '×${livestock.count}'),
                 if (species != null) ...[
                   const SizedBox(width: 8),
                   _InfoChip(
@@ -385,14 +391,22 @@ class _CareGuideCard extends StatelessWidget {
             const SizedBox(height: 12),
             Text(species.description, style: AppTypography.bodyMedium),
             const SizedBox(height: 16),
-            
-            _CareRow(icon: Icons.restaurant, label: 'Diet', value: species.diet),
-            _CareRow(icon: Icons.water, label: 'Swim Level', value: species.swimLevel),
+
+            _CareRow(
+              icon: Icons.restaurant,
+              label: 'Diet',
+              value: species.diet,
+            ),
+            _CareRow(
+              icon: Icons.water,
+              label: 'Swim Level',
+              value: species.swimLevel,
+            ),
             _CareRow(
               icon: Icons.group,
               label: 'Min School Size',
-              value: species.minSchoolSize == 1 
-                  ? 'Can be kept singly' 
+              value: species.minSchoolSize == 1
+                  ? 'Can be kept singly'
                   : '${species.minSchoolSize}+',
             ),
             _CareRow(
@@ -412,7 +426,11 @@ class _CareRow extends StatelessWidget {
   final String label;
   final String value;
 
-  const _CareRow({required this.icon, required this.label, required this.value});
+  const _CareRow({
+    required this.icon,
+    required this.label,
+    required this.value,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -427,12 +445,12 @@ class _CareRow extends StatelessWidget {
             width: 100,
             child: Text(
               label,
-              style: AppTypography.bodySmall.copyWith(color: AppColors.textSecondary),
+              style: AppTypography.bodySmall.copyWith(
+                color: AppColors.textSecondary,
+              ),
             ),
           ),
-          Expanded(
-            child: Text(value, style: AppTypography.bodyMedium),
-          ),
+          Expanded(child: Text(value, style: AppTypography.bodyMedium)),
         ],
       ),
     );
@@ -466,17 +484,20 @@ class _ParametersCard extends StatelessWidget {
               children: [
                 _ParamPill(
                   label: 'Temp',
-                  value: '${species.minTempC.toStringAsFixed(0)}–${species.maxTempC.toStringAsFixed(0)}',
+                  value:
+                      '${species.minTempC.toStringAsFixed(0)}–${species.maxTempC.toStringAsFixed(0)}',
                   unit: '°C',
                 ),
                 _ParamPill(
                   label: 'pH',
-                  value: '${species.minPh.toStringAsFixed(1)}–${species.maxPh.toStringAsFixed(1)}',
+                  value:
+                      '${species.minPh.toStringAsFixed(1)}–${species.maxPh.toStringAsFixed(1)}',
                 ),
                 if (species.minGh != null && species.maxGh != null)
                   _ParamPill(
                     label: 'GH',
-                    value: '${species.minGh!.toStringAsFixed(0)}–${species.maxGh!.toStringAsFixed(0)}',
+                    value:
+                        '${species.minGh!.toStringAsFixed(0)}–${species.maxGh!.toStringAsFixed(0)}',
                     unit: 'dGH',
                   ),
               ],
@@ -548,7 +569,11 @@ class _CompatibilityNotesCard extends StatelessWidget {
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Icon(Icons.check_circle, size: 18, color: AppColors.success),
+                  const Icon(
+                    Icons.check_circle,
+                    size: 18,
+                    color: AppColors.success,
+                  ),
                   const SizedBox(width: 8),
                   Expanded(
                     child: Column(
@@ -574,7 +599,11 @@ class _CompatibilityNotesCard extends StatelessWidget {
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Icon(Icons.do_not_disturb, size: 18, color: AppColors.error),
+                  const Icon(
+                    Icons.do_not_disturb,
+                    size: 18,
+                    color: AppColors.error,
+                  ),
                   const SizedBox(width: 8),
                   Expanded(
                     child: Column(
@@ -586,7 +615,9 @@ class _CompatibilityNotesCard extends StatelessWidget {
                           spacing: 6,
                           runSpacing: 6,
                           children: species.avoidWith
-                              .map((s) => _CompanionChip(name: s, isGood: false))
+                              .map(
+                                (s) => _CompanionChip(name: s, isGood: false),
+                              )
                               .toList(),
                         ),
                       ],
@@ -618,10 +649,7 @@ class _CompanionChip extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: color.withOpacity(0.3)),
       ),
-      child: Text(
-        name,
-        style: AppTypography.bodySmall.copyWith(color: color),
-      ),
+      child: Text(name, style: AppTypography.bodySmall.copyWith(color: color)),
     );
   }
 }
@@ -644,7 +672,10 @@ class _NoSpeciesDataCard extends StatelessWidget {
               children: [
                 const Icon(Icons.info_outline, color: AppColors.textSecondary),
                 const SizedBox(width: 8),
-                Text('Species info not found', style: AppTypography.headlineSmall),
+                Text(
+                  'Species info not found',
+                  style: AppTypography.headlineSmall,
+                ),
               ],
             ),
             const SizedBox(height: 8),

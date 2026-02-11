@@ -7,12 +7,8 @@ import 'package:flutter/material.dart';
 class ShimmerLoading extends StatefulWidget {
   final Widget child;
   final bool isLoading;
-  
-  const ShimmerLoading({
-    super.key,
-    required this.child,
-    this.isLoading = true,
-  });
+
+  const ShimmerLoading({super.key, required this.child, this.isLoading = true});
 
   @override
   State<ShimmerLoading> createState() => _ShimmerLoadingState();
@@ -30,10 +26,11 @@ class _ShimmerLoadingState extends State<ShimmerLoading>
       duration: const Duration(milliseconds: 1500),
       vsync: this,
     )..repeat();
-    
-    _animation = Tween<double>(begin: -2.0, end: 2.0).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
-    );
+
+    _animation = Tween<double>(
+      begin: -2.0,
+      end: 2.0,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
   }
 
   @override
@@ -55,11 +52,7 @@ class _ShimmerLoadingState extends State<ShimmerLoading>
             return LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
-              colors: const [
-                Colors.grey,
-                Colors.white,
-                Colors.grey,
-              ],
+              colors: const [Colors.grey, Colors.white, Colors.grey],
               stops: [
                 _animation.value - 0.3,
                 _animation.value,
@@ -81,13 +74,8 @@ class SkeletonBox extends StatelessWidget {
   final double? width;
   final double? height;
   final BorderRadius? borderRadius;
-  
-  const SkeletonBox({
-    super.key,
-    this.width,
-    this.height,
-    this.borderRadius,
-  });
+
+  const SkeletonBox({super.key, this.width, this.height, this.borderRadius});
 
   @override
   Widget build(BuildContext context) {
@@ -108,19 +96,16 @@ class SkeletonBox extends StatelessWidget {
 class SkeletonCard extends StatelessWidget {
   final double? height;
   final EdgeInsets? padding;
-  
-  const SkeletonCard({
-    super.key,
-    this.height,
-    this.padding,
-  });
+
+  const SkeletonCard({super.key, this.height, this.padding});
 
   @override
   Widget build(BuildContext context) {
     return ShimmerLoading(
       child: Container(
         height: height ?? 100,
-        margin: padding ?? const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        margin:
+            padding ?? const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: Theme.of(context).brightness == Brightness.dark
@@ -131,15 +116,31 @@ class SkeletonCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SkeletonBox(width: double.infinity, height: 16, borderRadius: BorderRadius.circular(4)),
+            SkeletonBox(
+              width: double.infinity,
+              height: 16,
+              borderRadius: BorderRadius.circular(4),
+            ),
             const SizedBox(height: 8),
-            SkeletonBox(width: 200, height: 14, borderRadius: BorderRadius.circular(4)),
+            SkeletonBox(
+              width: 200,
+              height: 14,
+              borderRadius: BorderRadius.circular(4),
+            ),
             const Spacer(),
             Row(
               children: [
-                SkeletonBox(width: 60, height: 12, borderRadius: BorderRadius.circular(4)),
+                SkeletonBox(
+                  width: 60,
+                  height: 12,
+                  borderRadius: BorderRadius.circular(4),
+                ),
                 const Spacer(),
-                SkeletonBox(width: 80, height: 12, borderRadius: BorderRadius.circular(4)),
+                SkeletonBox(
+                  width: 80,
+                  height: 12,
+                  borderRadius: BorderRadius.circular(4),
+                ),
               ],
             ),
           ],
@@ -154,7 +155,7 @@ class SkeletonGrid extends StatelessWidget {
   final int itemCount;
   final int crossAxisCount;
   final double childAspectRatio;
-  
+
   const SkeletonGrid({
     super.key,
     this.itemCount = 6,
@@ -175,9 +176,7 @@ class SkeletonGrid extends StatelessWidget {
       itemCount: itemCount,
       itemBuilder: (context, index) {
         return ShimmerLoading(
-          child: SkeletonBox(
-            borderRadius: BorderRadius.circular(20),
-          ),
+          child: SkeletonBox(borderRadius: BorderRadius.circular(20)),
         );
       },
     );
@@ -188,12 +187,8 @@ class SkeletonGrid extends StatelessWidget {
 class SkeletonList extends StatelessWidget {
   final int itemCount;
   final double itemHeight;
-  
-  const SkeletonList({
-    super.key,
-    this.itemCount = 5,
-    this.itemHeight = 100,
-  });
+
+  const SkeletonList({super.key, this.itemCount = 5, this.itemHeight = 100});
 
   @override
   Widget build(BuildContext context) {
@@ -209,11 +204,8 @@ class SkeletonList extends StatelessWidget {
 /// Skeleton for analytics charts
 class SkeletonChart extends StatelessWidget {
   final double height;
-  
-  const SkeletonChart({
-    super.key,
-    this.height = 200,
-  });
+
+  const SkeletonChart({super.key, this.height = 200});
 
   @override
   Widget build(BuildContext context) {
@@ -231,7 +223,11 @@ class SkeletonChart extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SkeletonBox(width: 150, height: 20, borderRadius: BorderRadius.circular(4)),
+            SkeletonBox(
+              width: 150,
+              height: 20,
+              borderRadius: BorderRadius.circular(4),
+            ),
             const SizedBox(height: 16),
             Expanded(
               child: Row(
@@ -291,11 +287,23 @@ class SkeletonStoryCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    SkeletonBox(width: double.infinity, height: 18, borderRadius: BorderRadius.circular(4)),
+                    SkeletonBox(
+                      width: double.infinity,
+                      height: 18,
+                      borderRadius: BorderRadius.circular(4),
+                    ),
                     const SizedBox(height: 8),
-                    SkeletonBox(width: 150, height: 14, borderRadius: BorderRadius.circular(4)),
+                    SkeletonBox(
+                      width: 150,
+                      height: 14,
+                      borderRadius: BorderRadius.circular(4),
+                    ),
                     const SizedBox(height: 12),
-                    SkeletonBox(width: 100, height: 12, borderRadius: BorderRadius.circular(4)),
+                    SkeletonBox(
+                      width: 100,
+                      height: 12,
+                      borderRadius: BorderRadius.circular(4),
+                    ),
                   ],
                 ),
               ),
@@ -334,11 +342,23 @@ class SkeletonAchievementCard extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 12),
-            SkeletonBox(width: double.infinity, height: 16, borderRadius: BorderRadius.circular(4)),
+            SkeletonBox(
+              width: double.infinity,
+              height: 16,
+              borderRadius: BorderRadius.circular(4),
+            ),
             const SizedBox(height: 8),
-            SkeletonBox(width: 120, height: 14, borderRadius: BorderRadius.circular(4)),
+            SkeletonBox(
+              width: 120,
+              height: 14,
+              borderRadius: BorderRadius.circular(4),
+            ),
             const Spacer(),
-            SkeletonBox(width: double.infinity, height: 8, borderRadius: BorderRadius.circular(4)),
+            SkeletonBox(
+              width: double.infinity,
+              height: 8,
+              borderRadius: BorderRadius.circular(4),
+            ),
           ],
         ),
       ),

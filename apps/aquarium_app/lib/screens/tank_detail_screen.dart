@@ -31,7 +31,12 @@ class TankDetailScreen extends ConsumerWidget {
 
   const TankDetailScreen({super.key, required this.tankId});
 
-  static Future<void> _completeTask(BuildContext context, WidgetRef ref, Task task, String tankId) async {
+  static Future<void> _completeTask(
+    BuildContext context,
+    WidgetRef ref,
+    Task task,
+    String tankId,
+  ) async {
     final storage = ref.read(storageServiceProvider);
     final now = DateTime.now();
 
@@ -64,7 +69,9 @@ class TankDetailScreen extends ConsumerWidget {
         }
       }
       if (e != null) {
-        await storage.saveEquipment(e.copyWith(lastServiced: now, updatedAt: now));
+        await storage.saveEquipment(
+          e.copyWith(lastServiced: now, updatedAt: now),
+        );
         await storage.saveLog(
           LogEntry(
             id: _uuid.v4(),
@@ -85,7 +92,7 @@ class TankDetailScreen extends ConsumerWidget {
     ref.invalidate(equipmentProvider(tankId));
     ref.invalidate(logsProvider(tankId));
     ref.invalidate(allLogsProvider(tankId));
-    
+
     // Show success feedback
     if (context.mounted) {
       AppFeedback.showSuccess(context, '${task.title} completed!');
@@ -96,7 +103,7 @@ class TankDetailScreen extends ConsumerWidget {
     final actions = ref.read(tankActionsProvider);
     final navigator = Navigator.of(context);
     final messenger = ScaffoldMessenger.of(context);
-    
+
     // Soft delete the tank (marks for deletion, starts 5s timer)
     actions.softDeleteTank(
       tankId,
@@ -136,9 +143,8 @@ class TankDetailScreen extends ConsumerWidget {
     final tasksAsync = ref.watch(tasksProvider(tankId));
 
     return tankAsync.when(
-      loading: () => const Scaffold(
-        body: Center(child: CircularProgressIndicator()),
-      ),
+      loading: () =>
+          const Scaffold(body: Center(child: CircularProgressIndicator())),
       error: (err, stack) => Scaffold(
         appBar: AppBar(title: const Text('Error')),
         body: Center(child: Text('Failed to load tank: $err')),
@@ -201,12 +207,18 @@ class TankDetailScreen extends ConsumerWidget {
                     ),
                   ),
                   IconButton(
-                    icon: const Icon(Icons.photo_library_outlined, color: Colors.white),
+                    icon: const Icon(
+                      Icons.photo_library_outlined,
+                      color: Colors.white,
+                    ),
                     tooltip: 'Gallery',
                     onPressed: () => Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => PhotoGalleryScreen(tankId: tankId, tankName: tank.name),
+                        builder: (_) => PhotoGalleryScreen(
+                          tankId: tankId,
+                          tankName: tank.name,
+                        ),
                       ),
                     ),
                   ),
@@ -235,33 +247,58 @@ class TankDetailScreen extends ConsumerWidget {
                     onSelected: (value) {
                       switch (value) {
                         case 'settings':
-                          Navigator.push(context, MaterialPageRoute(
-                            builder: (_) => TankSettingsScreen(tankId: tankId),
-                          ));
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) =>
+                                  TankSettingsScreen(tankId: tankId),
+                            ),
+                          );
                         case 'value':
-                          Navigator.push(context, MaterialPageRoute(
-                            builder: (_) => LivestockValueScreen(tankId: tankId, tankName: tank.name),
-                          ));
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => LivestockValueScreen(
+                                tankId: tankId,
+                                tankName: tank.name,
+                              ),
+                            ),
+                          );
                         case 'delete':
                           _deleteTank(context, ref, tank);
                       }
                     },
                     itemBuilder: (_) => [
-                      const PopupMenuItem(value: 'value', child: ListTile(
-                        leading: Icon(Icons.attach_money),
-                        title: Text('Estimate Value'),
-                        contentPadding: EdgeInsets.zero,
-                      )),
-                      const PopupMenuItem(value: 'settings', child: ListTile(
-                        leading: Icon(Icons.settings),
-                        title: Text('Tank Settings'),
-                        contentPadding: EdgeInsets.zero,
-                      )),
-                      const PopupMenuItem(value: 'delete', child: ListTile(
-                        leading: Icon(Icons.delete_outline, color: AppColors.error),
-                        title: Text('Delete Tank', style: TextStyle(color: AppColors.error)),
-                        contentPadding: EdgeInsets.zero,
-                      )),
+                      const PopupMenuItem(
+                        value: 'value',
+                        child: ListTile(
+                          leading: Icon(Icons.attach_money),
+                          title: Text('Estimate Value'),
+                          contentPadding: EdgeInsets.zero,
+                        ),
+                      ),
+                      const PopupMenuItem(
+                        value: 'settings',
+                        child: ListTile(
+                          leading: Icon(Icons.settings),
+                          title: Text('Tank Settings'),
+                          contentPadding: EdgeInsets.zero,
+                        ),
+                      ),
+                      const PopupMenuItem(
+                        value: 'delete',
+                        child: ListTile(
+                          leading: Icon(
+                            Icons.delete_outline,
+                            color: AppColors.error,
+                          ),
+                          title: Text(
+                            'Delete Tank',
+                            style: TextStyle(color: AppColors.error),
+                          ),
+                          contentPadding: EdgeInsets.zero,
+                        ),
+                      ),
                     ],
                   ),
                 ],
@@ -286,7 +323,8 @@ class TankDetailScreen extends ConsumerWidget {
                           icon: Icons.science_outlined,
                           label: 'Log Test',
                           color: AppColors.primary,
-                          onTap: () => _navigateToAddLog(context, LogType.waterTest),
+                          onTap: () =>
+                              _navigateToAddLog(context, LogType.waterTest),
                         ),
                       ),
                       const SizedBox(width: 12),
@@ -295,7 +333,8 @@ class TankDetailScreen extends ConsumerWidget {
                           icon: Icons.water_drop_outlined,
                           label: 'Water Change',
                           color: AppColors.secondary,
-                          onTap: () => _navigateToAddLog(context, LogType.waterChange),
+                          onTap: () =>
+                              _navigateToAddLog(context, LogType.waterChange),
                         ),
                       ),
                       const SizedBox(width: 12),
@@ -304,7 +343,8 @@ class TankDetailScreen extends ConsumerWidget {
                           icon: Icons.note_add_outlined,
                           label: 'Add Note',
                           color: AppColors.accent,
-                          onTap: () => _navigateToAddLog(context, LogType.observation),
+                          onTap: () =>
+                              _navigateToAddLog(context, LogType.observation),
                         ),
                       ),
                     ],
@@ -319,7 +359,9 @@ class TankDetailScreen extends ConsumerWidget {
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: logsAllAsync.when(
-                    loading: () => const _DashboardLoadingCard(title: 'Latest Water Snapshot'),
+                    loading: () => const _DashboardLoadingCard(
+                      title: 'Latest Water Snapshot',
+                    ),
                     error: (_, __) => const SizedBox.shrink(),
                     data: (logs) => _LatestSnapshotCard(tank: tank, logs: logs),
                   ),
@@ -341,7 +383,8 @@ class TankDetailScreen extends ConsumerWidget {
                       onOpenCharts: (param) => Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (_) => ChartsScreen(tankId: tankId, initialParam: param),
+                          builder: (_) =>
+                              ChartsScreen(tankId: tankId, initialParam: param),
                         ),
                       ),
                     ),
@@ -385,31 +428,43 @@ class TankDetailScreen extends ConsumerWidget {
                     loading: () => null,
                     error: (_, __) => null,
                     data: (tasks) {
-                      final pending = tasks.where((t) => t.isEnabled && (t.isOverdue || t.isDueToday)).length;
+                      final pending = tasks
+                          .where(
+                            (t) => t.isEnabled && (t.isOverdue || t.isDueToday),
+                          )
+                          .length;
                       if (pending == 0) return null;
                       return Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 2,
+                        ),
                         decoration: BoxDecoration(
                           color: AppColors.warning,
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: Text(
                           '$pending',
-                          style: AppTypography.bodySmall.copyWith(color: Colors.white),
+                          style: AppTypography.bodySmall.copyWith(
+                            color: Colors.white,
+                          ),
                         ),
                       );
                     },
                   ),
                   onViewAll: () => Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (_) => TasksScreen(tankId: tankId)),
+                    MaterialPageRoute(
+                      builder: (_) => TasksScreen(tankId: tankId),
+                    ),
                   ),
                 ),
               ),
-              
+
               SliverToBoxAdapter(
                 child: tasksAsync.when(
-                  loading: () => const Center(child: CircularProgressIndicator()),
+                  loading: () =>
+                      const Center(child: CircularProgressIndicator()),
                   error: (_, __) => const SizedBox.shrink(),
                   data: (tasks) => _TaskPreview(
                     tasks: tasks.take(3).toList(),
@@ -426,21 +481,25 @@ class TankDetailScreen extends ConsumerWidget {
                   title: 'Recent Activity',
                   onViewAll: () => Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (_) => LogsScreen(tankId: tankId)),
+                    MaterialPageRoute(
+                      builder: (_) => LogsScreen(tankId: tankId),
+                    ),
                   ),
                 ),
               ),
-              
+
               SliverToBoxAdapter(
                 child: logsRecentAsync.when(
-                  loading: () => const Center(child: CircularProgressIndicator()),
+                  loading: () =>
+                      const Center(child: CircularProgressIndicator()),
                   error: (_, __) => const SizedBox.shrink(),
                   data: (logs) => _LogsList(
                     logs: logs.take(5).toList(),
                     onTap: (log) => Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => LogDetailScreen(tankId: tankId, logId: log.id),
+                        builder: (_) =>
+                            LogDetailScreen(tankId: tankId, logId: log.id),
                       ),
                     ),
                   ),
@@ -463,14 +522,17 @@ class TankDetailScreen extends ConsumerWidget {
                   ),
                   onViewAll: () => Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (_) => LivestockScreen(tankId: tankId)),
+                    MaterialPageRoute(
+                      builder: (_) => LivestockScreen(tankId: tankId),
+                    ),
                   ),
                 ),
               ),
-              
+
               SliverToBoxAdapter(
                 child: livestockAsync.when(
-                  loading: () => const Center(child: CircularProgressIndicator()),
+                  loading: () =>
+                      const Center(child: CircularProgressIndicator()),
                   error: (_, __) => const SizedBox.shrink(),
                   data: (livestock) => _LivestockPreview(livestock: livestock),
                 ),
@@ -500,14 +562,17 @@ class TankDetailScreen extends ConsumerWidget {
                   title: 'Equipment',
                   onViewAll: () => Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (_) => EquipmentScreen(tankId: tankId)),
+                    MaterialPageRoute(
+                      builder: (_) => EquipmentScreen(tankId: tankId),
+                    ),
                   ),
                 ),
               ),
-              
+
               SliverToBoxAdapter(
                 child: equipmentAsync.when(
-                  loading: () => const Center(child: CircularProgressIndicator()),
+                  loading: () =>
+                      const Center(child: CircularProgressIndicator()),
                   error: (_, __) => const SizedBox.shrink(),
                   data: (equipment) => _EquipmentPreview(equipment: equipment),
                 ),
@@ -518,8 +583,10 @@ class TankDetailScreen extends ConsumerWidget {
           ),
           floatingActionButton: _QuickAddFab(
             onWaterTest: () => _navigateToAddLog(context, LogType.waterTest),
-            onWaterChange: () => _navigateToAddLog(context, LogType.waterChange),
-            onObservation: () => _navigateToAddLog(context, LogType.observation),
+            onWaterChange: () =>
+                _navigateToAddLog(context, LogType.waterChange),
+            onObservation: () =>
+                _navigateToAddLog(context, LogType.observation),
             onFeeding: () => _quickLogFeeding(context, ref),
           ),
         );
@@ -597,10 +664,14 @@ class _QuickStats extends StatelessWidget {
                 icon: Icons.science,
               ),
               data: (logs) {
-                final lastTest = logs.where((l) => l.type == LogType.waterTest).firstOrNull;
+                final lastTest = logs
+                    .where((l) => l.type == LogType.waterTest)
+                    .firstOrNull;
                 return _StatItem(
                   label: 'Last Test',
-                  value: lastTest != null ? _formatRelative(lastTest.timestamp) : 'Never',
+                  value: lastTest != null
+                      ? _formatRelative(lastTest.timestamp)
+                      : 'Never',
                   icon: Icons.science,
                 );
               },
@@ -633,7 +704,11 @@ class _StatItem extends StatelessWidget {
   final String value;
   final IconData icon;
 
-  const _StatItem({required this.label, required this.value, required this.icon});
+  const _StatItem({
+    required this.label,
+    required this.value,
+    required this.icon,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -710,16 +785,10 @@ class _SectionHeader extends StatelessWidget {
       child: Row(
         children: [
           Text(title, style: AppTypography.headlineSmall),
-          if (trailing != null) ...[
-            const SizedBox(width: 8),
-            trailing!,
-          ],
+          if (trailing != null) ...[const SizedBox(width: 8), trailing!],
           const Spacer(),
           if (onViewAll != null)
-            TextButton(
-              onPressed: onViewAll,
-              child: const Text('View All'),
-            ),
+            TextButton(onPressed: onViewAll, child: const Text('View All')),
         ],
       ),
     );
@@ -742,7 +811,10 @@ class _TaskPreview extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.all(24),
             child: Center(
-              child: Text('No tasks scheduled', style: AppTypography.bodyMedium),
+              child: Text(
+                'No tasks scheduled',
+                style: AppTypography.bodyMedium,
+              ),
             ),
           ),
         ),
@@ -755,7 +827,10 @@ class _TaskPreview extends StatelessWidget {
         margin: EdgeInsets.zero,
         child: Column(
           children: tasks
-              .map((task) => _TaskTile(task: task, onComplete: () => onComplete(task)))
+              .map(
+                (task) =>
+                    _TaskTile(task: task, onComplete: () => onComplete(task)),
+              )
               .toList(),
         ),
       ),
@@ -776,8 +851,12 @@ class _TaskTile extends StatelessWidget {
 
     return ListTile(
       leading: Icon(
-        isOverdue ? Icons.warning_amber : (isDueToday ? Icons.today : Icons.schedule),
-        color: isOverdue ? AppColors.warning : (isDueToday ? AppColors.info : AppColors.textHint),
+        isOverdue
+            ? Icons.warning_amber
+            : (isDueToday ? Icons.today : Icons.schedule),
+        color: isOverdue
+            ? AppColors.warning
+            : (isDueToday ? AppColors.info : AppColors.textHint),
       ),
       title: Text(task.title),
       subtitle: Text(
@@ -832,7 +911,9 @@ class _LogsList extends StatelessWidget {
       child: Card(
         margin: EdgeInsets.zero,
         child: Column(
-          children: logs.map((log) => _LogTile(log: log, onTap: onTap)).toList(),
+          children: logs
+              .map((log) => _LogTile(log: log, onTap: onTap))
+              .toList(),
         ),
       ),
     );
@@ -850,7 +931,11 @@ class _LogTile extends StatelessWidget {
     return ListTile(
       leading: CircleAvatar(
         backgroundColor: _getLogColor(log.type).withOpacity(0.2),
-        child: Icon(_getLogIcon(log.type), color: _getLogColor(log.type), size: 20),
+        child: Icon(
+          _getLogIcon(log.type),
+          color: _getLogColor(log.type),
+          size: 20,
+        ),
       ),
       title: Text(_getLogTitle(log)),
       subtitle: Text(DateFormat('MMM d, h:mm a').format(log.timestamp)),
@@ -963,7 +1048,9 @@ class _LivestockPreview extends StatelessWidget {
           final l = livestock[index];
           return Container(
             width: 120,
-            margin: EdgeInsets.only(right: index < livestock.length - 1 ? 12 : 0),
+            margin: EdgeInsets.only(
+              right: index < livestock.length - 1 ? 12 : 0,
+            ),
             child: Card(
               margin: EdgeInsets.zero,
               child: Padding(
@@ -1024,7 +1111,9 @@ class _EquipmentPreview extends StatelessWidget {
           final isOverdue = e.isMaintenanceOverdue;
           return Container(
             width: 120,
-            margin: EdgeInsets.only(right: index < equipment.length - 1 ? 12 : 0),
+            margin: EdgeInsets.only(
+              right: index < equipment.length - 1 ? 12 : 0,
+            ),
             child: Card(
               margin: EdgeInsets.zero,
               color: isOverdue ? AppColors.warning.withOpacity(0.1) : null,
@@ -1057,16 +1146,26 @@ class _EquipmentPreview extends StatelessWidget {
 
   IconData _getEquipmentIcon(EquipmentType type) {
     switch (type) {
-      case EquipmentType.filter: return Icons.filter_alt;
-      case EquipmentType.heater: return Icons.thermostat;
-      case EquipmentType.light: return Icons.light_mode;
-      case EquipmentType.airPump: return Icons.air;
-      case EquipmentType.co2System: return Icons.bubble_chart;
-      case EquipmentType.autoFeeder: return Icons.restaurant;
-      case EquipmentType.thermometer: return Icons.device_thermostat;
-      case EquipmentType.wavemaker: return Icons.waves;
-      case EquipmentType.skimmer: return Icons.filter_drama;
-      case EquipmentType.other: return Icons.settings;
+      case EquipmentType.filter:
+        return Icons.filter_alt;
+      case EquipmentType.heater:
+        return Icons.thermostat;
+      case EquipmentType.light:
+        return Icons.light_mode;
+      case EquipmentType.airPump:
+        return Icons.air;
+      case EquipmentType.co2System:
+        return Icons.bubble_chart;
+      case EquipmentType.autoFeeder:
+        return Icons.restaurant;
+      case EquipmentType.thermometer:
+        return Icons.device_thermostat;
+      case EquipmentType.wavemaker:
+        return Icons.waves;
+      case EquipmentType.skimmer:
+        return Icons.filter_drama;
+      case EquipmentType.other:
+        return Icons.settings;
     }
   }
 }
@@ -1107,7 +1206,10 @@ class _LatestSnapshotCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final latest = logs.firstWhereOrNull(
-      (l) => l.type == LogType.waterTest && l.waterTest != null && l.waterTest!.hasValues,
+      (l) =>
+          l.type == LogType.waterTest &&
+          l.waterTest != null &&
+          l.waterTest!.hasValues,
     );
 
     if (latest == null) {
@@ -1120,7 +1222,10 @@ class _LatestSnapshotCard extends StatelessWidget {
             children: [
               Text('Latest Water Snapshot', style: AppTypography.headlineSmall),
               const SizedBox(height: 8),
-              Text('No water tests logged yet.', style: AppTypography.bodyMedium),
+              Text(
+                'No water tests logged yet.',
+                style: AppTypography.bodyMedium,
+              ),
             ],
           ),
         ),
@@ -1138,7 +1243,10 @@ class _LatestSnapshotCard extends StatelessWidget {
           children: [
             Row(
               children: [
-                Text('Latest Water Snapshot', style: AppTypography.headlineSmall),
+                Text(
+                  'Latest Water Snapshot',
+                  style: AppTypography.headlineSmall,
+                ),
                 const Spacer(),
                 Text(
                   DateFormat('MMM d').format(latest.timestamp),
@@ -1175,19 +1283,31 @@ class _LatestSnapshotCard extends StatelessWidget {
                   label: 'NH₃',
                   value: _fmt(t.ammonia, decimals: 2),
                   unit: 'ppm',
-                  status: _thresholdStatus(value: t.ammonia, warn: 0.25, danger: 0.5),
+                  status: _thresholdStatus(
+                    value: t.ammonia,
+                    warn: 0.25,
+                    danger: 0.5,
+                  ),
                 ),
                 _ParamPill(
                   label: 'NO₂',
                   value: _fmt(t.nitrite, decimals: 2),
                   unit: 'ppm',
-                  status: _thresholdStatus(value: t.nitrite, warn: 0.25, danger: 0.5),
+                  status: _thresholdStatus(
+                    value: t.nitrite,
+                    warn: 0.25,
+                    danger: 0.5,
+                  ),
                 ),
                 _ParamPill(
                   label: 'NO₃',
                   value: _fmt(t.nitrate, decimals: 0),
                   unit: 'ppm',
-                  status: _thresholdStatus(value: t.nitrate, warn: 20, danger: 40),
+                  status: _thresholdStatus(
+                    value: t.nitrate,
+                    warn: 20,
+                    danger: 40,
+                  ),
                 ),
                 _ParamPill(
                   label: 'GH',
@@ -1213,7 +1333,11 @@ class _LatestSnapshotCard extends StatelessWidget {
                   label: 'PO₄',
                   value: _fmt(t.phosphate, decimals: 2),
                   unit: 'ppm',
-                  status: _thresholdStatus(value: t.phosphate, warn: 1.0, danger: 2.0),
+                  status: _thresholdStatus(
+                    value: t.phosphate,
+                    warn: 1.0,
+                    danger: 2.0,
+                  ),
                 ),
               ],
             ),
@@ -1234,14 +1358,22 @@ class _LatestSnapshotCard extends StatelessWidget {
     return v.toStringAsFixed(decimals);
   }
 
-  _ParamStatus _thresholdStatus({required double? value, required double warn, required double danger}) {
+  _ParamStatus _thresholdStatus({
+    required double? value,
+    required double warn,
+    required double danger,
+  }) {
     if (value == null) return _ParamStatus.unknown;
     if (value >= danger) return _ParamStatus.danger;
     if (value >= warn) return _ParamStatus.warning;
     return _ParamStatus.safe;
   }
 
-  _ParamStatus _rangeStatus({required double? value, required double? min, required double? max}) {
+  _ParamStatus _rangeStatus({
+    required double? value,
+    required double? min,
+    required double? max,
+  }) {
     if (value == null) return _ParamStatus.unknown;
     if (min == null && max == null) return _ParamStatus.unknown;
 
@@ -1253,12 +1385,7 @@ class _LatestSnapshotCard extends StatelessWidget {
   }
 }
 
-enum _ParamStatus {
-  unknown,
-  safe,
-  warning,
-  danger,
-}
+enum _ParamStatus { unknown, safe, warning, danger }
 
 class _ParamPill extends StatelessWidget {
   final String label;
@@ -1328,14 +1455,19 @@ class _TrendsRow extends StatelessWidget {
   final List<LogEntry> logs;
   final ValueChanged<String> onOpenCharts;
 
-  const _TrendsRow({required this.tank, required this.logs, required this.onOpenCharts});
+  const _TrendsRow({
+    required this.tank,
+    required this.logs,
+    required this.onOpenCharts,
+  });
 
   @override
   Widget build(BuildContext context) {
-    final tests = logs
-        .where((l) => l.type == LogType.waterTest && l.waterTest != null)
-        .toList()
-      ..sort((a, b) => a.timestamp.compareTo(b.timestamp));
+    final tests =
+        logs
+            .where((l) => l.type == LogType.waterTest && l.waterTest != null)
+            .toList()
+          ..sort((a, b) => a.timestamp.compareTo(b.timestamp));
 
     if (tests.isEmpty) {
       return Card(
@@ -1347,7 +1479,10 @@ class _TrendsRow extends StatelessWidget {
             children: [
               Text('Trends', style: AppTypography.headlineSmall),
               const SizedBox(height: 8),
-              Text('No trend data yet — log a few water tests.', style: AppTypography.bodyMedium),
+              Text(
+                'No trend data yet — log a few water tests.',
+                style: AppTypography.bodyMedium,
+              ),
             ],
           ),
         ),
@@ -1376,7 +1511,10 @@ class _TrendsRow extends StatelessWidget {
               children: [
                 Text('Trends', style: AppTypography.headlineSmall),
                 const Spacer(),
-                Text('last ${tests.length.clamp(0, 50)} tests', style: AppTypography.bodySmall),
+                Text(
+                  'last ${tests.length.clamp(0, 50)} tests',
+                  style: AppTypography.bodySmall,
+                ),
               ],
             ),
             const SizedBox(height: 12),
@@ -1408,7 +1546,11 @@ class _SparklineCard extends StatelessWidget {
   final List<LogEntry> tests;
   final VoidCallback onTap;
 
-  const _SparklineCard({required this.param, required this.tests, required this.onTap});
+  const _SparklineCard({
+    required this.param,
+    required this.tests,
+    required this.onTap,
+  });
 
   String _label() {
     switch (param) {
@@ -1505,9 +1647,7 @@ class _SparklineCard extends StatelessWidget {
             const SizedBox(height: 8),
             Expanded(
               child: values.length < 2
-                  ? Center(
-                      child: Text('—', style: AppTypography.bodySmall),
-                    )
+                  ? Center(child: Text('—', style: AppTypography.bodySmall))
                   : _MiniSparkline(values: values, color: _color()),
             ),
           ],
@@ -1544,7 +1684,10 @@ class _MiniSparkline extends StatelessWidget {
             color: color,
             barWidth: 2,
             dotData: const FlDotData(show: false),
-            belowBarData: BarAreaData(show: true, color: color.withOpacity(0.10)),
+            belowBarData: BarAreaData(
+              show: true,
+              color: color.withOpacity(0.10),
+            ),
           ),
         ],
         lineTouchData: const LineTouchData(enabled: false),
@@ -1553,11 +1696,7 @@ class _MiniSparkline extends StatelessWidget {
   }
 }
 
-enum _AlertSeverity {
-  info,
-  warning,
-  danger,
-}
+enum _AlertSeverity { info, warning, danger }
 
 class _AlertItem {
   final _AlertSeverity severity;
@@ -1575,10 +1714,11 @@ class _AlertsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tests = logs
-        .where((l) => l.type == LogType.waterTest && l.waterTest != null)
-        .toList()
-      ..sort((a, b) => b.timestamp.compareTo(a.timestamp));
+    final tests =
+        logs
+            .where((l) => l.type == LogType.waterTest && l.waterTest != null)
+            .toList()
+          ..sort((a, b) => b.timestamp.compareTo(a.timestamp));
 
     final latest = tests.firstOrNull;
     if (latest == null) {
@@ -1591,7 +1731,10 @@ class _AlertsCard extends StatelessWidget {
             children: [
               Text('Alerts', style: AppTypography.headlineSmall),
               const SizedBox(height: 8),
-              Text('No water tests yet — nothing to flag.', style: AppTypography.bodyMedium),
+              Text(
+                'No water tests yet — nothing to flag.',
+                style: AppTypography.bodyMedium,
+              ),
             ],
           ),
         ),
@@ -1637,7 +1780,8 @@ class _AlertsCard extends StatelessWidget {
         _AlertItem(
           severity: _AlertSeverity.warning,
           title: '$label out of target range',
-          detail: 'Latest: ${value.toStringAsFixed(2)}${unit != null ? ' $unit' : ''} (targets: $targetText)',
+          detail:
+              'Latest: ${value.toStringAsFixed(2)}${unit != null ? ' $unit' : ''} (targets: $targetText)',
         ),
       );
     }
@@ -1699,10 +1843,34 @@ class _AlertsCard extends StatelessWidget {
       }
     }
 
-    thresholdAlert(label: 'Ammonia (NH₃)', value: latestTest.ammonia, warn: 0.25, danger: 0.5, decimals: 2);
-    thresholdAlert(label: 'Nitrite (NO₂)', value: latestTest.nitrite, warn: 0.25, danger: 0.5, decimals: 2);
-    thresholdAlert(label: 'Nitrate (NO₃)', value: latestTest.nitrate, warn: 40, danger: 80, decimals: 0);
-    thresholdAlert(label: 'Phosphate (PO₄)', value: latestTest.phosphate, warn: 1.0, danger: 2.0, decimals: 2);
+    thresholdAlert(
+      label: 'Ammonia (NH₃)',
+      value: latestTest.ammonia,
+      warn: 0.25,
+      danger: 0.5,
+      decimals: 2,
+    );
+    thresholdAlert(
+      label: 'Nitrite (NO₂)',
+      value: latestTest.nitrite,
+      warn: 0.25,
+      danger: 0.5,
+      decimals: 2,
+    );
+    thresholdAlert(
+      label: 'Nitrate (NO₃)',
+      value: latestTest.nitrate,
+      warn: 40,
+      danger: 80,
+      decimals: 0,
+    );
+    thresholdAlert(
+      label: 'Phosphate (PO₄)',
+      value: latestTest.phosphate,
+      warn: 1.0,
+      danger: 2.0,
+      decimals: 2,
+    );
 
     // Simple delta trend (nitrate)
     final recentNitrateTests = tests
@@ -1720,7 +1888,8 @@ class _AlertsCard extends StatelessWidget {
           _AlertItem(
             severity: _AlertSeverity.warning,
             title: 'Nitrate jumped +${delta.toStringAsFixed(0)} ppm',
-            detail: 'Since the previous test (${DateFormat('MMM d').format(b.timestamp)}).',
+            detail:
+                'Since the previous test (${DateFormat('MMM d').format(b.timestamp)}).',
           ),
         );
       }
@@ -1742,7 +1911,10 @@ class _AlertsCard extends StatelessWidget {
                   children: [
                     Text('Alerts', style: AppTypography.headlineSmall),
                     const SizedBox(height: 6),
-                    Text('All looks stable based on your latest test.', style: AppTypography.bodyMedium),
+                    Text(
+                      'All looks stable based on your latest test.',
+                      style: AppTypography.bodyMedium,
+                    ),
                   ],
                 ),
               ),
@@ -1860,7 +2032,8 @@ class _QuickAddFab extends StatefulWidget {
   State<_QuickAddFab> createState() => _QuickAddFabState();
 }
 
-class _QuickAddFabState extends State<_QuickAddFab> with SingleTickerProviderStateMixin {
+class _QuickAddFabState extends State<_QuickAddFab>
+    with SingleTickerProviderStateMixin {
   bool _isExpanded = false;
   late AnimationController _controller;
   late Animation<double> _expandAnimation;
@@ -1992,7 +2165,9 @@ class _MiniFabOption extends StatelessWidget {
           ),
           child: Text(
             label,
-            style: AppTypography.bodySmall.copyWith(fontWeight: FontWeight.w500),
+            style: AppTypography.bodySmall.copyWith(
+              fontWeight: FontWeight.w500,
+            ),
           ),
         ),
         const SizedBox(width: 8),
@@ -2085,18 +2260,26 @@ class _StockingIndicator extends StatelessWidget {
               Text(result.summary, style: AppTypography.bodySmall),
               if (result.warnings.isNotEmpty) ...[
                 const SizedBox(height: 6),
-                ...result.warnings.map((w) => Row(
-                  children: [
-                    Icon(Icons.warning_amber, size: 12, color: AppColors.warning),
-                    const SizedBox(width: 4),
-                    Expanded(
-                      child: Text(
-                        w,
-                        style: AppTypography.bodySmall.copyWith(color: AppColors.warning),
+                ...result.warnings.map(
+                  (w) => Row(
+                    children: [
+                      Icon(
+                        Icons.warning_amber,
+                        size: 12,
+                        color: AppColors.warning,
                       ),
-                    ),
-                  ],
-                )),
+                      const SizedBox(width: 4),
+                      Expanded(
+                        child: Text(
+                          w,
+                          style: AppTypography.bodySmall.copyWith(
+                            color: AppColors.warning,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ],
             ],
           ),

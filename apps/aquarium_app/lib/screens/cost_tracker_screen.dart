@@ -28,7 +28,7 @@ class _CostTrackerScreenState extends ConsumerState<CostTrackerScreen> {
     final prefs = await SharedPreferences.getInstance();
     final json = prefs.getString('cost_tracker_expenses');
     final currency = prefs.getString('cost_tracker_currency') ?? '£';
-    
+
     if (json != null) {
       final list = jsonDecode(json) as List;
       setState(() {
@@ -166,24 +166,28 @@ class _CostTrackerScreenState extends ConsumerState<CostTrackerScreen> {
                   Text('By Category', style: AppTypography.headlineSmall),
                   const SizedBox(height: 12),
                   ...(_byCategory.entries.toList()
-                    ..sort((a, b) => b.value.compareTo(a.value)))
-                    .map((e) => _CategoryBar(
-                      category: e.key,
-                      amount: e.value,
-                      total: _totalSpent,
-                      currency: _currency,
-                    )),
+                        ..sort((a, b) => b.value.compareTo(a.value)))
+                      .map(
+                        (e) => _CategoryBar(
+                          category: e.key,
+                          amount: e.value,
+                          total: _totalSpent,
+                          currency: _currency,
+                        ),
+                      ),
                   const SizedBox(height: 24),
                 ],
 
                 // Recent expenses
                 Text('Recent Expenses', style: AppTypography.headlineSmall),
                 const SizedBox(height: 12),
-                ..._expenses.asMap().entries.map((e) => _ExpenseTile(
-                  expense: e.value,
-                  currency: _currency,
-                  onDelete: () => _deleteExpense(e.key),
-                )),
+                ..._expenses.asMap().entries.map(
+                  (e) => _ExpenseTile(
+                    expense: e.value,
+                    currency: _currency,
+                    onDelete: () => _deleteExpense(e.key),
+                  ),
+                ),
               ],
             ),
       floatingActionButton: FloatingActionButton.extended(
@@ -206,9 +210,9 @@ class _CostTrackerScreenState extends ConsumerState<CostTrackerScreen> {
               title: const Text('Currency'),
               trailing: DropdownButton<String>(
                 value: _currency,
-                items: ['£', '\$', '€', '¥', 'A\$', 'C\$'].map((c) => 
-                  DropdownMenuItem(value: c, child: Text(c))
-                ).toList(),
+                items: ['£', '\$', '€', '¥', 'A\$', 'C\$']
+                    .map((c) => DropdownMenuItem(value: c, child: Text(c)))
+                    .toList(),
                 onChanged: (v) {
                   setState(() => _currency = v ?? '£');
                   _saveExpenses();
@@ -309,9 +313,16 @@ class _EmptyState extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.account_balance_wallet_outlined, size: 64, color: AppColors.textHint),
+            Icon(
+              Icons.account_balance_wallet_outlined,
+              size: 64,
+              color: AppColors.textHint,
+            ),
             const SizedBox(height: 16),
-            Text('Track Your Aquarium Expenses', style: AppTypography.headlineSmall),
+            Text(
+              'Track Your Aquarium Expenses',
+              style: AppTypography.headlineSmall,
+            ),
             const SizedBox(height: 8),
             Text(
               'Keep track of fish, equipment, plants, and supplies. See where your money goes!',
@@ -391,9 +402,15 @@ class _CategoryBar extends StatelessWidget {
           Row(
             children: [
               Expanded(child: Text(category, style: AppTypography.labelLarge)),
-              Text('$currency${amount.toStringAsFixed(2)}', style: AppTypography.bodySmall),
+              Text(
+                '$currency${amount.toStringAsFixed(2)}',
+                style: AppTypography.bodySmall,
+              ),
               const SizedBox(width: 8),
-              Text('${(percentage * 100).toStringAsFixed(0)}%', style: AppTypography.bodySmall),
+              Text(
+                '${(percentage * 100).toStringAsFixed(0)}%',
+                style: AppTypography.bodySmall,
+              ),
             ],
           ),
           const SizedBox(height: 4),
@@ -445,7 +462,11 @@ class _ExpenseTile extends StatelessWidget {
               color: AppColors.primary.withOpacity(0.1),
               borderRadius: BorderRadius.circular(8),
             ),
-            child: Icon(_categoryIcon(expense.category), color: AppColors.primary, size: 20),
+            child: Icon(
+              _categoryIcon(expense.category),
+              color: AppColors.primary,
+              size: 20,
+            ),
           ),
           title: Text(expense.description, style: AppTypography.labelLarge),
           subtitle: Text(
@@ -501,12 +522,27 @@ class _AddExpenseSheetState extends State<_AddExpenseSheet> {
   String _category = 'Fish';
   DateTime _date = DateTime.now();
 
-  final _categories = ['Fish', 'Plants', 'Equipment', 'Food', 'Medication', 'Decor', 'Tank', 'Test Kits', 'Other'];
+  final _categories = [
+    'Fish',
+    'Plants',
+    'Equipment',
+    'Food',
+    'Medication',
+    'Decor',
+    'Tank',
+    'Test Kits',
+    'Other',
+  ];
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.fromLTRB(16, 16, 16, 16 + MediaQuery.of(context).viewInsets.bottom),
+      padding: EdgeInsets.fromLTRB(
+        16,
+        16,
+        16,
+        16 + MediaQuery.of(context).viewInsets.bottom,
+      ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -531,7 +567,9 @@ class _AddExpenseSheetState extends State<_AddExpenseSheet> {
               border: const OutlineInputBorder(),
             ),
             keyboardType: const TextInputType.numberWithOptions(decimal: true),
-            inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[\d.]'))],
+            inputFormatters: [
+              FilteringTextInputFormatter.allow(RegExp(r'[\d.]')),
+            ],
           ),
           const SizedBox(height: 12),
           DropdownButtonFormField<String>(
@@ -540,7 +578,9 @@ class _AddExpenseSheetState extends State<_AddExpenseSheet> {
               labelText: 'Category',
               border: OutlineInputBorder(),
             ),
-            items: _categories.map((c) => DropdownMenuItem(value: c, child: Text(c))).toList(),
+            items: _categories
+                .map((c) => DropdownMenuItem(value: c, child: Text(c)))
+                .toList(),
             onChanged: (v) => setState(() => _category = v ?? 'Other'),
           ),
           const SizedBox(height: 12),
@@ -572,13 +612,15 @@ class _AddExpenseSheetState extends State<_AddExpenseSheet> {
                   return;
                 }
 
-                widget.onSave(_Expense(
-                  id: DateTime.now().millisecondsSinceEpoch.toString(),
-                  description: _descController.text,
-                  amount: amount,
-                  category: _category,
-                  date: _date,
-                ));
+                widget.onSave(
+                  _Expense(
+                    id: DateTime.now().millisecondsSinceEpoch.toString(),
+                    description: _descController.text,
+                    amount: amount,
+                    category: _category,
+                    date: _date,
+                  ),
+                );
                 Navigator.pop(context);
               },
               child: const Text('Save Expense'),

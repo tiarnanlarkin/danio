@@ -2,7 +2,6 @@
 /// Manages heart deduction, auto-refill, and practice mode rewards
 library;
 
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/user_profile.dart';
 import '../providers/user_profile_provider.dart';
@@ -11,7 +10,9 @@ import '../providers/user_profile_provider.dart';
 class HeartsConfig {
   static const int maxHearts = 5;
   static const int startingHearts = 5;
-  static const Duration refillInterval = Duration(minutes: 5); // 5 minutes per heart
+  static const Duration refillInterval = Duration(
+    minutes: 5,
+  ); // 5 minutes per heart
   static const int practiceReward = 1; // Hearts earned for completing practice
 }
 
@@ -49,12 +50,16 @@ class HeartsService {
 
     final now = DateTime.now();
     final timeSinceRefill = now.difference(profile.lastHeartRefill!);
-    final intervalsPassed = timeSinceRefill.inMinutes ~/ HeartsConfig.refillInterval.inMinutes;
+    final intervalsPassed =
+        timeSinceRefill.inMinutes ~/ HeartsConfig.refillInterval.inMinutes;
 
     if (intervalsPassed <= 0) return 0;
 
     // Calculate how many hearts to refill (max out at 5)
-    final heartsToRefill = intervalsPassed.clamp(0, HeartsConfig.maxHearts - profile.hearts);
+    final heartsToRefill = intervalsPassed.clamp(
+      0,
+      HeartsConfig.maxHearts - profile.hearts,
+    );
     return heartsToRefill;
   }
 
@@ -94,14 +99,14 @@ class HeartsService {
 
     // Check auto-refill first
     await checkAndApplyAutoRefill();
-    
+
     final updatedProfile = ref.read(userProfileProvider).value;
     if (updatedProfile == null) return false;
 
     if (updatedProfile.hearts <= 0) return false;
 
     final newHearts = updatedProfile.hearts - 1;
-    
+
     await _updateHearts(
       newHearts,
       updateRefillTime: updatedProfile.lastHeartRefill == null,
@@ -117,7 +122,7 @@ class HeartsService {
 
     // Check auto-refill first
     await checkAndApplyAutoRefill();
-    
+
     final updatedProfile = ref.read(userProfileProvider).value;
     if (updatedProfile == null) return false;
 
@@ -132,14 +137,14 @@ class HeartsService {
     final profile = _profile;
     if (profile == null) return;
 
-    await _updateHearts(
-      HeartsConfig.maxHearts,
-      updateRefillTime: false,
-    );
+    await _updateHearts(HeartsConfig.maxHearts, updateRefillTime: false);
   }
 
   /// Internal method to update hearts count
-  Future<void> _updateHearts(int newHearts, {bool updateRefillTime = false}) async {
+  Future<void> _updateHearts(
+    int newHearts, {
+    bool updateRefillTime = false,
+  }) async {
     final notifier = ref.read(userProfileProvider.notifier);
     await notifier.updateHearts(
       hearts: newHearts.clamp(0, HeartsConfig.maxHearts),
@@ -176,9 +181,6 @@ class HeartsService {
   /// Get all hearts as a list for UI display (filled/empty)
   List<bool> getHeartsDisplay() {
     final hearts = currentHearts;
-    return List.generate(
-      HeartsConfig.maxHearts,
-      (index) => index < hearts,
-    );
+    return List.generate(HeartsConfig.maxHearts, (index) => index < hearts);
   }
 }

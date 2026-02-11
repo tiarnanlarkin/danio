@@ -2,7 +2,6 @@
 /// Shows current streak count with engaging animations
 library;
 
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/user_profile_provider.dart';
@@ -40,30 +39,35 @@ class _StreakDisplayState extends ConsumerState<StreakDisplay>
 
     _scaleAnimation = TweenSequence<double>([
       TweenSequenceItem(
-        tween: Tween<double>(begin: 1.0, end: 1.15)
-            .chain(CurveTween(curve: Curves.easeOut)),
+        tween: Tween<double>(
+          begin: 1.0,
+          end: 1.15,
+        ).chain(CurveTween(curve: Curves.easeOut)),
         weight: 30,
       ),
       TweenSequenceItem(
-        tween: Tween<double>(begin: 1.15, end: 1.0)
-            .chain(CurveTween(curve: Curves.easeIn)),
+        tween: Tween<double>(
+          begin: 1.15,
+          end: 1.0,
+        ).chain(CurveTween(curve: Curves.easeIn)),
         weight: 30,
       ),
-      TweenSequenceItem(
-        tween: ConstantTween<double>(1.0),
-        weight: 40,
-      ),
+      TweenSequenceItem(tween: ConstantTween<double>(1.0), weight: 40),
     ]).animate(_controller);
 
     _glowAnimation = TweenSequence<double>([
       TweenSequenceItem(
-        tween: Tween<double>(begin: 0.3, end: 0.8)
-            .chain(CurveTween(curve: Curves.easeOut)),
+        tween: Tween<double>(
+          begin: 0.3,
+          end: 0.8,
+        ).chain(CurveTween(curve: Curves.easeOut)),
         weight: 50,
       ),
       TweenSequenceItem(
-        tween: Tween<double>(begin: 0.8, end: 0.3)
-            .chain(CurveTween(curve: Curves.easeIn)),
+        tween: Tween<double>(
+          begin: 0.8,
+          end: 0.3,
+        ).chain(CurveTween(curve: Curves.easeIn)),
         weight: 50,
       ),
     ]).animate(_controller);
@@ -80,7 +84,7 @@ class _StreakDisplayState extends ConsumerState<StreakDisplay>
   @override
   Widget build(BuildContext context) {
     final profile = ref.watch(userProfileProvider).value;
-    
+
     if (profile == null) {
       return const SizedBox.shrink();
     }
@@ -107,13 +111,15 @@ class _StreakDisplayState extends ConsumerState<StreakDisplay>
                         shape: BoxShape.circle,
                         gradient: RadialGradient(
                           colors: [
-                            const Color(0xFFFF6B35).withOpacity(_glowAnimation.value),
+                            const Color(
+                              0xFFFF6B35,
+                            ).withOpacity(_glowAnimation.value),
                             Colors.transparent,
                           ],
                         ),
                       ),
                     ),
-                  
+
                   // Fire emoji with scale animation
                   Transform.scale(
                     scale: hasStreak ? _scaleAnimation.value : 1.0,
@@ -129,14 +135,12 @@ class _StreakDisplayState extends ConsumerState<StreakDisplay>
                       child: Center(
                         child: Text(
                           hasStreak ? '🔥' : '💤',
-                          style: TextStyle(
-                            fontSize: widget.size * 0.5,
-                          ),
+                          style: TextStyle(fontSize: widget.size * 0.5),
                         ),
                       ),
                     ),
                   ),
-                  
+
                   // Streak count badge
                   if (hasStreak)
                     Positioned(
@@ -152,10 +156,7 @@ class _StreakDisplayState extends ConsumerState<StreakDisplay>
                             colors: [Color(0xFFFF6B35), Color(0xFFF7931E)],
                           ),
                           borderRadius: BorderRadius.circular(10),
-                          border: Border.all(
-                            color: Colors.white,
-                            width: 2,
-                          ),
+                          border: Border.all(color: Colors.white, width: 2),
                           boxShadow: [
                             BoxShadow(
                               color: Colors.black.withOpacity(0.2),
@@ -211,15 +212,12 @@ class _StreakDisplayState extends ConsumerState<StreakDisplay>
 class StreakCard extends ConsumerWidget {
   final VoidCallback? onTap;
 
-  const StreakCard({
-    super.key,
-    this.onTap,
-  });
+  const StreakCard({super.key, this.onTap});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final profile = ref.watch(userProfileProvider).value;
-    
+
     if (profile == null) {
       return const SizedBox.shrink();
     }
@@ -266,21 +264,16 @@ class StreakCard extends ConsumerWidget {
             child: Row(
               children: [
                 // Streak display
-                StreakDisplay(
-                  size: 50,
-                  showLabel: false,
-                ),
+                StreakDisplay(size: 50, showLabel: false),
                 const SizedBox(width: 16),
-                
+
                 // Text info
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        hasStreak
-                            ? 'Keep it going!'
-                            : 'Start a streak',
+                        hasStreak ? 'Keep it going!' : 'Start a streak',
                         style: AppTypography.labelLarge.copyWith(
                           fontWeight: FontWeight.w600,
                           color: hasStreak
@@ -310,7 +303,7 @@ class StreakCard extends ConsumerWidget {
                     ],
                   ),
                 ),
-                
+
                 // Icon
                 Icon(
                   hasStreak ? Icons.local_fire_department : Icons.flag,

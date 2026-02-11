@@ -29,7 +29,10 @@ class StorageErrorHandler {
               children: [
                 Text(
                   error.message,
-                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
                 const SizedBox(height: 16),
                 const Text(
@@ -42,10 +45,7 @@ class StorageErrorHandler {
                   '• App crash during save\n'
                   '• File system errors\n'
                   '• Incomplete write operation',
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.grey[700],
-                  ),
+                  style: TextStyle(fontSize: 14, color: Colors.grey[700]),
                 ),
                 if (error.corruptedFilePath != null) ...[
                   const SizedBox(height: 16),
@@ -61,7 +61,11 @@ class StorageErrorHandler {
                       children: [
                         const Row(
                           children: [
-                            Icon(Icons.info_outline, size: 18, color: Colors.orange),
+                            Icon(
+                              Icons.info_outline,
+                              size: 18,
+                              color: Colors.orange,
+                            ),
                             SizedBox(width: 8),
                             Text(
                               'Backup Created',
@@ -136,7 +140,8 @@ class StorageErrorHandler {
                 const SizedBox(height: 12),
                 _InfoItem(
                   icon: Icons.bug_report,
-                  text: 'Error: ${error.originalError?.toString() ?? "Unknown"}',
+                  text:
+                      'Error: ${error.originalError?.toString() ?? "Unknown"}',
                 ),
                 if (error.corruptedFilePath != null)
                   _InfoItem(
@@ -171,7 +176,9 @@ class StorageErrorHandler {
               onPressed: () {
                 // TODO: Copy error info to clipboard
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Error info copied to clipboard')),
+                  const SnackBar(
+                    content: Text('Error info copied to clipboard'),
+                  ),
                 );
                 Navigator.of(context).pop();
               },
@@ -282,9 +289,9 @@ class StorageErrorHandler {
     } catch (e) {
       // Handle other errors
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: $e')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Error: $e')));
       }
       return null;
     }
@@ -307,12 +314,7 @@ class _InfoItem extends StatelessWidget {
         children: [
           Icon(icon, size: 18, color: Colors.grey[600]),
           const SizedBox(width: 8),
-          Expanded(
-            child: Text(
-              text,
-              style: const TextStyle(fontSize: 13),
-            ),
-          ),
+          Expanded(child: Text(text, style: const TextStyle(fontSize: 13))),
         ],
       ),
     );

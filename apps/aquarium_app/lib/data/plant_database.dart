@@ -50,8 +50,14 @@ class PlantDatabase {
       minHeightCm: 15,
       maxHeightCm: 35,
       propagation: 'Rhizome division, plantlets',
-      description: 'Hardy, low-light plant perfect for beginners. Attach to wood or rocks — do not bury the rhizome.',
-      tips: ['Attach with thread or glue', 'Don\'t bury rhizome', 'Grows plantlets on leaves', 'Tolerates brackish water'],
+      description:
+          'Hardy, low-light plant perfect for beginners. Attach to wood or rocks — do not bury the rhizome.',
+      tips: [
+        'Attach with thread or glue',
+        'Don\'t bury rhizome',
+        'Grows plantlets on leaves',
+        'Tolerates brackish water',
+      ],
     ),
     PlantInfo(
       commonName: 'Anubias',
@@ -66,8 +72,14 @@ class PlantDatabase {
       minHeightCm: 5,
       maxHeightCm: 25,
       propagation: 'Rhizome division',
-      description: 'Extremely hardy plant with thick, dark leaves. Grows well in low light. Attach to hardscape.',
-      tips: ['Don\'t bury rhizome', 'Prone to algae on leaves in high light', 'Very slow growing', 'Fish won\'t eat it'],
+      description:
+          'Extremely hardy plant with thick, dark leaves. Grows well in low light. Attach to hardscape.',
+      tips: [
+        'Don\'t bury rhizome',
+        'Prone to algae on leaves in high light',
+        'Very slow growing',
+        'Fish won\'t eat it',
+      ],
     ),
     PlantInfo(
       commonName: 'Java Moss',
@@ -82,8 +94,14 @@ class PlantDatabase {
       minHeightCm: 2,
       maxHeightCm: 10,
       propagation: 'Division',
-      description: 'Versatile moss that attaches to surfaces. Great for shrimp tanks and breeding setups.',
-      tips: ['Attach with thread or mesh', 'Trim regularly', 'Excellent fry shelter', 'Can trap debris'],
+      description:
+          'Versatile moss that attaches to surfaces. Great for shrimp tanks and breeding setups.',
+      tips: [
+        'Attach with thread or mesh',
+        'Trim regularly',
+        'Excellent fry shelter',
+        'Can trap debris',
+      ],
     ),
     PlantInfo(
       commonName: 'Amazon Sword',
@@ -98,8 +116,14 @@ class PlantDatabase {
       minHeightCm: 20,
       maxHeightCm: 50,
       propagation: 'Runners, adventitious plants',
-      description: 'Classic centerpiece plant. Grows large with broad leaves. Heavy root feeder.',
-      tips: ['Use root tabs', 'Needs nutrient-rich substrate', 'Can outgrow small tanks', 'Produces runners'],
+      description:
+          'Classic centerpiece plant. Grows large with broad leaves. Heavy root feeder.',
+      tips: [
+        'Use root tabs',
+        'Needs nutrient-rich substrate',
+        'Can outgrow small tanks',
+        'Produces runners',
+      ],
     ),
     PlantInfo(
       commonName: 'Vallisneria',
@@ -114,8 +138,14 @@ class PlantDatabase {
       minHeightCm: 30,
       maxHeightCm: 100,
       propagation: 'Runners',
-      description: 'Grass-like plant that creates a flowing background. Spreads quickly via runners.',
-      tips: ['Trim by cutting leaves, not pulling', 'Spreads aggressively', 'Sensitive to Excel/glutaraldehyde', 'Great for tall tanks'],
+      description:
+          'Grass-like plant that creates a flowing background. Spreads quickly via runners.',
+      tips: [
+        'Trim by cutting leaves, not pulling',
+        'Spreads aggressively',
+        'Sensitive to Excel/glutaraldehyde',
+        'Great for tall tanks',
+      ],
     ),
     PlantInfo(
       commonName: 'Cryptocoryne wendtii',
@@ -130,8 +160,14 @@ class PlantDatabase {
       minHeightCm: 10,
       maxHeightCm: 25,
       propagation: 'Runners',
-      description: 'Attractive, ruffled leaves in various colors. May "melt" when first planted but recovers.',
-      tips: ['Expect initial melt', 'Leave roots undisturbed', 'Many color varieties', 'Patient — slow starter'],
+      description:
+          'Attractive, ruffled leaves in various colors. May "melt" when first planted but recovers.',
+      tips: [
+        'Expect initial melt',
+        'Leave roots undisturbed',
+        'Many color varieties',
+        'Patient — slow starter',
+      ],
     ),
     PlantInfo(
       commonName: 'Water Wisteria',
@@ -146,8 +182,14 @@ class PlantDatabase {
       minHeightCm: 20,
       maxHeightCm: 50,
       propagation: 'Cuttings',
-      description: 'Fast-growing stem plant with lacy leaves. Great for absorbing nitrates.',
-      tips: ['Trim and replant tops', 'Leaf shape varies with light', 'Excellent nitrate absorber', 'Can float'],
+      description:
+          'Fast-growing stem plant with lacy leaves. Great for absorbing nitrates.',
+      tips: [
+        'Trim and replant tops',
+        'Leaf shape varies with light',
+        'Excellent nitrate absorber',
+        'Can float',
+      ],
     ),
     PlantInfo(
       commonName: 'Hornwort',
@@ -162,8 +204,14 @@ class PlantDatabase {
       minHeightCm: 30,
       maxHeightCm: 300,
       propagation: 'Cuttings',
-      description: 'Hardy, fast-growing plant. Can float or anchor. Excellent for new tanks and fry.',
-      tips: ['Sheds needles if stressed', 'Floats or weights down', 'Allelopathic — may inhibit algae', 'Cold tolerant'],
+      description:
+          'Hardy, fast-growing plant. Can float or anchor. Excellent for new tanks and fry.',
+      tips: [
+        'Sheds needles if stressed',
+        'Floats or weights down',
+        'Allelopathic — may inhibit algae',
+        'Cold tolerant',
+      ],
     ),
     PlantInfo(
       commonName: 'Duckweed',
@@ -178,8 +226,14 @@ class PlantDatabase {
       minHeightCm: 0.1,
       maxHeightCm: 0.5,
       propagation: 'Division',
-      description: 'Tiny floating plant that multiplies rapidly. Great nitrate absorber but can take over.',
-      tips: ['Very hard to remove completely', 'Blocks light for plants below', 'Fish love eating it', 'Good protein source'],
+      description:
+          'Tiny floating plant that multiplies rapidly. Great nitrate absorber but can take over.',
+      tips: [
+        'Very hard to remove completely',
+        'Blocks light for plants below',
+        'Fish love eating it',
+        'Good protein source',
+      ],
     ),
     PlantInfo(
       commonName: 'Amazon Frogbit',
@@ -194,8 +248,14 @@ class PlantDatabase {
       minHeightCm: 1,
       maxHeightCm: 5,
       propagation: 'Runners',
-      description: 'Attractive floating plant with round leaves and long roots. Provides shade and cover.',
-      tips: ['Keep leaves dry (no splashing)', 'Long roots provide fry cover', 'Control spread manually', 'Nutrient indicator'],
+      description:
+          'Attractive floating plant with round leaves and long roots. Provides shade and cover.',
+      tips: [
+        'Keep leaves dry (no splashing)',
+        'Long roots provide fry cover',
+        'Control spread manually',
+        'Nutrient indicator',
+      ],
     ),
 
     // Medium difficulty
@@ -212,8 +272,14 @@ class PlantDatabase {
       minHeightCm: 5,
       maxHeightCm: 15,
       propagation: 'Runners',
-      description: 'Grass-like carpet plant. Forms dense lawns without CO2 if light is adequate.',
-      tips: ['Spreads via runners', 'Height varies with light', 'Good beginner carpet', 'Root feeder'],
+      description:
+          'Grass-like carpet plant. Forms dense lawns without CO2 if light is adequate.',
+      tips: [
+        'Spreads via runners',
+        'Height varies with light',
+        'Good beginner carpet',
+        'Root feeder',
+      ],
     ),
     PlantInfo(
       commonName: 'Rotala rotundifolia',
@@ -228,8 +294,14 @@ class PlantDatabase {
       minHeightCm: 15,
       maxHeightCm: 40,
       propagation: 'Cuttings',
-      description: 'Popular stem plant that turns pink/red under high light. Versatile and attractive.',
-      tips: ['More light = more red', 'Trim and replant tops', 'CO2 enhances color', 'Dense growth with pruning'],
+      description:
+          'Popular stem plant that turns pink/red under high light. Versatile and attractive.',
+      tips: [
+        'More light = more red',
+        'Trim and replant tops',
+        'CO2 enhances color',
+        'Dense growth with pruning',
+      ],
     ),
     PlantInfo(
       commonName: 'Ludwigia repens',
@@ -244,8 +316,14 @@ class PlantDatabase {
       minHeightCm: 20,
       maxHeightCm: 50,
       propagation: 'Cuttings',
-      description: 'Red/orange stem plant that adds color. Relatively easy red plant for non-CO2 tanks.',
-      tips: ['High light for best color', 'Iron supplementation helps', 'Trim regularly', 'Lower leaves may drop'],
+      description:
+          'Red/orange stem plant that adds color. Relatively easy red plant for non-CO2 tanks.',
+      tips: [
+        'High light for best color',
+        'Iron supplementation helps',
+        'Trim regularly',
+        'Lower leaves may drop',
+      ],
     ),
     PlantInfo(
       commonName: 'Pogostemon stellatus',
@@ -260,8 +338,14 @@ class PlantDatabase {
       minHeightCm: 20,
       maxHeightCm: 60,
       propagation: 'Cuttings',
-      description: 'Stunning star-shaped leaves in pink/purple. Demanding but rewarding.',
-      tips: ['Needs CO2 and high light', 'Heavy nutrient feeder', 'Trim frequently', 'Iron brings out color'],
+      description:
+          'Stunning star-shaped leaves in pink/purple. Demanding but rewarding.',
+      tips: [
+        'Needs CO2 and high light',
+        'Heavy nutrient feeder',
+        'Trim frequently',
+        'Iron brings out color',
+      ],
     ),
 
     // Hard/Advanced
@@ -278,8 +362,14 @@ class PlantDatabase {
       minHeightCm: 1,
       maxHeightCm: 3,
       propagation: 'Division',
-      description: 'The smallest aquarium plant. Creates stunning carpets but demanding to grow.',
-      tips: ['Requires CO2 and high light', 'Needs fine substrate', 'Dry start method helps', 'Patience required'],
+      description:
+          'The smallest aquarium plant. Creates stunning carpets but demanding to grow.',
+      tips: [
+        'Requires CO2 and high light',
+        'Needs fine substrate',
+        'Dry start method helps',
+        'Patience required',
+      ],
     ),
     PlantInfo(
       commonName: 'Monte Carlo',
@@ -294,8 +384,14 @@ class PlantDatabase {
       minHeightCm: 2,
       maxHeightCm: 5,
       propagation: 'Runners',
-      description: 'Easier carpet alternative to HC Cuba. Forms dense, bright green mats.',
-      tips: ['Easier than HC Cuba', 'Better without CO2', 'Spreads via runners', 'Good beginner carpet'],
+      description:
+          'Easier carpet alternative to HC Cuba. Forms dense, bright green mats.',
+      tips: [
+        'Easier than HC Cuba',
+        'Better without CO2',
+        'Spreads via runners',
+        'Good beginner carpet',
+      ],
     ),
     PlantInfo(
       commonName: 'Bucephalandra',
@@ -310,8 +406,14 @@ class PlantDatabase {
       minHeightCm: 3,
       maxHeightCm: 15,
       propagation: 'Rhizome division',
-      description: 'Collector\'s plant with beautiful leaves in many varieties. Attach to hardscape.',
-      tips: ['Don\'t bury rhizome', 'Many color varieties', 'Produces small flowers', 'Very slow growing'],
+      description:
+          'Collector\'s plant with beautiful leaves in many varieties. Attach to hardscape.',
+      tips: [
+        'Don\'t bury rhizome',
+        'Many color varieties',
+        'Produces small flowers',
+        'Very slow growing',
+      ],
     ),
     PlantInfo(
       commonName: 'Red Tiger Lotus',
@@ -326,8 +428,14 @@ class PlantDatabase {
       minHeightCm: 20,
       maxHeightCm: 80,
       propagation: 'Bulb division',
-      description: 'Stunning red/purple leaves from a bulb. Will send lily pads to surface if allowed.',
-      tips: ['Trim lily pad shoots to keep submerged', 'Grows from bulb', 'Heavy root feeder', 'Dramatic focal point'],
+      description:
+          'Stunning red/purple leaves from a bulb. Will send lily pads to surface if allowed.',
+      tips: [
+        'Trim lily pad shoots to keep submerged',
+        'Grows from bulb',
+        'Heavy root feeder',
+        'Dramatic focal point',
+      ],
     ),
     PlantInfo(
       commonName: 'Scarlet Temple',
@@ -342,8 +450,14 @@ class PlantDatabase {
       minHeightCm: 15,
       maxHeightCm: 40,
       propagation: 'Cuttings',
-      description: 'Vibrant red/magenta leaves. One of the reddest aquarium plants available.',
-      tips: ['Needs CO2 and iron', 'High light essential', 'Lower leaves may drop', 'Stunning color payoff'],
+      description:
+          'Vibrant red/magenta leaves. One of the reddest aquarium plants available.',
+      tips: [
+        'Needs CO2 and iron',
+        'High light essential',
+        'Lower leaves may drop',
+        'Stunning color payoff',
+      ],
     ),
     PlantInfo(
       commonName: 'Glossostigma',
@@ -358,25 +472,36 @@ class PlantDatabase {
       minHeightCm: 1,
       maxHeightCm: 3,
       propagation: 'Runners',
-      description: 'Classic carpet plant for iwagumi style. Requires high tech setup.',
-      tips: ['High light prevents vertical growth', 'CO2 essential', 'Dense planting needed', 'Trim regularly'],
+      description:
+          'Classic carpet plant for iwagumi style. Requires high tech setup.',
+      tips: [
+        'High light prevents vertical growth',
+        'CO2 essential',
+        'Dense planting needed',
+        'Trim regularly',
+      ],
     ),
   ];
 
   /// Search plants by name or characteristics.
   static List<PlantInfo> search(String query) {
     final q = query.toLowerCase();
-    return plants.where((p) =>
-      p.commonName.toLowerCase().contains(q) ||
-      p.scientificName.toLowerCase().contains(q) ||
-      p.difficulty.toLowerCase().contains(q) ||
-      p.placement.toLowerCase().contains(q)
-    ).toList();
+    return plants
+        .where(
+          (p) =>
+              p.commonName.toLowerCase().contains(q) ||
+              p.scientificName.toLowerCase().contains(q) ||
+              p.difficulty.toLowerCase().contains(q) ||
+              p.placement.toLowerCase().contains(q),
+        )
+        .toList();
   }
 
   /// Filter plants by difficulty.
   static List<PlantInfo> byDifficulty(String difficulty) {
-    return plants.where((p) => p.difficulty.toLowerCase() == difficulty.toLowerCase()).toList();
+    return plants
+        .where((p) => p.difficulty.toLowerCase() == difficulty.toLowerCase())
+        .toList();
   }
 
   /// Filter plants suitable for low-tech (no CO2) setups.
@@ -386,6 +511,10 @@ class PlantDatabase {
 
   /// Filter plants by placement.
   static List<PlantInfo> byPlacement(String placement) {
-    return plants.where((p) => p.placement.toLowerCase().contains(placement.toLowerCase())).toList();
+    return plants
+        .where(
+          (p) => p.placement.toLowerCase().contains(placement.toLowerCase()),
+        )
+        .toList();
   }
 }

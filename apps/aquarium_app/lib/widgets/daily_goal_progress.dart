@@ -2,7 +2,6 @@
 /// Shows today's XP progress toward daily goal
 library;
 
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'dart:math' as math;
@@ -14,11 +13,7 @@ class DailyGoalProgress extends ConsumerWidget {
   final double size;
   final bool showLabel;
 
-  const DailyGoalProgress({
-    super.key,
-    this.size = 80,
-    this.showLabel = true,
-  });
+  const DailyGoalProgress({super.key, this.size = 80, this.showLabel = true});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -97,10 +92,7 @@ class _CircularProgressPainter extends CustomPainter {
   final double progress;
   final bool isCompleted;
 
-  _CircularProgressPainter({
-    required this.progress,
-    required this.isCompleted,
-  });
+  _CircularProgressPainter({required this.progress, required this.isCompleted});
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -159,10 +151,7 @@ class _CircularProgressPainter extends CustomPainter {
 class DailyGoalCard extends ConsumerWidget {
   final VoidCallback? onTap;
 
-  const DailyGoalCard({
-    super.key,
-    this.onTap,
-  });
+  const DailyGoalCard({super.key, this.onTap});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -190,10 +179,7 @@ class DailyGoalCard extends ConsumerWidget {
             offset: const Offset(0, 4),
           ),
         ],
-        border: Border.all(
-          color: Colors.white.withOpacity(0.6),
-          width: 1.5,
-        ),
+        border: Border.all(color: Colors.white.withOpacity(0.6), width: 1.5),
       ),
       child: Material(
         color: Colors.transparent,
@@ -205,12 +191,9 @@ class DailyGoalCard extends ConsumerWidget {
             child: Row(
               children: [
                 // Circular progress
-                DailyGoalProgress(
-                  size: 60,
-                  showLabel: false,
-                ),
+                DailyGoalProgress(size: 60, showLabel: false),
                 const SizedBox(width: 16),
-                
+
                 // Text info
                 Expanded(
                   child: Column(
@@ -251,7 +234,7 @@ class DailyGoalCard extends ConsumerWidget {
                     ],
                   ),
                 ),
-                
+
                 // Icon
                 Icon(
                   dailyGoal.isCompleted

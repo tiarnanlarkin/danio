@@ -13,10 +13,12 @@ class EnhancedOnboardingScreen extends ConsumerStatefulWidget {
   const EnhancedOnboardingScreen({super.key});
 
   @override
-  ConsumerState<EnhancedOnboardingScreen> createState() => _EnhancedOnboardingScreenState();
+  ConsumerState<EnhancedOnboardingScreen> createState() =>
+      _EnhancedOnboardingScreenState();
 }
 
-class _EnhancedOnboardingScreenState extends ConsumerState<EnhancedOnboardingScreen> {
+class _EnhancedOnboardingScreenState
+    extends ConsumerState<EnhancedOnboardingScreen> {
   final PageController _pageController = PageController();
   int _currentPage = 0;
 
@@ -55,11 +57,13 @@ class _EnhancedOnboardingScreenState extends ConsumerState<EnhancedOnboardingScr
     }
 
     try {
-      await ref.read(userProfileProvider.notifier).createProfile(
-        experienceLevel: _experienceLevel!,
-        primaryTankType: _tankType!,
-        goals: _goals.toList(),
-      );
+      await ref
+          .read(userProfileProvider.notifier)
+          .createProfile(
+            experienceLevel: _experienceLevel!,
+            primaryTankType: _tankType!,
+            goals: _goals.toList(),
+          );
 
       if (mounted) {
         Navigator.of(context).pushReplacement(
@@ -95,11 +99,13 @@ class _EnhancedOnboardingScreenState extends ConsumerState<EnhancedOnboardingScr
   Future<void> _skipOnboarding() async {
     try {
       // Create default profile
-      await ref.read(userProfileProvider.notifier).createProfile(
-        experienceLevel: ExperienceLevel.beginner,
-        primaryTankType: TankType.freshwater,
-        goals: [UserGoal.keepFishAlive],
-      );
+      await ref
+          .read(userProfileProvider.notifier)
+          .createProfile(
+            experienceLevel: ExperienceLevel.beginner,
+            primaryTankType: TankType.freshwater,
+            goals: [UserGoal.keepFishAlive],
+          );
 
       if (mounted) {
         Navigator.of(context).pushReplacement(
@@ -174,7 +180,8 @@ class _EnhancedOnboardingScreenState extends ConsumerState<EnhancedOnboardingScr
                   _WelcomePage(),
                   _ExperiencePage(
                     selected: _experienceLevel,
-                    onSelect: (level) => setState(() => _experienceLevel = level),
+                    onSelect: (level) =>
+                        setState(() => _experienceLevel = level),
                   ),
                   _TankTypePage(
                     selected: _tankType,
@@ -221,8 +228,8 @@ class _EnhancedOnboardingScreenState extends ConsumerState<EnhancedOnboardingScr
                         _currentPage == 0
                             ? "Let's Go!"
                             : _currentPage == 3
-                                ? 'Start Learning'
-                                : 'Continue',
+                            ? 'Start Learning'
+                            : 'Continue',
                       ),
                     ),
                   ),
@@ -252,11 +259,7 @@ class _WelcomePage extends StatelessWidget {
               gradient: AppColors.primaryGradient,
               shape: BoxShape.circle,
             ),
-            child: const Icon(
-              Icons.water_drop,
-              size: 60,
-              color: Colors.white,
-            ),
+            child: const Icon(Icons.water_drop, size: 60, color: Colors.white),
           ),
           const SizedBox(height: 40),
           Text(
@@ -431,10 +434,7 @@ class _GoalsPage extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SizedBox(height: 20),
-          Text(
-            'What are your goals?',
-            style: AppTypography.headlineMedium,
-          ),
+          Text('What are your goals?', style: AppTypography.headlineMedium),
           const SizedBox(height: 8),
           Text(
             "Select all that apply",

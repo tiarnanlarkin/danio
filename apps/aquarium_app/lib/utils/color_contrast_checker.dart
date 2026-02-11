@@ -59,10 +59,14 @@ class ColorContrastChecker {
 
     // Try adjusting brightness
     final hsl = HSLColor.fromColor(original);
-    
+
     if (preferDarker) {
       // Darken the color
-      for (double lightness = hsl.lightness; lightness >= 0.0; lightness -= 0.05) {
+      for (
+        double lightness = hsl.lightness;
+        lightness >= 0.0;
+        lightness -= 0.05
+      ) {
         final adjusted = hsl.withLightness(lightness).toColor();
         if (contrastRatio(adjusted, background) >= targetRatio) {
           return adjusted;
@@ -70,7 +74,11 @@ class ColorContrastChecker {
       }
     } else {
       // Lighten the color
-      for (double lightness = hsl.lightness; lightness <= 1.0; lightness += 0.05) {
+      for (
+        double lightness = hsl.lightness;
+        lightness <= 1.0;
+        lightness += 0.05
+      ) {
         final adjusted = hsl.withLightness(lightness).toColor();
         if (contrastRatio(adjusted, background) >= targetRatio) {
           return adjusted;

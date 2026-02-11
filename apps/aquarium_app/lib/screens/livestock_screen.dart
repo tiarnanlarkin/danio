@@ -61,7 +61,10 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
           if (_isSelectMode)
             TextButton(
               onPressed: _toggleSelectMode,
-              child: const Text('Cancel', style: TextStyle(color: Colors.white)),
+              child: const Text(
+                'Cancel',
+                style: TextStyle(color: Colors.white),
+              ),
             )
           else
             PopupMenuButton<String>(
@@ -91,7 +94,8 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
             return EmptyState(
               icon: Icons.set_meal,
               title: 'No livestock yet',
-              message: 'Add fish, shrimp, or snails to track your aquatic friends',
+              message:
+                  'Add fish, shrimp, or snails to track your aquatic friends',
               actionLabel: 'Add Livestock',
               onAction: () => _showAddDialog(context, ref),
               tips: const [
@@ -119,13 +123,23 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
                           padding: const EdgeInsets.all(16),
                           child: Row(
                             children: [
-                              Icon(Icons.pets, color: AppColors.primary, size: 32),
+                              Icon(
+                                Icons.pets,
+                                color: AppColors.primary,
+                                size: 32,
+                              ),
                               const SizedBox(width: 16),
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text('$totalCount total', style: AppTypography.headlineMedium),
-                                  Text('${livestock.length} species', style: AppTypography.bodyMedium),
+                                  Text(
+                                    '$totalCount total',
+                                    style: AppTypography.headlineMedium,
+                                  ),
+                                  Text(
+                                    '${livestock.length} species',
+                                    style: AppTypography.bodyMedium,
+                                  ),
                                 ],
                               ),
                             ],
@@ -151,11 +165,14 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
                                 ),
                               ),
                               const Spacer(),
-                              if (_selectedLivestockIds.length < livestock.length)
+                              if (_selectedLivestockIds.length <
+                                  livestock.length)
                                 TextButton(
                                   onPressed: () {
                                     setState(() {
-                                      _selectedLivestockIds.addAll(livestock.map((l) => l.id));
+                                      _selectedLivestockIds.addAll(
+                                        livestock.map((l) => l.id),
+                                      );
                                     });
                                   },
                                   child: const Text('Select All'),
@@ -176,23 +193,28 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
                     if (_isSelectMode) const SizedBox(height: 16),
 
                     // List
-                    ...livestock.map((l) => _LivestockCard(
-                      livestock: l,
-                      tank: tank,
-                      allLivestock: livestock,
-                      isSelectMode: _isSelectMode,
-                      isSelected: _selectedLivestockIds.contains(l.id),
-                      onTap: _isSelectMode 
-                          ? () => _toggleLivestockSelection(l.id)
-                          : () => Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => LivestockDetailScreen(tankId: widget.tankId, livestock: l),
+                    ...livestock.map(
+                      (l) => _LivestockCard(
+                        livestock: l,
+                        tank: tank,
+                        allLivestock: livestock,
+                        isSelectMode: _isSelectMode,
+                        isSelected: _selectedLivestockIds.contains(l.id),
+                        onTap: _isSelectMode
+                            ? () => _toggleLivestockSelection(l.id)
+                            : () => Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => LivestockDetailScreen(
+                                    tankId: widget.tankId,
+                                    livestock: l,
+                                  ),
+                                ),
                               ),
-                            ),
-                      onEdit: () => _showEditDialog(context, ref, l),
-                      onDelete: () => _confirmDelete(context, ref, l),
-                    )),
+                        onEdit: () => _showEditDialog(context, ref, l),
+                        onDelete: () => _confirmDelete(context, ref, l),
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -215,7 +237,8 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
                     children: [
                       Expanded(
                         child: ElevatedButton.icon(
-                          onPressed: () => _bulkMoveLivestock(context, ref, livestock),
+                          onPressed: () =>
+                              _bulkMoveLivestock(context, ref, livestock),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: AppColors.primary,
                             foregroundColor: Colors.white,
@@ -245,8 +268,8 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
           );
         },
       ),
-      floatingActionButton: _isSelectMode 
-          ? null 
+      floatingActionButton: _isSelectMode
+          ? null
           : FloatingActionButton(
               onPressed: () => _showAddDialog(context, ref),
               tooltip: 'Add livestock',
@@ -255,9 +278,15 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
     );
   }
 
-  Future<void> _bulkMoveLivestock(BuildContext context, WidgetRef ref, List<Livestock> allLivestock) async {
+  Future<void> _bulkMoveLivestock(
+    BuildContext context,
+    WidgetRef ref,
+    List<Livestock> allLivestock,
+  ) async {
     final tanksAsync = await ref.read(tanksProvider.future);
-    final availableTanks = tanksAsync.where((t) => t.id != widget.tankId).toList();
+    final availableTanks = tanksAsync
+        .where((t) => t.id != widget.tankId)
+        .toList();
 
     if (availableTanks.isEmpty) {
       if (mounted) {
@@ -272,11 +301,15 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
         title: const Text('Move to Tank'),
         content: Column(
           mainAxisSize: MainAxisSize.min,
-          children: availableTanks.map((tank) => ListTile(
-            title: Text(tank.name),
-            subtitle: Text('${tank.volumeLitres.toStringAsFixed(0)}L'),
-            onTap: () => Navigator.pop(ctx, tank),
-          )).toList(),
+          children: availableTanks
+              .map(
+                (tank) => ListTile(
+                  title: Text(tank.name),
+                  subtitle: Text('${tank.volumeLitres.toStringAsFixed(0)}L'),
+                  onTap: () => Navigator.pop(ctx, tank),
+                ),
+              )
+              .toList(),
         ),
       ),
     );
@@ -303,18 +336,27 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
       }
     } catch (e) {
       if (mounted) {
-        AppFeedback.showError(context, 'Failed to move livestock. Please try again.');
+        AppFeedback.showError(
+          context,
+          'Failed to move livestock. Please try again.',
+        );
       }
     }
   }
 
-  Future<void> _bulkDelete(BuildContext context, WidgetRef ref, List<Livestock> allLivestock) async {
+  Future<void> _bulkDelete(
+    BuildContext context,
+    WidgetRef ref,
+    List<Livestock> allLivestock,
+  ) async {
     final selectedLivestock = allLivestock
         .where((l) => _selectedLivestockIds.contains(l.id))
         .toList();
-    
-    final livestockNames = selectedLivestock.map((l) => '${l.count}× ${l.commonName}').join(', ');
-    
+
+    final livestockNames = selectedLivestock
+        .map((l) => '${l.count}× ${l.commonName}')
+        .join(', ');
+
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
@@ -327,7 +369,10 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
           ),
           TextButton(
             onPressed: () => Navigator.pop(ctx, true),
-            child: const Text('Remove', style: TextStyle(color: AppColors.error)),
+            child: const Text(
+              'Remove',
+              style: TextStyle(color: AppColors.error),
+            ),
           ),
         ],
       ),
@@ -364,7 +409,10 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
       }
     } catch (e) {
       if (mounted) {
-        AppFeedback.showError(context, 'Failed to remove livestock. Please try again.');
+        AppFeedback.showError(
+          context,
+          'Failed to remove livestock. Please try again.',
+        );
       }
     }
   }
@@ -385,15 +433,27 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
     );
   }
 
-  void _showEditDialog(BuildContext context, WidgetRef ref, Livestock livestock) {
+  void _showEditDialog(
+    BuildContext context,
+    WidgetRef ref,
+    Livestock livestock,
+  ) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      builder: (_) => _AddLivestockSheet(tankId: widget.tankId, ref: ref, existing: livestock),
+      builder: (_) => _AddLivestockSheet(
+        tankId: widget.tankId,
+        ref: ref,
+        existing: livestock,
+      ),
     );
   }
 
-  void _confirmDelete(BuildContext context, WidgetRef ref, Livestock livestock) async {
+  void _confirmDelete(
+    BuildContext context,
+    WidgetRef ref,
+    Livestock livestock,
+  ) async {
     final actions = ref.read(tankActionsProvider);
     final storage = ref.read(storageServiceProvider);
     final messenger = ScaffoldMessenger.of(context);
@@ -436,7 +496,10 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
             // Restore the livestock
             actions.undoDeleteLivestock(livestock.id, widget.tankId);
             if (context.mounted) {
-              AppFeedback.showSuccess(context, '${livestock.commonName} restored');
+              AppFeedback.showSuccess(
+                context,
+                '${livestock.commonName} restored',
+              );
             }
           },
         ),
@@ -469,7 +532,8 @@ class _LivestockCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Check for species info and compatibility
-    final species = SpeciesDatabase.lookup(livestock.commonName) ??
+    final species =
+        SpeciesDatabase.lookup(livestock.commonName) ??
         (livestock.scientificName != null
             ? SpeciesDatabase.lookup(livestock.scientificName!)
             : null);
@@ -482,7 +546,7 @@ class _LivestockCard extends StatelessWidget {
         existingLivestock: allLivestock,
       );
     }
-    
+
     final hasIssues = issues.isNotEmpty;
     final level = hasIssues ? CompatibilityService.overallLevel(issues) : null;
 
@@ -491,16 +555,13 @@ class _LivestockCard extends StatelessWidget {
       color: isSelected
           ? AppColors.primary.withOpacity(0.15)
           : (level == CompatibilityLevel.incompatible
-              ? AppColors.error.withOpacity(0.05)
-              : (level == CompatibilityLevel.warning
-                  ? AppColors.warning.withOpacity(0.05)
-                  : null)),
+                ? AppColors.error.withOpacity(0.05)
+                : (level == CompatibilityLevel.warning
+                      ? AppColors.warning.withOpacity(0.05)
+                      : null)),
       child: ListTile(
         leading: isSelectMode
-            ? Checkbox(
-                value: isSelected,
-                onChanged: (_) => onTap(),
-              )
+            ? Checkbox(value: isSelected, onChanged: (_) => onTap())
             : Stack(
                 children: [
                   CircleAvatar(
@@ -539,14 +600,19 @@ class _LivestockCard extends StatelessWidget {
             if (livestock.scientificName != null || species != null)
               Text(
                 livestock.scientificName ?? species?.scientificName ?? '',
-                style: AppTypography.bodySmall.copyWith(fontStyle: FontStyle.italic),
+                style: AppTypography.bodySmall.copyWith(
+                  fontStyle: FontStyle.italic,
+                ),
               ),
             Row(
               children: [
                 Text('×${livestock.count}', style: AppTypography.bodySmall),
                 if (species != null) ...[
                   const SizedBox(width: 8),
-                  Text('• ${species.temperament}', style: AppTypography.bodySmall),
+                  Text(
+                    '• ${species.temperament}',
+                    style: AppTypography.bodySmall,
+                  ),
                 ],
               ],
             ),
@@ -568,7 +634,10 @@ class _LivestockCard extends StatelessWidget {
             ? null
             : PopupMenuButton(
                 itemBuilder: (_) => [
-                  const PopupMenuItem(value: 'view', child: Text('View Details')),
+                  const PopupMenuItem(
+                    value: 'view',
+                    child: Text('View Details'),
+                  ),
                   const PopupMenuItem(value: 'edit', child: Text('Edit')),
                   const PopupMenuItem(value: 'delete', child: Text('Remove')),
                 ],
@@ -589,7 +658,11 @@ class _AddLivestockSheet extends StatefulWidget {
   final WidgetRef ref;
   final Livestock? existing;
 
-  const _AddLivestockSheet({required this.tankId, required this.ref, this.existing});
+  const _AddLivestockSheet({
+    required this.tankId,
+    required this.ref,
+    this.existing,
+  });
 
   @override
   State<_AddLivestockSheet> createState() => _AddLivestockSheetState();
@@ -606,12 +679,18 @@ class _AddLivestockSheetState extends State<_AddLivestockSheet> {
   @override
   void initState() {
     super.initState();
-    _nameController = TextEditingController(text: widget.existing?.commonName ?? '');
-    _scientificController = TextEditingController(text: widget.existing?.scientificName ?? '');
-    _countController = TextEditingController(text: widget.existing?.count.toString() ?? '1');
-    
+    _nameController = TextEditingController(
+      text: widget.existing?.commonName ?? '',
+    );
+    _scientificController = TextEditingController(
+      text: widget.existing?.scientificName ?? '',
+    );
+    _countController = TextEditingController(
+      text: widget.existing?.count.toString() ?? '1',
+    );
+
     _nameController.addListener(_onNameChanged);
-    
+
     // Check if existing livestock matches a known species
     if (widget.existing != null) {
       _selectedSpecies = SpeciesDatabase.lookup(widget.existing!.commonName);
@@ -637,7 +716,7 @@ class _AddLivestockSheetState extends State<_AddLivestockSheet> {
       _nameController.text = species.commonName;
       _scientificController.text = species.scientificName;
       _suggestions = [];
-      
+
       // Auto-set count to min school size if adding new
       if (widget.existing == null && species.minSchoolSize > 1) {
         _countController.text = species.minSchoolSize.toString();
@@ -673,7 +752,7 @@ class _AddLivestockSheetState extends State<_AddLivestockSheet> {
               style: AppTypography.headlineMedium,
             ),
             const SizedBox(height: 16),
-            
+
             // Name with autocomplete
             TextFormField(
               controller: _nameController,
@@ -681,13 +760,17 @@ class _AddLivestockSheetState extends State<_AddLivestockSheet> {
                 labelText: 'Common Name *',
                 hintText: 'e.g., Neon Tetra',
                 suffixIcon: _selectedSpecies != null
-                    ? Icon(Icons.check_circle, color: AppColors.success, size: 20)
+                    ? Icon(
+                        Icons.check_circle,
+                        color: AppColors.success,
+                        size: 20,
+                      )
                     : null,
               ),
               textCapitalization: TextCapitalization.words,
               autofocus: true,
             ),
-            
+
             // Suggestions
             if (_suggestions.isNotEmpty)
               Container(
@@ -698,24 +781,28 @@ class _AddLivestockSheetState extends State<_AddLivestockSheet> {
                   border: Border.all(color: AppColors.surfaceVariant),
                 ),
                 child: Column(
-                  children: _suggestions.map((species) => ListTile(
-                    dense: true,
-                    title: Text(species.commonName),
-                    subtitle: Text(
-                      '${species.scientificName} • ${species.temperament}',
-                      style: AppTypography.bodySmall,
-                    ),
-                    trailing: Text(
-                      species.careLevel,
-                      style: AppTypography.bodySmall.copyWith(
-                        color: _careLevelColor(species.careLevel),
-                      ),
-                    ),
-                    onTap: () => _selectSpecies(species),
-                  )).toList(),
+                  children: _suggestions
+                      .map(
+                        (species) => ListTile(
+                          dense: true,
+                          title: Text(species.commonName),
+                          subtitle: Text(
+                            '${species.scientificName} • ${species.temperament}',
+                            style: AppTypography.bodySmall,
+                          ),
+                          trailing: Text(
+                            species.careLevel,
+                            style: AppTypography.bodySmall.copyWith(
+                              color: _careLevelColor(species.careLevel),
+                            ),
+                          ),
+                          onTap: () => _selectSpecies(species),
+                        ),
+                      )
+                      .toList(),
                 ),
               ),
-            
+
             // Species info tip
             if (_selectedSpecies != null) ...[
               const SizedBox(height: 8),
@@ -731,7 +818,11 @@ class _AddLivestockSheetState extends State<_AddLivestockSheet> {
                   children: [
                     Row(
                       children: [
-                        const Icon(Icons.info_outline, size: 16, color: AppColors.primary),
+                        const Icon(
+                          Icons.info_outline,
+                          size: 16,
+                          color: AppColors.primary,
+                        ),
                         const SizedBox(width: 6),
                         Text('Species Info', style: AppTypography.labelLarge),
                       ],
@@ -744,13 +835,15 @@ class _AddLivestockSheetState extends State<_AddLivestockSheet> {
                     if (_selectedSpecies!.minSchoolSize > 1)
                       Text(
                         'Schooling fish — keep ${_selectedSpecies!.minSchoolSize}+ together',
-                        style: AppTypography.bodySmall.copyWith(color: AppColors.info),
+                        style: AppTypography.bodySmall.copyWith(
+                          color: AppColors.info,
+                        ),
                       ),
                   ],
                 ),
               ),
             ],
-            
+
             const SizedBox(height: 12),
             TextFormField(
               controller: _scientificController,
@@ -764,7 +857,9 @@ class _AddLivestockSheetState extends State<_AddLivestockSheet> {
               controller: _countController,
               decoration: InputDecoration(
                 labelText: 'Count *',
-                hintText: _selectedSpecies != null && _selectedSpecies!.minSchoolSize > 1
+                hintText:
+                    _selectedSpecies != null &&
+                        _selectedSpecies!.minSchoolSize > 1
                     ? 'Recommended: ${_selectedSpecies!.minSchoolSize}+'
                     : 'How many?',
               ),
@@ -930,7 +1025,9 @@ class _BulkAddLivestockSheetState extends State<_BulkAddLivestockSheet> {
             const SizedBox(height: 8),
             Text(
               'One per line. Formats supported: “Neon Tetra, 10”, “10 Neon Tetra”, “Neon Tetra x10”.',
-              style: AppTypography.bodySmall.copyWith(color: AppColors.textSecondary),
+              style: AppTypography.bodySmall.copyWith(
+                color: AppColors.textSecondary,
+              ),
             ),
             const SizedBox(height: 12),
             TextField(
@@ -945,14 +1042,19 @@ class _BulkAddLivestockSheetState extends State<_BulkAddLivestockSheet> {
             ),
             const SizedBox(height: 12),
             if (_items.isNotEmpty) ...[
-              Text('Preview (${_items.length})', style: AppTypography.labelLarge),
+              Text(
+                'Preview (${_items.length})',
+                style: AppTypography.labelLarge,
+              ),
               const SizedBox(height: 8),
               ..._items.map(
                 (i) => Padding(
                   padding: const EdgeInsets.only(bottom: 6),
                   child: Row(
                     children: [
-                      Expanded(child: Text(i.name, style: AppTypography.bodyMedium)),
+                      Expanded(
+                        child: Text(i.name, style: AppTypography.bodyMedium),
+                      ),
                       const SizedBox(width: 12),
                       Text('×${i.count}', style: AppTypography.bodyMedium),
                     ],
@@ -971,7 +1073,11 @@ class _BulkAddLivestockSheetState extends State<_BulkAddLivestockSheet> {
                       child: CircularProgressIndicator(strokeWidth: 2),
                     )
                   : const Icon(Icons.playlist_add),
-              label: Text(_isSaving ? 'Adding…' : 'Add ${_items.isEmpty ? '' : '(${_items.length}) '}livestock'),
+              label: Text(
+                _isSaving
+                    ? 'Adding…'
+                    : 'Add ${_items.isEmpty ? '' : '(${_items.length}) '}livestock',
+              ),
             ),
           ],
         ),
@@ -1021,13 +1127,16 @@ class _BulkAddLivestockSheetState extends State<_BulkAddLivestockSheet> {
       widget.ref.invalidate(logsProvider(widget.tankId));
       widget.ref.invalidate(allLogsProvider(widget.tankId));
 
-      await widget.ref.read(userProfileProvider.notifier).recordActivity(
-            xp: _items.length * XpRewards.addLivestock,
-          );
+      await widget.ref
+          .read(userProfileProvider.notifier)
+          .recordActivity(xp: _items.length * XpRewards.addLivestock);
 
       if (mounted) {
         Navigator.pop(context);
-        AppFeedback.showSuccess(context, 'Added ${_items.length} livestock entries');
+        AppFeedback.showSuccess(
+          context,
+          'Added ${_items.length} livestock entries',
+        );
       }
     } catch (e) {
       if (mounted) {
@@ -1054,10 +1163,7 @@ class _BulkAddLivestockSheetState extends State<_BulkAddLivestockSheet> {
     for (final line in lines) {
       final item = _parseLine(line);
       if (item == null) {
-        return _ParseResult(
-          items: items,
-          error: 'Could not parse: “$line”',
-        );
+        return _ParseResult(items: items, error: 'Could not parse: “$line”');
       }
       items.add(item);
     }

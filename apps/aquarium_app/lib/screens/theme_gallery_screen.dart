@@ -31,10 +31,7 @@ class ThemeGalleryScreen extends ConsumerWidget {
                 style: TextStyle(
                   color: Colors.white,
                   shadows: [
-                    Shadow(
-                      color: Colors.black.withOpacity(0.5),
-                      blurRadius: 8,
-                    ),
+                    Shadow(color: Colors.black.withOpacity(0.5), blurRadius: 8),
                   ],
                 ),
               ),
@@ -50,7 +47,10 @@ class ThemeGalleryScreen extends ConsumerWidget {
               child: Row(
                 children: [
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 4,
+                    ),
                     decoration: BoxDecoration(
                       color: AppColors.success.withOpacity(0.15),
                       borderRadius: BorderRadius.circular(8),
@@ -64,10 +64,7 @@ class ThemeGalleryScreen extends ConsumerWidget {
                     ),
                   ),
                   const SizedBox(width: 10),
-                  Text(
-                    'Included Themes',
-                    style: AppTypography.headlineSmall,
-                  ),
+                  Text('Included Themes', style: AppTypography.headlineSmall),
                 ],
               ),
             ),
@@ -83,25 +80,25 @@ class ThemeGalleryScreen extends ConsumerWidget {
                 crossAxisSpacing: 16,
                 childAspectRatio: 0.75,
               ),
-              delegate: SliverChildBuilderDelegate(
-                (context, index) {
-                  final theme = themes[index];
-                  final themeType = RoomThemeType.values[index];
-                  final isSelected = currentTheme == themeType;
+              delegate: SliverChildBuilderDelegate((context, index) {
+                final theme = themes[index];
+                final themeType = RoomThemeType.values[index];
+                final isSelected = currentTheme == themeType;
 
-                  return _ThemeCard(
-                    theme: theme,
-                    isSelected: isSelected,
-                    isPremium: false,
-                    isLocked: false,
-                    onTap: () {
-                      ref.read(roomThemeProvider.notifier).setTheme(themeType);
-                      AppFeedback.showSuccess(context, 'Switched to ${theme.name} theme');
-                    },
-                  );
-                },
-                childCount: themes.length,
-              ),
+                return _ThemeCard(
+                  theme: theme,
+                  isSelected: isSelected,
+                  isPremium: false,
+                  isLocked: false,
+                  onTap: () {
+                    ref.read(roomThemeProvider.notifier).setTheme(themeType);
+                    AppFeedback.showSuccess(
+                      context,
+                      'Switched to ${theme.name} theme',
+                    );
+                  },
+                );
+              }, childCount: themes.length),
             ),
           ),
 
@@ -112,7 +109,10 @@ class ThemeGalleryScreen extends ConsumerWidget {
               child: Row(
                 children: [
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 4,
+                    ),
                     decoration: BoxDecoration(
                       gradient: const LinearGradient(
                         colors: [Color(0xFFFFD700), Color(0xFFFFA500)],
@@ -135,10 +135,7 @@ class ThemeGalleryScreen extends ConsumerWidget {
                     ),
                   ),
                   const SizedBox(width: 10),
-                  Text(
-                    'Coming Soon',
-                    style: AppTypography.headlineSmall,
-                  ),
+                  Text('Coming Soon', style: AppTypography.headlineSmall),
                 ],
               ),
             ),
@@ -239,7 +236,11 @@ class ThemeGalleryScreen extends ConsumerWidget {
         buttonStats: Color(0xFFB8A090),
         textPrimary: Color(0xFF4A4A4A),
         textSecondary: Color(0xFF7A7A7A),
-        accentCircles: [Color(0xFF98D8C8), Color(0xFFD4A574), Color(0xFF6B8E6B)],
+        accentCircles: [
+          Color(0xFF98D8C8),
+          Color(0xFFD4A574),
+          Color(0xFF6B8E6B),
+        ],
       ),
       const RoomTheme(
         name: 'Neon Glow',
@@ -271,7 +272,11 @@ class ThemeGalleryScreen extends ConsumerWidget {
         buttonStats: Color(0xFFFF00FF),
         textPrimary: Colors.white,
         textSecondary: Color(0xB3FFFFFF),
-        accentCircles: [Color(0xFFFF00FF), Color(0xFF00FFFF), Color(0xFF00FF7F)],
+        accentCircles: [
+          Color(0xFFFF00FF),
+          Color(0xFF00FFFF),
+          Color(0xFF00FF7F),
+        ],
       ),
       const RoomTheme(
         name: 'Autumn',
@@ -303,7 +308,11 @@ class ThemeGalleryScreen extends ConsumerWidget {
         buttonStats: Color(0xFFDC143C),
         textPrimary: Colors.white,
         textSecondary: Color(0xB3FFFFFF),
-        accentCircles: [Color(0xFFFF8C00), Color(0xFFDC143C), Color(0xFFFFD700)],
+        accentCircles: [
+          Color(0xFFFF8C00),
+          Color(0xFFDC143C),
+          Color(0xFFFFD700),
+        ],
       ),
     ];
   }
@@ -340,10 +349,7 @@ class ThemeGalleryScreen extends ConsumerWidget {
             const SizedBox(height: 12),
             Text(
               'Support the app and unlock exclusive themes with unique animations and special effects.',
-              style: TextStyle(
-                color: AppColors.textSecondary,
-                fontSize: 14,
-              ),
+              style: TextStyle(color: AppColors.textSecondary, fontSize: 14),
             ),
           ],
         ),
@@ -371,11 +377,7 @@ class _CurrentThemePreview extends StatelessWidget {
         gradient: LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
-          colors: [
-            theme.background1,
-            theme.background2,
-            theme.background3,
-          ],
+          colors: [theme.background1, theme.background2, theme.background3],
         ),
       ),
       child: Stack(
@@ -541,9 +543,7 @@ class _ThemeCard extends StatelessWidget {
           child: Stack(
             children: [
               // Theme preview
-              Positioned.fill(
-                child: _MiniRoomPreview(theme: theme),
-              ),
+              Positioned.fill(child: _MiniRoomPreview(theme: theme)),
 
               // Locked overlay
               if (isLocked)
@@ -573,14 +573,21 @@ class _ThemeCard extends StatelessWidget {
                   top: 8,
                   right: 8,
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 6,
+                      vertical: 3,
+                    ),
                     decoration: BoxDecoration(
                       gradient: const LinearGradient(
                         colors: [Color(0xFFFFD700), Color(0xFFFFA500)],
                       ),
                       borderRadius: BorderRadius.circular(6),
                     ),
-                    child: const Icon(Icons.star, size: 12, color: Colors.white),
+                    child: const Icon(
+                      Icons.star,
+                      size: 12,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
 
@@ -609,7 +616,10 @@ class _ThemeCard extends StatelessWidget {
                 left: 0,
                 right: 0,
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 10,
+                  ),
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       begin: Alignment.topCenter,
@@ -666,11 +676,7 @@ class _MiniRoomPreview extends StatelessWidget {
         gradient: LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
-          colors: [
-            theme.background1,
-            theme.background2,
-            theme.background3,
-          ],
+          colors: [theme.background1, theme.background2, theme.background3],
         ),
       ),
       child: Stack(
@@ -725,17 +731,10 @@ class _MiniRoomPreview extends StatelessWidget {
                 gradient: LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
-                  colors: [
-                    theme.waterTop,
-                    theme.waterMid,
-                    theme.waterBottom,
-                  ],
+                  colors: [theme.waterTop, theme.waterMid, theme.waterBottom],
                 ),
                 borderRadius: BorderRadius.circular(3),
-                border: Border.all(
-                  color: theme.glassBorder,
-                  width: 1.5,
-                ),
+                border: Border.all(color: theme.glassBorder, width: 1.5),
               ),
               child: Stack(
                 children: [
@@ -818,7 +817,10 @@ class _MiniRoomPreview extends StatelessWidget {
               height: 30,
               decoration: BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [theme.sand.withOpacity(0.6), theme.sand.withOpacity(0.8)],
+                  colors: [
+                    theme.sand.withOpacity(0.6),
+                    theme.sand.withOpacity(0.8),
+                  ],
                 ),
               ),
             ),
@@ -915,11 +917,11 @@ class _WavePainter extends CustomPainter {
       ..color = color
       ..style = PaintingStyle.fill;
 
-    final path = Path()
-      ..moveTo(0, size.height * 0.5 + offset * 0.1);
+    final path = Path()..moveTo(0, size.height * 0.5 + offset * 0.1);
 
     for (double x = 0; x <= size.width; x += 1) {
-      final y = size.height * 0.5 +
+      final y =
+          size.height * 0.5 +
           20 * (0.5 + 0.5 * (x / size.width + offset / 100).remainder(1));
       path.lineTo(x, y);
     }

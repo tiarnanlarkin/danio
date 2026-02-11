@@ -18,7 +18,7 @@ class FriendsScreen extends ConsumerStatefulWidget {
   ConsumerState<FriendsScreen> createState() => _FriendsScreenState();
 }
 
-class _FriendsScreenState extends ConsumerState<FriendsScreen> 
+class _FriendsScreenState extends ConsumerState<FriendsScreen>
     with SingleTickerProviderStateMixin, DebounceMixin {
   late TabController _tabController;
   final _searchController = TextEditingController();
@@ -92,7 +92,8 @@ class _FriendsScreenState extends ConsumerState<FriendsScreen>
             error: (e, _) => ErrorState(
               message: 'Unable to load activity feed',
               details: 'Please check your connection and try again.',
-              onRetry: () => ref.read(friendActivitiesProvider.notifier).reload(),
+              onRetry: () =>
+                  ref.read(friendActivitiesProvider.notifier).reload(),
             ),
             data: (activities) => _ActivityFeedView(activities: activities),
           ),
@@ -171,12 +172,12 @@ class _FriendsScreenState extends ConsumerState<FriendsScreen>
     try {
       await ref.read(friendsProvider.notifier).addFriend(username.trim());
       if (!context.mounted) return;
-      
+
       Navigator.pop(context);
       AppFeedback.showSuccess(context, 'Added $username as friend!');
     } catch (error) {
       if (!context.mounted) return;
-      
+
       AppFeedback.showError(context, error.toString());
     }
   }
@@ -202,7 +203,8 @@ class _FriendsListView extends ConsumerWidget {
       return EmptyState(
         icon: Icons.people_outline,
         title: 'No friends yet',
-        message: 'Add friends to compare progress and share your aquarium journey!',
+        message:
+            'Add friends to compare progress and share your aquarium journey!',
         actionLabel: 'Tap + above to add friends',
         onAction: () {
           AppFeedback.showInfo(context, 'Tap the + icon above to add friends');
@@ -214,10 +216,16 @@ class _FriendsListView extends ConsumerWidget {
     final filteredFriends = searchQuery.isEmpty
         ? friends
         : friends
-            .where((f) =>
-                f.username.toLowerCase().contains(searchQuery.toLowerCase()) ||
-                f.displayName.toLowerCase().contains(searchQuery.toLowerCase()))
-            .toList();
+              .where(
+                (f) =>
+                    f.username.toLowerCase().contains(
+                      searchQuery.toLowerCase(),
+                    ) ||
+                    f.displayName.toLowerCase().contains(
+                      searchQuery.toLowerCase(),
+                    ),
+              )
+              .toList();
 
     return Column(
       children: [
@@ -365,7 +373,11 @@ class _FriendListTile extends ConsumerWidget {
                     const SizedBox(height: 4),
                     Row(
                       children: [
-                        Icon(Icons.star, size: 14, color: Colors.amber.shade700),
+                        Icon(
+                          Icons.star,
+                          size: 14,
+                          color: Colors.amber.shade700,
+                        ),
                         const SizedBox(width: 4),
                         Text(
                           '${friend.totalXp} XP',
@@ -373,7 +385,11 @@ class _FriendListTile extends ConsumerWidget {
                         ),
                         const SizedBox(width: 12),
                         if (friend.currentStreak > 0) ...[
-                          const Icon(Icons.local_fire_department, size: 14, color: Colors.orange),
+                          const Icon(
+                            Icons.local_fire_department,
+                            size: 14,
+                            color: Colors.orange,
+                          ),
                           const SizedBox(width: 4),
                           Text(
                             '${friend.currentStreak} day streak',
@@ -391,7 +407,10 @@ class _FriendListTile extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 4,
+                    ),
                     decoration: BoxDecoration(
                       color: _getLevelColor(friend.currentLevel),
                       borderRadius: BorderRadius.circular(12),
@@ -410,7 +429,9 @@ class _FriendListTile extends ConsumerWidget {
                     friend.statusText,
                     style: TextStyle(
                       fontSize: 11,
-                      color: friend.isOnline ? Colors.green : Colors.grey.shade500,
+                      color: friend.isOnline
+                          ? Colors.green
+                          : Colors.grey.shade500,
                     ),
                   ),
                 ],
@@ -546,7 +567,11 @@ class _ActivityTile extends StatelessWidget {
                     const SizedBox(height: 4),
                     Row(
                       children: [
-                        Icon(Icons.star, size: 14, color: Colors.amber.shade700),
+                        Icon(
+                          Icons.star,
+                          size: 14,
+                          color: Colors.amber.shade700,
+                        ),
                         const SizedBox(width: 4),
                         Text(
                           '+${activity.xpEarned} XP',
@@ -562,10 +587,7 @@ class _ActivityTile extends StatelessWidget {
                   const SizedBox(height: 4),
                   Text(
                     activity.timeAgo,
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.grey.shade500,
-                    ),
+                    style: TextStyle(fontSize: 12, color: Colors.grey.shade500),
                   ),
                 ],
               ),
@@ -577,7 +599,8 @@ class _ActivityTile extends StatelessWidget {
   }
 }
 
-/// Error view with retry button
+/// Error view with retry button (UNUSED - Kept for reference)
+/*
 class _ErrorView extends StatelessWidget {
   const _ErrorView({
     required this.message,
@@ -606,3 +629,4 @@ class _ErrorView extends StatelessWidget {
     );
   }
 }
+*/

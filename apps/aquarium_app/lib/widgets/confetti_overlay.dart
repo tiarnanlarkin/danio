@@ -2,7 +2,6 @@
 /// Shows celebration animation when completing sessions
 library;
 
-
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
 
@@ -61,20 +60,22 @@ class _ConfettiOverlayState extends State<ConfettiOverlay>
     final random = math.Random();
 
     for (int i = 0; i < _particleCount; i++) {
-      _particles.add(ConfettiParticle(
-        color: _getRandomColor(random),
-        position: Offset(
-          random.nextDouble(),
-          -0.1, // Start above screen
+      _particles.add(
+        ConfettiParticle(
+          color: _getRandomColor(random),
+          position: Offset(
+            random.nextDouble(),
+            -0.1, // Start above screen
+          ),
+          velocity: Offset(
+            (random.nextDouble() - 0.5) * 2, // -1 to 1
+            random.nextDouble() * 2 + 1, // 1 to 3
+          ),
+          rotation: random.nextDouble() * math.pi * 2,
+          rotationSpeed: (random.nextDouble() - 0.5) * 4,
+          size: random.nextDouble() * 8 + 4, // 4 to 12
         ),
-        velocity: Offset(
-          (random.nextDouble() - 0.5) * 2, // -1 to 1
-          random.nextDouble() * 2 + 1, // 1 to 3
-        ),
-        rotation: random.nextDouble() * math.pi * 2,
-        rotationSpeed: (random.nextDouble() - 0.5) * 4,
-        size: random.nextDouble() * 8 + 4, // 4 to 12
-      ));
+      );
     }
 
     _controller.forward(from: 0);
@@ -148,10 +149,7 @@ class ConfettiPainter extends CustomPainter {
   final List<ConfettiParticle> particles;
   final double progress;
 
-  ConfettiPainter({
-    required this.particles,
-    required this.progress,
-  });
+  ConfettiPainter({required this.particles, required this.progress});
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -161,9 +159,11 @@ class ConfettiPainter extends CustomPainter {
         ..style = PaintingStyle.fill;
 
       // Calculate position
-      final x = particle.position.dx * size.width +
+      final x =
+          particle.position.dx * size.width +
           particle.velocity.dx * progress * 100;
-      final y = particle.position.dy * size.height +
+      final y =
+          particle.position.dy * size.height +
           particle.velocity.dy * progress * size.height;
 
       // Skip if off screen

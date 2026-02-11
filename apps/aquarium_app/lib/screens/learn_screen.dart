@@ -28,8 +28,10 @@ class LearnScreen extends ConsumerWidget {
         error: (e, _) => Center(child: Text('Error: $e')),
         data: (profile) {
           // Calculate total lessons across all paths
-          final totalLessons = LessonContent.allPaths
-              .fold<int>(0, (sum, path) => sum + path.lessons.length);
+          final totalLessons = LessonContent.allPaths.fold<int>(
+            0,
+            (sum, path) => sum + path.lessons.length,
+          );
           final completedLessons = profile?.completedLessons.length ?? 0;
 
           return CustomScrollView(
@@ -81,10 +83,7 @@ class LearnScreen extends ConsumerWidget {
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
                               shadows: [
-                                Shadow(
-                                  color: Colors.black45,
-                                  blurRadius: 8,
-                                ),
+                                Shadow(color: Colors.black45, blurRadius: 8),
                               ],
                             ),
                           ),
@@ -116,20 +115,14 @@ class LearnScreen extends ConsumerWidget {
                 )
               else ...[
                 // Spaced repetition review banner (due cards)
-                SliverToBoxAdapter(
-                  child: _ReviewCardsBanner(),
-                ),
-                
+                SliverToBoxAdapter(child: _ReviewCardsBanner()),
+
                 // Daily streak reminder
                 if (profile.currentStreak > 0)
-                  SliverToBoxAdapter(
-                    child: _StreakCard(profile: profile),
-                  ),
+                  SliverToBoxAdapter(child: _StreakCard(profile: profile)),
 
                 // Practice card
-                SliverToBoxAdapter(
-                  child: _PracticeCard(profile: profile),
-                ),
+                SliverToBoxAdapter(child: _PracticeCard(profile: profile)),
 
                 // Learning paths header
                 SliverToBoxAdapter(
@@ -144,36 +137,36 @@ class LearnScreen extends ConsumerWidget {
 
                 // Learning path cards
                 SliverList(
-                  delegate: SliverChildBuilderDelegate(
-                    (context, index) {
-                      final path = LessonContent.allPaths[index];
-                      final completedInPath = path.lessons
-                          .where((l) => profile.completedLessons.contains(l.id))
-                          .length;
+                  delegate: SliverChildBuilderDelegate((context, index) {
+                    final path = LessonContent.allPaths[index];
+                    final completedInPath = path.lessons
+                        .where((l) => profile.completedLessons.contains(l.id))
+                        .length;
 
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                        child: _LearningPathCard(
-                          path: path,
-                          completedLessons: completedInPath,
-                          totalLessons: path.lessons.length,
-                          userCompletedLessons: profile.completedLessons,
-                          onLessonTap: (lesson) {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => LessonScreen(
-                                  lesson: lesson,
-                                  pathTitle: path.title,
-                                ),
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 8,
+                      ),
+                      child: _LearningPathCard(
+                        path: path,
+                        completedLessons: completedInPath,
+                        totalLessons: path.lessons.length,
+                        userCompletedLessons: profile.completedLessons,
+                        onLessonTap: (lesson) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => LessonScreen(
+                                lesson: lesson,
+                                pathTitle: path.title,
                               ),
-                            );
-                          },
-                        ),
-                      );
-                    },
-                    childCount: LessonContent.allPaths.length,
-                  ),
+                            ),
+                          );
+                        },
+                      ),
+                    );
+                  }, childCount: LessonContent.allPaths.length),
                 ),
 
                 const SliverToBoxAdapter(child: SizedBox(height: 100)),
@@ -194,7 +187,7 @@ class _ReviewCardsBanner extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final srState = ref.watch(spacedRepetitionProvider);
     final dueCount = srState.stats.dueCards;
-    
+
     // Don't show banner if no cards are due
     if (dueCount == 0) return const SizedBox.shrink();
 
@@ -213,10 +206,7 @@ class _ReviewCardsBanner extends ConsumerWidget {
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
             gradient: LinearGradient(
-              colors: [
-                AppColors.accent,
-                AppColors.accent.withOpacity(0.8),
-              ],
+              colors: [AppColors.accent, AppColors.accent.withOpacity(0.8)],
             ),
             borderRadius: BorderRadius.circular(16),
             boxShadow: [
@@ -249,10 +239,7 @@ class _ReviewCardsBanner extends ConsumerWidget {
                   children: [
                     Row(
                       children: [
-                        const Text(
-                          '🔔 ',
-                          style: TextStyle(fontSize: 18),
-                        ),
+                        const Text('🔔 ', style: TextStyle(fontSize: 18)),
                         Text(
                           'Time to Review!',
                           style: AppTypography.headlineSmall.copyWith(
@@ -299,9 +286,11 @@ class _PracticeCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final weakLessons = ref.read(userProfileProvider.notifier).getWeakestLessons();
+    final weakLessons = ref
+        .read(userProfileProvider.notifier)
+        .getWeakestLessons();
     final weakCount = weakLessons.length;
-    
+
     // Don't show if no lessons to review
     if (weakCount == 0) return const SizedBox.shrink();
 
@@ -309,21 +298,16 @@ class _PracticeCard extends ConsumerWidget {
       margin: const EdgeInsets.fromLTRB(16, 16, 16, 0),
       child: InkWell(
         onTap: () {
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (_) => const PracticeScreen(),
-            ),
-          );
+          Navigator.of(
+            context,
+          ).push(MaterialPageRoute(builder: (_) => const PracticeScreen()));
         },
         borderRadius: BorderRadius.circular(16),
         child: Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
             gradient: LinearGradient(
-              colors: [
-                AppColors.primary,
-                AppColors.primary.withOpacity(0.8),
-              ],
+              colors: [AppColors.primary, AppColors.primary.withOpacity(0.8)],
             ),
             borderRadius: BorderRadius.circular(16),
             boxShadow: [
@@ -481,7 +465,9 @@ class _StreakCard extends StatelessWidget {
                               ? 'Streak freeze available (1 skip per week)'
                               : 'Streak freeze used this week',
                           style: AppTypography.bodySmall.copyWith(
-                            color: hasFreeze ? AppColors.info : AppColors.textHint,
+                            color: hasFreeze
+                                ? AppColors.info
+                                : AppColors.textHint,
                           ),
                         ),
                       ),
@@ -589,22 +575,22 @@ class _LearningPathCard extends StatelessWidget {
                     color: isCompleted
                         ? AppColors.success.withOpacity(0.2)
                         : isUnlocked
-                            ? AppColors.primary.withOpacity(0.1)
-                            : AppColors.surfaceVariant,
+                        ? AppColors.primary.withOpacity(0.1)
+                        : AppColors.surfaceVariant,
                     shape: BoxShape.circle,
                   ),
                   child: Icon(
                     isCompleted
                         ? Icons.check
                         : isUnlocked
-                            ? Icons.play_arrow
-                            : Icons.lock,
+                        ? Icons.play_arrow
+                        : Icons.lock,
                     size: 18,
                     color: isCompleted
                         ? AppColors.success
                         : isUnlocked
-                            ? AppColors.primary
-                            : AppColors.textHint,
+                        ? AppColors.primary
+                        : AppColors.textHint,
                   ),
                 ),
                 title: Text(

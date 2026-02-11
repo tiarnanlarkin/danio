@@ -8,9 +8,7 @@ class TermsOfServiceScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Terms of Service'),
-      ),
+      appBar: AppBar(title: const Text('Terms of Service')),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(24),
         child: Column(
@@ -20,68 +18,74 @@ class TermsOfServiceScreen extends StatelessWidget {
               context,
               icon: Icons.gavel,
               title: 'Terms of Service',
-              content: 'These terms govern your use of the Aquarium Hobbyist app. '
+              content:
+                  'These terms govern your use of the Aquarium Hobbyist app. '
                   'Please read them carefully.',
             ),
-            
+
             const SizedBox(height: 24),
-            
+
             _buildSection(
               context,
               icon: Icons.school_outlined,
               title: 'Educational Use Only',
-              content: 'This app provides educational information about fishkeeping. '
+              content:
+                  'This app provides educational information about fishkeeping. '
                   'It is NOT professional veterinary advice. Always consult qualified '
                   'professionals for specific advice about your aquatic life.',
               highlighted: true,
             ),
-            
+
             const SizedBox(height: 24),
-            
+
             _buildSection(
               context,
               icon: Icons.shield_outlined,
               title: 'No Warranties',
-              content: 'The app is provided "as is" without warranties. We are not '
+              content:
+                  'The app is provided "as is" without warranties. We are not '
                   'responsible for any harm to aquatic life or decisions made using the app.',
             ),
-            
+
             const SizedBox(height: 24),
-            
+
             _buildSection(
               context,
               icon: Icons.storage_outlined,
               title: 'Your Data',
-              content: 'You own all data you create in the app. All data is stored '
+              content:
+                  'You own all data you create in the app. All data is stored '
                   'locally on your device. You are responsible for creating backups.',
             ),
-            
+
             const SizedBox(height: 24),
-            
+
             _buildSection(
               context,
               icon: Icons.lock_outline,
               title: 'License',
-              content: 'We grant you a limited, personal, non-commercial license to use '
+              content:
+                  'We grant you a limited, personal, non-commercial license to use '
                   'the app. You may not modify, reverse engineer, or distribute the app.',
             ),
-            
+
             const SizedBox(height: 24),
-            
+
             _buildSection(
               context,
               icon: Icons.update_outlined,
               title: 'Changes',
-              content: 'We may update the app and these terms at any time. Continued '
+              content:
+                  'We may update the app and these terms at any time. Continued '
                   'use after changes means you accept the new terms.',
             ),
-            
+
             const SizedBox(height: 32),
-            
+
             const Divider(),
-            
+
             const SizedBox(height: 16),
-            
+
             Center(
               child: Text(
                 'Last Updated: February 7, 2025',
@@ -90,9 +94,9 @@ class TermsOfServiceScreen extends StatelessWidget {
                 ),
               ),
             ),
-            
+
             const SizedBox(height: 24),
-            
+
             Center(
               child: Column(
                 children: [
@@ -115,9 +119,9 @@ class TermsOfServiceScreen extends StatelessWidget {
                 ],
               ),
             ),
-            
+
             const SizedBox(height: 32),
-            
+
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
@@ -141,7 +145,7 @@ class TermsOfServiceScreen extends StatelessWidget {
                 ],
               ),
             ),
-            
+
             const SizedBox(height: 48),
           ],
         ),
@@ -159,14 +163,10 @@ class TermsOfServiceScreen extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: highlighted 
-            ? Colors.orange[50] 
-            : Colors.grey[50],
+        color: highlighted ? Colors.orange[50] : Colors.grey[50],
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: highlighted 
-              ? Colors.orange[200]! 
-              : Colors.grey[200]!,
+          color: highlighted ? Colors.orange[200]! : Colors.grey[200]!,
         ),
       ),
       child: Row(
@@ -176,16 +176,14 @@ class TermsOfServiceScreen extends StatelessWidget {
             width: 40,
             height: 40,
             decoration: BoxDecoration(
-              color: highlighted 
-                  ? Colors.orange[100] 
+              color: highlighted
+                  ? Colors.orange[100]
                   : AppColors.primary.withOpacity(0.1),
               borderRadius: BorderRadius.circular(10),
             ),
             child: Icon(
               icon,
-              color: highlighted 
-                  ? Colors.orange[700] 
-                  : AppColors.primary,
+              color: highlighted ? Colors.orange[700] : AppColors.primary,
               size: 20,
             ),
           ),
@@ -216,9 +214,11 @@ class TermsOfServiceScreen extends StatelessWidget {
   }
 
   Future<void> _openFullTerms() async {
-    // TODO: Replace with your actual hosted URL
-    final Uri url = Uri.parse('https://aquariumhobbyist.app/terms-of-service');
-    
+    // GitHub Pages URL once repo is pushed
+    final Uri url = Uri.parse(
+      'https://tiarnanlarkin.github.io/Aquarium-App-Dev/docs/terms-of-service.html',
+    );
+
     try {
       if (await canLaunchUrl(url)) {
         await launchUrl(url, mode: LaunchMode.externalApplication);
@@ -264,10 +264,7 @@ class TermsOfServiceScreen extends StatelessWidget {
         Icon(icon, size: 16, color: Colors.grey[600]),
         const SizedBox(width: 8),
         Expanded(
-          child: Text(
-            text,
-            style: TextStyle(color: Colors.grey[800]),
-          ),
+          child: Text(text, style: TextStyle(color: Colors.grey[800])),
         ),
       ],
     );

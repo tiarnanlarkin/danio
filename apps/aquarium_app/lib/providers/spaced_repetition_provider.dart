@@ -2,7 +2,6 @@
 /// Manages review cards, sessions, and scheduling
 library;
 
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
@@ -14,9 +13,10 @@ import 'achievement_provider.dart';
 import 'package:flutter/material.dart';
 
 // Provider for spaced repetition state
-final spacedRepetitionProvider = StateNotifierProvider<SpacedRepetitionNotifier, SpacedRepetitionState>(
-  (ref) => SpacedRepetitionNotifier(ref),
-);
+final spacedRepetitionProvider =
+    StateNotifierProvider<SpacedRepetitionNotifier, SpacedRepetitionState>(
+      (ref) => SpacedRepetitionNotifier(ref),
+    );
 
 /// State for spaced repetition system
 class SpacedRepetitionState {
@@ -45,7 +45,9 @@ class SpacedRepetitionState {
   }) {
     return SpacedRepetitionState(
       cards: cards ?? this.cards,
-      currentSession: clearSession ? null : (currentSession ?? this.currentSession),
+      currentSession: clearSession
+          ? null
+          : (currentSession ?? this.currentSession),
       stats: stats ?? this.stats,
       isLoading: isLoading ?? this.isLoading,
       errorMessage: clearError ? null : (errorMessage ?? this.errorMessage),
@@ -61,11 +63,8 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
 
   final Ref _ref;
 
-  SpacedRepetitionNotifier(this._ref) : super(
-    SpacedRepetitionState(
-      stats: ReviewStats.fromCards([]),
-    )
-  ) {
+  SpacedRepetitionNotifier(this._ref)
+    : super(SpacedRepetitionState(stats: ReviewStats.fromCards([]))) {
     _loadData();
     _scheduleNotifications();
   }
@@ -76,11 +75,11 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
 
     try {
       final prefs = await SharedPreferences.getInstance();
-      
+
       // Load cards
       final cardsJson = prefs.getString(_storageKey);
       List<ReviewCard> cards = [];
-      
+
       if (cardsJson != null) {
         final decoded = jsonDecode(cardsJson) as List;
         cards = decoded.map((c) => ReviewCard.fromJson(c)).toList();
@@ -90,12 +89,12 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
       final statsJson = prefs.getString(_statsKey);
       int reviewsToday = 0;
       int streak = 0;
-      
+
       if (statsJson != null) {
         final statsData = jsonDecode(statsJson);
         reviewsToday = statsData['reviewsToday'] ?? 0;
         streak = statsData['streak'] ?? 0;
-        
+
         // Reset reviews today if it's a new day
         final lastReviewDate = statsData['lastReviewDate'] as String?;
         if (lastReviewDate != null) {
@@ -119,7 +118,7 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
         isLoading: false,
         clearError: true,
       );
-    } catch (e, st) {
+    } catch (e) {
       // Initialize with empty state on error, but keep flow going
       final stats = ReviewStats.fromCards([]);
       state = state.copyWith(
@@ -135,11 +134,9 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
   Future<void> _saveData() async {
     try {
       final prefs = await SharedPreferences.getInstance();
-      
+
       // Save cards
-      final cardsJson = jsonEncode(
-        state.cards.map((c) => c.toJson()).toList()
-      );
+      final cardsJson = jsonEncode(state.cards.map((c) => c.toJson()).toList());
       await prefs.setString(_storageKey, cardsJson);
 
       // Save stats
@@ -149,7 +146,7 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
         'lastReviewDate': DateTime.now().toIso8601String(),
       };
       await prefs.setString(_statsKey, jsonEncode(statsData));
-    } catch (e, st) {
+    } catch (e) {
       throw Exception('Failed to save review data: $e');
     }
   }
@@ -185,7 +182,7 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
 
       await _saveData();
       await _scheduleNotifications();
-    } catch (e, st) {
+    } catch (e) {
       state = state.copyWith(
         errorMessage: 'Failed to create review card: ${e.toString()}',
       );
@@ -210,13 +207,12 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
       for (final section in lessonSections) {
         // Only create cards for key points, tips, warnings, and fun facts
         final sectionType = section.type.toString();
-        if (sectionType.contains('keyPoint') || 
-            sectionType.contains('tip') || 
+        if (sectionType.contains('keyPoint') ||
+            sectionType.contains('tip') ||
             sectionType.contains('warning') ||
             sectionType.contains('funFact')) {
-          
           final conceptId = '${lessonId}_section_$sectionIndex';
-          
+
           // Check if card already exists
           if (!state.cards.any((c) => c.conceptId == conceptId)) {
             final card = ReviewCard(
@@ -243,7 +239,7 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
         int questionIndex = 0;
         for (final question in quizQuestions.take(5)) {
           final conceptId = '${lessonId}_quiz_q$questionIndex';
-          
+
           // Check if card already exists
           if (!state.cards.any((c) => c.conceptId == conceptId)) {
             final card = ReviewCard(
@@ -288,7 +284,7 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
 
       await _saveData();
       await _scheduleNotifications();
-    } catch (e, st) {
+    } catch (e) {
       // Log error but don't break lesson completion flow
       state = state.copyWith(
         errorMessage: 'Failed to auto-seed review cards: ${e.toString()}',
@@ -305,9 +301,7 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
   }) async {
     final cardIndex = state.cards.indexWhere((c) => c.id == cardId);
     if (cardIndex == -1) {
-      state = state.copyWith(
-        errorMessage: 'Card not found: $cardId',
-      );
+      state = state.copyWith(errorMessage: 'Card not found: $cardId');
       return; // Don't break flow
     }
 
@@ -341,12 +335,13 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
       );
 
       await _saveData();
-    } catch (e, st) {
+    } catch (e) {
       // Rollback on save failure, but don't break review flow
       state = state.copyWith(
         cards: originalCards,
         stats: originalStats,
-        errorMessage: 'Failed to save card review (will retry): ${e.toString()}',
+        errorMessage:
+            'Failed to save card review (will retry): ${e.toString()}',
       );
       // Don't rethrow - let review flow continue
     }
@@ -362,11 +357,8 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
         mode: mode,
       );
 
-      state = state.copyWith(
-        currentSession: session,
-        clearError: true,
-      );
-    } catch (e, st) {
+      state = state.copyWith(currentSession: session, clearError: true);
+    } catch (e) {
       state = state.copyWith(
         errorMessage: 'Failed to start review session: ${e.toString()}',
       );
@@ -421,16 +413,13 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
         mode: state.currentSession!.mode,
       );
 
-      state = state.copyWith(
-        currentSession: updatedSession,
-        clearError: true,
-      );
+      state = state.copyWith(currentSession: updatedSession, clearError: true);
 
       // Update the card itself (this has its own error handling)
       await reviewCard(cardId: cardId, correct: correct);
 
       return result;
-    } catch (e, st) {
+    } catch (e) {
       state = state.copyWith(
         errorMessage: 'Error recording result: ${e.toString()}',
       );
@@ -445,30 +434,30 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
     try {
       // Update review streak
       await _updateReviewStreak();
-      
+
       // Load and update session count
       final prefs = await SharedPreferences.getInstance();
       final sessionCountJson = prefs.getString(_sessionsKey);
       int sessionCount = 1;
-      
+
       if (sessionCountJson != null) {
         final data = jsonDecode(sessionCountJson);
         sessionCount = (data['count'] ?? 0) + 1;
       }
-      
+
       // Save session count
       await prefs.setString(_sessionsKey, jsonEncode({'count': sessionCount}));
-      
+
       // Check session count achievements
       await _checkSessionCountAchievements(sessionCount);
-      
+
       // Session is complete, clear it
       state = state.copyWith(clearSession: true, clearError: true);
       await _saveData();
-      
+
       // Refresh notifications for next review
       await _scheduleNotifications();
-    } catch (e, st) {
+    } catch (e) {
       state = state.copyWith(
         errorMessage: 'Failed to save session completion: ${e.toString()}',
       );
@@ -512,12 +501,12 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
     try {
       final prefs = await SharedPreferences.getInstance();
       final now = DateTime.now();
-      
+
       // Load streak data
       final streakJson = prefs.getString(_streakKey);
       int currentStreak = 0;
       DateTime? lastReviewDate;
-      
+
       if (streakJson != null) {
         final streakData = jsonDecode(streakJson);
         currentStreak = streakData['currentStreak'] ?? 0;
@@ -526,12 +515,12 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
           lastReviewDate = DateTime.parse(lastDateStr);
         }
       }
-      
+
       // Check if we've already reviewed today
       if (lastReviewDate != null && _isSameDay(lastReviewDate, now)) {
         return; // Streak already updated today
       }
-      
+
       // Calculate new streak
       int newStreak;
       if (lastReviewDate == null) {
@@ -547,14 +536,14 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
           newStreak = 1;
         }
       }
-      
+
       // Save updated streak
       final streakData = {
         'currentStreak': newStreak,
         'lastReviewDate': now.toIso8601String(),
       };
       await prefs.setString(_streakKey, jsonEncode(streakData));
-      
+
       // Update stats
       final updatedStats = ReviewStats.fromCards(
         state.cards,
@@ -562,7 +551,7 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
         streak: newStreak,
       );
       state = state.copyWith(stats: updatedStats);
-      
+
       // Check for streak achievements
       await _checkStreakAchievements(newStreak);
     } catch (e) {
@@ -578,7 +567,7 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
     try {
       final progressNotifier = _ref.read(achievementProgressProvider.notifier);
       final progressMap = _ref.read(achievementProgressProvider);
-      
+
       // Check each streak milestone
       final milestones = [
         {'id': 'review_streak_3', 'target': 3},
@@ -586,11 +575,11 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
         {'id': 'review_streak_14', 'target': 14},
         {'id': 'review_streak_30', 'target': 30},
       ];
-      
+
       for (final milestone in milestones) {
         final id = milestone['id'] as String;
         final target = milestone['target'] as int;
-        
+
         if (streak >= target) {
           final currentProgress = progressMap[id];
           if (currentProgress == null || !currentProgress.isUnlocked) {
@@ -618,7 +607,7 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
     try {
       final progressNotifier = _ref.read(achievementProgressProvider.notifier);
       final progressMap = _ref.read(achievementProgressProvider);
-      
+
       // Check each session milestone
       final milestones = [
         {'id': 'first_review', 'target': 1},
@@ -626,11 +615,11 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
         {'id': 'reviews_50', 'target': 50},
         {'id': 'reviews_100', 'target': 100},
       ];
-      
+
       for (final milestone in milestones) {
         final id = milestone['id'] as String;
         final target = milestone['target'] as int;
-        
+
         if (sessionCount >= target) {
           final currentProgress = progressMap[id];
           if (currentProgress == null || !currentProgress.isUnlocked) {
@@ -658,7 +647,7 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
     try {
       final notificationService = NotificationService();
       await notificationService.initialize();
-      
+
       // Schedule review reminder if cards are due
       final dueCount = getDueCount();
       if (dueCount > 0) {
@@ -697,7 +686,7 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
       );
 
       await _saveData();
-    } catch (e, st) {
+    } catch (e) {
       state = state.copyWith(
         errorMessage: 'Failed to delete card: ${e.toString()}',
       );
@@ -707,10 +696,8 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
 
   /// Reset all data (for testing)
   Future<void> resetAll() async {
-    state = SpacedRepetitionState(
-      stats: ReviewStats.fromCards([]),
-    );
-    
+    state = SpacedRepetitionState(stats: ReviewStats.fromCards([]));
+
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove(_storageKey);
     await prefs.remove(_statsKey);

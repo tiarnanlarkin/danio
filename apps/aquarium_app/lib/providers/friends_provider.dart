@@ -5,31 +5,37 @@ import '../models/friend.dart';
 import '../data/mock_friends.dart';
 
 /// Provider for friends list
-final friendsProvider = StateNotifierProvider<FriendsNotifier, AsyncValue<List<Friend>>>((ref) {
-  return FriendsNotifier();
-});
+final friendsProvider =
+    StateNotifierProvider<FriendsNotifier, AsyncValue<List<Friend>>>((ref) {
+      return FriendsNotifier();
+    });
 
 /// Provider for friend activities feed
-final friendActivitiesProvider = StateNotifierProvider<FriendActivitiesNotifier, AsyncValue<List<FriendActivity>>>((ref) {
-  final notifier = FriendActivitiesNotifier();
-  
-  // Listen to friends changes to regenerate activities
-  ref.listen<AsyncValue<List<Friend>>>(
-    friendsProvider,
-    (previous, next) {
-      next.whenData((friends) {
-        notifier.regenerateActivities(friends);
+final friendActivitiesProvider =
+    StateNotifierProvider<
+      FriendActivitiesNotifier,
+      AsyncValue<List<FriendActivity>>
+    >((ref) {
+      final notifier = FriendActivitiesNotifier();
+
+      // Listen to friends changes to regenerate activities
+      ref.listen<AsyncValue<List<Friend>>>(friendsProvider, (previous, next) {
+        next.whenData((friends) {
+          notifier.regenerateActivities(friends);
+        });
       });
-    },
-  );
-  
-  return notifier;
-});
+
+      return notifier;
+    });
 
 /// Provider for encouragements sent/received
-final encouragementsProvider = StateNotifierProvider<EncouragementsNotifier, AsyncValue<List<FriendEncouragement>>>((ref) {
-  return EncouragementsNotifier();
-});
+final encouragementsProvider =
+    StateNotifierProvider<
+      EncouragementsNotifier,
+      AsyncValue<List<FriendEncouragement>>
+    >((ref) {
+      return EncouragementsNotifier();
+    });
 
 class FriendsNotifier extends StateNotifier<AsyncValue<List<Friend>>> {
   FriendsNotifier() : super(const AsyncValue.loading()) {
@@ -46,7 +52,9 @@ class FriendsNotifier extends StateNotifier<AsyncValue<List<Friend>>> {
       List<Friend> friends;
       if (json != null) {
         final List<dynamic> decoded = jsonDecode(json);
-        friends = decoded.map((e) => Friend.fromJson(e as Map<String, dynamic>)).toList();
+        friends = decoded
+            .map((e) => Friend.fromJson(e as Map<String, dynamic>))
+            .toList();
       } else {
         // Generate initial mock friends
         friends = _generateMockFriends();
@@ -76,7 +84,9 @@ class FriendsNotifier extends StateNotifier<AsyncValue<List<Friend>>> {
     if (currentState == null) return;
 
     // Check if already friends
-    if (currentState.any((f) => f.username.toLowerCase() == username.toLowerCase())) {
+    if (currentState.any(
+      (f) => f.username.toLowerCase() == username.toLowerCase(),
+    )) {
       throw Exception('Already friends with $username');
     }
 
@@ -105,9 +115,11 @@ class FriendsNotifier extends StateNotifier<AsyncValue<List<Friend>>> {
 
     final lowercaseQuery = query.toLowerCase();
     return currentState
-        .where((f) =>
-            f.username.toLowerCase().contains(lowercaseQuery) ||
-            f.displayName.toLowerCase().contains(lowercaseQuery))
+        .where(
+          (f) =>
+              f.username.toLowerCase().contains(lowercaseQuery) ||
+              f.displayName.toLowerCase().contains(lowercaseQuery),
+        )
         .toList();
   }
 
@@ -124,7 +136,8 @@ class FriendsNotifier extends StateNotifier<AsyncValue<List<Friend>>> {
   }
 }
 
-class FriendActivitiesNotifier extends StateNotifier<AsyncValue<List<FriendActivity>>> {
+class FriendActivitiesNotifier
+    extends StateNotifier<AsyncValue<List<FriendActivity>>> {
   FriendActivitiesNotifier() : super(const AsyncValue.loading()) {
     _load();
   }
@@ -139,7 +152,9 @@ class FriendActivitiesNotifier extends StateNotifier<AsyncValue<List<FriendActiv
       List<FriendActivity> activities;
       if (json != null) {
         final List<dynamic> decoded = jsonDecode(json);
-        activities = decoded.map((e) => FriendActivity.fromJson(e as Map<String, dynamic>)).toList();
+        activities = decoded
+            .map((e) => FriendActivity.fromJson(e as Map<String, dynamic>))
+            .toList();
       } else {
         // Will be generated when friends load
         activities = [];
@@ -180,7 +195,8 @@ class FriendActivitiesNotifier extends StateNotifier<AsyncValue<List<FriendActiv
   }
 }
 
-class EncouragementsNotifier extends StateNotifier<AsyncValue<List<FriendEncouragement>>> {
+class EncouragementsNotifier
+    extends StateNotifier<AsyncValue<List<FriendEncouragement>>> {
   EncouragementsNotifier() : super(const AsyncValue.loading()) {
     _load();
   }
@@ -195,7 +211,9 @@ class EncouragementsNotifier extends StateNotifier<AsyncValue<List<FriendEncoura
       List<FriendEncouragement> encouragements;
       if (json != null) {
         final List<dynamic> decoded = jsonDecode(json);
-        encouragements = decoded.map((e) => FriendEncouragement.fromJson(e as Map<String, dynamic>)).toList();
+        encouragements = decoded
+            .map((e) => FriendEncouragement.fromJson(e as Map<String, dynamic>))
+            .toList();
       } else {
         encouragements = [];
       }
@@ -254,6 +272,8 @@ class EncouragementsNotifier extends StateNotifier<AsyncValue<List<FriendEncoura
   int get unreadCount {
     final currentState = state.valueOrNull;
     if (currentState == null) return 0;
-    return currentState.where((e) => !e.isRead && e.toUserId == 'current_user').length;
+    return currentState
+        .where((e) => !e.isRead && e.toUserId == 'current_user')
+        .length;
   }
 }

@@ -21,13 +21,17 @@ class LogDetailScreen extends ConsumerWidget {
     final logsAsync = ref.watch(allLogsProvider(tankId));
 
     return logsAsync.when(
-      loading: () => const Scaffold(body: Center(child: CircularProgressIndicator())),
+      loading: () =>
+          const Scaffold(body: Center(child: CircularProgressIndicator())),
       error: (err, _) => Scaffold(
         appBar: AppBar(title: const Text('Log')),
         body: Center(child: Text('Error: $err')),
       ),
       data: (logs) {
-        final log = logs.where((l) => l.id == logId).cast<LogEntry?>().firstOrNull;
+        final log = logs
+            .where((l) => l.id == logId)
+            .cast<LogEntry?>()
+            .firstOrNull;
         if (log == null) {
           return Scaffold(
             appBar: AppBar(title: const Text('Log')),
@@ -135,17 +139,27 @@ class LogDetailScreen extends ConsumerWidget {
     );
   }
 
-  Future<void> _confirmDelete(BuildContext context, WidgetRef ref, LogEntry log) async {
+  Future<void> _confirmDelete(
+    BuildContext context,
+    WidgetRef ref,
+    LogEntry log,
+  ) async {
     final ok = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
         title: const Text('Delete log?'),
         content: const Text('This cannot be undone.'),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Cancel')),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: const Text('Cancel'),
+          ),
           TextButton(
             onPressed: () => Navigator.pop(ctx, true),
-            child: const Text('Delete', style: TextStyle(color: AppColors.error)),
+            child: const Text(
+              'Delete',
+              style: TextStyle(color: AppColors.error),
+            ),
           ),
         ],
       ),
@@ -189,7 +203,8 @@ class LogDetailScreen extends ConsumerWidget {
     if (log.type == LogType.waterTest && log.waterTest != null) {
       final t = log.waterTest!;
       final parts = <String>[];
-      if (t.temperature != null) parts.add('${t.temperature!.toStringAsFixed(1)}°C');
+      if (t.temperature != null)
+        parts.add('${t.temperature!.toStringAsFixed(1)}°C');
       if (t.ph != null) parts.add('pH ${t.ph!.toStringAsFixed(1)}');
       if (t.ammonia != null) parts.add('NH₃ ${t.ammonia}');
       if (t.nitrite != null) parts.add('NO₂ ${t.nitrite}');
@@ -258,7 +273,10 @@ class _WaterTestCard extends StatelessWidget {
         children: [
           Text(k, style: AppTypography.bodySmall),
           const SizedBox(height: 2),
-          Text(unit == null ? value : '$value $unit', style: AppTypography.labelLarge),
+          Text(
+            unit == null ? value : '$value $unit',
+            style: AppTypography.labelLarge,
+          ),
         ],
       ),
     );

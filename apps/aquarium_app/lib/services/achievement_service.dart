@@ -2,7 +2,6 @@
 /// Integrates with user actions to award achievements automatically
 library;
 
-
 import 'package:flutter/foundation.dart';
 import '../models/achievements.dart';
 import '../models/user_profile.dart';
@@ -54,7 +53,6 @@ class AchievementStats {
 
 /// Service for managing achievements
 class AchievementService {
-  
   /// Check all achievements and return newly unlocked ones
   static List<AchievementUnlockResult> checkAchievements({
     required UserProfile userProfile,
@@ -64,8 +62,9 @@ class AchievementService {
     final List<AchievementUnlockResult> results = [];
 
     for (final achievement in AchievementDefinitions.all) {
-      final progress = progressMap[achievement.id] ?? 
-        AchievementProgress(achievementId: achievement.id);
+      final progress =
+          progressMap[achievement.id] ??
+          AchievementProgress(achievementId: achievement.id);
 
       // Skip if already unlocked
       if (progress.isUnlocked) continue;
@@ -260,7 +259,8 @@ class AchievementService {
         break;
 
       case 'comeback':
-        if (stats.lastActivityDate != null && stats.lastLessonCompletedAt != null) {
+        if (stats.lastActivityDate != null &&
+            stats.lastLessonCompletedAt != null) {
           final daysSinceLastActivity = stats.lastLessonCompletedAt!
               .difference(stats.lastActivityDate!)
               .inDays;
@@ -279,7 +279,8 @@ class AchievementService {
             .expand((path) => path.lessons)
             .map((l) => l.id)
             .toSet();
-        shouldUnlock = stats.completedLessonIds.length >= allLessons.length &&
+        shouldUnlock =
+            stats.completedLessonIds.length >= allLessons.length &&
             allLessons.isNotEmpty;
         break;
 
@@ -355,13 +356,13 @@ class AchievementService {
     );
 
     // Return result if there's a change
-    if (updatedProgress.currentCount != progress.currentCount || 
+    if (updatedProgress.currentCount != progress.currentCount ||
         updatedProgress.isUnlocked != progress.isUnlocked) {
       return AchievementUnlockResult(
         achievement: achievement,
         wasJustUnlocked: shouldUnlock && !progress.isUnlocked,
-        xpAwarded: (shouldUnlock && !progress.isUnlocked) 
-            ? achievement.rarity.xpReward 
+        xpAwarded: (shouldUnlock && !progress.isUnlocked)
+            ? achievement.rarity.xpReward
             : 0,
         progress: updatedProgress,
       );
@@ -377,13 +378,14 @@ class AchievementService {
   }
 
   /// Get achievements grouped by category
-  static Map<AchievementCategory, List<Achievement>> getAchievementsByCategory() {
+  static Map<AchievementCategory, List<Achievement>>
+  getAchievementsByCategory() {
     final Map<AchievementCategory, List<Achievement>> grouped = {};
-    
+
     for (final category in AchievementCategory.values) {
       grouped[category] = AchievementDefinitions.getByCategory(category);
     }
-    
+
     return grouped;
   }
 

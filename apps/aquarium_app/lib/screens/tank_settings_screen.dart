@@ -38,7 +38,8 @@ class _TankSettingsScreenState extends ConsumerState<TankSettingsScreen> {
     final tankAsync = ref.watch(tankProvider(widget.tankId));
 
     return tankAsync.when(
-      loading: () => const Scaffold(body: Center(child: CircularProgressIndicator())),
+      loading: () =>
+          const Scaffold(body: Center(child: CircularProgressIndicator())),
       error: (err, _) => Scaffold(
         appBar: AppBar(title: const Text('Tank Settings')),
         body: Center(child: Text('Error: $err')),
@@ -64,11 +65,15 @@ class _TankSettingsScreenState extends ConsumerState<TankSettingsScreen> {
           // Infer water type for freshwater.
           final tropical = WaterTargets.freshwaterTropical();
           final coldwater = WaterTargets.freshwaterColdwater();
-          final isMoreLikeTropical = _closeTo(tank.targets.tempMax, tropical.tempMax) ||
+          final isMoreLikeTropical =
+              _closeTo(tank.targets.tempMax, tropical.tempMax) ||
               _closeTo(tank.targets.tempMin, tropical.tempMin);
-          final isMoreLikeCold = _closeTo(tank.targets.tempMax, coldwater.tempMax) ||
+          final isMoreLikeCold =
+              _closeTo(tank.targets.tempMax, coldwater.tempMax) ||
               _closeTo(tank.targets.tempMin, coldwater.tempMin);
-          _waterType = isMoreLikeCold && !isMoreLikeTropical ? 'coldwater' : 'tropical';
+          _waterType = isMoreLikeCold && !isMoreLikeTropical
+              ? 'coldwater'
+              : 'tropical';
 
           _initialized = true;
         }
@@ -102,7 +107,8 @@ class _TankSettingsScreenState extends ConsumerState<TankSettingsScreen> {
                   textCapitalization: TextCapitalization.words,
                   onChanged: (v) => _name = v,
                   validator: (v) {
-                    if (v == null || v.trim().isEmpty) return 'Please enter a name';
+                    if (v == null || v.trim().isEmpty)
+                      return 'Please enter a name';
                     return null;
                   },
                 ),
@@ -110,8 +116,14 @@ class _TankSettingsScreenState extends ConsumerState<TankSettingsScreen> {
                 DropdownButtonFormField<TankType>(
                   value: _type,
                   items: const [
-                    DropdownMenuItem(value: TankType.freshwater, child: Text('Freshwater')),
-                    DropdownMenuItem(value: TankType.marine, child: Text('Marine (coming soon)')),
+                    DropdownMenuItem(
+                      value: TankType.freshwater,
+                      child: Text('Freshwater'),
+                    ),
+                    DropdownMenuItem(
+                      value: TankType.marine,
+                      child: Text('Marine (coming soon)'),
+                    ),
                   ],
                   onChanged: (v) {
                     if (v == null) return;
@@ -129,14 +141,24 @@ class _TankSettingsScreenState extends ConsumerState<TankSettingsScreen> {
                 Text('Size', style: AppTypography.headlineSmall),
                 const SizedBox(height: 12),
                 TextFormField(
-                  initialValue: _volumeLitres > 0 ? _volumeLitres.toString() : '',
-                  decoration: const InputDecoration(labelText: 'Volume', suffixText: 'L'),
-                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                  inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[\d.]'))],
+                  initialValue: _volumeLitres > 0
+                      ? _volumeLitres.toString()
+                      : '',
+                  decoration: const InputDecoration(
+                    labelText: 'Volume',
+                    suffixText: 'L',
+                  ),
+                  keyboardType: const TextInputType.numberWithOptions(
+                    decimal: true,
+                  ),
+                  inputFormatters: [
+                    FilteringTextInputFormatter.allow(RegExp(r'[\d.]')),
+                  ],
                   onChanged: (v) => _volumeLitres = double.tryParse(v) ?? 0,
                   validator: (v) {
                     final parsed = double.tryParse((v ?? '').trim());
-                    if (parsed == null || parsed <= 0) return 'Enter a valid volume';
+                    if (parsed == null || parsed <= 0)
+                      return 'Enter a valid volume';
                     return null;
                   },
                 ),
@@ -146,9 +168,16 @@ class _TankSettingsScreenState extends ConsumerState<TankSettingsScreen> {
                     Expanded(
                       child: TextFormField(
                         initialValue: _lengthCm?.toString() ?? '',
-                        decoration: const InputDecoration(labelText: 'Length', suffixText: 'cm'),
-                        keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                        inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[\d.]'))],
+                        decoration: const InputDecoration(
+                          labelText: 'Length',
+                          suffixText: 'cm',
+                        ),
+                        keyboardType: const TextInputType.numberWithOptions(
+                          decimal: true,
+                        ),
+                        inputFormatters: [
+                          FilteringTextInputFormatter.allow(RegExp(r'[\d.]')),
+                        ],
                         onChanged: (v) => _lengthCm = double.tryParse(v),
                       ),
                     ),
@@ -156,9 +185,16 @@ class _TankSettingsScreenState extends ConsumerState<TankSettingsScreen> {
                     Expanded(
                       child: TextFormField(
                         initialValue: _widthCm?.toString() ?? '',
-                        decoration: const InputDecoration(labelText: 'Width', suffixText: 'cm'),
-                        keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                        inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[\d.]'))],
+                        decoration: const InputDecoration(
+                          labelText: 'Width',
+                          suffixText: 'cm',
+                        ),
+                        keyboardType: const TextInputType.numberWithOptions(
+                          decimal: true,
+                        ),
+                        inputFormatters: [
+                          FilteringTextInputFormatter.allow(RegExp(r'[\d.]')),
+                        ],
                         onChanged: (v) => _widthCm = double.tryParse(v),
                       ),
                     ),
@@ -166,9 +202,16 @@ class _TankSettingsScreenState extends ConsumerState<TankSettingsScreen> {
                     Expanded(
                       child: TextFormField(
                         initialValue: _heightCm?.toString() ?? '',
-                        decoration: const InputDecoration(labelText: 'Height', suffixText: 'cm'),
-                        keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                        inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[\d.]'))],
+                        decoration: const InputDecoration(
+                          labelText: 'Height',
+                          suffixText: 'cm',
+                        ),
+                        keyboardType: const TextInputType.numberWithOptions(
+                          decimal: true,
+                        ),
+                        inputFormatters: [
+                          FilteringTextInputFormatter.allow(RegExp(r'[\d.]')),
+                        ],
                         onChanged: (v) => _heightCm = double.tryParse(v),
                       ),
                     ),
@@ -220,18 +263,31 @@ class _TankSettingsScreenState extends ConsumerState<TankSettingsScreen> {
                   },
                   borderRadius: BorderRadius.circular(12),
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 14,
+                    ),
                     decoration: BoxDecoration(
                       color: AppColors.surfaceVariant,
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Row(
                       children: [
-                        const Icon(Icons.calendar_today, color: AppColors.textSecondary),
+                        const Icon(
+                          Icons.calendar_today,
+                          color: AppColors.textSecondary,
+                        ),
                         const SizedBox(width: 12),
-                        Text(DateFormat('MMM d, yyyy').format(_startDate), style: AppTypography.bodyLarge),
+                        Text(
+                          DateFormat('MMM d, yyyy').format(_startDate),
+                          style: AppTypography.bodyLarge,
+                        ),
                         const Spacer(),
-                        const Icon(Icons.edit, color: AppColors.textHint, size: 18),
+                        const Icon(
+                          Icons.edit,
+                          color: AppColors.textHint,
+                          size: 18,
+                        ),
                       ],
                     ),
                   ),
@@ -253,7 +309,12 @@ class _TankSettingsScreenState extends ConsumerState<TankSettingsScreen> {
                 const SizedBox(height: 32),
                 const Divider(),
                 const SizedBox(height: 12),
-                Text('Danger zone', style: AppTypography.headlineSmall.copyWith(color: AppColors.error)),
+                Text(
+                  'Danger zone',
+                  style: AppTypography.headlineSmall.copyWith(
+                    color: AppColors.error,
+                  ),
+                ),
                 const SizedBox(height: 8),
                 Text(
                   'Deleting a tank removes all livestock, equipment, logs, and tasks for it.',
@@ -334,10 +395,16 @@ class _TankSettingsScreenState extends ConsumerState<TankSettingsScreen> {
         title: const Text('Delete tank?'),
         content: const Text('You\'ll have 5 seconds to undo.'),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Cancel')),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: const Text('Cancel'),
+          ),
           TextButton(
             onPressed: () => Navigator.pop(ctx, true),
-            child: const Text('Delete', style: TextStyle(color: AppColors.error)),
+            child: const Text(
+              'Delete',
+              style: TextStyle(color: AppColors.error),
+            ),
           ),
         ],
       ),
@@ -357,7 +424,7 @@ class _TankSettingsScreenState extends ConsumerState<TankSettingsScreen> {
     // Navigate back to home immediately
     if (mounted) {
       Navigator.of(context).popUntil((route) => route.isFirst);
-      
+
       // Show SnackBar with Undo option
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(

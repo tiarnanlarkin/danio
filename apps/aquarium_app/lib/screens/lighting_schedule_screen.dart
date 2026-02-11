@@ -13,7 +13,7 @@ class _LightingScheduleScreenState extends State<LightingScheduleScreen> {
   bool _hasCO2 = false;
   bool _hasAlgaeIssues = false;
   String _lightIntensity = 'Medium';
-  
+
   TimeOfDay _lightsOn = const TimeOfDay(hour: 10, minute: 0);
   TimeOfDay _lightsOff = const TimeOfDay(hour: 20, minute: 0);
   bool _useSiesta = false;
@@ -25,13 +25,13 @@ class _LightingScheduleScreenState extends State<LightingScheduleScreen> {
     final offMinutes = _lightsOff.hour * 60 + _lightsOff.minute;
     var totalMinutes = offMinutes - onMinutes;
     if (totalMinutes < 0) totalMinutes += 24 * 60;
-    
+
     if (_useSiesta) {
       final siestaStartMin = _siestaStart.hour * 60 + _siestaStart.minute;
       final siestaEndMin = _siestaEnd.hour * 60 + _siestaEnd.minute;
       totalMinutes -= (siestaEndMin - siestaStartMin);
     }
-    
+
     return (totalMinutes / 60).round();
   }
 
@@ -40,7 +40,7 @@ class _LightingScheduleScreenState extends State<LightingScheduleScreen> {
       return 'With algae issues, consider reducing to 6 hours until it clears up. '
           'A siesta period can also help starve algae while still supporting plants.';
     }
-    
+
     if (_hasCO2 && _hasPlants) {
       if (_totalLightHours > 10) {
         return 'With CO2, you can run lights longer. ${_totalLightHours}h is reasonable, '
@@ -53,7 +53,7 @@ class _LightingScheduleScreenState extends State<LightingScheduleScreen> {
             'Consider 8-10 hours for optimal plant growth.';
       }
     }
-    
+
     if (_hasPlants && !_hasCO2) {
       if (_totalLightHours > 8) {
         return 'Without CO2, ${_totalLightHours}h may cause algae. '
@@ -65,7 +65,7 @@ class _LightingScheduleScreenState extends State<LightingScheduleScreen> {
         return 'This may be insufficient for plants. Try 6-8 hours for low-tech tanks.';
       }
     }
-    
+
     // Fish only
     if (_totalLightHours > 10) {
       return 'Fish-only tanks don\'t need much light. Consider reducing to 8-10 hours.';
@@ -134,7 +134,8 @@ class _LightingScheduleScreenState extends State<LightingScheduleScreen> {
                       ButtonSegment(value: 'High', label: Text('High')),
                     ],
                     selected: {_lightIntensity},
-                    onSelectionChanged: (v) => setState(() => _lightIntensity = v.first),
+                    onSelectionChanged: (v) =>
+                        setState(() => _lightIntensity = v.first),
                   ),
                 ),
               ],
@@ -152,13 +153,19 @@ class _LightingScheduleScreenState extends State<LightingScheduleScreen> {
                 ListTile(
                   leading: Icon(Icons.wb_sunny, color: AppColors.warning),
                   title: const Text('Lights On'),
-                  trailing: Text(_formatTime(_lightsOn), style: AppTypography.labelLarge),
+                  trailing: Text(
+                    _formatTime(_lightsOn),
+                    style: AppTypography.labelLarge,
+                  ),
                   onTap: () => _pickTime(true),
                 ),
                 ListTile(
                   leading: Icon(Icons.nights_stay, color: AppColors.primary),
                   title: const Text('Lights Off'),
-                  trailing: Text(_formatTime(_lightsOff), style: AppTypography.labelLarge),
+                  trailing: Text(
+                    _formatTime(_lightsOff),
+                    style: AppTypography.labelLarge,
+                  ),
                   onTap: () => _pickTime(false),
                 ),
                 const Divider(),
@@ -172,13 +179,19 @@ class _LightingScheduleScreenState extends State<LightingScheduleScreen> {
                   ListTile(
                     leading: const SizedBox(width: 24),
                     title: const Text('Siesta Start'),
-                    trailing: Text(_formatTime(_siestaStart), style: AppTypography.bodyMedium),
+                    trailing: Text(
+                      _formatTime(_siestaStart),
+                      style: AppTypography.bodyMedium,
+                    ),
                     onTap: () => _pickSiestaTime(true),
                   ),
                   ListTile(
                     leading: const SizedBox(width: 24),
                     title: const Text('Siesta End'),
-                    trailing: Text(_formatTime(_siestaEnd), style: AppTypography.bodyMedium),
+                    trailing: Text(
+                      _formatTime(_siestaEnd),
+                      style: AppTypography.bodyMedium,
+                    ),
                     onTap: () => _pickSiestaTime(false),
                   ),
                 ],
@@ -201,7 +214,9 @@ class _LightingScheduleScreenState extends State<LightingScheduleScreen> {
                       Text(
                         '$_totalLightHours hours',
                         style: AppTypography.headlineSmall.copyWith(
-                          color: _totalLightHours > 10 ? AppColors.warning : AppColors.success,
+                          color: _totalLightHours > 10
+                              ? AppColors.warning
+                              : AppColors.success,
                         ),
                       ),
                     ],
@@ -223,7 +238,7 @@ class _LightingScheduleScreenState extends State<LightingScheduleScreen> {
 
           // Recommendation
           Card(
-            color: _hasAlgaeIssues 
+            color: _hasAlgaeIssues
                 ? AppColors.warning.withOpacity(0.1)
                 : AppColors.success.withOpacity(0.1),
             child: Padding(
@@ -233,7 +248,9 @@ class _LightingScheduleScreenState extends State<LightingScheduleScreen> {
                 children: [
                   Icon(
                     _hasAlgaeIssues ? Icons.warning : Icons.check_circle,
-                    color: _hasAlgaeIssues ? AppColors.warning : AppColors.success,
+                    color: _hasAlgaeIssues
+                        ? AppColors.warning
+                        : AppColors.success,
                   ),
                   const SizedBox(width: 12),
                   Expanded(
@@ -281,8 +298,14 @@ class _LightingScheduleScreenState extends State<LightingScheduleScreen> {
                   children: [
                     Text('CO2 Timing', style: AppTypography.labelLarge),
                     const SizedBox(height: 8),
-                    Text('• CO2 ON: ${_formatTime(TimeOfDay(hour: _lightsOn.hour - 1, minute: _lightsOn.minute))} (1hr before lights)', style: AppTypography.bodyMedium),
-                    Text('• CO2 OFF: ${_formatTime(TimeOfDay(hour: _lightsOff.hour - 1, minute: _lightsOff.minute))} (1hr before lights off)', style: AppTypography.bodyMedium),
+                    Text(
+                      '• CO2 ON: ${_formatTime(TimeOfDay(hour: _lightsOn.hour - 1, minute: _lightsOn.minute))} (1hr before lights)',
+                      style: AppTypography.bodyMedium,
+                    ),
+                    Text(
+                      '• CO2 OFF: ${_formatTime(TimeOfDay(hour: _lightsOff.hour - 1, minute: _lightsOff.minute))} (1hr before lights off)',
+                      style: AppTypography.bodyMedium,
+                    ),
                     const SizedBox(height: 8),
                     Text(
                       'This gives CO2 time to dissolve before photosynthesis peaks.',
@@ -367,9 +390,11 @@ class _TimelineBar extends StatelessWidget {
           child: LayoutBuilder(
             builder: (context, constraints) {
               final width = constraints.maxWidth;
-              final onPos = (lightsOn.hour * 60 + lightsOn.minute) / (24 * 60) * width;
-              final offPos = (lightsOff.hour * 60 + lightsOff.minute) / (24 * 60) * width;
-              
+              final onPos =
+                  (lightsOn.hour * 60 + lightsOn.minute) / (24 * 60) * width;
+              final offPos =
+                  (lightsOff.hour * 60 + lightsOff.minute) / (24 * 60) * width;
+
               return Stack(
                 children: [
                   // Light period
@@ -388,13 +413,18 @@ class _TimelineBar extends StatelessWidget {
                   // Siesta
                   if (useSiesta)
                     Positioned(
-                      left: (siestaStart.hour * 60 + siestaStart.minute) / (24 * 60) * width,
-                      width: ((siestaEnd.hour * 60 + siestaEnd.minute) - (siestaStart.hour * 60 + siestaStart.minute)) / (24 * 60) * width,
+                      left:
+                          (siestaStart.hour * 60 + siestaStart.minute) /
+                          (24 * 60) *
+                          width,
+                      width:
+                          ((siestaEnd.hour * 60 + siestaEnd.minute) -
+                              (siestaStart.hour * 60 + siestaStart.minute)) /
+                          (24 * 60) *
+                          width,
                       top: 0,
                       bottom: 0,
-                      child: Container(
-                        color: AppColors.surfaceVariant,
-                      ),
+                      child: Container(color: AppColors.surfaceVariant),
                     ),
                 ],
               );

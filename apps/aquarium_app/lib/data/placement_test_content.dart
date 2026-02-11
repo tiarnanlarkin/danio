@@ -2,7 +2,6 @@
 /// Used to assess user knowledge and skip appropriate lessons
 library;
 
-
 import '../models/placement_test.dart';
 
 class PlacementTestContent {
@@ -10,7 +9,8 @@ class PlacementTestContent {
   static final PlacementTest defaultTest = PlacementTest(
     id: 'initial_placement',
     title: 'Knowledge Assessment',
-    description: 'Let\'s see what you already know! This helps us skip stuff you\'ve mastered.',
+    description:
+        'Let\'s see what you already know! This helps us skip stuff you\'ve mastered.',
     questions: _allQuestions,
   );
 
@@ -19,7 +19,7 @@ class PlacementTestContent {
     // ===========================================
     // NITROGEN CYCLE PATH (4 questions)
     // ===========================================
-    
+
     // Question 1: Beginner level
     const PlacementQuestion(
       id: 'nc_q1',
@@ -32,7 +32,8 @@ class PlacementTestContent {
         'When a tank leaks water',
       ],
       correctIndex: 1,
-      explanation: 'New Tank Syndrome occurs when ammonia accumulates because beneficial bacteria haven\'t colonized the filter yet. This is the #1 killer of aquarium fish.',
+      explanation:
+          'New Tank Syndrome occurs when ammonia accumulates because beneficial bacteria haven\'t colonized the filter yet. This is the #1 killer of aquarium fish.',
       difficulty: QuestionDifficulty.beginner,
     ),
 
@@ -40,7 +41,8 @@ class PlacementTestContent {
     const PlacementQuestion(
       id: 'nc_q2',
       pathId: 'nitrogen_cycle',
-      question: 'During fishless cycling, what indicates the cycle is complete?',
+      question:
+          'During fishless cycling, what indicates the cycle is complete?',
       options: [
         'The water turns crystal clear',
         'Ammonia and nitrite both read 0 ppm after dosing',
@@ -48,7 +50,8 @@ class PlacementTestContent {
         'The tank has been running for exactly 4 weeks',
       ],
       correctIndex: 1,
-      explanation: 'A cycled tank can process ammonia to nitrite and then to nitrate within 24 hours, resulting in 0 ppm ammonia and nitrite readings.',
+      explanation:
+          'A cycled tank can process ammonia to nitrite and then to nitrate within 24 hours, resulting in 0 ppm ammonia and nitrite readings.',
       difficulty: QuestionDifficulty.intermediate,
     ),
 
@@ -64,7 +67,8 @@ class PlacementTestContent {
         'Anaerobic bacteria',
       ],
       correctIndex: 1,
-      explanation: 'Nitrospira bacteria convert toxic nitrite into less harmful nitrate. Nitrosomonas handle the first step (ammonia to nitrite).',
+      explanation:
+          'Nitrospira bacteria convert toxic nitrite into less harmful nitrate. Nitrosomonas handle the first step (ammonia to nitrite).',
       difficulty: QuestionDifficulty.intermediate,
     ),
 
@@ -72,7 +76,8 @@ class PlacementTestContent {
     const PlacementQuestion(
       id: 'nc_q4',
       pathId: 'nitrogen_cycle',
-      question: 'At what pH level does ammonia become significantly more toxic?',
+      question:
+          'At what pH level does ammonia become significantly more toxic?',
       options: [
         'pH below 6.0',
         'pH 7.0 (neutral)',
@@ -80,7 +85,8 @@ class PlacementTestContent {
         'pH doesn\'t affect ammonia toxicity',
       ],
       correctIndex: 2,
-      explanation: 'At higher pH levels (>7.5), more ammonia exists in its toxic NH₃ form rather than the less toxic NH₄⁺ form. This makes ammonia particularly dangerous in alkaline water.',
+      explanation:
+          'At higher pH levels (>7.5), more ammonia exists in its toxic NH₃ form rather than the less toxic NH₄⁺ form. This makes ammonia particularly dangerous in alkaline water.',
       difficulty: QuestionDifficulty.advanced,
     ),
 
@@ -100,7 +106,8 @@ class PlacementTestContent {
         'The concentration of minerals',
       ],
       correctIndex: 1,
-      explanation: 'pH measures acidity/alkalinity on a scale of 0-14, with 7 being neutral. Most freshwater fish prefer 6.5-7.5.',
+      explanation:
+          'pH measures acidity/alkalinity on a scale of 0-14, with 7 being neutral. Most freshwater fish prefer 6.5-7.5.',
       difficulty: QuestionDifficulty.beginner,
     ),
 
@@ -108,7 +115,8 @@ class PlacementTestContent {
     const PlacementQuestion(
       id: 'wp_q2',
       pathId: 'water_parameters',
-      question: 'What\'s the ideal nitrate (NO₃⁻) level for a freshwater aquarium?',
+      question:
+          'What\'s the ideal nitrate (NO₃⁻) level for a freshwater aquarium?',
       options: [
         '0 ppm (absolutely zero)',
         'Under 20 ppm',
@@ -116,7 +124,8 @@ class PlacementTestContent {
         'Over 80 ppm',
       ],
       correctIndex: 1,
-      explanation: 'While nitrate is less toxic than ammonia or nitrite, keeping it under 20 ppm prevents algae blooms and stress. Regular water changes control nitrate levels.',
+      explanation:
+          'While nitrate is less toxic than ammonia or nitrite, keeping it under 20 ppm prevents algae blooms and stress. Regular water changes control nitrate levels.',
       difficulty: QuestionDifficulty.intermediate,
     ),
 
@@ -132,7 +141,8 @@ class PlacementTestContent {
         'It only matters for saltwater tanks',
       ],
       correctIndex: 0,
-      explanation: 'GH measures calcium and magnesium ions. Soft water fish (like tetras) need low GH, while hard water fish (like African cichlids) need high GH.',
+      explanation:
+          'GH measures calcium and magnesium ions. Soft water fish (like tetras) need low GH, while hard water fish (like African cichlids) need high GH.',
       difficulty: QuestionDifficulty.intermediate,
     ),
 
@@ -148,7 +158,8 @@ class PlacementTestContent {
         'pH can\'t be safely changed',
       ],
       correctIndex: 1,
-      explanation: 'Natural methods like tannin-releasing wood or leaves gradually lower pH while buffering it against sudden swings. Chemical adjusters can cause dangerous pH crashes.',
+      explanation:
+          'Natural methods like tannin-releasing wood or leaves gradually lower pH while buffering it against sudden swings. Chemical adjusters can cause dangerous pH crashes.',
       difficulty: QuestionDifficulty.advanced,
     ),
 
@@ -168,7 +179,8 @@ class PlacementTestContent {
         'It means one fish per gallon of water',
       ],
       correctIndex: 1,
-      explanation: 'The "one inch per gallon" rule is overly simplistic. A 6-inch Oscar produces far more waste than six 1-inch tetras. Consider adult size, activity level, and waste production.',
+      explanation:
+          'The "one inch per gallon" rule is overly simplistic. A 6-inch Oscar produces far more waste than six 1-inch tetras. Consider adult size, activity level, and waste production.',
       difficulty: QuestionDifficulty.beginner,
     ),
 
@@ -184,7 +196,8 @@ class PlacementTestContent {
         'Add ice to the bag to slow their metabolism',
       ],
       correctIndex: 1,
-      explanation: 'Temperature equalization (floating) + slow drip acclimation helps fish adjust to differences in pH, GH, and temperature without shock.',
+      explanation:
+          'Temperature equalization (floating) + slow drip acclimation helps fish adjust to differences in pH, GH, and temperature without shock.',
       difficulty: QuestionDifficulty.intermediate,
     ),
 
@@ -200,7 +213,8 @@ class PlacementTestContent {
         'It\'s fine - they can live together',
       ],
       correctIndex: 1,
-      explanation: 'Goldfish thrive in cooler water (65-72°F) while most tropical fish need 75-80°F. Mixing them stresses both species.',
+      explanation:
+          'Goldfish thrive in cooler water (65-72°F) while most tropical fish need 75-80°F. Mixing them stresses both species.',
       difficulty: QuestionDifficulty.intermediate,
     ),
 
@@ -216,7 +230,8 @@ class PlacementTestContent {
         'It\'s caused by poor water quality; just do water changes',
       ],
       correctIndex: 1,
-      explanation: 'Velvet (Oodinium) is a dinoflagellate parasite that gives fish a gold/rust dusting. Treatment includes copper-based medications or raising temperature to 82-86°F for 10-14 days.',
+      explanation:
+          'Velvet (Oodinium) is a dinoflagellate parasite that gives fish a gold/rust dusting. Treatment includes copper-based medications or raising temperature to 82-86°F for 10-14 days.',
       difficulty: QuestionDifficulty.advanced,
     ),
 
@@ -236,7 +251,8 @@ class PlacementTestContent {
         'Never - the filter handles everything',
       ],
       correctIndex: 1,
-      explanation: 'Weekly 20-30% water changes remove nitrates, replenish minerals, and keep parameters stable. This is the most important maintenance task.',
+      explanation:
+          'Weekly 20-30% water changes remove nitrates, replenish minerals, and keep parameters stable. This is the most important maintenance task.',
       difficulty: QuestionDifficulty.beginner,
     ),
 
@@ -252,7 +268,8 @@ class PlacementTestContent {
         'Replace all media every month with new stuff',
       ],
       correctIndex: 1,
-      explanation: 'Mechanical media (sponges) should be rinsed in old tank water to preserve bacteria. Chemical media (carbon) loses effectiveness after 4-6 weeks. Never replace all media at once.',
+      explanation:
+          'Mechanical media (sponges) should be rinsed in old tank water to preserve bacteria. Chemical media (carbon) loses effectiveness after 4-6 weeks. Never replace all media at once.',
       difficulty: QuestionDifficulty.intermediate,
     ),
 
@@ -268,7 +285,8 @@ class PlacementTestContent {
         'Drain the entire tank and scrub it',
       ],
       correctIndex: 1,
-      explanation: 'Algae scrapers or magnetic cleaners safely remove algae without scratching glass or introducing chemicals. Clean during water changes so debris can be vacuumed out.',
+      explanation:
+          'Algae scrapers or magnetic cleaners safely remove algae without scratching glass or introducing chemicals. Clean during water changes so debris can be vacuumed out.',
       difficulty: QuestionDifficulty.intermediate,
     ),
 
@@ -276,7 +294,8 @@ class PlacementTestContent {
     const PlacementQuestion(
       id: 'mt_q4',
       pathId: 'maintenance',
-      question: 'How do you properly deep clean a filter without crashing the cycle?',
+      question:
+          'How do you properly deep clean a filter without crashing the cycle?',
       options: [
         'Replace all media with brand new media for maximum cleanliness',
         'Clean only mechanical media in old tank water; leave biological media undisturbed',
@@ -284,7 +303,8 @@ class PlacementTestContent {
         'Use bleach diluted in water to kill all bacteria',
       ],
       correctIndex: 1,
-      explanation: 'Your biological media houses the beneficial bacteria. Only clean mechanical pre-filters in old tank water to remove debris while preserving the bacteria colony.',
+      explanation:
+          'Your biological media houses the beneficial bacteria. Only clean mechanical pre-filters in old tank water to remove debris while preserving the bacteria colony.',
       difficulty: QuestionDifficulty.advanced,
     ),
 
@@ -304,7 +324,8 @@ class PlacementTestContent {
         'Cold water and gravel',
       ],
       correctIndex: 1,
-      explanation: 'Like terrestrial plants, aquatic plants need light for photosynthesis, nutrients (NPK + trace elements), and CO₂. Low-tech tanks rely on natural CO₂; high-tech tanks inject it.',
+      explanation:
+          'Like terrestrial plants, aquatic plants need light for photosynthesis, nutrients (NPK + trace elements), and CO₂. Low-tech tanks rely on natural CO₂; high-tech tanks inject it.',
       difficulty: QuestionDifficulty.beginner,
     ),
 
@@ -320,7 +341,8 @@ class PlacementTestContent {
         'Overwatering (in an aquarium!)',
       ],
       correctIndex: 1,
-      explanation: 'Yellowing leaves with green veins (interveinal chlorosis) indicates iron deficiency. Dose a complete fertilizer with chelated iron to fix this.',
+      explanation:
+          'Yellowing leaves with green veins (interveinal chlorosis) indicates iron deficiency. Dose a complete fertilizer with chelated iron to fix this.',
       difficulty: QuestionDifficulty.intermediate,
     ),
 
@@ -336,7 +358,8 @@ class PlacementTestContent {
         'A Japanese aquascaping style',
       ],
       correctIndex: 1,
-      explanation: 'The Walstad (or "dirted tank") method uses organic soil as a substrate to provide nutrients, with minimal technology. It mimics natural ecosystems.',
+      explanation:
+          'The Walstad (or "dirted tank") method uses organic soil as a substrate to provide nutrients, with minimal technology. It mimics natural ecosystems.',
       difficulty: QuestionDifficulty.intermediate,
     ),
 
@@ -344,7 +367,8 @@ class PlacementTestContent {
     const PlacementQuestion(
       id: 'pt_q4',
       pathId: 'planted_tank',
-      question: 'What is the Redfield Ratio and why does it matter for planted tanks?',
+      question:
+          'What is the Redfield Ratio and why does it matter for planted tanks?',
       options: [
         'It\'s the ideal light-to-plant ratio',
         'It\'s the optimal N:P ratio (16:1) that prevents algae while feeding plants',
@@ -352,7 +376,8 @@ class PlacementTestContent {
         'It\'s the CO₂ injection rate',
       ],
       correctIndex: 1,
-      explanation: 'The Redfield Ratio (16:1 nitrogen to phosphorus) helps balance nutrients so plants can grow without triggering algae blooms from excess nutrients.',
+      explanation:
+          'The Redfield Ratio (16:1 nitrogen to phosphorus) helps balance nutrients so plants can grow without triggering algae blooms from excess nutrients.',
       difficulty: QuestionDifficulty.advanced,
     ),
   ];

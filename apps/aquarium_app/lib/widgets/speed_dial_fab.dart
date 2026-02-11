@@ -145,10 +145,7 @@ class _SpeedDialFABState extends State<SpeedDialFAB>
               right: 8 + (-x * progress),
               child: Transform.scale(
                 scale: staggeredProgress,
-                child: Opacity(
-                  opacity: staggeredProgress,
-                  child: child,
-                ),
+                child: Opacity(opacity: staggeredProgress, child: child),
               ),
             );
           },
@@ -201,10 +198,7 @@ class _MainFAB extends StatelessWidget {
               gradient: LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
-                colors: [
-                  backgroundColor,
-                  backgroundColor.withOpacity(0.8),
-                ],
+                colors: [backgroundColor, backgroundColor.withOpacity(0.8)],
               ),
               boxShadow: [
                 BoxShadow(
@@ -235,10 +229,7 @@ class _ActionButton extends StatelessWidget {
   final SpeedDialAction action;
   final VoidCallback onPressed;
 
-  const _ActionButton({
-    required this.action,
-    required this.onPressed,
-  });
+  const _ActionButton({required this.action, required this.onPressed});
 
   @override
   Widget build(BuildContext context) {

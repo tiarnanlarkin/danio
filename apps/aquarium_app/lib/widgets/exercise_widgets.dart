@@ -2,7 +2,6 @@
 /// Duolingo-style interactive learning experiences
 library;
 
-
 import 'package:flutter/material.dart';
 import '../models/exercises.dart';
 import '../theme/app_theme.dart';
@@ -112,9 +111,10 @@ class _MultipleChoiceWidgetState extends State<MultipleChoiceWidget>
       duration: const Duration(milliseconds: 200),
       vsync: this,
     );
-    _scaleAnimation = Tween<double>(begin: 1.0, end: 0.95).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
-    );
+    _scaleAnimation = Tween<double>(
+      begin: 1.0,
+      end: 0.95,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
   }
 
   @override
@@ -133,13 +133,7 @@ class _MultipleChoiceWidgetState extends State<MultipleChoiceWidget>
         final isSelected = widget.selectedAnswer == index;
         final isCorrect = index == widget.exercise.correctIndex;
 
-        return _buildOption(
-          context,
-          index,
-          option,
-          isSelected,
-          isCorrect,
-        );
+        return _buildOption(context, index, option, isSelected, isCorrect);
       }).toList(),
     );
   }
@@ -200,7 +194,7 @@ class _MultipleChoiceWidgetState extends State<MultipleChoiceWidget>
                         color: AppColors.primary.withOpacity(0.2),
                         blurRadius: 8,
                         offset: const Offset(0, 4),
-                      )
+                      ),
                     ]
                   : null,
             ),
@@ -241,8 +235,9 @@ class _MultipleChoiceWidgetState extends State<MultipleChoiceWidget>
                   child: Text(
                     option,
                     style: AppTypography.bodyLarge.copyWith(
-                      fontWeight:
-                          isSelected ? FontWeight.w600 : FontWeight.normal,
+                      fontWeight: isSelected
+                          ? FontWeight.w600
+                          : FontWeight.normal,
                     ),
                   ),
                 ),
@@ -287,7 +282,7 @@ class _FillBlankWidgetState extends State<FillBlankWidget> {
   void initState() {
     super.initState();
     final numberOfBlanks = widget.exercise.numberOfBlanks;
-    
+
     if (widget.exercise.wordBank != null) {
       // Word bank mode
       _selectedWords = List.filled(numberOfBlanks, null);
@@ -295,11 +290,9 @@ class _FillBlankWidgetState extends State<FillBlankWidget> {
       // Text input mode
       _controllers = List.generate(
         numberOfBlanks,
-        (i) => TextEditingController(
-          text: widget.userAnswers?[i] ?? '',
-        ),
+        (i) => TextEditingController(text: widget.userAnswers?[i] ?? ''),
       );
-      
+
       // Listen to changes
       for (final controller in _controllers) {
         controller.addListener(_onTextChanged);
@@ -329,7 +322,7 @@ class _FillBlankWidgetState extends State<FillBlankWidget> {
     setState(() {
       _selectedWords[blankIndex] = word;
     });
-    
+
     if (_selectedWords.every((w) => w != null)) {
       widget.onAnswer(_selectedWords.cast<String>());
     }
@@ -372,12 +365,12 @@ class _FillBlankWidgetState extends State<FillBlankWidget> {
   }
 
   Widget _buildBlankInput(int index) {
-    final isCorrect = widget.isAnswered &&
-        widget.exercise.validate(
-          _controllers.map((c) => c.text).toList(),
-        );
-    
-    final thisBlankCorrect = widget.isAnswered &&
+    final isCorrect =
+        widget.isAnswered &&
+        widget.exercise.validate(_controllers.map((c) => c.text).toList());
+
+    final thisBlankCorrect =
+        widget.isAnswered &&
         _controllers[index].text.toLowerCase() ==
             widget.exercise.correctAnswers[index].toLowerCase();
 
@@ -398,8 +391,8 @@ class _FillBlankWidgetState extends State<FillBlankWidget> {
           filled: true,
           fillColor: widget.isAnswered
               ? (thisBlankCorrect
-                  ? AppColors.success.withOpacity(0.1)
-                  : AppColors.error.withOpacity(0.1))
+                    ? AppColors.success.withOpacity(0.1)
+                    : AppColors.error.withOpacity(0.1))
               : AppColors.primary.withOpacity(0.1),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(8),
@@ -419,10 +412,7 @@ class _FillBlankWidgetState extends State<FillBlankWidget> {
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(8),
-            borderSide: const BorderSide(
-              color: AppColors.primary,
-              width: 2,
-            ),
+            borderSide: const BorderSide(color: AppColors.primary, width: 2),
           ),
           contentPadding: const EdgeInsets.symmetric(
             horizontal: 12,
@@ -436,7 +426,7 @@ class _FillBlankWidgetState extends State<FillBlankWidget> {
   Widget _buildWordBankMode() {
     final parts = widget.exercise.getSentenceParts();
     final usedWords = <String>{};
-    
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -458,9 +448,9 @@ class _FillBlankWidgetState extends State<FillBlankWidget> {
             }
           }),
         ),
-        
+
         const SizedBox(height: 32),
-        
+
         // Word bank
         Text(
           'Tap a word to fill the blank',
@@ -483,7 +473,8 @@ class _FillBlankWidgetState extends State<FillBlankWidget> {
 
   Widget _buildWordBankBlank(int index) {
     final selectedWord = _selectedWords[index];
-    final isCorrect = widget.isAnswered &&
+    final isCorrect =
+        widget.isAnswered &&
         selectedWord?.toLowerCase() ==
             widget.exercise.correctAnswers[index].toLowerCase();
 
@@ -494,17 +485,17 @@ class _FillBlankWidgetState extends State<FillBlankWidget> {
       decoration: BoxDecoration(
         color: selectedWord != null
             ? (widget.isAnswered
-                ? (isCorrect
-                    ? AppColors.success.withOpacity(0.1)
-                    : AppColors.error.withOpacity(0.1))
-                : AppColors.primary.withOpacity(0.1))
+                  ? (isCorrect
+                        ? AppColors.success.withOpacity(0.1)
+                        : AppColors.error.withOpacity(0.1))
+                  : AppColors.primary.withOpacity(0.1))
             : AppColors.surfaceVariant,
         borderRadius: BorderRadius.circular(8),
         border: Border.all(
           color: selectedWord != null
               ? (widget.isAnswered
-                  ? (isCorrect ? AppColors.success : AppColors.error)
-                  : AppColors.primary)
+                    ? (isCorrect ? AppColors.success : AppColors.error)
+                    : AppColors.primary)
               : AppColors.surfaceVariant,
           width: 2,
         ),
@@ -515,8 +506,8 @@ class _FillBlankWidgetState extends State<FillBlankWidget> {
           fontWeight: FontWeight.bold,
           color: selectedWord != null
               ? (widget.isAnswered
-                  ? (isCorrect ? AppColors.success : AppColors.error)
-                  : AppColors.primary)
+                    ? (isCorrect ? AppColors.success : AppColors.error)
+                    : AppColors.primary)
               : AppColors.textHint,
         ),
       ),
@@ -540,8 +531,9 @@ class _FillBlankWidgetState extends State<FillBlankWidget> {
                   }
                 }
               },
-        backgroundColor:
-            isUsed ? AppColors.surfaceVariant : AppColors.primary.withOpacity(0.1),
+        backgroundColor: isUsed
+            ? AppColors.surfaceVariant
+            : AppColors.primary.withOpacity(0.1),
         side: BorderSide(
           color: isUsed ? AppColors.surfaceVariant : AppColors.primary,
         ),
@@ -633,18 +625,14 @@ class TrueFalseWidget extends StatelessWidget {
                       color: AppColors.primary.withOpacity(0.2),
                       blurRadius: 12,
                       offset: const Offset(0, 4),
-                    )
+                    ),
                   ]
                 : null,
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(
-                icon,
-                size: 32,
-                color: iconColor,
-              ),
+              Icon(icon, size: 32, color: iconColor),
               const SizedBox(width: 12),
               Text(
                 label,
@@ -701,7 +689,7 @@ class _MatchingWidgetState extends State<MatchingWidget> {
 
   void _onLeftTap(int index) {
     if (widget.isAnswered) return;
-    
+
     setState(() {
       if (_selectedLeft == index) {
         _selectedLeft = null;
@@ -713,16 +701,16 @@ class _MatchingWidgetState extends State<MatchingWidget> {
 
   void _onRightTap(int index) {
     if (widget.isAnswered || _selectedLeft == null) return;
-    
+
     setState(() {
       // Remove any existing pair with this right item
       _pairs.removeWhere((k, v) => v == index);
-      
+
       // Create new pair
       _pairs[_selectedLeft!] = index;
       _selectedLeft = null;
     });
-    
+
     // Check if all pairs are made
     if (_pairs.length == widget.exercise.leftItems.length) {
       widget.onAnswer(_pairs);
@@ -747,18 +735,22 @@ class _MatchingWidgetState extends State<MatchingWidget> {
             // Left column
             Expanded(
               child: Column(
-                children: widget.exercise.leftItems.asMap().entries.map((entry) {
+                children: widget.exercise.leftItems.asMap().entries.map((
+                  entry,
+                ) {
                   return _buildLeftItem(entry.key, entry.value);
                 }).toList(),
               ),
             ),
-            
+
             const SizedBox(width: 16),
-            
+
             // Right column
             Expanded(
               child: Column(
-                children: widget.exercise.rightItems.asMap().entries.map((entry) {
+                children: widget.exercise.rightItems.asMap().entries.map((
+                  entry,
+                ) {
                   return _buildRightItem(entry.key, entry.value);
                 }).toList(),
               ),
@@ -773,8 +765,9 @@ class _MatchingWidgetState extends State<MatchingWidget> {
     final isSelected = _selectedLeft == index;
     final isPaired = _pairs.containsKey(index);
     final pairedRightIndex = _pairs[index];
-    
-    final isCorrect = widget.isAnswered &&
+
+    final isCorrect =
+        widget.isAnswered &&
         widget.exercise.correctPairs[index] == pairedRightIndex;
 
     Color? bgColor;
@@ -826,7 +819,9 @@ class _MatchingWidgetState extends State<MatchingWidget> {
                 child: Text(
                   text,
                   style: AppTypography.bodyMedium.copyWith(
-                    fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                    fontWeight: isSelected
+                        ? FontWeight.bold
+                        : FontWeight.normal,
                   ),
                 ),
               ),
@@ -843,8 +838,9 @@ class _MatchingWidgetState extends State<MatchingWidget> {
         .where((e) => e.value == index)
         .map((e) => e.key)
         .firstOrNull;
-    
-    final isCorrect = widget.isAnswered &&
+
+    final isCorrect =
+        widget.isAnswered &&
         leftIndex != null &&
         widget.exercise.correctPairs[leftIndex] == index;
 
@@ -879,12 +875,7 @@ class _MatchingWidgetState extends State<MatchingWidget> {
           ),
           child: Row(
             children: [
-              Expanded(
-                child: Text(
-                  text,
-                  style: AppTypography.bodyMedium,
-                ),
-              ),
+              Expanded(child: Text(text, style: AppTypography.bodyMedium)),
               if (isPaired) const SizedBox(width: 8),
               if (isPaired)
                 Icon(
@@ -945,7 +936,7 @@ class _OrderingWidgetState extends State<OrderingWidget> {
 
   void _onReorder(int oldIndex, int newIndex) {
     if (widget.isAnswered) return;
-    
+
     setState(() {
       if (newIndex > oldIndex) {
         newIndex -= 1;
@@ -953,7 +944,7 @@ class _OrderingWidgetState extends State<OrderingWidget> {
       final item = _currentOrder.removeAt(oldIndex);
       _currentOrder.insert(newIndex, item);
     });
-    
+
     widget.onAnswer(_currentOrder);
   }
 
@@ -1001,11 +992,12 @@ class _OrderingWidgetState extends State<OrderingWidget> {
   Widget _buildOrderItem(int displayIndex) {
     final itemIndex = _currentOrder[displayIndex];
     final text = widget.exercise.items[itemIndex];
-    
-    final correctOrder = widget.exercise.correctOrder ??
+
+    final correctOrder =
+        widget.exercise.correctOrder ??
         List.generate(widget.exercise.items.length, (i) => i);
-    final isCorrectPosition = widget.isAnswered &&
-        correctOrder[displayIndex] == itemIndex;
+    final isCorrectPosition =
+        widget.isAnswered && correctOrder[displayIndex] == itemIndex;
 
     Color? bgColor;
     Color? borderColor;
@@ -1038,9 +1030,7 @@ class _OrderingWidgetState extends State<OrderingWidget> {
               height: 32,
               decoration: BoxDecoration(
                 color: widget.isAnswered
-                    ? (isCorrectPosition
-                        ? AppColors.success
-                        : AppColors.error)
+                    ? (isCorrectPosition ? AppColors.success : AppColors.error)
                     : AppColors.primary,
                 shape: BoxShape.circle,
               ),
@@ -1055,17 +1045,9 @@ class _OrderingWidgetState extends State<OrderingWidget> {
               ),
             ),
             const SizedBox(width: 16),
-            Expanded(
-              child: Text(
-                text,
-                style: AppTypography.bodyLarge,
-              ),
-            ),
+            Expanded(child: Text(text, style: AppTypography.bodyLarge)),
             if (!widget.isAnswered)
-              Icon(
-                Icons.drag_handle,
-                color: AppColors.textSecondary,
-              ),
+              Icon(Icons.drag_handle, color: AppColors.textSecondary),
             if (widget.isAnswered)
               Icon(
                 isCorrectPosition ? Icons.check_circle : Icons.cancel,
@@ -1100,9 +1082,7 @@ class ExplanationCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.info.withOpacity(0.1),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: AppColors.info.withOpacity(0.3),
-        ),
+        border: Border.all(color: AppColors.info.withOpacity(0.3)),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -1123,10 +1103,7 @@ class ExplanationCard extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 4),
-                Text(
-                  explanation,
-                  style: AppTypography.bodyMedium,
-                ),
+                Text(explanation, style: AppTypography.bodyMedium),
               ],
             ),
           ),

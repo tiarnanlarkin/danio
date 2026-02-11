@@ -5,24 +5,24 @@ import 'dart:ui';
 /// Study room colors - cozy knowledge theme
 class StudyColors {
   // Background gradient - warm study atmosphere
-  static const background1 = Color(0xFF2D3A4F);  // Deep blue-gray
-  static const background2 = Color(0xFF1F2937);  // Darker blue
-  static const background3 = Color(0xFF1A202C);  // Deep navy
-  
+  static const background1 = Color(0xFF2D3A4F); // Deep blue-gray
+  static const background2 = Color(0xFF1F2937); // Darker blue
+  static const background3 = Color(0xFF1A202C); // Deep navy
+
   // Accent colors
-  static const gold = Color(0xFFD4A574);          // Warm gold
-  static const goldLight = Color(0xFFE8C89E);    // Light gold
-  static const amber = Color(0xFFB8860B);         // Dark amber
-  static const cream = Color(0xFFFFF8E7);         // Warm cream
-  
+  static const gold = Color(0xFFD4A574); // Warm gold
+  static const goldLight = Color(0xFFE8C89E); // Light gold
+  static const amber = Color(0xFFB8860B); // Dark amber
+  static const cream = Color(0xFFFFF8E7); // Warm cream
+
   // Glass card
   static const glassCard = Color(0x20FFFFFF);
   static const glassBorder = Color(0x30FFFFFF);
-  
+
   // Text
   static const textPrimary = Color(0xFFF5F5F5);
   static const textSecondary = Color(0xFFB0B8C8);
-  
+
   // Accents
   static const bookRed = Color(0xFF8B3A3A);
   static const bookBlue = Color(0xFF3A5A8B);
@@ -60,8 +60,8 @@ class StudyRoomScene extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         final w = constraints.maxWidth;
-        final h = constraints.maxHeight.isFinite 
-            ? constraints.maxHeight 
+        final h = constraints.maxHeight.isFinite
+            ? constraints.maxHeight
             : w * 0.7;
 
         return SizedBox(
@@ -87,10 +87,7 @@ class StudyRoomScene extends StatelessWidget {
               ),
 
               // === Decorative elements ===
-              CustomPaint(
-                painter: _StudyBackgroundPainter(),
-                size: Size(w, h),
-              ),
+              CustomPaint(painter: _StudyBackgroundPainter(), size: Size(w, h)),
 
               // === Floating books/stars ===
               Positioned(
@@ -106,7 +103,10 @@ class StudyRoomScene extends StatelessWidget {
               Positioned(
                 bottom: h * 0.3,
                 right: w * 0.15,
-                child: _FloatingElement(icon: Icons.lightbulb_outline, size: 20),
+                child: _FloatingElement(
+                  icon: Icons.lightbulb_outline,
+                  size: 20,
+                ),
               ),
 
               // === Bookshelf illustration ===
@@ -194,12 +194,16 @@ class _StudyBackgroundPainter extends CustomPainter {
     final wave = Path()
       ..moveTo(0, size.height * 0.85)
       ..quadraticBezierTo(
-        size.width * 0.25, size.height * 0.8,
-        size.width * 0.5, size.height * 0.85,
+        size.width * 0.25,
+        size.height * 0.8,
+        size.width * 0.5,
+        size.height * 0.85,
       )
       ..quadraticBezierTo(
-        size.width * 0.75, size.height * 0.9,
-        size.width, size.height * 0.82,
+        size.width * 0.75,
+        size.height * 0.9,
+        size.width,
+        size.height * 0.82,
       )
       ..lineTo(size.width, size.height)
       ..lineTo(0, size.height)
@@ -221,11 +225,7 @@ class _FloatingElement extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Icon(
-      icon,
-      size: size,
-      color: StudyColors.gold.withOpacity(0.4),
-    );
+    return Icon(icon, size: size, color: StudyColors.gold.withOpacity(0.4));
   }
 }
 
@@ -254,20 +254,14 @@ class _BookshelfPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final woodPaint = Paint()..color = StudyColors.wood;
     final woodLightPaint = Paint()..color = StudyColors.woodLight;
-    
+
     // Shelf boards
     final shelfHeight = size.height / 4;
     for (var i = 1; i < 4; i++) {
       final y = i * shelfHeight;
-      canvas.drawRect(
-        Rect.fromLTWH(0, y - 4, size.width, 8),
-        woodPaint,
-      );
+      canvas.drawRect(Rect.fromLTWH(0, y - 4, size.width, 8), woodPaint);
       // Shelf edge highlight
-      canvas.drawRect(
-        Rect.fromLTWH(0, y - 4, size.width, 2),
-        woodLightPaint,
-      );
+      canvas.drawRect(Rect.fromLTWH(0, y - 4, size.width, 2), woodLightPaint);
     }
 
     // Books on shelves
@@ -280,16 +274,16 @@ class _BookshelfPainter extends CustomPainter {
     ];
 
     final random = math.Random(42); // Fixed seed for consistency
-    
+
     for (var shelf = 0; shelf < 3; shelf++) {
       final shelfY = (shelf + 1) * shelfHeight;
       var x = 4.0;
-      
+
       while (x < size.width - 20) {
         final bookWidth = 8.0 + random.nextDouble() * 12;
         final bookHeight = shelfHeight * (0.6 + random.nextDouble() * 0.3);
         final color = bookColors[random.nextInt(bookColors.length)];
-        
+
         // Book
         canvas.drawRRect(
           RRect.fromRectAndRadius(
@@ -298,13 +292,13 @@ class _BookshelfPainter extends CustomPainter {
           ),
           Paint()..color = color,
         );
-        
+
         // Book spine highlight
         canvas.drawRect(
           Rect.fromLTWH(x + 1, shelfY - bookHeight - 2, 2, bookHeight - 4),
           Paint()..color = color.withOpacity(0.5),
         );
-        
+
         x += bookWidth + 2 + random.nextDouble() * 4;
       }
     }
@@ -326,10 +320,7 @@ class _StudyDesk extends StatelessWidget {
     return SizedBox(
       width: width,
       height: height,
-      child: CustomPaint(
-        painter: _DeskPainter(),
-        size: Size(width, height),
-      ),
+      child: CustomPaint(painter: _DeskPainter(), size: Size(width, height)),
     );
   }
 }
@@ -350,7 +341,12 @@ class _DeskPainter extends CustomPainter {
     // Lamp base
     canvas.drawRRect(
       RRect.fromRectAndRadius(
-        Rect.fromLTWH(size.width * 0.6, size.height * 0.5, size.width * 0.15, size.height * 0.1),
+        Rect.fromLTWH(
+          size.width * 0.6,
+          size.height * 0.5,
+          size.width * 0.15,
+          size.height * 0.1,
+        ),
         const Radius.circular(2),
       ),
       Paint()..color = StudyColors.amber,
@@ -379,17 +375,15 @@ class _DeskPainter extends CustomPainter {
       Offset(size.width * 0.7, size.height * 0.35),
       size.width * 0.2,
       Paint()
-        ..shader = RadialGradient(
-          colors: [
-            StudyColors.gold.withOpacity(0.4),
-            Colors.transparent,
-          ],
-        ).createShader(
-          Rect.fromCircle(
-            center: Offset(size.width * 0.7, size.height * 0.35),
-            radius: size.width * 0.2,
-          ),
-        ),
+        ..shader =
+            RadialGradient(
+              colors: [StudyColors.gold.withOpacity(0.4), Colors.transparent],
+            ).createShader(
+              Rect.fromCircle(
+                center: Offset(size.width * 0.7, size.height * 0.35),
+                radius: size.width * 0.2,
+              ),
+            ),
     );
 
     // Open book on desk
@@ -398,8 +392,10 @@ class _DeskPainter extends CustomPainter {
       ..lineTo(size.width * 0.35, size.height * 0.52)
       ..lineTo(size.width * 0.35, size.height * 0.4)
       ..quadraticBezierTo(
-        size.width * 0.28, size.height * 0.38,
-        size.width * 0.2, size.height * 0.42,
+        size.width * 0.28,
+        size.height * 0.38,
+        size.width * 0.2,
+        size.height * 0.42,
       )
       ..close();
     canvas.drawPath(bookLeft, Paint()..color = StudyColors.cream);
@@ -409,11 +405,16 @@ class _DeskPainter extends CustomPainter {
       ..lineTo(size.width * 0.35, size.height * 0.52)
       ..lineTo(size.width * 0.35, size.height * 0.4)
       ..quadraticBezierTo(
-        size.width * 0.42, size.height * 0.38,
-        size.width * 0.5, size.height * 0.42,
+        size.width * 0.42,
+        size.height * 0.38,
+        size.width * 0.5,
+        size.height * 0.42,
       )
       ..close();
-    canvas.drawPath(bookRight, Paint()..color = StudyColors.cream.withOpacity(0.9));
+    canvas.drawPath(
+      bookRight,
+      Paint()..color = StudyColors.cream.withOpacity(0.9),
+    );
 
     // Text lines on book
     final linePaint = Paint()
@@ -582,7 +583,9 @@ class _ProgressCard extends StatelessWidget {
                 child: LinearProgressIndicator(
                   value: progress,
                   backgroundColor: StudyColors.background2,
-                  valueColor: const AlwaysStoppedAnimation<Color>(StudyColors.gold),
+                  valueColor: const AlwaysStoppedAnimation<Color>(
+                    StudyColors.gold,
+                  ),
                   minHeight: 8,
                 ),
               ),

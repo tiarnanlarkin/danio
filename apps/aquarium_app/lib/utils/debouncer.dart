@@ -67,9 +67,8 @@ class Throttler {
   /// Execute function if enough time has passed since last execution
   void run(VoidCallback action) {
     final now = DateTime.now();
-    
-    if (_lastExecution == null || 
-        now.difference(_lastExecution!) >= period) {
+
+    if (_lastExecution == null || now.difference(_lastExecution!) >= period) {
       _lastExecution = now;
       action();
     }
@@ -86,7 +85,10 @@ mixin DebounceMixin<T extends StatefulWidget> on State<T> {
   final Map<String, Debouncer> _debouncers = {};
 
   /// Get or create a debouncer with given key and delay
-  Debouncer debouncer(String key, {Duration delay = const Duration(milliseconds: 300)}) {
+  Debouncer debouncer(
+    String key, {
+    Duration delay = const Duration(milliseconds: 300),
+  }) {
     return _debouncers.putIfAbsent(key, () => Debouncer(delay: delay));
   }
 

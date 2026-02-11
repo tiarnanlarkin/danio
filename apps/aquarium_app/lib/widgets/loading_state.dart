@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
 
 /// Enhanced loading state with optional message
-/// 
+///
 /// Usage:
 /// ```dart
 /// LoadingState(message: 'Loading tanks...')
@@ -11,11 +11,7 @@ class LoadingState extends StatelessWidget {
   final String? message;
   final bool compact;
 
-  const LoadingState({
-    super.key,
-    this.message,
-    this.compact = false,
-  });
+  const LoadingState({super.key, this.message, this.compact = false});
 
   @override
   Widget build(BuildContext context) {
@@ -164,10 +160,7 @@ class LoadingOverlay extends StatelessWidget {
                     const CircularProgressIndicator(),
                     if (message != null) ...[
                       const SizedBox(height: AppSpacing.md),
-                      Text(
-                        message!,
-                        style: AppTypography.bodyMedium,
-                      ),
+                      Text(message!, style: AppTypography.bodyMedium),
                     ],
                   ],
                 ),

@@ -16,9 +16,10 @@ class NotificationService {
   factory NotificationService() => _instance;
   NotificationService._internal();
 
-  final FlutterLocalNotificationsPlugin _plugin = FlutterLocalNotificationsPlugin();
+  final FlutterLocalNotificationsPlugin _plugin =
+      FlutterLocalNotificationsPlugin();
   bool _initialized = false;
-  
+
   // Callback for handling notification taps
   Function(String?)? onNotificationTap;
 
@@ -27,13 +28,15 @@ class NotificationService {
     if (_initialized) return;
 
     tz_data.initializeTimeZones();
-    
+
     // Store callback for notification taps
     if (onSelectNotification != null) {
       onNotificationTap = onSelectNotification;
     }
 
-    const androidSettings = AndroidInitializationSettings('@mipmap/ic_launcher');
+    const androidSettings = AndroidInitializationSettings(
+      '@mipmap/ic_launcher',
+    );
     const iosSettings = DarwinInitializationSettings(
       requestAlertPermission: true,
       requestBadgePermission: true,
@@ -60,16 +63,20 @@ class NotificationService {
   /// Request notification permissions (iOS mainly).
   Future<bool> requestPermissions() async {
     // Android 13+ requires explicit permission
-    final android = _plugin.resolvePlatformSpecificImplementation<
-        AndroidFlutterLocalNotificationsPlugin>();
+    final android = _plugin
+        .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin
+        >();
     if (android != null) {
       final granted = await android.requestNotificationsPermission();
       return granted ?? false;
     }
 
     // iOS
-    final ios = _plugin.resolvePlatformSpecificImplementation<
-        IOSFlutterLocalNotificationsPlugin>();
+    final ios = _plugin
+        .resolvePlatformSpecificImplementation<
+          IOSFlutterLocalNotificationsPlugin
+        >();
     if (ios != null) {
       final granted = await ios.requestPermissions(
         alert: true,
@@ -211,16 +218,16 @@ class NotificationService {
       }
     }
   }
-  
+
   // ==================== STREAK NOTIFICATIONS ====================
-  
+
   /// Schedule daily morning streak reminder (9 AM)
   Future<void> scheduleMorningStreakReminder({
     required int currentStreak,
     required TimeOfDay time,
   }) async {
     if (!_initialized) await initialize();
-    
+
     final now = DateTime.now();
     var scheduledDate = DateTime(
       now.year,
@@ -229,14 +236,14 @@ class NotificationService {
       time.hour,
       time.minute,
     );
-    
+
     // If time has passed today, schedule for tomorrow
     if (scheduledDate.isBefore(now)) {
       scheduledDate = scheduledDate.add(const Duration(days: 1));
     }
-    
+
     final tzScheduledDate = tz.TZDateTime.from(scheduledDate, tz.local);
-    
+
     await _plugin.zonedSchedule(
       _morningNotificationId,
       '🔥 Good morning!',
@@ -246,7 +253,8 @@ class NotificationService {
         android: AndroidNotificationDetails(
           'streak_reminders',
           'Streak Reminders',
-          channelDescription: 'Daily reminders to maintain your learning streak',
+          channelDescription:
+              'Daily reminders to maintain your learning streak',
           importance: Importance.high,
           priority: Priority.high,
           icon: '@mipmap/ic_launcher',
@@ -264,7 +272,7 @@ class NotificationService {
       payload: 'learn', // Navigate to learn screen
     );
   }
-  
+
   /// Schedule evening streak reminder if goal not met (7 PM)
   Future<void> scheduleEveningStreakReminder({
     required int currentStreak,
@@ -272,7 +280,7 @@ class NotificationService {
     required TimeOfDay time,
   }) async {
     if (!_initialized) await initialize();
-    
+
     final now = DateTime.now();
     var scheduledDate = DateTime(
       now.year,
@@ -281,14 +289,14 @@ class NotificationService {
       time.hour,
       time.minute,
     );
-    
+
     // If time has passed today, schedule for tomorrow
     if (scheduledDate.isBefore(now)) {
       scheduledDate = scheduledDate.add(const Duration(days: 1));
     }
-    
+
     final tzScheduledDate = tz.TZDateTime.from(scheduledDate, tz.local);
-    
+
     await _plugin.zonedSchedule(
       _eveningNotificationId,
       '⏰ Keep your streak alive!',
@@ -298,7 +306,8 @@ class NotificationService {
         android: AndroidNotificationDetails(
           'streak_reminders',
           'Streak Reminders',
-          channelDescription: 'Daily reminders to maintain your learning streak',
+          channelDescription:
+              'Daily reminders to maintain your learning streak',
           importance: Importance.high,
           priority: Priority.high,
           icon: '@mipmap/ic_launcher',
@@ -316,14 +325,14 @@ class NotificationService {
       payload: 'learn', // Navigate to learn screen
     );
   }
-  
+
   /// Schedule late night streak reminder if goal not met (11 PM)
   Future<void> scheduleNightStreakReminder({
     required int currentStreak,
     required TimeOfDay time,
   }) async {
     if (!_initialized) await initialize();
-    
+
     final now = DateTime.now();
     var scheduledDate = DateTime(
       now.year,
@@ -332,14 +341,14 @@ class NotificationService {
       time.hour,
       time.minute,
     );
-    
+
     // If time has passed today, schedule for tomorrow
     if (scheduledDate.isBefore(now)) {
       scheduledDate = scheduledDate.add(const Duration(days: 1));
     }
-    
+
     final tzScheduledDate = tz.TZDateTime.from(scheduledDate, tz.local);
-    
+
     await _plugin.zonedSchedule(
       _nightNotificationId,
       '⚠️ Don\'t lose your streak!',
@@ -349,7 +358,8 @@ class NotificationService {
         android: AndroidNotificationDetails(
           'streak_reminders',
           'Streak Reminders',
-          channelDescription: 'Daily reminders to maintain your learning streak',
+          channelDescription:
+              'Daily reminders to maintain your learning streak',
           importance: Importance.max,
           priority: Priority.max,
           icon: '@mipmap/ic_launcher',
@@ -368,7 +378,7 @@ class NotificationService {
       payload: 'learn', // Navigate to learn screen
     );
   }
-  
+
   /// Cancel all streak notifications
   Future<void> cancelStreakNotifications() async {
     if (!_initialized) await initialize();
@@ -376,7 +386,7 @@ class NotificationService {
     await _plugin.cancel(_eveningNotificationId);
     await _plugin.cancel(_nightNotificationId);
   }
-  
+
   /// Schedule all streak notifications based on user preferences
   /// This should be called when streak reminders are enabled or settings change
   Future<void> scheduleAllStreakNotifications({
@@ -388,16 +398,16 @@ class NotificationService {
     TimeOfDay? nightTime,
   }) async {
     if (!_initialized) await initialize();
-    
+
     // Cancel existing streak notifications
     await cancelStreakNotifications();
-    
+
     // Schedule morning notification
     await scheduleMorningStreakReminder(
       currentStreak: currentStreak,
       time: morningTime ?? const TimeOfDay(hour: 9, minute: 0),
     );
-    
+
     // Only schedule evening/night notifications if goal not met today
     final xpNeeded = dailyXpGoal - todayXp;
     if (xpNeeded > 0) {
@@ -406,19 +416,19 @@ class NotificationService {
         xpNeeded: xpNeeded,
         time: eveningTime ?? const TimeOfDay(hour: 19, minute: 0),
       );
-      
+
       await scheduleNightStreakReminder(
         currentStreak: currentStreak,
         time: nightTime ?? const TimeOfDay(hour: 23, minute: 0),
       );
     }
   }
-  
+
   // ==================== SPACED REPETITION REVIEW NOTIFICATIONS ====================
-  
+
   /// Notification ID for review reminders
   static const int _reviewReminderNotificationId = 2000;
-  
+
   /// Schedule daily review reminder if cards are due
   /// Shows "You have X cards ready to review!" at specified time
   Future<void> scheduleReviewReminder({
@@ -426,16 +436,16 @@ class NotificationService {
     TimeOfDay? time,
   }) async {
     if (!_initialized) await initialize();
-    
+
     // Cancel existing review notification
     await _plugin.cancel(_reviewReminderNotificationId);
-    
+
     // Don't schedule if no cards are due
     if (dueCardsCount == 0) return;
-    
+
     final now = DateTime.now();
     final reviewTime = time ?? const TimeOfDay(hour: 9, minute: 0);
-    
+
     var scheduledDate = DateTime(
       now.year,
       now.month,
@@ -443,14 +453,14 @@ class NotificationService {
       reviewTime.hour,
       reviewTime.minute,
     );
-    
+
     // If time has passed today, schedule for tomorrow
     if (scheduledDate.isBefore(now)) {
       scheduledDate = scheduledDate.add(const Duration(days: 1));
     }
-    
+
     final tzScheduledDate = tz.TZDateTime.from(scheduledDate, tz.local);
-    
+
     await _plugin.zonedSchedule(
       _reviewReminderNotificationId,
       '🔔 Time to review!',
@@ -460,7 +470,8 @@ class NotificationService {
         android: AndroidNotificationDetails(
           'review_reminders',
           'Review Reminders',
-          channelDescription: 'Daily reminders to review spaced repetition cards',
+          channelDescription:
+              'Daily reminders to review spaced repetition cards',
           importance: Importance.high,
           priority: Priority.high,
           icon: '@mipmap/ic_launcher',
@@ -478,7 +489,7 @@ class NotificationService {
       payload: 'review', // Navigate to review screen
     );
   }
-  
+
   /// Cancel review reminder notification
   Future<void> cancelReviewReminder() async {
     if (!_initialized) await initialize();

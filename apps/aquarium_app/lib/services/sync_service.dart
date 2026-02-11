@@ -39,16 +39,16 @@ class SyncAction {
 
   factory SyncAction.fromJson(Map<String, dynamic> json) => SyncAction(
     id: json['id'] as String,
-    type: SyncActionType.values.firstWhere(
-      (e) => e.name == json['type'],
-    ),
+    type: SyncActionType.values.firstWhere((e) => e.name == json['type']),
     data: Map<String, dynamic>.from(json['data'] as Map),
     timestamp: DateTime.parse(json['timestamp'] as String),
   );
 }
 
 /// Provider for the sync service
-final syncServiceProvider = StateNotifierProvider<SyncService, SyncState>((ref) {
+final syncServiceProvider = StateNotifierProvider<SyncService, SyncState>((
+  ref,
+) {
   return SyncService(ref);
 });
 
@@ -157,9 +157,7 @@ class SyncService extends StateNotifier<SyncState> {
       );
       await prefs.setString(_queueKey, queueJson);
     } catch (e) {
-      state = state.copyWith(
-        lastError: 'Failed to save sync queue: $e',
-      );
+      state = state.copyWith(lastError: 'Failed to save sync queue: $e');
     }
   }
 
@@ -186,7 +184,8 @@ class SyncService extends StateNotifier<SyncState> {
   /// Sync queued actions with backend (or just process them locally)
   /// Includes conflict resolution for any overlapping changes
   Future<void> syncNow({
-    ConflictResolutionStrategy strategy = ConflictResolutionStrategy.lastWriteWins,
+    ConflictResolutionStrategy strategy =
+        ConflictResolutionStrategy.lastWriteWins,
   }) async {
     if (state.isSyncing || state.queuedActions.isEmpty) {
       return;
@@ -195,14 +194,12 @@ class SyncService extends StateNotifier<SyncState> {
     // Check if we're online
     final isOnline = ref.read(isOnlineProvider);
     if (!isOnline) {
-      state = state.copyWith(
-        lastError: 'Cannot sync while offline',
-      );
+      state = state.copyWith(lastError: 'Cannot sync while offline');
       return;
     }
 
     state = state.copyWith(
-      isSyncing: true, 
+      isSyncing: true,
       lastError: null,
       recentConflicts: [], // Clear previous conflicts
     );
@@ -220,27 +217,27 @@ class SyncService extends StateNotifier<SyncState> {
       // Check for conflicts within each type
       for (final entry in actionsByType.entries) {
         final actions = entry.value;
-        
+
         // If multiple actions of same type, detect conflicts
         if (actions.length > 1) {
           // Sort by timestamp
           actions.sort((a, b) => a.timestamp.compareTo(b.timestamp));
-          
+
           // Check for conflicts between consecutive actions
           for (int i = 0; i < actions.length - 1; i++) {
             final current = actions[i];
             final next = actions[i + 1];
-            
+
             // Resolve conflict between the two actions
             final resolution = ConflictResolver.resolve(
               local: current.data,
               remote: next.data,
               strategy: strategy,
             );
-            
+
             if (resolution.hadConflict) {
               conflicts.add(
-                '${entry.key.name}: ${resolution.conflictDescription}'
+                '${entry.key.name}: ${resolution.conflictDescription}',
               );
               conflictsResolved++;
             }
@@ -253,7 +250,7 @@ class SyncService extends StateNotifier<SyncState> {
       // 2. Apply conflict resolution with server state
       // 3. Wait for confirmation
       // 4. Remove from queue on success
-      
+
       // For now, since the app is fully local, we:
       // 1. Verify actions are already persisted locally (they were when queued)
       // 2. Apply conflict resolution to merge any overlapping changes
@@ -278,19 +275,13 @@ class SyncService extends StateNotifier<SyncState> {
         recentConflicts: conflicts.isNotEmpty ? conflicts : null,
       );
     } catch (e) {
-      state = state.copyWith(
-        isSyncing: false,
-        lastError: 'Sync failed: $e',
-      );
+      state = state.copyWith(isSyncing: false, lastError: 'Sync failed: $e');
     }
   }
 
   /// Clear all queued actions (useful for testing or error recovery)
   Future<void> clearQueue() async {
-    state = state.copyWith(
-      queuedActions: [],
-      lastError: null,
-    );
+    state = state.copyWith(queuedActions: [], lastError: null);
     await _saveQueue();
   }
 

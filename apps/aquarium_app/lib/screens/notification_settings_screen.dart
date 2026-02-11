@@ -12,11 +12,9 @@ class NotificationSettingsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final profileAsync = ref.watch(userProfileProvider);
-    
+
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Notification Settings'),
-      ),
+      appBar: AppBar(title: const Text('Notification Settings')),
       body: profileAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (e, _) => Center(child: Text('Error: $e')),
@@ -24,7 +22,7 @@ class NotificationSettingsScreen extends ConsumerWidget {
           if (profile == null) {
             return const Center(child: Text('No profile found'));
           }
-          
+
           return ListView(
             children: [
               // Header
@@ -33,7 +31,11 @@ class NotificationSettingsScreen extends ConsumerWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Icon(Icons.notifications_active, size: 48, color: AppColors.primary),
+                    const Icon(
+                      Icons.notifications_active,
+                      size: 48,
+                      color: AppColors.primary,
+                    ),
                     const SizedBox(height: 8),
                     Text(
                       'Streak Reminders',
@@ -49,15 +51,15 @@ class NotificationSettingsScreen extends ConsumerWidget {
                   ],
                 ),
               ),
-              
+
               const Divider(),
-              
+
               // Main toggle
               SwitchListTile(
                 secondary: const Icon(Icons.notifications),
                 title: const Text('Streak Reminders'),
                 subtitle: Text(
-                  profile.streakRemindersEnabled 
+                  profile.streakRemindersEnabled
                       ? 'Enabled - You\'ll get daily reminders'
                       : 'Disabled - No streak reminders',
                 ),
@@ -68,35 +70,44 @@ class NotificationSettingsScreen extends ConsumerWidget {
                     final service = NotificationService();
                     await service.initialize();
                     final granted = await service.requestPermissions();
-                    
+
                     if (!granted) {
                       if (context.mounted) {
-                        AppFeedback.showWarning(context, 'Notification permission denied. Please enable in settings.');
+                        AppFeedback.showWarning(
+                          context,
+                          'Notification permission denied. Please enable in settings.',
+                        );
                       }
                       return;
                     }
                   }
-                  
-                  await ref.read(userProfileProvider.notifier).updateProfile(
-                    streakRemindersEnabled: value,
-                  );
-                  
+
+                  await ref
+                      .read(userProfileProvider.notifier)
+                      .updateProfile(streakRemindersEnabled: value);
+
                   // Reschedule notifications
                   await _updateNotifications(ref);
-                  
+
                   if (context.mounted) {
                     if (value) {
-                      AppFeedback.showSuccess(context, 'Streak reminders enabled!');
+                      AppFeedback.showSuccess(
+                        context,
+                        'Streak reminders enabled!',
+                      );
                     } else {
-                      AppFeedback.showInfo(context, 'Streak reminders disabled');
+                      AppFeedback.showInfo(
+                        context,
+                        'Streak reminders disabled',
+                      );
                     }
                   }
                 },
               ),
-              
+
               if (profile.streakRemindersEnabled) ...[
                 const Divider(),
-                
+
                 // Notification times section
                 Padding(
                   padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
@@ -107,7 +118,7 @@ class NotificationSettingsScreen extends ConsumerWidget {
                     ),
                   ),
                 ),
-                
+
                 // Morning notification
                 ListTile(
                   leading: const Icon(Icons.wb_sunny),
@@ -124,7 +135,7 @@ class NotificationSettingsScreen extends ConsumerWidget {
                     'morningReminderTime',
                   ),
                 ),
-                
+
                 // Evening notification
                 ListTile(
                   leading: const Icon(Icons.wb_twilight),
@@ -141,7 +152,7 @@ class NotificationSettingsScreen extends ConsumerWidget {
                     'eveningReminderTime',
                   ),
                 ),
-                
+
                 // Night notification
                 ListTile(
                   leading: const Icon(Icons.nightlight),
@@ -158,9 +169,9 @@ class NotificationSettingsScreen extends ConsumerWidget {
                     'nightReminderTime',
                   ),
                 ),
-                
+
                 const Divider(),
-                
+
                 // Info section
                 Padding(
                   padding: const EdgeInsets.all(16),
@@ -186,15 +197,27 @@ class NotificationSettingsScreen extends ConsumerWidget {
                           ],
                         ),
                         const SizedBox(height: 12),
-                        _buildInfoRow('🌅', 'Morning reminder goes out every day'),
-                        _buildInfoRow('🌆', 'Evening reminder only if goal not met'),
-                        _buildInfoRow('🌙', 'Night reminder only if goal not met'),
-                        _buildInfoRow('✅', 'Notifications auto-cancel when you complete your goal'),
+                        _buildInfoRow(
+                          '🌅',
+                          'Morning reminder goes out every day',
+                        ),
+                        _buildInfoRow(
+                          '🌆',
+                          'Evening reminder only if goal not met',
+                        ),
+                        _buildInfoRow(
+                          '🌙',
+                          'Night reminder only if goal not met',
+                        ),
+                        _buildInfoRow(
+                          '✅',
+                          'Notifications auto-cancel when you complete your goal',
+                        ),
                       ],
                     ),
                   ),
                 ),
-                
+
                 // Test notification button
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -205,9 +228,12 @@ class NotificationSettingsScreen extends ConsumerWidget {
                       final service = NotificationService();
                       await service.initialize();
                       await service.showTestNotification();
-                      
+
                       if (context.mounted) {
-                        AppFeedback.showSuccess(context, 'Test notification sent!');
+                        AppFeedback.showSuccess(
+                          context,
+                          'Test notification sent!',
+                        );
                       }
                     },
                   ),
@@ -220,7 +246,7 @@ class NotificationSettingsScreen extends ConsumerWidget {
       ),
     );
   }
-  
+
   Widget _buildInfoRow(String emoji, String text) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
@@ -229,17 +255,12 @@ class NotificationSettingsScreen extends ConsumerWidget {
         children: [
           Text(emoji, style: const TextStyle(fontSize: 16)),
           const SizedBox(width: 8),
-          Expanded(
-            child: Text(
-              text,
-              style: AppTypography.bodySmall,
-            ),
-          ),
+          Expanded(child: Text(text, style: AppTypography.bodySmall)),
         ],
       ),
     );
   }
-  
+
   Future<void> _selectTime(
     BuildContext context,
     WidgetRef ref,
@@ -250,7 +271,7 @@ class NotificationSettingsScreen extends ConsumerWidget {
     final parts = currentTime.split(':');
     final hour = int.parse(parts[0]);
     final minute = int.parse(parts[1]);
-    
+
     final time = await showTimePicker(
       context: context,
       initialTime: TimeOfDay(hour: hour, minute: minute),
@@ -265,44 +286,53 @@ class NotificationSettingsScreen extends ConsumerWidget {
         );
       },
     );
-    
+
     if (time == null) return;
-    
-    final timeString = '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}';
-    
+
+    final timeString =
+        '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}';
+
     // Update the appropriate field
-    await ref.read(userProfileProvider.notifier).updateProfile(
-      morningReminderTime: fieldName == 'morningReminderTime' ? timeString : null,
-      eveningReminderTime: fieldName == 'eveningReminderTime' ? timeString : null,
-      nightReminderTime: fieldName == 'nightReminderTime' ? timeString : null,
-    );
-    
+    await ref
+        .read(userProfileProvider.notifier)
+        .updateProfile(
+          morningReminderTime: fieldName == 'morningReminderTime'
+              ? timeString
+              : null,
+          eveningReminderTime: fieldName == 'eveningReminderTime'
+              ? timeString
+              : null,
+          nightReminderTime: fieldName == 'nightReminderTime'
+              ? timeString
+              : null,
+        );
+
     // Reschedule notifications
     await _updateNotifications(ref);
-    
+
     if (context.mounted) {
       AppFeedback.showInfo(context, '$title updated to $timeString');
     }
   }
-  
+
   Future<void> _updateNotifications(WidgetRef ref) async {
     final profile = ref.read(userProfileProvider).value;
     if (profile == null) return;
-    
+
     final service = NotificationService();
     await service.initialize();
-    
+
     if (!profile.streakRemindersEnabled) {
       // Cancel all streak notifications
       await service.cancelStreakNotifications();
       return;
     }
-    
+
     // Parse times
     final morningParts = (profile.morningReminderTime ?? '09:00').split(':');
     final eveningParts = (profile.eveningReminderTime ?? '19:00').split(':');
     final nightParts = (profile.nightReminderTime ?? '23:00').split(':');
-    
+
     final morningTime = TimeOfDay(
       hour: int.parse(morningParts[0]),
       minute: int.parse(morningParts[1]),
@@ -315,10 +345,10 @@ class NotificationSettingsScreen extends ConsumerWidget {
       hour: int.parse(nightParts[0]),
       minute: int.parse(nightParts[1]),
     );
-    
+
     // Get today's XP
     final todayXp = ref.read(userProfileProvider.notifier).getTodayXp();
-    
+
     // Schedule notifications
     await service.scheduleAllStreakNotifications(
       currentStreak: profile.currentStreak,

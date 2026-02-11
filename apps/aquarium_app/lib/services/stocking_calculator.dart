@@ -2,13 +2,7 @@ import '../data/species_database.dart';
 import '../models/models.dart';
 
 /// Simple stocking level indicator
-enum StockingLevel {
-  understocked,
-  good,
-  moderate,
-  heavy,
-  overstocked,
-}
+enum StockingLevel { understocked, good, moderate, heavy, overstocked }
 
 /// Result of stocking calculation
 class StockingResult {
@@ -40,7 +34,9 @@ class StockingCalculator {
         level: StockingLevel.understocked,
         percentFull: 0,
         summary: 'No livestock — room for new additions!',
-        suggestions: ['Consider starting with hardy species like tetras or guppies.'],
+        suggestions: [
+          'Consider starting with hardy species like tetras or guppies.',
+        ],
       );
     }
 
@@ -50,30 +46,37 @@ class StockingCalculator {
     final suggestions = <String>[];
 
     for (final l in livestock) {
-      final species = SpeciesDatabase.lookup(l.commonName) ??
-          (l.scientificName != null ? SpeciesDatabase.lookup(l.scientificName!) : null);
+      final species =
+          SpeciesDatabase.lookup(l.commonName) ??
+          (l.scientificName != null
+              ? SpeciesDatabase.lookup(l.scientificName!)
+              : null);
 
       double sizeCm;
       double bioloadMultiplier = 1.0;
 
       if (species != null) {
         sizeCm = species.adultSizeCm;
-        
+
         // Adjust for high-bioload fish
         if (species.diet.toLowerCase().contains('carnivore') ||
             species.commonName.toLowerCase().contains('pleco') ||
             species.commonName.toLowerCase().contains('goldfish')) {
           bioloadMultiplier = 1.5;
         }
-        
+
         // Check school size
         if (species.minSchoolSize > 1 && l.count < species.minSchoolSize) {
-          warnings.add('${l.commonName} should be in groups of ${species.minSchoolSize}+');
+          warnings.add(
+            '${l.commonName} should be in groups of ${species.minSchoolSize}+',
+          );
         }
-        
+
         // Check minimum tank size
         if (species.minTankLitres > tank.volumeLitres) {
-          warnings.add('${l.commonName} needs at least ${species.minTankLitres.toStringAsFixed(0)}L');
+          warnings.add(
+            '${l.commonName} needs at least ${species.minTankLitres.toStringAsFixed(0)}L',
+          );
         }
       } else {
         // Unknown species — estimate 5cm

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../services/onboarding_service.dart';
 import '../theme/app_theme.dart';
 import 'onboarding/profile_creation_screen.dart';
+import 'onboarding/experience_assessment_screen.dart';
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
@@ -86,11 +87,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                             color: page.color.withOpacity(0.1),
                             shape: BoxShape.circle,
                           ),
-                          child: Icon(
-                            page.icon,
-                            size: 64,
-                            color: page.color,
-                          ),
+                          child: Icon(page.icon, size: 64, color: page.color),
                         ),
                         const SizedBox(height: 48),
 
@@ -197,7 +194,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
     if (mounted) {
       Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (_) => const ProfileCreationScreen()),
+        MaterialPageRoute(builder: (_) => const ExperienceAssessmentScreen()),
       );
     }
   }

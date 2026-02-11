@@ -23,7 +23,10 @@ class AcclimationGuideScreen extends StatelessWidget {
                     children: [
                       Icon(Icons.info_outline, color: AppColors.info),
                       const SizedBox(width: 8),
-                      Text('Why Acclimate?', style: AppTypography.headlineSmall),
+                      Text(
+                        'Why Acclimate?',
+                        style: AppTypography.headlineSmall,
+                      ),
                     ],
                   ),
                   const SizedBox(height: 12),
@@ -40,29 +43,38 @@ class AcclimationGuideScreen extends StatelessWidget {
           const SizedBox(height: 24),
 
           // Method 1: Float
-          Text('Method 1: Float & Release', style: AppTypography.headlineMedium),
+          Text(
+            'Method 1: Float & Release',
+            style: AppTypography.headlineMedium,
+          ),
           const SizedBox(height: 8),
-          Text('Best for: Hardy fish, short transit times', style: AppTypography.bodySmall),
+          Text(
+            'Best for: Hardy fish, short transit times',
+            style: AppTypography.bodySmall,
+          ),
           const SizedBox(height: 16),
 
           _StepCard(
             step: 1,
             title: 'Float the bag',
-            description: 'Turn off tank lights. Float the sealed bag in your tank for 15-20 minutes to equalize temperature.',
+            description:
+                'Turn off tank lights. Float the sealed bag in your tank for 15-20 minutes to equalize temperature.',
             icon: Icons.water,
             duration: '15-20 min',
           ),
           _StepCard(
             step: 2,
             title: 'Open and add tank water',
-            description: 'Open the bag, roll down the edges to create an air pocket. Add 1/2 cup of tank water every 5 minutes.',
+            description:
+                'Open the bag, roll down the edges to create an air pocket. Add 1/2 cup of tank water every 5 minutes.',
             icon: Icons.add,
             duration: '15-20 min',
           ),
           _StepCard(
             step: 3,
             title: 'Net and release',
-            description: 'Net the fish and release into the tank. Discard the bag water — don\'t add it to your tank.',
+            description:
+                'Net the fish and release into the tank. Discard the bag water — don\'t add it to your tank.',
             icon: Icons.catching_pokemon,
             duration: '1 min',
           ),
@@ -70,10 +82,15 @@ class AcclimationGuideScreen extends StatelessWidget {
           const SizedBox(height: 32),
 
           // Method 2: Drip
-          Text('Method 2: Drip Acclimation', style: AppTypography.headlineMedium),
+          Text(
+            'Method 2: Drip Acclimation',
+            style: AppTypography.headlineMedium,
+          ),
           const SizedBox(height: 8),
-          Text('Best for: Sensitive fish, shrimp, marine fish, large pH/hardness differences', 
-            style: AppTypography.bodySmall),
+          Text(
+            'Best for: Sensitive fish, shrimp, marine fish, large pH/hardness differences',
+            style: AppTypography.bodySmall,
+          ),
           const SizedBox(height: 16),
 
           _StepCard(
@@ -86,35 +103,40 @@ class AcclimationGuideScreen extends StatelessWidget {
           _StepCard(
             step: 2,
             title: 'Transfer to bucket',
-            description: 'Pour fish and bag water into a clean bucket. The water should cover the fish.',
+            description:
+                'Pour fish and bag water into a clean bucket. The water should cover the fish.',
             icon: Icons.delete_outline,
             duration: '1 min',
           ),
           _StepCard(
             step: 3,
             title: 'Set up drip line',
-            description: 'Use airline tubing with a loose knot or valve. Start a siphon from tank to bucket, dripping 2-4 drops per second.',
+            description:
+                'Use airline tubing with a loose knot or valve. Start a siphon from tank to bucket, dripping 2-4 drops per second.',
             icon: Icons.water_drop,
             duration: '1 min',
           ),
           _StepCard(
             step: 4,
             title: 'Drip until doubled',
-            description: 'Let water drip until the volume in the bucket has doubled. This takes about 1 hour.',
+            description:
+                'Let water drip until the volume in the bucket has doubled. This takes about 1 hour.',
             icon: Icons.timer,
             duration: '45-60 min',
           ),
           _StepCard(
             step: 5,
             title: 'Discard half and repeat',
-            description: 'For very sensitive species (shrimp), discard half the water and repeat the drip process.',
+            description:
+                'For very sensitive species (shrimp), discard half the water and repeat the drip process.',
             icon: Icons.replay,
             duration: '45-60 min',
           ),
           _StepCard(
             step: 6,
             title: 'Net and release',
-            description: 'Gently net the fish and release. Never add bucket water to your tank.',
+            description:
+                'Gently net the fish and release. Never add bucket water to your tank.',
             icon: Icons.catching_pokemon,
             duration: '1 min',
           ),
@@ -127,19 +149,23 @@ class AcclimationGuideScreen extends StatelessWidget {
 
           _TipCard(
             icon: Icons.lightbulb_outline,
-            tip: 'Keep lights off for several hours after adding new fish to reduce stress.',
+            tip:
+                'Keep lights off for several hours after adding new fish to reduce stress.',
           ),
           _TipCard(
             icon: Icons.no_food,
-            tip: 'Don\'t feed new fish for 24 hours — they won\'t eat while stressed.',
+            tip:
+                'Don\'t feed new fish for 24 hours — they won\'t eat while stressed.',
           ),
           _TipCard(
             icon: Icons.visibility,
-            tip: 'Watch for signs of stress: rapid breathing, hiding, color loss, erratic swimming.',
+            tip:
+                'Watch for signs of stress: rapid breathing, hiding, color loss, erratic swimming.',
           ),
           _TipCard(
             icon: Icons.water_drop,
-            tip: 'Never add store water to your tank — it may contain diseases or parasites.',
+            tip:
+                'Never add store water to your tank — it may contain diseases or parasites.',
           ),
           _TipCard(
             icon: Icons.schedule,
@@ -147,7 +173,8 @@ class AcclimationGuideScreen extends StatelessWidget {
           ),
           _TipCard(
             icon: Icons.local_hospital,
-            tip: 'Consider a quarantine tank for new fish to prevent disease spread.',
+            tip:
+                'Consider a quarantine tank for new fish to prevent disease spread.',
           ),
 
           const SizedBox(height: 32),
@@ -162,15 +189,35 @@ class AcclimationGuideScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _SensitiveItem(species: 'Shrimp', note: 'Extremely sensitive to parameter changes. Always drip acclimate for 2+ hours.'),
+                  _SensitiveItem(
+                    species: 'Shrimp',
+                    note:
+                        'Extremely sensitive to parameter changes. Always drip acclimate for 2+ hours.',
+                  ),
                   const Divider(),
-                  _SensitiveItem(species: 'Discus', note: 'Sensitive to pH and temperature. Drip acclimate and maintain pristine water.'),
+                  _SensitiveItem(
+                    species: 'Discus',
+                    note:
+                        'Sensitive to pH and temperature. Drip acclimate and maintain pristine water.',
+                  ),
                   const Divider(),
-                  _SensitiveItem(species: 'Wild-caught fish', note: 'Often more sensitive than captive-bred. Extended drip recommended.'),
+                  _SensitiveItem(
+                    species: 'Wild-caught fish',
+                    note:
+                        'Often more sensitive than captive-bred. Extended drip recommended.',
+                  ),
                   const Divider(),
-                  _SensitiveItem(species: 'Marine fish', note: 'Salinity and pH critical. Drip acclimate all marine species.'),
+                  _SensitiveItem(
+                    species: 'Marine fish',
+                    note:
+                        'Salinity and pH critical. Drip acclimate all marine species.',
+                  ),
                   const Divider(),
-                  _SensitiveItem(species: 'Plecos', note: 'Can be sensitive. Float longer and acclimate slowly.'),
+                  _SensitiveItem(
+                    species: 'Plecos',
+                    note:
+                        'Can be sensitive. Float longer and acclimate slowly.',
+                  ),
                 ],
               ),
             ),
@@ -217,7 +264,9 @@ class _StepCard extends StatelessWidget {
               child: Center(
                 child: Text(
                   '$step',
-                  style: AppTypography.labelLarge.copyWith(color: AppColors.primary),
+                  style: AppTypography.labelLarge.copyWith(
+                    color: AppColors.primary,
+                  ),
                 ),
               ),
             ),
@@ -228,9 +277,14 @@ class _StepCard extends StatelessWidget {
                 children: [
                   Row(
                     children: [
-                      Expanded(child: Text(title, style: AppTypography.labelLarge)),
+                      Expanded(
+                        child: Text(title, style: AppTypography.labelLarge),
+                      ),
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 2,
+                        ),
                         decoration: BoxDecoration(
                           color: AppColors.surfaceVariant,
                           borderRadius: BorderRadius.circular(8),
@@ -238,7 +292,11 @@ class _StepCard extends StatelessWidget {
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Icon(Icons.timer, size: 12, color: AppColors.textSecondary),
+                            Icon(
+                              Icons.timer,
+                              size: 12,
+                              color: AppColors.textSecondary,
+                            ),
                             const SizedBox(width: 4),
                             Text(duration, style: AppTypography.bodySmall),
                           ],

@@ -23,7 +23,10 @@ class BreedingGuideScreen extends StatelessWidget {
                     children: [
                       Icon(Icons.favorite, color: AppColors.info),
                       const SizedBox(width: 8),
-                      Text('Breeding Basics', style: AppTypography.headlineSmall),
+                      Text(
+                        'Breeding Basics',
+                        style: AppTypography.headlineSmall,
+                      ),
                     ],
                   ),
                   const SizedBox(height: 12),
@@ -59,7 +62,8 @@ class BreedingGuideScreen extends StatelessWidget {
           _MethodCard(
             title: 'Egg Scatterers',
             icon: Icons.scatter_plot,
-            description: 'Scatter eggs over plants/substrate. Parents often eat eggs.',
+            description:
+                'Scatter eggs over plants/substrate. Parents often eat eggs.',
             examples: 'Tetras, Danios, Barbs, Rasboras',
             tips: [
               'Use spawning mops or fine-leaved plants',
@@ -72,7 +76,8 @@ class BreedingGuideScreen extends StatelessWidget {
           _MethodCard(
             title: 'Egg Depositors',
             icon: Icons.egg,
-            description: 'Lay eggs on surfaces (rocks, leaves, glass). Often guard eggs.',
+            description:
+                'Lay eggs on surfaces (rocks, leaves, glass). Often guard eggs.',
             examples: 'Corydoras, Angelfish, Discus, Bristlenose Plecos',
             tips: [
               'Provide flat surfaces for egg laying',
@@ -123,27 +128,32 @@ class BreedingGuideScreen extends StatelessWidget {
                 children: [
                   _ConditionItem(
                     title: 'Diet',
-                    description: 'Feed high-protein foods: live/frozen brine shrimp, bloodworms, daphnia. Multiple small meals daily.',
+                    description:
+                        'Feed high-protein foods: live/frozen brine shrimp, bloodworms, daphnia. Multiple small meals daily.',
                   ),
                   const Divider(),
                   _ConditionItem(
                     title: 'Water Quality',
-                    description: 'Pristine water, frequent small changes. Many species triggered by cooler water change.',
+                    description:
+                        'Pristine water, frequent small changes. Many species triggered by cooler water change.',
                   ),
                   const Divider(),
                   _ConditionItem(
                     title: 'Temperature',
-                    description: 'Slight increase (1-2°C) can trigger breeding. Simulate rainy season.',
+                    description:
+                        'Slight increase (1-2°C) can trigger breeding. Simulate rainy season.',
                   ),
                   const Divider(),
                   _ConditionItem(
                     title: 'Ratio',
-                    description: 'Usually 1 male to 2-3 females. Reduces stress on single female.',
+                    description:
+                        'Usually 1 male to 2-3 females. Reduces stress on single female.',
                   ),
                   const Divider(),
                   _ConditionItem(
                     title: 'Privacy',
-                    description: 'Dim lighting, hiding spots, separate breeding tank often helps.',
+                    description:
+                        'Dim lighting, hiding spots, separate breeding tank often helps.',
                   ),
                 ],
               ),
@@ -195,7 +205,8 @@ class BreedingGuideScreen extends StatelessWidget {
                   _EasyBreederRow(
                     fish: 'Guppies',
                     difficulty: 'Very Easy',
-                    notes: 'Will breed constantly. Separate sexes to control population.',
+                    notes:
+                        'Will breed constantly. Separate sexes to control population.',
                   ),
                   const Divider(),
                   _EasyBreederRow(
@@ -219,19 +230,22 @@ class BreedingGuideScreen extends StatelessWidget {
                   _EasyBreederRow(
                     fish: 'Cherry Shrimp',
                     difficulty: 'Easy',
-                    notes: 'Breed readily in planted tanks. No intervention needed.',
+                    notes:
+                        'Breed readily in planted tanks. No intervention needed.',
                   ),
                   const Divider(),
                   _EasyBreederRow(
                     fish: 'Corydoras',
                     difficulty: 'Moderate',
-                    notes: 'Cool water change triggers spawning. Eggs on glass.',
+                    notes:
+                        'Cool water change triggers spawning. Eggs on glass.',
                   ),
                   const Divider(),
                   _EasyBreederRow(
                     fish: 'Bettas',
                     difficulty: 'Moderate',
-                    notes: 'Male builds bubble nest. Remove female after spawning.',
+                    notes:
+                        'Male builds bubble nest. Remove female after spawning.',
                   ),
                 ],
               ),
@@ -252,7 +266,10 @@ class BreedingGuideScreen extends StatelessWidget {
                     children: [
                       Icon(Icons.warning_amber, color: AppColors.warning),
                       const SizedBox(width: 8),
-                      Text('Before You Breed', style: AppTypography.headlineSmall),
+                      Text(
+                        'Before You Breed',
+                        style: AppTypography.headlineSmall,
+                      ),
                     ],
                   ),
                   const SizedBox(height: 12),
@@ -313,20 +330,28 @@ class _MethodCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Examples: $examples', 
-                  style: AppTypography.bodySmall.copyWith(fontStyle: FontStyle.italic)),
-                const SizedBox(height: 12),
-                ...tips.map((t) => Padding(
-                  padding: const EdgeInsets.only(bottom: 4),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Icon(Icons.check, size: 16, color: AppColors.success),
-                      const SizedBox(width: 8),
-                      Expanded(child: Text(t, style: AppTypography.bodySmall)),
-                    ],
+                Text(
+                  'Examples: $examples',
+                  style: AppTypography.bodySmall.copyWith(
+                    fontStyle: FontStyle.italic,
                   ),
-                )),
+                ),
+                const SizedBox(height: 12),
+                ...tips.map(
+                  (t) => Padding(
+                    padding: const EdgeInsets.only(bottom: 4),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Icon(Icons.check, size: 16, color: AppColors.success),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(t, style: AppTypography.bodySmall),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
@@ -388,7 +413,12 @@ class _FryStageCard extends StatelessWidget {
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Center(
-                child: Text(stage, style: AppTypography.bodySmall.copyWith(color: AppColors.secondary)),
+                child: Text(
+                  stage,
+                  style: AppTypography.bodySmall.copyWith(
+                    color: AppColors.secondary,
+                  ),
+                ),
               ),
             ),
             const SizedBox(width: 12),
@@ -434,7 +464,12 @@ class _EasyBreederRow extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(fish, style: AppTypography.labelLarge),
-                Text(difficulty, style: AppTypography.bodySmall.copyWith(color: AppColors.success)),
+                Text(
+                  difficulty,
+                  style: AppTypography.bodySmall.copyWith(
+                    color: AppColors.success,
+                  ),
+                ),
               ],
             ),
           ),

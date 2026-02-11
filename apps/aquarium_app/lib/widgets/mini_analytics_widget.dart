@@ -42,7 +42,8 @@ class MiniAnalyticsWidget extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const Placeholder(), // Replace with AnalyticsScreen()
+                  builder: (context) =>
+                      const Placeholder(), // Replace with AnalyticsScreen()
                 ),
               );
             },
@@ -56,15 +57,14 @@ class MiniAnalyticsWidget extends StatelessWidget {
                     children: [
                       Text(
                         'Your Progress',
-                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                              fontWeight: FontWeight.bold,
-                            ),
+                        style: Theme.of(context).textTheme.titleMedium
+                            ?.copyWith(fontWeight: FontWeight.bold),
                       ),
                       Icon(Icons.analytics, color: Colors.blue),
                     ],
                   ),
                   const SizedBox(height: 16),
-                  
+
                   // Quick stats row
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -92,12 +92,12 @@ class MiniAnalyticsWidget extends StatelessWidget {
                       ),
                     ],
                   ),
-                  
+
                   if (summary.insights.isNotEmpty) ...[
                     const SizedBox(height: 16),
                     const Divider(),
                     const SizedBox(height: 8),
-                    
+
                     // Top insight preview
                     Row(
                       children: [
@@ -120,9 +120,9 @@ class MiniAnalyticsWidget extends StatelessWidget {
                       ],
                     ),
                   ],
-                  
+
                   const SizedBox(height: 12),
-                  
+
                   // View full analytics button
                   SizedBox(
                     width: double.infinity,
@@ -132,15 +132,14 @@ class MiniAnalyticsWidget extends StatelessWidget {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => const Placeholder(), // Replace with AnalyticsScreen()
+                            builder: (context) =>
+                                const Placeholder(), // Replace with AnalyticsScreen()
                           ),
                         );
                       },
                       icon: const Icon(Icons.trending_up, size: 18),
                       label: const Text('View Detailed Analytics'),
-                      style: TextButton.styleFrom(
-                        foregroundColor: Colors.blue,
-                      ),
+                      style: TextButton.styleFrom(foregroundColor: Colors.blue),
                     ),
                   ),
                 ],
@@ -172,13 +171,7 @@ class MiniAnalyticsWidget extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 2),
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: 11,
-            color: Colors.grey[600],
-          ),
-        ),
+        Text(label, style: TextStyle(fontSize: 11, color: Colors.grey[600])),
       ],
     );
   }

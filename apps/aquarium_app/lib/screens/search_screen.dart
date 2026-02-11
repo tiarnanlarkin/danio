@@ -57,11 +57,8 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
           : tanksAsync.when(
               loading: () => const Center(child: CircularProgressIndicator()),
               error: (e, _) => Center(child: Text('Error: $e')),
-              data: (tanks) => _SearchResults(
-                query: _query,
-                tanks: tanks,
-                ref: ref,
-              ),
+              data: (tanks) =>
+                  _SearchResults(query: _query, tanks: tanks, ref: ref),
             ),
     );
   }
@@ -76,10 +73,7 @@ class _EmptySearchState extends StatelessWidget {
         children: [
           Icon(Icons.search, size: 64, color: AppColors.textHint),
           const SizedBox(height: 16),
-          Text(
-            'Search your aquarium data',
-            style: AppTypography.bodyMedium,
-          ),
+          Text('Search your aquarium data', style: AppTypography.bodyMedium),
           const SizedBox(height: 8),
           Text(
             'Find tanks, fish, equipment, or browse species',
@@ -109,16 +103,21 @@ class _SearchResults extends StatelessWidget {
     // Search tanks
     for (final tank in tanks) {
       if (tank.name.toLowerCase().contains(query)) {
-        results.add(_SearchResult(
-          type: _ResultType.tank,
-          title: tank.name,
-          subtitle: '${tank.volumeLitres.toStringAsFixed(0)}L ${tank.type.name}',
-          icon: Icons.water,
-          onTap: () => Navigator.push(
-            context,
-            MaterialPageRoute(builder: (_) => TankDetailScreen(tankId: tank.id)),
+        results.add(
+          _SearchResult(
+            type: _ResultType.tank,
+            title: tank.name,
+            subtitle:
+                '${tank.volumeLitres.toStringAsFixed(0)}L ${tank.type.name}',
+            icon: Icons.water,
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => TankDetailScreen(tankId: tank.id),
+              ),
+            ),
           ),
-        ));
+        );
       }
     }
 
@@ -129,18 +128,21 @@ class _SearchResults extends StatelessWidget {
         for (final l in livestock) {
           if (l.commonName.toLowerCase().contains(query) ||
               (l.scientificName?.toLowerCase().contains(query) ?? false)) {
-            results.add(_SearchResult(
-              type: _ResultType.livestock,
-              title: l.commonName,
-              subtitle: 'in ${tank.name} (×${l.count})',
-              icon: Icons.set_meal,
-              onTap: () => Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => LivestockDetailScreen(tankId: tank.id, livestock: l),
+            results.add(
+              _SearchResult(
+                type: _ResultType.livestock,
+                title: l.commonName,
+                subtitle: 'in ${tank.name} (×${l.count})',
+                icon: Icons.set_meal,
+                onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) =>
+                        LivestockDetailScreen(tankId: tank.id, livestock: l),
+                  ),
                 ),
               ),
-            ));
+            );
           }
         }
       });
@@ -152,16 +154,20 @@ class _SearchResults extends StatelessWidget {
           if (e.name.toLowerCase().contains(query) ||
               e.typeName.toLowerCase().contains(query) ||
               (e.brand?.toLowerCase().contains(query) ?? false)) {
-            results.add(_SearchResult(
-              type: _ResultType.equipment,
-              title: e.name,
-              subtitle: '${e.typeName} in ${tank.name}',
-              icon: Icons.build,
-              onTap: () => Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => TankDetailScreen(tankId: tank.id)),
+            results.add(
+              _SearchResult(
+                type: _ResultType.equipment,
+                title: e.name,
+                subtitle: '${e.typeName} in ${tank.name}',
+                icon: Icons.build,
+                onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => TankDetailScreen(tankId: tank.id),
+                  ),
+                ),
               ),
-            ));
+            );
           }
         }
       });
@@ -170,13 +176,15 @@ class _SearchResults extends StatelessWidget {
     // Search species database
     final speciesResults = SpeciesDatabase.search(query);
     for (final species in speciesResults.take(10)) {
-      results.add(_SearchResult(
-        type: _ResultType.species,
-        title: species.commonName,
-        subtitle: '${species.scientificName} • ${species.careLevel}',
-        icon: Icons.pets,
-        onTap: () => _showSpeciesInfo(context, species),
-      ));
+      results.add(
+        _SearchResult(
+          type: _ResultType.species,
+          title: species.commonName,
+          subtitle: '${species.scientificName} • ${species.careLevel}',
+          icon: Icons.pets,
+          onTap: () => _showSpeciesInfo(context, species),
+        ),
+      );
     }
 
     if (results.isEmpty) {
@@ -193,10 +201,18 @@ class _SearchResults extends StatelessWidget {
     }
 
     // Group results by type
-    final tankResults = results.where((r) => r.type == _ResultType.tank).toList();
-    final livestockResults = results.where((r) => r.type == _ResultType.livestock).toList();
-    final equipmentResults = results.where((r) => r.type == _ResultType.equipment).toList();
-    final speciesResultsList = results.where((r) => r.type == _ResultType.species).toList();
+    final tankResults = results
+        .where((r) => r.type == _ResultType.tank)
+        .toList();
+    final livestockResults = results
+        .where((r) => r.type == _ResultType.livestock)
+        .toList();
+    final equipmentResults = results
+        .where((r) => r.type == _ResultType.equipment)
+        .toList();
+    final speciesResultsList = results
+        .where((r) => r.type == _ResultType.species)
+        .toList();
 
     return ListView(
       padding: const EdgeInsets.all(16),
@@ -217,7 +233,10 @@ class _SearchResults extends StatelessWidget {
           const SizedBox(height: 16),
         ],
         if (speciesResultsList.isNotEmpty) ...[
-          _SectionHeader(title: 'Species Database', count: speciesResultsList.length),
+          _SectionHeader(
+            title: 'Species Database',
+            count: speciesResultsList.length,
+          ),
           ...speciesResultsList.map((r) => _ResultTile(result: r)),
         ],
       ],
@@ -253,7 +272,9 @@ class _SearchResults extends StatelessWidget {
               Text(species.commonName, style: AppTypography.headlineMedium),
               Text(
                 species.scientificName,
-                style: AppTypography.bodyMedium.copyWith(fontStyle: FontStyle.italic),
+                style: AppTypography.bodyMedium.copyWith(
+                  fontStyle: FontStyle.italic,
+                ),
               ),
               const SizedBox(height: 16),
               Wrap(
@@ -262,7 +283,9 @@ class _SearchResults extends StatelessWidget {
                 children: [
                   _InfoChip(label: species.careLevel),
                   _InfoChip(label: species.temperament),
-                  _InfoChip(label: '${species.adultSizeCm.toStringAsFixed(0)}cm'),
+                  _InfoChip(
+                    label: '${species.adultSizeCm.toStringAsFixed(0)}cm',
+                  ),
                   _InfoChip(label: species.family),
                 ],
               ),

@@ -17,8 +17,8 @@ class ThermometerItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final fillPercent = temperature != null 
-        ? ((temperature! - 15) / 20).clamp(0.0, 1.0) 
+    final fillPercent = temperature != null
+        ? ((temperature! - 15) / 20).clamp(0.0, 1.0)
         : 0.3;
 
     return GestureDetector(
@@ -56,12 +56,12 @@ class _ThermometerPainter extends CustomPainter {
     final bulbRadius = size.width * 0.45;
     final tubeWidth = size.width * 0.35;
     final tubeLeft = (size.width - tubeWidth) / 2;
-    
+
     // Glass outline
     final glassPaint = Paint()
       ..color = Colors.white.withOpacity(0.8)
       ..style = PaintingStyle.fill;
-    
+
     final outlinePaint = Paint()
       ..color = AppColors.textHint.withOpacity(0.5)
       ..style = PaintingStyle.stroke
@@ -90,14 +90,14 @@ class _ThermometerPainter extends CustomPainter {
     // Fill (mercury)
     final fillPaint = Paint()..color = color;
     final fillHeight = (size.height - bulbRadius * 2 - 16) * fillPercent;
-    
+
     // Bulb fill
     canvas.drawCircle(
       Offset(size.width / 2, size.height - bulbRadius),
       bulbRadius * 0.7,
       fillPaint,
     );
-    
+
     // Tube fill
     final innerTubeWidth = tubeWidth * 0.5;
     final innerTubeLeft = (size.width - innerTubeWidth) / 2;
@@ -118,7 +118,7 @@ class _ThermometerPainter extends CustomPainter {
     final tickPaint = Paint()
       ..color = AppColors.textHint.withOpacity(0.4)
       ..strokeWidth = 1;
-    
+
     for (var i = 0; i < 5; i++) {
       final y = 16 + (size.height - bulbRadius * 2 - 24) * (i / 4);
       canvas.drawLine(
@@ -130,7 +130,7 @@ class _ThermometerPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant _ThermometerPainter old) => 
+  bool shouldRepaint(covariant _ThermometerPainter old) =>
       old.fillPercent != fillPercent || old.color != color;
 }
 
@@ -245,7 +245,7 @@ class _TestTubeRackPainter extends CustomPainter {
     for (var i = 0; i < 4; i++) {
       final x = 10 + i * (tubeWidth + 4);
       final tubeHeight = size.height * 0.65;
-      
+
       // Tube glass
       final tubePath = Path()
         ..moveTo(x, size.height * 0.3)
@@ -267,7 +267,10 @@ class _TestTubeRackPainter extends CustomPainter {
         ..moveTo(x + 2, size.height * 0.3 + tubeHeight - fillHeight)
         ..lineTo(x + 2, size.height * 0.3 + tubeHeight - tubeWidth / 2)
         ..arcToPoint(
-          Offset(x + tubeWidth - 2, size.height * 0.3 + tubeHeight - tubeWidth / 2),
+          Offset(
+            x + tubeWidth - 2,
+            size.height * 0.3 + tubeHeight - tubeWidth / 2,
+          ),
           radius: Radius.circular(tubeWidth / 2 - 2),
         )
         ..lineTo(x + tubeWidth - 2, size.height * 0.3 + tubeHeight - fillHeight)
@@ -278,7 +281,7 @@ class _TestTubeRackPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant _TestTubeRackPainter old) => 
+  bool shouldRepaint(covariant _TestTubeRackPainter old) =>
       old.colors != colors;
 }
 
@@ -348,7 +351,7 @@ class _FilterPainter extends CustomPainter {
       ..color = const Color(0xFF718096)
       ..strokeWidth = 4
       ..strokeCap = StrokeCap.round;
-    
+
     canvas.drawLine(
       Offset(size.width * 0.3, 8),
       Offset(size.width * 0.3, 0),
@@ -362,12 +365,9 @@ class _FilterPainter extends CustomPainter {
 
     // Media layers (visible through "window")
     final windowRect = Rect.fromLTWH(8, 24, size.width - 16, size.height - 36);
-    
+
     // Window background
-    canvas.drawRect(
-      windowRect,
-      Paint()..color = const Color(0xFF1A202C),
-    );
+    canvas.drawRect(windowRect, Paint()..color = const Color(0xFF1A202C));
 
     // Draw media layers
     final layerHeight = windowRect.height / mediaTypes.length;
@@ -379,7 +379,7 @@ class _FilterPainter extends CustomPainter {
         layerHeight - 2,
       );
       canvas.drawRect(layerRect, Paint()..color = _mediaColor(mediaTypes[i]));
-      
+
       // Add texture based on media type
       _drawMediaTexture(canvas, layerRect, mediaTypes[i]);
     }
@@ -428,8 +428,11 @@ class _FilterPainter extends CustomPainter {
         for (var x = rect.left + 5; x < rect.right - 5; x += 8) {
           for (var y = rect.top + 4; y < rect.bottom - 4; y += 6) {
             canvas.drawCircle(
-              Offset(x, y), 2,
-              Paint()..color = Colors.grey.shade400..style = PaintingStyle.stroke,
+              Offset(x, y),
+              2,
+              Paint()
+                ..color = Colors.grey.shade400
+                ..style = PaintingStyle.stroke,
             );
           }
         }
@@ -452,7 +455,7 @@ class _FilterPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant _FilterPainter old) => 
+  bool shouldRepaint(covariant _FilterPainter old) =>
       old.mediaTypes != mediaTypes || old.isRunning != isRunning;
 }
 
@@ -501,7 +504,7 @@ class _FoodJarPainter extends CustomPainter {
     final glassPaint = Paint()
       ..color = Colors.white.withOpacity(0.3)
       ..style = PaintingStyle.fill;
-    
+
     final jarRect = RRect.fromRectAndRadius(
       Rect.fromLTWH(4, 16, size.width - 8, size.height - 20),
       const Radius.circular(4),
@@ -525,7 +528,7 @@ class _FoodJarPainter extends CustomPainter {
       ),
       Paint()..color = const Color(0xFFE53E3E), // Red lid
     );
-    
+
     // Lid highlight
     canvas.drawRRect(
       RRect.fromRectAndRadius(
@@ -543,7 +546,7 @@ class _FoodJarPainter extends CustomPainter {
       size.width - 12,
       fillHeight,
     );
-    
+
     canvas.drawRect(foodRect, Paint()..color = _foodColor());
 
     // Food texture
@@ -583,7 +586,7 @@ class _FoodJarPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant _FoodJarPainter old) => 
+  bool shouldRepaint(covariant _FoodJarPainter old) =>
       old.foodType != foodType || old.fillLevel != fillLevel;
 }
 
@@ -687,7 +690,7 @@ class _HeaterPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant _HeaterPainter old) => 
+  bool shouldRepaint(covariant _HeaterPainter old) =>
       old.setTemp != setTemp || old.isOn != isOn;
 }
 
@@ -743,8 +746,13 @@ class _LightPainter extends CustomPainter {
     );
 
     // Light panel (LEDs)
-    final panelRect = Rect.fromLTWH(4, size.height * 0.5, size.width - 8, size.height * 0.4);
-    
+    final panelRect = Rect.fromLTWH(
+      4,
+      size.height * 0.5,
+      size.width - 8,
+      size.height * 0.4,
+    );
+
     if (isOn) {
       // Glow effect
       canvas.drawRect(
@@ -757,21 +765,20 @@ class _LightPainter extends CustomPainter {
 
     canvas.drawRect(
       panelRect,
-      Paint()..color = isOn 
-          ? Color.lerp(const Color(0xFF4A5568), Colors.yellow, brightness)!
-          : const Color(0xFF4A5568),
+      Paint()
+        ..color = isOn
+            ? Color.lerp(const Color(0xFF4A5568), Colors.yellow, brightness)!
+            : const Color(0xFF4A5568),
     );
 
     // LED dots
     final ledPaint = Paint()
-      ..color = isOn ? Colors.white.withOpacity(brightness) : const Color(0xFF718096);
-    
+      ..color = isOn
+          ? Colors.white.withOpacity(brightness)
+          : const Color(0xFF718096);
+
     for (var x = panelRect.left + 6; x < panelRect.right - 6; x += 8) {
-      canvas.drawCircle(
-        Offset(x, panelRect.center.dy),
-        2,
-        ledPaint,
-      );
+      canvas.drawCircle(Offset(x, panelRect.center.dy), 2, ledPaint);
     }
 
     // Mounting brackets
@@ -786,7 +793,7 @@ class _LightPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant _LightPainter old) => 
+  bool shouldRepaint(covariant _LightPainter old) =>
       old.isOn != isOn || old.brightness != brightness;
 }
 
@@ -827,13 +834,17 @@ class _NetPainter extends CustomPainter {
     final framePath = Path()
       ..moveTo(size.width * 0.1, size.height * 0.4)
       ..quadraticBezierTo(
-        size.width * 0.5, size.height * 0.35,
-        size.width * 0.9, size.height * 0.4,
+        size.width * 0.5,
+        size.height * 0.35,
+        size.width * 0.9,
+        size.height * 0.4,
       )
       ..lineTo(size.width * 0.7, size.height * 0.95)
       ..quadraticBezierTo(
-        size.width * 0.5, size.height,
-        size.width * 0.3, size.height * 0.95,
+        size.width * 0.5,
+        size.height,
+        size.width * 0.3,
+        size.height * 0.95,
       )
       ..close();
 
@@ -915,16 +926,15 @@ class _BucketPainter extends CustomPainter {
       ..moveTo(size.width * 0.1, size.height * 0.25)
       ..lineTo(size.width * 0.05, size.height * 0.95)
       ..quadraticBezierTo(
-        size.width * 0.5, size.height,
-        size.width * 0.95, size.height * 0.95,
+        size.width * 0.5,
+        size.height,
+        size.width * 0.95,
+        size.height * 0.95,
       )
       ..lineTo(size.width * 0.9, size.height * 0.25)
       ..close();
 
-    canvas.drawPath(
-      bucketPath,
-      Paint()..color = const Color(0xFF4299E1),
-    );
+    canvas.drawPath(bucketPath, Paint()..color = const Color(0xFF4299E1));
 
     // Water fill
     if (fillLevel > 0) {
@@ -944,8 +954,10 @@ class _BucketPainter extends CustomPainter {
     final handlePath = Path()
       ..moveTo(size.width * 0.15, size.height * 0.25)
       ..quadraticBezierTo(
-        size.width * 0.5, size.height * 0.05,
-        size.width * 0.85, size.height * 0.25,
+        size.width * 0.5,
+        size.height * 0.05,
+        size.width * 0.85,
+        size.height * 0.25,
       );
 
     canvas.drawPath(
@@ -968,5 +980,6 @@ class _BucketPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant _BucketPainter old) => old.fillLevel != fillLevel;
+  bool shouldRepaint(covariant _BucketPainter old) =>
+      old.fillLevel != fillLevel;
 }

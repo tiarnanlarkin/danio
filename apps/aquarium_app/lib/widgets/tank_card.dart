@@ -9,11 +9,7 @@ class TankCard extends ConsumerWidget {
   final Tank tank;
   final VoidCallback? onTap;
 
-  const TankCard({
-    super.key,
-    required this.tank,
-    this.onTap,
-  });
+  const TankCard({super.key, required this.tank, this.onTap});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -83,7 +79,7 @@ class TankCard extends ConsumerWidget {
                 ],
               ),
             ),
-            
+
             // Body
             Padding(
               padding: const EdgeInsets.all(16),
@@ -103,7 +99,9 @@ class TankCard extends ConsumerWidget {
                         loading: () => const SizedBox.shrink(),
                         error: (_, __) => const SizedBox.shrink(),
                         data: (logs) {
-                          final lastTest = logs.where((l) => l.type == LogType.waterTest).firstOrNull;
+                          final lastTest = logs
+                              .where((l) => l.type == LogType.waterTest)
+                              .firstOrNull;
                           if (lastTest == null) return const SizedBox.shrink();
                           return _StatChip(
                             icon: Icons.science_outlined,
@@ -114,9 +112,9 @@ class TankCard extends ConsumerWidget {
                       ),
                     ],
                   ),
-                  
+
                   const SizedBox(height: 12),
-                  
+
                   // Status badges
                   _StatusBadgesRow(
                     tasksAsync: tasksAsync,
@@ -154,11 +152,7 @@ class _StatChip extends StatelessWidget {
   final String label;
   final String? tooltip;
 
-  const _StatChip({
-    required this.icon,
-    required this.label,
-    this.tooltip,
-  });
+  const _StatChip({required this.icon, required this.label, this.tooltip});
 
   @override
   Widget build(BuildContext context) {
@@ -204,55 +198,73 @@ class _StatusBadgesRow extends StatelessWidget {
     // Task badges
     tasksAsync.whenData((tasks) {
       final overdue = tasks.where((t) => t.isOverdue && t.isEnabled).length;
-      final dueToday = tasks.where((t) => t.isDueToday && t.isEnabled && !t.isOverdue).length;
+      final dueToday = tasks
+          .where((t) => t.isDueToday && t.isEnabled && !t.isOverdue)
+          .length;
 
       if (overdue > 0) {
-        badges.add(_Badge(
-          icon: Icons.warning_amber,
-          label: '$overdue overdue',
-          color: AppColors.warning,
-        ));
+        badges.add(
+          _Badge(
+            icon: Icons.warning_amber,
+            label: '$overdue overdue',
+            color: AppColors.warning,
+          ),
+        );
       }
       if (dueToday > 0) {
-        badges.add(_Badge(
-          icon: Icons.today,
-          label: '$dueToday today',
-          color: AppColors.info,
-        ));
+        badges.add(
+          _Badge(
+            icon: Icons.today,
+            label: '$dueToday today',
+            color: AppColors.info,
+          ),
+        );
       }
     });
 
     // Equipment maintenance badges
     equipmentAsync.whenData((equipment) {
-      final maintenanceDue = equipment.where((e) => e.isMaintenanceOverdue).length;
+      final maintenanceDue = equipment
+          .where((e) => e.isMaintenanceOverdue)
+          .length;
       if (maintenanceDue > 0) {
-        badges.add(_Badge(
-          icon: Icons.build,
-          label: '$maintenanceDue service due',
-          color: AppColors.warning,
-        ));
+        badges.add(
+          _Badge(
+            icon: Icons.build,
+            label: '$maintenanceDue service due',
+            color: AppColors.warning,
+          ),
+        );
       }
     });
 
     // Test overdue badge
     logsAsync.whenData((logs) {
-      final lastTest = logs.where((l) => l.type == LogType.waterTest).firstOrNull;
+      final lastTest = logs
+          .where((l) => l.type == LogType.waterTest)
+          .firstOrNull;
       if (lastTest != null) {
-        final daysSinceTest = DateTime.now().difference(lastTest.timestamp).inDays;
+        final daysSinceTest = DateTime.now()
+            .difference(lastTest.timestamp)
+            .inDays;
         if (daysSinceTest >= 14) {
-          badges.add(_Badge(
-            icon: Icons.science_outlined,
-            label: 'Test overdue',
-            color: AppColors.info,
-          ));
+          badges.add(
+            _Badge(
+              icon: Icons.science_outlined,
+              label: 'Test overdue',
+              color: AppColors.info,
+            ),
+          );
         }
       } else {
         // No tests at all
-        badges.add(_Badge(
-          icon: Icons.science_outlined,
-          label: 'No tests yet',
-          color: AppColors.textHint,
-        ));
+        badges.add(
+          _Badge(
+            icon: Icons.science_outlined,
+            label: 'No tests yet',
+            color: AppColors.textHint,
+          ),
+        );
       }
     });
 
@@ -270,11 +282,7 @@ class _StatusBadgesRow extends StatelessWidget {
       );
     }
 
-    return Wrap(
-      spacing: 8,
-      runSpacing: 6,
-      children: badges,
-    );
+    return Wrap(spacing: 8, runSpacing: 6, children: badges);
   }
 }
 
@@ -283,11 +291,7 @@ class _Badge extends StatelessWidget {
   final String label;
   final Color color;
 
-  const _Badge({
-    required this.icon,
-    required this.label,
-    required this.color,
-  });
+  const _Badge({required this.icon, required this.label, required this.color});
 
   @override
   Widget build(BuildContext context) {

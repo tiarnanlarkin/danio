@@ -72,11 +72,11 @@ class SpeciesDatabase {
   static SpeciesInfo? lookup(String name) {
     _ensureInitialized();
     final lower = name.toLowerCase().trim();
-    
+
     // Exact match first
     if (_byCommonName.containsKey(lower)) return _byCommonName[lower];
     if (_byScientificName.containsKey(lower)) return _byScientificName[lower];
-    
+
     // Partial match
     for (final entry in _byCommonName.entries) {
       if (entry.key.contains(lower) || lower.contains(entry.key)) {
@@ -88,7 +88,7 @@ class SpeciesDatabase {
         return entry.value;
       }
     }
-    
+
     return null;
   }
 
@@ -97,11 +97,11 @@ class SpeciesDatabase {
     _ensureInitialized();
     final lower = query.toLowerCase().trim();
     if (lower.isEmpty) return _allSpecies.toList();
-    
+
     return _allSpecies.where((s) {
       return s.commonName.toLowerCase().contains(lower) ||
-             s.scientificName.toLowerCase().contains(lower) ||
-             s.family.toLowerCase().contains(lower);
+          s.scientificName.toLowerCase().contains(lower) ||
+          s.family.toLowerCase().contains(lower);
     }).toList();
   }
 
@@ -132,8 +132,15 @@ const List<SpeciesInfo> _allSpecies = [
     diet: 'Omnivore — flakes, micro pellets, frozen/live foods',
     adultSizeCm: 3.5,
     swimLevel: 'Middle',
-    description: 'One of the most popular aquarium fish. Bright blue and red coloring. Thrives in schools of 6+. Prefers soft, slightly acidic water with plants.',
-    compatibleWith: ['Cardinal Tetra', 'Corydoras', 'Rasbora', 'Small Gourami', 'Shrimp'],
+    description:
+        'One of the most popular aquarium fish. Bright blue and red coloring. Thrives in schools of 6+. Prefers soft, slightly acidic water with plants.',
+    compatibleWith: [
+      'Cardinal Tetra',
+      'Corydoras',
+      'Rasbora',
+      'Small Gourami',
+      'Shrimp',
+    ],
     avoidWith: ['Angelfish', 'Bettas', 'Large Cichlids'],
   ),
   SpeciesInfo(
@@ -153,7 +160,8 @@ const List<SpeciesInfo> _allSpecies = [
     diet: 'Omnivore — flakes, micro pellets, frozen/live foods',
     adultSizeCm: 5,
     swimLevel: 'Middle',
-    description: 'Similar to Neon Tetra but with more vibrant red extending the full body length. Prefers warmer, softer water. Beautiful in planted tanks.',
+    description:
+        'Similar to Neon Tetra but with more vibrant red extending the full body length. Prefers warmer, softer water. Beautiful in planted tanks.',
     compatibleWith: ['Neon Tetra', 'Corydoras', 'Rasbora', 'Small Gourami'],
     avoidWith: ['Large Cichlids', 'Aggressive fish'],
   ),
@@ -174,7 +182,8 @@ const List<SpeciesInfo> _allSpecies = [
     diet: 'Omnivore — flakes, small pellets, frozen foods',
     adultSizeCm: 5,
     swimLevel: 'Middle',
-    description: 'Known for tight schooling behavior and distinctive red nose. The red nose fades when stressed — a good indicator of water quality.',
+    description:
+        'Known for tight schooling behavior and distinctive red nose. The red nose fades when stressed — a good indicator of water quality.',
     compatibleWith: ['Other Tetras', 'Corydoras', 'Rasboras', 'Dwarf Cichlids'],
     avoidWith: ['Aggressive fish', 'Large predators'],
   ),
@@ -197,8 +206,14 @@ const List<SpeciesInfo> _allSpecies = [
     diet: 'Omnivore — flakes, small pellets, vegetable matter',
     adultSizeCm: 5,
     swimLevel: 'Top',
-    description: 'Hardy, colorful, and prolific breeders. Males are more colorful; females are larger. Prefer harder, alkaline water. Will breed readily.',
-    compatibleWith: ['Platies', 'Mollies', 'Corydoras', 'Peaceful community fish'],
+    description:
+        'Hardy, colorful, and prolific breeders. Males are more colorful; females are larger. Prefer harder, alkaline water. Will breed readily.',
+    compatibleWith: [
+      'Platies',
+      'Mollies',
+      'Corydoras',
+      'Peaceful community fish',
+    ],
     avoidWith: ['Fin nippers', 'Aggressive fish', 'Bettas (male)'],
   ),
   SpeciesInfo(
@@ -218,7 +233,8 @@ const List<SpeciesInfo> _allSpecies = [
     diet: 'Omnivore — flakes, pellets, vegetable matter, algae',
     adultSizeCm: 6,
     swimLevel: 'Middle',
-    description: 'Hardy, peaceful livebearers available in many colors. Easy to breed. Great for beginners. Prefer harder, alkaline water.',
+    description:
+        'Hardy, peaceful livebearers available in many colors. Easy to breed. Great for beginners. Prefer harder, alkaline water.',
     compatibleWith: ['Guppies', 'Mollies', 'Swordtails', 'Corydoras'],
     avoidWith: ['Aggressive fish'],
   ),
@@ -239,8 +255,14 @@ const List<SpeciesInfo> _allSpecies = [
     diet: 'Omnivore with herbivore tendencies — flakes, algae, vegetables',
     adultSizeCm: 10,
     swimLevel: 'All',
-    description: 'Popular livebearers that come in many varieties (black, dalmatian, sailfin). Prefer hard, alkaline water. Good algae eaters.',
-    compatibleWith: ['Guppies', 'Platies', 'Swordtails', 'Larger community fish'],
+    description:
+        'Popular livebearers that come in many varieties (black, dalmatian, sailfin). Prefer hard, alkaline water. Good algae eaters.',
+    compatibleWith: [
+      'Guppies',
+      'Platies',
+      'Swordtails',
+      'Larger community fish',
+    ],
     avoidWith: ['Soft-water fish', 'Very small fish'],
   ),
 
@@ -262,8 +284,14 @@ const List<SpeciesInfo> _allSpecies = [
     diet: 'Omnivore — sinking pellets, wafers, frozen foods',
     adultSizeCm: 7,
     swimLevel: 'Bottom',
-    description: 'Hardy bottom-dwelling catfish. Excellent scavengers. Keep in groups of 6+ on soft substrate (sand preferred). Active during day.',
-    compatibleWith: ['Most community fish', 'Tetras', 'Rasboras', 'Peaceful fish'],
+    description:
+        'Hardy bottom-dwelling catfish. Excellent scavengers. Keep in groups of 6+ on soft substrate (sand preferred). Active during day.',
+    compatibleWith: [
+      'Most community fish',
+      'Tetras',
+      'Rasboras',
+      'Peaceful fish',
+    ],
     avoidWith: ['Aggressive bottom dwellers', 'Large cichlids'],
   ),
   SpeciesInfo(
@@ -283,8 +311,14 @@ const List<SpeciesInfo> _allSpecies = [
     diet: 'Omnivore — sinking pellets, wafers, frozen foods',
     adultSizeCm: 5,
     swimLevel: 'Bottom',
-    description: 'Adorable black and white pattern resembling a panda. Prefers cooler water than most tropicals. Needs groups and soft substrate.',
-    compatibleWith: ['Other Corydoras', 'Tetras', 'White Cloud Minnows', 'Peaceful fish'],
+    description:
+        'Adorable black and white pattern resembling a panda. Prefers cooler water than most tropicals. Needs groups and soft substrate.',
+    compatibleWith: [
+      'Other Corydoras',
+      'Tetras',
+      'White Cloud Minnows',
+      'Peaceful fish',
+    ],
     avoidWith: ['Aggressive fish', 'Hot water species'],
   ),
 
@@ -306,7 +340,8 @@ const List<SpeciesInfo> _allSpecies = [
     diet: 'Omnivore — flakes, micro pellets, frozen foods',
     adultSizeCm: 5,
     swimLevel: 'Middle',
-    description: 'Beautiful orange fish with distinctive black triangular patch. Peaceful schooling fish that does well in planted tanks.',
+    description:
+        'Beautiful orange fish with distinctive black triangular patch. Peaceful schooling fish that does well in planted tanks.',
     compatibleWith: ['Tetras', 'Corydoras', 'Gouramis', 'Other Rasboras'],
     avoidWith: ['Large aggressive fish'],
   ),
@@ -327,7 +362,8 @@ const List<SpeciesInfo> _allSpecies = [
     diet: 'Omnivore — micro foods, crushed flakes, baby brine shrimp',
     adultSizeCm: 2,
     swimLevel: 'Middle',
-    description: 'Tiny, vibrantly red nano fish. Perfect for planted nano tanks. Needs very clean water and small food. Best in species-only or with small shrimp.',
+    description:
+        'Tiny, vibrantly red nano fish. Perfect for planted nano tanks. Needs very clean water and small food. Best in species-only or with small shrimp.',
     compatibleWith: ['Small shrimp', 'Other nano fish', 'Snails'],
     avoidWith: ['Any fish that could eat them', 'Fast/aggressive feeders'],
   ),
@@ -350,9 +386,20 @@ const List<SpeciesInfo> _allSpecies = [
     diet: 'Carnivore — betta pellets, frozen bloodworms, brine shrimp',
     adultSizeCm: 7,
     swimLevel: 'Top',
-    description: 'Beautiful labyrinth fish with flowing fins. Males must be kept alone or with peaceful tankmates. Needs access to surface air. Many color varieties.',
-    compatibleWith: ['Corydoras', 'Snails', 'Some shrimp', 'Calm bottom dwellers'],
-    avoidWith: ['Other Bettas', 'Fin nippers', 'Colorful/long-finned fish', 'Guppies'],
+    description:
+        'Beautiful labyrinth fish with flowing fins. Males must be kept alone or with peaceful tankmates. Needs access to surface air. Many color varieties.',
+    compatibleWith: [
+      'Corydoras',
+      'Snails',
+      'Some shrimp',
+      'Calm bottom dwellers',
+    ],
+    avoidWith: [
+      'Other Bettas',
+      'Fin nippers',
+      'Colorful/long-finned fish',
+      'Guppies',
+    ],
   ),
 
   // Gouramis
@@ -373,8 +420,14 @@ const List<SpeciesInfo> _allSpecies = [
     diet: 'Omnivore — flakes, pellets, frozen foods, some vegetable matter',
     adultSizeCm: 9,
     swimLevel: 'Top',
-    description: 'Colorful labyrinth fish. Males are more vibrant (red/blue stripes). Can be kept singly or in pairs. Needs calm water and hiding spots.',
-    compatibleWith: ['Tetras', 'Rasboras', 'Corydoras', 'Peaceful community fish'],
+    description:
+        'Colorful labyrinth fish. Males are more vibrant (red/blue stripes). Can be kept singly or in pairs. Needs calm water and hiding spots.',
+    compatibleWith: [
+      'Tetras',
+      'Rasboras',
+      'Corydoras',
+      'Peaceful community fish',
+    ],
     avoidWith: ['Aggressive fish', 'Other male Gouramis', 'Very active fish'],
   ),
   SpeciesInfo(
@@ -394,7 +447,8 @@ const List<SpeciesInfo> _allSpecies = [
     diet: 'Omnivore — flakes, small pellets, frozen foods',
     adultSizeCm: 5,
     swimLevel: 'Top',
-    description: 'Smaller and more peaceful than Dwarf Gourami. Golden-honey coloration. Less prone to disease than other Gouramis. Great community fish.',
+    description:
+        'Smaller and more peaceful than Dwarf Gourami. Golden-honey coloration. Less prone to disease than other Gouramis. Great community fish.',
     compatibleWith: ['Tetras', 'Rasboras', 'Corydoras', 'Small peaceful fish'],
     avoidWith: ['Large aggressive fish', 'Very active fish'],
   ),
@@ -417,7 +471,8 @@ const List<SpeciesInfo> _allSpecies = [
     diet: 'Omnivore — high-quality pellets, frozen foods, live foods',
     adultSizeCm: 7,
     swimLevel: 'Bottom',
-    description: 'Stunningly beautiful dwarf cichlid. Needs warm, soft, acidic water. Sensitive to water quality. Best in mature, planted tanks.',
+    description:
+        'Stunningly beautiful dwarf cichlid. Needs warm, soft, acidic water. Sensitive to water quality. Best in mature, planted tanks.',
     compatibleWith: ['Tetras', 'Corydoras', 'Rasboras', 'Other peaceful fish'],
     avoidWith: ['Aggressive fish', 'Cold water species'],
   ),
@@ -438,7 +493,8 @@ const List<SpeciesInfo> _allSpecies = [
     diet: 'Carnivore — frozen foods, live foods, high-protein pellets',
     adultSizeCm: 8,
     swimLevel: 'Bottom',
-    description: 'Colorful dwarf cichlid with dramatic dorsal fin. Males are territorial but generally community-safe. Needs caves and hiding spots.',
+    description:
+        'Colorful dwarf cichlid with dramatic dorsal fin. Males are territorial but generally community-safe. Needs caves and hiding spots.',
     compatibleWith: ['Tetras', 'Corydoras', 'Rasboras'],
     avoidWith: ['Other bottom-dwelling cichlids', 'Very small fish'],
   ),
@@ -458,11 +514,18 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 20,
     minSchoolSize: 1,
     temperament: 'Peaceful',
-    diet: 'Herbivore — algae wafers, vegetables (zucchini, cucumber), driftwood',
+    diet:
+        'Herbivore — algae wafers, vegetables (zucchini, cucumber), driftwood',
     adultSizeCm: 15,
     swimLevel: 'Bottom',
-    description: 'Excellent algae eater that stays reasonably small (unlike Common Pleco). Needs driftwood for digestion. Mostly nocturnal. Males have bristles.',
-    compatibleWith: ['Most community fish', 'Tetras', 'Cichlids', 'Livebearers'],
+    description:
+        'Excellent algae eater that stays reasonably small (unlike Common Pleco). Needs driftwood for digestion. Mostly nocturnal. Males have bristles.',
+    compatibleWith: [
+      'Most community fish',
+      'Tetras',
+      'Cichlids',
+      'Livebearers',
+    ],
     avoidWith: ['Other territorial plecos in small tanks'],
   ),
   SpeciesInfo(
@@ -482,7 +545,8 @@ const List<SpeciesInfo> _allSpecies = [
     diet: 'Herbivore — algae, algae wafers, blanched vegetables',
     adultSizeCm: 4,
     swimLevel: 'Bottom',
-    description: 'Tiny algae-eating catfish. Must be kept in groups. Sensitive to water quality and needs established tank with natural algae. Do not add to new tanks.',
+    description:
+        'Tiny algae-eating catfish. Must be kept in groups. Sensitive to water quality and needs established tank with natural algae. Do not add to new tanks.',
     compatibleWith: ['Small peaceful fish', 'Shrimp', 'Tetras', 'Rasboras'],
     avoidWith: ['Large fish', 'Aggressive fish', 'New/unstable tanks'],
   ),
@@ -505,7 +569,8 @@ const List<SpeciesInfo> _allSpecies = [
     diet: 'Omnivore/detritivore — biofilm, algae, shrimp pellets, vegetables',
     adultSizeCm: 3,
     swimLevel: 'Bottom',
-    description: 'Hardy and colorful freshwater shrimp. Excellent algae and detritus cleaners. Breed readily in planted tanks. Many color varieties available.',
+    description:
+        'Hardy and colorful freshwater shrimp. Excellent algae and detritus cleaners. Breed readily in planted tanks. Many color varieties available.',
     compatibleWith: ['Small peaceful fish', 'Snails', 'Other dwarf shrimp'],
     avoidWith: ['Any fish large enough to eat them', 'Aggressive fish'],
   ),
@@ -523,10 +588,12 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 15,
     minSchoolSize: 3,
     temperament: 'Peaceful',
-    diet: 'Omnivore/detritivore — algae (especially hair algae), biofilm, pellets',
+    diet:
+        'Omnivore/detritivore — algae (especially hair algae), biofilm, pellets',
     adultSizeCm: 5,
     swimLevel: 'Bottom',
-    description: 'The best algae-eating shrimp. Larger than Cherry Shrimp. Cannot breed in freshwater (larvae need brackish). Voracious appetite for hair algae.',
+    description:
+        'The best algae-eating shrimp. Larger than Cherry Shrimp. Cannot breed in freshwater (larvae need brackish). Voracious appetite for hair algae.',
     compatibleWith: ['Most community fish', 'Other shrimp', 'Snails'],
     avoidWith: ['Large predatory fish'],
   ),
@@ -549,7 +616,8 @@ const List<SpeciesInfo> _allSpecies = [
     diet: 'Herbivore — algae, biofilm, algae wafers',
     adultSizeCm: 2.5,
     swimLevel: 'Bottom',
-    description: 'Excellent algae eaters with beautiful shell patterns. Cannot reproduce in freshwater. Will not overpopulate. Need calcium for shell health.',
+    description:
+        'Excellent algae eaters with beautiful shell patterns. Cannot reproduce in freshwater. Will not overpopulate. Need calcium for shell health.',
     compatibleWith: ['All peaceful fish', 'Shrimp', 'Other snails'],
     avoidWith: ['Snail-eating fish (loaches, puffers)'],
   ),
@@ -570,7 +638,8 @@ const List<SpeciesInfo> _allSpecies = [
     diet: 'Omnivore — algae, vegetables, fish food, calcium supplements',
     adultSizeCm: 5,
     swimLevel: 'All',
-    description: 'Large, attractive snails available in many colors (gold, blue, purple, ivory). Peaceful scavengers. Lay eggs above waterline. Need calcium.',
+    description:
+        'Large, attractive snails available in many colors (gold, blue, purple, ivory). Peaceful scavengers. Lay eggs above waterline. Need calcium.',
     compatibleWith: ['All peaceful fish', 'Shrimp', 'Other snails'],
     avoidWith: ['Snail-eating fish', 'Aggressive fish'],
   ),
@@ -593,8 +662,14 @@ const List<SpeciesInfo> _allSpecies = [
     diet: 'Omnivore — sinking pellets, frozen foods, live worms',
     adultSizeCm: 10,
     swimLevel: 'Bottom',
-    description: 'Eel-like loach with distinctive banding. Nocturnal and shy. Needs soft substrate (sand) and lots of hiding spots. Keep in groups.',
-    compatibleWith: ['Tetras', 'Rasboras', 'Corydoras', 'Peaceful community fish'],
+    description:
+        'Eel-like loach with distinctive banding. Nocturnal and shy. Needs soft substrate (sand) and lots of hiding spots. Keep in groups.',
+    compatibleWith: [
+      'Tetras',
+      'Rasboras',
+      'Corydoras',
+      'Peaceful community fish',
+    ],
     avoidWith: ['Large aggressive fish', 'Gravel substrate'],
   ),
 
@@ -616,7 +691,8 @@ const List<SpeciesInfo> _allSpecies = [
     diet: 'Omnivore — flakes, pellets, frozen foods',
     adultSizeCm: 5,
     swimLevel: 'Top',
-    description: 'Extremely hardy and active schooling fish. Great for cycling new tanks. Very fast swimmers — need horizontal swimming space.',
+    description:
+        'Extremely hardy and active schooling fish. Great for cycling new tanks. Very fast swimmers — need horizontal swimming space.',
     compatibleWith: ['Other Danios', 'Barbs', 'Tetras', 'Most community fish'],
     avoidWith: ['Slow-moving fish', 'Very small fish', 'Long-finned fish'],
   ),
@@ -639,7 +715,8 @@ const List<SpeciesInfo> _allSpecies = [
     diet: 'Omnivore — flakes, pellets, frozen foods',
     adultSizeCm: 5,
     swimLevel: 'Middle',
-    description: 'One of the most peaceful barbs. Males turn bright red when breeding. Hardy and adaptable. Great community fish.',
+    description:
+        'One of the most peaceful barbs. Males turn bright red when breeding. Hardy and adaptable. Great community fish.',
     compatibleWith: ['Tetras', 'Rasboras', 'Corydoras', 'Gouramis'],
     avoidWith: ['Aggressive fish'],
   ),
@@ -662,9 +739,19 @@ const List<SpeciesInfo> _allSpecies = [
     diet: 'Omnivore — flakes, pellets, frozen foods, live foods',
     adultSizeCm: 15,
     swimLevel: 'Middle',
-    description: 'Elegant cichlid with tall, triangular shape. Needs a tall tank. Can be kept in pairs or small groups. Will eat very small fish and shrimp.',
-    compatibleWith: ['Larger Tetras', 'Corydoras', 'Peaceful medium-sized fish'],
-    avoidWith: ['Neon Tetras', 'Small fish', 'Fin nippers', 'Aggressive cichlids'],
+    description:
+        'Elegant cichlid with tall, triangular shape. Needs a tall tank. Can be kept in pairs or small groups. Will eat very small fish and shrimp.',
+    compatibleWith: [
+      'Larger Tetras',
+      'Corydoras',
+      'Peaceful medium-sized fish',
+    ],
+    avoidWith: [
+      'Neon Tetras',
+      'Small fish',
+      'Fin nippers',
+      'Aggressive cichlids',
+    ],
   ),
 
   // Additional Tetras
@@ -685,7 +772,8 @@ const List<SpeciesInfo> _allSpecies = [
     diet: 'Omnivore — micro pellets, crushed flakes, baby brine shrimp',
     adultSizeCm: 2,
     swimLevel: 'Middle',
-    description: 'Tiny, vibrant orange nano fish. Perfect for planted nano tanks. Active schoolers that bring warmth and movement to small aquariums.',
+    description:
+        'Tiny, vibrant orange nano fish. Perfect for planted nano tanks. Active schoolers that bring warmth and movement to small aquariums.',
     compatibleWith: ['Other nano fish', 'Shrimp', 'Snails', 'Rasboras'],
     avoidWith: ['Large fish', 'Fast aggressive feeders'],
   ),
@@ -706,8 +794,14 @@ const List<SpeciesInfo> _allSpecies = [
     diet: 'Omnivore — flakes, pellets, frozen foods',
     adultSizeCm: 6,
     swimLevel: 'Middle',
-    description: 'Hardy tetra with distinctive black fins. Can be nippy, especially with long-finned fish. Best kept in larger groups to diffuse aggression.',
-    compatibleWith: ['Other robust tetras', 'Barbs', 'Corydoras', 'Larger community fish'],
+    description:
+        'Hardy tetra with distinctive black fins. Can be nippy, especially with long-finned fish. Best kept in larger groups to diffuse aggression.',
+    compatibleWith: [
+      'Other robust tetras',
+      'Barbs',
+      'Corydoras',
+      'Larger community fish',
+    ],
     avoidWith: ['Slow long-finned fish', 'Bettas', 'Guppies', 'Angelfish'],
   ),
   SpeciesInfo(
@@ -727,8 +821,14 @@ const List<SpeciesInfo> _allSpecies = [
     diet: 'Omnivore — flakes, pellets, frozen foods',
     adultSizeCm: 4,
     swimLevel: 'Middle',
-    description: 'Beautiful deep red tetra. Known for fin nipping — keep in groups of 8+ to reduce aggression. Avoid with slow or long-finned tankmates.',
-    compatibleWith: ['Other Serpae Tetras', 'Robust tetras', 'Barbs', 'Bottom dwellers'],
+    description:
+        'Beautiful deep red tetra. Known for fin nipping — keep in groups of 8+ to reduce aggression. Avoid with slow or long-finned tankmates.',
+    compatibleWith: [
+      'Other Serpae Tetras',
+      'Robust tetras',
+      'Barbs',
+      'Bottom dwellers',
+    ],
     avoidWith: ['Bettas', 'Guppies', 'Angelfish', 'Any long-finned fish'],
   ),
 
@@ -750,8 +850,14 @@ const List<SpeciesInfo> _allSpecies = [
     diet: 'Omnivore — flakes, small pellets, frozen foods',
     adultSizeCm: 4,
     swimLevel: 'Top',
-    description: 'Hardy coldwater fish — perfect for unheated tanks. Beautiful iridescent stripe. Very peaceful and easy to breed. Excellent beginner fish.',
-    compatibleWith: ['Other coldwater fish', 'Hillstream loaches', 'Danios', 'Corydoras'],
+    description:
+        'Hardy coldwater fish — perfect for unheated tanks. Beautiful iridescent stripe. Very peaceful and easy to breed. Excellent beginner fish.',
+    compatibleWith: [
+      'Other coldwater fish',
+      'Hillstream loaches',
+      'Danios',
+      'Corydoras',
+    ],
     avoidWith: ['Tropical fish requiring warm water', 'Large aggressive fish'],
   ),
 
@@ -773,7 +879,8 @@ const List<SpeciesInfo> _allSpecies = [
     diet: 'Omnivore — flakes, small pellets, algae, vegetable matter',
     adultSizeCm: 3,
     swimLevel: 'Top',
-    description: 'Smaller, more colorful relative of the guppy. Males are incredibly vibrant. Hardy and prolific breeders. Perfect for nano tanks.',
+    description:
+        'Smaller, more colorful relative of the guppy. Males are incredibly vibrant. Hardy and prolific breeders. Perfect for nano tanks.',
     compatibleWith: ['Guppies', 'Small peaceful fish', 'Shrimp', 'Snails'],
     avoidWith: ['Aggressive fish', 'Fish that will eat fry'],
   ),
@@ -796,8 +903,14 @@ const List<SpeciesInfo> _allSpecies = [
     diet: 'Omnivore — micro sinking foods, baby brine shrimp',
     adultSizeCm: 2.5,
     swimLevel: 'Bottom',
-    description: 'Tiny catfish that also swims in midwater, unlike larger Corydoras. Perfect for nano tanks. Needs groups and clean water.',
-    compatibleWith: ['Nano fish', 'Shrimp', 'Small tetras', 'Other peaceful fish'],
+    description:
+        'Tiny catfish that also swims in midwater, unlike larger Corydoras. Perfect for nano tanks. Needs groups and clean water.',
+    compatibleWith: [
+      'Nano fish',
+      'Shrimp',
+      'Small tetras',
+      'Other peaceful fish',
+    ],
     avoidWith: ['Large fish', 'Aggressive bottom dwellers'],
   ),
   SpeciesInfo(
@@ -817,7 +930,8 @@ const List<SpeciesInfo> _allSpecies = [
     diet: 'Omnivore — sinking pellets, wafers, frozen foods',
     adultSizeCm: 7,
     swimLevel: 'Bottom',
-    description: 'Beautiful spotted pattern with orange pectoral fins. Tolerates warmer water than most Corydoras — perfect with discus or German Blue Rams.',
+    description:
+        'Beautiful spotted pattern with orange pectoral fins. Tolerates warmer water than most Corydoras — perfect with discus or German Blue Rams.',
     compatibleWith: ['Most community fish', 'Discus', 'Rams', 'Tetras'],
     avoidWith: ['Aggressive bottom dwellers'],
   ),
@@ -838,8 +952,14 @@ const List<SpeciesInfo> _allSpecies = [
     diet: 'Omnivore — sinking pellets, wafers, frozen foods',
     adultSizeCm: 5,
     swimLevel: 'Bottom',
-    description: 'Attractive spotted pattern (often confused with C. trilineatus). Hardy and active. One of the most popular Corydoras species.',
-    compatibleWith: ['Most community fish', 'Tetras', 'Rasboras', 'Peaceful fish'],
+    description:
+        'Attractive spotted pattern (often confused with C. trilineatus). Hardy and active. One of the most popular Corydoras species.',
+    compatibleWith: [
+      'Most community fish',
+      'Tetras',
+      'Rasboras',
+      'Peaceful fish',
+    ],
     avoidWith: ['Aggressive fish', 'Sharp gravel substrate'],
   ),
 
@@ -861,8 +981,14 @@ const List<SpeciesInfo> _allSpecies = [
     diet: 'Omnivore — flakes, pellets, frozen foods, some vegetable matter',
     adultSizeCm: 12,
     swimLevel: 'Top',
-    description: 'One of the most beautiful gouramis with pearl-like spots. Peaceful and hardy. Males develop orange breast when breeding.',
-    compatibleWith: ['Tetras', 'Rasboras', 'Corydoras', 'Peaceful community fish'],
+    description:
+        'One of the most beautiful gouramis with pearl-like spots. Peaceful and hardy. Males develop orange breast when breeding.',
+    compatibleWith: [
+      'Tetras',
+      'Rasboras',
+      'Corydoras',
+      'Peaceful community fish',
+    ],
     avoidWith: ['Aggressive fish', 'Fin nippers', 'Multiple male gouramis'],
   ),
   SpeciesInfo(
@@ -882,8 +1008,14 @@ const List<SpeciesInfo> _allSpecies = [
     diet: 'Omnivore — small foods, frozen daphnia, micro pellets',
     adultSizeCm: 4,
     swimLevel: 'Top',
-    description: 'Tiny gourami that makes audible croaking sounds! Iridescent blue eyes. Best in planted nano tanks with calm water.',
-    compatibleWith: ['Small peaceful fish', 'Shrimp', 'Snails', 'Other nano fish'],
+    description:
+        'Tiny gourami that makes audible croaking sounds! Iridescent blue eyes. Best in planted nano tanks with calm water.',
+    compatibleWith: [
+      'Small peaceful fish',
+      'Shrimp',
+      'Snails',
+      'Other nano fish',
+    ],
     avoidWith: ['Large fish', 'Strong currents', 'Aggressive tankmates'],
   ),
 
@@ -905,7 +1037,8 @@ const List<SpeciesInfo> _allSpecies = [
     diet: 'Herbivore/Omnivore — algae, algae wafers, vegetables, some protein',
     adultSizeCm: 15,
     swimLevel: 'Bottom',
-    description: 'The true SAE — excellent at eating black beard algae. Active fish that needs swimming room. May become less algae-focused as it ages.',
+    description:
+        'The true SAE — excellent at eating black beard algae. Active fish that needs swimming room. May become less algae-focused as it ages.',
     compatibleWith: ['Most community fish', 'Tetras', 'Barbs', 'Corydoras'],
     avoidWith: ['Territorial bottom dwellers', 'Very small tanks'],
   ),
@@ -928,7 +1061,8 @@ const List<SpeciesInfo> _allSpecies = [
     diet: 'Omnivore/scavenger — detritus, algae, leftover fish food',
     adultSizeCm: 4,
     swimLevel: 'Bottom',
-    description: 'Transparent shrimp — you can see their internal organs! Hardy and inexpensive. Great for beginners and as tank cleaners.',
+    description:
+        'Transparent shrimp — you can see their internal organs! Hardy and inexpensive. Great for beginners and as tank cleaners.',
     compatibleWith: ['Small peaceful fish', 'Other shrimp', 'Snails'],
     avoidWith: ['Medium to large fish that may eat them'],
   ),
@@ -949,7 +1083,8 @@ const List<SpeciesInfo> _allSpecies = [
     diet: 'Omnivore/detritivore — biofilm, algae, shrimp pellets, vegetables',
     adultSizeCm: 3,
     swimLevel: 'Bottom',
-    description: 'Striking deep blue variety of Neocaridina. Same hardy care as Cherry Shrimp. Breed readily in stable conditions.',
+    description:
+        'Striking deep blue variety of Neocaridina. Same hardy care as Cherry Shrimp. Breed readily in stable conditions.',
     compatibleWith: ['Small peaceful fish', 'Snails', 'Other dwarf shrimp'],
     avoidWith: ['Any fish large enough to eat them'],
   ),
@@ -972,7 +1107,8 @@ const List<SpeciesInfo> _allSpecies = [
     diet: 'Omnivore — algae, decaying plant matter, fish food, vegetables',
     adultSizeCm: 2.5,
     swimLevel: 'All',
-    description: 'Flat-coiled shell in red, blue, or brown. Excellent cleaners. Will reproduce readily — control population by limiting food.',
+    description:
+        'Flat-coiled shell in red, blue, or brown. Excellent cleaners. Will reproduce readily — control population by limiting food.',
     compatibleWith: ['All peaceful fish', 'Shrimp', 'Other snails'],
     avoidWith: ['Snail-eating fish (loaches, puffers)', 'Assassin snails'],
   ),
@@ -993,7 +1129,8 @@ const List<SpeciesInfo> _allSpecies = [
     diet: 'Detritivore — decaying matter, leftover food, some algae',
     adultSizeCm: 3,
     swimLevel: 'Bottom',
-    description: 'Burrowing snails that aerate substrate and prevent gas pockets. Nocturnal — mostly hidden during day. Reproduce prolifically.',
+    description:
+        'Burrowing snails that aerate substrate and prevent gas pockets. Nocturnal — mostly hidden during day. Reproduce prolifically.',
     compatibleWith: ['All peaceful fish', 'Shrimp', 'Other snails'],
     avoidWith: ['Snail-eating fish', 'Those who dislike snail populations'],
   ),
@@ -1016,9 +1153,13 @@ const List<SpeciesInfo> _allSpecies = [
     diet: 'Omnivore — pellets, flakes, frozen foods',
     adultSizeCm: 10,
     swimLevel: 'Bottom',
-    description: 'Colorful West African dwarf cichlid. Easy to breed — great first cichlid. Territorial when breeding but generally community-safe.',
+    description:
+        'Colorful West African dwarf cichlid. Easy to breed — great first cichlid. Territorial when breeding but generally community-safe.',
     compatibleWith: ['Tetras', 'Barbs', 'Corydoras', 'Robust community fish'],
-    avoidWith: ['Other bottom-dwelling cichlids', 'Very small fish when breeding'],
+    avoidWith: [
+      'Other bottom-dwelling cichlids',
+      'Very small fish when breeding',
+    ],
   ),
   SpeciesInfo(
     commonName: 'Bolivian Ram',
@@ -1037,8 +1178,14 @@ const List<SpeciesInfo> _allSpecies = [
     diet: 'Omnivore — high-quality pellets, frozen foods',
     adultSizeCm: 8,
     swimLevel: 'Bottom',
-    description: 'Hardier than German Blue Ram, tolerating cooler water and wider parameters. Peaceful dwarf cichlid perfect for community tanks.',
-    compatibleWith: ['Tetras', 'Corydoras', 'Rasboras', 'Most peaceful community fish'],
+    description:
+        'Hardier than German Blue Ram, tolerating cooler water and wider parameters. Peaceful dwarf cichlid perfect for community tanks.',
+    compatibleWith: [
+      'Tetras',
+      'Corydoras',
+      'Rasboras',
+      'Most peaceful community fish',
+    ],
     avoidWith: ['Aggressive fish', 'Very small fry'],
   ),
 
@@ -1060,7 +1207,8 @@ const List<SpeciesInfo> _allSpecies = [
     diet: 'Omnivore — flakes, pellets, vegetables, algae',
     adultSizeCm: 12,
     swimLevel: 'Middle',
-    description: 'Males have distinctive sword-shaped tail extension. Hardy livebearers that prefer harder, alkaline water. Many color varieties.',
+    description:
+        'Males have distinctive sword-shaped tail extension. Hardy livebearers that prefer harder, alkaline water. Many color varieties.',
     compatibleWith: ['Platies', 'Mollies', 'Larger tetras', 'Corydoras'],
     avoidWith: ['Aggressive fish', 'Very small fish'],
   ),
@@ -1081,8 +1229,13 @@ const List<SpeciesInfo> _allSpecies = [
     diet: 'Omnivore — sinking pellets, frozen foods, snails, vegetables',
     adultSizeCm: 30,
     swimLevel: 'Bottom',
-    description: 'Vibrant orange and black striped loach. Gets VERY large — needs big tank long-term. Excellent snail control. Playful and social.',
-    compatibleWith: ['Large peaceful fish', 'Other loaches', 'Robust community fish'],
+    description:
+        'Vibrant orange and black striped loach. Gets VERY large — needs big tank long-term. Excellent snail control. Playful and social.',
+    compatibleWith: [
+      'Large peaceful fish',
+      'Other loaches',
+      'Robust community fish',
+    ],
     avoidWith: ['Small fish', 'Aggressive cichlids', 'Small tanks'],
   ),
   SpeciesInfo(
@@ -1099,11 +1252,17 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 8,
     minSchoolSize: 5,
     temperament: 'Peaceful',
-    diet: 'Omnivore — high-quality pellets, frozen bloodworms, beef heart, vegetables',
+    diet:
+        'Omnivore — high-quality pellets, frozen bloodworms, beef heart, vegetables',
     adultSizeCm: 20,
     swimLevel: 'Middle',
-    description: 'The "King of the Aquarium". Stunning disc-shaped cichlids requiring pristine, warm, soft water. High maintenance but incredibly rewarding.',
-    compatibleWith: ['Cardinal Tetras', 'Sterbai Corydoras', 'Rummy Nose Tetras'],
+    description:
+        'The "King of the Aquarium". Stunning disc-shaped cichlids requiring pristine, warm, soft water. High maintenance but incredibly rewarding.',
+    compatibleWith: [
+      'Cardinal Tetras',
+      'Sterbai Corydoras',
+      'Rummy Nose Tetras',
+    ],
     avoidWith: ['Aggressive fish', 'Coldwater species', 'Poor water quality'],
   ),
 ];

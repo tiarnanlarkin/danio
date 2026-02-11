@@ -41,7 +41,8 @@ class ParameterGuideScreen extends StatelessWidget {
             color: AppColors.error,
             ideal: '0 ppm',
             danger: '>0.25 ppm',
-            description: 'Produced by fish waste and decaying matter. Highly toxic — burns gills and causes stress. '
+            description:
+                'Produced by fish waste and decaying matter. Highly toxic — burns gills and causes stress. '
                 'Should always be 0 in a cycled tank.',
             tips: [
               'If detected, do an immediate 25-50% water change',
@@ -57,7 +58,8 @@ class ParameterGuideScreen extends StatelessWidget {
             color: AppColors.warning,
             ideal: '0 ppm',
             danger: '>0.5 ppm',
-            description: 'Intermediate product of the nitrogen cycle. Prevents fish from absorbing oxygen. '
+            description:
+                'Intermediate product of the nitrogen cycle. Prevents fish from absorbing oxygen. '
                 'Should be 0 in a cycled tank.',
             tips: [
               'Indicates incomplete cycling',
@@ -73,7 +75,8 @@ class ParameterGuideScreen extends StatelessWidget {
             color: AppColors.success,
             ideal: '<20 ppm',
             danger: '>40 ppm',
-            description: 'End product of nitrogen cycle. Much less toxic but builds up over time. '
+            description:
+                'End product of nitrogen cycle. Much less toxic but builds up over time. '
                 'Removed by water changes and plants.',
             tips: [
               'Weekly 20-25% water changes keep it low',
@@ -89,7 +92,8 @@ class ParameterGuideScreen extends StatelessWidget {
             color: AppColors.primary,
             ideal: '6.5-7.5 (species dependent)',
             danger: '<6.0 or >8.0',
-            description: 'Measures acidity/alkalinity. Most tropical fish prefer 6.5-7.5. '
+            description:
+                'Measures acidity/alkalinity. Most tropical fish prefer 6.5-7.5. '
                 'Stability is more important than hitting a specific number.',
             tips: [
               'Don\'t chase a specific pH — stability matters more',
@@ -105,7 +109,8 @@ class ParameterGuideScreen extends StatelessWidget {
             color: AppColors.secondary,
             ideal: '4-12 dGH (species dependent)',
             danger: 'Depends on species',
-            description: 'Measures dissolved minerals (calcium, magnesium). Affects fish health and breeding. '
+            description:
+                'Measures dissolved minerals (calcium, magnesium). Affects fish health and breeding. '
                 'Soft water fish: 4-8 dGH. Hard water fish: 8-20 dGH.',
             tips: [
               'Livebearers prefer harder water (12+ dGH)',
@@ -121,7 +126,8 @@ class ParameterGuideScreen extends StatelessWidget {
             color: AppColors.info,
             ideal: '4-8 dKH',
             danger: '<2 dKH',
-            description: 'Measures buffering capacity — prevents pH crashes. Low KH means pH can swing dangerously.',
+            description:
+                'Measures buffering capacity — prevents pH crashes. Low KH means pH can swing dangerously.',
             tips: [
               'Acts as pH buffer',
               'Low KH = risk of pH crash',
@@ -136,7 +142,8 @@ class ParameterGuideScreen extends StatelessWidget {
             color: AppColors.paramWarning,
             ideal: '24-26°C (tropical)',
             danger: '<20°C or >30°C',
-            description: 'Most tropical fish thrive at 24-26°C. Temperature affects metabolism, immune system, and oxygen levels.',
+            description:
+                'Most tropical fish thrive at 24-26°C. Temperature affects metabolism, immune system, and oxygen levels.',
             tips: [
               'Use a reliable heater with thermostat',
               'Place thermometer away from heater',
@@ -148,7 +155,10 @@ class ParameterGuideScreen extends StatelessWidget {
           const SizedBox(height: 24),
 
           // Quick reference table
-          Text('Quick Reference by Fish Type', style: AppTypography.headlineMedium),
+          Text(
+            'Quick Reference by Fish Type',
+            style: AppTypography.headlineMedium,
+          ),
           const SizedBox(height: 16),
 
           Card(
@@ -156,19 +166,54 @@ class ParameterGuideScreen extends StatelessWidget {
               padding: const EdgeInsets.all(12),
               child: Column(
                 children: [
-                  _QuickRefRow(type: 'Community (tetras, rasboras)', temp: '24-26°C', ph: '6.5-7.5', gh: '4-10'),
+                  _QuickRefRow(
+                    type: 'Community (tetras, rasboras)',
+                    temp: '24-26°C',
+                    ph: '6.5-7.5',
+                    gh: '4-10',
+                  ),
                   const Divider(),
-                  _QuickRefRow(type: 'Livebearers (guppies, mollies)', temp: '24-28°C', ph: '7.0-8.0', gh: '10-20'),
+                  _QuickRefRow(
+                    type: 'Livebearers (guppies, mollies)',
+                    temp: '24-28°C',
+                    ph: '7.0-8.0',
+                    gh: '10-20',
+                  ),
                   const Divider(),
-                  _QuickRefRow(type: 'Cichlids (African)', temp: '24-28°C', ph: '7.5-8.5', gh: '10-20'),
+                  _QuickRefRow(
+                    type: 'Cichlids (African)',
+                    temp: '24-28°C',
+                    ph: '7.5-8.5',
+                    gh: '10-20',
+                  ),
                   const Divider(),
-                  _QuickRefRow(type: 'Discus', temp: '28-30°C', ph: '6.0-7.0', gh: '1-4'),
+                  _QuickRefRow(
+                    type: 'Discus',
+                    temp: '28-30°C',
+                    ph: '6.0-7.0',
+                    gh: '1-4',
+                  ),
                   const Divider(),
-                  _QuickRefRow(type: 'Bettas', temp: '25-28°C', ph: '6.5-7.5', gh: '4-10'),
+                  _QuickRefRow(
+                    type: 'Bettas',
+                    temp: '25-28°C',
+                    ph: '6.5-7.5',
+                    gh: '4-10',
+                  ),
                   const Divider(),
-                  _QuickRefRow(type: 'Corydoras', temp: '22-26°C', ph: '6.0-7.5', gh: '2-12'),
+                  _QuickRefRow(
+                    type: 'Corydoras',
+                    temp: '22-26°C',
+                    ph: '6.0-7.5',
+                    gh: '2-12',
+                  ),
                   const Divider(),
-                  _QuickRefRow(type: 'Shrimp (Neocaridina)', temp: '20-25°C', ph: '6.5-8.0', gh: '6-12'),
+                  _QuickRefRow(
+                    type: 'Shrimp (Neocaridina)',
+                    temp: '20-25°C',
+                    ph: '6.5-8.0',
+                    gh: '6-12',
+                  ),
                 ],
               ),
             ),
@@ -219,7 +264,12 @@ class _ParameterSection extends StatelessWidget {
           subtitle: Row(
             children: [
               Text('Ideal: ', style: AppTypography.bodySmall),
-              Text(ideal, style: AppTypography.bodySmall.copyWith(color: AppColors.success)),
+              Text(
+                ideal,
+                style: AppTypography.bodySmall.copyWith(
+                  color: AppColors.success,
+                ),
+              ),
             ],
           ),
           children: [
@@ -233,7 +283,12 @@ class _ParameterSection extends StatelessWidget {
                       Icon(Icons.dangerous, size: 14, color: AppColors.error),
                       const SizedBox(width: 4),
                       Text('Danger: ', style: AppTypography.bodySmall),
-                      Text(danger, style: AppTypography.bodySmall.copyWith(color: AppColors.error)),
+                      Text(
+                        danger,
+                        style: AppTypography.bodySmall.copyWith(
+                          color: AppColors.error,
+                        ),
+                      ),
                     ],
                   ),
                   const SizedBox(height: 12),
@@ -241,16 +296,20 @@ class _ParameterSection extends StatelessWidget {
                   const SizedBox(height: 12),
                   Text('Tips:', style: AppTypography.labelLarge),
                   const SizedBox(height: 6),
-                  ...tips.map((tip) => Padding(
-                    padding: const EdgeInsets.only(bottom: 4),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('• ', style: AppTypography.bodySmall),
-                        Expanded(child: Text(tip, style: AppTypography.bodySmall)),
-                      ],
+                  ...tips.map(
+                    (tip) => Padding(
+                      padding: const EdgeInsets.only(bottom: 4),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('• ', style: AppTypography.bodySmall),
+                          Expanded(
+                            child: Text(tip, style: AppTypography.bodySmall),
+                          ),
+                        ],
+                      ),
                     ),
-                  )),
+                  ),
                 ],
               ),
             ),

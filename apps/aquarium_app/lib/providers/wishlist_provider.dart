@@ -9,26 +9,37 @@ const _budgetKey = 'shop_budget';
 const _shopsKey = 'local_shops';
 
 /// Provider for all wishlist items
-final wishlistProvider = StateNotifierProvider<WishlistNotifier, List<WishlistItem>>((ref) {
-  return WishlistNotifier();
-});
+final wishlistProvider =
+    StateNotifierProvider<WishlistNotifier, List<WishlistItem>>((ref) {
+      return WishlistNotifier();
+    });
 
 /// Provider for items filtered by category
 final fishWishlistProvider = Provider<List<WishlistItem>>((ref) {
-  return ref.watch(wishlistProvider)
-      .where((item) => item.category == WishlistCategory.fish && !item.purchased)
+  return ref
+      .watch(wishlistProvider)
+      .where(
+        (item) => item.category == WishlistCategory.fish && !item.purchased,
+      )
       .toList();
 });
 
 final plantWishlistProvider = Provider<List<WishlistItem>>((ref) {
-  return ref.watch(wishlistProvider)
-      .where((item) => item.category == WishlistCategory.plant && !item.purchased)
+  return ref
+      .watch(wishlistProvider)
+      .where(
+        (item) => item.category == WishlistCategory.plant && !item.purchased,
+      )
       .toList();
 });
 
 final equipmentWishlistProvider = Provider<List<WishlistItem>>((ref) {
-  return ref.watch(wishlistProvider)
-      .where((item) => item.category == WishlistCategory.equipment && !item.purchased)
+  return ref
+      .watch(wishlistProvider)
+      .where(
+        (item) =>
+            item.category == WishlistCategory.equipment && !item.purchased,
+      )
       .toList();
 });
 
@@ -38,9 +49,10 @@ final budgetProvider = StateNotifierProvider<BudgetNotifier, ShopBudget>((ref) {
 });
 
 /// Provider for local shops
-final localShopsProvider = StateNotifierProvider<LocalShopsNotifier, List<LocalShop>>((ref) {
-  return LocalShopsNotifier();
-});
+final localShopsProvider =
+    StateNotifierProvider<LocalShopsNotifier, List<LocalShop>>((ref) {
+      return LocalShopsNotifier();
+    });
 
 /// Wishlist state management
 class WishlistNotifier extends StateNotifier<List<WishlistItem>> {
@@ -88,7 +100,10 @@ class WishlistNotifier extends StateNotifier<List<WishlistItem>> {
     await _saveToStorage();
   }
 
-  List<WishlistItem> getByCategory(WishlistCategory category, {bool includePurchased = false}) {
+  List<WishlistItem> getByCategory(
+    WishlistCategory category, {
+    bool includePurchased = false,
+  }) {
     return state.where((item) {
       if (item.category != category) return false;
       if (!includePurchased && item.purchased) return false;
@@ -120,7 +135,8 @@ class BudgetNotifier extends StateNotifier<ShopBudget> {
 
   void _checkMonthReset() {
     final now = DateTime.now();
-    if (now.month != state.lastReset.month || now.year != state.lastReset.year) {
+    if (now.month != state.lastReset.month ||
+        now.year != state.lastReset.year) {
       // New month - reset spending
       state = state.copyWith(spentThisMonth: 0, lastReset: now);
       _saveToStorage();

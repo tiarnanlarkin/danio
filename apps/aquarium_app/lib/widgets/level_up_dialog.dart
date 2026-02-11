@@ -273,7 +273,7 @@ class _LevelUpDialogState extends State<LevelUpDialog>
       builder: (context, child) {
         // Calculate position based on animation progress
         final progress = (_confettiController.value + (delay / 3000)) % 1.0;
-        
+
         return Positioned(
           left: MediaQuery.of(context).size.width * startX,
           top: MediaQuery.of(context).size.height * progress * endY,
@@ -286,11 +286,11 @@ class _LevelUpDialogState extends State<LevelUpDialog>
                 height: size,
                 decoration: BoxDecoration(
                   color: color,
-                  shape: random.nextBool() 
-                      ? BoxShape.circle 
+                  shape: random.nextBool()
+                      ? BoxShape.circle
                       : BoxShape.rectangle,
-                  borderRadius: random.nextBool() 
-                      ? null 
+                  borderRadius: random.nextBool()
+                      ? null
                       : BorderRadius.circular(2),
                 ),
               ),

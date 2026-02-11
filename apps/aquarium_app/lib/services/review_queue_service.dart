@@ -2,7 +2,6 @@
 /// Implements intelligent review scheduling and prioritization algorithms
 library;
 
-
 import 'dart:math' as math;
 import '../models/spaced_repetition.dart';
 
@@ -75,10 +74,9 @@ class ReviewQueueService {
     final dueCards = getDueCards(allCards, limit: null);
 
     // Get strong cards (not due, but good to review occasionally)
-    final strongCards = allCards
-        .where((card) => !card.isDue && card.isStrong)
-        .toList()
-      ..shuffle();
+    final strongCards =
+        allCards.where((card) => !card.isDue && card.isStrong).toList()
+          ..shuffle();
 
     // Mix: 80% due, 20% strong (or all due if not enough strong cards)
     final dueCount = (sessionSize * 0.8).round();
@@ -87,16 +85,12 @@ class ReviewQueueService {
     final mixed = <ReviewCard>[];
 
     // Add due cards
-    mixed.addAll(
-      dueCards.take(math.min(dueCount, dueCards.length))
-    );
+    mixed.addAll(dueCards.take(math.min(dueCount, dueCards.length)));
 
     // Add strong cards if we have room
     if (mixed.length < sessionSize && strongCards.isNotEmpty) {
       final remaining = sessionSize - mixed.length;
-      mixed.addAll(
-        strongCards.take(math.min(remaining, strongCards.length))
-      );
+      mixed.addAll(strongCards.take(math.min(remaining, strongCards.length)));
     }
 
     // Shuffle the final list for variety
@@ -270,7 +264,7 @@ class ReviewQueueService {
   /// Calculate recommended session length based on available cards
   static int recommendSessionLength(List<ReviewCard> dueCards) {
     final count = dueCards.length;
-    
+
     if (count == 0) return 0;
     if (count <= 5) return count;
     if (count <= 10) return 5;
@@ -284,24 +278,24 @@ class ReviewQueueService {
     int daysAhead = 7,
   }) {
     final forecast = <int, int>{};
-    
+
     for (int day = 0; day <= daysAhead; day++) {
       final targetDate = DateTime.now().add(Duration(days: day));
       final dueByThen = allCards.where((card) {
         return card.nextReview.isBefore(targetDate) ||
-               card.nextReview.isAtSameMomentAs(targetDate);
+            card.nextReview.isAtSameMomentAs(targetDate);
       }).length;
-      
+
       forecast[day] = dueByThen;
     }
-    
+
     return forecast;
   }
 }
 
 /// Adaptive difficulty adjustment recommendation
 enum DifficultyAdjustment {
-  decrease,  // User is struggling - show easier cards
-  maintain,  // User is doing fine - maintain difficulty
-  increase,  // User is excelling - show harder cards
+  decrease, // User is struggling - show easier cards
+  maintain, // User is doing fine - maintain difficulty
+  increase, // User is excelling - show harder cards
 }

@@ -13,10 +13,15 @@ class _DiseaseGuideScreenState extends State<DiseaseGuideScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final diseases = _allDiseases.where((d) =>
-      d.name.toLowerCase().contains(_searchQuery.toLowerCase()) ||
-      d.symptoms.any((s) => s.toLowerCase().contains(_searchQuery.toLowerCase()))
-    ).toList();
+    final diseases = _allDiseases
+        .where(
+          (d) =>
+              d.name.toLowerCase().contains(_searchQuery.toLowerCase()) ||
+              d.symptoms.any(
+                (s) => s.toLowerCase().contains(_searchQuery.toLowerCase()),
+              ),
+        )
+        .toList();
 
     return Scaffold(
       appBar: AppBar(title: const Text('Fish Disease Guide')),
@@ -29,7 +34,9 @@ class _DiseaseGuideScreenState extends State<DiseaseGuideScreen> {
               decoration: InputDecoration(
                 hintText: 'Search by disease or symptom...',
                 prefixIcon: const Icon(Icons.search),
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
                 filled: true,
               ),
               onChanged: (v) => setState(() => _searchQuery = v),
@@ -45,7 +52,11 @@ class _DiseaseGuideScreenState extends State<DiseaseGuideScreen> {
                 padding: const EdgeInsets.all(12),
                 child: Row(
                   children: [
-                    Icon(Icons.warning_amber, color: AppColors.warning, size: 20),
+                    Icon(
+                      Icons.warning_amber,
+                      color: AppColors.warning,
+                      size: 20,
+                    ),
                     const SizedBox(width: 12),
                     Expanded(
                       child: Text(
@@ -106,19 +117,26 @@ class _DiseaseCard extends StatelessWidget {
                 Row(
                   children: [
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 4,
+                      ),
                       decoration: BoxDecoration(
                         color: disease.severityColor,
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Text(
                         disease.severity,
-                        style: AppTypography.bodySmall.copyWith(color: Colors.white),
+                        style: AppTypography.bodySmall.copyWith(
+                          color: Colors.white,
+                        ),
                       ),
                     ),
                     const SizedBox(width: 8),
-                    Text(disease.contagious ? '⚠️ Contagious' : '✓ Not contagious',
-                      style: AppTypography.bodySmall),
+                    Text(
+                      disease.contagious ? '⚠️ Contagious' : '✓ Not contagious',
+                      style: AppTypography.bodySmall,
+                    ),
                   ],
                 ),
 
@@ -130,14 +148,21 @@ class _DiseaseCard extends StatelessWidget {
                 Wrap(
                   spacing: 6,
                   runSpacing: 6,
-                  children: disease.symptoms.map((s) => Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                    decoration: BoxDecoration(
-                      color: AppColors.surfaceVariant,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Text(s, style: AppTypography.bodySmall),
-                  )).toList(),
+                  children: disease.symptoms
+                      .map(
+                        (s) => Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 4,
+                          ),
+                          decoration: BoxDecoration(
+                            color: AppColors.surfaceVariant,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Text(s, style: AppTypography.bodySmall),
+                        ),
+                      )
+                      .toList(),
                 ),
 
                 const SizedBox(height: 16),
@@ -145,33 +170,45 @@ class _DiseaseCard extends StatelessWidget {
                 // Treatment
                 Text('Treatment', style: AppTypography.labelLarge),
                 const SizedBox(height: 8),
-                ...disease.treatments.map((t) => Padding(
-                  padding: const EdgeInsets.only(bottom: 6),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Icon(Icons.check_circle, size: 16, color: AppColors.success),
-                      const SizedBox(width: 8),
-                      Expanded(child: Text(t, style: AppTypography.bodyMedium)),
-                    ],
+                ...disease.treatments.map(
+                  (t) => Padding(
+                    padding: const EdgeInsets.only(bottom: 6),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Icon(
+                          Icons.check_circle,
+                          size: 16,
+                          color: AppColors.success,
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(t, style: AppTypography.bodyMedium),
+                        ),
+                      ],
+                    ),
                   ),
-                )),
+                ),
 
                 const SizedBox(height: 16),
 
                 // Prevention
                 Text('Prevention', style: AppTypography.labelLarge),
                 const SizedBox(height: 8),
-                ...disease.prevention.map((p) => Padding(
-                  padding: const EdgeInsets.only(bottom: 4),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('• ', style: AppTypography.bodySmall),
-                      Expanded(child: Text(p, style: AppTypography.bodySmall)),
-                    ],
+                ...disease.prevention.map(
+                  (p) => Padding(
+                    padding: const EdgeInsets.only(bottom: 4),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('• ', style: AppTypography.bodySmall),
+                        Expanded(
+                          child: Text(p, style: AppTypography.bodySmall),
+                        ),
+                      ],
+                    ),
                   ),
-                )),
+                ),
               ],
             ),
           ),
@@ -213,7 +250,13 @@ final _allDiseases = [
     severityColor: AppColors.warning,
     contagious: true,
     icon: Icons.blur_on,
-    symptoms: ['White spots like salt grains', 'Flashing/rubbing on objects', 'Clamped fins', 'Lethargy', 'Loss of appetite'],
+    symptoms: [
+      'White spots like salt grains',
+      'Flashing/rubbing on objects',
+      'Clamped fins',
+      'Lethargy',
+      'Loss of appetite',
+    ],
     treatments: [
       'Raise temperature to 28-30°C gradually (speeds up parasite lifecycle)',
       'Add aquarium salt (1 tsp per gallon)',
@@ -221,7 +264,12 @@ final _allDiseases = [
       'Treat entire tank for 10-14 days',
       'Increase aeration (warm water holds less oxygen)',
     ],
-    prevention: ['Quarantine new fish', 'Avoid temperature swings', 'Maintain good water quality', 'Don\'t stress fish'],
+    prevention: [
+      'Quarantine new fish',
+      'Avoid temperature swings',
+      'Maintain good water quality',
+      'Don\'t stress fish',
+    ],
   ),
   _Disease(
     name: 'Fin Rot',
@@ -230,7 +278,13 @@ final _allDiseases = [
     severityColor: AppColors.warning,
     contagious: false,
     icon: Icons.cut,
-    symptoms: ['Ragged, frayed fins', 'White edges on fins', 'Fins shortening', 'Redness at fin base', 'Lethargy'],
+    symptoms: [
+      'Ragged, frayed fins',
+      'White edges on fins',
+      'Fins shortening',
+      'Redness at fin base',
+      'Lethargy',
+    ],
     treatments: [
       'Improve water quality immediately (water changes)',
       'Add aquarium salt (1 tsp per gallon)',
@@ -238,7 +292,12 @@ final _allDiseases = [
       'Isolate affected fish if possible',
       'Clean fin damage with diluted betadine (advanced)',
     ],
-    prevention: ['Regular water changes', 'Don\'t overstock', 'Avoid fin-nipping tankmates', 'Good filtration'],
+    prevention: [
+      'Regular water changes',
+      'Don\'t overstock',
+      'Avoid fin-nipping tankmates',
+      'Good filtration',
+    ],
   ),
   _Disease(
     name: 'Dropsy',
@@ -247,7 +306,13 @@ final _allDiseases = [
     severityColor: AppColors.error,
     contagious: false,
     icon: Icons.warning,
-    symptoms: ['Swollen belly', 'Pinecone-like raised scales', 'Bulging eyes', 'Lethargy', 'Loss of appetite'],
+    symptoms: [
+      'Swollen belly',
+      'Pinecone-like raised scales',
+      'Bulging eyes',
+      'Lethargy',
+      'Loss of appetite',
+    ],
     treatments: [
       'Often fatal by the time symptoms appear',
       'Isolate immediately',
@@ -256,7 +321,12 @@ final _allDiseases = [
       'Keep water pristine',
       'Euthanasia may be kindest option',
     ],
-    prevention: ['Maintain excellent water quality', 'Balanced diet', 'Reduce stress', 'Regular observation'],
+    prevention: [
+      'Maintain excellent water quality',
+      'Balanced diet',
+      'Reduce stress',
+      'Regular observation',
+    ],
   ),
   _Disease(
     name: 'Velvet (Gold Dust Disease)',
@@ -265,7 +335,13 @@ final _allDiseases = [
     severityColor: AppColors.error,
     contagious: true,
     icon: Icons.auto_awesome,
-    symptoms: ['Gold/rust dust coating', 'Flashing/scratching', 'Rapid breathing', 'Clamped fins', 'Lethargy'],
+    symptoms: [
+      'Gold/rust dust coating',
+      'Flashing/scratching',
+      'Rapid breathing',
+      'Clamped fins',
+      'Lethargy',
+    ],
     treatments: [
       'Dim lights or cover tank (parasite needs light)',
       'Raise temperature to 28-30°C',
@@ -273,7 +349,12 @@ final _allDiseases = [
       'Treat for 2 weeks minimum',
       'Increase aeration',
     ],
-    prevention: ['Quarantine new fish', 'Stable temperature', 'Low stress', 'Good water quality'],
+    prevention: [
+      'Quarantine new fish',
+      'Stable temperature',
+      'Low stress',
+      'Good water quality',
+    ],
   ),
   _Disease(
     name: 'Swim Bladder Disorder',
@@ -282,7 +363,13 @@ final _allDiseases = [
     severityColor: AppColors.paramWarning,
     contagious: false,
     icon: Icons.swap_vert,
-    symptoms: ['Floating upside down', 'Sinking to bottom', 'Swimming sideways', 'Difficulty maintaining position', 'Bloated belly'],
+    symptoms: [
+      'Floating upside down',
+      'Sinking to bottom',
+      'Swimming sideways',
+      'Difficulty maintaining position',
+      'Bloated belly',
+    ],
     treatments: [
       'Fast for 2-3 days',
       'Feed blanched, deshelled pea (fiber helps constipation)',
@@ -290,7 +377,12 @@ final _allDiseases = [
       'Lower water level to reduce effort',
       'If bacterial: antibiotics',
     ],
-    prevention: ['Don\'t overfeed', 'Soak pellets before feeding', 'Varied diet', 'Avoid low-quality food'],
+    prevention: [
+      'Don\'t overfeed',
+      'Soak pellets before feeding',
+      'Varied diet',
+      'Avoid low-quality food',
+    ],
   ),
   _Disease(
     name: 'Columnaris (Mouth Fungus)',
@@ -299,7 +391,13 @@ final _allDiseases = [
     severityColor: AppColors.error,
     contagious: true,
     icon: Icons.coronavirus,
-    symptoms: ['White/grey patches (mouth, body, fins)', 'Cottony growths', 'Fin erosion', 'Saddle-shaped lesions', 'Rapid death'],
+    symptoms: [
+      'White/grey patches (mouth, body, fins)',
+      'Cottony growths',
+      'Fin erosion',
+      'Saddle-shaped lesions',
+      'Rapid death',
+    ],
     treatments: [
       'Lower temperature (slows bacteria)',
       'Salt treatment (1 tbsp per 5 gallons)',
@@ -307,7 +405,12 @@ final _allDiseases = [
       'Treat early — progresses fast',
       'Remove carbon filtration during treatment',
     ],
-    prevention: ['Quarantine new fish', 'Avoid overcrowding', 'Good oxygenation', 'Handle fish gently'],
+    prevention: [
+      'Quarantine new fish',
+      'Avoid overcrowding',
+      'Good oxygenation',
+      'Handle fish gently',
+    ],
   ),
   _Disease(
     name: 'Fungal Infection',
@@ -316,7 +419,11 @@ final _allDiseases = [
     severityColor: AppColors.warning,
     contagious: false,
     icon: Icons.cloud,
-    symptoms: ['Cottony white growths', 'Usually on wounds/damaged areas', 'May spread if untreated'],
+    symptoms: [
+      'Cottony white growths',
+      'Usually on wounds/damaged areas',
+      'May spread if untreated',
+    ],
     treatments: [
       'Improve water quality',
       'Salt bath (1 tbsp per gallon)',
@@ -324,7 +431,12 @@ final _allDiseases = [
       'Treat underlying injury',
       'Remove any dead/dying tissue',
     ],
-    prevention: ['Avoid injuries', 'Remove sharp decorations', 'Good water quality', 'Don\'t overcrowd'],
+    prevention: [
+      'Avoid injuries',
+      'Remove sharp decorations',
+      'Good water quality',
+      'Don\'t overcrowd',
+    ],
   ),
   _Disease(
     name: 'Popeye (Exophthalmia)',
@@ -333,7 +445,11 @@ final _allDiseases = [
     severityColor: AppColors.warning,
     contagious: false,
     icon: Icons.visibility,
-    symptoms: ['One or both eyes bulging', 'Cloudy eyes', 'Eye may appear to "pop"'],
+    symptoms: [
+      'One or both eyes bulging',
+      'Cloudy eyes',
+      'Eye may appear to "pop"',
+    ],
     treatments: [
       'If one eye: likely injury — clean water and time',
       'If both eyes: likely infection or water quality',
@@ -341,7 +457,11 @@ final _allDiseases = [
       'Epsom salt (1 tbsp per 5 gallons)',
       'Antibiotics for bacterial infection',
     ],
-    prevention: ['Stable water parameters', 'Avoid sharp decorations', 'Regular water changes'],
+    prevention: [
+      'Stable water parameters',
+      'Avoid sharp decorations',
+      'Regular water changes',
+    ],
   ),
   _Disease(
     name: 'Anchor Worms',
@@ -350,14 +470,23 @@ final _allDiseases = [
     severityColor: AppColors.warning,
     contagious: true,
     icon: Icons.pest_control,
-    symptoms: ['Visible worm-like protrusions', 'Redness/inflammation at attachment', 'Scratching on objects', 'Ulcers'],
+    symptoms: [
+      'Visible worm-like protrusions',
+      'Redness/inflammation at attachment',
+      'Scratching on objects',
+      'Ulcers',
+    ],
     treatments: [
       'Remove visible worms with tweezers (carefully!)',
       'Treat wound with antiseptic',
       'Medication: Dimilin, potassium permanganate',
       'Treat whole tank (eggs in water)',
     ],
-    prevention: ['Quarantine new fish', 'Inspect fish before adding', 'Don\'t add wild-caught plants without treatment'],
+    prevention: [
+      'Quarantine new fish',
+      'Inspect fish before adding',
+      'Don\'t add wild-caught plants without treatment',
+    ],
   ),
   _Disease(
     name: 'Hole in the Head (HITH)',
@@ -366,7 +495,13 @@ final _allDiseases = [
     severityColor: AppColors.warning,
     contagious: false,
     icon: Icons.radio_button_unchecked,
-    symptoms: ['Pits/holes in head', 'White stringy feces', 'Loss of appetite', 'Color fading', 'Common in cichlids'],
+    symptoms: [
+      'Pits/holes in head',
+      'White stringy feces',
+      'Loss of appetite',
+      'Color fading',
+      'Common in cichlids',
+    ],
     treatments: [
       'Improve water quality (major factor)',
       'Metronidazole treatment',
@@ -374,6 +509,11 @@ final _allDiseases = [
       'Reduce stress',
       'Can heal if caught early',
     ],
-    prevention: ['Varied, vitamin-rich diet', 'Excellent water quality', 'Low stress', 'Proper tank size'],
+    prevention: [
+      'Varied, vitamin-rich diet',
+      'Excellent water quality',
+      'Low stress',
+      'Proper tank size',
+    ],
   ),
 ];

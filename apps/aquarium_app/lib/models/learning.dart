@@ -2,7 +2,6 @@
 /// Lessons, quizzes, achievements, and learning paths
 library;
 
-
 import 'package:flutter/foundation.dart';
 import 'tank.dart'; // For TankType enum
 import 'user_profile.dart';
@@ -31,7 +30,7 @@ class LearningPath {
   });
 
   int get totalXp => lessons.fold(0, (sum, l) => sum + l.xpReward);
-  
+
   bool isRelevantFor(UserProfile profile) {
     if (relevantTankTypes.isEmpty) return true;
     return relevantTankTypes.contains(profile.primaryTankType);
@@ -160,20 +159,15 @@ class Achievement {
 }
 
 enum AchievementCategory {
-  learning,    // Complete lessons
-  tracking,    // Log data
-  streak,      // Consistency
-  milestones,  // XP/level milestones
+  learning, // Complete lessons
+  tracking, // Log data
+  streak, // Consistency
+  milestones, // XP/level milestones
   exploration, // Use features
-  special,     // Easter eggs, events
+  special, // Easter eggs, events
 }
 
-enum AchievementTier {
-  bronze,
-  silver,
-  gold,
-  platinum,
-}
+enum AchievementTier { bronze, silver, gold, platinum }
 
 extension AchievementTierExt on AchievementTier {
   String get displayName {
@@ -223,9 +217,11 @@ class DailyTip {
   });
 
   bool isRelevantFor(UserProfile profile) {
-    final expMatch = targetExperience.isEmpty || 
+    final expMatch =
+        targetExperience.isEmpty ||
         targetExperience.contains(profile.experienceLevel);
-    final tankMatch = targetTankTypes.isEmpty || 
+    final tankMatch =
+        targetTankTypes.isEmpty ||
         targetTankTypes.contains(profile.primaryTankType);
     return expMatch && tankMatch;
   }
@@ -366,7 +362,7 @@ class Achievements {
       tier: AchievementTier.gold,
     ),
 
-    // Exploration achievements  
+    // Exploration achievements
     Achievement(
       id: 'first_tank',
       title: 'Tank Owner',

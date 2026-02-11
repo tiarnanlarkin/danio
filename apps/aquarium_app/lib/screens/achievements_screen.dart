@@ -2,7 +2,6 @@
 /// Displays all achievements with filtering, sorting, and progress tracking
 library;
 
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/achievements.dart';
@@ -38,7 +37,9 @@ class _AchievementsScreenState extends ConsumerState<AchievementsScreen> {
       sortBy: _sortBy,
     );
 
-    final filteredAchievements = ref.watch(filteredAchievementsProvider(filter));
+    final filteredAchievements = ref.watch(
+      filteredAchievementsProvider(filter),
+    );
 
     // Calculate stats
     final totalAchievements = AchievementDefinitions.all.length;
@@ -99,13 +100,13 @@ class _AchievementsScreenState extends ConsumerState<AchievementsScreen> {
                   children: [
                     Text(
                       '$unlockedCount / $totalAchievements',
-                      style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                            fontWeight: FontWeight.bold,
-                          ),
+                      style: Theme.of(context).textTheme.headlineSmall
+                          ?.copyWith(fontWeight: FontWeight.bold),
                     ),
                     Text(
                       '${(completionPercent * 100).toStringAsFixed(1)}%',
-                      style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                      style: Theme.of(context).textTheme.headlineSmall
+                          ?.copyWith(
                             fontWeight: FontWeight.bold,
                             color: Theme.of(context).colorScheme.primary,
                           ),
@@ -224,39 +225,45 @@ class _AchievementsScreenState extends ConsumerState<AchievementsScreen> {
                         const SizedBox(height: 16),
                         Text(
                           'No achievements found',
-                          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                color: Colors.grey,
-                              ),
+                          style: Theme.of(
+                            context,
+                          ).textTheme.titleMedium?.copyWith(color: Colors.grey),
                         ),
                         const SizedBox(height: 8),
                         Text(
                           'Try adjusting your filters',
-                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                color: Colors.grey,
-                              ),
+                          style: Theme.of(
+                            context,
+                          ).textTheme.bodyMedium?.copyWith(color: Colors.grey),
                         ),
                       ],
                     ),
                   )
                 : GridView.builder(
                     padding: const EdgeInsets.all(16),
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      childAspectRatio: 0.85,
-                      crossAxisSpacing: 12,
-                      mainAxisSpacing: 12,
-                    ),
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          childAspectRatio: 0.85,
+                          crossAxisSpacing: 12,
+                          mainAxisSpacing: 12,
+                        ),
                     itemCount: filteredAchievements.length,
                     itemBuilder: (context, index) {
                       final achievement = filteredAchievements[index];
-                      final progress = progressMap[achievement.id] ??
+                      final progress =
+                          progressMap[achievement.id] ??
                           AchievementProgress(achievementId: achievement.id);
 
                       return RepaintBoundary(
                         child: AchievementCard(
                           achievement: achievement,
                           progress: progress,
-                          onTap: () => _showAchievementDetail(context, achievement, progress),
+                          onTap: () => _showAchievementDetail(
+                            context,
+                            achievement,
+                            progress,
+                          ),
                         ),
                       );
                     },
@@ -276,16 +283,10 @@ class _AchievementsScreenState extends ConsumerState<AchievementsScreen> {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (context) => AchievementDetailModal(
-        achievement: achievement,
-        progress: progress,
-      ),
+      builder: (context) =>
+          AchievementDetailModal(achievement: achievement, progress: progress),
     );
   }
 }
 
-enum FilterMode {
-  all,
-  unlocked,
-  locked,
-}
+enum FilterMode { all, unlocked, locked }

@@ -4,16 +4,16 @@ import 'package:flutter/material.dart';
 /// Users can switch themes in settings
 
 enum RoomThemeType {
-  ocean,      // Current teal/coral design
-  pastel,     // Whimsical pastel (new)
-  sunset,     // Warm oranges/purples
-  midnight,   // Dark mode deep blues
-  forest,     // Earthy greens/browns
-  dreamy,     // Ultra-soft abstract pastels
+  ocean, // Current teal/coral design
+  pastel, // Whimsical pastel (new)
+  sunset, // Warm oranges/purples
+  midnight, // Dark mode deep blues
+  forest, // Earthy greens/browns
+  dreamy, // Ultra-soft abstract pastels
   watercolor, // Artistic watercolor washes
-  cotton,     // Cotton candy gradient mesh
-  aurora,     // Northern lights glow
-  golden,     // Golden hour warmth
+  cotton, // Cotton candy gradient mesh
+  aurora, // Northern lights glow
+  golden, // Golden hour warmth
 }
 
 class RoomTheme {
@@ -110,40 +110,42 @@ class RoomTheme {
     buttonWater: Color(0xFF64B5F6),
     buttonStats: Color(0xFFBA68C8),
     textPrimary: Colors.white,
-    textSecondary: Color(0xCCFFFFFF), // Improved from 0xB3 (70%) to 0xCC (80%) for WCAG AA contrast
+    textSecondary: Color(
+      0xCCFFFFFF,
+    ), // Improved from 0xB3 (70%) to 0xCC (80%) for WCAG AA contrast
     accentCircles: [Color(0xFF7FCDCD), Color(0xFFE8A87C), Colors.white],
   );
 
   static RoomTheme get pastel => const RoomTheme(
     name: 'Whimsical',
     description: 'Soft pastels, dreamy vibes',
-    primaryWave: Color(0xFFB8D4E3),      // Soft sky blue
-    secondaryWave: Color(0xFFE8D5E0),    // Lavender pink
-    accentBlob: Color(0xFFFFD6E0),       // Soft pink
-    accentBlob2: Color(0xFFD4F0F0),      // Mint
-    background1: Color(0xFFE8EEF5),      // Very light blue-gray
-    background2: Color(0xFFDDE5ED),      // Soft blue
-    background3: Color(0xFFD0DCE8),      // Muted blue
-    waterTop: Color(0xFFB5E8E8),         // Pastel aqua
-    waterMid: Color(0xFF9DD8D8),         // Soft teal
-    waterBottom: Color(0xFF8DCACA),      // Muted teal
-    sand: Color(0xFFF5E6D3),             // Cream
-    plantPrimary: Color(0xFF9DD6B0),     // Mint green
-    plantSecondary: Color(0xFFB8E6C4),   // Light mint
-    fish1: Color(0xFFFFB5BA),            // Soft coral
-    fish2: Color(0xFFB5D8FF),            // Baby blue
-    fish3: Color(0xFFE8D5FF),            // Lavender
+    primaryWave: Color(0xFFB8D4E3), // Soft sky blue
+    secondaryWave: Color(0xFFE8D5E0), // Lavender pink
+    accentBlob: Color(0xFFFFD6E0), // Soft pink
+    accentBlob2: Color(0xFFD4F0F0), // Mint
+    background1: Color(0xFFE8EEF5), // Very light blue-gray
+    background2: Color(0xFFDDE5ED), // Soft blue
+    background3: Color(0xFFD0DCE8), // Muted blue
+    waterTop: Color(0xFFB5E8E8), // Pastel aqua
+    waterMid: Color(0xFF9DD8D8), // Soft teal
+    waterBottom: Color(0xFF8DCACA), // Muted teal
+    sand: Color(0xFFF5E6D3), // Cream
+    plantPrimary: Color(0xFF9DD6B0), // Mint green
+    plantSecondary: Color(0xFFB8E6C4), // Light mint
+    fish1: Color(0xFFFFB5BA), // Soft coral
+    fish2: Color(0xFFB5D8FF), // Baby blue
+    fish3: Color(0xFFE8D5FF), // Lavender
     glassCard: Color(0x33FFFFFF),
     glassBorder: Color(0x4DFFFFFF),
-    gaugeColor1: Color(0xFFB5D8FF),      // Baby blue
-    gaugeColor2: Color(0xFFA8E6CF),      // Mint
-    gaugeColor3: Color(0xFFFFDAB9),      // Peach
-    buttonFeed: Color(0xFFFFB5BA),       // Soft coral
-    buttonTest: Color(0xFFA8E6CF),       // Mint
-    buttonWater: Color(0xFFB5D8FF),      // Baby blue
-    buttonStats: Color(0xFFDDB8E8),      // Soft purple
-    textPrimary: Color(0xFF5A6978),      // Soft dark gray
-    textSecondary: Color(0xFF8896A6),    // Muted gray
+    gaugeColor1: Color(0xFFB5D8FF), // Baby blue
+    gaugeColor2: Color(0xFFA8E6CF), // Mint
+    gaugeColor3: Color(0xFFFFDAB9), // Peach
+    buttonFeed: Color(0xFFFFB5BA), // Soft coral
+    buttonTest: Color(0xFFA8E6CF), // Mint
+    buttonWater: Color(0xFFB5D8FF), // Baby blue
+    buttonStats: Color(0xFFDDB8E8), // Soft purple
+    textPrimary: Color(0xFF5A6978), // Soft dark gray
+    textSecondary: Color(0xFF8896A6), // Muted gray
     accentCircles: [Color(0xFFFFE4E8), Color(0xFFE4F0FF), Color(0xFFE8FFE8)],
   );
 
@@ -209,7 +211,9 @@ class RoomTheme {
     buttonWater: Color(0xFF78B8E8),
     buttonStats: Color(0xFFB888D8),
     textPrimary: Color(0xFFE8F0F8),
-    textSecondary: Color(0xB3E8F0F8), // Improved from 0x99 (60%) to 0xB3 (70%) for WCAG AA contrast
+    textSecondary: Color(
+      0xB3E8F0F8,
+    ), // Improved from 0x99 (60%) to 0xB3 (70%) for WCAG AA contrast
     accentCircles: [Color(0xFF5A8AB8), Color(0xFF78B8E8), Color(0xFF4A6B8C)],
   );
 
@@ -249,165 +253,165 @@ class RoomTheme {
   static RoomTheme get dreamy => const RoomTheme(
     name: 'Dreamy',
     description: 'Ultra-soft abstract pastels',
-    primaryWave: Color(0xFFD8C8E8),      // Soft lavender wave
-    secondaryWave: Color(0xFFC8E8D8),    // Mint cream wave
-    accentBlob: Color(0xFFE8D0E0),       // Blush pink blob
-    accentBlob2: Color(0xFFD0E0F0),      // Powder blue blob
-    background1: Color(0xFFF0E8F4),      // Pale lavender base
-    background2: Color(0xFFE8F4F0),      // Pale mint
-    background3: Color(0xFFF4E8EC),      // Pale blush
-    waterTop: Color(0xFFE0F0F8),         // Ethereal aqua
-    waterMid: Color(0xFFD0E8F0),         // Soft sky
-    waterBottom: Color(0xFFC8E0E8),      // Misty teal
-    sand: Color(0xFFF8F4F0),             // Warm white
-    plantPrimary: Color(0xFFA8D8B8),     // Soft sage
-    plantSecondary: Color(0xFFB8E8C8),   // Pale mint
-    fish1: Color(0xFFE8B8C8),            // Soft coral
-    fish2: Color(0xFFB8D8E8),            // Baby blue
-    fish3: Color(0xFFD8C8E8),            // Lavender
-    glassCard: Color(0x40FFFFFF),        // Frosted white
-    glassBorder: Color(0x60FFFFFF),      // Soft white border
-    gaugeColor1: Color(0xFF98D8C8),      // Mint gauge
-    gaugeColor2: Color(0xFFB8C8E8),      // Periwinkle
-    gaugeColor3: Color(0xFFE8C8D0),      // Rose
-    buttonFeed: Color(0xFFE8B8C8),       // Soft coral
-    buttonTest: Color(0xFFA8D8B8),       // Sage
-    buttonWater: Color(0xFFB8D8E8),      // Baby blue
-    buttonStats: Color(0xFFD8B8E8),      // Soft lilac
-    textPrimary: Color(0xFF5A5A6A),      // Soft charcoal
-    textSecondary: Color(0xFF8A8A9A),    // Muted gray
+    primaryWave: Color(0xFFD8C8E8), // Soft lavender wave
+    secondaryWave: Color(0xFFC8E8D8), // Mint cream wave
+    accentBlob: Color(0xFFE8D0E0), // Blush pink blob
+    accentBlob2: Color(0xFFD0E0F0), // Powder blue blob
+    background1: Color(0xFFF0E8F4), // Pale lavender base
+    background2: Color(0xFFE8F4F0), // Pale mint
+    background3: Color(0xFFF4E8EC), // Pale blush
+    waterTop: Color(0xFFE0F0F8), // Ethereal aqua
+    waterMid: Color(0xFFD0E8F0), // Soft sky
+    waterBottom: Color(0xFFC8E0E8), // Misty teal
+    sand: Color(0xFFF8F4F0), // Warm white
+    plantPrimary: Color(0xFFA8D8B8), // Soft sage
+    plantSecondary: Color(0xFFB8E8C8), // Pale mint
+    fish1: Color(0xFFE8B8C8), // Soft coral
+    fish2: Color(0xFFB8D8E8), // Baby blue
+    fish3: Color(0xFFD8C8E8), // Lavender
+    glassCard: Color(0x40FFFFFF), // Frosted white
+    glassBorder: Color(0x60FFFFFF), // Soft white border
+    gaugeColor1: Color(0xFF98D8C8), // Mint gauge
+    gaugeColor2: Color(0xFFB8C8E8), // Periwinkle
+    gaugeColor3: Color(0xFFE8C8D0), // Rose
+    buttonFeed: Color(0xFFE8B8C8), // Soft coral
+    buttonTest: Color(0xFFA8D8B8), // Sage
+    buttonWater: Color(0xFFB8D8E8), // Baby blue
+    buttonStats: Color(0xFFD8B8E8), // Soft lilac
+    textPrimary: Color(0xFF5A5A6A), // Soft charcoal
+    textSecondary: Color(0xFF8A8A9A), // Muted gray
     accentCircles: [Color(0xFFE8D0E0), Color(0xFFD0E8F0), Color(0xFFD8E8D0)],
   );
 
   static RoomTheme get watercolor => const RoomTheme(
     name: 'Watercolor',
     description: 'Artistic painted washes',
-    primaryWave: Color(0xFFE8C8B8),      // Soft peach wash
-    secondaryWave: Color(0xFFB8D0E8),    // Periwinkle wash
-    accentBlob: Color(0xFFF0D8C8),       // Warm peach
-    accentBlob2: Color(0xFFC8E8D8),      // Seafoam green
-    background1: Color(0xFFFAF6F2),      // Warm paper white
-    background2: Color(0xFFF4EFE8),      // Soft cream
-    background3: Color(0xFFEDE6DE),      // Light tan
-    waterTop: Color(0xFFD0E8E0),         // Seafoam
-    waterMid: Color(0xFFC0D8D0),         // Soft teal
-    waterBottom: Color(0xFFB0C8C0),      // Muted sage
-    sand: Color(0xFFF5EDE0),             // Cream sand
-    plantPrimary: Color(0xFF90C8A8),     // Watercolor green
-    plantSecondary: Color(0xFFA8D8B8),   // Light green wash
-    fish1: Color(0xFFE8B8A0),            // Peach fish
-    fish2: Color(0xFFB8C8E8),            // Periwinkle fish
-    fish3: Color(0xFFC8E0C8),            // Mint fish
-    glassCard: Color(0x35FFFFFF),        // Soft frosted
-    glassBorder: Color(0x50FFFFFF),      // Light border
-    gaugeColor1: Color(0xFFB8D8D0),      // Seafoam gauge
-    gaugeColor2: Color(0xFFD8C8B8),      // Warm tan
-    gaugeColor3: Color(0xFFC8D0E8),      // Soft blue
-    buttonFeed: Color(0xFFE8C0A8),       // Peach
-    buttonTest: Color(0xFFA8D0B8),       // Mint
-    buttonWater: Color(0xFFB8C8E0),      // Periwinkle
-    buttonStats: Color(0xFFD0C0D8),      // Soft mauve
-    textPrimary: Color(0xFF4A4A50),      // Warm charcoal
-    textSecondary: Color(0xFF7A7A84),    // Soft gray
+    primaryWave: Color(0xFFE8C8B8), // Soft peach wash
+    secondaryWave: Color(0xFFB8D0E8), // Periwinkle wash
+    accentBlob: Color(0xFFF0D8C8), // Warm peach
+    accentBlob2: Color(0xFFC8E8D8), // Seafoam green
+    background1: Color(0xFFFAF6F2), // Warm paper white
+    background2: Color(0xFFF4EFE8), // Soft cream
+    background3: Color(0xFFEDE6DE), // Light tan
+    waterTop: Color(0xFFD0E8E0), // Seafoam
+    waterMid: Color(0xFFC0D8D0), // Soft teal
+    waterBottom: Color(0xFFB0C8C0), // Muted sage
+    sand: Color(0xFFF5EDE0), // Cream sand
+    plantPrimary: Color(0xFF90C8A8), // Watercolor green
+    plantSecondary: Color(0xFFA8D8B8), // Light green wash
+    fish1: Color(0xFFE8B8A0), // Peach fish
+    fish2: Color(0xFFB8C8E8), // Periwinkle fish
+    fish3: Color(0xFFC8E0C8), // Mint fish
+    glassCard: Color(0x35FFFFFF), // Soft frosted
+    glassBorder: Color(0x50FFFFFF), // Light border
+    gaugeColor1: Color(0xFFB8D8D0), // Seafoam gauge
+    gaugeColor2: Color(0xFFD8C8B8), // Warm tan
+    gaugeColor3: Color(0xFFC8D0E8), // Soft blue
+    buttonFeed: Color(0xFFE8C0A8), // Peach
+    buttonTest: Color(0xFFA8D0B8), // Mint
+    buttonWater: Color(0xFFB8C8E0), // Periwinkle
+    buttonStats: Color(0xFFD0C0D8), // Soft mauve
+    textPrimary: Color(0xFF4A4A50), // Warm charcoal
+    textSecondary: Color(0xFF7A7A84), // Soft gray
     accentCircles: [Color(0xFFF0D8C8), Color(0xFFC8E8D8), Color(0xFFD0D8E8)],
   );
 
   static RoomTheme get cotton => const RoomTheme(
     name: 'Cotton Candy',
     description: 'Smooth gradient mesh',
-    primaryWave: Color(0xFFE8C0D0),      // Soft rose
-    secondaryWave: Color(0xFFD0C0E8),    // Soft lilac
-    accentBlob: Color(0xFFF0D0E0),       // Pink
-    accentBlob2: Color(0xFFD0D8F0),      // Powder blue
-    background1: Color(0xFFF8E0E8),      // Rose gradient start
-    background2: Color(0xFFE8D8F0),      // Lilac middle
-    background3: Color(0xFFE0E0F8),      // Blue gradient end
-    waterTop: Color(0xFFE0D8F0),         // Soft lavender
-    waterMid: Color(0xFFD8D0E8),         // Misty purple
-    waterBottom: Color(0xFFD0C8E0),      // Dusky violet
-    sand: Color(0xFFF8F0F4),             // Pale pink white
-    plantPrimary: Color(0xFFB8D0C8),     // Muted sage
-    plantSecondary: Color(0xFFC8E0D8),   // Soft mint
-    fish1: Color(0xFFE8B0C0),            // Rose fish
-    fish2: Color(0xFFC0B8E8),            // Lilac fish
-    fish3: Color(0xFFB8D0E8),            // Sky fish
-    glassCard: Color(0x30FFFFFF),        // Neumorphic white
-    glassBorder: Color(0x45FFFFFF),      // Soft border
-    gaugeColor1: Color(0xFFD8C0E0),      // Lilac gauge
-    gaugeColor2: Color(0xFFE0C0D0),      // Rose gauge
-    gaugeColor3: Color(0xFFC0D0E8),      // Blue gauge
-    buttonFeed: Color(0xFFE8C0D0),       // Rose
-    buttonTest: Color(0xFFB8D8C8),       // Soft mint
-    buttonWater: Color(0xFFC0C8E8),      // Periwinkle
-    buttonStats: Color(0xFFD8C0E0),      // Lilac
-    textPrimary: Color(0xFF5A5060),      // Dusky purple-gray
-    textSecondary: Color(0xFF8A8090),    // Muted mauve
+    primaryWave: Color(0xFFE8C0D0), // Soft rose
+    secondaryWave: Color(0xFFD0C0E8), // Soft lilac
+    accentBlob: Color(0xFFF0D0E0), // Pink
+    accentBlob2: Color(0xFFD0D8F0), // Powder blue
+    background1: Color(0xFFF8E0E8), // Rose gradient start
+    background2: Color(0xFFE8D8F0), // Lilac middle
+    background3: Color(0xFFE0E0F8), // Blue gradient end
+    waterTop: Color(0xFFE0D8F0), // Soft lavender
+    waterMid: Color(0xFFD8D0E8), // Misty purple
+    waterBottom: Color(0xFFD0C8E0), // Dusky violet
+    sand: Color(0xFFF8F0F4), // Pale pink white
+    plantPrimary: Color(0xFFB8D0C8), // Muted sage
+    plantSecondary: Color(0xFFC8E0D8), // Soft mint
+    fish1: Color(0xFFE8B0C0), // Rose fish
+    fish2: Color(0xFFC0B8E8), // Lilac fish
+    fish3: Color(0xFFB8D0E8), // Sky fish
+    glassCard: Color(0x30FFFFFF), // Neumorphic white
+    glassBorder: Color(0x45FFFFFF), // Soft border
+    gaugeColor1: Color(0xFFD8C0E0), // Lilac gauge
+    gaugeColor2: Color(0xFFE0C0D0), // Rose gauge
+    gaugeColor3: Color(0xFFC0D0E8), // Blue gauge
+    buttonFeed: Color(0xFFE8C0D0), // Rose
+    buttonTest: Color(0xFFB8D8C8), // Soft mint
+    buttonWater: Color(0xFFC0C8E8), // Periwinkle
+    buttonStats: Color(0xFFD8C0E0), // Lilac
+    textPrimary: Color(0xFF5A5060), // Dusky purple-gray
+    textSecondary: Color(0xFF8A8090), // Muted mauve
     accentCircles: [Color(0xFFF0D0E0), Color(0xFFD0D8F0), Color(0xFFD8E0D8)],
   );
 
   static RoomTheme get aurora => const RoomTheme(
     name: 'Aurora',
     description: 'Northern lights glow',
-    primaryWave: Color(0xFF40E0D0),      // Bright teal aurora
-    secondaryWave: Color(0xFF20B890),    // Deep green aurora
-    accentBlob: Color(0xFF60F0C0),       // Glowing green
-    accentBlob2: Color(0xFF8080D0),      // Soft purple
-    background1: Color(0xFF1A2040),      // Deep navy
-    background2: Color(0xFF152038),      // Darker navy
-    background3: Color(0xFF101830),      // Deepest blue
-    waterTop: Color(0xFF304858),         // Dark teal
-    waterMid: Color(0xFF283848),         // Deeper teal
-    waterBottom: Color(0xFF202838),      // Deep blue-gray
-    sand: Color(0xFF384048),             // Dark sand
-    plantPrimary: Color(0xFF40C090),     // Aurora green
-    plantSecondary: Color(0xFF60D0A0),   // Lighter aurora
-    fish1: Color(0xFF60E0C0),            // Teal fish
-    fish2: Color(0xFF80A0E0),            // Blue fish
-    fish3: Color(0xFFA080D0),            // Purple fish
-    glassCard: Color(0x20FFFFFF),        // Dark frosted
-    glassBorder: Color(0x3040E0D0),      // Teal glow border
-    gaugeColor1: Color(0xFF40E0D0),      // Teal gauge
-    gaugeColor2: Color(0xFF60D0A0),      // Green gauge
-    gaugeColor3: Color(0xFF8080D0),      // Purple gauge
-    buttonFeed: Color(0xFF60E0C0),       // Teal
-    buttonTest: Color(0xFF40C090),       // Green
-    buttonWater: Color(0xFF6090D0),      // Blue
-    buttonStats: Color(0xFF9070C0),      // Purple
-    textPrimary: Color(0xFFE0F0F0),      // Light cyan
-    textSecondary: Color(0xFFA0C0C0),    // Muted cyan
+    primaryWave: Color(0xFF40E0D0), // Bright teal aurora
+    secondaryWave: Color(0xFF20B890), // Deep green aurora
+    accentBlob: Color(0xFF60F0C0), // Glowing green
+    accentBlob2: Color(0xFF8080D0), // Soft purple
+    background1: Color(0xFF1A2040), // Deep navy
+    background2: Color(0xFF152038), // Darker navy
+    background3: Color(0xFF101830), // Deepest blue
+    waterTop: Color(0xFF304858), // Dark teal
+    waterMid: Color(0xFF283848), // Deeper teal
+    waterBottom: Color(0xFF202838), // Deep blue-gray
+    sand: Color(0xFF384048), // Dark sand
+    plantPrimary: Color(0xFF40C090), // Aurora green
+    plantSecondary: Color(0xFF60D0A0), // Lighter aurora
+    fish1: Color(0xFF60E0C0), // Teal fish
+    fish2: Color(0xFF80A0E0), // Blue fish
+    fish3: Color(0xFFA080D0), // Purple fish
+    glassCard: Color(0x20FFFFFF), // Dark frosted
+    glassBorder: Color(0x3040E0D0), // Teal glow border
+    gaugeColor1: Color(0xFF40E0D0), // Teal gauge
+    gaugeColor2: Color(0xFF60D0A0), // Green gauge
+    gaugeColor3: Color(0xFF8080D0), // Purple gauge
+    buttonFeed: Color(0xFF60E0C0), // Teal
+    buttonTest: Color(0xFF40C090), // Green
+    buttonWater: Color(0xFF6090D0), // Blue
+    buttonStats: Color(0xFF9070C0), // Purple
+    textPrimary: Color(0xFFE0F0F0), // Light cyan
+    textSecondary: Color(0xFFA0C0C0), // Muted cyan
     accentCircles: [Color(0xFF40E0D0), Color(0xFF60D0A0), Color(0xFF8080D0)],
   );
 
   static RoomTheme get golden => const RoomTheme(
     name: 'Golden Hour',
     description: 'Warm sunset glow',
-    primaryWave: Color(0xFFF0C080),      // Amber wave
-    secondaryWave: Color(0xFFE8A868),    // Peach wave
-    accentBlob: Color(0xFFFFD090),       // Golden blob
-    accentBlob2: Color(0xFFF8E0C0),      // Cream blob
-    background1: Color(0xFFF8D8A0),      // Warm amber
-    background2: Color(0xFFF0C888),      // Golden peach
-    background3: Color(0xFFE8B878),      // Deeper amber
-    waterTop: Color(0xFFF8E8D0),         // Cream water
-    waterMid: Color(0xFFF0D8C0),         // Warm beige
-    waterBottom: Color(0xFFE8C8B0),      // Sandy tone
-    sand: Color(0xFFFFF0E0),             // Warm white
-    plantPrimary: Color(0xFF90B878),     // Warm sage
-    plantSecondary: Color(0xFFA8C888),   // Light green
-    fish1: Color(0xFFE89060),            // Coral fish
-    fish2: Color(0xFFF0A870),            // Peach fish
-    fish3: Color(0xFFD08050),            // Amber fish
-    glassCard: Color(0x30FFFFFF),        // Warm frosted
-    glassBorder: Color(0x50FFFFFF),      // Soft border
-    gaugeColor1: Color(0xFFF0B060),      // Gold gauge
-    gaugeColor2: Color(0xFFE89868),      // Coral gauge
-    gaugeColor3: Color(0xFFD8A878),      // Tan gauge
-    buttonFeed: Color(0xFFE89060),       // Coral
-    buttonTest: Color(0xFF90B878),       // Sage
-    buttonWater: Color(0xFFD0B8A0),      // Tan
-    buttonStats: Color(0xFFC08868),      // Amber
-    textPrimary: Color(0xFF5A4030),      // Warm brown
-    textSecondary: Color(0xFF8A7060),    // Muted brown
+    primaryWave: Color(0xFFF0C080), // Amber wave
+    secondaryWave: Color(0xFFE8A868), // Peach wave
+    accentBlob: Color(0xFFFFD090), // Golden blob
+    accentBlob2: Color(0xFFF8E0C0), // Cream blob
+    background1: Color(0xFFF8D8A0), // Warm amber
+    background2: Color(0xFFF0C888), // Golden peach
+    background3: Color(0xFFE8B878), // Deeper amber
+    waterTop: Color(0xFFF8E8D0), // Cream water
+    waterMid: Color(0xFFF0D8C0), // Warm beige
+    waterBottom: Color(0xFFE8C8B0), // Sandy tone
+    sand: Color(0xFFFFF0E0), // Warm white
+    plantPrimary: Color(0xFF90B878), // Warm sage
+    plantSecondary: Color(0xFFA8C888), // Light green
+    fish1: Color(0xFFE89060), // Coral fish
+    fish2: Color(0xFFF0A870), // Peach fish
+    fish3: Color(0xFFD08050), // Amber fish
+    glassCard: Color(0x30FFFFFF), // Warm frosted
+    glassBorder: Color(0x50FFFFFF), // Soft border
+    gaugeColor1: Color(0xFFF0B060), // Gold gauge
+    gaugeColor2: Color(0xFFE89868), // Coral gauge
+    gaugeColor3: Color(0xFFD8A878), // Tan gauge
+    buttonFeed: Color(0xFFE89060), // Coral
+    buttonTest: Color(0xFF90B878), // Sage
+    buttonWater: Color(0xFFD0B8A0), // Tan
+    buttonStats: Color(0xFFC08868), // Amber
+    textPrimary: Color(0xFF5A4030), // Warm brown
+    textSecondary: Color(0xFF8A7060), // Muted brown
     accentCircles: [Color(0xFFFFD090), Color(0xFFF0B060), Color(0xFFE8C0A0)],
   );
 

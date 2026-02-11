@@ -38,10 +38,11 @@ class WishlistScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final allItems = ref.watch(wishlistProvider);
-    final items = allItems
-        .where((item) => item.category == category && !item.purchased)
-        .toList()
-      ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
+    final items =
+        allItems
+            .where((item) => item.category == category && !item.purchased)
+            .toList()
+          ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
 
     final purchasedItems = allItems
         .where((item) => item.category == category && item.purchased)
@@ -55,7 +56,8 @@ class WishlistScreen extends ConsumerWidget {
             IconButton(
               icon: const Icon(Icons.history),
               tooltip: 'Purchased items',
-              onPressed: () => _showPurchasedItems(context, ref, purchasedItems),
+              onPressed: () =>
+                  _showPurchasedItems(context, ref, purchasedItems),
             ),
         ],
       ),
@@ -64,10 +66,15 @@ class WishlistScreen extends ConsumerWidget {
               icon: category == WishlistCategory.fish
                   ? Icons.set_meal
                   : category == WishlistCategory.plant
-                      ? Icons.grass
-                      : Icons.shopping_cart,
+                  ? Icons.grass
+                  : Icons.shopping_cart,
               title: 'No items in wishlist',
-              message: 'Add ${category == WishlistCategory.fish ? 'fish' : category == WishlistCategory.plant ? 'plants' : 'equipment'} you want to get for your aquarium',
+              message:
+                  'Add ${category == WishlistCategory.fish
+                      ? 'fish'
+                      : category == WishlistCategory.plant
+                      ? 'plants'
+                      : 'equipment'} you want to get for your aquarium',
               actionLabel: 'Add Item',
               onAction: () => _showAddDialog(context, ref),
             )
@@ -129,10 +136,12 @@ class WishlistScreen extends ConsumerWidget {
 
   void _markPurchased(BuildContext context, WidgetRef ref, WishlistItem item) {
     ref.read(wishlistProvider.notifier).markPurchased(item.id);
-    
+
     // Add to budget if price is set
     if (item.estimatedPrice != null) {
-      ref.read(budgetProvider.notifier).addPurchase(item.estimatedPrice! * item.quantity);
+      ref
+          .read(budgetProvider.notifier)
+          .addPurchase(item.estimatedPrice! * item.quantity);
     }
 
     AppFeedback.showSuccess(context, '${item.name} marked as purchased!');
@@ -162,7 +171,11 @@ class WishlistScreen extends ConsumerWidget {
     );
   }
 
-  void _showPurchasedItems(BuildContext context, WidgetRef ref, List<WishlistItem> items) {
+  void _showPurchasedItems(
+    BuildContext context,
+    WidgetRef ref,
+    List<WishlistItem> items,
+  ) {
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
@@ -246,7 +259,9 @@ class _EmptyState extends StatelessWidget {
             const SizedBox(height: 16),
             Text(
               text,
-              style: AppTypography.bodyLarge.copyWith(color: AppColors.textSecondary),
+              style: AppTypography.bodyLarge.copyWith(
+                color: AppColors.textSecondary,
+              ),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 24),
@@ -295,20 +310,14 @@ class _WishlistItemCard extends StatelessWidget {
                   color: accentColor.withOpacity(0.15),
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: Icon(
-                  _getCategoryIcon(),
-                  color: accentColor,
-                ),
+                child: Icon(_getCategoryIcon(), color: accentColor),
               ),
               const SizedBox(width: 16),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      item.name,
-                      style: AppTypography.labelLarge,
-                    ),
+                    Text(item.name, style: AppTypography.labelLarge),
                     if (item.species != null)
                       Text(
                         item.species!,
@@ -484,7 +493,9 @@ class _AddEditItemSheetState extends State<_AddEditItemSheet> {
                       labelText: 'Est. price (£)',
                       prefixText: '£ ',
                     ),
-                    keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                    keyboardType: const TextInputType.numberWithOptions(
+                      decimal: true,
+                    ),
                     inputFormatters: [
                       FilteringTextInputFormatter.allow(RegExp(r'[\d.]')),
                     ],
@@ -504,10 +515,7 @@ class _AddEditItemSheetState extends State<_AddEditItemSheet> {
                               ? () => setState(() => _quantity--)
                               : null,
                         ),
-                        Text(
-                          '$_quantity',
-                          style: AppTypography.labelLarge,
-                        ),
+                        Text('$_quantity', style: AppTypography.labelLarge),
                         IconButton(
                           icon: const Icon(Icons.add_circle_outline),
                           onPressed: () => setState(() => _quantity++),
@@ -535,7 +543,9 @@ class _AddEditItemSheetState extends State<_AddEditItemSheet> {
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: _nameController.text.trim().isNotEmpty ? _save : null,
+                onPressed: _nameController.text.trim().isNotEmpty
+                    ? _save
+                    : null,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: widget.accentColor,
                   padding: const EdgeInsets.symmetric(vertical: 16),

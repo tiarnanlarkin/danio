@@ -87,11 +87,11 @@ class _AppPerformanceOverlayState extends State<AppPerformanceOverlay> {
   }
 
   Widget _buildOverlay() {
-    final fpsColor = _fps >= 55 
-        ? Colors.green 
-        : _fps >= 45 
-            ? Colors.orange 
-            : Colors.red;
+    final fpsColor = _fps >= 55
+        ? Colors.green
+        : _fps >= 45
+        ? Colors.orange
+        : Colors.red;
 
     return Material(
       color: Colors.black87,
@@ -102,11 +102,7 @@ class _AppPerformanceOverlayState extends State<AppPerformanceOverlay> {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            _buildMetric(
-              'FPS',
-              _fps.toStringAsFixed(1),
-              fpsColor,
-            ),
+            _buildMetric('FPS', _fps.toStringAsFixed(1), fpsColor),
             const SizedBox(height: 4),
             _buildMetric(
               'Frame',
@@ -235,7 +231,9 @@ class _PerformanceDebugScreenState extends State<PerformanceDebugScreen> {
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
-                color: report.meetsTarget ? Colors.green.shade900 : Colors.red.shade900,
+                color: report.meetsTarget
+                    ? Colors.green.shade900
+                    : Colors.red.shade900,
               ),
             ),
           ],
@@ -253,10 +251,7 @@ class _PerformanceDebugScreenState extends State<PerformanceDebugScreen> {
           children: [
             const Text(
               'Frame Metrics',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
             _buildMetricRow(
@@ -292,7 +287,12 @@ class _PerformanceDebugScreenState extends State<PerformanceDebugScreen> {
     );
   }
 
-  Widget _buildMetricRow(String label, String value, String target, bool meetsTarget) {
+  Widget _buildMetricRow(
+    String label,
+    String value,
+    String target,
+    bool meetsTarget,
+  ) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: Row(
@@ -316,10 +316,7 @@ class _PerformanceDebugScreenState extends State<PerformanceDebugScreen> {
           Expanded(
             child: Text(
               'Target: $target',
-              style: const TextStyle(
-                color: Colors.grey,
-                fontSize: 12,
-              ),
+              style: const TextStyle(color: Colors.grey, fontSize: 12),
             ),
           ),
         ],
@@ -348,18 +345,12 @@ class _PerformanceDebugScreenState extends State<PerformanceDebugScreen> {
           children: [
             const Text(
               'Widget Rebuilds (Top 10)',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
             const Text(
               'Widgets with excessive rebuilds may need optimization',
-              style: TextStyle(
-                fontSize: 12,
-                color: Colors.grey,
-              ),
+              style: TextStyle(fontSize: 12, color: Colors.grey),
             ),
             const SizedBox(height: 16),
             ...rebuilds.take(10).map((entry) {

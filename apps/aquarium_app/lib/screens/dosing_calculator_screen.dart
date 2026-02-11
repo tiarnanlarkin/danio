@@ -45,9 +45,7 @@ class _DosingCalculatorScreenState extends State<DosingCalculatorScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Dosing Calculator'),
-      ),
+      appBar: AppBar(title: const Text('Dosing Calculator')),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -62,8 +60,12 @@ class _DosingCalculatorScreenState extends State<DosingCalculatorScreen> {
                 hintText: 'Enter tank volume',
                 suffixText: 'L',
               ),
-              keyboardType: const TextInputType.numberWithOptions(decimal: true),
-              inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[\d.]'))],
+              keyboardType: const TextInputType.numberWithOptions(
+                decimal: true,
+              ),
+              inputFormatters: [
+                FilteringTextInputFormatter.allow(RegExp(r'[\d.]')),
+              ],
               onChanged: (_) => setState(() {}),
             ),
 
@@ -81,8 +83,12 @@ class _DosingCalculatorScreenState extends State<DosingCalculatorScreen> {
                       hintText: 'Amount',
                       suffixText: 'ml',
                     ),
-                    keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                    inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[\d.]'))],
+                    keyboardType: const TextInputType.numberWithOptions(
+                      decimal: true,
+                    ),
+                    inputFormatters: [
+                      FilteringTextInputFormatter.allow(RegExp(r'[\d.]')),
+                    ],
                     onChanged: (_) => setState(() {}),
                   ),
                 ),
@@ -121,7 +127,11 @@ class _DosingCalculatorScreenState extends State<DosingCalculatorScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(Icons.science, color: AppColors.primary, size: 32),
+                          Icon(
+                            Icons.science,
+                            color: AppColors.primary,
+                            size: 32,
+                          ),
                           const SizedBox(width: 12),
                           Text(
                             '${_totalDose!.toStringAsFixed(2)} ml',
@@ -145,7 +155,8 @@ class _DosingCalculatorScreenState extends State<DosingCalculatorScreen> {
                       ),
                       _ResultRow(
                         label: 'Dose rate',
-                        value: '${_dosePer!.toStringAsFixed(1)} ml per ${_dosePerLitres.toStringAsFixed(0)} L',
+                        value:
+                            '${_dosePer!.toStringAsFixed(1)} ml per ${_dosePerLitres.toStringAsFixed(0)} L',
                       ),
                     ],
                   ),
@@ -209,7 +220,11 @@ class _DosingCalculatorScreenState extends State<DosingCalculatorScreen> {
                   child: Center(
                     child: Column(
                       children: [
-                        Icon(Icons.science_outlined, size: 48, color: AppColors.textHint),
+                        Icon(
+                          Icons.science_outlined,
+                          size: 48,
+                          color: AppColors.textHint,
+                        ),
                         const SizedBox(height: 16),
                         Text(
                           'Enter values to calculate dose',
@@ -268,7 +283,9 @@ class _ProductPreset extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 8),
       child: ListTile(
         title: Text(name),
-        subtitle: Text('${dose.toStringAsFixed(0)} ml per ${per.toStringAsFixed(0)} L'),
+        subtitle: Text(
+          '${dose.toStringAsFixed(0)} ml per ${per.toStringAsFixed(0)} L',
+        ),
         trailing: const Icon(Icons.arrow_forward_ios, size: 16),
         onTap: onTap,
       ),

@@ -56,10 +56,7 @@ class OfflineModeDemoScreen extends ConsumerWidget {
                       valueColor: isOnline ? Colors.green : Colors.orange,
                     ),
                     if (statusMessage != null)
-                      _InfoRow(
-                        label: 'Message',
-                        value: statusMessage,
-                      ),
+                      _InfoRow(label: 'Message', value: statusMessage),
                   ],
                 ),
 
@@ -102,7 +99,9 @@ class OfflineModeDemoScreen extends ConsumerWidget {
                     icon: Icons.list,
                     iconColor: Colors.purple,
                     children: syncState.queuedActions.map((action) {
-                      final description = SyncService.getActionDescription(action);
+                      final description = SyncService.getActionDescription(
+                        action,
+                      );
                       final time = _formatTime(action.timestamp);
                       return ListTile(
                         dense: true,
@@ -161,7 +160,8 @@ class OfflineModeDemoScreen extends ConsumerWidget {
                   iconColor: Colors.blueGrey,
                   children: [
                     ElevatedButton.icon(
-                      onPressed: syncState.isSyncing || !syncState.hasQueuedActions
+                      onPressed:
+                          syncState.isSyncing || !syncState.hasQueuedActions
                           ? null
                           : () {
                               ref.read(syncServiceProvider.notifier).syncNow();
@@ -174,7 +174,9 @@ class OfflineModeDemoScreen extends ConsumerWidget {
                       onPressed: syncState.queuedActions.isEmpty
                           ? null
                           : () {
-                              ref.read(syncServiceProvider.notifier).clearQueue();
+                              ref
+                                  .read(syncServiceProvider.notifier)
+                                  .clearQueue();
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(content: Text('Queue cleared')),
                               );
@@ -199,7 +201,10 @@ class OfflineModeDemoScreen extends ConsumerWidget {
                       children: [
                         Row(
                           children: [
-                            Icon(Icons.info_outline, color: Colors.blue.shade700),
+                            Icon(
+                              Icons.info_outline,
+                              color: Colors.blue.shade700,
+                            ),
                             const SizedBox(width: 8),
                             Text(
                               'How to Test',
@@ -247,11 +252,13 @@ class OfflineModeDemoScreen extends ConsumerWidget {
       amount: 10,
       reason: 'Test reward',
       localUpdate: () async {
-        await ref.read(gemsProvider.notifier).addGems(
-          amount: 10,
-          reason: GemEarnReason.promotional,
-          customReason: 'Test reward',
-        );
+        await ref
+            .read(gemsProvider.notifier)
+            .addGems(
+              amount: 10,
+              reason: GemEarnReason.promotional,
+              customReason: 'Test reward',
+            );
       },
     );
   }
@@ -266,11 +273,11 @@ class OfflineModeDemoScreen extends ConsumerWidget {
         // Simplified for demo
       },
     );
-    
+
     if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Lesson completed (demo)')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Lesson completed (demo)')));
     }
   }
 
@@ -287,7 +294,7 @@ class OfflineModeDemoScreen extends ConsumerWidget {
   String _formatTime(DateTime time) {
     final now = DateTime.now();
     final diff = now.difference(time);
-    
+
     if (diff.inSeconds < 60) return '${diff.inSeconds}s ago';
     if (diff.inMinutes < 60) return '${diff.inMinutes}m ago';
     if (diff.inHours < 24) return '${diff.inHours}h ago';
@@ -361,11 +368,7 @@ class _InfoRow extends StatelessWidget {
   final String value;
   final Color? valueColor;
 
-  const _InfoRow({
-    required this.label,
-    required this.value,
-    this.valueColor,
-  });
+  const _InfoRow({required this.label, required this.value, this.valueColor});
 
   @override
   Widget build(BuildContext context) {
@@ -374,13 +377,7 @@ class _InfoRow extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
-            label,
-            style: const TextStyle(
-              color: Colors.grey,
-              fontSize: 14,
-            ),
-          ),
+          Text(label, style: const TextStyle(color: Colors.grey, fontSize: 14)),
           Text(
             value,
             style: TextStyle(
@@ -416,9 +413,7 @@ class _TestActionButton extends StatelessWidget {
           onPressed: onPressed,
           icon: Icon(icon, size: 18),
           label: Text(label),
-          style: OutlinedButton.styleFrom(
-            alignment: Alignment.centerLeft,
-          ),
+          style: OutlinedButton.styleFrom(alignment: Alignment.centerLeft),
         ),
       ),
     );

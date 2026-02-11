@@ -5,7 +5,7 @@ import '../providers/tank_provider.dart';
 import '../theme/app_theme.dart';
 
 /// Example of optimized provider usage for TankDetailScreen
-/// 
+///
 /// Instead of watching all 6 providers in one widget:
 /// ```dart
 /// // ❌ Bad: Everything rebuilds on any change
@@ -36,7 +36,8 @@ class LivestockSection extends ConsumerWidget {
 
     return livestockAsync.when(
       loading: () => const _SectionLoading(title: 'Livestock'),
-      error: (err, _) => _SectionError(title: 'Livestock', error: err.toString()),
+      error: (err, _) =>
+          _SectionError(title: 'Livestock', error: err.toString()),
       data: (livestock) {
         if (livestock.isEmpty) {
           return const _SectionEmpty(
@@ -55,7 +56,10 @@ class LivestockSection extends ConsumerWidget {
                 children: [
                   const Icon(Icons.pets, color: AppColors.primary),
                   const SizedBox(width: 8),
-                  Text('Livestock (${livestock.length})', style: AppTypography.headlineSmall),
+                  Text(
+                    'Livestock (${livestock.length})',
+                    style: AppTypography.headlineSmall,
+                  ),
                 ],
               ),
             ),
@@ -68,10 +72,16 @@ class LivestockSection extends ConsumerWidget {
                 return ListTile(
                   leading: CircleAvatar(
                     backgroundColor: AppColors.primary.withOpacity(0.1),
-                    child: const Icon(Icons.pets, color: AppColors.primary, size: 20),
+                    child: const Icon(
+                      Icons.pets,
+                      color: AppColors.primary,
+                      size: 20,
+                    ),
                   ),
                   title: Text(item.commonName),
-                  subtitle: item.count > 1 ? Text('Quantity: ${item.count}') : null,
+                  subtitle: item.count > 1
+                      ? Text('Quantity: ${item.count}')
+                      : null,
                   trailing: const Icon(Icons.chevron_right),
                 );
               },
@@ -95,7 +105,8 @@ class EquipmentSection extends ConsumerWidget {
 
     return equipmentAsync.when(
       loading: () => const _SectionLoading(title: 'Equipment'),
-      error: (err, _) => _SectionError(title: 'Equipment', error: err.toString()),
+      error: (err, _) =>
+          _SectionError(title: 'Equipment', error: err.toString()),
       data: (equipment) {
         if (equipment.isEmpty) {
           return const _SectionEmpty(
@@ -114,7 +125,10 @@ class EquipmentSection extends ConsumerWidget {
                 children: [
                   const Icon(Icons.build, color: AppColors.primary),
                   const SizedBox(width: 8),
-                  Text('Equipment (${equipment.length})', style: AppTypography.headlineSmall),
+                  Text(
+                    'Equipment (${equipment.length})',
+                    style: AppTypography.headlineSmall,
+                  ),
                 ],
               ),
             ),
@@ -127,7 +141,11 @@ class EquipmentSection extends ConsumerWidget {
                 return ListTile(
                   leading: CircleAvatar(
                     backgroundColor: AppColors.secondary.withOpacity(0.1),
-                    child: const Icon(Icons.build, color: AppColors.secondary, size: 20),
+                    child: const Icon(
+                      Icons.build,
+                      color: AppColors.secondary,
+                      size: 20,
+                    ),
                   ),
                   title: Text(item.name),
                   subtitle: Text(item.typeName),
@@ -157,8 +175,10 @@ class TasksSection extends ConsumerWidget {
       error: (err, _) => _SectionError(title: 'Tasks', error: err.toString()),
       data: (tasks) {
         // Filter for incomplete tasks
-        final incompleteTasks = tasks.where((t) => t.isEnabled && t.dueDate != null).toList();
-        
+        final incompleteTasks = tasks
+            .where((t) => t.isEnabled && t.dueDate != null)
+            .toList();
+
         if (incompleteTasks.isEmpty) {
           return const _SectionEmpty(
             title: 'Tasks',
@@ -176,7 +196,10 @@ class TasksSection extends ConsumerWidget {
                 children: [
                   const Icon(Icons.task_alt, color: AppColors.primary),
                   const SizedBox(width: 8),
-                  Text('Tasks (${incompleteTasks.length})', style: AppTypography.headlineSmall),
+                  Text(
+                    'Tasks (${incompleteTasks.length})',
+                    style: AppTypography.headlineSmall,
+                  ),
                 ],
               ),
             ),
@@ -194,7 +217,10 @@ class TasksSection extends ConsumerWidget {
                     },
                   ),
                   title: Text(task.title),
-                  subtitle: task.description != null && task.description!.isNotEmpty ? Text(task.description!) : null,
+                  subtitle:
+                      task.description != null && task.description!.isNotEmpty
+                      ? Text(task.description!)
+                      : null,
                 );
               },
             ),
@@ -218,7 +244,8 @@ class RecentActivitySection extends ConsumerWidget {
 
     return logsAsync.when(
       loading: () => const _SectionLoading(title: 'Recent Activity'),
-      error: (err, _) => _SectionError(title: 'Recent Activity', error: err.toString()),
+      error: (err, _) =>
+          _SectionError(title: 'Recent Activity', error: err.toString()),
       data: (logs) {
         if (logs.isEmpty) {
           return const _SectionEmpty(
@@ -237,7 +264,10 @@ class RecentActivitySection extends ConsumerWidget {
                 children: [
                   const Icon(Icons.history, color: AppColors.primary),
                   const SizedBox(width: 8),
-                  const Text('Recent Activity', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                  const Text(
+                    'Recent Activity',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
                   const Spacer(),
                   TextButton(
                     onPressed: () {
@@ -255,7 +285,11 @@ class RecentActivitySection extends ConsumerWidget {
               itemBuilder: (context, index) {
                 final log = logs[index];
                 return ListTile(
-                  leading: Icon(_iconForLogType(log.type), color: AppColors.primary, size: 20),
+                  leading: Icon(
+                    _iconForLogType(log.type),
+                    color: AppColors.primary,
+                    size: 20,
+                  ),
                   title: Text(log.title ?? log.typeName),
                   subtitle: Text(_formatDate(log.timestamp)),
                   trailing: const Icon(Icons.chevron_right, size: 20),
@@ -270,16 +304,26 @@ class RecentActivitySection extends ConsumerWidget {
 
   IconData _iconForLogType(LogType type) {
     switch (type) {
-      case LogType.waterTest: return Icons.science;
-      case LogType.waterChange: return Icons.water_drop;
-      case LogType.feeding: return Icons.restaurant;
-      case LogType.medication: return Icons.medication;
-      case LogType.observation: return Icons.visibility;
-      case LogType.livestockAdded: return Icons.add_circle;
-      case LogType.livestockRemoved: return Icons.remove_circle;
-      case LogType.equipmentMaintenance: return Icons.build;
-      case LogType.taskCompleted: return Icons.task_alt;
-      case LogType.other: return Icons.note;
+      case LogType.waterTest:
+        return Icons.science;
+      case LogType.waterChange:
+        return Icons.water_drop;
+      case LogType.feeding:
+        return Icons.restaurant;
+      case LogType.medication:
+        return Icons.medication;
+      case LogType.observation:
+        return Icons.visibility;
+      case LogType.livestockAdded:
+        return Icons.add_circle;
+      case LogType.livestockRemoved:
+        return Icons.remove_circle;
+      case LogType.equipmentMaintenance:
+        return Icons.build;
+      case LogType.taskCompleted:
+        return Icons.task_alt;
+      case LogType.other:
+        return Icons.note;
     }
   }
 
@@ -344,7 +388,11 @@ class _SectionError extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Icon(Icons.error_outline, color: AppColors.error, size: 48),
+                const Icon(
+                  Icons.error_outline,
+                  color: AppColors.error,
+                  size: 48,
+                ),
                 const SizedBox(height: 8),
                 Text('Failed to load $title', style: AppTypography.bodySmall),
               ],
@@ -393,7 +441,7 @@ class _SectionEmpty extends StatelessWidget {
 }
 
 /// Usage example:
-/// 
+///
 /// Instead of this in TankDetailScreen:
 /// ```dart
 /// @override
@@ -405,7 +453,7 @@ class _SectionEmpty extends StatelessWidget {
 ///   final livestockAsync = ref.watch(livestockProvider(tankId));
 ///   final equipmentAsync = ref.watch(equipmentProvider(tankId));
 ///   final tasksAsync = ref.watch(tasksProvider(tankId));
-///   
+///
 ///   // ... build entire screen
 /// }
 /// ```
@@ -416,13 +464,13 @@ class _SectionEmpty extends StatelessWidget {
 /// Widget build(BuildContext context, WidgetRef ref) {
 ///   // Only watch tank provider for basic info
 ///   final tankAsync = ref.watch(tankProvider(tankId));
-///   
+///
 ///   return tankAsync.when(
 ///     data: (tank) => CustomScrollView(
 ///       slivers: [
 ///         // Header doesn't need data providers
 ///         _buildHeader(tank),
-///         
+///
 ///         // Each section watches only its data
 ///         SliverToBoxAdapter(child: LivestockSection(tankId: tankId)),
 ///         SliverToBoxAdapter(child: EquipmentSection(tankId: tankId)),

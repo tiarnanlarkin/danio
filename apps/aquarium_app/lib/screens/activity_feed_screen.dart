@@ -38,7 +38,7 @@ class _ActivityFeedScreenState extends ConsumerState<ActivityFeedScreen> {
 
   void _onScroll() {
     // Load more when scrolled to 80% of the list
-    if (_scrollController.position.pixels >= 
+    if (_scrollController.position.pixels >=
         _scrollController.position.maxScrollExtent * 0.8) {
       setState(() {
         _displayCount += 20;
@@ -99,17 +99,23 @@ class _ActivityFeedScreenState extends ConsumerState<ActivityFeedScreen> {
               loading: () => const Center(child: CircularProgressIndicator()),
               error: (e, st) => ErrorState(
                 message: 'Error loading activities',
-                onRetry: () => ref.read(friendActivitiesProvider.notifier).reload(),
+                onRetry: () =>
+                    ref.read(friendActivitiesProvider.notifier).reload(),
               ),
               data: (activities) {
                 // Filter by selected friend
                 final filteredActivities = _selectedFriendId == null
                     ? activities
-                    : activities.where((a) => a.friendId == _selectedFriendId).toList();
+                    : activities
+                          .where((a) => a.friendId == _selectedFriendId)
+                          .toList();
 
                 // Limit display count for pagination
-                final displayedActivities = filteredActivities.take(_displayCount).toList();
-                final hasMore = filteredActivities.length > displayedActivities.length;
+                final displayedActivities = filteredActivities
+                    .take(_displayCount)
+                    .toList();
+                final hasMore =
+                    filteredActivities.length > displayedActivities.length;
 
                 return _ActivityFeedView(
                   activities: displayedActivities,
@@ -180,7 +186,8 @@ class _FriendFilterBar extends StatelessWidget {
               child: FilterChip(
                 label: Text(friend.displayName),
                 selected: isSelected,
-                onSelected: (_) => onFriendSelected(isSelected ? null : friend.id),
+                onSelected: (_) =>
+                    onFriendSelected(isSelected ? null : friend.id),
                 avatar: Text(
                   friend.avatarEmoji ?? '🐠',
                   style: const TextStyle(fontSize: 16),
@@ -233,9 +240,7 @@ class _ActivityFeedView extends StatelessWidget {
             // Loading indicator for "load more"
             return const Padding(
               padding: EdgeInsets.all(16),
-              child: Center(
-                child: CircularProgressIndicator(),
-              ),
+              child: Center(child: CircularProgressIndicator()),
             );
           }
 
@@ -414,10 +419,7 @@ class _ActivityTile extends ConsumerWidget {
               ),
 
               // Chevron
-              Icon(
-                Icons.chevron_right,
-                color: Colors.grey.shade400,
-              ),
+              Icon(Icons.chevron_right, color: Colors.grey.shade400),
             ],
           ),
         ),
@@ -446,13 +448,31 @@ class _DateDivider extends StatelessWidget {
       label = 'Yesterday';
     } else if (now.difference(activityDay).inDays < 7) {
       // Within last week - show day name
-      const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+      const days = [
+        'Monday',
+        'Tuesday',
+        'Wednesday',
+        'Thursday',
+        'Friday',
+        'Saturday',
+        'Sunday',
+      ];
       label = days[activityDay.weekday - 1];
     } else {
       // Older - show date
       const months = [
-        'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-        'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+        'Jan',
+        'Feb',
+        'Mar',
+        'Apr',
+        'May',
+        'Jun',
+        'Jul',
+        'Aug',
+        'Sep',
+        'Oct',
+        'Nov',
+        'Dec',
       ];
       label = '${months[activityDay.month - 1]} ${activityDay.day}';
     }
@@ -461,9 +481,7 @@ class _DateDivider extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: Row(
         children: [
-          Expanded(
-            child: Divider(color: Colors.grey.shade300),
-          ),
+          Expanded(child: Divider(color: Colors.grey.shade300)),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12),
             child: Text(
@@ -475,9 +493,7 @@ class _DateDivider extends StatelessWidget {
               ),
             ),
           ),
-          Expanded(
-            child: Divider(color: Colors.grey.shade300),
-          ),
+          Expanded(child: Divider(color: Colors.grey.shade300)),
         ],
       ),
     );

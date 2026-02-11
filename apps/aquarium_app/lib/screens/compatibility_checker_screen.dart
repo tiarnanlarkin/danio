@@ -6,19 +6,20 @@ class CompatibilityCheckerScreen extends StatefulWidget {
   const CompatibilityCheckerScreen({super.key});
 
   @override
-  State<CompatibilityCheckerScreen> createState() => _CompatibilityCheckerScreenState();
+  State<CompatibilityCheckerScreen> createState() =>
+      _CompatibilityCheckerScreenState();
 }
 
-class _CompatibilityCheckerScreenState extends State<CompatibilityCheckerScreen> {
+class _CompatibilityCheckerScreenState
+    extends State<CompatibilityCheckerScreen> {
   final List<SpeciesInfo> _selectedSpecies = [];
   String _searchQuery = '';
 
   List<SpeciesInfo> get _searchResults {
     if (_searchQuery.isEmpty) return [];
-    return SpeciesDatabase.search(_searchQuery)
-        .where((s) => !_selectedSpecies.contains(s))
-        .take(10)
-        .toList();
+    return SpeciesDatabase.search(
+      _searchQuery,
+    ).where((s) => !_selectedSpecies.contains(s)).take(10).toList();
   }
 
   void _addSpecies(SpeciesInfo species) {
@@ -43,81 +44,107 @@ class _CompatibilityCheckerScreenState extends State<CompatibilityCheckerScreen>
         final b = _selectedSpecies[j];
 
         // Check explicit incompatibility
-        if (a.avoidWith.any((name) => 
-            b.commonName.toLowerCase().contains(name.toLowerCase()) ||
-            b.family.toLowerCase().contains(name.toLowerCase()))) {
-          issues.add(_CompatibilityIssue(
-            species1: a.commonName,
-            species2: b.commonName,
-            severity: _Severity.bad,
-            reason: '${a.commonName} is known to be incompatible with ${b.commonName}',
-          ));
-        } else if (b.avoidWith.any((name) => 
-            a.commonName.toLowerCase().contains(name.toLowerCase()) ||
-            a.family.toLowerCase().contains(name.toLowerCase()))) {
-          issues.add(_CompatibilityIssue(
-            species1: a.commonName,
-            species2: b.commonName,
-            severity: _Severity.bad,
-            reason: '${b.commonName} is known to be incompatible with ${a.commonName}',
-          ));
+        if (a.avoidWith.any(
+          (name) =>
+              b.commonName.toLowerCase().contains(name.toLowerCase()) ||
+              b.family.toLowerCase().contains(name.toLowerCase()),
+        )) {
+          issues.add(
+            _CompatibilityIssue(
+              species1: a.commonName,
+              species2: b.commonName,
+              severity: _Severity.bad,
+              reason:
+                  '${a.commonName} is known to be incompatible with ${b.commonName}',
+            ),
+          );
+        } else if (b.avoidWith.any(
+          (name) =>
+              a.commonName.toLowerCase().contains(name.toLowerCase()) ||
+              a.family.toLowerCase().contains(name.toLowerCase()),
+        )) {
+          issues.add(
+            _CompatibilityIssue(
+              species1: a.commonName,
+              species2: b.commonName,
+              severity: _Severity.bad,
+              reason:
+                  '${b.commonName} is known to be incompatible with ${a.commonName}',
+            ),
+          );
         }
 
         // Check temperament conflicts
         if (a.temperament == 'Aggressive' && b.temperament == 'Peaceful') {
-          issues.add(_CompatibilityIssue(
-            species1: a.commonName,
-            species2: b.commonName,
-            severity: _Severity.warning,
-            reason: '${a.commonName} (aggressive) may harass ${b.commonName} (peaceful)',
-          ));
-        } else if (b.temperament == 'Aggressive' && a.temperament == 'Peaceful') {
-          issues.add(_CompatibilityIssue(
-            species1: a.commonName,
-            species2: b.commonName,
-            severity: _Severity.warning,
-            reason: '${b.commonName} (aggressive) may harass ${a.commonName} (peaceful)',
-          ));
+          issues.add(
+            _CompatibilityIssue(
+              species1: a.commonName,
+              species2: b.commonName,
+              severity: _Severity.warning,
+              reason:
+                  '${a.commonName} (aggressive) may harass ${b.commonName} (peaceful)',
+            ),
+          );
+        } else if (b.temperament == 'Aggressive' &&
+            a.temperament == 'Peaceful') {
+          issues.add(
+            _CompatibilityIssue(
+              species1: a.commonName,
+              species2: b.commonName,
+              severity: _Severity.warning,
+              reason:
+                  '${b.commonName} (aggressive) may harass ${a.commonName} (peaceful)',
+            ),
+          );
         }
 
         // Check temperature overlap
         if (a.maxTempC < b.minTempC || b.maxTempC < a.minTempC) {
-          issues.add(_CompatibilityIssue(
-            species1: a.commonName,
-            species2: b.commonName,
-            severity: _Severity.bad,
-            reason: 'Temperature ranges don\'t overlap: '
-                '${a.commonName} (${a.minTempC}-${a.maxTempC}°C) vs '
-                '${b.commonName} (${b.minTempC}-${b.maxTempC}°C)',
-          ));
+          issues.add(
+            _CompatibilityIssue(
+              species1: a.commonName,
+              species2: b.commonName,
+              severity: _Severity.bad,
+              reason:
+                  'Temperature ranges don\'t overlap: '
+                  '${a.commonName} (${a.minTempC}-${a.maxTempC}°C) vs '
+                  '${b.commonName} (${b.minTempC}-${b.maxTempC}°C)',
+            ),
+          );
         }
 
         // Check pH overlap
         if (a.maxPh < b.minPh || b.maxPh < a.minPh) {
-          issues.add(_CompatibilityIssue(
-            species1: a.commonName,
-            species2: b.commonName,
-            severity: _Severity.bad,
-            reason: 'pH ranges don\'t overlap: '
-                '${a.commonName} (${a.minPh}-${a.maxPh}) vs '
-                '${b.commonName} (${b.minPh}-${b.maxPh})',
-          ));
+          issues.add(
+            _CompatibilityIssue(
+              species1: a.commonName,
+              species2: b.commonName,
+              severity: _Severity.bad,
+              reason:
+                  'pH ranges don\'t overlap: '
+                  '${a.commonName} (${a.minPh}-${a.maxPh}) vs '
+                  '${b.commonName} (${b.minPh}-${b.maxPh})',
+            ),
+          );
         }
 
         // Size difference warning
-        final sizeRatio = a.adultSizeCm > b.adultSizeCm 
-            ? a.adultSizeCm / b.adultSizeCm 
+        final sizeRatio = a.adultSizeCm > b.adultSizeCm
+            ? a.adultSizeCm / b.adultSizeCm
             : b.adultSizeCm / a.adultSizeCm;
         if (sizeRatio > 4) {
           final larger = a.adultSizeCm > b.adultSizeCm ? a : b;
           final smaller = a.adultSizeCm > b.adultSizeCm ? b : a;
-          issues.add(_CompatibilityIssue(
-            species1: a.commonName,
-            species2: b.commonName,
-            severity: _Severity.warning,
-            reason: 'Large size difference: ${larger.commonName} (${larger.adultSizeCm.toStringAsFixed(0)}cm) '
-                'may see ${smaller.commonName} (${smaller.adultSizeCm.toStringAsFixed(0)}cm) as food',
-          ));
+          issues.add(
+            _CompatibilityIssue(
+              species1: a.commonName,
+              species2: b.commonName,
+              severity: _Severity.warning,
+              reason:
+                  'Large size difference: ${larger.commonName} (${larger.adultSizeCm.toStringAsFixed(0)}cm) '
+                  'may see ${smaller.commonName} (${smaller.adultSizeCm.toStringAsFixed(0)}cm) as food',
+            ),
+          );
         }
       }
     }
@@ -127,20 +154,30 @@ class _CompatibilityCheckerScreenState extends State<CompatibilityCheckerScreen>
 
   double get _minTankSize {
     if (_selectedSpecies.isEmpty) return 0;
-    return _selectedSpecies.map((s) => s.minTankLitres).reduce((a, b) => a > b ? a : b);
+    return _selectedSpecies
+        .map((s) => s.minTankLitres)
+        .reduce((a, b) => a > b ? a : b);
   }
 
   (double, double) get _tempRange {
     if (_selectedSpecies.isEmpty) return (0, 0);
-    final minTemp = _selectedSpecies.map((s) => s.minTempC).reduce((a, b) => a > b ? a : b);
-    final maxTemp = _selectedSpecies.map((s) => s.maxTempC).reduce((a, b) => a < b ? a : b);
+    final minTemp = _selectedSpecies
+        .map((s) => s.minTempC)
+        .reduce((a, b) => a > b ? a : b);
+    final maxTemp = _selectedSpecies
+        .map((s) => s.maxTempC)
+        .reduce((a, b) => a < b ? a : b);
     return (minTemp, maxTemp);
   }
 
   (double, double) get _phRange {
     if (_selectedSpecies.isEmpty) return (0, 0);
-    final minPh = _selectedSpecies.map((s) => s.minPh).reduce((a, b) => a > b ? a : b);
-    final maxPh = _selectedSpecies.map((s) => s.maxPh).reduce((a, b) => a < b ? a : b);
+    final minPh = _selectedSpecies
+        .map((s) => s.minPh)
+        .reduce((a, b) => a > b ? a : b);
+    final maxPh = _selectedSpecies
+        .map((s) => s.maxPh)
+        .reduce((a, b) => a < b ? a : b);
     return (minPh, maxPh);
   }
 
@@ -148,7 +185,9 @@ class _CompatibilityCheckerScreenState extends State<CompatibilityCheckerScreen>
   Widget build(BuildContext context) {
     final issues = _issues;
     final badIssues = issues.where((i) => i.severity == _Severity.bad).length;
-    final warningIssues = issues.where((i) => i.severity == _Severity.warning).length;
+    final warningIssues = issues
+        .where((i) => i.severity == _Severity.warning)
+        .length;
 
     return Scaffold(
       appBar: AppBar(title: const Text('Compatibility Checker')),
@@ -161,7 +200,9 @@ class _CompatibilityCheckerScreenState extends State<CompatibilityCheckerScreen>
               decoration: InputDecoration(
                 hintText: 'Search fish to add...',
                 prefixIcon: const Icon(Icons.search),
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
                 filled: true,
               ),
               onChanged: (v) => setState(() => _searchQuery = v),
@@ -205,7 +246,10 @@ class _CompatibilityCheckerScreenState extends State<CompatibilityCheckerScreen>
                         children: [
                           Icon(Icons.pets, size: 48, color: AppColors.textHint),
                           const SizedBox(height: 12),
-                          Text('Add Fish to Check', style: AppTypography.headlineSmall),
+                          Text(
+                            'Add Fish to Check',
+                            style: AppTypography.headlineSmall,
+                          ),
                           const SizedBox(height: 4),
                           Text(
                             'Search and add fish above to check if they\'re compatible',
@@ -217,16 +261,23 @@ class _CompatibilityCheckerScreenState extends State<CompatibilityCheckerScreen>
                     ),
                   )
                 else ...[
-                  Text('Selected Fish (${_selectedSpecies.length})', style: AppTypography.headlineSmall),
+                  Text(
+                    'Selected Fish (${_selectedSpecies.length})',
+                    style: AppTypography.headlineSmall,
+                  ),
                   const SizedBox(height: 8),
                   Wrap(
                     spacing: 8,
                     runSpacing: 8,
-                    children: _selectedSpecies.map((s) => Chip(
-                      label: Text(s.commonName),
-                      deleteIcon: const Icon(Icons.close, size: 16),
-                      onDeleted: () => _removeSpecies(s),
-                    )).toList(),
+                    children: _selectedSpecies
+                        .map(
+                          (s) => Chip(
+                            label: Text(s.commonName),
+                            deleteIcon: const Icon(Icons.close, size: 16),
+                            onDeleted: () => _removeSpecies(s),
+                          ),
+                        )
+                        .toList(),
                   ),
 
                   const SizedBox(height: 24),
@@ -234,26 +285,26 @@ class _CompatibilityCheckerScreenState extends State<CompatibilityCheckerScreen>
                   // Compatibility verdict
                   if (_selectedSpecies.length >= 2) ...[
                     Card(
-                      color: badIssues > 0 
+                      color: badIssues > 0
                           ? AppColors.error.withOpacity(0.1)
                           : warningIssues > 0
-                              ? AppColors.warning.withOpacity(0.1)
-                              : AppColors.success.withOpacity(0.1),
+                          ? AppColors.warning.withOpacity(0.1)
+                          : AppColors.success.withOpacity(0.1),
                       child: Padding(
                         padding: const EdgeInsets.all(16),
                         child: Row(
                           children: [
                             Icon(
-                              badIssues > 0 
-                                  ? Icons.cancel 
-                                  : warningIssues > 0 
-                                      ? Icons.warning 
-                                      : Icons.check_circle,
-                              color: badIssues > 0 
-                                  ? AppColors.error 
-                                  : warningIssues > 0 
-                                      ? AppColors.warning 
-                                      : AppColors.success,
+                              badIssues > 0
+                                  ? Icons.cancel
+                                  : warningIssues > 0
+                                  ? Icons.warning
+                                  : Icons.check_circle,
+                              color: badIssues > 0
+                                  ? AppColors.error
+                                  : warningIssues > 0
+                                  ? AppColors.warning
+                                  : AppColors.success,
                               size: 32,
                             ),
                             const SizedBox(width: 12),
@@ -262,19 +313,19 @@ class _CompatibilityCheckerScreenState extends State<CompatibilityCheckerScreen>
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    badIssues > 0 
+                                    badIssues > 0
                                         ? 'Not Recommended'
                                         : warningIssues > 0
-                                            ? 'Proceed with Caution'
-                                            : 'Good Match!',
+                                        ? 'Proceed with Caution'
+                                        : 'Good Match!',
                                     style: AppTypography.labelLarge,
                                   ),
                                   Text(
                                     badIssues > 0
                                         ? '$badIssues serious issue${badIssues > 1 ? 's' : ''} found'
                                         : warningIssues > 0
-                                            ? '$warningIssues warning${warningIssues > 1 ? 's' : ''} to consider'
-                                            : 'These fish should work well together',
+                                        ? '$warningIssues warning${warningIssues > 1 ? 's' : ''} to consider'
+                                        : 'These fish should work well together',
                                     style: AppTypography.bodySmall,
                                   ),
                                 ],
@@ -291,22 +342,36 @@ class _CompatibilityCheckerScreenState extends State<CompatibilityCheckerScreen>
                     if (issues.isNotEmpty) ...[
                       Text('Issues Found', style: AppTypography.headlineSmall),
                       const SizedBox(height: 8),
-                      ...issues.map((issue) => Card(
-                        margin: const EdgeInsets.only(bottom: 8),
-                        child: ListTile(
-                          leading: Icon(
-                            issue.severity == _Severity.bad ? Icons.error : Icons.warning,
-                            color: issue.severity == _Severity.bad ? AppColors.error : AppColors.warning,
+                      ...issues.map(
+                        (issue) => Card(
+                          margin: const EdgeInsets.only(bottom: 8),
+                          child: ListTile(
+                            leading: Icon(
+                              issue.severity == _Severity.bad
+                                  ? Icons.error
+                                  : Icons.warning,
+                              color: issue.severity == _Severity.bad
+                                  ? AppColors.error
+                                  : AppColors.warning,
+                            ),
+                            title: Text(
+                              '${issue.species1} + ${issue.species2}',
+                            ),
+                            subtitle: Text(
+                              issue.reason,
+                              style: AppTypography.bodySmall,
+                            ),
                           ),
-                          title: Text('${issue.species1} + ${issue.species2}'),
-                          subtitle: Text(issue.reason, style: AppTypography.bodySmall),
                         ),
-                      )),
+                      ),
                       const SizedBox(height: 16),
                     ],
 
                     // Recommended parameters
-                    Text('Recommended Setup', style: AppTypography.headlineSmall),
+                    Text(
+                      'Recommended Setup',
+                      style: AppTypography.headlineSmall,
+                    ),
                     const SizedBox(height: 8),
                     Card(
                       child: Padding(
@@ -316,7 +381,8 @@ class _CompatibilityCheckerScreenState extends State<CompatibilityCheckerScreen>
                             _ParamRow(
                               icon: Icons.water,
                               label: 'Minimum tank',
-                              value: '${_minTankSize.toStringAsFixed(0)}+ litres',
+                              value:
+                                  '${_minTankSize.toStringAsFixed(0)}+ litres',
                             ),
                             _ParamRow(
                               icon: Icons.thermostat,
@@ -324,7 +390,9 @@ class _CompatibilityCheckerScreenState extends State<CompatibilityCheckerScreen>
                               value: _tempRange.$1 <= _tempRange.$2
                                   ? '${_tempRange.$1.toStringAsFixed(0)}-${_tempRange.$2.toStringAsFixed(0)}°C'
                                   : 'No overlap!',
-                              valueColor: _tempRange.$1 > _tempRange.$2 ? AppColors.error : null,
+                              valueColor: _tempRange.$1 > _tempRange.$2
+                                  ? AppColors.error
+                                  : null,
                             ),
                             _ParamRow(
                               icon: Icons.science,
@@ -332,7 +400,9 @@ class _CompatibilityCheckerScreenState extends State<CompatibilityCheckerScreen>
                               value: _phRange.$1 <= _phRange.$2
                                   ? '${_phRange.$1.toStringAsFixed(1)}-${_phRange.$2.toStringAsFixed(1)}'
                                   : 'No overlap!',
-                              valueColor: _phRange.$1 > _phRange.$2 ? AppColors.error : null,
+                              valueColor: _phRange.$1 > _phRange.$2
+                                  ? AppColors.error
+                                  : null,
                             ),
                           ],
                         ),
@@ -389,7 +459,10 @@ class _ParamRow extends StatelessWidget {
           Icon(icon, size: 18, color: AppColors.textSecondary),
           const SizedBox(width: 8),
           Expanded(child: Text(label, style: AppTypography.bodyMedium)),
-          Text(value, style: AppTypography.labelLarge.copyWith(color: valueColor)),
+          Text(
+            value,
+            style: AppTypography.labelLarge.copyWith(color: valueColor),
+          ),
         ],
       ),
     );

@@ -8,9 +8,11 @@ import '../models/gem_economy.dart';
 const _uuid = Uuid();
 
 /// Provider for gem economy management
-final gemsProvider = StateNotifierProvider<GemsNotifier, AsyncValue<GemsState>>((ref) {
-  return GemsNotifier();
-});
+final gemsProvider = StateNotifierProvider<GemsNotifier, AsyncValue<GemsState>>(
+  (ref) {
+    return GemsNotifier();
+  },
+);
 
 /// Gems state combining balance and transaction history
 class GemsState {
@@ -37,10 +39,10 @@ class GemsState {
   }
 
   Map<String, dynamic> toJson() => {
-        'balance': balance,
-        'transactions': transactions.map((t) => t.toJson()).toList(),
-        'lastUpdated': lastUpdated.toIso8601String(),
-      };
+    'balance': balance,
+    'transactions': transactions.map((t) => t.toJson()).toList(),
+    'lastUpdated': lastUpdated.toIso8601String(),
+  };
 
   factory GemsState.fromJson(Map<String, dynamic> json) {
     return GemsState(
@@ -88,7 +90,7 @@ class GemsNotifier extends StateNotifier<AsyncValue<GemsState>> {
     try {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString(_key, jsonEncode(gemsState.toJson()));
-    } catch (e, st) {
+    } catch (e) {
       // Rethrow to let callers handle the error
       throw Exception('Failed to save gems data: $e');
     }

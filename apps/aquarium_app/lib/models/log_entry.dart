@@ -108,16 +108,26 @@ class LogEntry {
   /// Friendly type name
   String get typeName {
     switch (type) {
-      case LogType.waterTest: return 'Water Test';
-      case LogType.waterChange: return 'Water Change';
-      case LogType.feeding: return 'Feeding';
-      case LogType.medication: return 'Medication';
-      case LogType.observation: return 'Observation';
-      case LogType.livestockAdded: return 'Livestock Added';
-      case LogType.livestockRemoved: return 'Livestock Removed';
-      case LogType.equipmentMaintenance: return 'Equipment Maintenance';
-      case LogType.taskCompleted: return 'Task Completed';
-      case LogType.other: return 'Other';
+      case LogType.waterTest:
+        return 'Water Test';
+      case LogType.waterChange:
+        return 'Water Change';
+      case LogType.feeding:
+        return 'Feeding';
+      case LogType.medication:
+        return 'Medication';
+      case LogType.observation:
+        return 'Observation';
+      case LogType.livestockAdded:
+        return 'Livestock Added';
+      case LogType.livestockRemoved:
+        return 'Livestock Removed';
+      case LogType.equipmentMaintenance:
+        return 'Equipment Maintenance';
+      case LogType.taskCompleted:
+        return 'Task Completed';
+      case LogType.other:
+        return 'Other';
     }
   }
 

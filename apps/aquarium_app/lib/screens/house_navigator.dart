@@ -15,7 +15,9 @@ import 'leaderboard_screen.dart';
 import 'friends_screen.dart';
 
 /// Provider for current room index
-final currentRoomProvider = StateProvider<int>((ref) => 1); // Start at Living Room
+final currentRoomProvider = StateProvider<int>(
+  (ref) => 1,
+); // Start at Living Room
 
 /// The main app shell - horizontal swipe navigation between rooms
 class HouseNavigator extends ConsumerStatefulWidget {
@@ -27,7 +29,7 @@ class HouseNavigator extends ConsumerStatefulWidget {
 
 class _HouseNavigatorState extends ConsumerState<HouseNavigator> {
   late PageController _pageController;
-  
+
   // Tutorial target keys
   final GlobalKey _studyRoomKey = GlobalKey();
   final GlobalKey _livingRoomKey = GlobalKey();
@@ -82,52 +84,57 @@ class _HouseNavigatorState extends ConsumerState<HouseNavigator> {
       initialPage: 1, // Start at Living Room
       viewportFraction: 1.0,
     );
-    
+
     // Check if tutorial should be shown after first frame
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _checkAndShowTutorial();
     });
   }
-  
+
   Future<void> _checkAndShowTutorial() async {
     if (_tutorialShown) return;
-    
+
     final profile = ref.read(userProfileProvider).value;
     if (profile == null || profile.hasSeenTutorial) return;
-    
+
     _tutorialShown = true;
-    
+
     // Wait a bit for UI to settle
     await Future.delayed(const Duration(milliseconds: 500));
-    
+
     if (!mounted) return;
-    
+
     showTutorialOverlay(
       context,
       steps: [
         TutorialStep(
           title: 'Welcome to Your House! 🏠',
-          description: 'Swipe left and right to explore different rooms. Each room has different features to help you learn and track your aquarium.',
+          description:
+              'Swipe left and right to explore different rooms. Each room has different features to help you learn and track your aquarium.',
           targetKey: _livingRoomKey,
         ),
         TutorialStep(
           title: 'Study Room 📚',
-          description: 'Start your aquarium journey here! Learn through interactive lessons and practice with spaced repetition.',
+          description:
+              'Start your aquarium journey here! Learn through interactive lessons and practice with spaced repetition.',
           targetKey: _studyRoomKey,
         ),
         TutorialStep(
           title: 'Living Room 🛋️',
-          description: 'Your home base! Track your tanks, log parameters, manage fish and equipment, and stay on top of maintenance.',
+          description:
+              'Your home base! Track your tanks, log parameters, manage fish and equipment, and stay on top of maintenance.',
           targetKey: _livingRoomKey,
         ),
         TutorialStep(
           title: 'Friends & Community 👥',
-          description: 'Connect with other aquarium enthusiasts, share tips, and learn together!',
+          description:
+              'Connect with other aquarium enthusiasts, share tips, and learn together!',
           targetKey: _friendsRoomKey,
         ),
         TutorialStep(
           title: 'Workshop 🔧',
-          description: 'Access powerful calculators and tools to help you make the right decisions for your aquarium.',
+          description:
+              'Access powerful calculators and tools to help you make the right decisions for your aquarium.',
           targetKey: _workshopRoomKey,
         ),
       ],
@@ -172,19 +179,19 @@ class _HouseNavigatorState extends ConsumerState<HouseNavigator> {
             children: const [
               // Room 0: Study (Learning)
               LearnScreen(),
-              
+
               // Room 1: Living Room (Home/Tanks)
               _LivingRoomWrapper(),
-              
+
               // Room 2: Friends (Social)
               FriendsScreen(),
-              
+
               // Room 3: Leaderboard (Competition)
               LeaderboardScreen(),
-              
+
               // Room 4: Workshop (Tools)
               WorkshopScreen(),
-              
+
               // Room 5: Shop Street
               ShopStreetScreen(),
             ],
@@ -199,10 +206,7 @@ class _HouseNavigatorState extends ConsumerState<HouseNavigator> {
               bottom: false,
               child: Column(
                 mainAxisSize: MainAxisSize.min,
-                children: const [
-                  OfflineIndicator(),
-                  SyncIndicator(),
-                ],
+                children: const [OfflineIndicator(), SyncIndicator()],
               ),
             ),
           ),
@@ -262,7 +266,7 @@ class _RoomIndicatorBar extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final bottomPadding = MediaQuery.of(context).padding.bottom;
-    
+
     // Watch spaced repetition state for badge count
     final srState = ref.watch(spacedRepetitionProvider);
     final dueCardsCount = srState.stats.dueCards;
@@ -304,7 +308,10 @@ class _RoomIndicatorBar extends ConsumerWidget {
                 children: [
                   AnimatedContainer(
                     duration: const Duration(milliseconds: 200),
-                    constraints: const BoxConstraints(minWidth: 44, minHeight: 44),
+                    constraints: const BoxConstraints(
+                      minWidth: 44,
+                      minHeight: 44,
+                    ),
                     padding: EdgeInsets.symmetric(
                       horizontal: isSelected ? 16 : 12,
                       vertical: 8,
@@ -326,9 +333,7 @@ class _RoomIndicatorBar extends ConsumerWidget {
                       children: [
                         Text(
                           room.emoji,
-                          style: TextStyle(
-                            fontSize: isSelected ? 18 : 16,
-                          ),
+                          style: TextStyle(fontSize: isSelected ? 18 : 16),
                         ),
                         if (isSelected) ...[
                           const SizedBox(width: 6),
@@ -357,10 +362,7 @@ class _RoomIndicatorBar extends ConsumerWidget {
                         decoration: BoxDecoration(
                           color: AppColors.error,
                           borderRadius: BorderRadius.circular(10),
-                          border: Border.all(
-                            color: Colors.white,
-                            width: 1.5,
-                          ),
+                          border: Border.all(color: Colors.white, width: 1.5),
                         ),
                         constraints: const BoxConstraints(
                           minWidth: 20,

@@ -153,7 +153,7 @@ class NotebookCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    
+
     return Transform.rotate(
       angle: (rotation ?? 0) * math.pi / 180,
       child: Container(
@@ -169,7 +169,7 @@ class NotebookCard extends StatelessWidget {
           ],
           // Subtle paper texture border
           border: Border.all(
-            color: isDark 
+            color: isDark
                 ? Colors.white.withOpacity(0.05)
                 : const Color(0xFFE8E4DC),
             width: 1,
@@ -180,15 +180,10 @@ class NotebookCard extends StatelessWidget {
             // Notebook lines (subtle)
             if (!isDark)
               Positioned.fill(
-                child: CustomPaint(
-                  painter: _NotebookLinesPainter(),
-                ),
+                child: CustomPaint(painter: _NotebookLinesPainter()),
               ),
             // Content
-            Padding(
-              padding: padding ?? const EdgeInsets.all(16),
-              child: child,
-            ),
+            Padding(padding: padding ?? const EdgeInsets.all(16), child: child),
           ],
         ),
       ),
@@ -229,7 +224,7 @@ class TabletCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    
+
     return Container(
       decoration: BoxDecoration(
         color: isDark ? const Color(0xFF1E2A38) : const Color(0xFF3D4852),
@@ -245,7 +240,9 @@ class TabletCard extends StatelessWidget {
       padding: const EdgeInsets.all(6),
       child: Container(
         decoration: BoxDecoration(
-          color: screenColor ?? (isDark ? const Color(0xFF243447) : const Color(0xFFF0F4F8)),
+          color:
+              screenColor ??
+              (isDark ? const Color(0xFF243447) : const Color(0xFFF0F4F8)),
           borderRadius: BorderRadius.circular(12),
         ),
         padding: padding ?? const EdgeInsets.all(16),
@@ -269,7 +266,7 @@ class ShelfDecoration extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -283,11 +280,13 @@ class ShelfDecoration extends StatelessWidget {
             gradient: LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
-              colors: isDark 
+              colors: isDark
                   ? [const Color(0xFF4A3728), const Color(0xFF3D2E22)]
                   : [const Color(0xFFD4A574), const Color(0xFFC49A6C)],
             ),
-            borderRadius: const BorderRadius.vertical(bottom: Radius.circular(4)),
+            borderRadius: const BorderRadius.vertical(
+              bottom: Radius.circular(4),
+            ),
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withOpacity(0.15),
@@ -325,9 +324,15 @@ class _ShelfBracket extends StatelessWidget {
         gradient: LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
-          colors: isDark 
-              ? [const Color(0xFF3D2E22), const Color(0xFF3D2E22).withOpacity(0)]
-              : [const Color(0xFFC49A6C), const Color(0xFFC49A6C).withOpacity(0)],
+          colors: isDark
+              ? [
+                  const Color(0xFF3D2E22),
+                  const Color(0xFF3D2E22).withOpacity(0),
+                ]
+              : [
+                  const Color(0xFFC49A6C),
+                  const Color(0xFFC49A6C).withOpacity(0),
+                ],
         ),
         borderRadius: const BorderRadius.vertical(bottom: Radius.circular(8)),
       ),
@@ -357,41 +362,26 @@ class CozyRoomBackground extends StatelessWidget {
           Positioned(
             top: -50,
             right: -30,
-            child: SoftBlob(
-              size: 180,
-              color: AppColors.primary,
-              seed: 1,
-            ),
+            child: SoftBlob(size: 180, color: AppColors.primary, seed: 1),
           ),
           Positioned(
             bottom: 100,
             left: -40,
-            child: SoftBlob(
-              size: 150,
-              color: AppColors.secondary,
-              seed: 2,
-            ),
+            child: SoftBlob(size: 150, color: AppColors.secondary, seed: 2),
           ),
           Positioned(
             top: 200,
             right: -60,
-            child: SoftBlob(
-              size: 120,
-              color: AppColors.accent,
-              seed: 3,
-            ),
+            child: SoftBlob(size: 120, color: AppColors.accent, seed: 3),
           ),
         ],
-        
+
         // Plants in corners
         if (showPlants) ...[
           Positioned(
             bottom: 0,
             left: 0,
-            child: PlantDecoration(
-              height: 140,
-              color: AppColors.success,
-            ),
+            child: PlantDecoration(height: 140, color: AppColors.success),
           ),
           Positioned(
             bottom: 0,
@@ -403,7 +393,7 @@ class CozyRoomBackground extends StatelessWidget {
             ),
           ),
         ],
-        
+
         // Main content
         child,
       ],
@@ -416,26 +406,24 @@ class WindowDecoration extends StatelessWidget {
   final double width;
   final double height;
 
-  const WindowDecoration({
-    super.key,
-    this.width = 120,
-    this.height = 160,
-  });
+  const WindowDecoration({super.key, this.width = 120, this.height = 160});
 
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    
+
     return Container(
       width: width,
       height: height,
       decoration: BoxDecoration(
-        color: isDark 
+        color: isDark
             ? const Color(0xFF1A2634).withOpacity(0.5)
             : const Color(0xFFE8F4F8).withOpacity(0.8),
         borderRadius: BorderRadius.circular(8),
         border: Border.all(
-          color: isDark ? Colors.white.withOpacity(0.1) : const Color(0xFFD4D0C8),
+          color: isDark
+              ? Colors.white.withOpacity(0.1)
+              : const Color(0xFFD4D0C8),
           width: 6,
         ),
       ),
@@ -449,7 +437,7 @@ class WindowDecoration extends StatelessWidget {
                 gradient: LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
-                  colors: isDark 
+                  colors: isDark
                       ? [const Color(0xFF2D3E50), const Color(0xFF1A2634)]
                       : [const Color(0xFFB8D4E3), const Color(0xFFD4E8F0)],
                 ),
@@ -460,7 +448,9 @@ class WindowDecoration extends StatelessWidget {
           // Window divider
           Container(
             height: 6,
-            color: isDark ? Colors.white.withOpacity(0.1) : const Color(0xFFD4D0C8),
+            color: isDark
+                ? Colors.white.withOpacity(0.1)
+                : const Color(0xFFD4D0C8),
           ),
           // Bottom pane
           Expanded(
@@ -470,7 +460,7 @@ class WindowDecoration extends StatelessWidget {
                 gradient: LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
-                  colors: isDark 
+                  colors: isDark
                       ? [const Color(0xFF2D3E50), const Color(0xFF1A2634)]
                       : [const Color(0xFFD4E8F0), const Color(0xFFE8F4F8)],
                 ),
@@ -507,10 +497,7 @@ class StatBubble extends StatelessWidget {
       decoration: BoxDecoration(
         color: color.withOpacity(0.15),
         shape: BoxShape.circle,
-        border: Border.all(
-          color: color.withOpacity(0.3),
-          width: 2,
-        ),
+        border: Border.all(color: color.withOpacity(0.3), width: 2),
         boxShadow: [
           BoxShadow(
             color: color.withOpacity(0.1),
@@ -579,7 +566,8 @@ class _WavePainter extends CustomPainter {
 
     // Create wave
     for (var x = 0.0; x <= size.width; x += 1) {
-      final y = size.height * 0.5 + 
+      final y =
+          size.height * 0.5 +
           math.sin(x * 0.02) * size.height * 0.3 +
           math.sin(x * 0.01 + 1) * size.height * 0.1;
       path.lineTo(x, y);

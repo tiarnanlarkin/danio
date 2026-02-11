@@ -7,19 +7,21 @@ class StockingCalculatorScreen extends StatefulWidget {
   const StockingCalculatorScreen({super.key});
 
   @override
-  State<StockingCalculatorScreen> createState() => _StockingCalculatorScreenState();
+  State<StockingCalculatorScreen> createState() =>
+      _StockingCalculatorScreenState();
 }
 
 class _StockingCalculatorScreenState extends State<StockingCalculatorScreen> {
   final _tankVolumeController = TextEditingController(text: '100');
   final _filterRatingController = TextEditingController(text: '1.0');
   bool _hasLivePlants = true;
-  
+
   final List<_StockEntry> _stock = [];
   String _searchQuery = '';
 
   double get _tankVolume => double.tryParse(_tankVolumeController.text) ?? 0;
-  double get _filterRating => double.tryParse(_filterRatingController.text) ?? 1.0;
+  double get _filterRating =>
+      double.tryParse(_filterRatingController.text) ?? 1.0;
 
   List<SpeciesInfo> get _searchResults {
     if (_searchQuery.isEmpty) return [];
@@ -41,9 +43,11 @@ class _StockingCalculatorScreenState extends State<StockingCalculatorScreen> {
   double _getBioloadMultiplier(SpeciesInfo species) {
     // Adjust based on species characteristics
     final name = species.commonName.toLowerCase();
-    
+
     // High bioload fish
-    if (name.contains('goldfish') || name.contains('oscar') || name.contains('pleco')) {
+    if (name.contains('goldfish') ||
+        name.contains('oscar') ||
+        name.contains('pleco')) {
       return 2.0;
     }
     // Medium-high
@@ -51,11 +55,15 @@ class _StockingCalculatorScreenState extends State<StockingCalculatorScreen> {
       return 1.3;
     }
     // Low bioload
-    if (name.contains('shrimp') || name.contains('snail') || name.contains('otocinclus')) {
+    if (name.contains('shrimp') ||
+        name.contains('snail') ||
+        name.contains('otocinclus')) {
       return 0.3;
     }
     // Tetras, rasboras, etc
-    if (name.contains('tetra') || name.contains('rasbora') || name.contains('danio')) {
+    if (name.contains('tetra') ||
+        name.contains('rasbora') ||
+        name.contains('danio')) {
       return 0.8;
     }
     return 1.0;
@@ -69,7 +77,8 @@ class _StockingCalculatorScreenState extends State<StockingCalculatorScreen> {
     return base;
   }
 
-  double get _stockingPercent => _capacity > 0 ? (_bioload / _capacity) * 100 : 0;
+  double get _stockingPercent =>
+      _capacity > 0 ? (_bioload / _capacity) * 100 : 0;
 
   String get _stockingLevel {
     if (_stockingPercent < 50) return 'Lightly Stocked';
@@ -86,10 +95,15 @@ class _StockingCalculatorScreenState extends State<StockingCalculatorScreen> {
   }
 
   void _addStock(SpeciesInfo species) {
-    final existing = _stock.indexWhere((e) => e.species.commonName == species.commonName);
+    final existing = _stock.indexWhere(
+      (e) => e.species.commonName == species.commonName,
+    );
     setState(() {
       if (existing >= 0) {
-        _stock[existing] = _StockEntry(species: species, count: _stock[existing].count + 1);
+        _stock[existing] = _StockEntry(
+          species: species,
+          count: _stock[existing].count + 1,
+        );
       } else {
         _stock.add(_StockEntry(species: species, count: 1));
       }
@@ -100,7 +114,7 @@ class _StockingCalculatorScreenState extends State<StockingCalculatorScreen> {
   void _updateCount(_StockEntry entry, int delta) {
     final index = _stock.indexOf(entry);
     if (index < 0) return;
-    
+
     final newCount = entry.count + delta;
     setState(() {
       if (newCount <= 0) {
@@ -147,7 +161,9 @@ class _StockingCalculatorScreenState extends State<StockingCalculatorScreen> {
                       isDense: true,
                       helperText: '1.0 = standard',
                     ),
-                    keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                    keyboardType: const TextInputType.numberWithOptions(
+                      decimal: true,
+                    ),
                     onChanged: (_) => setState(() {}),
                   ),
                 ),
@@ -179,7 +195,9 @@ class _StockingCalculatorScreenState extends State<StockingCalculatorScreen> {
                       children: [
                         Text(
                           '${_stockingPercent.toStringAsFixed(0)}%',
-                          style: AppTypography.headlineLarge.copyWith(color: _stockingColor),
+                          style: AppTypography.headlineLarge.copyWith(
+                            color: _stockingColor,
+                          ),
                         ),
                         const SizedBox(width: 12),
                         Text(_stockingLevel, style: AppTypography.labelLarge),
@@ -220,7 +238,9 @@ class _StockingCalculatorScreenState extends State<StockingCalculatorScreen> {
               decoration: InputDecoration(
                 hintText: 'Search fish to add...',
                 prefixIcon: const Icon(Icons.search),
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
                 filled: true,
               ),
               onChanged: (v) => setState(() => _searchQuery = v),
@@ -245,7 +265,9 @@ class _StockingCalculatorScreenState extends State<StockingCalculatorScreen> {
                     dense: true,
                     leading: const Icon(Icons.add_circle_outline, size: 20),
                     title: Text(species.commonName),
-                    subtitle: Text('${species.adultSizeCm.toStringAsFixed(0)}cm adult'),
+                    subtitle: Text(
+                      '${species.adultSizeCm.toStringAsFixed(0)}cm adult',
+                    ),
                     onTap: () => _addStock(species),
                   );
                 },
@@ -258,7 +280,9 @@ class _StockingCalculatorScreenState extends State<StockingCalculatorScreen> {
                 ? Center(
                     child: Text(
                       'Search and add fish above',
-                      style: AppTypography.bodyMedium.copyWith(color: AppColors.textHint),
+                      style: AppTypography.bodyMedium.copyWith(
+                        color: AppColors.textHint,
+                      ),
                     ),
                   )
                 : ListView.builder(
@@ -282,7 +306,10 @@ class _StockingCalculatorScreenState extends State<StockingCalculatorScreen> {
                                 icon: const Icon(Icons.remove_circle_outline),
                                 onPressed: () => _updateCount(entry, -1),
                               ),
-                              Text('${entry.count}', style: AppTypography.labelLarge),
+                              Text(
+                                '${entry.count}',
+                                style: AppTypography.labelLarge,
+                              ),
                               IconButton(
                                 icon: const Icon(Icons.add_circle_outline),
                                 onPressed: () => _updateCount(entry, 1),
@@ -307,7 +334,9 @@ class _StockingCalculatorScreenState extends State<StockingCalculatorScreen> {
                   if (_stockingPercent > 100)
                     Text(
                       '⚠️ Overstocked: Expect frequent water changes and potential aggression.',
-                      style: AppTypography.bodySmall.copyWith(color: AppColors.error),
+                      style: AppTypography.bodySmall.copyWith(
+                        color: AppColors.error,
+                      ),
                     )
                   else if (_stockingPercent > 75)
                     Text(
@@ -317,7 +346,9 @@ class _StockingCalculatorScreenState extends State<StockingCalculatorScreen> {
                   else
                     Text(
                       '✓ Good stocking level with room to grow.',
-                      style: AppTypography.bodySmall.copyWith(color: AppColors.success),
+                      style: AppTypography.bodySmall.copyWith(
+                        color: AppColors.success,
+                      ),
                     ),
                 ],
               ),

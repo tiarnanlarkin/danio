@@ -5,7 +5,6 @@ import '../models/shop_item.dart';
 class ShopCatalog {
   static final List<ShopItem> allItems = [
     // ==================== POWER-UPS ====================
-    
     ShopItem(
       id: 'timer_boost',
       name: 'Timer Boost',
@@ -71,7 +70,6 @@ class ShopCatalog {
     ),
 
     // ==================== EXTRAS ====================
-
     ShopItem(
       id: 'streak_freeze',
       name: 'Streak Freeze',
@@ -88,7 +86,8 @@ class ShopCatalog {
     ShopItem(
       id: 'weekend_amulet',
       name: 'Weekend Amulet',
-      description: "Weekend doesn't break your streak. Relax on Saturdays & Sundays!",
+      description:
+          "Weekend doesn't break your streak. Relax on Saturdays & Sundays!",
       emoji: '🏖️',
       category: ShopItemCategory.extras,
       type: ShopItemType.goalAdjust,
@@ -127,7 +126,8 @@ class ShopCatalog {
     ShopItem(
       id: 'progress_protector',
       name: 'Progress Protector',
-      description: 'Wrong answers won\'t affect your lesson progress (1 lesson)',
+      description:
+          'Wrong answers won\'t affect your lesson progress (1 lesson)',
       emoji: '🔒',
       category: ShopItemCategory.extras,
       type: ShopItemType.lessonHelper,
@@ -138,7 +138,6 @@ class ShopCatalog {
     ),
 
     // ==================== COSMETICS ====================
-
     ShopItem(
       id: 'badge_early_bird',
       name: 'Early Bird Badge',

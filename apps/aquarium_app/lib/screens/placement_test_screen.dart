@@ -2,7 +2,6 @@
 /// Duolingo-style onboarding experience
 library;
 
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/placement_test.dart';
@@ -17,20 +16,24 @@ class PlacementTestScreen extends ConsumerStatefulWidget {
   const PlacementTestScreen({super.key});
 
   @override
-  ConsumerState<PlacementTestScreen> createState() => _PlacementTestScreenState();
+  ConsumerState<PlacementTestScreen> createState() =>
+      _PlacementTestScreenState();
 }
 
 class _PlacementTestScreenState extends ConsumerState<PlacementTestScreen> {
   final PlacementTest _test = PlacementTestContent.defaultTest;
   final Map<String, int> _userAnswers = {}; // questionId -> selectedIndex
-  final Map<String, bool> _answeredQuestions = {}; // Track which questions have been answered
-  
+  final Map<String, bool> _answeredQuestions =
+      {}; // Track which questions have been answered
+
   int _currentQuestionIndex = 0;
   int? _selectedAnswer;
   bool _showExplanation = false;
 
-  PlacementQuestion get _currentQuestion => _test.questions[_currentQuestionIndex];
-  bool get _isLastQuestion => _currentQuestionIndex == _test.questions.length - 1;
+  PlacementQuestion get _currentQuestion =>
+      _test.questions[_currentQuestionIndex];
+  bool get _isLastQuestion =>
+      _currentQuestionIndex == _test.questions.length - 1;
   double get _progress => (_currentQuestionIndex + 1) / _test.questions.length;
 
   void _selectAnswer(int index) {
@@ -55,7 +58,8 @@ class _PlacementTestScreenState extends ConsumerState<PlacementTestScreen> {
     } else {
       setState(() {
         _currentQuestionIndex++;
-        _selectedAnswer = _userAnswers[_test.questions[_currentQuestionIndex].id];
+        _selectedAnswer =
+            _userAnswers[_test.questions[_currentQuestionIndex].id];
         _showExplanation = false;
       });
     }
@@ -65,8 +69,11 @@ class _PlacementTestScreenState extends ConsumerState<PlacementTestScreen> {
     if (_currentQuestionIndex > 0) {
       setState(() {
         _currentQuestionIndex--;
-        _selectedAnswer = _userAnswers[_test.questions[_currentQuestionIndex].id];
-        _showExplanation = _answeredQuestions[_test.questions[_currentQuestionIndex].id] ?? false;
+        _selectedAnswer =
+            _userAnswers[_test.questions[_currentQuestionIndex].id];
+        _showExplanation =
+            _answeredQuestions[_test.questions[_currentQuestionIndex].id] ??
+            false;
       });
     }
   }
@@ -154,7 +161,7 @@ class _PlacementTestScreenState extends ConsumerState<PlacementTestScreen> {
         children: [
           // Progress bar
           _buildProgressBar(),
-          
+
           // Question content
           Expanded(
             child: SingleChildScrollView(
@@ -194,7 +201,8 @@ class _PlacementTestScreenState extends ConsumerState<PlacementTestScreen> {
                   ..._buildAnswerOptions(),
 
                   // Explanation (shown after answering)
-                  if (_showExplanation && _currentQuestion.explanation != null) ...[
+                  if (_showExplanation &&
+                      _currentQuestion.explanation != null) ...[
                     const SizedBox(height: 24),
                     _buildExplanation(),
                   ],
@@ -226,7 +234,10 @@ class _PlacementTestScreenState extends ConsumerState<PlacementTestScreen> {
             children: [
               Text(
                 '${(_progress * 100).round()}% Complete',
-                style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
+                style: const TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
               Text(
                 '${_userAnswers.length}/${_test.questions.length} Answered',
@@ -240,86 +251,85 @@ class _PlacementTestScreenState extends ConsumerState<PlacementTestScreen> {
   }
 
   List<Widget> _buildAnswerOptions() {
-    return List.generate(
-      _currentQuestion.options.length,
-      (index) {
-        final isSelected = _selectedAnswer == index;
-        final isCorrect = index == _currentQuestion.correctIndex;
-        final showResult = _showExplanation;
+    return List.generate(_currentQuestion.options.length, (index) {
+      final isSelected = _selectedAnswer == index;
+      final isCorrect = index == _currentQuestion.correctIndex;
+      final showResult = _showExplanation;
 
-        Color? backgroundColor;
-        Color? borderColor;
-        IconData? icon;
+      Color? backgroundColor;
+      Color? borderColor;
+      IconData? icon;
 
-        if (showResult) {
-          if (isCorrect) {
-            backgroundColor = Colors.green[50];
-            borderColor = Colors.green;
-            icon = Icons.check_circle;
-          } else if (isSelected && !isCorrect) {
-            backgroundColor = Colors.red[50];
-            borderColor = Colors.red;
-            icon = Icons.cancel;
-          }
-        } else if (isSelected) {
-          backgroundColor = AppColors.accent.withOpacity(0.1);
-          borderColor = AppColors.accent;
+      if (showResult) {
+        if (isCorrect) {
+          backgroundColor = Colors.green[50];
+          borderColor = Colors.green;
+          icon = Icons.check_circle;
+        } else if (isSelected && !isCorrect) {
+          backgroundColor = Colors.red[50];
+          borderColor = Colors.red;
+          icon = Icons.cancel;
         }
+      } else if (isSelected) {
+        backgroundColor = AppColors.accent.withOpacity(0.1);
+        borderColor = AppColors.accent;
+      }
 
-        return Padding(
-          padding: const EdgeInsets.only(bottom: 12),
-          child: InkWell(
-            onTap: showResult ? null : () => _selectAnswer(index),
-            borderRadius: BorderRadius.circular(12),
-            child: Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: backgroundColor,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(
-                  color: borderColor ?? Colors.grey[300]!,
-                  width: 2,
-                ),
+      return Padding(
+        padding: const EdgeInsets.only(bottom: 12),
+        child: InkWell(
+          onTap: showResult ? null : () => _selectAnswer(index),
+          borderRadius: BorderRadius.circular(12),
+          child: Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: backgroundColor,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: borderColor ?? Colors.grey[300]!,
+                width: 2,
               ),
-              child: Row(
-                children: [
-                  Container(
-                    width: 32,
-                    height: 32,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: isSelected 
-                          ? (showResult && isCorrect ? Colors.green : AppColors.accent)
-                          : Colors.grey[200],
-                    ),
-                    child: Center(
-                      child: Text(
-                        String.fromCharCode(65 + index), // A, B, C, D
-                        style: TextStyle(
-                          color: isSelected ? Colors.white : Colors.black87,
-                          fontWeight: FontWeight.bold,
-                        ),
+            ),
+            child: Row(
+              children: [
+                Container(
+                  width: 32,
+                  height: 32,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: isSelected
+                        ? (showResult && isCorrect
+                              ? Colors.green
+                              : AppColors.accent)
+                        : Colors.grey[200],
+                  ),
+                  child: Center(
+                    child: Text(
+                      String.fromCharCode(65 + index), // A, B, C, D
+                      style: TextStyle(
+                        color: isSelected ? Colors.white : Colors.black87,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
                   ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: Text(
-                      _currentQuestion.options[index],
-                      style: const TextStyle(fontSize: 16),
-                    ),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Text(
+                    _currentQuestion.options[index],
+                    style: const TextStyle(fontSize: 16),
                   ),
-                  if (icon != null) ...[
-                    const SizedBox(width: 8),
-                    Icon(icon, color: borderColor),
-                  ],
+                ),
+                if (icon != null) ...[
+                  const SizedBox(width: 8),
+                  Icon(icon, color: borderColor),
                 ],
-              ),
+              ],
             ),
           ),
-        );
-      },
-    );
+        ),
+      );
+    });
   }
 
   Widget _buildExplanation() {
@@ -401,9 +411,7 @@ class _PlacementTestScreenState extends ConsumerState<PlacementTestScreen> {
 
   String _getPathName(String pathId) {
     try {
-      return LessonContent.allPaths
-          .firstWhere((p) => p.id == pathId)
-          .title;
+      return LessonContent.allPaths.firstWhere((p) => p.id == pathId).title;
     } catch (_) {
       return pathId;
     }

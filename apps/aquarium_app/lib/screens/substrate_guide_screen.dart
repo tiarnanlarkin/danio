@@ -23,7 +23,10 @@ class SubstrateGuideScreen extends StatelessWidget {
                     children: [
                       Icon(Icons.layers, color: AppColors.info),
                       const SizedBox(width: 8),
-                      Text('Why Substrate Matters', style: AppTypography.headlineSmall),
+                      Text(
+                        'Why Substrate Matters',
+                        style: AppTypography.headlineSmall,
+                      ),
                     ],
                   ),
                   const SizedBox(height: 12),
@@ -45,37 +48,79 @@ class SubstrateGuideScreen extends StatelessWidget {
 
           _SubstrateCard(
             name: 'Gravel',
-            description: 'Classic aquarium substrate. Inert, doesn\'t affect water chemistry.',
-            pros: ['Cheap', 'Easy to clean', 'Many colors', 'Won\'t cloud water'],
-            cons: ['No nutrients for plants', 'Food can get trapped', 'Too large for some bottom dwellers'],
+            description:
+                'Classic aquarium substrate. Inert, doesn\'t affect water chemistry.',
+            pros: [
+              'Cheap',
+              'Easy to clean',
+              'Many colors',
+              'Won\'t cloud water',
+            ],
+            cons: [
+              'No nutrients for plants',
+              'Food can get trapped',
+              'Too large for some bottom dwellers',
+            ],
             bestFor: 'Fish-only tanks, beginners, easy maintenance',
             size: '3-5mm typical',
             depth: '5-8cm (2-3 inches)',
           ),
           _SubstrateCard(
             name: 'Sand',
-            description: 'Fine particles, natural look. Popular for planted tanks and bottom dwellers.',
-            pros: ['Natural look', 'Great for corys/loaches', 'Easy for plants to root', 'No food trapping'],
-            cons: ['Can compact', 'May cause dead spots', 'Some types cloud water', 'Harder to vacuum'],
+            description:
+                'Fine particles, natural look. Popular for planted tanks and bottom dwellers.',
+            pros: [
+              'Natural look',
+              'Great for corys/loaches',
+              'Easy for plants to root',
+              'No food trapping',
+            ],
+            cons: [
+              'Can compact',
+              'May cause dead spots',
+              'Some types cloud water',
+              'Harder to vacuum',
+            ],
             bestFor: 'Corydoras, loaches, planted tanks, natural biotopes',
             size: '0.5-2mm',
             depth: '3-5cm (1-2 inches), or 5-8cm for plants',
           ),
           _SubstrateCard(
             name: 'Aquasoil (Active Substrate)',
-            description: 'Nutrient-rich, lowers pH. Designed for planted tanks.',
-            pros: ['Nutrients for plants', 'Lowers pH/KH', 'Excellent plant growth', 'Promotes root development'],
-            cons: ['Expensive', 'Leaches ammonia initially', 'Breaks down over 1-2 years', 'Clouds if disturbed'],
+            description:
+                'Nutrient-rich, lowers pH. Designed for planted tanks.',
+            pros: [
+              'Nutrients for plants',
+              'Lowers pH/KH',
+              'Excellent plant growth',
+              'Promotes root development',
+            ],
+            cons: [
+              'Expensive',
+              'Leaches ammonia initially',
+              'Breaks down over 1-2 years',
+              'Clouds if disturbed',
+            ],
             bestFor: 'High-tech planted tanks, soft water fish, aquascaping',
             size: '1-4mm granules',
             depth: '5-10cm (2-4 inches)',
-            brands: 'ADA Amazonia, Tropica Aquarium Soil, Fluval Stratum, UNS Controsoil',
+            brands:
+                'ADA Amazonia, Tropica Aquarium Soil, Fluval Stratum, UNS Controsoil',
           ),
           _SubstrateCard(
             name: 'Flourite',
             description: 'Clay-based planted tank substrate. Inert but porous.',
-            pros: ['Long-lasting', 'Doesn\'t break down', 'No ammonia spike', 'Holds nutrients'],
-            cons: ['Very dusty — rinse thoroughly', 'No initial nutrients', 'Heavy'],
+            pros: [
+              'Long-lasting',
+              'Doesn\'t break down',
+              'No ammonia spike',
+              'Holds nutrients',
+            ],
+            cons: [
+              'Very dusty — rinse thoroughly',
+              'No initial nutrients',
+              'Heavy',
+            ],
             bestFor: 'Low-tech planted tanks, long-term setups',
             size: '2-5mm',
             depth: '5-8cm (2-3 inches)',
@@ -83,8 +128,16 @@ class SubstrateGuideScreen extends StatelessWidget {
           _SubstrateCard(
             name: 'Crushed Coral',
             description: 'Calcium carbite. Raises pH and hardness.',
-            pros: ['Buffers to high pH', 'Adds calcium', 'Good for hard water fish'],
-            cons: ['Not for soft water fish', 'Not for most plants', 'Sharp edges'],
+            pros: [
+              'Buffers to high pH',
+              'Adds calcium',
+              'Good for hard water fish',
+            ],
+            cons: [
+              'Not for soft water fish',
+              'Not for most plants',
+              'Sharp edges',
+            ],
             bestFor: 'African cichlids, livebearers, marine tanks',
             size: '2-5mm',
             depth: '5-8cm (2-3 inches)',
@@ -92,8 +145,17 @@ class SubstrateGuideScreen extends StatelessWidget {
           _SubstrateCard(
             name: 'Bare Bottom',
             description: 'No substrate at all. Easy maintenance.',
-            pros: ['Easiest to clean', 'No detritus buildup', 'See waste immediately'],
-            cons: ['Unnatural look', 'No beneficial bacteria surface', 'No plants without pots', 'Fish may be stressed'],
+            pros: [
+              'Easiest to clean',
+              'No detritus buildup',
+              'See waste immediately',
+            ],
+            cons: [
+              'Unnatural look',
+              'No beneficial bacteria surface',
+              'No plants without pots',
+              'Fish may be stressed',
+            ],
             bestFor: 'Hospital tanks, quarantine, breeding tanks, fry tanks',
             size: 'N/A',
             depth: 'N/A',
@@ -108,12 +170,14 @@ class SubstrateGuideScreen extends StatelessWidget {
           _TankTypeCard(
             tankType: 'High-Tech Planted',
             substrate: 'Aquasoil + root tabs',
-            notes: 'Nutrient-rich soil is essential. Cap with sand for aesthetic if desired.',
+            notes:
+                'Nutrient-rich soil is essential. Cap with sand for aesthetic if desired.',
           ),
           _TankTypeCard(
             tankType: 'Low-Tech Planted',
             substrate: 'Sand or Flourite + root tabs',
-            notes: 'Inert substrate with root tabs works well. Dirted tanks also popular.',
+            notes:
+                'Inert substrate with root tabs works well. Dirted tanks also popular.',
           ),
           _TankTypeCard(
             tankType: 'Fish Only (Community)',
@@ -128,17 +192,20 @@ class SubstrateGuideScreen extends StatelessWidget {
           _TankTypeCard(
             tankType: 'Shrimp',
             substrate: 'Aquasoil (for Caridina) or inert (for Neocaridina)',
-            notes: 'Caridina need low pH — use buffering soil. Neocaridina adaptable.',
+            notes:
+                'Caridina need low pH — use buffering soil. Neocaridina adaptable.',
           ),
           _TankTypeCard(
             tankType: 'Biotope',
             substrate: 'Match the natural habitat',
-            notes: 'Amazon: sand + leaves. Asian: fine gravel. African stream: rocks.',
+            notes:
+                'Amazon: sand + leaves. Asian: fine gravel. African stream: rocks.',
           ),
           _TankTypeCard(
             tankType: 'Breeding',
             substrate: 'Bare bottom or marbles',
-            notes: 'Easy to see/collect eggs. Marbles protect eggs from being eaten.',
+            notes:
+                'Easy to see/collect eggs. Marbles protect eggs from being eaten.',
           ),
 
           const SizedBox(height: 24),
@@ -153,24 +220,47 @@ class SubstrateGuideScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Dirted Tank (Walstad Method)', style: AppTypography.labelLarge),
+                  Text(
+                    'Dirted Tank (Walstad Method)',
+                    style: AppTypography.labelLarge,
+                  ),
                   const SizedBox(height: 8),
-                  _LayerRow(layer: 'Top', material: 'Sand or fine gravel cap (3-5cm)', color: Colors.brown.shade300),
-                  _LayerRow(layer: 'Bottom', material: 'Organic potting soil (2-3cm)', color: Colors.brown.shade800),
+                  _LayerRow(
+                    layer: 'Top',
+                    material: 'Sand or fine gravel cap (3-5cm)',
+                    color: Colors.brown.shade300,
+                  ),
+                  _LayerRow(
+                    layer: 'Bottom',
+                    material: 'Organic potting soil (2-3cm)',
+                    color: Colors.brown.shade800,
+                  ),
                   const SizedBox(height: 8),
                   Text(
                     'Low-tech method. Soil provides nutrients, cap prevents clouding. '
                     'No CO2 or fertilizers needed for easy plants.',
                     style: AppTypography.bodySmall,
                   ),
-                  
+
                   const SizedBox(height: 20),
-                  
+
                   Text('High-Tech Planted', style: AppTypography.labelLarge),
                   const SizedBox(height: 8),
-                  _LayerRow(layer: 'Top', material: 'Aquasoil (5-8cm)', color: Colors.brown.shade600),
-                  _LayerRow(layer: 'Middle', material: 'Power Sand / Pumice (optional, 1-2cm)', color: Colors.grey.shade400),
-                  _LayerRow(layer: 'Bottom', material: 'Substrate fertilizer (optional)', color: Colors.brown.shade900),
+                  _LayerRow(
+                    layer: 'Top',
+                    material: 'Aquasoil (5-8cm)',
+                    color: Colors.brown.shade600,
+                  ),
+                  _LayerRow(
+                    layer: 'Middle',
+                    material: 'Power Sand / Pumice (optional, 1-2cm)',
+                    color: Colors.grey.shade400,
+                  ),
+                  _LayerRow(
+                    layer: 'Bottom',
+                    material: 'Substrate fertilizer (optional)',
+                    color: Colors.brown.shade900,
+                  ),
                   const SizedBox(height: 8),
                   Text(
                     'For maximum plant growth. Power sand adds drainage and bacterial surface area.',
@@ -199,12 +289,21 @@ class SubstrateGuideScreen extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: 12),
-                  _TipItem(text: 'Rinse all substrate before use — even "pre-washed"'),
-                  _TipItem(text: 'Slope substrate higher in back for depth illusion'),
+                  _TipItem(
+                    text: 'Rinse all substrate before use — even "pre-washed"',
+                  ),
+                  _TipItem(
+                    text: 'Slope substrate higher in back for depth illusion',
+                  ),
                   _TipItem(text: 'Use substrate dividers to create zones'),
-                  _TipItem(text: 'Never vacuum planted areas deeply — disturbs roots'),
+                  _TipItem(
+                    text: 'Never vacuum planted areas deeply — disturbs roots',
+                  ),
                   _TipItem(text: 'Dark substrate makes fish colors pop'),
-                  _TipItem(text: 'Calculate amount: L × W × depth (cm) ÷ 1000 = litres needed'),
+                  _TipItem(
+                    text:
+                        'Calculate amount: L × W × depth (cm) ÷ 1000 = litres needed',
+                  ),
                 ],
               ),
             ),
@@ -253,7 +352,11 @@ class _SubstrateCard extends StatelessWidget {
           child: const Icon(Icons.layers, color: Colors.brown),
         ),
         title: Text(name, style: AppTypography.labelLarge),
-        subtitle: Text(description, style: AppTypography.bodySmall, maxLines: 2),
+        subtitle: Text(
+          description,
+          style: AppTypography.bodySmall,
+          maxLines: 2,
+        ),
         children: [
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
@@ -267,8 +370,16 @@ class _SubstrateCard extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('✓ Pros', style: AppTypography.labelLarge.copyWith(color: AppColors.success, fontSize: 13)),
-                          ...pros.map((p) => Text('• $p', style: AppTypography.bodySmall)),
+                          Text(
+                            '✓ Pros',
+                            style: AppTypography.labelLarge.copyWith(
+                              color: AppColors.success,
+                              fontSize: 13,
+                            ),
+                          ),
+                          ...pros.map(
+                            (p) => Text('• $p', style: AppTypography.bodySmall),
+                          ),
                         ],
                       ),
                     ),
@@ -277,8 +388,16 @@ class _SubstrateCard extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('✗ Cons', style: AppTypography.labelLarge.copyWith(color: AppColors.error, fontSize: 13)),
-                          ...cons.map((c) => Text('• $c', style: AppTypography.bodySmall)),
+                          Text(
+                            '✗ Cons',
+                            style: AppTypography.labelLarge.copyWith(
+                              color: AppColors.error,
+                              fontSize: 13,
+                            ),
+                          ),
+                          ...cons.map(
+                            (c) => Text('• $c', style: AppTypography.bodySmall),
+                          ),
                         ],
                       ),
                     ),
@@ -295,10 +414,16 @@ class _SubstrateCard extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Best for: $bestFor', style: AppTypography.bodySmall.copyWith(fontWeight: FontWeight.w600)),
+                      Text(
+                        'Best for: $bestFor',
+                        style: AppTypography.bodySmall.copyWith(
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
                       Text('Grain size: $size', style: AppTypography.bodySmall),
                       Text('Depth: $depth', style: AppTypography.bodySmall),
-                      if (brands != null) Text('Brands: $brands', style: AppTypography.bodySmall),
+                      if (brands != null)
+                        Text('Brands: $brands', style: AppTypography.bodySmall),
                     ],
                   ),
                 ),
@@ -340,7 +465,12 @@ class _TankTypeCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(substrate, style: AppTypography.bodyMedium.copyWith(color: AppColors.primary)),
+                  Text(
+                    substrate,
+                    style: AppTypography.bodyMedium.copyWith(
+                      color: AppColors.primary,
+                    ),
+                  ),
                   Text(notes, style: AppTypography.bodySmall),
                 ],
               ),
@@ -357,7 +487,11 @@ class _LayerRow extends StatelessWidget {
   final String material;
   final Color color;
 
-  const _LayerRow({required this.layer, required this.material, required this.color});
+  const _LayerRow({
+    required this.layer,
+    required this.material,
+    required this.color,
+  });
 
   @override
   Widget build(BuildContext context) {

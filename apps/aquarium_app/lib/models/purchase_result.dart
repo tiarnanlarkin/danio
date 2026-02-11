@@ -18,10 +18,7 @@ class PurchaseResult {
   });
 
   factory PurchaseResult.success(ShopItem item) {
-    return PurchaseResult._(
-      success: true,
-      item: item,
-    );
+    return PurchaseResult._(success: true, item: item);
   }
 
   factory PurchaseResult.insufficientGems({
@@ -37,9 +34,6 @@ class PurchaseResult {
   }
 
   factory PurchaseResult.error(String message) {
-    return PurchaseResult._(
-      success: false,
-      errorMessage: message,
-    );
+    return PurchaseResult._(success: false, errorMessage: message);
   }
 }

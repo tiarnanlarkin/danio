@@ -176,21 +176,22 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
             children: AnalyticsTimeRange.values
                 .where((r) => r != AnalyticsTimeRange.custom)
                 .map((range) {
-              final isSelected = _selectedRange == range;
-              return ChoiceChip(
-                label: Text(range.displayName),
-                selected: isSelected,
-                onSelected: (selected) {
-                  if (selected) {
-                    setState(() {
-                      _selectedRange = range;
-                      _customStart = null;
-                      _customEnd = null;
-                    });
-                  }
-                },
-              );
-            }).toList(),
+                  final isSelected = _selectedRange == range;
+                  return ChoiceChip(
+                    label: Text(range.displayName),
+                    selected: isSelected,
+                    onSelected: (selected) {
+                      if (selected) {
+                        setState(() {
+                          _selectedRange = range;
+                          _customStart = null;
+                          _customEnd = null;
+                        });
+                      }
+                    },
+                  );
+                })
+                .toList(),
           ),
         ],
       ),
@@ -217,12 +218,13 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                   label: 'Total XP',
                   value: summary.totalXP.toString(),
                   color: Colors.amber,
-                  trend: summary.recentWeeklyStats.isNotEmpty &&
+                  trend:
+                      summary.recentWeeklyStats.isNotEmpty &&
                           summary.recentWeeklyStats.length >= 2
                       ? summary.recentWeeklyStats[0].totalXP >
-                              summary.recentWeeklyStats[1].totalXP
-                          ? ProgressTrend.increasing
-                          : ProgressTrend.decreasing
+                                summary.recentWeeklyStats[1].totalXP
+                            ? ProgressTrend.increasing
+                            : ProgressTrend.decreasing
                       : null,
                 ),
               ),
@@ -407,7 +409,10 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                     spots: data
                         .asMap()
                         .entries
-                        .map((e) => FlSpot(e.key.toDouble(), e.value.xp.toDouble()))
+                        .map(
+                          (e) =>
+                              FlSpot(e.key.toDouble(), e.value.xp.toDouble()),
+                        )
                         .toList(),
                     isCurved: true,
                     color: Colors.blue,
@@ -434,7 +439,11 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
     if (summary.recentDailyStats.isEmpty) return const SizedBox.shrink();
 
     // Get last 7 days
-    final last7Days = summary.recentDailyStats.take(7).toList().reversed.toList();
+    final last7Days = summary.recentDailyStats
+        .take(7)
+        .toList()
+        .reversed
+        .toList();
     final maxXP = last7Days.map((d) => d.xp).reduce((a, b) => a > b ? a : b);
 
     return Container(
@@ -555,12 +564,19 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
               RadarChartData(
                 radarShape: RadarShape.polygon,
                 tickCount: 5,
-                ticksTextStyle: const TextStyle(fontSize: 10, color: Colors.transparent),
+                ticksTextStyle: const TextStyle(
+                  fontSize: 10,
+                  color: Colors.transparent,
+                ),
                 radarBorderData: const BorderSide(color: Colors.grey, width: 1),
-                gridBorderData: const BorderSide(color: Colors.grey, width: 0.5),
+                gridBorderData: const BorderSide(
+                  color: Colors.grey,
+                  width: 0.5,
+                ),
                 tickBorderData: const BorderSide(color: Colors.transparent),
                 getTitle: (index, angle) {
-                  if (index >= topics.length) return const RadarChartTitle(text: '');
+                  if (index >= topics.length)
+                    return const RadarChartTitle(text: '');
                   return RadarChartTitle(
                     text: topics[index].topicName.split(' ').first,
                     angle: angle,
@@ -571,7 +587,9 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                     fillColor: Colors.blue.withOpacity(0.2),
                     borderColor: Colors.blue,
                     dataEntries: topics
-                        .map((t) => RadarEntry(value: t.masteryPercentage * 100))
+                        .map(
+                          (t) => RadarEntry(value: t.masteryPercentage * 100),
+                        )
                         .toList(),
                   ),
                 ],
@@ -613,18 +631,18 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
               itemCount: daysToShow,
               itemBuilder: (context, index) {
                 final date = startDate.add(Duration(days: index));
-                final dateKey = '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
-                final dayData = summary.recentDailyStats
-                    .firstWhere(
-                      (d) => d.dateKey == dateKey,
-                      orElse: () => DailyStats(
-                        date: date,
-                        xp: 0,
-                        lessonsCompleted: 0,
-                        practiceMinutes: 0,
-                        timeSpentSeconds: 0,
-                      ),
-                    );
+                final dateKey =
+                    '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
+                final dayData = summary.recentDailyStats.firstWhere(
+                  (d) => d.dateKey == dateKey,
+                  orElse: () => DailyStats(
+                    date: date,
+                    xp: 0,
+                    lessonsCompleted: 0,
+                    practiceMinutes: 0,
+                    timeSpentSeconds: 0,
+                  ),
+                );
 
                 Color color;
                 if (dayData.xp == 0) {
@@ -640,7 +658,8 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                 }
 
                 return Tooltip(
-                  message: '${DateFormat('MMM d').format(date)}: ${dayData.xp} XP',
+                  message:
+                      '${DateFormat('MMM d').format(date)}: ${dayData.xp} XP',
                   child: Container(
                     decoration: BoxDecoration(
                       color: color,
@@ -733,10 +752,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
           children: [
             Row(
               children: [
-                Text(
-                  insight.type.emoji,
-                  style: const TextStyle(fontSize: 24),
-                ),
+                Text(insight.type.emoji, style: const TextStyle(fontSize: 24)),
                 const SizedBox(width: 12),
                 Expanded(
                   child: Text(
@@ -827,10 +843,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                     ),
                   ),
                 ),
-                Text(
-                  topic.trend.emoji,
-                  style: const TextStyle(fontSize: 20),
-                ),
+                Text(topic.trend.emoji, style: const TextStyle(fontSize: 20)),
               ],
             ),
             const SizedBox(height: 12),
@@ -851,8 +864,8 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                         color: topic.isStrong
                             ? Colors.green
                             : topic.needsWork
-                                ? Colors.orange
-                                : Colors.blue,
+                            ? Colors.orange
+                            : Colors.blue,
                       ),
                       const SizedBox(height: 4),
                       Text(
@@ -902,7 +915,9 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 16),
-          ...summary.predictions.map((prediction) => _buildPredictionCard(prediction)),
+          ...summary.predictions.map(
+            (prediction) => _buildPredictionCard(prediction),
+          ),
         ],
       ),
     );
@@ -936,7 +951,10 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
             Row(
               children: [
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
                   decoration: BoxDecoration(
                     color: Colors.blue,
                     borderRadius: BorderRadius.circular(12),
@@ -981,8 +999,18 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
           mainAxisSize: MainAxisSize.min,
           children: [
             ListTile(
+              leading: const Icon(Icons.table_chart),
+              title: const Text('Export as CSV'),
+              subtitle: const Text('Spreadsheet-friendly format'),
+              onTap: () async {
+                Navigator.pop(context);
+                await _exportAsCSV(summary);
+              },
+            ),
+            ListTile(
               leading: const Icon(Icons.code),
               title: const Text('Export as JSON'),
+              subtitle: const Text('Technical format'),
               onTap: () async {
                 Navigator.pop(context);
                 await _exportAsJson(summary);
@@ -991,6 +1019,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
             ListTile(
               leading: const Icon(Icons.description),
               title: const Text('Share Progress Report'),
+              subtitle: const Text('Human-readable text'),
               onTap: () async {
                 Navigator.pop(context);
                 await _shareReport(summary);
@@ -1019,17 +1048,66 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
       final file = File('${dir.path}/analytics_export.json');
       await file.writeAsString(jsonString);
 
-      await Share.shareXFiles(
-        [XFile(file.path)],
-        subject: 'Aquarium App Analytics Export',
-      );
+      await Share.shareXFiles([
+        XFile(file.path),
+      ], subject: 'Aquarium App Analytics Export');
     } catch (e) {
       debugPrint('Export failed: $e');
     }
   }
 
+  Future<void> _exportAsCSV(AnalyticsSummary summary) async {
+    try {
+      // Create CSV content
+      final csvLines = <String>[];
+
+      // Header
+      csvLines.add('Metric,Value');
+
+      // Summary data
+      csvLines.add('Total XP,${summary.totalXP}');
+      csvLines.add('Current Streak,${summary.currentStreak}');
+      csvLines.add('Longest Streak,${summary.longestStreak}');
+      csvLines.add('Lessons Completed,${summary.lessonsCompleted}');
+      csvLines.add('Total Lessons,${summary.totalLessons}');
+      csvLines.add(
+        'Completion Rate,${(summary.lessonsCompleted / summary.totalLessons * 100).toStringAsFixed(1)}%',
+      );
+      csvLines.add('Time Spent,${summary.timeSpentFormatted}');
+
+      // Add insights section
+      if (summary.insights.isNotEmpty) {
+        csvLines.add('');
+        csvLines.add('Insights');
+        for (final insight in summary.insights) {
+          // Escape commas and quotes in text
+          final message = insight.message.replaceAll('"', '""');
+          csvLines.add('"${insight.type}","$message"');
+        }
+      }
+
+      // Add export metadata
+      csvLines.add('');
+      csvLines.add(
+        'Exported At,${DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now())}',
+      );
+
+      final csvContent = csvLines.join('\n');
+      final dir = await getApplicationDocumentsDirectory();
+      final file = File('${dir.path}/analytics_export.csv');
+      await file.writeAsString(csvContent);
+
+      await Share.shareXFiles([
+        XFile(file.path),
+      ], subject: 'Aquarium App Analytics Export (CSV)');
+    } catch (e) {
+      debugPrint('CSV Export failed: $e');
+    }
+  }
+
   Future<void> _shareReport(AnalyticsSummary summary) async {
-    final report = '''
+    final report =
+        '''
 📊 My Aquarium Learning Progress
 
 🌟 Total XP: ${summary.totalXP}
@@ -1042,10 +1120,7 @@ ${summary.insights.isNotEmpty ? '💡 Top Insights:\n${summary.insights.take(3).
 Generated: ${DateFormat('MMM d, yyyy').format(DateTime.now())}
 ''';
 
-    await Share.share(
-      report,
-      subject: 'My Aquarium Learning Progress',
-    );
+    await Share.share(report, subject: 'My Aquarium Learning Progress');
   }
 
   /// Sample profile for testing (replace with real data from state management)
@@ -1056,7 +1131,8 @@ Generated: ${DateFormat('MMM d, yyyy').format(DateTime.now())}
     // Generate sample data for the last 90 days
     for (int i = 0; i < 90; i++) {
       final date = now.subtract(Duration(days: i));
-      final dateKey = '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
+      final dateKey =
+          '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
       // Random XP between 0 and 150
       final xp = (i % 3 == 0) ? 0 : 30 + (i * 7) % 100;
       dailyXpHistory[dateKey] = xp;

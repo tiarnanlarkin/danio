@@ -23,7 +23,10 @@ class QuarantineGuideScreen extends StatelessWidget {
                     children: [
                       Icon(Icons.shield, color: AppColors.warning),
                       const SizedBox(width: 8),
-                      Text('Why Quarantine?', style: AppTypography.headlineSmall),
+                      Text(
+                        'Why Quarantine?',
+                        style: AppTypography.headlineSmall,
+                      ),
                     ],
                   ),
                   const SizedBox(height: 12),
@@ -46,32 +49,38 @@ class QuarantineGuideScreen extends StatelessWidget {
 
           _SetupCard(
             title: 'Tank Size',
-            description: '10-20 gallons is ideal. Smaller for small fish, larger for big fish.',
+            description:
+                '10-20 gallons is ideal. Smaller for small fish, larger for big fish.',
             icon: Icons.water,
           ),
           _SetupCard(
             title: 'Filtration',
-            description: 'Sponge filter recommended — easy to move, provides biological filtration, gentle flow.',
+            description:
+                'Sponge filter recommended — easy to move, provides biological filtration, gentle flow.',
             icon: Icons.filter_alt,
           ),
           _SetupCard(
             title: 'Heater',
-            description: 'Adjustable heater to match main tank temperature. May need higher temps for treatment.',
+            description:
+                'Adjustable heater to match main tank temperature. May need higher temps for treatment.',
             icon: Icons.thermostat,
           ),
           _SetupCard(
             title: 'Decor',
-            description: 'Minimal — PVC pipes or cheap plants for hiding. Easy to sterilize between uses.',
+            description:
+                'Minimal — PVC pipes or cheap plants for hiding. Easy to sterilize between uses.',
             icon: Icons.weekend,
           ),
           _SetupCard(
             title: 'Lighting',
-            description: 'Basic light or ambient room light. Keep dim to reduce stress.',
+            description:
+                'Basic light or ambient room light. Keep dim to reduce stress.',
             icon: Icons.lightbulb,
           ),
           _SetupCard(
             title: 'No Substrate',
-            description: 'Bare bottom is easier to clean and observe fish. Detritus is visible.',
+            description:
+                'Bare bottom is easier to clean and observe fish. Detritus is visible.',
             icon: Icons.layers_clear,
           ),
 
@@ -136,23 +145,50 @@ class QuarantineGuideScreen extends StatelessWidget {
                 children: [
                   _SymptomRow(symptom: 'White spots', indicates: 'Ich'),
                   const Divider(),
-                  _SymptomRow(symptom: 'Gold dust coating', indicates: 'Velvet'),
+                  _SymptomRow(
+                    symptom: 'Gold dust coating',
+                    indicates: 'Velvet',
+                  ),
                   const Divider(),
-                  _SymptomRow(symptom: 'Frayed/rotting fins', indicates: 'Fin rot'),
+                  _SymptomRow(
+                    symptom: 'Frayed/rotting fins',
+                    indicates: 'Fin rot',
+                  ),
                   const Divider(),
-                  _SymptomRow(symptom: 'Cottony growths', indicates: 'Fungal infection'),
+                  _SymptomRow(
+                    symptom: 'Cottony growths',
+                    indicates: 'Fungal infection',
+                  ),
                   const Divider(),
-                  _SymptomRow(symptom: 'Flashing/scratching', indicates: 'Parasites'),
+                  _SymptomRow(
+                    symptom: 'Flashing/scratching',
+                    indicates: 'Parasites',
+                  ),
                   const Divider(),
-                  _SymptomRow(symptom: 'Rapid breathing', indicates: 'Gill flukes, stress, ammonia'),
+                  _SymptomRow(
+                    symptom: 'Rapid breathing',
+                    indicates: 'Gill flukes, stress, ammonia',
+                  ),
                   const Divider(),
-                  _SymptomRow(symptom: 'Not eating', indicates: 'Stress, internal parasites, illness'),
+                  _SymptomRow(
+                    symptom: 'Not eating',
+                    indicates: 'Stress, internal parasites, illness',
+                  ),
                   const Divider(),
-                  _SymptomRow(symptom: 'White stringy feces', indicates: 'Internal parasites'),
+                  _SymptomRow(
+                    symptom: 'White stringy feces',
+                    indicates: 'Internal parasites',
+                  ),
                   const Divider(),
-                  _SymptomRow(symptom: 'Sunken belly', indicates: 'Internal parasites, wasting'),
+                  _SymptomRow(
+                    symptom: 'Sunken belly',
+                    indicates: 'Internal parasites, wasting',
+                  ),
                   const Divider(),
-                  _SymptomRow(symptom: 'Swollen belly', indicates: 'Bloat, dropsy, parasites'),
+                  _SymptomRow(
+                    symptom: 'Swollen belly',
+                    indicates: 'Bloat, dropsy, parasites',
+                  ),
                 ],
               ),
             ),
@@ -192,7 +228,8 @@ class QuarantineGuideScreen extends StatelessWidget {
           _MedCard(
             name: 'Aquarium Salt',
             treats: 'Mild ich, stress, nitrite poisoning',
-            notes: 'Not for scaleless fish, plants, or snails. 1 tbsp per 5 gal.',
+            notes:
+                'Not for scaleless fish, plants, or snails. 1 tbsp per 5 gal.',
           ),
 
           const SizedBox(height: 24),
@@ -213,11 +250,26 @@ class QuarantineGuideScreen extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: 12),
-                  _TipItem(text: 'Keep a cycled sponge filter in your main tank — move it to QT when needed'),
-                  _TipItem(text: 'Match QT temperature and pH to main tank to reduce acclimation stress'),
-                  _TipItem(text: 'Don\'t share nets, siphons, or equipment between QT and main tank'),
-                  _TipItem(text: 'Quarantine plants too — they can carry snails, parasites, and pesticides'),
-                  _TipItem(text: 'Take photos of fish when they arrive for comparison later'),
+                  _TipItem(
+                    text:
+                        'Keep a cycled sponge filter in your main tank — move it to QT when needed',
+                  ),
+                  _TipItem(
+                    text:
+                        'Match QT temperature and pH to main tank to reduce acclimation stress',
+                  ),
+                  _TipItem(
+                    text:
+                        'Don\'t share nets, siphons, or equipment between QT and main tank',
+                  ),
+                  _TipItem(
+                    text:
+                        'Quarantine plants too — they can carry snails, parasites, and pesticides',
+                  ),
+                  _TipItem(
+                    text:
+                        'Take photos of fish when they arrive for comparison later',
+                  ),
                 ],
               ),
             ),
@@ -298,7 +350,12 @@ class _ProtocolStep extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text('Week', style: AppTypography.bodySmall),
-                  Text(week, style: AppTypography.headlineSmall.copyWith(color: AppColors.primary)),
+                  Text(
+                    week,
+                    style: AppTypography.headlineSmall.copyWith(
+                      color: AppColors.primary,
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -309,16 +366,20 @@ class _ProtocolStep extends StatelessWidget {
                 children: [
                   Text(title, style: AppTypography.labelLarge),
                   const SizedBox(height: 8),
-                  ...tasks.map((t) => Padding(
-                    padding: const EdgeInsets.only(bottom: 4),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('• ', style: AppTypography.bodySmall),
-                        Expanded(child: Text(t, style: AppTypography.bodySmall)),
-                      ],
+                  ...tasks.map(
+                    (t) => Padding(
+                      padding: const EdgeInsets.only(bottom: 4),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('• ', style: AppTypography.bodySmall),
+                          Expanded(
+                            child: Text(t, style: AppTypography.bodySmall),
+                          ),
+                        ],
+                      ),
                     ),
-                  )),
+                  ),
                 ],
               ),
             ),
@@ -347,7 +408,9 @@ class _SymptomRow extends StatelessWidget {
           Expanded(
             child: Text(
               indicates,
-              style: AppTypography.bodyMedium.copyWith(color: AppColors.warning),
+              style: AppTypography.bodyMedium.copyWith(
+                color: AppColors.warning,
+              ),
             ),
           ),
         ],
@@ -378,7 +441,10 @@ class _MedCard extends StatelessWidget {
           children: [
             Text(name, style: AppTypography.labelLarge),
             const SizedBox(height: 4),
-            Text('Treats: $treats', style: AppTypography.bodySmall.copyWith(color: AppColors.success)),
+            Text(
+              'Treats: $treats',
+              style: AppTypography.bodySmall.copyWith(color: AppColors.success),
+            ),
             Text(notes, style: AppTypography.bodySmall),
           ],
         ),

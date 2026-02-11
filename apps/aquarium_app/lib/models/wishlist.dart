@@ -31,8 +31,8 @@ class WishlistItem {
     this.purchased = false,
     DateTime? createdAt,
     this.purchasedAt,
-  })  : id = id ?? _uuid.v4(),
-        createdAt = createdAt ?? DateTime.now();
+  }) : id = id ?? _uuid.v4(),
+       createdAt = createdAt ?? DateTime.now();
 
   WishlistItem copyWith({
     String? name,
@@ -60,18 +60,18 @@ class WishlistItem {
   }
 
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'category': category.name,
-        'name': name,
-        'species': species,
-        'notes': notes,
-        'estimatedPrice': estimatedPrice,
-        'imageUrl': imageUrl,
-        'quantity': quantity,
-        'purchased': purchased,
-        'createdAt': createdAt.toIso8601String(),
-        'purchasedAt': purchasedAt?.toIso8601String(),
-      };
+    'id': id,
+    'category': category.name,
+    'name': name,
+    'species': species,
+    'notes': notes,
+    'estimatedPrice': estimatedPrice,
+    'imageUrl': imageUrl,
+    'quantity': quantity,
+    'purchased': purchased,
+    'createdAt': createdAt.toIso8601String(),
+    'purchasedAt': purchasedAt?.toIso8601String(),
+  };
 
   factory WishlistItem.fromJson(Map<String, dynamic> json) {
     return WishlistItem(
@@ -107,8 +107,10 @@ class ShopBudget {
     DateTime? lastReset,
   }) : lastReset = lastReset ?? DateTime.now();
 
-  double get remaining => (monthlyBudget - spentThisMonth).clamp(0, double.infinity);
-  double get percentUsed => monthlyBudget > 0 ? (spentThisMonth / monthlyBudget).clamp(0, 1) : 0;
+  double get remaining =>
+      (monthlyBudget - spentThisMonth).clamp(0, double.infinity);
+  double get percentUsed =>
+      monthlyBudget > 0 ? (spentThisMonth / monthlyBudget).clamp(0, 1) : 0;
 
   ShopBudget copyWith({
     double? monthlyBudget,
@@ -123,10 +125,10 @@ class ShopBudget {
   }
 
   Map<String, dynamic> toJson() => {
-        'monthlyBudget': monthlyBudget,
-        'spentThisMonth': spentThisMonth,
-        'lastReset': lastReset.toIso8601String(),
-      };
+    'monthlyBudget': monthlyBudget,
+    'spentThisMonth': spentThisMonth,
+    'lastReset': lastReset.toIso8601String(),
+  };
 
   factory ShopBudget.fromJson(Map<String, dynamic> json) {
     return ShopBudget(
@@ -161,8 +163,8 @@ class LocalShop {
     this.rating,
     this.notes,
     DateTime? createdAt,
-  })  : id = id ?? _uuid.v4(),
-        createdAt = createdAt ?? DateTime.now();
+  }) : id = id ?? _uuid.v4(),
+       createdAt = createdAt ?? DateTime.now();
 
   LocalShop copyWith({
     String? name,
@@ -187,16 +189,16 @@ class LocalShop {
   }
 
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'name': name,
-        'address': address,
-        'phone': phone,
-        'website': website,
-        'distanceMiles': distanceMiles,
-        'rating': rating,
-        'notes': notes,
-        'createdAt': createdAt.toIso8601String(),
-      };
+    'id': id,
+    'name': name,
+    'address': address,
+    'phone': phone,
+    'website': website,
+    'distanceMiles': distanceMiles,
+    'rating': rating,
+    'notes': notes,
+    'createdAt': createdAt.toIso8601String(),
+  };
 
   factory LocalShop.fromJson(Map<String, dynamic> json) {
     return LocalShop(

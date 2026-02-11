@@ -3,7 +3,7 @@ import '../theme/app_theme.dart';
 import 'haptic_feedback.dart';
 
 /// Standardized user feedback (snackbars, toasts, haptics)
-/// 
+///
 /// Usage:
 /// ```dart
 /// AppFeedback.showSuccess(context, 'Task completed!');
@@ -30,16 +30,18 @@ class AppFeedback {
         backgroundColor: AppColors.success,
         behavior: SnackBarBehavior.floating,
         duration: const Duration(seconds: 2),
-        shape: RoundedRectangleBorder(
-          borderRadius: AppRadius.mediumRadius,
-        ),
+        shape: RoundedRectangleBorder(borderRadius: AppRadius.mediumRadius),
         margin: const EdgeInsets.all(AppSpacing.md),
       ),
     );
   }
 
   /// Show error message with red background + haptic
-  static void showError(BuildContext context, String message, {VoidCallback? onRetry}) {
+  static void showError(
+    BuildContext context,
+    String message, {
+    VoidCallback? onRetry,
+  }) {
     AppHaptics.error();
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -58,9 +60,7 @@ class AppFeedback {
         backgroundColor: AppColors.error,
         behavior: SnackBarBehavior.floating,
         duration: const Duration(seconds: 4),
-        shape: RoundedRectangleBorder(
-          borderRadius: AppRadius.mediumRadius,
-        ),
+        shape: RoundedRectangleBorder(borderRadius: AppRadius.mediumRadius),
         margin: const EdgeInsets.all(AppSpacing.md),
         action: onRetry != null
             ? SnackBarAction(
@@ -93,9 +93,7 @@ class AppFeedback {
         backgroundColor: AppColors.warning,
         behavior: SnackBarBehavior.floating,
         duration: const Duration(seconds: 3),
-        shape: RoundedRectangleBorder(
-          borderRadius: AppRadius.mediumRadius,
-        ),
+        shape: RoundedRectangleBorder(borderRadius: AppRadius.mediumRadius),
         margin: const EdgeInsets.all(AppSpacing.md),
       ),
     );
@@ -120,9 +118,7 @@ class AppFeedback {
         backgroundColor: AppColors.info,
         behavior: SnackBarBehavior.floating,
         duration: const Duration(seconds: 2),
-        shape: RoundedRectangleBorder(
-          borderRadius: AppRadius.mediumRadius,
-        ),
+        shape: RoundedRectangleBorder(borderRadius: AppRadius.mediumRadius),
         margin: const EdgeInsets.all(AppSpacing.md),
       ),
     );
@@ -132,15 +128,10 @@ class AppFeedback {
   static void show(BuildContext context, String message) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(
-          message,
-          style: AppTypography.bodyMedium,
-        ),
+        content: Text(message, style: AppTypography.bodyMedium),
         behavior: SnackBarBehavior.floating,
         duration: const Duration(seconds: 2),
-        shape: RoundedRectangleBorder(
-          borderRadius: AppRadius.mediumRadius,
-        ),
+        shape: RoundedRectangleBorder(borderRadius: AppRadius.mediumRadius),
         margin: const EdgeInsets.all(AppSpacing.md),
       ),
     );
@@ -171,10 +162,10 @@ class AppFeedback {
         ),
         backgroundColor: AppColors.textPrimary,
         behavior: SnackBarBehavior.floating,
-        duration: const Duration(days: 365), // "Forever" - must be dismissed manually
-        shape: RoundedRectangleBorder(
-          borderRadius: AppRadius.mediumRadius,
-        ),
+        duration: const Duration(
+          days: 365,
+        ), // "Forever" - must be dismissed manually
+        shape: RoundedRectangleBorder(borderRadius: AppRadius.mediumRadius),
         margin: const EdgeInsets.all(AppSpacing.md),
       ),
     );

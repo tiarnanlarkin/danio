@@ -31,10 +31,9 @@ class JournalScreen extends ConsumerWidget {
         error: (e, _) => Center(child: Text('Error: $e')),
         data: (logs) {
           // Get observation logs as journal entries
-          final journalEntries = logs
-              .where((l) => l.type == LogType.observation)
-              .toList()
-            ..sort((a, b) => b.timestamp.compareTo(a.timestamp));
+          final journalEntries =
+              logs.where((l) => l.type == LogType.observation).toList()
+                ..sort((a, b) => b.timestamp.compareTo(a.timestamp));
 
           if (journalEntries.isEmpty) {
             return _EmptyJournal(onAdd: () => _addJournalEntry(context, ref));
@@ -93,11 +92,11 @@ class JournalScreen extends ConsumerWidget {
             createdAt: now,
             notes: notes,
           );
-          
+
           final storage = ref.read(storageServiceProvider);
           await storage.saveLog(entry);
           ref.invalidate(allLogsProvider(tankId));
-          
+
           if (ctx.mounted) Navigator.pop(ctx);
         },
       ),
@@ -169,7 +168,9 @@ class _JournalEntryCard extends StatelessWidget {
                   child: Center(
                     child: Text(
                       '${entry.timestamp.day}',
-                      style: AppTypography.labelLarge.copyWith(color: AppColors.primary),
+                      style: AppTypography.labelLarge.copyWith(
+                        color: AppColors.primary,
+                      ),
                     ),
                   ),
                 ),
@@ -184,17 +185,17 @@ class _JournalEntryCard extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 12),
-            Text(
-              entry.notes ?? '',
-              style: AppTypography.bodyMedium,
-            ),
+            Text(entry.notes ?? '', style: AppTypography.bodyMedium),
             if (entry.photoUrls != null && entry.photoUrls!.isNotEmpty) ...[
               const SizedBox(height: 12),
               Row(
                 children: [
                   Icon(Icons.image, size: 16, color: AppColors.textSecondary),
                   const SizedBox(width: 4),
-                  Text('${entry.photoUrls!.length} photo(s) attached', style: AppTypography.bodySmall),
+                  Text(
+                    '${entry.photoUrls!.length} photo(s) attached',
+                    style: AppTypography.bodySmall,
+                  ),
                 ],
               ),
             ],
@@ -266,7 +267,8 @@ class _NewJournalEntrySheetState extends State<_NewJournalEntrySheet> {
             focusNode: _focusNode,
             maxLines: 6,
             decoration: const InputDecoration(
-              hintText: 'What\'s happening with your tank today?\n\nObservations, changes, milestones...',
+              hintText:
+                  'What\'s happening with your tank today?\n\nObservations, changes, milestones...',
               border: OutlineInputBorder(),
             ),
           ),

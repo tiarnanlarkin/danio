@@ -22,7 +22,10 @@ class FeedingGuideScreen extends StatelessWidget {
                     children: [
                       Icon(Icons.star, color: AppColors.warning),
                       const SizedBox(width: 8),
-                      Text('The Golden Rule', style: AppTypography.headlineSmall),
+                      Text(
+                        'The Golden Rule',
+                        style: AppTypography.headlineSmall,
+                      ),
                     ],
                   ),
                   const SizedBox(height: 12),
@@ -84,7 +87,10 @@ class FeedingGuideScreen extends StatelessWidget {
             icon: Icons.layers,
             suitableFor: 'Surface and mid-water feeders',
             pros: ['Convenient', 'Variety of formulas', 'Most fish accept'],
-            cons: ['Degrades water quality quickly', 'Loses nutrients over time'],
+            cons: [
+              'Degrades water quality quickly',
+              'Loses nutrients over time',
+            ],
             tips: 'Crush for smaller fish. Remove uneaten flakes.',
           ),
           _FoodTypeCard(
@@ -107,7 +113,11 @@ class FeedingGuideScreen extends StatelessWidget {
             name: 'Live Foods',
             icon: Icons.bug_report,
             suitableFor: 'Carnivores, breeding conditioning',
-            pros: ['Natural hunting behavior', 'Highly nutritious', 'Great for fry'],
+            pros: [
+              'Natural hunting behavior',
+              'Highly nutritious',
+              'Great for fry',
+            ],
             cons: ['Disease risk', 'Requires culturing', 'Expensive'],
             tips: 'Quarantine or culture your own for safety.',
           ),
@@ -190,10 +200,22 @@ class FeedingGuideScreen extends StatelessWidget {
                     style: AppTypography.bodyMedium,
                   ),
                   const SizedBox(height: 8),
-                  Text('• Gives digestive system a rest', style: AppTypography.bodySmall),
-                  Text('• Helps prevent bloat (especially bettas)', style: AppTypography.bodySmall),
-                  Text('• Encourages scavenging behavior', style: AppTypography.bodySmall),
-                  Text('• Fish can go 1-2 weeks without food if needed', style: AppTypography.bodySmall),
+                  Text(
+                    '• Gives digestive system a rest',
+                    style: AppTypography.bodySmall,
+                  ),
+                  Text(
+                    '• Helps prevent bloat (especially bettas)',
+                    style: AppTypography.bodySmall,
+                  ),
+                  Text(
+                    '• Encourages scavenging behavior',
+                    style: AppTypography.bodySmall,
+                  ),
+                  Text(
+                    '• Fish can go 1-2 weeks without food if needed',
+                    style: AppTypography.bodySmall,
+                  ),
                 ],
               ),
             ),
@@ -230,7 +252,10 @@ class _FrequencyCard extends StatelessWidget {
             color: AppColors.primary.withOpacity(0.1),
             borderRadius: BorderRadius.circular(16),
           ),
-          child: Text(frequency, style: AppTypography.labelLarge.copyWith(color: AppColors.primary)),
+          child: Text(
+            frequency,
+            style: AppTypography.labelLarge.copyWith(color: AppColors.primary),
+          ),
         ),
       ),
     );
@@ -275,8 +300,16 @@ class _FoodTypeCard extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('✓ Pros', style: AppTypography.labelLarge.copyWith(color: AppColors.success, fontSize: 13)),
-                          ...pros.map((p) => Text('• $p', style: AppTypography.bodySmall)),
+                          Text(
+                            '✓ Pros',
+                            style: AppTypography.labelLarge.copyWith(
+                              color: AppColors.success,
+                              fontSize: 13,
+                            ),
+                          ),
+                          ...pros.map(
+                            (p) => Text('• $p', style: AppTypography.bodySmall),
+                          ),
                         ],
                       ),
                     ),
@@ -285,8 +318,16 @@ class _FoodTypeCard extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('✗ Cons', style: AppTypography.labelLarge.copyWith(color: AppColors.error, fontSize: 13)),
-                          ...cons.map((c) => Text('• $c', style: AppTypography.bodySmall)),
+                          Text(
+                            '✗ Cons',
+                            style: AppTypography.labelLarge.copyWith(
+                              color: AppColors.error,
+                              fontSize: 13,
+                            ),
+                          ),
+                          ...cons.map(
+                            (c) => Text('• $c', style: AppTypography.bodySmall),
+                          ),
                         ],
                       ),
                     ),
@@ -301,9 +342,15 @@ class _FoodTypeCard extends StatelessWidget {
                   ),
                   child: Row(
                     children: [
-                      Icon(Icons.lightbulb_outline, size: 16, color: AppColors.textSecondary),
+                      Icon(
+                        Icons.lightbulb_outline,
+                        size: 16,
+                        color: AppColors.textSecondary,
+                      ),
                       const SizedBox(width: 8),
-                      Expanded(child: Text(tips, style: AppTypography.bodySmall)),
+                      Expanded(
+                        child: Text(tips, style: AppTypography.bodySmall),
+                      ),
                     ],
                   ),
                 ),
@@ -342,9 +389,15 @@ class _MistakeItem extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 4),
-          Text('→ $consequence', style: AppTypography.bodySmall.copyWith(color: AppColors.error)),
+          Text(
+            '→ $consequence',
+            style: AppTypography.bodySmall.copyWith(color: AppColors.error),
+          ),
           const SizedBox(height: 4),
-          Text('✓ $fix', style: AppTypography.bodySmall.copyWith(color: AppColors.success)),
+          Text(
+            '✓ $fix',
+            style: AppTypography.bodySmall.copyWith(color: AppColors.success),
+          ),
         ],
       ),
     );

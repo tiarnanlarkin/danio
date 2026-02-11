@@ -38,19 +38,19 @@ class SyncIndicator extends ConsumerWidget {
           color: isError
               ? Colors.red.shade100
               : hasConflicts
-                  ? Colors.orange.shade100
-                  : isSyncing
-                      ? Colors.blue.shade100
-                      : Colors.grey.shade100,
+              ? Colors.orange.shade100
+              : isSyncing
+              ? Colors.blue.shade100
+              : Colors.grey.shade100,
           border: Border(
             bottom: BorderSide(
               color: isError
                   ? Colors.red.shade300
                   : hasConflicts
-                      ? Colors.orange.shade300
-                      : isSyncing
-                          ? Colors.blue.shade300
-                          : Colors.grey.shade300,
+                  ? Colors.orange.shade300
+                  : isSyncing
+                  ? Colors.blue.shade300
+                  : Colors.grey.shade300,
               width: 1,
             ),
           ),
@@ -70,18 +70,18 @@ class SyncIndicator extends ConsumerWidget {
               )
             else
               Icon(
-                isError 
-                    ? Icons.error_outline 
-                    : hasConflicts 
-                        ? Icons.merge 
-                        : Icons.cloud_upload,
+                isError
+                    ? Icons.error_outline
+                    : hasConflicts
+                    ? Icons.merge
+                    : Icons.cloud_upload,
                 color: isError
                     ? Colors.red.shade900
                     : hasConflicts
-                        ? Colors.orange.shade900
-                        : isSyncing
-                            ? Colors.blue.shade900
-                            : Colors.grey.shade700,
+                    ? Colors.orange.shade900
+                    : isSyncing
+                    ? Colors.blue.shade900
+                    : Colors.grey.shade700,
                 size: 20,
               ),
             const SizedBox(width: 12),
@@ -92,10 +92,10 @@ class SyncIndicator extends ConsumerWidget {
                   color: isError
                       ? Colors.red.shade900
                       : hasConflicts
-                          ? Colors.orange.shade900
-                          : isSyncing
-                              ? Colors.blue.shade900
-                              : Colors.grey.shade700,
+                      ? Colors.orange.shade900
+                      : isSyncing
+                      ? Colors.blue.shade900
+                      : Colors.grey.shade700,
                   fontSize: 14,
                   fontWeight: FontWeight.w500,
                 ),
@@ -109,11 +109,7 @@ class SyncIndicator extends ConsumerWidget {
                 child: const Text('Retry'),
               )
             else
-              Icon(
-                Icons.info_outline,
-                size: 16,
-                color: Colors.grey.shade600,
-              ),
+              Icon(Icons.info_outline, size: 16, color: Colors.grey.shade600),
           ],
         ),
       ),
@@ -150,17 +146,11 @@ class SyncIndicatorCompact extends ConsumerWidget {
               height: 12,
               child: CircularProgressIndicator(
                 strokeWidth: 2,
-                valueColor: AlwaysStoppedAnimation<Color>(
-                  Colors.blue.shade900,
-                ),
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.blue.shade900),
               ),
             )
           else
-            Icon(
-              Icons.cloud_upload,
-              color: Colors.grey.shade700,
-              size: 12,
-            ),
+            Icon(Icons.cloud_upload, color: Colors.grey.shade700, size: 12),
           const SizedBox(width: 4),
           Text(
             syncState.isSyncing ? 'Syncing' : '${syncState.queuedCount}',

@@ -111,18 +111,18 @@ class FriendRequest {
   }
 
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'fromUserId': fromUserId,
-        'fromUsername': fromUsername,
-        'fromDisplayName': fromDisplayName,
-        'fromAvatarEmoji': fromAvatarEmoji,
-        'toUserId': toUserId,
-        'toUsername': toUsername,
-        'status': status.name,
-        'createdAt': createdAt.toIso8601String(),
-        'respondedAt': respondedAt?.toIso8601String(),
-        'message': message,
-      };
+    'id': id,
+    'fromUserId': fromUserId,
+    'fromUsername': fromUsername,
+    'fromDisplayName': fromDisplayName,
+    'fromAvatarEmoji': fromAvatarEmoji,
+    'toUserId': toUserId,
+    'toUsername': toUsername,
+    'status': status.name,
+    'createdAt': createdAt.toIso8601String(),
+    'respondedAt': respondedAt?.toIso8601String(),
+    'message': message,
+  };
 
   factory FriendRequest.fromJson(Map<String, dynamic> json) {
     return FriendRequest(
@@ -164,12 +164,12 @@ class WeeklyComparison {
   });
 
   Map<String, dynamic> toJson() => {
-        'userId': userId,
-        'username': username,
-        'weeklyXP': weeklyXP,
-        'rank': rank,
-        'dailyBreakdown': dailyBreakdown.map((d) => d.toJson()).toList(),
-      };
+    'userId': userId,
+    'username': username,
+    'weeklyXP': weeklyXP,
+    'rank': rank,
+    'dailyBreakdown': dailyBreakdown.map((d) => d.toJson()).toList(),
+  };
 
   factory WeeklyComparison.fromJson(Map<String, dynamic> json) {
     return WeeklyComparison(
@@ -190,15 +190,9 @@ class DailyXP {
   final DateTime date;
   final int xp;
 
-  const DailyXP({
-    required this.date,
-    required this.xp,
-  });
+  const DailyXP({required this.date, required this.xp});
 
-  Map<String, dynamic> toJson() => {
-        'date': date.toIso8601String(),
-        'xp': xp,
-      };
+  Map<String, dynamic> toJson() => {'date': date.toIso8601String(), 'xp': xp};
 
   factory DailyXP.fromJson(Map<String, dynamic> json) {
     return DailyXP(
@@ -242,29 +236,30 @@ class FriendChallenge {
   String? get winner {
     if (status != ChallengeStatus.completed) return null;
     if (challengerProgress == null || opponentProgress == null) return null;
-    
+
     if (challengerProgress! > opponentProgress!) return challengerId;
     if (opponentProgress! > challengerProgress!) return opponentId;
     return null; // Tie
   }
 
-  bool get isTie => status == ChallengeStatus.completed && 
-                     challengerProgress == opponentProgress;
+  bool get isTie =>
+      status == ChallengeStatus.completed &&
+      challengerProgress == opponentProgress;
 
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'challengerId': challengerId,
-        'challengerName': challengerName,
-        'opponentId': opponentId,
-        'opponentName': opponentName,
-        'type': type.name,
-        'targetValue': targetValue,
-        'startDate': startDate.toIso8601String(),
-        'endDate': endDate.toIso8601String(),
-        'status': status.name,
-        'challengerProgress': challengerProgress,
-        'opponentProgress': opponentProgress,
-      };
+    'id': id,
+    'challengerId': challengerId,
+    'challengerName': challengerName,
+    'opponentId': opponentId,
+    'opponentName': opponentName,
+    'type': type.name,
+    'targetValue': targetValue,
+    'startDate': startDate.toIso8601String(),
+    'endDate': endDate.toIso8601String(),
+    'status': status.name,
+    'challengerProgress': challengerProgress,
+    'opponentProgress': opponentProgress,
+  };
 
   factory FriendChallenge.fromJson(Map<String, dynamic> json) {
     return FriendChallenge(

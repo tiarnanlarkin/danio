@@ -1,25 +1,23 @@
 import 'package:flutter/foundation.dart';
 
 enum ShopItemCategory {
-  powerUps,      // Lesson helpers, XP boosts
-  extras,        // Streak freeze, hearts refill
-  cosmetics,     // Profile themes, badges
+  powerUps, // Lesson helpers, XP boosts
+  extras, // Streak freeze, hearts refill
+  cosmetics, // Profile themes, badges
 }
 
 enum ShopItemType {
   // Power-ups
-  xpBoost,           // 2x XP for 1 hour
-  lessonHelper,      // Show hints in lessons
-  quizSecondChance,  // Retry quiz questions
-  
+  xpBoost, // 2x XP for 1 hour
+  lessonHelper, // Show hints in lessons
+  quizSecondChance, // Retry quiz questions
   // Extras
-  streakFreeze,      // Extra streak protection
-  heartsRefill,      // Refill practice hearts (if hearts system exists)
-  goalAdjust,        // Reduce daily goal temporarily
-  
+  streakFreeze, // Extra streak protection
+  heartsRefill, // Refill practice hearts (if hearts system exists)
+  goalAdjust, // Reduce daily goal temporarily
   // Cosmetics
-  profileBadge,      // Decorative badge on profile
-  tankTheme,         // Special tank background/theme
+  profileBadge, // Decorative badge on profile
+  tankTheme, // Special tank background/theme
   celebrationEffect, // Special completion animations
 }
 
@@ -32,12 +30,12 @@ class ShopItem {
   final ShopItemCategory category;
   final ShopItemType type;
   final int gemCost;
-  final bool isConsumable;       // Can be used multiple times vs. permanent
-  final int? durationHours;      // For time-based items (XP boost, etc.)
-  final int? quantity;           // For consumable stacks
-  final bool isAvailable;        // Can be toggled for seasonal items
-  final String? imageUrl;        // Optional custom image
-  final int orderIndex;          // Display order in shop
+  final bool isConsumable; // Can be used multiple times vs. permanent
+  final int? durationHours; // For time-based items (XP boost, etc.)
+  final int? quantity; // For consumable stacks
+  final bool isAvailable; // Can be toggled for seasonal items
+  final String? imageUrl; // Optional custom image
+  final int orderIndex; // Display order in shop
 
   const ShopItem({
     required this.id,
@@ -80,9 +78,7 @@ class ShopItem {
       category: ShopItemCategory.values.firstWhere(
         (e) => e.name == json['category'],
       ),
-      type: ShopItemType.values.firstWhere(
-        (e) => e.name == json['type'],
-      ),
+      type: ShopItemType.values.firstWhere((e) => e.name == json['type']),
       gemCost: json['gemCost'] as int,
       isConsumable: json['isConsumable'] as bool? ?? true,
       durationHours: json['durationHours'] as int?,
@@ -97,10 +93,10 @@ class ShopItem {
 @immutable
 class InventoryItem {
   final String itemId;
-  final int quantity;           // For consumables
-  final DateTime? expiresAt;    // For time-based items
+  final int quantity; // For consumables
+  final DateTime? expiresAt; // For time-based items
   final DateTime purchasedAt;
-  final bool isActive;          // Currently in use (for time-based items)
+  final bool isActive; // Currently in use (for time-based items)
 
   const InventoryItem({
     required this.itemId,

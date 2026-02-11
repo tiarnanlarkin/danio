@@ -68,7 +68,7 @@ class HobbyDesk extends StatelessWidget {
                   onTap: () => onItemTap?.call('filter'),
                 ),
               ),
-              
+
               // Heater
               _ItemWithTooltip(
                 label: 'Heater',
@@ -154,10 +154,7 @@ class HobbyDesk extends StatelessWidget {
               // Net
               _ItemWithTooltip(
                 label: 'Net',
-                child: NetItem(
-                  size: 40,
-                  onTap: () => onItemTap?.call('net'),
-                ),
+                child: NetItem(size: 40, onTap: () => onItemTap?.call('net')),
               ),
 
               // Bucket
@@ -222,7 +219,7 @@ class ItemDetailPopup extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final color = accentColor ?? AppColors.primary;
-    
+
     return NotebookCard(
       padding: EdgeInsets.zero,
       child: Column(
@@ -233,7 +230,9 @@ class ItemDetailPopup extends StatelessWidget {
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
               color: color.withOpacity(0.1),
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(8)),
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(8),
+              ),
             ),
             child: Row(
               children: [
@@ -244,31 +243,39 @@ class ItemDetailPopup extends StatelessWidget {
                 if (onClose != null)
                   GestureDetector(
                     onTap: onClose,
-                    child: Icon(Icons.close, size: 18, color: AppColors.textHint),
+                    child: Icon(
+                      Icons.close,
+                      size: 18,
+                      color: AppColors.textHint,
+                    ),
                   ),
               ],
             ),
           ),
-          
+
           // Content
           Padding(
             padding: const EdgeInsets.all(12),
             child: Column(
-              children: rows.map((row) => Padding(
-                padding: const EdgeInsets.symmetric(vertical: 4),
-                child: Row(
-                  children: [
-                    Text(row.label, style: AppTypography.bodySmall),
-                    const Spacer(),
-                    Text(
-                      row.value,
-                      style: AppTypography.labelLarge.copyWith(
-                        color: row.color ?? AppColors.textPrimary,
+              children: rows
+                  .map(
+                    (row) => Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 4),
+                      child: Row(
+                        children: [
+                          Text(row.label, style: AppTypography.bodySmall),
+                          const Spacer(),
+                          Text(
+                            row.value,
+                            style: AppTypography.labelLarge.copyWith(
+                              color: row.color ?? AppColors.textPrimary,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                  ],
-                ),
-              )).toList(),
+                  )
+                  .toList(),
             ),
           ),
         ],
@@ -282,11 +289,7 @@ class ItemDetailRow {
   final String value;
   final Color? color;
 
-  const ItemDetailRow({
-    required this.label,
-    required this.value,
-    this.color,
-  });
+  const ItemDetailRow({required this.label, required this.value, this.color});
 }
 
 /// Mini tank scene that sits on a shelf
@@ -367,30 +370,35 @@ class MiniTankScene extends StatelessWidget {
                       ),
                     ),
                   ),
-                  
+
                   // Simple plant shapes
                   Positioned(
                     bottom: 10,
                     left: 12,
-                    child: _SimplePlant(height: 30, color: const Color(0xFF48BB78)),
+                    child: _SimplePlant(
+                      height: 30,
+                      color: const Color(0xFF48BB78),
+                    ),
                   ),
                   Positioned(
                     bottom: 10,
                     right: 20,
-                    child: _SimplePlant(height: 24, color: const Color(0xFF68D391)),
+                    child: _SimplePlant(
+                      height: 24,
+                      color: const Color(0xFF68D391),
+                    ),
                   ),
                   Positioned(
                     bottom: 10,
                     left: width * 0.4,
-                    child: _SimplePlant(height: 20, color: const Color(0xFF9AE6B4)),
+                    child: _SimplePlant(
+                      height: 20,
+                      color: const Color(0xFF9AE6B4),
+                    ),
                   ),
 
                   // Fish silhouettes
-                  Positioned(
-                    top: 20,
-                    left: 30,
-                    child: _SimpleFish(size: 12),
-                  ),
+                  Positioned(top: 20, left: 30, child: _SimpleFish(size: 12)),
                   Positioned(
                     top: 35,
                     right: 25,
@@ -465,7 +473,9 @@ class MiniTankScene extends StatelessWidget {
             ),
             Text(
               '${volumeLitres.toStringAsFixed(0)}L',
-              style: AppTypography.bodySmall.copyWith(color: AppColors.textHint),
+              style: AppTypography.bodySmall.copyWith(
+                color: AppColors.textHint,
+              ),
             ),
           ],
         ),
@@ -558,13 +568,12 @@ class _SimpleFishPainter extends CustomPainter {
     final bodyPath = Path()
       ..moveTo(0, size.height / 2)
       ..quadraticBezierTo(
-        size.width * 0.4, 0,
-        size.width * 0.7, size.height / 2,
+        size.width * 0.4,
+        0,
+        size.width * 0.7,
+        size.height / 2,
       )
-      ..quadraticBezierTo(
-        size.width * 0.4, size.height,
-        0, size.height / 2,
-      );
+      ..quadraticBezierTo(size.width * 0.4, size.height, 0, size.height / 2);
 
     canvas.drawPath(bodyPath, paint);
 

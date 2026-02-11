@@ -24,7 +24,8 @@ class DailyStats {
     this.activitiesCompleted = const [],
   });
 
-  String get dateKey => '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
+  String get dateKey =>
+      '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
 
   Map<String, dynamic> toJson() => {
     'date': date.toIso8601String(),
@@ -43,11 +44,16 @@ class DailyStats {
       lessonsCompleted: json['lessonsCompleted'] as int? ?? 0,
       practiceMinutes: json['practiceMinutes'] as int? ?? 0,
       timeSpentSeconds: json['timeSpentSeconds'] as int? ?? 0,
-      topicXp: (json['topicXp'] as Map<String, dynamic>?)
-          ?.map((key, value) => MapEntry(key, value as int)) ?? {},
-      activitiesCompleted: (json['activitiesCompleted'] as List<dynamic>?)
-          ?.map((e) => e as String)
-          .toList() ?? [],
+      topicXp:
+          (json['topicXp'] as Map<String, dynamic>?)?.map(
+            (key, value) => MapEntry(key, value as int),
+          ) ??
+          {},
+      activitiesCompleted:
+          (json['activitiesCompleted'] as List<dynamic>?)
+              ?.map((e) => e as String)
+              .toList() ??
+          [],
     );
   }
 }
@@ -103,8 +109,11 @@ class WeeklyStats {
       peakDayXP: json['peakDayXP'] as int? ?? 0,
       peakDay: DateTime.parse(json['peakDay'] as String),
       daysActive: json['daysActive'] as int? ?? 0,
-      topicXp: (json['topicXp'] as Map<String, dynamic>?)
-          ?.map((key, value) => MapEntry(key, value as int)) ?? {},
+      topicXp:
+          (json['topicXp'] as Map<String, dynamic>?)?.map(
+            (key, value) => MapEntry(key, value as int),
+          ) ??
+          {},
     );
   }
 }
@@ -130,7 +139,8 @@ class MonthlyStats {
     this.topicXp = const {},
   });
 
-  String get monthKey => '${month.year}-${month.month.toString().padLeft(2, '0')}';
+  String get monthKey =>
+      '${month.year}-${month.month.toString().padLeft(2, '0')}';
 
   Map<String, dynamic> toJson() => {
     'month': month.toIso8601String(),
@@ -150,18 +160,17 @@ class MonthlyStats {
       avgDailyXP: (json['avgDailyXP'] as num?)?.toDouble() ?? 0.0,
       daysActive: json['daysActive'] as int? ?? 0,
       longestStreak: json['longestStreak'] as int? ?? 0,
-      topicXp: (json['topicXp'] as Map<String, dynamic>?)
-          ?.map((key, value) => MapEntry(key, value as int)) ?? {},
+      topicXp:
+          (json['topicXp'] as Map<String, dynamic>?)?.map(
+            (key, value) => MapEntry(key, value as int),
+          ) ??
+          {},
     );
   }
 }
 
 /// Trend direction for analytics insights
-enum ProgressTrend {
-  increasing,
-  stable,
-  decreasing,
-}
+enum ProgressTrend { increasing, stable, decreasing }
 
 extension ProgressTrendExt on ProgressTrend {
   String get emoji {
@@ -189,12 +198,12 @@ extension ProgressTrendExt on ProgressTrend {
 
 /// Types of analytics insights
 enum InsightType {
-  achievement,  // Milestone reached
-  improvement,  // Positive change
-  warning,      // Engagement drop
+  achievement, // Milestone reached
+  improvement, // Positive change
+  warning, // Engagement drop
   recommendation, // Suggested action
-  pattern,      // Behavioral pattern detected
-  milestone,    // Major accomplishment
+  pattern, // Behavioral pattern detected
+  milestone, // Major accomplishment
 }
 
 extension InsightTypeExt on InsightType {

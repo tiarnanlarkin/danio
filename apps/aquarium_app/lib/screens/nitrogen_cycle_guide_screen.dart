@@ -25,8 +25,12 @@ class NitrogenCycleGuideScreen extends StatelessWidget {
                       children: [
                         Icon(Icons.lightbulb, color: AppColors.info),
                         const SizedBox(width: 8),
-                        Text('What is the Nitrogen Cycle?', 
-                          style: AppTypography.headlineSmall.copyWith(color: AppColors.info)),
+                        Text(
+                          'What is the Nitrogen Cycle?',
+                          style: AppTypography.headlineSmall.copyWith(
+                            color: AppColors.info,
+                          ),
+                        ),
                       ],
                     ),
                     const SizedBox(height: 12),
@@ -50,7 +54,8 @@ class NitrogenCycleGuideScreen extends StatelessWidget {
               number: 1,
               title: 'Ammonia (NH₃)',
               subtitle: 'Toxic — burns gills, causes stress',
-              description: 'Fish waste, uneaten food, and decaying plants produce ammonia. '
+              description:
+                  'Fish waste, uneaten food, and decaying plants produce ammonia. '
                   'Even small amounts (0.25 ppm+) are harmful.',
               color: AppColors.error,
               icon: Icons.warning,
@@ -62,7 +67,8 @@ class NitrogenCycleGuideScreen extends StatelessWidget {
               number: 2,
               title: 'Nitrite (NO₂)',
               subtitle: 'Toxic — prevents oxygen absorption',
-              description: 'Nitrosomonas bacteria convert ammonia to nitrite. '
+              description:
+                  'Nitrosomonas bacteria convert ammonia to nitrite. '
                   'Still toxic but shows the cycle is progressing.',
               color: AppColors.warning,
               icon: Icons.science,
@@ -74,7 +80,8 @@ class NitrogenCycleGuideScreen extends StatelessWidget {
               number: 3,
               title: 'Nitrate (NO₃)',
               subtitle: 'Safe in low amounts — removed by water changes',
-              description: 'Nitrobacter bacteria convert nitrite to nitrate. '
+              description:
+                  'Nitrobacter bacteria convert nitrite to nitrate. '
                   'Nitrate is much less toxic and removed during water changes.',
               color: AppColors.success,
               icon: Icons.check_circle,
@@ -114,13 +121,20 @@ class NitrogenCycleGuideScreen extends StatelessWidget {
                 'Add fish slowly over several weeks',
               ],
               pros: ['Fish from day one'],
-              cons: ['Stressful for fish', 'Requires daily monitoring', 'Fish may die'],
+              cons: [
+                'Stressful for fish',
+                'Requires daily monitoring',
+                'Fish may die',
+              ],
             ),
 
             const SizedBox(height: 32),
 
             // Signs of completion
-            Text('Signs Your Tank is Cycled', style: AppTypography.headlineMedium),
+            Text(
+              'Signs Your Tank is Cycled',
+              style: AppTypography.headlineMedium,
+            ),
             const SizedBox(height: 16),
 
             Card(
@@ -131,7 +145,9 @@ class NitrogenCycleGuideScreen extends StatelessWidget {
                     _CheckItem(text: 'Ammonia reads 0 ppm'),
                     _CheckItem(text: 'Nitrite reads 0 ppm'),
                     _CheckItem(text: 'Nitrate is present (5-40 ppm)'),
-                    _CheckItem(text: 'Tank can process 2 ppm ammonia in 24 hours'),
+                    _CheckItem(
+                      text: 'Tank can process 2 ppm ammonia in 24 hours',
+                    ),
                   ],
                 ),
               ),
@@ -145,7 +161,8 @@ class NitrogenCycleGuideScreen extends StatelessWidget {
 
             _TipCard(
               icon: Icons.thermostat,
-              tip: 'Keep temperature at 26-28°C — bacteria grow faster in warmth.',
+              tip:
+                  'Keep temperature at 26-28°C — bacteria grow faster in warmth.',
             ),
             _TipCard(
               icon: Icons.air,
@@ -153,7 +170,8 @@ class NitrogenCycleGuideScreen extends StatelessWidget {
             ),
             _TipCard(
               icon: Icons.cleaning_services,
-              tip: 'Never replace all filter media at once — you\'ll lose your bacteria.',
+              tip:
+                  'Never replace all filter media at once — you\'ll lose your bacteria.',
             ),
             _TipCard(
               icon: Icons.water_drop,
@@ -161,7 +179,8 @@ class NitrogenCycleGuideScreen extends StatelessWidget {
             ),
             _TipCard(
               icon: Icons.speed,
-              tip: 'Add bacteria starter (Seachem Stability, etc.) to speed things up.',
+              tip:
+                  'Add bacteria starter (Seachem Stability, etc.) to speed things up.',
             ),
 
             const SizedBox(height: 48),
@@ -217,7 +236,10 @@ class _CycleStage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(title, style: AppTypography.labelLarge),
-                  Text(subtitle, style: AppTypography.bodySmall.copyWith(color: color)),
+                  Text(
+                    subtitle,
+                    style: AppTypography.bodySmall.copyWith(color: color),
+                  ),
                   const SizedBox(height: 8),
                   Text(description, style: AppTypography.bodyMedium),
                 ],
@@ -272,9 +294,14 @@ class _MethodCard extends StatelessWidget {
           children: [
             Row(
               children: [
-                Expanded(child: Text(title, style: AppTypography.headlineSmall)),
+                Expanded(
+                  child: Text(title, style: AppTypography.headlineSmall),
+                ),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
                   decoration: BoxDecoration(
                     color: AppColors.surfaceVariant,
                     borderRadius: BorderRadius.circular(8),
@@ -284,16 +311,25 @@ class _MethodCard extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 16),
-            ...steps.asMap().entries.map((e) => Padding(
-              padding: const EdgeInsets.only(bottom: 6),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('${e.key + 1}. ', style: AppTypography.bodyMedium.copyWith(fontWeight: FontWeight.bold)),
-                  Expanded(child: Text(e.value, style: AppTypography.bodyMedium)),
-                ],
+            ...steps.asMap().entries.map(
+              (e) => Padding(
+                padding: const EdgeInsets.only(bottom: 6),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      '${e.key + 1}. ',
+                      style: AppTypography.bodyMedium.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Expanded(
+                      child: Text(e.value, style: AppTypography.bodyMedium),
+                    ),
+                  ],
+                ),
               ),
-            )),
+            ),
             const SizedBox(height: 12),
             Row(
               children: [
@@ -301,8 +337,16 @@ class _MethodCard extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('✓ Pros', style: AppTypography.labelLarge.copyWith(color: AppColors.success, fontSize: 13)),
-                      ...pros.map((p) => Text('• $p', style: AppTypography.bodySmall)),
+                      Text(
+                        '✓ Pros',
+                        style: AppTypography.labelLarge.copyWith(
+                          color: AppColors.success,
+                          fontSize: 13,
+                        ),
+                      ),
+                      ...pros.map(
+                        (p) => Text('• $p', style: AppTypography.bodySmall),
+                      ),
                     ],
                   ),
                 ),
@@ -310,8 +354,16 @@ class _MethodCard extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('✗ Cons', style: AppTypography.labelLarge.copyWith(color: AppColors.error, fontSize: 13)),
-                      ...cons.map((c) => Text('• $c', style: AppTypography.bodySmall)),
+                      Text(
+                        '✗ Cons',
+                        style: AppTypography.labelLarge.copyWith(
+                          color: AppColors.error,
+                          fontSize: 13,
+                        ),
+                      ),
+                      ...cons.map(
+                        (c) => Text('• $c', style: AppTypography.bodySmall),
+                      ),
                     ],
                   ),
                 ),

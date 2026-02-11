@@ -11,23 +11,23 @@ class Friend {
   final String username;
   final String displayName;
   final String? avatarEmoji; // Optional emoji avatar (e.g., '🐠', '🦈')
-  
+
   // Stats
   final int totalXp;
   final int currentStreak;
   final int longestStreak;
   final String levelTitle; // 'Beginner', 'Expert', etc.
   final int currentLevel;
-  
+
   // Social
   final DateTime friendsSince;
   final DateTime? lastActiveDate;
   final bool isOnline; // Mock field for UI
-  
+
   // Achievements
   final List<String> achievements; // Achievement IDs
   final int totalAchievements;
-  
+
   const Friend({
     required this.id,
     required this.username,
@@ -56,10 +56,10 @@ class Friend {
   String get statusText {
     if (isOnline) return 'Online now';
     if (lastActiveDate == null) return 'Never active';
-    
+
     final now = DateTime.now();
     final diff = now.difference(lastActiveDate!);
-    
+
     if (diff.inMinutes < 60) {
       return '${diff.inMinutes}m ago';
     } else if (diff.inHours < 24) {
@@ -106,21 +106,21 @@ class Friend {
   }
 
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'username': username,
-        'displayName': displayName,
-        'avatarEmoji': avatarEmoji,
-        'totalXp': totalXp,
-        'currentStreak': currentStreak,
-        'longestStreak': longestStreak,
-        'levelTitle': levelTitle,
-        'currentLevel': currentLevel,
-        'friendsSince': friendsSince.toIso8601String(),
-        'lastActiveDate': lastActiveDate?.toIso8601String(),
-        'isOnline': isOnline,
-        'achievements': achievements,
-        'totalAchievements': totalAchievements,
-      };
+    'id': id,
+    'username': username,
+    'displayName': displayName,
+    'avatarEmoji': avatarEmoji,
+    'totalXp': totalXp,
+    'currentStreak': currentStreak,
+    'longestStreak': longestStreak,
+    'levelTitle': levelTitle,
+    'currentLevel': currentLevel,
+    'friendsSince': friendsSince.toIso8601String(),
+    'lastActiveDate': lastActiveDate?.toIso8601String(),
+    'isOnline': isOnline,
+    'achievements': achievements,
+    'totalAchievements': totalAchievements,
+  };
 
   factory Friend.fromJson(Map<String, dynamic> json) {
     return Friend(
@@ -139,7 +139,10 @@ class Friend {
           : null,
       isOnline: json['isOnline'] as bool? ?? false,
       achievements:
-          (json['achievements'] as List<dynamic>?)?.map((e) => e as String).toList() ?? [],
+          (json['achievements'] as List<dynamic>?)
+              ?.map((e) => e as String)
+              .toList() ??
+          [],
       totalAchievements: json['totalAchievements'] as int? ?? 0,
     );
   }
@@ -257,16 +260,16 @@ class FriendActivity {
   }
 
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'friendId': friendId,
-        'friendUsername': friendUsername,
-        'friendDisplayName': friendDisplayName,
-        'friendAvatarEmoji': friendAvatarEmoji,
-        'type': type.name,
-        'description': description,
-        'xpEarned': xpEarned,
-        'timestamp': timestamp.toIso8601String(),
-      };
+    'id': id,
+    'friendId': friendId,
+    'friendUsername': friendUsername,
+    'friendDisplayName': friendDisplayName,
+    'friendAvatarEmoji': friendAvatarEmoji,
+    'type': type.name,
+    'description': description,
+    'xpEarned': xpEarned,
+    'timestamp': timestamp.toIso8601String(),
+  };
 
   factory FriendActivity.fromJson(Map<String, dynamic> json) {
     return FriendActivity(
@@ -328,14 +331,14 @@ class FriendEncouragement {
   }
 
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'fromUserId': fromUserId,
-        'toUserId': toUserId,
-        'emoji': emoji,
-        'message': message,
-        'timestamp': timestamp.toIso8601String(),
-        'isRead': isRead,
-      };
+    'id': id,
+    'fromUserId': fromUserId,
+    'toUserId': toUserId,
+    'emoji': emoji,
+    'message': message,
+    'timestamp': timestamp.toIso8601String(),
+    'isRead': isRead,
+  };
 
   factory FriendEncouragement.fromJson(Map<String, dynamic> json) {
     return FriendEncouragement(

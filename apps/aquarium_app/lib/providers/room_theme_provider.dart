@@ -3,9 +3,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../theme/room_themes.dart';
 
 /// Provider for room visual theme selection
-final roomThemeProvider = StateNotifierProvider<RoomThemeNotifier, RoomThemeType>((ref) {
-  return RoomThemeNotifier();
-});
+final roomThemeProvider =
+    StateNotifierProvider<RoomThemeNotifier, RoomThemeType>((ref) {
+      return RoomThemeNotifier();
+    });
 
 /// Convenience provider to get the actual theme data
 final currentRoomThemeProvider = Provider<RoomTheme>((ref) {

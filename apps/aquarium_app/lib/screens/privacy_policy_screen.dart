@@ -45,14 +45,21 @@ class PrivacyPolicyScreen extends StatelessWidget {
                       color: AppColors.primary.withOpacity(0.2),
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    child: const Icon(Icons.shield, color: AppColors.primary, size: 32),
+                    child: const Icon(
+                      Icons.shield,
+                      color: AppColors.primary,
+                      size: 32,
+                    ),
                   ),
                   const SizedBox(width: 16),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Privacy First', style: AppTypography.headlineSmall),
+                        Text(
+                          'Privacy First',
+                          style: AppTypography.headlineSmall,
+                        ),
                         const SizedBox(height: 4),
                         Text(
                           'Your data stays on your device',
@@ -163,10 +170,26 @@ class PrivacyPolicyScreen extends StatelessWidget {
               'Since all data is stored locally on your device, you have complete control:',
             ),
 
-            _buildRightCard('Access', 'View all your data anytime within the app', Icons.visibility),
-            _buildRightCard('Export', 'Use the Backup feature to export all data to a JSON file', Icons.file_download),
-            _buildRightCard('Delete', 'Delete individual items, clear all data, or uninstall the app', Icons.delete),
-            _buildRightCard('Portability', 'Backup files are in standard JSON format', Icons.sync_alt),
+            _buildRightCard(
+              'Access',
+              'View all your data anytime within the app',
+              Icons.visibility,
+            ),
+            _buildRightCard(
+              'Export',
+              'Use the Backup feature to export all data to a JSON file',
+              Icons.file_download,
+            ),
+            _buildRightCard(
+              'Delete',
+              'Delete individual items, clear all data, or uninstall the app',
+              Icons.delete,
+            ),
+            _buildRightCard(
+              'Portability',
+              'Backup files are in standard JSON format',
+              Icons.sync_alt,
+            ),
 
             _buildSection(
               'Data Security',
@@ -246,7 +269,11 @@ class PrivacyPolicyScreen extends StatelessWidget {
         children: [
           Row(
             children: [
-              const Icon(Icons.check_circle, color: AppColors.success, size: 24),
+              const Icon(
+                Icons.check_circle,
+                color: AppColors.success,
+                size: 24,
+              ),
               const SizedBox(width: 8),
               Text('Summary (TL;DR)', style: AppTypography.labelLarge),
             ],
@@ -270,12 +297,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
         children: [
           const Icon(Icons.check, color: AppColors.success, size: 18),
           const SizedBox(width: 8),
-          Expanded(
-            child: Text(
-              text,
-              style: AppTypography.bodyMedium,
-            ),
-          ),
+          Expanded(child: Text(text, style: AppTypography.bodyMedium)),
         ],
       ),
     );
@@ -289,10 +311,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
         children: [
           Text(title, style: AppTypography.headlineSmall),
           const SizedBox(height: 8),
-          Text(
-            content,
-            style: AppTypography.bodyMedium.copyWith(height: 1.6),
-          ),
+          Text(content, style: AppTypography.bodyMedium.copyWith(height: 1.6)),
         ],
       ),
     );
@@ -314,7 +333,9 @@ class PrivacyPolicyScreen extends StatelessWidget {
                   child: Icon(
                     isNegative ? Icons.close : Icons.circle,
                     size: isNegative ? 16 : 8,
-                    color: isNegative ? AppColors.error : AppColors.textSecondary,
+                    color: isNegative
+                        ? AppColors.error
+                        : AppColors.textSecondary,
                   ),
                 ),
                 const SizedBox(width: 12),
@@ -492,7 +513,10 @@ class PrivacyPolicyScreen extends StatelessWidget {
   }
 
   void _openOnlineVersion() async {
-    final url = Uri.parse('https://tiarnanlarkin.github.io/aquarium-app-privacy/');
+    // GitHub Pages URL once repo is pushed
+    final url = Uri.parse(
+      'https://tiarnanlarkin.github.io/Aquarium-App-Dev/docs/privacy-policy.html',
+    );
     if (await canLaunchUrl(url)) {
       await launchUrl(url, mode: LaunchMode.externalApplication);
     }

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
@@ -20,9 +21,10 @@ import '../services/offline_aware_service.dart';
 const _uuid = Uuid();
 
 /// Provider for user profile management
-final userProfileProvider = StateNotifierProvider<UserProfileNotifier, AsyncValue<UserProfile?>>((ref) {
-  return UserProfileNotifier(ref);
-});
+final userProfileProvider =
+    StateNotifierProvider<UserProfileNotifier, AsyncValue<UserProfile?>>((ref) {
+      return UserProfileNotifier(ref);
+    });
 
 class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
   UserProfileNotifier(this.ref) : super(const AsyncValue.loading()) {
@@ -36,7 +38,7 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
     try {
       final prefs = await SharedPreferences.getInstance();
       final json = prefs.getString(_key);
-      
+
       if (json != null) {
         final profile = UserProfile.fromJson(jsonDecode(json));
         state = AsyncValue.data(profile);
@@ -71,7 +73,7 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
         createdAt: now,
         updatedAt: now,
       );
-      
+
       await _save(profile);
       state = AsyncValue.data(profile);
     } catch (e, st) {
@@ -107,7 +109,8 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
       dailyXpGoal: dailyXpGoal ?? current.dailyXpGoal,
       inventory: inventory ?? current.inventory,
       dailyTipsEnabled: dailyTipsEnabled ?? current.dailyTipsEnabled,
-      streakRemindersEnabled: streakRemindersEnabled ?? current.streakRemindersEnabled,
+      streakRemindersEnabled:
+          streakRemindersEnabled ?? current.streakRemindersEnabled,
       hasSeenTutorial: hasSeenTutorial ?? current.hasSeenTutorial,
       reminderTime: reminderTime ?? current.reminderTime,
       morningReminderTime: morningReminderTime ?? current.morningReminderTime,
@@ -119,16 +122,16 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
     await _save(updated);
     state = AsyncValue.data(updated);
   }
-  
+
   /// Get today's XP progress
   int getTodayXp() {
     final current = state.value;
     if (current == null) return 0;
-    
+
     final today = _formatDate(DateTime.now());
     return current.dailyXpHistory[today] ?? 0;
   }
-  
+
   /// Format date as YYYY-MM-DD for dailyXpHistory key
   String _formatDate(DateTime date) {
     return '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
@@ -148,7 +151,7 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
 
       // Use offline-aware service to handle XP award
       final offlineService = ref.read(offlineAwareServiceProvider);
-      
+
       await offlineService.awardXp(
         amount: xp,
         localUpdate: () async {
@@ -163,7 +166,7 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
 
           final now = DateTime.now();
           final today = _normalizeDate(now);
-          
+
           int newStreak = current!.currentStreak;
           int longestStreak = current!.longestStreak;
           bool usedFreeze = false;
@@ -178,7 +181,9 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
             } else if (dayDifference == 1) {
               // Consecutive day - increment streak
               newStreak = current!.currentStreak + 1;
-            } else if (dayDifference == 2 && current!.hasStreakFreeze && !current!.streakFreezeUsedThisWeek) {
+            } else if (dayDifference == 2 &&
+                current!.hasStreakFreeze &&
+                !current!.streakFreezeUsedThisWeek) {
               // 1 day gap + freeze available = use freeze to save streak
               newStreak = current!.currentStreak + 1; // Continue streak
               usedFreeze = true;
@@ -200,12 +205,15 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
           if (newStreak > current!.currentStreak) {
             bonusXp = XpRewards.dailyStreak;
           }
-          
+
           // Update daily XP history
           final todayKey = _formatDate(today);
           final previousTodayXp = current!.dailyXpHistory[todayKey] ?? 0;
           final todayXp = previousTodayXp + xp + bonusXp;
-          final updatedHistory = {...current!.dailyXpHistory, todayKey: todayXp};
+          final updatedHistory = {
+            ...current!.dailyXpHistory,
+            todayKey: todayXp,
+          };
 
           final updated = current!.copyWith(
             totalXp: current!.totalXp + xp + bonusXp,
@@ -214,7 +222,9 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
             lastActivityDate: now,
             dailyXpHistory: updatedHistory,
             hasStreakFreeze: usedFreeze ? false : current!.hasStreakFreeze,
-            streakFreezeUsedDate: usedFreeze ? now : current!.streakFreezeUsedDate,
+            streakFreezeUsedDate: usedFreeze
+                ? now
+                : current!.streakFreezeUsedDate,
             updatedAt: now,
           );
 
@@ -237,7 +247,8 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
           }
 
           // Daily goal completion gems (first time reaching goal today)
-          if (previousTodayXp < current!.dailyXpGoal && todayXp >= current!.dailyXpGoal) {
+          if (previousTodayXp < current!.dailyXpGoal &&
+              todayXp >= current!.dailyXpGoal) {
             await gemsNotifier.addGems(
               amount: GemRewards.dailyGoalMet,
               reason: GemEarnReason.dailyGoalMet,
@@ -260,7 +271,7 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
   /// Add XP and update daily progress
   Future<void> addXp(int amount) async {
     if (amount <= 0) return;
-    
+
     final current = state.value;
     if (current == null) return;
 
@@ -307,18 +318,20 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
   bool _isSameWeek(DateTime date1, DateTime date2) {
     final monday1 = _getMondayOfWeek(date1);
     final monday2 = _getMondayOfWeek(date2);
-    
+
     return monday1.year == monday2.year &&
-           monday1.month == monday2.month &&
-           monday1.day == monday2.day;
+        monday1.month == monday2.month &&
+        monday1.day == monday2.day;
   }
 
   /// Get the Monday of the week containing the given date
   DateTime _getMondayOfWeek(DateTime date) {
     final daysFromMonday = date.weekday - 1;
-    return DateTime(date.year, date.month, date.day).subtract(
-      Duration(days: daysFromMonday),
-    );
+    return DateTime(
+      date.year,
+      date.month,
+      date.day,
+    ).subtract(Duration(days: daysFromMonday));
   }
 
   /// Determine league based on weekly XP
@@ -349,7 +362,9 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
       );
 
       // Update lesson progress map
-      final updatedProgress = Map<String, LessonProgress>.from(current.lessonProgress);
+      final updatedProgress = Map<String, LessonProgress>.from(
+        current.lessonProgress,
+      );
       updatedProgress[lessonId] = progress;
 
       // Update today's XP in history
@@ -390,7 +405,7 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
 
       // Record activity for streak tracking
       await recordActivity(xp: 0); // XP already added above
-      
+
       // AUTO-SEED REVIEW CARDS: Create spaced repetition cards for this lesson
       await _createReviewCardsForLesson(lessonId);
     } catch (e, st) {
@@ -398,21 +413,23 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
       rethrow;
     }
   }
-  
+
   /// Create spaced repetition review cards for a completed lesson
   /// Seeds 3-5 cards from key lesson concepts
   Future<void> _createReviewCardsForLesson(String lessonId) async {
     try {
       // Import is at top of file, access via ref
-      final spacedRepetitionNotifier = ref.read(spacedRepetitionProvider.notifier);
-      
+      final spacedRepetitionNotifier = ref.read(
+        spacedRepetitionProvider.notifier,
+      );
+
       // Find the lesson in lesson content
       final lesson = _findLessonById(lessonId);
       if (lesson == null) return; // Lesson not found, skip
-      
+
       // Extract reviewable concepts from lesson
       final concepts = _extractReviewableConceptsFromLesson(lesson);
-      
+
       // Create a review card for each concept (3-5 cards per lesson)
       for (final concept in concepts.take(5)) {
         await spacedRepetitionNotifier.createCard(
@@ -423,10 +440,12 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
     } catch (e) {
       // Don't fail lesson completion if card creation fails
       // Just log and continue
-      print('Warning: Failed to create review cards for lesson $lessonId: $e');
+      debugPrint(
+        'Warning: Failed to create review cards for lesson $lessonId: $e',
+      );
     }
   }
-  
+
   /// Find a lesson by ID from all learning paths
   Lesson? _findLessonById(String lessonId) {
     // Import LessonContent at top
@@ -439,12 +458,12 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
     }
     return null;
   }
-  
+
   /// Extract 3-5 reviewable concepts from a lesson
   /// Creates concept IDs from key points, tips, warnings, and quiz questions
   List<String> _extractReviewableConceptsFromLesson(Lesson lesson) {
     final concepts = <String>[];
-    
+
     // Extract key points, tips, and warnings from sections
     for (var i = 0; i < lesson.sections.length; i++) {
       final section = lesson.sections[i];
@@ -455,14 +474,14 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
         concepts.add('${lesson.id}_section_$i');
       }
     }
-    
+
     // Extract quiz questions
     if (lesson.quiz != null) {
       for (var i = 0; i < lesson.quiz!.questions.length; i++) {
         concepts.add('${lesson.id}_quiz_$i');
       }
     }
-    
+
     // Return 3-5 concepts (prioritize key points and quiz questions)
     return concepts.take(5).toList();
   }
@@ -484,7 +503,9 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
     ];
 
     // Create lesson progress entries for skipped lessons
-    final updatedProgress = Map<String, LessonProgress>.from(current.lessonProgress);
+    final updatedProgress = Map<String, LessonProgress>.from(
+      current.lessonProgress,
+    );
     for (final lessonId in lessonsToSkip) {
       if (!updatedProgress.containsKey(lessonId)) {
         updatedProgress[lessonId] = LessonProgress(
@@ -538,7 +559,9 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
 
     // Update lesson progress with review
     final updatedProgressEntry = progress.reviewed();
-    final updatedProgress = Map<String, LessonProgress>.from(current.lessonProgress);
+    final updatedProgress = Map<String, LessonProgress>.from(
+      current.lessonProgress,
+    );
     updatedProgress[lessonId] = updatedProgressEntry;
 
     // Update today's XP in history
@@ -707,7 +730,7 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
     // Add to completed stories if newly completed
     List<String> completedStories = List.from(current.completedStories);
     bool newlyCompleted = false;
-    
+
     if (isCompleted && !completedStories.contains(storyId)) {
       completedStories.add(storyId);
       newlyCompleted = true;

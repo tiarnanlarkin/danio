@@ -13,11 +13,7 @@ import '../widgets/skeleton_loader.dart';
 import '../widgets/error_state.dart';
 import 'story_player_screen.dart';
 
-enum StorySortOrder {
-  newest,
-  difficulty,
-  completion,
-}
+enum StorySortOrder { newest, difficulty, completion }
 
 class StoriesScreen extends ConsumerStatefulWidget {
   const StoriesScreen({super.key});
@@ -44,9 +40,7 @@ class _StoriesScreenState extends ConsumerState<StoriesScreen> {
             flexibleSpace: FlexibleSpaceBar(
               title: const Text(
                 '📖 Stories',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                ),
+                style: TextStyle(fontWeight: FontWeight.bold),
               ),
               background: Container(
                 decoration: BoxDecoration(
@@ -66,9 +60,7 @@ class _StoriesScreenState extends ConsumerState<StoriesScreen> {
                     Positioned.fill(
                       child: Opacity(
                         opacity: 0.1,
-                        child: CustomPaint(
-                          painter: StoryPatternPainter(),
-                        ),
+                        child: CustomPaint(painter: StoryPatternPainter()),
                       ),
                     ),
                     // Subtitle
@@ -78,10 +70,7 @@ class _StoriesScreenState extends ConsumerState<StoriesScreen> {
                       right: 16,
                       child: Text(
                         'Learn through interactive scenarios',
-                        style: TextStyle(
-                          color: Colors.white70,
-                          fontSize: 14,
-                        ),
+                        style: TextStyle(color: Colors.white70, fontSize: 14),
                       ),
                     ),
                   ],
@@ -142,9 +131,7 @@ class _StoriesScreenState extends ConsumerState<StoriesScreen> {
         ),
         ...StoryDifficulty.values.map((difficulty) {
           return FilterChip(
-            label: Text(
-              '${difficulty.emoji} ${difficulty.displayName}',
-            ),
+            label: Text('${difficulty.emoji} ${difficulty.displayName}'),
             selected: _selectedDifficulty == difficulty,
             onSelected: (selected) {
               setState(() {
@@ -160,12 +147,7 @@ class _StoriesScreenState extends ConsumerState<StoriesScreen> {
   Widget _buildSortDropdown() {
     return Row(
       children: [
-        const Text(
-          'Sort by:',
-          style: TextStyle(
-            fontWeight: FontWeight.w500,
-          ),
-        ),
+        const Text('Sort by:', style: TextStyle(fontWeight: FontWeight.w500)),
         const SizedBox(width: 12),
         DropdownButton<StorySortOrder>(
           value: _sortOrder,
@@ -239,41 +221,36 @@ class _StoriesScreenState extends ConsumerState<StoriesScreen> {
 
     if (sortedStories.isEmpty) {
       return const SliverFillRemaining(
-        child: Center(
-          child: Text('No stories found'),
-        ),
+        child: Center(child: Text('No stories found')),
       );
     }
 
     return SliverPadding(
       padding: const EdgeInsets.all(16),
       sliver: SliverList(
-        delegate: SliverChildBuilderDelegate(
-          (context, index) {
-            final story = sortedStories[index];
-            final isUnlocked = story.isUnlocked(
-              profile,
-              profile.completedStories,
-            );
-            final isCompleted = profile.completedStories.contains(story.id);
-            final storyProgress = profile.storyProgress[story.id];
-            final hasProgress = storyProgress != null;
+        delegate: SliverChildBuilderDelegate((context, index) {
+          final story = sortedStories[index];
+          final isUnlocked = story.isUnlocked(
+            profile,
+            profile.completedStories,
+          );
+          final isCompleted = profile.completedStories.contains(story.id);
+          final storyProgress = profile.storyProgress[story.id];
+          final hasProgress = storyProgress != null;
 
-            return Padding(
-              padding: const EdgeInsets.only(bottom: 16),
-              child: StoryCard(
-                story: story,
-                isUnlocked: isUnlocked,
-                isCompleted: isCompleted,
-                hasProgress: hasProgress,
-                onTap: isUnlocked
-                    ? () => _navigateToStory(context, story.id)
-                    : null,
-              ),
-            );
-          },
-          childCount: sortedStories.length,
-        ),
+          return Padding(
+            padding: const EdgeInsets.only(bottom: 16),
+            child: StoryCard(
+              story: story,
+              isUnlocked: isUnlocked,
+              isCompleted: isCompleted,
+              hasProgress: hasProgress,
+              onTap: isUnlocked
+                  ? () => _navigateToStory(context, story.id)
+                  : null,
+            ),
+          );
+        }, childCount: sortedStories.length),
       ),
     );
   }
@@ -336,8 +313,9 @@ class StoryCard extends StatelessWidget {
                       width: 80,
                       height: 80,
                       decoration: BoxDecoration(
-                        color: _getDifficultyColor(story.difficulty)
-                            .withOpacity(0.1),
+                        color: _getDifficultyColor(
+                          story.difficulty,
+                        ).withOpacity(0.1),
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Center(
@@ -436,8 +414,8 @@ class StoryCard extends StatelessWidget {
                           isCompleted
                               ? 'Replay'
                               : hasProgress
-                                  ? 'Resume'
-                                  : 'Start',
+                              ? 'Resume'
+                              : 'Start',
                           style: const TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.bold,
@@ -489,25 +467,16 @@ class StoryCard extends StatelessWidget {
     required Color color,
   }) {
     return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 10,
-        vertical: 6,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       decoration: BoxDecoration(
         color: color.withOpacity(0.1),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: color.withOpacity(0.3),
-        ),
+        border: Border.all(color: color.withOpacity(0.3)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(
-            icon,
-            size: 14,
-            color: _getColorShade(color),
-          ),
+          Icon(icon, size: 14, color: _getColorShade(color)),
           const SizedBox(width: 4),
           Text(
             label,
@@ -566,15 +535,8 @@ class StoryPatternPainter extends CustomPainter {
         final y = (j * size.height / 2) + 20;
 
         // Simple book shape
-        canvas.drawRect(
-          Rect.fromLTWH(x, y, 30, 40),
-          paint,
-        );
-        canvas.drawLine(
-          Offset(x + 15, y),
-          Offset(x + 15, y + 40),
-          paint,
-        );
+        canvas.drawRect(Rect.fromLTWH(x, y, 30, 40), paint);
+        canvas.drawLine(Offset(x + 15, y), Offset(x + 15, y + 40), paint);
       }
     }
   }

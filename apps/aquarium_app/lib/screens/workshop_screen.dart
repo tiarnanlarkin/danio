@@ -11,13 +11,13 @@ import 'cost_tracker_screen.dart';
 
 /// Workshop colors - practical maker space theme
 class WorkshopColors {
-  static const background1 = Color(0xFF5D4E37);  // Warm brown
-  static const background2 = Color(0xFF4A3F2E);  // Darker brown
-  static const background3 = Color(0xFF3D3425);  // Deep brown
-  static const accent = Color(0xFFA0AEC0);       // Steel blue
-  static const accentWarm = Color(0xFFD4A574);   // Warm gold
-  static const wood = Color(0xFF7A6548);         // Light wood
-  static const metal = Color(0xFF6B7280);        // Steel gray
+  static const background1 = Color(0xFF5D4E37); // Warm brown
+  static const background2 = Color(0xFF4A3F2E); // Darker brown
+  static const background3 = Color(0xFF3D3425); // Deep brown
+  static const accent = Color(0xFFA0AEC0); // Steel blue
+  static const accentWarm = Color(0xFFD4A574); // Warm gold
+  static const wood = Color(0xFF7A6548); // Light wood
+  static const metal = Color(0xFF6B7280); // Steel gray
   static const glassCard = Color(0x20FFFFFF);
   static const glassBorder = Color(0x30FFFFFF);
   static const textPrimary = Color(0xFFF5F5F5);
@@ -47,9 +47,7 @@ class WorkshopScreen extends ConsumerWidget {
         child: CustomScrollView(
           slivers: [
             // Header
-            SliverToBoxAdapter(
-              child: _WorkshopHeader(),
-            ),
+            SliverToBoxAdapter(child: _WorkshopHeader()),
 
             // Tool cards
             SliverPadding(
@@ -76,7 +74,9 @@ class WorkshopScreen extends ConsumerWidget {
                     color: Colors.green.shade400,
                     onTap: () => Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (_) => const Co2CalculatorScreen()),
+                      MaterialPageRoute(
+                        builder: (_) => const Co2CalculatorScreen(),
+                      ),
                     ),
                   ),
                   _ToolCard(
@@ -86,7 +86,9 @@ class WorkshopScreen extends ConsumerWidget {
                     color: Colors.purple.shade300,
                     onTap: () => Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (_) => const DosingCalculatorScreen()),
+                      MaterialPageRoute(
+                        builder: (_) => const DosingCalculatorScreen(),
+                      ),
                     ),
                   ),
                   _ToolCard(
@@ -96,7 +98,9 @@ class WorkshopScreen extends ConsumerWidget {
                     color: Colors.orange.shade400,
                     onTap: () => Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (_) => const CompatibilityCheckerScreen()),
+                      MaterialPageRoute(
+                        builder: (_) => const CompatibilityCheckerScreen(),
+                      ),
                     ),
                   ),
                   _ToolCard(
@@ -113,7 +117,9 @@ class WorkshopScreen extends ConsumerWidget {
                     color: Colors.teal.shade400,
                     onTap: () => Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (_) => const CostTrackerScreen()),
+                      MaterialPageRoute(
+                        builder: (_) => const CostTrackerScreen(),
+                      ),
                     ),
                   ),
                 ]),
@@ -121,14 +127,10 @@ class WorkshopScreen extends ConsumerWidget {
             ),
 
             // Quick conversions section
-            SliverToBoxAdapter(
-              child: _QuickConversions(),
-            ),
+            SliverToBoxAdapter(child: _QuickConversions()),
 
             // Bottom padding for navigation bar
-            const SliverToBoxAdapter(
-              child: SizedBox(height: 100),
-            ),
+            const SliverToBoxAdapter(child: SizedBox(height: 100)),
           ],
         ),
       ),
@@ -403,11 +405,17 @@ class _VolumeCalculatorSheetState extends State<_VolumeCalculatorSheet> {
                 children: const [
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 12),
-                    child: Text('cm', style: TextStyle(color: WorkshopColors.textSecondary)),
+                    child: Text(
+                      'cm',
+                      style: TextStyle(color: WorkshopColors.textSecondary),
+                    ),
                   ),
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 12),
-                    child: Text('in', style: TextStyle(color: WorkshopColors.textSecondary)),
+                    child: Text(
+                      'in',
+                      style: TextStyle(color: WorkshopColors.textSecondary),
+                    ),
                   ),
                 ],
               ),

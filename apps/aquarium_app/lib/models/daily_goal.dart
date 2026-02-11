@@ -2,7 +2,6 @@
 /// Tracks progress toward daily XP goals and manages streak logic
 library;
 
-
 import 'package:flutter/foundation.dart';
 
 /// Represents the daily goal progress for a specific date
@@ -55,9 +54,8 @@ class DailyGoal {
     final dateKey = _formatDateKey(date);
     final earnedXp = dailyXpHistory[dateKey] ?? 0;
     final now = DateTime.now();
-    final isToday = date.year == now.year &&
-        date.month == now.month &&
-        date.day == now.day;
+    final isToday =
+        date.year == now.year && date.month == now.month && date.day == now.day;
 
     return DailyGoal(
       date: date,
@@ -91,11 +89,13 @@ class DailyGoal {
 
     for (int i = days - 1; i >= 0; i--) {
       final date = now.subtract(Duration(days: i));
-      goals.add(DailyGoal.fromUserProfile(
-        date: date,
-        dailyXpGoal: dailyXpGoal,
-        dailyXpHistory: dailyXpHistory,
-      ));
+      goals.add(
+        DailyGoal.fromUserProfile(
+          date: date,
+          dailyXpGoal: dailyXpGoal,
+          dailyXpHistory: dailyXpHistory,
+        ),
+      );
     }
 
     return goals;

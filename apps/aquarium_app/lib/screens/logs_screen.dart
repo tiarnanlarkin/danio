@@ -56,7 +56,8 @@ class _LogsScreenState extends ConsumerState<LogsScreen> {
               return EmptyState(
                 icon: Icons.list_alt,
                 title: 'No logs yet',
-                message: 'Start logging water tests, maintenance, and events to track your tank\'s history',
+                message:
+                    'Start logging water tests, maintenance, and events to track your tank\'s history',
                 actionLabel: 'Add Log Entry',
                 onAction: () => Navigator.push(
                   context,
@@ -96,7 +97,9 @@ class _LogsScreenState extends ConsumerState<LogsScreen> {
                       margin: EdgeInsets.zero,
                       child: ListTile(
                         leading: CircleAvatar(
-                          backgroundColor: _getLogColor(log.type).withOpacity(0.2),
+                          backgroundColor: _getLogColor(
+                            log.type,
+                          ).withOpacity(0.2),
                           child: Icon(
                             _getLogIcon(log.type),
                             color: _getLogColor(log.type),
@@ -104,12 +107,19 @@ class _LogsScreenState extends ConsumerState<LogsScreen> {
                           ),
                         ),
                         title: Text(_titleFor(log)),
-                        subtitle: Text(DateFormat('MMM d, yyyy  •  h:mm a').format(log.timestamp)),
+                        subtitle: Text(
+                          DateFormat(
+                            'MMM d, yyyy  •  h:mm a',
+                          ).format(log.timestamp),
+                        ),
                         trailing: const Icon(Icons.chevron_right),
                         onTap: () => Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (_) => LogDetailScreen(tankId: widget.tankId, logId: log.id),
+                            builder: (_) => LogDetailScreen(
+                              tankId: widget.tankId,
+                              logId: log.id,
+                            ),
                           ),
                         ),
                       ),
@@ -137,9 +147,22 @@ class _LogsScreenState extends ConsumerState<LogsScreen> {
     final range = _dateRange;
     if (range != null) {
       // Inclusive end (by extending to end-of-day).
-      final start = DateTime(range.start.year, range.start.month, range.start.day);
-      final end = DateTime(range.end.year, range.end.month, range.end.day, 23, 59, 59, 999);
-      if (log.timestamp.isBefore(start) || log.timestamp.isAfter(end)) return false;
+      final start = DateTime(
+        range.start.year,
+        range.start.month,
+        range.start.day,
+      );
+      final end = DateTime(
+        range.end.year,
+        range.end.month,
+        range.end.day,
+        23,
+        59,
+        59,
+        999,
+      );
+      if (log.timestamp.isBefore(start) || log.timestamp.isAfter(end))
+        return false;
     }
 
     return true;
@@ -166,7 +189,8 @@ class _LogsScreenState extends ConsumerState<LogsScreen> {
         return StatefulBuilder(
           builder: (ctx, setModalState) {
             final hasChanges =
-                workingRange != initialRange || !setEquals(workingTypes, initialTypes);
+                workingRange != initialRange ||
+                !setEquals(workingTypes, initialTypes);
 
             return SafeArea(
               child: Padding(
@@ -178,7 +202,10 @@ class _LogsScreenState extends ConsumerState<LogsScreen> {
                     Row(
                       children: [
                         Expanded(
-                          child: Text('Filters', style: AppTypography.headlineSmall),
+                          child: Text(
+                            'Filters',
+                            style: AppTypography.headlineSmall,
+                          ),
                         ),
                         TextButton(
                           onPressed: () {
@@ -224,7 +251,9 @@ class _LogsScreenState extends ConsumerState<LogsScreen> {
                         final picked = await showDateRangePicker(
                           context: ctx,
                           firstDate: DateTime(2000),
-                          lastDate: DateTime.now().add(const Duration(days: 365)),
+                          lastDate: DateTime.now().add(
+                            const Duration(days: 365),
+                          ),
                           initialDateRange: workingRange,
                         );
                         if (picked != null) {

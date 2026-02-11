@@ -11,7 +11,8 @@ final connectivityProvider = StreamProvider<List<ConnectivityResult>>((ref) {
 final isOnlineProvider = Provider<bool>((ref) {
   final connectivity = ref.watch(connectivityProvider);
   return connectivity.when(
-    data: (results) => results.any((result) => result != ConnectivityResult.none),
+    data: (results) =>
+        results.any((result) => result != ConnectivityResult.none),
     loading: () => true, // Assume online while loading
     error: (_, __) => true, // Assume online on error
   );
@@ -37,19 +38,12 @@ class OfflineIndicator extends ConsumerWidget {
       decoration: BoxDecoration(
         color: Colors.orange.shade100,
         border: Border(
-          bottom: BorderSide(
-            color: Colors.orange.shade300,
-            width: 1,
-          ),
+          bottom: BorderSide(color: Colors.orange.shade300, width: 1),
         ),
       ),
       child: Row(
         children: [
-          Icon(
-            Icons.wifi_off,
-            color: Colors.orange.shade900,
-            size: 20,
-          ),
+          Icon(Icons.wifi_off, color: Colors.orange.shade900, size: 20),
           const SizedBox(width: 12),
           Expanded(
             child: Text(
@@ -88,11 +82,7 @@ class OfflineIndicatorCompact extends ConsumerWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(
-            Icons.wifi_off,
-            color: Colors.orange.shade900,
-            size: 14,
-          ),
+          Icon(Icons.wifi_off, color: Colors.orange.shade900, size: 14),
           const SizedBox(width: 4),
           Text(
             'Offline',

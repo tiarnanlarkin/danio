@@ -32,7 +32,10 @@ class VacationGuideScreen extends StatelessWidget {
 
           const SizedBox(height: 24),
 
-          Text('How Long Can Fish Go Without Food?', style: AppTypography.headlineMedium),
+          Text(
+            'How Long Can Fish Go Without Food?',
+            style: AppTypography.headlineMedium,
+          ),
           const SizedBox(height: 16),
 
           Card(
@@ -40,17 +43,41 @@ class VacationGuideScreen extends StatelessWidget {
               padding: const EdgeInsets.all(16),
               child: Column(
                 children: [
-                  _DurationRow(fish: 'Adult tropical fish', duration: '1-2 weeks', notes: 'Healthy adults handle fasting well'),
+                  _DurationRow(
+                    fish: 'Adult tropical fish',
+                    duration: '1-2 weeks',
+                    notes: 'Healthy adults handle fasting well',
+                  ),
                   const Divider(),
-                  _DurationRow(fish: 'Goldfish', duration: '2 weeks+', notes: 'Very resilient, slow metabolism'),
+                  _DurationRow(
+                    fish: 'Goldfish',
+                    duration: '2 weeks+',
+                    notes: 'Very resilient, slow metabolism',
+                  ),
                   const Divider(),
-                  _DurationRow(fish: 'Bettas', duration: '1-2 weeks', notes: 'Often overfed anyway'),
+                  _DurationRow(
+                    fish: 'Bettas',
+                    duration: '1-2 weeks',
+                    notes: 'Often overfed anyway',
+                  ),
                   const Divider(),
-                  _DurationRow(fish: 'Fry/juveniles', duration: '2-3 days max', notes: 'Need frequent feeding'),
+                  _DurationRow(
+                    fish: 'Fry/juveniles',
+                    duration: '2-3 days max',
+                    notes: 'Need frequent feeding',
+                  ),
                   const Divider(),
-                  _DurationRow(fish: 'Shrimp', duration: '2+ weeks', notes: 'Graze on biofilm, algae'),
+                  _DurationRow(
+                    fish: 'Shrimp',
+                    duration: '2+ weeks',
+                    notes: 'Graze on biofilm, algae',
+                  ),
                   const Divider(),
-                  _DurationRow(fish: 'Plecos', duration: '1-2 weeks', notes: 'Add driftwood, algae wafers before leaving'),
+                  _DurationRow(
+                    fish: 'Plecos',
+                    duration: '1-2 weeks',
+                    notes: 'Add driftwood, algae wafers before leaving',
+                  ),
                 ],
               ),
             ),
@@ -104,7 +131,11 @@ class VacationGuideScreen extends StatelessWidget {
           _OptionCard(
             title: 'No Feeding (Short Trips)',
             duration: '3-7 days',
-            pros: ['Safest option', 'No overfeeding risk', 'No water quality issues'],
+            pros: [
+              'Safest option',
+              'No overfeeding risk',
+              'No water quality issues',
+            ],
             cons: ['Fish may be hungry when you return'],
             tip: 'Healthy adult fish can easily go a week without food.',
           ),
@@ -112,25 +143,43 @@ class VacationGuideScreen extends StatelessWidget {
           _OptionCard(
             title: 'Automatic Feeder',
             duration: '1-3 weeks',
-            pros: ['Consistent feeding', 'Set and forget', 'Adjustable portions'],
-            cons: ['Can malfunction', 'May dump food', 'Needs testing before trip'],
-            tip: 'Test for at least a week before relying on it. Use less food than normal.',
+            pros: [
+              'Consistent feeding',
+              'Set and forget',
+              'Adjustable portions',
+            ],
+            cons: [
+              'Can malfunction',
+              'May dump food',
+              'Needs testing before trip',
+            ],
+            tip:
+                'Test for at least a week before relying on it. Use less food than normal.',
           ),
 
           _OptionCard(
             title: 'Vacation Feeder Blocks',
             duration: 'Not recommended',
             pros: ['Cheap', 'Easy to use'],
-            cons: ['Cloud water badly', 'Can cause ammonia spikes', 'Fish often ignore them'],
+            cons: [
+              'Cloud water badly',
+              'Can cause ammonia spikes',
+              'Fish often ignore them',
+            ],
             tip: 'Avoid these — they cause more problems than they solve.',
           ),
 
           _OptionCard(
             title: 'Fish Sitter',
             duration: '1+ weeks',
-            pros: ['Can handle emergencies', 'Check equipment', 'Proper feeding'],
+            pros: [
+              'Can handle emergencies',
+              'Check equipment',
+              'Proper feeding',
+            ],
             cons: ['Risk of overfeeding', 'Must be trained', 'Availability'],
-            tip: 'Pre-portion food in daily containers. Less is more — they WILL overfeed.',
+            tip:
+                'Pre-portion food in daily containers. Less is more — they WILL overfeed.',
           ),
 
           const SizedBox(height: 24),
@@ -144,13 +193,26 @@ class VacationGuideScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _BulletPoint(text: 'Pre-portion ALL food in labeled daily containers'),
-                  _BulletPoint(text: 'Write clear instructions — feeding only, no maintenance'),
-                  _BulletPoint(text: 'Show them where NOT to stick their hands'),
+                  _BulletPoint(
+                    text: 'Pre-portion ALL food in labeled daily containers',
+                  ),
+                  _BulletPoint(
+                    text:
+                        'Write clear instructions — feeding only, no maintenance',
+                  ),
+                  _BulletPoint(
+                    text: 'Show them where NOT to stick their hands',
+                  ),
                   _BulletPoint(text: 'Leave your contact info'),
-                  _BulletPoint(text: 'Leave emergency contact (local fish store, etc.)'),
-                  _BulletPoint(text: '"If in doubt, skip feeding" as golden rule'),
-                  _BulletPoint(text: 'Tell them what normal fish behavior looks like'),
+                  _BulletPoint(
+                    text: 'Leave emergency contact (local fish store, etc.)',
+                  ),
+                  _BulletPoint(
+                    text: '"If in doubt, skip feeding" as golden rule',
+                  ),
+                  _BulletPoint(
+                    text: 'Tell them what normal fish behavior looks like',
+                  ),
                   _BulletPoint(text: 'DO NOT ask them to do water changes'),
                 ],
               ),
@@ -159,7 +221,10 @@ class VacationGuideScreen extends StatelessWidget {
 
           const SizedBox(height: 24),
 
-          Text('Extended Absences (2+ Weeks)', style: AppTypography.headlineMedium),
+          Text(
+            'Extended Absences (2+ Weeks)',
+            style: AppTypography.headlineMedium,
+          ),
           const SizedBox(height: 16),
 
           Card(
@@ -169,15 +234,22 @@ class VacationGuideScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Additional Precautions:', style: AppTypography.labelLarge),
+                  Text(
+                    'Additional Precautions:',
+                    style: AppTypography.labelLarge,
+                  ),
                   const SizedBox(height: 8),
                   _BulletPoint(text: 'Have someone check tank every few days'),
                   _BulletPoint(text: 'Automatic feeder + fish sitter combo'),
-                  _BulletPoint(text: 'Consider reducing light period to slow algae'),
+                  _BulletPoint(
+                    text: 'Consider reducing light period to slow algae',
+                  ),
                   _BulletPoint(text: 'Add extra plants (floating plants good)'),
                   _BulletPoint(text: 'Set up camera to check remotely'),
                   _BulletPoint(text: 'Have backup equipment available'),
-                  _BulletPoint(text: 'Leave water change supplies ready (just in case)'),
+                  _BulletPoint(
+                    text: 'Leave water change supplies ready (just in case)',
+                  ),
                 ],
               ),
             ),
@@ -194,13 +266,22 @@ class VacationGuideScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _NumberedStep(num: 1, text: 'Check all fish are present and healthy'),
+                  _NumberedStep(
+                    num: 1,
+                    text: 'Check all fish are present and healthy',
+                  ),
                   _NumberedStep(num: 2, text: 'Check temperature'),
                   _NumberedStep(num: 3, text: 'Test water parameters'),
                   _NumberedStep(num: 4, text: 'Do a water change (25-30%)'),
-                  _NumberedStep(num: 5, text: 'Resume normal feeding gradually'),
+                  _NumberedStep(
+                    num: 5,
+                    text: 'Resume normal feeding gradually',
+                  ),
                   _NumberedStep(num: 6, text: 'Check equipment is working'),
-                  _NumberedStep(num: 7, text: 'Clean glass, trim plants if needed'),
+                  _NumberedStep(
+                    num: 7,
+                    text: 'Clean glass, trim plants if needed',
+                  ),
                 ],
               ),
             ),
@@ -218,7 +299,11 @@ class _DurationRow extends StatelessWidget {
   final String duration;
   final String notes;
 
-  const _DurationRow({required this.fish, required this.duration, required this.notes});
+  const _DurationRow({
+    required this.fish,
+    required this.duration,
+    required this.notes,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -226,18 +311,17 @@ class _DurationRow extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: Row(
         children: [
-          Expanded(
-            flex: 2,
-            child: Text(fish, style: AppTypography.labelLarge),
-          ),
+          Expanded(flex: 2, child: Text(fish, style: AppTypography.labelLarge)),
           Expanded(
             flex: 1,
-            child: Text(duration, style: AppTypography.bodyMedium.copyWith(color: AppColors.success)),
+            child: Text(
+              duration,
+              style: AppTypography.bodyMedium.copyWith(
+                color: AppColors.success,
+              ),
+            ),
           ),
-          Expanded(
-            flex: 2,
-            child: Text(notes, style: AppTypography.bodySmall),
-          ),
+          Expanded(flex: 2, child: Text(notes, style: AppTypography.bodySmall)),
         ],
       ),
     );
@@ -261,16 +345,24 @@ class _ChecklistSection extends StatelessWidget {
           children: [
             Text(title, style: AppTypography.headlineSmall),
             const SizedBox(height: 12),
-            ...items.map((item) => Padding(
-              padding: const EdgeInsets.only(bottom: 6),
-              child: Row(
-                children: [
-                  Icon(Icons.check_box_outline_blank, size: 18, color: AppColors.primary),
-                  const SizedBox(width: 8),
-                  Expanded(child: Text(item, style: AppTypography.bodyMedium)),
-                ],
+            ...items.map(
+              (item) => Padding(
+                padding: const EdgeInsets.only(bottom: 6),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.check_box_outline_blank,
+                      size: 18,
+                      color: AppColors.primary,
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(item, style: AppTypography.bodyMedium),
+                    ),
+                  ],
+                ),
               ),
-            )),
+            ),
           ],
         ),
       ),
@@ -304,9 +396,14 @@ class _OptionCard extends StatelessWidget {
           children: [
             Row(
               children: [
-                Expanded(child: Text(title, style: AppTypography.headlineSmall)),
+                Expanded(
+                  child: Text(title, style: AppTypography.headlineSmall),
+                ),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
                   decoration: BoxDecoration(
                     color: AppColors.surfaceVariant,
                     borderRadius: BorderRadius.circular(8),
@@ -323,8 +420,16 @@ class _OptionCard extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('✓ Pros', style: AppTypography.labelLarge.copyWith(color: AppColors.success, fontSize: 13)),
-                      ...pros.map((p) => Text('• $p', style: AppTypography.bodySmall)),
+                      Text(
+                        '✓ Pros',
+                        style: AppTypography.labelLarge.copyWith(
+                          color: AppColors.success,
+                          fontSize: 13,
+                        ),
+                      ),
+                      ...pros.map(
+                        (p) => Text('• $p', style: AppTypography.bodySmall),
+                      ),
                     ],
                   ),
                 ),
@@ -333,8 +438,16 @@ class _OptionCard extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('✗ Cons', style: AppTypography.labelLarge.copyWith(color: AppColors.error, fontSize: 13)),
-                      ...cons.map((c) => Text('• $c', style: AppTypography.bodySmall)),
+                      Text(
+                        '✗ Cons',
+                        style: AppTypography.labelLarge.copyWith(
+                          color: AppColors.error,
+                          fontSize: 13,
+                        ),
+                      ),
+                      ...cons.map(
+                        (c) => Text('• $c', style: AppTypography.bodySmall),
+                      ),
                     ],
                   ),
                 ),
@@ -405,7 +518,10 @@ class _NumberedStep extends StatelessWidget {
             child: Center(
               child: Text(
                 '$num',
-                style: AppTypography.bodySmall.copyWith(color: AppColors.primary, fontSize: 11),
+                style: AppTypography.bodySmall.copyWith(
+                  color: AppColors.primary,
+                  fontSize: 11,
+                ),
               ),
             ),
           ),

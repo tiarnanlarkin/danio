@@ -41,10 +41,7 @@ class _XpProgressBarState extends ConsumerState<XpProgressBar>
     _progressAnimation = Tween<double>(
       begin: 0.0,
       end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeOutCubic,
-    ));
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic));
   }
 
   @override
@@ -116,7 +113,7 @@ class _XpProgressBarState extends ConsumerState<XpProgressBar>
                   ),
                 ],
               ),
-            
+
             if (widget.showLabels) const SizedBox(height: 8),
 
             // Animated progress bar
@@ -124,8 +121,9 @@ class _XpProgressBarState extends ConsumerState<XpProgressBar>
               animation: _progressAnimation,
               builder: (context, child) {
                 final animatedProgress =
-                    _currentProgress + 
-                    (_targetProgress - _currentProgress) * _progressAnimation.value;
+                    _currentProgress +
+                    (_targetProgress - _currentProgress) *
+                        _progressAnimation.value;
 
                 return Stack(
                   children: [
@@ -145,7 +143,9 @@ class _XpProgressBarState extends ConsumerState<XpProgressBar>
                         height: widget.height,
                         decoration: BoxDecoration(
                           gradient: AppColors.primaryGradient,
-                          borderRadius: BorderRadius.circular(widget.height / 2),
+                          borderRadius: BorderRadius.circular(
+                            widget.height / 2,
+                          ),
                           boxShadow: [
                             BoxShadow(
                               color: AppColors.primary.withOpacity(0.4),
@@ -156,7 +156,9 @@ class _XpProgressBarState extends ConsumerState<XpProgressBar>
                         ),
                         // Shimmer effect
                         child: ClipRRect(
-                          borderRadius: BorderRadius.circular(widget.height / 2),
+                          borderRadius: BorderRadius.circular(
+                            widget.height / 2,
+                          ),
                           child: _ShimmerEffect(
                             isAnimating: _controller.isAnimating,
                           ),
@@ -251,10 +253,7 @@ class _ShimmerEffectState extends State<_ShimmerEffect>
 class XpProgressCard extends ConsumerWidget {
   final VoidCallback? onTap;
 
-  const XpProgressCard({
-    super.key,
-    this.onTap,
-  });
+  const XpProgressCard({super.key, this.onTap});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

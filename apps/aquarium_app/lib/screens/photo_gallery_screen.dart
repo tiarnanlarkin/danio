@@ -1,9 +1,11 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import '../models/models.dart';
 import '../providers/tank_provider.dart';
 import '../theme/app_theme.dart';
+import '../widgets/optimized_image.dart';
 
 class PhotoGalleryScreen extends ConsumerWidget {
   final String tankId;
@@ -20,18 +22,17 @@ class PhotoGalleryScreen extends ConsumerWidget {
     final logsAsync = ref.watch(allLogsProvider(tankId));
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text('$tankName Gallery'),
-      ),
+      appBar: AppBar(title: Text('$tankName Gallery')),
       body: logsAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (e, _) => Center(child: Text('Error: $e')),
         data: (logs) {
           // Get all logs with photos
-          final photosLogs = logs
-              .where((l) => l.photoUrls != null && l.photoUrls!.isNotEmpty)
-              .toList()
-            ..sort((a, b) => b.timestamp.compareTo(a.timestamp));
+          final photosLogs =
+              logs
+                  .where((l) => l.photoUrls != null && l.photoUrls!.isNotEmpty)
+                  .toList()
+                ..sort((a, b) => b.timestamp.compareTo(a.timestamp));
 
           if (photosLogs.isEmpty) {
             return _EmptyGallery();
@@ -41,12 +42,14 @@ class PhotoGalleryScreen extends ConsumerWidget {
           final photos = <_PhotoEntry>[];
           for (final log in photosLogs) {
             for (final url in log.photoUrls!) {
-              photos.add(_PhotoEntry(
-                url: url,
-                date: log.timestamp,
-                type: log.type,
-                notes: log.notes,
-              ));
+              photos.add(
+                _PhotoEntry(
+                  url: url,
+                  date: log.timestamp,
+                  type: log.type,
+                  notes: log.notes,
+                ),
+              );
             }
           }
 
@@ -83,11 +86,12 @@ class PhotoGalleryScreen extends ConsumerWidget {
                   GridView.builder(
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 3,
-                      crossAxisSpacing: 4,
-                      mainAxisSpacing: 4,
-                    ),
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 3,
+                          crossAxisSpacing: 4,
+                          mainAxisSpacing: 4,
+                        ),
                     itemCount: monthPhotos.length,
                     itemBuilder: (ctx, j) => _PhotoThumbnail(
                       photo: monthPhotos[j],
@@ -104,11 +108,16 @@ class PhotoGalleryScreen extends ConsumerWidget {
     );
   }
 
-  void _showPhotoViewer(BuildContext context, List<_PhotoEntry> photos, int initialIndex) {
+  void _showPhotoViewer(
+    BuildContext context,
+    List<_PhotoEntry> photos,
+    int initialIndex,
+  ) {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => _PhotoViewerScreen(photos: photos, initialIndex: initialIndex),
+        builder: (_) =>
+            _PhotoViewerScreen(photos: photos, initialIndex: initialIndex),
       ),
     );
   }
@@ -123,7 +132,11 @@ class _EmptyGallery extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.photo_library_outlined, size: 64, color: AppColors.textHint),
+            Icon(
+              Icons.photo_library_outlined,
+              size: 64,
+              color: AppColors.textHint,
+            ),
             const SizedBox(height: 16),
             Text('No Photos Yet', style: AppTypography.headlineSmall),
             const SizedBox(height: 8),
@@ -179,24 +192,27 @@ class _PhotoThumbnail extends StatelessWidget {
           child: Stack(
             fit: StackFit.expand,
             children: [
-              // Placeholder - in real app would load image from photo.url
-              Container(
-                color: AppColors.surfaceVariant,
-                child: Icon(Icons.image, color: AppColors.textHint, size: 32),
-              ),
+              // Load actual image
+              OptimizedFileImage(file: File(photo.url), fit: BoxFit.cover),
               // Date badge
               Positioned(
                 bottom: 4,
                 right: 4,
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 6,
+                    vertical: 2,
+                  ),
                   decoration: BoxDecoration(
                     color: Colors.black54,
                     borderRadius: BorderRadius.circular(4),
                   ),
                   child: Text(
                     DateFormat('d').format(photo.date),
-                    style: AppTypography.bodySmall.copyWith(color: Colors.white, fontSize: 10),
+                    style: AppTypography.bodySmall.copyWith(
+                      color: Colors.white,
+                      fontSize: 10,
+                    ),
                   ),
                 ),
               ),
@@ -261,27 +277,21 @@ class _PhotoViewerScreenState extends State<_PhotoViewerScreen> {
               itemBuilder: (ctx, i) {
                 final p = widget.photos[i];
                 return Center(
-                  child: Container(
-                    margin: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: AppColors.surfaceVariant,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Center(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(Icons.image, size: 100, color: AppColors.textHint),
-                          const SizedBox(height: 16),
-                          Text(
-                            'Photo from ${DateFormat('MMM d').format(p.date)}',
-                            style: AppTypography.bodyMedium.copyWith(color: Colors.white70),
-                          ),
-                          Text(
-                            p.type.name,
-                            style: AppTypography.bodySmall.copyWith(color: Colors.white54),
-                          ),
-                        ],
+                  child: InteractiveViewer(
+                    minScale: 0.5,
+                    maxScale: 4.0,
+                    child: Container(
+                      margin: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: Colors.black,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        child: OptimizedFileImage(
+                          file: File(p.url),
+                          fit: BoxFit.contain,
+                        ),
                       ),
                     ),
                   ),

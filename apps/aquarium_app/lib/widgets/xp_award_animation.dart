@@ -9,11 +9,7 @@ class XpAwardAnimation extends StatefulWidget {
   final int xpAmount;
   final VoidCallback? onComplete;
 
-  const XpAwardAnimation({
-    super.key,
-    required this.xpAmount,
-    this.onComplete,
-  });
+  const XpAwardAnimation({super.key, required this.xpAmount, this.onComplete});
 
   @override
   State<XpAwardAnimation> createState() => _XpAwardAnimationState();
@@ -39,36 +35,33 @@ class _XpAwardAnimationState extends State<XpAwardAnimation>
     _slideAnimation = Tween<Offset>(
       begin: Offset.zero,
       end: const Offset(0, -1.5),
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeOutCubic,
-    ));
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic));
 
     // Fade out animation (starts fading after 50% of animation)
-    _fadeAnimation = Tween<double>(
-      begin: 1.0,
-      end: 0.0,
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: const Interval(0.5, 1.0, curve: Curves.easeInCubic),
-    ));
+    _fadeAnimation = Tween<double>(begin: 1.0, end: 0.0).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: const Interval(0.5, 1.0, curve: Curves.easeInCubic),
+      ),
+    );
 
     // Scale animation (slight bounce at start)
     _scaleAnimation = TweenSequence<double>([
       TweenSequenceItem(
-        tween: Tween<double>(begin: 0.5, end: 1.2)
-            .chain(CurveTween(curve: Curves.easeOut)),
+        tween: Tween<double>(
+          begin: 0.5,
+          end: 1.2,
+        ).chain(CurveTween(curve: Curves.easeOut)),
         weight: 30,
       ),
       TweenSequenceItem(
-        tween: Tween<double>(begin: 1.2, end: 1.0)
-            .chain(CurveTween(curve: Curves.easeInOut)),
+        tween: Tween<double>(
+          begin: 1.2,
+          end: 1.0,
+        ).chain(CurveTween(curve: Curves.easeInOut)),
         weight: 20,
       ),
-      TweenSequenceItem(
-        tween: Tween<double>(begin: 1.0, end: 1.0),
-        weight: 50,
-      ),
+      TweenSequenceItem(tween: Tween<double>(begin: 1.0, end: 1.0), weight: 50),
     ]).animate(_controller);
 
     // Start animation
@@ -118,11 +111,7 @@ class _XpAwardAnimationState extends State<XpAwardAnimation>
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Icon(
-                      Icons.star,
-                      color: Colors.white,
-                      size: 24,
-                    ),
+                    const Icon(Icons.star, color: Colors.white, size: 24),
                     const SizedBox(width: 8),
                     Text(
                       '+${widget.xpAmount} XP',
@@ -147,11 +136,7 @@ class XpAwardOverlay extends StatelessWidget {
   final int xpAmount;
   final VoidCallback? onComplete;
 
-  const XpAwardOverlay({
-    super.key,
-    required this.xpAmount,
-    this.onComplete,
-  });
+  const XpAwardOverlay({super.key, required this.xpAmount, this.onComplete});
 
   /// Show XP award animation as an overlay
   static void show(
@@ -189,10 +174,7 @@ class XpAwardOverlay extends StatelessWidget {
       left: 0,
       right: 0,
       child: Center(
-        child: XpAwardAnimation(
-          xpAmount: xpAmount,
-          onComplete: onComplete,
-        ),
+        child: XpAwardAnimation(xpAmount: xpAmount, onComplete: onComplete),
       ),
     );
   }

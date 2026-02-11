@@ -12,20 +12,26 @@ import '../widgets/empty_state.dart';
 
 /// Gem Shop colors - jewel/treasure theme (WCAG AA compliant)
 class GemShopColors {
-  static const background1 = Color(0xFF1A1A2E);  // Deep navy
-  static const background2 = Color(0xFF16213E);  // Dark blue
-  static const background3 = Color(0xFF0F1A2E);  // Darker blue
-  static const gemPrimary = Color(0xFF5FD9CF);   // Turquoise (gem color) - Lightened for better contrast
-  static const gemGlow = Color(0xFF95E1D3);      // Light turquoise
-  static const goldAccent = Color(0xFFFFD700);   // Gold
+  static const background1 = Color(0xFF1A1A2E); // Deep navy
+  static const background2 = Color(0xFF16213E); // Dark blue
+  static const background3 = Color(0xFF0F1A2E); // Darker blue
+  static const gemPrimary = Color(
+    0xFF5FD9CF,
+  ); // Turquoise (gem color) - Lightened for better contrast
+  static const gemGlow = Color(0xFF95E1D3); // Light turquoise
+  static const goldAccent = Color(0xFFFFD700); // Gold
   static const silverAccent = Color(0xFFC0C0C0); // Silver
   static const glassCard = Color(0x15FFFFFF);
   static const glassBorder = Color(0x30FFFFFF);
-  static const textPrimary = Color(0xFFF5F5F5);  // High contrast white
-  static const textSecondary = Color(0xFFC5C5D5); // Improved contrast - lightened from B8B8C8
-  static const powerUpColor = Color(0xFFFF7B7B);    // Red - Lightened slightly
-  static const extrasColor = Color(0xFF5FD9CF);     // Turquoise - matches gemPrimary
-  static const cosmeticsColor = Color(0xFFFFD700);  // Gold
+  static const textPrimary = Color(0xFFF5F5F5); // High contrast white
+  static const textSecondary = Color(
+    0xFFC5C5D5,
+  ); // Improved contrast - lightened from B8B8C8
+  static const powerUpColor = Color(0xFFFF7B7B); // Red - Lightened slightly
+  static const extrasColor = Color(
+    0xFF5FD9CF,
+  ); // Turquoise - matches gemPrimary
+  static const cosmeticsColor = Color(0xFFFFD700); // Gold
 }
 
 /// Main Gem Shop Screen
@@ -46,7 +52,9 @@ class _GemShopScreenState extends ConsumerState<GemShopScreen>
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
-    _confettiController = ConfettiController(duration: const Duration(seconds: 3));
+    _confettiController = ConfettiController(
+      duration: const Duration(seconds: 3),
+    );
   }
 
   @override
@@ -101,7 +109,10 @@ class _GemShopScreenState extends ConsumerState<GemShopScreen>
                 text: 'Power-ups',
               ),
               Tab(
-                icon: Icon(Icons.card_giftcard, semanticLabel: 'Extras category'),
+                icon: Icon(
+                  Icons.card_giftcard,
+                  semanticLabel: 'Extras category',
+                ),
                 text: 'Extras',
               ),
               Tab(
@@ -205,10 +216,10 @@ class _GemShopScreenState extends ConsumerState<GemShopScreen>
           ),
         );
       }
-    } catch (e, st) {
+    } catch (e) {
       // Handle provider errors (atomic transaction failures)
       if (!mounted) return;
-      
+
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Error: ${e.toString()}'),
@@ -299,10 +310,7 @@ class _GemShopScreenState extends ConsumerState<GemShopScreen>
                               ),
                             ),
                             const SizedBox(width: 4),
-                            const Text(
-                              '💎',
-                              style: TextStyle(fontSize: 20),
-                            ),
+                            const Text('💎', style: TextStyle(fontSize: 20)),
                           ],
                         ),
                       ],
@@ -344,17 +352,22 @@ class _GemShopScreenState extends ConsumerState<GemShopScreen>
               ),
               actions: [
                 TextButton(
-                  onPressed: _isPurchasing ? null : () => Navigator.pop(ctx, false),
+                  onPressed: _isPurchasing
+                      ? null
+                      : () => Navigator.pop(ctx, false),
                   child: const Text(
                     'Cancel',
                     style: TextStyle(color: GemShopColors.textSecondary),
                   ),
                 ),
                 ElevatedButton(
-                  onPressed: (canAfford && !_isPurchasing) ? () => Navigator.pop(ctx, true) : null,
+                  onPressed: (canAfford && !_isPurchasing)
+                      ? () => Navigator.pop(ctx, true)
+                      : null,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: GemShopColors.gemPrimary,
-                    disabledBackgroundColor: GemShopColors.textSecondary.withOpacity(0.3),
+                    disabledBackgroundColor: GemShopColors.textSecondary
+                        .withOpacity(0.3),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
@@ -365,7 +378,9 @@ class _GemShopScreenState extends ConsumerState<GemShopScreen>
                           height: 20,
                           child: CircularProgressIndicator(
                             strokeWidth: 2,
-                            valueColor: AlwaysStoppedAnimation(GemShopColors.background1),
+                            valueColor: AlwaysStoppedAnimation(
+                              GemShopColors.background1,
+                            ),
                           ),
                         )
                       : const Text(
@@ -389,10 +404,7 @@ class _ShopItemGrid extends ConsumerWidget {
   final ShopItemCategory category;
   final Function(ShopItem) onPurchase;
 
-  const _ShopItemGrid({
-    required this.category,
-    required this.onPurchase,
-  });
+  const _ShopItemGrid({required this.category, required this.onPurchase});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -417,10 +429,7 @@ class _ShopItemGrid extends ConsumerWidget {
       itemCount: items.length,
       itemBuilder: (context, index) {
         final item = items[index];
-        return _ShopItemCard(
-          item: item,
-          onTap: () => onPurchase(item),
-        );
+        return _ShopItemCard(item: item, onTap: () => onPurchase(item));
       },
     );
   }
@@ -431,10 +440,7 @@ class _ShopItemCard extends ConsumerWidget {
   final ShopItem item;
   final VoidCallback onTap;
 
-  const _ShopItemCard({
-    required this.item,
-    required this.onTap,
-  });
+  const _ShopItemCard({required this.item, required this.onTap});
 
   Color _getCategoryColor() {
     switch (item.category) {
@@ -453,7 +459,8 @@ class _ShopItemCard extends ConsumerWidget {
     final quantity = ref.watch(itemQuantityProvider(item.id));
     final categoryColor = _getCategoryColor();
 
-    final semanticLabel = '${item.name}, ${item.gemCost} gems. ${item.description}'
+    final semanticLabel =
+        '${item.name}, ${item.gemCost} gems. ${item.description}'
         '${owned ? '. Already owned${item.isConsumable && quantity > 0 ? ', quantity $quantity' : ''}' : ''}';
 
     return Semantics(
@@ -463,133 +470,133 @@ class _ShopItemCard extends ConsumerWidget {
       child: GestureDetector(
         onTap: onTap,
         child: ClipRRect(
-        borderRadius: BorderRadius.circular(20),
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-          child: Container(
-            decoration: BoxDecoration(
-              color: GemShopColors.glassCard,
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(
-                color: owned
-                    ? categoryColor.withOpacity(0.5)
-                    : GemShopColors.glassBorder,
-                width: owned ? 2 : 1,
+          borderRadius: BorderRadius.circular(20),
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+            child: Container(
+              decoration: BoxDecoration(
+                color: GemShopColors.glassCard,
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(
+                  color: owned
+                      ? categoryColor.withOpacity(0.5)
+                      : GemShopColors.glassBorder,
+                  width: owned ? 2 : 1,
+                ),
               ),
-            ),
-            child: Stack(
-              children: [
-                // Content
-                Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Emoji icon
-                      Center(
-                        child: Text(
-                          item.emoji,
-                          style: const TextStyle(fontSize: 48),
-                        ),
-                      ),
-                      const SizedBox(height: 12),
-                      // Name
-                      Text(
-                        item.name,
-                        style: const TextStyle(
-                          color: GemShopColors.textPrimary,
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      const SizedBox(height: 8),
-                      // Description
-                      Expanded(
-                        child: Text(
-                          item.description,
-                          style: const TextStyle(
-                            color: GemShopColors.textSecondary,
-                            fontSize: 11,
+              child: Stack(
+                children: [
+                  // Content
+                  Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Emoji icon
+                        Center(
+                          child: Text(
+                            item.emoji,
+                            style: const TextStyle(fontSize: 48),
                           ),
-                          maxLines: 3,
+                        ),
+                        const SizedBox(height: 12),
+                        // Name
+                        Text(
+                          item.name,
+                          style: const TextStyle(
+                            color: GemShopColors.textPrimary,
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                         ),
-                      ),
-                      const SizedBox(height: 8),
-                      // Price
-                      Container(
+                        const SizedBox(height: 8),
+                        // Description
+                        Expanded(
+                          child: Text(
+                            item.description,
+                            style: const TextStyle(
+                              color: GemShopColors.textSecondary,
+                              fontSize: 11,
+                            ),
+                            maxLines: 3,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        // Price
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 6,
+                          ),
+                          decoration: BoxDecoration(
+                            color: categoryColor.withOpacity(0.2),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                '${item.gemCost}',
+                                style: TextStyle(
+                                  color: categoryColor,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                ),
+                              ),
+                              const SizedBox(width: 4),
+                              const Text('💎', style: TextStyle(fontSize: 14)),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  // Owned indicator
+                  if (owned)
+                    Positioned(
+                      top: 8,
+                      right: 8,
+                      child: Container(
                         padding: const EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 6,
+                          horizontal: 8,
+                          vertical: 4,
                         ),
                         decoration: BoxDecoration(
-                          color: categoryColor.withOpacity(0.2),
-                          borderRadius: BorderRadius.circular(12),
+                          color: categoryColor,
+                          borderRadius: BorderRadius.circular(8),
                         ),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Text(
-                              '${item.gemCost}',
-                              style: TextStyle(
-                                color: categoryColor,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
-                              ),
+                            const Icon(
+                              Icons.check_circle,
+                              size: 14,
+                              color: Colors.white,
                             ),
-                            const SizedBox(width: 4),
-                            const Text('💎', style: TextStyle(fontSize: 14)),
+                            if (item.isConsumable && quantity > 0) ...[
+                              const SizedBox(width: 4),
+                              Text(
+                                'x$quantity',
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
                           ],
                         ),
                       ),
-                    ],
-                  ),
-                ),
-                // Owned indicator
-                if (owned)
-                  Positioned(
-                    top: 8,
-                    right: 8,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 4,
-                      ),
-                      decoration: BoxDecoration(
-                        color: categoryColor,
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const Icon(
-                            Icons.check_circle,
-                            size: 14,
-                            color: Colors.white,
-                          ),
-                          if (item.isConsumable && quantity > 0) ...[
-                            const SizedBox(width: 4),
-                            Text(
-                              'x$quantity',
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 12,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
-                        ],
-                      ),
                     ),
-                  ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
       ),
-    ),
     );
   }
 }

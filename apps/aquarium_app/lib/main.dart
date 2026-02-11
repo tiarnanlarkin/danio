@@ -21,7 +21,8 @@ import 'widgets/performance_overlay.dart';
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 // Performance monitoring toggle (enable in debug mode)
-const bool _enablePerformanceMonitoring = kDebugMode && false; // Set to true to enable
+const bool _enablePerformanceMonitoring =
+    kDebugMode && false; // Set to true to enable
 const bool _showPerformanceOverlay = false; // Set to true to show FPS overlay
 
 void main() async {
@@ -31,7 +32,7 @@ void main() async {
   if (_enablePerformanceMonitoring) {
     performanceMonitor.startMonitoring();
   }
-  
+
   // Initialize notifications with navigation callback
   final notificationService = NotificationService();
   await notificationService.initialize(
@@ -44,7 +45,9 @@ void main() async {
       } else if (payload == 'review') {
         // Navigate to review/practice screen
         navigatorKey.currentState?.push(
-          MaterialPageRoute(builder: (_) => const SpacedRepetitionPracticeScreen()),
+          MaterialPageRoute(
+            builder: (_) => const SpacedRepetitionPracticeScreen(),
+          ),
         );
       } else if (payload == 'achievements') {
         // Navigate to achievements screen
@@ -55,11 +58,7 @@ void main() async {
     },
   );
 
-  runApp(
-    const ProviderScope(
-      child: AquariumApp(),
-    ),
-  );
+  runApp(const ProviderScope(child: AquariumApp()));
 }
 
 class AquariumApp extends ConsumerWidget {
@@ -68,7 +67,7 @@ class AquariumApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final settings = ref.watch(settingsProvider);
-    
+
     return MaterialApp(
       navigatorKey: navigatorKey,
       title: 'Aquarium',
@@ -92,7 +91,8 @@ class _AppRouter extends ConsumerStatefulWidget {
   ConsumerState<_AppRouter> createState() => _AppRouterState();
 }
 
-class _AppRouterState extends ConsumerState<_AppRouter> with WidgetsBindingObserver {
+class _AppRouterState extends ConsumerState<_AppRouter>
+    with WidgetsBindingObserver {
   bool _isLoading = true;
   bool _showOnboarding = false;
   bool _needsProfile = false;
@@ -116,7 +116,7 @@ class _AppRouterState extends ConsumerState<_AppRouter> with WidgetsBindingObser
       // Check and apply heart auto-refill when app resumes
       final heartsService = ref.read(heartsServiceProvider);
       heartsService.checkAndApplyAutoRefill();
-      
+
       // Schedule review notifications if cards are due
       _scheduleReviewNotifications();
     }
@@ -127,7 +127,7 @@ class _AppRouterState extends ConsumerState<_AppRouter> with WidgetsBindingObser
     try {
       final srState = ref.read(spacedRepetitionProvider);
       final dueCount = srState.stats.dueCards;
-      
+
       // Schedule notification if cards are due
       final notificationService = NotificationService();
       await notificationService.scheduleReviewReminder(
@@ -144,7 +144,7 @@ class _AppRouterState extends ConsumerState<_AppRouter> with WidgetsBindingObser
     // Check onboarding status
     final onboardingService = await OnboardingService.getInstance();
     final onboardingCompleted = onboardingService.isOnboardingCompleted;
-    
+
     // Check profile status
     bool profileExists = false;
     if (onboardingCompleted) {
@@ -153,7 +153,7 @@ class _AppRouterState extends ConsumerState<_AppRouter> with WidgetsBindingObser
       final profile = ref.read(userProfileProvider).value;
       profileExists = profile != null;
     }
-    
+
     setState(() {
       _showOnboarding = !onboardingCompleted;
       _needsProfile = onboardingCompleted && !profileExists;
@@ -177,7 +177,7 @@ class _AppRouterState extends ConsumerState<_AppRouter> with WidgetsBindingObser
             gradient: LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
-              colors: isDark 
+              colors: isDark
                   ? [AppColors.primaryDark, AppColors.backgroundDark]
                   : [AppColors.primary, AppColors.secondary],
             ),
@@ -186,7 +186,11 @@ class _AppRouterState extends ConsumerState<_AppRouter> with WidgetsBindingObser
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(Icons.water_drop, size: 80, color: isDark ? Colors.black : Colors.white),
+                Icon(
+                  Icons.water_drop,
+                  size: 80,
+                  color: isDark ? Colors.black : Colors.white,
+                ),
                 const SizedBox(height: 16),
                 Text(
                   'Aquarium',

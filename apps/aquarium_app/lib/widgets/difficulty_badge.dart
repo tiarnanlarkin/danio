@@ -2,7 +2,6 @@
 /// Shows difficulty level with color-coded styling
 library;
 
-
 import 'package:flutter/material.dart';
 import '../models/adaptive_difficulty.dart';
 import '../services/difficulty_service.dart';
@@ -25,25 +24,16 @@ class DifficultyBadge extends StatelessWidget {
     final color = Color(difficultyService.getDifficultyColor(difficulty));
 
     return Container(
-      padding: EdgeInsets.symmetric(
-        horizontal: 12 * size,
-        vertical: 6 * size,
-      ),
+      padding: EdgeInsets.symmetric(horizontal: 12 * size, vertical: 6 * size),
       decoration: BoxDecoration(
         color: color.withOpacity(0.2),
         borderRadius: BorderRadius.circular(20 * size),
-        border: Border.all(
-          color: color,
-          width: 2,
-        ),
+        border: Border.all(color: color, width: 2),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(
-            difficulty.emoji,
-            style: TextStyle(fontSize: 16 * size),
-          ),
+          Text(difficulty.emoji, style: TextStyle(fontSize: 16 * size)),
           if (showLabel) ...[
             SizedBox(width: 6 * size),
             Text(
@@ -90,17 +80,12 @@ class SkillLevelIndicator extends StatelessWidget {
               children: [
                 Text(
                   label!,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w500,
-                  ),
+                  style: const TextStyle(fontWeight: FontWeight.w500),
                 ),
                 if (showPercentage)
                   Text(
                     '$percentage%',
-                    style: TextStyle(
-                      color: color,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: TextStyle(color: color, fontWeight: FontWeight.bold),
                   ),
               ],
             ),
@@ -251,10 +236,7 @@ class _SkillLevelUpAnimationState extends State<SkillLevelUpAnimation>
               padding: const EdgeInsets.all(24),
               decoration: BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [
-                    Colors.amber.shade300,
-                    Colors.orange.shade400,
-                  ],
+                  colors: [Colors.amber.shade300, Colors.orange.shade400],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
@@ -270,10 +252,7 @@ class _SkillLevelUpAnimationState extends State<SkillLevelUpAnimation>
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Text(
-                    '🎉',
-                    style: TextStyle(fontSize: 48),
-                  ),
+                  const Text('🎉', style: TextStyle(fontSize: 48)),
                   const SizedBox(height: 12),
                   const Text(
                     'LEVEL UP!',
@@ -287,10 +266,7 @@ class _SkillLevelUpAnimationState extends State<SkillLevelUpAnimation>
                   Text(
                     widget.message,
                     textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      color: Colors.white,
-                    ),
+                    style: const TextStyle(fontSize: 16, color: Colors.white),
                   ),
                 ],
               ),
@@ -338,17 +314,11 @@ class DifficultyChangeNotification extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    Text(
-                      oldLevel.emoji,
-                      style: const TextStyle(fontSize: 16),
-                    ),
+                    Text(oldLevel.emoji, style: const TextStyle(fontSize: 16)),
                     const SizedBox(width: 4),
                     Icon(Icons.arrow_forward, size: 16, color: color),
                     const SizedBox(width: 4),
-                    Text(
-                      newLevel.emoji,
-                      style: const TextStyle(fontSize: 16),
-                    ),
+                    Text(newLevel.emoji, style: const TextStyle(fontSize: 16)),
                     const SizedBox(width: 8),
                     Text(
                       newLevel.displayName,
@@ -362,10 +332,7 @@ class DifficultyChangeNotification extends StatelessWidget {
                 const SizedBox(height: 4),
                 Text(
                   reason,
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.grey[700],
-                  ),
+                  style: TextStyle(fontSize: 14, color: Colors.grey[700]),
                 ),
               ],
             ),
@@ -381,21 +348,15 @@ class MasteryBadge extends StatelessWidget {
   final bool hasMastery;
   final double size;
 
-  const MasteryBadge({
-    Key? key,
-    required this.hasMastery,
-    this.size = 1.0,
-  }) : super(key: key);
+  const MasteryBadge({Key? key, required this.hasMastery, this.size = 1.0})
+    : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     if (!hasMastery) return const SizedBox.shrink();
 
     return Container(
-      padding: EdgeInsets.symmetric(
-        horizontal: 10 * size,
-        vertical: 5 * size,
-      ),
+      padding: EdgeInsets.symmetric(horizontal: 10 * size, vertical: 5 * size),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [Colors.amber.shade300, Colors.orange.shade400],

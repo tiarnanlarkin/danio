@@ -26,7 +26,9 @@ class _SpeciesBrowserScreenState extends State<SpeciesBrowserScreen> {
     }
 
     if (_temperamentFilter != null) {
-      results = results.where((s) => s.temperament == _temperamentFilter).toList();
+      results = results
+          .where((s) => s.temperament == _temperamentFilter)
+          .toList();
     }
 
     return results;
@@ -46,7 +48,9 @@ class _SpeciesBrowserScreenState extends State<SpeciesBrowserScreen> {
               decoration: InputDecoration(
                 hintText: 'Search fish by name...',
                 prefixIcon: const Icon(Icons.search),
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
                 filled: true,
               ),
               onChanged: (v) => setState(() => _searchQuery = v),
@@ -79,7 +83,10 @@ class _SpeciesBrowserScreenState extends State<SpeciesBrowserScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Row(
               children: [
-                Text('${species.length} species', style: AppTypography.bodySmall),
+                Text(
+                  '${species.length} species',
+                  style: AppTypography.bodySmall,
+                ),
                 const Spacer(),
                 if (_careLevelFilter != null || _temperamentFilter != null)
                   TextButton(
@@ -112,8 +119,8 @@ class _SpeciesBrowserScreenState extends State<SpeciesBrowserScreen> {
     return FilterChip(
       label: Text(level),
       selected: _careLevelFilter == level,
-      onSelected: (_) => setState(() =>
-        _careLevelFilter = _careLevelFilter == level ? null : level
+      onSelected: (_) => setState(
+        () => _careLevelFilter = _careLevelFilter == level ? null : level,
       ),
     );
   }
@@ -122,8 +129,10 @@ class _SpeciesBrowserScreenState extends State<SpeciesBrowserScreen> {
     return FilterChip(
       label: Text(temperament),
       selected: _temperamentFilter == temperament,
-      onSelected: (_) => setState(() =>
-        _temperamentFilter = _temperamentFilter == temperament ? null : temperament
+      onSelected: (_) => setState(
+        () => _temperamentFilter = _temperamentFilter == temperament
+            ? null
+            : temperament,
       ),
     );
   }
@@ -199,15 +208,23 @@ class _SpeciesCard extends StatelessWidget {
           children: [
             Text(
               species.scientificName,
-              style: AppTypography.bodySmall.copyWith(fontStyle: FontStyle.italic),
+              style: AppTypography.bodySmall.copyWith(
+                fontStyle: FontStyle.italic,
+              ),
             ),
             const SizedBox(height: 4),
             Wrap(
               spacing: 6,
               children: [
                 _MiniChip(label: species.careLevel, color: _careLevelColor()),
-                _MiniChip(label: species.temperament, color: _temperamentColor()),
-                _MiniChip(label: '${species.adultSizeCm.toStringAsFixed(0)}cm', color: AppColors.info),
+                _MiniChip(
+                  label: species.temperament,
+                  color: _temperamentColor(),
+                ),
+                _MiniChip(
+                  label: '${species.adultSizeCm.toStringAsFixed(0)}cm',
+                  color: AppColors.info,
+                ),
               ],
             ),
           ],
@@ -284,17 +301,26 @@ class _SpeciesDetailSheet extends StatelessWidget {
                     color: AppColors.primary.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  child: const Icon(Icons.set_meal, color: AppColors.primary, size: 32),
+                  child: const Icon(
+                    Icons.set_meal,
+                    color: AppColors.primary,
+                    size: 32,
+                  ),
                 ),
                 const SizedBox(width: 16),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(species.commonName, style: AppTypography.headlineMedium),
+                      Text(
+                        species.commonName,
+                        style: AppTypography.headlineMedium,
+                      ),
                       Text(
                         species.scientificName,
-                        style: AppTypography.bodyMedium.copyWith(fontStyle: FontStyle.italic),
+                        style: AppTypography.bodyMedium.copyWith(
+                          fontStyle: FontStyle.italic,
+                        ),
                       ),
                     ],
                   ),
@@ -311,7 +337,10 @@ class _SpeciesDetailSheet extends StatelessWidget {
               children: [
                 _StatChip(label: species.careLevel, icon: Icons.speed),
                 _StatChip(label: species.temperament, icon: Icons.pets),
-                _StatChip(label: '${species.adultSizeCm.toStringAsFixed(0)} cm adult', icon: Icons.straighten),
+                _StatChip(
+                  label: '${species.adultSizeCm.toStringAsFixed(0)} cm adult',
+                  icon: Icons.straighten,
+                ),
                 _StatChip(label: species.family, icon: Icons.account_tree),
               ],
             ),
@@ -330,10 +359,22 @@ class _SpeciesDetailSheet extends StatelessWidget {
                 padding: const EdgeInsets.all(12),
                 child: Column(
                   children: [
-                    _ParamRow(label: 'Temperature', value: '${species.minTempC}–${species.maxTempC}°C'),
-                    _ParamRow(label: 'pH', value: '${species.minPh}–${species.maxPh}'),
-                    _ParamRow(label: 'Min tank size', value: '${species.minTankLitres.toStringAsFixed(0)} L'),
-                    _ParamRow(label: 'Min school size', value: '${species.minSchoolSize}+'),
+                    _ParamRow(
+                      label: 'Temperature',
+                      value: '${species.minTempC}–${species.maxTempC}°C',
+                    ),
+                    _ParamRow(
+                      label: 'pH',
+                      value: '${species.minPh}–${species.maxPh}',
+                    ),
+                    _ParamRow(
+                      label: 'Min tank size',
+                      value: '${species.minTankLitres.toStringAsFixed(0)} L',
+                    ),
+                    _ParamRow(
+                      label: 'Min school size',
+                      value: '${species.minSchoolSize}+',
+                    ),
                   ],
                 ),
               ),
@@ -355,11 +396,15 @@ class _SpeciesDetailSheet extends StatelessWidget {
               Wrap(
                 spacing: 6,
                 runSpacing: 6,
-                children: species.compatibleWith.map((c) => Chip(
-                  label: Text(c, style: AppTypography.bodySmall),
-                  backgroundColor: AppColors.success.withOpacity(0.1),
-                  side: BorderSide.none,
-                )).toList(),
+                children: species.compatibleWith
+                    .map(
+                      (c) => Chip(
+                        label: Text(c, style: AppTypography.bodySmall),
+                        backgroundColor: AppColors.success.withOpacity(0.1),
+                        side: BorderSide.none,
+                      ),
+                    )
+                    .toList(),
               ),
               const SizedBox(height: 16),
             ],
@@ -370,11 +415,15 @@ class _SpeciesDetailSheet extends StatelessWidget {
               Wrap(
                 spacing: 6,
                 runSpacing: 6,
-                children: species.avoidWith.map((c) => Chip(
-                  label: Text(c, style: AppTypography.bodySmall),
-                  backgroundColor: AppColors.error.withOpacity(0.1),
-                  side: BorderSide.none,
-                )).toList(),
+                children: species.avoidWith
+                    .map(
+                      (c) => Chip(
+                        label: Text(c, style: AppTypography.bodySmall),
+                        backgroundColor: AppColors.error.withOpacity(0.1),
+                        side: BorderSide.none,
+                      ),
+                    )
+                    .toList(),
               ),
             ],
 

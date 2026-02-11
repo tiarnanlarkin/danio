@@ -13,10 +13,7 @@ import '../providers/user_profile_provider.dart';
 class StoryPlayerScreen extends ConsumerStatefulWidget {
   final String storyId;
 
-  const StoryPlayerScreen({
-    super.key,
-    required this.storyId,
-  });
+  const StoryPlayerScreen({super.key, required this.storyId});
 
   @override
   ConsumerState<StoryPlayerScreen> createState() => _StoryPlayerScreenState();
@@ -60,15 +57,13 @@ class _StoryPlayerScreenState extends ConsumerState<StoryPlayerScreen>
       duration: const Duration(milliseconds: 800),
       vsync: this,
     );
-    _choiceSlideAnimation = Tween<Offset>(
-      begin: const Offset(0, 0.3),
-      end: Offset.zero,
-    ).animate(
-      CurvedAnimation(
-        parent: _choiceAnimationController,
-        curve: Curves.easeOutCubic,
-      ),
-    );
+    _choiceSlideAnimation =
+        Tween<Offset>(begin: const Offset(0, 0.3), end: Offset.zero).animate(
+          CurvedAnimation(
+            parent: _choiceAnimationController,
+            curve: Curves.easeOutCubic,
+          ),
+        );
 
     _textAnimationController.forward();
     _choiceAnimationController.forward();
@@ -107,8 +102,8 @@ class _StoryPlayerScreenState extends ConsumerState<StoryPlayerScreen>
     if (_progress == null) return;
 
     final notifier = ref.read(userProfileProvider.notifier);
-    final xpReward = _progress!.completed 
-        ? _progress!.calculateXp(_story!.xpReward) 
+    final xpReward = _progress!.completed
+        ? _progress!.calculateXp(_story!.xpReward)
         : 0;
 
     await notifier.updateStoryProgress(
@@ -187,11 +182,7 @@ class _StoryPlayerScreenState extends ConsumerState<StoryPlayerScreen>
       context: context,
       barrierDismissible: false,
       builder: (context) => AlertDialog(
-        title: Row(
-          children: [
-            const Text('🎉 Story Complete!'),
-          ],
-        ),
+        title: Row(children: [const Text('🎉 Story Complete!')]),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -213,9 +204,9 @@ class _StoryPlayerScreenState extends ConsumerState<StoryPlayerScreen>
                   Text(
                     '+$xpEarned XP',
                     style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                          color: Colors.amber.shade700,
-                          fontWeight: FontWeight.bold,
-                        ),
+                      color: Colors.amber.shade700,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   const SizedBox(height: 8),
                   Text(
@@ -274,11 +265,7 @@ class _StoryPlayerScreenState extends ConsumerState<StoryPlayerScreen>
             ),
 
             // Aquarium bubble decorations
-            Positioned.fill(
-              child: CustomPaint(
-                painter: BubblePainter(),
-              ),
-            ),
+            Positioned.fill(child: CustomPaint(painter: BubblePainter())),
 
             // Main content
             Column(
@@ -287,16 +274,10 @@ class _StoryPlayerScreenState extends ConsumerState<StoryPlayerScreen>
                 _buildHeader(),
 
                 // Story text area
-                Expanded(
-                  flex: 3,
-                  child: _buildStoryText(),
-                ),
+                Expanded(flex: 3, child: _buildStoryText()),
 
                 // Choices area
-                Expanded(
-                  flex: 2,
-                  child: _buildChoices(),
-                ),
+                Expanded(flex: 2, child: _buildChoices()),
               ],
             ),
 
@@ -432,10 +413,7 @@ class _StoryPlayerScreenState extends ConsumerState<StoryPlayerScreen>
           style: ElevatedButton.styleFrom(
             backgroundColor: Colors.green,
             foregroundColor: Colors.white,
-            padding: const EdgeInsets.symmetric(
-              horizontal: 32,
-              vertical: 16,
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
             textStyle: const TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
@@ -532,10 +510,7 @@ class _ChoiceButton extends StatelessWidget {
   final StoryChoice choice;
   final VoidCallback onPressed;
 
-  const _ChoiceButton({
-    required this.choice,
-    required this.onPressed,
-  });
+  const _ChoiceButton({required this.choice, required this.onPressed});
 
   @override
   Widget build(BuildContext context) {
@@ -550,10 +525,7 @@ class _ChoiceButton extends StatelessWidget {
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(16),
-            border: Border.all(
-              color: Colors.blue.shade200,
-              width: 2,
-            ),
+            border: Border.all(color: Colors.blue.shade200, width: 2),
           ),
           child: Row(
             children: [

@@ -23,13 +23,19 @@ class _PlantBrowserScreenState extends State<PlantBrowserScreen> {
     }
 
     if (_difficultyFilter != null) {
-      results = results.where((p) => p.difficulty == _difficultyFilter).toList();
+      results = results
+          .where((p) => p.difficulty == _difficultyFilter)
+          .toList();
     }
 
     if (_placementFilter != null) {
-      results = results.where((p) => 
-        p.placement.toLowerCase().contains(_placementFilter!.toLowerCase())
-      ).toList();
+      results = results
+          .where(
+            (p) => p.placement.toLowerCase().contains(
+              _placementFilter!.toLowerCase(),
+            ),
+          )
+          .toList();
     }
 
     if (_lowTechOnly) {
@@ -54,7 +60,9 @@ class _PlantBrowserScreenState extends State<PlantBrowserScreen> {
               decoration: InputDecoration(
                 hintText: 'Search plants...',
                 prefixIcon: const Icon(Icons.search),
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
                 filled: true,
               ),
               onChanged: (v) => setState(() => _searchQuery = v),
@@ -97,7 +105,9 @@ class _PlantBrowserScreenState extends State<PlantBrowserScreen> {
               children: [
                 Text('${plants.length} plants', style: AppTypography.bodySmall),
                 const Spacer(),
-                if (_difficultyFilter != null || _placementFilter != null || _lowTechOnly)
+                if (_difficultyFilter != null ||
+                    _placementFilter != null ||
+                    _lowTechOnly)
                   TextButton(
                     onPressed: () => setState(() {
                       _difficultyFilter = null;
@@ -130,7 +140,8 @@ class _PlantBrowserScreenState extends State<PlantBrowserScreen> {
     return FilterChip(
       label: Text(difficulty),
       selected: _difficultyFilter == difficulty,
-      onSelected: (v) => setState(() => _difficultyFilter = v ? difficulty : null),
+      onSelected: (v) =>
+          setState(() => _difficultyFilter = v ? difficulty : null),
     );
   }
 
@@ -138,7 +149,8 @@ class _PlantBrowserScreenState extends State<PlantBrowserScreen> {
     return FilterChip(
       label: Text(placement),
       selected: _placementFilter == placement,
-      onSelected: (v) => setState(() => _placementFilter = v ? placement : null),
+      onSelected: (v) =>
+          setState(() => _placementFilter = v ? placement : null),
     );
   }
 
@@ -151,10 +163,8 @@ class _PlantBrowserScreenState extends State<PlantBrowserScreen> {
         minChildSize: 0.5,
         maxChildSize: 0.95,
         expand: false,
-        builder: (_, scrollController) => _PlantDetailSheet(
-          plant: plant,
-          scrollController: scrollController,
-        ),
+        builder: (_, scrollController) =>
+            _PlantDetailSheet(plant: plant, scrollController: scrollController),
       ),
     );
   }
@@ -201,25 +211,21 @@ class _PlantCard extends StatelessWidget {
           children: [
             Text(
               plant.scientificName,
-              style: AppTypography.bodySmall.copyWith(fontStyle: FontStyle.italic),
+              style: AppTypography.bodySmall.copyWith(
+                fontStyle: FontStyle.italic,
+              ),
             ),
             const SizedBox(height: 4),
             Wrap(
               spacing: 6,
               children: [
-                _MiniChip(
-                  label: plant.difficulty,
-                  color: _difficultyColor(),
-                ),
+                _MiniChip(label: plant.difficulty, color: _difficultyColor()),
                 _MiniChip(
                   label: plant.lightLevel,
                   color: AppColors.paramWarning,
                 ),
                 if (plant.needsCO2)
-                  _MiniChip(
-                    label: 'CO₂',
-                    color: AppColors.info,
-                  ),
+                  _MiniChip(label: 'CO₂', color: AppColors.info),
               ],
             ),
           ],
@@ -256,7 +262,10 @@ class _PlantDetailSheet extends StatelessWidget {
   final PlantInfo plant;
   final ScrollController scrollController;
 
-  const _PlantDetailSheet({required this.plant, required this.scrollController});
+  const _PlantDetailSheet({
+    required this.plant,
+    required this.scrollController,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -295,17 +304,26 @@ class _PlantDetailSheet extends StatelessWidget {
                     color: AppColors.success.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  child: const Icon(Icons.eco, color: AppColors.success, size: 32),
+                  child: const Icon(
+                    Icons.eco,
+                    color: AppColors.success,
+                    size: 32,
+                  ),
                 ),
                 const SizedBox(width: 16),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(plant.commonName, style: AppTypography.headlineMedium),
+                      Text(
+                        plant.commonName,
+                        style: AppTypography.headlineMedium,
+                      ),
                       Text(
                         plant.scientificName,
-                        style: AppTypography.bodyMedium.copyWith(fontStyle: FontStyle.italic),
+                        style: AppTypography.bodyMedium.copyWith(
+                          fontStyle: FontStyle.italic,
+                        ),
                       ),
                     ],
                   ),
@@ -321,11 +339,19 @@ class _PlantDetailSheet extends StatelessWidget {
               runSpacing: 8,
               children: [
                 _StatChip(label: plant.difficulty, icon: Icons.speed),
-                _StatChip(label: plant.lightLevel + ' Light', icon: Icons.wb_sunny),
-                _StatChip(label: plant.growthRate + ' Growth', icon: Icons.trending_up),
+                _StatChip(
+                  label: plant.lightLevel + ' Light',
+                  icon: Icons.wb_sunny,
+                ),
+                _StatChip(
+                  label: plant.growthRate + ' Growth',
+                  icon: Icons.trending_up,
+                ),
                 _StatChip(label: plant.placement, icon: Icons.layers),
-                if (plant.needsCO2) _StatChip(label: 'CO₂ Required', icon: Icons.bubble_chart),
-                if (!plant.needsCO2) _StatChip(label: 'No CO₂ Needed', icon: Icons.check_circle),
+                if (plant.needsCO2)
+                  _StatChip(label: 'CO₂ Required', icon: Icons.bubble_chart),
+                if (!plant.needsCO2)
+                  _StatChip(label: 'No CO₂ Needed', icon: Icons.check_circle),
               ],
             ),
 
@@ -337,29 +363,43 @@ class _PlantDetailSheet extends StatelessWidget {
             const SizedBox(height: 20),
 
             // Details
-            _DetailSection(title: 'Details', children: [
-              _DetailRow(label: 'Family', value: plant.family),
-              _DetailRow(label: 'Origin', value: plant.origin),
-              _DetailRow(label: 'Height', value: '${plant.minHeightCm.toStringAsFixed(0)}-${plant.maxHeightCm.toStringAsFixed(0)} cm'),
-              _DetailRow(label: 'Propagation', value: plant.propagation),
-            ]),
+            _DetailSection(
+              title: 'Details',
+              children: [
+                _DetailRow(label: 'Family', value: plant.family),
+                _DetailRow(label: 'Origin', value: plant.origin),
+                _DetailRow(
+                  label: 'Height',
+                  value:
+                      '${plant.minHeightCm.toStringAsFixed(0)}-${plant.maxHeightCm.toStringAsFixed(0)} cm',
+                ),
+                _DetailRow(label: 'Propagation', value: plant.propagation),
+              ],
+            ),
 
             const SizedBox(height: 16),
 
             // Tips
-            _DetailSection(title: 'Care Tips', children: [
-              ...plant.tips.map((tip) => Padding(
-                padding: const EdgeInsets.only(bottom: 8),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Icon(Icons.eco, size: 16, color: AppColors.success),
-                    const SizedBox(width: 8),
-                    Expanded(child: Text(tip, style: AppTypography.bodyMedium)),
-                  ],
+            _DetailSection(
+              title: 'Care Tips',
+              children: [
+                ...plant.tips.map(
+                  (tip) => Padding(
+                    padding: const EdgeInsets.only(bottom: 8),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Icon(Icons.eco, size: 16, color: AppColors.success),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(tip, style: AppTypography.bodyMedium),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
-              )),
-            ]),
+              ],
+            ),
 
             const SizedBox(height: 32),
           ],

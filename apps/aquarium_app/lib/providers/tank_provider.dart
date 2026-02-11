@@ -14,7 +14,7 @@ class SoftDeleteState {
   final Set<String> _deletedIds = {};
 
   bool isDeleted(String id) => _deletedIds.contains(id);
-  
+
   void markDeleted(String id, void Function() onPermanentDelete) {
     _deletedIds.add(id);
     _timers[id]?.cancel();
@@ -50,7 +50,9 @@ final _softDeleteLivestockState = SoftDeleteState();
 final tanksProvider = FutureProvider<List<Tank>>((ref) async {
   final storage = ref.watch(storageServiceProvider);
   final allTanks = await storage.getAllTanks();
-  final visibleTanks = allTanks.where((tank) => !_softDeleteState.isDeleted(tank.id)).toList();
+  final visibleTanks = allTanks
+      .where((tank) => !_softDeleteState.isDeleted(tank.id))
+      .toList();
   // Sort by sortOrder, then by createdAt as fallback
   visibleTanks.sort((a, b) {
     final orderCompare = a.sortOrder.compareTo(b.sortOrder);
@@ -225,7 +227,10 @@ class TankActions {
       for (int i = 0; i < reorderedTanks.length; i++) {
         final tank = reorderedTanks[i];
         if (tank.sortOrder != i) {
-          final updated = tank.copyWith(sortOrder: i, updatedAt: DateTime.now());
+          final updated = tank.copyWith(
+            sortOrder: i,
+            updatedAt: DateTime.now(),
+          );
           await _storage.saveTank(updated);
         }
       }
@@ -272,7 +277,11 @@ class TankActions {
 
   /// Soft delete livestock (marks for deletion, can be undone within 5 seconds)
   /// Returns a callback to undo the deletion
-  void softDeleteLivestock(String id, String tankId, {void Function()? onUndoExpired}) {
+  void softDeleteLivestock(
+    String id,
+    String tankId, {
+    void Function()? onUndoExpired,
+  }) {
     _softDeleteLivestockState.markDeleted(id, () {
       permanentlyDeleteLivestock(id, tankId);
       onUndoExpired?.call();
@@ -302,7 +311,7 @@ class TankActions {
     try {
       final moved = livestock.copyWith(tankId: newTankId);
       await _storage.saveLivestock(moved);
-      
+
       // Invalidate both tanks
       _ref.invalidate(livestockProvider(livestock.tankId));
       _ref.invalidate(livestockProvider(newTankId));
@@ -312,17 +321,21 @@ class TankActions {
   }
 
   /// Bulk move livestock to a different tank
-  Future<void> bulkMoveLivestock(List<String> livestockIds, String fromTankId, String toTankId) async {
+  Future<void> bulkMoveLivestock(
+    List<String> livestockIds,
+    String fromTankId,
+    String toTankId,
+  ) async {
     try {
       final storage = _storage;
       final allLivestock = await storage.getLivestockForTank(fromTankId);
-      
+
       for (final id in livestockIds) {
         final livestock = allLivestock.firstWhere((l) => l.id == id);
         final moved = livestock.copyWith(tankId: toTankId);
         await storage.saveLivestock(moved);
       }
-      
+
       _ref.invalidate(livestockProvider(fromTankId));
       _ref.invalidate(livestockProvider(toTankId));
     } catch (e) {
@@ -370,32 +383,49 @@ class TankActions {
 }
 
 /// Livestock for a tank (excludes soft-deleted livestock)
-final livestockProvider = FutureProvider.family<List<Livestock>, String>((ref, tankId) async {
+final livestockProvider = FutureProvider.family<List<Livestock>, String>((
+  ref,
+  tankId,
+) async {
   final storage = ref.watch(storageServiceProvider);
   final allLivestock = await storage.getLivestockForTank(tankId);
-  return allLivestock.where((livestock) => !_softDeleteLivestockState.isDeleted(livestock.id)).toList();
+  return allLivestock
+      .where((livestock) => !_softDeleteLivestockState.isDeleted(livestock.id))
+      .toList();
 });
 
 /// Equipment for a tank
-final equipmentProvider = FutureProvider.family<List<Equipment>, String>((ref, tankId) async {
+final equipmentProvider = FutureProvider.family<List<Equipment>, String>((
+  ref,
+  tankId,
+) async {
   final storage = ref.watch(storageServiceProvider);
   return storage.getEquipmentForTank(tankId);
 });
 
 /// Logs for a tank (recent only; used for previews / activity lists)
-final logsProvider = FutureProvider.family<List<LogEntry>, String>((ref, tankId) async {
+final logsProvider = FutureProvider.family<List<LogEntry>, String>((
+  ref,
+  tankId,
+) async {
   final storage = ref.watch(storageServiceProvider);
   return storage.getLogsForTank(tankId, limit: 50);
 });
 
 /// All logs for a tank (used for charts/exports)
-final allLogsProvider = FutureProvider.family<List<LogEntry>, String>((ref, tankId) async {
+final allLogsProvider = FutureProvider.family<List<LogEntry>, String>((
+  ref,
+  tankId,
+) async {
   final storage = ref.watch(storageServiceProvider);
   return storage.getLogsForTank(tankId);
 });
 
 /// Tasks for a tank (null = all tasks)
-final tasksProvider = FutureProvider.family<List<Task>, String?>((ref, tankId) async {
+final tasksProvider = FutureProvider.family<List<Task>, String?>((
+  ref,
+  tankId,
+) async {
   final storage = ref.watch(storageServiceProvider);
   return storage.getTasksForTank(tankId);
 });

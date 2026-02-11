@@ -7,7 +7,8 @@ class ShopEntry {
   final String? description;
   final String url;
   final String region; // UK, US, EU, Global
-  final List<String> categories; // Fish, Plants, Equipment, Food, Medication, etc.
+  final List<String>
+  categories; // Fish, Plants, Equipment, Food, Medication, etc.
   final bool isAffiliate;
   final String? affiliateDisclosure;
 
@@ -28,7 +29,8 @@ class ShopDirectory {
     // UK Shops
     ShopEntry(
       name: 'Aquarium Gardens',
-      description: 'Specialist in aquascaping plants, hardscape, and CO2 equipment',
+      description:
+          'Specialist in aquascaping plants, hardscape, and CO2 equipment',
       url: 'https://www.aquariumgardens.co.uk',
       region: 'UK',
       categories: ['Plants', 'Hardscape', 'CO2', 'Aquascaping'],
@@ -86,7 +88,8 @@ class ShopDirectory {
     ),
     ShopEntry(
       name: 'Buceplant',
-      description: 'Aquascaping specialists — plants, hardscape, tissue cultures',
+      description:
+          'Aquascaping specialists — plants, hardscape, tissue cultures',
       url: 'https://buceplant.com',
       region: 'US',
       categories: ['Plants', 'Hardscape', 'Aquascaping', 'Shrimp'],
@@ -119,7 +122,7 @@ class ShopDirectory {
       region: 'US',
       categories: ['Plants', 'Fish', 'Equipment'],
     ),
-    
+
     // EU Shops
     ShopEntry(
       name: 'Aquasabi',
@@ -164,8 +167,11 @@ class ShopDirectory {
   /// Get shops by category.
   static List<ShopEntry> byCategory(String category) {
     return _allShops
-        .where((s) => s.categories.any(
-            (c) => c.toLowerCase() == category.toLowerCase()))
+        .where(
+          (s) => s.categories.any(
+            (c) => c.toLowerCase() == category.toLowerCase(),
+          ),
+        )
         .toList();
   }
 
@@ -186,10 +192,6 @@ class ShopDirectory {
 
   /// Get all unique categories.
   static List<String> get categories {
-    return _allShops
-        .expand((s) => s.categories)
-        .toSet()
-        .toList()
-      ..sort();
+    return _allShops.expand((s) => s.categories).toSet().toList()..sort();
   }
 }

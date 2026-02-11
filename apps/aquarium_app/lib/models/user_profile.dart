@@ -2,25 +2,20 @@
 /// This powers the "Duolingo for fishkeeping" learning journey
 library;
 
-
 import 'package:flutter/foundation.dart';
 import 'lesson_progress.dart';
 import 'tank.dart'; // For TankType enum
 import 'leaderboard.dart'; // For League enum
 import 'shop_item.dart'; // For InventoryItem
 
-enum ExperienceLevel {
-  beginner,
-  intermediate,
-  expert,
-}
+enum ExperienceLevel { beginner, intermediate, expert }
 
 enum UserGoal {
-  keepFishAlive,    // Just want healthy fish
+  keepFishAlive, // Just want healthy fish
   beautifulDisplay, // Aesthetic focus
-  breeding,         // Want to breed fish
-  competition,      // Show quality
-  relaxation,       // Stress relief, zen
+  breeding, // Want to breed fish
+  competition, // Show quality
+  relaxation, // Stress relief, zen
 }
 
 @immutable
@@ -30,55 +25,60 @@ class UserProfile {
   final ExperienceLevel experienceLevel;
   final TankType primaryTankType;
   final List<UserGoal> goals;
-  
+
   // Gamification
   final int totalXp;
-  final int currentStreak;        // Days in a row
+  final int currentStreak; // Days in a row
   final int longestStreak;
   final DateTime? lastActivityDate;
   final List<String> achievements; // Achievement IDs
-  final List<String> completedLessons; // Legacy - kept for backward compatibility
-  final Map<String, LessonProgress> lessonProgress; // Spaced repetition tracking
-  
+  final List<String>
+  completedLessons; // Legacy - kept for backward compatibility
+  final Map<String, LessonProgress>
+  lessonProgress; // Spaced repetition tracking
+
   // Story Mode
   final List<String> completedStories; // Story IDs
   final Map<String, dynamic> storyProgress; // Story ID -> StoryProgress JSON
-  
+
   // Placement Test
   final bool hasCompletedPlacementTest;
   final String? placementResultId; // Reference to PlacementResult
   final DateTime? placementTestDate;
-  
+
   // Daily Goals
-  final int dailyXpGoal;          // Target XP per day (default 50)
+  final int dailyXpGoal; // Target XP per day (default 50)
   final Map<String, int> dailyXpHistory; // 'YYYY-MM-DD' -> XP earned that day
-  
+
   // Streak Freeze (1 free skip per week)
-  final bool hasStreakFreeze;     // Currently has a freeze available
+  final bool hasStreakFreeze; // Currently has a freeze available
   final DateTime? streakFreezeUsedDate; // When was it last used
   final DateTime? streakFreezeGrantedDate; // When was it granted (weekly reset)
-  
+
   // Hearts/Lives System (Duolingo-style)
-  final int hearts;               // Current hearts (0-5)
+  final int hearts; // Current hearts (0-5)
   final DateTime? lastHeartRefill; // Last time hearts auto-refilled
-  
+
   // Leaderboard/Competition
-  final League league;            // Current competitive league (Bronze/Silver/Gold/Diamond)
-  final int weeklyXP;             // XP earned this week (Monday-Sunday)
-  final DateTime? weekStartDate;  // When current week started (for reset tracking)
-  
+  final League
+  league; // Current competitive league (Bronze/Silver/Gold/Diamond)
+  final int weeklyXP; // XP earned this week (Monday-Sunday)
+  final DateTime?
+  weekStartDate; // When current week started (for reset tracking)
+
   // Shop & Inventory
   final List<InventoryItem> inventory; // Purchased shop items
-  
+
   // Preferences
   final bool dailyTipsEnabled;
   final bool streakRemindersEnabled;
-  final bool hasSeenTutorial;  // Whether user has seen first-launch tutorial
-  final String? reminderTime;     // "09:00" format (deprecated - use morningReminderTime)
-  final String? morningReminderTime;  // "09:00" format
-  final String? eveningReminderTime;  // "19:00" format
-  final String? nightReminderTime;    // "23:00" format
-  
+  final bool hasSeenTutorial; // Whether user has seen first-launch tutorial
+  final String?
+  reminderTime; // "09:00" format (deprecated - use morningReminderTime)
+  final String? morningReminderTime; // "09:00" format
+  final String? eveningReminderTime; // "19:00" format
+  final String? nightReminderTime; // "23:00" format
+
   final DateTime createdAt;
   final DateTime updatedAt;
 
@@ -181,7 +181,7 @@ class UserProfile {
   }
 
   bool get hasStreak => currentStreak > 0;
-  
+
   bool get isStreakActive {
     if (lastActivityDate == null) return false;
     final now = DateTime.now();
@@ -194,38 +194,38 @@ class UserProfile {
     final yesterday = today.subtract(const Duration(days: 1));
     return lastDate == today || lastDate == yesterday;
   }
-  
+
   /// Check if streak freeze should be reset (weekly reset on Monday)
   bool get shouldResetStreakFreeze {
     if (streakFreezeGrantedDate == null) return true;
-    
+
     final now = DateTime.now();
     final granted = streakFreezeGrantedDate!;
-    
+
     // Get the Monday of current week
     final currentMonday = now.subtract(Duration(days: now.weekday - 1));
     final grantedMonday = granted.subtract(Duration(days: granted.weekday - 1));
-    
+
     // Different weeks = reset
-    return currentMonday.isAfter(grantedMonday) || 
-           currentMonday.day != grantedMonday.day;
+    return currentMonday.isAfter(grantedMonday) ||
+        currentMonday.day != grantedMonday.day;
   }
-  
+
   /// Check if freeze was used this week
   bool get streakFreezeUsedThisWeek {
     if (streakFreezeUsedDate == null) return false;
-    
+
     final now = DateTime.now();
     final used = streakFreezeUsedDate!;
-    
+
     // Get the Monday of current week
     final currentMonday = now.subtract(Duration(days: now.weekday - 1));
     final usedMonday = used.subtract(Duration(days: used.weekday - 1));
-    
+
     // Same week = used this week
     return currentMonday.year == usedMonday.year &&
-           currentMonday.month == usedMonday.month &&
-           currentMonday.day == usedMonday.day;
+        currentMonday.month == usedMonday.month &&
+        currentMonday.day == usedMonday.day;
   }
 
   UserProfile copyWith({
@@ -282,14 +282,16 @@ class UserProfile {
       lessonProgress: lessonProgress ?? this.lessonProgress,
       completedStories: completedStories ?? this.completedStories,
       storyProgress: storyProgress ?? this.storyProgress,
-      hasCompletedPlacementTest: hasCompletedPlacementTest ?? this.hasCompletedPlacementTest,
+      hasCompletedPlacementTest:
+          hasCompletedPlacementTest ?? this.hasCompletedPlacementTest,
       placementResultId: placementResultId ?? this.placementResultId,
       placementTestDate: placementTestDate ?? this.placementTestDate,
       dailyXpGoal: dailyXpGoal ?? this.dailyXpGoal,
       dailyXpHistory: dailyXpHistory ?? this.dailyXpHistory,
       hasStreakFreeze: hasStreakFreeze ?? this.hasStreakFreeze,
       streakFreezeUsedDate: streakFreezeUsedDate ?? this.streakFreezeUsedDate,
-      streakFreezeGrantedDate: streakFreezeGrantedDate ?? this.streakFreezeGrantedDate,
+      streakFreezeGrantedDate:
+          streakFreezeGrantedDate ?? this.streakFreezeGrantedDate,
       hearts: hearts ?? this.hearts,
       lastHeartRefill: lastHeartRefill ?? this.lastHeartRefill,
       league: league ?? this.league,
@@ -297,7 +299,8 @@ class UserProfile {
       weekStartDate: weekStartDate ?? this.weekStartDate,
       inventory: inventory ?? this.inventory,
       dailyTipsEnabled: dailyTipsEnabled ?? this.dailyTipsEnabled,
-      streakRemindersEnabled: streakRemindersEnabled ?? this.streakRemindersEnabled,
+      streakRemindersEnabled:
+          streakRemindersEnabled ?? this.streakRemindersEnabled,
       hasSeenTutorial: hasSeenTutorial ?? this.hasSeenTutorial,
       reminderTime: reminderTime ?? this.reminderTime,
       morningReminderTime: morningReminderTime ?? this.morningReminderTime,
@@ -320,7 +323,9 @@ class UserProfile {
     'lastActivityDate': lastActivityDate?.toIso8601String(),
     'achievements': achievements,
     'completedLessons': completedLessons,
-    'lessonProgress': lessonProgress.map((key, value) => MapEntry(key, value.toJson())),
+    'lessonProgress': lessonProgress.map(
+      (key, value) => MapEntry(key, value.toJson()),
+    ),
     'completedStories': completedStories,
     'storyProgress': storyProgress,
     'hasCompletedPlacementTest': hasCompletedPlacementTest,
@@ -360,40 +365,58 @@ class UserProfile {
         (e) => e.name == json['primaryTankType'],
         orElse: () => TankType.freshwater,
       ),
-      goals: (json['goals'] as List<dynamic>?)
-          ?.map((g) => UserGoal.values.firstWhere(
-                (e) => e.name == g,
-                orElse: () => UserGoal.keepFishAlive,
-              ))
-          .toList() ?? [UserGoal.keepFishAlive],
+      goals:
+          (json['goals'] as List<dynamic>?)
+              ?.map(
+                (g) => UserGoal.values.firstWhere(
+                  (e) => e.name == g,
+                  orElse: () => UserGoal.keepFishAlive,
+                ),
+              )
+              .toList() ??
+          [UserGoal.keepFishAlive],
       totalXp: json['totalXp'] as int? ?? 0,
       currentStreak: json['currentStreak'] as int? ?? 0,
       longestStreak: json['longestStreak'] as int? ?? 0,
       lastActivityDate: json['lastActivityDate'] != null
           ? DateTime.parse(json['lastActivityDate'] as String)
           : null,
-      achievements: (json['achievements'] as List<dynamic>?)
-          ?.map((e) => e as String)
-          .toList() ?? [],
-      completedLessons: (json['completedLessons'] as List<dynamic>?)
-          ?.map((e) => e as String)
-          .toList() ?? [],
-      lessonProgress: (json['lessonProgress'] as Map<String, dynamic>?)
-          ?.map((key, value) => MapEntry(key, LessonProgress.fromJson(value as Map<String, dynamic>)))
-          ?? {},
-      completedStories: (json['completedStories'] as List<dynamic>?)
-          ?.map((e) => e as String)
-          .toList() ?? [],
+      achievements:
+          (json['achievements'] as List<dynamic>?)
+              ?.map((e) => e as String)
+              .toList() ??
+          [],
+      completedLessons:
+          (json['completedLessons'] as List<dynamic>?)
+              ?.map((e) => e as String)
+              .toList() ??
+          [],
+      lessonProgress:
+          (json['lessonProgress'] as Map<String, dynamic>?)?.map(
+            (key, value) => MapEntry(
+              key,
+              LessonProgress.fromJson(value as Map<String, dynamic>),
+            ),
+          ) ??
+          {},
+      completedStories:
+          (json['completedStories'] as List<dynamic>?)
+              ?.map((e) => e as String)
+              .toList() ??
+          [],
       storyProgress: (json['storyProgress'] as Map<String, dynamic>?) ?? {},
-      hasCompletedPlacementTest: json['hasCompletedPlacementTest'] as bool? ?? false,
+      hasCompletedPlacementTest:
+          json['hasCompletedPlacementTest'] as bool? ?? false,
       placementResultId: json['placementResultId'] as String?,
       placementTestDate: json['placementTestDate'] != null
           ? DateTime.parse(json['placementTestDate'] as String)
           : null,
       dailyXpGoal: json['dailyXpGoal'] as int? ?? 50,
-      dailyXpHistory: (json['dailyXpHistory'] as Map<String, dynamic>?)
-          ?.map((key, value) => MapEntry(key, value as int))
-          ?? {},
+      dailyXpHistory:
+          (json['dailyXpHistory'] as Map<String, dynamic>?)?.map(
+            (key, value) => MapEntry(key, value as int),
+          ) ??
+          {},
       hasStreakFreeze: json['hasStreakFreeze'] as bool? ?? true,
       streakFreezeUsedDate: json['streakFreezeUsedDate'] != null
           ? DateTime.parse(json['streakFreezeUsedDate'] as String)
@@ -412,9 +435,11 @@ class UserProfile {
       weekStartDate: json['weekStartDate'] != null
           ? DateTime.parse(json['weekStartDate'] as String)
           : null,
-      inventory: (json['inventory'] as List<dynamic>?)
-          ?.map((e) => InventoryItem.fromJson(e as Map<String, dynamic>))
-          .toList() ?? [],
+      inventory:
+          (json['inventory'] as List<dynamic>?)
+              ?.map((e) => InventoryItem.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          [],
       dailyTipsEnabled: json['dailyTipsEnabled'] as bool? ?? true,
       streakRemindersEnabled: json['streakRemindersEnabled'] as bool? ?? true,
       hasSeenTutorial: json['hasSeenTutorial'] as bool? ?? false,

@@ -2,16 +2,14 @@
 /// Organized by category: Learning, Streaks, XP, Special, Engagement
 library;
 
-
 import '../models/achievements.dart';
 
 /// All available achievements in the app
 class AchievementDefinitions {
-  
   // ========================================================================
   // LEARNING PROGRESS (10 achievements)
   // ========================================================================
-  
+
   static const firstLesson = Achievement(
     id: 'first_lesson',
     name: 'First Steps',
@@ -587,7 +585,7 @@ class AchievementDefinitions {
     plantsMaster,
     livestockMaster,
     placement,
-    
+
     // Streaks (13)
     streak3,
     streak7,
@@ -602,7 +600,7 @@ class AchievementDefinitions {
     reviewStreak7,
     reviewStreak14,
     reviewStreak30,
-    
+
     // XP Milestones (8)
     xp100,
     xp500,
@@ -612,7 +610,7 @@ class AchievementDefinitions {
     xp10000,
     xp25000,
     xp50000,
-    
+
     // Special (11)
     earlyBird,
     nightOwl,
@@ -626,7 +624,7 @@ class AchievementDefinitions {
     midnightScholar,
     heartCollector,
     leagueClimber,
-    
+
     // Engagement (12)
     dailyTips10,
     dailyTips50,

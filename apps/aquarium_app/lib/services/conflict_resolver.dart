@@ -5,13 +5,13 @@ import 'package:flutter/foundation.dart';
 enum ConflictResolutionStrategy {
   /// Most recent update wins (based on timestamp)
   lastWriteWins,
-  
+
   /// Local changes always take precedence
   localWins,
-  
-  /// Remote changes always take precedence  
+
+  /// Remote changes always take precedence
   remoteWins,
-  
+
   /// Merge both changes intelligently
   merge,
 }
@@ -34,19 +34,20 @@ class ConflictResolution<T> {
 /// Service for resolving data conflicts during sync
 class ConflictResolver {
   /// Resolve conflict between local and remote data
-  /// 
+  ///
   /// This is the main entry point for conflict resolution.
   /// For a local-only app, this handles edge cases where the same data
   /// was modified in quick succession or queued multiple times.
   static ConflictResolution<Map<String, dynamic>> resolve({
     required Map<String, dynamic> local,
     required Map<String, dynamic> remote,
-    ConflictResolutionStrategy strategy = ConflictResolutionStrategy.lastWriteWins,
+    ConflictResolutionStrategy strategy =
+        ConflictResolutionStrategy.lastWriteWins,
   }) {
     switch (strategy) {
       case ConflictResolutionStrategy.lastWriteWins:
         return _resolveLastWriteWins(local, remote);
-      
+
       case ConflictResolutionStrategy.localWins:
         return ConflictResolution(
           resolved: local,
@@ -54,7 +55,7 @@ class ConflictResolver {
           conflictDescription: 'Local changes preserved',
           strategyUsed: strategy,
         );
-      
+
       case ConflictResolutionStrategy.remoteWins:
         return ConflictResolution(
           resolved: remote,
@@ -62,7 +63,7 @@ class ConflictResolver {
           conflictDescription: 'Remote changes preserved',
           strategyUsed: strategy,
         );
-      
+
       case ConflictResolutionStrategy.merge:
         return _resolveMerge(local, remote);
     }
@@ -91,7 +92,7 @@ class ConflictResolver {
         strategyUsed: ConflictResolutionStrategy.lastWriteWins,
       );
     }
-    
+
     if (remoteTime == null) {
       return ConflictResolution(
         resolved: local,
@@ -103,12 +104,12 @@ class ConflictResolver {
 
     // Compare timestamps
     final hasConflict = !_areEqual(local, remote);
-    
+
     if (localTime.isAfter(remoteTime)) {
       return ConflictResolution(
         resolved: local,
         hadConflict: hasConflict,
-        conflictDescription: hasConflict 
+        conflictDescription: hasConflict
             ? 'Local is newer (${_formatTimeDiff(localTime, remoteTime)})'
             : null,
         strategyUsed: ConflictResolutionStrategy.lastWriteWins,
@@ -127,7 +128,7 @@ class ConflictResolver {
       return ConflictResolution(
         resolved: local,
         hadConflict: hasConflict,
-        conflictDescription: hasConflict 
+        conflictDescription: hasConflict
             ? 'Same timestamp, keeping local'
             : null,
         strategyUsed: ConflictResolutionStrategy.lastWriteWins,
@@ -162,8 +163,9 @@ class ConflictResolver {
         // Values differ - apply merge strategy based on type
         final mergedValue = _mergeValue(key, localValue, remoteValue);
         merged[key] = mergedValue;
-        
-        if (!_areEqual(mergedValue, localValue) || !_areEqual(mergedValue, remoteValue)) {
+
+        if (!_areEqual(mergedValue, localValue) ||
+            !_areEqual(mergedValue, remoteValue)) {
           conflicts.add(key);
         }
       }
@@ -172,7 +174,7 @@ class ConflictResolver {
     return ConflictResolution(
       resolved: merged,
       hadConflict: conflicts.isNotEmpty,
-      conflictDescription: conflicts.isNotEmpty 
+      conflictDescription: conflicts.isNotEmpty
           ? 'Merged conflicts in: ${conflicts.join(', ')}'
           : null,
       strategyUsed: ConflictResolutionStrategy.merge,
@@ -184,8 +186,8 @@ class ConflictResolver {
     // Numbers: Use the larger value (assumes incremental changes)
     if (local is num && remote is num) {
       // For XP, gems, counts - use max
-      if (key.contains('xp') || 
-          key.contains('gems') || 
+      if (key.contains('xp') ||
+          key.contains('gems') ||
           key.contains('count') ||
           key.contains('total') ||
           key.contains('hearts')) {
@@ -238,7 +240,13 @@ class ConflictResolver {
   /// Extract timestamp from data (looks for common timestamp fields)
   static DateTime? _extractTimestamp(Map<String, dynamic> data) {
     // Try common timestamp field names
-    for (final key in ['timestamp', 'updatedAt', 'updated_at', 'modifiedAt', 'modified_at']) {
+    for (final key in [
+      'timestamp',
+      'updatedAt',
+      'updated_at',
+      'modifiedAt',
+      'modified_at',
+    ]) {
       final value = data[key];
       if (value != null) {
         try {
@@ -258,7 +266,7 @@ class ConflictResolver {
   /// Format time difference in human-readable form
   static String _formatTimeDiff(DateTime newer, DateTime older) {
     final diff = newer.difference(older);
-    
+
     if (diff.inSeconds < 60) {
       return '${diff.inSeconds}s newer';
     } else if (diff.inMinutes < 60) {

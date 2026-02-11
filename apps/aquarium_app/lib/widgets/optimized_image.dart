@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 /// Optimized network image with lazy loading and memory caching
-/// 
+///
 /// Memory optimization: Images are cached at display size, not full resolution
 /// Example: 200x150 display size = ~120KB vs 600KB for full image (80% savings)
 class OptimizedNetworkImage extends StatelessWidget {
@@ -38,8 +38,12 @@ class OptimizedNetworkImage extends StatelessWidget {
     // Calculate cache dimensions based on device pixel ratio
     // This ensures images are sized appropriately for display resolution
     final devicePixelRatio = MediaQuery.of(context).devicePixelRatio;
-    final cacheWidth = width != null ? (width! * devicePixelRatio).round() : null;
-    final cacheHeight = height != null ? (height! * devicePixelRatio).round() : null;
+    final cacheWidth = width != null
+        ? (width! * devicePixelRatio).round()
+        : null;
+    final cacheHeight = height != null
+        ? (height! * devicePixelRatio).round()
+        : null;
 
     Widget imageWidget = CachedNetworkImage(
       imageUrl: imageUrl,
@@ -48,33 +52,34 @@ class OptimizedNetworkImage extends StatelessWidget {
       fit: fit,
       memCacheWidth: cacheWidth,
       memCacheHeight: cacheHeight,
-      fadeInDuration: fadeIn ? const Duration(milliseconds: 300) : Duration.zero,
-      placeholder: (context, url) => placeholder ?? 
-        Center(
-          child: SizedBox(
-            width: 20,
-            height: 20,
-            child: CircularProgressIndicator(
-              strokeWidth: 2,
-              valueColor: AlwaysStoppedAnimation<Color>(
-                Theme.of(context).primaryColor.withOpacity(0.5),
+      fadeInDuration: fadeIn
+          ? const Duration(milliseconds: 300)
+          : Duration.zero,
+      placeholder: (context, url) =>
+          placeholder ??
+          Center(
+            child: SizedBox(
+              width: 20,
+              height: 20,
+              child: CircularProgressIndicator(
+                strokeWidth: 2,
+                valueColor: AlwaysStoppedAnimation<Color>(
+                  Theme.of(context).primaryColor.withOpacity(0.5),
+                ),
               ),
             ),
           ),
-        ),
-      errorWidget: (context, url, error) => errorWidget ?? 
-        Icon(
-          Icons.broken_image_outlined,
-          color: Colors.grey.shade400,
-          size: 48,
-        ),
+      errorWidget: (context, url, error) =>
+          errorWidget ??
+          Icon(
+            Icons.broken_image_outlined,
+            color: Colors.grey.shade400,
+            size: 48,
+          ),
     );
 
     if (borderRadius != null) {
-      imageWidget = ClipRRect(
-        borderRadius: borderRadius!,
-        child: imageWidget,
-      );
+      imageWidget = ClipRRect(borderRadius: borderRadius!, child: imageWidget);
     }
 
     return imageWidget;
@@ -82,7 +87,7 @@ class OptimizedNetworkImage extends StatelessWidget {
 }
 
 /// Optimized local asset image with sizing hints
-/// 
+///
 /// Memory optimization: Images decoded at display size
 /// Perfect for static assets in lists/grids
 class OptimizedAssetImage extends StatelessWidget {
@@ -104,8 +109,12 @@ class OptimizedAssetImage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final devicePixelRatio = MediaQuery.of(context).devicePixelRatio;
-    final cacheWidth = width != null ? (width! * devicePixelRatio).round() : null;
-    final cacheHeight = height != null ? (height! * devicePixelRatio).round() : null;
+    final cacheWidth = width != null
+        ? (width! * devicePixelRatio).round()
+        : null;
+    final cacheHeight = height != null
+        ? (height! * devicePixelRatio).round()
+        : null;
 
     Widget imageWidget = Image.asset(
       assetPath,
@@ -117,10 +126,7 @@ class OptimizedAssetImage extends StatelessWidget {
     );
 
     if (borderRadius != null) {
-      imageWidget = ClipRRect(
-        borderRadius: borderRadius!,
-        child: imageWidget,
-      );
+      imageWidget = ClipRRect(borderRadius: borderRadius!, child: imageWidget);
     }
 
     return imageWidget;
@@ -128,7 +134,7 @@ class OptimizedAssetImage extends StatelessWidget {
 }
 
 /// Optimized file image for local photos
-/// 
+///
 /// Use for user-uploaded photos, camera images, etc.
 /// Automatically handles memory-efficient loading
 class OptimizedFileImage extends StatelessWidget {
@@ -150,8 +156,12 @@ class OptimizedFileImage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final devicePixelRatio = MediaQuery.of(context).devicePixelRatio;
-    final cacheWidth = width != null ? (width! * devicePixelRatio).round() : null;
-    final cacheHeight = height != null ? (height! * devicePixelRatio).round() : null;
+    final cacheWidth = width != null
+        ? (width! * devicePixelRatio).round()
+        : null;
+    final cacheHeight = height != null
+        ? (height! * devicePixelRatio).round()
+        : null;
 
     Widget imageWidget = Image.file(
       file,
@@ -163,10 +173,7 @@ class OptimizedFileImage extends StatelessWidget {
     );
 
     if (borderRadius != null) {
-      imageWidget = ClipRRect(
-        borderRadius: borderRadius!,
-        child: imageWidget,
-      );
+      imageWidget = ClipRRect(borderRadius: borderRadius!, child: imageWidget);
     }
 
     return imageWidget;

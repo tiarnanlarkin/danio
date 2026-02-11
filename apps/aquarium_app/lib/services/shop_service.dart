@@ -32,15 +32,15 @@ class ShopService {
     } catch (_) {
       return false;
     }
-    
+
     // Check if it's a consumable with quantity
     if (item.quantity > 0) return true;
-    
+
     // Check if it's a time-based item that hasn't expired
     if (item.expiresAt != null) {
       return !item.isExpired;
     }
-    
+
     // Non-consumable permanent item
     return true;
   }
@@ -59,7 +59,7 @@ class ShopService {
   /// Check if user can purchase an item
   PurchaseResult canPurchase(ShopItem item) {
     final gemBalance = ref.read(gemBalanceProvider);
-    
+
     // Check if user has enough gems
     if (gemBalance < item.gemCost) {
       return PurchaseResult.insufficientGems(
@@ -125,19 +125,21 @@ class ShopService {
           ? now.add(Duration(hours: item.durationHours!))
           : null;
 
-      inventory.add(InventoryItem(
-        itemId: item.id,
-        quantity: item.quantity ?? 1,
-        expiresAt: expiresAt,
-        purchasedAt: now,
-        isActive: false,
-      ));
+      inventory.add(
+        InventoryItem(
+          itemId: item.id,
+          quantity: item.quantity ?? 1,
+          expiresAt: expiresAt,
+          purchasedAt: now,
+          isActive: false,
+        ),
+      );
     }
 
     // Update profile with new inventory
-    await ref.read(userProfileProvider.notifier).updateProfile(
-      inventory: inventory,
-    );
+    await ref
+        .read(userProfileProvider.notifier)
+        .updateProfile(inventory: inventory);
   }
 
   /// Use/activate a consumable item
@@ -164,9 +166,7 @@ class ShopService {
         // Remove item if quantity reaches 0
         inventory.removeAt(itemIndex);
       } else {
-        inventory[itemIndex] = item.copyWith(
-          quantity: item.quantity - 1,
-        );
+        inventory[itemIndex] = item.copyWith(quantity: item.quantity - 1);
       }
     } else {
       // For time-based items, activate them
@@ -182,9 +182,9 @@ class ShopService {
     }
 
     // Update profile
-    await ref.read(userProfileProvider.notifier).updateProfile(
-      inventory: inventory,
-    );
+    await ref
+        .read(userProfileProvider.notifier)
+        .updateProfile(inventory: inventory);
 
     return true;
   }
@@ -200,7 +200,7 @@ class ShopService {
     }
     if (!item.isActive) return false;
     if (item.isExpired) return false;
-    
+
     return true;
   }
 
@@ -209,12 +209,14 @@ class ShopService {
     final profile = ref.read(userProfileProvider).value;
     if (profile == null) return;
 
-    final inventory = profile.inventory.where((item) => !item.isExpired).toList();
+    final inventory = profile.inventory
+        .where((item) => !item.isExpired)
+        .toList();
 
     if (inventory.length != profile.inventory.length) {
-      await ref.read(userProfileProvider.notifier).updateProfile(
-        inventory: inventory,
-      );
+      await ref
+          .read(userProfileProvider.notifier)
+          .updateProfile(inventory: inventory);
     }
   }
 

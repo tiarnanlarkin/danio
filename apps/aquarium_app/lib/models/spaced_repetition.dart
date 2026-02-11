@@ -2,7 +2,6 @@
 /// Implements forgetting curve algorithm with review cards and intelligent scheduling
 library;
 
-
 import 'package:flutter/foundation.dart';
 import 'dart:math' as math;
 
@@ -14,17 +13,17 @@ import 'dart:math' as math;
 /// Tracks strength, intervals, and scheduling using forgetting curve
 @immutable
 class ReviewCard {
-  final String id;                    // Unique card ID
-  final String conceptId;             // Reference to lesson/question/concept
-  final ConceptType conceptType;      // What kind of concept this is
-  final double strength;              // 0.0 - 1.0 (mastery level)
-  final DateTime lastReviewed;        // When last reviewed
-  final DateTime nextReview;          // When next review is due
-  final int reviewCount;              // Total number of reviews
-  final int correctCount;             // Number of correct answers
-  final int incorrectCount;           // Number of incorrect answers
+  final String id; // Unique card ID
+  final String conceptId; // Reference to lesson/question/concept
+  final ConceptType conceptType; // What kind of concept this is
+  final double strength; // 0.0 - 1.0 (mastery level)
+  final DateTime lastReviewed; // When last reviewed
+  final DateTime nextReview; // When next review is due
+  final int reviewCount; // Total number of reviews
+  final int correctCount; // Number of correct answers
+  final int incorrectCount; // Number of incorrect answers
   final ReviewInterval currentInterval; // Current review interval
-  final List<ReviewAttempt> history;  // Review history
+  final List<ReviewAttempt> history; // Review history
 
   const ReviewCard({
     required this.id,
@@ -41,7 +40,9 @@ class ReviewCard {
   });
 
   /// Check if card is due for review
-  bool get isDue => DateTime.now().isAfter(nextReview) || DateTime.now().isAtSameMomentAs(nextReview);
+  bool get isDue =>
+      DateTime.now().isAfter(nextReview) ||
+      DateTime.now().isAtSameMomentAs(nextReview);
 
   /// Check if card is weak (needs priority)
   bool get isWeak => strength < 0.5;
@@ -65,12 +66,9 @@ class ReviewCard {
   }
 
   /// Create new card after a review attempt
-  ReviewCard afterReview({
-    required bool correct,
-    DateTime? reviewedAt,
-  }) {
+  ReviewCard afterReview({required bool correct, DateTime? reviewedAt}) {
     final now = reviewedAt ?? DateTime.now();
-    
+
     // Adjust strength based on correctness
     double newStrength = strength;
     if (correct) {
@@ -127,15 +125,15 @@ class ReviewCard {
   /// Strength decays over time since last review
   double calculateCurrentStrength() {
     final daysSinceReview = DateTime.now().difference(lastReviewed).inDays;
-    
+
     // No decay if not yet due
     if (!isDue) return strength;
-    
+
     // Forgetting curve: exponential decay
     // Formula: strength * e^(-decayRate * days)
     const decayRate = 0.1; // Adjust this to control decay speed
     final decayFactor = math.exp(-decayRate * daysSinceReview);
-    
+
     return math.max(0.0, strength * decayFactor);
   }
 
@@ -170,9 +168,11 @@ class ReviewCard {
         (i) => i.toString().split('.').last == json['currentInterval'],
         orElse: () => ReviewInterval.day1,
       ),
-      history: (json['history'] as List?)
-          ?.map((h) => ReviewAttempt.fromJson(h))
-          .toList() ?? [],
+      history:
+          (json['history'] as List?)
+              ?.map((h) => ReviewAttempt.fromJson(h))
+              .toList() ??
+          [],
     );
   }
 
@@ -204,11 +204,11 @@ class ReviewCard {
 
 /// Predefined review intervals based on spaced repetition best practices
 enum ReviewInterval {
-  day1,   // 1 day
-  day3,   // 3 days
-  day7,   // 7 days
-  day14,  // 14 days
-  day30,  // 30 days
+  day1, // 1 day
+  day3, // 3 days
+  day7, // 7 days
+  day14, // 14 days
+  day30, // 30 days
 }
 
 extension ReviewIntervalExt on ReviewInterval {
@@ -249,11 +249,11 @@ extension ReviewIntervalExt on ReviewInterval {
 
 /// Types of learnable concepts
 enum ConceptType {
-  lesson,           // Full lesson
-  quizQuestion,     // Individual quiz question
-  definition,       // Terminology/definition
-  procedure,        // Step-by-step procedure
-  fact,            // Single fact
+  lesson, // Full lesson
+  quizQuestion, // Individual quiz question
+  definition, // Terminology/definition
+  procedure, // Step-by-step procedure
+  fact, // Single fact
 }
 
 // ==========================================
@@ -262,11 +262,11 @@ enum ConceptType {
 
 /// Visual representation of mastery progress
 enum MasteryLevel {
-  new_,           // 0-30%: Just learning
-  learning,       // 30-50%: Making progress
-  familiar,       // 50-70%: Comfortable
-  proficient,     // 70-90%: Strong understanding
-  mastered,       // 90-100%: Mastered
+  new_, // 0-30%: Just learning
+  learning, // 30-50%: Making progress
+  familiar, // 50-70%: Comfortable
+  proficient, // 70-90%: Strong understanding
+  mastered, // 90-100%: Mastered
 }
 
 extension MasteryLevelExt on MasteryLevel {
@@ -415,8 +415,12 @@ class ReviewSession {
       id: json['id'],
       startTime: DateTime.parse(json['startTime']),
       endTime: json['endTime'] != null ? DateTime.parse(json['endTime']) : null,
-      cards: (json['cards'] as List).map((c) => ReviewCard.fromJson(c)).toList(),
-      results: (json['results'] as List).map((r) => ReviewSessionResult.fromJson(r)).toList(),
+      cards: (json['cards'] as List)
+          .map((c) => ReviewCard.fromJson(c))
+          .toList(),
+      results: (json['results'] as List)
+          .map((r) => ReviewSessionResult.fromJson(r))
+          .toList(),
       mode: ReviewSessionMode.values.firstWhere(
         (m) => m.toString().split('.').last == json['mode'],
         orElse: () => ReviewSessionMode.standard,
@@ -462,10 +466,10 @@ class ReviewSessionResult {
 }
 
 enum ReviewSessionMode {
-  standard,    // Regular review
-  quick,       // Quick 5-question review
-  intensive,   // Focus on weak cards
-  mixed,       // Mix of due + strong cards (spaced practice)
+  standard, // Regular review
+  quick, // Quick 5-question review
+  intensive, // Focus on weak cards
+  mixed, // Mix of due + strong cards (spaced practice)
 }
 
 // ==========================================
@@ -496,7 +500,11 @@ class ReviewStats {
   });
 
   /// Calculate from list of cards
-  factory ReviewStats.fromCards(List<ReviewCard> cards, {int reviewsToday = 0, int streak = 0}) {
+  factory ReviewStats.fromCards(
+    List<ReviewCard> cards, {
+    int reviewsToday = 0,
+    int streak = 0,
+  }) {
     if (cards.isEmpty) {
       return ReviewStats(
         totalCards: 0,
@@ -512,8 +520,11 @@ class ReviewStats {
 
     final due = cards.where((c) => c.isDue).length;
     final weak = cards.where((c) => c.isWeak).length;
-    final mastered = cards.where((c) => c.masteryLevel == MasteryLevel.mastered).length;
-    final avgStrength = cards.fold(0.0, (sum, c) => sum + c.strength) / cards.length;
+    final mastered = cards
+        .where((c) => c.masteryLevel == MasteryLevel.mastered)
+        .length;
+    final avgStrength =
+        cards.fold(0.0, (sum, c) => sum + c.strength) / cards.length;
 
     final byMastery = <MasteryLevel, int>{};
     for (final level in MasteryLevel.values) {

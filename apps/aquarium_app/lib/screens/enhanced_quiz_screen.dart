@@ -2,7 +2,6 @@
 /// Replaces the basic quiz functionality with multi-type support
 library;
 
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/exercises.dart';
@@ -45,7 +44,7 @@ class _EnhancedQuizScreenState extends ConsumerState<EnhancedQuizScreen>
   bool _showHeartAnimation = false;
   bool _xpAnimationShown = false;
   int? _levelBeforeQuiz;
-  
+
   late AnimationController _progressController;
   late AnimationController _feedbackController;
   late Animation<double> _progressAnimation;
@@ -54,34 +53,28 @@ class _EnhancedQuizScreenState extends ConsumerState<EnhancedQuizScreen>
   @override
   void initState() {
     super.initState();
-    
+
     _progressController = AnimationController(
       duration: const Duration(milliseconds: 600),
       vsync: this,
     );
-    
+
     _feedbackController = AnimationController(
       duration: const Duration(milliseconds: 400),
       vsync: this,
     );
-    
-    _progressAnimation = Tween<double>(
-      begin: 0,
-      end: 1 / widget.quiz.exercises.length,
-    ).animate(CurvedAnimation(
-      parent: _progressController,
-      curve: Curves.easeInOut,
-    ));
-    
+
+    _progressAnimation =
+        Tween<double>(begin: 0, end: 1 / widget.quiz.exercises.length).animate(
+          CurvedAnimation(parent: _progressController, curve: Curves.easeInOut),
+        );
+
     _feedbackScale = Tween<double>(begin: 0.8, end: 1.0).animate(
-      CurvedAnimation(
-        parent: _feedbackController,
-        curve: Curves.elasticOut,
-      ),
+      CurvedAnimation(parent: _feedbackController, curve: Curves.elasticOut),
     );
-    
+
     _progressController.forward();
-    
+
     // Store current level for level-up detection
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final profile = ref.read(userProfileProvider).value;
@@ -102,7 +95,7 @@ class _EnhancedQuizScreenState extends ConsumerState<EnhancedQuizScreen>
 
   void _onAnswer(dynamic answer) {
     if (_currentAnswered) return;
-    
+
     setState(() {
       _userAnswers[_currentExerciseIndex] = answer;
     });
@@ -110,30 +103,30 @@ class _EnhancedQuizScreenState extends ConsumerState<EnhancedQuizScreen>
 
   Future<void> _checkAnswer() async {
     if (_currentAnswered) return;
-    
+
     final exercise = widget.quiz.exercises[_currentExerciseIndex];
     final isCorrect = exercise.validate(_userAnswers[_currentExerciseIndex]);
-    
+
     setState(() {
       _currentAnswered = true;
       _answeredCorrectly[_currentExerciseIndex] = isCorrect;
       if (isCorrect) _correctAnswers++;
     });
-    
+
     // Play feedback animation
     _feedbackController.forward(from: 0);
-    
+
     // Consume heart on wrong answer (not in practice mode)
     if (!isCorrect && !widget.isPracticeMode) {
       final heartsService = ref.read(heartsServiceProvider);
       final heartLost = await heartsService.loseHeart();
-      
+
       if (heartLost) {
         setState(() {
           _showHeartAnimation = true;
         });
       }
-      
+
       // Check if out of hearts after losing one
       if (!heartsService.hasHeartsAvailable) {
         // Show out of hearts modal after animation
@@ -144,14 +137,14 @@ class _EnhancedQuizScreenState extends ConsumerState<EnhancedQuizScreen>
         });
       }
     }
-    
+
     // Haptic feedback
     // HapticFeedback.lightImpact(); // Uncomment if you want haptics
   }
 
   Future<void> _showOutOfHeartsDialog() async {
     final result = await showOutOfHeartsModal(context);
-    
+
     if (result == 'practice') {
       // Navigate to practice mode or home
       if (mounted) {
@@ -174,13 +167,13 @@ class _EnhancedQuizScreenState extends ConsumerState<EnhancedQuizScreen>
         return;
       }
     }
-    
+
     if (_currentExerciseIndex < widget.quiz.exercises.length - 1) {
       setState(() {
         _currentExerciseIndex++;
         _currentAnswered = false;
       });
-      
+
       // Animate progress
       _progressController.animateTo(
         (_currentExerciseIndex + 1) / widget.quiz.exercises.length,
@@ -190,14 +183,19 @@ class _EnhancedQuizScreenState extends ConsumerState<EnhancedQuizScreen>
         _quizComplete = true;
         _isSubmitting = true;
       });
-      
+
       try {
         // Call completion callback
-        final percentage = (_correctAnswers / widget.quiz.maxScore * 100).round();
+        final percentage = (_correctAnswers / widget.quiz.maxScore * 100)
+            .round();
         final passed = percentage >= widget.quiz.passingScore;
         final bonusXp = passed ? widget.quiz.bonusXp : 0;
-        
-        widget.onQuizComplete?.call(_correctAnswers, widget.quiz.maxScore, bonusXp);
+
+        widget.onQuizComplete?.call(
+          _correctAnswers,
+          widget.quiz.maxScore,
+          bonusXp,
+        );
       } finally {
         if (mounted) {
           setState(() {
@@ -211,19 +209,19 @@ class _EnhancedQuizScreenState extends ConsumerState<EnhancedQuizScreen>
   /// Show XP animation and check for level-up
   void _showXpAnimation(int xpAmount) {
     if (!mounted) return;
-    
+
     // Show XP animation overlay
     XpAwardOverlay.show(
       context,
       xpAmount: xpAmount,
       onComplete: () {
         if (!mounted) return;
-        
+
         // Check for level up after XP animation
         final profile = ref.read(userProfileProvider).value;
         if (profile != null && _levelBeforeQuiz != null) {
           final currentLevel = profile.currentLevel;
-          
+
           if (currentLevel > _levelBeforeQuiz!) {
             // Level up detected! Show celebration
             _showLevelUpCelebration(
@@ -236,7 +234,7 @@ class _EnhancedQuizScreenState extends ConsumerState<EnhancedQuizScreen>
       },
     );
   }
-  
+
   /// Show level-up celebration dialog
   Future<void> _showLevelUpCelebration(
     int newLevel,
@@ -244,7 +242,7 @@ class _EnhancedQuizScreenState extends ConsumerState<EnhancedQuizScreen>
     int totalXp,
   ) async {
     if (!mounted) return;
-    
+
     await LevelUpDialog.show(
       context,
       newLevel: newLevel,
@@ -253,7 +251,7 @@ class _EnhancedQuizScreenState extends ConsumerState<EnhancedQuizScreen>
       unlockMessage: _getUnlockMessage(newLevel),
     );
   }
-  
+
   /// Get unlock message for level milestone
   String? _getUnlockMessage(int level) {
     switch (level) {
@@ -279,7 +277,7 @@ class _EnhancedQuizScreenState extends ConsumerState<EnhancedQuizScreen>
     if (_quizComplete) {
       return _buildResults();
     }
-    
+
     return _buildQuiz();
   }
 
@@ -294,7 +292,7 @@ class _EnhancedQuizScreenState extends ConsumerState<EnhancedQuizScreen>
           children: [
             // Progress header
             _buildProgressHeader(),
-            
+
             // Quiz content
             Expanded(
               child: ListView(
@@ -303,14 +301,11 @@ class _EnhancedQuizScreenState extends ConsumerState<EnhancedQuizScreen>
                   // Exercise type badge
                   _buildExerciseTypeBadge(exercise.type),
                   const SizedBox(height: 16),
-                  
+
                   // Question
-                  Text(
-                    exercise.question,
-                    style: AppTypography.headlineMedium,
-                  ),
+                  Text(exercise.question, style: AppTypography.headlineMedium),
                   const SizedBox(height: 24),
-                  
+
                   // Exercise widget
                   ExerciseWidget(
                     exercise: exercise,
@@ -319,23 +314,26 @@ class _EnhancedQuizScreenState extends ConsumerState<EnhancedQuizScreen>
                     isCorrect: isCorrect,
                     userAnswer: _userAnswers[_currentExerciseIndex],
                   ),
-                  
+
                   // Explanation (after answering)
                   if (_currentAnswered && exercise.explanation != null) ...[
                     const SizedBox(height: 24),
-                    _buildExplanation(exercise.explanation!, isCorrect ?? false),
+                    _buildExplanation(
+                      exercise.explanation!,
+                      isCorrect ?? false,
+                    ),
                   ],
-                  
+
                   const SizedBox(height: 100), // Space for bottom button
                 ],
               ),
             ),
-            
+
             // Bottom action button
             _buildBottomButton(hasAnswer),
           ],
         ),
-        
+
         // Heart animation overlay
         if (_showHeartAnimation)
           Center(
@@ -354,7 +352,7 @@ class _EnhancedQuizScreenState extends ConsumerState<EnhancedQuizScreen>
 
   Widget _buildProgressHeader() {
     final progress = (_currentExerciseIndex + 1) / widget.quiz.exercises.length;
-    
+
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
@@ -388,7 +386,10 @@ class _EnhancedQuizScreenState extends ConsumerState<EnhancedQuizScreen>
                     ],
                     // Score indicator
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 6,
+                      ),
                       decoration: BoxDecoration(
                         color: AppColors.success.withOpacity(0.1),
                         borderRadius: BorderRadius.circular(12),
@@ -396,7 +397,11 @@ class _EnhancedQuizScreenState extends ConsumerState<EnhancedQuizScreen>
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Icon(Icons.check_circle, size: 16, color: AppColors.success),
+                          Icon(
+                            Icons.check_circle,
+                            size: 16,
+                            color: AppColors.success,
+                          ),
                           const SizedBox(width: 4),
                           Text(
                             '$_correctAnswers correct',
@@ -421,7 +426,9 @@ class _EnhancedQuizScreenState extends ConsumerState<EnhancedQuizScreen>
                   child: LinearProgressIndicator(
                     value: progress,
                     backgroundColor: AppColors.surfaceVariant,
-                    valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                      AppColors.primary,
+                    ),
                     minHeight: 8,
                   ),
                 );
@@ -437,7 +444,7 @@ class _EnhancedQuizScreenState extends ConsumerState<EnhancedQuizScreen>
     String label;
     IconData icon;
     Color color;
-    
+
     switch (type) {
       case ExerciseType.multipleChoice:
         label = 'Multiple Choice';
@@ -465,7 +472,7 @@ class _EnhancedQuizScreenState extends ConsumerState<EnhancedQuizScreen>
         color = Colors.red;
         break;
     }
-    
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(
@@ -527,10 +534,7 @@ class _EnhancedQuizScreenState extends ConsumerState<EnhancedQuizScreen>
                     ),
                   ),
                   const SizedBox(height: 4),
-                  Text(
-                    explanation,
-                    style: AppTypography.bodyMedium,
-                  ),
+                  Text(explanation, style: AppTypography.bodyMedium),
                 ],
               ),
             ),
@@ -577,8 +581,8 @@ class _EnhancedQuizScreenState extends ConsumerState<EnhancedQuizScreen>
                   !_currentAnswered
                       ? 'Check Answer'
                       : _currentExerciseIndex < widget.quiz.exercises.length - 1
-                          ? 'Next Question'
-                          : 'See Results',
+                      ? 'Next Question'
+                      : 'See Results',
                 ),
         ),
       ),
@@ -590,7 +594,7 @@ class _EnhancedQuizScreenState extends ConsumerState<EnhancedQuizScreen>
     final passed = percentage >= widget.quiz.passingScore;
     final bonusXp = passed ? widget.quiz.bonusXp : 0;
     final totalXp = widget.quiz.bonusXp + bonusXp;
-    
+
     // Show XP animation once on first build of results
     if (!_xpAnimationShown && mounted) {
       _xpAnimationShown = true;
@@ -633,8 +637,11 @@ class _EnhancedQuizScreenState extends ConsumerState<EnhancedQuizScreen>
                             shape: BoxShape.circle,
                             boxShadow: [
                               BoxShadow(
-                                color: (passed ? AppColors.primary : AppColors.warning)
-                                    .withOpacity(0.3),
+                                color:
+                                    (passed
+                                            ? AppColors.primary
+                                            : AppColors.warning)
+                                        .withOpacity(0.3),
                                 blurRadius: 20,
                                 offset: const Offset(0, 10),
                               ),
@@ -651,7 +658,7 @@ class _EnhancedQuizScreenState extends ConsumerState<EnhancedQuizScreen>
                     },
                   ),
                   const SizedBox(height: 32),
-                  
+
                   // Title
                   Text(
                     passed ? 'Excellent work!' : 'Keep learning!',
@@ -659,7 +666,7 @@ class _EnhancedQuizScreenState extends ConsumerState<EnhancedQuizScreen>
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 12),
-                  
+
                   // Score
                   Text(
                     'You got $_correctAnswers out of ${widget.quiz.maxScore} correct',
@@ -669,7 +676,7 @@ class _EnhancedQuizScreenState extends ConsumerState<EnhancedQuizScreen>
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 8),
-                  
+
                   // Percentage with circular progress
                   SizedBox(
                     width: 100,
@@ -702,7 +709,7 @@ class _EnhancedQuizScreenState extends ConsumerState<EnhancedQuizScreen>
                     ),
                   ),
                   const SizedBox(height: 32),
-                  
+
                   // XP earned card
                   Container(
                     padding: const EdgeInsets.all(24),
@@ -750,7 +757,7 @@ class _EnhancedQuizScreenState extends ConsumerState<EnhancedQuizScreen>
                       ],
                     ),
                   ),
-                  
+
                   if (!passed) ...[
                     const SizedBox(height: 24),
                     Text(
@@ -766,7 +773,7 @@ class _EnhancedQuizScreenState extends ConsumerState<EnhancedQuizScreen>
             ),
           ),
         ),
-        
+
         // Bottom action
         Container(
           padding: const EdgeInsets.all(20),

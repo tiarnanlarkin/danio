@@ -1,9 +1,5 @@
 /// Temperament flags for compatibility checking
-enum Temperament {
-  peaceful,
-  semiAggressive,
-  aggressive,
-}
+enum Temperament { peaceful, semiAggressive, aggressive }
 
 /// Livestock entry — fish, snails, shrimp, etc.
 class Livestock {

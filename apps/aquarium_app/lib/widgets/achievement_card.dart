@@ -2,7 +2,6 @@
 /// Shows locked/unlocked state with progress bar
 library;
 
-
 import 'package:flutter/material.dart';
 import '../models/achievements.dart';
 
@@ -36,9 +35,7 @@ class AchievementCard extends StatelessWidget {
             color: isLocked ? Colors.grey.shade300 : rarityColor,
             width: isLocked ? 1 : 3,
           ),
-          color: isLocked
-              ? Colors.grey.shade100
-              : rarityColor.withOpacity(0.1),
+          color: isLocked ? Colors.grey.shade100 : rarityColor.withOpacity(0.1),
           boxShadow: isLocked
               ? []
               : [
@@ -139,13 +136,11 @@ class AchievementCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    achievement.isHidden && isLocked
-                        ? '???'
-                        : achievement.name,
+                    achievement.isHidden && isLocked ? '???' : achievement.name,
                     style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: isLocked ? Colors.grey : null,
-                        ),
+                      fontWeight: FontWeight.bold,
+                      color: isLocked ? Colors.grey : null,
+                    ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -155,8 +150,8 @@ class AchievementCard extends StatelessWidget {
                         ? 'Hidden achievement'
                         : achievement.description,
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: isLocked ? Colors.grey : Colors.black87,
-                        ),
+                      color: isLocked ? Colors.grey : Colors.black87,
+                    ),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -177,9 +172,9 @@ class AchievementCard extends StatelessWidget {
                     Text(
                       '${progress.currentCount} / ${achievement.targetCount}',
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: Colors.grey,
-                            fontSize: 10,
-                          ),
+                        color: Colors.grey,
+                        fontSize: 10,
+                      ),
                     ),
                   ],
                 ],

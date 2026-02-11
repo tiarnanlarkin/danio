@@ -78,15 +78,21 @@ class _VolumeConverterState extends State<_VolumeConverter> {
                     labelText: 'Value',
                     border: OutlineInputBorder(),
                   ),
-                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                  inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[\d.]'))],
+                  keyboardType: const TextInputType.numberWithOptions(
+                    decimal: true,
+                  ),
+                  inputFormatters: [
+                    FilteringTextInputFormatter.allow(RegExp(r'[\d.]')),
+                  ],
                   onChanged: (v) => setState(() => _value = double.tryParse(v)),
                 ),
               ),
               const SizedBox(width: 16),
               DropdownButton<String>(
                 value: _fromUnit,
-                items: _units.keys.map((u) => DropdownMenuItem(value: u, child: Text(u))).toList(),
+                items: _units.keys
+                    .map((u) => DropdownMenuItem(value: u, child: Text(u)))
+                    .toList(),
                 onChanged: (v) => setState(() => _fromUnit = v ?? 'L'),
               ),
             ],
@@ -98,10 +104,7 @@ class _VolumeConverterState extends State<_VolumeConverter> {
             ..._units.keys.where((u) => u != _fromUnit).map((u) {
               final litres = _value! * _units[_fromUnit]!;
               final converted = litres / _units[u]!;
-              return _ConversionResult(
-                value: converted,
-                unit: u,
-              );
+              return _ConversionResult(value: converted, unit: u);
             }),
           ],
         ],
@@ -136,15 +139,22 @@ class _TemperatureConverterState extends State<_TemperatureConverter> {
                     labelText: 'Temperature',
                     border: OutlineInputBorder(),
                   ),
-                  keyboardType: const TextInputType.numberWithOptions(decimal: true, signed: true),
-                  inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[\d.\-]'))],
+                  keyboardType: const TextInputType.numberWithOptions(
+                    decimal: true,
+                    signed: true,
+                  ),
+                  inputFormatters: [
+                    FilteringTextInputFormatter.allow(RegExp(r'[\d.\-]')),
+                  ],
                   onChanged: (v) => setState(() => _value = double.tryParse(v)),
                 ),
               ),
               const SizedBox(width: 16),
               DropdownButton<String>(
                 value: _fromUnit,
-                items: ['°C', '°F', 'K'].map((u) => DropdownMenuItem(value: u, child: Text(u))).toList(),
+                items: ['°C', '°F', 'K']
+                    .map((u) => DropdownMenuItem(value: u, child: Text(u)))
+                    .toList(),
                 onChanged: (v) => setState(() => _fromUnit = v ?? '°C'),
               ),
             ],
@@ -154,11 +164,20 @@ class _TemperatureConverterState extends State<_TemperatureConverter> {
             Text('Conversions', style: AppTypography.headlineSmall),
             const SizedBox(height: 12),
             if (_fromUnit != '°C')
-              _ConversionResult(value: _toCelsius(_value!, _fromUnit), unit: '°C'),
+              _ConversionResult(
+                value: _toCelsius(_value!, _fromUnit),
+                unit: '°C',
+              ),
             if (_fromUnit != '°F')
-              _ConversionResult(value: _toFahrenheit(_value!, _fromUnit), unit: '°F'),
+              _ConversionResult(
+                value: _toFahrenheit(_value!, _fromUnit),
+                unit: '°F',
+              ),
             if (_fromUnit != 'K')
-              _ConversionResult(value: _toKelvin(_value!, _fromUnit), unit: 'K'),
+              _ConversionResult(
+                value: _toKelvin(_value!, _fromUnit),
+                unit: 'K',
+              ),
           ],
         ],
       ),
@@ -167,9 +186,12 @@ class _TemperatureConverterState extends State<_TemperatureConverter> {
 
   double _toCelsius(double v, String from) {
     switch (from) {
-      case '°F': return (v - 32) * 5 / 9;
-      case 'K': return v - 273.15;
-      default: return v;
+      case '°F':
+        return (v - 32) * 5 / 9;
+      case 'K':
+        return v - 273.15;
+      default:
+        return v;
     }
   }
 
@@ -194,13 +216,7 @@ class _LengthConverterState extends State<_LengthConverter> {
   String _fromUnit = 'cm';
   double? _value;
 
-  final _units = {
-    'cm': 1.0,
-    'mm': 0.1,
-    'in': 2.54,
-    'ft': 30.48,
-    'm': 100.0,
-  };
+  final _units = {'cm': 1.0, 'mm': 0.1, 'in': 2.54, 'ft': 30.48, 'm': 100.0};
 
   @override
   Widget build(BuildContext context) {
@@ -218,15 +234,21 @@ class _LengthConverterState extends State<_LengthConverter> {
                     labelText: 'Length',
                     border: OutlineInputBorder(),
                   ),
-                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                  inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[\d.]'))],
+                  keyboardType: const TextInputType.numberWithOptions(
+                    decimal: true,
+                  ),
+                  inputFormatters: [
+                    FilteringTextInputFormatter.allow(RegExp(r'[\d.]')),
+                  ],
                   onChanged: (v) => setState(() => _value = double.tryParse(v)),
                 ),
               ),
               const SizedBox(width: 16),
               DropdownButton<String>(
                 value: _fromUnit,
-                items: _units.keys.map((u) => DropdownMenuItem(value: u, child: Text(u))).toList(),
+                items: _units.keys
+                    .map((u) => DropdownMenuItem(value: u, child: Text(u)))
+                    .toList(),
                 onChanged: (v) => setState(() => _fromUnit = v ?? 'cm'),
               ),
             ],
@@ -238,10 +260,7 @@ class _LengthConverterState extends State<_LengthConverter> {
             ..._units.keys.where((u) => u != _fromUnit).map((u) {
               final cm = _value! * _units[_fromUnit]!;
               final converted = cm / _units[u]!;
-              return _ConversionResult(
-                value: converted,
-                unit: u,
-              );
+              return _ConversionResult(value: converted, unit: u);
             }),
           ],
         ],
@@ -285,15 +304,21 @@ class _HardnessConverterState extends State<_HardnessConverter> {
                     labelText: 'Hardness',
                     border: OutlineInputBorder(),
                   ),
-                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                  inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[\d.]'))],
+                  keyboardType: const TextInputType.numberWithOptions(
+                    decimal: true,
+                  ),
+                  inputFormatters: [
+                    FilteringTextInputFormatter.allow(RegExp(r'[\d.]')),
+                  ],
                   onChanged: (v) => setState(() => _value = double.tryParse(v)),
                 ),
               ),
               const SizedBox(width: 16),
               DropdownButton<String>(
                 value: _fromUnit,
-                items: _units.keys.map((u) => DropdownMenuItem(value: u, child: Text(u))).toList(),
+                items: _units.keys
+                    .map((u) => DropdownMenuItem(value: u, child: Text(u)))
+                    .toList(),
                 onChanged: (v) => setState(() => _fromUnit = v ?? 'dGH'),
               ),
             ],
@@ -305,10 +330,7 @@ class _HardnessConverterState extends State<_HardnessConverter> {
             ..._units.keys.where((u) => u != _fromUnit).map((u) {
               final dgh = _value! / _units[_fromUnit]!;
               final converted = dgh * _units[u]!;
-              return _ConversionResult(
-                value: converted,
-                unit: u,
-              );
+              return _ConversionResult(value: converted, unit: u);
             }),
           ],
 

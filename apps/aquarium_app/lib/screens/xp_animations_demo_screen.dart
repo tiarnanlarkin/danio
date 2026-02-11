@@ -15,11 +15,9 @@ class XpAnimationsDemoScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final profileAsync = ref.watch(userProfileProvider);
-    
+
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('XP Animations Demo'),
-      ),
+      appBar: AppBar(title: const Text('XP Animations Demo')),
       body: profileAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (err, stack) => Center(child: Text('Error: $err')),
@@ -27,7 +25,7 @@ class XpAnimationsDemoScreen extends ConsumerWidget {
           if (profile == null) {
             return const Center(child: Text('No profile found'));
           }
-          
+
           return SingleChildScrollView(
             padding: const EdgeInsets.all(24),
             child: Column(
@@ -77,27 +75,21 @@ class XpAnimationsDemoScreen extends ConsumerWidget {
                     ],
                   ),
                 ),
-                
+
                 const SizedBox(height: 32),
                 const Text(
                   'Test Animations',
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 16),
-                
+
                 // XP Animation buttons
                 const Text(
                   'XP Award Animation',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                  ),
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                 ),
                 const SizedBox(height: 12),
-                
+
                 Wrap(
                   spacing: 12,
                   runSpacing: 12,
@@ -120,19 +112,16 @@ class XpAnimationsDemoScreen extends ConsumerWidget {
                     ),
                   ],
                 ),
-                
+
                 const SizedBox(height: 32),
-                
+
                 // Level-up dialog button
                 const Text(
                   'Level Up Celebration',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                  ),
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                 ),
                 const SizedBox(height: 12),
-                
+
                 ElevatedButton.icon(
                   onPressed: () => _showLevelUpDialog(context, profile),
                   icon: const Icon(Icons.celebration),
@@ -144,19 +133,16 @@ class XpAnimationsDemoScreen extends ConsumerWidget {
                     ),
                   ),
                 ),
-                
+
                 const SizedBox(height: 32),
-                
+
                 // Add XP buttons (for testing level-up)
                 const Text(
                   'Add XP to Profile (for testing)',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                  ),
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                 ),
                 const SizedBox(height: 12),
-                
+
                 Wrap(
                   spacing: 12,
                   runSpacing: 12,
@@ -175,18 +161,16 @@ class XpAnimationsDemoScreen extends ConsumerWidget {
                     ),
                   ],
                 ),
-                
+
                 const SizedBox(height: 24),
-                
+
                 // Info box
                 Container(
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
                     color: AppColors.info.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(16),
-                    border: Border.all(
-                      color: AppColors.info.withOpacity(0.3),
-                    ),
+                    border: Border.all(color: AppColors.info.withOpacity(0.3)),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -227,7 +211,7 @@ class XpAnimationsDemoScreen extends ConsumerWidget {
       ),
     );
   }
-  
+
   void _showXpAnimation(BuildContext context, int xpAmount) {
     XpAwardOverlay.show(
       context,
@@ -243,7 +227,7 @@ class XpAnimationsDemoScreen extends ConsumerWidget {
       },
     );
   }
-  
+
   void _showLevelUpDialog(BuildContext context, dynamic profile) {
     LevelUpDialog.show(
       context,
@@ -253,10 +237,10 @@ class XpAnimationsDemoScreen extends ConsumerWidget {
       unlockMessage: 'This is a demo of the level-up celebration!',
     );
   }
-  
+
   Future<void> _addXpToProfile(WidgetRef ref, int xpAmount) async {
     await ref.read(userProfileProvider.notifier).addXp(xpAmount);
-    
+
     // Show snackbar
     final context = ref.context;
     if (context.mounted) {
@@ -268,7 +252,7 @@ class XpAnimationsDemoScreen extends ConsumerWidget {
       );
     }
   }
-  
+
   String _getNextLevelTitle(int level) {
     const levels = {
       0: 'Beginner',

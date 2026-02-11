@@ -7,11 +7,7 @@ import 'package:flutter/foundation.dart';
 import 'user_profile.dart';
 
 /// Difficulty level for stories
-enum StoryDifficulty {
-  beginner,
-  intermediate,
-  advanced,
-}
+enum StoryDifficulty { beginner, intermediate, advanced }
 
 extension StoryDifficultyExt on StoryDifficulty {
   String get displayName {
@@ -79,12 +75,12 @@ class Story {
   bool isUnlocked(UserProfile profile, List<String> completedStories) {
     // Check level requirement
     if (profile.currentLevel < minLevel) return false;
-    
+
     // Check prerequisites
     if (prerequisites.isNotEmpty) {
       return prerequisites.every((id) => completedStories.contains(id));
     }
-    
+
     return true;
   }
 
@@ -128,7 +124,7 @@ class StoryScene {
   bool get hasCorrectAnswer => choices.any((c) => c.isCorrect);
 
   /// Get all correct choices
-  List<StoryChoice> get correctChoices => 
+  List<StoryChoice> get correctChoices =>
       choices.where((c) => c.isCorrect).toList();
 }
 
@@ -206,7 +202,10 @@ class StoryProgress {
     return StoryProgress(
       storyId: storyId,
       currentSceneId: nextSceneId,
-      visitedSceneIds: [...visitedSceneIds, if (!visitedSceneIds.contains(nextSceneId)) nextSceneId],
+      visitedSceneIds: [
+        ...visitedSceneIds,
+        if (!visitedSceneIds.contains(nextSceneId)) nextSceneId,
+      ],
       choicesMade: [...choicesMade, choice.id],
       correctChoices: newCorrectChoices,
       totalChoices: newTotalChoices,
@@ -220,7 +219,7 @@ class StoryProgress {
   /// Calculate final XP reward based on score
   int calculateXp(int baseXp) {
     if (!completed) return 0;
-    
+
     // Base XP + bonus for high score
     double multiplier = 1.0;
     if (score >= 90) {
@@ -232,7 +231,7 @@ class StoryProgress {
     } else {
       multiplier = 0.75; // 75% XP for below 50%
     }
-    
+
     return (baseXp * multiplier).round();
   }
 
@@ -253,12 +252,16 @@ class StoryProgress {
     return StoryProgress(
       storyId: json['storyId'] as String,
       currentSceneId: json['currentSceneId'] as String,
-      visitedSceneIds: (json['visitedSceneIds'] as List<dynamic>?)
-          ?.map((e) => e as String)
-          .toList() ?? [],
-      choicesMade: (json['choicesMade'] as List<dynamic>?)
-          ?.map((e) => e as String)
-          .toList() ?? [],
+      visitedSceneIds:
+          (json['visitedSceneIds'] as List<dynamic>?)
+              ?.map((e) => e as String)
+              .toList() ??
+          [],
+      choicesMade:
+          (json['choicesMade'] as List<dynamic>?)
+              ?.map((e) => e as String)
+              .toList() ??
+          [],
       correctChoices: json['correctChoices'] as int? ?? 0,
       totalChoices: json['totalChoices'] as int? ?? 0,
       completed: json['completed'] as bool? ?? false,

@@ -225,10 +225,7 @@ class _CompactActivityTile extends ConsumerWidget {
             // Time
             Text(
               activity.timeAgo,
-              style: TextStyle(
-                fontSize: 11,
-                color: Colors.grey.shade500,
-              ),
+              style: TextStyle(fontSize: 11, color: Colors.grey.shade500),
             ),
           ],
         ),
@@ -348,10 +345,7 @@ class _BannerActivityCard extends ConsumerWidget {
                 const SizedBox(height: 4),
                 Text(
                   activity.timeAgo,
-                  style: TextStyle(
-                    fontSize: 10,
-                    color: Colors.grey.shade500,
-                  ),
+                  style: TextStyle(fontSize: 10, color: Colors.grey.shade500),
                 ),
               ],
             ),

@@ -11,13 +11,11 @@ class LeaderboardScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final profileAsync = ref.watch(userProfileProvider);
-    
+
     return profileAsync.when(
       data: (profile) {
         if (profile == null) {
-          return const Scaffold(
-            body: Center(child: Text('No profile found')),
-          );
+          return const Scaffold(body: Center(child: Text('No profile found')));
         }
 
         // Generate leaderboard with current user
@@ -31,14 +29,18 @@ class LeaderboardScreen extends ConsumerWidget {
         final currentWeek = WeekPeriod.current();
         final currentEntry = entries.firstWhere((e) => e.isCurrentUser);
 
-        return _buildLeaderboard(context, entries, currentWeek, currentEntry, profile.league);
+        return _buildLeaderboard(
+          context,
+          entries,
+          currentWeek,
+          currentEntry,
+          profile.league,
+        );
       },
-      loading: () => const Scaffold(
-        body: Center(child: CircularProgressIndicator()),
-      ),
-      error: (error, stack) => Scaffold(
-        body: Center(child: Text('Error: $error')),
-      ),
+      loading: () =>
+          const Scaffold(body: Center(child: CircularProgressIndicator())),
+      error: (error, stack) =>
+          Scaffold(body: Center(child: Text('Error: $error'))),
     );
   }
 
@@ -50,18 +52,15 @@ class LeaderboardScreen extends ConsumerWidget {
     League league,
   ) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Leaderboard'),
-        centerTitle: true,
-      ),
+      appBar: AppBar(title: const Text('Leaderboard'), centerTitle: true),
       body: Column(
         children: [
           // Week timer and league header
           _buildHeader(context, currentWeek, currentEntry, league),
-          
+
           // Promotion/demotion zones indicator
           _buildPromoInfo(context, currentEntry, entries.length, league),
-          
+
           // Leaderboard list
           Expanded(
             child: ListView.builder(
@@ -69,7 +68,12 @@ class LeaderboardScreen extends ConsumerWidget {
               padding: const EdgeInsets.symmetric(vertical: 8),
               itemBuilder: (context, index) {
                 final entry = entries[index];
-                return _buildLeaderboardTile(context, entry, currentEntry, league);
+                return _buildLeaderboardTile(
+                  context,
+                  entry,
+                  currentEntry,
+                  league,
+                );
               },
             ),
           ),
@@ -78,7 +82,12 @@ class LeaderboardScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildHeader(BuildContext context, WeekPeriod week, LeaderboardEntry currentEntry, League league) {
+  Widget _buildHeader(
+    BuildContext context,
+    WeekPeriod week,
+    LeaderboardEntry currentEntry,
+    League league,
+  ) {
     final timeLeft = week.timeRemaining;
     final hours = timeLeft.inHours;
     final minutes = timeLeft.inMinutes % 60;
@@ -98,11 +107,7 @@ class LeaderboardScreen extends ConsumerWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(
-                _leagueIcon(league),
-                color: Colors.white,
-                size: 32,
-              ),
+              Icon(_leagueIcon(league), color: Colors.white, size: 32),
               const SizedBox(width: 8),
               Text(
                 '${league.displayName} League',
@@ -115,25 +120,29 @@ class LeaderboardScreen extends ConsumerWidget {
             ],
           ),
           const SizedBox(height: 8),
-          
+
           // Countdown
           Text(
             'Competition ends in ${hours}h ${minutes}m',
-            style: const TextStyle(
-              fontSize: 14,
-              color: Colors.white70,
-            ),
+            style: const TextStyle(fontSize: 14, color: Colors.white70),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildPromoInfo(BuildContext context, LeaderboardEntry currentEntry, int totalUsers, League league) {
-    final willPromote = currentEntry.rank <= LeagueThresholds.topPromotion && 
-                       league != League.diamond;
-    final willDemote = currentEntry.rank > totalUsers - LeagueThresholds.bottomDemotion && 
-                      league != League.bronze;
+  Widget _buildPromoInfo(
+    BuildContext context,
+    LeaderboardEntry currentEntry,
+    int totalUsers,
+    League league,
+  ) {
+    final willPromote =
+        currentEntry.rank <= LeagueThresholds.topPromotion &&
+        league != League.diamond;
+    final willDemote =
+        currentEntry.rank > totalUsers - LeagueThresholds.bottomDemotion &&
+        league != League.bronze;
 
     if (!willPromote && !willDemote) {
       return const SizedBox.shrink();
@@ -163,7 +172,9 @@ class LeaderboardScreen extends ConsumerWidget {
                   ? 'You\'re in the promotion zone! Finish top 3 to advance to ${_nextLeague(league)?.displayName} League!'
                   : 'You\'re at risk of demotion. Finish higher to stay in ${league.displayName} League!',
               style: TextStyle(
-                color: willPromote ? Colors.green.shade900 : Colors.red.shade900,
+                color: willPromote
+                    ? Colors.green.shade900
+                    : Colors.red.shade900,
                 fontWeight: FontWeight.w500,
               ),
             ),
@@ -173,7 +184,12 @@ class LeaderboardScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildLeaderboardTile(BuildContext context, LeaderboardEntry entry, LeaderboardEntry currentEntry, League league) {
+  Widget _buildLeaderboardTile(
+    BuildContext context,
+    LeaderboardEntry entry,
+    LeaderboardEntry currentEntry,
+    League league,
+  ) {
     final isTopThree = entry.rank <= 3;
     final isCurrentUser = entry.isCurrentUser;
     final isPromotionZone = entry.rank <= LeagueThresholds.topPromotion;
@@ -183,81 +199,79 @@ class LeaderboardScreen extends ConsumerWidget {
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
         decoration: BoxDecoration(
-          color: isCurrentUser 
+          color: isCurrentUser
               ? Theme.of(context).primaryColor.withOpacity(0.1)
               : null,
           borderRadius: BorderRadius.circular(8),
-          border: isCurrentUser 
+          border: isCurrentUser
               ? Border.all(color: Theme.of(context).primaryColor, width: 2)
               : null,
         ),
         child: ListTile(
-        leading: SizedBox(
-          width: 40,
-          child: Center(
-            child: isTopThree
-                ? Icon(
-                    Icons.emoji_events,
-                    color: _rankMedalColor(entry.rank),
-                    size: 28,
-                  )
-                : Text(
-                    '${entry.rank}',
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.grey,
+          leading: SizedBox(
+            width: 40,
+            child: Center(
+              child: isTopThree
+                  ? Icon(
+                      Icons.emoji_events,
+                      color: _rankMedalColor(entry.rank),
+                      size: 28,
+                    )
+                  : Text(
+                      '${entry.rank}',
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.grey,
+                      ),
                     ),
-                  ),
+            ),
           ),
-        ),
-        title: Row(
-          children: [
-            Expanded(
-              child: Text(
-                entry.displayName,
-                style: TextStyle(
-                  fontWeight: isCurrentUser ? FontWeight.bold : FontWeight.normal,
+          title: Row(
+            children: [
+              Expanded(
+                child: Text(
+                  entry.displayName,
+                  style: TextStyle(
+                    fontWeight: isCurrentUser
+                        ? FontWeight.bold
+                        : FontWeight.normal,
+                  ),
                 ),
               ),
-            ),
-            if (isCurrentUser)
-              const Chip(
-                label: Text('YOU', style: TextStyle(fontSize: 10)),
-                padding: EdgeInsets.symmetric(horizontal: 8, vertical: 0),
-                visualDensity: VisualDensity.compact,
+              if (isCurrentUser)
+                const Chip(
+                  label: Text('YOU', style: TextStyle(fontSize: 10)),
+                  padding: EdgeInsets.symmetric(horizontal: 8, vertical: 0),
+                  visualDensity: VisualDensity.compact,
+                ),
+            ],
+          ),
+          subtitle: Row(
+            children: [
+              Icon(_leagueIcon(league), size: 16, color: Colors.grey.shade600),
+              const SizedBox(width: 4),
+              Text(league.displayName),
+            ],
+          ),
+          trailing: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Text(
+                '${entry.weeklyXp} XP',
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                ),
               ),
-          ],
+              if (isPromotionZone && league != League.diamond)
+                const Icon(Icons.arrow_upward, color: Colors.green, size: 16)
+              else if (isDemotionZone && league != League.bronze)
+                const Icon(Icons.arrow_downward, color: Colors.red, size: 16),
+            ],
+          ),
         ),
-        subtitle: Row(
-          children: [
-            Icon(
-              _leagueIcon(league),
-              size: 16,
-              color: Colors.grey.shade600,
-            ),
-            const SizedBox(width: 4),
-            Text(league.displayName),
-          ],
-        ),
-        trailing: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            Text(
-              '${entry.weeklyXp} XP',
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 16,
-              ),
-            ),
-            if (isPromotionZone && league != League.diamond)
-              const Icon(Icons.arrow_upward, color: Colors.green, size: 16)
-            else if (isDemotionZone && league != League.bronze)
-              const Icon(Icons.arrow_downward, color: Colors.red, size: 16),
-          ],
-        ),
-      ),
       ),
     );
   }

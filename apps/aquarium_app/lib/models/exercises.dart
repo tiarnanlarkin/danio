@@ -2,7 +2,6 @@
 /// Supports multiple choice, fill-in-blank, true/false, matching, and ordering exercises
 library;
 
-
 import 'package:flutter/foundation.dart';
 
 /// Base class for all exercise types
@@ -32,13 +31,13 @@ abstract class Exercise {
 
   /// Serialization support
   Map<String, dynamic> toJson();
-  
+
   /// Deserialization factory
   factory Exercise.fromJson(Map<String, dynamic> json) {
     final type = ExerciseType.values.firstWhere(
       (e) => e.toString() == 'ExerciseType.${json['type']}',
     );
-    
+
     switch (type) {
       case ExerciseType.multipleChoice:
         return MultipleChoiceExercise.fromJson(json);
@@ -54,19 +53,9 @@ abstract class Exercise {
   }
 }
 
-enum ExerciseType {
-  multipleChoice,
-  fillBlank,
-  trueFalse,
-  matching,
-  ordering,
-}
+enum ExerciseType { multipleChoice, fillBlank, trueFalse, matching, ordering }
 
-enum ExerciseDifficulty {
-  easy,
-  medium,
-  hard,
-}
+enum ExerciseDifficulty { easy, medium, hard }
 
 // ==========================================
 // 1. MULTIPLE CHOICE
@@ -101,14 +90,14 @@ class MultipleChoiceExercise extends Exercise {
 
   @override
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'type': 'multipleChoice',
-        'question': question,
-        'explanation': explanation,
-        'options': options,
-        'correctIndex': correctIndex,
-        'hint': hint,
-      };
+    'id': id,
+    'type': 'multipleChoice',
+    'question': question,
+    'explanation': explanation,
+    'options': options,
+    'correctIndex': correctIndex,
+    'hint': hint,
+  };
 
   factory MultipleChoiceExercise.fromJson(Map<String, dynamic> json) =>
       MultipleChoiceExercise(
@@ -131,17 +120,17 @@ class MultipleChoiceExercise extends Exercise {
 class FillBlankExercise extends Exercise {
   /// The sentence with blanks marked as ___
   final String sentenceTemplate;
-  
+
   /// Correct answers for each blank (in order)
   final List<String> correctAnswers;
-  
+
   /// Optional word bank to choose from
   final List<String>? wordBank;
-  
+
   /// Whether to accept alternative spellings/case
   final bool caseSensitive;
   final bool acceptAlternatives;
-  
+
   /// Alternative acceptable answers for each blank
   final List<List<String>>? alternatives;
 
@@ -165,26 +154,30 @@ class FillBlankExercise extends Exercise {
     for (int i = 0; i < correctAnswers.length; i++) {
       final userAnswer = answer[i] as String;
       final correct = correctAnswers[i];
-      
+
       // Check main answer
       final match = caseSensitive
           ? userAnswer == correct
           : userAnswer.toLowerCase() == correct.toLowerCase();
-      
+
       if (match) continue;
-      
+
       // Check alternatives if allowed
-      if (acceptAlternatives && alternatives != null && i < alternatives!.length) {
+      if (acceptAlternatives &&
+          alternatives != null &&
+          i < alternatives!.length) {
         final alts = alternatives![i];
-        final altMatch = alts.any((alt) => caseSensitive
-            ? userAnswer == alt
-            : userAnswer.toLowerCase() == alt.toLowerCase());
+        final altMatch = alts.any(
+          (alt) => caseSensitive
+              ? userAnswer == alt
+              : userAnswer.toLowerCase() == alt.toLowerCase(),
+        );
         if (altMatch) continue;
       }
-      
+
       return false; // No match found for this blank
     }
-    
+
     return true;
   }
 
@@ -203,17 +196,17 @@ class FillBlankExercise extends Exercise {
 
   @override
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'type': 'fillBlank',
-        'question': question,
-        'explanation': explanation,
-        'sentenceTemplate': sentenceTemplate,
-        'correctAnswers': correctAnswers,
-        'wordBank': wordBank,
-        'caseSensitive': caseSensitive,
-        'acceptAlternatives': acceptAlternatives,
-        'alternatives': alternatives,
-      };
+    'id': id,
+    'type': 'fillBlank',
+    'question': question,
+    'explanation': explanation,
+    'sentenceTemplate': sentenceTemplate,
+    'correctAnswers': correctAnswers,
+    'wordBank': wordBank,
+    'caseSensitive': caseSensitive,
+    'acceptAlternatives': acceptAlternatives,
+    'alternatives': alternatives,
+  };
 
   factory FillBlankExercise.fromJson(Map<String, dynamic> json) =>
       FillBlankExercise(
@@ -229,8 +222,8 @@ class FillBlankExercise extends Exercise {
         acceptAlternatives: json['acceptAlternatives'] ?? true,
         alternatives: json['alternatives'] != null
             ? (json['alternatives'] as List)
-                .map((a) => List<String>.from(a))
-                .toList()
+                  .map((a) => List<String>.from(a))
+                  .toList()
             : null,
       );
 }
@@ -267,13 +260,13 @@ class TrueFalseExercise extends Exercise {
 
   @override
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'type': 'trueFalse',
-        'question': question,
-        'explanation': explanation,
-        'correctAnswer': correctAnswer,
-        'hint': hint,
-      };
+    'id': id,
+    'type': 'trueFalse',
+    'question': question,
+    'explanation': explanation,
+    'correctAnswer': correctAnswer,
+    'hint': hint,
+  };
 
   factory TrueFalseExercise.fromJson(Map<String, dynamic> json) =>
       TrueFalseExercise(
@@ -295,13 +288,13 @@ class TrueFalseExercise extends Exercise {
 class MatchingExercise extends Exercise {
   /// Left column items (keys)
   final List<String> leftItems;
-  
+
   /// Right column items (values)
   final List<String> rightItems;
-  
+
   /// Correct pairs: Map<leftIndex, rightIndex>
   final Map<int, int> correctPairs;
-  
+
   /// Optional images for visual matching
   final List<String>? leftImages;
   final List<String>? rightImages;
@@ -320,14 +313,14 @@ class MatchingExercise extends Exercise {
   @override
   bool validate(dynamic answer) {
     if (answer is! Map) return false;
-    
+
     // Check all pairs are correct
     if (answer.length != correctPairs.length) return false;
-    
+
     for (final entry in correctPairs.entries) {
       if (answer[entry.key] != entry.value) return false;
     }
-    
+
     return true;
   }
 
@@ -340,16 +333,16 @@ class MatchingExercise extends Exercise {
 
   @override
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'type': 'matching',
-        'question': question,
-        'explanation': explanation,
-        'leftItems': leftItems,
-        'rightItems': rightItems,
-        'correctPairs': correctPairs.map((k, v) => MapEntry(k.toString(), v)),
-        'leftImages': leftImages,
-        'rightImages': rightImages,
-      };
+    'id': id,
+    'type': 'matching',
+    'question': question,
+    'explanation': explanation,
+    'leftItems': leftItems,
+    'rightItems': rightItems,
+    'correctPairs': correctPairs.map((k, v) => MapEntry(k.toString(), v)),
+    'leftImages': leftImages,
+    'rightImages': rightImages,
+  };
 
   factory MatchingExercise.fromJson(Map<String, dynamic> json) =>
       MatchingExercise(
@@ -380,11 +373,11 @@ class MatchingExercise extends Exercise {
 class OrderingExercise extends Exercise {
   /// Items to be ordered (shown shuffled)
   final List<String> items;
-  
+
   /// Correct order (indices of items in correct sequence)
   /// If null, assumes items are already in correct order
   final List<int>? correctOrder;
-  
+
   /// Optional: allow partial credit for partially correct sequences
   final bool allowPartialCredit;
 
@@ -409,7 +402,7 @@ class OrderingExercise extends Exercise {
     for (int i = 0; i < answer.length; i++) {
       if (answer[i] != _correctSequence[i]) return false;
     }
-    
+
     return true;
   }
 
@@ -436,14 +429,14 @@ class OrderingExercise extends Exercise {
 
   @override
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'type': 'ordering',
-        'question': question,
-        'explanation': explanation,
-        'items': items,
-        'correctOrder': correctOrder,
-        'allowPartialCredit': allowPartialCredit,
-      };
+    'id': id,
+    'type': 'ordering',
+    'question': question,
+    'explanation': explanation,
+    'items': items,
+    'correctOrder': correctOrder,
+    'allowPartialCredit': allowPartialCredit,
+  };
 
   factory OrderingExercise.fromJson(Map<String, dynamic> json) =>
       OrderingExercise(
@@ -488,9 +481,15 @@ class EnhancedQuiz {
   /// Get exercises grouped by difficulty
   Map<ExerciseDifficulty, List<Exercise>> get exercisesByDifficulty {
     return {
-      ExerciseDifficulty.easy: exercises.where((e) => e.difficulty == ExerciseDifficulty.easy).toList(),
-      ExerciseDifficulty.medium: exercises.where((e) => e.difficulty == ExerciseDifficulty.medium).toList(),
-      ExerciseDifficulty.hard: exercises.where((e) => e.difficulty == ExerciseDifficulty.hard).toList(),
+      ExerciseDifficulty.easy: exercises
+          .where((e) => e.difficulty == ExerciseDifficulty.easy)
+          .toList(),
+      ExerciseDifficulty.medium: exercises
+          .where((e) => e.difficulty == ExerciseDifficulty.medium)
+          .toList(),
+      ExerciseDifficulty.hard: exercises
+          .where((e) => e.difficulty == ExerciseDifficulty.hard)
+          .toList(),
     };
   }
 
@@ -503,41 +502,41 @@ class EnhancedQuiz {
   }
 
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'lessonId': lessonId,
-        'exercises': exercises.map((e) => e.toJson()).toList(),
-        'passingScore': passingScore,
-        'bonusXp': bonusXp,
-        'shuffleExercises': shuffleExercises,
-        'mode': mode.toString().split('.').last,
-      };
+    'id': id,
+    'lessonId': lessonId,
+    'exercises': exercises.map((e) => e.toJson()).toList(),
+    'passingScore': passingScore,
+    'bonusXp': bonusXp,
+    'shuffleExercises': shuffleExercises,
+    'mode': mode.toString().split('.').last,
+  };
 
   factory EnhancedQuiz.fromJson(Map<String, dynamic> json) => EnhancedQuiz(
-        id: json['id'],
-        lessonId: json['lessonId'],
-        exercises: (json['exercises'] as List)
-            .map((e) => Exercise.fromJson(e))
-            .toList(),
-        passingScore: json['passingScore'] ?? 70,
-        bonusXp: json['bonusXp'] ?? 25,
-        shuffleExercises: json['shuffleExercises'] ?? false,
-        mode: QuizMode.values.firstWhere(
-          (m) => m.toString() == 'QuizMode.${json['mode']}',
-          orElse: () => QuizMode.standard,
-        ),
-      );
+    id: json['id'],
+    lessonId: json['lessonId'],
+    exercises: (json['exercises'] as List)
+        .map((e) => Exercise.fromJson(e))
+        .toList(),
+    passingScore: json['passingScore'] ?? 70,
+    bonusXp: json['bonusXp'] ?? 25,
+    shuffleExercises: json['shuffleExercises'] ?? false,
+    mode: QuizMode.values.firstWhere(
+      (m) => m.toString() == 'QuizMode.${json['mode']}',
+      orElse: () => QuizMode.standard,
+    ),
+  );
 }
 
 enum QuizMode {
   /// Standard mode: all questions, show results at end
   standard,
-  
+
   /// Practice mode: unlimited attempts, show hints
   practice,
-  
+
   /// Adaptive mode: difficulty adjusts based on performance
   adaptive,
-  
+
   /// Timed mode: race against the clock
   timed,
 }

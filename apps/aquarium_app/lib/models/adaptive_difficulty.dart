@@ -2,7 +2,6 @@
 /// Tracks user performance and provides dynamic difficulty recommendations
 library;
 
-
 import 'package:flutter/foundation.dart';
 
 /// Difficulty levels available in the app
@@ -87,8 +86,8 @@ class PerformanceRecord {
   final DateTime timestamp;
   final String topicId;
   final DifficultyLevel difficulty;
-  final int score;              // 0-100
-  final int maxScore;           // Total possible score
+  final int score; // 0-100
+  final int maxScore; // Total possible score
   final int mistakeCount;
   final Duration timeSpent;
   final bool completed;
@@ -112,9 +111,9 @@ class PerformanceRecord {
   double get timeEfficiency {
     final questionsCount = maxScore;
     if (questionsCount == 0) return 0.0;
-    
+
     final averageTimePerQuestion = timeSpent.inSeconds / questionsCount;
-    
+
     // Optimal time: 30-60 seconds per question
     // Too fast (<20s) = likely guessing
     // Too slow (>120s) = struggling
@@ -130,15 +129,15 @@ class PerformanceRecord {
   }
 
   Map<String, dynamic> toJson() => {
-        'timestamp': timestamp.toIso8601String(),
-        'topicId': topicId,
-        'difficulty': difficulty.name,
-        'score': score,
-        'maxScore': maxScore,
-        'mistakeCount': mistakeCount,
-        'timeSpent': timeSpent.inSeconds,
-        'completed': completed,
-      };
+    'timestamp': timestamp.toIso8601String(),
+    'topicId': topicId,
+    'difficulty': difficulty.name,
+    'score': score,
+    'maxScore': maxScore,
+    'mistakeCount': mistakeCount,
+    'timeSpent': timeSpent.inSeconds,
+    'completed': completed,
+  };
 
   factory PerformanceRecord.fromJson(Map<String, dynamic> json) {
     return PerformanceRecord(
@@ -174,27 +173,20 @@ class PerformanceHistory {
     if (newAttempts.length > 10) {
       newAttempts.removeAt(0); // Remove oldest
     }
-    return PerformanceHistory(
-      topicId: topicId,
-      recentAttempts: newAttempts,
-    );
+    return PerformanceHistory(topicId: topicId, recentAttempts: newAttempts);
   }
 
   /// Average accuracy over recent attempts
   double get averageAccuracy {
     if (recentAttempts.isEmpty) return 0.0;
-    return recentAttempts
-            .map((r) => r.accuracy)
-            .reduce((a, b) => a + b) /
+    return recentAttempts.map((r) => r.accuracy).reduce((a, b) => a + b) /
         recentAttempts.length;
   }
 
   /// Average time efficiency
   double get averageTimeEfficiency {
     if (recentAttempts.isEmpty) return 0.0;
-    return recentAttempts
-            .map((r) => r.timeEfficiency)
-            .reduce((a, b) => a + b) /
+    return recentAttempts.map((r) => r.timeEfficiency).reduce((a, b) => a + b) /
         recentAttempts.length;
   }
 
@@ -210,7 +202,7 @@ class PerformanceHistory {
   /// Consecutive correct answers (at end of history)
   int get consecutiveCorrect {
     if (recentAttempts.isEmpty) return 0;
-    
+
     int count = 0;
     for (int i = recentAttempts.length - 1; i >= 0; i--) {
       if (recentAttempts[i].accuracy >= 0.7) {
@@ -225,12 +217,12 @@ class PerformanceHistory {
   /// Check if user is struggling (3+ high mistake attempts recently)
   bool get isStruggling {
     if (recentAttempts.length < 3) return false;
-    
+
     final recentThree = recentAttempts.sublist(
       recentAttempts.length - 3,
       recentAttempts.length,
     );
-    
+
     return recentThree.every((r) => r.mistakeCount >= 3 || r.accuracy < 0.5);
   }
 
@@ -243,11 +235,15 @@ class PerformanceHistory {
     final firstHalf = recentAttempts.sublist(0, midPoint);
     final secondHalf = recentAttempts.sublist(midPoint);
 
-    final firstAvg = firstHalf.map((r) => r.accuracy).reduce((a, b) => a + b) / firstHalf.length;
-    final secondAvg = secondHalf.map((r) => r.accuracy).reduce((a, b) => a + b) / secondHalf.length;
+    final firstAvg =
+        firstHalf.map((r) => r.accuracy).reduce((a, b) => a + b) /
+        firstHalf.length;
+    final secondAvg =
+        secondHalf.map((r) => r.accuracy).reduce((a, b) => a + b) /
+        secondHalf.length;
 
     final difference = secondAvg - firstAvg;
-    
+
     if (difference > 0.1) return PerformanceTrend.improving;
     if (difference < -0.1) return PerformanceTrend.declining;
     return PerformanceTrend.stable;
@@ -256,20 +252,21 @@ class PerformanceHistory {
   /// Standard deviation of scores (measures consistency)
   double get scoreStandardDeviation {
     if (recentAttempts.isEmpty) return 0.0;
-    
+
     final mean = averageAccuracy;
-    final variance = recentAttempts
+    final variance =
+        recentAttempts
             .map((r) => (r.accuracy - mean) * (r.accuracy - mean))
             .reduce((a, b) => a + b) /
         recentAttempts.length;
-    
+
     return variance;
   }
 
   Map<String, dynamic> toJson() => {
-        'topicId': topicId,
-        'recentAttempts': recentAttempts.map((r) => r.toJson()).toList(),
-      };
+    'topicId': topicId,
+    'recentAttempts': recentAttempts.map((r) => r.toJson()).toList(),
+  };
 
   factory PerformanceHistory.fromJson(Map<String, dynamic> json) {
     return PerformanceHistory(
@@ -286,7 +283,8 @@ class PerformanceHistory {
 class UserSkillProfile {
   final Map<String, double> skillLevels; // topic ID -> skill level (0.0-1.0)
   final Map<String, PerformanceHistory> performanceHistory;
-  final Map<String, DifficultyLevel> manualOverrides; // User can override auto-difficulty
+  final Map<String, DifficultyLevel>
+  manualOverrides; // User can override auto-difficulty
 
   const UserSkillProfile({
     required this.skillLevels,
@@ -308,7 +306,7 @@ class UserSkillProfile {
   UserSkillProfile updateSkillLevel(String topicId, double newLevel) {
     final newSkills = Map<String, double>.from(skillLevels);
     newSkills[topicId] = newLevel.clamp(0.0, 1.0);
-    
+
     return UserSkillProfile(
       skillLevels: newSkills,
       performanceHistory: performanceHistory,
@@ -319,14 +317,13 @@ class UserSkillProfile {
   /// Add a performance record
   UserSkillProfile addPerformanceRecord(PerformanceRecord record) {
     final newHistory = Map<String, PerformanceHistory>.from(performanceHistory);
-    
-    final currentHistory = newHistory[record.topicId] ?? PerformanceHistory(
-      topicId: record.topicId,
-      recentAttempts: [],
-    );
-    
+
+    final currentHistory =
+        newHistory[record.topicId] ??
+        PerformanceHistory(topicId: record.topicId, recentAttempts: []);
+
     newHistory[record.topicId] = currentHistory.addRecord(record);
-    
+
     return UserSkillProfile(
       skillLevels: skillLevels,
       performanceHistory: newHistory,
@@ -335,15 +332,18 @@ class UserSkillProfile {
   }
 
   /// Set manual difficulty override
-  UserSkillProfile setManualOverride(String topicId, DifficultyLevel? difficulty) {
+  UserSkillProfile setManualOverride(
+    String topicId,
+    DifficultyLevel? difficulty,
+  ) {
     final newOverrides = Map<String, DifficultyLevel>.from(manualOverrides);
-    
+
     if (difficulty == null) {
       newOverrides.remove(topicId);
     } else {
       newOverrides[topicId] = difficulty;
     }
-    
+
     return UserSkillProfile(
       skillLevels: skillLevels,
       performanceHistory: performanceHistory,
@@ -363,27 +363,29 @@ class UserSkillProfile {
   }
 
   Map<String, dynamic> toJson() => {
-        'skillLevels': skillLevels,
-        'performanceHistory': performanceHistory.map(
-          (key, value) => MapEntry(key, value.toJson()),
-        ),
-        'manualOverrides': manualOverrides.map(
-          (key, value) => MapEntry(key, value.name),
-        ),
-      };
+    'skillLevels': skillLevels,
+    'performanceHistory': performanceHistory.map(
+      (key, value) => MapEntry(key, value.toJson()),
+    ),
+    'manualOverrides': manualOverrides.map(
+      (key, value) => MapEntry(key, value.name),
+    ),
+  };
 
   factory UserSkillProfile.fromJson(Map<String, dynamic> json) {
     return UserSkillProfile(
       skillLevels: (json['skillLevels'] as Map<String, dynamic>).map(
         (key, value) => MapEntry(key, (value as num).toDouble()),
       ),
-      performanceHistory: (json['performanceHistory'] as Map<String, dynamic>).map(
-        (key, value) => MapEntry(
-          key,
-          PerformanceHistory.fromJson(value as Map<String, dynamic>),
-        ),
-      ),
-      manualOverrides: (json['manualOverrides'] as Map<String, dynamic>?)?.map(
+      performanceHistory: (json['performanceHistory'] as Map<String, dynamic>)
+          .map(
+            (key, value) => MapEntry(
+              key,
+              PerformanceHistory.fromJson(value as Map<String, dynamic>),
+            ),
+          ),
+      manualOverrides:
+          (json['manualOverrides'] as Map<String, dynamic>?)?.map(
             (key, value) => MapEntry(
               key,
               DifficultyLevel.values.firstWhere((e) => e.name == value),

@@ -12,17 +12,14 @@ import '../screens/stories_screen.dart';
 class StoriesCard extends ConsumerWidget {
   final UserProfile profile;
 
-  const StoriesCard({
-    super.key,
-    required this.profile,
-  });
+  const StoriesCard({super.key, required this.profile});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final completedStories = profile.completedStories.length;
     final totalStories = Stories.allStories.length;
-    final progressPercent = totalStories > 0 
-        ? (completedStories / totalStories * 100).round() 
+    final progressPercent = totalStories > 0
+        ? (completedStories / totalStories * 100).round()
         : 0;
 
     // Find an unlocked incomplete story to highlight
@@ -33,22 +30,18 @@ class StoriesCard extends ConsumerWidget {
     final incompleteStories = unlockedStories
         .where((s) => !profile.completedStories.contains(s.id))
         .toList();
-    final suggestedStory = incompleteStories.isNotEmpty 
-        ? incompleteStories.first 
+    final suggestedStory = incompleteStories.isNotEmpty
+        ? incompleteStories.first
         : null;
 
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       elevation: 4,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: InkWell(
         onTap: () {
           Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) => const StoriesScreen(),
-            ),
+            MaterialPageRoute(builder: (context) => const StoriesScreen()),
           );
         },
         borderRadius: BorderRadius.circular(16),
@@ -59,10 +52,7 @@ class StoriesCard extends ConsumerWidget {
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
-              colors: [
-                Colors.purple.shade400,
-                Colors.deepPurple.shade600,
-              ],
+              colors: [Colors.purple.shade400, Colors.deepPurple.shade600],
             ),
           ),
           child: Column(
@@ -76,10 +66,7 @@ class StoriesCard extends ConsumerWidget {
                       color: Colors.white.withOpacity(0.2),
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    child: const Text(
-                      '📖',
-                      style: TextStyle(fontSize: 32),
-                    ),
+                    child: const Text('📖', style: TextStyle(fontSize: 32)),
                   ),
                   const SizedBox(width: 16),
                   Expanded(
@@ -113,7 +100,7 @@ class StoriesCard extends ConsumerWidget {
                 ],
               ),
               const SizedBox(height: 16),
-              
+
               // Progress bar
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -153,7 +140,7 @@ class StoriesCard extends ConsumerWidget {
                   ),
                 ],
               ),
-              
+
               // Suggested story
               if (suggestedStory != null) ...[
                 const SizedBox(height: 16),
@@ -162,9 +149,7 @@ class StoriesCard extends ConsumerWidget {
                   decoration: BoxDecoration(
                     color: Colors.white.withOpacity(0.15),
                     borderRadius: BorderRadius.circular(12),
-                    border: Border.all(
-                      color: Colors.white.withOpacity(0.3),
-                    ),
+                    border: Border.all(color: Colors.white.withOpacity(0.3)),
                   ),
                   child: Row(
                     children: [

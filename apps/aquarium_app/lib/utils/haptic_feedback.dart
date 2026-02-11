@@ -1,7 +1,7 @@
 import 'package:flutter/services.dart';
 
 /// Centralized haptic feedback for consistent tactile responses
-/// 
+///
 /// Usage:
 /// ```dart
 /// AppHaptics.light(); // Subtle tap

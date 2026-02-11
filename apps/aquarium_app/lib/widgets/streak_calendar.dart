@@ -2,7 +2,6 @@
 /// Shows daily goal completion with color-coded squares
 library;
 
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -25,7 +24,7 @@ class StreakCalendar extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final profile = ref.watch(userProfileProvider).value;
-    
+
     if (profile == null) {
       return const SizedBox.shrink();
     }
@@ -53,7 +52,7 @@ class StreakCalendar extends ConsumerWidget {
           ],
         ),
         const SizedBox(height: 12),
-        
+
         // Calendar grid
         SingleChildScrollView(
           scrollDirection: Axis.horizontal,
@@ -84,10 +83,10 @@ class _CalendarGrid extends StatelessWidget {
     // Group by week (Sunday-Saturday)
     final weeks = <List<DailyGoal>>[];
     var currentWeek = <DailyGoal>[];
-    
+
     for (final goal in goals) {
       currentWeek.add(goal);
-      
+
       // Sunday is end of week (weekday = 7)
       if (goal.date.weekday == DateTime.sunday || goal == goals.last) {
         weeks.add(List.from(currentWeek));
@@ -100,13 +99,16 @@ class _CalendarGrid extends StatelessWidget {
       final firstWeek = weeks.first;
       final daysToAdd = firstWeek.first.date.weekday % 7;
       for (int i = 0; i < daysToAdd; i++) {
-        firstWeek.insert(0, DailyGoal(
-          date: firstWeek.first.date.subtract(Duration(days: 1)),
-          targetXp: 0,
-          earnedXp: 0,
-          isCompleted: false,
-          isToday: false,
-        ));
+        firstWeek.insert(
+          0,
+          DailyGoal(
+            date: firstWeek.first.date.subtract(Duration(days: 1)),
+            targetXp: 0,
+            earnedXp: 0,
+            isCompleted: false,
+            isToday: false,
+          ),
+        );
       }
     }
 
@@ -122,10 +124,7 @@ class _CalendarGrid extends StatelessWidget {
                 width: cellSize,
                 child: Text(
                   'M',
-                  style: TextStyle(
-                    fontSize: 10,
-                    color: AppColors.textHint,
-                  ),
+                  style: TextStyle(fontSize: 10, color: AppColors.textHint),
                   textAlign: TextAlign.center,
                 ),
               ),
@@ -135,10 +134,7 @@ class _CalendarGrid extends StatelessWidget {
                 width: cellSize,
                 child: Text(
                   'W',
-                  style: TextStyle(
-                    fontSize: 10,
-                    color: AppColors.textHint,
-                  ),
+                  style: TextStyle(fontSize: 10, color: AppColors.textHint),
                   textAlign: TextAlign.center,
                 ),
               ),
@@ -148,10 +144,7 @@ class _CalendarGrid extends StatelessWidget {
                 width: cellSize,
                 child: Text(
                   'F',
-                  style: TextStyle(
-                    fontSize: 10,
-                    color: AppColors.textHint,
-                  ),
+                  style: TextStyle(fontSize: 10, color: AppColors.textHint),
                   textAlign: TextAlign.center,
                 ),
               ),
@@ -159,7 +152,7 @@ class _CalendarGrid extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 4),
-        
+
         // Calendar cells
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -170,13 +163,15 @@ class _CalendarGrid extends StatelessWidget {
               children: _buildMonthLabels(weeks),
             ),
             SizedBox(width: spacing),
-            
+
             // Week columns
-            ...weeks.map((week) => _WeekColumn(
-              goals: week,
-              cellSize: cellSize,
-              spacing: spacing,
-            )),
+            ...weeks.map(
+              (week) => _WeekColumn(
+                goals: week,
+                cellSize: cellSize,
+                spacing: spacing,
+              ),
+            ),
           ],
         ),
       ],
@@ -186,15 +181,15 @@ class _CalendarGrid extends StatelessWidget {
   List<Widget> _buildMonthLabels(List<List<DailyGoal>> weeks) {
     final labels = <Widget>[];
     String? lastMonth;
-    
+
     for (int i = 0; i < 7; i++) {
       String? monthLabel;
-      
+
       for (final week in weeks) {
         if (week.length > i) {
           final goal = week[i];
           final month = DateFormat('MMM').format(goal.date);
-          
+
           if (month != lastMonth && (lastMonth == null || i == 0)) {
             monthLabel = month;
             lastMonth = month;
@@ -202,27 +197,24 @@ class _CalendarGrid extends StatelessWidget {
           }
         }
       }
-      
+
       labels.add(
         SizedBox(
           height: cellSize,
           child: monthLabel != null
               ? Text(
                   monthLabel,
-                  style: TextStyle(
-                    fontSize: 10,
-                    color: AppColors.textHint,
-                  ),
+                  style: TextStyle(fontSize: 10, color: AppColors.textHint),
                 )
               : null,
         ),
       );
-      
+
       if (i < 6) {
         labels.add(SizedBox(height: spacing));
       }
     }
-    
+
     return labels;
   }
 }
@@ -244,15 +236,9 @@ class _WeekColumn extends StatelessWidget {
       children: [
         for (int i = 0; i < 7; i++) ...[
           if (i < goals.length)
-            _DayCell(
-              goal: goals[i],
-              size: cellSize,
-            )
+            _DayCell(goal: goals[i], size: cellSize)
           else
-            SizedBox(
-              width: cellSize,
-              height: cellSize,
-            ),
+            SizedBox(width: cellSize, height: cellSize),
           if (i < 6) SizedBox(height: spacing),
         ],
       ],
@@ -264,10 +250,7 @@ class _DayCell extends StatelessWidget {
   final DailyGoal goal;
   final double size;
 
-  const _DayCell({
-    required this.goal,
-    required this.size,
-  });
+  const _DayCell({required this.goal, required this.size});
 
   @override
   Widget build(BuildContext context) {
@@ -277,7 +260,7 @@ class _DayCell extends StatelessWidget {
     );
 
     final color = _getColorForIntensity(intensity);
-    
+
     return Tooltip(
       message: _getTooltipText(),
       child: Container(
@@ -287,10 +270,7 @@ class _DayCell extends StatelessWidget {
           color: color,
           borderRadius: BorderRadius.circular(2),
           border: goal.isToday
-              ? Border.all(
-                  color: AppColors.primary,
-                  width: 2,
-                )
+              ? Border.all(color: AppColors.primary, width: 2)
               : null,
         ),
       ),
@@ -316,11 +296,11 @@ class _DayCell extends StatelessWidget {
 
   String _getTooltipText() {
     final dateStr = DateFormat('MMM d, yyyy').format(goal.date);
-    
+
     if (goal.earnedXp == 0) {
       return '$dateStr\nNo activity';
     }
-    
+
     return '$dateStr\n${goal.earnedXp} XP earned\n${goal.progressPercent}% of goal';
   }
 }
@@ -328,22 +308,14 @@ class _DayCell extends StatelessWidget {
 class _Legend extends StatelessWidget {
   final double cellSize;
 
-  const _Legend({
-    required this.cellSize,
-  });
+  const _Legend({required this.cellSize});
 
   @override
   Widget build(BuildContext context) {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Text(
-          'Less',
-          style: TextStyle(
-            fontSize: 10,
-            color: AppColors.textHint,
-          ),
-        ),
+        Text('Less', style: TextStyle(fontSize: 10, color: AppColors.textHint)),
         const SizedBox(width: 4),
         _LegendCell(color: AppColors.surfaceVariant, size: cellSize),
         const SizedBox(width: 2),
@@ -355,13 +327,7 @@ class _Legend extends StatelessWidget {
         const SizedBox(width: 2),
         _LegendCell(color: const Color(0xFF43A047), size: cellSize),
         const SizedBox(width: 4),
-        Text(
-          'More',
-          style: TextStyle(
-            fontSize: 10,
-            color: AppColors.textHint,
-          ),
-        ),
+        Text('More', style: TextStyle(fontSize: 10, color: AppColors.textHint)),
       ],
     );
   }
@@ -371,10 +337,7 @@ class _LegendCell extends StatelessWidget {
   final Color color;
   final double size;
 
-  const _LegendCell({
-    required this.color,
-    required this.size,
-  });
+  const _LegendCell({required this.color, required this.size});
 
   @override
   Widget build(BuildContext context) {
@@ -396,11 +359,9 @@ class StreakCalendarScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final profile = ref.watch(userProfileProvider).value;
-    
+
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Activity Calendar'),
-      ),
+      appBar: AppBar(title: const Text('Activity Calendar')),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -429,7 +390,7 @@ class StreakCalendarScreen extends ConsumerWidget {
               ],
             ),
             const SizedBox(height: 24),
-            
+
             // Calendar
             const StreakCalendar(
               weeks: 52, // Full year
@@ -463,9 +424,7 @@ class _StatCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.surface,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: AppColors.surfaceVariant,
-        ),
+        border: Border.all(color: AppColors.surfaceVariant),
       ),
       child: Column(
         children: [

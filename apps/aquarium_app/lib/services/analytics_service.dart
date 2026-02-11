@@ -16,7 +16,10 @@ class AnalyticsService {
     DateTime? customStart,
     DateTime? customEnd,
   }) {
-    final (start, end) = timeRange == AnalyticsTimeRange.custom && customStart != null && customEnd != null
+    final (start, end) =
+        timeRange == AnalyticsTimeRange.custom &&
+            customStart != null &&
+            customEnd != null
         ? (customStart, customEnd)
         : timeRange.getDateRange();
 
@@ -47,7 +50,10 @@ class AnalyticsService {
     );
 
     // Count total lessons
-    final totalLessons = allPaths.fold<int>(0, (sum, path) => sum + path.lessons.length);
+    final totalLessons = allPaths.fold<int>(
+      0,
+      (sum, path) => sum + path.lessons.length,
+    );
 
     // Estimate total time spent (rough calculation based on completed lessons)
     final completedLessons = profile.completedLessons.length;
@@ -82,19 +88,22 @@ class AnalyticsService {
     final endDate = DateTime(end.year, end.month, end.day);
 
     while (!current.isAfter(endDate)) {
-      final dateKey = '${current.year}-${current.month.toString().padLeft(2, '0')}-${current.day.toString().padLeft(2, '0')}';
+      final dateKey =
+          '${current.year}-${current.month.toString().padLeft(2, '0')}-${current.day.toString().padLeft(2, '0')}';
       final xp = profile.dailyXpHistory[dateKey] ?? 0;
 
       // Estimate lessons completed (rough: 50 XP per lesson average)
       final lessonsCompleted = xp ~/ 50;
 
-      stats.add(DailyStats(
-        date: current,
-        xp: xp,
-        lessonsCompleted: lessonsCompleted,
-        practiceMinutes: lessonsCompleted * 5, // Estimate
-        timeSpentSeconds: lessonsCompleted * 300, // 5 minutes in seconds
-      ));
+      stats.add(
+        DailyStats(
+          date: current,
+          xp: xp,
+          lessonsCompleted: lessonsCompleted,
+          practiceMinutes: lessonsCompleted * 5, // Estimate
+          timeSpentSeconds: lessonsCompleted * 300, // 5 minutes in seconds
+        ),
+      );
 
       current.add(const Duration(days: 1));
     }
@@ -119,21 +128,26 @@ class AnalyticsService {
       final days = entry.value;
       final weekStart = _getWeekStart(days.first.date);
       final totalXP = days.fold<int>(0, (sum, day) => sum + day.xp);
-      final lessonsCompleted = days.fold<int>(0, (sum, day) => sum + day.lessonsCompleted);
+      final lessonsCompleted = days.fold<int>(
+        0,
+        (sum, day) => sum + day.lessonsCompleted,
+      );
       final daysActive = days.where((d) => d.xp > 0).length;
       final avgDailyXP = daysActive > 0 ? totalXP / daysActive : 0.0;
 
       final peakDay = days.reduce((a, b) => a.xp > b.xp ? a : b);
 
-      weeklyStats.add(WeeklyStats(
-        weekStart: weekStart,
-        totalXP: totalXP,
-        lessonsCompleted: lessonsCompleted,
-        avgDailyXP: avgDailyXP,
-        peakDayXP: peakDay.xp,
-        peakDay: peakDay.date,
-        daysActive: daysActive,
-      ));
+      weeklyStats.add(
+        WeeklyStats(
+          weekStart: weekStart,
+          totalXP: totalXP,
+          lessonsCompleted: lessonsCompleted,
+          avgDailyXP: avgDailyXP,
+          peakDayXP: peakDay.xp,
+          peakDay: peakDay.date,
+          daysActive: daysActive,
+        ),
+      );
     }
 
     return weeklyStats..sort((a, b) => b.weekStart.compareTo(a.weekStart));
@@ -163,18 +177,20 @@ class AnalyticsService {
         trend = ProgressTrend.decreasing;
       }
 
-      performances.add(TopicPerformance(
-        topicId: path.id,
-        topicName: path.title,
-        totalXP: path.lessons
-            .where((l) => profile.completedLessons.contains(l.id))
-            .fold<int>(0, (sum, l) => sum + l.xpReward),
-        lessonsCompleted: completedLessons,
-        totalLessons: totalLessons,
-        masteryPercentage: mastery,
-        trend: trend,
-        timeSpentMinutes: completedLessons * 5, // Estimate
-      ));
+      performances.add(
+        TopicPerformance(
+          topicId: path.id,
+          topicName: path.title,
+          totalXP: path.lessons
+              .where((l) => profile.completedLessons.contains(l.id))
+              .fold<int>(0, (sum, l) => sum + l.xpReward),
+          lessonsCompleted: completedLessons,
+          totalLessons: totalLessons,
+          masteryPercentage: mastery,
+          trend: trend,
+          timeSpentMinutes: completedLessons * 5, // Estimate
+        ),
+      );
     }
 
     return performances..sort((a, b) => b.totalXP.compareTo(a.totalXP));
@@ -255,72 +271,103 @@ class AnalyticsService {
       final lastWeek = weeklyStats[1].totalXP;
       if (thisWeek > lastWeek) {
         final percentChange = ((thisWeek - lastWeek) / lastWeek * 100).round();
-        insights.add(AnalyticsInsight(
-          id: 'xp_growth_${insightId++}',
-          type: InsightType.improvement,
-          message: 'Your XP increased $percentChange% this week!',
-          detailedMessage: 'You earned $thisWeek XP this week compared to $lastWeek last week. Keep up the great work!',
-          trend: ProgressTrend.increasing,
-          recommendation: 'Try to maintain this momentum by completing at least one lesson daily.',
-          data: {'thisWeek': thisWeek, 'lastWeek': lastWeek, 'change': percentChange},
-          generatedAt: DateTime.now(),
-        ));
+        insights.add(
+          AnalyticsInsight(
+            id: 'xp_growth_${insightId++}',
+            type: InsightType.improvement,
+            message: 'Your XP increased $percentChange% this week!',
+            detailedMessage:
+                'You earned $thisWeek XP this week compared to $lastWeek last week. Keep up the great work!',
+            trend: ProgressTrend.increasing,
+            recommendation:
+                'Try to maintain this momentum by completing at least one lesson daily.',
+            data: {
+              'thisWeek': thisWeek,
+              'lastWeek': lastWeek,
+              'change': percentChange,
+            },
+            generatedAt: DateTime.now(),
+          ),
+        );
       } else if (thisWeek < lastWeek) {
         final percentChange = ((lastWeek - thisWeek) / lastWeek * 100).round();
-        insights.add(AnalyticsInsight(
-          id: 'xp_decline_${insightId++}',
-          type: InsightType.warning,
-          message: 'Your XP dropped $percentChange% this week',
-          detailedMessage: 'You earned $thisWeek XP this week compared to $lastWeek last week.',
-          trend: ProgressTrend.decreasing,
-          recommendation: 'Try completing a quick lesson to get back on track. Even 5 minutes helps!',
-          data: {'thisWeek': thisWeek, 'lastWeek': lastWeek, 'change': percentChange},
-          generatedAt: DateTime.now(),
-        ));
+        insights.add(
+          AnalyticsInsight(
+            id: 'xp_decline_${insightId++}',
+            type: InsightType.warning,
+            message: 'Your XP dropped $percentChange% this week',
+            detailedMessage:
+                'You earned $thisWeek XP this week compared to $lastWeek last week.',
+            trend: ProgressTrend.decreasing,
+            recommendation:
+                'Try completing a quick lesson to get back on track. Even 5 minutes helps!',
+            data: {
+              'thisWeek': thisWeek,
+              'lastWeek': lastWeek,
+              'change': percentChange,
+            },
+            generatedAt: DateTime.now(),
+          ),
+        );
       }
     }
 
     // Streak Milestone
     if (profile.currentStreak >= 7) {
-      insights.add(AnalyticsInsight(
-        id: 'streak_milestone_${insightId++}',
-        type: InsightType.achievement,
-        message: '🔥 ${profile.currentStreak} day streak!',
-        detailedMessage: 'You\'ve been learning consistently for ${profile.currentStreak} days. That\'s dedication!',
-        recommendation: 'Don\'t break it now! Complete today\'s goal to keep the streak alive.',
-        data: {'streak': profile.currentStreak},
-        generatedAt: DateTime.now(),
-      ));
+      insights.add(
+        AnalyticsInsight(
+          id: 'streak_milestone_${insightId++}',
+          type: InsightType.achievement,
+          message: '🔥 ${profile.currentStreak} day streak!',
+          detailedMessage:
+              'You\'ve been learning consistently for ${profile.currentStreak} days. That\'s dedication!',
+          recommendation:
+              'Don\'t break it now! Complete today\'s goal to keep the streak alive.',
+          data: {'streak': profile.currentStreak},
+          generatedAt: DateTime.now(),
+        ),
+      );
     }
 
     // Longest Streak Achievement
-    if (profile.longestStreak > profile.currentStreak && profile.longestStreak >= 14) {
-      insights.add(AnalyticsInsight(
-        id: 'longest_streak_${insightId++}',
-        type: InsightType.milestone,
-        message: 'Longest streak: ${profile.longestStreak} days!',
-        detailedMessage: 'Your record is ${profile.longestStreak} days. Current streak: ${profile.currentStreak} days.',
-        recommendation: 'Can you beat your record? Stay consistent!',
-        data: {'longest': profile.longestStreak, 'current': profile.currentStreak},
-        generatedAt: DateTime.now(),
-      ));
+    if (profile.longestStreak > profile.currentStreak &&
+        profile.longestStreak >= 14) {
+      insights.add(
+        AnalyticsInsight(
+          id: 'longest_streak_${insightId++}',
+          type: InsightType.milestone,
+          message: 'Longest streak: ${profile.longestStreak} days!',
+          detailedMessage:
+              'Your record is ${profile.longestStreak} days. Current streak: ${profile.currentStreak} days.',
+          recommendation: 'Can you beat your record? Stay consistent!',
+          data: {
+            'longest': profile.longestStreak,
+            'current': profile.currentStreak,
+          },
+          generatedAt: DateTime.now(),
+        ),
+      );
     }
 
     // Best Learning Time
     if (timePattern != null) {
-      insights.add(AnalyticsInsight(
-        id: 'best_time_${insightId++}',
-        type: InsightType.pattern,
-        message: 'Best learning time: ${timePattern.preferredTimeOfDay}',
-        detailedMessage: 'You\'re most active in the ${timePattern.preferredTimeOfDay.toLowerCase()}, around ${timePattern.mostActiveTimeLabel}.',
-        recommendation: 'Schedule learning sessions during your peak hours for better focus.',
-        data: {
-          'timeOfDay': timePattern.preferredTimeOfDay,
-          'hour': timePattern.mostActiveHour,
-          'day': timePattern.mostActiveDayName,
-        },
-        generatedAt: DateTime.now(),
-      ));
+      insights.add(
+        AnalyticsInsight(
+          id: 'best_time_${insightId++}',
+          type: InsightType.pattern,
+          message: 'Best learning time: ${timePattern.preferredTimeOfDay}',
+          detailedMessage:
+              'You\'re most active in the ${timePattern.preferredTimeOfDay.toLowerCase()}, around ${timePattern.mostActiveTimeLabel}.',
+          recommendation:
+              'Schedule learning sessions during your peak hours for better focus.',
+          data: {
+            'timeOfDay': timePattern.preferredTimeOfDay,
+            'hour': timePattern.mostActiveHour,
+            'day': timePattern.mostActiveDayName,
+          },
+          generatedAt: DateTime.now(),
+        ),
+      );
     }
 
     // Topic Mastery
@@ -329,53 +376,71 @@ class AnalyticsService {
 
     if (strongTopics.isNotEmpty) {
       final best = strongTopics.first;
-      insights.add(AnalyticsInsight(
-        id: 'strong_topic_${insightId++}',
-        type: InsightType.achievement,
-        message: 'Most improved topic: ${best.topicName}',
-        detailedMessage: 'You\'ve completed ${best.lessonsCompleted}/${best.totalLessons} lessons in ${best.topicName} (${(best.masteryPercentage * 100).round()}% mastery).',
-        recommendation: 'Great progress! Consider reviewing earlier lessons to reinforce your knowledge.',
-        data: {'topic': best.topicName, 'mastery': best.masteryPercentage},
-        generatedAt: DateTime.now(),
-      ));
+      insights.add(
+        AnalyticsInsight(
+          id: 'strong_topic_${insightId++}',
+          type: InsightType.achievement,
+          message: 'Most improved topic: ${best.topicName}',
+          detailedMessage:
+              'You\'ve completed ${best.lessonsCompleted}/${best.totalLessons} lessons in ${best.topicName} (${(best.masteryPercentage * 100).round()}% mastery).',
+          recommendation:
+              'Great progress! Consider reviewing earlier lessons to reinforce your knowledge.',
+          data: {'topic': best.topicName, 'mastery': best.masteryPercentage},
+          generatedAt: DateTime.now(),
+        ),
+      );
     }
 
     if (weakTopics.isNotEmpty) {
       final weakest = weakTopics.first;
-      insights.add(AnalyticsInsight(
-        id: 'weak_topic_${insightId++}',
-        type: InsightType.recommendation,
-        message: 'Opportunity: ${weakest.topicName}',
-        detailedMessage: 'You\'ve only completed ${weakest.lessonsCompleted}/${weakest.totalLessons} lessons in ${weakest.topicName}.',
-        recommendation: 'Try completing a lesson in this topic to broaden your knowledge.',
-        data: {'topic': weakest.topicName, 'mastery': weakest.masteryPercentage},
-        generatedAt: DateTime.now(),
-      ));
+      insights.add(
+        AnalyticsInsight(
+          id: 'weak_topic_${insightId++}',
+          type: InsightType.recommendation,
+          message: 'Opportunity: ${weakest.topicName}',
+          detailedMessage:
+              'You\'ve only completed ${weakest.lessonsCompleted}/${weakest.totalLessons} lessons in ${weakest.topicName}.',
+          recommendation:
+              'Try completing a lesson in this topic to broaden your knowledge.',
+          data: {
+            'topic': weakest.topicName,
+            'mastery': weakest.masteryPercentage,
+          },
+          generatedAt: DateTime.now(),
+        ),
+      );
     }
 
     // Consistency Pattern
     final last7Days = dailyStats.take(7).toList();
     final daysActive = last7Days.where((d) => d.xp > 0).length;
     if (daysActive >= 5) {
-      insights.add(AnalyticsInsight(
-        id: 'consistency_${insightId++}',
-        type: InsightType.achievement,
-        message: 'Highly consistent learner!',
-        detailedMessage: 'You\'ve been active $daysActive out of the last 7 days.',
-        recommendation: 'This consistency will pay off. Keep the momentum!',
-        data: {'daysActive': daysActive},
-        generatedAt: DateTime.now(),
-      ));
+      insights.add(
+        AnalyticsInsight(
+          id: 'consistency_${insightId++}',
+          type: InsightType.achievement,
+          message: 'Highly consistent learner!',
+          detailedMessage:
+              'You\'ve been active $daysActive out of the last 7 days.',
+          recommendation: 'This consistency will pay off. Keep the momentum!',
+          data: {'daysActive': daysActive},
+          generatedAt: DateTime.now(),
+        ),
+      );
     } else if (daysActive <= 2) {
-      insights.add(AnalyticsInsight(
-        id: 'engagement_drop_${insightId++}',
-        type: InsightType.warning,
-        message: 'Activity has dropped recently',
-        detailedMessage: 'You\'ve only been active $daysActive out of the last 7 days.',
-        recommendation: 'Even 5 minutes a day makes a difference. Try setting a daily reminder!',
-        data: {'daysActive': daysActive},
-        generatedAt: DateTime.now(),
-      ));
+      insights.add(
+        AnalyticsInsight(
+          id: 'engagement_drop_${insightId++}',
+          type: InsightType.warning,
+          message: 'Activity has dropped recently',
+          detailedMessage:
+              'You\'ve only been active $daysActive out of the last 7 days.',
+          recommendation:
+              'Even 5 minutes a day makes a difference. Try setting a daily reminder!',
+          data: {'daysActive': daysActive},
+          generatedAt: DateTime.now(),
+        ),
+      );
     }
 
     return insights.take(5).toList(); // Return top 5 insights
@@ -398,40 +463,54 @@ class AnalyticsService {
     if (avgXPPerDay > 0) {
       // Predict XP milestone
       const milestones = [100, 500, 1000, 2000, 5000, 10000];
-      final nextMilestone = milestones.firstWhereOrNull((m) => m > profile.totalXp);
-      
+      final nextMilestone = milestones.firstWhereOrNull(
+        (m) => m > profile.totalXp,
+      );
+
       if (nextMilestone != null) {
         final xpRemaining = nextMilestone - profile.totalXp;
         final daysRemaining = (xpRemaining / avgXPPerDay).ceil();
         final estimatedDate = DateTime.now().add(Duration(days: daysRemaining));
 
-        predictions.add(Prediction(
-          message: 'At this rate, you\'ll reach $nextMilestone XP in $daysRemaining days',
-          estimatedDate: estimatedDate,
-          daysRemaining: daysRemaining,
-          confidence: avgXPPerDay >= 50 ? 0.8 : 0.6,
-          recommendation: daysRemaining > 14
-              ? 'Increase your daily XP to reach this milestone faster!'
-              : 'Keep up the pace and you\'ll hit this milestone soon!',
-        ));
+        predictions.add(
+          Prediction(
+            message:
+                'At this rate, you\'ll reach $nextMilestone XP in $daysRemaining days',
+            estimatedDate: estimatedDate,
+            daysRemaining: daysRemaining,
+            confidence: avgXPPerDay >= 50 ? 0.8 : 0.6,
+            recommendation: daysRemaining > 14
+                ? 'Increase your daily XP to reach this milestone faster!'
+                : 'Keep up the pace and you\'ll hit this milestone soon!',
+          ),
+        );
       }
 
       // Predict streak maintenance
       if (profile.currentStreak > 0) {
-        final dailyGoalMet = last7Days.where((d) => d.xp >= profile.dailyXpGoal).length >= 5;
+        final dailyGoalMet =
+            last7Days.where((d) => d.xp >= profile.dailyXpGoal).length >= 5;
         if (dailyGoalMet) {
-          predictions.add(Prediction(
-            message: 'On track to maintain your ${profile.currentStreak}-day streak',
-            confidence: 0.85,
-            recommendation: 'Complete your daily goal to keep the streak alive!',
-          ));
+          predictions.add(
+            Prediction(
+              message:
+                  'On track to maintain your ${profile.currentStreak}-day streak',
+              confidence: 0.85,
+              recommendation:
+                  'Complete your daily goal to keep the streak alive!',
+            ),
+          );
         } else {
           final lessonsNeeded = (profile.dailyXpGoal / 50).ceil();
-          predictions.add(Prediction(
-            message: 'Complete $lessonsNeeded more lesson${lessonsNeeded > 1 ? 's' : ''} to maintain streak',
-            confidence: 0.7,
-            recommendation: 'Don\'t break your streak! Quick lessons count too.',
-          ));
+          predictions.add(
+            Prediction(
+              message:
+                  'Complete $lessonsNeeded more lesson${lessonsNeeded > 1 ? 's' : ''} to maintain streak',
+              confidence: 0.7,
+              recommendation:
+                  'Don\'t break your streak! Quick lessons count too.',
+            ),
+          );
         }
       }
 
@@ -439,11 +518,14 @@ class AnalyticsService {
       if (profile.weeklyXP > 0 && profile.league != League.diamond) {
         final leagueThreshold = _getLeagueThreshold(profile.league);
         if (profile.weeklyXP >= leagueThreshold * 0.7) {
-          predictions.add(Prediction(
-            message: 'Likely to promote to ${_getNextLeague(profile.league).displayName} this week',
-            confidence: 0.75,
-            recommendation: 'Keep earning XP to secure your promotion!',
-          ));
+          predictions.add(
+            Prediction(
+              message:
+                  'Likely to promote to ${_getNextLeague(profile.league).displayName} this week',
+              confidence: 0.75,
+              recommendation: 'Keep earning XP to secure your promotion!',
+            ),
+          );
         }
       }
     }

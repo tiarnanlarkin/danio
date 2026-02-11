@@ -7,22 +7,22 @@ abstract class StorageService {
   Future<Tank?> getTank(String id);
   Future<void> saveTank(Tank tank);
   Future<void> deleteTank(String id);
-  
+
   // Livestock
   Future<List<Livestock>> getLivestockForTank(String tankId);
   Future<void> saveLivestock(Livestock livestock);
   Future<void> deleteLivestock(String id);
-  
+
   // Equipment
   Future<List<Equipment>> getEquipmentForTank(String tankId);
   Future<void> saveEquipment(Equipment equipment);
   Future<void> deleteEquipment(String id);
-  
+
   // Logs
   Future<List<LogEntry>> getLogsForTank(String tankId, {int? limit});
   Future<void> saveLog(LogEntry log);
   Future<void> deleteLog(String id);
-  
+
   // Tasks
   Future<List<Task>> getTasksForTank(String? tankId); // null = all tasks
   Future<void> saveTask(Task task);
@@ -70,9 +70,7 @@ class InMemoryStorageService implements StorageService {
   // --- Livestock ---
   @override
   Future<List<Livestock>> getLivestockForTank(String tankId) async {
-    return _livestock.values
-        .where((l) => l.tankId == tankId)
-        .toList()
+    return _livestock.values.where((l) => l.tankId == tankId).toList()
       ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
   }
 
@@ -89,9 +87,7 @@ class InMemoryStorageService implements StorageService {
   // --- Equipment ---
   @override
   Future<List<Equipment>> getEquipmentForTank(String tankId) async {
-    return _equipment.values
-        .where((e) => e.tankId == tankId)
-        .toList()
+    return _equipment.values.where((e) => e.tankId == tankId).toList()
       ..sort((a, b) => a.type.index.compareTo(b.type.index));
   }
 
@@ -108,9 +104,7 @@ class InMemoryStorageService implements StorageService {
   // --- Logs ---
   @override
   Future<List<LogEntry>> getLogsForTank(String tankId, {int? limit}) async {
-    var logs = _logs.values
-        .where((l) => l.tankId == tankId)
-        .toList()
+    var logs = _logs.values.where((l) => l.tankId == tankId).toList()
       ..sort((a, b) => b.timestamp.compareTo(a.timestamp));
     if (limit != null && logs.length > limit) {
       logs = logs.take(limit).toList();
@@ -160,7 +154,7 @@ class InMemoryStorageService implements StorageService {
   /// Add demo data for testing
   Future<void> addDemoData() async {
     final now = DateTime.now();
-    
+
     // Demo tank
     final tank = Tank(
       id: 'demo-tank-1',

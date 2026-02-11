@@ -23,7 +23,9 @@ class RoomNavigation extends StatelessWidget {
           const SizedBox(height: 4),
           Text(
             'Each room has different tools and features',
-            style: AppTypography.bodySmall.copyWith(color: AppColors.textSecondary),
+            style: AppTypography.bodySmall.copyWith(
+              color: AppColors.textSecondary,
+            ),
           ),
           const SizedBox(height: 16),
           Row(
@@ -49,9 +51,7 @@ class RoomNavigation extends StatelessWidget {
                   color: const Color(0xFF5D4037),
                   onTap: () => Navigator.push(
                     context,
-                    MaterialPageRoute(
-                      builder: (_) => const WorkshopScreen(),
-                    ),
+                    MaterialPageRoute(builder: (_) => const WorkshopScreen()),
                   ),
                 ),
               ),
@@ -100,10 +100,7 @@ class _RoomCard extends StatelessWidget {
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [
-              color,
-              color.withOpacity(0.7),
-            ],
+            colors: [color, color.withOpacity(0.7)],
           ),
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
@@ -125,9 +122,7 @@ class _RoomCard extends StatelessWidget {
             ),
             Text(
               description,
-              style: AppTypography.bodySmall.copyWith(
-                color: Colors.white70,
-              ),
+              style: AppTypography.bodySmall.copyWith(color: Colors.white70),
             ),
           ],
         ),
@@ -137,7 +132,11 @@ class _RoomCard extends StatelessWidget {
 }
 
 /// Bottom sheet to show room navigation
-void showRoomNavigationSheet(BuildContext context, {String? tankId, String? tankName}) {
+void showRoomNavigationSheet(
+  BuildContext context, {
+  String? tankId,
+  String? tankName,
+}) {
   showModalBottomSheet(
     context: context,
     backgroundColor: Colors.transparent,

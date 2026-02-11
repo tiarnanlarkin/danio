@@ -61,17 +61,15 @@ class SettingsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final settings = ref.watch(settingsProvider);
-    
+
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Settings'),
-      ),
+      appBar: AppBar(title: const Text('Settings')),
       body: ListView(
         children: [
           // Learning System (Duolingo-style)
           _SectionHeader(title: 'Learn'),
           _LearnCard(ref: ref),
-          
+
           // Daily Goal Settings
           ListTile(
             leading: const Icon(Icons.flag),
@@ -80,11 +78,11 @@ class SettingsScreen extends ConsumerWidget {
             trailing: const Icon(Icons.chevron_right),
             onTap: () => _showDailyGoalPicker(context, ref),
           ),
-          
+
           // House Navigation (Rooms)
           _SectionHeader(title: 'Explore'),
           const RoomNavigation(),
-          
+
           // Appearance
           _SectionHeader(title: 'Appearance'),
           ListTile(
@@ -116,7 +114,9 @@ class SettingsScreen extends ConsumerWidget {
             trailing: const Icon(Icons.chevron_right),
             onTap: () => Navigator.push(
               context,
-              MaterialPageRoute(builder: (_) => const NotificationSettingsScreen()),
+              MaterialPageRoute(
+                builder: (_) => const NotificationSettingsScreen(),
+              ),
             ),
           ),
           SwitchListTile(
@@ -155,7 +155,10 @@ class SettingsScreen extends ConsumerWidget {
             trailing: const Icon(Icons.chevron_right),
             onTap: () => Navigator.push(
               context,
-              MaterialPageRoute(builder: (_) => const WishlistScreen(category: WishlistCategory.fish)),
+              MaterialPageRoute(
+                builder: (_) =>
+                    const WishlistScreen(category: WishlistCategory.fish),
+              ),
             ),
           ),
           ListTile(
@@ -175,7 +178,9 @@ class SettingsScreen extends ConsumerWidget {
             trailing: const Icon(Icons.chevron_right),
             onTap: () => Navigator.push(
               context,
-              MaterialPageRoute(builder: (_) => const WaterChangeCalculatorScreen()),
+              MaterialPageRoute(
+                builder: (_) => const WaterChangeCalculatorScreen(),
+              ),
             ),
           ),
           ListTile(
@@ -215,7 +220,9 @@ class SettingsScreen extends ConsumerWidget {
             trailing: const Icon(Icons.chevron_right),
             onTap: () => Navigator.push(
               context,
-              MaterialPageRoute(builder: (_) => const TankVolumeCalculatorScreen()),
+              MaterialPageRoute(
+                builder: (_) => const TankVolumeCalculatorScreen(),
+              ),
             ),
           ),
           ListTile(
@@ -235,7 +242,9 @@ class SettingsScreen extends ConsumerWidget {
             trailing: const Icon(Icons.chevron_right),
             onTap: () => Navigator.push(
               context,
-              MaterialPageRoute(builder: (_) => const WaterChangeCalculatorScreen()),
+              MaterialPageRoute(
+                builder: (_) => const WaterChangeCalculatorScreen(),
+              ),
             ),
           ),
           ListTile(
@@ -245,7 +254,9 @@ class SettingsScreen extends ConsumerWidget {
             trailing: const Icon(Icons.chevron_right),
             onTap: () => Navigator.push(
               context,
-              MaterialPageRoute(builder: (_) => const CompatibilityCheckerScreen()),
+              MaterialPageRoute(
+                builder: (_) => const CompatibilityCheckerScreen(),
+              ),
             ),
           ),
           ListTile(
@@ -265,7 +276,9 @@ class SettingsScreen extends ConsumerWidget {
             trailing: const Icon(Icons.chevron_right),
             onTap: () => Navigator.push(
               context,
-              MaterialPageRoute(builder: (_) => const StockingCalculatorScreen()),
+              MaterialPageRoute(
+                builder: (_) => const StockingCalculatorScreen(),
+              ),
             ),
           ),
 
@@ -353,7 +366,9 @@ class SettingsScreen extends ConsumerWidget {
             trailing: const Icon(Icons.chevron_right),
             onTap: () => Navigator.push(
               context,
-              MaterialPageRoute(builder: (_) => const NitrogenCycleGuideScreen()),
+              MaterialPageRoute(
+                builder: (_) => const NitrogenCycleGuideScreen(),
+              ),
             ),
           ),
           ListTile(
@@ -566,7 +581,10 @@ class SettingsScreen extends ConsumerWidget {
           // Danger zone
           _SectionHeader(title: 'Danger Zone', color: AppColors.error),
           ListTile(
-            leading: Icon(Icons.delete_forever_outlined, color: AppColors.error),
+            leading: Icon(
+              Icons.delete_forever_outlined,
+              color: AppColors.error,
+            ),
             title: Text(
               'Clear All Data',
               style: TextStyle(color: AppColors.error),
@@ -579,12 +597,16 @@ class SettingsScreen extends ConsumerWidget {
     );
   }
 
-  Future<void> _toggleNotifications(BuildContext context, WidgetRef ref, bool enable) async {
+  Future<void> _toggleNotifications(
+    BuildContext context,
+    WidgetRef ref,
+    bool enable,
+  ) async {
     if (enable) {
       final service = NotificationService();
       await service.initialize();
       final granted = await service.requestPermissions();
-      
+
       if (!granted) {
         if (context.mounted) {
           AppFeedback.showWarning(context, 'Notification permission denied');
@@ -592,9 +614,9 @@ class SettingsScreen extends ConsumerWidget {
         return;
       }
     }
-    
+
     await ref.read(settingsProvider.notifier).setNotificationsEnabled(enable);
-    
+
     if (context.mounted) {
       if (enable) {
         AppFeedback.showSuccess(context, 'Notifications enabled!');
@@ -609,7 +631,7 @@ class SettingsScreen extends ConsumerWidget {
       final service = NotificationService();
       await service.initialize();
       await service.showTestNotification();
-      
+
       if (context.mounted) {
         AppFeedback.showSuccess(context, 'Test notification sent!');
       }
@@ -631,7 +653,11 @@ class SettingsScreen extends ConsumerWidget {
     }
   }
 
-  void _showThemePicker(BuildContext context, WidgetRef ref, AppThemeMode current) {
+  void _showThemePicker(
+    BuildContext context,
+    WidgetRef ref,
+    AppThemeMode current,
+  ) {
     showModalBottomSheet(
       context: context,
       builder: (ctx) => SafeArea(
@@ -640,39 +666,48 @@ class SettingsScreen extends ConsumerWidget {
           children: [
             Padding(
               padding: const EdgeInsets.all(16),
-              child: Text('Choose Theme', style: Theme.of(context).textTheme.titleLarge),
+              child: Text(
+                'Choose Theme',
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
             ),
             ListTile(
               leading: const Icon(Icons.brightness_auto),
               title: const Text('System default'),
               subtitle: const Text('Follow device settings'),
-              trailing: current == AppThemeMode.system 
-                  ? const Icon(Icons.check, color: AppColors.primary) 
+              trailing: current == AppThemeMode.system
+                  ? const Icon(Icons.check, color: AppColors.primary)
                   : null,
               onTap: () {
-                ref.read(settingsProvider.notifier).setThemeMode(AppThemeMode.system);
+                ref
+                    .read(settingsProvider.notifier)
+                    .setThemeMode(AppThemeMode.system);
                 Navigator.pop(ctx);
               },
             ),
             ListTile(
               leading: const Icon(Icons.light_mode),
               title: const Text('Light'),
-              trailing: current == AppThemeMode.light 
-                  ? const Icon(Icons.check, color: AppColors.primary) 
+              trailing: current == AppThemeMode.light
+                  ? const Icon(Icons.check, color: AppColors.primary)
                   : null,
               onTap: () {
-                ref.read(settingsProvider.notifier).setThemeMode(AppThemeMode.light);
+                ref
+                    .read(settingsProvider.notifier)
+                    .setThemeMode(AppThemeMode.light);
                 Navigator.pop(ctx);
               },
             ),
             ListTile(
               leading: const Icon(Icons.dark_mode),
               title: const Text('Dark'),
-              trailing: current == AppThemeMode.dark 
-                  ? const Icon(Icons.check, color: AppColors.primary) 
+              trailing: current == AppThemeMode.dark
+                  ? const Icon(Icons.check, color: AppColors.primary)
                   : null,
               onTap: () {
-                ref.read(settingsProvider.notifier).setThemeMode(AppThemeMode.dark);
+                ref
+                    .read(settingsProvider.notifier)
+                    .setThemeMode(AppThemeMode.dark);
                 Navigator.pop(ctx);
               },
             ),
@@ -697,7 +732,10 @@ class SettingsScreen extends ConsumerWidget {
               padding: const EdgeInsets.all(16),
               child: Column(
                 children: [
-                  Text('Daily XP Goal', style: Theme.of(context).textTheme.titleLarge),
+                  Text(
+                    'Daily XP Goal',
+                    style: Theme.of(context).textTheme.titleLarge,
+                  ),
                   const SizedBox(height: 8),
                   Text(
                     'Complete your goal every day to maintain your streak',
@@ -794,10 +832,9 @@ class SettingsScreen extends ConsumerWidget {
         return;
       }
 
-      await Share.shareXFiles(
-        [XFile(dataFile.path)],
-        subject: 'Aquarium App Data Export',
-      );
+      await Share.shareXFiles([
+        XFile(dataFile.path),
+      ], subject: 'Aquarium App Data Export');
     } catch (e) {
       if (context.mounted) {
         AppFeedback.dismiss(context);
@@ -828,10 +865,7 @@ class SettingsScreen extends ConsumerWidget {
           ),
           TextButton(
             onPressed: () => Navigator.pop(ctx, true),
-            child: Text(
-              'Import',
-              style: TextStyle(color: AppColors.warning),
-            ),
+            child: Text('Import', style: TextStyle(color: AppColors.warning)),
           ),
         ],
       ),
@@ -866,7 +900,10 @@ class SettingsScreen extends ConsumerWidget {
         if (context.mounted) {
           AppFeedback.dismiss(context);
           dismissLoadingInFinally = false;
-          AppFeedback.showError(context, 'Invalid file format (not valid JSON)');
+          AppFeedback.showError(
+            context,
+            'Invalid file format (not valid JSON)',
+          );
         }
         return;
       }
@@ -879,7 +916,10 @@ class SettingsScreen extends ConsumerWidget {
       if (context.mounted) {
         AppFeedback.dismiss(context);
         dismissLoadingInFinally = false;
-        AppFeedback.showSuccess(context, 'Data imported! Restart the app to see changes.');
+        AppFeedback.showSuccess(
+          context,
+          'Data imported! Restart the app to see changes.',
+        );
       }
     } catch (e) {
       if (context.mounted) {
@@ -1083,11 +1123,7 @@ class _LearnCard extends StatelessWidget {
                   color: Colors.white.withOpacity(0.2),
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: const Icon(
-                  Icons.school,
-                  color: Colors.white,
-                  size: 28,
-                ),
+                child: const Icon(Icons.school, color: Colors.white, size: 28),
               ),
               const SizedBox(width: 16),
               Expanded(
@@ -1116,7 +1152,9 @@ class _LearnCard extends StatelessWidget {
                             color: Colors.white70,
                           ),
                         ),
-                        if (profile != null && (profile.hasStreakFreeze || profile.streakFreezeUsedThisWeek)) ...[
+                        if (profile != null &&
+                            (profile.hasStreakFreeze ||
+                                profile.streakFreezeUsedThisWeek)) ...[
                           const SizedBox(height: 2),
                           Text(
                             profile.hasStreakFreeze
@@ -1138,10 +1176,7 @@ class _LearnCard extends StatelessWidget {
                   ],
                 ),
               ),
-              const Icon(
-                Icons.chevron_right,
-                color: Colors.white70,
-              ),
+              const Icon(Icons.chevron_right, color: Colors.white70),
             ],
           ),
         ),
@@ -1185,13 +1220,10 @@ class _GoalOptionState extends State<_GoalOption> {
               height: 32,
               child: CircularProgressIndicator(strokeWidth: 2),
             )
-          : Text(
-              widget.icon,
-              style: const TextStyle(fontSize: 32),
-            ),
+          : Text(widget.icon, style: const TextStyle(fontSize: 32)),
       title: Text('${widget.goal} XP/day'),
       subtitle: Text('${widget.label} • ${widget.description}'),
-      trailing: isSelected 
+      trailing: isSelected
           ? const Icon(Icons.check_circle, color: AppColors.primary)
           : null,
       selected: isSelected,
@@ -1199,10 +1231,15 @@ class _GoalOptionState extends State<_GoalOption> {
       onTap: () async {
         setState(() => _isLoading = true);
         try {
-          await widget.ref.read(userProfileProvider.notifier).setDailyGoal(widget.goal);
+          await widget.ref
+              .read(userProfileProvider.notifier)
+              .setDailyGoal(widget.goal);
           if (mounted) {
             Navigator.pop(context);
-            AppFeedback.showSuccess(context, 'Daily goal updated to ${widget.goal} XP');
+            AppFeedback.showSuccess(
+              context,
+              'Daily goal updated to ${widget.goal} XP',
+            );
           }
         } finally {
           if (mounted) {

@@ -22,9 +22,7 @@ class TasksScreen extends ConsumerWidget {
     final tasksAsync = ref.watch(tasksProvider(tankId));
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Tasks'),
-      ),
+      appBar: AppBar(title: const Text('Tasks')),
       body: tasksAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (err, _) => ErrorState(
@@ -36,15 +34,22 @@ class TasksScreen extends ConsumerWidget {
             return EmptyState(
               icon: Icons.task_alt,
               title: 'No tasks yet',
-              message: 'Set up reminders for water changes, testing, and maintenance to keep your tank healthy',
+              message:
+                  'Set up reminders for water changes, testing, and maintenance to keep your tank healthy',
               actionLabel: 'Add Task',
               onAction: () => _showAddDialog(context, ref),
             );
           }
 
-          final overdue = tasks.where((t) => t.isOverdue && t.isEnabled).toList();
-          final dueToday = tasks.where((t) => t.isDueToday && t.isEnabled && !t.isOverdue).toList();
-          final upcoming = tasks.where((t) => !t.isOverdue && !t.isDueToday && t.isEnabled).toList();
+          final overdue = tasks
+              .where((t) => t.isOverdue && t.isEnabled)
+              .toList();
+          final dueToday = tasks
+              .where((t) => t.isDueToday && t.isEnabled && !t.isOverdue)
+              .toList();
+          final upcoming = tasks
+              .where((t) => !t.isOverdue && !t.isDueToday && t.isEnabled)
+              .toList();
           final disabled = tasks.where((t) => !t.isEnabled).toList();
 
           return ListView(
@@ -56,14 +61,16 @@ class TasksScreen extends ConsumerWidget {
                   color: AppColors.warning,
                   count: overdue.length,
                 ),
-                ...overdue.map((t) => _TaskCard(
-                  task: t,
-                  onComplete: () => _completeTask(ref, t),
-                  onSnooze: () => _showSnoozeDialog(context, ref, t),
-                  onEdit: () => _showEditDialog(context, ref, t),
-                  onDelete: () => _confirmDelete(context, ref, t),
-                  onHistory: () => _showTaskHistoryDialog(context, t),
-                )),
+                ...overdue.map(
+                  (t) => _TaskCard(
+                    task: t,
+                    onComplete: () => _completeTask(ref, t),
+                    onSnooze: () => _showSnoozeDialog(context, ref, t),
+                    onEdit: () => _showEditDialog(context, ref, t),
+                    onDelete: () => _confirmDelete(context, ref, t),
+                    onHistory: () => _showTaskHistoryDialog(context, t),
+                  ),
+                ),
                 const SizedBox(height: 16),
               ],
               if (dueToday.isNotEmpty) ...[
@@ -72,14 +79,16 @@ class TasksScreen extends ConsumerWidget {
                   color: AppColors.info,
                   count: dueToday.length,
                 ),
-                ...dueToday.map((t) => _TaskCard(
-                  task: t,
-                  onComplete: () => _completeTask(ref, t),
-                  onSnooze: () => _showSnoozeDialog(context, ref, t),
-                  onEdit: () => _showEditDialog(context, ref, t),
-                  onDelete: () => _confirmDelete(context, ref, t),
-                  onHistory: () => _showTaskHistoryDialog(context, t),
-                )),
+                ...dueToday.map(
+                  (t) => _TaskCard(
+                    task: t,
+                    onComplete: () => _completeTask(ref, t),
+                    onSnooze: () => _showSnoozeDialog(context, ref, t),
+                    onEdit: () => _showEditDialog(context, ref, t),
+                    onDelete: () => _confirmDelete(context, ref, t),
+                    onHistory: () => _showTaskHistoryDialog(context, t),
+                  ),
+                ),
                 const SizedBox(height: 16),
               ],
               if (upcoming.isNotEmpty) ...[
@@ -88,14 +97,16 @@ class TasksScreen extends ConsumerWidget {
                   color: AppColors.textSecondary,
                   count: upcoming.length,
                 ),
-                ...upcoming.map((t) => _TaskCard(
-                  task: t,
-                  onComplete: () => _completeTask(ref, t),
-                  onSnooze: () => _showSnoozeDialog(context, ref, t),
-                  onEdit: () => _showEditDialog(context, ref, t),
-                  onDelete: () => _confirmDelete(context, ref, t),
-                  onHistory: () => _showTaskHistoryDialog(context, t),
-                )),
+                ...upcoming.map(
+                  (t) => _TaskCard(
+                    task: t,
+                    onComplete: () => _completeTask(ref, t),
+                    onSnooze: () => _showSnoozeDialog(context, ref, t),
+                    onEdit: () => _showEditDialog(context, ref, t),
+                    onDelete: () => _confirmDelete(context, ref, t),
+                    onHistory: () => _showTaskHistoryDialog(context, t),
+                  ),
+                ),
                 const SizedBox(height: 16),
               ],
               if (disabled.isNotEmpty) ...[
@@ -104,14 +115,16 @@ class TasksScreen extends ConsumerWidget {
                   color: AppColors.textHint,
                   count: disabled.length,
                 ),
-                ...disabled.map((t) => _TaskCard(
-                  task: t,
-                  onComplete: () => _completeTask(ref, t),
-                  onSnooze: () => _showSnoozeDialog(context, ref, t),
-                  onEdit: () => _showEditDialog(context, ref, t),
-                  onDelete: () => _confirmDelete(context, ref, t),
-                  onHistory: () => _showTaskHistoryDialog(context, t),
-                )),
+                ...disabled.map(
+                  (t) => _TaskCard(
+                    task: t,
+                    onComplete: () => _completeTask(ref, t),
+                    onSnooze: () => _showSnoozeDialog(context, ref, t),
+                    onEdit: () => _showEditDialog(context, ref, t),
+                    onDelete: () => _confirmDelete(context, ref, t),
+                    onHistory: () => _showTaskHistoryDialog(context, t),
+                  ),
+                ),
               ],
             ],
           );
@@ -158,7 +171,9 @@ class TasksScreen extends ConsumerWidget {
         }
       }
       if (e != null) {
-        await storage.saveEquipment(e.copyWith(lastServiced: now, updatedAt: now));
+        await storage.saveEquipment(
+          e.copyWith(lastServiced: now, updatedAt: now),
+        );
         await storage.saveLog(
           LogEntry(
             id: _uuid.v4(),
@@ -256,7 +271,10 @@ class TasksScreen extends ConsumerWidget {
               await ref.read(storageServiceProvider).deleteTask(task.id);
               ref.invalidate(tasksProvider(tankId));
             },
-            child: const Text('Delete', style: TextStyle(color: AppColors.error)),
+            child: const Text(
+              'Delete',
+              style: TextStyle(color: AppColors.error),
+            ),
           ),
         ],
       ),
@@ -292,15 +310,13 @@ class _TaskHistoryDialog extends ConsumerWidget {
           ),
           error: (err, _) => Text('Error loading history: $err'),
           data: (logs) {
-            final completions = logs
-                .where((l) => l.type == LogType.taskCompleted)
-                .where((l) {
+            final completions =
+                logs.where((l) => l.type == LogType.taskCompleted).where((l) {
                   // Prefer ID match. Fall back to title match for older entries.
-                  if (l.relatedTaskId != null) return l.relatedTaskId == task.id;
+                  if (l.relatedTaskId != null)
+                    return l.relatedTaskId == task.id;
                   return (l.title ?? '') == task.title;
-                })
-                .toList()
-              ..sort((a, b) => b.timestamp.compareTo(a.timestamp));
+                }).toList()..sort((a, b) => b.timestamp.compareTo(a.timestamp));
 
             if (completions.isEmpty) {
               return Text(
@@ -327,9 +343,17 @@ class _TaskHistoryDialog extends ConsumerWidget {
                       final log = completions[i];
                       return ListTile(
                         contentPadding: EdgeInsets.zero,
-                        leading: const Icon(Icons.check_circle, color: AppColors.success, size: 18),
-                        title: Text(DateFormat('MMM d, yyyy').format(log.timestamp)),
-                        subtitle: Text(DateFormat('h:mm a').format(log.timestamp)),
+                        leading: const Icon(
+                          Icons.check_circle,
+                          color: AppColors.success,
+                          size: 18,
+                        ),
+                        title: Text(
+                          DateFormat('MMM d, yyyy').format(log.timestamp),
+                        ),
+                        subtitle: Text(
+                          DateFormat('h:mm a').format(log.timestamp),
+                        ),
                       );
                     },
                   ),
@@ -354,7 +378,11 @@ class _SectionHeader extends StatelessWidget {
   final Color color;
   final int count;
 
-  const _SectionHeader({required this.title, required this.color, required this.count});
+  const _SectionHeader({
+    required this.title,
+    required this.color,
+    required this.count,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -446,7 +474,9 @@ class _TaskCard extends StatelessWidget {
                   color: isOverdue
                       ? AppColors.warning
                       : (isDueToday ? AppColors.info : AppColors.textSecondary),
-                  fontWeight: (isOverdue || isDueToday) ? FontWeight.w500 : FontWeight.normal,
+                  fontWeight: (isOverdue || isDueToday)
+                      ? FontWeight.w500
+                      : FontWeight.normal,
                 ),
               ),
           ],
@@ -504,11 +534,16 @@ class _AddTaskSheetState extends State<_AddTaskSheet> {
   @override
   void initState() {
     super.initState();
-    _titleController = TextEditingController(text: widget.existing?.title ?? '');
-    _descController = TextEditingController(text: widget.existing?.description ?? '');
+    _titleController = TextEditingController(
+      text: widget.existing?.title ?? '',
+    );
+    _descController = TextEditingController(
+      text: widget.existing?.description ?? '',
+    );
     _recurrence = widget.existing?.recurrence ?? RecurrenceType.none;
     _isEnabled = widget.existing?.isEnabled ?? true;
-    _dueDate = widget.existing?.dueDate ?? DateTime.now().add(const Duration(days: 1));
+    _dueDate =
+        widget.existing?.dueDate ?? DateTime.now().add(const Duration(days: 1));
   }
 
   @override
@@ -566,22 +601,26 @@ class _AddTaskSheetState extends State<_AddTaskSheet> {
                 _RecurrenceChip(
                   label: 'Once',
                   isSelected: _recurrence == RecurrenceType.none,
-                  onTap: () => setState(() => _recurrence = RecurrenceType.none),
+                  onTap: () =>
+                      setState(() => _recurrence = RecurrenceType.none),
                 ),
                 _RecurrenceChip(
                   label: 'Daily',
                   isSelected: _recurrence == RecurrenceType.daily,
-                  onTap: () => setState(() => _recurrence = RecurrenceType.daily),
+                  onTap: () =>
+                      setState(() => _recurrence = RecurrenceType.daily),
                 ),
                 _RecurrenceChip(
                   label: 'Weekly',
                   isSelected: _recurrence == RecurrenceType.weekly,
-                  onTap: () => setState(() => _recurrence = RecurrenceType.weekly),
+                  onTap: () =>
+                      setState(() => _recurrence = RecurrenceType.weekly),
                 ),
                 _RecurrenceChip(
                   label: 'Monthly',
                   isSelected: _recurrence == RecurrenceType.monthly,
-                  onTap: () => setState(() => _recurrence = RecurrenceType.monthly),
+                  onTap: () =>
+                      setState(() => _recurrence = RecurrenceType.monthly),
                 ),
               ],
             ),
@@ -608,7 +647,10 @@ class _AddTaskSheetState extends State<_AddTaskSheet> {
                 ),
                 child: Row(
                   children: [
-                    const Icon(Icons.calendar_today, color: AppColors.textSecondary),
+                    const Icon(
+                      Icons.calendar_today,
+                      color: AppColors.textSecondary,
+                    ),
                     const SizedBox(width: 12),
                     Text(
                       _dueDate != null
@@ -664,7 +706,9 @@ class _AddTaskSheetState extends State<_AddTaskSheet> {
         id: widget.existing?.id ?? _uuid.v4(),
         tankId: widget.tankId,
         title: title,
-        description: _descController.text.trim().isNotEmpty ? _descController.text.trim() : null,
+        description: _descController.text.trim().isNotEmpty
+            ? _descController.text.trim()
+            : null,
         recurrence: _recurrence,
         dueDate: _dueDate,
         isEnabled: _isEnabled,

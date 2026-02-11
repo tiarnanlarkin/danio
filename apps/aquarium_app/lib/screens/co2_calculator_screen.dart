@@ -98,8 +98,12 @@ class _Co2CalculatorScreenState extends State<Co2CalculatorScreen> {
                     border: OutlineInputBorder(),
                     helperText: 'Usually 6.0-8.0',
                   ),
-                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                  inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[\d.]'))],
+                  keyboardType: const TextInputType.numberWithOptions(
+                    decimal: true,
+                  ),
+                  inputFormatters: [
+                    FilteringTextInputFormatter.allow(RegExp(r'[\d.]')),
+                  ],
                   onChanged: (_) => _calculate(),
                 ),
               ),
@@ -132,11 +136,18 @@ class _Co2CalculatorScreenState extends State<Co2CalculatorScreen> {
                   Text('Estimated CO2 Level', style: AppTypography.labelLarge),
                   const SizedBox(height: 8),
                   Text(
-                    _co2Level != null ? '${_co2Level!.toStringAsFixed(1)} ppm' : '—',
-                    style: AppTypography.headlineLarge.copyWith(color: _co2Color),
+                    _co2Level != null
+                        ? '${_co2Level!.toStringAsFixed(1)} ppm'
+                        : '—',
+                    style: AppTypography.headlineLarge.copyWith(
+                      color: _co2Color,
+                    ),
                   ),
                   const SizedBox(height: 4),
-                  Text(_co2Status, style: AppTypography.bodyMedium.copyWith(color: _co2Color)),
+                  Text(
+                    _co2Status,
+                    style: AppTypography.bodyMedium.copyWith(color: _co2Color),
+                  ),
                 ],
               ),
             ),
@@ -153,11 +164,36 @@ class _Co2CalculatorScreenState extends State<Co2CalculatorScreen> {
               padding: const EdgeInsets.all(16),
               child: Column(
                 children: [
-                  _RefRow(range: '< 10 ppm', status: 'Too Low', desc: 'Plants will struggle', color: AppColors.warning),
-                  _RefRow(range: '10-20 ppm', status: 'Low', desc: 'Acceptable for low-tech', color: AppColors.warning),
-                  _RefRow(range: '20-30 ppm', status: 'Optimal', desc: 'Ideal for planted tanks', color: AppColors.success),
-                  _RefRow(range: '30-40 ppm', status: 'High', desc: 'Monitor fish closely', color: AppColors.warning),
-                  _RefRow(range: '> 40 ppm', status: 'Dangerous', desc: 'Fish stress/death risk', color: AppColors.error),
+                  _RefRow(
+                    range: '< 10 ppm',
+                    status: 'Too Low',
+                    desc: 'Plants will struggle',
+                    color: AppColors.warning,
+                  ),
+                  _RefRow(
+                    range: '10-20 ppm',
+                    status: 'Low',
+                    desc: 'Acceptable for low-tech',
+                    color: AppColors.warning,
+                  ),
+                  _RefRow(
+                    range: '20-30 ppm',
+                    status: 'Optimal',
+                    desc: 'Ideal for planted tanks',
+                    color: AppColors.success,
+                  ),
+                  _RefRow(
+                    range: '30-40 ppm',
+                    status: 'High',
+                    desc: 'Monitor fish closely',
+                    color: AppColors.warning,
+                  ),
+                  _RefRow(
+                    range: '> 40 ppm',
+                    status: 'Dangerous',
+                    desc: 'Fish stress/death risk',
+                    color: AppColors.error,
+                  ),
                 ],
               ),
             ),
@@ -173,9 +209,21 @@ class _Co2CalculatorScreenState extends State<Co2CalculatorScreen> {
               padding: const EdgeInsets.all(16),
               child: Column(
                 children: [
-                  _DropCheckerRow(color: Colors.blue, label: 'Blue', meaning: 'CO2 too low (<20 ppm)'),
-                  _DropCheckerRow(color: Colors.green, label: 'Green', meaning: 'CO2 optimal (20-30 ppm)'),
-                  _DropCheckerRow(color: Colors.yellow, label: 'Yellow', meaning: 'CO2 too high (>30 ppm)'),
+                  _DropCheckerRow(
+                    color: Colors.blue,
+                    label: 'Blue',
+                    meaning: 'CO2 too low (<20 ppm)',
+                  ),
+                  _DropCheckerRow(
+                    color: Colors.green,
+                    label: 'Green',
+                    meaning: 'CO2 optimal (20-30 ppm)',
+                  ),
+                  _DropCheckerRow(
+                    color: Colors.yellow,
+                    label: 'Yellow',
+                    meaning: 'CO2 too high (>30 ppm)',
+                  ),
                 ],
               ),
             ),
@@ -192,12 +240,19 @@ class _Co2CalculatorScreenState extends State<Co2CalculatorScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _TipRow(text: 'Measure pH at the same time each day for consistency'),
-                  _TipRow(text: 'KH stabilizes pH — don\'t let it drop below 2 dKH'),
+                  _TipRow(
+                    text:
+                        'Measure pH at the same time each day for consistency',
+                  ),
+                  _TipRow(
+                    text: 'KH stabilizes pH — don\'t let it drop below 2 dKH',
+                  ),
                   _TipRow(text: 'CO2 drops at night when plants respire'),
                   _TipRow(text: 'Drop checkers lag ~2 hours behind actual CO2'),
                   _TipRow(text: 'Surface agitation reduces CO2 levels'),
-                  _TipRow(text: 'Increase CO2 slowly over days, not all at once'),
+                  _TipRow(
+                    text: 'Increase CO2 slowly over days, not all at once',
+                  ),
                 ],
               ),
             ),
@@ -255,16 +310,20 @@ class _Co2CalculatorScreenState extends State<Co2CalculatorScreen> {
     return DataRow(
       cells: [
         DataCell(Text(ph, style: AppTypography.labelLarge)),
-        ...values.map((v) => DataCell(
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
-            decoration: BoxDecoration(
-              color: v >= 20 && v <= 30 ? AppColors.success.withOpacity(0.2) : null,
-              borderRadius: BorderRadius.circular(4),
+        ...values.map(
+          (v) => DataCell(
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+              decoration: BoxDecoration(
+                color: v >= 20 && v <= 30
+                    ? AppColors.success.withOpacity(0.2)
+                    : null,
+                borderRadius: BorderRadius.circular(4),
+              ),
+              child: Text('$v', style: AppTypography.bodySmall),
             ),
-            child: Text('$v', style: AppTypography.bodySmall),
           ),
-        )),
+        ),
       ],
     );
   }
@@ -276,7 +335,12 @@ class _RefRow extends StatelessWidget {
   final String desc;
   final Color color;
 
-  const _RefRow({required this.range, required this.status, required this.desc, required this.color});
+  const _RefRow({
+    required this.range,
+    required this.status,
+    required this.desc,
+    required this.color,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -290,11 +354,12 @@ class _RefRow extends StatelessWidget {
           ),
           SizedBox(
             width: 70,
-            child: Text(status, style: AppTypography.labelLarge.copyWith(color: color)),
+            child: Text(
+              status,
+              style: AppTypography.labelLarge.copyWith(color: color),
+            ),
           ),
-          Expanded(
-            child: Text(desc, style: AppTypography.bodySmall),
-          ),
+          Expanded(child: Text(desc, style: AppTypography.bodySmall)),
         ],
       ),
     );
@@ -306,7 +371,11 @@ class _DropCheckerRow extends StatelessWidget {
   final String label;
   final String meaning;
 
-  const _DropCheckerRow({required this.color, required this.label, required this.meaning});
+  const _DropCheckerRow({
+    required this.color,
+    required this.label,
+    required this.meaning,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -324,7 +393,10 @@ class _DropCheckerRow extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 12),
-          SizedBox(width: 60, child: Text(label, style: AppTypography.labelLarge)),
+          SizedBox(
+            width: 60,
+            child: Text(label, style: AppTypography.labelLarge),
+          ),
           Expanded(child: Text(meaning, style: AppTypography.bodySmall)),
         ],
       ),

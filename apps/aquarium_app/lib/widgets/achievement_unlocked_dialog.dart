@@ -96,7 +96,6 @@ class _AchievementUnlockedDialogState extends State<AchievementUnlockedDialog>
           _buildConfetti(Alignment.topCenter, pi / 2), // Down
           _buildConfetti(Alignment.topLeft, pi / 2.5), // Down-right
           _buildConfetti(Alignment.topRight, pi / 1.5), // Down-left
-
           // Main content
           Center(
             child: FadeTransition(
@@ -254,7 +253,8 @@ class _AchievementUnlockedDialogState extends State<AchievementUnlockedDialog>
                               ),
                               const SizedBox(height: 16),
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
                                 children: [
                                   // XP reward
                                   _buildRewardItem(
@@ -388,10 +388,7 @@ class _AchievementUnlockedDialogState extends State<AchievementUnlockedDialog>
         Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(
-              icon,
-              style: const TextStyle(fontSize: 32),
-            ),
+            Text(icon, style: const TextStyle(fontSize: 32)),
             const SizedBox(width: 8),
             Text(
               amount,

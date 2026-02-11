@@ -2,7 +2,6 @@
 /// Shows performance charts, skill levels by topic, and manual overrides
 library;
 
-
 import 'package:flutter/material.dart';
 import '../models/adaptive_difficulty.dart';
 import '../services/difficulty_service.dart';
@@ -18,7 +17,8 @@ class DifficultySettingsScreen extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<DifficultySettingsScreen> createState() => _DifficultySettingsScreenState();
+  State<DifficultySettingsScreen> createState() =>
+      _DifficultySettingsScreenState();
 }
 
 class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
@@ -44,10 +44,7 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Difficulty Settings'),
-        elevation: 0,
-      ),
+      appBar: AppBar(title: const Text('Difficulty Settings'), elevation: 0),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
@@ -68,7 +65,9 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
   /// Overall skill level card
   Widget _buildOverallSkillCard() {
     final overallSkill = _currentProfile.overallSkillLevel;
-    final difficulty = _difficultyService.recommendDifficultyFromSkill(overallSkill);
+    final difficulty = _difficultyService.recommendDifficultyFromSkill(
+      overallSkill,
+    );
 
     return Card(
       elevation: 4,
@@ -81,10 +80,7 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
               children: [
                 const Text(
                   'Overall Skill Level',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 Container(
                   padding: const EdgeInsets.symmetric(
@@ -92,11 +88,14 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
                     vertical: 6,
                   ),
                   decoration: BoxDecoration(
-                    color: Color(_difficultyService.getDifficultyColor(difficulty))
-                        .withOpacity(0.2),
+                    color: Color(
+                      _difficultyService.getDifficultyColor(difficulty),
+                    ).withOpacity(0.2),
                     borderRadius: BorderRadius.circular(20),
                     border: Border.all(
-                      color: Color(_difficultyService.getDifficultyColor(difficulty)),
+                      color: Color(
+                        _difficultyService.getDifficultyColor(difficulty),
+                      ),
                       width: 2,
                     ),
                   ),
@@ -112,7 +111,9 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
                         difficulty.displayName,
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          color: Color(_difficultyService.getDifficultyColor(difficulty)),
+                          color: Color(
+                            _difficultyService.getDifficultyColor(difficulty),
+                          ),
                         ),
                       ),
                     ],
@@ -125,10 +126,7 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
             const SizedBox(height: 8),
             Text(
               '${(overallSkill * 100).toInt()}% Mastery',
-              style: const TextStyle(
-                fontSize: 16,
-                color: Colors.grey,
-              ),
+              style: const TextStyle(fontSize: 16, color: Colors.grey),
             ),
           ],
         ),
@@ -143,10 +141,7 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
       children: [
         const Text(
           'Skills by Topic',
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-          ),
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 12),
         ..._buildTopicSkillCards(),
@@ -192,7 +187,8 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
       final skillLevel = entry.value;
       final topicName = _topicNames[topicId] ?? topicId;
       final history = _currentProfile.getPerformanceHistory(topicId);
-      final hasMastery = history != null &&
+      final hasMastery =
+          history != null &&
           _difficultyService.hasTopicMastery(
             history: history,
             skillLevel: skillLevel,
@@ -258,7 +254,7 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
 
   Widget _buildTopicStats(PerformanceHistory history) {
     final summary = _difficultyService.getPerformanceSummary(history: history);
-    
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
@@ -324,10 +320,7 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
       children: [
         const Text(
           'Performance History',
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-          ),
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 12),
         _buildPerformanceHistoryCard(),
@@ -365,10 +358,7 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
           children: [
             const Text(
               'Recent Activity',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-              ),
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 12),
             ...recentFive.map((record) => _buildHistoryItem(record)),
@@ -381,7 +371,7 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
   Widget _buildHistoryItem(PerformanceRecord record) {
     final topicName = _topicNames[record.topicId] ?? record.topicId;
     final scorePercent = (record.accuracy * 100).toInt();
-    
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: Row(
@@ -390,8 +380,9 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
             width: 40,
             height: 40,
             decoration: BoxDecoration(
-              color: Color(_difficultyService.getDifficultyColor(record.difficulty))
-                  .withOpacity(0.2),
+              color: Color(
+                _difficultyService.getDifficultyColor(record.difficulty),
+              ).withOpacity(0.2),
               borderRadius: BorderRadius.circular(8),
             ),
             child: Center(
@@ -412,10 +403,7 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
                 ),
                 Text(
                   _formatRelativeTime(record.timestamp),
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.grey[600],
-                  ),
+                  style: TextStyle(fontSize: 12, color: Colors.grey[600]),
                 ),
               ],
             ),
@@ -468,18 +456,12 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
       children: [
         const Text(
           'Manual Difficulty Override',
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-          ),
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 8),
         Text(
           'Override automatic difficulty for specific topics',
-          style: TextStyle(
-            color: Colors.grey[600],
-            fontSize: 14,
-          ),
+          style: TextStyle(color: Colors.grey[600], fontSize: 14),
         ),
         const SizedBox(height: 12),
         Card(
@@ -519,10 +501,7 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
                 if (currentOverride == null)
                   Text(
                     '${recommendation.suggestedLevel.emoji} ${recommendation.suggestedLevel.displayName} (Auto)',
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.grey[600],
-                    ),
+                    style: TextStyle(fontSize: 12, color: Colors.grey[600]),
                   ),
               ],
             ),
@@ -568,10 +547,7 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
       children: [
         const Text(
           'AI Recommendations',
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-          ),
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 12),
         ..._buildRecommendationCards(),
@@ -616,9 +592,7 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
                       children: [
                         Text(
                           topicName,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                          ),
+                          style: const TextStyle(fontWeight: FontWeight.bold),
                         ),
                         const SizedBox(height: 4),
                         Text(recommendation.reason),

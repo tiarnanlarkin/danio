@@ -13,13 +13,15 @@ class TutorialWalkthroughScreen extends ConsumerStatefulWidget {
   const TutorialWalkthroughScreen({super.key});
 
   @override
-  ConsumerState<TutorialWalkthroughScreen> createState() => _TutorialWalkthroughScreenState();
+  ConsumerState<TutorialWalkthroughScreen> createState() =>
+      _TutorialWalkthroughScreenState();
 }
 
-class _TutorialWalkthroughScreenState extends ConsumerState<TutorialWalkthroughScreen> {
+class _TutorialWalkthroughScreenState
+    extends ConsumerState<TutorialWalkthroughScreen> {
   final PageController _pageController = PageController();
   int _currentStep = 0;
-  
+
   // Tank creation form state
   final _formKey = GlobalKey<FormState>();
   String _tankName = '';
@@ -31,19 +33,22 @@ class _TutorialWalkthroughScreenState extends ConsumerState<TutorialWalkthroughS
     _TutorialStep(
       icon: Icons.waves,
       title: 'Welcome to Your Aquarium Journey! 🎉',
-      description: 'You\'ve completed the assessment! Now let\'s set up your first virtual tank to track your real aquarium.',
+      description:
+          'You\'ve completed the assessment! Now let\'s set up your first virtual tank to track your real aquarium.',
       emoji: '🐠',
     ),
     _TutorialStep(
       icon: Icons.water_drop,
       title: 'Track Everything in One Place',
-      description: 'Log water parameters, track fish health, set maintenance reminders, and watch your knowledge grow as you learn.',
+      description:
+          'Log water parameters, track fish health, set maintenance reminders, and watch your knowledge grow as you learn.',
       emoji: '📊',
     ),
     _TutorialStep(
       icon: Icons.tips_and_updates,
       title: 'Learn as You Go',
-      description: 'Complete lessons to unlock equipment, earn XP, and discover new species. The app gamifies aquarium keeping!',
+      description:
+          'Complete lessons to unlock equipment, earn XP, and discover new species. The app gamifies aquarium keeping!',
       emoji: '⭐',
     ),
   ];
@@ -86,7 +91,7 @@ class _TutorialWalkthroughScreenState extends ConsumerState<TutorialWalkthroughS
 
   Future<void> _createFirstTank() async {
     if (!_formKey.currentState!.validate()) return;
-    
+
     try {
       final actions = ref.read(tankActionsProvider);
       final targets = _waterType == 'tropical'
@@ -106,14 +111,16 @@ class _TutorialWalkthroughScreenState extends ConsumerState<TutorialWalkthroughS
       // Show success and navigate to main app
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('🎉 ${_tankName.trim()} created! Let\'s start your aquarium journey!'),
+          content: Text(
+            '🎉 ${_tankName.trim()} created! Let\'s start your aquarium journey!',
+          ),
           backgroundColor: Colors.green,
           duration: const Duration(seconds: 2),
         ),
       );
 
       await Future.delayed(const Duration(milliseconds: 500));
-      
+
       if (!mounted) return;
 
       Navigator.of(context).pushAndRemoveUntil(
@@ -122,7 +129,7 @@ class _TutorialWalkthroughScreenState extends ConsumerState<TutorialWalkthroughS
       );
     } catch (e) {
       if (!mounted) return;
-      
+
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Error creating tank: $e'),
@@ -139,10 +146,7 @@ class _TutorialWalkthroughScreenState extends ConsumerState<TutorialWalkthroughS
         title: const Text('Getting Started'),
         automaticallyImplyLeading: false,
         actions: [
-          TextButton(
-            onPressed: _skipTutorial,
-            child: const Text('Skip'),
-          ),
+          TextButton(onPressed: _skipTutorial, child: const Text('Skip')),
         ],
       ),
       body: _currentStep < _steps.length
@@ -154,18 +158,20 @@ class _TutorialWalkthroughScreenState extends ConsumerState<TutorialWalkthroughS
                   backgroundColor: Colors.grey[200],
                   valueColor: const AlwaysStoppedAnimation(AppColors.accent),
                 ),
-                
+
                 // Tutorial steps
                 Expanded(
                   child: PageView.builder(
                     controller: _pageController,
                     physics: const NeverScrollableScrollPhysics(),
-                    onPageChanged: (index) => setState(() => _currentStep = index),
+                    onPageChanged: (index) =>
+                        setState(() => _currentStep = index),
                     itemCount: _steps.length,
-                    itemBuilder: (context, index) => _buildTutorialPage(_steps[index]),
+                    itemBuilder: (context, index) =>
+                        _buildTutorialPage(_steps[index]),
                   ),
                 ),
-                
+
                 // Navigation
                 _buildNavigation(),
               ],
@@ -181,12 +187,9 @@ class _TutorialWalkthroughScreenState extends ConsumerState<TutorialWalkthroughS
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           // Large emoji
-          Text(
-            step.emoji,
-            style: const TextStyle(fontSize: 80),
-          ),
+          Text(step.emoji, style: const TextStyle(fontSize: 80)),
           const SizedBox(height: 32),
-          
+
           // Icon
           Container(
             padding: const EdgeInsets.all(20),
@@ -194,30 +197,26 @@ class _TutorialWalkthroughScreenState extends ConsumerState<TutorialWalkthroughS
               color: AppColors.accent.withOpacity(0.1),
               shape: BoxShape.circle,
             ),
-            child: Icon(
-              step.icon,
-              size: 48,
-              color: AppColors.accent,
-            ),
+            child: Icon(step.icon, size: 48, color: AppColors.accent),
           ),
           const SizedBox(height: 24),
-          
+
           // Title
           Text(
             step.title,
-            style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-              fontWeight: FontWeight.bold,
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.bold),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 16),
-          
+
           // Description
           Text(
             step.description,
-            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-              color: AppColors.textSecondary,
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.bodyLarge?.copyWith(color: AppColors.textSecondary),
             textAlign: TextAlign.center,
           ),
         ],
@@ -234,7 +233,7 @@ class _TutorialWalkthroughScreenState extends ConsumerState<TutorialWalkthroughS
           backgroundColor: Colors.grey[200],
           valueColor: const AlwaysStoppedAnimation(AppColors.accent),
         ),
-        
+
         Expanded(
           child: SingleChildScrollView(
             padding: const EdgeInsets.all(24),
@@ -260,7 +259,7 @@ class _TutorialWalkthroughScreenState extends ConsumerState<TutorialWalkthroughS
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 32),
-                  
+
                   // Tank name
                   Text(
                     'Tank Name',
@@ -285,7 +284,7 @@ class _TutorialWalkthroughScreenState extends ConsumerState<TutorialWalkthroughS
                     onChanged: (value) => _tankName = value,
                   ),
                   const SizedBox(height: 24),
-                  
+
                   // Tank type
                   Text(
                     'Tank Type',
@@ -301,7 +300,8 @@ class _TutorialWalkthroughScreenState extends ConsumerState<TutorialWalkthroughS
                           icon: Icons.water_drop,
                           label: 'Freshwater',
                           isSelected: _tankType == TankType.freshwater,
-                          onTap: () => setState(() => _tankType = TankType.freshwater),
+                          onTap: () =>
+                              setState(() => _tankType = TankType.freshwater),
                         ),
                       ),
                       const SizedBox(width: 12),
@@ -317,7 +317,7 @@ class _TutorialWalkthroughScreenState extends ConsumerState<TutorialWalkthroughS
                     ],
                   ),
                   const SizedBox(height: 24),
-                  
+
                   // Volume
                   Text(
                     'Tank Size',
@@ -333,7 +333,9 @@ class _TutorialWalkthroughScreenState extends ConsumerState<TutorialWalkthroughS
                       suffixText: 'litres',
                       border: OutlineInputBorder(),
                     ),
-                    keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                    keyboardType: const TextInputType.numberWithOptions(
+                      decimal: true,
+                    ),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return 'Please enter tank volume';
@@ -364,7 +366,7 @@ class _TutorialWalkthroughScreenState extends ConsumerState<TutorialWalkthroughS
                     }).toList(),
                   ),
                   const SizedBox(height: 24),
-                  
+
                   // Water type
                   Text(
                     'Water Type',
@@ -389,7 +391,7 @@ class _TutorialWalkthroughScreenState extends ConsumerState<TutorialWalkthroughS
                     onTap: () => setState(() => _waterType = 'coldwater'),
                   ),
                   const SizedBox(height: 32),
-                  
+
                   // Create button
                   FilledButton(
                     onPressed: _createFirstTank,
@@ -438,9 +440,7 @@ class _TutorialWalkthroughScreenState extends ConsumerState<TutorialWalkthroughS
             child: FilledButton(
               onPressed: _nextStep,
               child: Text(
-                _currentStep == _steps.length - 1
-                    ? 'Create My Tank!'
-                    : 'Next',
+                _currentStep == _steps.length - 1 ? 'Create My Tank!' : 'Next',
               ),
             ),
           ),
@@ -489,7 +489,9 @@ class _TankTypeCard extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: isSelected ? AppColors.primary.withOpacity(0.1) : Colors.grey[100],
+            color: isSelected
+                ? AppColors.primary.withOpacity(0.1)
+                : Colors.grey[100],
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
               color: isSelected ? AppColors.primary : Colors.grey[300]!,
@@ -550,7 +552,9 @@ class _WaterTypeCard extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: isSelected ? AppColors.accent.withOpacity(0.1) : Colors.grey[100],
+          color: isSelected
+              ? AppColors.accent.withOpacity(0.1)
+              : Colors.grey[100],
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
             color: isSelected ? AppColors.accent : Colors.grey[300]!,
@@ -575,10 +579,7 @@ class _WaterTypeCard extends StatelessWidget {
                   ),
                   Text(
                     subtitle,
-                    style: TextStyle(
-                      fontSize: 13,
-                      color: Colors.grey[600],
-                    ),
+                    style: TextStyle(fontSize: 13, color: Colors.grey[600]),
                   ),
                 ],
               ),
