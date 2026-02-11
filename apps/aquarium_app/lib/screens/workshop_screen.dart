@@ -8,6 +8,12 @@ import 'dosing_calculator_screen.dart';
 import 'compatibility_checker_screen.dart';
 // import 'equipment_screen.dart'; // Requires tankId - use settings instead
 import 'cost_tracker_screen.dart';
+import 'water_change_calculator_screen.dart';
+import 'stocking_calculator_screen.dart';
+import 'unit_converter_screen.dart';
+import 'tank_volume_calculator_screen.dart';
+import 'lighting_schedule_screen.dart';
+// charts_screen.dart requires tankId - accessed from tank detail screen
 
 /// Workshop colors - practical maker space theme
 class WorkshopColors {
@@ -61,11 +67,28 @@ class WorkshopScreen extends ConsumerWidget {
                 ),
                 delegate: SliverChildListDelegate([
                   _ToolCard(
-                    icon: Icons.calculate,
-                    title: 'Tank Volume',
-                    subtitle: 'Calculate capacity',
-                    color: WorkshopColors.accent,
-                    onTap: () => _showVolumeCalculator(context),
+                    icon: Icons.water_drop,
+                    title: 'Water Change',
+                    subtitle: 'Calculate changes',
+                    color: Colors.blue.shade400,
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const WaterChangeCalculatorScreen(),
+                      ),
+                    ),
+                  ),
+                  _ToolCard(
+                    icon: Icons.set_meal,
+                    title: 'Stocking',
+                    subtitle: 'Fish capacity',
+                    color: Colors.cyan.shade400,
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const StockingCalculatorScreen(),
+                      ),
+                    ),
                   ),
                   _ToolCard(
                     icon: Icons.science,
@@ -90,6 +113,49 @@ class WorkshopScreen extends ConsumerWidget {
                         builder: (_) => const DosingCalculatorScreen(),
                       ),
                     ),
+                  ),
+                  _ToolCard(
+                    icon: Icons.swap_horiz,
+                    title: 'Unit Converter',
+                    subtitle: 'Convert units',
+                    color: Colors.amber.shade400,
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const UnitConverterScreen(),
+                      ),
+                    ),
+                  ),
+                  _ToolCard(
+                    icon: Icons.calculate,
+                    title: 'Tank Volume',
+                    subtitle: 'Calculate capacity',
+                    color: WorkshopColors.accent,
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const TankVolumeCalculatorScreen(),
+                      ),
+                    ),
+                  ),
+                  _ToolCard(
+                    icon: Icons.lightbulb,
+                    title: 'Lighting',
+                    subtitle: 'Schedule lights',
+                    color: Colors.yellow.shade600,
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const LightingScheduleScreen(),
+                      ),
+                    ),
+                  ),
+                  _ToolCard(
+                    icon: Icons.bar_chart,
+                    title: 'Charts',
+                    subtitle: 'Analytics & trends',
+                    color: Colors.indigo.shade400,
+                    onTap: () => _showChartsInfo(context),
                   ),
                   _ToolCard(
                     icon: Icons.pets,
@@ -137,17 +203,12 @@ class WorkshopScreen extends ConsumerWidget {
     );
   }
 
-  void _showVolumeCalculator(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: Colors.transparent,
-      isScrollControlled: true,
-      builder: (_) => const _VolumeCalculatorSheet(),
-    );
-  }
-
   void _showEquipmentInfo(BuildContext context) {
     AppFeedback.showInfo(context, 'Select a tank first to manage equipment.');
+  }
+
+  void _showChartsInfo(BuildContext context) {
+    AppFeedback.showInfo(context, 'Select a tank first to view charts.');
   }
 }
 

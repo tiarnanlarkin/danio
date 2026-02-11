@@ -17,6 +17,8 @@ import 'charts_screen.dart';
 import 'logs_screen.dart';
 import 'log_detail_screen.dart';
 import 'tank_settings_screen.dart';
+import 'tank_comparison_screen.dart';
+import 'cost_tracker_screen.dart';
 import 'journal_screen.dart';
 import 'maintenance_checklist_screen.dart';
 import 'photo_gallery_screen.dart';
@@ -254,6 +256,20 @@ class TankDetailScreen extends ConsumerWidget {
                                   TankSettingsScreen(tankId: tankId),
                             ),
                           );
+                        case 'compare':
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const TankComparisonScreen(),
+                            ),
+                          );
+                        case 'costs':
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const CostTrackerScreen(),
+                            ),
+                          );
                         case 'value':
                           Navigator.push(
                             context,
@@ -269,6 +285,22 @@ class TankDetailScreen extends ConsumerWidget {
                       }
                     },
                     itemBuilder: (_) => [
+                      const PopupMenuItem(
+                        value: 'compare',
+                        child: ListTile(
+                          leading: Icon(Icons.compare_arrows),
+                          title: Text('Compare Tanks'),
+                          contentPadding: EdgeInsets.zero,
+                        ),
+                      ),
+                      const PopupMenuItem(
+                        value: 'costs',
+                        child: ListTile(
+                          leading: Icon(Icons.receipt_long),
+                          title: Text('Cost Tracker'),
+                          contentPadding: EdgeInsets.zero,
+                        ),
+                      ),
                       const PopupMenuItem(
                         value: 'value',
                         child: ListTile(
