@@ -604,11 +604,11 @@ Enforce quality gates, fix all P0/P1 bugs, ensure production readiness.
 
 **🔴 P0 CRITICAL - From Feb 11 Audit (App Will Crash!):**
 
-- [ ] P0: Fix `AppColors.border` undefined in `experience_assessment_screen.dart` - 30 min
-- [ ] P0: Fix `AppTypography.titleMedium` undefined in `experience_assessment_screen.dart` - 30 min
-- [ ] P0: Fix `FutureProvider.notifier` undefined in `first_tank_wizard_screen.dart` - 30 min
-- [ ] P0: Fix `AppColors.border` undefined in `first_tank_wizard_screen.dart` - 30 min
-- [ ] P0: Fix `AppTypography.titleMedium` undefined in `first_tank_wizard_screen.dart` - 30 min
+- [x] P0: Fix `AppColors.border` undefined in `experience_assessment_screen.dart` ✅ FIXED
+- [x] P0: Fix `AppTypography.titleMedium` undefined in `experience_assessment_screen.dart` ✅ FIXED
+- [x] P0: Fix `FutureProvider.notifier` undefined in `first_tank_wizard_screen.dart` ✅ FIXED
+- [x] P0: Fix `AppColors.border` undefined in `first_tank_wizard_screen.dart` ✅ FIXED
+- [x] P0: Fix `AppTypography.titleMedium` undefined in `first_tank_wizard_screen.dart` ✅ FIXED
 
 **P1 HIGH - Navigation & UX Issues:**
 
