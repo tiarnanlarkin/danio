@@ -1,7 +1,7 @@
 # 🎯 MASTER INTEGRATION ROADMAP
 
-**Version:** 2.1  
-**Date:** 2026-02-11 (Updated with mandatory quality gates)  
+**Version:** 2.2  
+**Date:** 2026-02-11 (Added checkboxes for all individual tasks)  
 **Status:** ACTIVE - This is the single source of truth  
 **Goal:** Wire ALL existing features into a cohesive, production-ready app  
 **Philosophy:** NO new features until everything built is fully integrated  
@@ -179,59 +179,50 @@ Link all hidden, fully-implemented features to make them accessible to users.
 #### 0.1 Workshop Screen Expansion (2 hours)
 **File:** `lib/screens/workshop_screen.dart`
 
-| Calculator to Add | Implementation | Time |
-|-------------------|----------------|------|
-| Water Change Calculator | 100% complete | 15 min |
-| Stocking Calculator | 100% complete | 15 min |
-| CO₂ Calculator | 98% complete | 15 min |
-| Dosing Calculator | 90% complete | 15 min |
-| Unit Converter | 95% complete | 15 min |
-| Tank Volume Calculator | 100% complete | 15 min |
-| Lighting Schedule | 85% complete | 15 min |
-| Charts/Analytics | 90% complete | 15 min |
-
 **Action:** Add grid tiles for each calculator with navigation to existing screens.
+
+- [ ] Water Change Calculator (100% complete) - 15 min
+- [ ] Stocking Calculator (100% complete) - 15 min
+- [ ] CO₂ Calculator (98% complete) - 15 min
+- [ ] Dosing Calculator (90% complete) - 15 min
+- [ ] Unit Converter (95% complete) - 15 min
+- [ ] Tank Volume Calculator (100% complete) - 15 min
+- [ ] Lighting Schedule (85% complete) - 15 min
+- [ ] Charts/Analytics (90% complete) - 15 min
 
 #### 0.2 Settings Screen Guides Section (2 hours)
 **File:** `lib/screens/settings_screen.dart`
 
-Create "Guides & Education" expansion section:
-
-| Guide to Link | Category | Time |
-|---------------|----------|------|
-| Quick Start Guide | Getting Started | 10 min |
-| Parameter Guide | Water Care | 10 min |
-| Nitrogen Cycle Guide | Water Care | 10 min |
-| Disease Guide | Health | 10 min |
-| Algae Guide | Problems | 10 min |
-| Feeding Guide | Care | 10 min |
-| Equipment Guide | Setup | 10 min |
-| Emergency Guide | Health | 10 min |
-| Troubleshooting | Problems | 10 min |
-| Glossary | Reference | 10 min |
-| + 6 more guides | Various | 30 min |
-
 **Action:** Add expandable "Guides" tile that reveals categorized guide links.
+
+- [ ] Create "Guides & Education" expandable section
+- [ ] Quick Start Guide (Getting Started) - 10 min
+- [ ] Parameter Guide (Water Care) - 10 min
+- [ ] Nitrogen Cycle Guide (Water Care) - 10 min
+- [ ] Disease Guide (Health) - 10 min
+- [ ] Algae Guide (Problems) - 10 min
+- [ ] Feeding Guide (Care) - 10 min
+- [ ] Equipment Guide (Setup) - 10 min
+- [ ] Emergency Guide (Health) - 10 min
+- [ ] Troubleshooting (Problems) - 10 min
+- [ ] Glossary (Reference) - 10 min
+- [ ] Link remaining 6 guides (Various) - 30 min
 
 #### 0.3 Settings Screen Configuration Links (1 hour)
 **File:** `lib/screens/settings_screen.dart`
 
-| Setting to Link | Current Status | Time |
-|-----------------|----------------|------|
-| Notification Settings | Built, not linked | 10 min |
-| Difficulty Settings | Built, not linked | 10 min |
-| Backup & Restore | Built, not linked | 10 min |
-| Theme Gallery | Built, not linked | 10 min |
+- [ ] Notification Settings (Built, not linked) - 10 min
+- [ ] Difficulty Settings (Built, not linked) - 10 min
+- [ ] Backup & Restore (Built, not linked) - 10 min
+- [ ] Theme Gallery (Built, not linked) - 10 min
 
 #### 0.4 Tank Detail Enhancements (1 hour)
 **File:** `lib/screens/tank_detail_screen.dart`
 
-| Feature to Link | Action | Time |
-|-----------------|--------|------|
-| Charts Screen | Add "View Charts" button | 15 min |
-| Tank Comparison | Add "Compare Tanks" option | 15 min |
-| Tank Settings | Add settings icon | 15 min |
-| Cost Tracker | Add from tank menu | 15 min |
+- [ ] Charts Screen - Add "View Charts" button - 15 min
+- [ ] Tank Comparison - Add "Compare Tanks" option - 15 min
+- [ ] Tank Settings - Add settings icon - 15 min
+- [ ] Cost Tracker - Add from tank menu - 15 min
 
 ### Phase 0 Success Criteria
 - [ ] All 13 calculators accessible from Workshop
@@ -287,19 +278,17 @@ Wire ALL gamification systems (XP, gems, hearts, streaks, shop) into every relev
 
 **Problem:** Gem rewards are defined but NEVER triggered automatically.
 
-| Trigger Event | Gems | File to Modify | Time |
-|---------------|------|----------------|------|
-| Lesson complete | 5 | `lesson_screen.dart` | 30 min |
-| Quiz pass | 3 | `enhanced_quiz_screen.dart` | 30 min |
-| Quiz perfect (100%) | 5 | `enhanced_quiz_screen.dart` | 15 min |
-| Daily goal met | 5 | `user_profile_provider.dart` | 45 min |
-| 7-day streak | 10 | `user_profile_provider.dart` | 30 min |
-| 30-day streak | 25 | `user_profile_provider.dart` | 15 min |
-| 100-day streak | 100 | `user_profile_provider.dart` | 15 min |
-| Level up | 10-200 | `user_profile_provider.dart` | 45 min |
-| Placement test complete | 10 | `placement_test_screen.dart` | 30 min |
-| Weekly active (5+ days) | 10 | NEW logic in provider | 1 hour |
-| Perfect week (7/7) | 25 | NEW logic in provider | 30 min |
+- [ ] Lesson complete → +5 gems (`lesson_screen.dart`) - 30 min
+- [ ] Quiz pass → +3 gems (`enhanced_quiz_screen.dart`) - 30 min
+- [ ] Quiz perfect (100%) → +5 gems (`enhanced_quiz_screen.dart`) - 15 min
+- [ ] Daily goal met → +5 gems (`user_profile_provider.dart`) - 45 min
+- [ ] 7-day streak → +10 gems (`user_profile_provider.dart`) - 30 min
+- [ ] 30-day streak → +25 gems (`user_profile_provider.dart`) - 15 min
+- [ ] 100-day streak → +100 gems (`user_profile_provider.dart`) - 15 min
+- [ ] Level up → +10-200 gems (`user_profile_provider.dart`) - 45 min
+- [ ] Placement test complete → +10 gems (`placement_test_screen.dart`) - 30 min
+- [ ] Weekly active (5+ days) → +10 gems (NEW logic in provider) - 1 hour
+- [ ] Perfect week (7/7) → +25 gems (NEW logic in provider) - 30 min
 
 **Code Pattern:**
 ```dart
@@ -315,49 +304,54 @@ await ref.read(gemsProvider.notifier).addGems(
 
 **Problem:** Only 5 screens award XP. Should be 30+.
 
-| Screen/Action | XP | Current | File | Time |
-|---------------|-----|---------|------|------|
-| Tank created | 25 | ❌ | `create_tank_screen.dart` | 30 min |
-| Livestock added | 10 | ❌ | `livestock_screen.dart` | 30 min |
-| Equipment logged | 10 | ❌ | `equipment_screen.dart` | 30 min |
-| Water test logged | 15 | ❌ | `add_log_screen.dart` | 30 min |
-| Maintenance complete | 20 | ❌ | `tasks_screen.dart` | 30 min |
-| Photo added | 5 | ❌ | `photo_gallery_screen.dart` | 30 min |
-| Guide read | 5 | ❌ | All guide screens | 2 hours |
-| Calculator used | 3 | ❌ | All calculator screens | 2 hours |
-| Species researched | 5 | ❌ | `species_browser_screen.dart` | 30 min |
-| Plant researched | 5 | ❌ | `plant_browser_screen.dart` | 30 min |
-| Profile completed | 50 | ❌ | `profile_creation_screen.dart` | 30 min |
-| Spaced repetition | 10 | ✅ | Already implemented | - |
-| Lesson complete | 15 | ✅ | Already implemented | - |
-| Quiz pass | 10 | ✅ | Already implemented | - |
+**New XP Awards to Add:**
+- [ ] Tank created → +25 XP (`create_tank_screen.dart`) - 30 min
+- [ ] Livestock added → +10 XP (`livestock_screen.dart`) - 30 min
+- [ ] Equipment logged → +10 XP (`equipment_screen.dart`) - 30 min
+- [ ] Water test logged → +15 XP (`add_log_screen.dart`) - 30 min
+- [ ] Maintenance complete → +20 XP (`tasks_screen.dart`) - 30 min
+- [ ] Photo added → +5 XP (`photo_gallery_screen.dart`) - 30 min
+- [ ] Guide read → +5 XP (All guide screens) - 2 hours
+- [ ] Calculator used → +3 XP (All calculator screens) - 2 hours
+- [ ] Species researched → +5 XP (`species_browser_screen.dart`) - 30 min
+- [ ] Plant researched → +5 XP (`plant_browser_screen.dart`) - 30 min
+- [ ] Profile completed → +50 XP (`profile_creation_screen.dart`) - 30 min
+
+**Already Implemented (verify working):**
+- [ ] Spaced repetition → +10 XP ✅
+- [ ] Lesson complete → +15 XP ✅
+- [ ] Quiz pass → +10 XP ✅
 
 ### Sprint 1.3: Shop Item Effects (12 hours)
 
 **Problem:** Items purchasable but don't function.
 
 #### Consumables (8 hours)
-| Item | Effect | Implementation | Time |
-|------|--------|----------------|------|
-| XP Boost (2x) | Double XP for 1 hour | Timer + XP multiplier flag | 2 hours |
-| Hearts Refill | Restore all hearts | Call hearts service | 30 min |
-| Streak Freeze | Protect streak for 1 day | Add freeze flag to profile | 1.5 hours |
-| Quiz Retry | Retry failed quiz free | Bypass heart deduction | 1 hour |
-| Timer Boost | Extra quiz time | Modify quiz timer logic | 1 hour |
-| Hint Token | Reveal quiz answer | Add hint UI to quiz | 2 hours |
+- [ ] XP Boost (2x) - Double XP for 1 hour (Timer + XP multiplier flag) - 2 hours
+- [ ] Hearts Refill - Restore all hearts (Call hearts service) - 30 min
+- [ ] Streak Freeze - Protect streak for 1 day (Add freeze flag to profile) - 1.5 hours
+- [ ] Quiz Retry - Retry failed quiz free (Bypass heart deduction) - 1 hour
+- [ ] Timer Boost - Extra quiz time (Modify quiz timer logic) - 1 hour
+- [ ] Hint Token - Reveal quiz answer (Add hint UI to quiz) - 2 hours
 
 #### Cosmetics (4 hours)
-| Item | Effect | Implementation | Time |
-|------|--------|----------------|------|
-| Badges (3) | Display on profile | Profile UI + badge state | 1 hour |
-| Themes (5) | Change room themes | Theme provider integration | 2 hours |
-| Effects (2) | Celebration animations | Confetti overlay triggers | 1 hour |
+- [ ] Badges (3) - Display on profile (Profile UI + badge state) - 1 hour
+- [ ] Themes (5) - Change room themes (Theme provider integration) - 2 hours
+- [ ] Effects (2) - Celebration animations (Confetti overlay triggers) - 1 hour
 
 ### Sprint 1.4: Home Screen Dashboard (6 hours)
 
 **Problem:** Gamification hidden in dialogs, not prominent on home screen.
 
-**Create Gamification Widget:**
+- [ ] Create `lib/widgets/gamification_dashboard.dart` - 2 hours
+- [ ] Display streak count with fire emoji - 30 min
+- [ ] Display total XP with star emoji - 30 min
+- [ ] Display gem count with gem emoji - 30 min
+- [ ] Display hearts (X/5) with heart emoji - 30 min
+- [ ] Display daily goal progress bar - 1 hour
+- [ ] Integrate widget in `home_screen.dart` - 1 hour
+
+**Target Widget Layout:**
 ```
 ┌─────────────────────────────────┐
 │  🔥 7-day streak    ⭐ 1,250 XP │
@@ -366,8 +360,6 @@ await ref.read(gemsProvider.notifier).addGems(
 │  ▓▓▓▓▓▓▓▓▓▓░░░░░ 70%           │
 └─────────────────────────────────┘
 ```
-
-**Files:** Create `lib/widgets/gamification_dashboard.dart`, integrate in `home_screen.dart`
 
 ### Phase 1 Success Criteria
 - [ ] Gems earned automatically for all 14 trigger events
@@ -425,27 +417,32 @@ Activate the 55 built achievements and expand databases to production scale.
 **Problem:** 55 achievements defined, 0 actively unlocking.
 
 #### Priority 1: Core Learning Achievements (4 hours)
-| Achievement | Trigger | Test Case | Time |
-|-------------|---------|-----------|------|
-| First Steps | 1 lesson | Complete any lesson | 20 min |
-| Getting Started | 10 lessons | Counter check | 20 min |
-| Dedicated Learner | 50 lessons | Counter check | 15 min |
-| XP Milestones (8) | 100-50k XP | XP threshold checks | 1 hour |
-| Streak Achievements (4) | 3-30 days | Streak counter | 45 min |
-| Placement Complete | Test done | Placement flow | 20 min |
+- [ ] First Steps - Trigger: 1 lesson completed - 20 min
+- [ ] Getting Started - Trigger: 10 lessons completed - 20 min
+- [ ] Dedicated Learner - Trigger: 50 lessons completed - 15 min
+- [ ] XP Milestone: 100 XP - 10 min
+- [ ] XP Milestone: 500 XP - 10 min
+- [ ] XP Milestone: 1,000 XP - 10 min
+- [ ] XP Milestone: 5,000 XP - 10 min
+- [ ] XP Milestone: 10,000 XP - 10 min
+- [ ] XP Milestone: 25,000 XP - 10 min
+- [ ] XP Milestone: 50,000 XP - 10 min
+- [ ] Streak Achievement: 3 days - 15 min
+- [ ] Streak Achievement: 7 days - 10 min
+- [ ] Streak Achievement: 14 days - 10 min
+- [ ] Streak Achievement: 30 days - 10 min
+- [ ] Placement Complete - Trigger: Placement test done - 20 min
 
 #### Priority 2: Hobby Achievements (4 hours)
-| Achievement | Trigger | Test Case | Time |
-|-------------|---------|-----------|------|
-| Tank Creator | 1 tank | Tank creation | 20 min |
-| Tank Collector | 5 tanks | Counter | 15 min |
-| Fish Parent | 10 livestock | Counter | 20 min |
-| Water Tester | 10 tests logged | Counter | 20 min |
-| Maintenance Master | 50 tasks done | Counter | 20 min |
-| Photo Collector | 25 photos | Counter | 15 min |
-| Species Explorer | 20 species viewed | Track browsing | 30 min |
-| Plant Enthusiast | 10 plants viewed | Track browsing | 20 min |
-| Quiz Champion | 10 perfect quizzes | Score tracking | 30 min |
+- [ ] Tank Creator - Trigger: 1 tank created - 20 min
+- [ ] Tank Collector - Trigger: 5 tanks created - 15 min
+- [ ] Fish Parent - Trigger: 10 livestock added - 20 min
+- [ ] Water Tester - Trigger: 10 tests logged - 20 min
+- [ ] Maintenance Master - Trigger: 50 tasks done - 20 min
+- [ ] Photo Collector - Trigger: 25 photos added - 15 min
+- [ ] Species Explorer - Trigger: 20 species viewed - 30 min
+- [ ] Plant Enthusiast - Trigger: 10 plants viewed - 20 min
+- [ ] Quiz Champion - Trigger: 10 perfect quizzes - 30 min
 
 ### Sprint 2.2: Species Database Expansion (6 hours)
 
@@ -453,13 +450,12 @@ Activate the 55 built achievements and expand databases to production scale.
 
 **Priority Species to Add (Beginner-Friendly First):**
 
-| Category | Count | Examples | Time |
-|----------|-------|----------|------|
-| Tropical Community | +20 | Mollies, Platies, Swordtails | 1.5 hours |
-| Cichlids (Beginner) | +15 | Kribensis, Rams, Apistos | 1.5 hours |
-| Catfish & Loaches | +10 | Bristlenose, Corydoras, Kuhli | 1 hour |
-| Livebearers | +10 | Endlers, various Guppy strains | 45 min |
-| Rasboras & Danios | +10 | Galaxy, Chili, Zebra variants | 45 min |
+- [ ] Tropical Community (+20 species: Mollies, Platies, Swordtails) - 1.5 hours
+- [ ] Cichlids Beginner (+15 species: Kribensis, Rams, Apistos) - 1.5 hours
+- [ ] Catfish & Loaches (+10 species: Bristlenose, Corydoras, Kuhli) - 1 hour
+- [ ] Livebearers (+10 species: Endlers, Guppy strains) - 45 min
+- [ ] Rasboras & Danios (+10 species: Galaxy, Chili, Zebra variants) - 45 min
+- [ ] Verify total species count reaches 100+ - 15 min
 
 **Data Template Per Species:**
 ```dart
@@ -479,12 +475,11 @@ Species(
 
 **Current:** 20 plants | **Target:** 50+ (Phase 1), 100+ (Phase 2)
 
-| Category | Count | Examples | Time |
-|----------|-------|----------|------|
-| Beginner Plants | +15 | More Anubias, Java Fern varieties | 1.5 hours |
-| Stem Plants | +10 | Rotala, Ludwigia, Bacopa | 1 hour |
-| Carpeting | +5 | Monte Carlo, Dwarf Hairgrass | 45 min |
-| Floating | +5 | Frogbit, Salvinia, Red Root | 45 min |
+- [ ] Beginner Plants (+15: More Anubias, Java Fern varieties) - 1.5 hours
+- [ ] Stem Plants (+10: Rotala, Ludwigia, Bacopa) - 1 hour
+- [ ] Carpeting Plants (+5: Monte Carlo, Dwarf Hairgrass) - 45 min
+- [ ] Floating Plants (+5: Frogbit, Salvinia, Red Root) - 45 min
+- [ ] Verify total plant count reaches 50+ - 15 min
 
 ### Phase 2 Success Criteria
 - [ ] 25+ achievements actively unlocking and displaying
@@ -540,43 +535,32 @@ Enforce quality gates, fix all P0/P1 bugs, ensure production readiness.
 
 ### Sprint 3.1: Automated Quality Checks Setup (4 hours)
 
-**Create:** `scripts/quality_gates/run_all_checks.sh`
-
-```bash
-#!/bin/bash
-# Tier 1: Mandatory (blocking)
-flutter analyze                    # Zero errors
-dart format --set-exit-if-changed . # Formatting
-flutter test                        # All tests pass
-
-# Tier 2: Recommended (warnings)
-# Code coverage check
-# APK size check (<100MB release)
-# Startup time check (<3s)
-```
+- [ ] Create `scripts/` directory structure - 15 min
+- [ ] Create `scripts/quality_gates/run_all_checks.sh` - 1 hour
+- [ ] Add flutter analyze check (0 errors required) - 30 min
+- [ ] Add dart format check (100% compliant) - 30 min
+- [ ] Add flutter test check (all pass) - 30 min
+- [ ] Add code coverage check (≥70%) - 30 min
+- [ ] Add APK size check (<100MB release) - 30 min
+- [ ] Test full quality script end-to-end - 30 min
 
 ### Sprint 3.2: Bug Triage & Fixes (8 hours)
 
 **Known Issues from Audits:**
 
-| Bug | Priority | Status | Time to Fix |
-|-----|----------|--------|-------------|
-| Tank creation form validation | P0 | Documented | 2 hours |
-| Marine tank "coming soon" | P1 | Decision needed | 1 hour |
-| Duplicate screens (learn vs study) | P1 | Consolidate | 1 hour |
-| Unused go_router dependency | P2 | Remove or use | 30 min |
-| Empty assets folder | P2 | Add icons/images | 2 hours |
+- [ ] P0: Tank creation form validation - 2 hours
+- [ ] P1: Marine tank "coming soon" placeholder - 1 hour
+- [ ] P1: Duplicate screens (learn vs study) - consolidate - 1 hour
+- [ ] P2: Unused go_router dependency - remove or use - 30 min
+- [ ] P2: Empty assets folder - add icons/images - 2 hours
+- [ ] Triage any new P0/P1 bugs found during testing
 
 ### Sprint 3.3: Regression Testing (4 hours)
 
-**Test Each Phase's Features:**
-
-| Phase | Test Cases | Time |
-|-------|------------|------|
-| Phase 0 | All navigation links work | 1 hour |
-| Phase 1 | Gems/XP/shop integration | 1.5 hours |
-| Phase 2 | Achievements unlock, DB queries | 1 hour |
-| Overall | Full user journey test | 30 min |
+- [ ] Phase 0 regression: All navigation links work - 1 hour
+- [ ] Phase 1 regression: Gems/XP/shop integration - 1.5 hours
+- [ ] Phase 2 regression: Achievements unlock, DB queries - 1 hour
+- [ ] Full user journey test (onboarding → tank → learning → achievements) - 30 min
 
 ### Sprint 3.4: Documentation Update (2 hours)
 
