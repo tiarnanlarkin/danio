@@ -1,7 +1,7 @@
 # 🎯 MASTER INTEGRATION ROADMAP
 
-**Version:** 2.0  
-**Date:** 2026-02-11  
+**Version:** 2.1  
+**Date:** 2026-02-11 (Updated with mandatory quality gates)  
 **Status:** ACTIVE - This is the single source of truth  
 **Goal:** Wire ALL existing features into a cohesive, production-ready app  
 **Philosophy:** NO new features until everything built is fully integrated  
@@ -50,6 +50,117 @@ Phase 0: Quick Wins (Navigation Links)
 
 **Critical Path:** Phase 0 → 1 → 2 → 3 = MVP  
 **Optional Enhancement:** Phase 4 = Full cloud-connected product
+
+---
+
+## 🚦 MANDATORY QUALITY GATE (After EVERY Phase)
+
+> ⚠️ **FOR ALL AGENTS:** This quality gate workflow is MANDATORY after completing each phase.
+> No phase can be marked complete until this process is done. No exceptions.
+
+### The Rule
+**No phase is complete until:**
+1. ✅ All development tasks done
+2. ✅ Automated checks pass (Tier 1 mandatory)
+3. ✅ Manual app testing run
+4. ✅ All P0/P1 bugs fixed
+5. ✅ Fixes verified
+
+### Phase 1: 🤖 Automated Checks (30-60 min)
+*Runs FIRST, must pass before manual testing*
+
+#### 🔴 Tier 1: MANDATORY (Blocking - Must Pass)
+| Check | Requirement |
+|-------|-------------|
+| Code Quality | `flutter analyze` = 0 errors |
+| Formatting | `dart format` = 100% compliant |
+| Unit Tests | 100% pass rate |
+| Code Coverage | ≥70% coverage |
+| Security | 0 critical/high vulnerabilities |
+| Build | Clean build succeeds |
+| Regression | All previous phases still work |
+
+#### 🟡 Tier 2: RECOMMENDED (Document Warnings)
+- Code complexity (<15 per function)
+- APK size (<50MB debug, <100MB release)
+- App startup time (<3 seconds)
+- Memory usage (<300MB peak)
+- Accessibility (no critical issues)
+
+#### 🟢 Tier 3: OPTIONAL (If Time Permits)
+- Golden tests (visual regression)
+- Performance profiling
+- Frame rate monitoring (60fps target)
+
+### Phase 2: 🧪 Manual App Testing (20-30 min)
+*Runs AFTER automated checks pass*
+
+1. Build app: `flutter build apk --debug`
+2. Install on emulator/device
+3. Test all features in phase scope systematically
+4. Grade the phase (A-F, score/100)
+5. Document all bugs found
+
+### Bug Priority & Action Required
+
+| Priority | Description | Action |
+|----------|-------------|--------|
+| **P0 Critical** | App crashes, data loss, blocking | ⛔ MUST fix before next phase |
+| **P1 High** | Major feature broken, bad UX | ⛔ MUST fix before next phase |
+| **P2 Medium** | Minor issues, workarounds exist | Triage: fix now or defer |
+| **P3 Low** | Polish, nice-to-have | Can defer to backlog |
+
+### Deliverables Per Phase
+
+After quality gate, create these documents in `docs/testing/`:
+
+```
+PHASE_[X]_AUTOMATED_CHECKS_REPORT.md  - Tier 1/2/3 results
+PHASE_[X]_TEST_REPORT.md              - Manual testing results, grade
+PHASE_[X]_FIXES_REQUIRED.md           - All bugs with checkboxes
+```
+
+### Phase Completion Checklist Template
+
+```markdown
+## Phase [X] Quality Gate
+
+### 🤖 Automated Checks
+- [ ] Tier 1 (Mandatory): All passed
+- [ ] Tier 2 (Recommended): Warnings documented
+- [ ] Report: `PHASE_[X]_AUTOMATED_CHECKS_REPORT.md`
+
+### 🧪 Manual Testing
+- [ ] App testing completed
+- [ ] Grade: [?]/100
+- [ ] Report: `PHASE_[X]_TEST_REPORT.md`
+
+### 🔧 Fixes
+- [ ] All P0 bugs fixed
+- [ ] All P1 bugs fixed
+- [ ] P2/P3 triaged (fix or defer)
+- [ ] Fixes document: `PHASE_[X]_FIXES_REQUIRED.md`
+
+### ✅ Verification
+- [ ] Re-ran automated checks (still passing)
+- [ ] Re-tested fixes manually (working)
+- [ ] No new bugs introduced
+
+**Phase Complete:** YES / NO
+**Verified By:** [Agent] ([Date])
+```
+
+### Time Investment Per Phase
+
+| Activity | Time |
+|----------|------|
+| Automated checks | 15-60 min |
+| Manual testing | 25-35 min |
+| Fixing P0/P1 bugs | 30-120 min |
+| Verification | 15-30 min |
+| **Total** | **1.5-4 hours** |
+
+**This is non-negotiable. Quality gates prevent technical debt and ensure each phase is solid before building on top of it.**
 
 ---
 
@@ -133,6 +244,32 @@ Create "Guides & Education" expansion section:
 - [ ] `PHASE_0_COMPLETION_REPORT.md`
 - [ ] Updated navigation map
 - [ ] Before/after screenshot comparison
+
+### 🚦 Phase 0 Quality Gate (MANDATORY)
+> **DO NOT proceed to Phase 1 until all boxes checked**
+
+#### 🤖 Automated Checks
+- [ ] `flutter analyze` = 0 errors
+- [ ] `dart format` = compliant
+- [ ] All unit tests pass
+- [ ] Build succeeds cleanly
+- [ ] Report: `docs/testing/PHASE_0_AUTOMATED_CHECKS_REPORT.md`
+
+#### 🧪 Manual Testing
+- [ ] All new navigation links tested
+- [ ] No crashes or broken screens
+- [ ] Grade: ___/100
+- [ ] Report: `docs/testing/PHASE_0_TEST_REPORT.md`
+
+#### 🔧 Fixes
+- [ ] All P0 bugs fixed
+- [ ] All P1 bugs fixed
+- [ ] Fixes doc: `docs/testing/PHASE_0_FIXES_REQUIRED.md`
+
+#### ✅ Verification
+- [ ] Re-ran checks after fixes
+- [ ] All fixes verified working
+- [ ] **PHASE 0 COMPLETE** ✅
 
 ---
 
@@ -241,9 +378,35 @@ await ref.read(gemsProvider.notifier).addGems(
 - [ ] All gamification persists after app restart
 
 ### Deliverables
-- [ ] `PHASE_1_TEST_REPORT.md`
-- [ ] `PHASE_1_FIXES_REQUIRED.md` (if bugs found)
 - [ ] Updated shop item documentation
+
+### 🚦 Phase 1 Quality Gate (MANDATORY)
+> **DO NOT proceed to Phase 2 until all boxes checked**
+
+#### 🤖 Automated Checks
+- [ ] `flutter analyze` = 0 errors
+- [ ] All unit tests pass (≥70% coverage)
+- [ ] Gamification unit tests added
+- [ ] Build succeeds cleanly
+- [ ] Report: `docs/testing/PHASE_1_AUTOMATED_CHECKS_REPORT.md`
+
+#### 🧪 Manual Testing
+- [ ] All gem triggers tested (14 events)
+- [ ] All XP awards tested (15+ activities)
+- [ ] Shop items tested (buy + use)
+- [ ] Dashboard displays correctly
+- [ ] Grade: ___/100
+- [ ] Report: `docs/testing/PHASE_1_TEST_REPORT.md`
+
+#### 🔧 Fixes
+- [ ] All P0 bugs fixed
+- [ ] All P1 bugs fixed
+- [ ] Fixes doc: `docs/testing/PHASE_1_FIXES_REQUIRED.md`
+
+#### ✅ Verification
+- [ ] Re-ran checks after fixes
+- [ ] All fixes verified working
+- [ ] **PHASE 1 COMPLETE** ✅
 
 ---
 
@@ -331,9 +494,37 @@ Species(
 - [ ] Achievement unlock notifications working
 
 ### Deliverables
-- [ ] `PHASE_2_TEST_REPORT.md`
 - [ ] Updated species/plant count documentation
 - [ ] Achievement testing checklist (all 55)
+
+### 🚦 Phase 2 Quality Gate (MANDATORY)
+> **DO NOT proceed to Phase 3 until all boxes checked**
+
+#### 🤖 Automated Checks
+- [ ] `flutter analyze` = 0 errors
+- [ ] All unit tests pass (≥70% coverage)
+- [ ] Achievement trigger tests added
+- [ ] Database query tests pass
+- [ ] Build succeeds cleanly
+- [ ] Report: `docs/testing/PHASE_2_AUTOMATED_CHECKS_REPORT.md`
+
+#### 🧪 Manual Testing
+- [ ] 25+ achievements unlock correctly
+- [ ] Species database browsable (100+ entries)
+- [ ] Plant database browsable (50+ entries)
+- [ ] Achievement notifications display
+- [ ] Grade: ___/100
+- [ ] Report: `docs/testing/PHASE_2_TEST_REPORT.md`
+
+#### 🔧 Fixes
+- [ ] All P0 bugs fixed
+- [ ] All P1 bugs fixed
+- [ ] Fixes doc: `docs/testing/PHASE_2_FIXES_REQUIRED.md`
+
+#### ✅ Verification
+- [ ] Re-ran checks after fixes
+- [ ] All fixes verified working
+- [ ] **PHASE 2 COMPLETE** ✅
 
 ---
 
@@ -403,9 +594,43 @@ flutter test                        # All tests pass
 - [ ] APK size < 100MB
 
 ### Deliverables
-- [ ] `PHASE_3_QUALITY_REPORT.md`
 - [ ] Clean `flutter analyze` output
 - [ ] Release APK artifact
+
+### 🚦 Phase 3 Quality Gate (MANDATORY - MVP READINESS)
+> **This is the final gate before MVP launch. All criteria must pass.**
+
+#### 🤖 Automated Checks
+- [ ] `flutter analyze` = 0 errors
+- [ ] `dart format` = 100% compliant
+- [ ] All unit tests pass (≥80% coverage)
+- [ ] All widget tests pass
+- [ ] Security scan = 0 critical/high
+- [ ] Build succeeds (debug + release)
+- [ ] APK size < 100MB
+- [ ] Report: `docs/testing/PHASE_3_AUTOMATED_CHECKS_REPORT.md`
+
+#### 🧪 Manual Testing (Full Regression)
+- [ ] Phase 0 features still work
+- [ ] Phase 1 features still work
+- [ ] Phase 2 features still work
+- [ ] Full user journey test (onboarding → tank → learning → achievements)
+- [ ] Edge cases tested (empty states, errors, offline)
+- [ ] Grade: ___/100 (Target: ≥85)
+- [ ] Report: `docs/testing/PHASE_3_TEST_REPORT.md`
+
+#### 🔧 Fixes
+- [ ] All P0 bugs fixed
+- [ ] All P1 bugs fixed
+- [ ] P2/P3 triaged and documented
+- [ ] Fixes doc: `docs/testing/PHASE_3_FIXES_REQUIRED.md`
+
+#### ✅ MVP Verification
+- [ ] Re-ran all automated checks (passing)
+- [ ] Full regression test passed
+- [ ] Release APK generated and tested
+- [ ] **PHASE 3 COMPLETE** ✅
+- [ ] **MVP READY FOR LAUNCH** 🚀
 
 ---
 
@@ -518,12 +743,17 @@ Until all existing features are integrated, we do not build anything new. The ap
 ### 2. NO Deletions Without Approval
 Nothing gets deleted without Tiarnan's explicit confirmation. Every screen was built for a reason.
 
-### 3. Quality Gates Enforced
+### 3. Quality Gates Enforced (MANDATORY)
+**See "🚦 MANDATORY QUALITY GATE" section above for full workflow.**
+
 No phase is complete until:
-- `flutter analyze` passes
-- All tests pass
-- Test report created
-- Bugs documented and triaged
+- ✅ All Tier 1 automated checks pass
+- ✅ Manual app testing completed
+- ✅ All P0/P1 bugs fixed
+- ✅ Fixes verified
+- ✅ Quality gate reports created in `docs/testing/`
+
+**This is non-negotiable. Every agent must follow this.**
 
 ### 4. Daily Progress Updates
 At end of each work session:
