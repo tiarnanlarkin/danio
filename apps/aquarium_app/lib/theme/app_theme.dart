@@ -53,6 +53,10 @@ class AppColors {
     0xFF5D6F76,
   ); // Medium-dark gray (WCAG AA: 4.67:1 on background, 5.25:1 on white)
 
+  // Border colors
+  static const Color border = Color(0xFFE0E0E0); // Light gray border
+  static const Color borderDark = Color(0xFF3D4A5C); // Dark mode border
+
   // Dark mode colors
   static const Color backgroundDark = Color(0xFF1A2634); // Deep blue-gray
   static const Color surfaceDark = Color(0xFF243447); // Slightly lighter
@@ -120,6 +124,27 @@ class AppTypography {
     fontSize: 20,
     fontWeight: FontWeight.w600,
     letterSpacing: -0.2,
+    height: 1.3,
+  );
+
+  // Titles (between headline and body)
+  static const TextStyle titleLarge = TextStyle(
+    fontSize: 22,
+    fontWeight: FontWeight.w600,
+    letterSpacing: -0.2,
+    height: 1.3,
+  );
+
+  static const TextStyle titleMedium = TextStyle(
+    fontSize: 18,
+    fontWeight: FontWeight.w500,
+    letterSpacing: -0.1,
+    height: 1.3,
+  );
+
+  static const TextStyle titleSmall = TextStyle(
+    fontSize: 16,
+    fontWeight: FontWeight.w500,
     height: 1.3,
   );
 

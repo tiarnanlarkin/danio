@@ -75,19 +75,12 @@ class _FirstTankWizardScreenState extends ConsumerState<FirstTankWizardScreen> {
   }
 
   Future<void> _createTank() async {
-    final now = DateTime.now();
-    final tank = Tank(
-      id: now.millisecondsSinceEpoch.toString(),
+    // Use tankActionsProvider to create the tank
+    await ref.read(tankActionsProvider).createTank(
       name: _tankName,
       type: _tankType,
       volumeLitres: _volumeLitres,
-      startDate: now,
-      targets: const WaterTargets(), // Default targets
-      createdAt: now,
-      updatedAt: now,
     );
-
-    await ref.read(tanksProvider.notifier).addTank(tank);
 
     if (mounted) {
       Navigator.of(context).pushAndRemoveUntil(
