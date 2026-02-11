@@ -1,3 +1,11 @@
+> ⚠️ **SUPPORTING DOCUMENT** - This is a detailed reference document.
+> 
+> **Source of Truth:** [`MASTER_INTEGRATION_ROADMAP.md`](../../MASTER_INTEGRATION_ROADMAP.md)
+> 
+> Use this document for detailed implementation guidance. Track progress in the MASTER roadmap.
+
+---
+
 # ROADMAP: Backend & Sync Integration
 **Version:** 1.0  
 **Date:** 2025-02-11  

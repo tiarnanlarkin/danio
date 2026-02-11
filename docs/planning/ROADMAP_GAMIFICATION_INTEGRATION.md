@@ -1,3 +1,11 @@
+> ⚠️ **SUPPORTING DOCUMENT** - This is a detailed reference document.
+> 
+> **Source of Truth:** [`MASTER_INTEGRATION_ROADMAP.md`](../../MASTER_INTEGRATION_ROADMAP.md)
+> 
+> Use this document for detailed implementation guidance. Track progress in the MASTER roadmap.
+
+---
+
 # Gamification Integration Roadmap
 
 **Created:** 2025-01-24  
