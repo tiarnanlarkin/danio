@@ -1,7 +1,7 @@
 # 🎯 MASTER INTEGRATION ROADMAP
 
-**Version:** 2.2  
-**Date:** 2026-02-11 (Added checkboxes for all individual tasks)  
+**Version:** 2.3  
+**Date:** 2026-02-11 (Updated with fresh audit findings)  
 **Status:** ACTIVE - This is the single source of truth  
 **Goal:** Wire ALL existing features into a cohesive, production-ready app  
 **Philosophy:** NO new features until everything built is fully integrated  
@@ -10,15 +10,34 @@
 
 ## 📋 Executive Summary
 
-### Current Reality
-- **78% complete** with exceptional features already built
-- **41% dead code** - 35 screens built but unreachable
-- **Gamification 95% built, 25% integrated** - only 5/86 screens use it
-- **100% offline-only** - sync architecture ready but no backend
-- **Quality gates defined but never enforced** - 0% compliance
+### Current Reality (Updated from Feb 11 Audit)
+- **86 total screens**, 77 navigable, **9 orphaned** (unreachable)
+- **Gamification 95% built, <25% integrated** — achievement checker NEVER CALLED
+- **Shop items purchasable but NOT USABLE** — no inventory/use functionality
+- **5 actual errors** in onboarding screens that will crash the app
+- **Duplicate navigation systems** causing UX confusion
+- **Species: 45/100+** | **Plants: 20/50+** | **Achievements: 55/55 ✅**
 
 ### The Mission
 **Integrate everything that exists. Delete nothing. Ship a polished app.**
+
+### 🔍 Fresh Audit Findings (Feb 11, 2026)
+
+**5 specialized audits identified these critical gaps:**
+
+| Finding | Phase | Priority | Status |
+|---------|-------|----------|--------|
+| 5 errors in onboarding (will crash) | Phase 3 | 🔴 P0 | Added |
+| Achievement checker never called | Phase 1 | 🔴 P0 | Added |
+| Shop items can't be used (no inventory) | Phase 1 | 🔴 P0 | Added |
+| XP Boost has no effect | Phase 1 | 🟡 P1 | Added |
+| Duplicate navigation (House + Bottom) | Phase 3 | 🟡 P1 | Added |
+| LearnScreen vs StudyScreen redundant | Phase 3 | 🟡 P2 | Added |
+| 9 orphaned screens | Phase 0 | 🟡 P1 | Added |
+| 11 unused widgets | Phase 3 | 🟢 P3 | Added |
+| 2 dev demo screens to delete | Phase 0 | 🟢 P3 | Added |
+
+**Audit reports saved to:** `docs/audits/`
 
 ### Timeline Overview
 | Phase | Focus | Duration | Hours | Outcome |
@@ -216,6 +235,19 @@ Link all hidden, fully-implemented features to make them accessible to users.
 - [ ] Backup & Restore (Built, not linked) - 10 min
 - [ ] Theme Gallery (Built, not linked) - 10 min
 
+#### 0.5 Orphaned Screens (From Audit) - 1 hour
+**9 screens exist but have NO navigation path:**
+
+- [ ] `AnalyticsScreen` → Link from Charts or add to Workshop - 15 min
+- [ ] `GemShopScreen` → Link from Shop or Profile rewards - 15 min
+- [ ] `DifficultySettingsScreen` → Already in 0.3 above ✅
+- [ ] Review `EnhancedOnboardingScreen` vs `OnboardingScreen` - consolidate? - 20 min
+- [ ] Review `EnhancedQuizScreen` vs regular quiz - consolidate? - 20 min
+
+**Safe to delete (dev demos):**
+- [ ] Delete `xp_animations_demo_screen.dart` - 2 min
+- [ ] Delete `offline_mode_demo_screen.dart` - 2 min
+
 #### 0.4 Tank Detail Enhancements (1 hour)
 **File:** `lib/screens/tank_detail_screen.dart`
 
@@ -351,6 +383,27 @@ await ref.read(gemsProvider.notifier).addGems(
 - [ ] Display daily goal progress bar - 1 hour
 - [ ] Integrate widget in `home_screen.dart` - 1 hour
 
+### 🔴 Sprint 1.5: CRITICAL - Achievement Checker Wiring (4 hours)
+**From Audit: Achievement checker EXISTS but is NEVER CALLED. 53/55 achievements can't unlock!**
+
+- [ ] Wire `achievementChecker.checkAfterLesson()` in `lesson_screen.dart` - 30 min
+- [ ] Wire `achievementChecker.checkAfterQuiz()` in quiz completion - 30 min
+- [ ] Wire `achievementChecker.checkAfterPractice()` in practice screens - 30 min
+- [ ] Wire achievement checks after tank creation - 30 min
+- [ ] Wire achievement checks after livestock added - 30 min
+- [ ] Wire achievement checks after water test logged - 30 min
+- [ ] Wire achievement checks after streak milestones - 30 min
+- [ ] Test: Verify achievements actually unlock now - 30 min
+
+### 🔴 Sprint 1.6: CRITICAL - Shop Item Usage (4 hours)
+**From Audit: Items purchasable but NOT USABLE - no inventory/use functionality!**
+
+- [ ] Create `InventoryScreen` or add inventory tab to Shop - 2 hours
+- [ ] Add "Use" button for each owned consumable item - 30 min
+- [ ] Wire `useItem()` function to actually consume items - 30 min
+- [ ] Fix XP Boost: Check `xpBoostActiveProvider` when awarding XP - 30 min
+- [ ] Test: Buy item → Use item → Verify effect works - 30 min
+
 **Target Widget Layout:**
 ```
 ┌─────────────────────────────────┐
@@ -368,6 +421,9 @@ await ref.read(gemsProvider.notifier).addGems(
 - [ ] All cosmetic items apply correctly
 - [ ] Gamification dashboard visible on home screen
 - [ ] All gamification persists after app restart
+- [ ] **🔴 Achievement checker wired - achievements actually unlock!**
+- [ ] **🔴 Shop items usable - inventory with "Use" buttons works!**
+- [ ] **🔴 XP Boost actually doubles XP when active!**
 
 ### Deliverables
 - [ ] Updated shop item documentation
@@ -544,16 +600,29 @@ Enforce quality gates, fix all P0/P1 bugs, ensure production readiness.
 - [ ] Add APK size check (<100MB release) - 30 min
 - [ ] Test full quality script end-to-end - 30 min
 
-### Sprint 3.2: Bug Triage & Fixes (8 hours)
+### Sprint 3.2: Bug Triage & Fixes (12 hours)
 
-**Known Issues from Audits:**
+**🔴 P0 CRITICAL - From Feb 11 Audit (App Will Crash!):**
 
-- [ ] P0: Tank creation form validation - 2 hours
+- [ ] P0: Fix `AppColors.border` undefined in `experience_assessment_screen.dart` - 30 min
+- [ ] P0: Fix `AppTypography.titleMedium` undefined in `experience_assessment_screen.dart` - 30 min
+- [ ] P0: Fix `FutureProvider.notifier` undefined in `first_tank_wizard_screen.dart` - 30 min
+- [ ] P0: Fix `AppColors.border` undefined in `first_tank_wizard_screen.dart` - 30 min
+- [ ] P0: Fix `AppTypography.titleMedium` undefined in `first_tank_wizard_screen.dart` - 30 min
+
+**P1 HIGH - Navigation & UX Issues:**
+
+- [ ] P1: Resolve duplicate navigation (HouseNavigator + BottomNavigationBar) - 2 hours
+- [ ] P1: Consolidate LearnScreen vs StudyScreen - eliminate redundant layer - 1 hour
+- [ ] P1: Tank creation form validation - 2 hours
 - [ ] P1: Marine tank "coming soon" placeholder - 1 hour
-- [ ] P1: Duplicate screens (learn vs study) - consolidate - 1 hour
+
+**P2/P3 - Cleanup:**
+
+- [ ] P2: Clean up 11 unused widgets (delete or integrate) - 1 hour
+- [ ] P2: Complete 4 TODOs in code before release - 1 hour
 - [ ] P2: Unused go_router dependency - remove or use - 30 min
-- [ ] P2: Empty assets folder - add icons/images - 2 hours
-- [ ] Triage any new P0/P1 bugs found during testing
+- [ ] P3: Settings screen organization (25+ items) - break into subpages - 2 hours
 
 ### Sprint 3.3: Regression Testing (4 hours)
 
@@ -570,8 +639,10 @@ Enforce quality gates, fix all P0/P1 bugs, ensure production readiness.
 - [ ] Create user-facing feature documentation
 
 ### Phase 3 Success Criteria
-- [ ] `flutter analyze` returns 0 errors
+- [ ] `flutter analyze` returns 0 errors (currently 5 errors!)
 - [ ] All unit tests pass
+- [ ] **🔴 All 5 onboarding screen errors fixed**
+- [ ] **🔴 Navigation system consolidated (one system, not two)**
 - [ ] All P0 bugs fixed
 - [ ] All P1 bugs fixed or explicitly deferred
 - [ ] Release APK builds successfully
