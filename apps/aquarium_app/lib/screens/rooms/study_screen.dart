@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../theme/app_theme.dart';
+import '../../widgets/core/app_card.dart';
 import '../learn_screen.dart';
 import '../nitrogen_cycle_guide_screen.dart';
 import '../parameter_guide_screen.dart';
@@ -338,7 +339,7 @@ class _SectionCard extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 12),
-          Card(margin: EdgeInsets.zero, child: child),
+          AppCard(padding: AppCardPadding.none, child: child),
         ],
       ),
     );

@@ -369,29 +369,27 @@ class _SpeciesDetailSheet extends StatelessWidget {
             // Parameters
             Text('Ideal Parameters', style: AppTypography.headlineSmall),
             const SizedBox(height: 12),
-            Card(
-              child: Padding(
-                padding: const EdgeInsets.all(12),
-                child: Column(
-                  children: [
-                    _ParamRow(
-                      label: 'Temperature',
-                      value: '${species.minTempC}–${species.maxTempC}°C',
-                    ),
-                    _ParamRow(
-                      label: 'pH',
-                      value: '${species.minPh}–${species.maxPh}',
-                    ),
-                    _ParamRow(
-                      label: 'Min tank size',
-                      value: '${species.minTankLitres.toStringAsFixed(0)} L',
-                    ),
-                    _ParamRow(
-                      label: 'Min school size',
-                      value: '${species.minSchoolSize}+',
-                    ),
-                  ],
-                ),
+            AppCard(
+              padding: AppCardPadding.compact,
+              child: Column(
+                children: [
+                  _ParamRow(
+                    label: 'Temperature',
+                    value: '${species.minTempC}–${species.maxTempC}°C',
+                  ),
+                  _ParamRow(
+                    label: 'pH',
+                    value: '${species.minPh}–${species.maxPh}',
+                  ),
+                  _ParamRow(
+                    label: 'Min tank size',
+                    value: '${species.minTankLitres.toStringAsFixed(0)} L',
+                  ),
+                  _ParamRow(
+                    label: 'Min school size',
+                    value: '${species.minSchoolSize}+',
+                  ),
+                ],
               ),
             ),
 
