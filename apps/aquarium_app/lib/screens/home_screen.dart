@@ -6,6 +6,7 @@ import '../providers/tank_provider.dart';
 import '../providers/room_theme_provider.dart';
 import '../providers/user_profile_provider.dart';
 import '../theme/app_theme.dart';
+import '../widgets/core/bubble_loader.dart';
 import 'house_navigator.dart';
 import '../theme/room_themes.dart';
 import '../widgets/decorative_elements.dart';
@@ -24,6 +25,7 @@ import 'create_tank_screen.dart';
 import 'search_screen.dart';
 import 'settings_screen.dart';
 import 'tank_detail_screen.dart';
+import '../utils/app_page_routes.dart';
 
 /// HomeScreen - The Living Room in the House Navigator
 /// This is just the tank management view - navigation between rooms
@@ -63,7 +65,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final tanksAsync = ref.watch(tanksProvider);
 
     return tanksAsync.when(
-      loading: () => const Center(child: CircularProgressIndicator()),
+      loading: () => const Center(child: BubbleLoader.large(message: 'Loading tanks...')),
       error: (err, stack) => ErrorState(
         message: 'Failed to load tanks',
         details: 'Please check your connection and try again',
@@ -163,7 +165,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       tooltip: 'Search',
                       onPressed: () => Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (_) => const SearchScreen()),
+                        RoomSlideRoute(page: const SearchScreen()),
                       ),
                     ),
                     IconButton(
@@ -174,9 +176,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       tooltip: 'Settings',
                       onPressed: () => Navigator.push(
                         context,
-                        MaterialPageRoute(
-                          builder: (_) => const SettingsScreen(),
-                        ),
+                        RoomSlideRoute(page: const SettingsScreen()),
                       ),
                     ),
                   ],
@@ -304,31 +304,29 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   void _navigateToCreateTank(BuildContext context) {
-    Navigator.of(
-      context,
-    ).push(MaterialPageRoute(builder: (_) => const CreateTankScreen()));
+    Navigator.of(context).push(
+      ModalScaleRoute(page: const CreateTankScreen()),
+    );
   }
 
   void _navigateToTankDetail(BuildContext context, Tank tank) {
     Navigator.of(context).push(
-      MaterialPageRoute(builder: (_) => TankDetailScreen(tankId: tank.id)),
+      TankDetailRoute(page: TankDetailScreen(tankId: tank.id)),
     );
   }
 
   void _navigateToQuickTest(BuildContext context, Tank tank) {
     Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (_) =>
-            AddLogScreen(tankId: tank.id, initialType: LogType.waterTest),
+      ModalScaleRoute(
+        page: AddLogScreen(tankId: tank.id, initialType: LogType.waterTest),
       ),
     );
   }
 
   void _navigateToWaterChange(BuildContext context, Tank tank) {
     Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (_) =>
-            AddLogScreen(tankId: tank.id, initialType: LogType.waterChange),
+      ModalScaleRoute(
+        page: AddLogScreen(tankId: tank.id, initialType: LogType.waterChange),
       ),
     );
   }
@@ -700,7 +698,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   void _showStreakCalendar(BuildContext context) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (_) => const StreakCalendarScreen()),
+      RoomSlideRoute(page: const StreakCalendarScreen()),
     );
   }
 
@@ -818,8 +816,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(
-                    builder: (_) => AddLogScreen(
+                  ModalScaleRoute(
+                    page: AddLogScreen(
                       tankId: currentTank.id,
                       initialType: LogType.waterTest,
                     ),
@@ -833,8 +831,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(
-                    builder: (_) => AddLogScreen(
+                  ModalScaleRoute(
+                    page: AddLogScreen(
                       tankId: currentTank.id,
                       initialType: LogType.observation,
                     ),

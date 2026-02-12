@@ -1,4 +1,5 @@
 /// Enhanced Practice Screen with full Spaced Repetition System
+import '../widgets/core/bubble_loader.dart';
 /// Implements review sessions, adaptive difficulty, and progress tracking
 library;
 
@@ -32,7 +33,7 @@ class _SpacedRepetitionPracticeScreenState
     final srState = ref.watch(spacedRepetitionProvider);
 
     if (srState.isLoading) {
-      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+      return const Scaffold(body: Center(child: BubbleLoader()));
     }
 
     // If session is active, show session screen

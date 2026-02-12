@@ -1,6 +1,8 @@
 import 'package:flutter/foundation.dart';
+import '../widgets/core/bubble_loader.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:intl/intl.dart';
 
 import '../models/models.dart';
@@ -41,7 +43,7 @@ class _LogsScreenState extends ConsumerState<LogsScreen> {
         ],
       ),
       body: logsAsync.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
+        loading: () => const Center(child: BubbleLoader()),
         error: (err, _) => ErrorState(
           message: 'Failed to load logs',
           onRetry: () => ref.invalidate(allLogsProvider(widget.tankId)),
@@ -123,7 +125,10 @@ class _LogsScreenState extends ConsumerState<LogsScreen> {
                           ),
                         ),
                       ),
-                    );
+                    )
+                        .animate()
+                        .fadeIn(delay: (50 * index).ms, duration: 300.ms)
+                        .slideX(begin: 0.1, end: 0, delay: (50 * index).ms, duration: 300.ms);
                   },
                 ),
               ),

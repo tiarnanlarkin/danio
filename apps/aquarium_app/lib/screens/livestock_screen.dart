@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import '../widgets/core/bubble_loader.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:uuid/uuid.dart';
 import '../data/species_database.dart';
 import '../models/models.dart';
@@ -9,6 +11,7 @@ import '../providers/storage_provider.dart';
 import '../providers/tank_provider.dart';
 import '../providers/user_profile_provider.dart';
 import '../services/compatibility_service.dart';
+import '../services/xp_animation_service.dart';
 import '../theme/app_theme.dart';
 import '../utils/app_feedback.dart';
 import '../widgets/core/app_card.dart';
@@ -84,7 +87,7 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
         ],
       ),
       body: livestockAsync.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
+        loading: () => const Center(child: BubbleLoader()),
         error: (err, _) => ErrorState(
           message: 'Failed to load livestock',
           details: 'Please check your connection and try again',
@@ -189,28 +192,35 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
                       ),
                     if (_isSelectMode) const SizedBox(height: AppSpacing.md),
 
-                    // List
-                    ...livestock.map(
-                      (l) => _LivestockCard(
-                        livestock: l,
-                        tank: tank,
-                        allLivestock: livestock,
-                        isSelectMode: _isSelectMode,
-                        isSelected: _selectedLivestockIds.contains(l.id),
-                        onTap: _isSelectMode
-                            ? () => _toggleLivestockSelection(l.id)
-                            : () => Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (_) => LivestockDetailScreen(
-                                    tankId: widget.tankId,
-                                    livestock: l,
+                    // List with staggered animation
+                    ...livestock.asMap().entries.map(
+                      (entry) {
+                        final index = entry.key;
+                        final l = entry.value;
+                        return _LivestockCard(
+                          livestock: l,
+                          tank: tank,
+                          allLivestock: livestock,
+                          isSelectMode: _isSelectMode,
+                          isSelected: _selectedLivestockIds.contains(l.id),
+                          onTap: _isSelectMode
+                              ? () => _toggleLivestockSelection(l.id)
+                              : () => Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => LivestockDetailScreen(
+                                      tankId: widget.tankId,
+                                      livestock: l,
+                                    ),
                                   ),
                                 ),
-                              ),
-                        onEdit: () => _showEditDialog(context, ref, l),
-                        onDelete: () => _confirmDelete(context, ref, l),
-                      ),
+                          onEdit: () => _showEditDialog(context, ref, l),
+                          onDelete: () => _confirmDelete(context, ref, l),
+                        )
+                            .animate()
+                            .fadeIn(delay: (50 * index).ms, duration: 300.ms)
+                            .slideX(begin: 0.1, end: 0, delay: (50 * index).ms, duration: 300.ms);
+                      },
                     ),
                   ],
                 ),
@@ -947,6 +957,11 @@ class _AddLivestockSheetState extends State<_AddLivestockSheet> {
         await widget.ref
             .read(userProfileProvider.notifier)
             .recordActivity(xp: XpRewards.addLivestock);
+        
+        // Show XP animation
+        if (mounted) {
+          widget.ref.showXpAnimation(XpRewards.addLivestock);
+        }
       }
 
       widget.ref.invalidate(livestockProvider(widget.tankId));
@@ -1124,9 +1139,15 @@ class _BulkAddLivestockSheetState extends State<_BulkAddLivestockSheet> {
       widget.ref.invalidate(logsProvider(widget.tankId));
       widget.ref.invalidate(allLogsProvider(widget.tankId));
 
+      final totalXp = _items.length * XpRewards.addLivestock;
       await widget.ref
           .read(userProfileProvider.notifier)
-          .recordActivity(xp: _items.length * XpRewards.addLivestock);
+          .recordActivity(xp: totalXp);
+
+      // Show XP animation
+      if (mounted && totalXp > 0) {
+        widget.ref.showXpAnimation(totalXp);
+      }
 
       if (mounted) {
         Navigator.pop(context);

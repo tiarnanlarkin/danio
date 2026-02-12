@@ -1,4 +1,5 @@
 import 'dart:io';
+import '../widgets/core/bubble_loader.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -24,7 +25,7 @@ class PhotoGalleryScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(title: Text('$tankName Gallery')),
       body: logsAsync.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
+        loading: () => const Center(child: BubbleLoader()),
         error: (e, _) => Center(child: Text('Error: $e')),
         data: (logs) {
           // Get all logs with photos

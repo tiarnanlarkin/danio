@@ -15,8 +15,10 @@ import '../providers/user_profile_provider.dart';
 import '../providers/inventory_provider.dart';
 import '../providers/achievement_provider.dart';
 import '../services/achievement_service.dart';
+import '../services/xp_animation_service.dart';
 import '../theme/app_theme.dart';
 import '../utils/app_feedback.dart';
+import '../widgets/core/app_button.dart';
 
 const _uuid = Uuid();
 
@@ -158,15 +160,15 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
       appBar: AppBar(
         title: Text(widget.existingLog != null ? 'Edit Log' : _getTitle()),
         actions: [
-          TextButton(
-            onPressed: _isSaving ? null : _save,
-            child: _isSaving
-                ? const SizedBox(
-                    width: 20,
-                    height: 20,
-                    child: CircularProgressIndicator(strokeWidth: 2),
-                  )
-                : const Text('Save'),
+          Padding(
+            padding: const EdgeInsets.only(right: 8),
+            child: AppButton(
+              label: 'Save',
+              onPressed: _isSaving ? null : _save,
+              isLoading: _isSaving,
+              size: AppButtonSize.small,
+              variant: AppButtonVariant.primary,
+            ),
           ),
         ],
       ),
@@ -877,10 +879,16 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
       };
 
       final isBoostActive = ref.read(xpBoostActiveProvider);
+      final effectiveXp = isBoostActive ? xp * 2 : xp;
       await ref.read(userProfileProvider.notifier).recordActivity(
         xp: xp,
         xpBoostActive: isBoostActive,
       );
+
+      // Show XP animation if XP was awarded
+      if (effectiveXp > 0 && mounted) {
+        ref.showXpAnimation(effectiveXp);
+      }
 
       // Check for achievements after logging activity
       final profile = ref.read(userProfileProvider).value;

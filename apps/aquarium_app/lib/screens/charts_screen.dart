@@ -1,4 +1,5 @@
 import 'dart:io';
+import '../widgets/core/bubble_loader.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -58,7 +59,7 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
         ],
       ),
       body: logsAsync.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
+        loading: () => const Center(child: BubbleLoader()),
         error: (err, _) => Center(child: Text('Error: $err')),
         data: (logs) {
           final waterTests =

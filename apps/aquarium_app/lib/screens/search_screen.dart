@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../widgets/core/bubble_loader.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../data/species_database.dart';
 import '../models/models.dart';
@@ -55,7 +56,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
       body: _query.isEmpty
           ? _EmptySearchState()
           : tanksAsync.when(
-              loading: () => const Center(child: CircularProgressIndicator()),
+              loading: () => const Center(child: BubbleLoader()),
               error: (e, _) => Center(child: Text('Error: $e')),
               data: (tanks) =>
                   _SearchResults(query: _query, tanks: tanks, ref: ref),

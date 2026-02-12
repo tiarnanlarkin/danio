@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../widgets/core/bubble_loader.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:collection/collection.dart';
@@ -22,7 +23,7 @@ class LogDetailScreen extends ConsumerWidget {
 
     return logsAsync.when(
       loading: () =>
-          const Scaffold(body: Center(child: CircularProgressIndicator())),
+          const Scaffold(body: Center(child: BubbleLoader())),
       error: (err, _) => Scaffold(
         appBar: AppBar(title: const Text('Log')),
         body: Center(child: Text('Error: $err')),

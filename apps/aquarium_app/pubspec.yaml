@@ -33,7 +33,13 @@ dependencies:
   fl_chart: ^0.69.2
   
   # Animations
+  flutter_animate: ^4.5.0
+  rive: ^0.13.0
   confetti: ^0.7.0
+  skeletonizer: ^1.4.0
+  floating_bubbles: ^2.6.2
+  animations: ^2.0.11
+  lottie: ^3.0.0
   
   # File handling
   path_provider: ^2.1.5

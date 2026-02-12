@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import '../widgets/core/bubble_loader.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
 import '../models/models.dart';
@@ -10,6 +12,7 @@ import '../providers/tank_provider.dart';
 import '../providers/user_profile_provider.dart';
 import '../providers/inventory_provider.dart';
 import '../services/storage_service.dart';
+import '../services/xp_animation_service.dart';
 import '../theme/app_theme.dart';
 import '../utils/app_feedback.dart';
 import '../widgets/core/app_card.dart';
@@ -95,7 +98,7 @@ class EquipmentScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(title: const Text('Equipment')),
       body: equipmentAsync.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
+        loading: () => const Center(child: BubbleLoader()),
         error: (err, _) => Center(child: Text('Error: $err')),
         data: (equipment) {
           if (equipment.isEmpty) {
@@ -160,15 +163,22 @@ class EquipmentScreen extends ConsumerWidget {
                 ),
               if (overdue > 0) const SizedBox(height: AppSpacing.md),
 
-              // List
-              ...equipment.map(
-                (e) => _EquipmentCard(
-                  equipment: e,
-                  onEdit: () => _showEditDialog(context, ref, e),
-                  onService: () => _markServiced(context, ref, e),
-                  onHistory: () => _showEquipmentHistoryDialog(context, e),
-                  onDelete: () => _confirmDelete(context, ref, e),
-                ),
+              // List with staggered animation
+              ...equipment.asMap().entries.map(
+                (entry) {
+                  final index = entry.key;
+                  final e = entry.value;
+                  return _EquipmentCard(
+                    equipment: e,
+                    onEdit: () => _showEditDialog(context, ref, e),
+                    onService: () => _markServiced(context, ref, e),
+                    onHistory: () => _showEquipmentHistoryDialog(context, e),
+                    onDelete: () => _confirmDelete(context, ref, e),
+                  )
+                      .animate()
+                      .fadeIn(delay: (50 * index).ms, duration: 300.ms)
+                      .slideX(begin: 0.1, end: 0, delay: (50 * index).ms, duration: 300.ms);
+                },
               ),
             ],
           );
@@ -702,9 +712,15 @@ class _AddEquipmentSheetState extends State<_AddEquipmentSheet> {
       // Award XP for adding new equipment (not editing)
       if (widget.existing == null) {
         final isBoostActive = widget.ref.read(xpBoostActiveProvider);
+        final effectiveXp = isBoostActive ? XpRewards.addEquipment * 2 : XpRewards.addEquipment;
         await widget.ref
             .read(userProfileProvider.notifier)
             .recordActivity(xp: XpRewards.addEquipment, xpBoostActive: isBoostActive);
+        
+        // Show XP animation
+        if (mounted) {
+          widget.ref.showXpAnimation(effectiveXp);
+        }
       }
 
       widget.ref.invalidate(equipmentProvider(widget.tankId));

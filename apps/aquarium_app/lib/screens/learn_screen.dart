@@ -6,6 +6,7 @@ import '../models/user_profile.dart';
 import '../providers/user_profile_provider.dart';
 import '../providers/spaced_repetition_provider.dart';
 import '../theme/app_theme.dart';
+import '../widgets/core/fish_loader.dart';
 import '../widgets/study_room_scene.dart';
 import '../widgets/hearts_widgets.dart';
 import 'lesson_screen.dart';
@@ -24,7 +25,7 @@ class LearnScreen extends ConsumerWidget {
 
     return Scaffold(
       body: profileAsync.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
+        loading: () => const Center(child: FishLoader.large(message: 'Loading lessons...')),
         error: (e, _) => Center(child: Text('Error: $e')),
         data: (profile) {
           // Calculate total lessons across all paths

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../data/plant_database.dart';
 import '../models/learning.dart';
 import '../providers/user_profile_provider.dart';
+import '../services/xp_animation_service.dart';
 import '../theme/app_theme.dart';
 
 class PlantBrowserScreen extends ConsumerStatefulWidget {
@@ -165,6 +166,11 @@ class _PlantBrowserScreenState extends ConsumerState<PlantBrowserScreen> {
       await ref
           .read(userProfileProvider.notifier)
           .recordActivity(xp: XpRewards.plantResearched);
+      
+      // Show XP animation
+      if (mounted) {
+        ref.showXpAnimation(XpRewards.plantResearched);
+      }
     }
 
     if (!mounted) return;

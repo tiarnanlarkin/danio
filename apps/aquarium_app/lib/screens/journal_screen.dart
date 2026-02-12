@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../widgets/core/bubble_loader.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import '../models/models.dart';
@@ -27,7 +28,7 @@ class JournalScreen extends ConsumerWidget {
         ],
       ),
       body: logsAsync.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
+        loading: () => const Center(child: BubbleLoader()),
         error: (e, _) => Center(child: Text('Error: $e')),
         data: (logs) {
           // Get observation logs as journal entries

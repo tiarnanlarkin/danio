@@ -1,4 +1,5 @@
 import 'dart:io';
+import '../widgets/core/bubble_loader.dart';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -65,7 +66,7 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
           const SizedBox(height: 12),
 
           tanksAsync.when(
-            loading: () => const Center(child: CircularProgressIndicator()),
+            loading: () => const Center(child: BubbleLoader()),
             error: (e, _) => Text('Error: $e'),
             data: (tanks) => Card(
               child: Padding(

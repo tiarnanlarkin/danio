@@ -13,6 +13,8 @@ import 'screens/achievements_screen.dart';
 import 'services/onboarding_service.dart';
 import 'services/notification_service.dart';
 import 'services/hearts_service.dart';
+import 'services/celebration_service.dart';
+import 'services/xp_animation_service.dart';
 import 'theme/app_theme.dart';
 import 'utils/performance_monitor.dart';
 import 'widgets/performance_overlay.dart';
@@ -75,9 +77,13 @@ class AquariumApp extends ConsumerWidget {
       theme: AppTheme.light,
       darkTheme: AppTheme.dark,
       themeMode: settings.flutterThemeMode,
-      home: AppPerformanceOverlay(
-        showOverlay: _showPerformanceOverlay,
-        child: const _AppRouter(),
+      home: XpAnimationListener(
+        child: CelebrationOverlayWrapper(
+          child: AppPerformanceOverlay(
+            showOverlay: _showPerformanceOverlay,
+            child: const _AppRouter(),
+          ),
+        ),
       ),
     );
   }

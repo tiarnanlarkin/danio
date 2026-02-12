@@ -1,4 +1,5 @@
 /// Activity Feed Screen - Dedicated screen for friend activities
+import '../widgets/core/bubble_loader.dart';
 /// Shows chronological feed of all friend activities with filtering
 library;
 
@@ -96,7 +97,7 @@ class _ActivityFeedScreenState extends ConsumerState<ActivityFeedScreen> {
           // Activity Feed
           Expanded(
             child: activitiesAsync.when(
-              loading: () => const Center(child: CircularProgressIndicator()),
+              loading: () => const Center(child: BubbleLoader()),
               error: (e, st) => ErrorState(
                 message: 'Error loading activities',
                 onRetry: () =>

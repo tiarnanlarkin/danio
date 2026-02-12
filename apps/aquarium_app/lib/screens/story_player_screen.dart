@@ -1,4 +1,5 @@
 // Story player screen - Interactive narrative experience
+import '../widgets/core/bubble_loader.dart';
 // Full-screen Duolingo-style story interface with animations
 
 library;
@@ -241,7 +242,7 @@ class _StoryPlayerScreenState extends ConsumerState<StoryPlayerScreen>
     if (_story == null || _currentScene == null || _progress == null) {
       return Scaffold(
         appBar: AppBar(title: const Text('Story')),
-        body: const Center(child: CircularProgressIndicator()),
+        body: const Center(child: BubbleLoader()),
       );
     }
 

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../widgets/core/bubble_loader.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fl_chart/fl_chart.dart';
 import '../models/friend.dart';
@@ -57,7 +58,7 @@ class _FriendComparisonScreenState
         ],
       ),
       body: userProfileAsync.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
+        loading: () => const Center(child: BubbleLoader()),
         error: (e, _) => Center(child: Text('Error: $e')),
         data: (userProfile) {
           if (userProfile == null) {

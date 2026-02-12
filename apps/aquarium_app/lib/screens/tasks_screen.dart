@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../widgets/core/bubble_loader.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
@@ -27,7 +28,7 @@ class TasksScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(title: const Text('Tasks')),
       body: tasksAsync.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
+        loading: () => const Center(child: BubbleLoader()),
         error: (err, _) => ErrorState(
           message: 'Failed to load tasks',
           onRetry: () => ref.invalidate(tasksProvider(tankId)),

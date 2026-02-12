@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'dart:math' as math;
 import '../theme/app_theme.dart';
 
@@ -189,7 +190,10 @@ class _MainFAB extends StatelessWidget {
       button: true,
       label: isOpen ? 'Close quick actions menu' : 'Open quick actions menu',
       child: GestureDetector(
-        onTap: onPressed,
+        onTap: () {
+          HapticFeedback.mediumImpact();
+          onPressed();
+        },
         child: AnimatedBuilder(
           animation: animation,
           builder: (context, child) {
@@ -229,71 +233,127 @@ class _MainFAB extends StatelessWidget {
   }
 }
 
-class _ActionButton extends StatelessWidget {
+class _ActionButton extends StatefulWidget {
   final SpeedDialAction action;
   final VoidCallback onPressed;
 
   const _ActionButton({required this.action, required this.onPressed});
 
   @override
+  State<_ActionButton> createState() => _ActionButtonState();
+}
+
+class _ActionButtonState extends State<_ActionButton>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _scaleController;
+  late Animation<double> _scaleAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _scaleController = AnimationController(
+      duration: const Duration(milliseconds: 150),
+      vsync: this,
+    );
+    _scaleAnimation = Tween<double>(begin: 1.0, end: 0.95).animate(
+      CurvedAnimation(parent: _scaleController, curve: Curves.easeOutCubic),
+    );
+  }
+
+  @override
+  void dispose() {
+    _scaleController.dispose();
+    super.dispose();
+  }
+
+  void _handleTapDown(TapDownDetails details) {
+    _scaleController.forward();
+  }
+
+  void _handleTapUp(TapUpDetails details) {
+    _scaleController.reverse();
+  }
+
+  void _handleTapCancel() {
+    _scaleController.reverse();
+  }
+
+  void _handleTap() {
+    HapticFeedback.lightImpact();
+    widget.onPressed();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Semantics(
       button: true,
-      label: action.label,
+      label: widget.action.label,
       child: GestureDetector(
-        onTap: onPressed,
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            // Label
-            ExcludeSemantics(
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        onTapDown: _handleTapDown,
+        onTapUp: _handleTapUp,
+        onTapCancel: _handleTapCancel,
+        onTap: _handleTap,
+        child: AnimatedBuilder(
+          animation: _scaleAnimation,
+          builder: (context, child) {
+            return Transform.scale(
+              scale: _scaleAnimation.value,
+              child: child,
+            );
+          },
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Label
+              ExcludeSemantics(
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: AppRadius.mediumRadius,
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppOverlays.black15,
+                        blurRadius: 8,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: Text(
+                    widget.action.label,
+                    style: const TextStyle(
+                      color: AppColors.textPrimary,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(width: AppSpacing.sm),
+              // Icon button - 48x48 for accessibility
+              Container(
+                width: 48,
+                height: 48,
                 decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: AppRadius.mediumRadius,
+                  shape: BoxShape.circle,
+                  color: widget.action.backgroundColor ?? Colors.white,
                   boxShadow: [
                     BoxShadow(
-                      color: AppOverlays.black15,
+                      color: (widget.action.backgroundColor ?? AppColors.primary)
+                          .withOpacity(0.3),
                       blurRadius: 8,
                       offset: const Offset(0, 2),
                     ),
                   ],
                 ),
-                child: Text(
-                  action.label,
-                  style: const TextStyle(
-                    color: AppColors.textPrimary,
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600,
-                  ),
+                child: Icon(
+                  widget.action.icon,
+                  color: widget.action.foregroundColor ?? AppColors.primary,
+                  size: 24,
                 ),
               ),
-            ),
-            const SizedBox(width: AppSpacing.sm),
-            // Icon button - 48x48 for accessibility
-            Container(
-              width: 48,
-              height: 48,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: action.backgroundColor ?? Colors.white,
-                boxShadow: [
-                  BoxShadow(
-                    color: (action.backgroundColor ?? AppColors.primary)
-                        .withOpacity(0.3),
-                    blurRadius: 8,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
-              ),
-              child: Icon(
-                action.icon,
-                color: action.foregroundColor ?? AppColors.primary,
-                size: 24,
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

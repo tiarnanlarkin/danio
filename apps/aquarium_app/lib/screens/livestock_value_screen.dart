@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../widgets/core/bubble_loader.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/models.dart';
@@ -56,7 +57,7 @@ class _LivestockValueScreenState extends ConsumerState<LivestockValueScreen> {
         ],
       ),
       body: livestockAsync.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
+        loading: () => const Center(child: BubbleLoader()),
         error: (e, _) => Center(child: Text('Error: $e')),
         data: (livestock) {
           if (livestock.isEmpty) {

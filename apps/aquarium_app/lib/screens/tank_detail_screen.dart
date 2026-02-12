@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:intl/intl.dart';
 import 'package:collection/collection.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:uuid/uuid.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 import '../models/models.dart';
 import '../widgets/core/app_card.dart';
+import '../widgets/core/bubble_loader.dart';
 import '../providers/storage_provider.dart';
 import '../providers/tank_provider.dart';
 import '../services/stocking_calculator.dart';
@@ -148,7 +151,7 @@ class TankDetailScreen extends ConsumerWidget {
 
     return tankAsync.when(
       loading: () =>
-          const Scaffold(body: Center(child: CircularProgressIndicator())),
+          const Scaffold(body: Center(child: BubbleLoader.large(message: 'Loading tank...'))),
       error: (err, stack) => Scaffold(
         appBar: AppBar(title: const Text('Error')),
         body: Center(child: Text('Failed to load tank: $err')),
@@ -498,7 +501,7 @@ class TankDetailScreen extends ConsumerWidget {
               SliverToBoxAdapter(
                 child: tasksAsync.when(
                   loading: () =>
-                      const Center(child: CircularProgressIndicator()),
+                      const Center(child: BubbleLoader()),
                   error: (_, __) => const SizedBox.shrink(),
                   data: (tasks) => _TaskPreview(
                     tasks: tasks.take(3).toList(),
@@ -525,7 +528,7 @@ class TankDetailScreen extends ConsumerWidget {
               SliverToBoxAdapter(
                 child: logsRecentAsync.when(
                   loading: () =>
-                      const Center(child: CircularProgressIndicator()),
+                      const Center(child: BubbleLoader()),
                   error: (_, __) => const SizedBox.shrink(),
                   data: (logs) => _LogsList(
                     logs: logs.take(5).toList(),
@@ -566,7 +569,7 @@ class TankDetailScreen extends ConsumerWidget {
               SliverToBoxAdapter(
                 child: livestockAsync.when(
                   loading: () =>
-                      const Center(child: CircularProgressIndicator()),
+                      const Center(child: BubbleLoader()),
                   error: (_, __) => const SizedBox.shrink(),
                   data: (livestock) => _LivestockPreview(livestock: livestock),
                 ),
@@ -606,7 +609,7 @@ class TankDetailScreen extends ConsumerWidget {
               SliverToBoxAdapter(
                 child: equipmentAsync.when(
                   loading: () =>
-                      const Center(child: CircularProgressIndicator()),
+                      const Center(child: BubbleLoader()),
                   error: (_, __) => const SizedBox.shrink(),
                   data: (equipment) => _EquipmentPreview(equipment: equipment),
                 ),
@@ -855,9 +858,16 @@ class _TaskPreview extends StatelessWidget {
         padding: AppCardPadding.none,
         child: Column(
           children: tasks
+              .asMap()
+              .entries
               .map(
-                (task) =>
-                    _TaskTile(task: task, onComplete: () => onComplete(task)),
+                (entry) => _TaskTile(
+                  task: entry.value,
+                  onComplete: () => onComplete(entry.value),
+                )
+                    .animate()
+                    .fadeIn(delay: (50 * entry.key).ms, duration: 300.ms)
+                    .slideX(begin: 0.1, end: 0, delay: (50 * entry.key).ms, duration: 300.ms),
               )
               .toList(),
         ),
@@ -938,7 +948,14 @@ class _LogsList extends StatelessWidget {
         padding: AppCardPadding.none,
         child: Column(
           children: logs
-              .map((log) => _LogTile(log: log, onTap: onTap))
+              .asMap()
+              .entries
+              .map(
+                (entry) => _LogTile(log: entry.value, onTap: onTap)
+                    .animate()
+                    .fadeIn(delay: (50 * entry.key).ms, duration: 300.ms)
+                    .slideX(begin: 0.1, end: 0, delay: (50 * entry.key).ms, duration: 300.ms),
+              )
               .toList(),
         ),
       ),
@@ -1207,11 +1224,7 @@ class _DashboardLoadingCard extends StatelessWidget {
           children: [
             Text(title, style: AppTypography.headlineSmall),
             const Spacer(),
-            const SizedBox(
-              width: 18,
-              height: 18,
-              child: CircularProgressIndicator(strokeWidth: 2),
-            ),
+            const BubbleLoader.small(),
           ],
         ),
       ),

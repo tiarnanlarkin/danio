@@ -1,4 +1,5 @@
 import 'package:aquarium_app/theme/app_theme.dart';
+import '../widgets/core/bubble_loader.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/leaderboard.dart';
@@ -39,7 +40,7 @@ class LeaderboardScreen extends ConsumerWidget {
         );
       },
       loading: () =>
-          const Scaffold(body: Center(child: CircularProgressIndicator())),
+          const Scaffold(body: Center(child: BubbleLoader())),
       error: (error, stack) =>
           Scaffold(body: Center(child: Text('Error: $error'))),
     );

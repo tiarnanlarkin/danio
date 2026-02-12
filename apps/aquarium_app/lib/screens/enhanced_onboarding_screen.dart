@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/tank.dart';
 import '../models/user_profile.dart';
 import '../providers/user_profile_provider.dart';
+import '../services/celebration_service.dart';
 import '../theme/app_theme.dart';
 import '../utils/app_feedback.dart';
 import 'home_screen.dart';
@@ -66,9 +67,20 @@ class _EnhancedOnboardingScreenState
           );
 
       if (mounted) {
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (_) => const HomeScreen()),
+        // 🎉 Celebrate onboarding completion!
+        ref.read(celebrationProvider.notifier).milestone(
+          'Welcome Aboard! 🐠',
+          subtitle: 'Your aquarium journey begins now!',
         );
+        
+        // Navigate after a brief moment for the celebration to show
+        Future.delayed(const Duration(milliseconds: 500), () {
+          if (mounted) {
+            Navigator.of(context).pushReplacement(
+              MaterialPageRoute(builder: (_) => const HomeScreen()),
+            );
+          }
+        });
       }
     } catch (e) {
       if (mounted) {

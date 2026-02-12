@@ -7,10 +7,13 @@ import '../providers/user_profile_provider.dart';
 import '../providers/inventory_provider.dart';
 import '../providers/achievement_provider.dart';
 import '../services/achievement_service.dart';
+import '../services/xp_animation_service.dart';
+import '../models/learning.dart';
 import '../theme/app_theme.dart';
 import '../utils/app_feedback.dart';
 import '../utils/haptic_feedback.dart';
 import '../utils/accessibility_utils.dart';
+import '../widgets/core/app_button.dart';
 
 class CreateTankScreen extends ConsumerStatefulWidget {
   const CreateTankScreen({super.key});
@@ -124,49 +127,33 @@ class _CreateTankScreenState extends ConsumerState<CreateTankScreen> {
                 child: Row(
                   children: [
                     if (_currentPage > 0)
-                      Semantics(
-                        label: A11yLabels.button('Go back to previous step'),
-                        button: true,
-                        child: OutlinedButton(
-                          onPressed: _previousPage,
-                          child: const Text('Back'),
-                        ),
+                      AppButton(
+                        label: 'Back',
+                        onPressed: _previousPage,
+                        variant: AppButtonVariant.secondary,
+                        semanticsLabel: A11yLabels.button('Go back to previous step'),
                       ),
                     const Spacer(),
                     if (_currentPage < 2)
-                      Semantics(
-                        label: A11yLabels.button('Continue to next step'),
-                        button: true,
-                        enabled: _canProceed(),
-                        child: ElevatedButton(
-                          onPressed: _canProceed() ? _nextPage : null,
-                          child: const Text('Next'),
-                        ),
+                      AppButton(
+                        label: 'Next',
+                        onPressed: _canProceed() ? _nextPage : null,
+                        variant: AppButtonVariant.primary,
+                        trailingIcon: Icons.arrow_forward,
+                        semanticsLabel: A11yLabels.button('Continue to next step'),
                       )
                     else
-                      Semantics(
-                        label: A11yLabels.button(
+                      AppButton(
+                        label: 'Create Tank',
+                        onPressed: _canProceed() && !_isCreating
+                            ? _createTank
+                            : null,
+                        variant: AppButtonVariant.primary,
+                        isLoading: _isCreating,
+                        leadingIcon: Icons.add,
+                        semanticsLabel: A11yLabels.button(
                           'Create tank',
                           _name.isNotEmpty ? _name : null,
-                        ),
-                        button: true,
-                        enabled: _canProceed() && !_isCreating,
-                        child: ElevatedButton(
-                          onPressed: _canProceed() && !_isCreating
-                              ? _createTank
-                              : null,
-                          child: _isCreating
-                              ? const SizedBox(
-                                  width: 20,
-                                  height: 20,
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 2,
-                                    valueColor: AlwaysStoppedAnimation(
-                                      Colors.white,
-                                    ),
-                                  ),
-                                )
-                              : const Text('Create Tank'),
                         ),
                       ),
                   ],
@@ -233,9 +220,15 @@ class _CreateTankScreenState extends ConsumerState<CreateTankScreen> {
 
       // Award XP for creating a new tank (with boost if active)
       final isBoostActive = ref.read(xpBoostActiveProvider);
+      final effectiveXp = isBoostActive ? XpRewards.createTank * 2 : XpRewards.createTank;
       await ref
           .read(userProfileProvider.notifier)
           .recordActivity(xp: XpRewards.createTank, xpBoostActive: isBoostActive);
+
+      // Show XP animation
+      if (mounted) {
+        ref.showXpAnimation(effectiveXp);
+      }
 
       // Check for achievements after tank creation
       final profile = ref.read(userProfileProvider).value;

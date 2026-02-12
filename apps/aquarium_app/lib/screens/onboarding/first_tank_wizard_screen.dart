@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../models/models.dart';
 import '../../providers/tank_provider.dart';
+import '../../services/celebration_service.dart';
 import '../../theme/app_theme.dart';
 import '../home_screen.dart';
 
@@ -83,10 +84,21 @@ class _FirstTankWizardScreenState extends ConsumerState<FirstTankWizardScreen> {
         );
 
     if (mounted) {
-      Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (_) => const HomeScreen()),
-        (route) => false,
+      // 🎉 Celebrate first tank creation!
+      ref.read(celebrationProvider.notifier).milestone(
+        'Tank Created! 🐠',
+        subtitle: 'Welcome to your aquarium journey!',
       );
+      
+      // Navigate after celebration starts
+      Future.delayed(const Duration(milliseconds: 500), () {
+        if (mounted) {
+          Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(builder: (_) => const HomeScreen()),
+            (route) => false,
+          );
+        }
+      });
     }
   }
 

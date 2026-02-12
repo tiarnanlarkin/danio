@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../theme/app_theme.dart';
+import 'bubble_loader.dart';
 
 /// Empty state variants for different contexts
 enum EmptyStateVariant {
@@ -311,15 +312,21 @@ class AppLoadingState extends StatelessWidget {
     
     switch (variant) {
       case LoadingIndicatorVariant.circular:
-        indicator = SizedBox(
-          width: compact ? 24 : 40,
-          height: compact ? 24 : 40,
-          child: CircularProgressIndicator(
-            value: progress,
-            strokeWidth: compact ? 2 : 3,
-            valueColor: AlwaysStoppedAnimation(AppColors.primary),
-          ),
-        );
+        // Use themed bubble loader instead of standard spinner
+        indicator = progress != null
+            ? SizedBox(
+                width: compact ? 24 : 40,
+                height: compact ? 24 : 40,
+                child: CircularProgressIndicator(
+                  value: progress,
+                  strokeWidth: compact ? 2 : 3,
+                  valueColor: AlwaysStoppedAnimation(AppColors.primary),
+                ),
+              )
+            : BubbleLoader(
+                size: compact ? 32 : 60,
+                bubbleCount: compact ? 3 : 5,
+              );
         break;
         
       case LoadingIndicatorVariant.linear:
