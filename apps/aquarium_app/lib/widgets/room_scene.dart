@@ -483,10 +483,11 @@ class _CircularTempGauge extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    'Celsius',
+                    '°C',
                     style: TextStyle(
                       color: theme.textSecondary,
-                      fontSize: size * 0.1,
+                      fontSize: size * 0.14,
+                      fontWeight: FontWeight.w500,
                     ),
                   ),
                 ],
@@ -576,6 +577,33 @@ class _WaterQualityCard extends StatelessWidget {
     this.nitrate,
   });
 
+  // Status colors for water parameters
+  static const Color _safe = Color(0xFF4CAF50);    // Green
+  static const Color _warning = Color(0xFFFFA726); // Orange
+  static const Color _danger = Color(0xFFEF5350);  // Red
+  static const Color _unknown = Color(0xFF9E9E9E); // Gray
+
+  Color _getPhColor(double? value) {
+    if (value == null) return _unknown;
+    if (value >= 6.5 && value <= 7.8) return _safe;
+    if (value >= 6.0 && value <= 8.2) return _warning;
+    return _danger;
+  }
+
+  Color _getAmmoniaColor(double? value) {
+    if (value == null) return _unknown;
+    if (value <= 0.25) return _safe;
+    if (value <= 0.5) return _warning;
+    return _danger;
+  }
+
+  Color _getNitrateColor(double? value) {
+    if (value == null) return _unknown;
+    if (value <= 20) return _safe;
+    if (value <= 40) return _warning;
+    return _danger;
+  }
+
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
@@ -607,7 +635,7 @@ class _WaterQualityCard extends StatelessWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: 14),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
@@ -616,29 +644,31 @@ class _WaterQualityCard extends StatelessWidget {
                       value: ph ?? 7.0,
                       maxValue: 14,
                       label: 'pH',
-                      color: theme.gaugeColor2,
+                      color: _getPhColor(ph),
                       theme: theme,
-                      size: 40,
+                      size: 42,
                     ),
                   ),
+                  const SizedBox(width: 8),
                   Flexible(
                     child: _MiniPieChart(
                       value: ammonia ?? 0,
                       maxValue: 4,
                       label: 'NH₃',
-                      color: theme.gaugeColor3,
+                      color: _getAmmoniaColor(ammonia),
                       theme: theme,
-                      size: 40,
+                      size: 42,
                     ),
                   ),
+                  const SizedBox(width: 8),
                   Flexible(
                     child: _MiniPieChart(
                       value: nitrate ?? 10,
                       maxValue: 80,
                       label: 'NO₃',
-                      color: theme.buttonFeed,
+                      color: _getNitrateColor(nitrate),
                       theme: theme,
-                      size: 40,
+                      size: 42,
                     ),
                   ),
                 ],
