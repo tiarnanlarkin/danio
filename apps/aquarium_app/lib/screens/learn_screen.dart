@@ -622,26 +622,70 @@ class _LearningPathCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final progress = totalLessons > 0 ? completedLessons / totalLessons : 0.0;
     final isComplete = completedLessons == totalLessons && totalLessons > 0;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    return Card(
-      margin: EdgeInsets.zero,
+    return Container(
+      decoration: BoxDecoration(
+        color: isDark ? const Color(0xFF1E2030) : Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(isDark ? 0.3 : 0.05),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
+          ),
+          if (isComplete)
+            BoxShadow(
+              color: AppColors.success.withOpacity(isDark ? 0.2 : 0.1),
+              blurRadius: 16,
+              offset: const Offset(0, 6),
+            ),
+        ],
+      ),
       child: Theme(
         data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
         child: ExpansionTile(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          collapsedShape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
           leading: Container(
-            width: 48,
-            height: 48,
+            width: 52,
+            height: 52,
             decoration: BoxDecoration(
-              color: isComplete
-                  ? AppOverlays.success20
-                  : AppOverlays.primary10,
-              borderRadius: AppRadius.mediumRadius,
+              gradient: isComplete
+                  ? LinearGradient(
+                      colors: [
+                        AppColors.success.withOpacity(0.2),
+                        AppColors.success.withOpacity(0.1),
+                      ],
+                    )
+                  : LinearGradient(
+                      colors: [
+                        AppColors.primary.withOpacity(0.15),
+                        AppColors.primary.withOpacity(0.08),
+                      ],
+                    ),
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(
+                color: isComplete
+                    ? AppColors.success.withOpacity(0.3)
+                    : AppColors.primary.withOpacity(0.15),
+                width: 1,
+              ),
             ),
             child: Center(
-              child: Text(path.emoji, style: const TextStyle(fontSize: 24)),
+              child: Text(path.emoji, style: const TextStyle(fontSize: 26)),
             ),
           ),
-          title: Text(path.title, style: AppTypography.labelLarge),
+          title: Text(
+            path.title,
+            style: AppTypography.labelLarge.copyWith(
+              fontWeight: FontWeight.w600,
+            ),
+          ),
           subtitle: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -658,23 +702,55 @@ class _LearningPathCard extends StatelessWidget {
               Row(
                 children: [
                   Expanded(
-                    child: ClipRRect(
-                      borderRadius: AppRadius.xsRadius,
-                      child: LinearProgressIndicator(
-                        value: progress,
-                        backgroundColor: AppColors.surfaceVariant,
-                        valueColor: AlwaysStoppedAnimation<Color>(
-                          isComplete ? AppColors.success : AppColors.primary,
+                    child: Container(
+                      height: 8,
+                      decoration: BoxDecoration(
+                        color: isDark 
+                            ? Colors.white.withOpacity(0.1)
+                            : AppColors.surfaceVariant,
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                      child: FractionallySizedBox(
+                        alignment: Alignment.centerLeft,
+                        widthFactor: progress,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: isComplete
+                                  ? [AppColors.success, AppColors.success.withOpacity(0.8)]
+                                  : [AppColors.primary, AppColors.secondary],
+                            ),
+                            borderRadius: BorderRadius.circular(4),
+                            boxShadow: progress > 0
+                                ? [
+                                    BoxShadow(
+                                      color: (isComplete ? AppColors.success : AppColors.primary)
+                                          .withOpacity(0.4),
+                                      blurRadius: 4,
+                                      offset: const Offset(0, 1),
+                                    ),
+                                  ]
+                                : null,
+                          ),
                         ),
-                        minHeight: 6,
                       ),
                     ),
                   ),
                   const SizedBox(width: 12),
-                  Text(
-                    '$completedLessons/$totalLessons',
-                    style: AppTypography.bodySmall.copyWith(
-                      color: AppColors.textSecondary,
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                    decoration: BoxDecoration(
+                      color: isDark
+                          ? Colors.white.withOpacity(0.1)
+                          : AppColors.surfaceVariant,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Text(
+                      '$completedLessons/$totalLessons',
+                      style: AppTypography.labelSmall.copyWith(
+                        color: isDark ? AppColors.textSecondaryDark : AppColors.textSecondary,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ),
                 ],
