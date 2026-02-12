@@ -184,50 +184,62 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
             // Tank switcher - clean card between tank and graph
             if (!_isSelectMode)
-              Positioned(
-                bottom: 160, // Above gamification dashboard
-                left: 16,
-                right: 80, // Leave room for speed dial
-                child: _TankSwitcher(
-                  tanks: tanks,
-                  currentIndex: _currentTankIndex,
-                  onChanged: (index) {
-                    setState(() => _currentTankIndex = index);
-                  },
-                  onAddTank: () => _navigateToCreateTank(context),
-                  onLongPress: tanks.length > 1 ? _toggleSelectMode : null,
-                ),
+              Builder(
+                builder: (context) {
+                  final bottomPadding = MediaQuery.of(context).padding.bottom;
+                  return Positioned(
+                    bottom: 180 + bottomPadding, // Above gamification dashboard with FAB clearance
+                    left: 16,
+                    right: 88, // Leave room for speed dial FAB
+                    child: _TankSwitcher(
+                      tanks: tanks,
+                      currentIndex: _currentTankIndex,
+                      onChanged: (index) {
+                        setState(() => _currentTankIndex = index);
+                      },
+                      onAddTank: () => _navigateToCreateTank(context),
+                      onLongPress: tanks.length > 1 ? _toggleSelectMode : null,
+                    ),
+                  );
+                },
               ),
 
             // Selection mode UI
             if (_isSelectMode)
-              Positioned(
-                bottom: 160,
-                left: 16,
-                right: 16,
-                child: _SelectionModePanel(
-                  tanks: tanks,
-                  selectedIds: _selectedTankIds,
-                  onToggleSelection: _toggleTankSelection,
-                  onCancel: _toggleSelectMode,
-                  onDeleteSelected: () => _bulkDelete(context, tanks),
-                  onExportSelected: () => _bulkExport(context, tanks),
-                ),
+              Builder(
+                builder: (context) {
+                  final bottomPadding = MediaQuery.of(context).padding.bottom;
+                  return Positioned(
+                    bottom: 180 + bottomPadding, // Above gamification dashboard
+                    left: 16,
+                    right: 16,
+                    child: _SelectionModePanel(
+                      tanks: tanks,
+                      selectedIds: _selectedTankIds,
+                      onToggleSelection: _toggleTankSelection,
+                      onCancel: _toggleSelectMode,
+                      onDeleteSelected: () => _bulkDelete(context, tanks),
+                      onExportSelected: () => _bulkExport(context, tanks),
+                    ),
+                  );
+                },
               ),
 
             // Gamification Dashboard - shows all stats at a glance
+            // Right margin avoids overlap with FAB
             Positioned(
-              bottom: 16,
+              bottom: 16 + MediaQuery.of(context).padding.bottom,
               left: 16,
-              right: 16,
+              right: 80, // Leave space for FAB
               child: GamificationDashboard(
                 onTap: () => _showStatsDetails(context),
               ),
             ),
 
             // Speed Dial FAB - radial menu for quick actions
+            // Positioned above the dashboard with safe area padding
             Positioned(
-              bottom: 150,
+              bottom: 170 + MediaQuery.of(context).padding.bottom,
               right: 16,
               child: SpeedDialFAB(
                 closedIcon: Icons.water_drop_rounded,
@@ -283,9 +295,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     // HomeScreen is the Living Room - it shows tank management only.
     // Navigation to other rooms (Learn, Workshop, Shop, etc.) is handled
     // by HouseNavigator's swipe/tab system, not a BottomNavigationBar here.
+    // Note: FAB is handled inside _buildLivingRoomScreen() Stack, not here
     return Scaffold(
       body: _buildLivingRoomScreen(),
-      floatingActionButton: _buildQuickAddFAB(),
     );
   }
 
