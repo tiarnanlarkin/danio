@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/models.dart';
 import '../providers/tank_provider.dart';
 import '../providers/room_theme_provider.dart';
 import '../providers/user_profile_provider.dart';
 import '../theme/app_theme.dart';
+import 'house_navigator.dart';
 import '../theme/room_themes.dart';
 import '../widgets/decorative_elements.dart';
 import '../widgets/hobby_items.dart';
@@ -367,27 +369,25 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             const SizedBox(height: 16),
             Text('Switch Room', style: AppTypography.headlineSmall),
             const SizedBox(height: 12),
-            ...rooms.map((room) => ListTile(
-              leading: Text(room.$3, style: const TextStyle(fontSize: 24)),
-              title: Text(room.$1),
-              trailing: room.$1 == 'Living Room' 
-                  ? const Icon(Icons.check, color: AppColors.primary)
-                  : null,
-              onTap: () {
-                Navigator.pop(ctx);
-                // Navigate via HouseNavigator's PageController
-                final navigator = context.findAncestorStateOfType<State>();
-                if (navigator != null) {
-                  // For now, show a snackbar - full navigation requires PageController access
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text('Swipe to navigate to ${room.$1}'),
-                      duration: const Duration(seconds: 2),
-                    ),
-                  );
-                }
-              },
-            )),
+            ...rooms.map((room) {
+              final currentRoom = ref.watch(currentRoomProvider);
+              final isSelected = room.$4 == currentRoom;
+              return ListTile(
+                leading: Text(room.$3, style: const TextStyle(fontSize: 24)),
+                title: Text(room.$1),
+                trailing: isSelected
+                    ? const Icon(Icons.check, color: AppColors.primary)
+                    : null,
+                onTap: () {
+                  Navigator.pop(ctx);
+                  if (!isSelected) {
+                    // Navigate to selected room
+                    ref.read(currentRoomProvider.notifier).state = room.$4;
+                    HapticFeedback.selectionClick();
+                  }
+                },
+              );
+            }),
             SizedBox(height: MediaQuery.of(context).padding.bottom + 8),
           ],
         ),

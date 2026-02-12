@@ -88,6 +88,12 @@ class _HouseNavigatorState extends ConsumerState<HouseNavigator> {
     // Check if tutorial should be shown after first frame
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _checkAndShowTutorial();
+      // Listen to room provider changes and sync PageController
+      ref.listenManual(currentRoomProvider, (previous, next) {
+        if (_pageController.hasClients && _pageController.page?.round() != next) {
+          _goToRoom(next);
+        }
+      });
     });
   }
 
@@ -208,6 +214,46 @@ class _HouseNavigatorState extends ConsumerState<HouseNavigator> {
                 mainAxisSize: MainAxisSize.min,
                 children: const [OfflineIndicator(), SyncIndicator()],
               ),
+            ),
+          ),
+
+          // === Swipe Zones for Room Navigation ===
+          // These wider zones allow horizontal swipes to navigate between rooms
+          // They're positioned to avoid the Android back gesture zones (< 24px from edge)
+          // Left side - swipe right to go to previous room
+          Positioned(
+            left: 24, // Start after Android's back gesture zone
+            top: 120,
+            bottom: 200,
+            width: 60,
+            child: GestureDetector(
+              behavior: HitTestBehavior.translucent,
+              onHorizontalDragEnd: (details) {
+                if (details.primaryVelocity != null && details.primaryVelocity! > 400) {
+                  // Swipe right - go to previous room
+                  if (currentRoom > 0) {
+                    _goToRoom(currentRoom - 1);
+                  }
+                }
+              },
+            ),
+          ),
+          // Right side - swipe left to go to next room
+          Positioned(
+            right: 24, // End before Android's back gesture zone
+            top: 120,
+            bottom: 200,
+            width: 60,
+            child: GestureDetector(
+              behavior: HitTestBehavior.translucent,
+              onHorizontalDragEnd: (details) {
+                if (details.primaryVelocity != null && details.primaryVelocity! < -400) {
+                  // Swipe left - go to next room
+                  if (currentRoom < _rooms.length - 1) {
+                    _goToRoom(currentRoom + 1);
+                  }
+                }
+              },
             ),
           ),
 
