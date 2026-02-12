@@ -18,6 +18,8 @@ import '../theme/app_theme.dart';
 import '../utils/app_feedback.dart';
 import '../utils/skeleton_placeholders.dart';
 import '../widgets/core/app_card.dart';
+import '../widgets/empty_state.dart';
+import '../widgets/error_state.dart';
 
 const _uuid = Uuid();
 
@@ -119,29 +121,24 @@ class EquipmentScreen extends ConsumerWidget {
       appBar: AppBar(title: const Text('Equipment')),
       body: equipmentAsync.when(
         loading: () => _buildSkeletonList(),
-        error: (err, _) => Center(child: Text('Error: $err')),
+        error: (err, _) => ErrorState(
+          message: 'Failed to load equipment',
+          details: 'Please check your connection and try again.',
+          onRetry: () => ref.invalidate(equipmentProvider(tankId)),
+        ),
         data: (equipment) {
           if (equipment.isEmpty) {
-            return Center(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(Icons.settings, size: 64, color: AppColors.textHint),
-                  const SizedBox(height: AppSpacing.md),
-                  Text('No equipment yet', style: AppTypography.headlineSmall),
-                  const SizedBox(height: AppSpacing.sm),
-                  Text(
-                    'Add filters, heaters, lights...',
-                    style: AppTypography.bodyMedium,
-                  ),
-                  const SizedBox(height: AppSpacing.lg),
-                  ElevatedButton.icon(
-                    onPressed: () => _showAddDialog(context, ref),
-                    icon: const Icon(Icons.add),
-                    label: const Text('Add Equipment'),
-                  ),
-                ],
-              ),
+            return EmptyState(
+              icon: Icons.settings,
+              title: 'No equipment yet',
+              message: 'Add your filters, heaters, lights, and other gear to track maintenance schedules',
+              actionLabel: 'Add Equipment',
+              onAction: () => _showAddDialog(context, ref),
+              tips: const [
+                'Track filter maintenance to keep water clean',
+                'Set reminders for heater checks',
+                'Monitor light schedules for plant health',
+              ],
             );
           }
 

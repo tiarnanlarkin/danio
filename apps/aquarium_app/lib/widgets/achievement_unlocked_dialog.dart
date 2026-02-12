@@ -416,16 +416,7 @@ class _AchievementUnlockedDialogState extends State<AchievementUnlockedDialog>
 
   /// Get rarity color
   Color _getRarityColor(AchievementRarity rarity) {
-    switch (rarity) {
-      case AchievementRarity.bronze:
-        return const Color(0xFFCD7F32); // Bronze
-      case AchievementRarity.silver:
-        return const Color(0xFFC0C0C0); // Silver
-      case AchievementRarity.gold:
-        return const Color(0xFFFFD700); // Gold
-      case AchievementRarity.platinum:
-        return const Color(0xFFB9F2FF); // Platinum (lighter blue-white)
-    }
+    return AppAchievementColors.forTier(rarity.name);
   }
 
   /// Get gem reward based on rarity

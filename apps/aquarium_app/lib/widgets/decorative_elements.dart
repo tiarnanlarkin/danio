@@ -245,7 +245,7 @@ class TabletCard extends StatelessWidget {
               (isDark ? const Color(0xFF243447) : const Color(0xFFF0F4F8)),
           borderRadius: AppRadius.mediumRadius,
         ),
-        padding: padding ?? const EdgeInsets.all(16),
+        padding: padding ?? EdgeInsets.all(AppSpacing.md),
         child: child,
       ),
     );

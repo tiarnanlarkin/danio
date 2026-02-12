@@ -55,8 +55,8 @@ class AchievementProgressNotifier
       debugPrint('Error loading achievement progress: $e');
       debugPrint('Stack trace: $st');
       state = {};
-      // Rethrow to surface the error
-      rethrow;
+      // Don't rethrow - gracefully recover with empty state
+      // This prevents app crash on startup if preferences are corrupted
     }
   }
 

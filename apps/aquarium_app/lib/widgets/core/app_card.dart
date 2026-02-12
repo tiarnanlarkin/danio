@@ -264,10 +264,10 @@ class _AppCardState extends State<AppCard> with SingleTickerProviderStateMixin {
         
       case AppCardVariant.glass:
         return BoxDecoration(
-          color: (widget.backgroundColor ?? (isDark ? Colors.white : Colors.black)).withOpacity(0.1),
+          color: isDark ? AppOverlays.white10 : AppOverlays.black10,
           borderRadius: radius,
           border: Border.all(
-            color: (isDark ? Colors.white : Colors.black).withOpacity(0.1),
+            color: isDark ? AppOverlays.white10 : AppOverlays.black10,
             width: 1,
           ),
         );

@@ -909,27 +909,42 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
           .read(userProfileProvider.notifier)
           .completeLesson(widget.lesson.id, totalXp);
 
-      // Auto-seed spaced repetition cards from lesson content
-      await ref
-          .read(spacedRepetitionProvider.notifier)
-          .autoSeedFromLesson(
-            lessonId: widget.lesson.id,
-            lessonSections: widget.lesson.sections,
-            quizQuestions: widget.lesson.quiz?.questions,
+      // Auto-seed spaced repetition cards from lesson content (non-critical)
+      try {
+        await ref
+            .read(spacedRepetitionProvider.notifier)
+            .autoSeedFromLesson(
+              lessonId: widget.lesson.id,
+              lessonSections: widget.lesson.sections,
+              quizQuestions: widget.lesson.quiz?.questions,
+            );
+      } catch (e) {
+        // Don't fail lesson completion if card seeding fails
+        debugPrint('Spaced repetition seeding failed: $e');
+      }
+
+      // Record activity for streak (non-critical)
+      try {
+        await ref.read(userProfileProvider.notifier).recordActivity();
+      } catch (e) {
+        // Don't fail lesson completion if activity recording fails
+        debugPrint('Activity recording failed: $e');
+      }
+
+      // Schedule review notifications for newly created cards (non-critical)
+      try {
+        final srState = ref.read(spacedRepetitionProvider);
+        final dueCount = srState.stats.dueCards;
+        if (dueCount > 0) {
+          final notificationService = NotificationService();
+          await notificationService.scheduleReviewReminder(
+            dueCardsCount: dueCount,
+            time: const TimeOfDay(hour: 9, minute: 0), // Default 9 AM
           );
-
-      // Record activity for streak
-      await ref.read(userProfileProvider.notifier).recordActivity();
-
-      // Schedule review notifications for newly created cards
-      final srState = ref.read(spacedRepetitionProvider);
-      final dueCount = srState.stats.dueCards;
-      if (dueCount > 0) {
-        final notificationService = NotificationService();
-        await notificationService.scheduleReviewReminder(
-          dueCardsCount: dueCount,
-          time: const TimeOfDay(hour: 9, minute: 0), // Default 9 AM
-        );
+        }
+      } catch (e) {
+        // Don't fail lesson completion if notification scheduling fails
+        debugPrint('Notification scheduling failed: $e');
       }
 
       // Check for achievements using the full achievement checker
@@ -978,7 +993,9 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
         // Navigation happens in onComplete callback after all animations
         _showXpAnimation(totalXp);
       }
-    } catch (e) {
+    } catch (e, st) {
+      debugPrint('Lesson completion error: $e');
+      debugPrint('Stack trace: $st');
       if (mounted) {
         AppFeedback.showError(
           context,

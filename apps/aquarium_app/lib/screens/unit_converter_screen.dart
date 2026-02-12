@@ -54,6 +54,12 @@ class _VolumeConverterState extends State<_VolumeConverter> {
   String _fromUnit = 'L';
   double? _value;
 
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
   final _units = {
     'L': 1.0,
     'US gal': 3.78541,
@@ -123,6 +129,12 @@ class _TemperatureConverterState extends State<_TemperatureConverter> {
   final _controller = TextEditingController();
   String _fromUnit = '°C';
   double? _value;
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -217,6 +229,12 @@ class _LengthConverterState extends State<_LengthConverter> {
   String _fromUnit = 'cm';
   double? _value;
 
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
   final _units = {'cm': 1.0, 'mm': 0.1, 'in': 2.54, 'ft': 30.48, 'm': 100.0};
 
   @override
@@ -279,6 +297,12 @@ class _HardnessConverterState extends State<_HardnessConverter> {
   final _controller = TextEditingController();
   String _fromUnit = 'dGH';
   double? _value;
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   // All relative to dGH
   final _units = {

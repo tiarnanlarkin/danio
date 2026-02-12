@@ -6,6 +6,7 @@ import '../models/models.dart';
 import '../providers/storage_provider.dart';
 import '../providers/tank_provider.dart';
 import '../theme/app_theme.dart';
+import '../widgets/error_state.dart';
 
 class JournalScreen extends ConsumerWidget {
   final String tankId;
@@ -29,7 +30,11 @@ class JournalScreen extends ConsumerWidget {
       ),
       body: logsAsync.when(
         loading: () => const Center(child: BubbleLoader()),
-        error: (e, _) => Center(child: Text('Error: $e')),
+        error: (e, _) => ErrorState(
+          message: 'Failed to load journal',
+          details: 'Please check your connection and try again.',
+          onRetry: () => ref.invalidate(allLogsProvider(tankId)),
+        ),
         data: (logs) {
           // Get observation logs as journal entries
           final journalEntries =

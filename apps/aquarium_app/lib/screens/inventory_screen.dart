@@ -7,6 +7,7 @@ import '../data/shop_catalog.dart';
 import '../providers/inventory_provider.dart';
 import '../providers/hearts_provider.dart';
 import '../widgets/empty_state.dart';
+import '../widgets/error_state.dart';
 
 /// Inventory colors - warm treasure chest theme
 class InventoryColors {
@@ -110,11 +111,10 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen>
           loading: () => const Center(
             child: CircularProgressIndicator(color: InventoryColors.goldAccent),
           ),
-          error: (e, _) => Center(
-            child: Text(
-              'Error loading inventory: $e',
-              style: const TextStyle(color: InventoryColors.textSecondary),
-            ),
+          error: (e, _) => ErrorState(
+            message: 'Failed to load inventory',
+            details: 'Please check your connection and try again.',
+            onRetry: () => ref.invalidate(inventoryProvider),
           ),
           data: (inventory) {
             // Separate items by type

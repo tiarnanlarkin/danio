@@ -75,7 +75,7 @@ class SkillLevelIndicator extends StatelessWidget {
       children: [
         if (label != null)
           Padding(
-            padding: const EdgeInsets.only(bottom: 8),
+            padding: EdgeInsets.only(bottom: AppSpacing.sm),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -96,7 +96,7 @@ class SkillLevelIndicator extends StatelessWidget {
           child: LinearProgressIndicator(
             value: skillLevel,
             minHeight: 12,
-            backgroundColor: Colors.grey[300],
+            backgroundColor: AppColors.surfaceVariant,
             valueColor: AlwaysStoppedAnimation<Color>(color),
           ),
         ),
@@ -105,10 +105,10 @@ class SkillLevelIndicator extends StatelessWidget {
   }
 
   Color _getSkillColor() {
-    if (skillLevel < 0.3) return Colors.red;
-    if (skillLevel < 0.6) return Colors.orange;
-    if (skillLevel < 0.8) return Colors.blue;
-    return Colors.green;
+    if (skillLevel < 0.3) return AppColors.error;
+    if (skillLevel < 0.6) return AppColors.warning;
+    if (skillLevel < 0.8) return AppColors.info;
+    return AppColors.success;
   }
 }
 
@@ -128,7 +128,7 @@ class PerformanceTrendWidget extends StatelessWidget {
     final color = _getTrendColor();
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      padding: EdgeInsets.symmetric(horizontal: AppSpacing.sm + 2, vertical: AppSpacing.xs + 1),
       decoration: BoxDecoration(
         color: color.withOpacity(0.1),
         borderRadius: AppRadius.mediumRadius,
@@ -137,9 +137,9 @@ class PerformanceTrendWidget extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(trend.emoji, style: const TextStyle(fontSize: 14)),
+          Text(trend.emoji, style: TextStyle(fontSize: 14)),
           if (showLabel) ...[
-            const SizedBox(width: 6),
+            SizedBox(width: AppSpacing.sm - 2),
             Text(
               trend.displayName,
               style: TextStyle(
@@ -157,11 +157,11 @@ class PerformanceTrendWidget extends StatelessWidget {
   Color _getTrendColor() {
     switch (trend) {
       case PerformanceTrend.improving:
-        return Colors.green;
+        return AppColors.success;
       case PerformanceTrend.stable:
-        return Colors.blue;
+        return AppColors.info;
       case PerformanceTrend.declining:
-        return Colors.orange;
+        return AppColors.warning;
     }
   }
 }
@@ -234,7 +234,7 @@ class _SkillLevelUpAnimationState extends State<SkillLevelUpAnimation>
           child: Transform.scale(
             scale: _scaleAnimation.value,
             child: Container(
-              padding: const EdgeInsets.all(24),
+              padding: EdgeInsets.all(AppSpacing.lg),
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [Colors.amber.shade300, Colors.orange.shade400],
@@ -254,7 +254,7 @@ class _SkillLevelUpAnimationState extends State<SkillLevelUpAnimation>
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   const Text('🎉', style: TextStyle(fontSize: 48)),
-                  const SizedBox(height: 12),
+                  SizedBox(height: AppSpacing.md),
                   const Text(
                     'LEVEL UP!',
                     style: TextStyle(
@@ -295,11 +295,11 @@ class DifficultyChangeNotification extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isIncrease = newLevel.index > oldLevel.index;
-    final color = isIncrease ? Colors.green : Colors.orange;
+    final color = isIncrease ? AppColors.success : AppColors.warning;
     final icon = isIncrease ? Icons.arrow_upward : Icons.arrow_downward;
 
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
         color: color.withOpacity(0.1),
         borderRadius: AppRadius.mediumRadius,
@@ -307,8 +307,8 @@ class DifficultyChangeNotification extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Icon(icon, color: color, size: 32),
-          const SizedBox(width: 12),
+          Icon(icon, color: color, size: AppIconSizes.lg),
+          SizedBox(width: AppSpacing.md),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -333,7 +333,7 @@ class DifficultyChangeNotification extends StatelessWidget {
                 const SizedBox(height: AppSpacing.xs),
                 Text(
                   reason,
-                  style: TextStyle(fontSize: 14, color: Colors.grey[700]),
+                  style: AppTypography.bodySmall.copyWith(color: AppColors.textSecondary),
                 ),
               ],
             ),

@@ -6,6 +6,7 @@ import 'dart:convert';
 import '../theme/app_theme.dart';
 import '../utils/app_feedback.dart';
 import '../widgets/empty_state.dart';
+import '../widgets/core/bubble_loader.dart';
 
 class RemindersScreen extends ConsumerStatefulWidget {
   const RemindersScreen({super.key});
@@ -16,6 +17,7 @@ class RemindersScreen extends ConsumerStatefulWidget {
 
 class _RemindersScreenState extends ConsumerState<RemindersScreen> {
   List<_Reminder> _reminders = [];
+  bool _isLoading = true;
 
   @override
   void initState() {
@@ -24,13 +26,20 @@ class _RemindersScreenState extends ConsumerState<RemindersScreen> {
   }
 
   Future<void> _loadReminders() async {
-    final prefs = await SharedPreferences.getInstance();
-    final json = prefs.getString('aquarium_reminders');
-    if (json != null) {
-      final list = jsonDecode(json) as List;
-      setState(() {
-        _reminders = list.map((e) => _Reminder.fromJson(e)).toList();
-      });
+    setState(() => _isLoading = true);
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final json = prefs.getString('aquarium_reminders');
+      if (json != null) {
+        final list = jsonDecode(json) as List;
+        setState(() {
+          _reminders = list.map((e) => _Reminder.fromJson(e)).toList();
+        });
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
     }
   }
 
@@ -150,7 +159,9 @@ class _RemindersScreenState extends ConsumerState<RemindersScreen> {
 
     return Scaffold(
       appBar: AppBar(title: const Text('Reminders')),
-      body: _reminders.isEmpty
+      body: _isLoading
+          ? const Center(child: BubbleLoader())
+          : _reminders.isEmpty
           ? EmptyState(
               icon: Icons.notifications_none,
               title: 'No reminders set',
@@ -485,6 +496,13 @@ class _AddReminderSheetState extends State<_AddReminderSheet> {
   TimeOfDay _dueTime = const TimeOfDay(hour: 10, minute: 0);
   bool _isRecurring = true;
   String _frequency = 'weekly';
+
+  @override
+  void dispose() {
+    _titleController.dispose();
+    _notesController.dispose();
+    super.dispose();
+  }
 
   final _categories = [
     'Water Change',

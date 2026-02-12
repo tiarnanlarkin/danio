@@ -57,44 +57,67 @@ class SettingsNotifier extends StateNotifier<AppSettings> {
   static const _ambientLightingKey = 'ambient_lighting_enabled';
 
   Future<void> _loadSettings() async {
-    final prefs = await SharedPreferences.getInstance();
+    try {
+      final prefs = await SharedPreferences.getInstance();
 
-    final themeModeIndex = prefs.getInt(_themeModeKey) ?? 0;
-    final useMetric = prefs.getBool(_useMetricKey) ?? true;
-    final notificationsEnabled = prefs.getBool(_notificationsKey) ?? false;
-    final ambientLightingEnabled = prefs.getBool(_ambientLightingKey) ?? true;
+      final themeModeIndex = prefs.getInt(_themeModeKey) ?? 0;
+      final useMetric = prefs.getBool(_useMetricKey) ?? true;
+      final notificationsEnabled = prefs.getBool(_notificationsKey) ?? false;
+      final ambientLightingEnabled = prefs.getBool(_ambientLightingKey) ?? true;
 
-    state = AppSettings(
-      themeMode: AppThemeMode
-          .values[themeModeIndex.clamp(0, AppThemeMode.values.length - 1)],
-      useMetric: useMetric,
-      notificationsEnabled: notificationsEnabled,
-      ambientLightingEnabled: ambientLightingEnabled,
-    );
+      state = AppSettings(
+        themeMode: AppThemeMode
+            .values[themeModeIndex.clamp(0, AppThemeMode.values.length - 1)],
+        useMetric: useMetric,
+        notificationsEnabled: notificationsEnabled,
+        ambientLightingEnabled: ambientLightingEnabled,
+      );
+    } catch (e) {
+      // If loading fails, keep default settings
+      // Don't crash the app - user can still use it with defaults
+      debugPrint('Failed to load app settings: $e');
+    }
   }
 
   Future<void> setThemeMode(AppThemeMode mode) async {
     state = state.copyWith(themeMode: mode);
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setInt(_themeModeKey, mode.index);
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setInt(_themeModeKey, mode.index);
+    } catch (e) {
+      debugPrint('Failed to save theme mode setting: $e');
+      // Setting is applied in-memory, just won't persist
+    }
   }
 
   Future<void> setUseMetric(bool useMetric) async {
     state = state.copyWith(useMetric: useMetric);
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(_useMetricKey, useMetric);
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setBool(_useMetricKey, useMetric);
+    } catch (e) {
+      debugPrint('Failed to save metric preference: $e');
+    }
   }
 
   Future<void> setNotificationsEnabled(bool enabled) async {
     state = state.copyWith(notificationsEnabled: enabled);
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(_notificationsKey, enabled);
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setBool(_notificationsKey, enabled);
+    } catch (e) {
+      debugPrint('Failed to save notification preference: $e');
+    }
   }
 
   Future<void> setAmbientLightingEnabled(bool enabled) async {
     state = state.copyWith(ambientLightingEnabled: enabled);
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(_ambientLightingKey, enabled);
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setBool(_ambientLightingKey, enabled);
+    } catch (e) {
+      debugPrint('Failed to save ambient lighting preference: $e');
+    }
   }
 }
 

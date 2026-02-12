@@ -105,12 +105,12 @@ class AchievementCard extends StatelessWidget {
 
                   // Rarity badge
                   Positioned(
-                    top: 8,
-                    right: 8,
+                    top: AppSpacing.sm,
+                    right: AppSpacing.sm,
                     child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 4,
+                      padding: EdgeInsets.symmetric(
+                        horizontal: AppSpacing.sm,
+                        vertical: AppSpacing.xs,
                       ),
                       decoration: BoxDecoration(
                         color: rarityColor,
@@ -132,7 +132,7 @@ class AchievementCard extends StatelessWidget {
 
             // Name and description
             Container(
-              padding: const EdgeInsets.all(12),
+              padding: EdgeInsets.all(AppSpacing.md),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -188,15 +188,6 @@ class AchievementCard extends StatelessWidget {
   }
 
   Color _getRarityColor(AchievementRarity rarity) {
-    switch (rarity) {
-      case AchievementRarity.bronze:
-        return const Color(0xFFCD7F32);
-      case AchievementRarity.silver:
-        return const Color(0xFFC0C0C0);
-      case AchievementRarity.gold:
-        return const Color(0xFFFFD700);
-      case AchievementRarity.platinum:
-        return const Color(0xFFE5E4E2);
-    }
+    return AppAchievementColors.forTier(rarity.name);
   }
 }

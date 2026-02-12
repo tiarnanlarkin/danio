@@ -61,43 +61,81 @@ class WishlistNotifier extends StateNotifier<List<WishlistItem>> {
   }
 
   Future<void> _loadFromStorage() async {
-    final prefs = await SharedPreferences.getInstance();
-    final jsonString = prefs.getString(_wishlistKey);
-    if (jsonString != null) {
-      final List<dynamic> jsonList = json.decode(jsonString);
-      state = jsonList.map((j) => WishlistItem.fromJson(j)).toList();
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final jsonString = prefs.getString(_wishlistKey);
+      if (jsonString != null) {
+        final List<dynamic> jsonList = json.decode(jsonString);
+        state = jsonList.map((j) => WishlistItem.fromJson(j)).toList();
+      }
+    } catch (e) {
+      // If loading fails (corrupt data, etc.), start with empty wishlist
+      // Don't crash the app - user can rebuild their wishlist
+      state = [];
     }
   }
 
   Future<void> _saveToStorage() async {
-    final prefs = await SharedPreferences.getInstance();
-    final jsonString = json.encode(state.map((e) => e.toJson()).toList());
-    await prefs.setString(_wishlistKey, jsonString);
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final jsonString = json.encode(state.map((e) => e.toJson()).toList());
+      await prefs.setString(_wishlistKey, jsonString);
+    } catch (e) {
+      // Save failed - throw so callers can handle/notify user
+      throw Exception('Failed to save wishlist. Please try again.');
+    }
   }
 
   Future<void> addItem(WishlistItem item) async {
     state = [...state, item];
-    await _saveToStorage();
+    try {
+      await _saveToStorage();
+    } catch (e) {
+      // Revert state change on save failure
+      state = state.where((i) => i.id != item.id).toList();
+      rethrow;
+    }
   }
 
   Future<void> updateItem(WishlistItem item) async {
+    final oldState = state;
     state = state.map((e) => e.id == item.id ? item : e).toList();
-    await _saveToStorage();
+    try {
+      await _saveToStorage();
+    } catch (e) {
+      // Revert on failure
+      state = oldState;
+      rethrow;
+    }
   }
 
   Future<void> removeItem(String id) async {
+    final oldState = state;
     state = state.where((e) => e.id != id).toList();
-    await _saveToStorage();
+    try {
+      await _saveToStorage();
+    } catch (e) {
+      // Revert on failure
+      state = oldState;
+      rethrow;
+    }
   }
 
   Future<void> markPurchased(String id) async {
+    final oldState = state;
     state = state.map((e) {
       if (e.id == id) {
         return e.copyWith(purchased: true, purchasedAt: DateTime.now());
       }
       return e;
     }).toList();
-    await _saveToStorage();
+    try {
+      await _saveToStorage();
+    } catch (e) {
+      // Revert on failure
+      state = oldState;
+      rethrow;
+    }
   }
 
   List<WishlistItem> getByCategory(
@@ -119,18 +157,28 @@ class BudgetNotifier extends StateNotifier<ShopBudget> {
   }
 
   Future<void> _loadFromStorage() async {
-    final prefs = await SharedPreferences.getInstance();
-    final jsonString = prefs.getString(_budgetKey);
-    if (jsonString != null) {
-      state = ShopBudget.fromJson(json.decode(jsonString));
-      // Check if we need to reset for new month
-      _checkMonthReset();
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final jsonString = prefs.getString(_budgetKey);
+      if (jsonString != null) {
+        state = ShopBudget.fromJson(json.decode(jsonString));
+        // Check if we need to reset for new month
+        _checkMonthReset();
+      }
+    } catch (e) {
+      // If loading fails, start with default budget
+      // Don't crash the app - user can set up budget again
+      state = ShopBudget();
     }
   }
 
   Future<void> _saveToStorage() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(_budgetKey, json.encode(state.toJson()));
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString(_budgetKey, json.encode(state.toJson()));
+    } catch (e) {
+      throw Exception('Failed to save budget. Please try again.');
+    }
   }
 
   void _checkMonthReset() {
@@ -139,23 +187,43 @@ class BudgetNotifier extends StateNotifier<ShopBudget> {
         now.year != state.lastReset.year) {
       // New month - reset spending
       state = state.copyWith(spentThisMonth: 0, lastReset: now);
-      _saveToStorage();
+      _saveToStorage().catchError((_) {
+        // Silently fail for auto-reset - not critical
+      });
     }
   }
 
   Future<void> setMonthlyBudget(double amount) async {
+    final oldState = state;
     state = state.copyWith(monthlyBudget: amount);
-    await _saveToStorage();
+    try {
+      await _saveToStorage();
+    } catch (e) {
+      state = oldState;
+      rethrow;
+    }
   }
 
   Future<void> addPurchase(double amount) async {
+    final oldState = state;
     state = state.copyWith(spentThisMonth: state.spentThisMonth + amount);
-    await _saveToStorage();
+    try {
+      await _saveToStorage();
+    } catch (e) {
+      state = oldState;
+      rethrow;
+    }
   }
 
   Future<void> resetSpending() async {
+    final oldState = state;
     state = state.copyWith(spentThisMonth: 0, lastReset: DateTime.now());
-    await _saveToStorage();
+    try {
+      await _saveToStorage();
+    } catch (e) {
+      state = oldState;
+      rethrow;
+    }
   }
 }
 
@@ -166,32 +234,60 @@ class LocalShopsNotifier extends StateNotifier<List<LocalShop>> {
   }
 
   Future<void> _loadFromStorage() async {
-    final prefs = await SharedPreferences.getInstance();
-    final jsonString = prefs.getString(_shopsKey);
-    if (jsonString != null) {
-      final List<dynamic> jsonList = json.decode(jsonString);
-      state = jsonList.map((j) => LocalShop.fromJson(j)).toList();
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final jsonString = prefs.getString(_shopsKey);
+      if (jsonString != null) {
+        final List<dynamic> jsonList = json.decode(jsonString);
+        state = jsonList.map((j) => LocalShop.fromJson(j)).toList();
+      }
+    } catch (e) {
+      // If loading fails, start with empty shops list
+      // Don't crash the app - user can add shops again
+      state = [];
     }
   }
 
   Future<void> _saveToStorage() async {
-    final prefs = await SharedPreferences.getInstance();
-    final jsonString = json.encode(state.map((e) => e.toJson()).toList());
-    await prefs.setString(_shopsKey, jsonString);
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final jsonString = json.encode(state.map((e) => e.toJson()).toList());
+      await prefs.setString(_shopsKey, jsonString);
+    } catch (e) {
+      throw Exception('Failed to save local shops. Please try again.');
+    }
   }
 
   Future<void> addShop(LocalShop shop) async {
     state = [...state, shop];
-    await _saveToStorage();
+    try {
+      await _saveToStorage();
+    } catch (e) {
+      // Revert on failure
+      state = state.where((s) => s.id != shop.id).toList();
+      rethrow;
+    }
   }
 
   Future<void> updateShop(LocalShop shop) async {
+    final oldState = state;
     state = state.map((e) => e.id == shop.id ? shop : e).toList();
-    await _saveToStorage();
+    try {
+      await _saveToStorage();
+    } catch (e) {
+      state = oldState;
+      rethrow;
+    }
   }
 
   Future<void> removeShop(String id) async {
+    final oldState = state;
     state = state.where((e) => e.id != id).toList();
-    await _saveToStorage();
+    try {
+      await _saveToStorage();
+    } catch (e) {
+      state = oldState;
+      rethrow;
+    }
   }
 }

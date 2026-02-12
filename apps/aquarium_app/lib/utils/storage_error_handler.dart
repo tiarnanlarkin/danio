@@ -1,5 +1,6 @@
 import 'package:aquarium_app/theme/app_theme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../services/local_json_storage_service.dart';
 
 /// Handles storage corruption errors by showing a dialog with recovery options
@@ -175,7 +176,18 @@ class StorageErrorHandler {
               icon: const Icon(Icons.copy),
               label: const Text('Copy Info'),
               onPressed: () {
-                // TODO: Copy error info to clipboard
+                // Build error info string for clipboard
+                final buffer = StringBuffer();
+                buffer.writeln('=== Aquarium App Error Report ===');
+                buffer.writeln('Error: ${error.originalError?.toString() ?? "Unknown"}');
+                if (error.corruptedFilePath != null) {
+                  buffer.writeln('Backup File: ${error.corruptedFilePath}');
+                }
+                buffer.writeln('Time: ${DateTime.now().toIso8601String()}');
+                buffer.writeln('================================');
+                
+                Clipboard.setData(ClipboardData(text: buffer.toString()));
+                
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(
                     content: Text('Error info copied to clipboard'),

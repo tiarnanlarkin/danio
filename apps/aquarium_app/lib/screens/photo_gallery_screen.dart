@@ -7,6 +7,7 @@ import '../models/models.dart';
 import '../providers/tank_provider.dart';
 import '../theme/app_theme.dart';
 import '../widgets/optimized_image.dart';
+import '../widgets/error_state.dart';
 
 class PhotoGalleryScreen extends ConsumerWidget {
   final String tankId;
@@ -26,7 +27,11 @@ class PhotoGalleryScreen extends ConsumerWidget {
       appBar: AppBar(title: Text('$tankName Gallery')),
       body: logsAsync.when(
         loading: () => const Center(child: BubbleLoader()),
-        error: (e, _) => Center(child: Text('Error: $e')),
+        error: (e, _) => ErrorState(
+          message: 'Failed to load photos',
+          details: 'Please check your connection and try again.',
+          onRetry: () => ref.invalidate(allLogsProvider(tankId)),
+        ),
         data: (logs) {
           // Get all logs with photos
           final photosLogs =

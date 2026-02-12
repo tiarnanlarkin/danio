@@ -342,15 +342,6 @@ class _AchievementNotificationWidgetState
   }
 
   Color _getRarityColor(AchievementRarity rarity) {
-    switch (rarity) {
-      case AchievementRarity.bronze:
-        return const Color(0xFFCD7F32);
-      case AchievementRarity.silver:
-        return const Color(0xFFC0C0C0);
-      case AchievementRarity.gold:
-        return const Color(0xFFFFD700);
-      case AchievementRarity.platinum:
-        return const Color(0xFFE5E4E2);
-    }
+    return AppAchievementColors.forTier(rarity.name);
   }
 }

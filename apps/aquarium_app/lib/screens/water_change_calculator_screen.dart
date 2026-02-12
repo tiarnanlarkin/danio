@@ -22,6 +22,15 @@ class _WaterChangeCalculatorScreenState
   double? _changeVolume;
   String? _recommendation;
 
+  @override
+  void dispose() {
+    _tankVolumeController.dispose();
+    _currentNitrateController.dispose();
+    _targetNitrateController.dispose();
+    _tapNitrateController.dispose();
+    super.dispose();
+  }
+
   void _calculate() {
     final tankVolume = double.tryParse(_tankVolumeController.text);
     final currentNitrate = double.tryParse(_currentNitrateController.text);

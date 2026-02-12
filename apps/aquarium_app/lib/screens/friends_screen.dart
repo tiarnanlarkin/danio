@@ -463,23 +463,10 @@ class _ActivityFeedView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (activities.isEmpty) {
-      return Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(Icons.feed_outlined, size: 80, color: Colors.grey.shade400),
-            const SizedBox(height: AppSpacing.md),
-            Text(
-              'No recent activity',
-              style: TextStyle(fontSize: 18, color: Colors.grey.shade600),
-            ),
-            const SizedBox(height: AppSpacing.sm),
-            Text(
-              'Your friends\' achievements will appear here',
-              style: TextStyle(fontSize: 14, color: Colors.grey.shade500),
-            ),
-          ],
-        ),
+      return const EmptyState(
+        icon: Icons.feed_outlined,
+        title: 'No recent activity',
+        message: 'Your friends\' achievements will appear here once they start learning!',
       );
     }
 

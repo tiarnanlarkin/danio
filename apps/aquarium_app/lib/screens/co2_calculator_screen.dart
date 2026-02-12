@@ -23,6 +23,13 @@ class _Co2CalculatorScreenState extends State<Co2CalculatorScreen> {
     _calculate();
   }
 
+  @override
+  void dispose() {
+    _phController.dispose();
+    _khController.dispose();
+    super.dispose();
+  }
+
   void _calculate() {
     final ph = double.tryParse(_phController.text);
     final kh = double.tryParse(_khController.text);

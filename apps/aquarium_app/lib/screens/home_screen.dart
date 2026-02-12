@@ -29,6 +29,7 @@ import 'reminders_screen.dart';
 import 'search_screen.dart';
 import 'settings_screen.dart';
 import 'tank_detail_screen.dart';
+import 'backup_restore_screen.dart';
 import '../utils/app_page_routes.dart';
 
 /// HomeScreen - The Living Room in the House Navigator
@@ -893,10 +894,17 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       return;
     }
 
-    // TODO: Implement actual export functionality
+    // Navigate to backup/restore screen for full export functionality
     if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Export feature coming soon!')),
+      setState(() {
+        _selectedTankIds.clear();
+      });
+      
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const BackupRestoreScreen(),
+        ),
       );
     }
   }

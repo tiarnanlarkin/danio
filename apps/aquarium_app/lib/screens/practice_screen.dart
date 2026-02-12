@@ -742,8 +742,12 @@ class _PracticeLessonScreenState extends ConsumerState<PracticeLessonScreen> {
             .completeLesson(widget.lesson.id, xpReward);
       }
 
-      // Record activity for streak
-      await ref.read(userProfileProvider.notifier).recordActivity();
+      // Record activity for streak (non-critical)
+      try {
+        await ref.read(userProfileProvider.notifier).recordActivity();
+      } catch (e) {
+        debugPrint('Activity recording failed: $e');
+      }
 
       if (mounted) {
         // Show XP animation

@@ -28,7 +28,7 @@ class AchievementDetailModal extends StatelessWidget {
         color: Colors.white,
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
-      padding: const EdgeInsets.all(24),
+      padding: EdgeInsets.all(AppSpacing.lg),
       child: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -37,7 +37,7 @@ class AchievementDetailModal extends StatelessWidget {
             Container(
               width: 40,
               height: 4,
-              margin: const EdgeInsets.only(bottom: 16),
+              margin: EdgeInsets.only(bottom: AppSpacing.md),
               decoration: BoxDecoration(
                 color: Colors.grey.shade300,
                 borderRadius: BorderRadius.circular(2),
@@ -331,15 +331,6 @@ class AchievementDetailModal extends StatelessWidget {
   }
 
   Color _getRarityColor(AchievementRarity rarity) {
-    switch (rarity) {
-      case AchievementRarity.bronze:
-        return const Color(0xFFCD7F32);
-      case AchievementRarity.silver:
-        return const Color(0xFFC0C0C0);
-      case AchievementRarity.gold:
-        return const Color(0xFFFFD700);
-      case AchievementRarity.platinum:
-        return const Color(0xFFE5E4E2);
-    }
+    return AppAchievementColors.forTier(rarity.name);
   }
 }

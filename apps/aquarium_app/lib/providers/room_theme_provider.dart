@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../theme/room_themes.dart';
@@ -22,17 +23,29 @@ class RoomThemeNotifier extends StateNotifier<RoomThemeType> {
   static const _key = 'room_theme';
 
   Future<void> _loadTheme() async {
-    final prefs = await SharedPreferences.getInstance();
-    final themeIndex = prefs.getInt(_key) ?? 0;
-    if (themeIndex < RoomThemeType.values.length) {
-      state = RoomThemeType.values[themeIndex];
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final themeIndex = prefs.getInt(_key) ?? 0;
+      if (themeIndex < RoomThemeType.values.length) {
+        state = RoomThemeType.values[themeIndex];
+      }
+    } catch (e) {
+      // If loading fails, keep default theme (ocean)
+      // Don't crash the app for a cosmetic preference
+      debugPrint('Failed to load room theme preference: $e');
     }
   }
 
   Future<void> setTheme(RoomThemeType theme) async {
     state = theme;
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setInt(_key, theme.index);
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setInt(_key, theme.index);
+    } catch (e) {
+      // Theme is already set in state, just log the save failure
+      // User will see the change but it won't persist
+      debugPrint('Failed to save room theme preference: $e');
+    }
   }
 
   void nextTheme() {

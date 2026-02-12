@@ -522,6 +522,13 @@ class _AddExpenseSheetState extends State<_AddExpenseSheet> {
   String _category = 'Fish';
   DateTime _date = DateTime.now();
 
+  @override
+  void dispose() {
+    _descController.dispose();
+    _amountController.dispose();
+    super.dispose();
+  }
+
   final _categories = [
     'Fish',
     'Plants',

@@ -167,14 +167,14 @@ class DailyGoalCard extends ConsumerWidget {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            Colors.white.withOpacity(0.95),
-            Colors.white.withOpacity(0.88),
+            AppOverlays.white95,
+            AppOverlays.white88,
           ],
         ),
         borderRadius: AppRadius.mediumRadius,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.08),
+            color: AppOverlays.black8,
             blurRadius: 12,
             offset: const Offset(0, 4),
           ),
@@ -187,7 +187,7 @@ class DailyGoalCard extends ConsumerWidget {
           onTap: onTap,
           borderRadius: AppRadius.mediumRadius,
           child: Padding(
-            padding: const EdgeInsets.all(16),
+            padding: EdgeInsets.all(AppSpacing.md),
             child: Row(
               children: [
                 // Circular progress

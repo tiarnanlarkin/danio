@@ -19,6 +19,13 @@ class _StockingCalculatorScreenState extends State<StockingCalculatorScreen> {
   final List<_StockEntry> _stock = [];
   String _searchQuery = '';
 
+  @override
+  void dispose() {
+    _tankVolumeController.dispose();
+    _filterRatingController.dispose();
+    super.dispose();
+  }
+
   double get _tankVolume => double.tryParse(_tankVolumeController.text) ?? 0;
   double get _filterRating =>
       double.tryParse(_filterRatingController.text) ?? 1.0;
