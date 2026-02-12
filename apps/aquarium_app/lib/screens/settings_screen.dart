@@ -1136,13 +1136,36 @@ class _SectionHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 24, 16, 8),
-      child: Text(
-        title,
-        style: AppTypography.labelLarge.copyWith(
-          color: color ?? AppColors.textSecondary,
-        ),
+      padding: const EdgeInsets.fromLTRB(20, 28, 20, 12),
+      child: Row(
+        children: [
+          Container(
+            width: 4,
+            height: 20,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  AppColors.primary,
+                  AppColors.primary.withOpacity(0.5),
+                ],
+              ),
+              borderRadius: BorderRadius.circular(2),
+            ),
+          ),
+          const SizedBox(width: 12),
+          Text(
+            title.toUpperCase(),
+            style: AppTypography.labelLarge.copyWith(
+              color: color ?? (isDark ? AppColors.textSecondaryDark : AppColors.textSecondary),
+              letterSpacing: 1.2,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -1158,85 +1181,110 @@ class _LearnCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final stats = ref.watch(learningStatsProvider);
     final profile = ref.watch(userProfileProvider).asData?.value;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      child: InkWell(
-        onTap: () => Navigator.push(
-          context,
-          MaterialPageRoute(builder: (_) => const LearnScreen()),
-        ),
-        borderRadius: AppRadius.mediumRadius,
-        child: Container(
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            gradient: AppColors.primaryGradient,
-            borderRadius: AppRadius.mediumRadius,
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+      child: Material(
+        color: Colors.transparent,
+        borderRadius: BorderRadius.circular(20),
+        child: InkWell(
+          onTap: () => Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => const LearnScreen()),
           ),
-          child: Row(
-            children: [
-              Container(
-                width: 56,
-                height: 56,
-                decoration: BoxDecoration(
-                  color: AppOverlays.white20,
-                  borderRadius: AppRadius.mediumRadius,
-                ),
-                child: const Icon(Icons.school, color: Colors.white, size: 28),
+          borderRadius: BorderRadius.circular(20),
+          child: Container(
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  AppColors.primary,
+                  AppColors.primary.withOpacity(0.85),
+                  AppColors.secondary.withOpacity(0.9),
+                ],
               ),
-              const SizedBox(width: AppSpacing.md),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Learn Fishkeeping',
-                      style: AppTypography.labelLarge.copyWith(
-                        color: Colors.white,
-                      ),
-                    ),
-                    const SizedBox(height: AppSpacing.xs),
-                    if (stats != null) ...[
+              borderRadius: BorderRadius.circular(20),
+              boxShadow: [
+                BoxShadow(
+                  color: AppColors.primary.withOpacity(isDark ? 0.4 : 0.25),
+                  blurRadius: 20,
+                  offset: const Offset(0, 8),
+                ),
+                BoxShadow(
+                  color: Colors.black.withOpacity(isDark ? 0.3 : 0.1),
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+            child: Row(
+              children: [
+                Container(
+                  width: 56,
+                  height: 56,
+                  decoration: BoxDecoration(
+                    color: AppOverlays.white20,
+                    borderRadius: AppRadius.mediumRadius,
+                  ),
+                  child: const Icon(Icons.school, color: Colors.white, size: 28),
+                ),
+                const SizedBox(width: AppSpacing.md),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
                       Text(
-                        '${stats.levelTitle} • ${stats.totalXp} XP',
-                        style: AppTypography.bodySmall.copyWith(
-                          color: Colors.white70,
+                        'Learn Fishkeeping',
+                        style: AppTypography.labelLarge.copyWith(
+                          color: Colors.white,
                         ),
                       ),
-                      if (stats.currentStreak > 0) ...[
-                        const SizedBox(height: 2),
+                      const SizedBox(height: AppSpacing.xs),
+                      if (stats != null) ...[
                         Text(
-                          '🔥 ${stats.currentStreak} day streak',
+                          '${stats.levelTitle} • ${stats.totalXp} XP',
                           style: AppTypography.bodySmall.copyWith(
                             color: Colors.white70,
                           ),
                         ),
-                        if (profile != null &&
-                            (profile.hasStreakFreeze ||
-                                profile.streakFreezeUsedThisWeek)) ...[
+                        if (stats.currentStreak > 0) ...[
                           const SizedBox(height: 2),
                           Text(
-                            profile.hasStreakFreeze
-                                ? '🧊 Streak freeze available'
-                                : '🧊 Streak freeze used this week',
+                            '🔥 ${stats.currentStreak} day streak',
                             style: AppTypography.bodySmall.copyWith(
                               color: Colors.white70,
                             ),
                           ),
+                          if (profile != null &&
+                              (profile.hasStreakFreeze ||
+                                  profile.streakFreezeUsedThisWeek)) ...[
+                            const SizedBox(height: 2),
+                            Text(
+                              profile.hasStreakFreeze
+                                  ? '🧊 Streak freeze available'
+                                  : '🧊 Streak freeze used this week',
+                              style: AppTypography.bodySmall.copyWith(
+                                color: Colors.white70,
+                              ),
+                            ),
+                          ],
                         ],
-                      ],
-                    ] else
-                      Text(
-                        'Start your learning journey',
-                        style: AppTypography.bodySmall.copyWith(
-                          color: Colors.white70,
+                      ] else
+                        Text(
+                          'Start your learning journey',
+                          style: AppTypography.bodySmall.copyWith(
+                            color: Colors.white70,
+                          ),
                         ),
-                      ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-              const Icon(Icons.chevron_right, color: Colors.white70),
-            ],
+                const Icon(Icons.chevron_right, color: Colors.white70),
+              ],
+            ),
           ),
         ),
       ),
