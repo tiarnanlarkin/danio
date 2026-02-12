@@ -12,6 +12,7 @@ import '../theme/room_themes.dart';
 import '../widgets/decorative_elements.dart';
 import '../widgets/hobby_items.dart';
 import '../widgets/hobby_desk.dart';
+import '../widgets/mascot/mascot_widgets.dart';
 import '../widgets/room_scene.dart';
 import '../widgets/speed_dial_fab.dart';
 import '../widgets/daily_goal_progress.dart';
@@ -22,6 +23,8 @@ import '../widgets/gamification_dashboard.dart';
 import '../utils/app_feedback.dart';
 import 'add_log_screen.dart';
 import 'create_tank_screen.dart';
+import 'journal_screen.dart';
+import 'reminders_screen.dart';
 import 'search_screen.dart';
 import 'settings_screen.dart';
 import 'tank_detail_screen.dart';
@@ -95,12 +98,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 tankName: currentTank.name,
                 tankVolume: currentTank.volumeLitres,
                 theme: ref.watch(currentRoomThemeProvider),
+                isNewUser: _isNewUser(ref),
                 onTankTap: () => _navigateToTankDetail(context, currentTank),
                 onTestKitTap: () => _showWaterParams(context),
                 onFoodTap: () => _showFeedingInfo(context),
                 onPlantTap: () => _showPlantInfo(context),
                 onStatsTap: () => _showStatsInfo(context),
                 onThemeTap: () => _showThemePicker(context, ref),
+                onJournalTap: () => _navigateToJournal(context, currentTank.id),
+                onCalendarTap: () => _navigateToSchedule(context),
               ),
             ),
 
@@ -329,6 +335,26 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         page: AddLogScreen(tankId: tank.id, initialType: LogType.waterChange),
       ),
     );
+  }
+
+  void _navigateToJournal(BuildContext context, String tankId) {
+    Navigator.of(context).push(
+      RoomSlideRoute(page: JournalScreen(tankId: tankId)),
+    );
+  }
+
+  void _navigateToSchedule(BuildContext context) {
+    Navigator.of(context).push(
+      RoomSlideRoute(page: const RemindersScreen()),
+    );
+  }
+
+  /// Check if user is new (first few sessions) to show more prominent animations
+  bool _isNewUser(WidgetRef ref) {
+    final profile = ref.watch(userProfileProvider).value;
+    if (profile == null) return true;
+    // Consider user "new" for first 5 sessions
+    return profile.totalSessions < 5;
   }
 
   void _showRoomSwitcher(BuildContext context) {
@@ -1552,7 +1578,7 @@ class _EmptyRoomScene extends StatelessWidget {
           ),
         ),
 
-        // Call to action
+        // Call to action with Finn mascot
         Center(
           child: NotebookCard(
             rotation: 1.5,
@@ -1560,8 +1586,12 @@ class _EmptyRoomScene extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text('🐠 Welcome!', style: AppTypography.headlineSmall),
-                const SizedBox(height: 12),
+                // Finn greeting
+                MascotBubble.fromContext(
+                  context: MascotContext.noTanks,
+                  size: MascotSize.small,
+                ),
+                const SizedBox(height: 16),
                 Text(
                   'This room is waiting for\nyour first aquarium.',
                   style: AppTypography.bodyMedium.copyWith(

@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 import '../widgets/core/bubble_loader.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -8,8 +9,10 @@ import 'package:intl/intl.dart';
 import '../models/models.dart';
 import '../providers/tank_provider.dart';
 import '../theme/app_theme.dart';
+import '../utils/skeleton_placeholders.dart';
 import '../widgets/empty_state.dart';
 import '../widgets/error_state.dart';
+import '../widgets/mascot/mascot_widgets.dart';
 import 'add_log_screen.dart';
 import 'log_detail_screen.dart';
 
@@ -43,7 +46,7 @@ class _LogsScreenState extends ConsumerState<LogsScreen> {
         ],
       ),
       body: logsAsync.when(
-        loading: () => const Center(child: BubbleLoader()),
+        loading: () => _buildSkeletonList(),
         error: (err, _) => ErrorState(
           message: 'Failed to load logs',
           onRetry: () => ref.invalidate(allLogsProvider(widget.tankId)),
@@ -55,11 +58,12 @@ class _LogsScreenState extends ConsumerState<LogsScreen> {
 
           if (filtered.isEmpty) {
             if (logs.isEmpty) {
-              return EmptyState(
+              return EmptyState.withMascot(
                 icon: Icons.list_alt,
                 title: 'No logs yet',
                 message:
                     'Start logging water tests, maintenance, and events to track your tank\'s history',
+                mascotContext: MascotContext.noLogs,
                 actionLabel: 'Add Log Entry',
                 onAction: () => Navigator.push(
                   context,
@@ -178,6 +182,53 @@ class _LogsScreenState extends ConsumerState<LogsScreen> {
       _typeFilters = <LogType>{};
       _dateRange = null;
     });
+  }
+
+  Widget _buildSkeletonList() {
+    final placeholders = SkeletonPlaceholders.logsList;
+    return Skeletonizer(
+      child: Column(
+        children: [
+          _FiltersSummaryBar(
+            typeFilters: const {},
+            dateRange: null,
+            onClear: null,
+            onEdit: () {},
+          ),
+          Expanded(
+            child: ListView.separated(
+              padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+              itemCount: placeholders.length,
+              separatorBuilder: (_, __) =>
+                  const SizedBox(height: AppSpacing.sm),
+              itemBuilder: (context, index) {
+                final log = placeholders[index];
+                return Card(
+                  margin: EdgeInsets.zero,
+                  child: ListTile(
+                    leading: CircleAvatar(
+                      backgroundColor:
+                          _getLogColor(log.type).withOpacity(0.2),
+                      child: Icon(
+                        _getLogIcon(log.type),
+                        color: _getLogColor(log.type),
+                        size: 20,
+                      ),
+                    ),
+                    title: Text(_titleFor(log)),
+                    subtitle: Text(
+                      DateFormat('MMM d, yyyy  •  h:mm a')
+                          .format(log.timestamp),
+                    ),
+                    trailing: const Icon(Icons.chevron_right),
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   Future<void> _openFilters(BuildContext context) async {

@@ -6,6 +6,7 @@ import '../providers/user_profile_provider.dart';
 import '../services/celebration_service.dart';
 import '../theme/app_theme.dart';
 import '../utils/app_feedback.dart';
+import '../widgets/mascot/mascot_widgets.dart';
 import 'home_screen.dart';
 
 /// Enhanced onboarding that personalizes the app experience
@@ -263,15 +264,17 @@ class _WelcomePage extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          // Animated fish icon
-          Container(
-            width: 120,
-            height: 120,
-            decoration: BoxDecoration(
-              gradient: AppColors.primaryGradient,
-              shape: BoxShape.circle,
-            ),
-            child: const Icon(Icons.water_drop, size: 60, color: Colors.white),
+          // Finn the mascot
+          const MascotAvatar(
+            mood: MascotMood.waving,
+            size: MascotSize.large,
+          ),
+          const SizedBox(height: AppSpacing.lg),
+          // Mascot greeting bubble
+          MascotBubble.fromContext(
+            context: MascotContext.welcome,
+            size: MascotSize.small,
+            animateEntrance: true,
           ),
           const SizedBox(height: 40),
           Text(

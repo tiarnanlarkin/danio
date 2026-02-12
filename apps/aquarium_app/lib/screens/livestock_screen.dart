@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 import '../widgets/core/bubble_loader.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -14,9 +15,11 @@ import '../services/compatibility_service.dart';
 import '../services/xp_animation_service.dart';
 import '../theme/app_theme.dart';
 import '../utils/app_feedback.dart';
+import '../utils/skeleton_placeholders.dart';
 import '../widgets/core/app_card.dart';
 import '../widgets/empty_state.dart';
 import '../widgets/error_state.dart';
+import '../widgets/mascot/mascot_widgets.dart';
 import 'livestock_detail_screen.dart';
 
 const _uuid = Uuid();
@@ -87,7 +90,7 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
         ],
       ),
       body: livestockAsync.when(
-        loading: () => const Center(child: BubbleLoader()),
+        loading: () => _buildSkeletonList(),
         error: (err, _) => ErrorState(
           message: 'Failed to load livestock',
           details: 'Please check your connection and try again',
@@ -95,11 +98,12 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
         ),
         data: (livestock) {
           if (livestock.isEmpty) {
-            return EmptyState(
+            return EmptyState.withMascot(
               icon: Icons.set_meal,
               title: 'No livestock yet',
               message:
                   'Add fish, shrimp, or snails to track your aquatic friends',
+              mascotContext: MascotContext.noLivestock,
               actionLabel: 'Add Livestock',
               onAction: () => _showAddDialog(context, ref),
               tips: const [
@@ -422,6 +426,44 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
         );
       }
     }
+  }
+
+  Widget _buildSkeletonList() {
+    final placeholders = SkeletonPlaceholders.livestockList;
+    return Skeletonizer(
+      child: ListView(
+        padding: const EdgeInsets.all(16),
+        children: [
+          // Skeleton summary card
+          AppCard(
+            padding: AppCardPadding.standard,
+            child: Row(
+              children: [
+                Icon(Icons.pets, color: AppColors.primary, size: 32),
+                const SizedBox(width: AppSpacing.md),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('50 total', style: AppTypography.headlineMedium),
+                    Text('5 species', style: AppTypography.bodyMedium),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: AppSpacing.md),
+          // Skeleton livestock cards
+          ...placeholders.map((l) => _LivestockCard(
+                livestock: l,
+                tank: null,
+                allLivestock: placeholders,
+                onTap: () {},
+                onEdit: () {},
+                onDelete: () {},
+              )),
+        ],
+      ),
+    );
   }
 
   void _showAddDialog(BuildContext context, WidgetRef ref) {

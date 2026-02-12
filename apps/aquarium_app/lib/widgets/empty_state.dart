@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
+import 'mascot/mascot_widgets.dart';
 
 /// Beautiful empty state widget for consistent UX
 ///
@@ -13,6 +14,18 @@ import '../theme/app_theme.dart';
 ///   onAction: () => _createTank(),
 /// )
 /// ```
+/// 
+/// With mascot:
+/// ```dart
+/// EmptyState.withMascot(
+///   icon: Icons.water_drop,
+///   title: 'No tanks yet',
+///   message: 'Create your first aquarium to get started!',
+///   mascotContext: MascotContext.noTanks,
+///   actionLabel: 'Create Tank',
+///   onAction: () => _createTank(),
+/// )
+/// ```
 class EmptyState extends StatefulWidget {
   final IconData icon;
   final String title;
@@ -21,6 +34,12 @@ class EmptyState extends StatefulWidget {
   final VoidCallback? onAction;
   final Widget? illustration;
   final List<String>? tips;
+  
+  /// Optional mascot message to display
+  final String? mascotMessage;
+  
+  /// Optional mascot mood (defaults to encouraging)
+  final MascotMood? mascotMood;
 
   const EmptyState({
     super.key,
@@ -31,7 +50,35 @@ class EmptyState extends StatefulWidget {
     this.onAction,
     this.illustration,
     this.tips,
+    this.mascotMessage,
+    this.mascotMood,
   });
+  
+  /// Create an empty state with Finn the mascot
+  factory EmptyState.withMascot({
+    Key? key,
+    required IconData icon,
+    required String title,
+    required String message,
+    required MascotContext mascotContext,
+    String? actionLabel,
+    VoidCallback? onAction,
+    Widget? illustration,
+    List<String>? tips,
+  }) {
+    return EmptyState(
+      key: key,
+      icon: icon,
+      title: title,
+      message: message,
+      actionLabel: actionLabel,
+      onAction: onAction,
+      illustration: illustration,
+      tips: tips,
+      mascotMessage: MascotHelper.getMessage(mascotContext),
+      mascotMood: MascotHelper.getMoodForContext(mascotContext),
+    );
+  }
 
   @override
   State<EmptyState> createState() => _EmptyStateState();
@@ -198,6 +245,16 @@ class _EmptyStateState extends State<EmptyState>
                   ),
                 ],
 
+                // Mascot bubble (if provided)
+                if (widget.mascotMessage != null) ...[
+                  const SizedBox(height: AppSpacing.lg),
+                  MascotBubble(
+                    message: widget.mascotMessage!,
+                    mood: widget.mascotMood ?? MascotMood.encouraging,
+                    size: MascotSize.medium,
+                  ),
+                ],
+                
                 // Action button
                 if (widget.actionLabel != null && widget.onAction != null) ...[
                   const SizedBox(height: AppSpacing.lg),
