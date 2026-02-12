@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
+import '../widgets/core/app_card.dart';
 
 class VacationGuideScreen extends StatelessWidget {
   const VacationGuideScreen({super.key});
@@ -11,22 +12,20 @@ class VacationGuideScreen extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          Card(
-            color: AppColors.info.withOpacity(0.1),
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Row(
-                children: [
-                  Icon(Icons.flight, size: 32, color: AppColors.info),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Text(
-                      'Planning ahead ensures your fish stay healthy while you\'re away. Most tanks can handle 1-2 weeks without intervention.',
-                      style: AppTypography.bodyMedium,
-                    ),
+          AppCard(
+            backgroundColor: AppColors.info.withOpacity(0.1),
+            padding: AppCardPadding.standard,
+            child: Row(
+              children: [
+                Icon(Icons.flight, size: 32, color: AppColors.info),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    'Planning ahead ensures your fish stay healthy while you\'re away. Most tanks can handle 1-2 weeks without intervention.',
+                    style: AppTypography.bodyMedium,
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
 
@@ -38,48 +37,46 @@ class VacationGuideScreen extends StatelessWidget {
           ),
           const SizedBox(height: AppSpacing.md),
 
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                children: [
-                  _DurationRow(
-                    fish: 'Adult tropical fish',
-                    duration: '1-2 weeks',
-                    notes: 'Healthy adults handle fasting well',
-                  ),
-                  const Divider(),
-                  _DurationRow(
-                    fish: 'Goldfish',
-                    duration: '2 weeks+',
-                    notes: 'Very resilient, slow metabolism',
-                  ),
-                  const Divider(),
-                  _DurationRow(
-                    fish: 'Bettas',
-                    duration: '1-2 weeks',
-                    notes: 'Often overfed anyway',
-                  ),
-                  const Divider(),
-                  _DurationRow(
-                    fish: 'Fry/juveniles',
-                    duration: '2-3 days max',
-                    notes: 'Need frequent feeding',
-                  ),
-                  const Divider(),
-                  _DurationRow(
-                    fish: 'Shrimp',
-                    duration: '2+ weeks',
-                    notes: 'Graze on biofilm, algae',
-                  ),
-                  const Divider(),
-                  _DurationRow(
-                    fish: 'Plecos',
-                    duration: '1-2 weeks',
-                    notes: 'Add driftwood, algae wafers before leaving',
-                  ),
-                ],
-              ),
+          AppCard(
+            padding: AppCardPadding.standard,
+            child: Column(
+              children: [
+                _DurationRow(
+                  fish: 'Adult tropical fish',
+                  duration: '1-2 weeks',
+                  notes: 'Healthy adults handle fasting well',
+                ),
+                const Divider(),
+                _DurationRow(
+                  fish: 'Goldfish',
+                  duration: '2 weeks+',
+                  notes: 'Very resilient, slow metabolism',
+                ),
+                const Divider(),
+                _DurationRow(
+                  fish: 'Bettas',
+                  duration: '1-2 weeks',
+                  notes: 'Often overfed anyway',
+                ),
+                const Divider(),
+                _DurationRow(
+                  fish: 'Fry/juveniles',
+                  duration: '2-3 days max',
+                  notes: 'Need frequent feeding',
+                ),
+                const Divider(),
+                _DurationRow(
+                  fish: 'Shrimp',
+                  duration: '2+ weeks',
+                  notes: 'Graze on biofilm, algae',
+                ),
+                const Divider(),
+                _DurationRow(
+                  fish: 'Plecos',
+                  duration: '1-2 weeks',
+                  notes: 'Add driftwood, algae wafers before leaving',
+                ),
+              ],
             ),
           ),
 
@@ -187,35 +184,33 @@ class VacationGuideScreen extends StatelessWidget {
           Text('If Using a Fish Sitter', style: AppTypography.headlineMedium),
           const SizedBox(height: AppSpacing.md),
 
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _BulletPoint(
-                    text: 'Pre-portion ALL food in labeled daily containers',
-                  ),
-                  _BulletPoint(
-                    text:
-                        'Write clear instructions — feeding only, no maintenance',
-                  ),
-                  _BulletPoint(
-                    text: 'Show them where NOT to stick their hands',
-                  ),
-                  _BulletPoint(text: 'Leave your contact info'),
-                  _BulletPoint(
-                    text: 'Leave emergency contact (local fish store, etc.)',
-                  ),
-                  _BulletPoint(
-                    text: '"If in doubt, skip feeding" as golden rule',
-                  ),
-                  _BulletPoint(
-                    text: 'Tell them what normal fish behavior looks like',
-                  ),
-                  _BulletPoint(text: 'DO NOT ask them to do water changes'),
-                ],
-              ),
+          AppCard(
+            padding: AppCardPadding.standard,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _BulletPoint(
+                  text: 'Pre-portion ALL food in labeled daily containers',
+                ),
+                _BulletPoint(
+                  text:
+                      'Write clear instructions — feeding only, no maintenance',
+                ),
+                _BulletPoint(
+                  text: 'Show them where NOT to stick their hands',
+                ),
+                _BulletPoint(text: 'Leave your contact info'),
+                _BulletPoint(
+                  text: 'Leave emergency contact (local fish store, etc.)',
+                ),
+                _BulletPoint(
+                  text: '"If in doubt, skip feeding" as golden rule',
+                ),
+                _BulletPoint(
+                  text: 'Tell them what normal fish behavior looks like',
+                ),
+                _BulletPoint(text: 'DO NOT ask them to do water changes'),
+              ],
             ),
           ),
 
@@ -227,31 +222,29 @@ class VacationGuideScreen extends StatelessWidget {
           ),
           const SizedBox(height: AppSpacing.md),
 
-          Card(
-            color: AppColors.warning.withOpacity(0.1),
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Additional Precautions:',
-                    style: AppTypography.labelLarge,
-                  ),
-                  const SizedBox(height: AppSpacing.sm),
-                  _BulletPoint(text: 'Have someone check tank every few days'),
-                  _BulletPoint(text: 'Automatic feeder + fish sitter combo'),
-                  _BulletPoint(
-                    text: 'Consider reducing light period to slow algae',
-                  ),
-                  _BulletPoint(text: 'Add extra plants (floating plants good)'),
-                  _BulletPoint(text: 'Set up camera to check remotely'),
-                  _BulletPoint(text: 'Have backup equipment available'),
-                  _BulletPoint(
-                    text: 'Leave water change supplies ready (just in case)',
-                  ),
-                ],
-              ),
+          AppCard(
+            backgroundColor: AppColors.warning.withOpacity(0.1),
+            padding: AppCardPadding.standard,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Additional Precautions:',
+                  style: AppTypography.labelLarge,
+                ),
+                const SizedBox(height: AppSpacing.sm),
+                _BulletPoint(text: 'Have someone check tank every few days'),
+                _BulletPoint(text: 'Automatic feeder + fish sitter combo'),
+                _BulletPoint(
+                  text: 'Consider reducing light period to slow algae',
+                ),
+                _BulletPoint(text: 'Add extra plants (floating plants good)'),
+                _BulletPoint(text: 'Set up camera to check remotely'),
+                _BulletPoint(text: 'Have backup equipment available'),
+                _BulletPoint(
+                  text: 'Leave water change supplies ready (just in case)',
+                ),
+              ],
             ),
           ),
 
@@ -260,30 +253,28 @@ class VacationGuideScreen extends StatelessWidget {
           Text('When You Return', style: AppTypography.headlineMedium),
           const SizedBox(height: AppSpacing.md),
 
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _NumberedStep(
-                    num: 1,
-                    text: 'Check all fish are present and healthy',
-                  ),
-                  _NumberedStep(num: 2, text: 'Check temperature'),
-                  _NumberedStep(num: 3, text: 'Test water parameters'),
-                  _NumberedStep(num: 4, text: 'Do a water change (25-30%)'),
-                  _NumberedStep(
-                    num: 5,
-                    text: 'Resume normal feeding gradually',
-                  ),
-                  _NumberedStep(num: 6, text: 'Check equipment is working'),
-                  _NumberedStep(
-                    num: 7,
-                    text: 'Clean glass, trim plants if needed',
-                  ),
-                ],
-              ),
+          AppCard(
+            padding: AppCardPadding.standard,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _NumberedStep(
+                  num: 1,
+                  text: 'Check all fish are present and healthy',
+                ),
+                _NumberedStep(num: 2, text: 'Check temperature'),
+                _NumberedStep(num: 3, text: 'Test water parameters'),
+                _NumberedStep(num: 4, text: 'Do a water change (25-30%)'),
+                _NumberedStep(
+                  num: 5,
+                  text: 'Resume normal feeding gradually',
+                ),
+                _NumberedStep(num: 6, text: 'Check equipment is working'),
+                _NumberedStep(
+                  num: 7,
+                  text: 'Clean glass, trim plants if needed',
+                ),
+              ],
             ),
           ),
 
