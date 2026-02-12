@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
+import '../widgets/core/app_card.dart';
 
 class NitrogenCycleGuideScreen extends StatelessWidget {
   const NitrogenCycleGuideScreen({super.key});
@@ -14,33 +15,31 @@ class NitrogenCycleGuideScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Intro
-            Card(
-              color: AppColors.info.withOpacity(0.1),
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Icon(Icons.lightbulb, color: AppColors.info),
-                        const SizedBox(width: AppSpacing.sm),
-                        Text(
-                          'What is the Nitrogen Cycle?',
-                          style: AppTypography.headlineSmall.copyWith(
-                            color: AppColors.info,
-                          ),
+            AppCard(
+              backgroundColor: AppColors.info.withOpacity(0.1),
+              padding: AppCardPadding.standard,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Icon(Icons.lightbulb, color: AppColors.info),
+                      const SizedBox(width: AppSpacing.sm),
+                      Text(
+                        'What is the Nitrogen Cycle?',
+                        style: AppTypography.headlineSmall.copyWith(
+                          color: AppColors.info,
                         ),
-                      ],
-                    ),
-                    const SizedBox(height: 12),
-                    Text(
-                      'The nitrogen cycle is the process by which beneficial bacteria convert toxic fish waste (ammonia) into less harmful substances. '
-                      'A "cycled" tank has enough bacteria to process all the ammonia your fish produce.',
-                      style: AppTypography.bodyMedium,
-                    ),
-                  ],
-                ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    'The nitrogen cycle is the process by which beneficial bacteria convert toxic fish waste (ammonia) into less harmful substances. '
+                    'A "cycled" tank has enough bacteria to process all the ammonia your fish produce.',
+                    style: AppTypography.bodyMedium,
+                  ),
+                ],
               ),
             ),
 
@@ -137,19 +136,17 @@ class NitrogenCycleGuideScreen extends StatelessWidget {
             ),
             const SizedBox(height: AppSpacing.md),
 
-            Card(
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  children: [
-                    _CheckItem(text: 'Ammonia reads 0 ppm'),
-                    _CheckItem(text: 'Nitrite reads 0 ppm'),
-                    _CheckItem(text: 'Nitrate is present (5-40 ppm)'),
-                    _CheckItem(
-                      text: 'Tank can process 2 ppm ammonia in 24 hours',
-                    ),
-                  ],
-                ),
+            AppCard(
+              padding: AppCardPadding.standard,
+              child: Column(
+                children: [
+                  _CheckItem(text: 'Ammonia reads 0 ppm'),
+                  _CheckItem(text: 'Nitrite reads 0 ppm'),
+                  _CheckItem(text: 'Nitrate is present (5-40 ppm)'),
+                  _CheckItem(
+                    text: 'Tank can process 2 ppm ammonia in 24 hours',
+                  ),
+                ],
               ),
             ),
 
