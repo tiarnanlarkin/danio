@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 import '../models/models.dart';
 import '../providers/tank_provider.dart';
 import '../providers/room_theme_provider.dart';
@@ -64,11 +65,93 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     });
   }
 
+  Widget _buildSkeletonRoom() {
+    return Skeletonizer(
+      child: Stack(
+        children: [
+          // Skeleton room background
+          Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  AppColors.surfaceVariant.withOpacity(0.5),
+                  AppColors.surfaceVariant,
+                ],
+              ),
+            ),
+          ),
+          // Skeleton tank placeholder
+          Center(
+            child: Container(
+              width: 200,
+              height: 150,
+              decoration: BoxDecoration(
+                color: AppColors.primary.withOpacity(0.1),
+                borderRadius: AppRadius.mediumRadius,
+                border: Border.all(color: AppColors.primary.withOpacity(0.3)),
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(Icons.water, size: 48, color: AppColors.primary),
+                  const SizedBox(height: AppSpacing.sm),
+                  Text('Loading tanks...', style: AppTypography.bodyMedium),
+                ],
+              ),
+            ),
+          ),
+          // Skeleton tank switcher
+          Positioned(
+            bottom: 180 + MediaQuery.of(context).padding.bottom,
+            left: 16,
+            right: 88,
+            child: Container(
+              height: 56,
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.95),
+                borderRadius: AppRadius.mediumRadius,
+              ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 14),
+                child: Row(
+                  children: [
+                    Container(
+                      width: 36,
+                      height: 36,
+                      decoration: BoxDecoration(
+                        color: AppColors.primary.withOpacity(0.15),
+                        borderRadius: AppRadius.smallRadius,
+                      ),
+                      child: const Icon(Icons.set_meal_rounded,
+                          color: AppColors.primary, size: 20),
+                    ),
+                    const SizedBox(width: 12),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('Community Tank',
+                            style: AppTypography.labelLarge),
+                        Text('200L', style: AppTypography.bodySmall),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildLivingRoomScreen() {
     final tanksAsync = ref.watch(tanksProvider);
 
     return tanksAsync.when(
-      loading: () => const Center(child: BubbleLoader.large(message: 'Loading tanks...')),
+      loading: () => _buildSkeletonRoom(),
       error: (err, stack) => ErrorState(
         message: 'Failed to load tanks',
         details: 'Please check your connection and try again',

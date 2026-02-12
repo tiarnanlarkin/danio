@@ -13,6 +13,7 @@ import '../providers/storage_provider.dart';
 import '../providers/tank_provider.dart';
 import '../services/stocking_calculator.dart';
 import '../theme/app_theme.dart';
+import '../utils/skeleton_placeholders.dart';
 import 'add_log_screen.dart';
 import 'livestock_screen.dart';
 import 'equipment_screen.dart';
@@ -37,6 +38,121 @@ class TankDetailScreen extends ConsumerWidget {
   final String tankId;
 
   const TankDetailScreen({super.key, required this.tankId});
+
+  // Skeleton loading builders
+  static Widget _buildTaskSkeletonPreview() {
+    return Skeletonizer(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        child: AppCard(
+          padding: AppCardPadding.none,
+          child: Column(
+            children: List.generate(
+              3,
+              (_) => const ListTile(
+                leading: Icon(Icons.schedule, color: AppColors.textHint),
+                title: Text('Task loading placeholder'),
+                subtitle: Text('Due in some days'),
+                trailing: Icon(Icons.check_circle_outline, color: AppColors.success),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  static Widget _buildLogsSkeletonList() {
+    final placeholders = SkeletonPlaceholders.logsList;
+    return Skeletonizer(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        child: AppCard(
+          padding: AppCardPadding.none,
+          child: Column(
+            children: placeholders.take(5).map((log) {
+              return ListTile(
+                leading: CircleAvatar(
+                  backgroundColor: AppColors.primary.withOpacity(0.2),
+                  child: const Icon(Icons.science, color: AppColors.primary, size: 20),
+                ),
+                title: Text(log.title ?? 'Activity placeholder'),
+                subtitle: Text(DateFormat('MMM d, h:mm a').format(log.timestamp)),
+              );
+            }).toList(),
+          ),
+        ),
+      ),
+    );
+  }
+
+  static Widget _buildLivestockSkeletonPreview() {
+    return Skeletonizer(
+      child: SizedBox(
+        height: 100,
+        child: ListView.builder(
+          scrollDirection: Axis.horizontal,
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          itemCount: 4,
+          itemBuilder: (context, index) {
+            return Container(
+              width: 120,
+              margin: EdgeInsets.only(right: index < 3 ? 12 : 0),
+              child: Card(
+                margin: EdgeInsets.zero,
+                child: Padding(
+                  padding: const EdgeInsets.all(12),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Icon(Icons.set_meal, color: AppColors.primary),
+                      const Spacer(),
+                      Text('Neon Tetra', style: AppTypography.labelLarge),
+                      Text('×10', style: AppTypography.bodySmall),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  static Widget _buildEquipmentSkeletonPreview() {
+    return Skeletonizer(
+      child: SizedBox(
+        height: 100,
+        child: ListView.builder(
+          scrollDirection: Axis.horizontal,
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          itemCount: 4,
+          itemBuilder: (context, index) {
+            return Container(
+              width: 120,
+              margin: EdgeInsets.only(right: index < 3 ? 12 : 0),
+              child: Card(
+                margin: EdgeInsets.zero,
+                child: Padding(
+                  padding: const EdgeInsets.all(12),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Icon(Icons.filter_alt, color: AppColors.primary),
+                      const Spacer(),
+                      Text('Fluval 307', style: AppTypography.labelLarge),
+                      Text('Filter', style: AppTypography.bodySmall),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
 
   static Future<void> _completeTask(
     BuildContext context,
@@ -500,8 +616,7 @@ class TankDetailScreen extends ConsumerWidget {
 
               SliverToBoxAdapter(
                 child: tasksAsync.when(
-                  loading: () =>
-                      const Center(child: BubbleLoader()),
+                  loading: () => _buildTaskSkeletonPreview(),
                   error: (_, __) => const SizedBox.shrink(),
                   data: (tasks) => _TaskPreview(
                     tasks: tasks.take(3).toList(),
@@ -527,8 +642,7 @@ class TankDetailScreen extends ConsumerWidget {
 
               SliverToBoxAdapter(
                 child: logsRecentAsync.when(
-                  loading: () =>
-                      const Center(child: BubbleLoader()),
+                  loading: () => _buildLogsSkeletonList(),
                   error: (_, __) => const SizedBox.shrink(),
                   data: (logs) => _LogsList(
                     logs: logs.take(5).toList(),
@@ -568,8 +682,7 @@ class TankDetailScreen extends ConsumerWidget {
 
               SliverToBoxAdapter(
                 child: livestockAsync.when(
-                  loading: () =>
-                      const Center(child: BubbleLoader()),
+                  loading: () => _buildLivestockSkeletonPreview(),
                   error: (_, __) => const SizedBox.shrink(),
                   data: (livestock) => _LivestockPreview(livestock: livestock),
                 ),
@@ -608,8 +721,7 @@ class TankDetailScreen extends ConsumerWidget {
 
               SliverToBoxAdapter(
                 child: equipmentAsync.when(
-                  loading: () =>
-                      const Center(child: BubbleLoader()),
+                  loading: () => _buildEquipmentSkeletonPreview(),
                   error: (_, __) => const SizedBox.shrink(),
                   data: (equipment) => _EquipmentPreview(equipment: equipment),
                 ),

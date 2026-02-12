@@ -1,6 +1,9 @@
+import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 import '../data/lesson_content.dart';
+import '../data/species_database.dart';
 import '../models/learning.dart';
 import '../models/user_profile.dart';
 import '../providers/user_profile_provider.dart';
@@ -10,6 +13,7 @@ import '../widgets/core/fish_loader.dart';
 import '../widgets/study_room_scene.dart';
 import '../widgets/hearts_widgets.dart';
 import 'lesson_screen.dart';
+import 'parameter_guide_screen.dart';
 import 'practice_screen.dart';
 import 'spaced_repetition_practice_screen.dart';
 
@@ -18,6 +22,74 @@ import 'spaced_repetition_practice_screen.dart';
 class LearnScreen extends ConsumerWidget {
   const LearnScreen({super.key});
 
+  static Widget _buildSkeletonScreen(BuildContext context) {
+    return Skeletonizer(
+      child: CustomScrollView(
+        slivers: [
+          // Skeleton header
+          SliverToBoxAdapter(
+            child: Container(
+              height: 320,
+              color: AppColors.primary.withOpacity(0.1),
+            ),
+          ),
+          // Skeleton learning paths header
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(16, 16, 16, 12),
+              child: Text('Learning Paths', style: AppTypography.headlineSmall),
+            ),
+          ),
+          // Skeleton learning path cards
+          SliverList(
+            delegate: SliverChildBuilderDelegate(
+              (context, index) => Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                child: Card(
+                  margin: EdgeInsets.zero,
+                  child: ListTile(
+                    leading: Container(
+                      width: 48,
+                      height: 48,
+                      decoration: BoxDecoration(
+                        color: AppColors.primary.withOpacity(0.1),
+                        borderRadius: AppRadius.mediumRadius,
+                      ),
+                      child: const Center(
+                        child: Text('🐟', style: TextStyle(fontSize: 24)),
+                      ),
+                    ),
+                    title: const Text('Loading learning path'),
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const SizedBox(height: AppSpacing.xs),
+                        const Text('Description of this learning path'),
+                        const SizedBox(height: AppSpacing.sm),
+                        ClipRRect(
+                          borderRadius: AppRadius.xsRadius,
+                          child: LinearProgressIndicator(
+                            value: 0.5,
+                            backgroundColor: AppColors.surfaceVariant,
+                            valueColor: const AlwaysStoppedAnimation<Color>(
+                              AppColors.primary,
+                            ),
+                            minHeight: 6,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              childCount: 4,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final profileAsync = ref.watch(userProfileProvider);
@@ -25,7 +97,7 @@ class LearnScreen extends ConsumerWidget {
 
     return Scaffold(
       body: profileAsync.when(
-        loading: () => const Center(child: FishLoader.large(message: 'Loading lessons...')),
+        loading: () => _buildSkeletonScreen(context),
         error: (e, _) => Center(child: Text('Error: $e')),
         data: (profile) {
           // Calculate total lessons across all paths
@@ -50,6 +122,9 @@ class LearnScreen extends ConsumerWidget {
                         currentStreak: profile?.currentStreak ?? 0,
                         completedLessons: completedLessons,
                         totalLessons: totalLessons,
+                        isNewUser: (profile?.totalSessions ?? 0) < 5,
+                        onMicroscopeTap: () => _navigateToWaterChemistry(context),
+                        onGlobeTap: () => _showRandomFishFact(context),
                       ),
                       // No back button - LearnScreen is Room 0 in HouseNavigator
                       // Navigation between rooms is via swipe or room indicator bar
@@ -157,6 +232,68 @@ class LearnScreen extends ConsumerWidget {
             ],
           );
         },
+      ),
+    );
+  }
+
+  /// Navigate to water chemistry/parameter guide
+  void _navigateToWaterChemistry(BuildContext context) {
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (_) => const ParameterGuideScreen()),
+    );
+  }
+
+  /// Show a random fish fact in a dialog
+  void _showRandomFishFact(BuildContext context) {
+    final species = SpeciesDatabase.species;
+    if (species.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('No fish facts available yet!')),
+      );
+      return;
+    }
+
+    final random = math.Random();
+    final randomSpecies = species[random.nextInt(species.length)];
+
+    // Generate a fun fact
+    final facts = [
+      '${randomSpecies.commonName} (${randomSpecies.scientificName}) can grow up to ${randomSpecies.adultSizeCm}cm!',
+      'Did you know? ${randomSpecies.commonName} prefers a temperature of ${randomSpecies.minTempC}°C - ${randomSpecies.maxTempC}°C.',
+      '${randomSpecies.commonName} is ${randomSpecies.temperament.toLowerCase()} and swims at the ${randomSpecies.swimLevel.toLowerCase()} level.',
+      'The ${randomSpecies.commonName} is from the ${randomSpecies.family} family.',
+      '${randomSpecies.commonName} needs at least ${randomSpecies.minTankLitres}L of tank space.',
+      'A ${randomSpecies.commonName} is best kept in groups of ${randomSpecies.minSchoolSize} or more.',
+    ];
+
+    final fact = facts[random.nextInt(facts.length)];
+
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Row(
+          children: [
+            const Text('🐠 ', style: TextStyle(fontSize: 24)),
+            const Expanded(child: Text('Fish Fact!')),
+          ],
+        ),
+        content: Text(
+          fact,
+          style: AppTypography.bodyLarge,
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(),
+            child: const Text('Cool!'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.of(ctx).pop();
+              _showRandomFishFact(context); // Show another
+            },
+            child: const Text('Another!'),
+          ),
+        ],
       ),
     );
   }

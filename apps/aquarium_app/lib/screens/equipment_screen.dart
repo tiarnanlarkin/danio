@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 import '../widgets/core/bubble_loader.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -15,6 +16,7 @@ import '../services/storage_service.dart';
 import '../services/xp_animation_service.dart';
 import '../theme/app_theme.dart';
 import '../utils/app_feedback.dart';
+import '../utils/skeleton_placeholders.dart';
 import '../widgets/core/app_card.dart';
 
 const _uuid = Uuid();
@@ -91,6 +93,24 @@ class EquipmentScreen extends ConsumerWidget {
 
   const EquipmentScreen({super.key, required this.tankId});
 
+  Widget _buildSkeletonList() {
+    final placeholders = SkeletonPlaceholders.equipmentList;
+    return Skeletonizer(
+      child: ListView(
+        padding: const EdgeInsets.all(16),
+        children: placeholders
+            .map((e) => _EquipmentCard(
+                  equipment: e,
+                  onEdit: () {},
+                  onService: () {},
+                  onHistory: () {},
+                  onDelete: () {},
+                ))
+            .toList(),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final equipmentAsync = ref.watch(equipmentProvider(tankId));
@@ -98,7 +118,7 @@ class EquipmentScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(title: const Text('Equipment')),
       body: equipmentAsync.when(
-        loading: () => const Center(child: BubbleLoader()),
+        loading: () => _buildSkeletonList(),
         error: (err, _) => Center(child: Text('Error: $err')),
         data: (equipment) {
           if (equipment.isEmpty) {
