@@ -14,6 +14,8 @@ enum RoomThemeType {
   cotton, // Cotton candy gradient mesh
   aurora, // Northern lights glow
   golden, // Golden hour warmth
+  cozyLiving, // Warm cozy living room (cream, beige, coral)
+  eveningGlow, // Cozy evening with lamp light
 }
 
 class RoomTheme {
@@ -415,6 +417,74 @@ class RoomTheme {
     accentCircles: [Color(0xFFFFD090), Color(0xFFF0B060), Color(0xFFE8C0A0)],
   );
 
+  /// Cozy Living Room - Warm cream walls, wood floor, homey feel
+  static RoomTheme get cozyLiving => const RoomTheme(
+    name: 'Cozy Living',
+    description: 'Warm cream walls, wooden accents',
+    primaryWave: Color(0xFFE8D4C0), // Soft cream wave
+    secondaryWave: Color(0xFFD4C4B0), // Warm beige wave
+    accentBlob: Color(0xFFE8A088), // Soft coral accent
+    accentBlob2: Color(0xFFC4D8D0), // Sage green accent
+    background1: Color(0xFFF5EDE0), // Warm cream wall top
+    background2: Color(0xFFEDE5D8), // Soft beige mid
+    background3: Color(0xFFE5DDD0), // Warm tan bottom
+    waterTop: Color(0xFF8ED8D8), // Fresh aqua
+    waterMid: Color(0xFF78C8C8), // Soft teal
+    waterBottom: Color(0xFF68B8B8), // Deep teal
+    sand: Color(0xFFD4C4A8), // Natural wood floor
+    plantPrimary: Color(0xFF6BA87C), // Healthy green
+    plantSecondary: Color(0xFF8BC89C), // Light sage
+    fish1: Color(0xFFFF9078), // Warm coral fish
+    fish2: Color(0xFF78B8D8), // Sky blue fish  
+    fish3: Color(0xFFE8B868), // Golden fish
+    glassCard: Color(0x28FFFFFF), // Soft frosted
+    glassBorder: Color(0x45FFFFFF), // Warm border
+    gaugeColor1: Color(0xFF78C8D8), // Teal gauge
+    gaugeColor2: Color(0xFF8BD888), // Green gauge
+    gaugeColor3: Color(0xFFE8B878), // Amber gauge
+    buttonFeed: Color(0xFFE8A088), // Coral
+    buttonTest: Color(0xFF8BD888), // Green
+    buttonWater: Color(0xFF78C8D8), // Teal
+    buttonStats: Color(0xFFB898C8), // Lavender
+    textPrimary: Color(0xFF4A4038), // Warm charcoal
+    textSecondary: Color(0xFF7A7068), // Muted brown
+    accentCircles: [Color(0xFFE8C8B0), Color(0xFFC8D8C8), Color(0xFFE8D8C0)],
+  );
+
+  /// Evening Glow - Cozy night with warm lamp light
+  static RoomTheme get eveningGlow => const RoomTheme(
+    name: 'Evening Glow',
+    description: 'Cozy night with warm lamplight',
+    primaryWave: Color(0xFF4A5568), // Soft evening gray-blue
+    secondaryWave: Color(0xFF3D4A5C), // Deeper evening
+    accentBlob: Color(0xFFE8A868), // Warm lamp glow
+    accentBlob2: Color(0xFF5A6878), // Cool shadow
+    background1: Color(0xFF2D3748), // Deep evening blue
+    background2: Color(0xFF252F3F), // Darker evening
+    background3: Color(0xFF1E2736), // Night base
+    waterTop: Color(0xFF5A8898), // Moonlit aqua
+    waterMid: Color(0xFF4A7888), // Deep teal
+    waterBottom: Color(0xFF3A6878), // Night teal
+    sand: Color(0xFF4A4038), // Dark wood floor
+    plantPrimary: Color(0xFF4A7860), // Dark sage
+    plantSecondary: Color(0xFF5A8870), // Evening green
+    fish1: Color(0xFFE8A070), // Warm orange fish
+    fish2: Color(0xFF70A8D8), // Blue fish
+    fish3: Color(0xFFC888B8), // Purple fish
+    glassCard: Color(0x20FFFFFF), // Night frosted
+    glassBorder: Color(0x35FFFFFF), // Dim border
+    gaugeColor1: Color(0xFF70B8D8), // Blue gauge
+    gaugeColor2: Color(0xFF70C898), // Teal gauge
+    gaugeColor3: Color(0xFFE8B070), // Amber gauge
+    buttonFeed: Color(0xFFE8A868), // Warm amber
+    buttonTest: Color(0xFF70C898), // Teal
+    buttonWater: Color(0xFF70A8D8), // Blue
+    buttonStats: Color(0xFFA878C8), // Purple
+    textPrimary: Color(0xFFE8E8F0), // Soft white
+    textSecondary: Color(0xFFA8B0B8), // Muted gray
+    accentCircles: [Color(0xFFE8B878), Color(0xFF78A8C8), Color(0xFF6890A8)],
+  );
+
   static RoomTheme fromType(RoomThemeType type) {
     switch (type) {
       case RoomThemeType.ocean:
@@ -437,10 +507,16 @@ class RoomTheme {
         return aurora;
       case RoomThemeType.golden:
         return golden;
+      case RoomThemeType.cozyLiving:
+        return cozyLiving;
+      case RoomThemeType.eveningGlow:
+        return eveningGlow;
     }
   }
 
   static List<RoomTheme> get allThemes => [
+    cozyLiving,  // New cozy themes first for discoverability
+    eveningGlow,
     ocean,
     pastel,
     sunset,

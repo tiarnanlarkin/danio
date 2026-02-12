@@ -71,51 +71,77 @@ class LivingRoomScene extends ConsumerWidget {
             height: h,
             child: Stack(
               children: [
-                // === LAYER 1: Organic abstract background ===
-                Positioned.fill(child: _OrganicBackground(theme: theme)),
+                // === LAYER 1: Cozy room background with walls, floor, window ===
+                Positioned.fill(child: _CozyRoomBackground(theme: theme)),
 
-              // === LAYER 2: Decorative elements ===
+              // === LAYER 2: Decorative room elements (plants, shelves, lamp) ===
+              // Tall plant on left side
+              Positioned(
+                bottom: h * 0.08,
+                left: w * 0.02,
+                child: _RoomPlant(height: h * 0.25, theme: theme),
+              ),
+              
+              // Small plant on shelf (right)
+              Positioned(
+                top: h * 0.12,
+                right: w * 0.08,
+                child: _ShelfPlant(size: w * 0.08, theme: theme),
+              ),
+
               // Stars/sparkles for whimsical themes
-              if (theme.name == 'Whimsical') ...[
+              if (theme.name == 'Whimsical' || theme.name == 'Midnight' || theme.name == 'Aurora') ...[
+                Positioned(
+                  top: h * 0.08,
+                  left: w * 0.15,
+                  child: _Sparkle(size: 8, color: theme.accentCircles[0]),
+                ),
+                Positioned(
+                  top: h * 0.12,
+                  right: w * 0.25,
+                  child: _Sparkle(size: 6, color: theme.accentCircles[1]),
+                ),
+                Positioned(
+                  top: h * 0.06,
+                  left: w * 0.35,
+                  child: _Sparkle(size: 5, color: theme.accentCircles[2]),
+                ),
                 Positioned(
                   top: h * 0.15,
-                  left: w * 0.1,
-                  child: _Sparkle(size: 12, color: theme.accentCircles[0]),
-                ),
-                Positioned(
-                  top: h * 0.25,
-                  right: w * 0.15,
-                  child: _Sparkle(size: 8, color: theme.accentCircles[1]),
-                ),
-                Positioned(
-                  top: h * 0.45,
-                  left: w * 0.05,
-                  child: _Sparkle(size: 10, color: theme.accentCircles[2]),
-                ),
-                Positioned(
-                  bottom: h * 0.35,
-                  right: w * 0.08,
-                  child: _Sparkle(size: 14, color: theme.accentCircles[0]),
+                  left: w * 0.08,
+                  child: _Sparkle(size: 4, color: theme.accentCircles[0]),
                 ),
               ],
 
-              // === LAYER 3: 3D Aquarium illustration (center) ===
+              // === LAYER 3: Furniture stand for aquarium ===
               Positioned(
-                top: h * 0.28,
+                top: h * 0.54,
+                left: w * 0.08,
+                right: w * 0.08,
+                child: _AquariumStand(
+                  width: w * 0.84,
+                  height: h * 0.08,
+                  theme: theme,
+                ),
+              ),
+
+              // === LAYER 4: 3D Aquarium illustration (center, sitting on stand) ===
+              Positioned(
+                top: h * 0.26,
                 left: w * 0.1,
                 right: w * 0.1,
                 child: RippleContainer(
                   onTap: onTankTap,
                   child: _ThemedAquarium(
                     width: w * 0.8,
-                    height: h * 0.32,
+                    height: h * 0.30,
                     theme: theme,
                     useRiveFish: useRiveFish,
                   ),
                 ),
               ),
 
-              // === LAYER 4: Glassmorphic UI cards ===
+              // === LAYER 5: Glassmorphic UI cards ===
 
               // Temperature gauge (top left)
               Positioned(
@@ -124,7 +150,7 @@ class LivingRoomScene extends ConsumerWidget {
                 child: GestureDetector(
                   onTap: onStatsTap,
                   child: _CircularTempGauge(
-                    size: w * 0.28,
+                    size: w * 0.26,
                     temperature: temperature ?? 25,
                     theme: theme,
                   ),
@@ -138,7 +164,7 @@ class LivingRoomScene extends ConsumerWidget {
                 child: GestureDetector(
                   onTap: onTestKitTap,
                   child: _WaterQualityCard(
-                    width: w * 0.38,
+                    width: w * 0.36,
                     ph: ph,
                     ammonia: ammonia,
                     nitrate: nitrate,
@@ -149,7 +175,7 @@ class LivingRoomScene extends ConsumerWidget {
 
               // Tank name badge
               Positioned(
-                top: h * 0.22,
+                top: h * 0.20,
                 left: 0,
                 right: 0,
                 child: Center(
@@ -163,23 +189,21 @@ class LivingRoomScene extends ConsumerWidget {
 
               // Wave graph card (bottom center) - moved up since actions are in speed dial
               Positioned(
-                bottom: h * 0.12,
+                bottom: h * 0.04,
                 left: w * 0.08,
                 right: w * 0.08,
                 child: _WaveGraphCard(
                   width: w * 0.84,
-                  height: 70,
+                  height: 65,
                   theme: theme,
                 ),
               ),
 
-              // Action buttons removed - now using SpeedDialFAB in home_screen
-
-              // === LAYER 5: Interactive objects ===
+              // === LAYER 6: Interactive objects ===
               // Journal object (left side of scene)
               if (onJournalTap != null)
                 Positioned(
-                  bottom: h * 0.25,
+                  bottom: h * 0.15,
                   left: w * 0.05,
                   child: LivingRoomObjects.journal(
                     onTap: onJournalTap!,
@@ -190,7 +214,7 @@ class LivingRoomScene extends ConsumerWidget {
               // Calendar/Schedule object (right side of scene)
               if (onCalendarTap != null)
                 Positioned(
-                  bottom: h * 0.25,
+                  bottom: h * 0.15,
                   right: w * 0.05,
                   child: LivingRoomObjects.calendar(
                     onTap: onCalendarTap!,
@@ -246,7 +270,7 @@ class LivingRoomScene extends ConsumerWidget {
   }
 }
 
-// === SPARKLE (for whimsical theme) ===
+// === SPARKLE (for whimsical/night themes) ===
 
 class _Sparkle extends StatelessWidget {
   final double size;
@@ -271,7 +295,7 @@ class _SparklePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = color.withOpacity(0.6)
+      ..color = color.withOpacity(0.7)
       ..style = PaintingStyle.fill;
 
     final center = Offset(size.width / 2, size.height / 2);
@@ -319,159 +343,628 @@ class _SparklePainter extends CustomPainter {
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
 
-// === ORGANIC ABSTRACT BACKGROUND ===
+// === COZY ROOM BACKGROUND - Actual room with walls, floor, window ===
 
-class _OrganicBackground extends StatelessWidget {
+class _CozyRoomBackground extends StatelessWidget {
   final RoomTheme theme;
 
-  const _OrganicBackground({required this.theme});
+  const _CozyRoomBackground({required this.theme});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [theme.background1, theme.background2, theme.background3],
-        ),
+    return CustomPaint(
+      painter: _CozyRoomPainter(theme: theme),
+      size: Size.infinite,
+    );
+  }
+}
+
+class _CozyRoomPainter extends CustomPainter {
+  final RoomTheme theme;
+
+  _CozyRoomPainter({required this.theme});
+
+  // Determine if this is a dark/night theme
+  bool get _isDarkTheme {
+    final luminance = theme.background1.computeLuminance();
+    return luminance < 0.3;
+  }
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final w = size.width;
+    final h = size.height;
+
+    // === BASE WALL GRADIENT ===
+    final wallGradient = LinearGradient(
+      begin: Alignment.topCenter,
+      end: Alignment.bottomCenter,
+      colors: [
+        theme.background1,
+        theme.background2,
+        theme.background3,
+      ],
+      stops: const [0.0, 0.5, 1.0],
+    );
+    
+    canvas.drawRect(
+      Rect.fromLTWH(0, 0, w, h),
+      Paint()..shader = wallGradient.createShader(Rect.fromLTWH(0, 0, w, h)),
+    );
+
+    // === SUBTLE WALL TEXTURE (vertical stripes like wallpaper) ===
+    final texturePaint = Paint()
+      ..color = theme.primaryWave.withOpacity(0.03)
+      ..strokeWidth = 1;
+    
+    for (var x = 0.0; x < w; x += 30) {
+      canvas.drawLine(Offset(x, 0), Offset(x, h * 0.7), texturePaint);
+    }
+
+    // === FLOOR ===
+    final floorTop = h * 0.68;
+    final floorGradient = LinearGradient(
+      begin: Alignment.topCenter,
+      end: Alignment.bottomCenter,
+      colors: [
+        _isDarkTheme 
+            ? theme.sand.withOpacity(0.3)
+            : theme.sand.withOpacity(0.8),
+        _isDarkTheme
+            ? theme.sand.withOpacity(0.2)
+            : theme.sand,
+      ],
+    );
+    
+    canvas.drawRect(
+      Rect.fromLTWH(0, floorTop, w, h - floorTop),
+      Paint()..shader = floorGradient.createShader(Rect.fromLTWH(0, floorTop, w, h)),
+    );
+
+    // Floor boards (subtle horizontal lines)
+    final floorLinePaint = Paint()
+      ..color = _isDarkTheme 
+          ? Colors.black.withOpacity(0.1)
+          : Colors.brown.withOpacity(0.08)
+      ..strokeWidth = 1;
+    
+    for (var y = floorTop; y < h; y += 20) {
+      canvas.drawLine(Offset(0, y), Offset(w, y), floorLinePaint);
+    }
+
+    // === BASEBOARD / TRIM ===
+    final baseboardPaint = Paint()
+      ..color = _isDarkTheme
+          ? theme.textSecondary.withOpacity(0.15)
+          : theme.textSecondary.withOpacity(0.2);
+    canvas.drawRect(
+      Rect.fromLTWH(0, floorTop - 4, w, 8),
+      baseboardPaint,
+    );
+
+    // === WINDOW WITH CURTAINS (top right) ===
+    _drawWindow(canvas, w, h);
+
+    // === WARM LIGHTING EFFECTS ===
+    _drawLightingEffects(canvas, w, h);
+
+    // === DECORATIVE SHELF (top area) ===
+    _drawShelf(canvas, w, h);
+  }
+
+  void _drawWindow(Canvas canvas, double w, double h) {
+    final windowLeft = w * 0.60;
+    final windowTop = h * 0.04;
+    final windowWidth = w * 0.35;
+    final windowHeight = h * 0.18;
+
+    // Window light glow (outside light coming in)
+    final windowGlow = Paint()
+      ..shader = RadialGradient(
+        center: Alignment.center,
+        radius: 1.0,
+        colors: _isDarkTheme
+            ? [
+                const Color(0xFF4A6080).withOpacity(0.3), // Moonlight blue
+                Colors.transparent,
+              ]
+            : [
+                const Color(0xFFFFF8E7).withOpacity(0.4), // Warm sunlight
+                const Color(0xFFFFEDD5).withOpacity(0.2),
+                Colors.transparent,
+              ],
+      ).createShader(Rect.fromLTWH(
+        windowLeft - windowWidth * 0.3,
+        windowTop - windowHeight * 0.2,
+        windowWidth * 1.6,
+        windowHeight * 2,
+      ));
+    
+    canvas.drawOval(
+      Rect.fromLTWH(
+        windowLeft - windowWidth * 0.2,
+        windowTop,
+        windowWidth * 1.4,
+        windowHeight * 1.5,
       ),
+      windowGlow,
+    );
+
+    // Window frame
+    final windowRect = RRect.fromRectAndRadius(
+      Rect.fromLTWH(windowLeft, windowTop, windowWidth, windowHeight),
+      const Radius.circular(4),
+    );
+    
+    // Window glass (sky/outside)
+    final skyGradient = LinearGradient(
+      begin: Alignment.topCenter,
+      end: Alignment.bottomCenter,
+      colors: _isDarkTheme
+          ? [
+              const Color(0xFF1A2040), // Night sky
+              const Color(0xFF2A3050),
+            ]
+          : [
+              const Color(0xFF87CEEB), // Day sky
+              const Color(0xFFB0E0E6),
+            ],
+    );
+    canvas.drawRRect(
+      windowRect,
+      Paint()..shader = skyGradient.createShader(windowRect.outerRect),
+    );
+
+    // Window frame border
+    canvas.drawRRect(
+      windowRect,
+      Paint()
+        ..color = _isDarkTheme
+            ? theme.textSecondary.withOpacity(0.3)
+            : const Color(0xFF8B7355).withOpacity(0.5)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 3,
+    );
+
+    // Window cross bars
+    final crossPaint = Paint()
+      ..color = _isDarkTheme
+          ? theme.textSecondary.withOpacity(0.25)
+          : const Color(0xFF8B7355).withOpacity(0.4)
+      ..strokeWidth = 2;
+    
+    // Vertical bar
+    canvas.drawLine(
+      Offset(windowLeft + windowWidth / 2, windowTop),
+      Offset(windowLeft + windowWidth / 2, windowTop + windowHeight),
+      crossPaint,
+    );
+    // Horizontal bar
+    canvas.drawLine(
+      Offset(windowLeft, windowTop + windowHeight / 2),
+      Offset(windowLeft + windowWidth, windowTop + windowHeight / 2),
+      crossPaint,
+    );
+
+    // === CURTAINS ===
+    final curtainColor = _isDarkTheme
+        ? theme.accentBlob.withOpacity(0.4)
+        : theme.accentBlob.withOpacity(0.6);
+    final curtainPaint = Paint()..color = curtainColor;
+
+    // Left curtain
+    final leftCurtain = Path()
+      ..moveTo(windowLeft - 8, windowTop - 5)
+      ..quadraticBezierTo(
+        windowLeft + windowWidth * 0.15,
+        windowTop + windowHeight * 0.3,
+        windowLeft - 5,
+        windowTop + windowHeight + 10,
+      )
+      ..lineTo(windowLeft - 15, windowTop + windowHeight + 10)
+      ..quadraticBezierTo(
+        windowLeft - 10,
+        windowTop + windowHeight * 0.5,
+        windowLeft - 15,
+        windowTop - 5,
+      )
+      ..close();
+    canvas.drawPath(leftCurtain, curtainPaint);
+
+    // Right curtain
+    final rightCurtain = Path()
+      ..moveTo(windowLeft + windowWidth + 8, windowTop - 5)
+      ..quadraticBezierTo(
+        windowLeft + windowWidth - windowWidth * 0.15,
+        windowTop + windowHeight * 0.3,
+        windowLeft + windowWidth + 5,
+        windowTop + windowHeight + 10,
+      )
+      ..lineTo(windowLeft + windowWidth + 15, windowTop + windowHeight + 10)
+      ..quadraticBezierTo(
+        windowLeft + windowWidth + 10,
+        windowTop + windowHeight * 0.5,
+        windowLeft + windowWidth + 15,
+        windowTop - 5,
+      )
+      ..close();
+    canvas.drawPath(rightCurtain, curtainPaint);
+
+    // Curtain rod
+    canvas.drawLine(
+      Offset(windowLeft - 20, windowTop - 8),
+      Offset(windowLeft + windowWidth + 20, windowTop - 8),
+      Paint()
+        ..color = _isDarkTheme
+            ? theme.textSecondary.withOpacity(0.3)
+            : const Color(0xFF8B7355).withOpacity(0.6)
+        ..strokeWidth = 3
+        ..strokeCap = StrokeCap.round,
+    );
+
+    // Moon or sun in window
+    if (_isDarkTheme) {
+      // Moon
+      canvas.drawCircle(
+        Offset(windowLeft + windowWidth * 0.7, windowTop + windowHeight * 0.3),
+        8,
+        Paint()..color = const Color(0xFFE8E8F0).withOpacity(0.8),
+      );
+    }
+  }
+
+  void _drawLightingEffects(Canvas canvas, double w, double h) {
+    // === LAMP GLOW (left side, for cozy evening feel) ===
+    if (_isDarkTheme) {
+      // Warm lamp glow for night themes
+      final lampGlow = Paint()
+        ..shader = RadialGradient(
+          center: Alignment.center,
+          radius: 0.5,
+          colors: [
+            const Color(0xFFFFD54F).withOpacity(0.25),
+            const Color(0xFFFFB74D).withOpacity(0.12),
+            Colors.transparent,
+          ],
+        ).createShader(Rect.fromLTWH(0, h * 0.2, w * 0.5, h * 0.5));
+      
+      canvas.drawOval(
+        Rect.fromCenter(
+          center: Offset(w * 0.12, h * 0.45),
+          width: w * 0.35,
+          height: h * 0.4,
+        ),
+        lampGlow,
+      );
+
+      // Small lamp icon hint
+      final lampPaint = Paint()
+        ..color = const Color(0xFFFFD54F).withOpacity(0.6);
+      canvas.drawCircle(
+        Offset(w * 0.08, h * 0.38),
+        6,
+        lampPaint,
+      );
+    } else {
+      // Subtle warm ambient light for day themes
+      final ambientGlow = Paint()
+        ..shader = RadialGradient(
+          center: Alignment.topRight,
+          radius: 1.2,
+          colors: [
+            const Color(0xFFFFF8E7).withOpacity(0.15),
+            Colors.transparent,
+          ],
+        ).createShader(Rect.fromLTWH(0, 0, w, h));
+      
+      canvas.drawRect(Rect.fromLTWH(0, 0, w, h), ambientGlow);
+    }
+
+    // === AQUARIUM GLOW (centerpiece lighting) ===
+    final aquariumGlow = Paint()
+      ..shader = RadialGradient(
+        center: Alignment.center,
+        radius: 0.5,
+        colors: [
+          theme.waterMid.withOpacity(_isDarkTheme ? 0.25 : 0.15),
+          theme.waterMid.withOpacity(_isDarkTheme ? 0.12 : 0.05),
+          Colors.transparent,
+        ],
+      ).createShader(Rect.fromLTWH(w * 0.15, h * 0.25, w * 0.7, h * 0.4));
+    
+    canvas.drawOval(
+      Rect.fromCenter(
+        center: Offset(w * 0.5, h * 0.42),
+        width: w * 0.6,
+        height: h * 0.35,
+      ),
+      aquariumGlow,
+    );
+  }
+
+  void _drawShelf(Canvas canvas, double w, double h) {
+    // Floating shelf on top right (above window area, decorative)
+    final shelfY = h * 0.10;
+    final shelfPaint = Paint()
+      ..color = _isDarkTheme
+          ? theme.textSecondary.withOpacity(0.2)
+          : const Color(0xFF8B7355).withOpacity(0.3);
+    
+    // Shelf surface
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(
+        Rect.fromLTWH(w * 0.72, shelfY, w * 0.22, 4),
+        const Radius.circular(2),
+      ),
+      shelfPaint,
+    );
+
+    // Shelf bracket hints
+    canvas.drawLine(
+      Offset(w * 0.76, shelfY + 4),
+      Offset(w * 0.76, shelfY + 12),
+      shelfPaint..strokeWidth = 2,
+    );
+    canvas.drawLine(
+      Offset(w * 0.90, shelfY + 4),
+      Offset(w * 0.90, shelfY + 12),
+      shelfPaint,
+    );
+  }
+
+  @override
+  bool shouldRepaint(covariant _CozyRoomPainter old) => old.theme != theme;
+}
+
+// === ROOM PLANT (decorative floor plant) ===
+
+class _RoomPlant extends StatelessWidget {
+  final double height;
+  final RoomTheme theme;
+
+  const _RoomPlant({required this.height, required this.theme});
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: height * 0.5,
+      height: height,
       child: CustomPaint(
-        painter: _OrganicShapesPainter(theme: theme),
-        size: Size.infinite,
+        painter: _RoomPlantPainter(theme: theme),
       ),
     );
   }
 }
 
-class _OrganicShapesPainter extends CustomPainter {
+class _RoomPlantPainter extends CustomPainter {
   final RoomTheme theme;
 
-  _OrganicShapesPainter({required this.theme});
+  _RoomPlantPainter({required this.theme});
 
   @override
   void paint(Canvas canvas, Size size) {
-    // Large wave (top)
-    final wave1Paint = Paint()
-      ..color = theme.primaryWave.withOpacity(0.5)
-      ..style = PaintingStyle.fill;
+    final w = size.width;
+    final h = size.height;
 
-    final wave1 = Path()
-      ..moveTo(0, 0)
-      ..lineTo(0, size.height * 0.2)
-      ..quadraticBezierTo(
-        size.width * 0.25,
-        size.height * 0.12,
-        size.width * 0.5,
-        size.height * 0.2,
-      )
-      ..quadraticBezierTo(
-        size.width * 0.75,
-        size.height * 0.28,
-        size.width,
-        size.height * 0.15,
-      )
-      ..lineTo(size.width, 0)
+    // Plant pot
+    final potPaint = Paint()..color = const Color(0xFFB87333).withOpacity(0.7);
+    final potPath = Path()
+      ..moveTo(w * 0.25, h * 0.75)
+      ..lineTo(w * 0.3, h)
+      ..lineTo(w * 0.7, h)
+      ..lineTo(w * 0.75, h * 0.75)
       ..close();
-
-    canvas.drawPath(wave1, wave1Paint);
-
-    // Accent blob (right side)
-    final blobPaint = Paint()
-      ..color = theme.accentBlob.withOpacity(0.4)
-      ..style = PaintingStyle.fill;
-
-    final blob = Path()
-      ..moveTo(size.width * 0.7, size.height * 0.12)
-      ..quadraticBezierTo(
-        size.width * 1.1,
-        size.height * 0.22,
-        size.width * 0.95,
-        size.height * 0.42,
-      )
-      ..quadraticBezierTo(
-        size.width * 0.8,
-        size.height * 0.48,
-        size.width * 0.85,
-        size.height * 0.32,
-      )
-      ..quadraticBezierTo(
-        size.width * 0.65,
-        size.height * 0.22,
-        size.width * 0.7,
-        size.height * 0.12,
-      );
-
-    canvas.drawPath(blob, blobPaint);
-
-    // Second blob (bottom left)
-    final blob2 = Path()
-      ..moveTo(0, size.height * 0.55)
-      ..quadraticBezierTo(
-        size.width * 0.18,
-        size.height * 0.5,
-        size.width * 0.22,
-        size.height * 0.68,
-      )
-      ..quadraticBezierTo(
-        size.width * 0.12,
-        size.height * 0.82,
-        0,
-        size.height * 0.78,
-      )
-      ..close();
-
-    canvas.drawPath(
-      blob2,
-      Paint()..color = theme.accentBlob2.withOpacity(0.35),
+    canvas.drawPath(potPath, potPaint);
+    
+    // Pot rim
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(
+        Rect.fromLTWH(w * 0.2, h * 0.72, w * 0.6, h * 0.05),
+        const Radius.circular(2),
+      ),
+      potPaint,
     );
 
-    // Bottom wave
-    final wave2Paint = Paint()
-      ..color = theme.secondaryWave.withOpacity(0.4)
-      ..style = PaintingStyle.fill;
-
-    final wave2 = Path()
-      ..moveTo(0, size.height)
-      ..lineTo(0, size.height * 0.82)
-      ..quadraticBezierTo(
-        size.width * 0.3,
-        size.height * 0.78,
-        size.width * 0.5,
-        size.height * 0.85,
-      )
-      ..quadraticBezierTo(
-        size.width * 0.7,
-        size.height * 0.92,
-        size.width,
-        size.height * 0.82,
-      )
-      ..lineTo(size.width, size.height)
-      ..close();
-
-    canvas.drawPath(wave2, wave2Paint);
-
-    // Accent circles
-    for (var i = 0; i < theme.accentCircles.length; i++) {
-      final positions = [
-        Offset(size.width * 0.15, size.height * 0.32),
-        Offset(size.width * 0.88, size.height * 0.68),
-        Offset(size.width * 0.6, size.height * 0.1),
-      ];
-      final sizes = [22.0, 16.0, 10.0];
-
-      if (i < positions.length) {
-        canvas.drawCircle(
-          positions[i],
-          sizes[i],
-          Paint()..color = theme.accentCircles[i].withOpacity(0.25),
+    // Plant leaves
+    final leafPaint = Paint()..color = theme.plantPrimary.withOpacity(0.8);
+    
+    // Multiple leaves going up
+    for (var i = 0; i < 5; i++) {
+      final angle = -0.4 + i * 0.2;
+      final leafH = h * (0.5 + (i % 2) * 0.15);
+      final startY = h * 0.72;
+      
+      final leaf = Path()
+        ..moveTo(w * 0.5, startY)
+        ..quadraticBezierTo(
+          w * 0.5 + math.cos(angle) * w * 0.4,
+          startY - leafH * 0.5,
+          w * 0.5 + math.cos(angle) * w * 0.25,
+          startY - leafH,
+        )
+        ..quadraticBezierTo(
+          w * 0.5 + math.cos(angle) * w * 0.2,
+          startY - leafH * 0.6,
+          w * 0.5,
+          startY,
         );
-      }
+      
+      canvas.drawPath(leaf, leafPaint);
     }
   }
 
   @override
-  bool shouldRepaint(covariant _OrganicShapesPainter old) => old.theme != theme;
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
+
+// === SHELF PLANT (small decorative plant) ===
+
+class _ShelfPlant extends StatelessWidget {
+  final double size;
+  final RoomTheme theme;
+
+  const _ShelfPlant({required this.size, required this.theme});
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: size,
+      height: size,
+      child: CustomPaint(
+        painter: _ShelfPlantPainter(theme: theme),
+      ),
+    );
+  }
+}
+
+class _ShelfPlantPainter extends CustomPainter {
+  final RoomTheme theme;
+
+  _ShelfPlantPainter({required this.theme});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final w = size.width;
+    final h = size.height;
+
+    // Small pot
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(
+        Rect.fromLTWH(w * 0.25, h * 0.6, w * 0.5, h * 0.4),
+        const Radius.circular(4),
+      ),
+      Paint()..color = const Color(0xFFD4A574).withOpacity(0.8),
+    );
+
+    // Small succulent/plant
+    final leafPaint = Paint()..color = theme.plantSecondary.withOpacity(0.9);
+    for (var i = 0; i < 3; i++) {
+      final angle = -0.3 + i * 0.3;
+      canvas.drawOval(
+        Rect.fromCenter(
+          center: Offset(w * 0.5 + math.cos(angle) * w * 0.1, h * 0.45),
+          width: w * 0.25,
+          height: h * 0.3,
+        ),
+        leafPaint,
+      );
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
+
+// === AQUARIUM STAND (furniture) ===
+
+class _AquariumStand extends StatelessWidget {
+  final double width;
+  final double height;
+  final RoomTheme theme;
+
+  const _AquariumStand({
+    required this.width,
+    required this.height,
+    required this.theme,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return CustomPaint(
+      size: Size(width, height),
+      painter: _StandPainter(theme: theme),
+    );
+  }
+}
+
+class _StandPainter extends CustomPainter {
+  final RoomTheme theme;
+
+  _StandPainter({required this.theme});
+
+  bool get _isDarkTheme => theme.background1.computeLuminance() < 0.3;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final w = size.width;
+    final h = size.height;
+
+    final woodColor = _isDarkTheme
+        ? const Color(0xFF3D3228)
+        : const Color(0xFF8B6914).withOpacity(0.7);
+    final woodHighlight = _isDarkTheme
+        ? const Color(0xFF4A3D30)
+        : const Color(0xFFA67C00).withOpacity(0.5);
+
+    // Stand top surface
+    final topRect = RRect.fromRectAndRadius(
+      Rect.fromLTWH(0, 0, w, h * 0.35),
+      const Radius.circular(3),
+    );
+    canvas.drawRRect(topRect, Paint()..color = woodColor);
+    
+    // Highlight on top
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(
+        Rect.fromLTWH(w * 0.05, 2, w * 0.9, 3),
+        const Radius.circular(2),
+      ),
+      Paint()..color = woodHighlight,
+    );
+
+    // Stand legs
+    final legPaint = Paint()..color = woodColor;
+    
+    // Left leg
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(
+        Rect.fromLTWH(w * 0.05, h * 0.3, w * 0.08, h * 0.7),
+        const Radius.circular(2),
+      ),
+      legPaint,
+    );
+    
+    // Right leg
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(
+        Rect.fromLTWH(w * 0.87, h * 0.3, w * 0.08, h * 0.7),
+        const Radius.circular(2),
+      ),
+      legPaint,
+    );
+
+    // Cross support
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(
+        Rect.fromLTWH(w * 0.05, h * 0.6, w * 0.9, h * 0.12),
+        const Radius.circular(2),
+      ),
+      legPaint,
+    );
+
+    // Decorative cabinet door hint
+    final doorPaint = Paint()
+      ..color = woodHighlight
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1;
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(
+        Rect.fromLTWH(w * 0.2, h * 0.35, w * 0.25, h * 0.55),
+        const Radius.circular(2),
+      ),
+      doorPaint,
+    );
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(
+        Rect.fromLTWH(w * 0.55, h * 0.35, w * 0.25, h * 0.55),
+        const Radius.circular(2),
+      ),
+      doorPaint,
+    );
+  }
+
+  @override
+  bool shouldRepaint(covariant _StandPainter old) => old.theme != theme;
 }
 
 // === CIRCULAR TEMPERATURE GAUGE ===
@@ -657,7 +1150,7 @@ class _WaterQualityCard extends StatelessWidget {
         filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
         child: Container(
           width: width,
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(14),
           decoration: BoxDecoration(
             color: theme.glassCard,
             borderRadius: AppRadius.largeRadius,
@@ -668,19 +1161,19 @@ class _WaterQualityCard extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  Icon(Icons.water_drop, color: theme.textSecondary, size: 16),
-                  const SizedBox(width: 6),
+                  Icon(Icons.water_drop, color: theme.textSecondary, size: 14),
+                  const SizedBox(width: 5),
                   Text(
                     'Water Quality',
                     style: TextStyle(
                       color: theme.textPrimary,
-                      fontSize: 13,
+                      fontSize: 12,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
                 ],
               ),
-              const SizedBox(height: 14),
+              const SizedBox(height: 12),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
@@ -691,10 +1184,10 @@ class _WaterQualityCard extends StatelessWidget {
                       label: 'pH',
                       color: _getPhColor(ph),
                       theme: theme,
-                      size: 42,
+                      size: 38,
                     ),
                   ),
-                  const SizedBox(width: 8),
+                  const SizedBox(width: 6),
                   Flexible(
                     child: _MiniPieChart(
                       value: ammonia ?? 0,
@@ -702,10 +1195,10 @@ class _WaterQualityCard extends StatelessWidget {
                       label: 'NH₃',
                       color: _getAmmoniaColor(ammonia),
                       theme: theme,
-                      size: 42,
+                      size: 38,
                     ),
                   ),
-                  const SizedBox(width: 8),
+                  const SizedBox(width: 6),
                   Flexible(
                     child: _MiniPieChart(
                       value: nitrate ?? 10,
@@ -713,7 +1206,7 @@ class _WaterQualityCard extends StatelessWidget {
                       label: 'NO₃',
                       color: _getNitrateColor(nitrate),
                       theme: theme,
-                      size: 42,
+                      size: 38,
                     ),
                   ),
                 ],
@@ -770,7 +1263,7 @@ class _MiniPieChart extends StatelessWidget {
           ),
         ),
         const SizedBox(height: AppSpacing.xs),
-        Text(label, style: TextStyle(color: theme.textSecondary, fontSize: 10)),
+        Text(label, style: TextStyle(color: theme.textSecondary, fontSize: 9)),
       ],
     );
   }
@@ -840,7 +1333,7 @@ class _GlassBadge extends StatelessWidget {
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
           decoration: BoxDecoration(
             color: AppOverlays.black15,
             borderRadius: AppRadius.largeRadius,
@@ -853,15 +1346,15 @@ class _GlassBadge extends StatelessWidget {
                 text,
                 style: TextStyle(
                   color: theme.textPrimary,
-                  fontSize: 16,
+                  fontSize: 15,
                   fontWeight: FontWeight.w600,
                 ),
               ),
-              const SizedBox(width: 10),
+              const SizedBox(width: 8),
               Container(
                 padding: const EdgeInsets.symmetric(
-                  horizontal: 10,
-                  vertical: 4,
+                  horizontal: 8,
+                  vertical: 3,
                 ),
                 decoration: BoxDecoration(
                   color: theme.accentBlob.withOpacity(0.4),
@@ -871,7 +1364,7 @@ class _GlassBadge extends StatelessWidget {
                   subtext,
                   style: TextStyle(
                     color: theme.textPrimary,
-                    fontSize: 12,
+                    fontSize: 11,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -1038,7 +1531,7 @@ class _ThemedAquarium extends StatelessWidget {
               ),
             ],
 
-            // Plants with gentle swaying animation
+            // Plants with gentle swaying animation (duplicated for layering)
             Positioned(
               bottom: height * 0.15,
               left: width * 0.08,
@@ -1421,7 +1914,7 @@ class _WaveGraphCard extends StatelessWidget {
         child: Container(
           width: width,
           height: height,
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(14),
           decoration: BoxDecoration(
             color: theme.glassCard,
             borderRadius: AppRadius.largeRadius,
@@ -1434,11 +1927,11 @@ class _WaveGraphCard extends StatelessWidget {
                 'Weekly Trends',
                 style: TextStyle(
                   color: theme.textSecondary,
-                  fontSize: 12,
+                  fontSize: 11,
                   fontWeight: FontWeight.w500,
                 ),
               ),
-              const SizedBox(height: AppSpacing.sm),
+              const SizedBox(height: AppSpacing.xs),
               Expanded(
                 child: CustomPaint(
                   painter: _WaveGraphPainter(theme: theme),

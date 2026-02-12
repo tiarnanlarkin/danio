@@ -331,7 +331,10 @@ class TankActions {
       final allLivestock = await storage.getLivestockForTank(fromTankId);
 
       for (final id in livestockIds) {
-        final livestock = allLivestock.firstWhere((l) => l.id == id);
+        final livestock = allLivestock.firstWhere(
+          (l) => l.id == id,
+          orElse: () => throw StateError('Livestock not found: $id'),
+        );
         final moved = livestock.copyWith(tankId: toTankId);
         await storage.saveLivestock(moved);
       }

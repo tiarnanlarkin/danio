@@ -159,3 +159,17 @@
   - wishlist_provider (added atomic rollback)
 - Commit: 9a840f6 - Memory leak prevention + error handling
 
+### Session 2 (23:30 GMT onwards)
+- Received design reference images - cozy living room style wanted
+- Discovered existing `cozy_room_scene.dart` not being used!
+- **UI Consistency sub-agent completed:**
+  - Centralized achievement tier colors
+  - Replaced hardcoded spacing → AppSpacing
+  - Replaced hardcoded colors → theme colors
+  - Fixed withOpacity() performance issues
+- **UX States sub-agent completed:**
+  - Fixed 6 screens with better loading/error/empty states
+- **Active sub-agents:**
+  - cozy-room-redesign: Reworking Living Room for cozy feel
+  - bug-hunting: Testing features and hunting bugs
+

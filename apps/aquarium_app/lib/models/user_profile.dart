@@ -202,13 +202,16 @@ class UserProfile {
     final now = DateTime.now();
     final granted = streakFreezeGrantedDate!;
 
-    // Get the Monday of current week
-    final currentMonday = now.subtract(Duration(days: now.weekday - 1));
-    final grantedMonday = granted.subtract(Duration(days: granted.weekday - 1));
+    // Normalize to midnight to avoid time-of-day issues
+    final nowNormalized = DateTime(now.year, now.month, now.day);
+    final grantedNormalized = DateTime(granted.year, granted.month, granted.day);
 
-    // Different weeks = reset
-    return currentMonday.isAfter(grantedMonday) ||
-        currentMonday.day != grantedMonday.day;
+    // Get the Monday of current week (normalize first, then subtract)
+    final currentMonday = nowNormalized.subtract(Duration(days: nowNormalized.weekday - 1));
+    final grantedMonday = grantedNormalized.subtract(Duration(days: grantedNormalized.weekday - 1));
+
+    // Different weeks = reset (compare normalized dates)
+    return currentMonday.isAfter(grantedMonday);
   }
 
   /// Check if freeze was used this week
@@ -218,11 +221,15 @@ class UserProfile {
     final now = DateTime.now();
     final used = streakFreezeUsedDate!;
 
-    // Get the Monday of current week
-    final currentMonday = now.subtract(Duration(days: now.weekday - 1));
-    final usedMonday = used.subtract(Duration(days: used.weekday - 1));
+    // Normalize to midnight to avoid time-of-day issues
+    final nowNormalized = DateTime(now.year, now.month, now.day);
+    final usedNormalized = DateTime(used.year, used.month, used.day);
 
-    // Same week = used this week
+    // Get the Monday of current week (normalize first, then subtract)
+    final currentMonday = nowNormalized.subtract(Duration(days: nowNormalized.weekday - 1));
+    final usedMonday = usedNormalized.subtract(Duration(days: usedNormalized.weekday - 1));
+
+    // Same week = used this week (compare normalized dates)
     return currentMonday.year == usedMonday.year &&
         currentMonday.month == usedMonday.month &&
         currentMonday.day == usedMonday.day;

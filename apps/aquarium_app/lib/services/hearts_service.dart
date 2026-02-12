@@ -107,9 +107,15 @@ class HeartsService {
 
     final newHearts = updatedProfile.hearts - 1;
 
+    // Start the refill timer when losing a heart if not at max
+    // or if there's no existing refill time tracked
+    final shouldStartTimer = newHearts < HeartsConfig.maxHearts &&
+        (updatedProfile.lastHeartRefill == null ||
+            updatedProfile.hearts >= HeartsConfig.maxHearts);
+
     await _updateHearts(
       newHearts,
-      updateRefillTime: updatedProfile.lastHeartRefill == null,
+      updateRefillTime: shouldStartTimer,
     );
 
     return true;
