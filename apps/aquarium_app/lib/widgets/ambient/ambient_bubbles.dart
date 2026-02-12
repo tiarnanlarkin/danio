@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:floating_bubbles/floating_bubbles.dart';
+import '../../theme/app_theme.dart';
 
 /// Animated floating bubbles overlay for tank scenes.
 /// Uses the floating_bubbles package for smooth, repeating bubble animations.
