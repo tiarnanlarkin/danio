@@ -107,9 +107,15 @@ class GemsNotifier extends StateNotifier<AsyncValue<GemsState>> {
   }) async {
     if (amount <= 0) return;
 
-    final current = state.value;
+    // Auto-initialize if state not loaded yet
+    var current = state.value;
     if (current == null) {
-      throw Exception('Cannot add gems: Gems state not loaded');
+      current = GemsState(
+        balance: 0,
+        transactions: [],
+        lastUpdated: DateTime.now(),
+      );
+      state = AsyncValue.data(current);
     }
 
     try {
