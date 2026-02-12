@@ -9,6 +9,8 @@ import 'ambient/ambient_overlay.dart';
 import 'ambient/swaying_plant.dart';
 import 'effects/ripple_container.dart';
 import 'room/interactive_object.dart';
+import 'rive/rive_fish.dart';
+import 'rive/rive_water_effect.dart';
 
 /// Themeable room scene - supports multiple visual styles
 /// Includes day/night ambient lighting overlay based on real time.
@@ -29,6 +31,8 @@ class LivingRoomScene extends ConsumerWidget {
   final VoidCallback? onJournalTap;
   final VoidCallback? onCalendarTap;
   final bool isNewUser;
+  /// Whether to use animated Rive fish instead of static drawn fish
+  final bool useRiveFish;
 
   const LivingRoomScene({
     super.key,
@@ -48,6 +52,7 @@ class LivingRoomScene extends ConsumerWidget {
     this.onJournalTap,
     this.onCalendarTap,
     this.isNewUser = false,
+    this.useRiveFish = true,
   });
 
   @override
@@ -105,6 +110,7 @@ class LivingRoomScene extends ConsumerWidget {
                     width: w * 0.8,
                     height: h * 0.32,
                     theme: theme,
+                    useRiveFish: useRiveFish,
                   ),
                 ),
               ),
@@ -884,11 +890,13 @@ class _ThemedAquarium extends StatelessWidget {
   final double width;
   final double height;
   final RoomTheme theme;
+  final bool useRiveFish;
 
   const _ThemedAquarium({
     required this.width,
     required this.height,
     required this.theme,
+    this.useRiveFish = true,
   });
 
   @override
@@ -1000,22 +1008,52 @@ class _ThemedAquarium extends StatelessWidget {
               ),
             ),
 
-            // Fish
-            Positioned(
-              top: height * 0.22,
-              left: width * 0.2,
-              child: _SoftFish(size: 28, color: theme.fish1),
-            ),
-            Positioned(
-              top: height * 0.4,
-              right: width * 0.18,
-              child: _SoftFish(size: 24, color: theme.fish2, flip: true),
-            ),
-            Positioned(
-              top: height * 0.55,
-              left: width * 0.45,
-              child: _SoftFish(size: 20, color: theme.fish3),
-            ),
+            // Fish - Rive animated or static drawn
+            if (useRiveFish) ...[
+              // Animated Rive fish
+              Positioned(
+                top: height * 0.15,
+                left: width * 0.1,
+                child: RiveFish(
+                  fishType: RiveFishType.puffer,
+                  size: height * 0.35,
+                ),
+              ),
+              Positioned(
+                top: height * 0.35,
+                right: width * 0.05,
+                child: RiveFish(
+                  fishType: RiveFishType.joystick,
+                  size: height * 0.3,
+                  flipHorizontal: true,
+                ),
+              ),
+              Positioned(
+                top: height * 0.5,
+                left: width * 0.35,
+                child: RiveFish(
+                  fishType: RiveFishType.emotional,
+                  size: height * 0.25,
+                ),
+              ),
+            ] else ...[
+              // Static drawn fish (original)
+              Positioned(
+                top: height * 0.22,
+                left: width * 0.2,
+                child: _SoftFish(size: 28, color: theme.fish1),
+              ),
+              Positioned(
+                top: height * 0.4,
+                right: width * 0.18,
+                child: _SoftFish(size: 24, color: theme.fish2, flip: true),
+              ),
+              Positioned(
+                top: height * 0.55,
+                left: width * 0.45,
+                child: _SoftFish(size: 20, color: theme.fish3),
+              ),
+            ],
 
             // Static bubbles (decorative)
             Positioned(
@@ -1026,6 +1064,13 @@ class _ThemedAquarium extends StatelessWidget {
 
             // Animated floating bubbles
             const AmbientBubblesSubtle(bubbleCount: 12),
+
+            // Water surface effect (Rive animated)
+            if (useRiveFish)
+              const WaterSurfaceOverlay(
+                height: 30,
+                opacity: 0.3,
+              ),
 
             // Light reflection
             Positioned(
