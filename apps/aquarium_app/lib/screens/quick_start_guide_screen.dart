@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
+import '../widgets/core/app_card.dart';
 
 class QuickStartGuideScreen extends StatelessWidget {
   const QuickStartGuideScreen({super.key});
@@ -11,26 +12,24 @@ class QuickStartGuideScreen extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          Card(
-            color: AppColors.primary.withOpacity(0.1),
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                children: [
-                  Icon(Icons.rocket_launch, size: 48, color: AppColors.primary),
-                  const SizedBox(height: 12),
-                  Text(
-                    'Your First Aquarium',
-                    style: AppTypography.headlineMedium,
-                  ),
-                  const SizedBox(height: AppSpacing.sm),
-                  Text(
-                    'Setting up an aquarium is exciting! Follow these steps for a successful start.',
-                    style: AppTypography.bodyMedium,
-                    textAlign: TextAlign.center,
-                  ),
-                ],
-              ),
+          AppCard(
+            backgroundColor: AppColors.primary.withOpacity(0.1),
+            padding: AppCardPadding.standard,
+            child: Column(
+              children: [
+                Icon(Icons.rocket_launch, size: 48, color: AppColors.primary),
+                const SizedBox(height: 12),
+                Text(
+                  'Your First Aquarium',
+                  style: AppTypography.headlineMedium,
+                ),
+                const SizedBox(height: AppSpacing.sm),
+                Text(
+                  'Setting up an aquarium is exciting! Follow these steps for a successful start.',
+                  style: AppTypography.bodyMedium,
+                  textAlign: TextAlign.center,
+                ),
+              ],
             ),
           ),
 
@@ -248,50 +247,48 @@ class QuickStartGuideScreen extends StatelessWidget {
 
           const SizedBox(height: AppSpacing.lg),
 
-          Card(
-            color: AppColors.error.withOpacity(0.1),
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Icon(Icons.warning, color: AppColors.error),
-                      const SizedBox(width: AppSpacing.sm),
-                      Text(
-                        'Common Beginner Mistakes',
-                        style: AppTypography.headlineSmall,
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 12),
-                  _MistakeItem(
-                    mistake: 'Adding fish before cycling',
-                    result: 'Fish die from ammonia poisoning',
-                  ),
-                  _MistakeItem(
-                    mistake: 'Overfeeding',
-                    result: 'Ammonia spikes, obesity, water quality issues',
-                  ),
-                  _MistakeItem(
-                    mistake: 'Overstocking',
-                    result: 'Stress, aggression, poor water quality',
-                  ),
-                  _MistakeItem(
-                    mistake: 'Cleaning filter in tap water',
-                    result: 'Kills beneficial bacteria',
-                  ),
-                  _MistakeItem(
-                    mistake: 'Changing too much water at once',
-                    result: 'Stress, parameter swings',
-                  ),
-                  _MistakeItem(
-                    mistake: 'Not researching fish',
-                    result: 'Incompatible tankmates, wrong conditions',
-                  ),
-                ],
-              ),
+          AppCard(
+            backgroundColor: AppColors.error.withOpacity(0.1),
+            padding: AppCardPadding.standard,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Icon(Icons.warning, color: AppColors.error),
+                    const SizedBox(width: AppSpacing.sm),
+                    Text(
+                      'Common Beginner Mistakes',
+                      style: AppTypography.headlineSmall,
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                _MistakeItem(
+                  mistake: 'Adding fish before cycling',
+                  result: 'Fish die from ammonia poisoning',
+                ),
+                _MistakeItem(
+                  mistake: 'Overfeeding',
+                  result: 'Ammonia spikes, obesity, water quality issues',
+                ),
+                _MistakeItem(
+                  mistake: 'Overstocking',
+                  result: 'Stress, aggression, poor water quality',
+                ),
+                _MistakeItem(
+                  mistake: 'Cleaning filter in tap water',
+                  result: 'Kills beneficial bacteria',
+                ),
+                _MistakeItem(
+                  mistake: 'Changing too much water at once',
+                  result: 'Stress, parameter swings',
+                ),
+                _MistakeItem(
+                  mistake: 'Not researching fish',
+                  result: 'Incompatible tankmates, wrong conditions',
+                ),
+              ],
             ),
           ),
 
