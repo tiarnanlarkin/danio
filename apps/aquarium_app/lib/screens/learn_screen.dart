@@ -122,7 +122,7 @@ class LearnScreen extends ConsumerWidget {
                         currentStreak: profile?.currentStreak ?? 0,
                         completedLessons: completedLessons,
                         totalLessons: totalLessons,
-                        isNewUser: (profile?.totalSessions ?? 0) < 5,
+                        isNewUser: !(profile?.hasSeenTutorial ?? false),
                         onMicroscopeTap: () => _navigateToWaterChemistry(context),
                         onGlobeTap: () => _showRandomFishFact(context),
                       ),

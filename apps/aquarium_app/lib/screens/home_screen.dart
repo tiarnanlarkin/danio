@@ -432,12 +432,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 
-  /// Check if user is new (first few sessions) to show more prominent animations
+  /// Check if user is new to show more prominent animations
   bool _isNewUser(WidgetRef ref) {
     final profile = ref.watch(userProfileProvider).value;
     if (profile == null) return true;
-    // Consider user "new" for first 5 sessions
-    return profile.totalSessions < 5;
+    // Consider user "new" if they haven't completed the tutorial yet
+    return !profile.hasSeenTutorial;
   }
 
   void _showRoomSwitcher(BuildContext context) {

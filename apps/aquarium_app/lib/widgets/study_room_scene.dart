@@ -2,6 +2,7 @@ import 'package:aquarium_app/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
 import 'dart:ui';
+import 'room/interactive_object.dart';
 
 /// Study room colors - cozy knowledge theme
 class StudyColors {
@@ -43,6 +44,9 @@ class StudyRoomScene extends StatelessWidget {
   final VoidCallback? onBookshelfTap;
   final VoidCallback? onDeskTap;
   final VoidCallback? onLampTap;
+  final VoidCallback? onMicroscopeTap;
+  final VoidCallback? onGlobeTap;
+  final bool isNewUser;
 
   const StudyRoomScene({
     super.key,
@@ -54,6 +58,9 @@ class StudyRoomScene extends StatelessWidget {
     this.onBookshelfTap,
     this.onDeskTap,
     this.onLampTap,
+    this.onMicroscopeTap,
+    this.onGlobeTap,
+    this.isNewUser = false,
   });
 
   @override
@@ -162,6 +169,29 @@ class StudyRoomScene extends StatelessWidget {
                   total: totalLessons,
                 ),
               ),
+
+              // === Interactive Objects ===
+              // Microscope - Water Chemistry Guide
+              if (onMicroscopeTap != null)
+                Positioned(
+                  top: h * 0.62,
+                  right: w * 0.12,
+                  child: StudyRoomObjects.microscope(
+                    onTap: onMicroscopeTap!,
+                    isNewUser: isNewUser,
+                  ),
+                ),
+
+              // Globe - Random Fish Facts
+              if (onGlobeTap != null)
+                Positioned(
+                  top: h * 0.5,
+                  left: w * 0.48,
+                  child: StudyRoomObjects.globe(
+                    onTap: onGlobeTap!,
+                    isNewUser: isNewUser,
+                  ),
+                ),
             ],
           ),
         );

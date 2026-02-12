@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'dart:ui';
 import '../theme/app_theme.dart';
 import '../utils/app_feedback.dart';
+import '../providers/user_profile_provider.dart';
+import '../widgets/room/interactive_object.dart';
 import 'co2_calculator_screen.dart';
 import 'dosing_calculator_screen.dart';
 import 'compatibility_checker_screen.dart';
@@ -212,9 +215,12 @@ class WorkshopScreen extends ConsumerWidget {
   }
 }
 
-class _WorkshopHeader extends StatelessWidget {
+class _WorkshopHeader extends ConsumerWidget {
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final profile = ref.watch(userProfileProvider).value;
+    final isNewUser = !(profile?.hasSeenTutorial ?? false);
+
     return Padding(
       padding: const EdgeInsets.all(20),
       child: Column(
@@ -236,28 +242,66 @@ class _WorkshopHeader extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: AppSpacing.md),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: const [
-                  Text(
-                    '🔧 Workshop',
-                    style: TextStyle(
-                      color: WorkshopColors.textPrimary,
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: const [
+                    Text(
+                      '🔧 Workshop',
+                      style: TextStyle(
+                        color: WorkshopColors.textPrimary,
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
-                  SizedBox(height: AppSpacing.xs),
-                  Text(
-                    'Tools & calculators',
-                    style: TextStyle(
-                      color: WorkshopColors.textSecondary,
-                      fontSize: 14,
+                    SizedBox(height: AppSpacing.xs),
+                    Text(
+                      'Tools & calculators',
+                      style: TextStyle(
+                        color: WorkshopColors.textSecondary,
+                        fontSize: 14,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
+              ),
+              // Interactive workbench object - DIY Projects
+              WorkshopObjects.workbench(
+                onTap: () => _showDiyProjectsInfo(context),
+                isNewUser: isNewUser,
               ),
             ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showDiyProjectsInfo(BuildContext context) {
+    HapticFeedback.lightImpact();
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Row(
+          children: [
+            Text('🔨 ', style: TextStyle(fontSize: 24)),
+            Expanded(child: Text('DIY Projects')),
+          ],
+        ),
+        content: const Text(
+          'DIY Projects section coming soon!\n\n'
+          'Build your own:\n'
+          '• Sump filtration systems\n'
+          '• DIY CO₂ reactors\n'
+          '• Custom light stands\n'
+          '• Aquarium stands\n'
+          '• Auto top-off systems\n\n'
+          'Stay tuned for step-by-step guides!',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(),
+            child: const Text('Got it!'),
           ),
         ],
       ),
