@@ -5,6 +5,7 @@ import 'package:collection/collection.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:uuid/uuid.dart';
 import '../models/models.dart';
+import '../widgets/core/app_card.dart';
 import '../providers/storage_provider.dart';
 import '../providers/tank_provider.dart';
 import '../services/stocking_calculator.dart';
@@ -667,49 +668,46 @@ class _QuickStats extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      margin: EdgeInsets.zero,
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            _StatItem(
-              label: 'Volume',
-              value: '${tank.volumeLitres.toStringAsFixed(0)}L',
-              icon: Icons.straighten,
+    return AppCard(
+      padding: AppCardPadding.standard,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          _StatItem(
+            label: 'Volume',
+            value: '${tank.volumeLitres.toStringAsFixed(0)}L',
+            icon: Icons.straighten,
+          ),
+          _StatItem(
+            label: 'Age',
+            value: _formatAge(tank.startDate),
+            icon: Icons.calendar_today,
+          ),
+          logsAsync.when(
+            loading: () => const _StatItem(
+              label: 'Last Test',
+              value: '...',
+              icon: Icons.science,
             ),
-            _StatItem(
-              label: 'Age',
-              value: _formatAge(tank.startDate),
-              icon: Icons.calendar_today,
+            error: (_, __) => const _StatItem(
+              label: 'Last Test',
+              value: '-',
+              icon: Icons.science,
             ),
-            logsAsync.when(
-              loading: () => const _StatItem(
+            data: (logs) {
+              final lastTest = logs
+                  .where((l) => l.type == LogType.waterTest)
+                  .firstOrNull;
+              return _StatItem(
                 label: 'Last Test',
-                value: '...',
+                value: lastTest != null
+                    ? _formatRelative(lastTest.timestamp)
+                    : 'Never',
                 icon: Icons.science,
-              ),
-              error: (_, __) => const _StatItem(
-                label: 'Last Test',
-                value: '-',
-                icon: Icons.science,
-              ),
-              data: (logs) {
-                final lastTest = logs
-                    .where((l) => l.type == LogType.waterTest)
-                    .firstOrNull;
-                return _StatItem(
-                  label: 'Last Test',
-                  value: lastTest != null
-                      ? _formatRelative(lastTest.timestamp)
-                      : 'Never',
-                  icon: Icons.science,
-                );
-              },
-            ),
-          ],
-        ),
+              );
+            },
+          ),
+        ],
       ),
     );
   }
@@ -838,15 +836,12 @@ class _TaskPreview extends StatelessWidget {
     if (tasks.isEmpty) {
       return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
-        child: Card(
-          margin: EdgeInsets.zero,
-          child: Padding(
-            padding: const EdgeInsets.all(24),
-            child: Center(
-              child: Text(
-                'No tasks scheduled',
-                style: AppTypography.bodyMedium,
-              ),
+        child: AppCard(
+          padding: AppCardPadding.spacious,
+          child: Center(
+            child: Text(
+              'No tasks scheduled',
+              style: AppTypography.bodyMedium,
             ),
           ),
         ),
@@ -855,8 +850,8 @@ class _TaskPreview extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Card(
-        margin: EdgeInsets.zero,
+      child: AppCard(
+        padding: AppCardPadding.none,
         child: Column(
           children: tasks
               .map(
@@ -926,13 +921,10 @@ class _LogsList extends StatelessWidget {
     if (logs.isEmpty) {
       return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
-        child: Card(
-          margin: EdgeInsets.zero,
-          child: Padding(
-            padding: const EdgeInsets.all(24),
-            child: Center(
-              child: Text('No logs yet', style: AppTypography.bodyMedium),
-            ),
+        child: AppCard(
+          padding: AppCardPadding.spacious,
+          child: Center(
+            child: Text('No logs yet', style: AppTypography.bodyMedium),
           ),
         ),
       );
@@ -940,8 +932,8 @@ class _LogsList extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Card(
-        margin: EdgeInsets.zero,
+      child: AppCard(
+        padding: AppCardPadding.none,
         child: Column(
           children: logs
               .map((log) => _LogTile(log: log, onTap: onTap))
@@ -1058,13 +1050,10 @@ class _LivestockPreview extends StatelessWidget {
     if (livestock.isEmpty) {
       return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
-        child: Card(
-          margin: EdgeInsets.zero,
-          child: Padding(
-            padding: const EdgeInsets.all(24),
-            child: Center(
-              child: Text('No livestock yet', style: AppTypography.bodyMedium),
-            ),
+        child: AppCard(
+          padding: AppCardPadding.spacious,
+          child: Center(
+            child: Text('No livestock yet', style: AppTypography.bodyMedium),
           ),
         ),
       );
@@ -1120,13 +1109,10 @@ class _EquipmentPreview extends StatelessWidget {
     if (equipment.isEmpty) {
       return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
-        child: Card(
-          margin: EdgeInsets.zero,
-          child: Padding(
-            padding: const EdgeInsets.all(24),
-            child: Center(
-              child: Text('No equipment yet', style: AppTypography.bodyMedium),
-            ),
+        child: AppCard(
+          padding: AppCardPadding.spacious,
+          child: Center(
+            child: Text('No equipment yet', style: AppTypography.bodyMedium),
           ),
         ),
       );

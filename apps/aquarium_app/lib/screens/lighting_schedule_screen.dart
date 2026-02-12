@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
+import '../widgets/core/app_card.dart';
 
 class LightingScheduleScreen extends StatefulWidget {
   const LightingScheduleScreen({super.key});
@@ -80,22 +81,20 @@ class _LightingScheduleScreenState extends State<LightingScheduleScreen> {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          Card(
-            color: AppColors.info.withOpacity(0.1),
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Row(
-                children: [
-                  Icon(Icons.lightbulb, size: 32, color: AppColors.info),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Text(
-                      'Proper lighting duration prevents algae while keeping plants and fish healthy.',
-                      style: AppTypography.bodyMedium,
-                    ),
+          AppCard(
+            backgroundColor: AppColors.info.withOpacity(0.1),
+            padding: AppCardPadding.standard,
+            child: Row(
+              children: [
+                Icon(Icons.lightbulb, size: 32, color: AppColors.info),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    'Proper lighting duration prevents algae while keeping plants and fish healthy.',
+                    style: AppTypography.bodyMedium,
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
 
@@ -104,7 +103,8 @@ class _LightingScheduleScreenState extends State<LightingScheduleScreen> {
           Text('Tank Setup', style: AppTypography.headlineSmall),
           const SizedBox(height: 12),
 
-          Card(
+          AppCard(
+            padding: AppCardPadding.none,
             child: Column(
               children: [
                 SwitchListTile(
@@ -147,7 +147,8 @@ class _LightingScheduleScreenState extends State<LightingScheduleScreen> {
           Text('Schedule', style: AppTypography.headlineSmall),
           const SizedBox(height: 12),
 
-          Card(
+          AppCard(
+            padding: AppCardPadding.none,
             child: Column(
               children: [
                 ListTile(
@@ -202,69 +203,65 @@ class _LightingScheduleScreenState extends State<LightingScheduleScreen> {
           const SizedBox(height: AppSpacing.lg),
 
           // Visual timeline
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Text('Total Light: ', style: AppTypography.labelLarge),
-                      Text(
-                        '$_totalLightHours hours',
-                        style: AppTypography.headlineSmall.copyWith(
-                          color: _totalLightHours > 10
-                              ? AppColors.warning
-                              : AppColors.success,
-                        ),
+          AppCard(
+            padding: AppCardPadding.standard,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Text('Total Light: ', style: AppTypography.labelLarge),
+                    Text(
+                      '$_totalLightHours hours',
+                      style: AppTypography.headlineSmall.copyWith(
+                        color: _totalLightHours > 10
+                            ? AppColors.warning
+                            : AppColors.success,
                       ),
-                    ],
-                  ),
-                  const SizedBox(height: 12),
-                  _TimelineBar(
-                    lightsOn: _lightsOn,
-                    lightsOff: _lightsOff,
-                    useSiesta: _useSiesta,
-                    siestaStart: _siestaStart,
-                    siestaEnd: _siestaEnd,
-                  ),
-                ],
-              ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                _TimelineBar(
+                  lightsOn: _lightsOn,
+                  lightsOff: _lightsOff,
+                  useSiesta: _useSiesta,
+                  siestaStart: _siestaStart,
+                  siestaEnd: _siestaEnd,
+                ),
+              ],
             ),
           ),
 
           const SizedBox(height: AppSpacing.md),
 
           // Recommendation
-          Card(
-            color: _hasAlgaeIssues
+          AppCard(
+            backgroundColor: _hasAlgaeIssues
                 ? AppColors.warning.withOpacity(0.1)
                 : AppColors.success.withOpacity(0.1),
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Icon(
-                    _hasAlgaeIssues ? Icons.warning : Icons.check_circle,
-                    color: _hasAlgaeIssues
-                        ? AppColors.warning
-                        : AppColors.success,
+            padding: AppCardPadding.standard,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Icon(
+                  _hasAlgaeIssues ? Icons.warning : Icons.check_circle,
+                  color: _hasAlgaeIssues
+                      ? AppColors.warning
+                      : AppColors.success,
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Recommendation', style: AppTypography.labelLarge),
+                      const SizedBox(height: AppSpacing.xs),
+                      Text(_recommendation, style: AppTypography.bodyMedium),
+                    ],
                   ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('Recommendation', style: AppTypography.labelLarge),
-                        const SizedBox(height: AppSpacing.xs),
-                        Text(_recommendation, style: AppTypography.bodyMedium),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
 
@@ -273,46 +270,42 @@ class _LightingScheduleScreenState extends State<LightingScheduleScreen> {
           Text('Quick Guide', style: AppTypography.headlineSmall),
           const SizedBox(height: 12),
 
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                children: const [
-                  _GuideRow(setup: 'Fish only', hours: '6-10 hours'),
-                  _GuideRow(setup: 'Low-tech planted', hours: '6-8 hours'),
-                  _GuideRow(setup: 'High-tech + CO2', hours: '8-10 hours'),
-                  _GuideRow(setup: 'Fighting algae', hours: '4-6 hours'),
-                ],
-              ),
+          AppCard(
+            padding: AppCardPadding.standard,
+            child: Column(
+              children: const [
+                _GuideRow(setup: 'Fish only', hours: '6-10 hours'),
+                _GuideRow(setup: 'Low-tech planted', hours: '6-8 hours'),
+                _GuideRow(setup: 'High-tech + CO2', hours: '8-10 hours'),
+                _GuideRow(setup: 'Fighting algae', hours: '4-6 hours'),
+              ],
             ),
           ),
 
           if (_hasCO2) ...[
             const SizedBox(height: AppSpacing.md),
-            Card(
-              color: AppColors.info.withOpacity(0.1),
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('CO2 Timing', style: AppTypography.labelLarge),
-                    const SizedBox(height: AppSpacing.sm),
-                    Text(
-                      '• CO2 ON: ${_formatTime(TimeOfDay(hour: _lightsOn.hour - 1, minute: _lightsOn.minute))} (1hr before lights)',
-                      style: AppTypography.bodyMedium,
-                    ),
-                    Text(
-                      '• CO2 OFF: ${_formatTime(TimeOfDay(hour: _lightsOff.hour - 1, minute: _lightsOff.minute))} (1hr before lights off)',
-                      style: AppTypography.bodyMedium,
-                    ),
-                    const SizedBox(height: AppSpacing.sm),
-                    Text(
-                      'This gives CO2 time to dissolve before photosynthesis peaks.',
-                      style: AppTypography.bodySmall,
-                    ),
-                  ],
-                ),
+            AppCard(
+              backgroundColor: AppColors.info.withOpacity(0.1),
+              padding: AppCardPadding.standard,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('CO2 Timing', style: AppTypography.labelLarge),
+                  const SizedBox(height: AppSpacing.sm),
+                  Text(
+                    '• CO2 ON: ${_formatTime(TimeOfDay(hour: _lightsOn.hour - 1, minute: _lightsOn.minute))} (1hr before lights)',
+                    style: AppTypography.bodyMedium,
+                  ),
+                  Text(
+                    '• CO2 OFF: ${_formatTime(TimeOfDay(hour: _lightsOff.hour - 1, minute: _lightsOff.minute))} (1hr before lights off)',
+                    style: AppTypography.bodyMedium,
+                  ),
+                  const SizedBox(height: AppSpacing.sm),
+                  Text(
+                    'This gives CO2 time to dissolve before photosynthesis peaks.',
+                    style: AppTypography.bodySmall,
+                  ),
+                ],
               ),
             ),
           ],

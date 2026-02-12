@@ -2,6 +2,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../theme/app_theme.dart';
+import '../widgets/core/app_card.dart';
 
 class Co2CalculatorScreen extends StatefulWidget {
   const Co2CalculatorScreen({super.key});
@@ -64,22 +65,20 @@ class _Co2CalculatorScreenState extends State<Co2CalculatorScreen> {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          Card(
-            color: AppColors.info.withOpacity(0.1),
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Row(
-                children: [
-                  Icon(Icons.bubble_chart, size: 32, color: AppColors.info),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Text(
-                      'Calculate dissolved CO2 from your pH and KH readings. Optimal range is 20-30 ppm for planted tanks.',
-                      style: AppTypography.bodyMedium,
-                    ),
+          AppCard(
+            backgroundColor: AppColors.info.withOpacity(0.1),
+            padding: AppCardPadding.standard,
+            child: Row(
+              children: [
+                Icon(Icons.bubble_chart, size: 32, color: AppColors.info),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    'Calculate dissolved CO2 from your pH and KH readings. Optimal range is 20-30 ppm for planted tanks.',
+                    style: AppTypography.bodyMedium,
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
 
@@ -127,29 +126,27 @@ class _Co2CalculatorScreenState extends State<Co2CalculatorScreen> {
           const SizedBox(height: AppSpacing.lg),
 
           // Result
-          Card(
-            color: _co2Color.withOpacity(0.1),
-            child: Padding(
-              padding: const EdgeInsets.all(24),
-              child: Column(
-                children: [
-                  Text('Estimated CO2 Level', style: AppTypography.labelLarge),
-                  const SizedBox(height: AppSpacing.sm),
-                  Text(
-                    _co2Level != null
-                        ? '${_co2Level!.toStringAsFixed(1)} ppm'
-                        : '—',
-                    style: AppTypography.headlineLarge.copyWith(
-                      color: _co2Color,
-                    ),
+          AppCard(
+            backgroundColor: _co2Color.withOpacity(0.1),
+            padding: AppCardPadding.spacious,
+            child: Column(
+              children: [
+                Text('Estimated CO2 Level', style: AppTypography.labelLarge),
+                const SizedBox(height: AppSpacing.sm),
+                Text(
+                  _co2Level != null
+                      ? '${_co2Level!.toStringAsFixed(1)} ppm'
+                      : '—',
+                  style: AppTypography.headlineLarge.copyWith(
+                    color: _co2Color,
                   ),
-                  const SizedBox(height: AppSpacing.xs),
-                  Text(
-                    _co2Status,
-                    style: AppTypography.bodyMedium.copyWith(color: _co2Color),
-                  ),
-                ],
-              ),
+                ),
+                const SizedBox(height: AppSpacing.xs),
+                Text(
+                  _co2Status,
+                  style: AppTypography.bodyMedium.copyWith(color: _co2Color),
+                ),
+              ],
             ),
           ),
 
@@ -159,43 +156,41 @@ class _Co2CalculatorScreenState extends State<Co2CalculatorScreen> {
           Text('CO2 Reference Chart', style: AppTypography.headlineSmall),
           const SizedBox(height: 12),
 
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                children: [
-                  _RefRow(
-                    range: '< 10 ppm',
-                    status: 'Too Low',
-                    desc: 'Plants will struggle',
-                    color: AppColors.warning,
-                  ),
-                  _RefRow(
-                    range: '10-20 ppm',
-                    status: 'Low',
-                    desc: 'Acceptable for low-tech',
-                    color: AppColors.warning,
-                  ),
-                  _RefRow(
-                    range: '20-30 ppm',
-                    status: 'Optimal',
-                    desc: 'Ideal for planted tanks',
-                    color: AppColors.success,
-                  ),
-                  _RefRow(
-                    range: '30-40 ppm',
-                    status: 'High',
-                    desc: 'Monitor fish closely',
-                    color: AppColors.warning,
-                  ),
-                  _RefRow(
-                    range: '> 40 ppm',
-                    status: 'Dangerous',
-                    desc: 'Fish stress/death risk',
-                    color: AppColors.error,
-                  ),
-                ],
-              ),
+          AppCard(
+            padding: AppCardPadding.standard,
+            child: Column(
+              children: [
+                _RefRow(
+                  range: '< 10 ppm',
+                  status: 'Too Low',
+                  desc: 'Plants will struggle',
+                  color: AppColors.warning,
+                ),
+                _RefRow(
+                  range: '10-20 ppm',
+                  status: 'Low',
+                  desc: 'Acceptable for low-tech',
+                  color: AppColors.warning,
+                ),
+                _RefRow(
+                  range: '20-30 ppm',
+                  status: 'Optimal',
+                  desc: 'Ideal for planted tanks',
+                  color: AppColors.success,
+                ),
+                _RefRow(
+                  range: '30-40 ppm',
+                  status: 'High',
+                  desc: 'Monitor fish closely',
+                  color: AppColors.warning,
+                ),
+                _RefRow(
+                  range: '> 40 ppm',
+                  status: 'Dangerous',
+                  desc: 'Fish stress/death risk',
+                  color: AppColors.error,
+                ),
+              ],
             ),
           ),
 
@@ -204,28 +199,26 @@ class _Co2CalculatorScreenState extends State<Co2CalculatorScreen> {
           Text('Drop Checker Colors', style: AppTypography.headlineSmall),
           const SizedBox(height: 12),
 
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                children: [
-                  _DropCheckerRow(
-                    color: Colors.blue,
-                    label: 'Blue',
-                    meaning: 'CO2 too low (<20 ppm)',
-                  ),
-                  _DropCheckerRow(
-                    color: Colors.green,
-                    label: 'Green',
-                    meaning: 'CO2 optimal (20-30 ppm)',
-                  ),
-                  _DropCheckerRow(
-                    color: Colors.yellow,
-                    label: 'Yellow',
-                    meaning: 'CO2 too high (>30 ppm)',
-                  ),
-                ],
-              ),
+          AppCard(
+            padding: AppCardPadding.standard,
+            child: Column(
+              children: [
+                _DropCheckerRow(
+                  color: Colors.blue,
+                  label: 'Blue',
+                  meaning: 'CO2 too low (<20 ppm)',
+                ),
+                _DropCheckerRow(
+                  color: Colors.green,
+                  label: 'Green',
+                  meaning: 'CO2 optimal (20-30 ppm)',
+                ),
+                _DropCheckerRow(
+                  color: Colors.yellow,
+                  label: 'Yellow',
+                  meaning: 'CO2 too high (>30 ppm)',
+                ),
+              ],
             ),
           ),
 
@@ -234,27 +227,25 @@ class _Co2CalculatorScreenState extends State<Co2CalculatorScreen> {
           Text('Tips', style: AppTypography.headlineSmall),
           const SizedBox(height: 12),
 
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _TipRow(
-                    text:
-                        'Measure pH at the same time each day for consistency',
-                  ),
-                  _TipRow(
-                    text: 'KH stabilizes pH — don\'t let it drop below 2 dKH',
-                  ),
-                  _TipRow(text: 'CO2 drops at night when plants respire'),
-                  _TipRow(text: 'Drop checkers lag ~2 hours behind actual CO2'),
-                  _TipRow(text: 'Surface agitation reduces CO2 levels'),
-                  _TipRow(
-                    text: 'Increase CO2 slowly over days, not all at once',
-                  ),
-                ],
-              ),
+          AppCard(
+            padding: AppCardPadding.standard,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _TipRow(
+                  text:
+                      'Measure pH at the same time each day for consistency',
+                ),
+                _TipRow(
+                  text: 'KH stabilizes pH — don\'t let it drop below 2 dKH',
+                ),
+                _TipRow(text: 'CO2 drops at night when plants respire'),
+                _TipRow(text: 'Drop checkers lag ~2 hours behind actual CO2'),
+                _TipRow(text: 'Surface agitation reduces CO2 levels'),
+                _TipRow(
+                  text: 'Increase CO2 slowly over days, not all at once',
+                ),
+              ],
             ),
           ),
 
@@ -264,10 +255,10 @@ class _Co2CalculatorScreenState extends State<Co2CalculatorScreen> {
           Text('pH/KH/CO2 Table', style: AppTypography.headlineSmall),
           const SizedBox(height: 12),
 
-          Card(
+          AppCard(
+            padding: AppCardPadding.compact,
             child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
-              padding: const EdgeInsets.all(12),
               child: DataTable(
                 columnSpacing: 16,
                 headingRowHeight: 40,

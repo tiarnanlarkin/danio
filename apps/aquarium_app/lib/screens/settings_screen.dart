@@ -6,6 +6,7 @@ import 'package:file_picker/file_picker.dart';
 import 'dart:convert';
 import 'dart:io';
 import '../models/wishlist.dart';
+import '../widgets/core/app_list_tile.dart';
 import '../providers/settings_provider.dart';
 import 'about_screen.dart';
 import 'notification_settings_screen.dart';
@@ -73,11 +74,10 @@ class SettingsScreen extends ConsumerWidget {
           _LearnCard(ref: ref),
 
           // Daily Goal Settings
-          ListTile(
-            leading: const Icon(Icons.flag),
-            title: const Text('Daily Goal'),
-            subtitle: Text('Set your daily XP target'),
-            trailing: const Icon(Icons.chevron_right),
+          NavListTile(
+            icon: Icons.flag,
+            title: 'Daily Goal',
+            subtitle: 'Set your daily XP target',
             onTap: () => _showDailyGoalPicker(context, ref),
           ),
 
@@ -87,28 +87,25 @@ class SettingsScreen extends ConsumerWidget {
 
           // Appearance
           _SectionHeader(title: 'Appearance'),
-          ListTile(
-            leading: const Icon(Icons.palette_outlined),
-            title: const Text('Light/Dark Mode'),
-            subtitle: Text(_themeModeLabel(settings.themeMode)),
-            trailing: const Icon(Icons.chevron_right),
+          NavListTile(
+            icon: Icons.palette_outlined,
+            title: 'Light/Dark Mode',
+            subtitle: _themeModeLabel(settings.themeMode),
             onTap: () => _showThemePicker(context, ref, settings.themeMode),
           ),
-          ListTile(
-            leading: const Icon(Icons.color_lens_outlined),
-            title: const Text('Room Themes'),
-            subtitle: const Text('Customize your living room style'),
-            trailing: const Icon(Icons.chevron_right),
+          NavListTile(
+            icon: Icons.color_lens_outlined,
+            title: 'Room Themes',
+            subtitle: 'Customize your living room style',
             onTap: () => Navigator.push(
               context,
               MaterialPageRoute(builder: (_) => const ThemeGalleryScreen()),
             ),
           ),
-          ListTile(
-            leading: const Icon(Icons.tune),
-            title: const Text('Difficulty Settings'),
-            subtitle: const Text('Adjust app complexity level'),
-            trailing: const Icon(Icons.chevron_right),
+          NavListTile(
+            icon: Icons.tune,
+            title: 'Difficulty Settings',
+            subtitle: 'Adjust app complexity level',
             onTap: () => Navigator.push(
               context,
               MaterialPageRoute(
@@ -121,11 +118,10 @@ class SettingsScreen extends ConsumerWidget {
 
           // Notifications
           _SectionHeader(title: 'Notifications'),
-          ListTile(
-            leading: const Icon(Icons.notifications_active),
-            title: const Text('Streak Reminders'),
-            subtitle: const Text('Daily notifications to maintain your streak'),
-            trailing: const Icon(Icons.chevron_right),
+          NavListTile(
+            icon: Icons.notifications_active,
+            title: 'Streak Reminders',
+            subtitle: 'Daily notifications to maintain your streak',
             onTap: () => Navigator.push(
               context,
               MaterialPageRoute(
@@ -141,10 +137,10 @@ class SettingsScreen extends ConsumerWidget {
             onChanged: (value) => _toggleNotifications(context, ref, value),
           ),
           if (settings.notificationsEnabled)
-            ListTile(
-              leading: const SizedBox(width: AppSpacing.lg),
-              title: const Text('Test Notification'),
-              subtitle: const Text('Send a test notification'),
+            AppListTile(
+              leading: SizedBox(width: AppSpacing.lg),
+              title: 'Test Notification',
+              subtitle: 'Send a test notification',
               onTap: () => _testNotification(context),
             ),
 
@@ -152,21 +148,19 @@ class SettingsScreen extends ConsumerWidget {
 
           // Tools
           _SectionHeader(title: 'Tools'),
-          ListTile(
-            leading: const Icon(Icons.notifications_active),
-            title: const Text('Reminders'),
-            subtitle: const Text('Schedule maintenance tasks'),
-            trailing: const Icon(Icons.chevron_right),
+          NavListTile(
+            icon: Icons.notifications_active,
+            title: 'Reminders',
+            subtitle: 'Schedule maintenance tasks',
             onTap: () => Navigator.push(
               context,
               MaterialPageRoute(builder: (_) => const RemindersScreen()),
             ),
           ),
-          ListTile(
-            leading: const Icon(Icons.favorite),
-            title: const Text('Fish Wishlist'),
-            subtitle: const Text('Track fish you want to keep'),
-            trailing: const Icon(Icons.chevron_right),
+          NavListTile(
+            icon: Icons.favorite,
+            title: 'Fish Wishlist',
+            subtitle: 'Track fish you want to keep',
             onTap: () => Navigator.push(
               context,
               MaterialPageRoute(
@@ -175,21 +169,19 @@ class SettingsScreen extends ConsumerWidget {
               ),
             ),
           ),
-          ListTile(
-            leading: const Icon(Icons.compare),
-            title: const Text('Compare Tanks'),
-            subtitle: const Text('Side-by-side tank comparison'),
-            trailing: const Icon(Icons.chevron_right),
+          NavListTile(
+            icon: Icons.compare,
+            title: 'Compare Tanks',
+            subtitle: 'Side-by-side tank comparison',
             onTap: () => Navigator.push(
               context,
               MaterialPageRoute(builder: (_) => const TankComparisonScreen()),
             ),
           ),
-          ListTile(
-            leading: const Icon(Icons.calculate_outlined),
-            title: const Text('Water Change Calculator'),
-            subtitle: const Text('Calculate how much water to change'),
-            trailing: const Icon(Icons.chevron_right),
+          NavListTile(
+            icon: Icons.calculate_outlined,
+            title: 'Water Change Calculator',
+            subtitle: 'Calculate how much water to change',
             onTap: () => Navigator.push(
               context,
               MaterialPageRoute(
@@ -197,41 +189,37 @@ class SettingsScreen extends ConsumerWidget {
               ),
             ),
           ),
-          ListTile(
-            leading: const Icon(Icons.bubble_chart),
-            title: const Text('CO2 Calculator'),
-            subtitle: const Text('Calculate CO2 from pH and KH'),
-            trailing: const Icon(Icons.chevron_right),
+          NavListTile(
+            icon: Icons.bubble_chart,
+            title: 'CO2 Calculator',
+            subtitle: 'Calculate CO2 from pH and KH',
             onTap: () => Navigator.push(
               context,
               MaterialPageRoute(builder: (_) => const Co2CalculatorScreen()),
             ),
           ),
-          ListTile(
-            leading: const Icon(Icons.science_outlined),
-            title: const Text('Dosing Calculator'),
-            subtitle: const Text('Calculate fertilizer & medication doses'),
-            trailing: const Icon(Icons.chevron_right),
+          NavListTile(
+            icon: Icons.science_outlined,
+            title: 'Dosing Calculator',
+            subtitle: 'Calculate fertilizer & medication doses',
             onTap: () => Navigator.push(
               context,
               MaterialPageRoute(builder: (_) => const DosingCalculatorScreen()),
             ),
           ),
-          ListTile(
-            leading: const Icon(Icons.straighten),
-            title: const Text('Unit Converter'),
-            subtitle: const Text('Volume, temperature, length, hardness'),
-            trailing: const Icon(Icons.chevron_right),
+          NavListTile(
+            icon: Icons.straighten,
+            title: 'Unit Converter',
+            subtitle: 'Volume, temperature, length, hardness',
             onTap: () => Navigator.push(
               context,
               MaterialPageRoute(builder: (_) => const UnitConverterScreen()),
             ),
           ),
-          ListTile(
-            leading: const Icon(Icons.view_in_ar),
-            title: const Text('Tank Volume Calculator'),
-            subtitle: const Text('Calculate volume for any tank shape'),
-            trailing: const Icon(Icons.chevron_right),
+          NavListTile(
+            icon: Icons.view_in_ar,
+            title: 'Tank Volume Calculator',
+            subtitle: 'Calculate volume for any tank shape',
             onTap: () => Navigator.push(
               context,
               MaterialPageRoute(
@@ -239,21 +227,19 @@ class SettingsScreen extends ConsumerWidget {
               ),
             ),
           ),
-          ListTile(
-            leading: const Icon(Icons.account_balance_wallet),
-            title: const Text('Cost Tracker'),
-            subtitle: const Text('Track aquarium expenses'),
-            trailing: const Icon(Icons.chevron_right),
+          NavListTile(
+            icon: Icons.account_balance_wallet,
+            title: 'Cost Tracker',
+            subtitle: 'Track aquarium expenses',
             onTap: () => Navigator.push(
               context,
               MaterialPageRoute(builder: (_) => const CostTrackerScreen()),
             ),
           ),
-          ListTile(
-            leading: const Icon(Icons.compare_arrows),
-            title: const Text('Compatibility Checker'),
-            subtitle: const Text('Check if fish work together'),
-            trailing: const Icon(Icons.chevron_right),
+          NavListTile(
+            icon: Icons.compare_arrows,
+            title: 'Compatibility Checker',
+            subtitle: 'Check if fish work together',
             onTap: () => Navigator.push(
               context,
               MaterialPageRoute(
@@ -261,21 +247,19 @@ class SettingsScreen extends ConsumerWidget {
               ),
             ),
           ),
-          ListTile(
-            leading: const Icon(Icons.lightbulb),
-            title: const Text('Lighting Schedule'),
-            subtitle: const Text('Optimize light duration for your setup'),
-            trailing: const Icon(Icons.chevron_right),
+          NavListTile(
+            icon: Icons.lightbulb,
+            title: 'Lighting Schedule',
+            subtitle: 'Optimize light duration for your setup',
             onTap: () => Navigator.push(
               context,
               MaterialPageRoute(builder: (_) => const LightingScheduleScreen()),
             ),
           ),
-          ListTile(
-            leading: const Icon(Icons.bar_chart),
-            title: const Text('Stocking Calculator'),
-            subtitle: const Text('Check if your tank is overstocked'),
-            trailing: const Icon(Icons.chevron_right),
+          NavListTile(
+            icon: Icons.bar_chart,
+            title: 'Stocking Calculator',
+            subtitle: 'Check if your tank is overstocked',
             onTap: () => Navigator.push(
               context,
               MaterialPageRoute(
@@ -288,11 +272,10 @@ class SettingsScreen extends ConsumerWidget {
 
           // Shop Street
           _SectionHeader(title: 'Shop'),
-          ListTile(
-            leading: const Icon(Icons.storefront),
-            title: const Text('Shop Street'),
-            subtitle: const Text('Find aquarium supplies online'),
-            trailing: const Icon(Icons.chevron_right),
+          NavListTile(
+            icon: Icons.storefront,
+            title: 'Shop Street',
+            subtitle: 'Find aquarium supplies online',
             onTap: () => Navigator.push(
               context,
               MaterialPageRoute(builder: (_) => const ShopStreetScreen()),
@@ -303,14 +286,14 @@ class SettingsScreen extends ConsumerWidget {
 
           // About section
           _SectionHeader(title: 'About'),
-          ListTile(
+          AppListTile(
             leading: const Icon(Icons.water_drop),
-            title: const Text('Aquarium'),
-            subtitle: const Text('Version 0.1.0'),
+            title: 'Aquarium',
+            subtitle: 'Version 0.1.0',
           ),
-          ListTile(
+          AppListTile(
             leading: const Icon(Icons.info_outline),
-            title: const Text('About'),
+            title: 'About',
             onTap: () => _showAboutDialog(context),
           ),
 
@@ -318,22 +301,22 @@ class SettingsScreen extends ConsumerWidget {
 
           // Data section
           _SectionHeader(title: 'Data'),
-          ListTile(
+          AppListTile(
             leading: const Icon(Icons.upload_outlined),
-            title: const Text('Export All Data'),
-            subtitle: const Text('Share your aquarium data as JSON'),
+            title: 'Export All Data',
+            subtitle: 'Share your aquarium data as JSON',
             onTap: () => _exportData(context),
           ),
-          ListTile(
+          AppListTile(
             leading: const Icon(Icons.download_outlined),
-            title: const Text('Import Data'),
-            subtitle: const Text('Restore from a backup file'),
+            title: 'Import Data',
+            subtitle: 'Restore from a backup file',
             onTap: () => _importData(context),
           ),
-          ListTile(
+          AppListTile(
             leading: const Icon(Icons.photo_library_outlined),
-            title: const Text('Photo Storage'),
-            subtitle: const Text('View where photos are stored'),
+            title: 'Photo Storage',
+            subtitle: 'View where photos are stored',
             onTap: () => _showPhotoStorageInfo(context),
           ),
 
@@ -348,11 +331,10 @@ class SettingsScreen extends ConsumerWidget {
             title: const Text('Essential Guides'),
             subtitle: const Text('Start here - critical knowledge'),
             children: [
-              ListTile(
-                leading: const Icon(Icons.rocket_launch),
-                title: const Text('Quick Start Guide'),
-                subtitle: const Text('Setting up your first aquarium'),
-                trailing: const Icon(Icons.chevron_right),
+              NavListTile(
+                icon: Icons.rocket_launch,
+                title: 'Quick Start Guide',
+                subtitle: 'Setting up your first aquarium',
                 onTap: () => Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -360,11 +342,11 @@ class SettingsScreen extends ConsumerWidget {
                   ),
                 ),
               ),
-              ListTile(
-                leading: Icon(Icons.emergency, color: AppColors.error),
-                title: const Text('Emergency Guide'),
-                subtitle: const Text('Urgent problems & immediate actions'),
-                trailing: const Icon(Icons.chevron_right),
+              NavListTile(
+                icon: Icons.emergency,
+                iconColor: AppColors.error,
+                title: 'Emergency Guide',
+                subtitle: 'Urgent problems & immediate actions',
                 onTap: () => Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -372,11 +354,10 @@ class SettingsScreen extends ConsumerWidget {
                   ),
                 ),
               ),
-              ListTile(
-                leading: const Icon(Icons.autorenew),
-                title: const Text('Nitrogen Cycle Guide'),
-                subtitle: const Text('Learn how to cycle your tank'),
-                trailing: const Icon(Icons.chevron_right),
+              NavListTile(
+                icon: Icons.autorenew,
+                title: 'Nitrogen Cycle Guide',
+                subtitle: 'Learn how to cycle your tank',
                 onTap: () => Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -393,11 +374,10 @@ class SettingsScreen extends ConsumerWidget {
             title: const Text('Water & Parameters'),
             subtitle: const Text('Water quality and chemistry'),
             children: [
-              ListTile(
-                leading: const Icon(Icons.analytics_outlined),
-                title: const Text('Water Parameters Guide'),
-                subtitle: const Text('Ideal ranges for common fish'),
-                trailing: const Icon(Icons.chevron_right),
+              NavListTile(
+                icon: Icons.analytics_outlined,
+                title: 'Water Parameters Guide',
+                subtitle: 'Ideal ranges for common fish',
                 onTap: () => Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -405,11 +385,10 @@ class SettingsScreen extends ConsumerWidget {
                   ),
                 ),
               ),
-              ListTile(
-                leading: const Icon(Icons.grass),
-                title: const Text('Algae Guide'),
-                subtitle: const Text('Identify and control common algae'),
-                trailing: const Icon(Icons.chevron_right),
+              NavListTile(
+                icon: Icons.grass,
+                title: 'Algae Guide',
+                subtitle: 'Identify and control common algae',
                 onTap: () => Navigator.push(
                   context,
                   MaterialPageRoute(builder: (_) => const AlgaeGuideScreen()),
@@ -424,31 +403,28 @@ class SettingsScreen extends ConsumerWidget {
             title: const Text('Fish Care'),
             subtitle: const Text('Feeding, health, and wellbeing'),
             children: [
-              ListTile(
-                leading: const Icon(Icons.restaurant),
-                title: const Text('Feeding Guide'),
-                subtitle: const Text('How much, how often, what types'),
-                trailing: const Icon(Icons.chevron_right),
+              NavListTile(
+                icon: Icons.restaurant,
+                title: 'Feeding Guide',
+                subtitle: 'How much, how often, what types',
                 onTap: () => Navigator.push(
                   context,
                   MaterialPageRoute(builder: (_) => const FeedingGuideScreen()),
                 ),
               ),
-              ListTile(
-                leading: const Icon(Icons.healing),
-                title: const Text('Fish Disease Guide'),
-                subtitle: const Text('Identify and treat common diseases'),
-                trailing: const Icon(Icons.chevron_right),
+              NavListTile(
+                icon: Icons.healing,
+                title: 'Fish Disease Guide',
+                subtitle: 'Identify and treat common diseases',
                 onTap: () => Navigator.push(
                   context,
                   MaterialPageRoute(builder: (_) => const DiseaseGuideScreen()),
                 ),
               ),
-              ListTile(
-                leading: const Icon(Icons.sync_alt),
-                title: const Text('Acclimation Guide'),
-                subtitle: const Text('How to safely add new fish'),
-                trailing: const Icon(Icons.chevron_right),
+              NavListTile(
+                icon: Icons.sync_alt,
+                title: 'Acclimation Guide',
+                subtitle: 'How to safely add new fish',
                 onTap: () => Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -456,11 +432,10 @@ class SettingsScreen extends ConsumerWidget {
                   ),
                 ),
               ),
-              ListTile(
-                leading: const Icon(Icons.local_hospital),
-                title: const Text('Quarantine Guide'),
-                subtitle: const Text('Setup, protocol, medications'),
-                trailing: const Icon(Icons.chevron_right),
+              NavListTile(
+                icon: Icons.local_hospital,
+                title: 'Quarantine Guide',
+                subtitle: 'Setup, protocol, medications',
                 onTap: () => Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -468,11 +443,10 @@ class SettingsScreen extends ConsumerWidget {
                   ),
                 ),
               ),
-              ListTile(
-                leading: const Icon(Icons.favorite),
-                title: const Text('Breeding Guide'),
-                subtitle: const Text('Methods, conditioning, raising fry'),
-                trailing: const Icon(Icons.chevron_right),
+              NavListTile(
+                icon: Icons.favorite,
+                title: 'Breeding Guide',
+                subtitle: 'Methods, conditioning, raising fry',
                 onTap: () => Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -489,11 +463,10 @@ class SettingsScreen extends ConsumerWidget {
             title: const Text('Tank Setup & Design'),
             subtitle: const Text('Equipment, substrate, hardscape'),
             children: [
-              ListTile(
-                leading: const Icon(Icons.build),
-                title: const Text('Equipment Guide'),
-                subtitle: const Text('Filters, heaters, lights, CO2, testing'),
-                trailing: const Icon(Icons.chevron_right),
+              NavListTile(
+                icon: Icons.build,
+                title: 'Equipment Guide',
+                subtitle: 'Filters, heaters, lights, CO2, testing',
                 onTap: () => Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -501,11 +474,10 @@ class SettingsScreen extends ConsumerWidget {
                   ),
                 ),
               ),
-              ListTile(
-                leading: const Icon(Icons.layers),
-                title: const Text('Substrate Guide'),
-                subtitle: const Text('Types, recommendations, layering'),
-                trailing: const Icon(Icons.chevron_right),
+              NavListTile(
+                icon: Icons.layers,
+                title: 'Substrate Guide',
+                subtitle: 'Types, recommendations, layering',
                 onTap: () => Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -513,11 +485,10 @@ class SettingsScreen extends ConsumerWidget {
                   ),
                 ),
               ),
-              ListTile(
-                leading: const Icon(Icons.terrain),
-                title: const Text('Hardscape Guide'),
-                subtitle: const Text('Rocks, driftwood, aquascaping tips'),
-                trailing: const Icon(Icons.chevron_right),
+              NavListTile(
+                icon: Icons.terrain,
+                title: 'Hardscape Guide',
+                subtitle: 'Rocks, driftwood, aquascaping tips',
                 onTap: () => Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -534,11 +505,10 @@ class SettingsScreen extends ConsumerWidget {
             title: const Text('Planning & Travel'),
             subtitle: const Text('Vacation prep and maintenance'),
             children: [
-              ListTile(
-                leading: const Icon(Icons.flight),
-                title: const Text('Vacation Planning'),
-                subtitle: const Text('Prepare your tank for time away'),
-                trailing: const Icon(Icons.chevron_right),
+              NavListTile(
+                icon: Icons.flight,
+                title: 'Vacation Planning',
+                subtitle: 'Prepare your tank for time away',
                 onTap: () => Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -555,11 +525,10 @@ class SettingsScreen extends ConsumerWidget {
             title: const Text('Reference'),
             subtitle: const Text('Databases, glossary, FAQ'),
             children: [
-              ListTile(
-                leading: const Icon(Icons.set_meal),
-                title: const Text('Fish Database'),
-                subtitle: const Text('45+ species with care info'),
-                trailing: const Icon(Icons.chevron_right),
+              NavListTile(
+                icon: Icons.set_meal,
+                title: 'Fish Database',
+                subtitle: '45+ species with care info',
                 onTap: () => Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -567,41 +536,37 @@ class SettingsScreen extends ConsumerWidget {
                   ),
                 ),
               ),
-              ListTile(
-                leading: const Icon(Icons.eco),
-                title: const Text('Plant Database'),
-                subtitle: const Text('20+ aquarium plants with care info'),
-                trailing: const Icon(Icons.chevron_right),
+              NavListTile(
+                icon: Icons.eco,
+                title: 'Plant Database',
+                subtitle: '20+ aquarium plants with care info',
                 onTap: () => Navigator.push(
                   context,
                   MaterialPageRoute(builder: (_) => const PlantBrowserScreen()),
                 ),
               ),
-              ListTile(
-                leading: const Icon(Icons.menu_book),
-                title: const Text('Glossary'),
-                subtitle: const Text('50+ aquarium terms explained'),
-                trailing: const Icon(Icons.chevron_right),
+              NavListTile(
+                icon: Icons.menu_book,
+                title: 'Glossary',
+                subtitle: '50+ aquarium terms explained',
                 onTap: () => Navigator.push(
                   context,
                   MaterialPageRoute(builder: (_) => const GlossaryScreen()),
                 ),
               ),
-              ListTile(
-                leading: const Icon(Icons.quiz),
-                title: const Text('FAQ'),
-                subtitle: const Text('Frequently asked questions'),
-                trailing: const Icon(Icons.chevron_right),
+              NavListTile(
+                icon: Icons.quiz,
+                title: 'FAQ',
+                subtitle: 'Frequently asked questions',
                 onTap: () => Navigator.push(
                   context,
                   MaterialPageRoute(builder: (_) => const FaqScreen()),
                 ),
               ),
-              ListTile(
-                leading: const Icon(Icons.build_circle),
-                title: const Text('Troubleshooting'),
-                subtitle: const Text('Common problems & solutions'),
-                trailing: const Icon(Icons.chevron_right),
+              NavListTile(
+                icon: Icons.build_circle,
+                title: 'Troubleshooting',
+                subtitle: 'Common problems & solutions',
                 onTap: () => Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -616,16 +581,16 @@ class SettingsScreen extends ConsumerWidget {
 
           // Help & Support section (app-related)
           _SectionHeader(title: 'Help & Support'),
-          ListTile(
+          AppListTile(
             leading: const Icon(Icons.replay_outlined),
-            title: const Text('Replay Onboarding'),
-            subtitle: const Text('See the intro screens again'),
+            title: 'Replay Onboarding',
+            subtitle: 'See the intro screens again',
             onTap: () => _replayOnboarding(context),
           ),
-          ListTile(
+          AppListTile(
             leading: const Icon(Icons.auto_awesome),
-            title: const Text('Add Sample Tank'),
-            subtitle: const Text('Explore the app with demo data'),
+            title: 'Add Sample Tank',
+            subtitle: 'Explore the app with demo data',
             onTap: () async {
               final actions = ref.read(tankActionsProvider);
               final demoTank = await actions.addDemoTank();
@@ -640,21 +605,19 @@ class SettingsScreen extends ConsumerWidget {
               }
             },
           ),
-          ListTile(
-            leading: const Icon(Icons.backup),
-            title: const Text('Backup & Restore'),
-            subtitle: const Text('Export or import your tank data'),
-            trailing: const Icon(Icons.chevron_right),
+          NavListTile(
+            icon: Icons.backup,
+            title: 'Backup & Restore',
+            subtitle: 'Export or import your tank data',
             onTap: () => Navigator.push(
               context,
               MaterialPageRoute(builder: (_) => const BackupRestoreScreen()),
             ),
           ),
-          ListTile(
-            leading: const Icon(Icons.info_outline),
-            title: const Text('About'),
-            subtitle: const Text('Version info and features'),
-            trailing: const Icon(Icons.chevron_right),
+          NavListTile(
+            icon: Icons.info_outline,
+            title: 'About',
+            subtitle: 'Version info and features',
             onTap: () => Navigator.push(
               context,
               MaterialPageRoute(builder: (_) => const AboutScreen()),
@@ -665,16 +628,14 @@ class SettingsScreen extends ConsumerWidget {
 
           // Danger zone
           _SectionHeader(title: 'Danger Zone', color: AppColors.error),
-          ListTile(
+          AppListTile(
             leading: Icon(
               Icons.delete_forever_outlined,
               color: AppColors.error,
             ),
-            title: Text(
-              'Clear All Data',
-              style: TextStyle(color: AppColors.error),
-            ),
-            subtitle: const Text('Delete all tanks, logs, and settings'),
+            title: 'Clear All Data',
+            subtitle: 'Delete all tanks, logs, and settings',
+            isDestructive: true,
             onTap: () => _confirmClearData(context),
           ),
         ],
@@ -756,10 +717,11 @@ class SettingsScreen extends ConsumerWidget {
                 style: Theme.of(context).textTheme.titleLarge,
               ),
             ),
-            ListTile(
+            AppListTile(
               leading: const Icon(Icons.brightness_auto),
-              title: const Text('System default'),
-              subtitle: const Text('Follow device settings'),
+              title: 'System default',
+              subtitle: 'Follow device settings',
+              isSelected: current == AppThemeMode.system,
               trailing: current == AppThemeMode.system
                   ? const Icon(Icons.check, color: AppColors.primary)
                   : null,
@@ -770,9 +732,10 @@ class SettingsScreen extends ConsumerWidget {
                 Navigator.pop(ctx);
               },
             ),
-            ListTile(
+            AppListTile(
               leading: const Icon(Icons.light_mode),
-              title: const Text('Light'),
+              title: 'Light',
+              isSelected: current == AppThemeMode.light,
               trailing: current == AppThemeMode.light
                   ? const Icon(Icons.check, color: AppColors.primary)
                   : null,
@@ -783,9 +746,10 @@ class SettingsScreen extends ConsumerWidget {
                 Navigator.pop(ctx);
               },
             ),
-            ListTile(
+            AppListTile(
               leading: const Icon(Icons.dark_mode),
-              title: const Text('Dark'),
+              title: 'Dark',
+              isSelected: current == AppThemeMode.dark,
               trailing: current == AppThemeMode.dark
                   ? const Icon(Icons.check, color: AppColors.primary)
                   : null,

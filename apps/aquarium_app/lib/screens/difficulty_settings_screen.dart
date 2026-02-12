@@ -2,6 +2,7 @@
 /// Shows performance charts, skill levels by topic, and manual overrides
 library;
 import 'package:aquarium_app/theme/app_theme.dart';
+import 'package:aquarium_app/widgets/core/app_card.dart';
 
 import 'package:flutter/material.dart';
 import '../models/adaptive_difficulty.dart';
@@ -157,26 +158,24 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
 
     if (rankedTopics.isEmpty) {
       return [
-        Card(
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Center(
-              child: Column(
-                children: const [
-                  Icon(Icons.school_outlined, size: 48, color: Colors.grey),
-                  SizedBox(height: AppSpacing.sm),
-                  Text(
-                    'No lesson data yet',
-                    style: TextStyle(color: Colors.grey),
-                  ),
-                  SizedBox(height: AppSpacing.xs),
-                  Text(
-                    'Complete lessons to see your skill progress',
-                    style: TextStyle(color: Colors.grey, fontSize: 12),
-                    textAlign: TextAlign.center,
-                  ),
-                ],
-              ),
+        AppCard(
+          padding: AppCardPadding.standard,
+          child: Center(
+            child: Column(
+              children: const [
+                Icon(Icons.school_outlined, size: 48, color: Colors.grey),
+                SizedBox(height: AppSpacing.sm),
+                Text(
+                  'No lesson data yet',
+                  style: TextStyle(color: Colors.grey),
+                ),
+                SizedBox(height: AppSpacing.xs),
+                Text(
+                  'Complete lessons to see your skill progress',
+                  style: TextStyle(color: Colors.grey, fontSize: 12),
+                  textAlign: TextAlign.center,
+                ),
+              ],
             ),
           ),
         ),
