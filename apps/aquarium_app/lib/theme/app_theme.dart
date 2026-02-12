@@ -257,7 +257,9 @@ class AppAchievementColors {
 class AppOverlays {
   // White overlays
   static const Color white5 = Color(0x0DFFFFFF);   // 5%
+  static const Color white8 = Color(0x14FFFFFF);   // 8%
   static const Color white10 = Color(0x1AFFFFFF);  // 10%
+  static const Color white12 = Color(0x1FFFFFFF);  // 12%
   static const Color white15 = Color(0x26FFFFFF);  // 15%
   static const Color white20 = Color(0x33FFFFFF);  // 20%
   static const Color white25 = Color(0x40FFFFFF);  // 25%
@@ -267,11 +269,15 @@ class AppOverlays {
   static const Color white60 = Color(0x99FFFFFF);  // 60%
   static const Color white70 = Color(0xB3FFFFFF);  // 70%
   static const Color white80 = Color(0xCCFFFFFF);  // 80%
+  static const Color white88 = Color(0xE0FFFFFF);  // 88%
   static const Color white90 = Color(0xE6FFFFFF);  // 90%
+  static const Color white95 = Color(0xF2FFFFFF);  // 95%
   
   // Black overlays
   static const Color black5 = Color(0x0D000000);   // 5%
+  static const Color black8 = Color(0x14000000);   // 8%
   static const Color black10 = Color(0x1A000000);  // 10%
+  static const Color black12 = Color(0x1F000000);  // 12%
   static const Color black15 = Color(0x26000000);  // 15%
   static const Color black20 = Color(0x33000000);  // 20%
   static const Color black25 = Color(0x40000000);  // 25%
@@ -283,11 +289,46 @@ class AppOverlays {
   static const Color black80 = Color(0xCC000000);  // 80%
   static const Color black90 = Color(0xE6000000);  // 90%
   
-  // Primary color overlays
+  // Primary color overlays (AppColors.primary = 0xFF3D7068)
+  static const Color primary8 = Color(0x143D7068);   // 8%
   static const Color primary10 = Color(0x1A3D7068);  // 10%
+  static const Color primary15 = Color(0x263D7068);  // 15%
   static const Color primary20 = Color(0x333D7068);  // 20%
   static const Color primary30 = Color(0x4D3D7068);  // 30%
   static const Color primary50 = Color(0x803D7068);  // 50%
+  
+  // Secondary color overlays (AppColors.secondary = 0xFF9F6847)
+  static const Color secondary10 = Color(0x1A9F6847);  // 10%
+  static const Color secondary20 = Color(0x339F6847);  // 20%
+  static const Color secondary30 = Color(0x4D9F6847);  // 30%
+  
+  // Surface variant overlays (AppColors.surfaceVariant = 0xFFF0EBE3)
+  static const Color surfaceVariant30 = Color(0x4DF0EBE3);  // 30%
+  static const Color surfaceVariant50 = Color(0x80F0EBE3);  // 50%
+  
+  // Text hint overlays (AppColors.textHint = 0xFF5D6F76)
+  static const Color textHint30 = Color(0x4D5D6F76);  // 30%
+  static const Color textHint50 = Color(0x805D6F76);  // 50%
+  
+  // Custom color overlays for specific UI elements
+  static const Color forestGreen50 = Color(0x80228B22);  // Forest green 50%
+  static const Color peru50 = Color(0x80CD853F);         // Peru/tan 50%
+  
+  // Success color overlays (AppColors.success = 0xFF5AAF7A)
+  static const Color success10 = Color(0x1A5AAF7A);  // 10%
+  static const Color success20 = Color(0x335AAF7A);  // 20%
+  
+  // Error color overlays (AppColors.error = 0xFFD96A6A)
+  static const Color error10 = Color(0x1AD96A6A);  // 10%
+  static const Color error20 = Color(0x33D96A6A);  // 20%
+  
+  // Accent color overlays (AppColors.accent = 0xFF85C7DE)
+  static const Color accent10 = Color(0x1A85C7DE);  // 10%
+  static const Color accent20 = Color(0x3385C7DE);  // 20%
+  
+  // Info color overlays (AppColors.info = 0xFF5C9FBF)
+  static const Color info10 = Color(0x1A5C9FBF);  // 10%
+  static const Color info30 = Color(0x4D5C9FBF);  // 30%
 }
 
 class AppRadius {

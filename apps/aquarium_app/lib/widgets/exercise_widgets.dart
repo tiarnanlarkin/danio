@@ -151,16 +151,16 @@ class _MultipleChoiceWidgetState extends State<MultipleChoiceWidget>
 
     if (widget.isAnswered) {
       if (isCorrect) {
-        bgColor = AppColors.success.withOpacity(0.1);
+        bgColor = AppOverlays.success10;
         borderColor = AppColors.success;
         icon = Icons.check_circle;
       } else if (isSelected && !isCorrect) {
-        bgColor = AppColors.error.withOpacity(0.1);
+        bgColor = AppOverlays.error10;
         borderColor = AppColors.error;
         icon = Icons.cancel;
       }
     } else if (isSelected) {
-      bgColor = AppColors.primary.withOpacity(0.1);
+      bgColor = AppOverlays.primary10;
       borderColor = AppColors.primary;
     }
 
@@ -191,7 +191,7 @@ class _MultipleChoiceWidgetState extends State<MultipleChoiceWidget>
               boxShadow: isSelected && !widget.isAnswered
                   ? [
                       BoxShadow(
-                        color: AppColors.primary.withOpacity(0.2),
+                        color: AppOverlays.primary20,
                         blurRadius: 8,
                         offset: const Offset(0, 4),
                       ),
@@ -391,9 +391,9 @@ class _FillBlankWidgetState extends State<FillBlankWidget> {
           filled: true,
           fillColor: widget.isAnswered
               ? (thisBlankCorrect
-                    ? AppColors.success.withOpacity(0.1)
-                    : AppColors.error.withOpacity(0.1))
-              : AppColors.primary.withOpacity(0.1),
+                    ? AppOverlays.success10
+                    : AppOverlays.error10)
+              : AppOverlays.primary10,
           border: OutlineInputBorder(
             borderRadius: AppRadius.smallRadius,
             borderSide: BorderSide(
@@ -406,7 +406,7 @@ class _FillBlankWidgetState extends State<FillBlankWidget> {
           enabledBorder: OutlineInputBorder(
             borderRadius: AppRadius.smallRadius,
             borderSide: BorderSide(
-              color: AppColors.primary.withOpacity(0.5),
+              color: AppOverlays.primary50,
               width: 2,
             ),
           ),
@@ -486,9 +486,9 @@ class _FillBlankWidgetState extends State<FillBlankWidget> {
         color: selectedWord != null
             ? (widget.isAnswered
                   ? (isCorrect
-                        ? AppColors.success.withOpacity(0.1)
-                        : AppColors.error.withOpacity(0.1))
-                  : AppColors.primary.withOpacity(0.1))
+                        ? AppOverlays.success10
+                        : AppOverlays.error10)
+                  : AppOverlays.primary10)
             : AppColors.surfaceVariant,
         borderRadius: AppRadius.smallRadius,
         border: Border.all(
@@ -533,7 +533,7 @@ class _FillBlankWidgetState extends State<FillBlankWidget> {
               },
         backgroundColor: isUsed
             ? AppColors.surfaceVariant
-            : AppColors.primary.withOpacity(0.1),
+            : AppOverlays.primary10,
         side: BorderSide(
           color: isUsed ? AppColors.surfaceVariant : AppColors.primary,
         ),
@@ -589,16 +589,16 @@ class TrueFalseWidget extends StatelessWidget {
 
     if (isAnswered) {
       if (isCorrect) {
-        bgColor = AppColors.success.withOpacity(0.1);
+        bgColor = AppOverlays.success10;
         borderColor = AppColors.success;
         iconColor = AppColors.success;
       } else if (isSelected && !isCorrect) {
-        bgColor = AppColors.error.withOpacity(0.1);
+        bgColor = AppOverlays.error10;
         borderColor = AppColors.error;
         iconColor = AppColors.error;
       }
     } else if (isSelected) {
-      bgColor = AppColors.primary.withOpacity(0.1);
+      bgColor = AppOverlays.primary10;
       borderColor = AppColors.primary;
       iconColor = AppColors.primary;
     }
@@ -622,7 +622,7 @@ class TrueFalseWidget extends StatelessWidget {
             boxShadow: isSelected && !isAnswered
                 ? [
                     BoxShadow(
-                      color: AppColors.primary.withOpacity(0.2),
+                      color: AppOverlays.primary20,
                       blurRadius: 12,
                       offset: const Offset(0, 4),
                     ),
@@ -775,14 +775,14 @@ class _MatchingWidgetState extends State<MatchingWidget> {
 
     if (widget.isAnswered && isPaired) {
       bgColor = isCorrect
-          ? AppColors.success.withOpacity(0.1)
-          : AppColors.error.withOpacity(0.1);
+          ? AppOverlays.success10
+          : AppOverlays.error10;
       borderColor = isCorrect ? AppColors.success : AppColors.error;
     } else if (isSelected) {
-      bgColor = AppColors.primary.withOpacity(0.1);
+      bgColor = AppOverlays.primary10;
       borderColor = AppColors.primary;
     } else if (isPaired) {
-      bgColor = AppColors.accent.withOpacity(0.1);
+      bgColor = AppOverlays.accent10;
       borderColor = AppColors.accent;
     }
 
@@ -849,11 +849,11 @@ class _MatchingWidgetState extends State<MatchingWidget> {
 
     if (widget.isAnswered && isPaired) {
       bgColor = isCorrect
-          ? AppColors.success.withOpacity(0.1)
-          : AppColors.error.withOpacity(0.1);
+          ? AppOverlays.success10
+          : AppOverlays.error10;
       borderColor = isCorrect ? AppColors.success : AppColors.error;
     } else if (isPaired) {
-      bgColor = AppColors.accent.withOpacity(0.1);
+      bgColor = AppOverlays.accent10;
       borderColor = AppColors.accent;
     }
 
@@ -956,7 +956,7 @@ class _OrderingWidgetState extends State<OrderingWidget> {
         Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: AppColors.info.withOpacity(0.1),
+            color: AppOverlays.info10,
             borderRadius: AppRadius.mediumRadius,
           ),
           child: Row(
@@ -1004,8 +1004,8 @@ class _OrderingWidgetState extends State<OrderingWidget> {
 
     if (widget.isAnswered) {
       bgColor = isCorrectPosition
-          ? AppColors.success.withOpacity(0.1)
-          : AppColors.error.withOpacity(0.1);
+          ? AppOverlays.success10
+          : AppOverlays.error10;
       borderColor = isCorrectPosition ? AppColors.success : AppColors.error;
     }
 
@@ -1080,9 +1080,9 @@ class ExplanationCard extends StatelessWidget {
       duration: const Duration(milliseconds: 300),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppColors.info.withOpacity(0.1),
+        color: AppOverlays.info10,
         borderRadius: AppRadius.mediumRadius,
-        border: Border.all(color: AppColors.info.withOpacity(0.3)),
+        border: Border.all(color: AppOverlays.info30),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,

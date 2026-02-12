@@ -76,7 +76,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 colors: [
-                  AppColors.surfaceVariant.withOpacity(0.5),
+                  AppOverlays.surfaceVariant50,
                   AppColors.surfaceVariant,
                 ],
               ),
@@ -88,9 +88,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               width: 200,
               height: 150,
               decoration: BoxDecoration(
-                color: AppColors.primary.withOpacity(0.1),
+                color: AppOverlays.primary10,
                 borderRadius: AppRadius.mediumRadius,
-                border: Border.all(color: AppColors.primary.withOpacity(0.3)),
+                border: Border.all(color: AppOverlays.primary30),
               ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -110,7 +110,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             child: Container(
               height: 56,
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.95),
+                color: AppOverlays.white95,
                 borderRadius: AppRadius.mediumRadius,
               ),
               child: Padding(
@@ -121,7 +121,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       width: 36,
                       height: 36,
                       decoration: BoxDecoration(
-                        color: AppColors.primary.withOpacity(0.15),
+                        color: AppOverlays.primary15,
                         borderRadius: AppRadius.smallRadius,
                       ),
                       child: const Icon(Icons.set_meal_rounded,
@@ -988,14 +988,14 @@ class _TankSwitcher extends StatelessWidget {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            Colors.white.withOpacity(0.95),
-            Colors.white.withOpacity(0.88),
+            AppOverlays.white95,
+            AppOverlays.white88,
           ],
         ),
         borderRadius: AppRadius.mediumRadius,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.12),
+            color: AppOverlays.black12,
             blurRadius: 16,
             offset: const Offset(0, 6),
           ),
@@ -1021,8 +1021,8 @@ class _TankSwitcher extends StatelessWidget {
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                       colors: [
-                        AppColors.primary.withOpacity(0.15),
-                        AppColors.primary.withOpacity(0.08),
+                        AppOverlays.primary15,
+                        AppOverlays.primary8,
                       ],
                     ),
                     borderRadius: AppRadius.smallRadius,
@@ -1141,7 +1141,7 @@ class _TankPickerSheetState extends ConsumerState<_TankPickerSheet> {
             width: 40,
             height: 4,
             decoration: BoxDecoration(
-              color: AppColors.textHint.withOpacity(0.3),
+              color: AppOverlays.textHint30,
               borderRadius: BorderRadius.circular(2),
             ),
           ),
@@ -1200,7 +1200,7 @@ class _TankPickerSheetState extends ConsumerState<_TankPickerSheet> {
                   margin: const EdgeInsets.only(bottom: 8),
                   decoration: BoxDecoration(
                     color: isSelected
-                        ? AppColors.primary.withOpacity(0.1)
+                        ? AppOverlays.primary10
                         : AppColors.surfaceVariant,
                     borderRadius: AppRadius.mediumRadius,
                     border: isSelected
@@ -1218,7 +1218,7 @@ class _TankPickerSheetState extends ConsumerState<_TankPickerSheet> {
                       height: 48,
                       decoration: BoxDecoration(
                         color: isSelected
-                            ? AppColors.primary.withOpacity(0.2)
+                            ? AppOverlays.primary20
                             : Colors.white,
                         borderRadius: AppRadius.mediumRadius,
                       ),
@@ -1328,7 +1328,7 @@ class _XpSourceRow extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
             decoration: BoxDecoration(
-              color: AppColors.primary.withOpacity(0.1),
+              color: AppOverlays.primary10,
               borderRadius: AppRadius.smallRadius,
             ),
             child: Text(
@@ -1371,11 +1371,11 @@ class _SelectionModePanel extends StatelessWidget {
         Container(
           constraints: const BoxConstraints(maxHeight: 300),
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.95),
+            color: AppOverlays.white95,
             borderRadius: AppRadius.mediumRadius,
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.12),
+                color: AppOverlays.black12,
                 blurRadius: 16,
                 offset: const Offset(0, 6),
               ),
@@ -1392,7 +1392,7 @@ class _SelectionModePanel extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: AppColors.primary.withOpacity(0.1),
+                  color: AppOverlays.primary10,
                   borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(16),
                     topRight: Radius.circular(16),
@@ -1600,10 +1600,10 @@ class _EmptyRoomScene extends StatelessWidget {
             width: 180,
             height: 120,
             decoration: BoxDecoration(
-              color: AppColors.surfaceVariant.withOpacity(0.3),
+              color: AppOverlays.surfaceVariant30,
               borderRadius: AppRadius.smallRadius,
               border: Border.all(
-                color: AppColors.textHint.withOpacity(0.5),
+                color: AppOverlays.textHint50,
                 width: 2,
                 style: BorderStyle.solid,
               ),
@@ -1614,7 +1614,7 @@ class _EmptyRoomScene extends StatelessWidget {
                 Icon(
                   Icons.water_drop_outlined,
                   size: 40,
-                  color: AppColors.textHint.withOpacity(0.5),
+                  color: AppOverlays.textHint50,
                 ),
                 const SizedBox(height: AppSpacing.sm),
                 Text(
@@ -1643,7 +1643,7 @@ class _EmptyRoomScene extends StatelessWidget {
                     width: 30,
                     height: 50,
                     decoration: BoxDecoration(
-                      color: const Color(0xFF228B22).withOpacity(0.5),
+                      color: AppOverlays.forestGreen50,
                       borderRadius: AppRadius.mediumRadius,
                     ),
                   ),
@@ -1651,7 +1651,7 @@ class _EmptyRoomScene extends StatelessWidget {
                     width: 25,
                     height: 20,
                     decoration: BoxDecoration(
-                      color: const Color(0xFFCD853F).withOpacity(0.5),
+                      color: AppOverlays.peru50,
                       borderRadius: AppRadius.xsRadius,
                     ),
                   ),
