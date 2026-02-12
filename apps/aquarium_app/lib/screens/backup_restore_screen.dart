@@ -13,6 +13,7 @@ import '../providers/tank_provider.dart';
 import '../services/backup_service.dart';
 import '../theme/app_theme.dart';
 import '../utils/app_feedback.dart';
+import '../widgets/core/app_card.dart';
 
 const _uuid = Uuid();
 
@@ -41,22 +42,20 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          Card(
-            color: AppColors.info.withOpacity(0.1),
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Row(
-                children: [
-                  Icon(Icons.backup, size: 32, color: AppColors.info),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Text(
-                      'Export your tank data and photos as a ZIP file to back up or transfer to another device.',
-                      style: AppTypography.bodyMedium,
-                    ),
+          AppCard(
+            backgroundColor: AppColors.info.withOpacity(0.1),
+            padding: AppCardPadding.standard,
+            child: Row(
+              children: [
+                Icon(Icons.backup, size: 32, color: AppColors.info),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    'Export your tank data and photos as a ZIP file to back up or transfer to another device.',
+                    style: AppTypography.bodyMedium,
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
 
@@ -160,48 +159,46 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
           Text('Import Data', style: AppTypography.headlineSmall),
           const SizedBox(height: 12),
 
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
+          AppCard(
+            padding: AppCardPadding.standard,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Restore a backup by selecting a ZIP file exported from this app.',
+                  style: AppTypography.bodyMedium,
+                ),
+
+                if (_isImporting) ...[
+                  const SizedBox(height: AppSpacing.md),
+                  LinearProgressIndicator(value: _progressValue),
+                  const SizedBox(height: AppSpacing.sm),
                   Text(
-                    'Restore a backup by selecting a ZIP file exported from this app.',
-                    style: AppTypography.bodyMedium,
-                  ),
-
-                  if (_isImporting) ...[
-                    const SizedBox(height: AppSpacing.md),
-                    LinearProgressIndicator(value: _progressValue),
-                    const SizedBox(height: AppSpacing.sm),
-                    Text(
-                      _progressStatus,
-                      style: AppTypography.bodySmall.copyWith(
-                        color: AppColors.textSecondary,
-                      ),
-                    ),
-                  ],
-
-                  const SizedBox(height: 12),
-                  SizedBox(
-                    width: double.infinity,
-                    child: FilledButton.icon(
-                      onPressed: _isImporting ? null : _importData,
-                      icon: _isImporting
-                          ? const SizedBox(
-                              width: 16,
-                              height: 16,
-                              child: CircularProgressIndicator(strokeWidth: 2),
-                            )
-                          : const Icon(Icons.file_upload),
-                      label: Text(
-                        _isImporting ? 'Importing...' : 'Select Backup File',
-                      ),
+                    _progressStatus,
+                    style: AppTypography.bodySmall.copyWith(
+                      color: AppColors.textSecondary,
                     ),
                   ),
                 ],
-              ),
+
+                const SizedBox(height: 12),
+                SizedBox(
+                  width: double.infinity,
+                  child: FilledButton.icon(
+                    onPressed: _isImporting ? null : _importData,
+                    icon: _isImporting
+                        ? const SizedBox(
+                            width: 16,
+                            height: 16,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
+                        : const Icon(Icons.file_upload),
+                    label: Text(
+                      _isImporting ? 'Importing...' : 'Select Backup File',
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
 
@@ -210,79 +207,75 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
           Text('What Gets Exported', style: AppTypography.headlineSmall),
           const SizedBox(height: 12),
 
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _ExportItem(
-                    icon: Icons.water,
-                    text: 'All tanks and settings',
-                    included: true,
-                  ),
-                  _ExportItem(
-                    icon: Icons.pets,
-                    text: 'Livestock inventories',
-                    included: true,
-                  ),
-                  _ExportItem(
-                    icon: Icons.science,
-                    text: 'Water test logs',
-                    included: true,
-                  ),
-                  _ExportItem(
-                    icon: Icons.eco,
-                    text: 'Plant inventories',
-                    included: true,
-                  ),
-                  _ExportItem(
-                    icon: Icons.book,
-                    text: 'Journal entries',
-                    included: true,
-                  ),
-                  const Divider(),
-                  _ExportItem(
-                    icon: Icons.photo,
-                    text: 'All photos (bundled in ZIP)',
-                    included: true,
-                  ),
-                  _ExportItem(
-                    icon: Icons.settings,
-                    text: 'App preferences',
-                    included: false,
-                  ),
-                ],
-              ),
+          AppCard(
+            padding: AppCardPadding.standard,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _ExportItem(
+                  icon: Icons.water,
+                  text: 'All tanks and settings',
+                  included: true,
+                ),
+                _ExportItem(
+                  icon: Icons.pets,
+                  text: 'Livestock inventories',
+                  included: true,
+                ),
+                _ExportItem(
+                  icon: Icons.science,
+                  text: 'Water test logs',
+                  included: true,
+                ),
+                _ExportItem(
+                  icon: Icons.eco,
+                  text: 'Plant inventories',
+                  included: true,
+                ),
+                _ExportItem(
+                  icon: Icons.book,
+                  text: 'Journal entries',
+                  included: true,
+                ),
+                const Divider(),
+                _ExportItem(
+                  icon: Icons.photo,
+                  text: 'All photos (bundled in ZIP)',
+                  included: true,
+                ),
+                _ExportItem(
+                  icon: Icons.settings,
+                  text: 'App preferences',
+                  included: false,
+                ),
+              ],
             ),
           ),
 
           const SizedBox(height: AppSpacing.lg),
 
-          Card(
-            color: AppColors.warning.withOpacity(0.1),
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Icon(Icons.warning, color: AppColors.warning),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('Import Warning', style: AppTypography.labelLarge),
-                        const SizedBox(height: AppSpacing.xs),
-                        Text(
-                          'Importing data will ADD to your existing tanks — it won\'t overwrite or delete anything.',
-                          style: AppTypography.bodySmall,
-                        ),
-                      ],
-                    ),
+          AppCard(
+            backgroundColor: AppColors.warning.withOpacity(0.1),
+            padding: AppCardPadding.standard,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Icon(Icons.warning, color: AppColors.warning),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Import Warning', style: AppTypography.labelLarge),
+                      const SizedBox(height: AppSpacing.xs),
+                      Text(
+                        'Importing data will ADD to your existing tanks — it won\'t overwrite or delete anything.',
+                        style: AppTypography.bodySmall,
+                      ),
+                    ],
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
 
