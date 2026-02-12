@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
+import '../widgets/core/app_card.dart';
 
 class QuarantineGuideScreen extends StatelessWidget {
   const QuarantineGuideScreen({super.key});
@@ -12,32 +13,30 @@ class QuarantineGuideScreen extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         children: [
           // Why quarantine
-          Card(
-            color: AppColors.warning.withOpacity(0.1),
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Icon(Icons.shield, color: AppColors.warning),
-                      const SizedBox(width: AppSpacing.sm),
-                      Text(
-                        'Why Quarantine?',
-                        style: AppTypography.headlineSmall,
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 12),
-                  Text(
-                    'New fish often carry diseases or parasites that may not show symptoms immediately. '
-                    'Quarantine protects your existing fish from potentially devastating infections. '
-                    'A single sick fish can wipe out an entire tank.',
-                    style: AppTypography.bodyMedium,
-                  ),
-                ],
-              ),
+          AppCard(
+            backgroundColor: AppColors.warning.withOpacity(0.1),
+            padding: AppCardPadding.standard,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Icon(Icons.shield, color: AppColors.warning),
+                    const SizedBox(width: AppSpacing.sm),
+                    Text(
+                      'Why Quarantine?',
+                      style: AppTypography.headlineSmall,
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  'New fish often carry diseases or parasites that may not show symptoms immediately. '
+                  'Quarantine protects your existing fish from potentially devastating infections. '
+                  'A single sick fish can wipe out an entire tank.',
+                  style: AppTypography.bodyMedium,
+                ),
+              ],
             ),
           ),
 
@@ -138,59 +137,57 @@ class QuarantineGuideScreen extends StatelessWidget {
           Text('Symptoms to Watch For', style: AppTypography.headlineMedium),
           const SizedBox(height: AppSpacing.md),
 
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                children: [
-                  _SymptomRow(symptom: 'White spots', indicates: 'Ich'),
-                  const Divider(),
-                  _SymptomRow(
-                    symptom: 'Gold dust coating',
-                    indicates: 'Velvet',
-                  ),
-                  const Divider(),
-                  _SymptomRow(
-                    symptom: 'Frayed/rotting fins',
-                    indicates: 'Fin rot',
-                  ),
-                  const Divider(),
-                  _SymptomRow(
-                    symptom: 'Cottony growths',
-                    indicates: 'Fungal infection',
-                  ),
-                  const Divider(),
-                  _SymptomRow(
-                    symptom: 'Flashing/scratching',
-                    indicates: 'Parasites',
-                  ),
-                  const Divider(),
-                  _SymptomRow(
-                    symptom: 'Rapid breathing',
-                    indicates: 'Gill flukes, stress, ammonia',
-                  ),
-                  const Divider(),
-                  _SymptomRow(
-                    symptom: 'Not eating',
-                    indicates: 'Stress, internal parasites, illness',
-                  ),
-                  const Divider(),
-                  _SymptomRow(
-                    symptom: 'White stringy feces',
-                    indicates: 'Internal parasites',
-                  ),
-                  const Divider(),
-                  _SymptomRow(
-                    symptom: 'Sunken belly',
-                    indicates: 'Internal parasites, wasting',
-                  ),
-                  const Divider(),
-                  _SymptomRow(
-                    symptom: 'Swollen belly',
-                    indicates: 'Bloat, dropsy, parasites',
-                  ),
-                ],
-              ),
+          AppCard(
+            padding: AppCardPadding.standard,
+            child: Column(
+              children: [
+                _SymptomRow(symptom: 'White spots', indicates: 'Ich'),
+                const Divider(),
+                _SymptomRow(
+                  symptom: 'Gold dust coating',
+                  indicates: 'Velvet',
+                ),
+                const Divider(),
+                _SymptomRow(
+                  symptom: 'Frayed/rotting fins',
+                  indicates: 'Fin rot',
+                ),
+                const Divider(),
+                _SymptomRow(
+                  symptom: 'Cottony growths',
+                  indicates: 'Fungal infection',
+                ),
+                const Divider(),
+                _SymptomRow(
+                  symptom: 'Flashing/scratching',
+                  indicates: 'Parasites',
+                ),
+                const Divider(),
+                _SymptomRow(
+                  symptom: 'Rapid breathing',
+                  indicates: 'Gill flukes, stress, ammonia',
+                ),
+                const Divider(),
+                _SymptomRow(
+                  symptom: 'Not eating',
+                  indicates: 'Stress, internal parasites, illness',
+                ),
+                const Divider(),
+                _SymptomRow(
+                  symptom: 'White stringy feces',
+                  indicates: 'Internal parasites',
+                ),
+                const Divider(),
+                _SymptomRow(
+                  symptom: 'Sunken belly',
+                  indicates: 'Internal parasites, wasting',
+                ),
+                const Divider(),
+                _SymptomRow(
+                  symptom: 'Swollen belly',
+                  indicates: 'Bloat, dropsy, parasites',
+                ),
+              ],
             ),
           ),
 
@@ -235,43 +232,41 @@ class QuarantineGuideScreen extends StatelessWidget {
           const SizedBox(height: AppSpacing.lg),
 
           // Tips
-          Card(
-            color: AppColors.info.withOpacity(0.1),
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Icon(Icons.lightbulb, color: AppColors.info),
-                      const SizedBox(width: AppSpacing.sm),
-                      Text('Pro Tips', style: AppTypography.headlineSmall),
-                    ],
-                  ),
-                  const SizedBox(height: 12),
-                  _TipItem(
-                    text:
-                        'Keep a cycled sponge filter in your main tank — move it to QT when needed',
-                  ),
-                  _TipItem(
-                    text:
-                        'Match QT temperature and pH to main tank to reduce acclimation stress',
-                  ),
-                  _TipItem(
-                    text:
-                        'Don\'t share nets, siphons, or equipment between QT and main tank',
-                  ),
-                  _TipItem(
-                    text:
-                        'Quarantine plants too — they can carry snails, parasites, and pesticides',
-                  ),
-                  _TipItem(
-                    text:
-                        'Take photos of fish when they arrive for comparison later',
-                  ),
-                ],
-              ),
+          AppCard(
+            backgroundColor: AppColors.info.withOpacity(0.1),
+            padding: AppCardPadding.standard,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Icon(Icons.lightbulb, color: AppColors.info),
+                    const SizedBox(width: AppSpacing.sm),
+                    Text('Pro Tips', style: AppTypography.headlineSmall),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                _TipItem(
+                  text:
+                      'Keep a cycled sponge filter in your main tank — move it to QT when needed',
+                ),
+                _TipItem(
+                  text:
+                      'Match QT temperature and pH to main tank to reduce acclimation stress',
+                ),
+                _TipItem(
+                  text:
+                      'Don\'t share nets, siphons, or equipment between QT and main tank',
+                ),
+                _TipItem(
+                  text:
+                      'Quarantine plants too — they can carry snails, parasites, and pesticides',
+                ),
+                _TipItem(
+                  text:
+                      'Take photos of fish when they arrive for comparison later',
+                ),
+              ],
             ),
           ),
 
