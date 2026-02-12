@@ -28,6 +28,8 @@ class AchievementStats {
   final int todayLessonsCompleted;
   final List<String> completedLessonIds;
   final int fullHeartsStreak;
+  final int reviewsCompleted;
+  final int reviewStreak;
 
   const AchievementStats({
     this.lessonsCompleted = 0,
@@ -48,6 +50,8 @@ class AchievementStats {
     this.todayLessonsCompleted = 0,
     this.completedLessonIds = const [],
     this.fullHeartsStreak = 0,
+    this.reviewsCompleted = 0,
+    this.reviewStreak = 0,
   });
 }
 
@@ -345,6 +349,49 @@ class AchievementService {
       case 'shop_visitor':
         newCount = stats.shopVisits;
         shouldUnlock = stats.shopVisits >= 5;
+        break;
+
+      // ====================================================================
+      // REVIEWS (Spaced Repetition)
+      // ====================================================================
+      case 'first_review':
+        newCount = stats.reviewsCompleted;
+        shouldUnlock = stats.reviewsCompleted >= 1;
+        break;
+
+      case 'reviews_10':
+        newCount = stats.reviewsCompleted;
+        shouldUnlock = stats.reviewsCompleted >= 10;
+        break;
+
+      case 'reviews_50':
+        newCount = stats.reviewsCompleted;
+        shouldUnlock = stats.reviewsCompleted >= 50;
+        break;
+
+      case 'reviews_100':
+        newCount = stats.reviewsCompleted;
+        shouldUnlock = stats.reviewsCompleted >= 100;
+        break;
+
+      case 'review_streak_3':
+        newCount = stats.reviewStreak;
+        shouldUnlock = stats.reviewStreak >= 3;
+        break;
+
+      case 'review_streak_7':
+        newCount = stats.reviewStreak;
+        shouldUnlock = stats.reviewStreak >= 7;
+        break;
+
+      case 'review_streak_14':
+        newCount = stats.reviewStreak;
+        shouldUnlock = stats.reviewStreak >= 14;
+        break;
+
+      case 'review_streak_30':
+        newCount = stats.reviewStreak;
+        shouldUnlock = stats.reviewStreak >= 30;
         break;
     }
 

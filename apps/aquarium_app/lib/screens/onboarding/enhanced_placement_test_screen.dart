@@ -17,10 +17,12 @@ class EnhancedPlacementTestScreen extends ConsumerStatefulWidget {
   const EnhancedPlacementTestScreen({super.key});
 
   @override
-  ConsumerState<EnhancedPlacementTestScreen> createState() => _EnhancedPlacementTestScreenState();
+  ConsumerState<EnhancedPlacementTestScreen> createState() =>
+      _EnhancedPlacementTestScreenState();
 }
 
-class _EnhancedPlacementTestScreenState extends ConsumerState<EnhancedPlacementTestScreen>
+class _EnhancedPlacementTestScreenState
+    extends ConsumerState<EnhancedPlacementTestScreen>
     with TickerProviderStateMixin {
   final PlacementTest _test = PlacementTestContent.defaultTest;
   final Map<String, int> _userAnswers = {}; // questionId -> selectedIndex
@@ -35,14 +37,18 @@ class _EnhancedPlacementTestScreenState extends ConsumerState<EnhancedPlacementT
   late AnimationController _shakeController;
   late Animation<double> _shakeAnimation;
 
-  PlacementQuestion get _currentQuestion => _test.questions[_currentQuestionIndex];
-  bool get _isLastQuestion => _currentQuestionIndex == _test.questions.length - 1;
+  PlacementQuestion get _currentQuestion =>
+      _test.questions[_currentQuestionIndex];
+  bool get _isLastQuestion =>
+      _currentQuestionIndex == _test.questions.length - 1;
   double get _progress => (_currentQuestionIndex + 1) / _test.questions.length;
 
   @override
   void initState() {
     super.initState();
-    _confettiController = ConfettiController(duration: const Duration(milliseconds: 800));
+    _confettiController = ConfettiController(
+      duration: const Duration(milliseconds: 800),
+    );
     _celebrationController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 500),
@@ -82,7 +88,9 @@ class _EnhancedPlacementTestScreenState extends ConsumerState<EnhancedPlacementT
     final isCorrect = _selectedAnswer == _currentQuestion.correctIndex;
     if (isCorrect) {
       _confettiController.play();
-      _celebrationController.forward().then((_) => _celebrationController.reverse());
+      _celebrationController.forward().then(
+        (_) => _celebrationController.reverse(),
+      );
     } else {
       _shakeController.forward().then((_) => _shakeController.reverse());
     }
@@ -94,8 +102,11 @@ class _EnhancedPlacementTestScreenState extends ConsumerState<EnhancedPlacementT
     } else {
       setState(() {
         _currentQuestionIndex++;
-        _selectedAnswer = _userAnswers[_test.questions[_currentQuestionIndex].id];
-        _showExplanation = _answeredQuestions[_test.questions[_currentQuestionIndex].id] ?? false;
+        _selectedAnswer =
+            _userAnswers[_test.questions[_currentQuestionIndex].id];
+        _showExplanation =
+            _answeredQuestions[_test.questions[_currentQuestionIndex].id] ??
+            false;
       });
     }
   }
@@ -104,8 +115,11 @@ class _EnhancedPlacementTestScreenState extends ConsumerState<EnhancedPlacementT
     if (_currentQuestionIndex > 0) {
       setState(() {
         _currentQuestionIndex--;
-        _selectedAnswer = _userAnswers[_test.questions[_currentQuestionIndex].id];
-        _showExplanation = _answeredQuestions[_test.questions[_currentQuestionIndex].id] ?? false;
+        _selectedAnswer =
+            _userAnswers[_test.questions[_currentQuestionIndex].id];
+        _showExplanation =
+            _answeredQuestions[_test.questions[_currentQuestionIndex].id] ??
+            false;
       });
     }
   }
@@ -136,7 +150,9 @@ class _EnhancedPlacementTestScreenState extends ConsumerState<EnhancedPlacementT
     if (!mounted) return;
 
     Navigator.of(context).pushReplacement(
-      MaterialPageRoute(builder: (context) => PlacementResultScreen(result: result)),
+      MaterialPageRoute(
+        builder: (context) => PlacementResultScreen(result: result),
+      ),
     );
   }
 
@@ -205,7 +221,11 @@ class _EnhancedPlacementTestScreenState extends ConsumerState<EnhancedPlacementT
                       AnimatedBuilder(
                         animation: _shakeAnimation,
                         builder: (context, child) => Transform.translate(
-                          offset: Offset(_shakeAnimation.value * ((_currentQuestionIndex % 2 == 0) ? 1 : -1), 0),
+                          offset: Offset(
+                            _shakeAnimation.value *
+                                ((_currentQuestionIndex % 2 == 0) ? 1 : -1),
+                            0,
+                          ),
                           child: child,
                         ),
                         child: Card(
@@ -217,7 +237,9 @@ class _EnhancedPlacementTestScreenState extends ConsumerState<EnhancedPlacementT
                             padding: const EdgeInsets.all(20),
                             child: Text(
                               _currentQuestion.question,
-                              style: theme.textTheme.titleLarge?.copyWith(height: 1.4),
+                              style: theme.textTheme.titleLarge?.copyWith(
+                                height: 1.4,
+                              ),
                             ),
                           ),
                         ),
@@ -228,7 +250,8 @@ class _EnhancedPlacementTestScreenState extends ConsumerState<EnhancedPlacementT
                       ..._buildAnimatedAnswerOptions(),
 
                       // Explanation with animation
-                      if (_showExplanation && _currentQuestion.explanation != null) ...[
+                      if (_showExplanation &&
+                          _currentQuestion.explanation != null) ...[
                         const SizedBox(height: 24),
                         _buildAnimatedExplanation(),
                       ],
@@ -280,7 +303,9 @@ class _EnhancedPlacementTestScreenState extends ConsumerState<EnhancedPlacementT
                 value: value,
                 minHeight: 8,
                 backgroundColor: Colors.grey[200],
-                valueColor: const AlwaysStoppedAnimation<Color>(AppColors.accent),
+                valueColor: const AlwaysStoppedAnimation<Color>(
+                  AppColors.accent,
+                ),
               ),
               // Shimmer effect on progress
               if (value < 1.0)
@@ -314,12 +339,18 @@ class _EnhancedPlacementTestScreenState extends ConsumerState<EnhancedPlacementT
                     const SizedBox(width: 4),
                     Text(
                       '${(_progress * 100).round()}% Complete',
-                      style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+                      style: const TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ],
                 ),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
                   decoration: BoxDecoration(
                     color: AppColors.accent.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(12),
@@ -350,11 +381,15 @@ class _EnhancedPlacementTestScreenState extends ConsumerState<EnhancedPlacementT
           children: [
             Text(
               'Question ${_currentQuestionIndex + 1}',
-              style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+              style: theme.textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
             ),
             Text(
               'of ${_test.questions.length}',
-              style: theme.textTheme.bodySmall?.copyWith(color: Colors.grey[600]),
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: Colors.grey[600],
+              ),
             ),
           ],
         ),
@@ -364,7 +399,9 @@ class _EnhancedPlacementTestScreenState extends ConsumerState<EnhancedPlacementT
             _getPathName(_currentQuestion.pathId),
             style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
           ),
-          backgroundColor: _getPathColor(_currentQuestion.pathId).withOpacity(0.1),
+          backgroundColor: _getPathColor(
+            _currentQuestion.pathId,
+          ).withOpacity(0.1),
           side: BorderSide(color: _getPathColor(_currentQuestion.pathId)),
           visualDensity: VisualDensity.compact,
         ),
@@ -391,7 +428,12 @@ class _EnhancedPlacementTestScreenState extends ConsumerState<EnhancedPlacementT
     });
   }
 
-  Widget _buildAnswerOption(int index, bool isSelected, bool isCorrect, bool showResult) {
+  Widget _buildAnswerOption(
+    int index,
+    bool isSelected,
+    bool isCorrect,
+    bool showResult,
+  ) {
     Color? backgroundColor;
     Color? borderColor;
     IconData? icon;
@@ -437,7 +479,7 @@ class _EnhancedPlacementTestScreenState extends ConsumerState<EnhancedPlacementT
                         color: AppColors.accent.withOpacity(0.3),
                         blurRadius: 8,
                         offset: const Offset(0, 2),
-                      )
+                      ),
                     ]
                   : null,
             ),
@@ -458,7 +500,9 @@ class _EnhancedPlacementTestScreenState extends ConsumerState<EnhancedPlacementT
                     child: Text(
                       String.fromCharCode(65 + index), // A, B, C, D
                       style: TextStyle(
-                        color: isSelected || (showResult && isCorrect) ? Colors.white : Colors.black87,
+                        color: isSelected || (showResult && isCorrect)
+                            ? Colors.white
+                            : Colors.black87,
                         fontWeight: FontWeight.bold,
                         fontSize: 14,
                       ),
@@ -471,7 +515,9 @@ class _EnhancedPlacementTestScreenState extends ConsumerState<EnhancedPlacementT
                     _currentQuestion.options[index],
                     style: TextStyle(
                       fontSize: 15,
-                      fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+                      fontWeight: isSelected
+                          ? FontWeight.w600
+                          : FontWeight.normal,
                     ),
                   ),
                 ),
@@ -595,7 +641,9 @@ class _EnhancedPlacementTestScreenState extends ConsumerState<EnhancedPlacementT
               flex: 2,
               child: FilledButton.icon(
                 onPressed: _nextQuestion,
-                icon: Icon(_isLastQuestion ? Icons.emoji_events : Icons.arrow_forward),
+                icon: Icon(
+                  _isLastQuestion ? Icons.emoji_events : Icons.arrow_forward,
+                ),
                 label: Text(_isLastQuestion ? 'See Results!' : 'Next'),
                 style: FilledButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 14),
@@ -622,7 +670,7 @@ class _EnhancedPlacementTestScreenState extends ConsumerState<EnhancedPlacementT
       AppColors.secondary,
       AppColors.accent,
       Colors.orange,
-      Colors.purple
+      Colors.purple,
     ];
     return colors[index % colors.length];
   }

@@ -336,6 +336,24 @@ class AchievementChecker {
     return await checkAchievements(stats);
   }
 
+  /// Check after review session
+  Future<List<AchievementUnlockResult>> checkAfterReview({
+    required int reviewsCompleted,
+    required int reviewStreak,
+  }) async {
+    final userProfileAsync = ref.read(userProfileProvider);
+    final stats = AchievementStats(
+      reviewsCompleted: reviewsCompleted,
+      reviewStreak: reviewStreak,
+      totalXp: userProfileAsync.value?.totalXp ?? 0,
+      currentStreak: userProfileAsync.value?.currentStreak ?? 0,
+      hasCompletedPlacementTest:
+          userProfileAsync.value?.hasCompletedPlacementTest ?? false,
+    );
+
+    return await checkAchievements(stats);
+  }
+
   /// Check streak-related achievements
   Future<List<AchievementUnlockResult>> checkStreakAchievements() async {
     final userProfileAsync = ref.read(userProfileProvider);

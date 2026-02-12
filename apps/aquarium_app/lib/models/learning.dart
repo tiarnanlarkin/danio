@@ -421,11 +421,17 @@ class XpRewards {
   static const int lessonComplete = 50;
   static const int quizPass = 25;
   static const int quizPerfect = 50;
-  static const int waterTest = 10;
+  static const int waterTest = 15;
   static const int waterChange = 10;
-  static const int taskComplete = 15;
+  static const int taskComplete = 20;
   static const int dailyStreak = 25;
-  static const int addLivestock = 5;
+  static const int addLivestock = 10;
   static const int addPhoto = 5;
   static const int journalEntry = 10;
+  
+  // Hobby activity rewards
+  static const int createTank = 25;
+  static const int addEquipment = 10;
+  static const int speciesResearched = 5;
+  static const int plantResearched = 5;
 }

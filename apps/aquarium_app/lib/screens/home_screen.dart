@@ -16,6 +16,7 @@ import '../widgets/streak_display.dart';
 import '../widgets/streak_calendar.dart';
 import '../widgets/error_state.dart';
 import '../widgets/hearts_widgets.dart';
+import '../widgets/gamification_dashboard.dart';
 import '../utils/app_feedback.dart';
 import 'add_log_screen.dart';
 import 'create_tank_screen.dart';
@@ -186,7 +187,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             // Tank switcher - clean card between tank and graph
             if (!_isSelectMode)
               Positioned(
-                bottom: 240, // Between tank illustration and wave graph
+                bottom: 160, // Above gamification dashboard
                 left: 16,
                 right: 80, // Leave room for speed dial
                 child: _TankSwitcher(
@@ -203,7 +204,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             // Selection mode UI
             if (_isSelectMode)
               Positioned(
-                bottom: 240,
+                bottom: 160,
                 left: 16,
                 right: 16,
                 child: _SelectionModePanel(
@@ -216,36 +217,19 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 ),
               ),
 
-            // Learning Progress Cards
+            // Gamification Dashboard - shows all stats at a glance
             Positioned(
-              bottom: 80,
+              bottom: 16,
               left: 16,
               right: 16,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Row(
-                    children: [
-                      Expanded(
-                        child: DailyGoalCard(
-                          onTap: () => _showDailyGoalDetails(context),
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: StreakCard(
-                          onTap: () => _showStreakCalendar(context),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
+              child: GamificationDashboard(
+                onTap: () => _showStatsDetails(context),
               ),
             ),
 
             // Speed Dial FAB - radial menu for quick actions
             Positioned(
-              bottom: 230,
+              bottom: 150,
               right: 16,
               child: SpeedDialFAB(
                 closedIcon: Icons.water_drop_rounded,
@@ -551,6 +535,71 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 
+  void _showStatsDetails(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (ctx) => Container(
+        margin: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          color: Theme.of(context).scaffoldBackgroundColor,
+          borderRadius: BorderRadius.circular(24),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Row(
+              children: [
+                const Icon(Icons.insights, color: AppColors.primary),
+                const SizedBox(width: 12),
+                Text('Your Progress', style: AppTypography.headlineSmall),
+                const Spacer(),
+                IconButton(
+                  icon: const Icon(Icons.close),
+                  tooltip: 'Close',
+                  onPressed: () => Navigator.pop(ctx),
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
+            // Gamification dashboard without card styling
+            const GamificationDashboard(showAsCard: false),
+            const SizedBox(height: 24),
+            // Quick actions
+            Row(
+              children: [
+                Expanded(
+                  child: OutlinedButton.icon(
+                    onPressed: () {
+                      Navigator.pop(ctx);
+                      _showDailyGoalDetails(context);
+                    },
+                    icon: const Icon(Icons.flag),
+                    label: const Text('Daily Goal'),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: OutlinedButton.icon(
+                    onPressed: () {
+                      Navigator.pop(ctx);
+                      _showStreakCalendar(context);
+                    },
+                    icon: const Icon(Icons.calendar_month),
+                    label: const Text('Calendar'),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
+          ],
+        ),
+      ),
+    );
+  }
+
   void _showDailyGoalDetails(BuildContext context) {
     showModalBottomSheet(
       context: context,
@@ -696,15 +745,17 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   /// Quick-add floating action button for fast parameter logging
   Widget _buildQuickAddFAB() {
     final tanksAsync = ref.watch(tanksProvider);
-    
+
     return tanksAsync.when(
       loading: () => const SizedBox.shrink(),
       error: (_, __) => const SizedBox.shrink(),
       data: (tanks) {
         if (tanks.isEmpty) return const SizedBox.shrink();
-        
-        final currentTank = tanks.length > _currentTankIndex ? tanks[_currentTankIndex] : tanks.first;
-        
+
+        final currentTank = tanks.length > _currentTankIndex
+            ? tanks[_currentTankIndex]
+            : tanks.first;
+
         return SpeedDialFAB(
           closedIcon: Icons.add_rounded,
           openIcon: Icons.close_rounded,

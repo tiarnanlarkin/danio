@@ -12,6 +12,9 @@ import '../models/learning.dart';
 import '../providers/storage_provider.dart';
 import '../providers/tank_provider.dart';
 import '../providers/user_profile_provider.dart';
+import '../providers/inventory_provider.dart';
+import '../providers/achievement_provider.dart';
+import '../services/achievement_service.dart';
 import '../theme/app_theme.dart';
 import '../utils/app_feedback.dart';
 
@@ -873,7 +876,32 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
         LogType.other => XpRewards.journalEntry,
       };
 
-      await ref.read(userProfileProvider.notifier).recordActivity(xp: xp);
+      final isBoostActive = ref.read(xpBoostActiveProvider);
+      await ref.read(userProfileProvider.notifier).recordActivity(
+        xp: xp,
+        xpBoostActive: isBoostActive,
+      );
+
+      // Check for achievements after logging activity
+      final profile = ref.read(userProfileProvider).value;
+      if (profile != null) {
+        try {
+          final achievementChecker = ref.read(achievementCheckerProvider);
+
+          // Build stats for achievement checking
+          final stats = AchievementStats(
+            totalXp: profile.totalXp,
+            currentStreak: profile.currentStreak,
+            hasCompletedPlacementTest: profile.hasCompletedPlacementTest,
+            lessonsCompleted: profile.completedLessons.length,
+          );
+
+          await achievementChecker.checkAllAchievements(stats: stats);
+        } catch (e) {
+          // Don't fail the log save if achievement check fails
+          debugPrint('Achievement check failed: $e');
+        }
+      }
 
       if (mounted) {
         Navigator.pop(context);

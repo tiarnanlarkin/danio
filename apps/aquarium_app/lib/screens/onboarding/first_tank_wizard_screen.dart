@@ -9,13 +9,11 @@ import '../home_screen.dart';
 class FirstTankWizardScreen extends ConsumerStatefulWidget {
   final ExperienceLevel experienceLevel;
 
-  const FirstTankWizardScreen({
-    super.key,
-    required this.experienceLevel,
-  });
+  const FirstTankWizardScreen({super.key, required this.experienceLevel});
 
   @override
-  ConsumerState<FirstTankWizardScreen> createState() => _FirstTankWizardScreenState();
+  ConsumerState<FirstTankWizardScreen> createState() =>
+      _FirstTankWizardScreenState();
 }
 
 class _FirstTankWizardScreenState extends ConsumerState<FirstTankWizardScreen> {
@@ -76,11 +74,13 @@ class _FirstTankWizardScreenState extends ConsumerState<FirstTankWizardScreen> {
 
   Future<void> _createTank() async {
     // Use tankActionsProvider to create the tank
-    await ref.read(tankActionsProvider).createTank(
-      name: _tankName,
-      type: _tankType,
-      volumeLitres: _volumeLitres,
-    );
+    await ref
+        .read(tankActionsProvider)
+        .createTank(
+          name: _tankName,
+          type: _tankType,
+          volumeLitres: _volumeLitres,
+        );
 
     if (mounted) {
       Navigator.of(context).pushAndRemoveUntil(
@@ -89,8 +89,6 @@ class _FirstTankWizardScreenState extends ConsumerState<FirstTankWizardScreen> {
       );
     }
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -157,11 +155,7 @@ class _FirstTankWizardScreenState extends ConsumerState<FirstTankWizardScreen> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           const SizedBox(height: 32),
-          Icon(
-            Icons.edit_rounded,
-            size: 64,
-            color: AppColors.primary,
-          ),
+          Icon(Icons.edit_rounded, size: 64, color: AppColors.primary),
           const SizedBox(height: 24),
           Text(
             'Name Your Tank',
@@ -209,11 +203,7 @@ class _FirstTankWizardScreenState extends ConsumerState<FirstTankWizardScreen> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           const SizedBox(height: 32),
-          Icon(
-            Icons.straighten_rounded,
-            size: 64,
-            color: AppColors.primary,
-          ),
+          Icon(Icons.straighten_rounded, size: 64, color: AppColors.primary),
           const SizedBox(height: 24),
           Text(
             'Tank Size',
@@ -265,11 +255,7 @@ class _FirstTankWizardScreenState extends ConsumerState<FirstTankWizardScreen> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           const SizedBox(height: 32),
-          Icon(
-            Icons.waves_rounded,
-            size: 64,
-            color: AppColors.primary,
-          ),
+          Icon(Icons.waves_rounded, size: 64, color: AppColors.primary),
           const SizedBox(height: 24),
           Text(
             'Water Type',
@@ -299,7 +285,9 @@ class _FirstTankWizardScreenState extends ConsumerState<FirstTankWizardScreen> {
                     padding: const EdgeInsets.all(20),
                     decoration: BoxDecoration(
                       border: Border.all(
-                        color: isSelected ? AppColors.primary : AppColors.border,
+                        color: isSelected
+                            ? AppColors.primary
+                            : AppColors.border,
                         width: 2,
                       ),
                       borderRadius: BorderRadius.circular(16),
@@ -338,10 +326,7 @@ class _FirstTankWizardScreenState extends ConsumerState<FirstTankWizardScreen> {
                           ),
                         ),
                         if (isSelected)
-                          Icon(
-                            Icons.check_circle,
-                            color: AppColors.primary,
-                          ),
+                          Icon(Icons.check_circle, color: AppColors.primary),
                       ],
                     ),
                   ),
@@ -398,10 +383,7 @@ class _FirstTankWizardScreenState extends ConsumerState<FirstTankWizardScreen> {
                   '${_volumeLitres.toStringAsFixed(1)} liters (${(_volumeLitres * 0.264172).toStringAsFixed(1)} gallons)',
                 ),
                 const SizedBox(height: 12),
-                _buildSummaryRow(
-                  'Type',
-                  _getTankTypeName(_tankType),
-                ),
+                _buildSummaryRow('Type', _getTankTypeName(_tankType)),
               ],
             ),
           ),
@@ -414,10 +396,7 @@ class _FirstTankWizardScreenState extends ConsumerState<FirstTankWizardScreen> {
             ),
             child: Row(
               children: [
-                Icon(
-                  Icons.lightbulb_outline_rounded,
-                  color: AppColors.accent,
-                ),
+                Icon(Icons.lightbulb_outline_rounded, color: AppColors.accent),
                 const SizedBox(width: 12),
                 Expanded(
                   child: Text(
@@ -459,7 +438,6 @@ class _FirstTankWizardScreenState extends ConsumerState<FirstTankWizardScreen> {
       ],
     );
   }
-
 
   IconData _getTankTypeIcon(TankType type) {
     switch (type) {

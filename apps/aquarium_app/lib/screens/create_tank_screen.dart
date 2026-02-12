@@ -2,7 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/models.dart';
+import '../models/learning.dart';
 import '../providers/tank_provider.dart';
+import '../providers/user_profile_provider.dart';
+import '../providers/inventory_provider.dart';
+import '../providers/achievement_provider.dart';
+import '../services/achievement_service.dart';
 import '../theme/app_theme.dart';
 import '../utils/app_feedback.dart';
 import '../utils/haptic_feedback.dart';
@@ -227,10 +232,37 @@ class _CreateTankScreenState extends ConsumerState<CreateTankScreen> {
         targets: _targets,
       );
 
+      // Award XP for creating a new tank (with boost if active)
+      final isBoostActive = ref.read(xpBoostActiveProvider);
+      await ref
+          .read(userProfileProvider.notifier)
+          .recordActivity(xp: XpRewards.createTank, xpBoostActive: isBoostActive);
+
+      // Check for achievements after tank creation
+      final profile = ref.read(userProfileProvider).value;
+      if (profile != null) {
+        try {
+          final achievementChecker = ref.read(achievementCheckerProvider);
+
+          // Build stats for achievement checking
+          final stats = AchievementStats(
+            totalXp: profile.totalXp,
+            currentStreak: profile.currentStreak,
+            hasCompletedPlacementTest: profile.hasCompletedPlacementTest,
+            lessonsCompleted: profile.completedLessons.length,
+          );
+
+          await achievementChecker.checkAllAchievements(stats: stats);
+        } catch (e) {
+          // Don't fail the tank creation if achievement check fails
+          debugPrint('Achievement check failed: $e');
+        }
+      }
+
       if (mounted) {
         AppHaptics.success();
         Navigator.of(context).pop();
-        AppFeedback.showSuccess(context, '${_name.trim()} created!');
+        AppFeedback.showSuccess(context, '${_name.trim()} created! +${XpRewards.createTank} XP');
       }
     } catch (e) {
       if (mounted) {

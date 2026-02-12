@@ -9,6 +9,7 @@ import '../models/spaced_repetition.dart';
 import '../models/exercises.dart';
 import '../providers/spaced_repetition_provider.dart';
 import '../providers/user_profile_provider.dart';
+import '../providers/inventory_provider.dart';
 import '../services/review_queue_service.dart';
 import '../theme/app_theme.dart';
 import '../widgets/confetti_overlay.dart';
@@ -941,9 +942,13 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
             timeSpent: timeSpent,
           );
 
-      // Award XP to user profile
+      // Award XP to user profile (with boost if active)
       final result = widget.session.results.last;
-      await ref.read(userProfileProvider.notifier).addXp(result.xpEarned);
+      final isBoostActive = ref.read(xpBoostActiveProvider);
+      await ref.read(userProfileProvider.notifier).addXp(
+        result.xpEarned,
+        xpBoostActive: isBoostActive,
+      );
 
       if (mounted) {
         setState(() {

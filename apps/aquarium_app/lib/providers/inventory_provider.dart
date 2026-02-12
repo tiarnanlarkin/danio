@@ -4,6 +4,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../models/shop_item.dart';
 import '../data/shop_catalog.dart';
 import 'gems_provider.dart';
+import 'hearts_provider.dart';
+import 'user_profile_provider.dart';
+import 'room_theme_provider.dart';
+import '../theme/room_themes.dart';
 
 /// Provider for user's shop inventory
 final inventoryProvider =
@@ -124,7 +128,7 @@ class InventoryNotifier extends StateNotifier<AsyncValue<List<InventoryItem>>> {
     return true;
   }
 
-  /// Use/consume an item
+  /// Use/consume an item AND apply its effect
   Future<bool> useItem(String itemId) async {
     final currentInventory = state.valueOrNull ?? [];
     final itemIndex = currentInventory.indexWhere((i) => i.itemId == itemId);
@@ -134,6 +138,10 @@ class InventoryNotifier extends StateNotifier<AsyncValue<List<InventoryItem>>> {
     final item = currentInventory[itemIndex];
     final shopItem = ShopCatalog.getById(itemId);
     if (shopItem == null) return false;
+
+    // Apply the effect first
+    final effectApplied = await _applyItemEffect(shopItem);
+    if (!effectApplied) return false;
 
     if (shopItem.isConsumable) {
       // Decrease quantity
@@ -168,6 +176,97 @@ class InventoryNotifier extends StateNotifier<AsyncValue<List<InventoryItem>>> {
       }
       return false;
     }
+  }
+
+  /// Apply the actual effect of an item
+  Future<bool> _applyItemEffect(ShopItem item) async {
+    switch (item.type) {
+      case ShopItemType.heartsRefill:
+        // Refill all hearts to max
+        final heartsActions = ref.read(heartsActionsProvider);
+        await heartsActions.refillToMax();
+        return true;
+
+      case ShopItemType.streakFreeze:
+        // Add a streak freeze to user profile
+        final profileNotifier = ref.read(userProfileProvider.notifier);
+        await profileNotifier.addStreakFreeze();
+        return true;
+
+      case ShopItemType.xpBoost:
+        // XP boost is handled by activating the item with expiry time
+        // The xpBoostActiveProvider checks if it's active
+        await _activateTimedItem(item.id, item.durationHours ?? 1);
+        return true;
+
+      case ShopItemType.quizSecondChance:
+        // Quiz retry - just mark as available, quiz screen checks this
+        await _activateQuizRetry();
+        return true;
+
+      case ShopItemType.tankTheme:
+        // Themes are applied via the theme gallery, not directly
+        // But we can auto-apply if it's the first purchase
+        return true;
+
+      case ShopItemType.profileBadge:
+        // Badges are automatically shown once owned
+        return true;
+
+      case ShopItemType.celebrationEffect:
+        // Celebration effects are automatically used once owned
+        return true;
+
+      case ShopItemType.lessonHelper:
+        // Lesson helper effects are checked during lessons
+        return true;
+
+      case ShopItemType.goalAdjust:
+        // Goal adjustments are time-based
+        if (item.durationHours != null) {
+          await _activateTimedItem(item.id, item.durationHours!);
+        }
+        return true;
+    }
+  }
+
+  /// Activate a timed item (sets isActive=true with expiry)
+  Future<void> _activateTimedItem(String itemId, int durationHours) async {
+    final currentInventory = state.valueOrNull ?? [];
+    final itemIndex = currentInventory.indexWhere((i) => i.itemId == itemId);
+    if (itemIndex < 0) return;
+
+    final item = currentInventory[itemIndex];
+    final expiresAt = DateTime.now().add(Duration(hours: durationHours));
+    final updatedItem = item.copyWith(isActive: true, expiresAt: expiresAt);
+
+    final updated = List<InventoryItem>.from(currentInventory);
+    updated[itemIndex] = updatedItem;
+    await _save(updated);
+    state = AsyncValue.data(updated);
+  }
+
+  /// Mark quiz retry as available
+  Future<void> _activateQuizRetry() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('quiz_retry_available', true);
+  }
+
+  /// Check if quiz retry is available (and consume it)
+  Future<bool> consumeQuizRetry() async {
+    final prefs = await SharedPreferences.getInstance();
+    final available = prefs.getBool('quiz_retry_available') ?? false;
+    if (available) {
+      await prefs.setBool('quiz_retry_available', false);
+      return true;
+    }
+    return false;
+  }
+
+  /// Check if quiz retry is available (without consuming)
+  Future<bool> isQuizRetryAvailable() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool('quiz_retry_available') ?? false;
   }
 
   /// Activate a time-based item (XP boost, etc.)

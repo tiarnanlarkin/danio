@@ -169,7 +169,8 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
                       icon: Icons.square,
                       label: 'Goal Zones',
                       isActive: _showGoalZones,
-                      onTap: () => setState(() => _showGoalZones = !_showGoalZones),
+                      onTap: () =>
+                          setState(() => _showGoalZones = !_showGoalZones),
                     ),
                     _ChartControlChip(
                       icon: Icons.notifications_outlined,
@@ -190,8 +191,8 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
 
                 // Chart
                 Text(
-                  _multiParamMode 
-                      ? 'Multi-Parameter Comparison' 
+                  _multiParamMode
+                      ? 'Multi-Parameter Comparison'
                       : _getParamTitle(_selectedParam),
                   style: AppTypography.headlineSmall,
                 ),
@@ -199,7 +200,10 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
                 SizedBox(
                   height: 250,
                   child: _multiParamMode
-                      ? _buildMultiParamChart(waterTests, targets: tank?.targets)
+                      ? _buildMultiParamChart(
+                          waterTests,
+                          targets: tank?.targets,
+                        )
                       : _buildChart(waterTests, targets: tank?.targets),
                 ),
 
@@ -551,9 +555,7 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
 
   Widget _buildMultiParamChart(List<LogEntry> logs, {WaterTargets? targets}) {
     if (_selectedParams.isEmpty) {
-      return const Center(
-        child: Text('Select parameters to compare'),
-      );
+      return const Center(child: Text('Select parameters to compare'));
     }
 
     final List<LineChartBarData> bars = [];
@@ -625,9 +627,15 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
               },
             ),
           ),
-          leftTitles: const AxisTitles(sideTitles: SideTitles(showTitles: true, reservedSize: 40)),
-          rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-          topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+          leftTitles: const AxisTitles(
+            sideTitles: SideTitles(showTitles: true, reservedSize: 40),
+          ),
+          rightTitles: const AxisTitles(
+            sideTitles: SideTitles(showTitles: false),
+          ),
+          topTitles: const AxisTitles(
+            sideTitles: SideTitles(showTitles: false),
+          ),
         ),
         borderData: FlBorderData(show: false),
         lineBarsData: bars,
@@ -636,11 +644,17 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
             getTooltipItems: (touchedSpots) {
               return touchedSpots.map((spot) {
                 final barIndex = touchedSpots.indexOf(spot);
-                final param = _selectedParams.elementAt(barIndex % _selectedParams.length);
+                final param = _selectedParams.elementAt(
+                  barIndex % _selectedParams.length,
+                );
                 final color = _getParamColor(param);
                 return LineTooltipItem(
                   '${_getParamTitle(param)}\n${spot.y.toStringAsFixed(2)}',
-                  TextStyle(color: color, fontWeight: FontWeight.bold, fontSize: 12),
+                  TextStyle(
+                    color: color,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 12,
+                  ),
                 );
               }).toList();
             },
@@ -686,9 +700,11 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
     // Check temperature against targets
     if (tank.targets != null && latestTest.temperature != null) {
       final targets = tank.targets!;
-      if (targets.tempMin != null && latestTest.temperature! < targets.tempMin!) {
+      if (targets.tempMin != null &&
+          latestTest.temperature! < targets.tempMin!) {
         issues.add('🥶 Temperature too low (${latestTest.temperature}°C)');
-      } else if (targets.tempMax != null && latestTest.temperature! > targets.tempMax!) {
+      } else if (targets.tempMax != null &&
+          latestTest.temperature! > targets.tempMax!) {
         issues.add('🥵 Temperature too high (${latestTest.temperature}°C)');
       }
     }
@@ -703,12 +719,18 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
         ),
         child: Row(
           children: [
-            Icon(Icons.check_circle_outline, color: AppColors.success, size: 20),
+            Icon(
+              Icons.check_circle_outline,
+              color: AppColors.success,
+              size: 20,
+            ),
             const SizedBox(width: 12),
             Expanded(
               child: Text(
                 'All parameters within safe ranges ✓',
-                style: AppTypography.bodyMedium.copyWith(color: AppColors.success),
+                style: AppTypography.bodyMedium.copyWith(
+                  color: AppColors.success,
+                ),
               ),
             ),
           ],
@@ -728,19 +750,27 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
         children: [
           Row(
             children: [
-              Icon(Icons.warning_amber_rounded, color: AppColors.warning, size: 20),
+              Icon(
+                Icons.warning_amber_rounded,
+                color: AppColors.warning,
+                size: 20,
+              ),
               const SizedBox(width: 8),
               Text(
                 'Parameter Alerts',
-                style: AppTypography.labelLarge.copyWith(color: AppColors.warning),
+                style: AppTypography.labelLarge.copyWith(
+                  color: AppColors.warning,
+                ),
               ),
             ],
           ),
           const SizedBox(height: 8),
-          ...issues.map((issue) => Padding(
-                padding: const EdgeInsets.only(bottom: 4),
-                child: Text(issue, style: AppTypography.bodySmall),
-              )),
+          ...issues.map(
+            (issue) => Padding(
+              padding: const EdgeInsets.only(bottom: 4),
+              child: Text(issue, style: AppTypography.bodySmall),
+            ),
+          ),
         ],
       ),
     );
@@ -759,7 +789,9 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
             Wrap(
               spacing: 8,
               runSpacing: 8,
-              children: ['nitrate', 'nitrite', 'ammonia', 'ph', 'temp'].map((param) {
+              children: ['nitrate', 'nitrite', 'ammonia', 'ph', 'temp'].map((
+                param,
+              ) {
                 final isSelected = _selectedParams.contains(param);
                 return FilterChip(
                   label: Text(_getParamTitle(param)),
@@ -784,7 +816,9 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
                 padding: const EdgeInsets.only(top: 8),
                 child: Text(
                   'Maximum 4 parameters',
-                  style: AppTypography.bodySmall.copyWith(color: AppColors.info),
+                  style: AppTypography.bodySmall.copyWith(
+                    color: AppColors.info,
+                  ),
                 ),
               ),
           ],
@@ -838,9 +872,11 @@ class _ChartControlChip extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
         decoration: BoxDecoration(
-          color: isActive ? AppColors.primary.withOpacity(0.1) : AppColors.surfaceVariant,
+          color: isActive
+              ? AppColors.primary.withOpacity(0.1)
+              : AppColors.surfaceVariant,
           borderRadius: BorderRadius.circular(20),
-          border: isActive 
+          border: isActive
               ? Border.all(color: AppColors.primary, width: 1.5)
               : null,
         ),

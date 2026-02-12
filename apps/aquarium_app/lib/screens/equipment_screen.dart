@@ -4,8 +4,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
 import '../models/models.dart';
+import '../models/learning.dart';
 import '../providers/storage_provider.dart';
 import '../providers/tank_provider.dart';
+import '../providers/user_profile_provider.dart';
+import '../providers/inventory_provider.dart';
 import '../services/storage_service.dart';
 import '../theme/app_theme.dart';
 import '../utils/app_feedback.dart';
@@ -696,6 +699,14 @@ class _AddEquipmentSheetState extends State<_AddEquipmentSheet> {
 
       // Create/update (or remove) the auto maintenance task.
       await _syncEquipmentMaintenanceTask(storage, equipment);
+
+      // Award XP for adding new equipment (not editing)
+      if (widget.existing == null) {
+        final isBoostActive = widget.ref.read(xpBoostActiveProvider);
+        await widget.ref
+            .read(userProfileProvider.notifier)
+            .recordActivity(xp: XpRewards.addEquipment, xpBoostActive: isBoostActive);
+      }
 
       widget.ref.invalidate(equipmentProvider(widget.tankId));
       widget.ref.invalidate(tasksProvider(widget.tankId));

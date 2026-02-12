@@ -8,10 +8,12 @@ class ExperienceAssessmentScreen extends StatefulWidget {
   const ExperienceAssessmentScreen({super.key});
 
   @override
-  State<ExperienceAssessmentScreen> createState() => _ExperienceAssessmentScreenState();
+  State<ExperienceAssessmentScreen> createState() =>
+      _ExperienceAssessmentScreenState();
 }
 
-class _ExperienceAssessmentScreenState extends State<ExperienceAssessmentScreen> {
+class _ExperienceAssessmentScreenState
+    extends State<ExperienceAssessmentScreen> {
   int _currentQuestion = 0;
   final Map<int, String> _answers = {};
   ExperienceLevel? _determinedLevel;
@@ -64,13 +66,19 @@ class _ExperienceAssessmentScreenState extends State<ExperienceAssessmentScreen>
     int expertCount = 0;
 
     for (final answer in _answers.values) {
-      if (answer.contains('never') || answer == 'beginner' || answer == 'minimal') {
+      if (answer.contains('never') ||
+          answer == 'beginner' ||
+          answer == 'minimal') {
         neverCount++;
       } else if (answer.contains('basic') || answer == 'past') {
         basicCount++;
-      } else if (answer.contains('intermediate') || answer == 'current' || answer == 'regular') {
+      } else if (answer.contains('intermediate') ||
+          answer == 'current' ||
+          answer == 'regular') {
         intermediateCount++;
-      } else if (answer.contains('expert') || answer == 'advanced' || answer == 'dedicated') {
+      } else if (answer.contains('expert') ||
+          answer == 'advanced' ||
+          answer == 'dedicated') {
         expertCount++;
       }
     }
@@ -150,7 +158,8 @@ class _ExperienceAssessmentScreenState extends State<ExperienceAssessmentScreen>
   void _startJourney() {
     Navigator.of(context).pushReplacement(
       MaterialPageRoute(
-        builder: (_) => FirstTankWizardScreen(experienceLevel: _determinedLevel!),
+        builder: (_) =>
+            FirstTankWizardScreen(experienceLevel: _determinedLevel!),
       ),
     );
   }
@@ -204,7 +213,8 @@ class _ExperienceAssessmentScreenState extends State<ExperienceAssessmentScreen>
                     Expanded(
                       child: ListView(
                         children: question.options.entries.map((entry) {
-                          final isSelected = _answers[_currentQuestion] == entry.key;
+                          final isSelected =
+                              _answers[_currentQuestion] == entry.key;
                           return Padding(
                             padding: const EdgeInsets.only(bottom: 12),
                             child: Material(
@@ -232,14 +242,15 @@ class _ExperienceAssessmentScreenState extends State<ExperienceAssessmentScreen>
                                       Expanded(
                                         child: Text(
                                           entry.value,
-                                          style: AppTypography.bodyLarge.copyWith(
-                                            color: isSelected
-                                                ? AppColors.primary
-                                                : AppColors.textPrimary,
-                                            fontWeight: isSelected
-                                                ? FontWeight.w600
-                                                : FontWeight.normal,
-                                          ),
+                                          style: AppTypography.bodyLarge
+                                              .copyWith(
+                                                color: isSelected
+                                                    ? AppColors.primary
+                                                    : AppColors.textPrimary,
+                                                fontWeight: isSelected
+                                                    ? FontWeight.w600
+                                                    : FontWeight.normal,
+                                              ),
                                         ),
                                       ),
                                       if (isSelected)
@@ -321,20 +332,22 @@ class _ExperienceAssessmentScreenState extends State<ExperienceAssessmentScreen>
                 style: AppTypography.titleMedium,
               ),
               const SizedBox(height: 16),
-              ...paths.map((path) => Padding(
-                    padding: const EdgeInsets.only(bottom: 8),
-                    child: Row(
-                      children: [
-                        Icon(
-                          Icons.school_rounded,
-                          size: 20,
-                          color: AppColors.primary,
-                        ),
-                        const SizedBox(width: 12),
-                        Text(path, style: AppTypography.bodyMedium),
-                      ],
-                    ),
-                  )),
+              ...paths.map(
+                (path) => Padding(
+                  padding: const EdgeInsets.only(bottom: 8),
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.school_rounded,
+                        size: 20,
+                        color: AppColors.primary,
+                      ),
+                      const SizedBox(width: 12),
+                      Text(path, style: AppTypography.bodyMedium),
+                    ],
+                  ),
+                ),
+              ),
 
               const Spacer(),
 
@@ -370,8 +383,5 @@ class _AssessmentQuestion {
   final String question;
   final Map<String, String> options;
 
-  const _AssessmentQuestion({
-    required this.question,
-    required this.options,
-  });
+  const _AssessmentQuestion({required this.question, required this.options});
 }

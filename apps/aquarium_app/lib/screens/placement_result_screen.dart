@@ -87,7 +87,8 @@ class PlacementResultScreen extends ConsumerWidget {
                     onPressed: () {
                       Navigator.of(context).pushReplacement(
                         MaterialPageRoute(
-                          builder: (_) => const EnhancedTutorialWalkthroughScreen(),
+                          builder: (_) =>
+                              const EnhancedTutorialWalkthroughScreen(),
                         ),
                       );
                     },

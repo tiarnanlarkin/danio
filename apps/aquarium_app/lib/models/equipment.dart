@@ -95,11 +95,7 @@ class Equipment {
     if (expectedLifespanMonths == null) return null;
     final date = purchaseDate ?? installedDate;
     if (date == null) return null;
-    return DateTime(
-      date.year,
-      date.month + expectedLifespanMonths!,
-      date.day,
-    );
+    return DateTime(date.year, date.month + expectedLifespanMonths!, date.day);
   }
 
   /// Default lifespan for equipment type (in months)
@@ -184,7 +180,8 @@ class Equipment {
       lastServiced: lastServiced ?? this.lastServiced,
       installedDate: installedDate ?? this.installedDate,
       purchaseDate: purchaseDate ?? this.purchaseDate,
-      expectedLifespanMonths: expectedLifespanMonths ?? this.expectedLifespanMonths,
+      expectedLifespanMonths:
+          expectedLifespanMonths ?? this.expectedLifespanMonths,
       notes: notes ?? this.notes,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,

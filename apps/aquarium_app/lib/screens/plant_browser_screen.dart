@@ -1,19 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../data/plant_database.dart';
+import '../models/learning.dart';
+import '../providers/user_profile_provider.dart';
 import '../theme/app_theme.dart';
 
-class PlantBrowserScreen extends StatefulWidget {
+class PlantBrowserScreen extends ConsumerStatefulWidget {
   const PlantBrowserScreen({super.key});
 
   @override
-  State<PlantBrowserScreen> createState() => _PlantBrowserScreenState();
+  ConsumerState<PlantBrowserScreen> createState() => _PlantBrowserScreenState();
 }
 
-class _PlantBrowserScreenState extends State<PlantBrowserScreen> {
+class _PlantBrowserScreenState extends ConsumerState<PlantBrowserScreen> {
   String _searchQuery = '';
   String? _difficultyFilter;
   String? _placementFilter;
   bool _lowTechOnly = false;
+  final Set<String> _researchedPlants = {}; // Track researched plants this session
 
   List<PlantInfo> get _filteredPlants {
     var results = PlantDatabase.plants;
@@ -154,7 +158,17 @@ class _PlantBrowserScreenState extends State<PlantBrowserScreen> {
     );
   }
 
-  void _showPlantDetail(BuildContext context, PlantInfo plant) {
+  Future<void> _showPlantDetail(BuildContext context, PlantInfo plant) async {
+    // Award XP for researching a new plant (once per session per plant)
+    if (!_researchedPlants.contains(plant.scientificName)) {
+      _researchedPlants.add(plant.scientificName);
+      await ref
+          .read(userProfileProvider.notifier)
+          .recordActivity(xp: XpRewards.plantResearched);
+    }
+
+    if (!mounted) return;
+
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,

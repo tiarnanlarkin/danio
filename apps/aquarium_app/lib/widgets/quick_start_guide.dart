@@ -23,25 +23,29 @@ class _QuickStartGuideState extends State<QuickStartGuide> {
   final List<_GuideStep> _steps = [
     _GuideStep(
       title: 'Welcome to Your Tank! 🐠',
-      description: 'This is your home screen. Here you can see your tank health and quick actions.',
+      description:
+          'This is your home screen. Here you can see your tank health and quick actions.',
       targetKey: 'tank_card',
       position: _GuidePosition.bottom,
     ),
     _GuideStep(
       title: 'Log Water Parameters 💧',
-      description: 'Tap the + button to log water tests. Regular testing keeps your fish healthy!',
+      description:
+          'Tap the + button to log water tests. Regular testing keeps your fish healthy!',
       targetKey: 'add_log_button',
       position: _GuidePosition.left,
     ),
     _GuideStep(
       title: 'Complete Tasks ✅',
-      description: 'Check your maintenance tasks here. Complete them to earn XP and keep your tank thriving!',
+      description:
+          'Check your maintenance tasks here. Complete them to earn XP and keep your tank thriving!',
       targetKey: 'tasks_section',
       position: _GuidePosition.top,
     ),
     _GuideStep(
       title: 'Learn & Grow 📚',
-      description: 'Visit the Learning tab to complete lessons and unlock new features. You\'re all set!',
+      description:
+          'Visit the Learning tab to complete lessons and unlock new features. You\'re all set!',
       targetKey: 'learning_tab',
       position: _GuidePosition.top,
     ),
@@ -56,7 +60,7 @@ class _QuickStartGuideState extends State<QuickStartGuide> {
   Future<void> _checkShouldShowGuide() async {
     final prefs = await SharedPreferences.getInstance();
     final hasSeenGuide = prefs.getBool('quick_start_guide_seen') ?? false;
-    
+
     if (!hasSeenGuide && mounted) {
       // Delay to let UI settle
       Future.delayed(const Duration(milliseconds: 500), () {
@@ -81,7 +85,7 @@ class _QuickStartGuideState extends State<QuickStartGuide> {
 
   OverlayEntry _createOverlayEntry() {
     final step = _steps[_currentStep];
-    
+
     return OverlayEntry(
       builder: (context) => Material(
         color: Colors.black54,
@@ -90,10 +94,8 @@ class _QuickStartGuideState extends State<QuickStartGuide> {
           child: Stack(
             children: [
               // Dimmed background
-              Positioned.fill(
-                child: Container(color: Colors.black54),
-              ),
-              
+              Positioned.fill(child: Container(color: Colors.black54)),
+
               // Guide tooltip
               _buildGuideTooltip(step),
 
@@ -106,11 +108,17 @@ class _QuickStartGuideState extends State<QuickStartGuide> {
                   icon: const Icon(Icons.close, color: Colors.white),
                   label: const Text(
                     'Skip Tutorial',
-                    style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                   style: TextButton.styleFrom(
                     backgroundColor: Colors.black38,
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 8,
+                    ),
                   ),
                 ),
               ),
@@ -136,7 +144,9 @@ class _QuickStartGuideState extends State<QuickStartGuide> {
         ),
         child: Card(
           elevation: 8,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
           child: Padding(
             padding: const EdgeInsets.all(20),
             child: Column(
@@ -207,12 +217,16 @@ class _QuickStartGuideState extends State<QuickStartGuide> {
                         const SizedBox(width: 8),
                         FilledButton.icon(
                           onPressed: _nextStep,
-                          icon: Icon(_currentStep == _steps.length - 1
-                              ? Icons.check
-                              : Icons.arrow_forward),
-                          label: Text(_currentStep == _steps.length - 1
-                              ? 'Got it!'
-                              : 'Next'),
+                          icon: Icon(
+                            _currentStep == _steps.length - 1
+                                ? Icons.check
+                                : Icons.arrow_forward,
+                          ),
+                          label: Text(
+                            _currentStep == _steps.length - 1
+                                ? 'Got it!'
+                                : 'Next',
+                          ),
                         ),
                       ],
                     ),
@@ -246,7 +260,7 @@ class _QuickStartGuideState extends State<QuickStartGuide> {
     _overlayEntry?.remove();
     _overlayEntry = null;
     setState(() => _isGuideActive = false);
-    
+
     // Mark as seen
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool('quick_start_guide_seen', true);
@@ -278,23 +292,14 @@ class _GuideStep {
   });
 }
 
-enum _GuidePosition {
-  top,
-  bottom,
-  left,
-  right,
-}
+enum _GuidePosition { top, bottom, left, right }
 
 /// Widget to mark guide targets
 class GuideTarget extends StatelessWidget {
   final String targetKey;
   final Widget child;
 
-  const GuideTarget({
-    super.key,
-    required this.targetKey,
-    required this.child,
-  });
+  const GuideTarget({super.key, required this.targetKey, required this.child});
 
   @override
   Widget build(BuildContext context) {
@@ -412,12 +417,7 @@ class QuickStartTipsCard extends StatelessWidget {
       children: [
         Icon(icon, size: 20, color: color),
         const SizedBox(width: 12),
-        Expanded(
-          child: Text(
-            text,
-            style: const TextStyle(fontSize: 14),
-          ),
-        ),
+        Expanded(child: Text(text, style: const TextStyle(fontSize: 14))),
       ],
     );
   }
@@ -426,7 +426,9 @@ class QuickStartTipsCard extends StatelessWidget {
     // This would trigger the overlay guide
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
-        content: Text('Tutorial overlay feature - integrate with QuickStartGuide widget'),
+        content: Text(
+          'Tutorial overlay feature - integrate with QuickStartGuide widget',
+        ),
         duration: Duration(seconds: 2),
       ),
     );
@@ -435,7 +437,7 @@ class QuickStartTipsCard extends StatelessWidget {
   Future<void> _dismissCard(BuildContext context) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool('quick_start_tips_card_dismissed', true);
-    
+
     if (context.mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(

@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/learning.dart';
 import '../providers/user_profile_provider.dart';
 import '../providers/spaced_repetition_provider.dart';
+import '../providers/achievement_provider.dart';
+import '../services/achievement_service.dart';
 import '../services/hearts_service.dart';
 import '../services/notification_service.dart';
 import '../widgets/hearts_widgets.dart';
@@ -930,22 +932,44 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
         );
       }
 
-      // Check for achievements
+      // Check for achievements using the full achievement checker
       final profile = ref.read(userProfileProvider).value;
       if (profile != null) {
-        final notifier = ref.read(userProfileProvider.notifier);
+        try {
+          final achievementChecker = ref.read(achievementCheckerProvider);
+          final isPerfect = widget.lesson.quiz != null &&
+              _correctAnswers == widget.lesson.quiz!.questions.length;
 
-        // First lesson achievement
-        if (profile.completedLessons.isEmpty) {
-          await notifier.unlockAchievement('first_lesson');
-        }
+          // Calculate today's lessons completed
+          final todayKey = DateTime.now().toIso8601String().split('T')[0];
+          final todayLessons = profile.completedLessons
+              .where((id) {
+                final progress = profile.lessonProgress[id];
+                return progress != null &&
+                    progress.completedDate.toIso8601String().split('T')[0] ==
+                        todayKey;
+              })
+              .length +
+              1; // +1 for this lesson
 
-        // Quiz ace (100%)
-        if (widget.lesson.quiz != null) {
-          final quiz = widget.lesson.quiz!;
-          if (_correctAnswers == quiz.questions.length) {
-            await notifier.unlockAchievement('quiz_ace');
-          }
+          await achievementChecker.checkAfterLesson(
+            lessonsCompleted: profile.completedLessons.length + 1,
+            currentStreak: profile.currentStreak,
+            totalXp: profile.totalXp + totalXp,
+            perfectScores: isPerfect
+                ? (profile.achievements.where((a) => a == 'perfectionist').length + 1)
+                : profile.achievements.where((a) => a == 'perfectionist').length,
+            lessonCompletedAt: DateTime.now(),
+            lessonDuration: widget.lesson.estimatedMinutes * 60,
+            lessonScore: widget.lesson.quiz != null
+                ? (_correctAnswers * 100 ~/ widget.lesson.quiz!.questions.length)
+                : 100,
+            todayLessonsCompleted: todayLessons,
+            completedLessonIds: [...profile.completedLessons, widget.lesson.id],
+          );
+        } catch (e) {
+          // Don't fail the lesson completion if achievement check fails
+          debugPrint('Achievement check failed: $e');
         }
       }
 

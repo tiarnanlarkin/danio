@@ -9,6 +9,7 @@ import '../services/shop_service.dart';
 import '../data/shop_catalog.dart';
 import '../theme/app_theme.dart';
 import '../widgets/empty_state.dart';
+import 'inventory_screen.dart';
 
 /// Gem Shop colors - jewel/treasure theme (WCAG AA compliant)
 class GemShopColors {
@@ -94,6 +95,15 @@ class _GemShopScreenState extends ConsumerState<GemShopScreen>
             ),
           ),
           actions: [
+            // Inventory button
+            IconButton(
+              icon: const Icon(Icons.inventory_2, color: GemShopColors.goldAccent),
+              tooltip: 'My Inventory',
+              onPressed: () => Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const InventoryScreen()),
+              ),
+            ),
             // Gem balance display
             _GemBalanceChip(balance: gemBalance),
             const SizedBox(width: 16),

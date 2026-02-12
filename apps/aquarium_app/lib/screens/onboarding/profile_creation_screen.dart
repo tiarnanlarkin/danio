@@ -109,7 +109,9 @@ class _ProfileCreationScreenState extends ConsumerState<ProfileCreationScreen> {
 
       // Navigate to placement test
       Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => const EnhancedPlacementTestScreen()),
+        MaterialPageRoute(
+          builder: (context) => const EnhancedPlacementTestScreen(),
+        ),
       );
     } catch (e) {
       if (!mounted) return;

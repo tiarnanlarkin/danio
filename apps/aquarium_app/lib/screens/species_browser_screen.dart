@@ -1,18 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../data/species_database.dart';
+import '../models/learning.dart';
+import '../providers/user_profile_provider.dart';
 import '../theme/app_theme.dart';
 
-class SpeciesBrowserScreen extends StatefulWidget {
+class SpeciesBrowserScreen extends ConsumerStatefulWidget {
   const SpeciesBrowserScreen({super.key});
 
   @override
-  State<SpeciesBrowserScreen> createState() => _SpeciesBrowserScreenState();
+  ConsumerState<SpeciesBrowserScreen> createState() => _SpeciesBrowserScreenState();
 }
 
-class _SpeciesBrowserScreenState extends State<SpeciesBrowserScreen> {
+class _SpeciesBrowserScreenState extends ConsumerState<SpeciesBrowserScreen> {
   String _searchQuery = '';
   String? _careLevelFilter;
   String? _temperamentFilter;
+  final Set<String> _researchedSpecies = {}; // Track researched species this session
 
   List<SpeciesInfo> get _filteredSpecies {
     var results = SpeciesDatabase.species;
@@ -137,7 +141,17 @@ class _SpeciesBrowserScreenState extends State<SpeciesBrowserScreen> {
     );
   }
 
-  void _showSpeciesDetail(BuildContext context, SpeciesInfo species) {
+  Future<void> _showSpeciesDetail(BuildContext context, SpeciesInfo species) async {
+    // Award XP for researching a new species (once per session per species)
+    if (!_researchedSpecies.contains(species.scientificName)) {
+      _researchedSpecies.add(species.scientificName);
+      await ref
+          .read(userProfileProvider.notifier)
+          .recordActivity(xp: XpRewards.speciesResearched);
+    }
+
+    if (!mounted) return;
+
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,

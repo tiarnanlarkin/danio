@@ -3,8 +3,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
 import '../models/models.dart';
+import '../models/learning.dart';
 import '../providers/storage_provider.dart';
 import '../providers/tank_provider.dart';
+import '../providers/user_profile_provider.dart';
+import '../providers/inventory_provider.dart';
 import '../theme/app_theme.dart';
 import '../utils/app_feedback.dart';
 import '../widgets/empty_state.dart';
@@ -189,6 +192,12 @@ class TasksScreen extends ConsumerWidget {
         );
       }
     }
+
+    // Award XP for completing a maintenance task (with boost if active)
+    final isBoostActive = ref.read(xpBoostActiveProvider);
+    await ref
+        .read(userProfileProvider.notifier)
+        .recordActivity(xp: XpRewards.taskComplete, xpBoostActive: isBoostActive);
 
     ref.invalidate(tasksProvider(tankId));
     ref.invalidate(equipmentProvider(tankId));

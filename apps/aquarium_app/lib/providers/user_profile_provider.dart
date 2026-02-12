@@ -142,9 +142,28 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
     await updateProfile(dailyXpGoal: goal);
   }
 
+  /// Add a streak freeze (purchased from shop)
+  Future<void> addStreakFreeze() async {
+    final current = state.value;
+    if (current == null) return;
+
+    // Grant the streak freeze
+    final updated = current.copyWith(
+      hasStreakFreeze: true,
+      streakFreezeGrantedDate: DateTime.now(),
+      updatedAt: DateTime.now(),
+    );
+
+    await _save(updated);
+    state = AsyncValue.data(updated);
+  }
+
   /// Award XP and handle streak logic (with streak freeze support)
   /// Now uses offline-aware service to queue changes when offline
-  Future<void> recordActivity({int xp = 0}) async {
+  /// If xpBoostActive is true, the XP amount will be doubled
+  Future<void> recordActivity({int xp = 0, bool xpBoostActive = false}) async {
+    // Apply XP boost multiplier if active
+    final effectiveXp = xpBoostActive ? xp * 2 : xp;
     try {
       var current = state.value;
       if (current == null) return;
@@ -153,7 +172,7 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
       final offlineService = ref.read(offlineAwareServiceProvider);
 
       await offlineService.awardXp(
-        amount: xp,
+        amount: effectiveXp,
         localUpdate: () async {
           // Reset streak freeze weekly if needed
           if (current!.shouldResetStreakFreeze) {
@@ -209,14 +228,14 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
           // Update daily XP history
           final todayKey = _formatDate(today);
           final previousTodayXp = current!.dailyXpHistory[todayKey] ?? 0;
-          final todayXp = previousTodayXp + xp + bonusXp;
+          final todayXp = previousTodayXp + effectiveXp + bonusXp;
           final updatedHistory = {
             ...current!.dailyXpHistory,
             todayKey: todayXp,
           };
 
           final updated = current!.copyWith(
-            totalXp: current!.totalXp + xp + bonusXp,
+            totalXp: current!.totalXp + effectiveXp + bonusXp,
             currentStreak: newStreak,
             longestStreak: longestStreak,
             lastActivityDate: now,
@@ -269,11 +288,15 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
   }
 
   /// Add XP and update daily progress
-  Future<void> addXp(int amount) async {
+  /// If xpBoostActive is true, doubles the XP amount
+  Future<void> addXp(int amount, {bool xpBoostActive = false}) async {
     if (amount <= 0) return;
 
     final current = state.value;
     if (current == null) return;
+
+    // Apply XP boost multiplier if active
+    final effectiveAmount = xpBoostActive ? amount * 2 : amount;
 
     // Check and reset weekly XP if needed
     final currentWeek = WeekPeriod.current();
@@ -288,7 +311,7 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
     }
 
     // Add to weekly XP
-    weeklyXP += amount;
+    weeklyXP += effectiveAmount;
 
     // Determine league based on weekly XP
     final newLeague = _calculateLeagueFromXP(weeklyXP);
@@ -296,10 +319,10 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
     // Update today's XP in history
     final todayKey = getTodayKey();
     final updatedHistory = Map<String, int>.from(current.dailyXpHistory);
-    updatedHistory[todayKey] = (updatedHistory[todayKey] ?? 0) + amount;
+    updatedHistory[todayKey] = (updatedHistory[todayKey] ?? 0) + effectiveAmount;
 
     final updated = current.copyWith(
-      totalXp: current.totalXp + amount,
+      totalXp: current.totalXp + effectiveAmount,
       weeklyXP: weeklyXP,
       weekStartDate: newWeekStart,
       league: newLeague,

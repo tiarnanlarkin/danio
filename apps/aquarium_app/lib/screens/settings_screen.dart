@@ -111,7 +111,9 @@ class SettingsScreen extends ConsumerWidget {
             trailing: const Icon(Icons.chevron_right),
             onTap: () => Navigator.push(
               context,
-              MaterialPageRoute(builder: (_) => const _DifficultySettingsWrapper()),
+              MaterialPageRoute(
+                builder: (_) => const _DifficultySettingsWrapper(),
+              ),
             ),
           ),
 
@@ -351,7 +353,7 @@ class SettingsScreen extends ConsumerWidget {
 
           // Guides & Education section (expandable)
           _SectionHeader(title: 'Guides & Education'),
-          
+
           // Essential - Quick start and emergency
           ExpansionTile(
             leading: const Icon(Icons.star, color: AppColors.primary),
@@ -365,7 +367,9 @@ class SettingsScreen extends ConsumerWidget {
                 trailing: const Icon(Icons.chevron_right),
                 onTap: () => Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (_) => const QuickStartGuideScreen()),
+                  MaterialPageRoute(
+                    builder: (_) => const QuickStartGuideScreen(),
+                  ),
                 ),
               ),
               ListTile(
@@ -375,7 +379,9 @@ class SettingsScreen extends ConsumerWidget {
                 trailing: const Icon(Icons.chevron_right),
                 onTap: () => Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (_) => const EmergencyGuideScreen()),
+                  MaterialPageRoute(
+                    builder: (_) => const EmergencyGuideScreen(),
+                  ),
                 ),
               ),
               ListTile(
@@ -385,7 +391,9 @@ class SettingsScreen extends ConsumerWidget {
                 trailing: const Icon(Icons.chevron_right),
                 onTap: () => Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (_) => const NitrogenCycleGuideScreen()),
+                  MaterialPageRoute(
+                    builder: (_) => const NitrogenCycleGuideScreen(),
+                  ),
                 ),
               ),
             ],
@@ -404,7 +412,9 @@ class SettingsScreen extends ConsumerWidget {
                 trailing: const Icon(Icons.chevron_right),
                 onTap: () => Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (_) => const ParameterGuideScreen()),
+                  MaterialPageRoute(
+                    builder: (_) => const ParameterGuideScreen(),
+                  ),
                 ),
               ),
               ListTile(
@@ -453,7 +463,9 @@ class SettingsScreen extends ConsumerWidget {
                 trailing: const Icon(Icons.chevron_right),
                 onTap: () => Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (_) => const AcclimationGuideScreen()),
+                  MaterialPageRoute(
+                    builder: (_) => const AcclimationGuideScreen(),
+                  ),
                 ),
               ),
               ListTile(
@@ -463,7 +475,9 @@ class SettingsScreen extends ConsumerWidget {
                 trailing: const Icon(Icons.chevron_right),
                 onTap: () => Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (_) => const QuarantineGuideScreen()),
+                  MaterialPageRoute(
+                    builder: (_) => const QuarantineGuideScreen(),
+                  ),
                 ),
               ),
               ListTile(
@@ -473,7 +487,9 @@ class SettingsScreen extends ConsumerWidget {
                 trailing: const Icon(Icons.chevron_right),
                 onTap: () => Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (_) => const BreedingGuideScreen()),
+                  MaterialPageRoute(
+                    builder: (_) => const BreedingGuideScreen(),
+                  ),
                 ),
               ),
             ],
@@ -492,7 +508,9 @@ class SettingsScreen extends ConsumerWidget {
                 trailing: const Icon(Icons.chevron_right),
                 onTap: () => Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (_) => const EquipmentGuideScreen()),
+                  MaterialPageRoute(
+                    builder: (_) => const EquipmentGuideScreen(),
+                  ),
                 ),
               ),
               ListTile(
@@ -502,7 +520,9 @@ class SettingsScreen extends ConsumerWidget {
                 trailing: const Icon(Icons.chevron_right),
                 onTap: () => Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (_) => const SubstrateGuideScreen()),
+                  MaterialPageRoute(
+                    builder: (_) => const SubstrateGuideScreen(),
+                  ),
                 ),
               ),
               ListTile(
@@ -512,7 +532,9 @@ class SettingsScreen extends ConsumerWidget {
                 trailing: const Icon(Icons.chevron_right),
                 onTap: () => Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (_) => const HardscapeGuideScreen()),
+                  MaterialPageRoute(
+                    builder: (_) => const HardscapeGuideScreen(),
+                  ),
                 ),
               ),
             ],
@@ -531,7 +553,9 @@ class SettingsScreen extends ConsumerWidget {
                 trailing: const Icon(Icons.chevron_right),
                 onTap: () => Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (_) => const VacationGuideScreen()),
+                  MaterialPageRoute(
+                    builder: (_) => const VacationGuideScreen(),
+                  ),
                 ),
               ),
             ],
@@ -550,7 +574,9 @@ class SettingsScreen extends ConsumerWidget {
                 trailing: const Icon(Icons.chevron_right),
                 onTap: () => Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (_) => const SpeciesBrowserScreen()),
+                  MaterialPageRoute(
+                    builder: (_) => const SpeciesBrowserScreen(),
+                  ),
                 ),
               ),
               ListTile(
@@ -590,7 +616,9 @@ class SettingsScreen extends ConsumerWidget {
                 trailing: const Icon(Icons.chevron_right),
                 onTap: () => Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (_) => const TroubleshootingScreen()),
+                  MaterialPageRoute(
+                    builder: (_) => const TroubleshootingScreen(),
+                  ),
                 ),
               ),
             ],
@@ -1325,10 +1353,12 @@ class _DifficultySettingsWrapper extends StatefulWidget {
   const _DifficultySettingsWrapper();
 
   @override
-  State<_DifficultySettingsWrapper> createState() => _DifficultySettingsWrapperState();
+  State<_DifficultySettingsWrapper> createState() =>
+      _DifficultySettingsWrapperState();
 }
 
-class _DifficultySettingsWrapperState extends State<_DifficultySettingsWrapper> {
+class _DifficultySettingsWrapperState
+    extends State<_DifficultySettingsWrapper> {
   late UserSkillProfile _profile;
 
   @override
