@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../theme/app_theme.dart';
+import '../widgets/core/app_card.dart';
 
 class DosingCalculatorScreen extends StatefulWidget {
   final double? tankVolumeLitres;
@@ -119,47 +120,45 @@ class _DosingCalculatorScreenState extends State<DosingCalculatorScreen> {
 
             // Result
             if (_tankVolume != null && _totalDose != null) ...[
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: Column(
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.science,
+              AppCard(
+                padding: AppCardPadding.spacious,
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.science,
+                          color: AppColors.primary,
+                          size: 32,
+                        ),
+                        const SizedBox(width: 12),
+                        Text(
+                          '${_totalDose!.toStringAsFixed(2)} ml',
+                          style: AppTypography.headlineLarge.copyWith(
                             color: AppColors.primary,
-                            size: 32,
                           ),
-                          const SizedBox(width: 12),
-                          Text(
-                            '${_totalDose!.toStringAsFixed(2)} ml',
-                            style: AppTypography.headlineLarge.copyWith(
-                              color: AppColors.primary,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: AppSpacing.sm),
-                      Text(
-                        'Total dose for your tank',
-                        style: AppTypography.bodyMedium,
-                      ),
-                      const SizedBox(height: AppSpacing.md),
-                      const Divider(),
-                      const SizedBox(height: AppSpacing.md),
-                      _ResultRow(
-                        label: 'Tank volume',
-                        value: '${_tankVolume!.toStringAsFixed(0)} L',
-                      ),
-                      _ResultRow(
-                        label: 'Dose rate',
-                        value:
-                            '${_dosePer!.toStringAsFixed(1)} ml per ${_dosePerLitres.toStringAsFixed(0)} L',
-                      ),
-                    ],
-                  ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: AppSpacing.sm),
+                    Text(
+                      'Total dose for your tank',
+                      style: AppTypography.bodyMedium,
+                    ),
+                    const SizedBox(height: AppSpacing.md),
+                    const Divider(),
+                    const SizedBox(height: AppSpacing.md),
+                    _ResultRow(
+                      label: 'Tank volume',
+                      value: '${_tankVolume!.toStringAsFixed(0)} L',
+                    ),
+                    _ResultRow(
+                      label: 'Dose rate',
+                      value:
+                          '${_dosePer!.toStringAsFixed(1)} ml per ${_dosePerLitres.toStringAsFixed(0)} L',
+                    ),
+                  ],
                 ),
               ),
 
@@ -214,24 +213,22 @@ class _DosingCalculatorScreenState extends State<DosingCalculatorScreen> {
                 }),
               ),
             ] else ...[
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(32),
-                  child: Center(
-                    child: Column(
-                      children: [
-                        Icon(
-                          Icons.science_outlined,
-                          size: 48,
-                          color: AppColors.textHint,
-                        ),
-                        const SizedBox(height: AppSpacing.md),
-                        Text(
-                          'Enter values to calculate dose',
-                          style: AppTypography.bodyMedium,
-                        ),
-                      ],
-                    ),
+              AppCard(
+                padding: AppCardPadding.spacious,
+                child: Center(
+                  child: Column(
+                    children: [
+                      Icon(
+                        Icons.science_outlined,
+                        size: 48,
+                        color: AppColors.textHint,
+                      ),
+                      const SizedBox(height: AppSpacing.md),
+                      Text(
+                        'Enter values to calculate dose',
+                        style: AppTypography.bodyMedium,
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -279,15 +276,18 @@ class _ProductPreset extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      margin: const EdgeInsets.only(bottom: 8),
-      child: ListTile(
-        title: Text(name),
-        subtitle: Text(
-          '${dose.toStringAsFixed(0)} ml per ${per.toStringAsFixed(0)} L',
-        ),
-        trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: AppCard(
+        padding: AppCardPadding.none,
         onTap: onTap,
+        child: ListTile(
+          title: Text(name),
+          subtitle: Text(
+            '${dose.toStringAsFixed(0)} ml per ${per.toStringAsFixed(0)} L',
+          ),
+          trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+        ),
       ),
     );
   }

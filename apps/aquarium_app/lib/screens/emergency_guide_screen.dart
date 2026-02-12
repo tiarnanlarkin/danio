@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
+import '../widgets/core/app_card.dart';
 
 class EmergencyGuideScreen extends StatelessWidget {
   const EmergencyGuideScreen({super.key});
@@ -15,22 +16,20 @@ class EmergencyGuideScreen extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          Card(
-            color: AppColors.error.withOpacity(0.1),
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Row(
-                children: [
-                  Icon(Icons.emergency, size: 32, color: AppColors.error),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Text(
-                      'Quick reference for urgent aquarium situations. When in doubt: large water change.',
-                      style: AppTypography.bodyMedium,
-                    ),
+          AppCard(
+            backgroundColor: AppColors.error.withOpacity(0.1),
+            padding: AppCardPadding.standard,
+            child: Row(
+              children: [
+                Icon(Icons.emergency, size: 32, color: AppColors.error),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    'Quick reference for urgent aquarium situations. When in doubt: large water change.',
+                    style: AppTypography.bodyMedium,
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
 
@@ -184,32 +183,30 @@ class EmergencyGuideScreen extends StatelessWidget {
 
           const SizedBox(height: AppSpacing.lg),
 
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Emergency Kit Checklist',
-                    style: AppTypography.headlineSmall,
-                  ),
-                  const SizedBox(height: 12),
-                  _CheckItem(
-                    text: 'Extra dechlorinator (Seachem Prime recommended)',
-                  ),
-                  _CheckItem(text: 'Spare heater'),
-                  _CheckItem(text: 'Battery-powered air pump'),
-                  _CheckItem(text: 'Hospital/quarantine tank'),
-                  _CheckItem(
-                    text: 'Basic medications (ich treatment, antibacterial)',
-                  ),
-                  _CheckItem(text: 'Activated carbon'),
-                  _CheckItem(text: 'Clean buckets'),
-                  _CheckItem(text: 'Test kit'),
-                  _CheckItem(text: 'Aquarium salt'),
-                ],
-              ),
+          AppCard(
+            padding: AppCardPadding.standard,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Emergency Kit Checklist',
+                  style: AppTypography.headlineSmall,
+                ),
+                const SizedBox(height: 12),
+                _CheckItem(
+                  text: 'Extra dechlorinator (Seachem Prime recommended)',
+                ),
+                _CheckItem(text: 'Spare heater'),
+                _CheckItem(text: 'Battery-powered air pump'),
+                _CheckItem(text: 'Hospital/quarantine tank'),
+                _CheckItem(
+                  text: 'Basic medications (ich treatment, antibacterial)',
+                ),
+                _CheckItem(text: 'Activated carbon'),
+                _CheckItem(text: 'Clean buckets'),
+                _CheckItem(text: 'Test kit'),
+                _CheckItem(text: 'Aquarium salt'),
+              ],
             ),
           ),
 

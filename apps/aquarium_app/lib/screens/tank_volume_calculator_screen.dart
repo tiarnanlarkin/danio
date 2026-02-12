@@ -2,6 +2,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../theme/app_theme.dart';
+import '../widgets/core/app_card.dart';
 
 class TankVolumeCalculatorScreen extends StatefulWidget {
   const TankVolumeCalculatorScreen({super.key});
@@ -158,11 +159,10 @@ class _TankVolumeCalculatorScreenState
 
             // Result
             if (_volume != null) ...[
-              Card(
-                color: AppColors.primary.withOpacity(0.1),
-                child: Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: Column(
+              AppCard(
+                backgroundColor: AppColors.primary.withOpacity(0.1),
+                padding: AppCardPadding.spacious,
+                child: Column(
                     children: [
                       Text('Estimated Volume', style: AppTypography.bodyMedium),
                       const SizedBox(height: AppSpacing.sm),
@@ -200,39 +200,36 @@ class _TankVolumeCalculatorScreenState
                       ),
                     ],
                   ),
-                ),
               ),
             ],
 
             const SizedBox(height: AppSpacing.lg),
 
             // Tips
-            Card(
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('Tips', style: AppTypography.labelLarge),
-                    const SizedBox(height: AppSpacing.sm),
-                    Text(
-                      '• Actual water volume is ~90% of total (substrate, decor)',
-                      style: AppTypography.bodySmall,
-                    ),
-                    Text(
-                      '• 1 litre of water weighs 1 kg',
-                      style: AppTypography.bodySmall,
-                    ),
-                    Text(
-                      '• Add tank weight + stand capacity when planning placement',
-                      style: AppTypography.bodySmall,
-                    ),
-                    Text(
-                      '• Internal dimensions give more accurate results',
-                      style: AppTypography.bodySmall,
-                    ),
-                  ],
-                ),
+            AppCard(
+              padding: AppCardPadding.standard,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('Tips', style: AppTypography.labelLarge),
+                  const SizedBox(height: AppSpacing.sm),
+                  Text(
+                    '• Actual water volume is ~90% of total (substrate, decor)',
+                    style: AppTypography.bodySmall,
+                  ),
+                  Text(
+                    '• 1 litre of water weighs 1 kg',
+                    style: AppTypography.bodySmall,
+                  ),
+                  Text(
+                    '• Add tank weight + stand capacity when planning placement',
+                    style: AppTypography.bodySmall,
+                  ),
+                  Text(
+                    '• Internal dimensions give more accurate results',
+                    style: AppTypography.bodySmall,
+                  ),
+                ],
               ),
             ),
           ],

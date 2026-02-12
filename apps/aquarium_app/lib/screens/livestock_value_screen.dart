@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/models.dart';
 import '../providers/tank_provider.dart';
 import '../theme/app_theme.dart';
+import '../widgets/core/app_card.dart';
 
 class LivestockValueScreen extends ConsumerStatefulWidget {
   final String tankId;
@@ -90,51 +91,47 @@ class _LivestockValueScreenState extends ConsumerState<LivestockValueScreen> {
             padding: const EdgeInsets.all(16),
             children: [
               // Total value card
-              Card(
-                color: AppColors.primary.withOpacity(0.1),
-                child: Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: Column(
-                    children: [
-                      Text(
-                        'Estimated Total Value',
-                        style: AppTypography.labelLarge,
+              AppCard(
+                backgroundColor: AppColors.primary.withOpacity(0.1),
+                padding: AppCardPadding.spacious,
+                child: Column(
+                  children: [
+                    Text(
+                      'Estimated Total Value',
+                      style: AppTypography.labelLarge,
+                    ),
+                    const SizedBox(height: AppSpacing.sm),
+                    Text(
+                      '$_currency${totalValue.toStringAsFixed(2)}',
+                      style: AppTypography.headlineLarge.copyWith(
+                        color: AppColors.primary,
                       ),
-                      const SizedBox(height: AppSpacing.sm),
-                      Text(
-                        '$_currency${totalValue.toStringAsFixed(2)}',
-                        style: AppTypography.headlineLarge.copyWith(
-                          color: AppColors.primary,
-                        ),
-                      ),
-                      const SizedBox(height: AppSpacing.xs),
-                      Text(
-                        '$totalAnimals animals',
-                        style: AppTypography.bodySmall,
-                      ),
-                    ],
-                  ),
+                    ),
+                    const SizedBox(height: AppSpacing.xs),
+                    Text(
+                      '$totalAnimals animals',
+                      style: AppTypography.bodySmall,
+                    ),
+                  ],
                 ),
               ),
 
               const SizedBox(height: AppSpacing.sm),
 
-              Card(
-                color: AppColors.warning.withOpacity(0.1),
-                child: Padding(
-                  padding: const EdgeInsets.all(12),
-                  child: Row(
-                    children: [
-                      Icon(Icons.info, size: 18, color: AppColors.warning),
-                      const SizedBox(width: AppSpacing.sm),
-                      Expanded(
-                        child: Text(
-                          'Enter prices below to calculate total value. Useful for insurance or selling.',
-                          style: AppTypography.bodySmall,
-                        ),
+              AppCard(
+                backgroundColor: AppColors.warning.withOpacity(0.1),
+                padding: AppCardPadding.compact,
+                child: Row(
+                  children: [
+                    Icon(Icons.info, size: 18, color: AppColors.warning),
+                    const SizedBox(width: AppSpacing.sm),
+                    Expanded(
+                      child: Text(
+                        'Enter prices below to calculate total value. Useful for insurance or selling.',
+                        style: AppTypography.bodySmall,
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
 
@@ -144,10 +141,10 @@ class _LivestockValueScreenState extends ConsumerState<LivestockValueScreen> {
               const SizedBox(height: 12),
 
               ...livestock.map(
-                (item) => Card(
-                  margin: const EdgeInsets.only(bottom: 8),
-                  child: Padding(
-                    padding: const EdgeInsets.all(12),
+                (item) => Padding(
+                  padding: const EdgeInsets.only(bottom: 8),
+                  child: AppCard(
+                    padding: AppCardPadding.compact,
                     child: Row(
                       children: [
                         Container(
@@ -228,26 +225,24 @@ class _LivestockValueScreenState extends ConsumerState<LivestockValueScreen> {
               Text('Pricing Tips', style: AppTypography.headlineSmall),
               const SizedBox(height: 12),
 
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
-                      _TipRow(
-                        text:
-                            'Check local fish store prices for common species',
-                      ),
-                      _TipRow(
-                        text: 'Online retailers often have different pricing',
-                      ),
-                      _TipRow(text: 'Rare or breeding pairs are worth more'),
-                      _TipRow(text: 'Consider age and size when estimating'),
-                      _TipRow(
-                        text: 'Shrimp colonies can be valued per individual',
-                      ),
-                    ],
-                  ),
+              AppCard(
+                padding: AppCardPadding.standard,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: const [
+                    _TipRow(
+                      text:
+                          'Check local fish store prices for common species',
+                    ),
+                    _TipRow(
+                      text: 'Online retailers often have different pricing',
+                    ),
+                    _TipRow(text: 'Rare or breeding pairs are worth more'),
+                    _TipRow(text: 'Consider age and size when estimating'),
+                    _TipRow(
+                      text: 'Shrimp colonies can be valued per individual',
+                    ),
+                  ],
                 ),
               ),
 

@@ -71,10 +71,8 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
       overallSkill,
     );
 
-    return Card(
-      elevation: 4,
-      child: Padding(
-        padding: const EdgeInsets.all(20),
+    return AppCard(
+      padding: AppCardPadding.spacious,
         child: Column(
           children: [
             Row(
@@ -132,7 +130,6 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
             ),
           ],
         ),
-      ),
     );
   }
 
@@ -194,10 +191,10 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
             skillLevel: skillLevel,
           );
 
-      return Card(
-        margin: const EdgeInsets.only(bottom: 12),
-        child: Padding(
-          padding: const EdgeInsets.all(16),
+      return Padding(
+        padding: const EdgeInsets.only(bottom: 12),
+        child: AppCard(
+          padding: AppCardPadding.standard,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -335,14 +332,12 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
     }
 
     if (allAttempts.isEmpty) {
-      return Card(
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Center(
-            child: Text(
-              'Complete lessons to see your performance history',
-              style: TextStyle(color: Colors.grey[600]),
-            ),
+      return AppCard(
+        padding: AppCardPadding.standard,
+        child: Center(
+          child: Text(
+            'Complete lessons to see your performance history',
+            style: TextStyle(color: Colors.grey[600]),
           ),
         ),
       );
@@ -351,19 +346,17 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
     allAttempts.sort((a, b) => b.timestamp.compareTo(a.timestamp));
     final recentFive = allAttempts.take(5).toList();
 
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            const Text(
-              'Recent Activity',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 12),
-            ...recentFive.map((record) => _buildHistoryItem(record)),
-          ],
-        ),
+    return AppCard(
+      padding: AppCardPadding.standard,
+      child: Column(
+        children: [
+          const Text(
+            'Recent Activity',
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 12),
+          ...recentFive.map((record) => _buildHistoryItem(record)),
+        ],
       ),
     );
   }
@@ -464,14 +457,12 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
           style: TextStyle(color: Colors.grey[600], fontSize: 14),
         ),
         const SizedBox(height: 12),
-        Card(
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              children: _topicNames.entries.map((entry) {
-                return _buildOverrideRow(entry.key, entry.value);
-              }).toList(),
-            ),
+        AppCard(
+          padding: AppCardPadding.standard,
+          child: Column(
+            children: _topicNames.entries.map((entry) {
+              return _buildOverrideRow(entry.key, entry.value);
+            }).toList(),
           ),
         ),
       ],
@@ -568,13 +559,12 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
 
       if (recommendation.shouldIncrease || recommendation.shouldDecrease) {
         recommendations.add(
-          Card(
-            color: recommendation.shouldIncrease
+          AppCard(
+            backgroundColor: recommendation.shouldIncrease
                 ? Colors.green.shade50
                 : Colors.orange.shade50,
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Row(
+            padding: AppCardPadding.standard,
+            child: Row(
                 children: [
                   Icon(
                     recommendation.shouldIncrease
@@ -609,7 +599,6 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
                   ),
                 ],
               ),
-            ),
           ),
         );
       }
@@ -617,21 +606,19 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
 
     if (recommendations.isEmpty) {
       recommendations.add(
-        Card(
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Row(
-              children: [
-                const Icon(Icons.check_circle, color: Colors.green, size: 32),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Text(
-                    'No changes recommended. Keep up the great work!',
-                    style: TextStyle(color: Colors.grey[700]),
-                  ),
+        AppCard(
+          padding: AppCardPadding.standard,
+          child: Row(
+            children: [
+              const Icon(Icons.check_circle, color: Colors.green, size: 32),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  'No changes recommended. Keep up the great work!',
+                  style: TextStyle(color: Colors.grey[700]),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       );

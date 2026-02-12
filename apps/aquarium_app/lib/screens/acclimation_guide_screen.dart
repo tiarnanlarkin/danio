@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
+import '../widgets/core/app_card.dart';
 
 class AcclimationGuideScreen extends StatelessWidget {
   const AcclimationGuideScreen({super.key});
@@ -12,31 +13,29 @@ class AcclimationGuideScreen extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         children: [
           // Intro
-          Card(
-            color: AppColors.info.withOpacity(0.1),
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Icon(Icons.info_outline, color: AppColors.info),
-                      const SizedBox(width: AppSpacing.sm),
-                      Text(
-                        'Why Acclimate?',
-                        style: AppTypography.headlineSmall,
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 12),
-                  Text(
-                    'Fish are sensitive to sudden changes in water chemistry and temperature. '
-                    'Proper acclimation reduces stress and prevents shock, which can be fatal.',
-                    style: AppTypography.bodyMedium,
-                  ),
-                ],
-              ),
+          AppCard(
+            backgroundColor: AppColors.info.withOpacity(0.1),
+            padding: AppCardPadding.standard,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Icon(Icons.info_outline, color: AppColors.info),
+                    const SizedBox(width: AppSpacing.sm),
+                    Text(
+                      'Why Acclimate?',
+                      style: AppTypography.headlineSmall,
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  'Fish are sensitive to sudden changes in water chemistry and temperature. '
+                  'Proper acclimation reduces stress and prevents shock, which can be fatal.',
+                  style: AppTypography.bodyMedium,
+                ),
+              ],
             ),
           ),
 
@@ -183,43 +182,41 @@ class AcclimationGuideScreen extends StatelessWidget {
           Text('Extra Care For', style: AppTypography.headlineMedium),
           const SizedBox(height: AppSpacing.md),
 
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _SensitiveItem(
-                    species: 'Shrimp',
-                    note:
-                        'Extremely sensitive to parameter changes. Always drip acclimate for 2+ hours.',
-                  ),
-                  const Divider(),
-                  _SensitiveItem(
-                    species: 'Discus',
-                    note:
-                        'Sensitive to pH and temperature. Drip acclimate and maintain pristine water.',
-                  ),
-                  const Divider(),
-                  _SensitiveItem(
-                    species: 'Wild-caught fish',
-                    note:
-                        'Often more sensitive than captive-bred. Extended drip recommended.',
-                  ),
-                  const Divider(),
-                  _SensitiveItem(
-                    species: 'Marine fish',
-                    note:
-                        'Salinity and pH critical. Drip acclimate all marine species.',
-                  ),
-                  const Divider(),
-                  _SensitiveItem(
-                    species: 'Plecos',
-                    note:
-                        'Can be sensitive. Float longer and acclimate slowly.',
-                  ),
-                ],
-              ),
+          AppCard(
+            padding: AppCardPadding.standard,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _SensitiveItem(
+                  species: 'Shrimp',
+                  note:
+                      'Extremely sensitive to parameter changes. Always drip acclimate for 2+ hours.',
+                ),
+                const Divider(),
+                _SensitiveItem(
+                  species: 'Discus',
+                  note:
+                      'Sensitive to pH and temperature. Drip acclimate and maintain pristine water.',
+                ),
+                const Divider(),
+                _SensitiveItem(
+                  species: 'Wild-caught fish',
+                  note:
+                      'Often more sensitive than captive-bred. Extended drip recommended.',
+                ),
+                const Divider(),
+                _SensitiveItem(
+                  species: 'Marine fish',
+                  note:
+                      'Salinity and pH critical. Drip acclimate all marine species.',
+                ),
+                const Divider(),
+                _SensitiveItem(
+                  species: 'Plecos',
+                  note:
+                      'Can be sensitive. Float longer and acclimate slowly.',
+                ),
+              ],
             ),
           ),
 

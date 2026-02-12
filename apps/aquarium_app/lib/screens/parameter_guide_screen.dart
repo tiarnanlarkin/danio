@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
+import '../widgets/core/app_card.dart';
 
 class ParameterGuideScreen extends StatelessWidget {
   const ParameterGuideScreen({super.key});
@@ -12,23 +13,21 @@ class ParameterGuideScreen extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         children: [
           // Intro
-          Card(
-            color: AppColors.info.withOpacity(0.1),
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Row(
-                children: [
-                  Icon(Icons.info_outline, color: AppColors.info),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Text(
-                      'Understanding your water parameters is key to keeping healthy fish. '
-                      'Test regularly and maintain stable values.',
-                      style: AppTypography.bodyMedium,
-                    ),
+          AppCard(
+            backgroundColor: AppColors.info.withOpacity(0.1),
+            padding: AppCardPadding.standard,
+            child: Row(
+              children: [
+                Icon(Icons.info_outline, color: AppColors.info),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    'Understanding your water parameters is key to keeping healthy fish. '
+                    'Test regularly and maintain stable values.',
+                    style: AppTypography.bodyMedium,
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
 
@@ -161,61 +160,59 @@ class ParameterGuideScreen extends StatelessWidget {
           ),
           const SizedBox(height: AppSpacing.md),
 
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.all(12),
-              child: Column(
-                children: [
-                  _QuickRefRow(
-                    type: 'Community (tetras, rasboras)',
-                    temp: '24-26°C',
-                    ph: '6.5-7.5',
-                    gh: '4-10',
-                  ),
-                  const Divider(),
-                  _QuickRefRow(
-                    type: 'Livebearers (guppies, mollies)',
-                    temp: '24-28°C',
-                    ph: '7.0-8.0',
-                    gh: '10-20',
-                  ),
-                  const Divider(),
-                  _QuickRefRow(
-                    type: 'Cichlids (African)',
-                    temp: '24-28°C',
-                    ph: '7.5-8.5',
-                    gh: '10-20',
-                  ),
-                  const Divider(),
-                  _QuickRefRow(
-                    type: 'Discus',
-                    temp: '28-30°C',
-                    ph: '6.0-7.0',
-                    gh: '1-4',
-                  ),
-                  const Divider(),
-                  _QuickRefRow(
-                    type: 'Bettas',
-                    temp: '25-28°C',
-                    ph: '6.5-7.5',
-                    gh: '4-10',
-                  ),
-                  const Divider(),
-                  _QuickRefRow(
-                    type: 'Corydoras',
-                    temp: '22-26°C',
-                    ph: '6.0-7.5',
-                    gh: '2-12',
-                  ),
-                  const Divider(),
-                  _QuickRefRow(
-                    type: 'Shrimp (Neocaridina)',
-                    temp: '20-25°C',
-                    ph: '6.5-8.0',
-                    gh: '6-12',
-                  ),
-                ],
-              ),
+          AppCard(
+            padding: AppCardPadding.compact,
+            child: Column(
+              children: [
+                _QuickRefRow(
+                  type: 'Community (tetras, rasboras)',
+                  temp: '24-26°C',
+                  ph: '6.5-7.5',
+                  gh: '4-10',
+                ),
+                const Divider(),
+                _QuickRefRow(
+                  type: 'Livebearers (guppies, mollies)',
+                  temp: '24-28°C',
+                  ph: '7.0-8.0',
+                  gh: '10-20',
+                ),
+                const Divider(),
+                _QuickRefRow(
+                  type: 'Cichlids (African)',
+                  temp: '24-28°C',
+                  ph: '7.5-8.5',
+                  gh: '10-20',
+                ),
+                const Divider(),
+                _QuickRefRow(
+                  type: 'Discus',
+                  temp: '28-30°C',
+                  ph: '6.0-7.0',
+                  gh: '1-4',
+                ),
+                const Divider(),
+                _QuickRefRow(
+                  type: 'Bettas',
+                  temp: '25-28°C',
+                  ph: '6.5-7.5',
+                  gh: '4-10',
+                ),
+                const Divider(),
+                _QuickRefRow(
+                  type: 'Corydoras',
+                  temp: '22-26°C',
+                  ph: '6.0-7.5',
+                  gh: '2-12',
+                ),
+                const Divider(),
+                _QuickRefRow(
+                  type: 'Shrimp (Neocaridina)',
+                  temp: '20-25°C',
+                  ph: '6.5-8.0',
+                  gh: '6-12',
+                ),
+              ],
             ),
           ),
 

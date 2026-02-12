@@ -10,6 +10,7 @@ import '../data/placement_test_content.dart';
 import '../data/lesson_content.dart';
 import '../providers/user_profile_provider.dart';
 import '../theme/app_theme.dart';
+import '../widgets/core/app_card.dart';
 import 'placement_result_screen.dart';
 
 class PlacementTestScreen extends ConsumerStatefulWidget {
@@ -186,13 +187,11 @@ class _PlacementTestScreenState extends ConsumerState<PlacementTestScreen> {
                   const SizedBox(height: AppSpacing.md),
 
                   // Question text
-                  Card(
-                    child: Padding(
-                      padding: const EdgeInsets.all(20),
-                      child: Text(
-                        _currentQuestion.question,
-                        style: theme.textTheme.titleLarge,
-                      ),
+                  AppCard(
+                    padding: AppCardPadding.spacious,
+                    child: Text(
+                      _currentQuestion.question,
+                      style: theme.textTheme.titleLarge,
                     ),
                   ),
                   const SizedBox(height: AppSpacing.lg),

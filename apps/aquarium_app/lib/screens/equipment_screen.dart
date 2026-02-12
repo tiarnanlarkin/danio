@@ -12,6 +12,7 @@ import '../providers/inventory_provider.dart';
 import '../services/storage_service.dart';
 import '../theme/app_theme.dart';
 import '../utils/app_feedback.dart';
+import '../widgets/core/app_card.dart';
 
 const _uuid = Uuid();
 
@@ -128,35 +129,33 @@ class EquipmentScreen extends ConsumerWidget {
             children: [
               // Summary card
               if (overdue > 0)
-                Card(
-                  color: AppColors.warning.withOpacity(0.1),
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Row(
-                      children: [
-                        Icon(
-                          Icons.warning_amber,
-                          color: AppColors.warning,
-                          size: 32,
+                AppCard(
+                  backgroundColor: AppColors.warning.withOpacity(0.1),
+                  padding: AppCardPadding.standard,
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.warning_amber,
+                        color: AppColors.warning,
+                        size: 32,
+                      ),
+                      const SizedBox(width: AppSpacing.md),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              '$overdue maintenance overdue',
+                              style: AppTypography.labelLarge,
+                            ),
+                            Text(
+                              'Check equipment below',
+                              style: AppTypography.bodySmall,
+                            ),
+                          ],
                         ),
-                        const SizedBox(width: AppSpacing.md),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                '$overdue maintenance overdue',
-                                style: AppTypography.labelLarge,
-                              ),
-                              Text(
-                                'Check equipment below',
-                                style: AppTypography.bodySmall,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
               if (overdue > 0) const SizedBox(height: AppSpacing.md),

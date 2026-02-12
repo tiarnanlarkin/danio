@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../theme/app_theme.dart';
+import '../widgets/core/app_card.dart';
 
 class UnitConverterScreen extends StatefulWidget {
   const UnitConverterScreen({super.key});
@@ -335,22 +336,20 @@ class _HardnessConverterState extends State<_HardnessConverter> {
           ],
 
           const SizedBox(height: AppSpacing.lg),
-          Card(
-            color: AppColors.info.withOpacity(0.1),
-            child: Padding(
-              padding: const EdgeInsets.all(12),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('Reference', style: AppTypography.labelLarge),
-                  const SizedBox(height: AppSpacing.sm),
-                  Text('0-4 dGH: Very soft', style: AppTypography.bodySmall),
-                  Text('4-8 dGH: Soft', style: AppTypography.bodySmall),
-                  Text('8-12 dGH: Medium', style: AppTypography.bodySmall),
-                  Text('12-18 dGH: Hard', style: AppTypography.bodySmall),
-                  Text('18+ dGH: Very hard', style: AppTypography.bodySmall),
-                ],
-              ),
+          AppCard(
+            backgroundColor: AppColors.info.withOpacity(0.1),
+            padding: AppCardPadding.compact,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Reference', style: AppTypography.labelLarge),
+                const SizedBox(height: AppSpacing.sm),
+                Text('0-4 dGH: Very soft', style: AppTypography.bodySmall),
+                Text('4-8 dGH: Soft', style: AppTypography.bodySmall),
+                Text('8-12 dGH: Medium', style: AppTypography.bodySmall),
+                Text('12-18 dGH: Hard', style: AppTypography.bodySmall),
+                Text('18+ dGH: Very hard', style: AppTypography.bodySmall),
+              ],
             ),
           ),
         ],

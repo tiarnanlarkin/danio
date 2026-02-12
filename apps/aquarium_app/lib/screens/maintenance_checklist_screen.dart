@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
 import '../theme/app_theme.dart';
+import '../widgets/core/app_card.dart';
 
 class MaintenanceChecklistScreen extends ConsumerStatefulWidget {
   final String tankId;
@@ -158,36 +159,34 @@ class _MaintenanceChecklistScreenState
         padding: const EdgeInsets.all(16),
         children: [
           // Progress summary
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                children: [
-                  Row(
-                    children: [
-                      Expanded(
-                        child: _ProgressCircle(
-                          label: 'Weekly',
-                          progress: weeklyProgress,
-                          count: '$_weeklyComplete/${_weeklyItems.length}',
-                        ),
+          AppCard(
+            padding: AppCardPadding.standard,
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: _ProgressCircle(
+                        label: 'Weekly',
+                        progress: weeklyProgress,
+                        count: '$_weeklyComplete/${_weeklyItems.length}',
                       ),
-                      Expanded(
-                        child: _ProgressCircle(
-                          label: 'Monthly',
-                          progress: monthlyProgress,
-                          count: '$_monthlyComplete/${_monthlyItems.length}',
-                        ),
+                    ),
+                    Expanded(
+                      child: _ProgressCircle(
+                        label: 'Monthly',
+                        progress: monthlyProgress,
+                        count: '$_monthlyComplete/${_monthlyItems.length}',
                       ),
-                    ],
-                  ),
-                  const SizedBox(height: 12),
-                  Text(
-                    DateFormat('MMMM d, y').format(DateTime.now()),
-                    style: AppTypography.bodySmall,
-                  ),
-                ],
-              ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  DateFormat('MMMM d, y').format(DateTime.now()),
+                  style: AppTypography.bodySmall,
+                ),
+              ],
             ),
           ),
 

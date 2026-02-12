@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
+import '../widgets/core/app_card.dart';
 
 class TroubleshootingScreen extends StatelessWidget {
   const TroubleshootingScreen({super.key});
@@ -245,32 +246,30 @@ class TroubleshootingScreen extends StatelessWidget {
 
           const SizedBox(height: AppSpacing.lg),
 
-          Card(
-            color: AppColors.info.withOpacity(0.1),
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Icon(Icons.lightbulb, color: AppColors.info),
-                      const SizedBox(width: AppSpacing.sm),
-                      Text('General Tips', style: AppTypography.headlineSmall),
-                    ],
-                  ),
-                  const SizedBox(height: 12),
-                  Text(
-                    '• When in doubt, do a water change\n'
-                    '• Test water before making changes\n'
-                    '• Make changes gradually, not all at once\n'
-                    '• Observe fish behavior — they tell you when something\'s wrong\n'
-                    '• Keep a log to track patterns\n'
-                    '• Quarantine new additions',
-                    style: AppTypography.bodyMedium,
-                  ),
-                ],
-              ),
+          AppCard(
+            backgroundColor: AppColors.info.withOpacity(0.1),
+            padding: AppCardPadding.standard,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Icon(Icons.lightbulb, color: AppColors.info),
+                    const SizedBox(width: AppSpacing.sm),
+                    Text('General Tips', style: AppTypography.headlineSmall),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  '• When in doubt, do a water change\n'
+                  '• Test water before making changes\n'
+                  '• Make changes gradually, not all at once\n'
+                  '• Observe fish behavior — they tell you when something\'s wrong\n'
+                  '• Keep a log to track patterns\n'
+                  '• Quarantine new additions',
+                  style: AppTypography.bodyMedium,
+                ),
+              ],
             ),
           ),
 

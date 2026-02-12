@@ -4,6 +4,7 @@ import '../data/species_database.dart';
 import '../models/learning.dart';
 import '../providers/user_profile_provider.dart';
 import '../theme/app_theme.dart';
+import '../widgets/core/app_card.dart';
 
 class SpeciesBrowserScreen extends ConsumerStatefulWidget {
   const SpeciesBrowserScreen({super.key});

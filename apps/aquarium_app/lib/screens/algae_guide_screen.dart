@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
+import '../widgets/core/app_card.dart';
 
 class AlgaeGuideScreen extends StatelessWidget {
   const AlgaeGuideScreen({super.key});
@@ -12,28 +13,26 @@ class AlgaeGuideScreen extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         children: [
           // Intro
-          Card(
-            color: AppColors.info.withOpacity(0.1),
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Icon(Icons.eco, color: AppColors.info),
-                      const SizedBox(width: AppSpacing.sm),
-                      Text('Algae Basics', style: AppTypography.headlineSmall),
-                    ],
-                  ),
-                  const SizedBox(height: 12),
-                  Text(
-                    'Some algae is normal and healthy — it means your tank is alive! '
-                    'Problems occur when algae grows out of control due to imbalances in light, nutrients, or CO2.',
-                    style: AppTypography.bodyMedium,
-                  ),
-                ],
-              ),
+          AppCard(
+            backgroundColor: AppColors.info.withOpacity(0.1),
+            padding: AppCardPadding.standard,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Icon(Icons.eco, color: AppColors.info),
+                    const SizedBox(width: AppSpacing.sm),
+                    Text('Algae Basics', style: AppTypography.headlineSmall),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  'Some algae is normal and healthy — it means your tank is alive! '
+                  'Problems occur when algae grows out of control due to imbalances in light, nutrients, or CO2.',
+                  style: AppTypography.bodyMedium,
+                ),
+              ],
             ),
           ),
 
@@ -253,22 +252,20 @@ class AlgaeGuideScreen extends StatelessWidget {
           // Prevention tips
           Text('Prevention Checklist', style: AppTypography.headlineMedium),
           const SizedBox(height: AppSpacing.md),
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                children: [
-                  _ChecklistItem(
-                    text: 'Light: 6-8 hours max, no direct sunlight',
-                  ),
-                  _ChecklistItem(text: 'CO2: Consistent levels if injecting'),
-                  _ChecklistItem(text: 'Nutrients: Balanced N:P:K ratio'),
-                  _ChecklistItem(text: 'Flow: No dead spots'),
-                  _ChecklistItem(text: 'Maintenance: Regular water changes'),
-                  _ChecklistItem(text: 'Stocking: Don\'t overfeed'),
-                  _ChecklistItem(text: 'Plants: Fast growers outcompete algae'),
-                ],
-              ),
+          AppCard(
+            padding: AppCardPadding.standard,
+            child: Column(
+              children: [
+                _ChecklistItem(
+                  text: 'Light: 6-8 hours max, no direct sunlight',
+                ),
+                _ChecklistItem(text: 'CO2: Consistent levels if injecting'),
+                _ChecklistItem(text: 'Nutrients: Balanced N:P:K ratio'),
+                _ChecklistItem(text: 'Flow: No dead spots'),
+                _ChecklistItem(text: 'Maintenance: Regular water changes'),
+                _ChecklistItem(text: 'Stocking: Don\'t overfeed'),
+                _ChecklistItem(text: 'Plants: Fast growers outcompete algae'),
+              ],
             ),
           ),
 

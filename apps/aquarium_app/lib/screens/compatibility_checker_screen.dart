@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../data/species_database.dart';
 import '../theme/app_theme.dart';
+import '../widgets/core/app_card.dart';
 
 class CompatibilityCheckerScreen extends StatefulWidget {
   const CompatibilityCheckerScreen({super.key});
@@ -239,25 +240,23 @@ class _CompatibilityCheckerScreenState
               children: [
                 // Selected species
                 if (_selectedSpecies.isEmpty)
-                  Card(
-                    child: Padding(
-                      padding: const EdgeInsets.all(32),
-                      child: Column(
-                        children: [
-                          Icon(Icons.pets, size: 48, color: AppColors.textHint),
-                          const SizedBox(height: 12),
-                          Text(
-                            'Add Fish to Check',
-                            style: AppTypography.headlineSmall,
-                          ),
-                          const SizedBox(height: AppSpacing.xs),
-                          Text(
-                            'Search and add fish above to check if they\'re compatible',
-                            style: AppTypography.bodySmall,
-                            textAlign: TextAlign.center,
-                          ),
-                        ],
-                      ),
+                  AppCard(
+                    padding: AppCardPadding.spacious,
+                    child: Column(
+                      children: [
+                        Icon(Icons.pets, size: 48, color: AppColors.textHint),
+                        const SizedBox(height: 12),
+                        Text(
+                          'Add Fish to Check',
+                          style: AppTypography.headlineSmall,
+                        ),
+                        const SizedBox(height: AppSpacing.xs),
+                        Text(
+                          'Search and add fish above to check if they\'re compatible',
+                          style: AppTypography.bodySmall,
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
                     ),
                   )
                 else ...[
@@ -284,55 +283,53 @@ class _CompatibilityCheckerScreenState
 
                   // Compatibility verdict
                   if (_selectedSpecies.length >= 2) ...[
-                    Card(
-                      color: badIssues > 0
+                    AppCard(
+                      backgroundColor: badIssues > 0
                           ? AppColors.error.withOpacity(0.1)
                           : warningIssues > 0
                           ? AppColors.warning.withOpacity(0.1)
                           : AppColors.success.withOpacity(0.1),
-                      child: Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: Row(
-                          children: [
-                            Icon(
-                              badIssues > 0
-                                  ? Icons.cancel
-                                  : warningIssues > 0
-                                  ? Icons.warning
-                                  : Icons.check_circle,
-                              color: badIssues > 0
-                                  ? AppColors.error
-                                  : warningIssues > 0
-                                  ? AppColors.warning
-                                  : AppColors.success,
-                              size: 32,
+                      padding: AppCardPadding.standard,
+                      child: Row(
+                        children: [
+                          Icon(
+                            badIssues > 0
+                                ? Icons.cancel
+                                : warningIssues > 0
+                                ? Icons.warning
+                                : Icons.check_circle,
+                            color: badIssues > 0
+                                ? AppColors.error
+                                : warningIssues > 0
+                                ? AppColors.warning
+                                : AppColors.success,
+                            size: 32,
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  badIssues > 0
+                                      ? 'Not Recommended'
+                                      : warningIssues > 0
+                                      ? 'Proceed with Caution'
+                                      : 'Good Match!',
+                                  style: AppTypography.labelLarge,
+                                ),
+                                Text(
+                                  badIssues > 0
+                                      ? '$badIssues serious issue${badIssues > 1 ? 's' : ''} found'
+                                      : warningIssues > 0
+                                      ? '$warningIssues warning${warningIssues > 1 ? 's' : ''} to consider'
+                                      : 'These fish should work well together',
+                                  style: AppTypography.bodySmall,
+                                ),
+                              ],
                             ),
-                            const SizedBox(width: 12),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    badIssues > 0
-                                        ? 'Not Recommended'
-                                        : warningIssues > 0
-                                        ? 'Proceed with Caution'
-                                        : 'Good Match!',
-                                    style: AppTypography.labelLarge,
-                                  ),
-                                  Text(
-                                    badIssues > 0
-                                        ? '$badIssues serious issue${badIssues > 1 ? 's' : ''} found'
-                                        : warningIssues > 0
-                                        ? '$warningIssues warning${warningIssues > 1 ? 's' : ''} to consider'
-                                        : 'These fish should work well together',
-                                    style: AppTypography.bodySmall,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                     ),
 
@@ -343,23 +340,26 @@ class _CompatibilityCheckerScreenState
                       Text('Issues Found', style: AppTypography.headlineSmall),
                       const SizedBox(height: AppSpacing.sm),
                       ...issues.map(
-                        (issue) => Card(
-                          margin: const EdgeInsets.only(bottom: 8),
-                          child: ListTile(
-                            leading: Icon(
-                              issue.severity == _Severity.bad
-                                  ? Icons.error
-                                  : Icons.warning,
-                              color: issue.severity == _Severity.bad
-                                  ? AppColors.error
-                                  : AppColors.warning,
-                            ),
-                            title: Text(
-                              '${issue.species1} + ${issue.species2}',
-                            ),
-                            subtitle: Text(
-                              issue.reason,
-                              style: AppTypography.bodySmall,
+                        (issue) => Padding(
+                          padding: const EdgeInsets.only(bottom: 8),
+                          child: AppCard(
+                            padding: AppCardPadding.none,
+                            child: ListTile(
+                              leading: Icon(
+                                issue.severity == _Severity.bad
+                                    ? Icons.error
+                                    : Icons.warning,
+                                color: issue.severity == _Severity.bad
+                                    ? AppColors.error
+                                    : AppColors.warning,
+                              ),
+                              title: Text(
+                                '${issue.species1} + ${issue.species2}',
+                              ),
+                              subtitle: Text(
+                                issue.reason,
+                                style: AppTypography.bodySmall,
+                              ),
                             ),
                           ),
                         ),
@@ -373,39 +373,37 @@ class _CompatibilityCheckerScreenState
                       style: AppTypography.headlineSmall,
                     ),
                     const SizedBox(height: AppSpacing.sm),
-                    Card(
-                      child: Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: Column(
-                          children: [
-                            _ParamRow(
-                              icon: Icons.water,
-                              label: 'Minimum tank',
-                              value:
-                                  '${_minTankSize.toStringAsFixed(0)}+ litres',
-                            ),
-                            _ParamRow(
-                              icon: Icons.thermostat,
-                              label: 'Temperature',
-                              value: _tempRange.$1 <= _tempRange.$2
-                                  ? '${_tempRange.$1.toStringAsFixed(0)}-${_tempRange.$2.toStringAsFixed(0)}°C'
-                                  : 'No overlap!',
-                              valueColor: _tempRange.$1 > _tempRange.$2
-                                  ? AppColors.error
-                                  : null,
-                            ),
-                            _ParamRow(
-                              icon: Icons.science,
-                              label: 'pH range',
-                              value: _phRange.$1 <= _phRange.$2
-                                  ? '${_phRange.$1.toStringAsFixed(1)}-${_phRange.$2.toStringAsFixed(1)}'
-                                  : 'No overlap!',
-                              valueColor: _phRange.$1 > _phRange.$2
-                                  ? AppColors.error
-                                  : null,
-                            ),
-                          ],
-                        ),
+                    AppCard(
+                      padding: AppCardPadding.standard,
+                      child: Column(
+                        children: [
+                          _ParamRow(
+                            icon: Icons.water,
+                            label: 'Minimum tank',
+                            value:
+                                '${_minTankSize.toStringAsFixed(0)}+ litres',
+                          ),
+                          _ParamRow(
+                            icon: Icons.thermostat,
+                            label: 'Temperature',
+                            value: _tempRange.$1 <= _tempRange.$2
+                                ? '${_tempRange.$1.toStringAsFixed(0)}-${_tempRange.$2.toStringAsFixed(0)}°C'
+                                : 'No overlap!',
+                            valueColor: _tempRange.$1 > _tempRange.$2
+                                ? AppColors.error
+                                : null,
+                          ),
+                          _ParamRow(
+                            icon: Icons.science,
+                            label: 'pH range',
+                            value: _phRange.$1 <= _phRange.$2
+                                ? '${_phRange.$1.toStringAsFixed(1)}-${_phRange.$2.toStringAsFixed(1)}'
+                                : 'No overlap!',
+                            valueColor: _phRange.$1 > _phRange.$2
+                                ? AppColors.error
+                                : null,
+                          ),
+                        ],
                       ),
                     ),
                   ],

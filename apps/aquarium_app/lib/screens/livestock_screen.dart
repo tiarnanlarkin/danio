@@ -11,6 +11,7 @@ import '../providers/user_profile_provider.dart';
 import '../services/compatibility_service.dart';
 import '../theme/app_theme.dart';
 import '../utils/app_feedback.dart';
+import '../widgets/core/app_card.dart';
 import '../widgets/empty_state.dart';
 import '../widgets/error_state.dart';
 import 'livestock_detail_screen.dart';
@@ -118,76 +119,72 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
                   children: [
                     // Summary card
                     if (!_isSelectMode)
-                      Card(
-                        child: Padding(
-                          padding: const EdgeInsets.all(16),
-                          child: Row(
-                            children: [
-                              Icon(
-                                Icons.pets,
-                                color: AppColors.primary,
-                                size: 32,
-                              ),
-                              const SizedBox(width: AppSpacing.md),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    '$totalCount total',
-                                    style: AppTypography.headlineMedium,
-                                  ),
-                                  Text(
-                                    '${livestock.length} species',
-                                    style: AppTypography.bodyMedium,
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
+                      AppCard(
+                        padding: AppCardPadding.standard,
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.pets,
+                              color: AppColors.primary,
+                              size: 32,
+                            ),
+                            const SizedBox(width: AppSpacing.md),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  '$totalCount total',
+                                  style: AppTypography.headlineMedium,
+                                ),
+                                Text(
+                                  '${livestock.length} species',
+                                  style: AppTypography.bodyMedium,
+                                ),
+                              ],
+                            ),
+                          ],
                         ),
                       ),
                     if (!_isSelectMode) const SizedBox(height: AppSpacing.md),
 
                     // Selection info banner
                     if (_isSelectMode)
-                      Card(
-                        color: AppColors.primary.withOpacity(0.1),
-                        child: Padding(
-                          padding: const EdgeInsets.all(16),
-                          child: Row(
-                            children: [
-                              Icon(Icons.checklist, color: AppColors.primary),
-                              const SizedBox(width: 12),
-                              Text(
-                                '${_selectedLivestockIds.length} selected',
-                                style: AppTypography.labelLarge.copyWith(
-                                  color: AppColors.primary,
-                                ),
+                      AppCard(
+                        backgroundColor: AppColors.primary.withOpacity(0.1),
+                        padding: AppCardPadding.standard,
+                        child: Row(
+                          children: [
+                            Icon(Icons.checklist, color: AppColors.primary),
+                            const SizedBox(width: 12),
+                            Text(
+                              '${_selectedLivestockIds.length} selected',
+                              style: AppTypography.labelLarge.copyWith(
+                                color: AppColors.primary,
                               ),
-                              const Spacer(),
-                              if (_selectedLivestockIds.length <
-                                  livestock.length)
-                                TextButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      _selectedLivestockIds.addAll(
-                                        livestock.map((l) => l.id),
-                                      );
-                                    });
-                                  },
-                                  child: const Text('Select All'),
-                                )
-                              else
-                                TextButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      _selectedLivestockIds.clear();
-                                    });
-                                  },
-                                  child: const Text('Clear'),
-                                ),
-                            ],
-                          ),
+                            ),
+                            const Spacer(),
+                            if (_selectedLivestockIds.length <
+                                livestock.length)
+                              TextButton(
+                                onPressed: () {
+                                  setState(() {
+                                    _selectedLivestockIds.addAll(
+                                      livestock.map((l) => l.id),
+                                    );
+                                  });
+                                },
+                                child: const Text('Select All'),
+                              )
+                            else
+                              TextButton(
+                                onPressed: () {
+                                  setState(() {
+                                    _selectedLivestockIds.clear();
+                                  });
+                                },
+                                child: const Text('Clear'),
+                              ),
+                          ],
                         ),
                       ),
                     if (_isSelectMode) const SizedBox(height: AppSpacing.md),
