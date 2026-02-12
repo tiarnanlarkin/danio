@@ -159,7 +159,7 @@ class NotebookCard extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           color: isDark ? const Color(0xFF2A3A4A) : const Color(0xFFFFFDF8),
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: AppRadius.smallRadius,
           boxShadow: [
             BoxShadow(
               color: Colors.black.withOpacity(0.08),
@@ -170,7 +170,7 @@ class NotebookCard extends StatelessWidget {
           // Subtle paper texture border
           border: Border.all(
             color: isDark
-                ? Colors.white.withOpacity(0.05)
+                ? AppOverlays.white5
                 : const Color(0xFFE8E4DC),
             width: 1,
           ),
@@ -228,10 +228,10 @@ class TabletCard extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: isDark ? const Color(0xFF1E2A38) : const Color(0xFF3D4852),
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: AppRadius.mediumRadius,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.2),
+            color: AppOverlays.black20,
             blurRadius: 16,
             offset: const Offset(0, 6),
           ),
@@ -243,7 +243,7 @@ class TabletCard extends StatelessWidget {
           color:
               screenColor ??
               (isDark ? const Color(0xFF243447) : const Color(0xFFF0F4F8)),
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: AppRadius.mediumRadius,
         ),
         padding: padding ?? const EdgeInsets.all(16),
         child: child,
@@ -289,7 +289,7 @@ class ShelfDecoration extends StatelessWidget {
             ),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.15),
+                color: AppOverlays.black15,
                 blurRadius: 6,
                 offset: const Offset(0, 3),
               ),
@@ -419,10 +419,10 @@ class WindowDecoration extends StatelessWidget {
         color: isDark
             ? const Color(0xFF1A2634).withOpacity(0.5)
             : const Color(0xFFE8F4F8).withOpacity(0.8),
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: AppRadius.smallRadius,
         border: Border.all(
           color: isDark
-              ? Colors.white.withOpacity(0.1)
+              ? AppOverlays.white10
               : const Color(0xFFD4D0C8),
           width: 6,
         ),
@@ -441,7 +441,7 @@ class WindowDecoration extends StatelessWidget {
                       ? [const Color(0xFF2D3E50), const Color(0xFF1A2634)]
                       : [const Color(0xFFB8D4E3), const Color(0xFFD4E8F0)],
                 ),
-                borderRadius: BorderRadius.circular(4),
+                borderRadius: AppRadius.xsRadius,
               ),
             ),
           ),
@@ -449,7 +449,7 @@ class WindowDecoration extends StatelessWidget {
           Container(
             height: 6,
             color: isDark
-                ? Colors.white.withOpacity(0.1)
+                ? AppOverlays.white10
                 : const Color(0xFFD4D0C8),
           ),
           // Bottom pane
@@ -464,7 +464,7 @@ class WindowDecoration extends StatelessWidget {
                       ? [const Color(0xFF2D3E50), const Color(0xFF1A2634)]
                       : [const Color(0xFFD4E8F0), const Color(0xFFE8F4F8)],
                 ),
-                borderRadius: BorderRadius.circular(4),
+                borderRadius: AppRadius.xsRadius,
               ),
             ),
           ),

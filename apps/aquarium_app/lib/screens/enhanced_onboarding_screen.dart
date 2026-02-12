@@ -155,7 +155,7 @@ class _EnhancedOnboardingScreenState
                   ),
                   // Skip button (only on welcome page)
                   if (_currentPage == 0) ...[
-                    const SizedBox(width: 16),
+                    const SizedBox(width: AppSpacing.md),
                     TextButton(
                       onPressed: _skipOnboarding,
                       child: Text(
@@ -217,7 +217,7 @@ class _EnhancedOnboardingScreenState
                     )
                   else
                     const Spacer(),
-                  const SizedBox(width: 16),
+                  const SizedBox(width: AppSpacing.md),
                   Expanded(
                     flex: 2,
                     child: ElevatedButton(
@@ -267,7 +267,7 @@ class _WelcomePage extends StatelessWidget {
             style: AppTypography.headlineLarge,
             textAlign: TextAlign.center,
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.md),
           Text(
             "Let's personalize your experience.\n\nWe'll ask a few questions to tailor the app to your needs and help you succeed with your aquarium.",
             style: AppTypography.bodyLarge.copyWith(
@@ -275,7 +275,7 @@ class _WelcomePage extends StatelessWidget {
             ),
             textAlign: TextAlign.center,
           ),
-          const SizedBox(height: 32),
+          const SizedBox(height: AppSpacing.xl),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -304,7 +304,7 @@ class _FeatureChip extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(
         color: AppColors.primary.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: AppRadius.largeRadius,
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -339,14 +339,14 @@ class _ExperiencePage extends StatelessWidget {
             'How experienced are you with fishkeeping?',
             style: AppTypography.headlineMedium,
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.sm),
           Text(
             "This helps us customize your learning path",
             style: AppTypography.bodyMedium.copyWith(
               color: AppColors.textSecondary,
             ),
           ),
-          const SizedBox(height: 32),
+          const SizedBox(height: AppSpacing.xl),
           Expanded(
             child: ListView(
               children: ExperienceLevel.values.map((level) {
@@ -388,14 +388,14 @@ class _TankTypePage extends StatelessWidget {
             'What type of tank do you have (or want)?',
             style: AppTypography.headlineMedium,
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.sm),
           Text(
             "We'll show relevant guides and tips",
             style: AppTypography.bodyMedium.copyWith(
               color: AppColors.textSecondary,
             ),
           ),
-          const SizedBox(height: 32),
+          const SizedBox(height: AppSpacing.xl),
           Expanded(
             child: ListView(
               children: TankType.values.map((type) {
@@ -435,14 +435,14 @@ class _GoalsPage extends StatelessWidget {
         children: [
           const SizedBox(height: 20),
           Text('What are your goals?', style: AppTypography.headlineMedium),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.sm),
           Text(
             "Select all that apply",
             style: AppTypography.bodyMedium.copyWith(
               color: AppColors.textSecondary,
             ),
           ),
-          const SizedBox(height: 32),
+          const SizedBox(height: AppSpacing.xl),
           Expanded(
             child: ListView(
               children: UserGoal.values.map((goal) {
@@ -490,7 +490,7 @@ class _SelectionCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(16),
+      borderRadius: AppRadius.mediumRadius,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
         padding: EdgeInsets.all(compact ? 16 : 20),
@@ -498,7 +498,7 @@ class _SelectionCard extends StatelessWidget {
           color: isSelected
               ? AppColors.primary.withOpacity(0.1)
               : AppColors.surface,
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: AppRadius.mediumRadius,
           border: Border.all(
             color: isSelected ? AppColors.primary : AppColors.surfaceVariant,
             width: isSelected ? 2 : 1,
@@ -507,7 +507,7 @@ class _SelectionCard extends StatelessWidget {
         child: Row(
           children: [
             Text(emoji, style: TextStyle(fontSize: compact ? 28 : 36)),
-            const SizedBox(width: 16),
+            const SizedBox(width: AppSpacing.md),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -519,7 +519,7 @@ class _SelectionCard extends StatelessWidget {
                         : AppTypography.headlineSmall,
                   ),
                   if (description != null) ...[
-                    const SizedBox(height: 4),
+                    const SizedBox(height: AppSpacing.xs),
                     Text(
                       description!,
                       style: AppTypography.bodySmall.copyWith(
@@ -537,7 +537,7 @@ class _SelectionCard extends StatelessWidget {
                 height: 24,
                 decoration: BoxDecoration(
                   color: isSelected ? AppColors.primary : Colors.transparent,
-                  borderRadius: BorderRadius.circular(6),
+                  borderRadius: AppRadius.smallRadius,
                   border: Border.all(
                     color: isSelected ? AppColors.primary : AppColors.textHint,
                     width: 2,

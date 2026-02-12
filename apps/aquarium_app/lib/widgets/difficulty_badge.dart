@@ -1,6 +1,7 @@
 /// Reusable difficulty badge widget
 /// Shows difficulty level with color-coded styling
 library;
+import 'package:aquarium_app/theme/app_theme.dart';
 
 import 'package:flutter/material.dart';
 import '../models/adaptive_difficulty.dart';
@@ -91,7 +92,7 @@ class SkillLevelIndicator extends StatelessWidget {
             ),
           ),
         ClipRRect(
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: AppRadius.smallRadius,
           child: LinearProgressIndicator(
             value: skillLevel,
             minHeight: 12,
@@ -130,7 +131,7 @@ class PerformanceTrendWidget extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       decoration: BoxDecoration(
         color: color.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: AppRadius.mediumRadius,
         border: Border.all(color: color, width: 1.5),
       ),
       child: Row(
@@ -240,7 +241,7 @@ class _SkillLevelUpAnimationState extends State<SkillLevelUpAnimation>
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
-                borderRadius: BorderRadius.circular(16),
+                borderRadius: AppRadius.mediumRadius,
                 boxShadow: [
                   BoxShadow(
                     color: Colors.orange.withOpacity(0.5),
@@ -262,7 +263,7 @@ class _SkillLevelUpAnimationState extends State<SkillLevelUpAnimation>
                       color: Colors.white,
                     ),
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: AppSpacing.sm),
                   Text(
                     widget.message,
                     textAlign: TextAlign.center,
@@ -301,7 +302,7 @@ class DifficultyChangeNotification extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: color.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: AppRadius.mediumRadius,
         border: Border.all(color: color, width: 2),
       ),
       child: Row(
@@ -315,11 +316,11 @@ class DifficultyChangeNotification extends StatelessWidget {
                 Row(
                   children: [
                     Text(oldLevel.emoji, style: const TextStyle(fontSize: 16)),
-                    const SizedBox(width: 4),
+                    const SizedBox(width: AppSpacing.xs),
                     Icon(Icons.arrow_forward, size: 16, color: color),
-                    const SizedBox(width: 4),
+                    const SizedBox(width: AppSpacing.xs),
                     Text(newLevel.emoji, style: const TextStyle(fontSize: 16)),
-                    const SizedBox(width: 8),
+                    const SizedBox(width: AppSpacing.sm),
                     Text(
                       newLevel.displayName,
                       style: TextStyle(
@@ -329,7 +330,7 @@ class DifficultyChangeNotification extends StatelessWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: 4),
+                const SizedBox(height: AppSpacing.xs),
                 Text(
                   reason,
                   style: TextStyle(fontSize: 14, color: Colors.grey[700]),

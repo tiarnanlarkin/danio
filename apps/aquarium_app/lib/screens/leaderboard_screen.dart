@@ -1,3 +1,4 @@
+import 'package:aquarium_app/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/leaderboard.dart';
@@ -108,7 +109,7 @@ class LeaderboardScreen extends ConsumerWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Icon(_leagueIcon(league), color: Colors.white, size: 32),
-              const SizedBox(width: 8),
+              const SizedBox(width: AppSpacing.sm),
               Text(
                 '${league.displayName} League',
                 style: const TextStyle(
@@ -119,7 +120,7 @@ class LeaderboardScreen extends ConsumerWidget {
               ),
             ],
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.sm),
 
           // Countdown
           Text(
@@ -153,7 +154,7 @@ class LeaderboardScreen extends ConsumerWidget {
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: willPromote ? Colors.green.shade50 : Colors.red.shade50,
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: AppRadius.smallRadius,
         border: Border.all(
           color: willPromote ? Colors.green : Colors.red,
           width: 2,
@@ -165,7 +166,7 @@ class LeaderboardScreen extends ConsumerWidget {
             willPromote ? Icons.arrow_upward : Icons.arrow_downward,
             color: willPromote ? Colors.green : Colors.red,
           ),
-          const SizedBox(width: 8),
+          const SizedBox(width: AppSpacing.sm),
           Expanded(
             child: Text(
               willPromote
@@ -202,7 +203,7 @@ class LeaderboardScreen extends ConsumerWidget {
           color: isCurrentUser
               ? Theme.of(context).primaryColor.withOpacity(0.1)
               : null,
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: AppRadius.smallRadius,
           border: isCurrentUser
               ? Border.all(color: Theme.of(context).primaryColor, width: 2)
               : null,
@@ -250,7 +251,7 @@ class LeaderboardScreen extends ConsumerWidget {
           subtitle: Row(
             children: [
               Icon(_leagueIcon(league), size: 16, color: Colors.grey.shade600),
-              const SizedBox(width: 4),
+              const SizedBox(width: AppSpacing.xs),
               Text(league.displayName),
             ],
           ),

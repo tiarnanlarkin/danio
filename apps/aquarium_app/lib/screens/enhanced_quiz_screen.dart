@@ -300,11 +300,11 @@ class _EnhancedQuizScreenState extends ConsumerState<EnhancedQuizScreen>
                 children: [
                   // Exercise type badge
                   _buildExerciseTypeBadge(exercise.type),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.md),
 
                   // Question
                   Text(exercise.question, style: AppTypography.headlineMedium),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: AppSpacing.lg),
 
                   // Exercise widget
                   ExerciseWidget(
@@ -317,7 +317,7 @@ class _EnhancedQuizScreenState extends ConsumerState<EnhancedQuizScreen>
 
                   // Explanation (after answering)
                   if (_currentAnswered && exercise.explanation != null) ...[
-                    const SizedBox(height: 24),
+                    const SizedBox(height: AppSpacing.lg),
                     _buildExplanation(
                       exercise.explanation!,
                       isCorrect ?? false,
@@ -359,7 +359,7 @@ class _EnhancedQuizScreenState extends ConsumerState<EnhancedQuizScreen>
         color: Theme.of(context).scaffoldBackgroundColor,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: AppOverlays.black5,
             blurRadius: 10,
             offset: const Offset(0, 5),
           ),
@@ -392,7 +392,7 @@ class _EnhancedQuizScreenState extends ConsumerState<EnhancedQuizScreen>
                       ),
                       decoration: BoxDecoration(
                         color: AppColors.success.withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: AppRadius.mediumRadius,
                       ),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
@@ -402,7 +402,7 @@ class _EnhancedQuizScreenState extends ConsumerState<EnhancedQuizScreen>
                             size: 16,
                             color: AppColors.success,
                           ),
-                          const SizedBox(width: 4),
+                          const SizedBox(width: AppSpacing.xs),
                           Text(
                             '$_correctAnswers correct',
                             style: AppTypography.labelMedium.copyWith(
@@ -422,7 +422,7 @@ class _EnhancedQuizScreenState extends ConsumerState<EnhancedQuizScreen>
               animation: _progressAnimation,
               builder: (context, child) {
                 return ClipRRect(
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: AppRadius.smallRadius,
                   child: LinearProgressIndicator(
                     value: progress,
                     backgroundColor: AppColors.surfaceVariant,
@@ -477,7 +477,7 @@ class _EnhancedQuizScreenState extends ConsumerState<EnhancedQuizScreen>
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(
         color: color.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: AppRadius.largeRadius,
         border: Border.all(color: color.withOpacity(0.3)),
       ),
       child: Row(
@@ -506,7 +506,7 @@ class _EnhancedQuizScreenState extends ConsumerState<EnhancedQuizScreen>
           color: isCorrect
               ? AppColors.success.withOpacity(0.1)
               : AppColors.info.withOpacity(0.1),
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: AppRadius.mediumRadius,
           border: Border.all(
             color: isCorrect
                 ? AppColors.success.withOpacity(0.3)
@@ -533,7 +533,7 @@ class _EnhancedQuizScreenState extends ConsumerState<EnhancedQuizScreen>
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  const SizedBox(height: 4),
+                  const SizedBox(height: AppSpacing.xs),
                   Text(explanation, style: AppTypography.bodyMedium),
                 ],
               ),
@@ -551,7 +551,7 @@ class _EnhancedQuizScreenState extends ConsumerState<EnhancedQuizScreen>
         color: Theme.of(context).scaffoldBackgroundColor,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: AppOverlays.black5,
             blurRadius: 10,
             offset: const Offset(0, -5),
           ),
@@ -657,7 +657,7 @@ class _EnhancedQuizScreenState extends ConsumerState<EnhancedQuizScreen>
                       );
                     },
                   ),
-                  const SizedBox(height: 32),
+                  const SizedBox(height: AppSpacing.xl),
 
                   // Title
                   Text(
@@ -675,7 +675,7 @@ class _EnhancedQuizScreenState extends ConsumerState<EnhancedQuizScreen>
                     ),
                     textAlign: TextAlign.center,
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: AppSpacing.sm),
 
                   // Percentage with circular progress
                   SizedBox(
@@ -708,14 +708,14 @@ class _EnhancedQuizScreenState extends ConsumerState<EnhancedQuizScreen>
                       ],
                     ),
                   ),
-                  const SizedBox(height: 32),
+                  const SizedBox(height: AppSpacing.xl),
 
                   // XP earned card
                   Container(
                     padding: const EdgeInsets.all(24),
                     decoration: BoxDecoration(
                       gradient: AppColors.primaryGradient,
-                      borderRadius: BorderRadius.circular(20),
+                      borderRadius: AppRadius.largeRadius,
                       boxShadow: [
                         BoxShadow(
                           color: AppColors.primary.withOpacity(0.3),
@@ -736,15 +736,15 @@ class _EnhancedQuizScreenState extends ConsumerState<EnhancedQuizScreen>
                           ),
                         ),
                         if (bonusXp > 0) ...[
-                          const SizedBox(height: 8),
+                          const SizedBox(height: AppSpacing.sm),
                           Container(
                             padding: const EdgeInsets.symmetric(
                               horizontal: 12,
                               vertical: 6,
                             ),
                             decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.2),
-                              borderRadius: BorderRadius.circular(12),
+                              color: AppOverlays.white20,
+                              borderRadius: AppRadius.mediumRadius,
                             ),
                             child: Text(
                               'includes +$bonusXp passing bonus!',
@@ -759,7 +759,7 @@ class _EnhancedQuizScreenState extends ConsumerState<EnhancedQuizScreen>
                   ),
 
                   if (!passed) ...[
-                    const SizedBox(height: 24),
+                    const SizedBox(height: AppSpacing.lg),
                     Text(
                       'Pass with ${widget.quiz.passingScore}% to earn bonus XP!',
                       style: AppTypography.bodyMedium.copyWith(

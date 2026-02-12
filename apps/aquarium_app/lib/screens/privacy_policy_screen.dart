@@ -35,7 +35,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
                     AppColors.secondary.withOpacity(0.1),
                   ],
                 ),
-                borderRadius: BorderRadius.circular(16),
+                borderRadius: AppRadius.mediumRadius,
               ),
               child: Row(
                 children: [
@@ -43,7 +43,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
                       color: AppColors.primary.withOpacity(0.2),
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: AppRadius.mediumRadius,
                     ),
                     child: const Icon(
                       Icons.shield,
@@ -51,7 +51,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
                       size: 32,
                     ),
                   ),
-                  const SizedBox(width: 16),
+                  const SizedBox(width: AppSpacing.md),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -60,7 +60,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
                           'Privacy First',
                           style: AppTypography.headlineSmall,
                         ),
-                        const SizedBox(height: 4),
+                        const SizedBox(height: AppSpacing.xs),
                         Text(
                           'Your data stays on your device',
                           style: AppTypography.bodyMedium.copyWith(
@@ -74,12 +74,12 @@ class PrivacyPolicyScreen extends StatelessWidget {
               ),
             ),
 
-            const SizedBox(height: 24),
+            const SizedBox(height: AppSpacing.lg),
 
             // TL;DR Summary
             _buildSummaryCard(),
 
-            const SizedBox(height: 32),
+            const SizedBox(height: AppSpacing.xl),
 
             // Last Updated
             Text(
@@ -90,7 +90,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
               ),
             ),
 
-            const SizedBox(height: 24),
+            const SizedBox(height: AppSpacing.lg),
 
             // Sections
             _buildSection(
@@ -157,7 +157,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
               Icons.photo_library,
             ),
 
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.md),
 
             _buildHighlight(
               'Important',
@@ -225,7 +225,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
 
             _buildContactCard(),
 
-            const SizedBox(height: 32),
+            const SizedBox(height: AppSpacing.xl),
 
             // Footer
             Center(
@@ -237,7 +237,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
                       color: AppColors.textSecondary,
                     ),
                   ),
-                  const SizedBox(height: 4),
+                  const SizedBox(height: AppSpacing.xs),
                   Text(
                     'Built for the aquarium community',
                     style: AppTypography.bodySmall.copyWith(
@@ -249,7 +249,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
               ),
             ),
 
-            const SizedBox(height: 48),
+            const SizedBox(height: AppSpacing.xxl),
           ],
         ),
       ),
@@ -261,7 +261,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: AppColors.success.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: AppRadius.mediumRadius,
         border: Border.all(color: AppColors.success.withOpacity(0.3)),
       ),
       child: Column(
@@ -274,11 +274,11 @@ class PrivacyPolicyScreen extends StatelessWidget {
                 color: AppColors.success,
                 size: 24,
               ),
-              const SizedBox(width: 8),
+              const SizedBox(width: AppSpacing.sm),
               Text('Summary (TL;DR)', style: AppTypography.labelLarge),
             ],
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.md),
           _buildSummaryItem('All data stored locally on your device'),
           _buildSummaryItem('No internet connection required'),
           _buildSummaryItem('No analytics, ads, or tracking'),
@@ -296,7 +296,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
       child: Row(
         children: [
           const Icon(Icons.check, color: AppColors.success, size: 18),
-          const SizedBox(width: 8),
+          const SizedBox(width: AppSpacing.sm),
           Expanded(child: Text(text, style: AppTypography.bodyMedium)),
         ],
       ),
@@ -310,7 +310,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(title, style: AppTypography.headlineSmall),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.sm),
           Text(content, style: AppTypography.bodyMedium.copyWith(height: 1.6)),
         ],
       ),
@@ -359,7 +359,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: AppColors.primary.withOpacity(0.05),
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: AppRadius.mediumRadius,
         border: Border.all(color: AppColors.primary.withOpacity(0.2)),
       ),
       child: Row(
@@ -372,7 +372,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(title, style: AppTypography.labelLarge),
-                const SizedBox(height: 4),
+                const SizedBox(height: AppSpacing.xs),
                 Text(
                   content,
                   style: AppTypography.bodyMedium.copyWith(height: 1.5),
@@ -391,7 +391,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: AppRadius.mediumRadius,
         border: Border.all(color: Colors.grey.shade200),
       ),
       child: Row(
@@ -401,7 +401,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
               color: AppColors.primary.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: AppRadius.smallRadius,
             ),
             child: Icon(icon, color: AppColors.primary, size: 20),
           ),
@@ -411,7 +411,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(title, style: AppTypography.labelMedium),
-                const SizedBox(height: 4),
+                const SizedBox(height: AppSpacing.xs),
                 Text(
                   description,
                   style: AppTypography.bodySmall.copyWith(
@@ -433,7 +433,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: AppColors.success.withOpacity(0.05),
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: AppRadius.mediumRadius,
         border: Border.all(color: AppColors.success.withOpacity(0.2)),
       ),
       child: Row(
@@ -466,7 +466,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: AppRadius.mediumRadius,
         border: Border.all(color: Colors.grey.shade200),
       ),
       child: Column(
@@ -499,7 +499,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.sm),
           Text(
             'Response time: Within 7 business days',
             style: AppTypography.bodySmall.copyWith(

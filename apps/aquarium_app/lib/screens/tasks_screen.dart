@@ -74,7 +74,7 @@ class TasksScreen extends ConsumerWidget {
                     onHistory: () => _showTaskHistoryDialog(context, t),
                   ),
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: AppSpacing.md),
               ],
               if (dueToday.isNotEmpty) ...[
                 _SectionHeader(
@@ -92,7 +92,7 @@ class TasksScreen extends ConsumerWidget {
                     onHistory: () => _showTaskHistoryDialog(context, t),
                   ),
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: AppSpacing.md),
               ],
               if (upcoming.isNotEmpty) ...[
                 _SectionHeader(
@@ -110,7 +110,7 @@ class TasksScreen extends ConsumerWidget {
                     onHistory: () => _showTaskHistoryDialog(context, t),
                   ),
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: AppSpacing.md),
               ],
               if (disabled.isNotEmpty) ...[
                 _SectionHeader(
@@ -407,14 +407,14 @@ class _SectionHeader extends StatelessWidget {
               borderRadius: BorderRadius.circular(2),
             ),
           ),
-          const SizedBox(width: 8),
+          const SizedBox(width: AppSpacing.sm),
           Text(title, style: AppTypography.labelLarge),
-          const SizedBox(width: 8),
+          const SizedBox(width: AppSpacing.sm),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
             decoration: BoxDecoration(
               color: color.withOpacity(0.2),
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: AppRadius.mediumRadius,
             ),
             child: Text(
               '$count',
@@ -580,7 +580,7 @@ class _AddTaskSheetState extends State<_AddTaskSheet> {
               widget.existing != null ? 'Edit Task' : 'Add Task',
               style: AppTypography.headlineMedium,
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.md),
             TextFormField(
               controller: _titleController,
               decoration: const InputDecoration(
@@ -598,11 +598,11 @@ class _AddTaskSheetState extends State<_AddTaskSheet> {
               ),
               maxLines: 2,
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.md),
 
             // Recurrence
             Text('Repeat', style: AppTypography.labelLarge),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpacing.sm),
             Wrap(
               spacing: 8,
               runSpacing: 8,
@@ -634,7 +634,7 @@ class _AddTaskSheetState extends State<_AddTaskSheet> {
               ],
             ),
 
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.md),
 
             // Due date
             InkWell(
@@ -647,12 +647,12 @@ class _AddTaskSheetState extends State<_AddTaskSheet> {
                 );
                 if (date != null) setState(() => _dueDate = date);
               },
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: AppRadius.mediumRadius,
               child: Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
                   color: AppColors.surfaceVariant,
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: AppRadius.mediumRadius,
                 ),
                 child: Row(
                   children: [
@@ -673,7 +673,7 @@ class _AddTaskSheetState extends State<_AddTaskSheet> {
             ),
 
             if (widget.existing != null) ...[
-              const SizedBox(height: 16),
+              const SizedBox(height: AppSpacing.md),
               SwitchListTile(
                 title: const Text('Enabled'),
                 value: _isEnabled,
@@ -681,7 +681,7 @@ class _AddTaskSheetState extends State<_AddTaskSheet> {
               ),
             ],
 
-            const SizedBox(height: 24),
+            const SizedBox(height: AppSpacing.lg),
             ElevatedButton(
               onPressed: _isSaving ? null : _save,
               child: _isSaving

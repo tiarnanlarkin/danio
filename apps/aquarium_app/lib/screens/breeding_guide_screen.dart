@@ -22,7 +22,7 @@ class BreedingGuideScreen extends StatelessWidget {
                   Row(
                     children: [
                       Icon(Icons.favorite, color: AppColors.info),
-                      const SizedBox(width: 8),
+                      const SizedBox(width: AppSpacing.sm),
                       Text(
                         'Breeding Basics',
                         style: AppTypography.headlineSmall,
@@ -40,11 +40,11 @@ class BreedingGuideScreen extends StatelessWidget {
             ),
           ),
 
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.lg),
 
           // Breeding types
           Text('Breeding Methods', style: AppTypography.headlineMedium),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.md),
 
           _MethodCard(
             title: 'Livebearers',
@@ -114,11 +114,11 @@ class BreedingGuideScreen extends StatelessWidget {
             ],
           ),
 
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.lg),
 
           // General conditioning
           Text('Conditioning Breeders', style: AppTypography.headlineMedium),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.md),
 
           Card(
             child: Padding(
@@ -160,11 +160,11 @@ class BreedingGuideScreen extends StatelessWidget {
             ),
           ),
 
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.lg),
 
           // Raising fry
           Text('Raising Fry', style: AppTypography.headlineMedium),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.md),
 
           _FryStageCard(
             stage: 'Day 1-3',
@@ -191,11 +191,11 @@ class BreedingGuideScreen extends StatelessWidget {
             care: 'Separate by size if needed, regular maintenance',
           ),
 
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.lg),
 
           // Easy breeders
           Text('Easiest Fish to Breed', style: AppTypography.headlineMedium),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.md),
 
           Card(
             child: Padding(
@@ -252,7 +252,7 @@ class BreedingGuideScreen extends StatelessWidget {
             ),
           ),
 
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.lg),
 
           // Warning
           Card(
@@ -265,7 +265,7 @@ class BreedingGuideScreen extends StatelessWidget {
                   Row(
                     children: [
                       Icon(Icons.warning_amber, color: AppColors.warning),
-                      const SizedBox(width: 8),
+                      const SizedBox(width: AppSpacing.sm),
                       Text(
                         'Before You Breed',
                         style: AppTypography.headlineSmall,
@@ -286,7 +286,7 @@ class BreedingGuideScreen extends StatelessWidget {
             ),
           ),
 
-          const SizedBox(height: 48),
+          const SizedBox(height: AppSpacing.xxl),
         ],
       ),
     );
@@ -318,7 +318,7 @@ class _MethodCard extends StatelessWidget {
           height: 40,
           decoration: BoxDecoration(
             color: AppColors.primary.withOpacity(0.1),
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: AppRadius.smallRadius,
           ),
           child: Icon(icon, color: AppColors.primary),
         ),
@@ -344,7 +344,7 @@ class _MethodCard extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Icon(Icons.check, size: 16, color: AppColors.success),
-                        const SizedBox(width: 8),
+                        const SizedBox(width: AppSpacing.sm),
                         Expanded(
                           child: Text(t, style: AppTypography.bodySmall),
                         ),
@@ -375,7 +375,7 @@ class _ConditionItem extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(title, style: AppTypography.labelLarge),
-          const SizedBox(height: 4),
+          const SizedBox(height: AppSpacing.xs),
           Text(description, style: AppTypography.bodySmall),
         ],
       ),
@@ -410,7 +410,7 @@ class _FryStageCard extends StatelessWidget {
               padding: const EdgeInsets.symmetric(vertical: 8),
               decoration: BoxDecoration(
                 color: AppColors.secondary.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: AppRadius.smallRadius,
               ),
               child: Center(
                 child: Text(
@@ -427,7 +427,7 @@ class _FryStageCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(title, style: AppTypography.labelLarge),
-                  const SizedBox(height: 4),
+                  const SizedBox(height: AppSpacing.xs),
                   Text('🍼 $feeding', style: AppTypography.bodySmall),
                   Text('🏥 $care', style: AppTypography.bodySmall),
                 ],

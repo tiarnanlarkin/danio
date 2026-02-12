@@ -55,7 +55,7 @@ class LivestockSection extends ConsumerWidget {
               child: Row(
                 children: [
                   const Icon(Icons.pets, color: AppColors.primary),
-                  const SizedBox(width: 8),
+                  const SizedBox(width: AppSpacing.sm),
                   Text(
                     'Livestock (${livestock.length})',
                     style: AppTypography.headlineSmall,
@@ -124,7 +124,7 @@ class EquipmentSection extends ConsumerWidget {
               child: Row(
                 children: [
                   const Icon(Icons.build, color: AppColors.primary),
-                  const SizedBox(width: 8),
+                  const SizedBox(width: AppSpacing.sm),
                   Text(
                     'Equipment (${equipment.length})',
                     style: AppTypography.headlineSmall,
@@ -195,7 +195,7 @@ class TasksSection extends ConsumerWidget {
               child: Row(
                 children: [
                   const Icon(Icons.task_alt, color: AppColors.primary),
-                  const SizedBox(width: 8),
+                  const SizedBox(width: AppSpacing.sm),
                   Text(
                     'Tasks (${incompleteTasks.length})',
                     style: AppTypography.headlineSmall,
@@ -263,7 +263,7 @@ class RecentActivitySection extends ConsumerWidget {
               child: Row(
                 children: [
                   const Icon(Icons.history, color: AppColors.primary),
-                  const SizedBox(width: 8),
+                  const SizedBox(width: AppSpacing.sm),
                   const Text(
                     'Recent Activity',
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
@@ -361,7 +361,7 @@ class _SectionLoading extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(title, style: AppTypography.headlineSmall),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.md),
           const Center(child: CircularProgressIndicator()),
         ],
       ),
@@ -383,7 +383,7 @@ class _SectionError extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(title, style: AppTypography.headlineSmall),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.md),
           Center(
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -393,7 +393,7 @@ class _SectionError extends StatelessWidget {
                   color: AppColors.error,
                   size: 48,
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: AppSpacing.sm),
                 Text('Failed to load $title', style: AppTypography.bodySmall),
               ],
             ),
@@ -423,7 +423,7 @@ class _SectionEmpty extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(title, style: AppTypography.headlineSmall),
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.lg),
           Center(
             child: Column(
               mainAxisSize: MainAxisSize.min,

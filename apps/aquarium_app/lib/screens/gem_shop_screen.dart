@@ -106,7 +106,7 @@ class _GemShopScreenState extends ConsumerState<GemShopScreen>
             ),
             // Gem balance display
             _GemBalanceChip(balance: gemBalance),
-            const SizedBox(width: 16),
+            const SizedBox(width: AppSpacing.md),
           ],
           bottom: TabBar(
             controller: _tabController,
@@ -260,7 +260,7 @@ class _GemShopScreenState extends ConsumerState<GemShopScreen>
             child: AlertDialog(
               backgroundColor: GemShopColors.background2,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20),
+                borderRadius: AppRadius.largeRadius,
                 side: const BorderSide(color: GemShopColors.glassBorder),
               ),
               title: Row(
@@ -294,7 +294,7 @@ class _GemShopScreenState extends ConsumerState<GemShopScreen>
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
                       color: GemShopColors.glassCard,
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: AppRadius.mediumRadius,
                       border: Border.all(color: GemShopColors.glassBorder),
                     ),
                     child: Row(
@@ -319,14 +319,14 @@ class _GemShopScreenState extends ConsumerState<GemShopScreen>
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
-                            const SizedBox(width: 4),
+                            const SizedBox(width: AppSpacing.xs),
                             const Text('💎', style: TextStyle(fontSize: 20)),
                           ],
                         ),
                       ],
                     ),
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: AppSpacing.sm),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -379,7 +379,7 @@ class _GemShopScreenState extends ConsumerState<GemShopScreen>
                     disabledBackgroundColor: GemShopColors.textSecondary
                         .withOpacity(0.3),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: AppRadius.mediumRadius,
                     ),
                   ),
                   child: _isPurchasing
@@ -480,13 +480,13 @@ class _ShopItemCard extends ConsumerWidget {
       child: GestureDetector(
         onTap: onTap,
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: AppRadius.largeRadius,
           child: BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
             child: Container(
               decoration: BoxDecoration(
                 color: GemShopColors.glassCard,
-                borderRadius: BorderRadius.circular(20),
+                borderRadius: AppRadius.largeRadius,
                 border: Border.all(
                   color: owned
                       ? categoryColor.withOpacity(0.5)
@@ -521,7 +521,7 @@ class _ShopItemCard extends ConsumerWidget {
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                         ),
-                        const SizedBox(height: 8),
+                        const SizedBox(height: AppSpacing.sm),
                         // Description
                         Expanded(
                           child: Text(
@@ -534,7 +534,7 @@ class _ShopItemCard extends ConsumerWidget {
                             overflow: TextOverflow.ellipsis,
                           ),
                         ),
-                        const SizedBox(height: 8),
+                        const SizedBox(height: AppSpacing.sm),
                         // Price
                         Container(
                           padding: const EdgeInsets.symmetric(
@@ -543,7 +543,7 @@ class _ShopItemCard extends ConsumerWidget {
                           ),
                           decoration: BoxDecoration(
                             color: categoryColor.withOpacity(0.2),
-                            borderRadius: BorderRadius.circular(12),
+                            borderRadius: AppRadius.mediumRadius,
                           ),
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
@@ -556,7 +556,7 @@ class _ShopItemCard extends ConsumerWidget {
                                   fontSize: 16,
                                 ),
                               ),
-                              const SizedBox(width: 4),
+                              const SizedBox(width: AppSpacing.xs),
                               const Text('💎', style: TextStyle(fontSize: 14)),
                             ],
                           ),
@@ -576,7 +576,7 @@ class _ShopItemCard extends ConsumerWidget {
                         ),
                         decoration: BoxDecoration(
                           color: categoryColor,
-                          borderRadius: BorderRadius.circular(8),
+                          borderRadius: AppRadius.smallRadius,
                         ),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
@@ -587,7 +587,7 @@ class _ShopItemCard extends ConsumerWidget {
                               color: Colors.white,
                             ),
                             if (item.isConsumable && quantity > 0) ...[
-                              const SizedBox(width: 4),
+                              const SizedBox(width: AppSpacing.xs),
                               Text(
                                 'x$quantity',
                                 style: const TextStyle(
@@ -631,7 +631,7 @@ class _GemBalanceChip extends StatelessWidget {
               GemShopColors.gemGlow.withOpacity(0.2),
             ],
           ),
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: AppRadius.largeRadius,
           border: Border.all(
             color: GemShopColors.gemPrimary.withOpacity(0.5),
             width: 2,
@@ -648,7 +648,7 @@ class _GemBalanceChip extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             const Text('💎', style: TextStyle(fontSize: 20)),
-            const SizedBox(width: 8),
+            const SizedBox(width: AppSpacing.sm),
             Text(
               '$balance',
               style: const TextStyle(

@@ -45,7 +45,7 @@ class HobbyDesk extends StatelessWidget {
             const Color(0xFFD2B48C).withOpacity(0.4),
           ],
         ),
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: AppRadius.mediumRadius,
         border: Border.all(
           color: const Color(0xFFC4A574).withOpacity(0.5),
           width: 2,
@@ -101,7 +101,7 @@ class HobbyDesk extends StatelessWidget {
             ],
           ),
 
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.md),
 
           // Divider (desk edge)
           Container(
@@ -112,7 +112,7 @@ class HobbyDesk extends StatelessWidget {
               borderRadius: BorderRadius.circular(2),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.1),
+                  color: AppOverlays.black10,
                   blurRadius: 2,
                   offset: const Offset(0, 2),
                 ),
@@ -120,7 +120,7 @@ class HobbyDesk extends StatelessWidget {
             ),
           ),
 
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.md),
 
           // Bottom shelf - Testing & maintenance
           Row(
@@ -186,7 +186,7 @@ class _ItemWithTooltip extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         child,
-        const SizedBox(height: 4),
+        const SizedBox(height: AppSpacing.xs),
         Text(
           label,
           style: AppTypography.labelSmall.copyWith(
@@ -237,7 +237,7 @@ class ItemDetailPopup extends StatelessWidget {
             child: Row(
               children: [
                 Icon(icon, color: color, size: 20),
-                const SizedBox(width: 8),
+                const SizedBox(width: AppSpacing.sm),
                 Text(title, style: AppTypography.labelLarge),
                 const Spacer(),
                 if (onClose != null)
@@ -333,9 +333,9 @@ class MiniTankScene extends StatelessWidget {
                     AppColors.primaryDark.withOpacity(0.4),
                   ],
                 ),
-                borderRadius: BorderRadius.circular(4),
+                borderRadius: AppRadius.xsRadius,
                 border: Border.all(
-                  color: Colors.white.withOpacity(0.5),
+                  color: AppOverlays.white50,
                   width: 2,
                 ),
                 boxShadow: [
@@ -416,7 +416,7 @@ class MiniTankScene extends StatelessWidget {
                         gradient: LinearGradient(
                           colors: [
                             Colors.white.withOpacity(0.0),
-                            Colors.white.withOpacity(0.3),
+                            AppOverlays.white30,
                             Colors.white.withOpacity(0.0),
                           ],
                         ),
@@ -454,7 +454,7 @@ class MiniTankScene extends StatelessWidget {
                 borderRadius: BorderRadius.circular(2),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.15),
+                    color: AppOverlays.black15,
                     blurRadius: 4,
                     offset: const Offset(0, 2),
                   ),
@@ -462,7 +462,7 @@ class MiniTankScene extends StatelessWidget {
               ),
             ),
 
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpacing.sm),
 
             // Label
             Text(

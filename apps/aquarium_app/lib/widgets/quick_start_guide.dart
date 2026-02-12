@@ -145,7 +145,7 @@ class _QuickStartGuideState extends State<QuickStartGuide> {
         child: Card(
           elevation: 8,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: AppRadius.mediumRadius,
           ),
           child: Padding(
             padding: const EdgeInsets.all(20),
@@ -166,12 +166,12 @@ class _QuickStartGuideState extends State<QuickStartGuide> {
                         color: _currentStep == index
                             ? AppColors.accent
                             : Colors.grey[300],
-                        borderRadius: BorderRadius.circular(4),
+                        borderRadius: AppRadius.xsRadius,
                       ),
                     ),
                   ),
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: AppSpacing.md),
 
                 // Title
                 Text(
@@ -182,7 +182,7 @@ class _QuickStartGuideState extends State<QuickStartGuide> {
                     color: AppColors.accent,
                   ),
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: AppSpacing.sm),
 
                 // Description
                 Text(
@@ -214,7 +214,7 @@ class _QuickStartGuideState extends State<QuickStartGuide> {
                             onPressed: _previousStep,
                             child: const Text('Back'),
                           ),
-                        const SizedBox(width: 8),
+                        const SizedBox(width: AppSpacing.sm),
                         FilledButton.icon(
                           onPressed: _nextStep,
                           icon: Icon(
@@ -316,7 +316,7 @@ class QuickStartTipsCard extends StatelessWidget {
     return Card(
       elevation: 2,
       margin: const EdgeInsets.all(16),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      shape: RoundedRectangleBorder(borderRadius: AppRadius.mediumRadius),
       child: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
@@ -327,7 +327,7 @@ class QuickStartTipsCard extends StatelessWidget {
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: AppRadius.mediumRadius,
         ),
         child: Padding(
           padding: const EdgeInsets.all(16),
@@ -340,7 +340,7 @@ class QuickStartTipsCard extends StatelessWidget {
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
                       color: AppColors.accent.withOpacity(0.2),
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: AppRadius.smallRadius,
                     ),
                     child: const Icon(
                       Icons.lightbulb_outline,
@@ -360,7 +360,7 @@ class QuickStartTipsCard extends StatelessWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppSpacing.md),
               _buildTipItem(
                 icon: Icons.water_drop,
                 text: 'Log your first water test to track trends',
@@ -378,7 +378,7 @@ class QuickStartTipsCard extends StatelessWidget {
                 text: 'Start a learning path to unlock features',
                 color: Colors.orange,
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppSpacing.md),
               Row(
                 children: [
                   Expanded(
@@ -392,7 +392,7 @@ class QuickStartTipsCard extends StatelessWidget {
                       ),
                     ),
                   ),
-                  const SizedBox(width: 8),
+                  const SizedBox(width: AppSpacing.sm),
                   IconButton(
                     onPressed: () => _dismissCard(context),
                     icon: const Icon(Icons.close, size: 20),

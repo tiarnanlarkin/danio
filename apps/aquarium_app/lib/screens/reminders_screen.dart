@@ -176,7 +176,7 @@ class _RemindersScreenState extends ConsumerState<RemindersScreen> {
                       onDelete: () => _deleteReminder(_reminders.indexOf(r)),
                     ),
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: AppSpacing.lg),
                 ],
 
                 if (upcoming.isNotEmpty) ...[
@@ -284,15 +284,15 @@ class _EmptyState extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Icon(Icons.notifications_none, size: 64, color: AppColors.textHint),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.md),
             Text('No Reminders Yet', style: AppTypography.headlineSmall),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpacing.sm),
             Text(
               'Set up reminders for water changes, filter cleaning, feeding, and more.',
               style: AppTypography.bodyMedium,
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: AppSpacing.lg),
             FilledButton.icon(
               onPressed: onAdd,
               icon: const Icon(Icons.add),
@@ -323,12 +323,12 @@ class _SectionHeader extends StatelessWidget {
             title,
             style: AppTypography.headlineSmall.copyWith(color: color),
           ),
-          const SizedBox(width: 8),
+          const SizedBox(width: AppSpacing.sm),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
             decoration: BoxDecoration(
               color: (color ?? AppColors.primary).withOpacity(0.1),
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: AppRadius.mediumRadius,
             ),
             child: Text(
               '$count',
@@ -418,7 +418,7 @@ class _ReminderTile extends StatelessWidget {
             decoration: BoxDecoration(
               color: (isOverdue ? AppColors.error : AppColors.primary)
                   .withOpacity(0.1),
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: AppRadius.smallRadius,
             ),
             child: Icon(
               _categoryIcon(),
@@ -439,7 +439,7 @@ class _ReminderTile extends StatelessWidget {
                     ),
                   ),
                   if (reminder.isRecurring) ...[
-                    const SizedBox(width: 8),
+                    const SizedBox(width: AppSpacing.sm),
                     Icon(Icons.repeat, size: 12, color: AppColors.textHint),
                     const SizedBox(width: 2),
                     Text(reminder.frequency, style: AppTypography.bodySmall),
@@ -550,7 +550,7 @@ class _AddReminderSheetState extends State<_AddReminderSheet> {
 
             // Quick presets
             Text('Quick Presets', style: AppTypography.labelMedium),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpacing.sm),
             Wrap(
               spacing: 8,
               runSpacing: 8,
@@ -577,7 +577,7 @@ class _AddReminderSheetState extends State<_AddReminderSheet> {
                 ),
               ],
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.md),
 
             TextField(
               controller: _titleController,
@@ -670,7 +670,7 @@ class _AddReminderSheetState extends State<_AddReminderSheet> {
               maxLines: 2,
             ),
 
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.md),
 
             SizedBox(
               width: double.infinity,
@@ -729,12 +729,12 @@ class _PresetChip extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(20),
+      borderRadius: AppRadius.largeRadius,
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         decoration: BoxDecoration(
           color: AppColors.primary.withOpacity(0.1),
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: AppRadius.largeRadius,
           border: Border.all(color: AppColors.primary.withOpacity(0.3)),
         ),
         child: Row(

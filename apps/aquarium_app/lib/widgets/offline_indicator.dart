@@ -1,3 +1,4 @@
+import 'package:aquarium_app/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
@@ -77,13 +78,13 @@ class OfflineIndicatorCompact extends ConsumerWidget {
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
         color: Colors.orange.shade100,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: AppRadius.mediumRadius,
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(Icons.wifi_off, color: Colors.orange.shade900, size: 14),
-          const SizedBox(width: 4),
+          const SizedBox(width: AppSpacing.xs),
           Text(
             'Offline',
             style: TextStyle(

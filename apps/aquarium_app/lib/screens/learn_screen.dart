@@ -50,26 +50,8 @@ class LearnScreen extends ConsumerWidget {
                         completedLessons: completedLessons,
                         totalLessons: totalLessons,
                       ),
-                      // Back button overlay
-                      Positioned(
-                        top: MediaQuery.of(context).padding.top + 8,
-                        left: 8,
-                        child: IconButton(
-                          icon: Container(
-                            padding: const EdgeInsets.all(8),
-                            decoration: BoxDecoration(
-                              color: Colors.black26,
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: const Icon(
-                              Icons.arrow_back,
-                              color: Colors.white,
-                              size: 20,
-                            ),
-                          ),
-                          onPressed: () => Navigator.pop(context),
-                        ),
-                      ),
+                      // No back button - LearnScreen is Room 0 in HouseNavigator
+                      // Navigation between rooms is via swipe or room indicator bar
                       // Title overlay
                       Positioned(
                         top: MediaQuery.of(context).padding.top + 16,
@@ -201,14 +183,14 @@ class _ReviewCardsBanner extends ConsumerWidget {
             ),
           );
         },
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: AppRadius.mediumRadius,
         child: Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
             gradient: LinearGradient(
               colors: [AppColors.accent, AppColors.accent.withOpacity(0.8)],
             ),
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: AppRadius.mediumRadius,
             boxShadow: [
               BoxShadow(
                 color: AppColors.accent.withOpacity(0.3),
@@ -223,7 +205,7 @@ class _ReviewCardsBanner extends ConsumerWidget {
                 width: 56,
                 height: 56,
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.2),
+                  color: AppOverlays.white20,
                   shape: BoxShape.circle,
                 ),
                 child: const Icon(
@@ -232,7 +214,7 @@ class _ReviewCardsBanner extends ConsumerWidget {
                   size: 28,
                 ),
               ),
-              const SizedBox(width: 16),
+              const SizedBox(width: AppSpacing.md),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -249,18 +231,18 @@ class _ReviewCardsBanner extends ConsumerWidget {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 4),
+                    const SizedBox(height: AppSpacing.xs),
                     Text(
                       'You have $dueCount card${dueCount == 1 ? '' : 's'} ready to review',
                       style: AppTypography.bodyMedium.copyWith(
-                        color: Colors.white.withOpacity(0.9),
+                        color: AppOverlays.white90,
                       ),
                     ),
-                    const SizedBox(height: 4),
+                    const SizedBox(height: AppSpacing.xs),
                     Text(
                       'Tap to start practicing',
                       style: AppTypography.bodySmall.copyWith(
-                        color: Colors.white.withOpacity(0.7),
+                        color: AppOverlays.white70,
                       ),
                     ),
                   ],
@@ -302,14 +284,14 @@ class _PracticeCard extends ConsumerWidget {
             context,
           ).push(MaterialPageRoute(builder: (_) => const PracticeScreen()));
         },
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: AppRadius.mediumRadius,
         child: Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
             gradient: LinearGradient(
               colors: [AppColors.primary, AppColors.primary.withOpacity(0.8)],
             ),
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: AppRadius.mediumRadius,
             boxShadow: [
               BoxShadow(
                 color: AppColors.primary.withOpacity(0.3),
@@ -324,7 +306,7 @@ class _PracticeCard extends ConsumerWidget {
                 width: 56,
                 height: 56,
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.2),
+                  color: AppOverlays.white20,
                   shape: BoxShape.circle,
                 ),
                 child: const Icon(
@@ -333,7 +315,7 @@ class _PracticeCard extends ConsumerWidget {
                   size: 28,
                 ),
               ),
-              const SizedBox(width: 16),
+              const SizedBox(width: AppSpacing.md),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -347,7 +329,7 @@ class _PracticeCard extends ConsumerWidget {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        const SizedBox(width: 8),
+                        const SizedBox(width: AppSpacing.sm),
                         Container(
                           padding: const EdgeInsets.symmetric(
                             horizontal: 8,
@@ -355,7 +337,7 @@ class _PracticeCard extends ConsumerWidget {
                           ),
                           decoration: BoxDecoration(
                             color: AppColors.error,
-                            borderRadius: BorderRadius.circular(12),
+                            borderRadius: AppRadius.mediumRadius,
                           ),
                           child: Text(
                             '$weakCount',
@@ -367,18 +349,18 @@ class _PracticeCard extends ConsumerWidget {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 4),
+                    const SizedBox(height: AppSpacing.xs),
                     Text(
                       '$weakCount lesson${weakCount == 1 ? '' : 's'} need review',
                       style: AppTypography.bodyMedium.copyWith(
-                        color: Colors.white.withOpacity(0.9),
+                        color: AppOverlays.white90,
                       ),
                     ),
-                    const SizedBox(height: 4),
+                    const SizedBox(height: AppSpacing.xs),
                     Text(
                       'Review before you forget!',
                       style: AppTypography.bodySmall.copyWith(
-                        color: Colors.white.withOpacity(0.7),
+                        color: AppOverlays.white70,
                       ),
                     ),
                   ],
@@ -413,7 +395,7 @@ class _StreakCard extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.orange.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: AppRadius.mediumRadius,
         border: Border.all(color: Colors.orange.withOpacity(0.3)),
       ),
       child: Row(
@@ -431,7 +413,7 @@ class _StreakCard extends StatelessWidget {
               size: 28,
             ),
           ),
-          const SizedBox(width: 16),
+          const SizedBox(width: AppSpacing.md),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -450,7 +432,7 @@ class _StreakCard extends StatelessWidget {
                   ),
                 ),
                 if (hasFreeze || usedFreezeThisWeek) ...[
-                  const SizedBox(height: 8),
+                  const SizedBox(height: AppSpacing.sm),
                   Row(
                     children: [
                       Icon(
@@ -515,7 +497,7 @@ class _LearningPathCard extends StatelessWidget {
               color: isComplete
                   ? AppColors.success.withOpacity(0.2)
                   : AppColors.primary.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: AppRadius.mediumRadius,
             ),
             child: Center(
               child: Text(path.emoji, style: const TextStyle(fontSize: 24)),
@@ -525,7 +507,7 @@ class _LearningPathCard extends StatelessWidget {
           subtitle: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const SizedBox(height: 4),
+              const SizedBox(height: AppSpacing.xs),
               Text(
                 path.description,
                 style: AppTypography.bodySmall.copyWith(
@@ -534,12 +516,12 @@ class _LearningPathCard extends StatelessWidget {
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: AppSpacing.sm),
               Row(
                 children: [
                   Expanded(
                     child: ClipRRect(
-                      borderRadius: BorderRadius.circular(4),
+                      borderRadius: AppRadius.xsRadius,
                       child: LinearProgressIndicator(
                         value: progress,
                         backgroundColor: AppColors.surfaceVariant,

@@ -131,7 +131,7 @@ class _FirstTankWizardScreenState extends ConsumerState<FirstTankWizardScreen> {
                     )
                   else
                     const Spacer(),
-                  const SizedBox(width: 16),
+                  const SizedBox(width: AppSpacing.md),
                   Expanded(
                     flex: 2,
                     child: ElevatedButton(
@@ -154,9 +154,9 @@ class _FirstTankWizardScreenState extends ConsumerState<FirstTankWizardScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          const SizedBox(height: 32),
+          const SizedBox(height: AppSpacing.xl),
           Icon(Icons.edit_rounded, size: 64, color: AppColors.primary),
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.lg),
           Text(
             'Name Your Tank',
             style: AppTypography.headlineLarge,
@@ -178,13 +178,13 @@ class _FirstTankWizardScreenState extends ConsumerState<FirstTankWizardScreen> {
               hintText: 'e.g., Living Room Tank, Main Display',
               prefixIcon: const Icon(Icons.water_drop_outlined),
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: AppRadius.mediumRadius,
               ),
             ),
             textCapitalization: TextCapitalization.words,
             onChanged: (value) => setState(() => _tankName = value),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.md),
           Text(
             'Examples: "Living Room Tank", "Bedroom Aquarium", "My First Tank"',
             style: AppTypography.labelSmall.copyWith(
@@ -202,9 +202,9 @@ class _FirstTankWizardScreenState extends ConsumerState<FirstTankWizardScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          const SizedBox(height: 32),
+          const SizedBox(height: AppSpacing.xl),
           Icon(Icons.straighten_rounded, size: 64, color: AppColors.primary),
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.lg),
           Text(
             'Tank Size',
             style: AppTypography.headlineLarge,
@@ -226,7 +226,7 @@ class _FirstTankWizardScreenState extends ConsumerState<FirstTankWizardScreen> {
               hintText: 'e.g., 20',
               prefixIcon: const Icon(Icons.water_outlined),
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: AppRadius.mediumRadius,
               ),
             ),
             keyboardType: const TextInputType.numberWithOptions(decimal: true),
@@ -236,7 +236,7 @@ class _FirstTankWizardScreenState extends ConsumerState<FirstTankWizardScreen> {
               });
             },
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.md),
           Text(
             'Common sizes: 10, 20, 29, 40, 55, 75 gallons',
             style: AppTypography.labelSmall.copyWith(
@@ -254,9 +254,9 @@ class _FirstTankWizardScreenState extends ConsumerState<FirstTankWizardScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          const SizedBox(height: 32),
+          const SizedBox(height: AppSpacing.xl),
           Icon(Icons.waves_rounded, size: 64, color: AppColors.primary),
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.lg),
           Text(
             'Water Type',
             style: AppTypography.headlineLarge,
@@ -279,7 +279,7 @@ class _FirstTankWizardScreenState extends ConsumerState<FirstTankWizardScreen> {
                 color: Colors.transparent,
                 child: InkWell(
                   onTap: () => setState(() => _tankType = type),
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: AppRadius.mediumRadius,
                   child: AnimatedContainer(
                     duration: const Duration(milliseconds: 200),
                     padding: const EdgeInsets.all(20),
@@ -290,7 +290,7 @@ class _FirstTankWizardScreenState extends ConsumerState<FirstTankWizardScreen> {
                             : AppColors.border,
                         width: 2,
                       ),
-                      borderRadius: BorderRadius.circular(16),
+                      borderRadius: AppRadius.mediumRadius,
                       color: isSelected
                           ? AppColors.primary.withOpacity(0.1)
                           : AppColors.surface,
@@ -303,7 +303,7 @@ class _FirstTankWizardScreenState extends ConsumerState<FirstTankWizardScreen> {
                               ? AppColors.primary
                               : AppColors.textSecondary,
                         ),
-                        const SizedBox(width: 16),
+                        const SizedBox(width: AppSpacing.md),
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -345,13 +345,13 @@ class _FirstTankWizardScreenState extends ConsumerState<FirstTankWizardScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          const SizedBox(height: 32),
+          const SizedBox(height: AppSpacing.xl),
           Icon(
             Icons.check_circle_outline_rounded,
             size: 80,
             color: AppColors.primary,
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.lg),
           Text(
             'Ready to Create!',
             style: AppTypography.headlineLarge,
@@ -370,7 +370,7 @@ class _FirstTankWizardScreenState extends ConsumerState<FirstTankWizardScreen> {
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
               color: AppColors.primary.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: AppRadius.mediumRadius,
               border: Border.all(color: AppColors.primary.withOpacity(0.3)),
             ),
             child: Column(
@@ -387,12 +387,12 @@ class _FirstTankWizardScreenState extends ConsumerState<FirstTankWizardScreen> {
               ],
             ),
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.lg),
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
               color: AppColors.accent.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: AppRadius.mediumRadius,
             ),
             child: Row(
               children: [

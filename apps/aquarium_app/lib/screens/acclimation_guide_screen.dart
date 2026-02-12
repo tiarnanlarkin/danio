@@ -22,7 +22,7 @@ class AcclimationGuideScreen extends StatelessWidget {
                   Row(
                     children: [
                       Icon(Icons.info_outline, color: AppColors.info),
-                      const SizedBox(width: 8),
+                      const SizedBox(width: AppSpacing.sm),
                       Text(
                         'Why Acclimate?',
                         style: AppTypography.headlineSmall,
@@ -40,19 +40,19 @@ class AcclimationGuideScreen extends StatelessWidget {
             ),
           ),
 
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.lg),
 
           // Method 1: Float
           Text(
             'Method 1: Float & Release',
             style: AppTypography.headlineMedium,
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.sm),
           Text(
             'Best for: Hardy fish, short transit times',
             style: AppTypography.bodySmall,
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.md),
 
           _StepCard(
             step: 1,
@@ -79,19 +79,19 @@ class AcclimationGuideScreen extends StatelessWidget {
             duration: '1 min',
           ),
 
-          const SizedBox(height: 32),
+          const SizedBox(height: AppSpacing.xl),
 
           // Method 2: Drip
           Text(
             'Method 2: Drip Acclimation',
             style: AppTypography.headlineMedium,
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.sm),
           Text(
             'Best for: Sensitive fish, shrimp, marine fish, large pH/hardness differences',
             style: AppTypography.bodySmall,
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.md),
 
           _StepCard(
             step: 1,
@@ -141,11 +141,11 @@ class AcclimationGuideScreen extends StatelessWidget {
             duration: '1 min',
           ),
 
-          const SizedBox(height: 32),
+          const SizedBox(height: AppSpacing.xl),
 
           // Tips
           Text('Tips for Success', style: AppTypography.headlineMedium),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.md),
 
           _TipCard(
             icon: Icons.lightbulb_outline,
@@ -177,11 +177,11 @@ class AcclimationGuideScreen extends StatelessWidget {
                 'Consider a quarantine tank for new fish to prevent disease spread.',
           ),
 
-          const SizedBox(height: 32),
+          const SizedBox(height: AppSpacing.xl),
 
           // Sensitive species
           Text('Extra Care For', style: AppTypography.headlineMedium),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.md),
 
           Card(
             child: Padding(
@@ -223,7 +223,7 @@ class AcclimationGuideScreen extends StatelessWidget {
             ),
           ),
 
-          const SizedBox(height: 48),
+          const SizedBox(height: AppSpacing.xxl),
         ],
       ),
     );
@@ -287,7 +287,7 @@ class _StepCard extends StatelessWidget {
                         ),
                         decoration: BoxDecoration(
                           color: AppColors.surfaceVariant,
-                          borderRadius: BorderRadius.circular(8),
+                          borderRadius: AppRadius.smallRadius,
                         ),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
@@ -297,14 +297,14 @@ class _StepCard extends StatelessWidget {
                               size: 12,
                               color: AppColors.textSecondary,
                             ),
-                            const SizedBox(width: 4),
+                            const SizedBox(width: AppSpacing.xs),
                             Text(duration, style: AppTypography.bodySmall),
                           ],
                         ),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 4),
+                  const SizedBox(height: AppSpacing.xs),
                   Text(description, style: AppTypography.bodyMedium),
                 ],
               ),
@@ -354,7 +354,7 @@ class _SensitiveItem extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(species, style: AppTypography.labelLarge),
-          const SizedBox(height: 4),
+          const SizedBox(height: AppSpacing.xs),
           Text(note, style: AppTypography.bodySmall),
         ],
       ),

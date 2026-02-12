@@ -15,7 +15,7 @@ class TroubleshootingScreen extends StatelessWidget {
             'Common Problems & Solutions',
             style: AppTypography.headlineMedium,
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.md),
 
           _ProblemCard(
             problem: 'Cloudy Water',
@@ -243,7 +243,7 @@ class TroubleshootingScreen extends StatelessWidget {
             ],
           ),
 
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.lg),
 
           Card(
             color: AppColors.info.withOpacity(0.1),
@@ -255,7 +255,7 @@ class TroubleshootingScreen extends StatelessWidget {
                   Row(
                     children: [
                       Icon(Icons.lightbulb, color: AppColors.info),
-                      const SizedBox(width: 8),
+                      const SizedBox(width: AppSpacing.sm),
                       Text('General Tips', style: AppTypography.headlineSmall),
                     ],
                   ),
@@ -274,7 +274,7 @@ class TroubleshootingScreen extends StatelessWidget {
             ),
           ),
 
-          const SizedBox(height: 48),
+          const SizedBox(height: AppSpacing.xxl),
         ],
       ),
     );
@@ -302,7 +302,7 @@ class _ProblemCard extends StatelessWidget {
           height: 40,
           decoration: BoxDecoration(
             color: AppColors.warning.withOpacity(0.1),
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: AppRadius.smallRadius,
           ),
           child: const Icon(Icons.help_outline, color: AppColors.warning),
         ),
@@ -319,7 +319,7 @@ class _ProblemCard extends StatelessWidget {
                     color: AppColors.error,
                   ),
                 ),
-                const SizedBox(height: 4),
+                const SizedBox(height: AppSpacing.xs),
                 ...causes.map(
                   (c) => Padding(
                     padding: const EdgeInsets.only(bottom: 2),
@@ -341,7 +341,7 @@ class _ProblemCard extends StatelessWidget {
                     color: AppColors.success,
                   ),
                 ),
-                const SizedBox(height: 4),
+                const SizedBox(height: AppSpacing.xs),
                 ...solutions.map(
                   (s) => Padding(
                     padding: const EdgeInsets.only(bottom: 2),

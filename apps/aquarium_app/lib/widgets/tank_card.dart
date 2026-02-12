@@ -47,7 +47,7 @@ class TankCard extends ConsumerWidget {
                     child: Icon(
                       Icons.water,
                       size: 48,
-                      color: Colors.white.withOpacity(0.3),
+                      color: AppOverlays.white30,
                     ),
                   ),
                   // Tank name
@@ -66,11 +66,11 @@ class TankCard extends ConsumerWidget {
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
-                        const SizedBox(height: 4),
+                        const SizedBox(height: AppSpacing.xs),
                         Text(
                           '${tank.volumeLitres.toStringAsFixed(0)}L • ${tank.type.name}',
                           style: AppTypography.bodySmall.copyWith(
-                            color: Colors.white.withOpacity(0.9),
+                            color: AppOverlays.white90,
                           ),
                         ),
                       ],
@@ -94,7 +94,7 @@ class TankCard extends ConsumerWidget {
                         label: _formatAge(tank.startDate),
                         tooltip: 'Tank age',
                       ),
-                      const SizedBox(width: 8),
+                      const SizedBox(width: AppSpacing.sm),
                       logsAsync.when(
                         loading: () => const SizedBox.shrink(),
                         error: (_, __) => const SizedBox.shrink(),
@@ -160,7 +160,7 @@ class _StatChip extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       decoration: BoxDecoration(
         color: AppColors.surfaceVariant,
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: AppRadius.smallRadius,
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -299,14 +299,14 @@ class _Badge extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
         color: color.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(6),
+        borderRadius: AppRadius.smallRadius,
         border: Border.all(color: color.withOpacity(0.3)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(icon, size: 12, color: color),
-          const SizedBox(width: 4),
+          const SizedBox(width: AppSpacing.xs),
           Text(
             label,
             style: AppTypography.bodySmall.copyWith(

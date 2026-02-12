@@ -34,7 +34,7 @@ class EmergencyGuideScreen extends StatelessWidget {
             ),
           ),
 
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.lg),
 
           _EmergencyCard(
             title: '🚨 Ammonia/Nitrite Spike',
@@ -182,7 +182,7 @@ class EmergencyGuideScreen extends StatelessWidget {
                 'Investigate cause before adding new fish. May need to restart cycle.',
           ),
 
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.lg),
 
           Card(
             child: Padding(
@@ -213,7 +213,7 @@ class EmergencyGuideScreen extends StatelessWidget {
             ),
           ),
 
-          const SizedBox(height: 48),
+          const SizedBox(height: AppSpacing.xxl),
         ],
       ),
     );
@@ -256,7 +256,7 @@ class _EmergencyCard extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
           decoration: BoxDecoration(
             color: _urgencyColor,
-            borderRadius: BorderRadius.circular(4),
+            borderRadius: AppRadius.xsRadius,
           ),
           child: Text(
             urgency,
@@ -288,7 +288,7 @@ class _EmergencyCard extends StatelessWidget {
                     color: AppColors.error,
                   ),
                 ),
-                const SizedBox(height: 4),
+                const SizedBox(height: AppSpacing.xs),
                 ...immediateActions.asMap().entries.map(
                   (e) => Padding(
                     padding: const EdgeInsets.only(bottom: 4),
@@ -312,7 +312,7 @@ class _EmergencyCard extends StatelessWidget {
                             ),
                           ),
                         ),
-                        const SizedBox(width: 8),
+                        const SizedBox(width: AppSpacing.sm),
                         Expanded(
                           child: Text(e.value, style: AppTypography.bodyMedium),
                         ),
@@ -325,13 +325,13 @@ class _EmergencyCard extends StatelessWidget {
                   padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
                     color: AppColors.info.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: AppRadius.smallRadius,
                   ),
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Icon(Icons.update, size: 16, color: AppColors.info),
-                      const SizedBox(width: 8),
+                      const SizedBox(width: AppSpacing.sm),
                       Expanded(
                         child: Text(
                           'Follow-up: $followUp',
@@ -366,7 +366,7 @@ class _CheckItem extends StatelessWidget {
             size: 18,
             color: AppColors.primary,
           ),
-          const SizedBox(width: 8),
+          const SizedBox(width: AppSpacing.sm),
           Expanded(child: Text(text, style: AppTypography.bodyMedium)),
         ],
       ),

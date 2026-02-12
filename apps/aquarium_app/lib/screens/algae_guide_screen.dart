@@ -22,7 +22,7 @@ class AlgaeGuideScreen extends StatelessWidget {
                   Row(
                     children: [
                       Icon(Icons.eco, color: AppColors.info),
-                      const SizedBox(width: 8),
+                      const SizedBox(width: AppSpacing.sm),
                       Text('Algae Basics', style: AppTypography.headlineSmall),
                     ],
                   ),
@@ -37,7 +37,7 @@ class AlgaeGuideScreen extends StatelessWidget {
             ),
           ),
 
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.lg),
 
           // Algae types
           _AlgaeCard(
@@ -208,11 +208,11 @@ class AlgaeGuideScreen extends StatelessWidget {
             prevention: 'Start with adequate CO2, especially with new soil',
           ),
 
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.lg),
 
           // Algae eaters
           Text('Algae-Eating Crew', style: AppTypography.headlineMedium),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.md),
           _CrewCard(
             name: 'Amano Shrimp',
             eats: 'Hair algae, most soft algae',
@@ -248,11 +248,11 @@ class AlgaeGuideScreen extends StatelessWidget {
             notes: 'More scavenger than algae eater. Won\'t harm live plants.',
           ),
 
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.lg),
 
           // Prevention tips
           Text('Prevention Checklist', style: AppTypography.headlineMedium),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.md),
           Card(
             child: Padding(
               padding: const EdgeInsets.all(16),
@@ -272,7 +272,7 @@ class AlgaeGuideScreen extends StatelessWidget {
             ),
           ),
 
-          const SizedBox(height: 48),
+          const SizedBox(height: AppSpacing.xxl),
         ],
       ),
     );
@@ -306,7 +306,7 @@ class _AlgaeCard extends StatelessWidget {
           height: 40,
           decoration: BoxDecoration(
             color: color.withOpacity(0.3),
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: AppRadius.smallRadius,
             border: Border.all(color: color, width: 2),
           ),
         ),
@@ -324,7 +324,7 @@ class _AlgaeCard extends StatelessWidget {
                     color: AppColors.error,
                   ),
                 ),
-                const SizedBox(height: 4),
+                const SizedBox(height: AppSpacing.xs),
                 ...causes.map(
                   (c) => Text('• $c', style: AppTypography.bodySmall),
                 ),
@@ -337,7 +337,7 @@ class _AlgaeCard extends StatelessWidget {
                     color: AppColors.success,
                   ),
                 ),
-                const SizedBox(height: 4),
+                const SizedBox(height: AppSpacing.xs),
                 ...solutions.map(
                   (s) => Text('• $s', style: AppTypography.bodySmall),
                 ),
@@ -348,12 +348,12 @@ class _AlgaeCard extends StatelessWidget {
                   padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
                     color: AppColors.info.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: AppRadius.smallRadius,
                   ),
                   child: Row(
                     children: [
                       Icon(Icons.shield, size: 16, color: AppColors.info),
-                      const SizedBox(width: 8),
+                      const SizedBox(width: AppSpacing.sm),
                       Expanded(
                         child: Text(
                           'Prevention: $prevention',
@@ -397,7 +397,7 @@ class _CrewCard extends StatelessWidget {
               height: 36,
               decoration: BoxDecoration(
                 color: AppColors.success.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: AppRadius.smallRadius,
               ),
               child: const Icon(
                 Icons.pest_control,

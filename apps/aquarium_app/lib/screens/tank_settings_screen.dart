@@ -137,7 +137,7 @@ class _TankSettingsScreenState extends ConsumerState<TankSettingsScreen> {
                   decoration: const InputDecoration(labelText: 'Tank type'),
                 ),
 
-                const SizedBox(height: 24),
+                const SizedBox(height: AppSpacing.lg),
                 Text('Size', style: AppTypography.headlineSmall),
                 const SizedBox(height: 12),
                 TextFormField(
@@ -218,9 +218,9 @@ class _TankSettingsScreenState extends ConsumerState<TankSettingsScreen> {
                   ],
                 ),
 
-                const SizedBox(height: 24),
+                const SizedBox(height: AppSpacing.lg),
                 Text('Water profile', style: AppTypography.headlineSmall),
-                const SizedBox(height: 8),
+                const SizedBox(height: AppSpacing.sm),
                 Text(
                   'This sets target ranges used by Alerts and Charts.',
                   style: AppTypography.bodySmall,
@@ -248,7 +248,7 @@ class _TankSettingsScreenState extends ConsumerState<TankSettingsScreen> {
                 else
                   const Text('Marine targets not available yet.'),
 
-                const SizedBox(height: 24),
+                const SizedBox(height: AppSpacing.lg),
                 Text('Start date', style: AppTypography.headlineSmall),
                 const SizedBox(height: 12),
                 InkWell(
@@ -261,7 +261,7 @@ class _TankSettingsScreenState extends ConsumerState<TankSettingsScreen> {
                     );
                     if (picked != null) setState(() => _startDate = picked);
                   },
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: AppRadius.mediumRadius,
                   child: Container(
                     padding: const EdgeInsets.symmetric(
                       horizontal: 16,
@@ -269,7 +269,7 @@ class _TankSettingsScreenState extends ConsumerState<TankSettingsScreen> {
                     ),
                     decoration: BoxDecoration(
                       color: AppColors.surfaceVariant,
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: AppRadius.mediumRadius,
                     ),
                     child: Row(
                       children: [
@@ -293,7 +293,7 @@ class _TankSettingsScreenState extends ConsumerState<TankSettingsScreen> {
                   ),
                 ),
 
-                const SizedBox(height: 24),
+                const SizedBox(height: AppSpacing.lg),
                 Text('Notes', style: AppTypography.headlineSmall),
                 const SizedBox(height: 12),
                 TextFormField(
@@ -306,7 +306,7 @@ class _TankSettingsScreenState extends ConsumerState<TankSettingsScreen> {
                   onChanged: (v) => _notes = v,
                 ),
 
-                const SizedBox(height: 32),
+                const SizedBox(height: AppSpacing.xl),
                 const Divider(),
                 const SizedBox(height: 12),
                 Text(
@@ -315,7 +315,7 @@ class _TankSettingsScreenState extends ConsumerState<TankSettingsScreen> {
                     color: AppColors.error,
                   ),
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: AppSpacing.sm),
                 Text(
                   'Deleting a tank removes all livestock, equipment, logs, and tasks for it.',
                   style: AppTypography.bodySmall,
@@ -330,7 +330,7 @@ class _TankSettingsScreenState extends ConsumerState<TankSettingsScreen> {
                   icon: const Icon(Icons.delete_outline),
                   label: const Text('Delete tank'),
                 ),
-                const SizedBox(height: 24),
+                const SizedBox(height: AppSpacing.lg),
               ],
             ),
           ),

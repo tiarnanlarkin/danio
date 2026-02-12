@@ -59,7 +59,7 @@ class _ThermometerPainter extends CustomPainter {
 
     // Glass outline
     final glassPaint = Paint()
-      ..color = Colors.white.withOpacity(0.8)
+      ..color = AppOverlays.white80
       ..style = PaintingStyle.fill;
 
     final outlinePaint = Paint()
@@ -235,7 +235,7 @@ class _TestTubeRackPainter extends CustomPainter {
     // Draw 4 test tubes
     final tubeWidth = (size.width - 24) / 4;
     final glassPaint = Paint()
-      ..color = Colors.white.withOpacity(0.6)
+      ..color = AppOverlays.white60
       ..style = PaintingStyle.fill;
     final outlinePaint = Paint()
       ..color = AppColors.textHint.withOpacity(0.4)
@@ -411,7 +411,7 @@ class _FilterPainter extends CustomPainter {
 
   void _drawMediaTexture(Canvas canvas, Rect rect, String type) {
     final paint = Paint()
-      ..color = Colors.white.withOpacity(0.2)
+      ..color = AppOverlays.white20
       ..strokeWidth = 1;
 
     switch (type.toLowerCase()) {
@@ -502,7 +502,7 @@ class _FoodJarPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     // Jar body (glass)
     final glassPaint = Paint()
-      ..color = Colors.white.withOpacity(0.3)
+      ..color = AppOverlays.white30
       ..style = PaintingStyle.fill;
 
     final jarRect = RRect.fromRectAndRadius(
@@ -555,7 +555,7 @@ class _FoodJarPainter extends CustomPainter {
     // Label
     canvas.drawRect(
       Rect.fromLTWH(8, size.height * 0.45, size.width - 16, 14),
-      Paint()..color = Colors.white.withOpacity(0.9),
+      Paint()..color = AppOverlays.white90,
     );
   }
 
@@ -576,7 +576,7 @@ class _FoodJarPainter extends CustomPainter {
 
   void _drawFoodTexture(Canvas canvas, Rect rect) {
     final random = math.Random(123);
-    final paint = Paint()..color = Colors.black.withOpacity(0.1);
+    final paint = Paint()..color = AppOverlays.black10;
 
     for (var i = 0; i < 20; i++) {
       final x = rect.left + random.nextDouble() * rect.width;

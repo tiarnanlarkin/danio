@@ -226,7 +226,7 @@ class _WorkshopHeader extends StatelessWidget {
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
                   color: WorkshopColors.glassCard,
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: AppRadius.mediumRadius,
                   border: Border.all(color: WorkshopColors.glassBorder),
                 ),
                 child: const Icon(
@@ -235,7 +235,7 @@ class _WorkshopHeader extends StatelessWidget {
                   size: 28,
                 ),
               ),
-              const SizedBox(width: 16),
+              const SizedBox(width: AppSpacing.md),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: const [
@@ -247,7 +247,7 @@ class _WorkshopHeader extends StatelessWidget {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  SizedBox(height: 4),
+                  SizedBox(height: AppSpacing.xs),
                   Text(
                     'Tools & calculators',
                     style: TextStyle(
@@ -285,14 +285,14 @@ class _ToolCard extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: AppRadius.largeRadius,
         child: BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
           child: Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
               color: WorkshopColors.glassCard,
-              borderRadius: BorderRadius.circular(20),
+              borderRadius: AppRadius.largeRadius,
               border: Border.all(color: WorkshopColors.glassBorder),
             ),
             child: Column(
@@ -302,7 +302,7 @@ class _ToolCard extends StatelessWidget {
                   padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
                     color: color.withOpacity(0.2),
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: AppRadius.mediumRadius,
                   ),
                   child: Icon(icon, color: color, size: 24),
                 ),
@@ -338,14 +338,14 @@ class _QuickConversions extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: AppRadius.largeRadius,
         child: BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
           child: Container(
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
               color: WorkshopColors.glassCard,
-              borderRadius: BorderRadius.circular(20),
+              borderRadius: AppRadius.largeRadius,
               border: Border.all(color: WorkshopColors.glassBorder),
             ),
             child: Column(
@@ -359,7 +359,7 @@ class _QuickConversions extends StatelessWidget {
                     fontWeight: FontWeight.w600,
                   ),
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: AppSpacing.md),
                 _ConversionRow('1 gallon', '3.785 liters'),
                 _ConversionRow('1 inch', '2.54 cm'),
                 _ConversionRow('°F to °C', '(°F - 32) × 5/9'),
@@ -399,220 +399,6 @@ class _ConversionRow extends StatelessWidget {
               color: WorkshopColors.accentWarm,
               fontSize: 14,
               fontWeight: FontWeight.w500,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _VolumeCalculatorSheet extends StatefulWidget {
-  const _VolumeCalculatorSheet();
-
-  @override
-  State<_VolumeCalculatorSheet> createState() => _VolumeCalculatorSheetState();
-}
-
-class _VolumeCalculatorSheetState extends State<_VolumeCalculatorSheet> {
-  double _length = 60;
-  double _width = 30;
-  double _height = 36;
-  bool _isMetric = true;
-
-  double get _volumeLiters {
-    if (_isMetric) {
-      return (_length * _width * _height) / 1000;
-    } else {
-      // Convert inches to cm, then calculate
-      final lcm = _length * 2.54;
-      final wcm = _width * 2.54;
-      final hcm = _height * 2.54;
-      return (lcm * wcm * hcm) / 1000;
-    }
-  }
-
-  double get _volumeGallons => _volumeLiters / 3.785;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(24),
-      decoration: const BoxDecoration(
-        color: WorkshopColors.background2,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text(
-                'Tank Volume Calculator',
-                style: TextStyle(
-                  color: WorkshopColors.textPrimary,
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              ToggleButtons(
-                isSelected: [_isMetric, !_isMetric],
-                onPressed: (i) => setState(() => _isMetric = i == 0),
-                borderRadius: BorderRadius.circular(8),
-                selectedColor: WorkshopColors.textPrimary,
-                fillColor: WorkshopColors.accent.withOpacity(0.3),
-                children: const [
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 12),
-                    child: Text(
-                      'cm',
-                      style: TextStyle(color: WorkshopColors.textSecondary),
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 12),
-                    child: Text(
-                      'in',
-                      style: TextStyle(color: WorkshopColors.textSecondary),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-          const SizedBox(height: 24),
-          _DimensionSlider(
-            label: 'Length',
-            value: _length,
-            unit: _isMetric ? 'cm' : 'in',
-            min: 10,
-            max: _isMetric ? 200 : 80,
-            onChanged: (v) => setState(() => _length = v),
-          ),
-          _DimensionSlider(
-            label: 'Width',
-            value: _width,
-            unit: _isMetric ? 'cm' : 'in',
-            min: 10,
-            max: _isMetric ? 100 : 40,
-            onChanged: (v) => setState(() => _width = v),
-          ),
-          _DimensionSlider(
-            label: 'Height',
-            value: _height,
-            unit: _isMetric ? 'cm' : 'in',
-            min: 10,
-            max: _isMetric ? 80 : 32,
-            onChanged: (v) => setState(() => _height = v),
-          ),
-          const SizedBox(height: 24),
-          Container(
-            padding: const EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              color: WorkshopColors.glassCard,
-              borderRadius: BorderRadius.circular(16),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                Column(
-                  children: [
-                    Text(
-                      '${_volumeLiters.toStringAsFixed(1)}L',
-                      style: const TextStyle(
-                        color: WorkshopColors.accentWarm,
-                        fontSize: 28,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const Text(
-                      'Liters',
-                      style: TextStyle(color: WorkshopColors.textSecondary),
-                    ),
-                  ],
-                ),
-                Container(
-                  width: 1,
-                  height: 40,
-                  color: WorkshopColors.glassBorder,
-                ),
-                Column(
-                  children: [
-                    Text(
-                      '${_volumeGallons.toStringAsFixed(1)}G',
-                      style: const TextStyle(
-                        color: WorkshopColors.accent,
-                        fontSize: 28,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const Text(
-                      'Gallons',
-                      style: TextStyle(color: WorkshopColors.textSecondary),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-          SizedBox(height: MediaQuery.of(context).padding.bottom + 16),
-        ],
-      ),
-    );
-  }
-}
-
-class _DimensionSlider extends StatelessWidget {
-  final String label;
-  final double value;
-  final String unit;
-  final double min;
-  final double max;
-  final ValueChanged<double> onChanged;
-
-  const _DimensionSlider({
-    required this.label,
-    required this.value,
-    required this.unit,
-    required this.min,
-    required this.max,
-    required this.onChanged,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      child: Row(
-        children: [
-          SizedBox(
-            width: 60,
-            child: Text(
-              label,
-              style: const TextStyle(color: WorkshopColors.textSecondary),
-            ),
-          ),
-          Expanded(
-            child: Slider(
-              value: value,
-              min: min,
-              max: max,
-              activeColor: WorkshopColors.accent,
-              inactiveColor: WorkshopColors.glassBorder,
-              onChanged: onChanged,
-            ),
-          ),
-          SizedBox(
-            width: 70,
-            child: Text(
-              '${value.toStringAsFixed(0)} $unit',
-              style: const TextStyle(
-                color: WorkshopColors.textPrimary,
-                fontWeight: FontWeight.w500,
-              ),
-              textAlign: TextAlign.right,
             ),
           ),
         ],

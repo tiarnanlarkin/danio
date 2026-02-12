@@ -117,7 +117,7 @@ class _FriendsScreenState extends ConsumerState<FriendsScreen>
               'Enter username to add friend',
               style: TextStyle(fontSize: 14, color: Colors.grey),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.md),
             TextField(
               controller: controller,
               decoration: const InputDecoration(
@@ -130,17 +130,17 @@ class _FriendsScreenState extends ConsumerState<FriendsScreen>
               textInputAction: TextInputAction.done,
               onSubmitted: (_) => _addFriend(context, controller.text),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.md),
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
                 color: Colors.blue.shade50,
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: AppRadius.smallRadius,
               ),
               child: const Row(
                 children: [
                   Icon(Icons.info_outline, size: 20, color: Colors.blue),
-                  SizedBox(width: 8),
+                  SizedBox(width: AppSpacing.sm),
                   Expanded(
                     child: Text(
                       'This is a demo - try adding any username!',
@@ -247,7 +247,7 @@ class _FriendsListView extends ConsumerWidget {
                     )
                   : null,
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: AppRadius.mediumRadius,
               ),
               filled: true,
             ),
@@ -272,7 +272,7 @@ class _FriendsListView extends ConsumerWidget {
           ),
         ),
 
-        const SizedBox(height: 8),
+        const SizedBox(height: AppSpacing.sm),
 
         // Friends list
         Expanded(
@@ -315,7 +315,7 @@ class _FriendListTile extends ConsumerWidget {
             ),
           );
         },
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: AppRadius.mediumRadius,
         child: Padding(
           padding: const EdgeInsets.all(12),
           child: Row(
@@ -370,7 +370,7 @@ class _FriendListTile extends ConsumerWidget {
                         color: Colors.grey.shade600,
                       ),
                     ),
-                    const SizedBox(height: 4),
+                    const SizedBox(height: AppSpacing.xs),
                     Row(
                       children: [
                         Icon(
@@ -378,7 +378,7 @@ class _FriendListTile extends ConsumerWidget {
                           size: 14,
                           color: Colors.amber.shade700,
                         ),
-                        const SizedBox(width: 4),
+                        const SizedBox(width: AppSpacing.xs),
                         Text(
                           '${friend.totalXp} XP',
                           style: const TextStyle(fontSize: 12),
@@ -390,7 +390,7 @@ class _FriendListTile extends ConsumerWidget {
                             size: 14,
                             color: Colors.orange,
                           ),
-                          const SizedBox(width: 4),
+                          const SizedBox(width: AppSpacing.xs),
                           Text(
                             '${friend.currentStreak} day streak',
                             style: const TextStyle(fontSize: 12),
@@ -413,7 +413,7 @@ class _FriendListTile extends ConsumerWidget {
                     ),
                     decoration: BoxDecoration(
                       color: _getLevelColor(friend.currentLevel),
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: AppRadius.mediumRadius,
                     ),
                     child: Text(
                       friend.levelTitle,
@@ -424,7 +424,7 @@ class _FriendListTile extends ConsumerWidget {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 4),
+                  const SizedBox(height: AppSpacing.xs),
                   Text(
                     friend.statusText,
                     style: TextStyle(
@@ -437,7 +437,7 @@ class _FriendListTile extends ConsumerWidget {
                 ],
               ),
 
-              const SizedBox(width: 8),
+              const SizedBox(width: AppSpacing.sm),
               const Icon(Icons.chevron_right, color: Colors.grey),
             ],
           ),
@@ -468,12 +468,12 @@ class _ActivityFeedView extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Icon(Icons.feed_outlined, size: 80, color: Colors.grey.shade400),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.md),
             Text(
               'No recent activity',
               style: TextStyle(fontSize: 18, color: Colors.grey.shade600),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpacing.sm),
             Text(
               'Your friends\' achievements will appear here',
               style: TextStyle(fontSize: 14, color: Colors.grey.shade500),
@@ -544,7 +544,7 @@ class _ActivityTile extends StatelessWidget {
                       ],
                     ),
                   ),
-                  const SizedBox(height: 4),
+                  const SizedBox(height: AppSpacing.xs),
                   Row(
                     children: [
                       Text(
@@ -564,7 +564,7 @@ class _ActivityTile extends StatelessWidget {
                     ],
                   ),
                   if (activity.xpEarned != null) ...[
-                    const SizedBox(height: 4),
+                    const SizedBox(height: AppSpacing.xs),
                     Row(
                       children: [
                         Icon(
@@ -572,7 +572,7 @@ class _ActivityTile extends StatelessWidget {
                           size: 14,
                           color: Colors.amber.shade700,
                         ),
-                        const SizedBox(width: 4),
+                        const SizedBox(width: AppSpacing.xs),
                         Text(
                           '+${activity.xpEarned} XP',
                           style: TextStyle(
@@ -584,7 +584,7 @@ class _ActivityTile extends StatelessWidget {
                       ],
                     ),
                   ],
-                  const SizedBox(height: 4),
+                  const SizedBox(height: AppSpacing.xs),
                   Text(
                     activity.timeAgo,
                     style: TextStyle(fontSize: 12, color: Colors.grey.shade500),
@@ -617,9 +617,9 @@ class _ErrorView extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           const Icon(Icons.error_outline, size: 64, color: Colors.red),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.md),
           Text(message),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.md),
           ElevatedButton(
             onPressed: onRetry,
             child: const Text('Retry'),

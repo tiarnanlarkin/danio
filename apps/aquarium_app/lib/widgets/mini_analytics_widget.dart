@@ -1,3 +1,4 @@
+import 'package:aquarium_app/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 
 /// Mini analytics widget for home screen
@@ -63,7 +64,7 @@ class MiniAnalyticsWidget extends StatelessWidget {
                       Icon(Icons.analytics, color: Colors.blue),
                     ],
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.md),
 
                   // Quick stats row
                   Row(
@@ -94,9 +95,9 @@ class MiniAnalyticsWidget extends StatelessWidget {
                   ),
 
                   if (summary.insights.isNotEmpty) ...[
-                    const SizedBox(height: 16),
+                    const SizedBox(height: AppSpacing.md),
                     const Divider(),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: AppSpacing.sm),
 
                     // Top insight preview
                     Row(
@@ -105,7 +106,7 @@ class MiniAnalyticsWidget extends StatelessWidget {
                           summary.insights.first.type.emoji,
                           style: const TextStyle(fontSize: 20),
                         ),
-                        const SizedBox(width: 8),
+                        const SizedBox(width: AppSpacing.sm),
                         Expanded(
                           child: Text(
                             summary.insights.first.message,

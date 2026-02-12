@@ -44,9 +44,9 @@ class PracticeScreen extends ConsumerWidget {
                 child: Text('🎯', style: TextStyle(fontSize: 56)),
               ),
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: AppSpacing.lg),
             Text('All caught up!', style: AppTypography.headlineLarge),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpacing.sm),
             Text(
               'No lessons need review right now. Your knowledge is fresh!',
               style: AppTypography.bodyLarge.copyWith(
@@ -54,7 +54,7 @@ class PracticeScreen extends ConsumerWidget {
               ),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 32),
+            const SizedBox(height: AppSpacing.xl),
             Text(
               'Complete more lessons to build your practice queue.',
               style: AppTypography.bodyMedium.copyWith(
@@ -81,7 +81,7 @@ class PracticeScreen extends ConsumerWidget {
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
             gradient: AppColors.primaryGradient,
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: AppRadius.mediumRadius,
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -104,7 +104,7 @@ class PracticeScreen extends ConsumerWidget {
                             color: Colors.white,
                           ),
                         ),
-                        const SizedBox(height: 4),
+                        const SizedBox(height: AppSpacing.xs),
                         Text(
                           'Review lessons before you forget them',
                           style: AppTypography.bodyMedium.copyWith(
@@ -119,14 +119,14 @@ class PracticeScreen extends ConsumerWidget {
             ],
           ),
         ),
-        const SizedBox(height: 24),
+        const SizedBox(height: AppSpacing.lg),
 
         // Info card explaining spaced repetition
         Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
             color: AppColors.info.withOpacity(0.1),
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: AppRadius.mediumRadius,
             border: Border.all(color: AppColors.info.withOpacity(0.3)),
           ),
           child: Row(
@@ -144,7 +144,7 @@ class PracticeScreen extends ConsumerWidget {
                         color: AppColors.info,
                       ),
                     ),
-                    const SizedBox(height: 4),
+                    const SizedBox(height: AppSpacing.xs),
                     Text(
                       'Lesson strength decays over time: 100% → 70% (1 day) → 40% (7 days) → 0% (30 days). Review before they\'re forgotten!',
                       style: AppTypography.bodySmall,
@@ -155,7 +155,7 @@ class PracticeScreen extends ConsumerWidget {
             ],
           ),
         ),
-        const SizedBox(height: 24),
+        const SizedBox(height: AppSpacing.lg),
 
         // Lessons to review
         Text(
@@ -217,12 +217,12 @@ class PracticeScreen extends ConsumerWidget {
           ),
         );
       },
-      borderRadius: BorderRadius.circular(16),
+      borderRadius: AppRadius.mediumRadius,
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: AppColors.surface,
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: AppRadius.mediumRadius,
           border: Border.all(color: AppColors.surfaceVariant),
         ),
         child: Column(
@@ -240,7 +240,7 @@ class PracticeScreen extends ConsumerWidget {
                           fontWeight: FontWeight.w600,
                         ),
                       ),
-                      const SizedBox(height: 4),
+                      const SizedBox(height: AppSpacing.xs),
                       Text(
                         pathTitle,
                         style: AppTypography.bodySmall.copyWith(
@@ -257,13 +257,13 @@ class PracticeScreen extends ConsumerWidget {
                   ),
                   decoration: BoxDecoration(
                     color: AppColors.accent.withOpacity(0.2),
-                    borderRadius: BorderRadius.circular(16),
+                    borderRadius: AppRadius.mediumRadius,
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       const Icon(Icons.star, size: 14, color: AppColors.accent),
-                      const SizedBox(width: 4),
+                      const SizedBox(width: AppSpacing.xs),
                       Text(
                         '+${lesson.xpReward ~/ 2} XP',
                         style: AppTypography.labelSmall.copyWith(
@@ -304,7 +304,7 @@ class PracticeScreen extends ConsumerWidget {
                       ),
                       const SizedBox(height: 6),
                       ClipRRect(
-                        borderRadius: BorderRadius.circular(4),
+                        borderRadius: AppRadius.xsRadius,
                         child: LinearProgressIndicator(
                           value: strength / 100,
                           backgroundColor: AppColors.surfaceVariant,
@@ -319,13 +319,13 @@ class PracticeScreen extends ConsumerWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpacing.sm),
 
             // Review stats
             Row(
               children: [
                 Icon(Icons.refresh, size: 14, color: AppColors.textHint),
-                const SizedBox(width: 4),
+                const SizedBox(width: AppSpacing.xs),
                 Text(
                   'Reviewed ${progress.reviewCount} time${progress.reviewCount == 1 ? '' : 's'}',
                   style: AppTypography.bodySmall.copyWith(
@@ -334,7 +334,7 @@ class PracticeScreen extends ConsumerWidget {
                 ),
                 const SizedBox(width: 12),
                 Icon(Icons.calendar_today, size: 14, color: AppColors.textHint),
-                const SizedBox(width: 4),
+                const SizedBox(width: AppSpacing.xs),
                 Text(
                   _getTimeSinceReview(progress),
                   style: AppTypography.bodySmall.copyWith(
@@ -423,13 +423,13 @@ class _PracticeLessonScreenState extends ConsumerState<PracticeLessonScreen> {
                 ),
                 decoration: BoxDecoration(
                   color: AppColors.accent.withOpacity(0.2),
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: AppRadius.mediumRadius,
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     const Icon(Icons.star, size: 16, color: AppColors.accent),
-                    const SizedBox(width: 4),
+                    const SizedBox(width: AppSpacing.xs),
                     Text(
                       widget.isReview
                           ? '+${widget.lesson.xpReward ~/ 2} XP'
@@ -461,7 +461,7 @@ class _PracticeLessonScreenState extends ConsumerState<PracticeLessonScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Icon(Icons.refresh, size: 16, color: AppColors.info),
-                const SizedBox(width: 8),
+                const SizedBox(width: AppSpacing.sm),
                 Text(
                   'Review Mode - Half XP',
                   style: AppTypography.labelMedium.copyWith(
@@ -477,11 +477,11 @@ class _PracticeLessonScreenState extends ConsumerState<PracticeLessonScreen> {
             children: [
               // Lesson title
               Text(widget.lesson.title, style: AppTypography.headlineLarge),
-              const SizedBox(height: 8),
+              const SizedBox(height: AppSpacing.sm),
               Row(
                 children: [
                   Icon(Icons.timer, size: 16, color: AppColors.textSecondary),
-                  const SizedBox(width: 4),
+                  const SizedBox(width: AppSpacing.xs),
                   Text(
                     '${widget.lesson.estimatedMinutes} min read',
                     style: AppTypography.bodySmall.copyWith(
@@ -490,7 +490,7 @@ class _PracticeLessonScreenState extends ConsumerState<PracticeLessonScreen> {
                   ),
                 ],
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: AppSpacing.lg),
 
               // Lesson sections
               ...widget.lesson.sections.map((section) {
@@ -512,7 +512,7 @@ class _PracticeLessonScreenState extends ConsumerState<PracticeLessonScreen> {
             color: Theme.of(context).scaffoldBackgroundColor,
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.05),
+                color: AppOverlays.black5,
                 blurRadius: 10,
                 offset: const Offset(0, -5),
               ),
@@ -561,7 +561,7 @@ class _PracticeLessonScreenState extends ConsumerState<PracticeLessonScreen> {
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
             color: AppColors.primary.withOpacity(0.1),
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: AppRadius.mediumRadius,
             border: Border.all(color: AppColors.primary.withOpacity(0.3)),
           ),
           child: Row(
@@ -585,7 +585,7 @@ class _PracticeLessonScreenState extends ConsumerState<PracticeLessonScreen> {
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
             color: AppColors.success.withOpacity(0.1),
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: AppRadius.mediumRadius,
             border: Border.all(color: AppColors.success.withOpacity(0.3)),
           ),
           child: Row(
@@ -603,7 +603,7 @@ class _PracticeLessonScreenState extends ConsumerState<PracticeLessonScreen> {
                         color: AppColors.success,
                       ),
                     ),
-                    const SizedBox(height: 4),
+                    const SizedBox(height: AppSpacing.xs),
                     Text(section.content, style: AppTypography.bodyMedium),
                   ],
                 ),
@@ -616,7 +616,7 @@ class _PracticeLessonScreenState extends ConsumerState<PracticeLessonScreen> {
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
             color: AppColors.warning.withOpacity(0.1),
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: AppRadius.mediumRadius,
             border: Border.all(color: AppColors.warning.withOpacity(0.3)),
           ),
           child: Row(
@@ -634,7 +634,7 @@ class _PracticeLessonScreenState extends ConsumerState<PracticeLessonScreen> {
                         color: AppColors.warning,
                       ),
                     ),
-                    const SizedBox(height: 4),
+                    const SizedBox(height: AppSpacing.xs),
                     Text(section.content, style: AppTypography.bodyMedium),
                   ],
                 ),
@@ -647,7 +647,7 @@ class _PracticeLessonScreenState extends ConsumerState<PracticeLessonScreen> {
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
             color: Colors.purple.withOpacity(0.1),
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: AppRadius.mediumRadius,
             border: Border.all(color: Colors.purple.withOpacity(0.3)),
           ),
           child: Row(
@@ -665,7 +665,7 @@ class _PracticeLessonScreenState extends ConsumerState<PracticeLessonScreen> {
                         color: Colors.purple,
                       ),
                     ),
-                    const SizedBox(height: 4),
+                    const SizedBox(height: AppSpacing.xs),
                     Text(section.content, style: AppTypography.bodyMedium),
                   ],
                 ),
@@ -706,7 +706,7 @@ class _PracticeLessonScreenState extends ConsumerState<PracticeLessonScreen> {
           height: 200,
           decoration: BoxDecoration(
             color: AppColors.surfaceVariant,
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: AppRadius.mediumRadius,
           ),
           child: Center(
             child: Icon(Icons.image, size: 48, color: AppColors.textHint),

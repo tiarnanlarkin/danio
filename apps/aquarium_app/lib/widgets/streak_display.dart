@@ -155,11 +155,11 @@ class _StreakDisplayState extends ConsumerState<StreakDisplay>
                           gradient: const LinearGradient(
                             colors: [Color(0xFFFF6B35), Color(0xFFF7931E)],
                           ),
-                          borderRadius: BorderRadius.circular(10),
+                          borderRadius: AppRadius.smallRadius,
                           border: Border.all(color: Colors.white, width: 2),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withOpacity(0.2),
+                              color: AppOverlays.black20,
                               blurRadius: 4,
                               offset: const Offset(0, 2),
                             ),
@@ -239,7 +239,7 @@ class StreakCard extends ConsumerWidget {
                   Colors.white.withOpacity(0.88),
                 ],
         ),
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: AppRadius.mediumRadius,
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.08),
@@ -250,7 +250,7 @@ class StreakCard extends ConsumerWidget {
         border: Border.all(
           color: hasStreak
               ? const Color(0xFFFF6B35).withOpacity(0.3)
-              : Colors.white.withOpacity(0.6),
+              : AppOverlays.white60,
           width: 1.5,
         ),
       ),
@@ -258,14 +258,14 @@ class StreakCard extends ConsumerWidget {
         color: Colors.transparent,
         child: InkWell(
           onTap: onTap,
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: AppRadius.mediumRadius,
           child: Padding(
             padding: const EdgeInsets.all(16),
             child: Row(
               children: [
                 // Streak display
                 StreakDisplay(size: 50, showLabel: false),
-                const SizedBox(width: 16),
+                const SizedBox(width: AppSpacing.md),
 
                 // Text info
                 Expanded(
@@ -281,7 +281,7 @@ class StreakCard extends ConsumerWidget {
                               : AppColors.textPrimary,
                         ),
                       ),
-                      const SizedBox(height: 4),
+                      const SizedBox(height: AppSpacing.xs),
                       Text(
                         hasStreak
                             ? '${profile.currentStreak} day${profile.currentStreak == 1 ? '' : 's'} in a row'

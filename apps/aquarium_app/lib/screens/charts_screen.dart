@@ -75,12 +75,12 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Icon(Icons.show_chart, size: 64, color: AppColors.textHint),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.md),
                   Text(
                     'No water tests yet',
                     style: AppTypography.headlineSmall,
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: AppSpacing.sm),
                   Text(
                     'Log some water tests to see trends',
                     style: AppTypography.bodyMedium,
@@ -105,43 +105,43 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
                         isSelected: _selectedParam == 'nitrate',
                         onTap: () => setState(() => _selectedParam = 'nitrate'),
                       ),
-                      const SizedBox(width: 8),
+                      const SizedBox(width: AppSpacing.sm),
                       _ParamChip(
                         label: 'Nitrite',
                         isSelected: _selectedParam == 'nitrite',
                         onTap: () => setState(() => _selectedParam = 'nitrite'),
                       ),
-                      const SizedBox(width: 8),
+                      const SizedBox(width: AppSpacing.sm),
                       _ParamChip(
                         label: 'Ammonia',
                         isSelected: _selectedParam == 'ammonia',
                         onTap: () => setState(() => _selectedParam = 'ammonia'),
                       ),
-                      const SizedBox(width: 8),
+                      const SizedBox(width: AppSpacing.sm),
                       _ParamChip(
                         label: 'pH',
                         isSelected: _selectedParam == 'ph',
                         onTap: () => setState(() => _selectedParam = 'ph'),
                       ),
-                      const SizedBox(width: 8),
+                      const SizedBox(width: AppSpacing.sm),
                       _ParamChip(
                         label: 'Temp',
                         isSelected: _selectedParam == 'temp',
                         onTap: () => setState(() => _selectedParam = 'temp'),
                       ),
-                      const SizedBox(width: 8),
+                      const SizedBox(width: AppSpacing.sm),
                       _ParamChip(
                         label: 'GH',
                         isSelected: _selectedParam == 'gh',
                         onTap: () => setState(() => _selectedParam = 'gh'),
                       ),
-                      const SizedBox(width: 8),
+                      const SizedBox(width: AppSpacing.sm),
                       _ParamChip(
                         label: 'KH',
                         isSelected: _selectedParam == 'kh',
                         onTap: () => setState(() => _selectedParam = 'kh'),
                       ),
-                      const SizedBox(width: 8),
+                      const SizedBox(width: AppSpacing.sm),
                       _ParamChip(
                         label: 'Phosphate',
                         isSelected: _selectedParam == 'phosphate',
@@ -152,7 +152,7 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
                   ),
                 ),
 
-                const SizedBox(height: 16),
+                const SizedBox(height: AppSpacing.md),
 
                 // Chart controls
                 Wrap(
@@ -181,12 +181,12 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
                   ],
                 ),
 
-                const SizedBox(height: 16),
+                const SizedBox(height: AppSpacing.md),
 
                 // Alerts banner (if enabled and issues found)
                 if (_showAlerts && tank != null) ...[
                   _buildAlertsBanner(waterTests, tank),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.md),
                 ],
 
                 // Chart
@@ -196,7 +196,7 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
                       : _getParamTitle(_selectedParam),
                   style: AppTypography.headlineSmall,
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: AppSpacing.sm),
                 SizedBox(
                   height: 250,
                   child: _multiParamMode
@@ -207,14 +207,14 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
                       : _buildChart(waterTests, targets: tank?.targets),
                 ),
 
-                const SizedBox(height: 32),
+                const SizedBox(height: AppSpacing.xl),
 
                 // Summary stats
                 Text('Summary', style: AppTypography.headlineSmall),
                 const SizedBox(height: 12),
                 _SummaryCard(logs: waterTests, param: _selectedParam),
 
-                const SizedBox(height: 32),
+                const SizedBox(height: AppSpacing.xl),
 
                 // Recent values table
                 Text('Recent Values', style: AppTypography.headlineSmall),
@@ -714,7 +714,7 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
           color: AppColors.success.withOpacity(0.1),
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: AppRadius.mediumRadius,
           border: Border.all(color: AppColors.success.withOpacity(0.3)),
         ),
         child: Row(
@@ -742,7 +742,7 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: AppColors.warning.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: AppRadius.mediumRadius,
         border: Border.all(color: AppColors.warning.withOpacity(0.3)),
       ),
       child: Column(
@@ -755,7 +755,7 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
                 color: AppColors.warning,
                 size: 20,
               ),
-              const SizedBox(width: 8),
+              const SizedBox(width: AppSpacing.sm),
               Text(
                 'Parameter Alerts',
                 style: AppTypography.labelLarge.copyWith(
@@ -764,7 +764,7 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
               ),
             ],
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.sm),
           ...issues.map(
             (issue) => Padding(
               padding: const EdgeInsets.only(bottom: 4),
@@ -785,7 +785,7 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
           mainAxisSize: MainAxisSize.min,
           children: [
             const Text('Select 2-4 parameters to overlay on the same chart:'),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.md),
             Wrap(
               spacing: 8,
               runSpacing: 8,
@@ -868,14 +868,14 @@ class _ChartControlChip extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(20),
+      borderRadius: AppRadius.largeRadius,
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
         decoration: BoxDecoration(
           color: isActive
               ? AppColors.primary.withOpacity(0.1)
               : AppColors.surfaceVariant,
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: AppRadius.largeRadius,
           border: isActive
               ? Border.all(color: AppColors.primary, width: 1.5)
               : null,

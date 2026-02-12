@@ -126,7 +126,7 @@ class _HeartsChangeOverlayState extends State<HeartsChangeOverlay>
                         color: widget.gained
                             ? AppColors.success.withOpacity(0.95)
                             : AppColors.error.withOpacity(0.95),
-                        borderRadius: BorderRadius.circular(24),
+                        borderRadius: AppRadius.largeRadius,
                         boxShadow: [
                           BoxShadow(
                             color:
@@ -147,7 +147,7 @@ class _HeartsChangeOverlayState extends State<HeartsChangeOverlay>
                             size: 80,
                             color: Colors.white,
                           ),
-                          const SizedBox(height: 16),
+                          const SizedBox(height: AppSpacing.md),
                           Text(
                             widget.gained ? '+1 Heart' : '-1 Heart',
                             style: const TextStyle(
@@ -156,7 +156,7 @@ class _HeartsChangeOverlayState extends State<HeartsChangeOverlay>
                               color: Colors.white,
                             ),
                           ),
-                          const SizedBox(height: 8),
+                          const SizedBox(height: AppSpacing.sm),
                           Text(
                             widget.gained ? 'Great job! 🎉' : 'Keep trying! 💪',
                             style: const TextStyle(
@@ -244,7 +244,7 @@ class _HeartsStatusBannerState extends ConsumerState<HeartsStatusBanner> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     const Icon(Icons.favorite, color: Colors.white, size: 16),
-                    const SizedBox(width: 8),
+                    const SizedBox(width: AppSpacing.sm),
                     Text(
                       'Next heart in ${heartsService.formatTimeRemaining(timeUntilRefill)}',
                       style: const TextStyle(
@@ -304,7 +304,7 @@ mixin HeartsScreenMixin<T extends ConsumerStatefulWidget> on ConsumerState<T> {
         title: const Row(
           children: [
             Icon(Icons.heart_broken, color: AppColors.error),
-            SizedBox(width: 8),
+            SizedBox(width: AppSpacing.sm),
             Text('Out of Hearts'),
           ],
         ),

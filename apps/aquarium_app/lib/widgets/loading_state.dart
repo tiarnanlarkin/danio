@@ -145,7 +145,7 @@ class LoadingOverlay extends StatelessWidget {
         child,
         if (isLoading)
           Container(
-            color: Colors.black.withOpacity(0.3),
+            color: AppOverlays.black30,
             child: Center(
               child: Container(
                 padding: const EdgeInsets.all(AppSpacing.lg),

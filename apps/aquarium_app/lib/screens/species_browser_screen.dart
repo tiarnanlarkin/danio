@@ -53,7 +53,7 @@ class _SpeciesBrowserScreenState extends ConsumerState<SpeciesBrowserScreen> {
                 hintText: 'Search fish by name...',
                 prefixIcon: const Icon(Icons.search),
                 border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: AppRadius.mediumRadius,
                 ),
                 filled: true,
               ),
@@ -67,21 +67,21 @@ class _SpeciesBrowserScreenState extends ConsumerState<SpeciesBrowserScreen> {
             child: Row(
               children: [
                 _buildCareLevelChip('Easy'),
-                const SizedBox(width: 8),
+                const SizedBox(width: AppSpacing.sm),
                 _buildCareLevelChip('Moderate'),
-                const SizedBox(width: 8),
+                const SizedBox(width: AppSpacing.sm),
                 _buildCareLevelChip('Advanced'),
-                const SizedBox(width: 16),
+                const SizedBox(width: AppSpacing.md),
                 _buildTemperamentChip('Peaceful'),
-                const SizedBox(width: 8),
+                const SizedBox(width: AppSpacing.sm),
                 _buildTemperamentChip('Semi-aggressive'),
-                const SizedBox(width: 8),
+                const SizedBox(width: AppSpacing.sm),
                 _buildTemperamentChip('Aggressive'),
               ],
             ),
           ),
 
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.sm),
 
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -212,7 +212,7 @@ class _SpeciesCard extends StatelessWidget {
           height: 44,
           decoration: BoxDecoration(
             color: AppColors.primary.withOpacity(0.1),
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: AppRadius.smallRadius,
           ),
           child: const Icon(Icons.set_meal, color: AppColors.primary),
         ),
@@ -226,7 +226,7 @@ class _SpeciesCard extends StatelessWidget {
                 fontStyle: FontStyle.italic,
               ),
             ),
-            const SizedBox(height: 4),
+            const SizedBox(height: AppSpacing.xs),
             Wrap(
               spacing: 6,
               children: [
@@ -261,7 +261,7 @@ class _MiniChip extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
       decoration: BoxDecoration(
         color: color.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(6),
+        borderRadius: AppRadius.smallRadius,
       ),
       child: Text(
         label,
@@ -313,7 +313,7 @@ class _SpeciesDetailSheet extends StatelessWidget {
                   height: 60,
                   decoration: BoxDecoration(
                     color: AppColors.primary.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: AppRadius.mediumRadius,
                   ),
                   child: const Icon(
                     Icons.set_meal,
@@ -321,7 +321,7 @@ class _SpeciesDetailSheet extends StatelessWidget {
                     size: 32,
                   ),
                 ),
-                const SizedBox(width: 16),
+                const SizedBox(width: AppSpacing.md),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -342,7 +342,7 @@ class _SpeciesDetailSheet extends StatelessWidget {
               ],
             ),
 
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.md),
 
             // Quick stats
             Wrap(
@@ -398,7 +398,7 @@ class _SpeciesDetailSheet extends StatelessWidget {
 
             // Diet
             Text('Diet', style: AppTypography.headlineSmall),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpacing.sm),
             Text(species.diet, style: AppTypography.bodyMedium),
 
             const SizedBox(height: 20),
@@ -406,7 +406,7 @@ class _SpeciesDetailSheet extends StatelessWidget {
             // Compatibility
             if (species.compatibleWith.isNotEmpty) ...[
               Text('Compatible With', style: AppTypography.headlineSmall),
-              const SizedBox(height: 8),
+              const SizedBox(height: AppSpacing.sm),
               Wrap(
                 spacing: 6,
                 runSpacing: 6,
@@ -420,12 +420,12 @@ class _SpeciesDetailSheet extends StatelessWidget {
                     )
                     .toList(),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppSpacing.md),
             ],
 
             if (species.avoidWith.isNotEmpty) ...[
               Text('Avoid With', style: AppTypography.headlineSmall),
-              const SizedBox(height: 8),
+              const SizedBox(height: AppSpacing.sm),
               Wrap(
                 spacing: 6,
                 runSpacing: 6,
@@ -441,7 +441,7 @@ class _SpeciesDetailSheet extends StatelessWidget {
               ),
             ],
 
-            const SizedBox(height: 32),
+            const SizedBox(height: AppSpacing.xl),
           ],
         ),
       ),
@@ -461,7 +461,7 @@ class _StatChip extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       decoration: BoxDecoration(
         color: AppColors.surfaceVariant,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: AppRadius.mediumRadius,
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,

@@ -61,7 +61,7 @@ class JournalScreen extends ConsumerWidget {
                     child: Text(month, style: AppTypography.headlineSmall),
                   ),
                   ...entries.map((e) => _JournalEntryCard(entry: e)),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.md),
                 ],
               );
             },
@@ -118,15 +118,15 @@ class _EmptyJournal extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Icon(Icons.book_outlined, size: 64, color: AppColors.textHint),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.md),
             Text('No journal entries yet', style: AppTypography.headlineSmall),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpacing.sm),
             Text(
               'Keep a diary of your tank\'s journey — observations, milestones, changes, and memories.',
               style: AppTypography.bodyMedium,
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: AppSpacing.lg),
             FilledButton.icon(
               onPressed: onAdd,
               icon: const Icon(Icons.edit),
@@ -191,7 +191,7 @@ class _JournalEntryCard extends StatelessWidget {
               Row(
                 children: [
                   Icon(Icons.image, size: 16, color: AppColors.textSecondary),
-                  const SizedBox(width: 4),
+                  const SizedBox(width: AppSpacing.xs),
                   Text(
                     '${entry.photoUrls!.length} photo(s) attached',
                     style: AppTypography.bodySmall,
@@ -256,12 +256,12 @@ class _NewJournalEntrySheetState extends State<_NewJournalEntrySheet> {
               ),
             ],
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.sm),
           Text(
             DateFormat('EEEE, MMMM d, y').format(DateTime.now()),
             style: AppTypography.bodySmall,
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.md),
           TextField(
             controller: _controller,
             focusNode: _focusNode,
@@ -272,7 +272,7 @@ class _NewJournalEntrySheetState extends State<_NewJournalEntrySheet> {
               border: OutlineInputBorder(),
             ),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.md),
           SizedBox(
             width: double.infinity,
             child: FilledButton(

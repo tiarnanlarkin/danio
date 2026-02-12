@@ -252,9 +252,9 @@ class _ActivityFeedView extends StatelessWidget {
             children: [
               _ActivityTile(activity: activity),
               if (isLastInDay) ...[
-                const SizedBox(height: 8),
+                const SizedBox(height: AppSpacing.sm),
                 _DateDivider(date: activity.timestamp),
-                const SizedBox(height: 8),
+                const SizedBox(height: AppSpacing.sm),
               ],
             ],
           );
@@ -312,7 +312,7 @@ class _ActivityTile extends ConsumerWidget {
             );
           });
         },
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: AppRadius.mediumRadius,
         child: Padding(
           padding: const EdgeInsets.all(12),
           child: Row(
@@ -364,7 +364,7 @@ class _ActivityTile extends ConsumerWidget {
                           activity.type.emoji,
                           style: const TextStyle(fontSize: 18),
                         ),
-                        const SizedBox(width: 8),
+                        const SizedBox(width: AppSpacing.sm),
                         Expanded(
                           child: Text(
                             activity.description,
@@ -388,7 +388,7 @@ class _ActivityTile extends ConsumerWidget {
                             size: 14,
                             color: Colors.amber.shade700,
                           ),
-                          const SizedBox(width: 4),
+                          const SizedBox(width: AppSpacing.xs),
                           Text(
                             '+${activity.xpEarned} XP',
                             style: TextStyle(
@@ -404,7 +404,7 @@ class _ActivityTile extends ConsumerWidget {
                           size: 12,
                           color: Colors.grey.shade500,
                         ),
-                        const SizedBox(width: 4),
+                        const SizedBox(width: AppSpacing.xs),
                         Text(
                           activity.timeAgo,
                           style: TextStyle(

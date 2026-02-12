@@ -1,6 +1,7 @@
 /// Achievements Screen - Trophy Case Gallery
 /// Displays all achievements with filtering, sorting, and progress tracking
 library;
+import 'package:aquarium_app/theme/app_theme.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -113,13 +114,13 @@ class _AchievementsScreenState extends ConsumerState<AchievementsScreen> {
                     ),
                   ],
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: AppSpacing.sm),
                 ClipRRect(
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: AppRadius.smallRadius,
                   child: LinearProgressIndicator(
                     value: completionPercent,
                     minHeight: 12,
-                    backgroundColor: Colors.white.withOpacity(0.3),
+                    backgroundColor: AppOverlays.white30,
                     valueColor: AlwaysStoppedAnimation<Color>(
                       Theme.of(context).colorScheme.primary,
                     ),
@@ -147,7 +148,7 @@ class _AchievementsScreenState extends ConsumerState<AchievementsScreen> {
                     }
                   },
                 ),
-                const SizedBox(width: 8),
+                const SizedBox(width: AppSpacing.sm),
                 ChoiceChip(
                   label: const Text('Unlocked'),
                   selected: _filterMode == FilterMode.unlocked,
@@ -159,7 +160,7 @@ class _AchievementsScreenState extends ConsumerState<AchievementsScreen> {
                     }
                   },
                 ),
-                const SizedBox(width: 8),
+                const SizedBox(width: AppSpacing.sm),
                 ChoiceChip(
                   label: const Text('Locked'),
                   selected: _filterMode == FilterMode.locked,
@@ -171,7 +172,7 @@ class _AchievementsScreenState extends ConsumerState<AchievementsScreen> {
                     }
                   },
                 ),
-                const SizedBox(width: 16),
+                const SizedBox(width: AppSpacing.md),
 
                 // Filter by category
                 ...AchievementCategory.values.map((category) {
@@ -189,7 +190,7 @@ class _AchievementsScreenState extends ConsumerState<AchievementsScreen> {
                   );
                 }),
 
-                const SizedBox(width: 8),
+                const SizedBox(width: AppSpacing.sm),
 
                 // Filter by rarity
                 ...AchievementRarity.values.map((rarity) {
@@ -222,14 +223,14 @@ class _AchievementsScreenState extends ConsumerState<AchievementsScreen> {
                           size: 64,
                           color: Colors.grey,
                         ),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: AppSpacing.md),
                         Text(
                           'No achievements found',
                           style: Theme.of(
                             context,
                           ).textTheme.titleMedium?.copyWith(color: Colors.grey),
                         ),
-                        const SizedBox(height: 8),
+                        const SizedBox(height: AppSpacing.sm),
                         Text(
                           'Try adjusting your filters',
                           style: Theme.of(

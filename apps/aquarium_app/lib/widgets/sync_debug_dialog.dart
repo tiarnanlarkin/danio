@@ -1,3 +1,4 @@
+import 'package:aquarium_app/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../services/sync_service.dart';
@@ -47,12 +48,12 @@ class SyncDebugDialog extends ConsumerWidget {
             // Recent conflicts
             if (syncState.hasConflicts) ...[
               const Divider(),
-              const SizedBox(height: 8),
+              const SizedBox(height: AppSpacing.sm),
               const Text(
                 'Recent Conflicts:',
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: AppSpacing.sm),
               ...syncState.recentConflicts.map(
                 (conflict) => Padding(
                   padding: const EdgeInsets.only(bottom: 4),
@@ -64,7 +65,7 @@ class SyncDebugDialog extends ConsumerWidget {
                         size: 16,
                         color: Colors.orange,
                       ),
-                      const SizedBox(width: 8),
+                      const SizedBox(width: AppSpacing.sm),
                       Expanded(
                         child: Text(
                           conflict,
@@ -81,19 +82,19 @@ class SyncDebugDialog extends ConsumerWidget {
             // Queued actions detail
             if (syncState.hasQueuedActions) ...[
               const Divider(),
-              const SizedBox(height: 8),
+              const SizedBox(height: AppSpacing.sm),
               const Text(
                 'Queued Actions:',
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: AppSpacing.sm),
               ...syncState.queuedActions.map(
                 (action) => Padding(
                   padding: const EdgeInsets.only(bottom: 4),
                   child: Row(
                     children: [
                       Icon(_getActionIcon(action.type), size: 16),
-                      const SizedBox(width: 8),
+                      const SizedBox(width: AppSpacing.sm),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -121,18 +122,18 @@ class SyncDebugDialog extends ConsumerWidget {
             // Error
             if (syncState.lastError != null) ...[
               const Divider(),
-              const SizedBox(height: 8),
+              const SizedBox(height: AppSpacing.sm),
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
                   color: Colors.red.shade50,
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: AppRadius.smallRadius,
                   border: Border.all(color: Colors.red.shade200),
                 ),
                 child: Row(
                   children: [
                     Icon(Icons.error_outline, color: Colors.red.shade900),
-                    const SizedBox(width: 8),
+                    const SizedBox(width: AppSpacing.sm),
                     Expanded(
                       child: Text(
                         syncState.lastError!,

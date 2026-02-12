@@ -1,6 +1,7 @@
 /// Achievement Notification Widget - Popup with confetti when unlocking
 /// Shows achievement details with celebration animation
 library;
+import 'package:aquarium_app/theme/app_theme.dart';
 
 import 'package:flutter/material.dart';
 import 'package:confetti/confetti.dart';
@@ -164,10 +165,10 @@ class _AchievementNotificationWidgetState
                     constraints: const BoxConstraints(maxWidth: 400),
                     decoration: BoxDecoration(
                       color: Colors.white,
-                      borderRadius: BorderRadius.circular(24),
+                      borderRadius: AppRadius.largeRadius,
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.3),
+                          color: AppOverlays.black30,
                           blurRadius: 24,
                           offset: const Offset(0, 8),
                         ),
@@ -205,7 +206,7 @@ class _AchievementNotificationWidgetState
                                 ),
                                 textAlign: TextAlign.center,
                               ),
-                              const SizedBox(height: 16),
+                              const SizedBox(height: AppSpacing.md),
                               Container(
                                 width: 100,
                                 height: 100,
@@ -214,7 +215,7 @@ class _AchievementNotificationWidgetState
                                   shape: BoxShape.circle,
                                   boxShadow: [
                                     BoxShadow(
-                                      color: Colors.black.withOpacity(0.2),
+                                      color: AppOverlays.black20,
                                       blurRadius: 16,
                                       spreadRadius: 2,
                                     ),
@@ -244,7 +245,7 @@ class _AchievementNotificationWidgetState
                                 ),
                                 decoration: BoxDecoration(
                                   color: rarityColor,
-                                  borderRadius: BorderRadius.circular(16),
+                                  borderRadius: AppRadius.mediumRadius,
                                 ),
                                 child: Text(
                                   widget.achievement.rarity.displayName
@@ -258,7 +259,7 @@ class _AchievementNotificationWidgetState
                                 ),
                               ),
 
-                              const SizedBox(height: 16),
+                              const SizedBox(height: AppSpacing.md),
 
                               // Achievement name
                               Text(
@@ -270,7 +271,7 @@ class _AchievementNotificationWidgetState
                                 textAlign: TextAlign.center,
                               ),
 
-                              const SizedBox(height: 8),
+                              const SizedBox(height: AppSpacing.sm),
 
                               // Description
                               Text(
@@ -282,14 +283,14 @@ class _AchievementNotificationWidgetState
                                 textAlign: TextAlign.center,
                               ),
 
-                              const SizedBox(height: 24),
+                              const SizedBox(height: AppSpacing.lg),
 
                               // XP reward
                               Container(
                                 padding: const EdgeInsets.all(16),
                                 decoration: BoxDecoration(
                                   color: Colors.amber.shade50,
-                                  borderRadius: BorderRadius.circular(12),
+                                  borderRadius: AppRadius.mediumRadius,
                                   border: Border.all(
                                     color: Colors.amber.shade200,
                                   ),
@@ -315,7 +316,7 @@ class _AchievementNotificationWidgetState
                                 ),
                               ),
 
-                              const SizedBox(height: 16),
+                              const SizedBox(height: AppSpacing.md),
 
                               // Dismiss button
                               TextButton(

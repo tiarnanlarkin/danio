@@ -1,6 +1,7 @@
 /// Achievement Detail Modal - Detailed view when tapping achievement
 /// Shows full description, progress, unlock date, and XP reward
 library;
+import 'package:aquarium_app/theme/app_theme.dart';
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -93,14 +94,14 @@ class AchievementDetailModal extends StatelessWidget {
               ),
             ),
 
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.md),
 
             // Rarity badge
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
               decoration: BoxDecoration(
                 color: rarityColor,
-                borderRadius: BorderRadius.circular(16),
+                borderRadius: AppRadius.mediumRadius,
               ),
               child: Text(
                 achievement.rarity.displayName.toUpperCase(),
@@ -113,7 +114,7 @@ class AchievementDetailModal extends StatelessWidget {
               ),
             ),
 
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.md),
 
             // Name
             Text(
@@ -125,14 +126,14 @@ class AchievementDetailModal extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
 
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpacing.sm),
 
             // Category badge
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
               decoration: BoxDecoration(
                 color: Colors.grey.shade200,
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: AppRadius.mediumRadius,
               ),
               child: Text(
                 '${achievement.category.icon} ${achievement.category.displayName}',
@@ -140,7 +141,7 @@ class AchievementDetailModal extends StatelessWidget {
               ),
             ),
 
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.md),
 
             // Description
             Text(
@@ -153,7 +154,7 @@ class AchievementDetailModal extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
 
-            const SizedBox(height: 24),
+            const SizedBox(height: AppSpacing.lg),
 
             // Progress section
             if (achievement.targetCount != null) ...[
@@ -161,7 +162,7 @@ class AchievementDetailModal extends StatelessWidget {
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
                   color: Colors.grey.shade100,
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: AppRadius.mediumRadius,
                 ),
                 child: Column(
                   children: [
@@ -185,7 +186,7 @@ class AchievementDetailModal extends StatelessWidget {
                     ),
                     const SizedBox(height: 12),
                     ClipRRect(
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: AppRadius.smallRadius,
                       child: LinearProgressIndicator(
                         value: progressPercent,
                         minHeight: 12,
@@ -193,7 +194,7 @@ class AchievementDetailModal extends StatelessWidget {
                         valueColor: AlwaysStoppedAnimation<Color>(rarityColor),
                       ),
                     ),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: AppSpacing.sm),
                     Text(
                       '${(progressPercent * 100).toStringAsFixed(1)}% Complete',
                       style: Theme.of(
@@ -203,7 +204,7 @@ class AchievementDetailModal extends StatelessWidget {
                   ],
                 ),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppSpacing.md),
             ],
 
             // Reward info
@@ -218,7 +219,7 @@ class AchievementDetailModal extends StatelessWidget {
                     rarityColor.withOpacity(0.1),
                   ],
                 ),
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: AppRadius.mediumRadius,
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -226,7 +227,7 @@ class AchievementDetailModal extends StatelessWidget {
                   Column(
                     children: [
                       const Icon(Icons.star, color: Colors.amber, size: 32),
-                      const SizedBox(height: 4),
+                      const SizedBox(height: AppSpacing.xs),
                       Text(
                         '${achievement.rarity.xpReward} XP',
                         style: Theme.of(context).textTheme.titleMedium
@@ -253,7 +254,7 @@ class AchievementDetailModal extends StatelessWidget {
                           color: Colors.blue,
                           size: 32,
                         ),
-                        const SizedBox(height: 4),
+                        const SizedBox(height: AppSpacing.xs),
                         Text(
                           DateFormat('MMM d').format(progress.unlockedAt!),
                           style: Theme.of(context).textTheme.titleMedium
@@ -272,7 +273,7 @@ class AchievementDetailModal extends StatelessWidget {
               ),
             ),
 
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.md),
 
             // Status
             if (isLocked)
@@ -280,7 +281,7 @@ class AchievementDetailModal extends StatelessWidget {
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
                   color: Colors.orange.shade50,
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: AppRadius.smallRadius,
                   border: Border.all(color: Colors.orange.shade200),
                 ),
                 child: Row(
@@ -304,7 +305,7 @@ class AchievementDetailModal extends StatelessWidget {
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
                   color: Colors.green.shade50,
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: AppRadius.smallRadius,
                   border: Border.all(color: Colors.green.shade200),
                 ),
                 child: Row(

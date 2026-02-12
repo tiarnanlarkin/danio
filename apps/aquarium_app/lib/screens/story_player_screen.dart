@@ -2,6 +2,7 @@
 // Full-screen Duolingo-style story interface with animations
 
 library;
+import 'package:aquarium_app/theme/app_theme.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -191,12 +192,12 @@ class _StoryPlayerScreenState extends ConsumerState<StoryPlayerScreen>
               style: Theme.of(context).textTheme.bodyLarge,
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: AppSpacing.lg),
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
                 color: Colors.amber.withOpacity(0.2),
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: AppRadius.mediumRadius,
                 border: Border.all(color: Colors.amber, width: 2),
               ),
               child: Column(
@@ -208,7 +209,7 @@ class _StoryPlayerScreenState extends ConsumerState<StoryPlayerScreen>
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: AppSpacing.sm),
                   Text(
                     'Score: ${_progress!.score}%',
                     style: Theme.of(context).textTheme.titleMedium,
@@ -316,12 +317,12 @@ class _StoryPlayerScreenState extends ConsumerState<StoryPlayerScreen>
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    const SizedBox(height: 4),
+                    const SizedBox(height: AppSpacing.xs),
                     ClipRRect(
-                      borderRadius: BorderRadius.circular(4),
+                      borderRadius: AppRadius.xsRadius,
                       child: LinearProgressIndicator(
                         value: progressValue,
-                        backgroundColor: Colors.white.withOpacity(0.3),
+                        backgroundColor: AppOverlays.white30,
                         valueColor: const AlwaysStoppedAnimation<Color>(
                           Colors.amber,
                         ),
@@ -331,15 +332,15 @@ class _StoryPlayerScreenState extends ConsumerState<StoryPlayerScreen>
                   ],
                 ),
               ),
-              const SizedBox(width: 8),
+              const SizedBox(width: AppSpacing.sm),
               Container(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 12,
                   vertical: 6,
                 ),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.2),
-                  borderRadius: BorderRadius.circular(16),
+                  color: AppOverlays.white20,
+                  borderRadius: AppRadius.mediumRadius,
                 ),
                 child: Text(
                   '$visitedScenes/$totalScenes',
@@ -364,10 +365,10 @@ class _StoryPlayerScreenState extends ConsumerState<StoryPlayerScreen>
         padding: const EdgeInsets.all(24),
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: AppRadius.largeRadius,
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.2),
+              color: AppOverlays.black20,
               blurRadius: 20,
               offset: const Offset(0, 10),
             ),
@@ -385,7 +386,7 @@ class _StoryPlayerScreenState extends ConsumerState<StoryPlayerScreen>
                     style: const TextStyle(fontSize: 48),
                   ),
                 ),
-              if (_currentScene!.imageUrl != null) const SizedBox(height: 16),
+              if (_currentScene!.imageUrl != null) const SizedBox(height: AppSpacing.md),
 
               // Scene text
               Text(
@@ -464,7 +465,7 @@ class _StoryPlayerScreenState extends ConsumerState<StoryPlayerScreen>
                   size: 80,
                   color: Colors.white,
                 ),
-                const SizedBox(height: 24),
+                const SizedBox(height: AppSpacing.lg),
                 Text(
                   _feedbackMessage ?? '',
                   style: const TextStyle(
@@ -516,15 +517,15 @@ class _ChoiceButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Material(
       color: Colors.white,
-      borderRadius: BorderRadius.circular(16),
+      borderRadius: AppRadius.mediumRadius,
       elevation: 4,
       child: InkWell(
         onTap: onPressed,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: AppRadius.mediumRadius,
         child: Container(
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: AppRadius.mediumRadius,
             border: Border.all(color: Colors.blue.shade200, width: 2),
           ),
           child: Row(
@@ -558,7 +559,7 @@ class BubblePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = Colors.white.withOpacity(0.1)
+      ..color = AppOverlays.white10
       ..style = PaintingStyle.fill;
 
     // Draw some random bubbles

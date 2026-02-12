@@ -142,7 +142,7 @@ class SettingsScreen extends ConsumerWidget {
           ),
           if (settings.notificationsEnabled)
             ListTile(
-              leading: const SizedBox(width: 24),
+              leading: const SizedBox(width: AppSpacing.lg),
               title: const Text('Test Notification'),
               subtitle: const Text('Send a test notification'),
               onTap: () => _testNotification(context),
@@ -247,18 +247,6 @@ class SettingsScreen extends ConsumerWidget {
             onTap: () => Navigator.push(
               context,
               MaterialPageRoute(builder: (_) => const CostTrackerScreen()),
-            ),
-          ),
-          ListTile(
-            leading: const Icon(Icons.water_drop),
-            title: const Text('Water Change Calculator'),
-            subtitle: const Text('Calculate changes to hit target nitrate'),
-            trailing: const Icon(Icons.chevron_right),
-            onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (_) => const WaterChangeCalculatorScreen(),
-              ),
             ),
           ),
           ListTile(
@@ -808,7 +796,7 @@ class SettingsScreen extends ConsumerWidget {
                 Navigator.pop(ctx);
               },
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.md),
           ],
         ),
       ),
@@ -833,7 +821,7 @@ class SettingsScreen extends ConsumerWidget {
                     'Daily XP Goal',
                     style: Theme.of(context).textTheme.titleLarge,
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: AppSpacing.sm),
                   Text(
                     'Complete your goal every day to maintain your streak',
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
@@ -876,7 +864,7 @@ class SettingsScreen extends ConsumerWidget {
               current: currentGoal,
               icon: '🐋',
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.md),
           ],
         ),
       ),
@@ -901,7 +889,7 @@ class SettingsScreen extends ConsumerWidget {
         const Text(
           'Personal aquarium management — track tanks, livestock, equipment & maintenance.',
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: AppSpacing.md),
         const Text(
           'Your data is stored locally on this device.',
           style: TextStyle(fontStyle: FontStyle.italic),
@@ -1051,9 +1039,9 @@ class SettingsScreen extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text('Location:\n${photoDir.path}'),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppSpacing.md),
               Text('Photos stored: $photoCount'),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppSpacing.md),
               const Text(
                 'Photos are stored locally on your device in the app\'s documents folder.',
                 style: TextStyle(fontStyle: FontStyle.italic),
@@ -1204,12 +1192,12 @@ class _LearnCard extends StatelessWidget {
           context,
           MaterialPageRoute(builder: (_) => const LearnScreen()),
         ),
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: AppRadius.mediumRadius,
         child: Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
             gradient: AppColors.primaryGradient,
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: AppRadius.mediumRadius,
           ),
           child: Row(
             children: [
@@ -1217,12 +1205,12 @@ class _LearnCard extends StatelessWidget {
                 width: 56,
                 height: 56,
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.2),
-                  borderRadius: BorderRadius.circular(12),
+                  color: AppOverlays.white20,
+                  borderRadius: AppRadius.mediumRadius,
                 ),
                 child: const Icon(Icons.school, color: Colors.white, size: 28),
               ),
-              const SizedBox(width: 16),
+              const SizedBox(width: AppSpacing.md),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -1233,7 +1221,7 @@ class _LearnCard extends StatelessWidget {
                         color: Colors.white,
                       ),
                     ),
-                    const SizedBox(height: 4),
+                    const SizedBox(height: AppSpacing.xs),
                     if (stats != null) ...[
                       Text(
                         '${stats.levelTitle} • ${stats.totalXp} XP',

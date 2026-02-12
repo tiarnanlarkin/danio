@@ -2,6 +2,7 @@
 // Quick access to interactive story mode
 
 library;
+import 'package:aquarium_app/theme/app_theme.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -37,18 +38,18 @@ class StoriesCard extends ConsumerWidget {
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       elevation: 4,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      shape: RoundedRectangleBorder(borderRadius: AppRadius.mediumRadius),
       child: InkWell(
         onTap: () {
           Navigator.of(context).push(
             MaterialPageRoute(builder: (context) => const StoriesScreen()),
           );
         },
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: AppRadius.mediumRadius,
         child: Container(
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: AppRadius.mediumRadius,
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
@@ -63,12 +64,12 @@ class StoriesCard extends ConsumerWidget {
                   Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.2),
-                      borderRadius: BorderRadius.circular(12),
+                      color: AppOverlays.white20,
+                      borderRadius: AppRadius.mediumRadius,
                     ),
                     child: const Text('📖', style: TextStyle(fontSize: 32)),
                   ),
-                  const SizedBox(width: 16),
+                  const SizedBox(width: AppSpacing.md),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -81,11 +82,11 @@ class StoriesCard extends ConsumerWidget {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        const SizedBox(height: 4),
+                        const SizedBox(height: AppSpacing.xs),
                         Text(
                           'Learn through scenarios',
                           style: TextStyle(
-                            color: Colors.white.withOpacity(0.9),
+                            color: AppOverlays.white90,
                             fontSize: 14,
                           ),
                         ),
@@ -99,7 +100,7 @@ class StoriesCard extends ConsumerWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppSpacing.md),
 
               // Progress bar
               Column(
@@ -111,7 +112,7 @@ class StoriesCard extends ConsumerWidget {
                       Text(
                         '$completedStories/$totalStories completed',
                         style: TextStyle(
-                          color: Colors.white.withOpacity(0.9),
+                          color: AppOverlays.white90,
                           fontSize: 12,
                           fontWeight: FontWeight.w500,
                         ),
@@ -119,7 +120,7 @@ class StoriesCard extends ConsumerWidget {
                       Text(
                         '$progressPercent%',
                         style: TextStyle(
-                          color: Colors.white.withOpacity(0.9),
+                          color: AppOverlays.white90,
                           fontSize: 12,
                           fontWeight: FontWeight.bold,
                         ),
@@ -128,10 +129,10 @@ class StoriesCard extends ConsumerWidget {
                   ),
                   const SizedBox(height: 6),
                   ClipRRect(
-                    borderRadius: BorderRadius.circular(4),
+                    borderRadius: AppRadius.xsRadius,
                     child: LinearProgressIndicator(
                       value: completedStories / totalStories,
-                      backgroundColor: Colors.white.withOpacity(0.3),
+                      backgroundColor: AppOverlays.white30,
                       valueColor: const AlwaysStoppedAnimation<Color>(
                         Colors.amber,
                       ),
@@ -143,13 +144,13 @@ class StoriesCard extends ConsumerWidget {
 
               // Suggested story
               if (suggestedStory != null) ...[
-                const SizedBox(height: 16),
+                const SizedBox(height: AppSpacing.md),
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.15),
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: Colors.white.withOpacity(0.3)),
+                    color: AppOverlays.white15,
+                    borderRadius: AppRadius.mediumRadius,
+                    border: Border.all(color: AppOverlays.white30),
                   ),
                   child: Row(
                     children: [
@@ -165,7 +166,7 @@ class StoriesCard extends ConsumerWidget {
                             Text(
                               'Try this:',
                               style: TextStyle(
-                                color: Colors.white.withOpacity(0.7),
+                                color: AppOverlays.white70,
                                 fontSize: 10,
                                 fontWeight: FontWeight.w600,
                               ),
@@ -190,7 +191,7 @@ class StoriesCard extends ConsumerWidget {
                         ),
                         decoration: BoxDecoration(
                           color: Colors.amber.withOpacity(0.3),
-                          borderRadius: BorderRadius.circular(8),
+                          borderRadius: AppRadius.smallRadius,
                         ),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
@@ -200,7 +201,7 @@ class StoriesCard extends ConsumerWidget {
                               size: 12,
                               color: Colors.amber,
                             ),
-                            const SizedBox(width: 4),
+                            const SizedBox(width: AppSpacing.xs),
                             Text(
                               '+${suggestedStory.xpReward}',
                               style: const TextStyle(

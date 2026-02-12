@@ -113,13 +113,13 @@ class _TankVolumeCalculatorScreenState
             Row(
               children: [
                 Text('Units:', style: AppTypography.bodyMedium),
-                const SizedBox(width: 16),
+                const SizedBox(width: AppSpacing.md),
                 ChoiceChip(
                   label: const Text('Metric (cm)'),
                   selected: _useMetric,
                   onSelected: (_) => setState(() => _useMetric = true),
                 ),
-                const SizedBox(width: 8),
+                const SizedBox(width: AppSpacing.sm),
                 ChoiceChip(
                   label: const Text('Imperial (in)'),
                   selected: !_useMetric,
@@ -128,7 +128,7 @@ class _TankVolumeCalculatorScreenState
               ],
             ),
 
-            const SizedBox(height: 24),
+            const SizedBox(height: AppSpacing.lg),
 
             // Shape selector
             Text('Tank Shape', style: AppTypography.headlineSmall),
@@ -147,14 +147,14 @@ class _TankVolumeCalculatorScreenState
                   .toList(),
             ),
 
-            const SizedBox(height: 24),
+            const SizedBox(height: AppSpacing.lg),
 
             // Dimensions
             Text('Dimensions', style: AppTypography.headlineSmall),
             const SizedBox(height: 12),
             _buildDimensionInputs(),
 
-            const SizedBox(height: 32),
+            const SizedBox(height: AppSpacing.xl),
 
             // Result
             if (_volume != null) ...[
@@ -165,7 +165,7 @@ class _TankVolumeCalculatorScreenState
                   child: Column(
                     children: [
                       Text('Estimated Volume', style: AppTypography.bodyMedium),
-                      const SizedBox(height: 8),
+                      const SizedBox(height: AppSpacing.sm),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -177,14 +177,14 @@ class _TankVolumeCalculatorScreenState
                           ),
                         ],
                       ),
-                      const SizedBox(height: 8),
+                      const SizedBox(height: AppSpacing.sm),
                       Text(
                         '${(_volume! / 3.785).toStringAsFixed(1)} US gal  •  ${(_volume! / 4.546).toStringAsFixed(1)} UK gal',
                         style: AppTypography.bodySmall,
                       ),
-                      const SizedBox(height: 16),
+                      const SizedBox(height: AppSpacing.md),
                       const Divider(),
-                      const SizedBox(height: 16),
+                      const SizedBox(height: AppSpacing.md),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
@@ -204,7 +204,7 @@ class _TankVolumeCalculatorScreenState
               ),
             ],
 
-            const SizedBox(height: 24),
+            const SizedBox(height: AppSpacing.lg),
 
             // Tips
             Card(
@@ -214,7 +214,7 @@ class _TankVolumeCalculatorScreenState
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text('Tips', style: AppTypography.labelLarge),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: AppSpacing.sm),
                     Text(
                       '• Actual water volume is ~90% of total (substrate, decor)',
                       style: AppTypography.bodySmall,

@@ -1,6 +1,7 @@
 /// Achievement Card Widget - Displays achievement in grid
 /// Shows locked/unlocked state with progress bar
 library;
+import 'package:aquarium_app/theme/app_theme.dart';
 
 import 'package:flutter/material.dart';
 import '../models/achievements.dart';
@@ -30,7 +31,7 @@ class AchievementCard extends StatelessWidget {
       onTap: onTap,
       child: Container(
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: AppRadius.mediumRadius,
           border: Border.all(
             color: isLocked ? Colors.grey.shade300 : rarityColor,
             width: isLocked ? 1 : 3,
@@ -87,7 +88,7 @@ class AchievementCard extends StatelessWidget {
                     Positioned.fill(
                       child: Container(
                         decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.7),
+                          color: AppOverlays.white70,
                           borderRadius: const BorderRadius.vertical(
                             top: Radius.circular(14),
                           ),
@@ -113,7 +114,7 @@ class AchievementCard extends StatelessWidget {
                       ),
                       decoration: BoxDecoration(
                         color: rarityColor,
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: AppRadius.mediumRadius,
                       ),
                       child: Text(
                         achievement.rarity.displayName.toUpperCase(),
@@ -144,7 +145,7 @@ class AchievementCard extends StatelessWidget {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  const SizedBox(height: 4),
+                  const SizedBox(height: AppSpacing.xs),
                   Text(
                     achievement.isHidden && isLocked
                         ? 'Hidden achievement'
@@ -158,9 +159,9 @@ class AchievementCard extends StatelessWidget {
 
                   // Progress bar for in-progress achievements
                   if (hasProgress) ...[
-                    const SizedBox(height: 8),
+                    const SizedBox(height: AppSpacing.sm),
                     ClipRRect(
-                      borderRadius: BorderRadius.circular(4),
+                      borderRadius: AppRadius.xsRadius,
                       child: LinearProgressIndicator(
                         value: progressPercent,
                         minHeight: 6,
@@ -168,7 +169,7 @@ class AchievementCard extends StatelessWidget {
                         valueColor: AlwaysStoppedAnimation<Color>(rarityColor),
                       ),
                     ),
-                    const SizedBox(height: 4),
+                    const SizedBox(height: AppSpacing.xs),
                     Text(
                       '${progress.currentCount} / ${achievement.targetCount}',
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(

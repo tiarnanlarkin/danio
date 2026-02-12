@@ -32,7 +32,7 @@ class ParameterGuideScreen extends StatelessWidget {
             ),
           ),
 
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.lg),
 
           // Parameters
           _ParameterSection(
@@ -152,14 +152,14 @@ class ParameterGuideScreen extends StatelessWidget {
             ],
           ),
 
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.lg),
 
           // Quick reference table
           Text(
             'Quick Reference by Fish Type',
             style: AppTypography.headlineMedium,
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.md),
 
           Card(
             child: Padding(
@@ -219,7 +219,7 @@ class ParameterGuideScreen extends StatelessWidget {
             ),
           ),
 
-          const SizedBox(height: 48),
+          const SizedBox(height: AppSpacing.xxl),
         ],
       ),
     );
@@ -256,7 +256,7 @@ class _ParameterSection extends StatelessWidget {
             height: 36,
             decoration: BoxDecoration(
               color: color.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: AppRadius.smallRadius,
             ),
             child: Icon(icon, color: color, size: 20),
           ),
@@ -281,7 +281,7 @@ class _ParameterSection extends StatelessWidget {
                   Row(
                     children: [
                       Icon(Icons.dangerous, size: 14, color: AppColors.error),
-                      const SizedBox(width: 4),
+                      const SizedBox(width: AppSpacing.xs),
                       Text('Danger: ', style: AppTypography.bodySmall),
                       Text(
                         danger,
@@ -341,13 +341,13 @@ class _QuickRefRow extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(type, style: AppTypography.labelLarge),
-          const SizedBox(height: 4),
+          const SizedBox(height: AppSpacing.xs),
           Row(
             children: [
               _MiniChip(label: temp, icon: Icons.thermostat),
-              const SizedBox(width: 8),
+              const SizedBox(width: AppSpacing.sm),
               _MiniChip(label: 'pH $ph', icon: Icons.science),
-              const SizedBox(width: 8),
+              const SizedBox(width: AppSpacing.sm),
               _MiniChip(label: '$gh dGH', icon: Icons.opacity),
             ],
           ),
@@ -369,13 +369,13 @@ class _MiniChip extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
         color: AppColors.surfaceVariant,
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: AppRadius.smallRadius,
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(icon, size: 12, color: AppColors.textSecondary),
-          const SizedBox(width: 4),
+          const SizedBox(width: AppSpacing.xs),
           Text(label, style: AppTypography.bodySmall),
         ],
       ),

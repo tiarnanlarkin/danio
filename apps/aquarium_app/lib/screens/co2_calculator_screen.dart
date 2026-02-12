@@ -83,10 +83,10 @@ class _Co2CalculatorScreenState extends State<Co2CalculatorScreen> {
             ),
           ),
 
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.lg),
 
           Text('Enter Your Readings', style: AppTypography.headlineSmall),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.md),
 
           Row(
             children: [
@@ -107,7 +107,7 @@ class _Co2CalculatorScreenState extends State<Co2CalculatorScreen> {
                   onChanged: (_) => _calculate(),
                 ),
               ),
-              const SizedBox(width: 16),
+              const SizedBox(width: AppSpacing.md),
               Expanded(
                 child: TextField(
                   controller: _khController,
@@ -124,7 +124,7 @@ class _Co2CalculatorScreenState extends State<Co2CalculatorScreen> {
             ],
           ),
 
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.lg),
 
           // Result
           Card(
@@ -134,7 +134,7 @@ class _Co2CalculatorScreenState extends State<Co2CalculatorScreen> {
               child: Column(
                 children: [
                   Text('Estimated CO2 Level', style: AppTypography.labelLarge),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: AppSpacing.sm),
                   Text(
                     _co2Level != null
                         ? '${_co2Level!.toStringAsFixed(1)} ppm'
@@ -143,7 +143,7 @@ class _Co2CalculatorScreenState extends State<Co2CalculatorScreen> {
                       color: _co2Color,
                     ),
                   ),
-                  const SizedBox(height: 4),
+                  const SizedBox(height: AppSpacing.xs),
                   Text(
                     _co2Status,
                     style: AppTypography.bodyMedium.copyWith(color: _co2Color),
@@ -153,7 +153,7 @@ class _Co2CalculatorScreenState extends State<Co2CalculatorScreen> {
             ),
           ),
 
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.lg),
 
           // Reference chart
           Text('CO2 Reference Chart', style: AppTypography.headlineSmall),
@@ -199,7 +199,7 @@ class _Co2CalculatorScreenState extends State<Co2CalculatorScreen> {
             ),
           ),
 
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.lg),
 
           Text('Drop Checker Colors', style: AppTypography.headlineSmall),
           const SizedBox(height: 12),
@@ -229,7 +229,7 @@ class _Co2CalculatorScreenState extends State<Co2CalculatorScreen> {
             ),
           ),
 
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.lg),
 
           Text('Tips', style: AppTypography.headlineSmall),
           const SizedBox(height: 12),
@@ -258,7 +258,7 @@ class _Co2CalculatorScreenState extends State<Co2CalculatorScreen> {
             ),
           ),
 
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.lg),
 
           // pH/KH/CO2 relationship table
           Text('pH/KH/CO2 Table', style: AppTypography.headlineSmall),
@@ -293,14 +293,14 @@ class _Co2CalculatorScreenState extends State<Co2CalculatorScreen> {
             ),
           ),
 
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.sm),
           Text(
             'Values in ppm. Green = optimal range.',
             style: AppTypography.bodySmall,
             textAlign: TextAlign.center,
           ),
 
-          const SizedBox(height: 48),
+          const SizedBox(height: AppSpacing.xxl),
         ],
       ),
     );
@@ -318,7 +318,7 @@ class _Co2CalculatorScreenState extends State<Co2CalculatorScreen> {
                 color: v >= 20 && v <= 30
                     ? AppColors.success.withOpacity(0.2)
                     : null,
-                borderRadius: BorderRadius.circular(4),
+                borderRadius: AppRadius.xsRadius,
               ),
               child: Text('$v', style: AppTypography.bodySmall),
             ),

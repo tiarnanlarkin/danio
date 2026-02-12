@@ -21,7 +21,7 @@ class FeedingGuideScreen extends StatelessWidget {
                   Row(
                     children: [
                       Icon(Icons.star, color: AppColors.warning),
-                      const SizedBox(width: 8),
+                      const SizedBox(width: AppSpacing.sm),
                       Text(
                         'The Golden Rule',
                         style: AppTypography.headlineSmall,
@@ -39,11 +39,11 @@ class FeedingGuideScreen extends StatelessWidget {
             ),
           ),
 
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.lg),
 
           // Frequency
           Text('How Often to Feed', style: AppTypography.headlineMedium),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.md),
 
           _FrequencyCard(
             fishType: 'Adult tropical fish',
@@ -76,11 +76,11 @@ class FeedingGuideScreen extends StatelessWidget {
             notes: 'They graze on biofilm between feedings',
           ),
 
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.lg),
 
           // Food types
           Text('Food Types', style: AppTypography.headlineMedium),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.md),
 
           _FoodTypeCard(
             name: 'Flakes',
@@ -138,11 +138,11 @@ class FeedingGuideScreen extends StatelessWidget {
             tips: 'Drop in after lights out for nocturnal feeders.',
           ),
 
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.lg),
 
           // Common mistakes
           Text('Common Mistakes', style: AppTypography.headlineMedium),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.md),
 
           Card(
             child: Padding(
@@ -177,7 +177,7 @@ class FeedingGuideScreen extends StatelessWidget {
             ),
           ),
 
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.lg),
 
           // Fasting
           Card(
@@ -190,7 +190,7 @@ class FeedingGuideScreen extends StatelessWidget {
                   Row(
                     children: [
                       Icon(Icons.no_food, color: AppColors.info),
-                      const SizedBox(width: 8),
+                      const SizedBox(width: AppSpacing.sm),
                       Text('Fasting Days', style: AppTypography.headlineSmall),
                     ],
                   ),
@@ -199,7 +199,7 @@ class FeedingGuideScreen extends StatelessWidget {
                     'Skipping 1-2 feeding days per week is actually beneficial:',
                     style: AppTypography.bodyMedium,
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: AppSpacing.sm),
                   Text(
                     '• Gives digestive system a rest',
                     style: AppTypography.bodySmall,
@@ -221,7 +221,7 @@ class FeedingGuideScreen extends StatelessWidget {
             ),
           ),
 
-          const SizedBox(height: 48),
+          const SizedBox(height: AppSpacing.xxl),
         ],
       ),
     );
@@ -250,7 +250,7 @@ class _FrequencyCard extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
           decoration: BoxDecoration(
             color: AppColors.primary.withOpacity(0.1),
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: AppRadius.mediumRadius,
           ),
           child: Text(
             frequency,
@@ -313,7 +313,7 @@ class _FoodTypeCard extends StatelessWidget {
                         ],
                       ),
                     ),
-                    const SizedBox(width: 16),
+                    const SizedBox(width: AppSpacing.md),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -338,7 +338,7 @@ class _FoodTypeCard extends StatelessWidget {
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
                     color: AppColors.surfaceVariant,
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: AppRadius.smallRadius,
                   ),
                   child: Row(
                     children: [
@@ -347,7 +347,7 @@ class _FoodTypeCard extends StatelessWidget {
                         size: 16,
                         color: AppColors.textSecondary,
                       ),
-                      const SizedBox(width: 8),
+                      const SizedBox(width: AppSpacing.sm),
                       Expanded(
                         child: Text(tips, style: AppTypography.bodySmall),
                       ),
@@ -384,16 +384,16 @@ class _MistakeItem extends StatelessWidget {
           Row(
             children: [
               Icon(Icons.close, size: 16, color: AppColors.error),
-              const SizedBox(width: 8),
+              const SizedBox(width: AppSpacing.sm),
               Text(mistake, style: AppTypography.labelLarge),
             ],
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: AppSpacing.xs),
           Text(
             '→ $consequence',
             style: AppTypography.bodySmall.copyWith(color: AppColors.error),
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: AppSpacing.xs),
           Text(
             '✓ $fix',
             style: AppTypography.bodySmall.copyWith(color: AppColors.success),

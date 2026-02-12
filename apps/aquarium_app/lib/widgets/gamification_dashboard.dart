@@ -84,7 +84,7 @@ class GamificationDashboard extends ConsumerWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppSpacing.md),
 
               // Row 3: Daily Goal Progress
               _DailyGoalProgress(
@@ -101,11 +101,11 @@ class GamificationDashboard extends ConsumerWidget {
             margin: EdgeInsets.zero,
             elevation: 2,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: AppRadius.mediumRadius,
             ),
             child: InkWell(
               onTap: onTap,
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: AppRadius.mediumRadius,
               child: content,
             ),
           );
@@ -124,7 +124,7 @@ class GamificationDashboard extends ConsumerWidget {
       margin: EdgeInsets.zero,
       elevation: 2,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: AppRadius.mediumRadius,
       ),
       child: const Padding(
         padding: EdgeInsets.all(24),
@@ -144,14 +144,14 @@ class GamificationDashboard extends ConsumerWidget {
       margin: EdgeInsets.zero,
       elevation: 2,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: AppRadius.mediumRadius,
       ),
       child: const Padding(
         padding: EdgeInsets.all(16),
         child: Row(
           children: [
             Icon(Icons.error_outline, color: AppColors.error),
-            SizedBox(width: 8),
+            SizedBox(width: AppSpacing.sm),
             Text('Unable to load stats'),
           ],
         ),
@@ -327,7 +327,7 @@ class _DailyGoalProgress extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                 decoration: BoxDecoration(
                   color: AppColors.success.withOpacity(0.2),
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: AppRadius.smallRadius,
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
@@ -337,7 +337,7 @@ class _DailyGoalProgress extends StatelessWidget {
                       size: 14,
                       color: AppColors.success,
                     ),
-                    const SizedBox(width: 4),
+                    const SizedBox(width: AppSpacing.xs),
                     Text(
                       'Done!',
                       style: AppTypography.labelSmall.copyWith(
@@ -357,9 +357,9 @@ class _DailyGoalProgress extends StatelessWidget {
               ),
           ],
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: AppSpacing.sm),
         ClipRRect(
-          borderRadius: BorderRadius.circular(4),
+          borderRadius: AppRadius.xsRadius,
           child: LinearProgressIndicator(
             value: progress,
             minHeight: 8,
@@ -415,14 +415,14 @@ class _MiniStat extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
-        color: Colors.black.withOpacity(0.2),
-        borderRadius: BorderRadius.circular(12),
+        color: AppOverlays.black20,
+        borderRadius: AppRadius.mediumRadius,
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(emoji, style: const TextStyle(fontSize: 14)),
-          const SizedBox(width: 4),
+          const SizedBox(width: AppSpacing.xs),
           Text(
             value.toString(),
             style: AppTypography.labelSmall.copyWith(

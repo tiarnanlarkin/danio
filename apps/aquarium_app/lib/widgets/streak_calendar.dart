@@ -151,7 +151,7 @@ class _CalendarGrid extends StatelessWidget {
             ],
           ),
         ),
-        const SizedBox(height: 4),
+        const SizedBox(height: AppSpacing.xs),
 
         // Calendar cells
         Row(
@@ -316,7 +316,7 @@ class _Legend extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         Text('Less', style: TextStyle(fontSize: 10, color: AppColors.textHint)),
-        const SizedBox(width: 4),
+        const SizedBox(width: AppSpacing.xs),
         _LegendCell(color: AppColors.surfaceVariant, size: cellSize),
         const SizedBox(width: 2),
         _LegendCell(color: const Color(0xFFC6E7C6), size: cellSize),
@@ -326,7 +326,7 @@ class _Legend extends StatelessWidget {
         _LegendCell(color: const Color(0xFF66BB6A), size: cellSize),
         const SizedBox(width: 2),
         _LegendCell(color: const Color(0xFF43A047), size: cellSize),
-        const SizedBox(width: 4),
+        const SizedBox(width: AppSpacing.xs),
         Text('More', style: TextStyle(fontSize: 10, color: AppColors.textHint)),
       ],
     );
@@ -389,7 +389,7 @@ class StreakCalendarScreen extends ConsumerWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: AppSpacing.lg),
 
             // Calendar
             const StreakCalendar(
@@ -423,13 +423,13 @@ class _StatCard extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: AppColors.surface,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: AppRadius.mediumRadius,
         border: Border.all(color: AppColors.surfaceVariant),
       ),
       child: Column(
         children: [
           Icon(icon, color: color, size: 32),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.sm),
           Text(
             value,
             style: AppTypography.headlineMedium.copyWith(
@@ -437,7 +437,7 @@ class _StatCard extends StatelessWidget {
               fontWeight: FontWeight.bold,
             ),
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: AppSpacing.xs),
           Text(
             label,
             style: AppTypography.bodySmall.copyWith(

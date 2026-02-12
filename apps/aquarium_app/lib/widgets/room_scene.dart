@@ -1,3 +1,4 @@
+import 'package:aquarium_app/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
 import 'dart:ui';
@@ -168,7 +169,7 @@ class LivingRoomScene extends StatelessWidget {
                       ),
                       decoration: BoxDecoration(
                         color: theme.glassCard,
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: AppRadius.mediumRadius,
                       ),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
@@ -178,7 +179,7 @@ class LivingRoomScene extends StatelessWidget {
                             size: 14,
                             color: theme.textSecondary,
                           ),
-                          const SizedBox(width: 4),
+                          const SizedBox(width: AppSpacing.xs),
                           Text(
                             theme.name,
                             style: TextStyle(
@@ -265,7 +266,7 @@ class _SparklePainter extends CustomPainter {
     canvas.drawCircle(
       center,
       r * 0.3,
-      Paint()..color = Colors.white.withOpacity(0.5),
+      Paint()..color = AppOverlays.white50,
     );
   }
 
@@ -456,7 +457,7 @@ class _CircularTempGauge extends StatelessWidget {
             border: Border.all(color: theme.glassBorder, width: 2),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.1),
+                color: AppOverlays.black10,
                 blurRadius: 20,
                 offset: const Offset(0, 8),
               ),
@@ -578,7 +579,7 @@ class _WaterQualityCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
-      borderRadius: BorderRadius.circular(20),
+      borderRadius: AppRadius.largeRadius,
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
         child: Container(
@@ -586,7 +587,7 @@ class _WaterQualityCard extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
             color: theme.glassCard,
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: AppRadius.largeRadius,
             border: Border.all(color: theme.glassBorder, width: 1.5),
           ),
           child: Column(
@@ -693,7 +694,7 @@ class _MiniPieChart extends StatelessWidget {
             ),
           ),
         ),
-        const SizedBox(height: 4),
+        const SizedBox(height: AppSpacing.xs),
         Text(label, style: TextStyle(color: theme.textSecondary, fontSize: 10)),
       ],
     );
@@ -760,14 +761,14 @@ class _GlassBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
-      borderRadius: BorderRadius.circular(25),
+      borderRadius: AppRadius.largeRadius,
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
           decoration: BoxDecoration(
-            color: Colors.black.withOpacity(0.15),
-            borderRadius: BorderRadius.circular(25),
+            color: AppOverlays.black15,
+            borderRadius: AppRadius.largeRadius,
             border: Border.all(color: theme.glassBorder, width: 1),
           ),
           child: Row(
@@ -789,7 +790,7 @@ class _GlassBadge extends StatelessWidget {
                 ),
                 decoration: BoxDecoration(
                   color: theme.accentBlob.withOpacity(0.4),
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: AppRadius.mediumRadius,
                 ),
                 child: Text(
                   subtext,
@@ -827,7 +828,7 @@ class _ThemedAquarium extends StatelessWidget {
       width: width,
       height: height,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(24),
+        borderRadius: AppRadius.largeRadius,
         boxShadow: [
           BoxShadow(
             color: theme.waterMid.withOpacity(0.4),
@@ -835,14 +836,14 @@ class _ThemedAquarium extends StatelessWidget {
             spreadRadius: 5,
           ),
           BoxShadow(
-            color: Colors.black.withOpacity(0.15),
+            color: AppOverlays.black15,
             blurRadius: 20,
             offset: const Offset(0, 10),
           ),
         ],
       ),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(24),
+        borderRadius: AppRadius.largeRadius,
         child: Stack(
           children: [
             // Water gradient
@@ -859,9 +860,9 @@ class _ThemedAquarium extends StatelessWidget {
             // Glass frame
             Container(
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(24),
+                borderRadius: AppRadius.largeRadius,
                 border: Border.all(
-                  color: Colors.white.withOpacity(0.5),
+                  color: AppOverlays.white50,
                   width: 4,
                 ),
               ),
@@ -973,7 +974,7 @@ class _ThemedAquarium extends StatelessWidget {
                 height: 8,
                 decoration: BoxDecoration(
                   color: const Color(0xFF37474F),
-                  borderRadius: BorderRadius.circular(4),
+                  borderRadius: AppRadius.xsRadius,
                   boxShadow: [
                     BoxShadow(
                       color: Colors.amber.withOpacity(0.3),
@@ -1165,8 +1166,8 @@ class _Bubble extends StatelessWidget {
       height: size,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        color: Colors.white.withOpacity(0.4),
-        border: Border.all(color: Colors.white.withOpacity(0.6), width: 1),
+        color: AppOverlays.white40,
+        border: Border.all(color: AppOverlays.white60, width: 1),
       ),
     );
   }
@@ -1188,7 +1189,7 @@ class _WaveGraphCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
-      borderRadius: BorderRadius.circular(20),
+      borderRadius: AppRadius.largeRadius,
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
         child: Container(
@@ -1197,7 +1198,7 @@ class _WaveGraphCard extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
             color: theme.glassCard,
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: AppRadius.largeRadius,
             border: Border.all(color: theme.glassBorder, width: 1.5),
           ),
           child: Column(
@@ -1211,7 +1212,7 @@ class _WaveGraphCard extends StatelessWidget {
                   fontWeight: FontWeight.w500,
                 ),
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: AppSpacing.sm),
               Expanded(
                 child: CustomPaint(
                   painter: _WaveGraphPainter(theme: theme),

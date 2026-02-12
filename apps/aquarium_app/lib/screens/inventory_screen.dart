@@ -1,3 +1,4 @@
+import 'package:aquarium_app/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'dart:ui';
@@ -82,7 +83,7 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen>
               currentHearts: heartsState.currentHearts,
               maxHearts: heartsState.maxHearts,
             ),
-            const SizedBox(width: 16),
+            const SizedBox(width: AppSpacing.md),
           ],
           bottom: TabBar(
             controller: _tabController,
@@ -235,7 +236,7 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen>
             child: AlertDialog(
               backgroundColor: InventoryColors.background2,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20),
+                borderRadius: AppRadius.largeRadius,
                 side: const BorderSide(color: InventoryColors.glassBorder),
               ),
               title: Row(
@@ -264,12 +265,12 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen>
                       fontSize: 14,
                     ),
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.md),
                   Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
                       color: InventoryColors.glassCard,
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: AppRadius.mediumRadius,
                     ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -306,7 +307,7 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen>
                   style: ElevatedButton.styleFrom(
                     backgroundColor: InventoryColors.consumableColor,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: AppRadius.mediumRadius,
                     ),
                   ),
                   child: const Text(
@@ -406,13 +407,13 @@ class _InventoryItemCard extends StatelessWidget {
     }
 
     return ClipRRect(
-      borderRadius: BorderRadius.circular(20),
+      borderRadius: AppRadius.largeRadius,
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
         child: Container(
           decoration: BoxDecoration(
             color: InventoryColors.glassCard,
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: AppRadius.largeRadius,
             border: Border.all(
               color: accentColor.withOpacity(0.5),
               width: 2,
@@ -439,7 +440,7 @@ class _InventoryItemCard extends StatelessWidget {
                         ),
                         decoration: BoxDecoration(
                           color: accentColor,
-                          borderRadius: BorderRadius.circular(8),
+                          borderRadius: AppRadius.smallRadius,
                         ),
                         child: Text(
                           'x${item.quantity}',
@@ -452,7 +453,7 @@ class _InventoryItemCard extends StatelessWidget {
                       ),
                   ],
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: AppSpacing.sm),
                 // Name
                 Text(
                   shopItem.name,
@@ -464,7 +465,7 @@ class _InventoryItemCard extends StatelessWidget {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
-                const SizedBox(height: 4),
+                const SizedBox(height: AppSpacing.xs),
                 // Description or timer
                 Expanded(
                   child: showTimer && item.expiresAt != null
@@ -489,7 +490,7 @@ class _InventoryItemCard extends StatelessWidget {
                         backgroundColor: accentColor,
                         padding: const EdgeInsets.symmetric(vertical: 8),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
+                          borderRadius: AppRadius.smallRadius,
                         ),
                       ),
                       child: const Text(
@@ -536,7 +537,7 @@ class _ExpiryTimer extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
         color: InventoryColors.activeColor.withOpacity(0.2),
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: AppRadius.smallRadius,
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -546,7 +547,7 @@ class _ExpiryTimer extends StatelessWidget {
             color: InventoryColors.activeColor,
             size: 16,
           ),
-          const SizedBox(width: 4),
+          const SizedBox(width: AppSpacing.xs),
           Text(
             timeText,
             style: const TextStyle(
@@ -577,7 +578,7 @@ class _HeartsChip extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
         color: Colors.red.withOpacity(0.2),
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: AppRadius.mediumRadius,
         border: Border.all(
           color: Colors.red.withOpacity(0.5),
           width: 2,

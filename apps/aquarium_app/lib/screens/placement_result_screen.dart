@@ -33,7 +33,7 @@ class PlacementResultScreen extends ConsumerWidget {
             // Overall score card
             _buildOverallScoreCard(theme),
 
-            const SizedBox(height: 24),
+            const SizedBox(height: AppSpacing.lg),
 
             // Per-path recommendations
             Padding(
@@ -47,14 +47,14 @@ class PlacementResultScreen extends ConsumerWidget {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: AppSpacing.sm),
                   Text(
                     'Based on your score, here\'s what we recommend:',
                     style: theme.textTheme.bodyMedium?.copyWith(
                       color: Colors.grey[600],
                     ),
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.md),
 
                   // Recommendations for each path
                   ...allPaths.map((path) {
@@ -70,12 +70,12 @@ class PlacementResultScreen extends ConsumerWidget {
               ),
             ),
 
-            const SizedBox(height: 24),
+            const SizedBox(height: AppSpacing.lg),
 
             // XP earned card
             _buildXpEarnedCard(theme, allPaths),
 
-            const SizedBox(height: 24),
+            const SizedBox(height: AppSpacing.lg),
 
             // Action buttons
             Padding(
@@ -154,13 +154,13 @@ class PlacementResultScreen extends ConsumerWidget {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: AppRadius.mediumRadius,
         border: Border.all(color: color.withOpacity(0.3)),
       ),
       child: Column(
         children: [
           Icon(icon, size: 64, color: color),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.md),
           Text(
             message,
             style: theme.textTheme.headlineSmall?.copyWith(
@@ -169,12 +169,12 @@ class PlacementResultScreen extends ConsumerWidget {
             ),
             textAlign: TextAlign.center,
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.sm),
           Text(
             'You scored ${result.correctAnswers}/${result.totalAnswers} ($percentage%)',
             style: theme.textTheme.titleMedium,
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: AppSpacing.xs),
           Chip(
             label: Text(
               'Recommended Level: ${_getLevelName(level)}',
@@ -213,7 +213,7 @@ class PlacementResultScreen extends ConsumerWidget {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      const SizedBox(height: 4),
+                      const SizedBox(height: AppSpacing.xs),
                       Text(
                         '${recommendation.score.round()}% correct',
                         style: theme.textTheme.bodySmall?.copyWith(
@@ -232,7 +232,7 @@ class PlacementResultScreen extends ConsumerWidget {
                     color: _getSkipLevelColor(
                       recommendation.skipLevel,
                     ).withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(20),
+                    borderRadius: AppRadius.largeRadius,
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
@@ -241,7 +241,7 @@ class PlacementResultScreen extends ConsumerWidget {
                         recommendation.emoji,
                         style: const TextStyle(fontSize: 16),
                       ),
-                      const SizedBox(width: 4),
+                      const SizedBox(width: AppSpacing.xs),
                       Text(
                         _getSkipLevelLabel(recommendation.skipLevel),
                         style: TextStyle(
@@ -260,7 +260,7 @@ class PlacementResultScreen extends ConsumerWidget {
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
                 color: Colors.grey[100],
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: AppRadius.smallRadius,
               ),
               child: Text(
                 recommendation.description,
@@ -268,7 +268,7 @@ class PlacementResultScreen extends ConsumerWidget {
               ),
             ),
             if (recommendation.lessonsToSkip.isNotEmpty) ...[
-              const SizedBox(height: 8),
+              const SizedBox(height: AppSpacing.sm),
               Text(
                 'Skipping ${recommendation.lessonsToSkip.length} of ${path.lessons.length} lessons',
                 style: theme.textTheme.bodySmall?.copyWith(
@@ -300,7 +300,7 @@ class PlacementResultScreen extends ConsumerWidget {
             AppColors.accent.withOpacity(0.05),
           ],
         ),
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: AppRadius.mediumRadius,
         border: Border.all(color: AppColors.accent.withOpacity(0.3)),
       ),
       child: Row(
@@ -313,7 +313,7 @@ class PlacementResultScreen extends ConsumerWidget {
             ),
             child: const Icon(Icons.star, color: AppColors.accent, size: 32),
           ),
-          const SizedBox(width: 16),
+          const SizedBox(width: AppSpacing.md),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -325,7 +325,7 @@ class PlacementResultScreen extends ConsumerWidget {
                     color: AppColors.accent,
                   ),
                 ),
-                const SizedBox(height: 4),
+                const SizedBox(height: AppSpacing.xs),
                 Text(
                   'For testing out of $lessonsSkipped lessons',
                   style: theme.textTheme.bodyMedium,
@@ -356,7 +356,7 @@ class PlacementResultScreen extends ConsumerWidget {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppSpacing.md),
               Expanded(
                 child: ListView.builder(
                   controller: scrollController,

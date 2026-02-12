@@ -1,6 +1,7 @@
 /// Difficulty settings screen - View skill levels and manage difficulty preferences
 /// Shows performance charts, skill levels by topic, and manual overrides
 library;
+import 'package:aquarium_app/theme/app_theme.dart';
 
 import 'package:flutter/material.dart';
 import '../models/adaptive_difficulty.dart';
@@ -49,13 +50,13 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
         padding: const EdgeInsets.all(16),
         children: [
           _buildOverallSkillCard(),
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.lg),
           _buildTopicSkillsSection(),
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.lg),
           _buildPerformanceTrendsSection(),
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.lg),
           _buildManualOverridesSection(),
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.lg),
           _buildRecommendationsSection(),
         ],
       ),
@@ -91,7 +92,7 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
                     color: Color(
                       _difficultyService.getDifficultyColor(difficulty),
                     ).withOpacity(0.2),
-                    borderRadius: BorderRadius.circular(20),
+                    borderRadius: AppRadius.largeRadius,
                     border: Border.all(
                       color: Color(
                         _difficultyService.getDifficultyColor(difficulty),
@@ -106,7 +107,7 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
                         difficulty.emoji,
                         style: const TextStyle(fontSize: 16),
                       ),
-                      const SizedBox(width: 4),
+                      const SizedBox(width: AppSpacing.xs),
                       Text(
                         difficulty.displayName,
                         style: TextStyle(
@@ -121,9 +122,9 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
                 ),
               ],
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.md),
             _buildSkillProgressBar(overallSkill),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpacing.sm),
             Text(
               '${(overallSkill * 100).toInt()}% Mastery',
               style: const TextStyle(fontSize: 16, color: Colors.grey),
@@ -163,12 +164,12 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
               child: Column(
                 children: const [
                   Icon(Icons.school_outlined, size: 48, color: Colors.grey),
-                  SizedBox(height: 8),
+                  SizedBox(height: AppSpacing.sm),
                   Text(
                     'No lesson data yet',
                     style: TextStyle(color: Colors.grey),
                   ),
-                  SizedBox(height: 4),
+                  SizedBox(height: AppSpacing.xs),
                   Text(
                     'Complete lessons to see your skill progress',
                     style: TextStyle(color: Colors.grey, fontSize: 12),
@@ -221,13 +222,13 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
                       ),
                       decoration: BoxDecoration(
                         color: Colors.amber.withOpacity(0.2),
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: AppRadius.mediumRadius,
                       ),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: const [
                           Text('🏆', style: TextStyle(fontSize: 12)),
-                          SizedBox(width: 4),
+                          SizedBox(width: AppSpacing.xs),
                           Text(
                             'Mastered',
                             style: TextStyle(
@@ -243,7 +244,7 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
               ),
               const SizedBox(height: 12),
               _buildSkillProgressBar(skillLevel),
-              const SizedBox(height: 8),
+              const SizedBox(height: AppSpacing.sm),
               if (history != null) _buildTopicStats(history),
             ],
           ),
@@ -282,13 +283,13 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
         color: color.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: AppRadius.mediumRadius,
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(icon, size: 14, color: color),
-          const SizedBox(width: 4),
+          const SizedBox(width: AppSpacing.xs),
           Text(
             label,
             style: TextStyle(
@@ -383,7 +384,7 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
               color: Color(
                 _difficultyService.getDifficultyColor(record.difficulty),
               ).withOpacity(0.2),
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: AppRadius.smallRadius,
             ),
             child: Center(
               child: Text(
@@ -412,7 +413,7 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
             decoration: BoxDecoration(
               color: _getScoreColor(scorePercent).withOpacity(0.2),
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: AppRadius.mediumRadius,
             ),
             child: Text(
               '$scorePercent%',
@@ -458,7 +459,7 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
           'Manual Difficulty Override',
           style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: AppSpacing.sm),
         Text(
           'Override automatic difficulty for specific topics',
           style: TextStyle(color: Colors.grey[600], fontSize: 14),
@@ -594,9 +595,9 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
                           topicName,
                           style: const TextStyle(fontWeight: FontWeight.bold),
                         ),
-                        const SizedBox(height: 4),
+                        const SizedBox(height: AppSpacing.xs),
                         Text(recommendation.reason),
-                        const SizedBox(height: 4),
+                        const SizedBox(height: AppSpacing.xs),
                         Text(
                           'Suggested: ${recommendation.suggestedLevel.emoji} ${recommendation.suggestedLevel.displayName}',
                           style: TextStyle(
@@ -643,7 +644,7 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
   /// Skill progress bar
   Widget _buildSkillProgressBar(double skillLevel) {
     return ClipRRect(
-      borderRadius: BorderRadius.circular(8),
+      borderRadius: AppRadius.smallRadius,
       child: LinearProgressIndicator(
         value: skillLevel,
         minHeight: 12,

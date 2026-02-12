@@ -187,7 +187,7 @@ class TankDetailScreen extends ConsumerWidget {
                           child: Icon(
                             Icons.water,
                             size: 150,
-                            color: Colors.white.withOpacity(0.1),
+                            color: AppOverlays.white10,
                           ),
                         ),
                       ],
@@ -384,7 +384,7 @@ class TankDetailScreen extends ConsumerWidget {
                 ),
               ),
 
-              const SliverToBoxAdapter(child: SizedBox(height: 16)),
+              const SliverToBoxAdapter(child: SizedBox(height: AppSpacing.md)),
 
               // Dashboard: latest snapshot
               SliverToBoxAdapter(
@@ -438,7 +438,7 @@ class TankDetailScreen extends ConsumerWidget {
                 ),
               ),
 
-              const SliverToBoxAdapter(child: SizedBox(height: 24)),
+              const SliverToBoxAdapter(child: SizedBox(height: AppSpacing.lg)),
 
               // Cycling status (for tanks < 90 days old)
               SliverToBoxAdapter(
@@ -473,7 +473,7 @@ class TankDetailScreen extends ConsumerWidget {
                         ),
                         decoration: BoxDecoration(
                           color: AppColors.warning,
-                          borderRadius: BorderRadius.circular(12),
+                          borderRadius: AppRadius.mediumRadius,
                         ),
                         child: Text(
                           '$pending',
@@ -505,7 +505,7 @@ class TankDetailScreen extends ConsumerWidget {
                 ),
               ),
 
-              const SliverToBoxAdapter(child: SizedBox(height: 16)),
+              const SliverToBoxAdapter(child: SizedBox(height: AppSpacing.md)),
 
               // Recent logs
               SliverToBoxAdapter(
@@ -538,7 +538,7 @@ class TankDetailScreen extends ConsumerWidget {
                 ),
               ),
 
-              const SliverToBoxAdapter(child: SizedBox(height: 16)),
+              const SliverToBoxAdapter(child: SizedBox(height: AppSpacing.md)),
 
               // Livestock
               SliverToBoxAdapter(
@@ -586,7 +586,7 @@ class TankDetailScreen extends ConsumerWidget {
                 ),
               ),
 
-              const SliverToBoxAdapter(child: SizedBox(height: 16)),
+              const SliverToBoxAdapter(child: SizedBox(height: AppSpacing.md)),
 
               // Equipment
               SliverToBoxAdapter(
@@ -747,7 +747,7 @@ class _StatItem extends StatelessWidget {
     return Column(
       children: [
         Icon(icon, color: AppColors.primary, size: 24),
-        const SizedBox(height: 8),
+        const SizedBox(height: AppSpacing.sm),
         Text(value, style: AppTypography.headlineSmall),
         Text(label, style: AppTypography.bodySmall),
       ],
@@ -775,19 +775,19 @@ class _ActionButton extends StatelessWidget {
       button: true,
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: AppRadius.mediumRadius,
         child: Container(
           constraints: const BoxConstraints(minHeight: 44),
           padding: const EdgeInsets.symmetric(vertical: 16),
           decoration: BoxDecoration(
             color: color.withOpacity(0.1),
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: AppRadius.mediumRadius,
             border: Border.all(color: color.withOpacity(0.3)),
           ),
           child: Column(
             children: [
               Icon(icon, color: color, size: 28),
-              const SizedBox(height: 8),
+              const SizedBox(height: AppSpacing.sm),
               Text(
                 label,
                 style: AppTypography.bodySmall.copyWith(
@@ -817,7 +817,7 @@ class _SectionHeader extends StatelessWidget {
       child: Row(
         children: [
           Text(title, style: AppTypography.headlineSmall),
-          if (trailing != null) ...[const SizedBox(width: 8), trailing!],
+          if (trailing != null) ...[const SizedBox(width: AppSpacing.sm), trailing!],
           const Spacer(),
           if (onViewAll != null)
             TextButton(onPressed: onViewAll, child: const Text('View All')),
@@ -1253,7 +1253,7 @@ class _LatestSnapshotCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text('Latest Water Snapshot', style: AppTypography.headlineSmall),
-              const SizedBox(height: 8),
+              const SizedBox(height: AppSpacing.sm),
               Text(
                 'No water tests logged yet.',
                 style: AppTypography.bodyMedium,
@@ -1374,7 +1374,7 @@ class _LatestSnapshotCard extends StatelessWidget {
               ],
             ),
 
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpacing.sm),
             Text(
               'Tip: tap a trend below to jump straight to charts.',
               style: AppTypography.bodySmall,
@@ -1453,7 +1453,7 @@ class _ParamPill extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       decoration: BoxDecoration(
         color: c.withOpacity(0.14),
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: AppRadius.mediumRadius,
         border: Border.all(color: c.withOpacity(0.35)),
       ),
       child: Row(
@@ -1464,7 +1464,7 @@ class _ParamPill extends StatelessWidget {
             height: 8,
             decoration: BoxDecoration(color: c, shape: BoxShape.circle),
           ),
-          const SizedBox(width: 8),
+          const SizedBox(width: AppSpacing.sm),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -1510,7 +1510,7 @@ class _TrendsRow extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text('Trends', style: AppTypography.headlineSmall),
-              const SizedBox(height: 8),
+              const SizedBox(height: AppSpacing.sm),
               Text(
                 'No trend data yet — log a few water tests.',
                 style: AppTypography.bodyMedium,
@@ -1663,20 +1663,20 @@ class _SparklineCard extends StatelessWidget {
 
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(12),
+      borderRadius: AppRadius.mediumRadius,
       child: Container(
         width: 110,
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
           color: AppColors.surfaceVariant,
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: AppRadius.mediumRadius,
           border: Border.all(color: AppColors.surfaceVariant.withOpacity(0.6)),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(_label(), style: AppTypography.labelLarge),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpacing.sm),
             Expanded(
               child: values.length < 2
                   ? Center(child: Text('—', style: AppTypography.bodySmall))
@@ -1762,7 +1762,7 @@ class _AlertsCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text('Alerts', style: AppTypography.headlineSmall),
-              const SizedBox(height: 8),
+              const SizedBox(height: AppSpacing.sm),
               Text(
                 'No water tests yet — nothing to flag.',
                 style: AppTypography.bodyMedium,
@@ -2019,7 +2019,7 @@ class _AlertRow extends StatelessWidget {
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
           color: c.withOpacity(0.10),
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: AppRadius.mediumRadius,
           border: Border.all(color: c.withOpacity(0.25)),
         ),
         child: Row(
@@ -2033,7 +2033,7 @@ class _AlertRow extends StatelessWidget {
                 children: [
                   Text(item.title, style: AppTypography.labelLarge),
                   if (item.detail != null) ...[
-                    const SizedBox(height: 4),
+                    const SizedBox(height: AppSpacing.xs),
                     Text(item.detail!, style: AppTypography.bodySmall),
                   ],
                 ],
@@ -2124,21 +2124,21 @@ class _QuickAddFabState extends State<_QuickAddFab>
                 color: AppColors.primary,
                 onTap: () => _handleAction(widget.onWaterTest),
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: AppSpacing.sm),
               _MiniFabOption(
                 icon: Icons.water_drop,
                 label: 'Water Change',
                 color: AppColors.secondary,
                 onTap: () => _handleAction(widget.onWaterChange),
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: AppSpacing.sm),
               _MiniFabOption(
                 icon: Icons.restaurant,
                 label: 'Log Feeding',
                 color: Colors.orange,
                 onTap: () => _handleAction(widget.onFeeding),
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: AppSpacing.sm),
               _MiniFabOption(
                 icon: Icons.edit_note,
                 label: 'Observation',
@@ -2186,10 +2186,10 @@ class _MiniFabOption extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.circular(4),
+            borderRadius: AppRadius.xsRadius,
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.1),
+                color: AppOverlays.black10,
                 blurRadius: 4,
                 offset: const Offset(0, 2),
               ),
@@ -2202,7 +2202,7 @@ class _MiniFabOption extends StatelessWidget {
             ),
           ),
         ),
-        const SizedBox(width: 8),
+        const SizedBox(width: AppSpacing.sm),
         FloatingActionButton.small(
           heroTag: label,
           backgroundColor: color,
@@ -2278,9 +2278,9 @@ class _StockingIndicator extends StatelessWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: AppSpacing.sm),
               ClipRRect(
-                borderRadius: BorderRadius.circular(4),
+                borderRadius: AppRadius.xsRadius,
                 child: LinearProgressIndicator(
                   value: (result.percentFull / 100).clamp(0, 1),
                   backgroundColor: AppColors.surfaceVariant,
@@ -2288,7 +2288,7 @@ class _StockingIndicator extends StatelessWidget {
                   minHeight: 6,
                 ),
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: AppSpacing.sm),
               Text(result.summary, style: AppTypography.bodySmall),
               if (result.warnings.isNotEmpty) ...[
                 const SizedBox(height: 6),
@@ -2300,7 +2300,7 @@ class _StockingIndicator extends StatelessWidget {
                         size: 12,
                         color: AppColors.warning,
                       ),
-                      const SizedBox(width: 4),
+                      const SizedBox(width: AppSpacing.xs),
                       Expanded(
                         child: Text(
                           w,

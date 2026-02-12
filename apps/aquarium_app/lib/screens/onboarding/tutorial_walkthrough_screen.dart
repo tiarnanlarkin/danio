@@ -188,7 +188,7 @@ class _TutorialWalkthroughScreenState
         children: [
           // Large emoji
           Text(step.emoji, style: const TextStyle(fontSize: 80)),
-          const SizedBox(height: 32),
+          const SizedBox(height: AppSpacing.xl),
 
           // Icon
           Container(
@@ -199,7 +199,7 @@ class _TutorialWalkthroughScreenState
             ),
             child: Icon(step.icon, size: 48, color: AppColors.accent),
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.lg),
 
           // Title
           Text(
@@ -209,7 +209,7 @@ class _TutorialWalkthroughScreenState
             ).textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.bold),
             textAlign: TextAlign.center,
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.md),
 
           // Description
           Text(
@@ -250,7 +250,7 @@ class _TutorialWalkthroughScreenState
                     ),
                     textAlign: TextAlign.center,
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: AppSpacing.sm),
                   Text(
                     'This will be your virtual tank to track your real aquarium',
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
@@ -258,7 +258,7 @@ class _TutorialWalkthroughScreenState
                     ),
                     textAlign: TextAlign.center,
                   ),
-                  const SizedBox(height: 32),
+                  const SizedBox(height: AppSpacing.xl),
 
                   // Tank name
                   Text(
@@ -267,7 +267,7 @@ class _TutorialWalkthroughScreenState
                       fontWeight: FontWeight.w600,
                     ),
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: AppSpacing.sm),
                   TextFormField(
                     decoration: const InputDecoration(
                       hintText: 'e.g., Living Room Tank',
@@ -283,7 +283,7 @@ class _TutorialWalkthroughScreenState
                     },
                     onChanged: (value) => _tankName = value,
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: AppSpacing.lg),
 
                   // Tank type
                   Text(
@@ -292,7 +292,7 @@ class _TutorialWalkthroughScreenState
                       fontWeight: FontWeight.w600,
                     ),
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: AppSpacing.sm),
                   Row(
                     children: [
                       Expanded(
@@ -316,7 +316,7 @@ class _TutorialWalkthroughScreenState
                       ),
                     ],
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: AppSpacing.lg),
 
                   // Volume
                   Text(
@@ -325,7 +325,7 @@ class _TutorialWalkthroughScreenState
                       fontWeight: FontWeight.w600,
                     ),
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: AppSpacing.sm),
                   TextFormField(
                     decoration: const InputDecoration(
                       hintText: 'Enter volume',
@@ -350,7 +350,7 @@ class _TutorialWalkthroughScreenState
                       _volumeLitres = double.tryParse(value) ?? 0;
                     },
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: AppSpacing.sm),
                   Wrap(
                     spacing: 8,
                     children: [20, 40, 60, 100, 120, 200].map((volume) {
@@ -365,7 +365,7 @@ class _TutorialWalkthroughScreenState
                       );
                     }).toList(),
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: AppSpacing.lg),
 
                   // Water type
                   Text(
@@ -374,7 +374,7 @@ class _TutorialWalkthroughScreenState
                       fontWeight: FontWeight.w600,
                     ),
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: AppSpacing.sm),
                   _WaterTypeCard(
                     icon: '🌴',
                     label: 'Tropical',
@@ -390,7 +390,7 @@ class _TutorialWalkthroughScreenState
                     isSelected: _waterType == 'coldwater',
                     onTap: () => setState(() => _waterType = 'coldwater'),
                   ),
-                  const SizedBox(height: 32),
+                  const SizedBox(height: AppSpacing.xl),
 
                   // Create button
                   FilledButton(
@@ -434,7 +434,7 @@ class _TutorialWalkthroughScreenState
             )
           else
             const Spacer(),
-          const SizedBox(width: 16),
+          const SizedBox(width: AppSpacing.md),
           Expanded(
             flex: 2,
             child: FilledButton(
@@ -483,7 +483,7 @@ class _TankTypeCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: isDisabled ? null : onTap,
-      borderRadius: BorderRadius.circular(12),
+      borderRadius: AppRadius.mediumRadius,
       child: Opacity(
         opacity: isDisabled ? 0.5 : 1.0,
         child: Container(
@@ -492,7 +492,7 @@ class _TankTypeCard extends StatelessWidget {
             color: isSelected
                 ? AppColors.primary.withOpacity(0.1)
                 : Colors.grey[100],
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: AppRadius.mediumRadius,
             border: Border.all(
               color: isSelected ? AppColors.primary : Colors.grey[300]!,
               width: 2,
@@ -505,7 +505,7 @@ class _TankTypeCard extends StatelessWidget {
                 size: 32,
                 color: isSelected ? AppColors.primary : Colors.grey[600],
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: AppSpacing.sm),
               Text(
                 label,
                 style: TextStyle(
@@ -515,7 +515,7 @@ class _TankTypeCard extends StatelessWidget {
                 ),
               ),
               if (isDisabled) ...[
-                const SizedBox(height: 4),
+                const SizedBox(height: AppSpacing.xs),
                 const Text(
                   'Coming soon',
                   style: TextStyle(fontSize: 11, color: Colors.grey),
@@ -548,14 +548,14 @@ class _WaterTypeCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(12),
+      borderRadius: AppRadius.mediumRadius,
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: isSelected
               ? AppColors.accent.withOpacity(0.1)
               : Colors.grey[100],
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: AppRadius.mediumRadius,
           border: Border.all(
             color: isSelected ? AppColors.accent : Colors.grey[300]!,
             width: 2,
@@ -564,7 +564,7 @@ class _WaterTypeCard extends StatelessWidget {
         child: Row(
           children: [
             Text(icon, style: const TextStyle(fontSize: 32)),
-            const SizedBox(width: 16),
+            const SizedBox(width: AppSpacing.md),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

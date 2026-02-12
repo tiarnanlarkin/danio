@@ -284,8 +284,8 @@ class _RoomIndicatorBar extends ConsumerWidget {
           end: Alignment.bottomCenter,
           colors: [
             Colors.transparent,
-            Colors.black.withOpacity(0.3),
-            Colors.black.withOpacity(0.5),
+            AppOverlays.black30,
+            AppOverlays.black50,
           ],
         ),
       ),
@@ -319,11 +319,11 @@ class _RoomIndicatorBar extends ConsumerWidget {
                     decoration: BoxDecoration(
                       color: isSelected
                           ? room.color.withOpacity(0.9)
-                          : Colors.white.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(20),
+                          : AppOverlays.white10,
+                      borderRadius: AppRadius.largeRadius,
                       border: Border.all(
                         color: isSelected
-                            ? Colors.white.withOpacity(0.3)
+                            ? AppOverlays.white30
                             : Colors.transparent,
                         width: 1,
                       ),
@@ -361,7 +361,7 @@ class _RoomIndicatorBar extends ConsumerWidget {
                         ),
                         decoration: BoxDecoration(
                           color: AppColors.error,
-                          borderRadius: BorderRadius.circular(10),
+                          borderRadius: AppRadius.smallRadius,
                           border: Border.all(color: Colors.white, width: 1.5),
                         ),
                         constraints: const BoxConstraints(

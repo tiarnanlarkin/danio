@@ -128,7 +128,7 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
                                 color: AppColors.primary,
                                 size: 32,
                               ),
-                              const SizedBox(width: 16),
+                              const SizedBox(width: AppSpacing.md),
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
@@ -146,7 +146,7 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
                           ),
                         ),
                       ),
-                    if (!_isSelectMode) const SizedBox(height: 16),
+                    if (!_isSelectMode) const SizedBox(height: AppSpacing.md),
 
                     // Selection info banner
                     if (_isSelectMode)
@@ -190,7 +190,7 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
                           ),
                         ),
                       ),
-                    if (_isSelectMode) const SizedBox(height: 16),
+                    if (_isSelectMode) const SizedBox(height: AppSpacing.md),
 
                     // List
                     ...livestock.map(
@@ -227,7 +227,7 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
                     color: Colors.white,
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.1),
+                        color: AppOverlays.black10,
                         blurRadius: 8,
                         offset: const Offset(0, -2),
                       ),
@@ -608,7 +608,7 @@ class _LivestockCard extends StatelessWidget {
               children: [
                 Text('×${livestock.count}', style: AppTypography.bodySmall),
                 if (species != null) ...[
-                  const SizedBox(width: 8),
+                  const SizedBox(width: AppSpacing.sm),
                   Text(
                     '• ${species.temperament}',
                     style: AppTypography.bodySmall,
@@ -751,7 +751,7 @@ class _AddLivestockSheetState extends State<_AddLivestockSheet> {
               widget.existing != null ? 'Edit Livestock' : 'Add Livestock',
               style: AppTypography.headlineMedium,
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.md),
 
             // Name with autocomplete
             TextFormField(
@@ -777,7 +777,7 @@ class _AddLivestockSheetState extends State<_AddLivestockSheet> {
                 margin: const EdgeInsets.only(top: 4),
                 decoration: BoxDecoration(
                   color: AppColors.surfaceVariant,
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: AppRadius.smallRadius,
                   border: Border.all(color: AppColors.surfaceVariant),
                 ),
                 child: Column(
@@ -805,12 +805,12 @@ class _AddLivestockSheetState extends State<_AddLivestockSheet> {
 
             // Species info tip
             if (_selectedSpecies != null) ...[
-              const SizedBox(height: 8),
+              const SizedBox(height: AppSpacing.sm),
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
                   color: AppColors.primary.withOpacity(0.05),
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: AppRadius.smallRadius,
                   border: Border.all(color: AppColors.primary.withOpacity(0.2)),
                 ),
                 child: Column(
@@ -866,7 +866,7 @@ class _AddLivestockSheetState extends State<_AddLivestockSheet> {
               keyboardType: TextInputType.number,
               inputFormatters: [FilteringTextInputFormatter.digitsOnly],
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: AppSpacing.lg),
             ElevatedButton(
               onPressed: _isSaving ? null : _save,
               child: _isSaving
@@ -1022,7 +1022,7 @@ class _BulkAddLivestockSheetState extends State<_BulkAddLivestockSheet> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text('Bulk add livestock', style: AppTypography.headlineMedium),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpacing.sm),
             Text(
               'One per line. Formats supported: “Neon Tetra, 10”, “10 Neon Tetra”, “Neon Tetra x10”.',
               style: AppTypography.bodySmall.copyWith(
@@ -1046,7 +1046,7 @@ class _BulkAddLivestockSheetState extends State<_BulkAddLivestockSheet> {
                 'Preview (${_items.length})',
                 style: AppTypography.labelLarge,
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: AppSpacing.sm),
               ..._items.map(
                 (i) => Padding(
                   padding: const EdgeInsets.only(bottom: 6),
@@ -1061,9 +1061,9 @@ class _BulkAddLivestockSheetState extends State<_BulkAddLivestockSheet> {
                   ),
                 ),
               ),
-              const SizedBox(height: 4),
+              const SizedBox(height: AppSpacing.xs),
             ],
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.md),
             ElevatedButton.icon(
               onPressed: _isSaving ? null : _save,
               icon: _isSaving

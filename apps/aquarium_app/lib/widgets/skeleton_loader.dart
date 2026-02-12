@@ -1,3 +1,4 @@
+import 'package:aquarium_app/theme/app_theme.dart';
 // Skeleton loading screens for better perceived performance
 // Provides visual placeholders while content loads
 
@@ -86,7 +87,7 @@ class SkeletonBox extends StatelessWidget {
         color: Theme.of(context).brightness == Brightness.dark
             ? Colors.grey[800]
             : Colors.grey[300],
-        borderRadius: borderRadius ?? BorderRadius.circular(8),
+        borderRadius: borderRadius ?? AppRadius.smallRadius,
       ),
     );
   }
@@ -111,7 +112,7 @@ class SkeletonCard extends StatelessWidget {
           color: Theme.of(context).brightness == Brightness.dark
               ? Colors.grey[800]
               : Colors.grey[100],
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: AppRadius.mediumRadius,
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -119,13 +120,13 @@ class SkeletonCard extends StatelessWidget {
             SkeletonBox(
               width: double.infinity,
               height: 16,
-              borderRadius: BorderRadius.circular(4),
+              borderRadius: AppRadius.xsRadius,
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpacing.sm),
             SkeletonBox(
               width: 200,
               height: 14,
-              borderRadius: BorderRadius.circular(4),
+              borderRadius: AppRadius.xsRadius,
             ),
             const Spacer(),
             Row(
@@ -133,13 +134,13 @@ class SkeletonCard extends StatelessWidget {
                 SkeletonBox(
                   width: 60,
                   height: 12,
-                  borderRadius: BorderRadius.circular(4),
+                  borderRadius: AppRadius.xsRadius,
                 ),
                 const Spacer(),
                 SkeletonBox(
                   width: 80,
                   height: 12,
-                  borderRadius: BorderRadius.circular(4),
+                  borderRadius: AppRadius.xsRadius,
                 ),
               ],
             ),
@@ -176,7 +177,7 @@ class SkeletonGrid extends StatelessWidget {
       itemCount: itemCount,
       itemBuilder: (context, index) {
         return ShimmerLoading(
-          child: SkeletonBox(borderRadius: BorderRadius.circular(20)),
+          child: SkeletonBox(borderRadius: AppRadius.largeRadius),
         );
       },
     );
@@ -218,7 +219,7 @@ class SkeletonChart extends StatelessWidget {
           color: Theme.of(context).brightness == Brightness.dark
               ? Colors.grey[800]
               : Colors.grey[100],
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: AppRadius.mediumRadius,
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -226,9 +227,9 @@ class SkeletonChart extends StatelessWidget {
             SkeletonBox(
               width: 150,
               height: 20,
-              borderRadius: BorderRadius.circular(4),
+              borderRadius: AppRadius.xsRadius,
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.md),
             Expanded(
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.end,
@@ -240,7 +241,7 @@ class SkeletonChart extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(horizontal: 4),
                       child: SkeletonBox(
                         height: 60 + (index * 20).toDouble(),
-                        borderRadius: BorderRadius.circular(4),
+                        borderRadius: AppRadius.xsRadius,
                       ),
                     ),
                   ),
@@ -268,7 +269,7 @@ class SkeletonStoryCard extends StatelessWidget {
           color: Theme.of(context).brightness == Brightness.dark
               ? Colors.grey[800]
               : Colors.grey[100],
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: AppRadius.mediumRadius,
         ),
         child: Row(
           children: [
@@ -277,7 +278,7 @@ class SkeletonStoryCard extends StatelessWidget {
               child: SkeletonBox(
                 width: 80,
                 height: 80,
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: AppRadius.mediumRadius,
               ),
             ),
             Expanded(
@@ -290,19 +291,19 @@ class SkeletonStoryCard extends StatelessWidget {
                     SkeletonBox(
                       width: double.infinity,
                       height: 18,
-                      borderRadius: BorderRadius.circular(4),
+                      borderRadius: AppRadius.xsRadius,
                     ),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: AppSpacing.sm),
                     SkeletonBox(
                       width: 150,
                       height: 14,
-                      borderRadius: BorderRadius.circular(4),
+                      borderRadius: AppRadius.xsRadius,
                     ),
                     const SizedBox(height: 12),
                     SkeletonBox(
                       width: 100,
                       height: 12,
-                      borderRadius: BorderRadius.circular(4),
+                      borderRadius: AppRadius.xsRadius,
                     ),
                   ],
                 ),
@@ -329,7 +330,7 @@ class SkeletonAchievementCard extends StatelessWidget {
           color: Theme.of(context).brightness == Brightness.dark
               ? Colors.grey[800]
               : Colors.grey[100],
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: AppRadius.largeRadius,
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -338,26 +339,26 @@ class SkeletonAchievementCard extends StatelessWidget {
               child: SkeletonBox(
                 width: 60,
                 height: 60,
-                borderRadius: BorderRadius.circular(30),
+                borderRadius: AppRadius.xlRadius,
               ),
             ),
             const SizedBox(height: 12),
             SkeletonBox(
               width: double.infinity,
               height: 16,
-              borderRadius: BorderRadius.circular(4),
+              borderRadius: AppRadius.xsRadius,
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpacing.sm),
             SkeletonBox(
               width: 120,
               height: 14,
-              borderRadius: BorderRadius.circular(4),
+              borderRadius: AppRadius.xsRadius,
             ),
             const Spacer(),
             SkeletonBox(
               width: double.infinity,
               height: 8,
-              borderRadius: BorderRadius.circular(4),
+              borderRadius: AppRadius.xsRadius,
             ),
           ],
         ),

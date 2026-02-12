@@ -30,13 +30,13 @@ class VacationGuideScreen extends StatelessWidget {
             ),
           ),
 
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.lg),
 
           Text(
             'How Long Can Fish Go Without Food?',
             style: AppTypography.headlineMedium,
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.md),
 
           Card(
             child: Padding(
@@ -83,10 +83,10 @@ class VacationGuideScreen extends StatelessWidget {
             ),
           ),
 
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.lg),
 
           Text('Before You Leave', style: AppTypography.headlineMedium),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.md),
 
           _ChecklistSection(
             title: '1 Week Before',
@@ -123,10 +123,10 @@ class VacationGuideScreen extends StatelessWidget {
             ],
           ),
 
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.lg),
 
           Text('Feeding Options', style: AppTypography.headlineMedium),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.md),
 
           _OptionCard(
             title: 'No Feeding (Short Trips)',
@@ -182,10 +182,10 @@ class VacationGuideScreen extends StatelessWidget {
                 'Pre-portion food in daily containers. Less is more — they WILL overfeed.',
           ),
 
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.lg),
 
           Text('If Using a Fish Sitter', style: AppTypography.headlineMedium),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.md),
 
           Card(
             child: Padding(
@@ -219,13 +219,13 @@ class VacationGuideScreen extends StatelessWidget {
             ),
           ),
 
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.lg),
 
           Text(
             'Extended Absences (2+ Weeks)',
             style: AppTypography.headlineMedium,
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.md),
 
           Card(
             color: AppColors.warning.withOpacity(0.1),
@@ -238,7 +238,7 @@ class VacationGuideScreen extends StatelessWidget {
                     'Additional Precautions:',
                     style: AppTypography.labelLarge,
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: AppSpacing.sm),
                   _BulletPoint(text: 'Have someone check tank every few days'),
                   _BulletPoint(text: 'Automatic feeder + fish sitter combo'),
                   _BulletPoint(
@@ -255,10 +255,10 @@ class VacationGuideScreen extends StatelessWidget {
             ),
           ),
 
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.lg),
 
           Text('When You Return', style: AppTypography.headlineMedium),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.md),
 
           Card(
             child: Padding(
@@ -287,7 +287,7 @@ class VacationGuideScreen extends StatelessWidget {
             ),
           ),
 
-          const SizedBox(height: 48),
+          const SizedBox(height: AppSpacing.xxl),
         ],
       ),
     );
@@ -355,7 +355,7 @@ class _ChecklistSection extends StatelessWidget {
                       size: 18,
                       color: AppColors.primary,
                     ),
-                    const SizedBox(width: 8),
+                    const SizedBox(width: AppSpacing.sm),
                     Expanded(
                       child: Text(item, style: AppTypography.bodyMedium),
                     ),
@@ -406,7 +406,7 @@ class _OptionCard extends StatelessWidget {
                   ),
                   decoration: BoxDecoration(
                     color: AppColors.surfaceVariant,
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: AppRadius.smallRadius,
                   ),
                   child: Text(duration, style: AppTypography.bodySmall),
                 ),
@@ -433,7 +433,7 @@ class _OptionCard extends StatelessWidget {
                     ],
                   ),
                 ),
-                const SizedBox(width: 16),
+                const SizedBox(width: AppSpacing.md),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -453,12 +453,12 @@ class _OptionCard extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpacing.sm),
             Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
                 color: AppColors.info.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: AppRadius.smallRadius,
               ),
               child: Row(
                 children: [
@@ -525,7 +525,7 @@ class _NumberedStep extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(width: 8),
+          const SizedBox(width: AppSpacing.sm),
           Expanded(child: Text(text, style: AppTypography.bodyMedium)),
         ],
       ),

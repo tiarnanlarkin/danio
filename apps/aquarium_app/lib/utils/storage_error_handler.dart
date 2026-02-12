@@ -1,3 +1,4 @@
+import 'package:aquarium_app/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import '../services/local_json_storage_service.dart';
 
@@ -34,12 +35,12 @@ class StorageErrorHandler {
                     fontWeight: FontWeight.w500,
                   ),
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: AppSpacing.md),
                 const Text(
                   'What happened?',
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: AppSpacing.sm),
                 Text(
                   'The app storage file could not be read. This usually happens due to:\n'
                   '• App crash during save\n'
@@ -48,12 +49,12 @@ class StorageErrorHandler {
                   style: TextStyle(fontSize: 14, color: Colors.grey[700]),
                 ),
                 if (error.corruptedFilePath != null) ...[
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.md),
                   Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
                       color: Colors.orange[50],
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: AppRadius.smallRadius,
                       border: Border.all(color: Colors.orange[300]!),
                     ),
                     child: Column(
@@ -66,14 +67,14 @@ class StorageErrorHandler {
                               size: 18,
                               color: Colors.orange,
                             ),
-                            SizedBox(width: 8),
+                            SizedBox(width: AppSpacing.sm),
                             Text(
                               'Backup Created',
                               style: TextStyle(fontWeight: FontWeight.bold),
                             ),
                           ],
                         ),
-                        const SizedBox(height: 4),
+                        const SizedBox(height: AppSpacing.xs),
                         Text(
                           'Your corrupted data has been backed up to:\n${error.corruptedFilePath}',
                           style: const TextStyle(fontSize: 12),
@@ -82,7 +83,7 @@ class StorageErrorHandler {
                     ),
                   ),
                 ],
-                const SizedBox(height: 16),
+                const SizedBox(height: AppSpacing.md),
                 const Text(
                   'What would you like to do?',
                   style: TextStyle(fontWeight: FontWeight.bold),
@@ -152,12 +153,12 @@ class StorageErrorHandler {
                   icon: Icons.access_time,
                   text: 'Time: ${DateTime.now().toIso8601String()}',
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: AppSpacing.md),
                 const Text(
                   'Email this information to:\nsupport@aquariumapp.com',
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: AppSpacing.sm),
                 const Text(
                   'We\'ll help you recover your data from the backup file.',
                   style: TextStyle(fontSize: 12, fontStyle: FontStyle.italic),
@@ -313,7 +314,7 @@ class _InfoItem extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Icon(icon, size: 18, color: Colors.grey[600]),
-          const SizedBox(width: 8),
+          const SizedBox(width: AppSpacing.sm),
           Expanded(child: Text(text, style: const TextStyle(fontSize: 13))),
         ],
       ),

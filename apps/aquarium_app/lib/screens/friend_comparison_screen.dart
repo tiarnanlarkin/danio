@@ -47,7 +47,7 @@ class _FriendComparisonScreenState
                 child: Row(
                   children: [
                     Icon(Icons.person_remove, color: Colors.red),
-                    SizedBox(width: 8),
+                    SizedBox(width: AppSpacing.sm),
                     Text('Remove Friend', style: TextStyle(color: Colors.red)),
                   ],
                 ),
@@ -70,7 +70,7 @@ class _FriendComparisonScreenState
                 // === Header Cards ===
                 _HeaderSection(userProfile: userProfile, friend: widget.friend),
 
-                const SizedBox(height: 16),
+                const SizedBox(height: AppSpacing.md),
 
                 // === Stats Comparison ===
                 _StatsComparisonSection(
@@ -78,7 +78,7 @@ class _FriendComparisonScreenState
                   friend: widget.friend,
                 ),
 
-                const SizedBox(height: 16),
+                const SizedBox(height: AppSpacing.md),
 
                 // === Progress Chart ===
                 _ProgressChartSection(
@@ -86,7 +86,7 @@ class _FriendComparisonScreenState
                   friend: widget.friend,
                 ),
 
-                const SizedBox(height: 16),
+                const SizedBox(height: AppSpacing.md),
 
                 // === Achievements Comparison ===
                 _AchievementsSection(
@@ -94,7 +94,7 @@ class _FriendComparisonScreenState
                   friend: widget.friend,
                 ),
 
-                const SizedBox(height: 24),
+                const SizedBox(height: AppSpacing.lg),
               ],
             ),
           );
@@ -116,7 +116,7 @@ class _FriendComparisonScreenState
             mainAxisSize: MainAxisSize.min,
             children: [
               Text('Cheer on ${widget.friend.displayName}!'),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppSpacing.md),
               Wrap(
                 spacing: 12,
                 runSpacing: 12,
@@ -229,12 +229,12 @@ class _HeaderSection extends StatelessWidget {
               isUser: true,
             ),
           ),
-          const SizedBox(width: 16),
+          const SizedBox(width: AppSpacing.md),
           const Text(
             'VS',
             style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           ),
-          const SizedBox(width: 16),
+          const SizedBox(width: AppSpacing.md),
           Expanded(
             child: _UserCard(
               name: friend.displayName,
@@ -279,18 +279,18 @@ class _UserCard extends StatelessWidget {
                   .withOpacity(0.2),
               child: Text(emoji, style: const TextStyle(fontSize: 32)),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpacing.sm),
             Text(
               name,
               style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 4),
+            const SizedBox(height: AppSpacing.xs),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
               decoration: BoxDecoration(
                 color: Colors.grey.shade200,
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: AppRadius.mediumRadius,
               ),
               child: Text(
                 level,
@@ -300,12 +300,12 @@ class _UserCard extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpacing.sm),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Icon(Icons.star, size: 16, color: Colors.amber.shade700),
-                const SizedBox(width: 4),
+                const SizedBox(width: AppSpacing.xs),
                 Text(
                   '$xp XP',
                   style: const TextStyle(
@@ -424,7 +424,7 @@ class _StatComparisonRow extends StatelessWidget {
           Row(
             children: [
               Icon(icon, size: 20, color: color),
-              const SizedBox(width: 8),
+              const SizedBox(width: AppSpacing.sm),
               Text(
                 label,
                 style: const TextStyle(
@@ -434,7 +434,7 @@ class _StatComparisonRow extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.sm),
           Row(
             children: [
               Expanded(
@@ -456,7 +456,7 @@ class _StatComparisonRow extends StatelessWidget {
                       height: 8,
                       decoration: BoxDecoration(
                         color: Colors.grey.shade300,
-                        borderRadius: BorderRadius.circular(4),
+                        borderRadius: AppRadius.xsRadius,
                       ),
                     ),
                     FractionallySizedBox(
@@ -465,7 +465,7 @@ class _StatComparisonRow extends StatelessWidget {
                         height: 8,
                         decoration: BoxDecoration(
                           color: Colors.blue,
-                          borderRadius: BorderRadius.circular(4),
+                          borderRadius: AppRadius.xsRadius,
                         ),
                       ),
                     ),
@@ -520,7 +520,7 @@ class _ProgressChartSection extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
             color: Colors.grey.shade50,
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: AppRadius.mediumRadius,
             border: Border.all(color: Colors.grey.shade300),
           ),
           child: _buildChart(context),
@@ -671,7 +671,7 @@ class _AchievementsSection extends StatelessWidget {
                   color: Colors.blue,
                 ),
               ),
-              const SizedBox(width: 16),
+              const SizedBox(width: AppSpacing.md),
               Expanded(
                 child: _AchievementCard(
                   title: '${friend.displayName}\'s',
@@ -706,7 +706,7 @@ class _AchievementCard extends StatelessWidget {
         child: Column(
           children: [
             Icon(Icons.emoji_events, size: 40, color: color),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpacing.sm),
             Text(
               count.toString(),
               style: TextStyle(
@@ -715,7 +715,7 @@ class _AchievementCard extends StatelessWidget {
                 color: color,
               ),
             ),
-            const SizedBox(height: 4),
+            const SizedBox(height: AppSpacing.xs),
             Text(
               title,
               style: const TextStyle(fontSize: 12, color: Colors.grey),

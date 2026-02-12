@@ -60,7 +60,7 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
             ),
           ),
 
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.lg),
 
           Text('Export Data', style: AppTypography.headlineSmall),
           const SizedBox(height: 12),
@@ -77,14 +77,14 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
                     Row(
                       children: [
                         Icon(Icons.inventory_2, color: AppColors.primary),
-                        const SizedBox(width: 8),
+                        const SizedBox(width: AppSpacing.sm),
                         Text(
                           '${tanks.length} tank${tanks.length == 1 ? '' : 's'} to export',
                           style: AppTypography.labelLarge,
                         ),
                       ],
                     ),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: AppSpacing.sm),
                     ...tanks
                         .take(5)
                         .map(
@@ -106,9 +106,9 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
                       ),
 
                     if (_isExporting) ...[
-                      const SizedBox(height: 16),
+                      const SizedBox(height: AppSpacing.md),
                       LinearProgressIndicator(value: _progressValue),
-                      const SizedBox(height: 8),
+                      const SizedBox(height: AppSpacing.sm),
                       Text(
                         _progressStatus,
                         style: AppTypography.bodySmall.copyWith(
@@ -117,7 +117,7 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
                       ),
                     ],
 
-                    const SizedBox(height: 16),
+                    const SizedBox(height: AppSpacing.md),
                     SizedBox(
                       width: double.infinity,
                       child: FilledButton.icon(
@@ -139,7 +139,7 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
                       ),
                     ),
                     if (_lastBackup != null) ...[
-                      const SizedBox(height: 8),
+                      const SizedBox(height: AppSpacing.sm),
                       Center(
                         child: Text(
                           '✓ Last backup: $_lastBackup',
@@ -155,7 +155,7 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
             ),
           ),
 
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.lg),
 
           Text('Import Data', style: AppTypography.headlineSmall),
           const SizedBox(height: 12),
@@ -172,9 +172,9 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
                   ),
 
                   if (_isImporting) ...[
-                    const SizedBox(height: 16),
+                    const SizedBox(height: AppSpacing.md),
                     LinearProgressIndicator(value: _progressValue),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: AppSpacing.sm),
                     Text(
                       _progressStatus,
                       style: AppTypography.bodySmall.copyWith(
@@ -205,7 +205,7 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
             ),
           ),
 
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.lg),
 
           Text('What Gets Exported', style: AppTypography.headlineSmall),
           const SizedBox(height: 12),
@@ -257,7 +257,7 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
             ),
           ),
 
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.lg),
 
           Card(
             color: AppColors.warning.withOpacity(0.1),
@@ -273,7 +273,7 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text('Import Warning', style: AppTypography.labelLarge),
-                        const SizedBox(height: 4),
+                        const SizedBox(height: AppSpacing.xs),
                         Text(
                           'Importing data will ADD to your existing tanks — it won\'t overwrite or delete anything.',
                           style: AppTypography.bodySmall,
@@ -286,7 +286,7 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
             ),
           ),
 
-          const SizedBox(height: 48),
+          const SizedBox(height: AppSpacing.xxl),
         ],
       ),
     );

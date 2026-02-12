@@ -190,7 +190,7 @@ class FaqScreen extends StatelessWidget {
             ],
           ),
 
-          SizedBox(height: 48),
+          SizedBox(height: AppSpacing.xxl),
         ],
       ),
     );
@@ -213,7 +213,7 @@ class _FaqSection extends StatelessWidget {
           child: Text(title, style: AppTypography.headlineSmall),
         ),
         ...items,
-        const SizedBox(height: 8),
+        const SizedBox(height: AppSpacing.sm),
       ],
     );
   }
@@ -238,7 +238,7 @@ class _FaqItemState extends State<_FaqItem> {
       margin: const EdgeInsets.only(bottom: 8),
       child: InkWell(
         onTap: () => setState(() => _expanded = !_expanded),
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: AppRadius.mediumRadius,
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Column(

@@ -95,13 +95,13 @@ class _LevelUpDialogState extends State<LevelUpDialog>
             scale: _scaleAnimation,
             child: Dialog(
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(32),
+                borderRadius: AppRadius.xlRadius,
               ),
               child: Container(
                 padding: const EdgeInsets.all(32),
                 decoration: BoxDecoration(
                   gradient: AppColors.primaryGradient,
-                  borderRadius: BorderRadius.circular(32),
+                  borderRadius: AppRadius.xlRadius,
                   boxShadow: [
                     BoxShadow(
                       color: AppColors.primary.withOpacity(0.4),
@@ -119,10 +119,10 @@ class _LevelUpDialogState extends State<LevelUpDialog>
                       height: 100,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: Colors.white.withOpacity(0.2),
+                        color: AppOverlays.white20,
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.white.withOpacity(0.3),
+                            color: AppOverlays.white30,
                             blurRadius: 30,
                             spreadRadius: 5,
                           ),
@@ -134,7 +134,7 @@ class _LevelUpDialogState extends State<LevelUpDialog>
                         color: Colors.white,
                       ),
                     ),
-                    const SizedBox(height: 24),
+                    const SizedBox(height: AppSpacing.lg),
 
                     // "Level Up!" text
                     const Text(
@@ -146,7 +146,7 @@ class _LevelUpDialogState extends State<LevelUpDialog>
                         letterSpacing: 1,
                       ),
                     ),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: AppSpacing.md),
 
                     // New level badge
                     Container(
@@ -155,8 +155,8 @@ class _LevelUpDialogState extends State<LevelUpDialog>
                         vertical: 12,
                       ),
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.2),
-                        borderRadius: BorderRadius.circular(24),
+                        color: AppOverlays.white20,
+                        borderRadius: AppRadius.largeRadius,
                       ),
                       child: Column(
                         children: [
@@ -168,7 +168,7 @@ class _LevelUpDialogState extends State<LevelUpDialog>
                               color: Colors.white,
                             ),
                           ),
-                          const SizedBox(height: 4),
+                          const SizedBox(height: AppSpacing.xs),
                           Text(
                             widget.levelTitle,
                             style: const TextStyle(
@@ -180,14 +180,14 @@ class _LevelUpDialogState extends State<LevelUpDialog>
                         ],
                       ),
                     ),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: AppSpacing.md),
 
                     // Total XP
                     Text(
                       '${widget.totalXp} Total XP',
                       style: TextStyle(
                         fontSize: 16,
-                        color: Colors.white.withOpacity(0.9),
+                        color: AppOverlays.white90,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
@@ -198,8 +198,8 @@ class _LevelUpDialogState extends State<LevelUpDialog>
                       Container(
                         padding: const EdgeInsets.all(16),
                         decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.15),
-                          borderRadius: BorderRadius.circular(16),
+                          color: AppOverlays.white15,
+                          borderRadius: AppRadius.mediumRadius,
                         ),
                         child: Row(
                           children: [
@@ -223,7 +223,7 @@ class _LevelUpDialogState extends State<LevelUpDialog>
                       ),
                     ],
 
-                    const SizedBox(height: 24),
+                    const SizedBox(height: AppSpacing.lg),
 
                     // Continue button
                     SizedBox(
@@ -235,7 +235,7 @@ class _LevelUpDialogState extends State<LevelUpDialog>
                           foregroundColor: AppColors.primary,
                           padding: const EdgeInsets.symmetric(vertical: 16),
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(24),
+                            borderRadius: AppRadius.largeRadius,
                           ),
                           elevation: 0,
                         ),

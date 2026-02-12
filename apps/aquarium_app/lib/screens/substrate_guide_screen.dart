@@ -22,7 +22,7 @@ class SubstrateGuideScreen extends StatelessWidget {
                   Row(
                     children: [
                       Icon(Icons.layers, color: AppColors.info),
-                      const SizedBox(width: 8),
+                      const SizedBox(width: AppSpacing.sm),
                       Text(
                         'Why Substrate Matters',
                         style: AppTypography.headlineSmall,
@@ -40,11 +40,11 @@ class SubstrateGuideScreen extends StatelessWidget {
             ),
           ),
 
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.lg),
 
           // Substrate types
           Text('Substrate Types', style: AppTypography.headlineMedium),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.md),
 
           _SubstrateCard(
             name: 'Gravel',
@@ -161,11 +161,11 @@ class SubstrateGuideScreen extends StatelessWidget {
             depth: 'N/A',
           ),
 
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.lg),
 
           // By tank type
           Text('Recommended by Tank Type', style: AppTypography.headlineMedium),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.md),
 
           _TankTypeCard(
             tankType: 'High-Tech Planted',
@@ -208,11 +208,11 @@ class SubstrateGuideScreen extends StatelessWidget {
                 'Easy to see/collect eggs. Marbles protect eggs from being eaten.',
           ),
 
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.lg),
 
           // Layering
           Text('Layering Substrates', style: AppTypography.headlineMedium),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.md),
 
           Card(
             child: Padding(
@@ -224,7 +224,7 @@ class SubstrateGuideScreen extends StatelessWidget {
                     'Dirted Tank (Walstad Method)',
                     style: AppTypography.labelLarge,
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: AppSpacing.sm),
                   _LayerRow(
                     layer: 'Top',
                     material: 'Sand or fine gravel cap (3-5cm)',
@@ -235,7 +235,7 @@ class SubstrateGuideScreen extends StatelessWidget {
                     material: 'Organic potting soil (2-3cm)',
                     color: Colors.brown.shade800,
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: AppSpacing.sm),
                   Text(
                     'Low-tech method. Soil provides nutrients, cap prevents clouding. '
                     'No CO2 or fertilizers needed for easy plants.',
@@ -245,7 +245,7 @@ class SubstrateGuideScreen extends StatelessWidget {
                   const SizedBox(height: 20),
 
                   Text('High-Tech Planted', style: AppTypography.labelLarge),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: AppSpacing.sm),
                   _LayerRow(
                     layer: 'Top',
                     material: 'Aquasoil (5-8cm)',
@@ -261,7 +261,7 @@ class SubstrateGuideScreen extends StatelessWidget {
                     material: 'Substrate fertilizer (optional)',
                     color: Colors.brown.shade900,
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: AppSpacing.sm),
                   Text(
                     'For maximum plant growth. Power sand adds drainage and bacterial surface area.',
                     style: AppTypography.bodySmall,
@@ -271,7 +271,7 @@ class SubstrateGuideScreen extends StatelessWidget {
             ),
           ),
 
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.lg),
 
           // Tips
           Card(
@@ -284,7 +284,7 @@ class SubstrateGuideScreen extends StatelessWidget {
                   Row(
                     children: [
                       Icon(Icons.lightbulb, color: AppColors.warning),
-                      const SizedBox(width: 8),
+                      const SizedBox(width: AppSpacing.sm),
                       Text('Pro Tips', style: AppTypography.headlineSmall),
                     ],
                   ),
@@ -309,7 +309,7 @@ class SubstrateGuideScreen extends StatelessWidget {
             ),
           ),
 
-          const SizedBox(height: 48),
+          const SizedBox(height: AppSpacing.xxl),
         ],
       ),
     );
@@ -347,7 +347,7 @@ class _SubstrateCard extends StatelessWidget {
           height: 40,
           decoration: BoxDecoration(
             color: Colors.brown.withOpacity(0.2),
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: AppRadius.smallRadius,
           ),
           child: const Icon(Icons.layers, color: Colors.brown),
         ),
@@ -383,7 +383,7 @@ class _SubstrateCard extends StatelessWidget {
                         ],
                       ),
                     ),
-                    const SizedBox(width: 16),
+                    const SizedBox(width: AppSpacing.md),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -409,7 +409,7 @@ class _SubstrateCard extends StatelessWidget {
                   padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
                     color: AppColors.surfaceVariant,
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: AppRadius.smallRadius,
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -504,7 +504,7 @@ class _LayerRow extends StatelessWidget {
             height: 24,
             decoration: BoxDecoration(
               color: color,
-              borderRadius: BorderRadius.circular(4),
+              borderRadius: AppRadius.xsRadius,
             ),
           ),
           const SizedBox(width: 12),
@@ -529,7 +529,7 @@ class _TipItem extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Icon(Icons.check, size: 16, color: AppColors.warning),
-          const SizedBox(width: 8),
+          const SizedBox(width: AppSpacing.sm),
           Expanded(child: Text(text, style: AppTypography.bodySmall)),
         ],
       ),

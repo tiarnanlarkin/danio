@@ -89,7 +89,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                           ),
                           child: Icon(page.icon, size: 64, color: page.color),
                         ),
-                        const SizedBox(height: 48),
+                        const SizedBox(height: AppSpacing.xxl),
 
                         // Title
                         Text(
@@ -97,7 +97,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                           style: AppTypography.headlineLarge,
                           textAlign: TextAlign.center,
                         ),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: AppSpacing.md),
 
                         // Description
                         Text(
@@ -130,7 +130,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       color: _currentPage == index
                           ? _pages[_currentPage].color
                           : AppColors.textHint.withOpacity(0.3),
-                      borderRadius: BorderRadius.circular(4),
+                      borderRadius: AppRadius.xsRadius,
                     ),
                   ),
                 ),
@@ -158,7 +158,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   else
                     const Spacer(),
 
-                  const SizedBox(width: 16),
+                  const SizedBox(width: AppSpacing.md),
 
                   // Next / Get Started button
                   Expanded(

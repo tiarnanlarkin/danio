@@ -62,7 +62,7 @@ class DailyGoalProgress extends ConsumerWidget {
           ),
         ),
         if (showLabel) ...[
-          const SizedBox(height: 4),
+          const SizedBox(height: AppSpacing.xs),
           Text(
             dailyGoal.isCompleted
                 ? 'Goal complete! 🎉'
@@ -171,7 +171,7 @@ class DailyGoalCard extends ConsumerWidget {
             Colors.white.withOpacity(0.88),
           ],
         ),
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: AppRadius.mediumRadius,
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.08),
@@ -179,20 +179,20 @@ class DailyGoalCard extends ConsumerWidget {
             offset: const Offset(0, 4),
           ),
         ],
-        border: Border.all(color: Colors.white.withOpacity(0.6), width: 1.5),
+        border: Border.all(color: AppOverlays.white60, width: 1.5),
       ),
       child: Material(
         color: Colors.transparent,
         child: InkWell(
           onTap: onTap,
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: AppRadius.mediumRadius,
           child: Padding(
             padding: const EdgeInsets.all(16),
             child: Row(
               children: [
                 // Circular progress
                 DailyGoalProgress(size: 60, showLabel: false),
-                const SizedBox(width: 16),
+                const SizedBox(width: AppSpacing.md),
 
                 // Text info
                 Expanded(
@@ -210,7 +210,7 @@ class DailyGoalCard extends ConsumerWidget {
                               : AppColors.textPrimary,
                         ),
                       ),
-                      const SizedBox(height: 4),
+                      const SizedBox(height: AppSpacing.xs),
                       Text(
                         dailyGoal.isCompleted
                             ? '+${dailyGoal.bonusXp} bonus XP earned!'
@@ -220,7 +220,7 @@ class DailyGoalCard extends ConsumerWidget {
                         ),
                       ),
                       if (!dailyGoal.isCompleted) ...[
-                        const SizedBox(height: 4),
+                        const SizedBox(height: AppSpacing.xs),
                         LinearProgressIndicator(
                           value: dailyGoal.progress,
                           backgroundColor: AppColors.surfaceVariant,

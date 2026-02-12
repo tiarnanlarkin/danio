@@ -38,7 +38,7 @@ class LivestockDetailScreen extends ConsumerWidget {
             // Header card
             _HeaderCard(livestock: livestock, species: species),
 
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.md),
 
             // Compatibility check (if we have tank data)
             tankAsync.when(
@@ -80,16 +80,16 @@ class LivestockDetailScreen extends ConsumerWidget {
 
             // Species care guide (if found)
             if (species != null) ...[
-              const SizedBox(height: 16),
+              const SizedBox(height: AppSpacing.md),
               _CareGuideCard(species: species),
 
-              const SizedBox(height: 16),
+              const SizedBox(height: AppSpacing.md),
               _ParametersCard(species: species),
 
-              const SizedBox(height: 16),
+              const SizedBox(height: AppSpacing.md),
               _CompatibilityNotesCard(species: species),
             ] else ...[
-              const SizedBox(height: 16),
+              const SizedBox(height: AppSpacing.md),
               _NoSpeciesDataCard(livestock: livestock),
             ],
           ],
@@ -124,7 +124,7 @@ class _HeaderCard extends StatelessWidget {
                     color: AppColors.primary,
                   ),
                 ),
-                const SizedBox(width: 16),
+                const SizedBox(width: AppSpacing.md),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -148,17 +148,17 @@ class _HeaderCard extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.md),
             Row(
               children: [
                 _InfoChip(icon: Icons.tag, label: '×${livestock.count}'),
                 if (species != null) ...[
-                  const SizedBox(width: 8),
+                  const SizedBox(width: AppSpacing.sm),
                   _InfoChip(
                     icon: Icons.straighten,
                     label: '${species!.adultSizeCm.toStringAsFixed(0)} cm',
                   ),
-                  const SizedBox(width: 8),
+                  const SizedBox(width: AppSpacing.sm),
                   _InfoChip(
                     icon: Icons.psychology,
                     label: species!.temperament,
@@ -176,7 +176,7 @@ class _HeaderCard extends StatelessWidget {
                     label: species!.careLevel,
                     color: _careLevelColor(species!.careLevel),
                   ),
-                  const SizedBox(width: 8),
+                  const SizedBox(width: AppSpacing.sm),
                   _InfoChip(
                     icon: Icons.family_restroom,
                     label: species!.family,
@@ -231,14 +231,14 @@ class _InfoChip extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       decoration: BoxDecoration(
         color: c.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: AppRadius.mediumRadius,
         border: Border.all(color: c.withOpacity(0.3)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(icon, size: 14, color: c),
-          const SizedBox(width: 4),
+          const SizedBox(width: AppSpacing.xs),
           Text(label, style: AppTypography.bodySmall.copyWith(color: c)),
         ],
       ),
@@ -286,7 +286,7 @@ class _CompatibilityCard extends StatelessWidget {
             Row(
               children: [
                 Icon(icon, color: color),
-                const SizedBox(width: 8),
+                const SizedBox(width: AppSpacing.sm),
                 Text(
                   title,
                   style: AppTypography.headlineSmall.copyWith(color: color),
@@ -294,7 +294,7 @@ class _CompatibilityCard extends StatelessWidget {
               ],
             ),
             if (issues.isEmpty && level == CompatibilityLevel.compatible) ...[
-              const SizedBox(height: 8),
+              const SizedBox(height: AppSpacing.sm),
               Text(
                 'Parameters and tankmates look good.',
                 style: AppTypography.bodyMedium,
@@ -337,7 +337,7 @@ class _IssueRow extends StatelessWidget {
                 size: 16,
                 color: color,
               ),
-              const SizedBox(width: 8),
+              const SizedBox(width: AppSpacing.sm),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -349,7 +349,7 @@ class _IssueRow extends StatelessWidget {
                     const SizedBox(height: 2),
                     Text(issue.description, style: AppTypography.bodySmall),
                     if (issue.suggestion != null) ...[
-                      const SizedBox(height: 4),
+                      const SizedBox(height: AppSpacing.xs),
                       Text(
                         '💡 ${issue.suggestion}',
                         style: AppTypography.bodySmall.copyWith(
@@ -384,13 +384,13 @@ class _CareGuideCard extends StatelessWidget {
             Row(
               children: [
                 const Icon(Icons.auto_stories, color: AppColors.primary),
-                const SizedBox(width: 8),
+                const SizedBox(width: AppSpacing.sm),
                 Text('Care Guide', style: AppTypography.headlineSmall),
               ],
             ),
             const SizedBox(height: 12),
             Text(species.description, style: AppTypography.bodyMedium),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.md),
 
             _CareRow(
               icon: Icons.restaurant,
@@ -440,7 +440,7 @@ class _CareRow extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Icon(icon, size: 18, color: AppColors.textSecondary),
-          const SizedBox(width: 8),
+          const SizedBox(width: AppSpacing.sm),
           SizedBox(
             width: 100,
             child: Text(
@@ -473,11 +473,11 @@ class _ParametersCard extends StatelessWidget {
             Row(
               children: [
                 const Icon(Icons.science, color: AppColors.primary),
-                const SizedBox(width: 8),
+                const SizedBox(width: AppSpacing.sm),
                 Text('Ideal Parameters', style: AppTypography.headlineSmall),
               ],
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.md),
             Wrap(
               spacing: 12,
               runSpacing: 12,
@@ -522,7 +522,7 @@ class _ParamPill extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
       decoration: BoxDecoration(
         color: AppColors.surfaceVariant,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: AppRadius.mediumRadius,
         border: Border.all(color: AppColors.surfaceVariant.withOpacity(0.6)),
       ),
       child: Column(
@@ -560,7 +560,7 @@ class _CompatibilityNotesCard extends StatelessWidget {
             Row(
               children: [
                 const Icon(Icons.groups, color: AppColors.primary),
-                const SizedBox(width: 8),
+                const SizedBox(width: AppSpacing.sm),
                 Text('Tank Mates', style: AppTypography.headlineSmall),
               ],
             ),
@@ -574,13 +574,13 @@ class _CompatibilityNotesCard extends StatelessWidget {
                     size: 18,
                     color: AppColors.success,
                   ),
-                  const SizedBox(width: 8),
+                  const SizedBox(width: AppSpacing.sm),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text('Good matches:', style: AppTypography.labelLarge),
-                        const SizedBox(height: 4),
+                        const SizedBox(height: AppSpacing.xs),
                         Wrap(
                           spacing: 6,
                           runSpacing: 6,
@@ -595,7 +595,7 @@ class _CompatibilityNotesCard extends StatelessWidget {
               ),
             ],
             if (species.avoidWith.isNotEmpty) ...[
-              const SizedBox(height: 16),
+              const SizedBox(height: AppSpacing.md),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -604,13 +604,13 @@ class _CompatibilityNotesCard extends StatelessWidget {
                     size: 18,
                     color: AppColors.error,
                   ),
-                  const SizedBox(width: 8),
+                  const SizedBox(width: AppSpacing.sm),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text('Avoid:', style: AppTypography.labelLarge),
-                        const SizedBox(height: 4),
+                        const SizedBox(height: AppSpacing.xs),
                         Wrap(
                           spacing: 6,
                           runSpacing: 6,
@@ -646,7 +646,7 @@ class _CompanionChip extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
         color: color.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: AppRadius.mediumRadius,
         border: Border.all(color: color.withOpacity(0.3)),
       ),
       child: Text(name, style: AppTypography.bodySmall.copyWith(color: color)),
@@ -671,14 +671,14 @@ class _NoSpeciesDataCard extends StatelessWidget {
             Row(
               children: [
                 const Icon(Icons.info_outline, color: AppColors.textSecondary),
-                const SizedBox(width: 8),
+                const SizedBox(width: AppSpacing.sm),
                 Text(
                   'Species info not found',
                   style: AppTypography.headlineSmall,
                 ),
               ],
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpacing.sm),
             Text(
               'We don\'t have care data for "${livestock.commonName}" in our database yet.\n\n'
               'Consider researching:\n'

@@ -143,7 +143,7 @@ class _EmptyStateState extends State<EmptyState>
                     padding: const EdgeInsets.all(AppSpacing.md),
                     decoration: BoxDecoration(
                       color: AppColors.info.withOpacity(0.05),
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: AppRadius.mediumRadius,
                       border: Border.all(
                         color: AppColors.info.withOpacity(0.2),
                         width: 1,
@@ -159,7 +159,7 @@ class _EmptyStateState extends State<EmptyState>
                               size: 16,
                               color: AppColors.info,
                             ),
-                            const SizedBox(width: 8),
+                            const SizedBox(width: AppSpacing.sm),
                             Text(
                               'Quick Tips',
                               style: AppTypography.labelMedium.copyWith(

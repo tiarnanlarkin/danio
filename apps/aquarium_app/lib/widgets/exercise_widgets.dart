@@ -176,14 +176,14 @@ class _MultipleChoiceWidgetState extends State<MultipleChoiceWidget>
                   _controller.forward().then((_) => _controller.reverse());
                   widget.onAnswer(index);
                 },
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: AppRadius.mediumRadius,
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 300),
             curve: Curves.easeInOut,
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
               color: bgColor ?? AppColors.surface,
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: AppRadius.mediumRadius,
               border: Border.all(
                 color: borderColor ?? AppColors.surfaceVariant,
                 width: borderColor != null ? 2 : 1,
@@ -230,7 +230,7 @@ class _MultipleChoiceWidgetState extends State<MultipleChoiceWidget>
                           ),
                   ),
                 ),
-                const SizedBox(width: 16),
+                const SizedBox(width: AppSpacing.md),
                 Expanded(
                   child: Text(
                     option,
@@ -395,7 +395,7 @@ class _FillBlankWidgetState extends State<FillBlankWidget> {
                     : AppColors.error.withOpacity(0.1))
               : AppColors.primary.withOpacity(0.1),
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: AppRadius.smallRadius,
             borderSide: BorderSide(
               color: widget.isAnswered
                   ? (thisBlankCorrect ? AppColors.success : AppColors.error)
@@ -404,14 +404,14 @@ class _FillBlankWidgetState extends State<FillBlankWidget> {
             ),
           ),
           enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: AppRadius.smallRadius,
             borderSide: BorderSide(
               color: AppColors.primary.withOpacity(0.5),
               width: 2,
             ),
           ),
           focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: AppRadius.smallRadius,
             borderSide: const BorderSide(color: AppColors.primary, width: 2),
           ),
           contentPadding: const EdgeInsets.symmetric(
@@ -449,7 +449,7 @@ class _FillBlankWidgetState extends State<FillBlankWidget> {
           }),
         ),
 
-        const SizedBox(height: 32),
+        const SizedBox(height: AppSpacing.xl),
 
         // Word bank
         Text(
@@ -490,7 +490,7 @@ class _FillBlankWidgetState extends State<FillBlankWidget> {
                         : AppColors.error.withOpacity(0.1))
                   : AppColors.primary.withOpacity(0.1))
             : AppColors.surfaceVariant,
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: AppRadius.smallRadius,
         border: Border.all(
           color: selectedWord != null
               ? (widget.isAnswered
@@ -568,7 +568,7 @@ class TrueFalseWidget extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         _buildOption(context, true, 'True', Icons.check_circle_outline),
-        const SizedBox(height: 16),
+        const SizedBox(height: AppSpacing.md),
         _buildOption(context, false, 'False', Icons.cancel_outlined),
       ],
     );
@@ -608,13 +608,13 @@ class TrueFalseWidget extends StatelessWidget {
       duration: const Duration(milliseconds: 100),
       child: InkWell(
         onTap: isAnswered ? null : () => onAnswer(value),
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: AppRadius.mediumRadius,
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 300),
           padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 20),
           decoration: BoxDecoration(
             color: bgColor ?? AppColors.surface,
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: AppRadius.mediumRadius,
             border: Border.all(
               color: borderColor ?? AppColors.surfaceVariant,
               width: borderColor != null ? 2 : 1,
@@ -728,7 +728,7 @@ class _MatchingWidgetState extends State<MatchingWidget> {
           ),
           textAlign: TextAlign.center,
         ),
-        const SizedBox(height: 24),
+        const SizedBox(height: AppSpacing.lg),
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -743,7 +743,7 @@ class _MatchingWidgetState extends State<MatchingWidget> {
               ),
             ),
 
-            const SizedBox(width: 16),
+            const SizedBox(width: AppSpacing.md),
 
             // Right column
             Expanded(
@@ -790,13 +790,13 @@ class _MatchingWidgetState extends State<MatchingWidget> {
       padding: const EdgeInsets.only(bottom: 12),
       child: InkWell(
         onTap: () => _onLeftTap(index),
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: AppRadius.mediumRadius,
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 200),
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
             color: bgColor ?? AppColors.surface,
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: AppRadius.mediumRadius,
             border: Border.all(
               color: borderColor ?? AppColors.surfaceVariant,
               width: borderColor != null ? 2 : 1,
@@ -814,7 +814,7 @@ class _MatchingWidgetState extends State<MatchingWidget> {
                       ? (isCorrect ? AppColors.success : AppColors.error)
                       : AppColors.accent,
                 ),
-              if (isPaired) const SizedBox(width: 8),
+              if (isPaired) const SizedBox(width: AppSpacing.sm),
               Expanded(
                 child: Text(
                   text,
@@ -861,13 +861,13 @@ class _MatchingWidgetState extends State<MatchingWidget> {
       padding: const EdgeInsets.only(bottom: 12),
       child: InkWell(
         onTap: () => _onRightTap(index),
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: AppRadius.mediumRadius,
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 200),
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
             color: bgColor ?? AppColors.surface,
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: AppRadius.mediumRadius,
             border: Border.all(
               color: borderColor ?? AppColors.surfaceVariant,
               width: borderColor != null ? 2 : 1,
@@ -876,7 +876,7 @@ class _MatchingWidgetState extends State<MatchingWidget> {
           child: Row(
             children: [
               Expanded(child: Text(text, style: AppTypography.bodyMedium)),
-              if (isPaired) const SizedBox(width: 8),
+              if (isPaired) const SizedBox(width: AppSpacing.sm),
               if (isPaired)
                 Icon(
                   widget.isAnswered
@@ -957,7 +957,7 @@ class _OrderingWidgetState extends State<OrderingWidget> {
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
             color: AppColors.info.withOpacity(0.1),
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: AppRadius.mediumRadius,
           ),
           child: Row(
             children: [
@@ -974,7 +974,7 @@ class _OrderingWidgetState extends State<OrderingWidget> {
             ],
           ),
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: AppSpacing.md),
         ReorderableListView.builder(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
@@ -1017,7 +1017,7 @@ class _OrderingWidgetState extends State<OrderingWidget> {
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: bgColor ?? AppColors.surface,
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: AppRadius.mediumRadius,
           border: Border.all(
             color: borderColor ?? AppColors.surfaceVariant,
             width: borderColor != null ? 2 : 1,
@@ -1044,7 +1044,7 @@ class _OrderingWidgetState extends State<OrderingWidget> {
                 ),
               ),
             ),
-            const SizedBox(width: 16),
+            const SizedBox(width: AppSpacing.md),
             Expanded(child: Text(text, style: AppTypography.bodyLarge)),
             if (!widget.isAnswered)
               Icon(Icons.drag_handle, color: AppColors.textSecondary),
@@ -1081,7 +1081,7 @@ class ExplanationCard extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: AppColors.info.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: AppRadius.mediumRadius,
         border: Border.all(color: AppColors.info.withOpacity(0.3)),
       ),
       child: Row(
@@ -1102,7 +1102,7 @@ class ExplanationCard extends StatelessWidget {
                     color: AppColors.info,
                   ),
                 ),
-                const SizedBox(height: 4),
+                const SizedBox(height: AppSpacing.xs),
                 Text(explanation, style: AppTypography.bodyMedium),
               ],
             ),

@@ -201,7 +201,7 @@ class _CompatibilityCheckerScreenState
                 hintText: 'Search fish to add...',
                 prefixIcon: const Icon(Icons.search),
                 border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: AppRadius.mediumRadius,
                 ),
                 filled: true,
               ),
@@ -215,7 +215,7 @@ class _CompatibilityCheckerScreenState
               margin: const EdgeInsets.symmetric(horizontal: 16),
               decoration: BoxDecoration(
                 color: Theme.of(context).cardColor,
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: AppRadius.mediumRadius,
                 boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 8)],
               ),
               child: ListView.builder(
@@ -250,7 +250,7 @@ class _CompatibilityCheckerScreenState
                             'Add Fish to Check',
                             style: AppTypography.headlineSmall,
                           ),
-                          const SizedBox(height: 4),
+                          const SizedBox(height: AppSpacing.xs),
                           Text(
                             'Search and add fish above to check if they\'re compatible',
                             style: AppTypography.bodySmall,
@@ -265,7 +265,7 @@ class _CompatibilityCheckerScreenState
                     'Selected Fish (${_selectedSpecies.length})',
                     style: AppTypography.headlineSmall,
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: AppSpacing.sm),
                   Wrap(
                     spacing: 8,
                     runSpacing: 8,
@@ -280,7 +280,7 @@ class _CompatibilityCheckerScreenState
                         .toList(),
                   ),
 
-                  const SizedBox(height: 24),
+                  const SizedBox(height: AppSpacing.lg),
 
                   // Compatibility verdict
                   if (_selectedSpecies.length >= 2) ...[
@@ -336,12 +336,12 @@ class _CompatibilityCheckerScreenState
                       ),
                     ),
 
-                    const SizedBox(height: 16),
+                    const SizedBox(height: AppSpacing.md),
 
                     // Issues list
                     if (issues.isNotEmpty) ...[
                       Text('Issues Found', style: AppTypography.headlineSmall),
-                      const SizedBox(height: 8),
+                      const SizedBox(height: AppSpacing.sm),
                       ...issues.map(
                         (issue) => Card(
                           margin: const EdgeInsets.only(bottom: 8),
@@ -364,7 +364,7 @@ class _CompatibilityCheckerScreenState
                           ),
                         ),
                       ),
-                      const SizedBox(height: 16),
+                      const SizedBox(height: AppSpacing.md),
                     ],
 
                     // Recommended parameters
@@ -372,7 +372,7 @@ class _CompatibilityCheckerScreenState
                       'Recommended Setup',
                       style: AppTypography.headlineSmall,
                     ),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: AppSpacing.sm),
                     Card(
                       child: Padding(
                         padding: const EdgeInsets.all(16),
@@ -411,7 +411,7 @@ class _CompatibilityCheckerScreenState
                   ],
                 ],
 
-                const SizedBox(height: 48),
+                const SizedBox(height: AppSpacing.xxl),
               ],
             ),
           ),
@@ -457,7 +457,7 @@ class _ParamRow extends StatelessWidget {
       child: Row(
         children: [
           Icon(icon, size: 18, color: AppColors.textSecondary),
-          const SizedBox(width: 8),
+          const SizedBox(width: AppSpacing.sm),
           Expanded(child: Text(label, style: AppTypography.bodyMedium)),
           Text(
             value,

@@ -66,12 +66,12 @@ class _LivestockValueScreenState extends ConsumerState<LivestockValueScreen> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Icon(Icons.pets, size: 64, color: AppColors.textHint),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: AppSpacing.md),
                     Text(
                       'No Livestock Yet',
                       style: AppTypography.headlineSmall,
                     ),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: AppSpacing.sm),
                     Text(
                       'Add fish and invertebrates to your tank to estimate their value.',
                       style: AppTypography.bodyMedium,
@@ -100,14 +100,14 @@ class _LivestockValueScreenState extends ConsumerState<LivestockValueScreen> {
                         'Estimated Total Value',
                         style: AppTypography.labelLarge,
                       ),
-                      const SizedBox(height: 8),
+                      const SizedBox(height: AppSpacing.sm),
                       Text(
                         '$_currency${totalValue.toStringAsFixed(2)}',
                         style: AppTypography.headlineLarge.copyWith(
                           color: AppColors.primary,
                         ),
                       ),
-                      const SizedBox(height: 4),
+                      const SizedBox(height: AppSpacing.xs),
                       Text(
                         '$totalAnimals animals',
                         style: AppTypography.bodySmall,
@@ -117,7 +117,7 @@ class _LivestockValueScreenState extends ConsumerState<LivestockValueScreen> {
                 ),
               ),
 
-              const SizedBox(height: 8),
+              const SizedBox(height: AppSpacing.sm),
 
               Card(
                 color: AppColors.warning.withOpacity(0.1),
@@ -126,7 +126,7 @@ class _LivestockValueScreenState extends ConsumerState<LivestockValueScreen> {
                   child: Row(
                     children: [
                       Icon(Icons.info, size: 18, color: AppColors.warning),
-                      const SizedBox(width: 8),
+                      const SizedBox(width: AppSpacing.sm),
                       Expanded(
                         child: Text(
                           'Enter prices below to calculate total value. Useful for insurance or selling.',
@@ -138,7 +138,7 @@ class _LivestockValueScreenState extends ConsumerState<LivestockValueScreen> {
                 ),
               ),
 
-              const SizedBox(height: 24),
+              const SizedBox(height: AppSpacing.lg),
 
               Text('Livestock Prices', style: AppTypography.headlineSmall),
               const SizedBox(height: 12),
@@ -155,7 +155,7 @@ class _LivestockValueScreenState extends ConsumerState<LivestockValueScreen> {
                           height: 40,
                           decoration: BoxDecoration(
                             color: AppColors.primary.withOpacity(0.1),
-                            borderRadius: BorderRadius.circular(8),
+                            borderRadius: AppRadius.smallRadius,
                           ),
                           child: Icon(
                             Icons.set_meal,
@@ -207,7 +207,7 @@ class _LivestockValueScreenState extends ConsumerState<LivestockValueScreen> {
                             },
                           ),
                         ),
-                        const SizedBox(width: 8),
+                        const SizedBox(width: AppSpacing.sm),
                         SizedBox(
                           width: 70,
                           child: Text(
@@ -222,7 +222,7 @@ class _LivestockValueScreenState extends ConsumerState<LivestockValueScreen> {
                 ),
               ),
 
-              const SizedBox(height: 24),
+              const SizedBox(height: AppSpacing.lg),
 
               // Tips
               Text('Pricing Tips', style: AppTypography.headlineSmall),
@@ -251,7 +251,7 @@ class _LivestockValueScreenState extends ConsumerState<LivestockValueScreen> {
                 ),
               ),
 
-              const SizedBox(height: 48),
+              const SizedBox(height: AppSpacing.xxl),
             ],
           );
         },

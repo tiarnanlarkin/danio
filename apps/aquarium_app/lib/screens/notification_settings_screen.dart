@@ -36,12 +36,12 @@ class NotificationSettingsScreen extends ConsumerWidget {
                       size: 48,
                       color: AppColors.primary,
                     ),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: AppSpacing.sm),
                     Text(
                       'Streak Reminders',
                       style: AppTypography.headlineMedium,
                     ),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: AppSpacing.sm),
                     Text(
                       'Get daily notifications to help maintain your learning streak.',
                       style: AppTypography.bodyMedium.copyWith(
@@ -179,7 +179,7 @@ class NotificationSettingsScreen extends ConsumerWidget {
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
                       color: AppColors.primary.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: AppRadius.mediumRadius,
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -187,7 +187,7 @@ class NotificationSettingsScreen extends ConsumerWidget {
                         Row(
                           children: [
                             Icon(Icons.info_outline, color: AppColors.primary),
-                            const SizedBox(width: 8),
+                            const SizedBox(width: AppSpacing.sm),
                             Text(
                               'How it works',
                               style: AppTypography.labelLarge.copyWith(
@@ -238,7 +238,7 @@ class NotificationSettingsScreen extends ConsumerWidget {
                     },
                   ),
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: AppSpacing.md),
               ],
             ],
           );
@@ -254,7 +254,7 @@ class NotificationSettingsScreen extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(emoji, style: const TextStyle(fontSize: 16)),
-          const SizedBox(width: 8),
+          const SizedBox(width: AppSpacing.sm),
           Expanded(child: Text(text, style: AppTypography.bodySmall)),
         ],
       ),

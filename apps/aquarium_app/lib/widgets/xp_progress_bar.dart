@@ -92,7 +92,7 @@ class _XpProgressBarState extends ConsumerState<XpProgressBar>
                           size: 16,
                           color: AppColors.warning,
                         ),
-                        const SizedBox(width: 4),
+                        const SizedBox(width: AppSpacing.xs),
                         Text(
                           'Level ${profile.currentLevel}',
                           style: AppTypography.labelMedium.copyWith(
@@ -114,7 +114,7 @@ class _XpProgressBarState extends ConsumerState<XpProgressBar>
                 ],
               ),
 
-            if (widget.showLabels) const SizedBox(height: 8),
+            if (widget.showLabels) const SizedBox(height: AppSpacing.sm),
 
             // Animated progress bar
             AnimatedBuilder(
@@ -172,7 +172,7 @@ class _XpProgressBarState extends ConsumerState<XpProgressBar>
 
             // XP count below bar
             if (widget.showLabels) ...[
-              const SizedBox(height: 4),
+              const SizedBox(height: AppSpacing.xs),
               Text(
                 '${profile.totalXp} Total XP',
                 style: AppTypography.bodySmall.copyWith(
@@ -233,7 +233,7 @@ class _ShimmerEffectState extends State<_ShimmerEffect>
               end: Alignment.centerRight,
               colors: [
                 Colors.transparent,
-                Colors.white.withOpacity(0.3),
+                AppOverlays.white30,
                 Colors.transparent,
               ],
               stops: [
@@ -275,7 +275,7 @@ class XpProgressCard extends ConsumerWidget {
                 AppColors.secondary.withOpacity(0.1),
               ],
             ),
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: AppRadius.mediumRadius,
             border: Border.all(
               color: AppColors.warning.withOpacity(0.3),
               width: 1.5,
@@ -285,7 +285,7 @@ class XpProgressCard extends ConsumerWidget {
             color: Colors.transparent,
             child: InkWell(
               onTap: onTap,
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: AppRadius.mediumRadius,
               child: Padding(
                 padding: const EdgeInsets.all(16),
                 child: Column(
@@ -300,7 +300,7 @@ class XpProgressCard extends ConsumerWidget {
                               padding: const EdgeInsets.all(8),
                               decoration: BoxDecoration(
                                 color: AppColors.warning,
-                                borderRadius: BorderRadius.circular(8),
+                                borderRadius: AppRadius.smallRadius,
                               ),
                               child: const Icon(
                                 Icons.workspace_premium,
@@ -337,13 +337,13 @@ class XpProgressCard extends ConsumerWidget {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: AppSpacing.md),
                     XpProgressBar(
                       height: 8,
                       showLabels: false,
                       showLevel: false,
                     ),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: AppSpacing.sm),
                     Text(
                       profile.xpToNextLevel > 0
                           ? '${profile.xpToNextLevel} XP to Level ${profile.currentLevel + 1}'

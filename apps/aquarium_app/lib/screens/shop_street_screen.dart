@@ -105,12 +105,12 @@ class ShopStreetScreen extends ConsumerWidget {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: AppSpacing.lg),
                   _BudgetCard(
                     budget: budget,
                     onEdit: () => _showBudgetDialog(context, ref, budget),
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: AppSpacing.lg),
                   _LocalShopsCard(
                     shops: shops,
                     onAddShop: () => _showAddShopDialog(context, ref),
@@ -211,7 +211,7 @@ class ShopStreetScreen extends ConsumerWidget {
         padding: EdgeInsets.only(bottom: MediaQuery.of(ctx).viewInsets.bottom),
         decoration: BoxDecoration(
           color: Theme.of(context).scaffoldBackgroundColor,
-          borderRadius: BorderRadius.circular(24),
+          borderRadius: AppRadius.largeRadius,
         ),
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(24),
@@ -223,7 +223,7 @@ class ShopStreetScreen extends ConsumerWidget {
                 existingShop == null ? 'Add Local Shop' : 'Edit Shop',
                 style: AppTypography.headlineSmall,
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: AppSpacing.lg),
               TextField(
                 controller: nameController,
                 decoration: const InputDecoration(
@@ -231,14 +231,14 @@ class ShopStreetScreen extends ConsumerWidget {
                   hintText: 'e.g., Aquatic World',
                 ),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppSpacing.md),
               TextField(
                 controller: addressController,
                 decoration: const InputDecoration(
                   labelText: 'Address (optional)',
                 ),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppSpacing.md),
               TextField(
                 controller: distanceController,
                 decoration: const InputDecoration(
@@ -248,7 +248,7 @@ class ShopStreetScreen extends ConsumerWidget {
                   decimal: true,
                 ),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppSpacing.md),
               TextField(
                 controller: notesController,
                 decoration: const InputDecoration(
@@ -256,7 +256,7 @@ class ShopStreetScreen extends ConsumerWidget {
                 ),
                 maxLines: 2,
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: AppSpacing.lg),
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
@@ -334,7 +334,7 @@ class _ShopHeader extends StatelessWidget {
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
               color: ShopColors.glassCard,
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: AppRadius.mediumRadius,
               border: Border.all(color: ShopColors.glassBorder),
             ),
             child: const Icon(
@@ -343,7 +343,7 @@ class _ShopHeader extends StatelessWidget {
               size: 28,
             ),
           ),
-          const SizedBox(width: 16),
+          const SizedBox(width: AppSpacing.md),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: const [
@@ -355,7 +355,7 @@ class _ShopHeader extends StatelessWidget {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              SizedBox(height: 4),
+              SizedBox(height: AppSpacing.xs),
               Text(
                 'Wishlists & shopping',
                 style: TextStyle(color: ShopColors.textSecondary, fontSize: 14),
@@ -390,14 +390,14 @@ class _ShopSection extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: AppRadius.largeRadius,
         child: BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
           child: Container(
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
               color: ShopColors.glassCard,
-              borderRadius: BorderRadius.circular(20),
+              borderRadius: AppRadius.largeRadius,
               border: Border.all(color: ShopColors.glassBorder),
             ),
             child: Row(
@@ -406,11 +406,11 @@ class _ShopSection extends StatelessWidget {
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
                     color: color.withOpacity(0.2),
-                    borderRadius: BorderRadius.circular(14),
+                    borderRadius: AppRadius.mediumRadius,
                   ),
                   child: Icon(icon, color: color, size: 28),
                 ),
-                const SizedBox(width: 16),
+                const SizedBox(width: AppSpacing.md),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -423,7 +423,7 @@ class _ShopSection extends StatelessWidget {
                           fontWeight: FontWeight.w600,
                         ),
                       ),
-                      const SizedBox(height: 4),
+                      const SizedBox(height: AppSpacing.xs),
                       Text(
                         subtitle,
                         style: const TextStyle(
@@ -443,7 +443,7 @@ class _ShopSection extends StatelessWidget {
                     color: itemCount > 0
                         ? ShopColors.accent.withOpacity(0.2)
                         : ShopColors.glassCard,
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: AppRadius.mediumRadius,
                   ),
                   child: Text(
                     '$itemCount',
@@ -455,7 +455,7 @@ class _ShopSection extends StatelessWidget {
                     ),
                   ),
                 ),
-                const SizedBox(width: 8),
+                const SizedBox(width: AppSpacing.sm),
                 const Icon(
                   Icons.chevron_right,
                   color: ShopColors.textSecondary,
@@ -480,14 +480,14 @@ class _BudgetCard extends StatelessWidget {
     return GestureDetector(
       onTap: onEdit,
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: AppRadius.largeRadius,
         child: BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
           child: Container(
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
               color: ShopColors.glassCard,
-              borderRadius: BorderRadius.circular(20),
+              borderRadius: AppRadius.largeRadius,
               border: Border.all(color: ShopColors.glassBorder),
             ),
             child: Column(
@@ -562,9 +562,9 @@ class _BudgetCard extends StatelessWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: AppSpacing.md),
                 ClipRRect(
-                  borderRadius: BorderRadius.circular(4),
+                  borderRadius: AppRadius.xsRadius,
                   child: LinearProgressIndicator(
                     value: budget.percentUsed,
                     backgroundColor: ShopColors.background3,
@@ -599,14 +599,14 @@ class _LocalShopsCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
-      borderRadius: BorderRadius.circular(20),
+      borderRadius: AppRadius.largeRadius,
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
         child: Container(
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
             color: ShopColors.glassCard,
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: AppRadius.largeRadius,
             border: Border.all(color: ShopColors.glassBorder),
           ),
           child: Column(
@@ -626,7 +626,7 @@ class _LocalShopsCard extends StatelessWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppSpacing.md),
               if (shops.isEmpty)
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 16),
@@ -683,7 +683,7 @@ class _ShopTile extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: AppRadius.mediumRadius,
         child: Row(
           children: [
             Container(
@@ -691,7 +691,7 @@ class _ShopTile extends StatelessWidget {
               height: 40,
               decoration: BoxDecoration(
                 color: ShopColors.background3,
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: AppRadius.smallRadius,
               ),
               child: const Icon(
                 Icons.store,

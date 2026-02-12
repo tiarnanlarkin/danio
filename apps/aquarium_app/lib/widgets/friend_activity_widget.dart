@@ -31,7 +31,7 @@ class FriendActivityWidget extends ConsumerWidget {
           margin: const EdgeInsets.all(16),
           elevation: 2,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: AppRadius.mediumRadius,
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -58,7 +58,7 @@ class FriendActivityWidget extends ConsumerWidget {
                         color: AppColors.primary,
                         size: 20,
                       ),
-                      const SizedBox(width: 8),
+                      const SizedBox(width: AppSpacing.sm),
                       const Text(
                         'Friend Activity',
                         style: TextStyle(
@@ -193,7 +193,7 @@ class _CompactActivityTile extends ConsumerWidget {
                         activity.type.emoji,
                         style: const TextStyle(fontSize: 12),
                       ),
-                      const SizedBox(width: 4),
+                      const SizedBox(width: AppSpacing.xs),
                       Expanded(
                         child: Text(
                           activity.description,
@@ -206,7 +206,7 @@ class _CompactActivityTile extends ConsumerWidget {
                         ),
                       ),
                       if (activity.xpEarned != null) ...[
-                        const SizedBox(width: 8),
+                        const SizedBox(width: AppSpacing.sm),
                         Text(
                           '+${activity.xpEarned}',
                           style: TextStyle(
@@ -294,7 +294,7 @@ class _BannerActivityCard extends ConsumerWidget {
               );
             });
           },
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: AppRadius.mediumRadius,
           child: Padding(
             padding: const EdgeInsets.all(12),
             child: Column(
@@ -307,7 +307,7 @@ class _BannerActivityCard extends ConsumerWidget {
                       activity.friendAvatarEmoji ?? '🐠',
                       style: const TextStyle(fontSize: 20),
                     ),
-                    const SizedBox(width: 8),
+                    const SizedBox(width: AppSpacing.sm),
                     Expanded(
                       child: Text(
                         activity.friendDisplayName,
@@ -342,7 +342,7 @@ class _BannerActivityCard extends ConsumerWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: 4),
+                const SizedBox(height: AppSpacing.xs),
                 Text(
                   activity.timeAgo,
                   style: TextStyle(fontSize: 10, color: Colors.grey.shade500),

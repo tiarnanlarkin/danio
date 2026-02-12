@@ -80,9 +80,9 @@ class _SpacedRepetitionPracticeScreenState
                 child: Text('🎯', style: TextStyle(fontSize: 56)),
               ),
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: AppSpacing.lg),
             Text('All caught up!', style: AppTypography.headlineLarge),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpacing.sm),
             Text(
               'No reviews due right now. Your knowledge is fresh!',
               style: AppTypography.bodyLarge.copyWith(
@@ -90,7 +90,7 @@ class _SpacedRepetitionPracticeScreenState
               ),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: AppSpacing.lg),
             if (srState.stats.totalCards > 0) ...[
               Text(
                 'Next review in:',
@@ -98,7 +98,7 @@ class _SpacedRepetitionPracticeScreenState
                   color: AppColors.textHint,
                 ),
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: AppSpacing.sm),
               Text(
                 _getNextReviewTime(srState),
                 style: AppTypography.headlineMedium.copyWith(
@@ -106,7 +106,7 @@ class _SpacedRepetitionPracticeScreenState
                 ),
               ),
             ] else ...[
-              const SizedBox(height: 16),
+              const SizedBox(height: AppSpacing.md),
               Text(
                 'Complete lessons to build your practice queue.',
                 style: AppTypography.bodyMedium.copyWith(
@@ -172,7 +172,7 @@ class _SpacedRepetitionPracticeScreenState
           color: AppColors.secondary,
         ),
 
-        const SizedBox(height: 24),
+        const SizedBox(height: AppSpacing.lg),
 
         // Mastery Progress
         if (srState.stats.totalCards > 0) ...[
@@ -189,7 +189,7 @@ class _SpacedRepetitionPracticeScreenState
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         gradient: AppColors.primaryGradient,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: AppRadius.mediumRadius,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -208,7 +208,7 @@ class _SpacedRepetitionPracticeScreenState
                         color: Colors.white,
                       ),
                     ),
-                    const SizedBox(height: 4),
+                    const SizedBox(height: AppSpacing.xs),
                     Text(
                       '${srState.stats.totalCards} concepts learning',
                       style: AppTypography.bodyMedium.copyWith(
@@ -255,7 +255,7 @@ class _SpacedRepetitionPracticeScreenState
     return Column(
       children: [
         Icon(icon, color: Colors.white70, size: 20),
-        const SizedBox(height: 4),
+        const SizedBox(height: AppSpacing.xs),
         Text(
           value,
           style: AppTypography.headlineMedium.copyWith(
@@ -282,14 +282,14 @@ class _SpacedRepetitionPracticeScreenState
   }) {
     return InkWell(
       onTap: enabled && count > 0 ? () => _startSession(mode) : null,
-      borderRadius: BorderRadius.circular(16),
+      borderRadius: AppRadius.mediumRadius,
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: enabled
               ? AppColors.surface
               : AppColors.surface.withOpacity(0.5),
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: AppRadius.mediumRadius,
           border: Border.all(
             color: enabled ? color.withOpacity(0.3) : AppColors.surfaceVariant,
           ),
@@ -302,11 +302,11 @@ class _SpacedRepetitionPracticeScreenState
                 color: enabled
                     ? color.withOpacity(0.1)
                     : AppColors.surfaceVariant,
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: AppRadius.mediumRadius,
               ),
               child: Icon(icon, color: enabled ? color : AppColors.textHint),
             ),
-            const SizedBox(width: 16),
+            const SizedBox(width: AppSpacing.md),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -318,7 +318,7 @@ class _SpacedRepetitionPracticeScreenState
                       color: enabled ? null : AppColors.textHint,
                     ),
                   ),
-                  const SizedBox(height: 4),
+                  const SizedBox(height: AppSpacing.xs),
                   Text(
                     description,
                     style: AppTypography.bodySmall.copyWith(
@@ -336,7 +336,7 @@ class _SpacedRepetitionPracticeScreenState
                 color: enabled && count > 0
                     ? color.withOpacity(0.2)
                     : AppColors.surfaceVariant,
-                borderRadius: BorderRadius.circular(16),
+                borderRadius: AppRadius.mediumRadius,
               ),
               child: Text(
                 count == 0 ? 'None' : '$count',
@@ -346,7 +346,7 @@ class _SpacedRepetitionPracticeScreenState
                 ),
               ),
             ),
-            const SizedBox(width: 8),
+            const SizedBox(width: AppSpacing.sm),
             Icon(
               Icons.chevron_right,
               color: enabled && count > 0
@@ -364,7 +364,7 @@ class _SpacedRepetitionPracticeScreenState
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: AppColors.surface,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: AppRadius.mediumRadius,
         border: Border.all(color: AppColors.surfaceVariant),
       ),
       child: Column(
@@ -379,7 +379,7 @@ class _SpacedRepetitionPracticeScreenState
             child: Row(
               children: [
                 Text(level.emoji, style: const TextStyle(fontSize: 20)),
-                const SizedBox(width: 8),
+                const SizedBox(width: AppSpacing.sm),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -399,7 +399,7 @@ class _SpacedRepetitionPracticeScreenState
                           ),
                         ],
                       ),
-                      const SizedBox(height: 4),
+                      const SizedBox(height: AppSpacing.xs),
                       LinearProgressIndicator(
                         value: percentage / 100,
                         backgroundColor: AppColors.surfaceVariant,
@@ -600,7 +600,7 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
                 color: AppColors.surface,
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.05),
+                    color: AppOverlays.black5,
                     blurRadius: 4,
                     offset: const Offset(0, 2),
                   ),
@@ -623,9 +623,9 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: AppSpacing.sm),
                   ClipRRect(
-                    borderRadius: BorderRadius.circular(4),
+                    borderRadius: AppRadius.xsRadius,
                     child: LinearProgressIndicator(
                       value: progress,
                       backgroundColor: AppColors.surfaceVariant,
@@ -636,7 +636,7 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
                     ),
                   ),
                   if (cardsReviewed > 0) ...[
-                    const SizedBox(height: 8),
+                    const SizedBox(height: AppSpacing.sm),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -645,23 +645,23 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
                           size: 16,
                           color: AppColors.success,
                         ),
-                        const SizedBox(width: 4),
+                        const SizedBox(width: AppSpacing.xs),
                         Text(
                           '$correctSoFar correct',
                           style: AppTypography.bodySmall.copyWith(
                             color: AppColors.success,
                           ),
                         ),
-                        const SizedBox(width: 16),
+                        const SizedBox(width: AppSpacing.md),
                         Icon(Icons.cancel, size: 16, color: AppColors.error),
-                        const SizedBox(width: 4),
+                        const SizedBox(width: AppSpacing.xs),
                         Text(
                           '${cardsReviewed - correctSoFar} incorrect',
                           style: AppTypography.bodySmall.copyWith(
                             color: AppColors.error,
                           ),
                         ),
-                        const SizedBox(width: 16),
+                        const SizedBox(width: AppSpacing.md),
                         Text(
                           '($accuracy% accuracy)',
                           style: AppTypography.bodySmall.copyWith(
@@ -700,7 +700,7 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
                 _currentCard.masteryLevel.emoji,
                 style: const TextStyle(fontSize: 24),
               ),
-              const SizedBox(width: 8),
+              const SizedBox(width: AppSpacing.sm),
               Text(
                 _currentCard.masteryLevel.displayName,
                 style: AppTypography.labelLarge.copyWith(
@@ -717,18 +717,18 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
               ),
             ],
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.lg),
 
           // Question card
           Container(
             padding: const EdgeInsets.all(24),
             decoration: BoxDecoration(
               color: AppColors.surface,
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: AppRadius.mediumRadius,
               border: Border.all(color: AppColors.surfaceVariant),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.05),
+                  color: AppOverlays.black5,
                   blurRadius: 10,
                   offset: const Offset(0, 4),
                 ),
@@ -750,12 +750,12 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
           ),
 
           if (_errorMessage != null) ...[
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.md),
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
                 color: AppColors.error.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: AppRadius.smallRadius,
               ),
               child: Text(
                 _errorMessage!,
@@ -779,7 +779,7 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
         color: Theme.of(context).scaffoldBackgroundColor,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: AppOverlays.black5,
             blurRadius: 10,
             offset: const Offset(0, -5),
           ),
@@ -800,7 +800,7 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
               const Column(
                 children: [
                   CircularProgressIndicator(),
-                  SizedBox(height: 8),
+                  SizedBox(height: AppSpacing.sm),
                   Text('Submitting...'),
                 ],
               )
@@ -819,7 +819,7 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Icon(Icons.close),
-                          SizedBox(height: 4),
+                          SizedBox(height: AppSpacing.xs),
                           Text('Forgot'),
                         ],
                       ),
@@ -838,7 +838,7 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Icon(Icons.check),
-                          SizedBox(height: 4),
+                          SizedBox(height: AppSpacing.xs),
                           Text('Remembered'),
                         ],
                       ),
@@ -861,7 +861,7 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
         color: lastResult.correct
             ? AppColors.success.withOpacity(0.1)
             : AppColors.error.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: AppRadius.mediumRadius,
         border: Border.all(
           color: lastResult.correct
               ? AppColors.success.withOpacity(0.3)
@@ -891,7 +891,7 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
                             : AppColors.error,
                       ),
                     ),
-                    const SizedBox(height: 4),
+                    const SizedBox(height: AppSpacing.xs),
                     Text(
                       '+${lastResult.xpEarned} XP',
                       style: AppTypography.bodyMedium.copyWith(
@@ -903,7 +903,7 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
               ),
             ],
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.md),
           ElevatedButton(
             onPressed: _nextCard,
             style: ElevatedButton.styleFrom(
@@ -1021,7 +1021,7 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
       title: Row(
         children: [
           const Text('Session Complete!'),
-          const SizedBox(width: 8),
+          const SizedBox(width: AppSpacing.sm),
           const Text('🎉'),
         ],
       ),
@@ -1039,7 +1039,7 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
                     : accuracy >= 60
                     ? AppColors.warning.withOpacity(0.1)
                     : AppColors.error.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: AppRadius.mediumRadius,
               ),
               child: Column(
                 children: [
@@ -1055,7 +1055,7 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
                       fontSize: 48,
                     ),
                   ),
-                  const SizedBox(height: 4),
+                  const SizedBox(height: AppSpacing.xs),
                   Text(
                     'Accuracy',
                     style: AppTypography.bodyMedium.copyWith(
@@ -1070,23 +1070,23 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
 
           // Stats breakdown
           _buildStatRow('Cards Reviewed', '$totalCards'),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.sm),
           _buildStatRow(
             'Correct',
             '$correctCards',
             iconColor: AppColors.success,
             icon: Icons.check_circle,
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.sm),
           _buildStatRow(
             'Incorrect',
             '$incorrectCards',
             iconColor: AppColors.error,
             icon: Icons.cancel,
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.sm),
           const Divider(),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.sm),
           _buildStatRow(
             'XP Earned',
             '+$totalXp',
@@ -1128,7 +1128,7 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
           children: [
             if (icon != null) ...[
               Icon(icon, size: 18, color: iconColor ?? AppColors.textSecondary),
-              const SizedBox(width: 8),
+              const SizedBox(width: AppSpacing.sm),
             ],
             Text(
               label,
@@ -1169,12 +1169,12 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
             const Text(
               'Your progress will be saved, but you\'ll need to start a new session to continue practicing.',
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.md),
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
                 color: AppColors.surfaceVariant,
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: AppRadius.smallRadius,
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -1193,7 +1193,7 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 4),
+                  const SizedBox(height: AppSpacing.xs),
                   Row(
                     children: [
                       const Icon(

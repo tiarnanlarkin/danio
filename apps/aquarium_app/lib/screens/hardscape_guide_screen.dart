@@ -22,7 +22,7 @@ class HardscapeGuideScreen extends StatelessWidget {
                   Row(
                     children: [
                       Icon(Icons.landscape, color: AppColors.info),
-                      const SizedBox(width: 8),
+                      const SizedBox(width: AppSpacing.sm),
                       Text(
                         'What is Hardscape?',
                         style: AppTypography.headlineSmall,
@@ -41,11 +41,11 @@ class HardscapeGuideScreen extends StatelessWidget {
             ),
           ),
 
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.lg),
 
           // Rocks
           Text('Rocks', style: AppTypography.headlineMedium),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.md),
 
           _RockCard(
             name: 'Seiryu Stone',
@@ -111,11 +111,11 @@ class HardscapeGuideScreen extends StatelessWidget {
             ],
           ),
 
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.lg),
 
           // Driftwood
           Text('Driftwood', style: AppTypography.headlineMedium),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.md),
 
           _WoodCard(
             name: 'Mopani Wood',
@@ -174,11 +174,11 @@ class HardscapeGuideScreen extends StatelessWidget {
             ],
           ),
 
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.lg),
 
           // Preparing hardscape
           Text('Preparation', style: AppTypography.headlineMedium),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.md),
 
           Card(
             child: Padding(
@@ -187,7 +187,7 @@ class HardscapeGuideScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text('Preparing Rocks', style: AppTypography.labelLarge),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: AppSpacing.sm),
                   _PrepStep(
                     step: '1',
                     text: 'Scrub with brush and water (no soap!)',
@@ -205,10 +205,10 @@ class HardscapeGuideScreen extends StatelessWidget {
                     text: 'Test with vinegar — fizzing means calcium',
                   ),
 
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.md),
 
                   Text('Preparing Driftwood', style: AppTypography.labelLarge),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: AppSpacing.sm),
                   _PrepStep(step: '1', text: 'Scrub off any loose material'),
                   _PrepStep(
                     step: '2',
@@ -231,11 +231,11 @@ class HardscapeGuideScreen extends StatelessWidget {
             ),
           ),
 
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.lg),
 
           // Aquascaping tips
           Text('Design Tips', style: AppTypography.headlineMedium),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.md),
 
           _TipCard(
             title: 'Rule of Thirds',
@@ -272,7 +272,7 @@ class HardscapeGuideScreen extends StatelessWidget {
             icon: Icons.category,
           ),
 
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.lg),
 
           // Warning
           Card(
@@ -285,7 +285,7 @@ class HardscapeGuideScreen extends StatelessWidget {
                   Row(
                     children: [
                       Icon(Icons.warning_amber, color: AppColors.warning),
-                      const SizedBox(width: 8),
+                      const SizedBox(width: AppSpacing.sm),
                       Text('Safety Notes', style: AppTypography.headlineSmall),
                     ],
                   ),
@@ -304,7 +304,7 @@ class HardscapeGuideScreen extends StatelessWidget {
             ),
           ),
 
-          const SizedBox(height: 48),
+          const SizedBox(height: AppSpacing.xxl),
         ],
       ),
     );
@@ -336,7 +336,7 @@ class _RockCard extends StatelessWidget {
           height: 40,
           decoration: BoxDecoration(
             color: Colors.grey.withOpacity(0.2),
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: AppRadius.smallRadius,
           ),
           child: const Icon(Icons.terrain, color: Colors.grey),
         ),
@@ -354,7 +354,7 @@ class _RockCard extends StatelessWidget {
               children: [
                 _DetailRow(label: 'Water effect', value: affectsWater),
                 _DetailRow(label: 'Best for', value: bestFor),
-                const SizedBox(height: 8),
+                const SizedBox(height: AppSpacing.sm),
                 ...tips.map(
                   (t) => Padding(
                     padding: const EdgeInsets.only(bottom: 4),
@@ -362,7 +362,7 @@ class _RockCard extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Icon(Icons.check, size: 16, color: AppColors.success),
-                        const SizedBox(width: 8),
+                        const SizedBox(width: AppSpacing.sm),
                         Expanded(
                           child: Text(t, style: AppTypography.bodySmall),
                         ),
@@ -404,7 +404,7 @@ class _WoodCard extends StatelessWidget {
           height: 40,
           decoration: BoxDecoration(
             color: Colors.brown.withOpacity(0.2),
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: AppRadius.smallRadius,
           ),
           child: const Icon(Icons.park, color: Colors.brown),
         ),
@@ -422,7 +422,7 @@ class _WoodCard extends StatelessWidget {
               children: [
                 _DetailRow(label: 'Characteristics', value: characteristics),
                 _DetailRow(label: 'Best for', value: bestFor),
-                const SizedBox(height: 8),
+                const SizedBox(height: AppSpacing.sm),
                 ...tips.map(
                   (t) => Padding(
                     padding: const EdgeInsets.only(bottom: 4),
@@ -430,7 +430,7 @@ class _WoodCard extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Icon(Icons.check, size: 16, color: AppColors.success),
-                        const SizedBox(width: 8),
+                        const SizedBox(width: AppSpacing.sm),
                         Expanded(
                           child: Text(t, style: AppTypography.bodySmall),
                         ),
@@ -505,7 +505,7 @@ class _PrepStep extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(width: 8),
+          const SizedBox(width: AppSpacing.sm),
           Expanded(child: Text(text, style: AppTypography.bodySmall)),
         ],
       ),

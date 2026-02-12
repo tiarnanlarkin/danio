@@ -1,3 +1,4 @@
+import 'package:aquarium_app/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../services/sync_service.dart';
@@ -135,7 +136,7 @@ class SyncIndicatorCompact extends ConsumerWidget {
         color: syncState.isSyncing
             ? Colors.blue.shade100
             : Colors.grey.shade200,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: AppRadius.mediumRadius,
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -151,7 +152,7 @@ class SyncIndicatorCompact extends ConsumerWidget {
             )
           else
             Icon(Icons.cloud_upload, color: Colors.grey.shade700, size: 12),
-          const SizedBox(width: 4),
+          const SizedBox(width: AppSpacing.xs),
           Text(
             syncState.isSyncing ? 'Syncing' : '${syncState.queuedCount}',
             style: TextStyle(

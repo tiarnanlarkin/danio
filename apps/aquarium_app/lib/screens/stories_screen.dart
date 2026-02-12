@@ -2,6 +2,7 @@
 // Duolingo-style story selection with difficulty filtering
 
 library;
+import 'package:aquarium_app/theme/app_theme.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -287,14 +288,14 @@ class StoryCard extends StatelessWidget {
       child: Material(
         color: Colors.white,
         elevation: isUnlocked ? 4 : 2,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: AppRadius.mediumRadius,
         child: InkWell(
           onTap: onTap,
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: AppRadius.mediumRadius,
           child: Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: AppRadius.mediumRadius,
               border: Border.all(
                 color: isCompleted
                     ? Colors.green.shade300
@@ -316,7 +317,7 @@ class StoryCard extends StatelessWidget {
                         color: _getDifficultyColor(
                           story.difficulty,
                         ).withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: AppRadius.mediumRadius,
                       ),
                       child: Center(
                         child: Text(
@@ -325,7 +326,7 @@ class StoryCard extends StatelessWidget {
                         ),
                       ),
                     ),
-                    const SizedBox(width: 16),
+                    const SizedBox(width: AppSpacing.md),
                     // Story info
                     Expanded(
                       child: Column(
@@ -356,7 +357,7 @@ class StoryCard extends StatelessWidget {
                                 ),
                             ],
                           ),
-                          const SizedBox(height: 4),
+                          const SizedBox(height: AppSpacing.xs),
                           Text(
                             story.description,
                             style: TextStyle(
@@ -441,7 +442,7 @@ class StoryCard extends StatelessWidget {
                           size: 16,
                           color: Colors.grey,
                         ),
-                        const SizedBox(width: 4),
+                        const SizedBox(width: AppSpacing.xs),
                         Text(
                           _getLockReason(story),
                           style: TextStyle(
@@ -470,14 +471,14 @@ class StoryCard extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       decoration: BoxDecoration(
         color: color.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: AppRadius.mediumRadius,
         border: Border.all(color: color.withOpacity(0.3)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(icon, size: 14, color: _getColorShade(color)),
-          const SizedBox(width: 4),
+          const SizedBox(width: AppSpacing.xs),
           Text(
             label,
             style: TextStyle(

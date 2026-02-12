@@ -110,7 +110,7 @@ class _DetailedHeartsDisplayState extends ConsumerState<DetailedHeartsDisplay> {
             AppColors.error.withOpacity(0.05),
           ],
         ),
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: AppRadius.mediumRadius,
         border: Border.all(color: AppColors.error.withOpacity(0.2)),
       ),
       child: Column(
@@ -247,7 +247,7 @@ class _HeartAnimationState extends State<HeartAnimation>
                     color: widget.gained ? AppColors.success : AppColors.error,
                     size: 64,
                   ),
-                  const SizedBox(width: 8),
+                  const SizedBox(width: AppSpacing.sm),
                   Text(
                     widget.gained ? '+1' : '-1',
                     style: AppTypography.headlineLarge.copyWith(
@@ -305,7 +305,7 @@ class _OutOfHeartsModalState extends ConsumerState<OutOfHeartsModal> {
     final timeUntilRefill = heartsService.getTimeUntilNextRefill(profile);
 
     return Dialog(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+      shape: RoundedRectangleBorder(borderRadius: AppRadius.largeRadius),
       child: Padding(
         padding: const EdgeInsets.all(24),
         child: Column(
@@ -341,7 +341,7 @@ class _OutOfHeartsModalState extends ConsumerState<OutOfHeartsModal> {
               ),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: AppSpacing.lg),
 
             // Countdown timer
             if (timeUntilRefill != null)
@@ -349,13 +349,13 @@ class _OutOfHeartsModalState extends ConsumerState<OutOfHeartsModal> {
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
                   color: AppColors.surfaceVariant,
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: AppRadius.mediumRadius,
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Icon(Icons.schedule, color: AppColors.primary),
-                    const SizedBox(width: 8),
+                    const SizedBox(width: AppSpacing.sm),
                     Text(
                       'Next heart in ${heartsService.formatTimeRemaining(timeUntilRefill)}',
                       style: AppTypography.labelLarge.copyWith(
@@ -366,7 +366,7 @@ class _OutOfHeartsModalState extends ConsumerState<OutOfHeartsModal> {
                   ],
                 ),
               ),
-            const SizedBox(height: 24),
+            const SizedBox(height: AppSpacing.lg),
 
             // Options
             Column(

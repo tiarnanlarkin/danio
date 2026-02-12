@@ -258,7 +258,7 @@ class _CyclingProgressBar extends StatelessWidget {
     return Column(
       children: [
         ClipRRect(
-          borderRadius: BorderRadius.circular(4),
+          borderRadius: AppRadius.xsRadius,
           child: LinearProgressIndicator(
             value: _progress,
             backgroundColor: AppColors.surfaceVariant,

@@ -103,14 +103,14 @@ class EquipmentScreen extends ConsumerWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Icon(Icons.settings, size: 64, color: AppColors.textHint),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.md),
                   Text('No equipment yet', style: AppTypography.headlineSmall),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: AppSpacing.sm),
                   Text(
                     'Add filters, heaters, lights...',
                     style: AppTypography.bodyMedium,
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: AppSpacing.lg),
                   ElevatedButton.icon(
                     onPressed: () => _showAddDialog(context, ref),
                     icon: const Icon(Icons.add),
@@ -139,7 +139,7 @@ class EquipmentScreen extends ConsumerWidget {
                           color: AppColors.warning,
                           size: 32,
                         ),
-                        const SizedBox(width: 16),
+                        const SizedBox(width: AppSpacing.md),
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -159,7 +159,7 @@ class EquipmentScreen extends ConsumerWidget {
                     ),
                   ),
                 ),
-              if (overdue > 0) const SizedBox(height: 16),
+              if (overdue > 0) const SizedBox(height: AppSpacing.md),
 
               // List
               ...equipment.map(
@@ -428,7 +428,7 @@ class _EquipmentCard extends StatelessWidget {
               children: [
                 Text(equipment.typeName, style: AppTypography.bodySmall),
                 if (equipment.maintenanceIntervalDays != null) ...[
-                  const SizedBox(height: 4),
+                  const SizedBox(height: AppSpacing.xs),
                   Text(
                     daysUntil != null
                         ? (daysUntil < 0
@@ -475,7 +475,7 @@ class _EquipmentCard extends StatelessWidget {
               child: Row(
                 children: [
                   Icon(Icons.history, size: 14, color: AppColors.textHint),
-                  const SizedBox(width: 4),
+                  const SizedBox(width: AppSpacing.xs),
                   Text(
                     'Last serviced ${DateFormat('MMM d').format(equipment.lastServiced!)}',
                     style: AppTypography.bodySmall,
@@ -575,11 +575,11 @@ class _AddEquipmentSheetState extends State<_AddEquipmentSheet> {
               widget.existing != null ? 'Edit Equipment' : 'Add Equipment',
               style: AppTypography.headlineMedium,
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.md),
 
             // Type selector
             Text('Type', style: AppTypography.labelLarge),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpacing.sm),
             Wrap(
               spacing: 8,
               runSpacing: 8,
@@ -593,7 +593,7 @@ class _AddEquipmentSheetState extends State<_AddEquipmentSheet> {
               }).toList(),
             ),
 
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.md),
             TextFormField(
               controller: _nameController,
               decoration: const InputDecoration(
@@ -623,7 +623,7 @@ class _AddEquipmentSheetState extends State<_AddEquipmentSheet> {
               inputFormatters: [FilteringTextInputFormatter.digitsOnly],
             ),
 
-            const SizedBox(height: 24),
+            const SizedBox(height: AppSpacing.lg),
             ElevatedButton(
               onPressed: _isSaving ? null : _save,
               child: _isSaving

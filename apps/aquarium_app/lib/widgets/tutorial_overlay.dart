@@ -131,10 +131,10 @@ class _TutorialOverlayState extends ConsumerState<TutorialOverlay>
                     height: targetSize.height + 16,
                     decoration: BoxDecoration(
                       border: Border.all(color: Colors.white, width: 3),
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: AppRadius.mediumRadius,
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.white.withOpacity(0.3),
+                          color: AppOverlays.white30,
                           blurRadius: 20,
                           spreadRadius: 5,
                         ),
@@ -203,7 +203,7 @@ class _TutorialOverlayState extends ConsumerState<TutorialOverlay>
           color: Colors.white,
           elevation: 8,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: AppRadius.mediumRadius,
           ),
           child: Padding(
             padding: const EdgeInsets.all(20),
@@ -221,7 +221,7 @@ class _TutorialOverlayState extends ConsumerState<TutorialOverlay>
                       ),
                       decoration: BoxDecoration(
                         color: AppColors.accent.withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: AppRadius.mediumRadius,
                       ),
                       child: Text(
                         'Tip ${_currentStep + 1}/${widget.steps.length}',
@@ -245,7 +245,7 @@ class _TutorialOverlayState extends ConsumerState<TutorialOverlay>
                     color: Colors.black87,
                   ),
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: AppSpacing.sm),
 
                 // Description
                 Text(
@@ -291,7 +291,7 @@ class _TutorialOverlayState extends ConsumerState<TutorialOverlay>
                     shape: BoxShape.circle,
                     color: index == _currentStep
                         ? Colors.white
-                        : Colors.white.withOpacity(0.3),
+                        : AppOverlays.white30,
                   ),
                 ),
               ),
@@ -304,7 +304,7 @@ class _TutorialOverlayState extends ConsumerState<TutorialOverlay>
                 backgroundColor: AppColors.accent,
                 foregroundColor: Colors.white,
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
+                  borderRadius: AppRadius.largeRadius,
                 ),
               ),
               child: Text(

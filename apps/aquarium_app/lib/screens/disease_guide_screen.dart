@@ -35,7 +35,7 @@ class _DiseaseGuideScreenState extends State<DiseaseGuideScreen> {
                 hintText: 'Search by disease or symptom...',
                 prefixIcon: const Icon(Icons.search),
                 border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: AppRadius.mediumRadius,
                 ),
                 filled: true,
               ),
@@ -70,7 +70,7 @@ class _DiseaseGuideScreenState extends State<DiseaseGuideScreen> {
             ),
           ),
 
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.sm),
 
           // List
           Expanded(
@@ -101,7 +101,7 @@ class _DiseaseCard extends StatelessWidget {
           height: 40,
           decoration: BoxDecoration(
             color: disease.severityColor.withOpacity(0.1),
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: AppRadius.smallRadius,
           ),
           child: Icon(disease.icon, color: disease.severityColor, size: 22),
         ),
@@ -123,7 +123,7 @@ class _DiseaseCard extends StatelessWidget {
                       ),
                       decoration: BoxDecoration(
                         color: disease.severityColor,
-                        borderRadius: BorderRadius.circular(8),
+                        borderRadius: AppRadius.smallRadius,
                       ),
                       child: Text(
                         disease.severity,
@@ -132,7 +132,7 @@ class _DiseaseCard extends StatelessWidget {
                         ),
                       ),
                     ),
-                    const SizedBox(width: 8),
+                    const SizedBox(width: AppSpacing.sm),
                     Text(
                       disease.contagious ? '⚠️ Contagious' : '✓ Not contagious',
                       style: AppTypography.bodySmall,
@@ -140,11 +140,11 @@ class _DiseaseCard extends StatelessWidget {
                   ],
                 ),
 
-                const SizedBox(height: 16),
+                const SizedBox(height: AppSpacing.md),
 
                 // Symptoms
                 Text('Symptoms', style: AppTypography.labelLarge),
-                const SizedBox(height: 8),
+                const SizedBox(height: AppSpacing.sm),
                 Wrap(
                   spacing: 6,
                   runSpacing: 6,
@@ -157,7 +157,7 @@ class _DiseaseCard extends StatelessWidget {
                           ),
                           decoration: BoxDecoration(
                             color: AppColors.surfaceVariant,
-                            borderRadius: BorderRadius.circular(12),
+                            borderRadius: AppRadius.mediumRadius,
                           ),
                           child: Text(s, style: AppTypography.bodySmall),
                         ),
@@ -165,11 +165,11 @@ class _DiseaseCard extends StatelessWidget {
                       .toList(),
                 ),
 
-                const SizedBox(height: 16),
+                const SizedBox(height: AppSpacing.md),
 
                 // Treatment
                 Text('Treatment', style: AppTypography.labelLarge),
-                const SizedBox(height: 8),
+                const SizedBox(height: AppSpacing.sm),
                 ...disease.treatments.map(
                   (t) => Padding(
                     padding: const EdgeInsets.only(bottom: 6),
@@ -181,7 +181,7 @@ class _DiseaseCard extends StatelessWidget {
                           size: 16,
                           color: AppColors.success,
                         ),
-                        const SizedBox(width: 8),
+                        const SizedBox(width: AppSpacing.sm),
                         Expanded(
                           child: Text(t, style: AppTypography.bodyMedium),
                         ),
@@ -190,11 +190,11 @@ class _DiseaseCard extends StatelessWidget {
                   ),
                 ),
 
-                const SizedBox(height: 16),
+                const SizedBox(height: AppSpacing.md),
 
                 // Prevention
                 Text('Prevention', style: AppTypography.labelLarge),
-                const SizedBox(height: 8),
+                const SizedBox(height: AppSpacing.sm),
                 ...disease.prevention.map(
                   (p) => Padding(
                     padding: const EdgeInsets.only(bottom: 4),

@@ -191,7 +191,7 @@ class _MaintenanceChecklistScreenState
             ),
           ),
 
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.lg),
 
           // Weekly tasks
           Row(
@@ -206,7 +206,7 @@ class _MaintenanceChecklistScreenState
                   ),
                   decoration: BoxDecoration(
                     color: AppColors.success,
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: AppRadius.mediumRadius,
                   ),
                   child: Text(
                     '✓ Complete!',
@@ -227,7 +227,7 @@ class _MaintenanceChecklistScreenState
             ),
           ),
 
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.lg),
 
           // Monthly tasks
           Row(
@@ -242,7 +242,7 @@ class _MaintenanceChecklistScreenState
                   ),
                   decoration: BoxDecoration(
                     color: AppColors.success,
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: AppRadius.mediumRadius,
                   ),
                   child: Text(
                     '✓ Complete!',
@@ -263,7 +263,7 @@ class _MaintenanceChecklistScreenState
             ),
           ),
 
-          const SizedBox(height: 48),
+          const SizedBox(height: AppSpacing.xxl),
         ],
       ),
     );
@@ -381,7 +381,7 @@ class _ProgressCircle extends StatelessWidget {
             ],
           ),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: AppSpacing.sm),
         Text(label, style: AppTypography.labelLarge),
         Text(count, style: AppTypography.bodySmall),
       ],

@@ -22,7 +22,7 @@ class QuarantineGuideScreen extends StatelessWidget {
                   Row(
                     children: [
                       Icon(Icons.shield, color: AppColors.warning),
-                      const SizedBox(width: 8),
+                      const SizedBox(width: AppSpacing.sm),
                       Text(
                         'Why Quarantine?',
                         style: AppTypography.headlineSmall,
@@ -41,11 +41,11 @@ class QuarantineGuideScreen extends StatelessWidget {
             ),
           ),
 
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.lg),
 
           // Setup
           Text('Quarantine Tank Setup', style: AppTypography.headlineMedium),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.md),
 
           _SetupCard(
             title: 'Tank Size',
@@ -84,11 +84,11 @@ class QuarantineGuideScreen extends StatelessWidget {
             icon: Icons.layers_clear,
           ),
 
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.lg),
 
           // Protocol
           Text('Quarantine Protocol', style: AppTypography.headlineMedium),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.md),
 
           _ProtocolStep(
             week: '1',
@@ -132,11 +132,11 @@ class QuarantineGuideScreen extends StatelessWidget {
             ],
           ),
 
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.lg),
 
           // What to watch for
           Text('Symptoms to Watch For', style: AppTypography.headlineMedium),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.md),
 
           Card(
             child: Padding(
@@ -194,11 +194,11 @@ class QuarantineGuideScreen extends StatelessWidget {
             ),
           ),
 
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.lg),
 
           // Common medications
           Text('Common QT Medications', style: AppTypography.headlineMedium),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.md),
 
           _MedCard(
             name: 'PraziPro / Praziquantel',
@@ -232,7 +232,7 @@ class QuarantineGuideScreen extends StatelessWidget {
                 'Not for scaleless fish, plants, or snails. 1 tbsp per 5 gal.',
           ),
 
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.lg),
 
           // Tips
           Card(
@@ -245,7 +245,7 @@ class QuarantineGuideScreen extends StatelessWidget {
                   Row(
                     children: [
                       Icon(Icons.lightbulb, color: AppColors.info),
-                      const SizedBox(width: 8),
+                      const SizedBox(width: AppSpacing.sm),
                       Text('Pro Tips', style: AppTypography.headlineSmall),
                     ],
                   ),
@@ -275,7 +275,7 @@ class QuarantineGuideScreen extends StatelessWidget {
             ),
           ),
 
-          const SizedBox(height: 48),
+          const SizedBox(height: AppSpacing.xxl),
         ],
       ),
     );
@@ -344,7 +344,7 @@ class _ProtocolStep extends StatelessWidget {
               height: 50,
               decoration: BoxDecoration(
                 color: AppColors.primary.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: AppRadius.smallRadius,
               ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -359,13 +359,13 @@ class _ProtocolStep extends StatelessWidget {
                 ],
               ),
             ),
-            const SizedBox(width: 16),
+            const SizedBox(width: AppSpacing.md),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(title, style: AppTypography.labelLarge),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: AppSpacing.sm),
                   ...tasks.map(
                     (t) => Padding(
                       padding: const EdgeInsets.only(bottom: 4),
@@ -404,7 +404,7 @@ class _SymptomRow extends StatelessWidget {
         children: [
           Expanded(child: Text(symptom, style: AppTypography.bodyMedium)),
           Icon(Icons.arrow_forward, size: 16, color: AppColors.textHint),
-          const SizedBox(width: 8),
+          const SizedBox(width: AppSpacing.sm),
           Expanded(
             child: Text(
               indicates,
@@ -440,7 +440,7 @@ class _MedCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(name, style: AppTypography.labelLarge),
-            const SizedBox(height: 4),
+            const SizedBox(height: AppSpacing.xs),
             Text(
               'Treats: $treats',
               style: AppTypography.bodySmall.copyWith(color: AppColors.success),
@@ -466,7 +466,7 @@ class _TipItem extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Icon(Icons.check, size: 16, color: AppColors.info),
-          const SizedBox(width: 8),
+          const SizedBox(width: AppSpacing.sm),
           Expanded(child: Text(text, style: AppTypography.bodySmall)),
         ],
       ),

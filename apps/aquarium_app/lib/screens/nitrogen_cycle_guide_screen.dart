@@ -24,7 +24,7 @@ class NitrogenCycleGuideScreen extends StatelessWidget {
                     Row(
                       children: [
                         Icon(Icons.lightbulb, color: AppColors.info),
-                        const SizedBox(width: 8),
+                        const SizedBox(width: AppSpacing.sm),
                         Text(
                           'What is the Nitrogen Cycle?',
                           style: AppTypography.headlineSmall.copyWith(
@@ -44,11 +44,11 @@ class NitrogenCycleGuideScreen extends StatelessWidget {
               ),
             ),
 
-            const SizedBox(height: 24),
+            const SizedBox(height: AppSpacing.lg),
 
             // The cycle stages
             Text('The Cycle', style: AppTypography.headlineMedium),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.md),
 
             _CycleStage(
               number: 1,
@@ -87,11 +87,11 @@ class NitrogenCycleGuideScreen extends StatelessWidget {
               icon: Icons.check_circle,
             ),
 
-            const SizedBox(height: 32),
+            const SizedBox(height: AppSpacing.xl),
 
             // How to cycle
             Text('How to Cycle Your Tank', style: AppTypography.headlineMedium),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.md),
 
             _MethodCard(
               title: 'Fishless Cycling (Recommended)',
@@ -108,7 +108,7 @@ class NitrogenCycleGuideScreen extends StatelessWidget {
               cons: ['Takes patience', 'Need ammonia source'],
             ),
 
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.md),
 
             _MethodCard(
               title: 'Fish-In Cycling',
@@ -128,14 +128,14 @@ class NitrogenCycleGuideScreen extends StatelessWidget {
               ],
             ),
 
-            const SizedBox(height: 32),
+            const SizedBox(height: AppSpacing.xl),
 
             // Signs of completion
             Text(
               'Signs Your Tank is Cycled',
               style: AppTypography.headlineMedium,
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.md),
 
             Card(
               child: Padding(
@@ -153,11 +153,11 @@ class NitrogenCycleGuideScreen extends StatelessWidget {
               ),
             ),
 
-            const SizedBox(height: 32),
+            const SizedBox(height: AppSpacing.xl),
 
             // Tips
             Text('Tips for Success', style: AppTypography.headlineMedium),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.md),
 
             _TipCard(
               icon: Icons.thermostat,
@@ -183,7 +183,7 @@ class NitrogenCycleGuideScreen extends StatelessWidget {
                   'Add bacteria starter (Seachem Stability, etc.) to speed things up.',
             ),
 
-            const SizedBox(height: 48),
+            const SizedBox(height: AppSpacing.xxl),
           ],
         ),
       ),
@@ -230,7 +230,7 @@ class _CycleStage extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(width: 16),
+            const SizedBox(width: AppSpacing.md),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -240,7 +240,7 @@ class _CycleStage extends StatelessWidget {
                     subtitle,
                     style: AppTypography.bodySmall.copyWith(color: color),
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: AppSpacing.sm),
                   Text(description, style: AppTypography.bodyMedium),
                 ],
               ),
@@ -304,13 +304,13 @@ class _MethodCard extends StatelessWidget {
                   ),
                   decoration: BoxDecoration(
                     color: AppColors.surfaceVariant,
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: AppRadius.smallRadius,
                   ),
                   child: Text(duration, style: AppTypography.bodySmall),
                 ),
               ],
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.md),
             ...steps.asMap().entries.map(
               (e) => Padding(
                 padding: const EdgeInsets.only(bottom: 6),

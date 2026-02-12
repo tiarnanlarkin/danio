@@ -23,7 +23,7 @@ class QuickStartGuideScreen extends StatelessWidget {
                     'Your First Aquarium',
                     style: AppTypography.headlineMedium,
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: AppSpacing.sm),
                   Text(
                     'Setting up an aquarium is exciting! Follow these steps for a successful start.',
                     style: AppTypography.bodyMedium,
@@ -34,7 +34,7 @@ class QuickStartGuideScreen extends StatelessWidget {
             ),
           ),
 
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.lg),
 
           _StepCard(
             step: 1,
@@ -53,7 +53,7 @@ class QuickStartGuideScreen extends StatelessWidget {
                 _BulletPoint(
                   text: '1L of water = 1kg weight — plan accordingly',
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: AppSpacing.sm),
                 _TipBox(
                   text:
                       'Starter kit bundles often include filter, heater, and light.',
@@ -77,7 +77,7 @@ class QuickStartGuideScreen extends StatelessWidget {
                 _BulletPoint(text: 'Test kit (liquid preferred)'),
                 _BulletPoint(text: 'Substrate (gravel or sand)'),
                 _BulletPoint(text: 'Bucket (dedicated to aquarium use)'),
-                const SizedBox(height: 8),
+                const SizedBox(height: AppSpacing.sm),
                 Text('Nice to have:', style: AppTypography.labelLarge),
                 _BulletPoint(text: 'Light (essential if keeping plants)'),
                 _BulletPoint(text: 'Gravel vacuum/siphon'),
@@ -143,7 +143,7 @@ class QuickStartGuideScreen extends StatelessWidget {
                   text:
                       'Cycle is complete when ammonia = 0, nitrite = 0, nitrate > 0',
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: AppSpacing.sm),
                 _WarningBox(
                   text:
                       'DO NOT add fish until the cycle is complete. This is the #1 beginner mistake.',
@@ -167,7 +167,7 @@ class QuickStartGuideScreen extends StatelessWidget {
                 _BulletPoint(text: 'Corydoras — need groups of 6+, need sand'),
                 _BulletPoint(text: 'Betta — single male only, no fin nippers'),
                 _BulletPoint(text: 'Cherry barbs, zebra danios'),
-                const SizedBox(height: 8),
+                const SizedBox(height: AppSpacing.sm),
                 Text('Consider:', style: AppTypography.labelLarge),
                 _BulletPoint(text: 'Adult size — research how big they get'),
                 _BulletPoint(text: 'Compatibility — will they get along?'),
@@ -203,7 +203,7 @@ class QuickStartGuideScreen extends StatelessWidget {
                 ),
                 _NumberedStep(num: 5, text: 'Keep lights off for a few hours'),
                 _NumberedStep(num: 6, text: 'Don\'t feed for 24 hours'),
-                const SizedBox(height: 8),
+                const SizedBox(height: AppSpacing.sm),
                 _TipBox(
                   text:
                       'Add fish slowly over weeks — don\'t stock all at once!',
@@ -226,7 +226,7 @@ class QuickStartGuideScreen extends StatelessWidget {
                 _BulletPoint(text: '20-25% water change'),
                 _BulletPoint(text: 'Vacuum substrate (avoid planted areas)'),
                 _BulletPoint(text: 'Clean glass if needed'),
-                const SizedBox(height: 8),
+                const SizedBox(height: AppSpacing.sm),
                 Text('Monthly:', style: AppTypography.labelLarge),
                 _BulletPoint(
                   text:
@@ -234,7 +234,7 @@ class QuickStartGuideScreen extends StatelessWidget {
                 ),
                 _BulletPoint(text: 'Trim plants'),
                 _BulletPoint(text: 'Check equipment'),
-                const SizedBox(height: 8),
+                const SizedBox(height: AppSpacing.sm),
                 Text('Daily:', style: AppTypography.labelLarge),
                 _BulletPoint(
                   text: 'Feed once or twice (only what they eat in 2 minutes)',
@@ -246,7 +246,7 @@ class QuickStartGuideScreen extends StatelessWidget {
             ),
           ),
 
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.lg),
 
           Card(
             color: AppColors.error.withOpacity(0.1),
@@ -258,7 +258,7 @@ class QuickStartGuideScreen extends StatelessWidget {
                   Row(
                     children: [
                       Icon(Icons.warning, color: AppColors.error),
-                      const SizedBox(width: 8),
+                      const SizedBox(width: AppSpacing.sm),
                       Text(
                         'Common Beginner Mistakes',
                         style: AppTypography.headlineSmall,
@@ -295,7 +295,7 @@ class QuickStartGuideScreen extends StatelessWidget {
             ),
           ),
 
-          const SizedBox(height: 48),
+          const SizedBox(height: AppSpacing.xxl),
         ],
       ),
     );
@@ -359,7 +359,7 @@ class _StepCard extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.md),
             content,
           ],
         ),
@@ -418,7 +418,7 @@ class _NumberedStep extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(width: 8),
+          const SizedBox(width: AppSpacing.sm),
           Expanded(child: Text(text, style: AppTypography.bodyMedium)),
         ],
       ),
@@ -437,12 +437,12 @@ class _TipBox extends StatelessWidget {
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
         color: AppColors.info.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: AppRadius.smallRadius,
       ),
       child: Row(
         children: [
           Icon(Icons.lightbulb, size: 16, color: AppColors.info),
-          const SizedBox(width: 8),
+          const SizedBox(width: AppSpacing.sm),
           Expanded(child: Text(text, style: AppTypography.bodySmall)),
         ],
       ),
@@ -461,12 +461,12 @@ class _WarningBox extends StatelessWidget {
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
         color: AppColors.error.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: AppRadius.smallRadius,
       ),
       child: Row(
         children: [
           Icon(Icons.warning, size: 16, color: AppColors.error),
-          const SizedBox(width: 8),
+          const SizedBox(width: AppSpacing.sm),
           Expanded(
             child: Text(
               text,
@@ -495,7 +495,7 @@ class _MistakeItem extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Icon(Icons.close, size: 16, color: AppColors.error),
-          const SizedBox(width: 8),
+          const SizedBox(width: AppSpacing.sm),
           Expanded(
             child: RichText(
               text: TextSpan(

@@ -215,7 +215,7 @@ class _EnhancedPlacementTestScreenState
                     children: [
                       // Question header
                       _buildQuestionHeader(theme),
-                      const SizedBox(height: 16),
+                      const SizedBox(height: AppSpacing.md),
 
                       // Question card with shake animation
                       AnimatedBuilder(
@@ -231,7 +231,7 @@ class _EnhancedPlacementTestScreenState
                         child: Card(
                           elevation: 2,
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(16),
+                            borderRadius: AppRadius.mediumRadius,
                           ),
                           child: Padding(
                             padding: const EdgeInsets.all(20),
@@ -244,7 +244,7 @@ class _EnhancedPlacementTestScreenState
                           ),
                         ),
                       ),
-                      const SizedBox(height: 24),
+                      const SizedBox(height: AppSpacing.lg),
 
                       // Answer options
                       ..._buildAnimatedAnswerOptions(),
@@ -252,7 +252,7 @@ class _EnhancedPlacementTestScreenState
                       // Explanation with animation
                       if (_showExplanation &&
                           _currentQuestion.explanation != null) ...[
-                        const SizedBox(height: 24),
+                        const SizedBox(height: AppSpacing.lg),
                         _buildAnimatedExplanation(),
                       ],
                     ],
@@ -318,7 +318,7 @@ class _EnhancedPlacementTestScreenState
                         gradient: LinearGradient(
                           colors: [
                             Colors.transparent,
-                            Colors.white.withOpacity(0.3),
+                            AppOverlays.white30,
                             Colors.transparent,
                           ],
                         ),
@@ -336,7 +336,7 @@ class _EnhancedPlacementTestScreenState
                 Row(
                   children: [
                     const Icon(Icons.quiz, size: 16, color: AppColors.accent),
-                    const SizedBox(width: 4),
+                    const SizedBox(width: AppSpacing.xs),
                     Text(
                       '${(_progress * 100).round()}% Complete',
                       style: const TextStyle(
@@ -353,7 +353,7 @@ class _EnhancedPlacementTestScreenState
                   ),
                   decoration: BoxDecoration(
                     color: AppColors.accent.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: AppRadius.mediumRadius,
                   ),
                   child: Text(
                     '${_userAnswers.length}/${_test.questions.length}',
@@ -462,13 +462,13 @@ class _EnhancedPlacementTestScreenState
         duration: const Duration(milliseconds: 200),
         child: InkWell(
           onTap: showResult ? null : () => _selectAnswer(index),
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: AppRadius.mediumRadius,
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 200),
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
               color: backgroundColor,
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: AppRadius.mediumRadius,
               border: Border.all(
                 color: borderColor ?? Colors.grey[300]!,
                 width: isSelected || showResult ? 2 : 1,
@@ -509,7 +509,7 @@ class _EnhancedPlacementTestScreenState
                     ),
                   ),
                 ),
-                const SizedBox(width: 16),
+                const SizedBox(width: AppSpacing.md),
                 Expanded(
                   child: Text(
                     _currentQuestion.options[index],
@@ -522,7 +522,7 @@ class _EnhancedPlacementTestScreenState
                   ),
                 ),
                 if (icon != null) ...[
-                  const SizedBox(width: 8),
+                  const SizedBox(width: AppSpacing.sm),
                   ScaleTransition(
                     scale: _celebrationController,
                     child: Icon(icon, color: iconColor, size: 24),
@@ -551,7 +551,7 @@ class _EnhancedPlacementTestScreenState
         elevation: 4,
         color: isCorrect ? Colors.green[50] : Colors.blue[50],
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: AppRadius.mediumRadius,
           side: BorderSide(
             color: isCorrect ? Colors.green : Colors.blue,
             width: 2,
@@ -569,7 +569,7 @@ class _EnhancedPlacementTestScreenState
                     color: isCorrect ? Colors.green : Colors.blue,
                     size: 24,
                   ),
-                  const SizedBox(width: 8),
+                  const SizedBox(width: AppSpacing.sm),
                   Text(
                     isCorrect ? 'Excellent! 🎉' : 'Good to know! 💡',
                     style: TextStyle(
@@ -585,7 +585,7 @@ class _EnhancedPlacementTestScreenState
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: AppRadius.smallRadius,
                 ),
                 child: Text(
                   _currentQuestion.explanation!,
@@ -606,7 +606,7 @@ class _EnhancedPlacementTestScreenState
         color: Colors.white,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: AppOverlays.black10,
             blurRadius: 4,
             offset: const Offset(0, -2),
           ),

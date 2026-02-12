@@ -99,7 +99,7 @@ class _XpAwardAnimationState extends State<XpAwardAnimation>
                       AppColors.warning.withOpacity(0.8),
                     ],
                   ),
-                  borderRadius: BorderRadius.circular(24),
+                  borderRadius: AppRadius.largeRadius,
                   boxShadow: [
                     BoxShadow(
                       color: AppColors.warning.withOpacity(0.4),
@@ -112,7 +112,7 @@ class _XpAwardAnimationState extends State<XpAwardAnimation>
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     const Icon(Icons.star, color: Colors.white, size: 24),
-                    const SizedBox(width: 8),
+                    const SizedBox(width: AppSpacing.sm),
                     Text(
                       '+${widget.xpAmount} XP',
                       style: AppTypography.headlineSmall.copyWith(

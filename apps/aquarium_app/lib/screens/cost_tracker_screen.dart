@@ -159,7 +159,7 @@ class _CostTrackerScreenState extends ConsumerState<CostTrackerScreen> {
                   color: AppColors.success,
                 ),
 
-                const SizedBox(height: 24),
+                const SizedBox(height: AppSpacing.lg),
 
                 // Category breakdown
                 if (_byCategory.isNotEmpty) ...[
@@ -175,7 +175,7 @@ class _CostTrackerScreenState extends ConsumerState<CostTrackerScreen> {
                           currency: _currency,
                         ),
                       ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: AppSpacing.lg),
                 ],
 
                 // Recent expenses
@@ -318,18 +318,18 @@ class _EmptyState extends StatelessWidget {
               size: 64,
               color: AppColors.textHint,
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.md),
             Text(
               'Track Your Aquarium Expenses',
               style: AppTypography.headlineSmall,
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpacing.sm),
             Text(
               'Keep track of fish, equipment, plants, and supplies. See where your money goes!',
               style: AppTypography.bodyMedium,
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: AppSpacing.lg),
             FilledButton.icon(
               onPressed: onAdd,
               icon: const Icon(Icons.add),
@@ -365,7 +365,7 @@ class _SummaryCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(title, style: AppTypography.bodySmall),
-            const SizedBox(height: 4),
+            const SizedBox(height: AppSpacing.xs),
             Text(
               '$currency${amount.toStringAsFixed(2)}',
               style: AppTypography.headlineSmall.copyWith(color: color),
@@ -406,16 +406,16 @@ class _CategoryBar extends StatelessWidget {
                 '$currency${amount.toStringAsFixed(2)}',
                 style: AppTypography.bodySmall,
               ),
-              const SizedBox(width: 8),
+              const SizedBox(width: AppSpacing.sm),
               Text(
                 '${(percentage * 100).toStringAsFixed(0)}%',
                 style: AppTypography.bodySmall,
               ),
             ],
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: AppSpacing.xs),
           ClipRRect(
-            borderRadius: BorderRadius.circular(4),
+            borderRadius: AppRadius.xsRadius,
             child: LinearProgressIndicator(
               value: percentage,
               backgroundColor: AppColors.surfaceVariant,
@@ -460,7 +460,7 @@ class _ExpenseTile extends StatelessWidget {
             height: 40,
             decoration: BoxDecoration(
               color: AppColors.primary.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: AppRadius.smallRadius,
             ),
             child: Icon(
               _categoryIcon(expense.category),
@@ -548,7 +548,7 @@ class _AddExpenseSheetState extends State<_AddExpenseSheet> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text('Add Expense', style: AppTypography.headlineSmall),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.md),
           TextField(
             controller: _descController,
             decoration: const InputDecoration(
@@ -601,7 +601,7 @@ class _AddExpenseSheetState extends State<_AddExpenseSheet> {
               }
             },
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.md),
           SizedBox(
             width: double.infinity,
             child: FilledButton(

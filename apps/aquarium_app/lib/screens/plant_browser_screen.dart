@@ -65,7 +65,7 @@ class _PlantBrowserScreenState extends ConsumerState<PlantBrowserScreen> {
                 hintText: 'Search plants...',
                 prefixIcon: const Icon(Icons.search),
                 border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: AppRadius.mediumRadius,
                 ),
                 filled: true,
               ),
@@ -84,23 +84,23 @@ class _PlantBrowserScreenState extends ConsumerState<PlantBrowserScreen> {
                   selected: _lowTechOnly,
                   onSelected: (v) => setState(() => _lowTechOnly = v),
                 ),
-                const SizedBox(width: 8),
+                const SizedBox(width: AppSpacing.sm),
                 _buildDifficultyChip('Easy'),
-                const SizedBox(width: 8),
+                const SizedBox(width: AppSpacing.sm),
                 _buildDifficultyChip('Medium'),
-                const SizedBox(width: 8),
+                const SizedBox(width: AppSpacing.sm),
                 _buildDifficultyChip('Hard'),
-                const SizedBox(width: 8),
+                const SizedBox(width: AppSpacing.sm),
                 _buildPlacementChip('Foreground'),
-                const SizedBox(width: 8),
+                const SizedBox(width: AppSpacing.sm),
                 _buildPlacementChip('Background'),
-                const SizedBox(width: 8),
+                const SizedBox(width: AppSpacing.sm),
                 _buildPlacementChip('Floating'),
               ],
             ),
           ),
 
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.sm),
 
           // Results count
           Padding(
@@ -215,7 +215,7 @@ class _PlantCard extends StatelessWidget {
           height: 44,
           decoration: BoxDecoration(
             color: AppColors.success.withOpacity(0.1),
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: AppRadius.smallRadius,
           ),
           child: const Icon(Icons.eco, color: AppColors.success),
         ),
@@ -229,7 +229,7 @@ class _PlantCard extends StatelessWidget {
                 fontStyle: FontStyle.italic,
               ),
             ),
-            const SizedBox(height: 4),
+            const SizedBox(height: AppSpacing.xs),
             Wrap(
               spacing: 6,
               children: [
@@ -262,7 +262,7 @@ class _MiniChip extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
       decoration: BoxDecoration(
         color: color.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(6),
+        borderRadius: AppRadius.smallRadius,
       ),
       child: Text(
         label,
@@ -316,7 +316,7 @@ class _PlantDetailSheet extends StatelessWidget {
                   height: 60,
                   decoration: BoxDecoration(
                     color: AppColors.success.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: AppRadius.mediumRadius,
                   ),
                   child: const Icon(
                     Icons.eco,
@@ -324,7 +324,7 @@ class _PlantDetailSheet extends StatelessWidget {
                     size: 32,
                   ),
                 ),
-                const SizedBox(width: 16),
+                const SizedBox(width: AppSpacing.md),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -345,7 +345,7 @@ class _PlantDetailSheet extends StatelessWidget {
               ],
             ),
 
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.md),
 
             // Quick stats
             Wrap(
@@ -391,7 +391,7 @@ class _PlantDetailSheet extends StatelessWidget {
               ],
             ),
 
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.md),
 
             // Tips
             _DetailSection(
@@ -404,7 +404,7 @@ class _PlantDetailSheet extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Icon(Icons.eco, size: 16, color: AppColors.success),
-                        const SizedBox(width: 8),
+                        const SizedBox(width: AppSpacing.sm),
                         Expanded(
                           child: Text(tip, style: AppTypography.bodyMedium),
                         ),
@@ -415,7 +415,7 @@ class _PlantDetailSheet extends StatelessWidget {
               ],
             ),
 
-            const SizedBox(height: 32),
+            const SizedBox(height: AppSpacing.xl),
           ],
         ),
       ),
@@ -435,7 +435,7 @@ class _StatChip extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       decoration: BoxDecoration(
         color: AppColors.surfaceVariant,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: AppRadius.mediumRadius,
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,

@@ -181,7 +181,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
               onChanged: (type) => setState(() => _type = type),
             ),
 
-            const SizedBox(height: 24),
+            const SizedBox(height: AppSpacing.lg),
 
             // Type-specific form
             if (_type == LogType.waterTest) _buildWaterTestForm(),
@@ -189,11 +189,11 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
             if (_type == LogType.observation) _buildObservationForm(),
             if (_type == LogType.medication) _buildMedicationForm(),
 
-            const SizedBox(height: 24),
+            const SizedBox(height: AppSpacing.lg),
 
             // Photos
             Text('Photos (optional)', style: AppTypography.headlineSmall),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpacing.sm),
             Row(
               children: [
                 Expanded(
@@ -221,26 +221,26 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
               ],
             ),
             if (_photoPaths.isNotEmpty) ...[
-              const SizedBox(height: 8),
+              const SizedBox(height: AppSpacing.sm),
               _PhotoGrid(
                 paths: _photoPaths,
                 onRemove: (path) => setState(() => _photoPaths.remove(path)),
               ),
             ],
 
-            const SizedBox(height: 24),
+            const SizedBox(height: AppSpacing.lg),
 
             // Timestamp
             Text('Date & Time', style: AppTypography.headlineSmall),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpacing.sm),
             InkWell(
               onTap: _pickDateTime,
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: AppRadius.mediumRadius,
               child: Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
                   color: AppColors.surfaceVariant,
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: AppRadius.mediumRadius,
                 ),
                 child: Row(
                   children: [
@@ -264,11 +264,11 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
               ),
             ),
 
-            const SizedBox(height: 24),
+            const SizedBox(height: AppSpacing.lg),
 
             // Notes (always shown)
             Text('Notes (optional)', style: AppTypography.headlineSmall),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpacing.sm),
             TextFormField(
               initialValue: _notes,
               decoration: const InputDecoration(
@@ -316,7 +316,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text('Water Parameters', style: AppTypography.headlineSmall),
-                  const SizedBox(height: 4),
+                  const SizedBox(height: AppSpacing.xs),
                   Text(
                     'Enter the values you tested. Leave blank if not tested.',
                     style: AppTypography.bodySmall,
@@ -324,7 +324,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
                 ],
               ),
             ),
-            const SizedBox(width: 8),
+            const SizedBox(width: AppSpacing.sm),
             // Bulk entry toggle
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
@@ -332,7 +332,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
                 color: _bulkEntryMode
                     ? AppColors.primary.withOpacity(0.1)
                     : AppColors.surfaceVariant,
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: AppRadius.smallRadius,
               ),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
@@ -344,7 +344,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
                         ? AppColors.primary
                         : AppColors.textSecondary,
                   ),
-                  const SizedBox(width: 4),
+                  const SizedBox(width: AppSpacing.xs),
                   Text(
                     'Quick',
                     style: AppTypography.bodySmall.copyWith(
@@ -356,7 +356,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
                           : FontWeight.normal,
                     ),
                   ),
-                  const SizedBox(width: 4),
+                  const SizedBox(width: AppSpacing.xs),
                   Switch(
                     value: _bulkEntryMode,
                     onChanged: (v) => setState(() => _bulkEntryMode = v),
@@ -375,13 +375,13 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
               color: AppColors.info.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: AppRadius.smallRadius,
               border: Border.all(color: AppColors.info.withOpacity(0.3)),
             ),
             child: Row(
               children: [
                 Icon(Icons.history, size: 16, color: AppColors.info),
-                const SizedBox(width: 8),
+                const SizedBox(width: AppSpacing.sm),
                 Expanded(
                   child: Text(
                     'Pre-filled with last test values',
@@ -413,7 +413,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
             ),
           ),
         ],
-        const SizedBox(height: 16),
+        const SizedBox(height: AppSpacing.md),
 
         // Bulk entry mode - compact grid
         if (_bulkEntryMode) ...[
@@ -421,7 +421,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
               color: AppColors.surfaceVariant,
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: AppRadius.mediumRadius,
             ),
             child: Column(
               children: [
@@ -435,7 +435,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
                         onChanged: (v) => setState(() => _temperature = v),
                       ),
                     ),
-                    const SizedBox(width: 8),
+                    const SizedBox(width: AppSpacing.sm),
                     Expanded(
                       child: _CompactParamField(
                         label: 'pH',
@@ -444,7 +444,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
                         decimal: true,
                       ),
                     ),
-                    const SizedBox(width: 8),
+                    const SizedBox(width: AppSpacing.sm),
                     Expanded(
                       child: _CompactParamField(
                         label: 'NH₃',
@@ -472,7 +472,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
                         dangerThreshold: 0.5,
                       ),
                     ),
-                    const SizedBox(width: 8),
+                    const SizedBox(width: AppSpacing.sm),
                     Expanded(
                       child: _CompactParamField(
                         label: 'NO₃',
@@ -483,7 +483,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
                         dangerThreshold: 40,
                       ),
                     ),
-                    const SizedBox(width: 8),
+                    const SizedBox(width: AppSpacing.sm),
                     Expanded(
                       child: _CompactParamField(
                         label: 'GH',
@@ -505,7 +505,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
                         onChanged: (v) => setState(() => _kh = v),
                       ),
                     ),
-                    const SizedBox(width: 8),
+                    const SizedBox(width: AppSpacing.sm),
                     Expanded(
                       child: _CompactParamField(
                         label: 'PO₄',
@@ -547,9 +547,9 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
             ],
           ),
 
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.md),
           const Divider(),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.md),
 
           // Nitrogen cycle
           Text('Nitrogen Cycle', style: AppTypography.labelLarge),
@@ -596,9 +596,9 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
             ],
           ),
 
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.md),
           const Divider(),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.md),
 
           // Hardness
           Text('Hardness', style: AppTypography.labelLarge),
@@ -625,9 +625,9 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
             ],
           ),
 
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.md),
           const Divider(),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.md),
 
           // Other
           Text('Other', style: AppTypography.labelLarge),
@@ -656,7 +656,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text('Water Change', style: AppTypography.headlineSmall),
-        const SizedBox(height: 16),
+        const SizedBox(height: AppSpacing.md),
 
         Text('How much water did you change?', style: AppTypography.bodyMedium),
         const SizedBox(height: 12),
@@ -676,7 +676,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
           }).toList(),
         ),
 
-        const SizedBox(height: 16),
+        const SizedBox(height: AppSpacing.md),
 
         // Custom input
         Row(
@@ -709,7 +709,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text('Observation', style: AppTypography.headlineSmall),
-        const SizedBox(height: 8),
+        const SizedBox(height: AppSpacing.sm),
         Text(
           'Record anything you notice — fish behavior, algae, plant growth, etc.',
           style: AppTypography.bodyMedium,
@@ -724,7 +724,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text('Medication', style: AppTypography.headlineSmall),
-        const SizedBox(height: 8),
+        const SizedBox(height: AppSpacing.sm),
         Text(
           'Record what medication you added and dosage in the notes.',
           style: AppTypography.bodyMedium,
@@ -941,21 +941,21 @@ class _TypeSelector extends StatelessWidget {
             isSelected: selected == LogType.waterTest,
             onTap: () => onChanged(LogType.waterTest),
           ),
-          const SizedBox(width: 8),
+          const SizedBox(width: AppSpacing.sm),
           _TypeChip(
             icon: Icons.water_drop,
             label: 'Water Change',
             isSelected: selected == LogType.waterChange,
             onTap: () => onChanged(LogType.waterChange),
           ),
-          const SizedBox(width: 8),
+          const SizedBox(width: AppSpacing.sm),
           _TypeChip(
             icon: Icons.visibility,
             label: 'Observation',
             isSelected: selected == LogType.observation,
             onTap: () => onChanged(LogType.observation),
           ),
-          const SizedBox(width: 8),
+          const SizedBox(width: AppSpacing.sm),
           _TypeChip(
             icon: Icons.medication,
             label: 'Medication',
@@ -985,12 +985,12 @@ class _TypeChip extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(20),
+      borderRadius: AppRadius.largeRadius,
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
           color: isSelected ? AppColors.primary : AppColors.surfaceVariant,
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: AppRadius.largeRadius,
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
@@ -1078,7 +1078,7 @@ class _PhotoGrid extends StatelessWidget {
         return Stack(
           children: [
             ClipRRect(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: AppRadius.mediumRadius,
               child: Image.file(
                 File(path),
                 width: 96,
@@ -1104,8 +1104,8 @@ class _PhotoGrid extends StatelessWidget {
                 child: Container(
                   padding: const EdgeInsets.all(4),
                   decoration: BoxDecoration(
-                    color: Colors.black.withOpacity(0.6),
-                    borderRadius: BorderRadius.circular(999),
+                    color: AppOverlays.black60,
+                    borderRadius: AppRadius.pillRadius,
                   ),
                   child: const Icon(Icons.close, size: 16, color: Colors.white),
                 ),
@@ -1169,7 +1169,7 @@ class _CompactParamField extends StatelessWidget {
               Icon(Icons.circle, color: statusColor, size: 8),
           ],
         ),
-        const SizedBox(height: 4),
+        const SizedBox(height: AppSpacing.xs),
         TextFormField(
           initialValue: value?.toString() ?? '',
           decoration: InputDecoration(
@@ -1179,7 +1179,7 @@ class _CompactParamField extends StatelessWidget {
               horizontal: 8,
               vertical: 8,
             ),
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+            border: OutlineInputBorder(borderRadius: AppRadius.smallRadius),
           ),
           style: AppTypography.bodySmall.copyWith(fontSize: 13),
           keyboardType: TextInputType.numberWithOptions(decimal: decimal),

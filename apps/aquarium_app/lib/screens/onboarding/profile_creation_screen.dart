@@ -163,7 +163,7 @@ class _ProfileCreationScreenState extends ConsumerState<ProfileCreationScreen> {
                   ),
                   textAlign: TextAlign.center,
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: AppSpacing.sm),
                 Text(
                   'Let\'s personalize your learning experience',
                   style: Theme.of(context).textTheme.bodyLarge?.copyWith(
@@ -171,23 +171,23 @@ class _ProfileCreationScreenState extends ConsumerState<ProfileCreationScreen> {
                   ),
                   textAlign: TextAlign.center,
                 ),
-                const SizedBox(height: 32),
+                const SizedBox(height: AppSpacing.xl),
 
                 // Name field (optional)
                 _buildNameField(),
-                const SizedBox(height: 24),
+                const SizedBox(height: AppSpacing.lg),
 
                 // Experience level (required)
                 _buildExperienceLevelSection(),
-                const SizedBox(height: 24),
+                const SizedBox(height: AppSpacing.lg),
 
                 // Tank type (required)
                 _buildTankTypeSection(),
-                const SizedBox(height: 24),
+                const SizedBox(height: AppSpacing.lg),
 
                 // Goals (at least one required)
                 _buildGoalsSection(),
-                const SizedBox(height: 32),
+                const SizedBox(height: AppSpacing.xl),
 
                 // Continue button
                 FocusTraversalOrder(
@@ -213,7 +213,7 @@ class _ProfileCreationScreenState extends ConsumerState<ProfileCreationScreen> {
                     ),
                   ),
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: AppSpacing.md),
                 Text(
                   'Next: Quick knowledge check (2-3 minutes)',
                   style: Theme.of(
@@ -279,7 +279,7 @@ class _ProfileCreationScreenState extends ConsumerState<ProfileCreationScreen> {
                     fontWeight: FontWeight.w600,
                   ),
                 ),
-                const SizedBox(width: 4),
+                const SizedBox(width: AppSpacing.xs),
                 const Text(
                   '*',
                   style: TextStyle(color: Colors.red, fontSize: 16),
@@ -307,12 +307,12 @@ class _ProfileCreationScreenState extends ConsumerState<ProfileCreationScreen> {
         onTap: () => setState(() => _selectedExperience = level),
         child: InkWell(
           onTap: () => setState(() => _selectedExperience = level),
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: AppRadius.mediumRadius,
           child: Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
               color: isSelected ? AppColors.accent.withOpacity(0.1) : null,
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: AppRadius.mediumRadius,
               border: Border.all(
                 color: isSelected ? AppColors.accent : Colors.grey[300]!,
                 width: 2,
@@ -326,7 +326,7 @@ class _ProfileCreationScreenState extends ConsumerState<ProfileCreationScreen> {
                     style: const TextStyle(fontSize: 32),
                   ),
                 ),
-                const SizedBox(width: 16),
+                const SizedBox(width: AppSpacing.md),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -340,7 +340,7 @@ class _ProfileCreationScreenState extends ConsumerState<ProfileCreationScreen> {
                           ),
                         ),
                       ),
-                      const SizedBox(height: 4),
+                      const SizedBox(height: AppSpacing.xs),
                       ExcludeSemantics(
                         child: Text(
                           level.description,
@@ -381,7 +381,7 @@ class _ProfileCreationScreenState extends ConsumerState<ProfileCreationScreen> {
                     fontWeight: FontWeight.w600,
                   ),
                 ),
-                const SizedBox(width: 4),
+                const SizedBox(width: AppSpacing.xs),
                 const Text(
                   '*',
                   style: TextStyle(color: Colors.red, fontSize: 16),
@@ -413,12 +413,12 @@ class _ProfileCreationScreenState extends ConsumerState<ProfileCreationScreen> {
       onTap: () => setState(() => _selectedTankType = type),
       child: InkWell(
         onTap: () => setState(() => _selectedTankType = type),
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: AppRadius.mediumRadius,
         child: Container(
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
             color: isSelected ? AppColors.primary.withOpacity(0.1) : null,
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: AppRadius.mediumRadius,
             border: Border.all(
               color: isSelected ? AppColors.primary : Colors.grey[300]!,
               width: 2,
@@ -488,7 +488,7 @@ class _ProfileCreationScreenState extends ConsumerState<ProfileCreationScreen> {
                     fontWeight: FontWeight.w600,
                   ),
                 ),
-                const SizedBox(width: 4),
+                const SizedBox(width: AppSpacing.xs),
                 const Text(
                   '*',
                   style: TextStyle(color: Colors.red, fontSize: 16),

@@ -23,7 +23,7 @@ class TermsOfServiceScreen extends StatelessWidget {
                   'Please read them carefully.',
             ),
 
-            const SizedBox(height: 24),
+            const SizedBox(height: AppSpacing.lg),
 
             _buildSection(
               context,
@@ -36,7 +36,7 @@ class TermsOfServiceScreen extends StatelessWidget {
               highlighted: true,
             ),
 
-            const SizedBox(height: 24),
+            const SizedBox(height: AppSpacing.lg),
 
             _buildSection(
               context,
@@ -47,7 +47,7 @@ class TermsOfServiceScreen extends StatelessWidget {
                   'responsible for any harm to aquatic life or decisions made using the app.',
             ),
 
-            const SizedBox(height: 24),
+            const SizedBox(height: AppSpacing.lg),
 
             _buildSection(
               context,
@@ -58,7 +58,7 @@ class TermsOfServiceScreen extends StatelessWidget {
                   'locally on your device. You are responsible for creating backups.',
             ),
 
-            const SizedBox(height: 24),
+            const SizedBox(height: AppSpacing.lg),
 
             _buildSection(
               context,
@@ -69,7 +69,7 @@ class TermsOfServiceScreen extends StatelessWidget {
                   'the app. You may not modify, reverse engineer, or distribute the app.',
             ),
 
-            const SizedBox(height: 24),
+            const SizedBox(height: AppSpacing.lg),
 
             _buildSection(
               context,
@@ -80,11 +80,11 @@ class TermsOfServiceScreen extends StatelessWidget {
                   'use after changes means you accept the new terms.',
             ),
 
-            const SizedBox(height: 32),
+            const SizedBox(height: AppSpacing.xl),
 
             const Divider(),
 
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.md),
 
             Center(
               child: Text(
@@ -95,7 +95,7 @@ class TermsOfServiceScreen extends StatelessWidget {
               ),
             ),
 
-            const SizedBox(height: 24),
+            const SizedBox(height: AppSpacing.lg),
 
             Center(
               child: Column(
@@ -120,19 +120,19 @@ class TermsOfServiceScreen extends StatelessWidget {
               ),
             ),
 
-            const SizedBox(height: 32),
+            const SizedBox(height: AppSpacing.xl),
 
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
                 color: Colors.blue[50],
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: AppRadius.mediumRadius,
                 border: Border.all(color: Colors.blue[200]!),
               ),
               child: Row(
                 children: [
                   Icon(Icons.info_outline, color: Colors.blue[700], size: 24),
-                  const SizedBox(width: 16),
+                  const SizedBox(width: AppSpacing.md),
                   Expanded(
                     child: Text(
                       'By using Aquarium Hobbyist, you agree to these terms. '
@@ -146,7 +146,7 @@ class TermsOfServiceScreen extends StatelessWidget {
               ),
             ),
 
-            const SizedBox(height: 48),
+            const SizedBox(height: AppSpacing.xxl),
           ],
         ),
       ),
@@ -164,7 +164,7 @@ class TermsOfServiceScreen extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: highlighted ? Colors.orange[50] : Colors.grey[50],
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: AppRadius.mediumRadius,
         border: Border.all(
           color: highlighted ? Colors.orange[200]! : Colors.grey[200]!,
         ),
@@ -179,7 +179,7 @@ class TermsOfServiceScreen extends StatelessWidget {
               color: highlighted
                   ? Colors.orange[100]
                   : AppColors.primary.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: AppRadius.smallRadius,
             ),
             child: Icon(
               icon,
@@ -187,7 +187,7 @@ class TermsOfServiceScreen extends StatelessWidget {
               size: 20,
             ),
           ),
-          const SizedBox(width: 16),
+          const SizedBox(width: AppSpacing.md),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -198,7 +198,7 @@ class TermsOfServiceScreen extends StatelessWidget {
                     color: highlighted ? Colors.orange[900] : null,
                   ),
                 ),
-                const SizedBox(height: 4),
+                const SizedBox(height: AppSpacing.xs),
                 Text(
                   content,
                   style: AppTypography.bodySmall.copyWith(
@@ -242,9 +242,9 @@ class TermsOfServiceScreen extends StatelessWidget {
               'For questions about these Terms of Service:',
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.md),
             _buildContactRow(Icons.email, 'support@aquariumhobbyist.app'),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpacing.sm),
             _buildContactRow(Icons.person, 'Developer: Tiarnan Larkin'),
           ],
         ),
@@ -262,7 +262,7 @@ class TermsOfServiceScreen extends StatelessWidget {
     return Row(
       children: [
         Icon(icon, size: 16, color: Colors.grey[600]),
-        const SizedBox(width: 8),
+        const SizedBox(width: AppSpacing.sm),
         Expanded(
           child: Text(text, style: TextStyle(color: Colors.grey[800])),
         ),

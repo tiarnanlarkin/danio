@@ -31,7 +31,7 @@ class ThemeGalleryScreen extends ConsumerWidget {
                 style: TextStyle(
                   color: Colors.white,
                   shadows: [
-                    Shadow(color: Colors.black.withOpacity(0.5), blurRadius: 8),
+                    Shadow(color: AppOverlays.black50, blurRadius: 8),
                   ],
                 ),
               ),
@@ -53,7 +53,7 @@ class ThemeGalleryScreen extends ConsumerWidget {
                     ),
                     decoration: BoxDecoration(
                       color: AppColors.success.withOpacity(0.15),
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: AppRadius.smallRadius,
                     ),
                     child: Text(
                       'FREE',
@@ -117,13 +117,13 @@ class ThemeGalleryScreen extends ConsumerWidget {
                       gradient: const LinearGradient(
                         colors: [Color(0xFFFFD700), Color(0xFFFFA500)],
                       ),
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: AppRadius.smallRadius,
                     ),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         const Icon(Icons.star, size: 12, color: Colors.white),
-                        const SizedBox(width: 4),
+                        const SizedBox(width: AppSpacing.xs),
                         Text(
                           'PREMIUM',
                           style: AppTypography.labelSmall.copyWith(
@@ -321,7 +321,7 @@ class ThemeGalleryScreen extends ConsumerWidget {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+        shape: RoundedRectangleBorder(borderRadius: AppRadius.largeRadius),
         title: Row(
           children: [
             Container(
@@ -330,7 +330,7 @@ class ThemeGalleryScreen extends ConsumerWidget {
                 gradient: const LinearGradient(
                   colors: [Color(0xFFFFD700), Color(0xFFFFA500)],
                 ),
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: AppRadius.mediumRadius,
               ),
               child: const Icon(Icons.star, color: Colors.white, size: 20),
             ),
@@ -468,8 +468,8 @@ class _CurrentThemePreview extends StatelessWidget {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.2),
-                borderRadius: BorderRadius.circular(20),
+                color: AppOverlays.white20,
+                borderRadius: AppRadius.largeRadius,
               ),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
@@ -517,7 +517,7 @@ class _ThemeCard extends StatelessWidget {
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: AppRadius.largeRadius,
           border: Border.all(
             color: isSelected ? theme.accentBlob : Colors.grey.shade300,
             width: isSelected ? 3 : 1,
@@ -539,7 +539,7 @@ class _ThemeCard extends StatelessWidget {
                 ],
         ),
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(18),
+          borderRadius: AppRadius.mediumRadius,
           child: Stack(
             children: [
               // Theme preview
@@ -549,12 +549,12 @@ class _ThemeCard extends StatelessWidget {
               if (isLocked)
                 Positioned.fill(
                   child: Container(
-                    color: Colors.black.withOpacity(0.4),
+                    color: AppOverlays.black40,
                     child: Center(
                       child: Container(
                         padding: const EdgeInsets.all(12),
                         decoration: BoxDecoration(
-                          color: Colors.black.withOpacity(0.5),
+                          color: AppOverlays.black50,
                           shape: BoxShape.circle,
                         ),
                         child: const Icon(
@@ -581,7 +581,7 @@ class _ThemeCard extends StatelessWidget {
                       gradient: const LinearGradient(
                         colors: [Color(0xFFFFD700), Color(0xFFFFA500)],
                       ),
-                      borderRadius: BorderRadius.circular(6),
+                      borderRadius: AppRadius.smallRadius,
                     ),
                     child: const Icon(
                       Icons.star,
@@ -626,7 +626,7 @@ class _ThemeCard extends StatelessWidget {
                       end: Alignment.bottomCenter,
                       colors: [
                         Colors.transparent,
-                        Colors.black.withOpacity(0.6),
+                        AppOverlays.black60,
                       ],
                     ),
                   ),
@@ -645,7 +645,7 @@ class _ThemeCard extends StatelessWidget {
                       Text(
                         theme.description,
                         style: TextStyle(
-                          color: Colors.white.withOpacity(0.8),
+                          color: AppOverlays.white80,
                           fontSize: 11,
                         ),
                         maxLines: 1,
@@ -859,7 +859,7 @@ class _ColorDot extends StatelessWidget {
       decoration: BoxDecoration(
         color: color,
         shape: BoxShape.circle,
-        border: Border.all(color: Colors.white.withOpacity(0.3), width: 0.5),
+        border: Border.all(color: AppOverlays.white30, width: 0.5),
       ),
     );
   }

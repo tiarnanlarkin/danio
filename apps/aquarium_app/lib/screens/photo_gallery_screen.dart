@@ -75,7 +75,7 @@ class PhotoGalleryScreen extends ConsumerWidget {
                     child: Row(
                       children: [
                         Text(month, style: AppTypography.headlineSmall),
-                        const SizedBox(width: 8),
+                        const SizedBox(width: AppSpacing.sm),
                         Text(
                           '${monthPhotos.length} photos',
                           style: AppTypography.bodySmall,
@@ -98,7 +98,7 @@ class PhotoGalleryScreen extends ConsumerWidget {
                       onTap: () => _showPhotoViewer(context, monthPhotos, j),
                     ),
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.md),
                 ],
               );
             },
@@ -137,15 +137,15 @@ class _EmptyGallery extends StatelessWidget {
               size: 64,
               color: AppColors.textHint,
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.md),
             Text('No Photos Yet', style: AppTypography.headlineSmall),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpacing.sm),
             Text(
               'Photos attached to log entries will appear here. Document your tank\'s journey!',
               style: AppTypography.bodyMedium,
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.md),
             Text(
               'Tip: Add photos when logging water tests, changes, or observations.',
               style: AppTypography.bodySmall,
@@ -185,10 +185,10 @@ class _PhotoThumbnail extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           color: AppColors.surfaceVariant,
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: AppRadius.smallRadius,
         ),
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: AppRadius.smallRadius,
           child: Stack(
             fit: StackFit.expand,
             children: [
@@ -205,7 +205,7 @@ class _PhotoThumbnail extends StatelessWidget {
                   ),
                   decoration: BoxDecoration(
                     color: Colors.black54,
-                    borderRadius: BorderRadius.circular(4),
+                    borderRadius: AppRadius.xsRadius,
                   ),
                   child: Text(
                     DateFormat('d').format(photo.date),
@@ -284,10 +284,10 @@ class _PhotoViewerScreenState extends State<_PhotoViewerScreen> {
                       margin: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
                         color: Colors.black,
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: AppRadius.mediumRadius,
                       ),
                       child: ClipRRect(
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: AppRadius.mediumRadius,
                         child: OptimizedFileImage(
                           file: File(p.url),
                           fit: BoxFit.contain,

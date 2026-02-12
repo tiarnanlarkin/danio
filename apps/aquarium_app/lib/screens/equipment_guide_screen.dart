@@ -88,7 +88,7 @@ class EquipmentGuideScreen extends StatelessWidget {
             ],
           ),
 
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.lg),
 
           // Heating
           _EquipmentSection(
@@ -131,7 +131,7 @@ class EquipmentGuideScreen extends StatelessWidget {
             ],
           ),
 
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.lg),
 
           // Lighting
           _EquipmentSection(
@@ -170,7 +170,7 @@ class EquipmentGuideScreen extends StatelessWidget {
             ],
           ),
 
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.lg),
 
           // Aeration
           _EquipmentSection(
@@ -199,7 +199,7 @@ class EquipmentGuideScreen extends StatelessWidget {
             ],
           ),
 
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.lg),
 
           // CO2
           _EquipmentSection(
@@ -248,7 +248,7 @@ class EquipmentGuideScreen extends StatelessWidget {
             ],
           ),
 
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.lg),
 
           // Testing
           _EquipmentSection(
@@ -291,7 +291,7 @@ class EquipmentGuideScreen extends StatelessWidget {
             ],
           ),
 
-          const SizedBox(height: 48),
+          const SizedBox(height: AppSpacing.xxl),
         ],
       ),
     );
@@ -317,7 +317,7 @@ class _EquipmentSection extends StatelessWidget {
         Row(
           children: [
             Icon(icon, color: AppColors.primary),
-            const SizedBox(width: 8),
+            const SizedBox(width: AppSpacing.sm),
             Text(title, style: AppTypography.headlineMedium),
           ],
         ),
@@ -384,7 +384,7 @@ class _EquipmentCard extends StatelessWidget {
                         ],
                       ),
                     ),
-                    const SizedBox(width: 16),
+                    const SizedBox(width: AppSpacing.md),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -410,7 +410,7 @@ class _EquipmentCard extends StatelessWidget {
                   padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
                     color: AppColors.info.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: AppRadius.smallRadius,
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -421,7 +421,7 @@ class _EquipmentCard extends StatelessWidget {
                           fontWeight: FontWeight.w600,
                         ),
                       ),
-                      const SizedBox(height: 4),
+                      const SizedBox(height: AppSpacing.xs),
                       Text(
                         'Maintenance: ${item.maintenance}',
                         style: AppTypography.bodySmall,

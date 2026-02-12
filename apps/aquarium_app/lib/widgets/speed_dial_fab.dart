@@ -185,41 +185,45 @@ class _MainFAB extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onPressed,
-      child: AnimatedBuilder(
-        animation: animation,
-        builder: (context, child) {
-          return Container(
-            width: 56,
-            height: 56,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [backgroundColor, backgroundColor.withOpacity(0.8)],
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: backgroundColor.withOpacity(0.4),
-                  blurRadius: 12 + (animation.value * 8),
-                  spreadRadius: animation.value * 2,
-                  offset: const Offset(0, 4),
+    return Semantics(
+      button: true,
+      label: isOpen ? 'Close quick actions menu' : 'Open quick actions menu',
+      child: GestureDetector(
+        onTap: onPressed,
+        child: AnimatedBuilder(
+          animation: animation,
+          builder: (context, child) {
+            return Container(
+              width: 56,
+              height: 56,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [backgroundColor, backgroundColor.withOpacity(0.8)],
                 ),
-              ],
-            ),
-            child: AnimatedSwitcher(
-              duration: const Duration(milliseconds: 200),
-              child: Icon(
-                isOpen ? openIcon : closedIcon,
-                key: ValueKey(isOpen),
-                color: foregroundColor,
-                size: 26,
+                boxShadow: [
+                  BoxShadow(
+                    color: backgroundColor.withOpacity(0.4),
+                    blurRadius: 12 + (animation.value * 8),
+                    spreadRadius: animation.value * 2,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
               ),
-            ),
-          );
-        },
+              child: AnimatedSwitcher(
+                duration: const Duration(milliseconds: 200),
+                child: Icon(
+                  isOpen ? openIcon : closedIcon,
+                  key: ValueKey(isOpen),
+                  color: foregroundColor,
+                  size: 26,
+                ),
+              ),
+            );
+          },
+        ),
       ),
     );
   }
@@ -233,58 +237,64 @@ class _ActionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onPressed,
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          // Label
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(16),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.15),
-                  blurRadius: 8,
-                  offset: const Offset(0, 2),
+    return Semantics(
+      button: true,
+      label: action.label,
+      child: GestureDetector(
+        onTap: onPressed,
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // Label
+            ExcludeSemantics(
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: AppRadius.mediumRadius,
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppOverlays.black15,
+                      blurRadius: 8,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
                 ),
-              ],
-            ),
-            child: Text(
-              action.label,
-              style: const TextStyle(
-                color: AppColors.textPrimary,
-                fontSize: 12,
-                fontWeight: FontWeight.w600,
+                child: Text(
+                  action.label,
+                  style: const TextStyle(
+                    color: AppColors.textPrimary,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
               ),
             ),
-          ),
-          const SizedBox(width: 8),
-          // Icon button
-          Container(
-            width: 44,
-            height: 44,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: action.backgroundColor ?? Colors.white,
-              boxShadow: [
-                BoxShadow(
-                  color: (action.backgroundColor ?? AppColors.primary)
-                      .withOpacity(0.3),
-                  blurRadius: 8,
-                  offset: const Offset(0, 2),
-                ),
-              ],
+            const SizedBox(width: AppSpacing.sm),
+            // Icon button - 48x48 for accessibility
+            Container(
+              width: 48,
+              height: 48,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: action.backgroundColor ?? Colors.white,
+                boxShadow: [
+                  BoxShadow(
+                    color: (action.backgroundColor ?? AppColors.primary)
+                        .withOpacity(0.3),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: Icon(
+                action.icon,
+                color: action.foregroundColor ?? AppColors.primary,
+                size: 24,
+              ),
             ),
-            child: Icon(
-              action.icon,
-              color: action.foregroundColor ?? AppColors.primary,
-              size: 22,
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

@@ -1,6 +1,7 @@
 /// Performance Overlay Widget
 /// Shows real-time FPS, frame time, and memory metrics during development
 library;
+import 'package:aquarium_app/theme/app_theme.dart';
 
 import 'dart:async';
 import 'package:flutter/material.dart';
@@ -95,7 +96,7 @@ class _AppPerformanceOverlayState extends State<AppPerformanceOverlay> {
 
     return Material(
       color: Colors.black87,
-      borderRadius: BorderRadius.circular(8),
+      borderRadius: AppRadius.smallRadius,
       child: Padding(
         padding: const EdgeInsets.all(8),
         child: Column(
@@ -103,13 +104,13 @@ class _AppPerformanceOverlayState extends State<AppPerformanceOverlay> {
           mainAxisSize: MainAxisSize.min,
           children: [
             _buildMetric('FPS', _fps.toStringAsFixed(1), fpsColor),
-            const SizedBox(height: 4),
+            const SizedBox(height: AppSpacing.xs),
             _buildMetric(
               'Frame',
               '${_frameTime.toStringAsFixed(1)}ms',
               _frameTime <= 16.67 ? Colors.green : Colors.red,
             ),
-            const SizedBox(height: 4),
+            const SizedBox(height: AppSpacing.xs),
             _buildMetric(
               'Dropped',
               '${_droppedPercent.toStringAsFixed(1)}%',
@@ -204,9 +205,9 @@ class _PerformanceDebugScreenState extends State<PerformanceDebugScreen> {
               padding: const EdgeInsets.all(16),
               children: [
                 _buildStatusCard(report),
-                const SizedBox(height: 16),
+                const SizedBox(height: AppSpacing.md),
                 _buildMetricsCard(report),
-                const SizedBox(height: 16),
+                const SizedBox(height: AppSpacing.md),
                 _buildRebuildsCard(report),
               ],
             ),
@@ -225,7 +226,7 @@ class _PerformanceDebugScreenState extends State<PerformanceDebugScreen> {
               size: 48,
               color: report.meetsTarget ? Colors.green : Colors.red,
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpacing.sm),
             Text(
               report.meetsTarget ? 'Performance OK' : 'Needs Optimization',
               style: TextStyle(
@@ -253,7 +254,7 @@ class _PerformanceDebugScreenState extends State<PerformanceDebugScreen> {
               'Frame Metrics',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.md),
             _buildMetricRow(
               'FPS',
               report.fps.toStringAsFixed(1),
@@ -347,12 +348,12 @@ class _PerformanceDebugScreenState extends State<PerformanceDebugScreen> {
               'Widget Rebuilds (Top 10)',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpacing.sm),
             const Text(
               'Widgets with excessive rebuilds may need optimization',
               style: TextStyle(fontSize: 12, color: Colors.grey),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.md),
             ...rebuilds.take(10).map((entry) {
               final isHigh = entry.value > 50;
               return Padding(
@@ -372,7 +373,7 @@ class _PerformanceDebugScreenState extends State<PerformanceDebugScreen> {
                       ),
                       decoration: BoxDecoration(
                         color: isHigh ? Colors.orange : Colors.grey.shade200,
-                        borderRadius: BorderRadius.circular(4),
+                        borderRadius: AppRadius.xsRadius,
                       ),
                       child: Text(
                         '${entry.value}',

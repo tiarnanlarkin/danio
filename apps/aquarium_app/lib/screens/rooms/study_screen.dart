@@ -16,7 +16,8 @@ import '../species_browser_screen.dart';
 import '../plant_browser_screen.dart';
 
 /// The Study room - Learning & Knowledge hub
-/// Part of the "House Navigation" system
+/// Part of the "House Navigation" system - navigation between rooms
+/// is handled by swiping or tapping the room indicator bar.
 class StudyScreen extends ConsumerWidget {
   const StudyScreen({super.key});
 
@@ -26,9 +27,11 @@ class StudyScreen extends ConsumerWidget {
       body: CustomScrollView(
         slivers: [
           // Header with illustrated study room
+          // No back button - navigation is via HouseNavigator swipe/tabs
           SliverAppBar(
             expandedHeight: 200,
             pinned: true,
+            automaticallyImplyLeading: false, // No back button - we're in HouseNavigator
             flexibleSpace: FlexibleSpaceBar(
               title: Text(
                 '📚 Study',
@@ -287,7 +290,7 @@ class _StudyBackground extends StatelessWidget {
             child: Icon(
               Icons.menu_book,
               size: 120,
-              color: Colors.white.withOpacity(0.1),
+              color: AppOverlays.white10,
             ),
           ),
           // Desk lamp
@@ -327,7 +330,7 @@ class _SectionCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(title, style: AppTypography.headlineSmall),
-          const SizedBox(height: 4),
+          const SizedBox(height: AppSpacing.xs),
           Text(
             subtitle,
             style: AppTypography.bodySmall.copyWith(
@@ -365,7 +368,7 @@ class _StudyTile extends StatelessWidget {
         height: 44,
         decoration: BoxDecoration(
           color: color.withOpacity(0.1),
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: AppRadius.mediumRadius,
         ),
         child: Icon(icon, color: color),
       ),

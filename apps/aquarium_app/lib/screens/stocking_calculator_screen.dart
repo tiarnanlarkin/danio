@@ -205,7 +205,7 @@ class _StockingCalculatorScreenState extends State<StockingCalculatorScreen> {
                     ),
                     const SizedBox(height: 12),
                     ClipRRect(
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: AppRadius.smallRadius,
                       child: LinearProgressIndicator(
                         value: (_stockingPercent / 120).clamp(0, 1),
                         backgroundColor: AppColors.surfaceVariant,
@@ -213,7 +213,7 @@ class _StockingCalculatorScreenState extends State<StockingCalculatorScreen> {
                         minHeight: 12,
                       ),
                     ),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: AppSpacing.sm),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -229,7 +229,7 @@ class _StockingCalculatorScreenState extends State<StockingCalculatorScreen> {
             ),
           ),
 
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.md),
 
           // Search
           Padding(
@@ -239,7 +239,7 @@ class _StockingCalculatorScreenState extends State<StockingCalculatorScreen> {
                 hintText: 'Search fish to add...',
                 prefixIcon: const Icon(Icons.search),
                 border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: AppRadius.mediumRadius,
                 ),
                 filled: true,
               ),
@@ -253,7 +253,7 @@ class _StockingCalculatorScreenState extends State<StockingCalculatorScreen> {
               margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               decoration: BoxDecoration(
                 color: Theme.of(context).cardColor,
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: AppRadius.mediumRadius,
                 boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 8)],
               ),
               child: ListView.builder(

@@ -87,7 +87,7 @@ class LogDetailScreen extends ConsumerWidget {
                   style: AppTypography.bodySmall,
                 ),
 
-                const SizedBox(height: 16),
+                const SizedBox(height: AppSpacing.md),
 
                 if (log.type == LogType.waterTest && log.waterTest != null)
                   _WaterTestCard(test: log.waterTest!),
@@ -96,22 +96,22 @@ class LogDetailScreen extends ConsumerWidget {
                   _WaterChangeCard(percent: log.waterChangePercent),
 
                 if (log.notes != null && log.notes!.trim().isNotEmpty) ...[
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.md),
                   Text('Notes', style: AppTypography.labelLarge),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: AppSpacing.sm),
                   Text(log.notes!, style: AppTypography.bodyLarge),
                 ],
 
                 if (log.photoUrls != null && log.photoUrls!.isNotEmpty) ...[
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.md),
                   Text('Photos', style: AppTypography.labelLarge),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: AppSpacing.sm),
                   Wrap(
                     spacing: 8,
                     runSpacing: 8,
                     children: log.photoUrls!.map((path) {
                       return ClipRRect(
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: AppRadius.mediumRadius,
                         child: CachedImage(
                           imagePath: path,
                           thumbnail: true,
@@ -130,7 +130,7 @@ class LogDetailScreen extends ConsumerWidget {
                   ),
                 ],
 
-                const SizedBox(height: 32),
+                const SizedBox(height: AppSpacing.xl),
               ],
             ),
           ),
@@ -266,7 +266,7 @@ class _WaterTestCard extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       decoration: BoxDecoration(
         color: AppColors.surfaceVariant,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: AppRadius.mediumRadius,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -298,7 +298,7 @@ class _WaterChangeCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text('Water Change', style: AppTypography.labelLarge),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpacing.sm),
             Text(
               percent != null ? '$percent%' : '—',
               style: AppTypography.headlineSmall,

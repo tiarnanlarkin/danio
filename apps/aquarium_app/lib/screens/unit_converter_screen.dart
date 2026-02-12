@@ -87,7 +87,7 @@ class _VolumeConverterState extends State<_VolumeConverter> {
                   onChanged: (v) => setState(() => _value = double.tryParse(v)),
                 ),
               ),
-              const SizedBox(width: 16),
+              const SizedBox(width: AppSpacing.md),
               DropdownButton<String>(
                 value: _fromUnit,
                 items: _units.keys
@@ -97,7 +97,7 @@ class _VolumeConverterState extends State<_VolumeConverter> {
               ),
             ],
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.lg),
           if (_value != null) ...[
             Text('Conversions', style: AppTypography.headlineSmall),
             const SizedBox(height: 12),
@@ -149,7 +149,7 @@ class _TemperatureConverterState extends State<_TemperatureConverter> {
                   onChanged: (v) => setState(() => _value = double.tryParse(v)),
                 ),
               ),
-              const SizedBox(width: 16),
+              const SizedBox(width: AppSpacing.md),
               DropdownButton<String>(
                 value: _fromUnit,
                 items: ['°C', '°F', 'K']
@@ -159,7 +159,7 @@ class _TemperatureConverterState extends State<_TemperatureConverter> {
               ),
             ],
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.lg),
           if (_value != null) ...[
             Text('Conversions', style: AppTypography.headlineSmall),
             const SizedBox(height: 12),
@@ -243,7 +243,7 @@ class _LengthConverterState extends State<_LengthConverter> {
                   onChanged: (v) => setState(() => _value = double.tryParse(v)),
                 ),
               ),
-              const SizedBox(width: 16),
+              const SizedBox(width: AppSpacing.md),
               DropdownButton<String>(
                 value: _fromUnit,
                 items: _units.keys
@@ -253,7 +253,7 @@ class _LengthConverterState extends State<_LengthConverter> {
               ),
             ],
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.lg),
           if (_value != null) ...[
             Text('Conversions', style: AppTypography.headlineSmall),
             const SizedBox(height: 12),
@@ -313,7 +313,7 @@ class _HardnessConverterState extends State<_HardnessConverter> {
                   onChanged: (v) => setState(() => _value = double.tryParse(v)),
                 ),
               ),
-              const SizedBox(width: 16),
+              const SizedBox(width: AppSpacing.md),
               DropdownButton<String>(
                 value: _fromUnit,
                 items: _units.keys
@@ -323,7 +323,7 @@ class _HardnessConverterState extends State<_HardnessConverter> {
               ),
             ],
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.lg),
           if (_value != null) ...[
             Text('Conversions', style: AppTypography.headlineSmall),
             const SizedBox(height: 12),
@@ -334,7 +334,7 @@ class _HardnessConverterState extends State<_HardnessConverter> {
             }),
           ],
 
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.lg),
           Card(
             color: AppColors.info.withOpacity(0.1),
             child: Padding(
@@ -343,7 +343,7 @@ class _HardnessConverterState extends State<_HardnessConverter> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text('Reference', style: AppTypography.labelLarge),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: AppSpacing.sm),
                   Text('0-4 dGH: Very soft', style: AppTypography.bodySmall),
                   Text('4-8 dGH: Soft', style: AppTypography.bodySmall),
                   Text('8-12 dGH: Medium', style: AppTypography.bodySmall),

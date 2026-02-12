@@ -183,7 +183,7 @@ class WishlistScreen extends ConsumerWidget {
         margin: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: Theme.of(context).scaffoldBackgroundColor,
-          borderRadius: BorderRadius.circular(24),
+          borderRadius: AppRadius.largeRadius,
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -256,7 +256,7 @@ class _EmptyState extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(emoji, style: const TextStyle(fontSize: 64)),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.md),
             Text(
               text,
               style: AppTypography.bodyLarge.copyWith(
@@ -264,7 +264,7 @@ class _EmptyState extends StatelessWidget {
               ),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: AppSpacing.lg),
             ElevatedButton.icon(
               onPressed: onAdd,
               icon: const Icon(Icons.add),
@@ -298,7 +298,7 @@ class _WishlistItemCard extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 12),
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: AppRadius.mediumRadius,
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Row(
@@ -308,11 +308,11 @@ class _WishlistItemCard extends StatelessWidget {
                 height: 48,
                 decoration: BoxDecoration(
                   color: accentColor.withOpacity(0.15),
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: AppRadius.mediumRadius,
                 ),
                 child: Icon(_getCategoryIcon(), color: accentColor),
               ),
-              const SizedBox(width: 16),
+              const SizedBox(width: AppSpacing.md),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -437,7 +437,7 @@ class _AddEditItemSheetState extends State<_AddEditItemSheet> {
       ),
       decoration: BoxDecoration(
         color: Theme.of(context).scaffoldBackgroundColor,
-        borderRadius: BorderRadius.circular(24),
+        borderRadius: AppRadius.largeRadius,
       ),
       child: SingleChildScrollView(
         padding: const EdgeInsets.all(24),
@@ -458,7 +458,7 @@ class _AddEditItemSheetState extends State<_AddEditItemSheet> {
                 ),
               ],
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: AppSpacing.lg),
 
             // Name field
             TextField(
@@ -469,7 +469,7 @@ class _AddEditItemSheetState extends State<_AddEditItemSheet> {
               ),
               textCapitalization: TextCapitalization.words,
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.md),
 
             // Species field (for fish and plants)
             if (widget.category != WishlistCategory.equipment) ...[
@@ -480,7 +480,7 @@ class _AddEditItemSheetState extends State<_AddEditItemSheet> {
                   hintText: 'e.g., Paracheirodon innesi',
                 ),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppSpacing.md),
             ],
 
             // Price and quantity row
@@ -501,12 +501,12 @@ class _AddEditItemSheetState extends State<_AddEditItemSheet> {
                     ],
                   ),
                 ),
-                const SizedBox(width: 16),
+                const SizedBox(width: AppSpacing.md),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text('Quantity', style: AppTypography.bodySmall),
-                    const SizedBox(height: 4),
+                    const SizedBox(height: AppSpacing.xs),
                     Row(
                       children: [
                         IconButton(
@@ -526,7 +526,7 @@ class _AddEditItemSheetState extends State<_AddEditItemSheet> {
                 ),
               ],
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.md),
 
             // Notes
             TextField(
@@ -537,7 +537,7 @@ class _AddEditItemSheetState extends State<_AddEditItemSheet> {
               ),
               maxLines: 2,
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: AppSpacing.lg),
 
             // Save button
             SizedBox(

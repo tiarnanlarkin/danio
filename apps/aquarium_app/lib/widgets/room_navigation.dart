@@ -20,14 +20,14 @@ class RoomNavigation extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text('Explore the House', style: AppTypography.headlineSmall),
-          const SizedBox(height: 4),
+          const SizedBox(height: AppSpacing.xs),
           Text(
             'Each room has different tools and features',
             style: AppTypography.bodySmall.copyWith(
               color: AppColors.textSecondary,
             ),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.md),
           Row(
             children: [
               Expanded(
@@ -93,7 +93,7 @@ class _RoomCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(16),
+      borderRadius: AppRadius.mediumRadius,
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
@@ -102,7 +102,7 @@ class _RoomCard extends StatelessWidget {
             end: Alignment.bottomRight,
             colors: [color, color.withOpacity(0.7)],
           ),
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: AppRadius.mediumRadius,
           boxShadow: [
             BoxShadow(
               color: color.withOpacity(0.3),
@@ -115,7 +115,7 @@ class _RoomCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(emoji, style: const TextStyle(fontSize: 32)),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpacing.sm),
             Text(
               name,
               style: AppTypography.labelLarge.copyWith(color: Colors.white),
@@ -159,7 +159,7 @@ void showRoomNavigationSheet(
             ),
           ),
           RoomNavigation(tankId: tankId, tankName: tankName),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.md),
         ],
       ),
     ),

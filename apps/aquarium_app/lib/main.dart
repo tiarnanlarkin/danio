@@ -191,7 +191,7 @@ class _AppRouterState extends ConsumerState<_AppRouter>
                   size: 80,
                   color: isDark ? Colors.black : Colors.white,
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: AppSpacing.md),
                 Text(
                   'Aquarium',
                   style: TextStyle(

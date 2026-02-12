@@ -12,7 +12,6 @@ import '../widgets/hobby_desk.dart';
 import '../widgets/room_scene.dart';
 import '../widgets/speed_dial_fab.dart';
 import '../widgets/daily_goal_progress.dart';
-import '../widgets/streak_display.dart';
 import '../widgets/streak_calendar.dart';
 import '../widgets/error_state.dart';
 import '../widgets/hearts_widgets.dart';
@@ -23,10 +22,10 @@ import 'create_tank_screen.dart';
 import 'search_screen.dart';
 import 'settings_screen.dart';
 import 'tank_detail_screen.dart';
-import 'rooms/study_screen.dart';
-import 'workshop_screen.dart';
-import 'shop_street_screen.dart';
 
+/// HomeScreen - The Living Room in the House Navigator
+/// This is just the tank management view - navigation between rooms
+/// is handled by HouseNavigator's swipe/tab system.
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
 
@@ -35,7 +34,6 @@ class HomeScreen extends ConsumerStatefulWidget {
 }
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
-  int _currentNavIndex = 0;
   int _currentTankIndex = 0;
   bool _isSelectMode = false;
   final Set<String> _selectedTankIds = {};
@@ -57,20 +55,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         _selectedTankIds.add(tankId);
       }
     });
-  }
-
-  Widget _getCurrentScreen() {
-    switch (_currentNavIndex) {
-      case 1:
-        return const StudyScreen();
-      case 2:
-        return const WorkshopScreen();
-      case 3:
-        return const ShopStreetScreen();
-      case 0:
-      default:
-        return _buildLivingRoomScreen();
-    }
   }
 
   Widget _buildLivingRoomScreen() {
@@ -132,7 +116,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   gradient: LinearGradient(
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
-                    colors: [Colors.black.withOpacity(0.3), Colors.transparent],
+                    colors: [AppOverlays.black30, Colors.transparent],
                   ),
                 ),
                 child: Row(
@@ -143,7 +127,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         color: Colors.white,
                         shadows: [
                           Shadow(
-                            color: Colors.black.withOpacity(0.5),
+                            color: AppOverlays.black50,
                             blurRadius: 4,
                           ),
                         ],
@@ -158,7 +142,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     IconButton(
                       icon: Icon(
                         Icons.search,
-                        color: Colors.white.withOpacity(0.9),
+                        color: AppOverlays.white90,
                       ),
                       tooltip: 'Search',
                       onPressed: () => Navigator.push(
@@ -169,7 +153,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     IconButton(
                       icon: Icon(
                         Icons.settings_outlined,
-                        color: Colors.white.withOpacity(0.9),
+                        color: AppOverlays.white90,
                       ),
                       tooltip: 'Settings',
                       onPressed: () => Navigator.push(
@@ -282,34 +266,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // HomeScreen is the Living Room - it shows tank management only.
+    // Navigation to other rooms (Learn, Workshop, Shop, etc.) is handled
+    // by HouseNavigator's swipe/tab system, not a BottomNavigationBar here.
     return Scaffold(
-      body: _getCurrentScreen(),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _currentNavIndex,
-        onTap: (index) => setState(() => _currentNavIndex = index),
-        type: BottomNavigationBarType.fixed,
-        selectedItemColor: AppColors.primary,
-        unselectedItemColor: AppColors.textSecondary,
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home_rounded),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.school_rounded),
-            label: 'Learn',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.build_rounded),
-            label: 'Tools',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.shopping_bag_rounded),
-            label: 'Shop',
-          ),
-        ],
-      ),
-      floatingActionButton: _currentNavIndex == 0 ? _buildQuickAddFAB() : null,
+      body: _buildLivingRoomScreen(),
+      floatingActionButton: _buildQuickAddFAB(),
     );
   }
 
@@ -413,7 +375,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
           color: Theme.of(context).scaffoldBackgroundColor,
-          borderRadius: BorderRadius.circular(24),
+          borderRadius: AppRadius.largeRadius,
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -446,7 +408,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       width: 100,
                       padding: const EdgeInsets.all(12),
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(16),
+                        borderRadius: AppRadius.mediumRadius,
                         border: Border.all(
                           color: isSelected
                               ? theme.accentBlob
@@ -468,19 +430,19 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                 radius: 8,
                                 backgroundColor: theme.accentBlob,
                               ),
-                              const SizedBox(width: 4),
+                              const SizedBox(width: AppSpacing.xs),
                               CircleAvatar(
                                 radius: 8,
                                 backgroundColor: theme.waterMid,
                               ),
-                              const SizedBox(width: 4),
+                              const SizedBox(width: AppSpacing.xs),
                               CircleAvatar(
                                 radius: 8,
                                 backgroundColor: theme.plantPrimary,
                               ),
                             ],
                           ),
-                          const SizedBox(height: 8),
+                          const SizedBox(height: AppSpacing.sm),
                           Text(
                             theme.name,
                             style: TextStyle(
@@ -505,7 +467,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 );
               }).toList(),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.md),
           ],
         ),
       ),
@@ -545,7 +507,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
           color: Theme.of(context).scaffoldBackgroundColor,
-          borderRadius: BorderRadius.circular(24),
+          borderRadius: AppRadius.largeRadius,
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -566,7 +528,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             const SizedBox(height: 20),
             // Gamification dashboard without card styling
             const GamificationDashboard(showAsCard: false),
-            const SizedBox(height: 24),
+            const SizedBox(height: AppSpacing.lg),
             // Quick actions
             Row(
               children: [
@@ -610,7 +572,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
           color: Theme.of(context).scaffoldBackgroundColor,
-          borderRadius: BorderRadius.circular(24),
+          borderRadius: AppRadius.largeRadius,
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -833,7 +795,7 @@ class _TankSwitcher extends StatelessWidget {
             Colors.white.withOpacity(0.88),
           ],
         ),
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: AppRadius.mediumRadius,
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.12),
@@ -841,14 +803,14 @@ class _TankSwitcher extends StatelessWidget {
             offset: const Offset(0, 6),
           ),
         ],
-        border: Border.all(color: Colors.white.withOpacity(0.6), width: 1.5),
+        border: Border.all(color: AppOverlays.white60, width: 1.5),
       ),
       child: Material(
         color: Colors.transparent,
         child: InkWell(
           onTap: hasMultipleTanks ? () => _showTankPicker(context) : null,
           onLongPress: onLongPress,
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: AppRadius.mediumRadius,
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 14),
             child: Row(
@@ -866,7 +828,7 @@ class _TankSwitcher extends StatelessWidget {
                         AppColors.primary.withOpacity(0.08),
                       ],
                     ),
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: AppRadius.smallRadius,
                   ),
                   child: const Icon(
                     Icons.set_meal_rounded, // Fish icon
@@ -971,7 +933,7 @@ class _TankPickerSheetState extends ConsumerState<_TankPickerSheet> {
       margin: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Theme.of(context).scaffoldBackgroundColor,
-        borderRadius: BorderRadius.circular(24),
+        borderRadius: AppRadius.largeRadius,
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -1043,7 +1005,7 @@ class _TankPickerSheetState extends ConsumerState<_TankPickerSheet> {
                     color: isSelected
                         ? AppColors.primary.withOpacity(0.1)
                         : AppColors.surfaceVariant,
-                    borderRadius: BorderRadius.circular(16),
+                    borderRadius: AppRadius.mediumRadius,
                     border: isSelected
                         ? Border.all(color: AppColors.primary, width: 2)
                         : null,
@@ -1061,7 +1023,7 @@ class _TankPickerSheetState extends ConsumerState<_TankPickerSheet> {
                         color: isSelected
                             ? AppColors.primary.withOpacity(0.2)
                             : Colors.white,
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: AppRadius.mediumRadius,
                       ),
                       child: Icon(
                         Icons.water,
@@ -1090,7 +1052,7 @@ class _TankPickerSheetState extends ConsumerState<_TankPickerSheet> {
                       children: [
                         if (isSelected)
                           Icon(Icons.check_circle, color: AppColors.primary),
-                        const SizedBox(width: 8),
+                        const SizedBox(width: AppSpacing.sm),
                         Icon(Icons.drag_handle, color: AppColors.textHint),
                       ],
                     ),
@@ -1107,7 +1069,7 @@ class _TankPickerSheetState extends ConsumerState<_TankPickerSheet> {
               child: Row(
                 children: [
                   Icon(Icons.info_outline, size: 16, color: AppColors.info),
-                  const SizedBox(width: 8),
+                  const SizedBox(width: AppSpacing.sm),
                   Expanded(
                     child: Text(
                       'Tap "Save" to keep this order',
@@ -1170,7 +1132,7 @@ class _XpSourceRow extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
             decoration: BoxDecoration(
               color: AppColors.primary.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: AppRadius.smallRadius,
             ),
             child: Text(
               '+$xp XP',
@@ -1213,7 +1175,7 @@ class _SelectionModePanel extends StatelessWidget {
           constraints: const BoxConstraints(maxHeight: 300),
           decoration: BoxDecoration(
             color: Colors.white.withOpacity(0.95),
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: AppRadius.mediumRadius,
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withOpacity(0.12),
@@ -1222,7 +1184,7 @@ class _SelectionModePanel extends StatelessWidget {
               ),
             ],
             border: Border.all(
-              color: Colors.white.withOpacity(0.6),
+              color: AppOverlays.white60,
               width: 1.5,
             ),
           ),
@@ -1257,7 +1219,7 @@ class _SelectionModePanel extends StatelessWidget {
                         color: AppColors.textSecondary,
                       ),
                     ),
-                    const SizedBox(width: 8),
+                    const SizedBox(width: AppSpacing.sm),
                     IconButton(
                       icon: const Icon(Icons.close, size: 20),
                       tooltip: 'Cancel selection',
@@ -1323,7 +1285,7 @@ class _SelectionModePanel extends StatelessWidget {
                   foregroundColor: Colors.white,
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: AppRadius.mediumRadius,
                   ),
                 ),
                 icon: const Icon(Icons.delete_outline, size: 20),
@@ -1339,7 +1301,7 @@ class _SelectionModePanel extends StatelessWidget {
                   foregroundColor: Colors.white,
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: AppRadius.mediumRadius,
                   ),
                 ),
                 icon: const Icon(Icons.file_download_outlined, size: 20),
@@ -1388,7 +1350,7 @@ class _EmptyRoomScene extends StatelessWidget {
                 colors: [Color(0xFF87CEEB), Color(0xFFB8E0F0)],
               ),
               border: Border.all(color: const Color(0xFF8B7355), width: 6),
-              borderRadius: BorderRadius.circular(4),
+              borderRadius: AppRadius.xsRadius,
             ),
           ),
         ),
@@ -1421,10 +1383,10 @@ class _EmptyRoomScene extends StatelessWidget {
               gradient: const LinearGradient(
                 colors: [Color(0xFF5D4037), Color(0xFF4E342E)],
               ),
-              borderRadius: BorderRadius.circular(4),
+              borderRadius: AppRadius.xsRadius,
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.3),
+                  color: AppOverlays.black30,
                   blurRadius: 8,
                   offset: const Offset(0, 4),
                 ),
@@ -1442,7 +1404,7 @@ class _EmptyRoomScene extends StatelessWidget {
             height: 120,
             decoration: BoxDecoration(
               color: AppColors.surfaceVariant.withOpacity(0.3),
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: AppRadius.smallRadius,
               border: Border.all(
                 color: AppColors.textHint.withOpacity(0.5),
                 width: 2,
@@ -1457,7 +1419,7 @@ class _EmptyRoomScene extends StatelessWidget {
                   size: 40,
                   color: AppColors.textHint.withOpacity(0.5),
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: AppSpacing.sm),
                 Text(
                   'Your tank here',
                   style: AppTypography.bodySmall.copyWith(
@@ -1485,7 +1447,7 @@ class _EmptyRoomScene extends StatelessWidget {
                     height: 50,
                     decoration: BoxDecoration(
                       color: const Color(0xFF228B22).withOpacity(0.5),
-                      borderRadius: BorderRadius.circular(15),
+                      borderRadius: AppRadius.mediumRadius,
                     ),
                   ),
                   Container(
@@ -1493,7 +1455,7 @@ class _EmptyRoomScene extends StatelessWidget {
                     height: 20,
                     decoration: BoxDecoration(
                       color: const Color(0xFFCD853F).withOpacity(0.5),
-                      borderRadius: BorderRadius.circular(4),
+                      borderRadius: AppRadius.xsRadius,
                     ),
                   ),
                 ],
@@ -1525,7 +1487,7 @@ class _EmptyRoomScene extends StatelessWidget {
                   icon: const Icon(Icons.add),
                   label: const Text('Add Your Tank'),
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: AppSpacing.sm),
                 TextButton(
                   onPressed: onLoadDemo,
                   child: const Text('Try a sample tank'),

@@ -1,3 +1,4 @@
+import 'package:aquarium_app/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 
 /// Analytics Dashboard Screen - Comprehensive progress visualization
@@ -84,7 +85,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                 _buildTopicBreakdown(summary),
                 const Divider(height: 32),
                 _buildPredictionsSection(summary),
-                const SizedBox(height: 32),
+                const SizedBox(height: AppSpacing.xl),
               ],
             ),
           );
@@ -116,7 +117,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _buildTimeRangeSelector(),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.md),
           // Overview skeleton
           const Padding(
             padding: EdgeInsets.all(16),
@@ -209,7 +210,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
             'Overview',
             style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.md),
           Row(
             children: [
               Expanded(
@@ -291,7 +292,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: color.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: AppRadius.mediumRadius,
         border: Border.all(color: color.withOpacity(0.3)),
       ),
       child: Column(
@@ -300,7 +301,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
           Row(
             children: [
               Icon(icon, color: color, size: 24),
-              const SizedBox(width: 8),
+              const SizedBox(width: AppSpacing.sm),
               Expanded(
                 child: Text(
                   label,
@@ -314,7 +315,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
               if (trend != null) Text(trend.emoji),
             ],
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.sm),
           Text(
             value,
             style: TextStyle(
@@ -324,7 +325,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
             ),
           ),
           if (subtitle != null) ...[
-            const SizedBox(height: 4),
+            const SizedBox(height: AppSpacing.xs),
             Text(
               subtitle,
               style: TextStyle(fontSize: 11, color: Colors.grey[600]),
@@ -353,7 +354,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
             'XP Over Time',
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.lg),
           SizedBox(
             height: 200,
             child: LineChart(
@@ -455,7 +456,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
             'Last 7 Days',
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.lg),
           SizedBox(
             height: 200,
             child: BarChart(
@@ -557,7 +558,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
             'Topic Mastery',
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.lg),
           SizedBox(
             height: 300,
             child: RadarChart(
@@ -618,7 +619,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
             'Activity Calendar',
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.md),
           SizedBox(
             height: 120,
             child: GridView.builder(
@@ -675,13 +676,13 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const Text('Less', style: TextStyle(fontSize: 11)),
-              const SizedBox(width: 4),
+              const SizedBox(width: AppSpacing.xs),
               _buildLegendBox(Colors.grey[200]!),
               _buildLegendBox(Colors.green[200]!),
               _buildLegendBox(Colors.green[400]!),
               _buildLegendBox(Colors.green[600]!),
               _buildLegendBox(Colors.green[800]!),
-              const SizedBox(width: 4),
+              const SizedBox(width: AppSpacing.xs),
               const Text('More', style: TextStyle(fontSize: 11)),
             ],
           ),
@@ -715,7 +716,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
             'Insights & Recommendations',
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.md),
           ...summary.insights.map((insight) => _buildInsightCard(insight)),
         ],
       ),
@@ -768,25 +769,25 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
               ],
             ),
             if (insight.detailedMessage != null) ...[
-              const SizedBox(height: 8),
+              const SizedBox(height: AppSpacing.sm),
               Text(
                 insight.detailedMessage!,
                 style: TextStyle(fontSize: 14, color: Colors.grey[700]),
               ),
             ],
             if (insight.recommendation != null) ...[
-              const SizedBox(height: 8),
+              const SizedBox(height: AppSpacing.sm),
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
                   color: color.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: AppRadius.smallRadius,
                   border: Border.all(color: color.withOpacity(0.3)),
                 ),
                 child: Row(
                   children: [
                     Icon(Icons.lightbulb_outline, color: color, size: 20),
-                    const SizedBox(width: 8),
+                    const SizedBox(width: AppSpacing.sm),
                     Expanded(
                       child: Text(
                         insight.recommendation!,
@@ -816,7 +817,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
             'Topic Breakdown',
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.md),
           ...summary.topicPerformance.map((topic) => _buildTopicCard(topic)),
         ],
       ),
@@ -857,7 +858,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                         'Progress',
                         style: TextStyle(fontSize: 12, color: Colors.grey[600]),
                       ),
-                      const SizedBox(height: 4),
+                      const SizedBox(height: AppSpacing.xs),
                       LinearProgressIndicator(
                         value: topic.masteryPercentage,
                         backgroundColor: Colors.grey[200],
@@ -867,7 +868,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                             ? Colors.orange
                             : Colors.blue,
                       ),
-                      const SizedBox(height: 4),
+                      const SizedBox(height: AppSpacing.xs),
                       Text(
                         '${topic.lessonsCompleted}/${topic.totalLessons} lessons (${(topic.masteryPercentage * 100).toInt()}%)',
                         style: const TextStyle(fontSize: 11),
@@ -875,7 +876,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                     ],
                   ),
                 ),
-                const SizedBox(width: 16),
+                const SizedBox(width: AppSpacing.md),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
@@ -914,7 +915,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
             'Predictions & Goals',
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.md),
           ...summary.predictions.map(
             (prediction) => _buildPredictionCard(prediction),
           ),
@@ -947,7 +948,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                 ),
               ],
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpacing.sm),
             Row(
               children: [
                 Container(
@@ -957,7 +958,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                   ),
                   decoration: BoxDecoration(
                     color: Colors.blue,
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: AppRadius.mediumRadius,
                   ),
                   child: Text(
                     prediction.confidenceLabel,
@@ -965,7 +966,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                   ),
                 ),
                 if (prediction.estimatedDate != null) ...[
-                  const SizedBox(width: 8),
+                  const SizedBox(width: AppSpacing.sm),
                   Text(
                     'ETA: ${DateFormat('MMM d').format(prediction.estimatedDate!)}',
                     style: TextStyle(fontSize: 12, color: Colors.grey[700]),

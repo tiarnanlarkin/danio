@@ -99,7 +99,7 @@ class _LightingScheduleScreenState extends State<LightingScheduleScreen> {
             ),
           ),
 
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.lg),
 
           Text('Tank Setup', style: AppTypography.headlineSmall),
           const SizedBox(height: 12),
@@ -142,7 +142,7 @@ class _LightingScheduleScreenState extends State<LightingScheduleScreen> {
             ),
           ),
 
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.lg),
 
           Text('Schedule', style: AppTypography.headlineSmall),
           const SizedBox(height: 12),
@@ -177,7 +177,7 @@ class _LightingScheduleScreenState extends State<LightingScheduleScreen> {
                 ),
                 if (_useSiesta) ...[
                   ListTile(
-                    leading: const SizedBox(width: 24),
+                    leading: const SizedBox(width: AppSpacing.lg),
                     title: const Text('Siesta Start'),
                     trailing: Text(
                       _formatTime(_siestaStart),
@@ -186,7 +186,7 @@ class _LightingScheduleScreenState extends State<LightingScheduleScreen> {
                     onTap: () => _pickSiestaTime(true),
                   ),
                   ListTile(
-                    leading: const SizedBox(width: 24),
+                    leading: const SizedBox(width: AppSpacing.lg),
                     title: const Text('Siesta End'),
                     trailing: Text(
                       _formatTime(_siestaEnd),
@@ -199,7 +199,7 @@ class _LightingScheduleScreenState extends State<LightingScheduleScreen> {
             ),
           ),
 
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.lg),
 
           // Visual timeline
           Card(
@@ -234,7 +234,7 @@ class _LightingScheduleScreenState extends State<LightingScheduleScreen> {
             ),
           ),
 
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.md),
 
           // Recommendation
           Card(
@@ -258,7 +258,7 @@ class _LightingScheduleScreenState extends State<LightingScheduleScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text('Recommendation', style: AppTypography.labelLarge),
-                        const SizedBox(height: 4),
+                        const SizedBox(height: AppSpacing.xs),
                         Text(_recommendation, style: AppTypography.bodyMedium),
                       ],
                     ),
@@ -268,7 +268,7 @@ class _LightingScheduleScreenState extends State<LightingScheduleScreen> {
             ),
           ),
 
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.lg),
 
           Text('Quick Guide', style: AppTypography.headlineSmall),
           const SizedBox(height: 12),
@@ -288,7 +288,7 @@ class _LightingScheduleScreenState extends State<LightingScheduleScreen> {
           ),
 
           if (_hasCO2) ...[
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.md),
             Card(
               color: AppColors.info.withOpacity(0.1),
               child: Padding(
@@ -297,7 +297,7 @@ class _LightingScheduleScreenState extends State<LightingScheduleScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text('CO2 Timing', style: AppTypography.labelLarge),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: AppSpacing.sm),
                     Text(
                       '• CO2 ON: ${_formatTime(TimeOfDay(hour: _lightsOn.hour - 1, minute: _lightsOn.minute))} (1hr before lights)',
                       style: AppTypography.bodyMedium,
@@ -306,7 +306,7 @@ class _LightingScheduleScreenState extends State<LightingScheduleScreen> {
                       '• CO2 OFF: ${_formatTime(TimeOfDay(hour: _lightsOff.hour - 1, minute: _lightsOff.minute))} (1hr before lights off)',
                       style: AppTypography.bodyMedium,
                     ),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: AppSpacing.sm),
                     Text(
                       'This gives CO2 time to dissolve before photosynthesis peaks.',
                       style: AppTypography.bodySmall,
@@ -317,7 +317,7 @@ class _LightingScheduleScreenState extends State<LightingScheduleScreen> {
             ),
           ],
 
-          const SizedBox(height: 48),
+          const SizedBox(height: AppSpacing.xxl),
         ],
       ),
     );
@@ -384,7 +384,7 @@ class _TimelineBar extends StatelessWidget {
         Container(
           height: 32,
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: AppRadius.smallRadius,
             color: AppColors.surfaceVariant,
           ),
           child: LayoutBuilder(
@@ -406,7 +406,7 @@ class _TimelineBar extends StatelessWidget {
                     child: Container(
                       decoration: BoxDecoration(
                         color: AppColors.warning.withOpacity(0.6),
-                        borderRadius: BorderRadius.circular(8),
+                        borderRadius: AppRadius.smallRadius,
                       ),
                     ),
                   ),
@@ -431,7 +431,7 @@ class _TimelineBar extends StatelessWidget {
             },
           ),
         ),
-        const SizedBox(height: 4),
+        const SizedBox(height: AppSpacing.xs),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [

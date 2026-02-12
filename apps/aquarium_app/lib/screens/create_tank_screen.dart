@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/models.dart';
-import '../models/learning.dart';
 import '../providers/tank_provider.dart';
 import '../providers/user_profile_provider.dart';
 import '../providers/inventory_provider.dart';
@@ -306,12 +305,12 @@ class _BasicInfoPage extends StatelessWidget {
             header: true,
             child: Text('Name your tank', style: AppTypography.headlineMedium),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.sm),
           Text(
             'Give it a memorable name, like "Living Room Tank" or "Betta Palace".',
             style: AppTypography.bodyMedium,
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.lg),
 
           FocusTraversalOrder(
             order: const NumericFocusOrder(1.0),
@@ -330,18 +329,18 @@ class _BasicInfoPage extends StatelessWidget {
             ),
           ),
 
-          const SizedBox(height: 32),
+          const SizedBox(height: AppSpacing.xl),
 
           Semantics(
             header: true,
             child: Text('Tank type', style: AppTypography.headlineSmall),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.sm),
           Text(
             'Freshwater is the most common choice for beginners.',
             style: AppTypography.bodyMedium,
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.md),
 
           FocusTraversalOrder(
             order: const NumericFocusOrder(2.0),
@@ -380,7 +379,26 @@ class _TypeSelector extends StatelessWidget {
             subtitle: 'Coming soon',
             isSelected: selected == TankType.marine,
             isDisabled: true,
-            onTap: null,
+            onTap: () {
+              // Show coming soon message when user taps disabled Marine option
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Row(
+                    children: const [
+                      Icon(Icons.waves, color: Colors.white),
+                      SizedBox(width: 12),
+                      Expanded(
+                        child: Text(
+                          'Marine tank support is coming soon! 🐠🦀🐙',
+                        ),
+                      ),
+                    ],
+                  ),
+                  behavior: SnackBarBehavior.floating,
+                  duration: const Duration(seconds: 3),
+                ),
+              );
+            },
           ),
         ),
       ],
@@ -409,23 +427,24 @@ class _TypeCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Semantics(
       label: A11yLabels.selectableItem(title, isSelected),
-      hint: subtitle,
+      hint: isDisabled ? 'Coming soon' : subtitle,
       button: true,
       enabled: !isDisabled,
       selected: isSelected,
-      onTap: isDisabled ? null : onTap,
+      onTap: onTap,
       child: Opacity(
-        opacity: isDisabled ? 0.5 : 1,
+        opacity: isDisabled ? 0.6 : 1,
         child: InkWell(
-          onTap: isDisabled ? null : onTap,
-          borderRadius: BorderRadius.circular(12),
+          // Allow tap even when disabled to show feedback message
+          onTap: onTap,
+          borderRadius: AppRadius.mediumRadius,
           child: Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
               color: isSelected
                   ? AppColors.primary.withOpacity(0.1)
                   : AppColors.surfaceVariant,
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: AppRadius.mediumRadius,
               border: Border.all(
                 color: isSelected ? AppColors.primary : Colors.transparent,
                 width: 2,
@@ -442,7 +461,7 @@ class _TypeCard extends StatelessWidget {
                         : AppColors.textSecondary,
                   ),
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: AppSpacing.sm),
                 ExcludeSemantics(
                   child: Text(
                     title,
@@ -453,11 +472,14 @@ class _TypeCard extends StatelessWidget {
                     ),
                   ),
                 ),
-                const SizedBox(height: 4),
+                const SizedBox(height: AppSpacing.xs),
                 ExcludeSemantics(
                   child: Text(
                     subtitle,
-                    style: AppTypography.bodySmall,
+                    style: AppTypography.bodySmall.copyWith(
+                      color: isDisabled ? AppColors.textHint : null,
+                      fontStyle: isDisabled ? FontStyle.italic : null,
+                    ),
                     textAlign: TextAlign.center,
                   ),
                 ),
@@ -503,12 +525,12 @@ class _SizePage extends StatelessWidget {
             header: true,
             child: Text('Tank size', style: AppTypography.headlineMedium),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.sm),
           Text(
             'Enter the volume, or we can calculate it from dimensions.',
             style: AppTypography.bodyMedium,
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.lg),
 
           // Volume input
           FocusTraversalOrder(
@@ -537,7 +559,7 @@ class _SizePage extends StatelessWidget {
             ),
           ),
 
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.lg),
 
           Semantics(
             header: true,
@@ -546,12 +568,12 @@ class _SizePage extends StatelessWidget {
               style: AppTypography.headlineSmall,
             ),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.sm),
           Text(
             'Useful for stocking recommendations.',
             style: AppTypography.bodyMedium,
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.md),
 
           Row(
             children: [
@@ -630,9 +652,9 @@ class _SizePage extends StatelessWidget {
           ),
 
           // Quick size presets
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.lg),
           Text('Quick presets', style: AppTypography.bodySmall),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.sm),
           Wrap(
             spacing: 8,
             runSpacing: 8,
@@ -691,12 +713,12 @@ class _WaterTypePage extends StatelessWidget {
             header: true,
             child: Text('Water type', style: AppTypography.headlineMedium),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.sm),
           Text(
             'This sets default temperature and parameter targets.',
             style: AppTypography.bodyMedium,
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.lg),
 
           FocusTraversalOrder(
             order: const NumericFocusOrder(1.0),
@@ -706,7 +728,7 @@ class _WaterTypePage extends StatelessWidget {
             ),
           ),
 
-          const SizedBox(height: 32),
+          const SizedBox(height: AppSpacing.xl),
 
           Semantics(
             header: true,
@@ -715,12 +737,12 @@ class _WaterTypePage extends StatelessWidget {
               style: AppTypography.headlineSmall,
             ),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.sm),
           Text(
             'Helps track cycling progress and maintenance history.',
             style: AppTypography.bodyMedium,
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.md),
 
           FocusTraversalOrder(
             order: const NumericFocusOrder(2.0),
@@ -742,7 +764,7 @@ class _WaterTypePage extends StatelessWidget {
                     onStartDateChanged(picked);
                   }
                 },
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: AppRadius.mediumRadius,
                 child: Container(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 16,
@@ -750,7 +772,7 @@ class _WaterTypePage extends StatelessWidget {
                   ),
                   decoration: BoxDecoration(
                     color: AppColors.surfaceVariant,
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: AppRadius.mediumRadius,
                   ),
                   child: Row(
                     children: [
@@ -782,7 +804,7 @@ class _WaterTypePage extends StatelessWidget {
             ),
           ),
 
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.sm),
 
           FocusTraversalOrder(
             order: const NumericFocusOrder(3.0),
@@ -856,14 +878,14 @@ class _WaterTypeOption extends StatelessWidget {
       onTap: onTap,
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: AppRadius.mediumRadius,
         child: Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
             color: isSelected
                 ? AppColors.primary.withOpacity(0.1)
                 : AppColors.surfaceVariant,
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: AppRadius.mediumRadius,
             border: Border.all(
               color: isSelected ? AppColors.primary : Colors.transparent,
               width: 2,
@@ -874,7 +896,7 @@ class _WaterTypeOption extends StatelessWidget {
               ExcludeSemantics(
                 child: Text(icon, style: const TextStyle(fontSize: 28)),
               ),
-              const SizedBox(width: 16),
+              const SizedBox(width: AppSpacing.md),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,

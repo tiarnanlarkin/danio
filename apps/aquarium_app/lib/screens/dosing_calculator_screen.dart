@@ -53,7 +53,7 @@ class _DosingCalculatorScreenState extends State<DosingCalculatorScreen> {
           children: [
             // Tank volume
             Text('Tank Volume', style: AppTypography.headlineSmall),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpacing.sm),
             TextFormField(
               controller: _volumeController,
               decoration: const InputDecoration(
@@ -69,11 +69,11 @@ class _DosingCalculatorScreenState extends State<DosingCalculatorScreen> {
               onChanged: (_) => setState(() {}),
             ),
 
-            const SizedBox(height: 24),
+            const SizedBox(height: AppSpacing.lg),
 
             // Dose per X litres
             Text('Recommended Dose', style: AppTypography.headlineSmall),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpacing.sm),
             Row(
               children: [
                 Expanded(
@@ -115,7 +115,7 @@ class _DosingCalculatorScreenState extends State<DosingCalculatorScreen> {
               ],
             ),
 
-            const SizedBox(height: 32),
+            const SizedBox(height: AppSpacing.xl),
 
             // Result
             if (_tankVolume != null && _totalDose != null) ...[
@@ -141,14 +141,14 @@ class _DosingCalculatorScreenState extends State<DosingCalculatorScreen> {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 8),
+                      const SizedBox(height: AppSpacing.sm),
                       Text(
                         'Total dose for your tank',
                         style: AppTypography.bodyMedium,
                       ),
-                      const SizedBox(height: 16),
+                      const SizedBox(height: AppSpacing.md),
                       const Divider(),
-                      const SizedBox(height: 16),
+                      const SizedBox(height: AppSpacing.md),
                       _ResultRow(
                         label: 'Tank volume',
                         value: '${_tankVolume!.toStringAsFixed(0)} L',
@@ -163,7 +163,7 @@ class _DosingCalculatorScreenState extends State<DosingCalculatorScreen> {
                 ),
               ),
 
-              const SizedBox(height: 24),
+              const SizedBox(height: AppSpacing.lg),
 
               // Common products
               Text('Common Products', style: AppTypography.headlineSmall),
@@ -225,7 +225,7 @@ class _DosingCalculatorScreenState extends State<DosingCalculatorScreen> {
                           size: 48,
                           color: AppColors.textHint,
                         ),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: AppSpacing.md),
                         Text(
                           'Enter values to calculate dose',
                           style: AppTypography.bodyMedium,

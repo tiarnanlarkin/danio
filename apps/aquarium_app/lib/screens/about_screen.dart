@@ -15,7 +15,7 @@ class AboutScreen extends StatelessWidget {
         padding: const EdgeInsets.all(24),
         child: Column(
           children: [
-            const SizedBox(height: 24),
+            const SizedBox(height: AppSpacing.lg),
 
             // App icon placeholder
             Container(
@@ -27,7 +27,7 @@ class AboutScreen extends StatelessWidget {
                   end: Alignment.bottomRight,
                   colors: [AppColors.primary, AppColors.secondary],
                 ),
-                borderRadius: BorderRadius.circular(24),
+                borderRadius: AppRadius.largeRadius,
                 boxShadow: [
                   BoxShadow(
                     color: AppColors.primary.withOpacity(0.3),
@@ -43,13 +43,13 @@ class AboutScreen extends StatelessWidget {
               ),
             ),
 
-            const SizedBox(height: 24),
+            const SizedBox(height: AppSpacing.lg),
 
             Text('Aquarium Hobby App', style: AppTypography.headlineMedium),
-            const SizedBox(height: 4),
+            const SizedBox(height: AppSpacing.xs),
             Text('Version 1.0.0', style: AppTypography.bodyMedium),
 
-            const SizedBox(height: 32),
+            const SizedBox(height: AppSpacing.xl),
 
             Text(
               'Track your tanks, livestock, equipment, and maintenance in one calm, organized place.',
@@ -57,11 +57,11 @@ class AboutScreen extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
 
-            const SizedBox(height: 32),
+            const SizedBox(height: AppSpacing.xl),
 
             const Divider(),
 
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.md),
 
             const _FeatureItem(
               icon: Icons.water,
@@ -89,18 +89,18 @@ class AboutScreen extends StatelessWidget {
               description: 'Your data stays on your device',
             ),
 
-            const SizedBox(height: 32),
+            const SizedBox(height: AppSpacing.xl),
 
             const Divider(),
 
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.md),
 
             Text(
               'Made with ❤️ for the fishkeeping community',
               style: AppTypography.bodySmall,
             ),
 
-            const SizedBox(height: 24),
+            const SizedBox(height: AppSpacing.lg),
 
             Wrap(
               alignment: WrapAlignment.center,
@@ -134,7 +134,7 @@ class AboutScreen extends StatelessWidget {
               ],
             ),
 
-            const SizedBox(height: 48),
+            const SizedBox(height: AppSpacing.xxl),
           ],
         ),
       ),
@@ -171,11 +171,11 @@ class _FeatureItem extends StatelessWidget {
             height: 40,
             decoration: BoxDecoration(
               color: AppColors.primary.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: AppRadius.smallRadius,
             ),
             child: Icon(icon, color: AppColors.primary, size: 20),
           ),
-          const SizedBox(width: 16),
+          const SizedBox(width: AppSpacing.md),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

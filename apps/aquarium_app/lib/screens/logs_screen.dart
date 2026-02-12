@@ -90,7 +90,7 @@ class _LogsScreenState extends ConsumerState<LogsScreen> {
                 child: ListView.separated(
                   padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
                   itemCount: filtered.length,
-                  separatorBuilder: (_, __) => const SizedBox(height: 8),
+                  separatorBuilder: (_, __) => const SizedBox(height: AppSpacing.sm),
                   itemBuilder: (context, index) {
                     final log = filtered[index];
                     return Card(
@@ -218,10 +218,10 @@ class _LogsScreenState extends ConsumerState<LogsScreen> {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: AppSpacing.sm),
 
                     Text('Type', style: AppTypography.labelLarge),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: AppSpacing.sm),
                     Wrap(
                       spacing: 8,
                       runSpacing: 8,
@@ -243,9 +243,9 @@ class _LogsScreenState extends ConsumerState<LogsScreen> {
                       }).toList(),
                     ),
 
-                    const SizedBox(height: 16),
+                    const SizedBox(height: AppSpacing.md),
                     Text('Date', style: AppTypography.labelLarge),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: AppSpacing.sm),
                     OutlinedButton.icon(
                       onPressed: () async {
                         final picked = await showDateRangePicker(
@@ -268,7 +268,7 @@ class _LogsScreenState extends ConsumerState<LogsScreen> {
                       ),
                     ),
 
-                    const SizedBox(height: 16),
+                    const SizedBox(height: AppSpacing.md),
                     ElevatedButton(
                       onPressed: hasChanges
                           ? () {
@@ -513,7 +513,7 @@ class _Chip extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       decoration: BoxDecoration(
         color: AppColors.surfaceVariant,
-        borderRadius: BorderRadius.circular(999),
+        borderRadius: AppRadius.pillRadius,
       ),
       child: Text(label, style: AppTypography.bodySmall),
     );

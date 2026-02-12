@@ -72,9 +72,9 @@ class _EmptySearchState extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(Icons.search, size: 64, color: AppColors.textHint),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.md),
           Text('Search your aquarium data', style: AppTypography.bodyMedium),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.sm),
           Text(
             'Find tanks, fish, equipment, or browse species',
             style: AppTypography.bodySmall,
@@ -193,7 +193,7 @@ class _SearchResults extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Icon(Icons.search_off, size: 64, color: AppColors.textHint),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.md),
             Text('No results for "$query"', style: AppTypography.bodyMedium),
           ],
         ),
@@ -220,17 +220,17 @@ class _SearchResults extends StatelessWidget {
         if (tankResults.isNotEmpty) ...[
           _SectionHeader(title: 'Tanks', count: tankResults.length),
           ...tankResults.map((r) => _ResultTile(result: r)),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.md),
         ],
         if (livestockResults.isNotEmpty) ...[
           _SectionHeader(title: 'Livestock', count: livestockResults.length),
           ...livestockResults.map((r) => _ResultTile(result: r)),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.md),
         ],
         if (equipmentResults.isNotEmpty) ...[
           _SectionHeader(title: 'Equipment', count: equipmentResults.length),
           ...equipmentResults.map((r) => _ResultTile(result: r)),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.md),
         ],
         if (speciesResultsList.isNotEmpty) ...[
           _SectionHeader(
@@ -276,7 +276,7 @@ class _SearchResults extends StatelessWidget {
                   fontStyle: FontStyle.italic,
                 ),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppSpacing.md),
               Wrap(
                 spacing: 8,
                 runSpacing: 8,
@@ -289,11 +289,11 @@ class _SearchResults extends StatelessWidget {
                   _InfoChip(label: species.family),
                 ],
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppSpacing.md),
               Text(species.description, style: AppTypography.bodyLarge),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppSpacing.md),
               Text('Parameters', style: AppTypography.headlineSmall),
-              const SizedBox(height: 8),
+              const SizedBox(height: AppSpacing.sm),
               Text(
                 'Temperature: ${species.minTempC}–${species.maxTempC}°C\n'
                 'pH: ${species.minPh}–${species.maxPh}\n'
@@ -301,11 +301,11 @@ class _SearchResults extends StatelessWidget {
                 'School size: ${species.minSchoolSize}+',
                 style: AppTypography.bodyMedium,
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppSpacing.md),
               Text('Diet', style: AppTypography.headlineSmall),
-              const SizedBox(height: 8),
+              const SizedBox(height: AppSpacing.sm),
               Text(species.diet, style: AppTypography.bodyMedium),
-              const SizedBox(height: 24),
+              const SizedBox(height: AppSpacing.lg),
             ],
           ),
         ),
@@ -325,7 +325,7 @@ class _InfoChip extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
         color: AppColors.surfaceVariant,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: AppRadius.mediumRadius,
       ),
       child: Text(label, style: AppTypography.bodySmall),
     );
@@ -363,7 +363,7 @@ class _SectionHeader extends StatelessWidget {
       child: Row(
         children: [
           Text(title, style: AppTypography.labelLarge),
-          const SizedBox(width: 8),
+          const SizedBox(width: AppSpacing.sm),
           Text('($count)', style: AppTypography.bodySmall),
         ],
       ),

@@ -183,7 +183,7 @@ class _PlacementTestScreenState extends ConsumerState<PlacementTestScreen> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.md),
 
                   // Question text
                   Card(
@@ -195,7 +195,7 @@ class _PlacementTestScreenState extends ConsumerState<PlacementTestScreen> {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: AppSpacing.lg),
 
                   // Answer options
                   ..._buildAnswerOptions(),
@@ -203,7 +203,7 @@ class _PlacementTestScreenState extends ConsumerState<PlacementTestScreen> {
                   // Explanation (shown after answering)
                   if (_showExplanation &&
                       _currentQuestion.explanation != null) ...[
-                    const SizedBox(height: 24),
+                    const SizedBox(height: AppSpacing.lg),
                     _buildExplanation(),
                   ],
                 ],
@@ -279,12 +279,12 @@ class _PlacementTestScreenState extends ConsumerState<PlacementTestScreen> {
         padding: const EdgeInsets.only(bottom: 12),
         child: InkWell(
           onTap: showResult ? null : () => _selectAnswer(index),
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: AppRadius.mediumRadius,
           child: Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
               color: backgroundColor,
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: AppRadius.mediumRadius,
               border: Border.all(
                 color: borderColor ?? Colors.grey[300]!,
                 width: 2,
@@ -313,7 +313,7 @@ class _PlacementTestScreenState extends ConsumerState<PlacementTestScreen> {
                     ),
                   ),
                 ),
-                const SizedBox(width: 16),
+                const SizedBox(width: AppSpacing.md),
                 Expanded(
                   child: Text(
                     _currentQuestion.options[index],
@@ -321,7 +321,7 @@ class _PlacementTestScreenState extends ConsumerState<PlacementTestScreen> {
                   ),
                 ),
                 if (icon != null) ...[
-                  const SizedBox(width: 8),
+                  const SizedBox(width: AppSpacing.sm),
                   Icon(icon, color: borderColor),
                 ],
               ],
@@ -348,7 +348,7 @@ class _PlacementTestScreenState extends ConsumerState<PlacementTestScreen> {
                   isCorrect ? Icons.check_circle : Icons.info,
                   color: isCorrect ? Colors.green : Colors.blue,
                 ),
-                const SizedBox(width: 8),
+                const SizedBox(width: AppSpacing.sm),
                 Text(
                   isCorrect ? 'Correct!' : 'Not quite...',
                   style: TextStyle(
@@ -359,7 +359,7 @@ class _PlacementTestScreenState extends ConsumerState<PlacementTestScreen> {
                 ),
               ],
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpacing.sm),
             Text(
               _currentQuestion.explanation!,
               style: const TextStyle(fontSize: 14),
@@ -377,7 +377,7 @@ class _PlacementTestScreenState extends ConsumerState<PlacementTestScreen> {
         color: Colors.white,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: AppOverlays.black10,
             blurRadius: 4,
             offset: const Offset(0, -2),
           ),

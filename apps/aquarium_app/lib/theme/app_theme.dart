@@ -196,13 +196,109 @@ class AppSpacing {
   static const double xxl = 48;
 }
 
+/// Animation durations (Material 3 aligned)
+class AppDurations {
+  static const Duration extraShort = Duration(milliseconds: 50);
+  static const Duration short = Duration(milliseconds: 100);
+  static const Duration medium1 = Duration(milliseconds: 150);
+  static const Duration medium2 = Duration(milliseconds: 200);
+  static const Duration medium3 = Duration(milliseconds: 250);
+  static const Duration medium4 = Duration(milliseconds: 300);
+  static const Duration long1 = Duration(milliseconds: 400);
+  static const Duration long2 = Duration(milliseconds: 500);
+  static const Duration extraLong = Duration(milliseconds: 700);
+  static const Duration celebration = Duration(milliseconds: 1500);
+}
+
+/// Animation curves (Material 3 motion)
+class AppCurves {
+  static const Curve emphasized = Curves.easeOutCubic;
+  static const Curve emphasizedDecelerate = Curves.easeOutCirc;
+  static const Curve emphasizedAccelerate = Curves.easeInCirc;
+  static const Curve standard = Curves.easeInOut;
+  static const Curve standardDecelerate = Curves.easeOut;
+  static const Curve standardAccelerate = Curves.easeIn;
+  static const Curve elastic = Curves.elasticOut;
+  static const Curve bounce = Curves.bounceOut;
+}
+
+/// Standard icon sizes
+class AppIconSizes {
+  static const double xs = 16.0;
+  static const double sm = 20.0;
+  static const double md = 24.0;
+  static const double lg = 32.0;
+  static const double xl = 48.0;
+  static const double xxl = 64.0;
+}
+
+/// Achievement tier colors
+class AppAchievementColors {
+  static const Color bronze = Color(0xFFCD7F32);
+  static const Color silver = Color(0xFFC0C0C0);
+  static const Color gold = Color(0xFFFFD700);
+  static const Color platinum = Color(0xFFE5E4E2);
+  static const Color diamond = Color(0xFFB9F2FF);
+  
+  /// Get color for tier name
+  static Color forTier(String tier) {
+    switch (tier.toLowerCase()) {
+      case 'bronze': return bronze;
+      case 'silver': return silver;
+      case 'gold': return gold;
+      case 'platinum': return platinum;
+      case 'diamond': return diamond;
+      default: return bronze;
+    }
+  }
+}
+
+/// Pre-computed overlay colors (avoid withOpacity() rebuilds)
+class AppOverlays {
+  // White overlays
+  static const Color white5 = Color(0x0DFFFFFF);   // 5%
+  static const Color white10 = Color(0x1AFFFFFF);  // 10%
+  static const Color white15 = Color(0x26FFFFFF);  // 15%
+  static const Color white20 = Color(0x33FFFFFF);  // 20%
+  static const Color white25 = Color(0x40FFFFFF);  // 25%
+  static const Color white30 = Color(0x4DFFFFFF);  // 30%
+  static const Color white40 = Color(0x66FFFFFF);  // 40%
+  static const Color white50 = Color(0x80FFFFFF);  // 50%
+  static const Color white60 = Color(0x99FFFFFF);  // 60%
+  static const Color white70 = Color(0xB3FFFFFF);  // 70%
+  static const Color white80 = Color(0xCCFFFFFF);  // 80%
+  static const Color white90 = Color(0xE6FFFFFF);  // 90%
+  
+  // Black overlays
+  static const Color black5 = Color(0x0D000000);   // 5%
+  static const Color black10 = Color(0x1A000000);  // 10%
+  static const Color black15 = Color(0x26000000);  // 15%
+  static const Color black20 = Color(0x33000000);  // 20%
+  static const Color black25 = Color(0x40000000);  // 25%
+  static const Color black30 = Color(0x4D000000);  // 30%
+  static const Color black40 = Color(0x66000000);  // 40%
+  static const Color black50 = Color(0x80000000);  // 50%
+  static const Color black60 = Color(0x99000000);  // 60%
+  static const Color black70 = Color(0xB3000000);  // 70%
+  static const Color black80 = Color(0xCC000000);  // 80%
+  static const Color black90 = Color(0xE6000000);  // 90%
+  
+  // Primary color overlays
+  static const Color primary10 = Color(0x1A3D7068);  // 10%
+  static const Color primary20 = Color(0x333D7068);  // 20%
+  static const Color primary30 = Color(0x4D3D7068);  // 30%
+  static const Color primary50 = Color(0x803D7068);  // 50%
+}
+
 class AppRadius {
+  static const double xs = 4;
   static const double sm = 8;
   static const double md = 16;
   static const double lg = 24;
   static const double xl = 32;
   static const double pill = 100;
 
+  static BorderRadius get xsRadius => BorderRadius.circular(xs);
   static BorderRadius get smallRadius => BorderRadius.circular(sm);
   static BorderRadius get mediumRadius => BorderRadius.circular(md);
   static BorderRadius get largeRadius => BorderRadius.circular(lg);
@@ -212,37 +308,59 @@ class AppRadius {
 
 class AppShadows {
   // Soft, subtle shadows for depth
-  static List<BoxShadow> get soft => [
+  static const List<BoxShadow> soft = [
     BoxShadow(
-      color: Colors.black.withOpacity(0.04),
+      color: AppOverlays.black5, // ~4%
       blurRadius: 10,
-      offset: const Offset(0, 4),
+      offset: Offset(0, 4),
     ),
     BoxShadow(
-      color: Colors.black.withOpacity(0.02),
+      color: Color(0x05000000), // 2%
       blurRadius: 20,
-      offset: const Offset(0, 8),
+      offset: Offset(0, 8),
     ),
   ];
 
-  static List<BoxShadow> get medium => [
+  static const List<BoxShadow> medium = [
     BoxShadow(
-      color: Colors.black.withOpacity(0.06),
+      color: Color(0x0F000000), // 6%
       blurRadius: 15,
-      offset: const Offset(0, 6),
+      offset: Offset(0, 6),
     ),
     BoxShadow(
-      color: Colors.black.withOpacity(0.03),
+      color: Color(0x08000000), // 3%
       blurRadius: 30,
-      offset: const Offset(0, 12),
+      offset: Offset(0, 12),
     ),
   ];
 
-  static List<BoxShadow> get glow => [
+  static const List<BoxShadow> glow = [
     BoxShadow(
-      color: AppColors.primary.withOpacity(0.3),
+      color: AppOverlays.primary30,
       blurRadius: 20,
-      offset: const Offset(0, 4),
+      offset: Offset(0, 4),
+    ),
+  ];
+  
+  // Additional shadow variants
+  static const List<BoxShadow> elevated = [
+    BoxShadow(
+      color: AppOverlays.black15,
+      blurRadius: 24,
+      offset: Offset(0, 8),
+    ),
+    BoxShadow(
+      color: AppOverlays.black5,
+      blurRadius: 48,
+      offset: Offset(0, 16),
+    ),
+  ];
+  
+  static const List<BoxShadow> subtle = [
+    BoxShadow(
+      color: Color(0x08000000), // 3%
+      blurRadius: 6,
+      offset: Offset(0, 2),
     ),
   ];
 }
@@ -614,6 +732,12 @@ class GlassCard extends StatelessWidget {
     this.borderRadius,
   });
 
+  // Pre-computed glass colors to avoid withOpacity in build
+  static const Color _lightGlass = Color(0xCCFFFFFF); // white 80%
+  static const Color _darkGlass = Color(0xB32A3A4A);  // cardDark 70%
+  static const Color _lightBorder = AppOverlays.white50;
+  static const Color _darkBorder = AppOverlays.white10;
+
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -621,15 +745,11 @@ class GlassCard extends StatelessWidget {
     return Container(
       margin: margin,
       decoration: BoxDecoration(
-        color: isDark
-            ? AppColors.cardDark.withOpacity(0.7)
-            : AppColors.card.withOpacity(0.8),
+        color: isDark ? _darkGlass : _lightGlass,
         borderRadius: BorderRadius.circular(borderRadius ?? AppRadius.lg),
         boxShadow: AppShadows.soft,
         border: Border.all(
-          color: isDark
-              ? Colors.white.withOpacity(0.1)
-              : Colors.white.withOpacity(0.5),
+          color: isDark ? _darkBorder : _lightBorder,
           width: 1,
         ),
       ),
@@ -742,19 +862,26 @@ class StatCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
-        color: cardColor.withOpacity(0.1),
+        // Use Color.withValues for dynamic colors (unavoidable here)
+        // but use static overlays where possible
+        color: Color.fromRGBO(
+          cardColor.red, 
+          cardColor.green, 
+          cardColor.blue, 
+          0.1,
+        ),
         borderRadius: AppRadius.largeRadius,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (icon != null) Icon(icon, size: 24, color: cardColor),
+          if (icon != null) Icon(icon, size: AppIconSizes.md, color: cardColor),
           const Spacer(),
           Text(
             value,
             style: AppTypography.headlineMedium.copyWith(color: cardColor),
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: AppSpacing.xs),
           Text(
             label,
             style: AppTypography.bodySmall.copyWith(

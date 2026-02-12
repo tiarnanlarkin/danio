@@ -34,12 +34,12 @@ class _TankComparisonScreenState extends ConsumerState<TankComparisonScreen> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Icon(Icons.compare, size: 64, color: AppColors.textHint),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: AppSpacing.md),
                     Text(
                       'Need at Least 2 Tanks',
                       style: AppTypography.headlineSmall,
                     ),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: AppSpacing.sm),
                     Text(
                       'Add another tank to compare them side by side.',
                       style: AppTypography.bodyMedium,
@@ -93,7 +93,7 @@ class _TankComparisonScreenState extends ConsumerState<TankComparisonScreen> {
                 ],
               ),
 
-              const SizedBox(height: 24),
+              const SizedBox(height: AppSpacing.lg),
 
               // Comparison table
               _ComparisonSection(
@@ -117,7 +117,7 @@ class _TankComparisonScreenState extends ConsumerState<TankComparisonScreen> {
                 ],
               ),
 
-              const SizedBox(height: 48),
+              const SizedBox(height: AppSpacing.xxl),
             ],
           );
         },

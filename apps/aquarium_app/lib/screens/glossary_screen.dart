@@ -49,7 +49,7 @@ class _GlossaryScreenState extends State<GlossaryScreen> {
                 hintText: 'Search terms...',
                 prefixIcon: const Icon(Icons.search),
                 border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: AppRadius.mediumRadius,
                 ),
                 filled: true,
               ),
@@ -67,7 +67,7 @@ class _GlossaryScreenState extends State<GlossaryScreen> {
                   selected: _selectedCategory == null,
                   onSelected: (_) => setState(() => _selectedCategory = null),
                 ),
-                const SizedBox(width: 8),
+                const SizedBox(width: AppSpacing.sm),
                 ...categories.map(
                   (c) => Padding(
                     padding: const EdgeInsets.only(right: 8),
@@ -86,7 +86,7 @@ class _GlossaryScreenState extends State<GlossaryScreen> {
             ),
           ),
 
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.sm),
 
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -135,7 +135,7 @@ class _TermCard extends StatelessWidget {
                   ),
                   decoration: BoxDecoration(
                     color: AppColors.primary.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: AppRadius.smallRadius,
                   ),
                   child: Text(
                     term.category,
@@ -149,7 +149,7 @@ class _TermCard extends StatelessWidget {
             const SizedBox(height: 6),
             Text(term.definition, style: AppTypography.bodyMedium),
             if (term.example != null) ...[
-              const SizedBox(height: 4),
+              const SizedBox(height: AppSpacing.xs),
               Text(
                 'Example: ${term.example}',
                 style: AppTypography.bodySmall.copyWith(

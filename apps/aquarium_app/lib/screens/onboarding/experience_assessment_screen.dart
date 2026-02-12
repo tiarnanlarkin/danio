@@ -190,7 +190,7 @@ class _ExperienceAssessmentScreenState
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    const SizedBox(height: 32),
+                    const SizedBox(height: AppSpacing.xl),
 
                     // Question counter
                     Text(
@@ -200,14 +200,14 @@ class _ExperienceAssessmentScreenState
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: AppSpacing.md),
 
                     // Question
                     Text(
                       question.question,
                       style: AppTypography.headlineMedium,
                     ),
-                    const SizedBox(height: 32),
+                    const SizedBox(height: AppSpacing.xl),
 
                     // Options
                     Expanded(
@@ -221,7 +221,7 @@ class _ExperienceAssessmentScreenState
                               color: Colors.transparent,
                               child: InkWell(
                                 onTap: () => _selectAnswer(entry.key),
-                                borderRadius: BorderRadius.circular(16),
+                                borderRadius: AppRadius.mediumRadius,
                                 child: AnimatedContainer(
                                   duration: const Duration(milliseconds: 200),
                                   padding: const EdgeInsets.all(20),
@@ -232,7 +232,7 @@ class _ExperienceAssessmentScreenState
                                           : AppColors.border,
                                       width: 2,
                                     ),
-                                    borderRadius: BorderRadius.circular(16),
+                                    borderRadius: AppRadius.mediumRadius,
                                     color: isSelected
                                         ? AppColors.primary.withOpacity(0.1)
                                         : AppColors.surface,
@@ -304,7 +304,7 @@ class _ExperienceAssessmentScreenState
                 size: 80,
                 color: AppColors.primary,
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: AppSpacing.lg),
 
               // Level badge
               Text(
@@ -314,7 +314,7 @@ class _ExperienceAssessmentScreenState
                 ),
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppSpacing.md),
 
               // Recommendation
               Text(
@@ -324,14 +324,14 @@ class _ExperienceAssessmentScreenState
                 ),
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 32),
+              const SizedBox(height: AppSpacing.xl),
 
               // Recommended learning paths
               Text(
                 'We recommend starting with:',
                 style: AppTypography.titleMedium,
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppSpacing.md),
               ...paths.map(
                 (path) => Padding(
                   padding: const EdgeInsets.only(bottom: 8),
@@ -359,7 +359,7 @@ class _ExperienceAssessmentScreenState
                 ),
                 child: const Text('Start My Journey!'),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppSpacing.md),
             ],
           ),
         ),
