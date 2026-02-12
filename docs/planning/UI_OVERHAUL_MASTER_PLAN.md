@@ -424,8 +424,8 @@ class MascotBubble extends StatelessWidget {
 - [ ] Enhanced button feedback throughout
 - [ ] Replace all loading spinners with BubbleLoader
 - [ ] Add Skeletonizer to data screens
-- [ ] Implement water ripple on tank tap
-- [ ] Add haptic feedback helper
+- [x] Implement water ripple on tank tap
+- [x] Add haptic feedback helper
 
 ### Week 3: Celebrations
 - [ ] XP gain floating animation
