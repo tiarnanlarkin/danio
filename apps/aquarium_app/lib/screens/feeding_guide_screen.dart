@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
+import '../widgets/core/app_card.dart';
 
 class FeedingGuideScreen extends StatelessWidget {
   const FeedingGuideScreen({super.key});
@@ -12,30 +13,28 @@ class FeedingGuideScreen extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         children: [
           // Golden rule
-          Card(
-            color: AppColors.warning.withOpacity(0.1),
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                children: [
-                  Row(
-                    children: [
-                      Icon(Icons.star, color: AppColors.warning),
-                      const SizedBox(width: AppSpacing.sm),
-                      Text(
-                        'The Golden Rule',
-                        style: AppTypography.headlineSmall,
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 12),
-                  Text(
-                    'Feed only what fish can consume in 2-3 minutes. '
-                    'Overfeeding is the #1 cause of poor water quality in aquariums.',
-                    style: AppTypography.bodyMedium,
-                  ),
-                ],
-              ),
+          AppCard(
+            backgroundColor: AppColors.warning.withOpacity(0.1),
+            padding: AppCardPadding.standard,
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    Icon(Icons.star, color: AppColors.warning),
+                    const SizedBox(width: AppSpacing.sm),
+                    Text(
+                      'The Golden Rule',
+                      style: AppTypography.headlineSmall,
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  'Feed only what fish can consume in 2-3 minutes. '
+                  'Overfeeding is the #1 cause of poor water quality in aquariums.',
+                  style: AppTypography.bodyMedium,
+                ),
+              ],
             ),
           ),
 
@@ -144,80 +143,76 @@ class FeedingGuideScreen extends StatelessWidget {
           Text('Common Mistakes', style: AppTypography.headlineMedium),
           const SizedBox(height: AppSpacing.md),
 
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                children: [
-                  _MistakeItem(
-                    mistake: 'Overfeeding',
-                    consequence: 'Ammonia spikes, algae blooms, obese fish',
-                    fix: 'Feed less, skip a day weekly, remove uneaten food',
-                  ),
-                  const Divider(),
-                  _MistakeItem(
-                    mistake: 'Only one food type',
-                    consequence: 'Nutritional deficiencies',
-                    fix: 'Rotate between 2-3 different foods',
-                  ),
-                  const Divider(),
-                  _MistakeItem(
-                    mistake: 'Ignoring bottom feeders',
-                    consequence: 'Starvation, aggression',
-                    fix: 'Provide sinking foods specifically for them',
-                  ),
-                  const Divider(),
-                  _MistakeItem(
-                    mistake: 'Feeding right after lights on',
-                    consequence: 'Fish may not be active/hungry',
-                    fix: 'Wait 30 mins after lights on',
-                  ),
-                ],
-              ),
+          AppCard(
+            padding: AppCardPadding.standard,
+            child: Column(
+              children: [
+                _MistakeItem(
+                  mistake: 'Overfeeding',
+                  consequence: 'Ammonia spikes, algae blooms, obese fish',
+                  fix: 'Feed less, skip a day weekly, remove uneaten food',
+                ),
+                const Divider(),
+                _MistakeItem(
+                  mistake: 'Only one food type',
+                  consequence: 'Nutritional deficiencies',
+                  fix: 'Rotate between 2-3 different foods',
+                ),
+                const Divider(),
+                _MistakeItem(
+                  mistake: 'Ignoring bottom feeders',
+                  consequence: 'Starvation, aggression',
+                  fix: 'Provide sinking foods specifically for them',
+                ),
+                const Divider(),
+                _MistakeItem(
+                  mistake: 'Feeding right after lights on',
+                  consequence: 'Fish may not be active/hungry',
+                  fix: 'Wait 30 mins after lights on',
+                ),
+              ],
             ),
           ),
 
           const SizedBox(height: AppSpacing.lg),
 
           // Fasting
-          Card(
-            color: AppColors.info.withOpacity(0.1),
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Icon(Icons.no_food, color: AppColors.info),
-                      const SizedBox(width: AppSpacing.sm),
-                      Text('Fasting Days', style: AppTypography.headlineSmall),
-                    ],
-                  ),
-                  const SizedBox(height: 12),
-                  Text(
-                    'Skipping 1-2 feeding days per week is actually beneficial:',
-                    style: AppTypography.bodyMedium,
-                  ),
-                  const SizedBox(height: AppSpacing.sm),
-                  Text(
-                    '• Gives digestive system a rest',
-                    style: AppTypography.bodySmall,
-                  ),
-                  Text(
-                    '• Helps prevent bloat (especially bettas)',
-                    style: AppTypography.bodySmall,
-                  ),
-                  Text(
-                    '• Encourages scavenging behavior',
-                    style: AppTypography.bodySmall,
-                  ),
-                  Text(
-                    '• Fish can go 1-2 weeks without food if needed',
-                    style: AppTypography.bodySmall,
-                  ),
-                ],
-              ),
+          AppCard(
+            backgroundColor: AppColors.info.withOpacity(0.1),
+            padding: AppCardPadding.standard,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Icon(Icons.no_food, color: AppColors.info),
+                    const SizedBox(width: AppSpacing.sm),
+                    Text('Fasting Days', style: AppTypography.headlineSmall),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  'Skipping 1-2 feeding days per week is actually beneficial:',
+                  style: AppTypography.bodyMedium,
+                ),
+                const SizedBox(height: AppSpacing.sm),
+                Text(
+                  '• Gives digestive system a rest',
+                  style: AppTypography.bodySmall,
+                ),
+                Text(
+                  '• Helps prevent bloat (especially bettas)',
+                  style: AppTypography.bodySmall,
+                ),
+                Text(
+                  '• Encourages scavenging behavior',
+                  style: AppTypography.bodySmall,
+                ),
+                Text(
+                  '• Fish can go 1-2 weeks without food if needed',
+                  style: AppTypography.bodySmall,
+                ),
+              ],
             ),
           ),
 

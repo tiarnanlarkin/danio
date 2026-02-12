@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
+import '../widgets/core/app_card.dart';
 
 class HardscapeGuideScreen extends StatelessWidget {
   const HardscapeGuideScreen({super.key});
@@ -12,32 +13,30 @@ class HardscapeGuideScreen extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         children: [
           // Intro
-          Card(
-            color: AppColors.info.withOpacity(0.1),
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Icon(Icons.landscape, color: AppColors.info),
-                      const SizedBox(width: AppSpacing.sm),
-                      Text(
-                        'What is Hardscape?',
-                        style: AppTypography.headlineSmall,
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 12),
-                  Text(
-                    'Hardscape refers to rocks, driftwood, and other non-living decorative elements. '
-                    'Good hardscape creates structure, hiding spots, and visual interest. '
-                    'It\'s the backbone of aquascaping.',
-                    style: AppTypography.bodyMedium,
-                  ),
-                ],
-              ),
+          AppCard(
+            backgroundColor: AppColors.info.withOpacity(0.1),
+            padding: AppCardPadding.standard,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Icon(Icons.landscape, color: AppColors.info),
+                    const SizedBox(width: AppSpacing.sm),
+                    Text(
+                      'What is Hardscape?',
+                      style: AppTypography.headlineSmall,
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  'Hardscape refers to rocks, driftwood, and other non-living decorative elements. '
+                  'Good hardscape creates structure, hiding spots, and visual interest. '
+                  'It\'s the backbone of aquascaping.',
+                  style: AppTypography.bodyMedium,
+                ),
+              ],
             ),
           ),
 
@@ -180,54 +179,52 @@ class HardscapeGuideScreen extends StatelessWidget {
           Text('Preparation', style: AppTypography.headlineMedium),
           const SizedBox(height: AppSpacing.md),
 
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('Preparing Rocks', style: AppTypography.labelLarge),
-                  const SizedBox(height: AppSpacing.sm),
-                  _PrepStep(
-                    step: '1',
-                    text: 'Scrub with brush and water (no soap!)',
-                  ),
-                  _PrepStep(
-                    step: '2',
-                    text: 'Boil small rocks for 10-15 minutes',
-                  ),
-                  _PrepStep(
-                    step: '3',
-                    text: 'Pour boiling water over large rocks',
-                  ),
-                  _PrepStep(
-                    step: '4',
-                    text: 'Test with vinegar — fizzing means calcium',
-                  ),
+          AppCard(
+            padding: AppCardPadding.standard,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Preparing Rocks', style: AppTypography.labelLarge),
+                const SizedBox(height: AppSpacing.sm),
+                _PrepStep(
+                  step: '1',
+                  text: 'Scrub with brush and water (no soap!)',
+                ),
+                _PrepStep(
+                  step: '2',
+                  text: 'Boil small rocks for 10-15 minutes',
+                ),
+                _PrepStep(
+                  step: '3',
+                  text: 'Pour boiling water over large rocks',
+                ),
+                _PrepStep(
+                  step: '4',
+                  text: 'Test with vinegar — fizzing means calcium',
+                ),
 
-                  const SizedBox(height: AppSpacing.md),
+                const SizedBox(height: AppSpacing.md),
 
-                  Text('Preparing Driftwood', style: AppTypography.labelLarge),
-                  const SizedBox(height: AppSpacing.sm),
-                  _PrepStep(step: '1', text: 'Scrub off any loose material'),
-                  _PrepStep(
-                    step: '2',
-                    text: 'Boil if small enough (removes tannins faster)',
-                  ),
-                  _PrepStep(
-                    step: '3',
-                    text: 'Soak in bucket — change water daily',
-                  ),
-                  _PrepStep(
-                    step: '4',
-                    text: 'Soak until it sinks (days to weeks)',
-                  ),
-                  _PrepStep(
-                    step: '5',
-                    text: 'Or weigh down with rocks/suction cups',
-                  ),
-                ],
-              ),
+                Text('Preparing Driftwood', style: AppTypography.labelLarge),
+                const SizedBox(height: AppSpacing.sm),
+                _PrepStep(step: '1', text: 'Scrub off any loose material'),
+                _PrepStep(
+                  step: '2',
+                  text: 'Boil if small enough (removes tannins faster)',
+                ),
+                _PrepStep(
+                  step: '3',
+                  text: 'Soak in bucket — change water daily',
+                ),
+                _PrepStep(
+                  step: '4',
+                  text: 'Soak until it sinks (days to weeks)',
+                ),
+                _PrepStep(
+                  step: '5',
+                  text: 'Or weigh down with rocks/suction cups',
+                ),
+              ],
             ),
           ),
 
@@ -275,32 +272,30 @@ class HardscapeGuideScreen extends StatelessWidget {
           const SizedBox(height: AppSpacing.lg),
 
           // Warning
-          Card(
-            color: AppColors.warning.withOpacity(0.1),
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Icon(Icons.warning_amber, color: AppColors.warning),
-                      const SizedBox(width: AppSpacing.sm),
-                      Text('Safety Notes', style: AppTypography.headlineSmall),
-                    ],
-                  ),
-                  const SizedBox(height: 12),
-                  Text(
-                    '• Never use rocks from parking lots or roadsides (contaminated)\n'
-                    '• Avoid metal ores or rocks with metallic veins\n'
-                    '• Secure heavy rocks — they can crack glass if they fall\n'
-                    '• Test unknown rocks: vinegar fizz = calcium = affects water\n'
-                    '• Don\'t collect wood from treated/painted sources\n'
-                    '• Weigh down floating wood — fish can get trapped',
-                    style: AppTypography.bodyMedium,
-                  ),
-                ],
-              ),
+          AppCard(
+            backgroundColor: AppColors.warning.withOpacity(0.1),
+            padding: AppCardPadding.standard,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Icon(Icons.warning_amber, color: AppColors.warning),
+                    const SizedBox(width: AppSpacing.sm),
+                    Text('Safety Notes', style: AppTypography.headlineSmall),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  '• Never use rocks from parking lots or roadsides (contaminated)\n'
+                  '• Avoid metal ores or rocks with metallic veins\n'
+                  '• Secure heavy rocks — they can crack glass if they fall\n'
+                  '• Test unknown rocks: vinegar fizz = calcium = affects water\n'
+                  '• Don\'t collect wood from treated/painted sources\n'
+                  '• Weigh down floating wood — fish can get trapped',
+                  style: AppTypography.bodyMedium,
+                ),
+              ],
             ),
           ),
 
