@@ -4,6 +4,7 @@ import '../models/learning.dart';
 import '../models/lesson_progress.dart';
 import '../data/lesson_content.dart';
 import '../providers/user_profile_provider.dart';
+import '../services/xp_animation_service.dart';
 import '../theme/app_theme.dart';
 import '../utils/app_feedback.dart';
 import 'lesson_screen.dart';
@@ -745,6 +746,9 @@ class _PracticeLessonScreenState extends ConsumerState<PracticeLessonScreen> {
       await ref.read(userProfileProvider.notifier).recordActivity();
 
       if (mounted) {
+        // Show XP animation
+        ref.showXpAnimation(xpReward);
+        
         // Show success message
         final message = widget.isReview
             ? 'Review complete! +$xpReward XP'
