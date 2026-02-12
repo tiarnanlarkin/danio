@@ -271,43 +271,222 @@ class StudyScreen extends ConsumerWidget {
 class _StudyBackground extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            Color(0xFF1A237E), // Deep blue
-            Color(0xFF3949AB), // Lighter blue
-          ],
-        ),
-      ),
-      child: Stack(
-        children: [
-          // Bookshelf silhouette
-          Positioned(
-            right: 20,
-            bottom: 40,
-            child: Icon(
-              Icons.menu_book,
-              size: 120,
-              color: AppOverlays.white10,
-            ),
-          ),
-          // Desk lamp
-          Positioned(
-            left: 30,
-            bottom: 60,
-            child: Icon(
-              Icons.lightbulb_outline,
-              size: 60,
-              color: Colors.amber.withOpacity(0.3),
-            ),
-          ),
-        ],
-      ),
+    return CustomPaint(
+      painter: _StudyRoomPainter(),
+      size: Size.infinite,
     );
   }
+}
+
+class _StudyRoomPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final w = size.width;
+    final h = size.height;
+
+    // === COZY STUDY WALL ===
+    final wallGradient = LinearGradient(
+      begin: Alignment.topCenter,
+      end: Alignment.bottomCenter,
+      colors: [
+        const Color(0xFF3D5A6B), // Deep teal-blue
+        const Color(0xFF4A6A7A), // Lighter teal
+        const Color(0xFF5A7A8A), // Softer teal
+      ],
+    );
+    canvas.drawRect(
+      Rect.fromLTWH(0, 0, w, h),
+      Paint()..shader = wallGradient.createShader(Rect.fromLTWH(0, 0, w, h)),
+    );
+
+    // === BOOKSHELF (right side) ===
+    _drawBookshelf(canvas, w, h);
+
+    // === DESK WITH LAMP (left side) ===
+    _drawDesk(canvas, w, h);
+
+    // === WARM LAMP GLOW ===
+    final lampGlow = Paint()
+      ..shader = RadialGradient(
+        center: Alignment.center,
+        radius: 0.6,
+        colors: [
+          const Color(0xFFFFD54F).withOpacity(0.35),
+          const Color(0xFFFFB74D).withOpacity(0.15),
+          Colors.transparent,
+        ],
+      ).createShader(Rect.fromLTWH(0, h * 0.3, w * 0.5, h * 0.5));
+    canvas.drawOval(
+      Rect.fromCenter(center: Offset(w * 0.18, h * 0.55), width: w * 0.5, height: h * 0.5),
+      lampGlow,
+    );
+
+    // === WINDOW LIGHT (top) ===
+    final windowGlow = Paint()
+      ..shader = LinearGradient(
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+        colors: [
+          const Color(0xFF87CEEB).withOpacity(0.2),
+          Colors.transparent,
+        ],
+      ).createShader(Rect.fromLTWH(0, 0, w, h * 0.5));
+    canvas.drawRect(Rect.fromLTWH(0, 0, w, h * 0.4), windowGlow);
+  }
+
+  void _drawBookshelf(Canvas canvas, double w, double h) {
+    final shelfColor = const Color(0xFF5C4033);
+    final bookColors = [
+      const Color(0xFFC0392B), // Red
+      const Color(0xFF2980B9), // Blue
+      const Color(0xFF27AE60), // Green
+      const Color(0xFFF39C12), // Orange
+      const Color(0xFF8E44AD), // Purple
+      const Color(0xFF16A085), // Teal
+    ];
+
+    // Shelf frame (right side)
+    final shelfLeft = w * 0.58;
+    final shelfTop = h * 0.15;
+    final shelfWidth = w * 0.38;
+    final shelfHeight = h * 0.75;
+
+    // Back panel
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(
+        Rect.fromLTWH(shelfLeft, shelfTop, shelfWidth, shelfHeight),
+        const Radius.circular(4),
+      ),
+      Paint()..color = shelfColor.withOpacity(0.7),
+    );
+
+    // Shelves (3 rows)
+    final shelfPaint = Paint()..color = shelfColor;
+    for (var i = 0; i < 3; i++) {
+      final shelfY = shelfTop + (i + 1) * (shelfHeight / 3.5);
+      canvas.drawRect(
+        Rect.fromLTWH(shelfLeft - 5, shelfY, shelfWidth + 10, 6),
+        shelfPaint,
+      );
+
+      // Books on each shelf
+      var bookX = shelfLeft + 8.0;
+      final bookBaseY = shelfY - 2;
+      for (var j = 0; j < 5 + (i % 2); j++) {
+        final bookWidth = 12.0 + (j % 3) * 4;
+        final bookHeight = 35.0 + (j % 4) * 8;
+        final bookColor = bookColors[(i * 5 + j) % bookColors.length];
+
+        // Book spine
+        canvas.drawRRect(
+          RRect.fromRectAndRadius(
+            Rect.fromLTWH(bookX, bookBaseY - bookHeight, bookWidth, bookHeight),
+            const Radius.circular(1),
+          ),
+          Paint()..color = bookColor.withOpacity(0.85),
+        );
+
+        // Book spine detail
+        canvas.drawLine(
+          Offset(bookX + bookWidth / 2, bookBaseY - bookHeight + 5),
+          Offset(bookX + bookWidth / 2, bookBaseY - 5),
+          Paint()
+            ..color = Colors.white.withOpacity(0.2)
+            ..strokeWidth = 1,
+        );
+
+        bookX += bookWidth + 3;
+        if (bookX > shelfLeft + shelfWidth - 20) break;
+      }
+    }
+
+    // Top shelf decoration
+    canvas.drawRect(
+      Rect.fromLTWH(shelfLeft - 5, shelfTop - 4, shelfWidth + 10, 6),
+      shelfPaint,
+    );
+  }
+
+  void _drawDesk(Canvas canvas, double w, double h) {
+    final deskColor = const Color(0xFF5C4033);
+    
+    // Desk surface
+    final deskTop = h * 0.72;
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(
+        Rect.fromLTWH(w * 0.02, deskTop, w * 0.45, 8),
+        const Radius.circular(2),
+      ),
+      Paint()..color = deskColor,
+    );
+
+    // Desk leg (left)
+    canvas.drawRect(
+      Rect.fromLTWH(w * 0.05, deskTop + 8, 8, h - deskTop - 8),
+      Paint()..color = deskColor.withOpacity(0.8),
+    );
+    
+    // Desk leg (right)
+    canvas.drawRect(
+      Rect.fromLTWH(w * 0.40, deskTop + 8, 8, h - deskTop - 8),
+      Paint()..color = deskColor.withOpacity(0.8),
+    );
+
+    // Desk lamp
+    final lampBase = Offset(w * 0.18, deskTop);
+    
+    // Lamp base
+    canvas.drawOval(
+      Rect.fromCenter(center: lampBase, width: 25, height: 8),
+      Paint()..color = const Color(0xFF2C3E50),
+    );
+    
+    // Lamp arm
+    canvas.drawLine(
+      lampBase,
+      Offset(w * 0.15, deskTop - 50),
+      Paint()
+        ..color = const Color(0xFF2C3E50)
+        ..strokeWidth = 3
+        ..strokeCap = StrokeCap.round,
+    );
+    
+    // Lamp shade
+    final shadePath = Path()
+      ..moveTo(w * 0.10, deskTop - 50)
+      ..lineTo(w * 0.08, deskTop - 35)
+      ..lineTo(w * 0.22, deskTop - 35)
+      ..lineTo(w * 0.20, deskTop - 50)
+      ..close();
+    canvas.drawPath(shadePath, Paint()..color = const Color(0xFFE8D4B8));
+    
+    // Lamp light bulb glow
+    canvas.drawCircle(
+      Offset(w * 0.15, deskTop - 38),
+      8,
+      Paint()..color = const Color(0xFFFFD54F).withOpacity(0.8),
+    );
+
+    // Open book on desk
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(
+        Rect.fromLTWH(w * 0.25, deskTop - 15, 40, 25),
+        const Radius.circular(2),
+      ),
+      Paint()..color = Colors.white.withOpacity(0.9),
+    );
+    // Book spine
+    canvas.drawLine(
+      Offset(w * 0.25 + 20, deskTop - 15),
+      Offset(w * 0.25 + 20, deskTop + 10),
+      Paint()
+        ..color = const Color(0xFFDDD6C6)
+        ..strokeWidth = 2,
+    );
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
 
 class _SectionCard extends StatelessWidget {
