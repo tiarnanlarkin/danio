@@ -4,7 +4,7 @@ import '../../models/models.dart';
 import '../../providers/tank_provider.dart';
 import '../../services/celebration_service.dart';
 import '../../theme/app_theme.dart';
-import '../home_screen.dart';
+import '../house_navigator.dart';
 
 /// Step-by-step wizard for creating first tank
 class FirstTankWizardScreen extends ConsumerStatefulWidget {
@@ -94,7 +94,7 @@ class _FirstTankWizardScreenState extends ConsumerState<FirstTankWizardScreen> {
       Future.delayed(const Duration(milliseconds: 500), () {
         if (mounted) {
           Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute(builder: (_) => const HomeScreen()),
+            MaterialPageRoute(builder: (_) => const HouseNavigator()),
             (route) => false,
           );
         }

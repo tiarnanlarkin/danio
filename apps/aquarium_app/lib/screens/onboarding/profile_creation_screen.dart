@@ -10,7 +10,7 @@ import '../../providers/user_profile_provider.dart';
 import '../../theme/app_theme.dart';
 import 'enhanced_placement_test_screen.dart';
 import '../../utils/accessibility_utils.dart';
-import '../home_screen.dart';
+import '../house_navigator.dart';
 
 class ProfileCreationScreen extends ConsumerStatefulWidget {
   const ProfileCreationScreen({super.key});
@@ -60,9 +60,10 @@ class _ProfileCreationScreenState extends ConsumerState<ProfileCreationScreen> {
 
       if (!mounted) return;
 
-      // Skip directly to HomeScreen
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => const HomeScreen()),
+      // Skip to HouseNavigator (main app shell with navigation)
+      Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(builder: (context) => const HouseNavigator()),
+        (route) => false,
       );
     } catch (e) {
       if (!mounted) return;
