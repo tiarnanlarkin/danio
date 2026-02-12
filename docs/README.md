@@ -1,62 +1,34 @@
 # 📚 Aquarium App Documentation
 
-This folder contains all planning, testing, and reference documentation for the Aquarium Hobby App project.
+## 🎯 Start Here
 
-## 📂 Folder Structure
+| Document | Description |
+|----------|-------------|
+| **[ROADMAP.md](ROADMAP.md)** | Master roadmap — single source of truth for all dev work |
+| [FEATURE_LIST.md](FEATURE_LIST.md) | Complete feature inventory (150+ features) |
+| [DECISIONS.md](DECISIONS.md) | Key architectural decisions |
 
-### `/planning`
-Project planning, design documents, and roadmaps:
-- Market research & competitive analysis
-- Project plans and milestones
-- Design documents (House Navigation, Room Navigation)
-- Play Store launch plans
+## 📁 Active Folders
 
-### `/testing`
-Testing reports, test results, and screenshots:
-- Comprehensive test reports
-- End-to-end testing results
-- User flow diagrams
-- Test screenshots (organized by wave/phase)
+| Folder | Contents |
+|--------|----------|
+| `planning/` | Research & design docs (market research, room concepts) |
+| `guides/` | User-facing guides |
+| `completed/` | Completion reports for finished work |
+| `testing/` | Test reports and QA |
+| `legal/` | Privacy policy, terms |
+| `research/` | Competitor and market research |
+| `review/` | Code review notes |
 
-### `/guides`
-Development guides and instructions:
-- Content creation guidelines
-- Release build instructions
-- Quick start guides
-- Keystore information
+## 📦 Archive
 
-### `/legal`
-Legal documents and privacy policy:
-- Privacy policy (markdown & HTML)
-- Terms of Service (markdown & HTML)
-- Implementation guides
-- Setup instructions
+Old planning documents consolidated into ROADMAP.md:
 
-### `/completed`
-Completion reports and task summaries:
-- Phase completion summaries
-- Task completion reports
-- Play Store launch completion
-- Content expansion completion
-
-### `/research`
-Research documents and analysis:
-- Competitor research
-- Market research
-- Feature analysis
+| Folder | Contents |
+|--------|----------|
+| `archive/planning/` | Legacy roadmaps, UI audits, planning docs |
+| `archive/ui-audit/` | Detailed UI/UX audit specs (reference only) |
 
 ---
 
-## 🎯 Purpose
-
-All documentation is version-controlled alongside the source code to:
-- ✅ Keep everything in one place
-- ✅ Track documentation changes over time
-- ✅ Back up research and planning work
-- ✅ Share context with collaborators
-- ✅ Maintain project history
-
----
-
-**Last Updated:** 2026-02-11  
-**Maintained By:** Tiarnan Larkin + Molt (AI Agent)
+*Last updated: 2026-02-13*
