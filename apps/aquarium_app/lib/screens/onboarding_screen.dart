@@ -14,11 +14,10 @@ class OnboardingScreen extends StatefulWidget {
 }
 
 class _OnboardingScreenState extends State<OnboardingScreen>
-    with TickerProviderStateMixin {
+    with SingleTickerProviderStateMixin {
   final PageController _pageController = PageController();
   int _currentPage = 0;
   
-  late AnimationController _backgroundController;
   late AnimationController _contentController;
   late Animation<double> _contentFade;
   late Animation<Offset> _contentSlide;
@@ -51,11 +50,6 @@ class _OnboardingScreenState extends State<OnboardingScreen>
   void initState() {
     super.initState();
     
-    _backgroundController = AnimationController(
-      duration: const Duration(seconds: 20),
-      vsync: this,
-    )..repeat();
-    
     _contentController = AnimationController(
       duration: const Duration(milliseconds: 600),
       vsync: this,
@@ -76,7 +70,6 @@ class _OnboardingScreenState extends State<OnboardingScreen>
   @override
   void dispose() {
     _pageController.dispose();
-    _backgroundController.dispose();
     _contentController.dispose();
     super.dispose();
   }
@@ -98,34 +91,57 @@ class _OnboardingScreenState extends State<OnboardingScreen>
       child: Scaffold(
         body: Stack(
           children: [
-            // Animated gradient background
-            AnimatedBuilder(
-              animation: _backgroundController,
-              builder: (context, child) {
-                return Container(
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment(
-                        -1 + _backgroundController.value * 0.5,
-                        -1 + _backgroundController.value * 0.3,
-                      ),
-                      end: Alignment(
-                        1 - _backgroundController.value * 0.5,
-                        1 - _backgroundController.value * 0.3,
-                      ),
-                      colors: [
-                        page.gradientColors[0],
-                        page.gradientColors[1],
-                        page.gradientColors[0].withOpacity(0.8),
-                      ],
-                    ),
-                  ),
-                );
-              },
+            // Static gradient background (animated caused ANR)
+            AnimatedContainer(
+              duration: const Duration(milliseconds: 500),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    page.gradientColors[0],
+                    page.gradientColors[1],
+                    page.gradientColors[0].withOpacity(0.8),
+                  ],
+                ),
+              ),
             ),
             
-            // Decorative floating orbs
-            ..._buildFloatingOrbs(),
+            // Static decorative orbs (no animation to prevent ANR)
+            Positioned(
+              top: -100,
+              left: -50,
+              child: Container(
+                width: 250,
+                height: 250,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient: RadialGradient(
+                    colors: [
+                      Colors.white.withOpacity(0.15),
+                      Colors.transparent,
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            Positioned(
+              bottom: 100,
+              right: -80,
+              child: Container(
+                width: 200,
+                height: 200,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient: RadialGradient(
+                    colors: [
+                      Colors.white.withOpacity(0.1),
+                      Colors.transparent,
+                    ],
+                  ),
+                ),
+              ),
+            ),
             
             // Main content
             SafeArea(
@@ -169,69 +185,6 @@ class _OnboardingScreenState extends State<OnboardingScreen>
         ),
       ),
     );
-  }
-
-  List<Widget> _buildFloatingOrbs() {
-    return [
-      // Large orb top-left
-      Positioned(
-        top: -100,
-        left: -50,
-        child: AnimatedBuilder(
-          animation: _backgroundController,
-          builder: (context, child) {
-            return Transform.translate(
-              offset: Offset(
-                30 * (0.5 - _backgroundController.value).abs(),
-                20 * (0.5 - _backgroundController.value).abs(),
-              ),
-              child: Container(
-                width: 250,
-                height: 250,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  gradient: RadialGradient(
-                    colors: [
-                      Colors.white.withOpacity(0.15),
-                      Colors.transparent,
-                    ],
-                  ),
-                ),
-              ),
-            );
-          },
-        ),
-      ),
-      // Medium orb bottom-right
-      Positioned(
-        bottom: 100,
-        right: -80,
-        child: AnimatedBuilder(
-          animation: _backgroundController,
-          builder: (context, child) {
-            return Transform.translate(
-              offset: Offset(
-                -20 * _backgroundController.value,
-                -30 * _backgroundController.value,
-              ),
-              child: Container(
-                width: 200,
-                height: 200,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  gradient: RadialGradient(
-                    colors: [
-                      Colors.white.withOpacity(0.1),
-                      Colors.transparent,
-                    ],
-                  ),
-                ),
-              ),
-            );
-          },
-        ),
-      ),
-    ];
   }
 
   Widget _buildPageContent(_OnboardingPage page) {
