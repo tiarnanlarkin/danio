@@ -301,6 +301,8 @@ class AppOverlays {
   static const Color secondary10 = Color(0x1A9F6847);  // 10%
   static const Color secondary20 = Color(0x339F6847);  // 20%
   static const Color secondary30 = Color(0x4D9F6847);  // 30%
+  static const Color secondary60 = Color(0x999F6847);  // 60%
+  static const Color secondary80 = Color(0xCC9F6847);  // 80%
   
   // Surface variant overlays (AppColors.surfaceVariant = 0xFFF0EBE3)
   static const Color surfaceVariant30 = Color(0x4DF0EBE3);  // 30%
@@ -347,9 +349,13 @@ class AppOverlays {
   static const Color blue20 = Color(0x332196F3);  // 20%
   
   // Info color overlays (AppColors.info = 0xFF5C9FBF)
+  static const Color info5 = Color(0x0D5C9FBF);   // 5%
   static const Color info10 = Color(0x1A5C9FBF);  // 10%
   static const Color info20 = Color(0x335C9FBF);  // 20%
   static const Color info30 = Color(0x4D5C9FBF);  // 30%
+  
+  // Primary color additional overlays (AppColors.primary = 0xFF3D7068)
+  static const Color primary5 = Color(0x0D3D7068);  // 5%
   
   // Warning color overlays (AppColors.warning = 0xFFC99524)
   static const Color warning10 = Color(0x1AC99524);  // 10%

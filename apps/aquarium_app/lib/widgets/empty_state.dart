@@ -137,20 +137,20 @@ class _EmptyStateState extends State<EmptyState>
                     width: 120,
                     height: 120,
                     decoration: BoxDecoration(
-                      gradient: LinearGradient(
+                      gradient: const LinearGradient(
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                         colors: [
                           AppOverlays.primary10,
-                          AppColors.primary.withOpacity(0.05),
+                          AppOverlays.primary5,
                         ],
                       ),
                       shape: BoxShape.circle,
-                      boxShadow: [
+                      boxShadow: const [
                         BoxShadow(
                           color: AppOverlays.primary10,
                           blurRadius: 20,
-                          offset: const Offset(0, 10),
+                          offset: Offset(0, 10),
                         ),
                       ],
                     ),
@@ -189,10 +189,10 @@ class _EmptyStateState extends State<EmptyState>
                   Container(
                     padding: const EdgeInsets.all(AppSpacing.md),
                     decoration: BoxDecoration(
-                      color: AppColors.info.withOpacity(0.05),
+                      color: AppOverlays.info5,
                       borderRadius: AppRadius.mediumRadius,
                       border: Border.all(
-                        color: AppColors.info.withOpacity(0.2),
+                        color: AppOverlays.info20,
                         width: 1,
                       ),
                     ),

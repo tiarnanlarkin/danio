@@ -17,27 +17,29 @@ class TankCard extends ConsumerWidget {
     final logsAsync = ref.watch(logsProvider(tank.id));
     final equipmentAsync = ref.watch(equipmentProvider(tank.id));
 
-    return Card(
-      margin: const EdgeInsets.only(bottom: 16),
-      clipBehavior: Clip.antiAlias,
-      child: InkWell(
-        onTap: onTap,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Header with tank image or gradient
-            Container(
-              height: 100,
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    AppColors.primary.withOpacity(0.8),
-                    AppColors.secondary.withOpacity(0.6),
-                  ],
+    return Hero(
+      tag: 'tank-card-${tank.id}',
+      child: Card(
+        margin: const EdgeInsets.only(bottom: 16),
+        clipBehavior: Clip.antiAlias,
+        child: InkWell(
+          onTap: onTap,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Header with tank image or gradient
+              Container(
+                height: 100,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      AppOverlays.primary80,
+                      AppOverlays.secondary60,
+                    ],
+                  ),
                 ),
-              ),
               child: Stack(
                 children: [
                   // Tank icon
@@ -126,6 +128,7 @@ class TankCard extends ConsumerWidget {
             ),
           ],
         ),
+      ),
       ),
     );
   }

@@ -292,26 +292,29 @@ class TankDetailScreen extends ConsumerWidget {
                     tank.name,
                     style: const TextStyle(color: Colors.white),
                   ),
-                  background: Container(
-                    decoration: const BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        colors: [AppColors.primary, AppColors.secondary],
-                      ),
-                    ),
-                    child: Stack(
-                      children: [
-                        Positioned(
-                          right: -20,
-                          bottom: -20,
-                          child: Icon(
-                            Icons.water,
-                            size: 150,
-                            color: AppOverlays.white10,
-                          ),
+                  background: Hero(
+                    tag: 'tank-card-${tank.id}',
+                    child: Container(
+                      decoration: const BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [AppColors.primary, AppColors.secondary],
                         ),
-                      ],
+                      ),
+                      child: Stack(
+                        children: [
+                          Positioned(
+                            right: -20,
+                            bottom: -20,
+                            child: Icon(
+                              Icons.water,
+                              size: 150,
+                              color: AppOverlays.white10,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
