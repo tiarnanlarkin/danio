@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
+import '../widgets/core/app_card.dart';
 
 class BreedingGuideScreen extends StatelessWidget {
   const BreedingGuideScreen({super.key});
@@ -12,31 +13,29 @@ class BreedingGuideScreen extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         children: [
           // Intro
-          Card(
-            color: AppColors.info.withOpacity(0.1),
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Icon(Icons.favorite, color: AppColors.info),
-                      const SizedBox(width: AppSpacing.sm),
-                      Text(
-                        'Breeding Basics',
-                        style: AppTypography.headlineSmall,
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 12),
-                  Text(
-                    'Breeding fish can be rewarding! Most fish breed readily in the right conditions. '
-                    'Key factors: healthy parents, proper diet, and appropriate environment.',
-                    style: AppTypography.bodyMedium,
-                  ),
-                ],
-              ),
+          AppCard(
+            backgroundColor: AppColors.info.withOpacity(0.1),
+            padding: AppCardPadding.standard,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Icon(Icons.favorite, color: AppColors.info),
+                    const SizedBox(width: AppSpacing.sm),
+                    Text(
+                      'Breeding Basics',
+                      style: AppTypography.headlineSmall,
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  'Breeding fish can be rewarding! Most fish breed readily in the right conditions. '
+                  'Key factors: healthy parents, proper diet, and appropriate environment.',
+                  style: AppTypography.bodyMedium,
+                ),
+              ],
             ),
           ),
 
@@ -120,43 +119,41 @@ class BreedingGuideScreen extends StatelessWidget {
           Text('Conditioning Breeders', style: AppTypography.headlineMedium),
           const SizedBox(height: AppSpacing.md),
 
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _ConditionItem(
-                    title: 'Diet',
-                    description:
-                        'Feed high-protein foods: live/frozen brine shrimp, bloodworms, daphnia. Multiple small meals daily.',
-                  ),
-                  const Divider(),
-                  _ConditionItem(
-                    title: 'Water Quality',
-                    description:
-                        'Pristine water, frequent small changes. Many species triggered by cooler water change.',
-                  ),
-                  const Divider(),
-                  _ConditionItem(
-                    title: 'Temperature',
-                    description:
-                        'Slight increase (1-2°C) can trigger breeding. Simulate rainy season.',
-                  ),
-                  const Divider(),
-                  _ConditionItem(
-                    title: 'Ratio',
-                    description:
-                        'Usually 1 male to 2-3 females. Reduces stress on single female.',
-                  ),
-                  const Divider(),
-                  _ConditionItem(
-                    title: 'Privacy',
-                    description:
-                        'Dim lighting, hiding spots, separate breeding tank often helps.',
-                  ),
-                ],
-              ),
+          AppCard(
+            padding: AppCardPadding.standard,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _ConditionItem(
+                  title: 'Diet',
+                  description:
+                      'Feed high-protein foods: live/frozen brine shrimp, bloodworms, daphnia. Multiple small meals daily.',
+                ),
+                const Divider(),
+                _ConditionItem(
+                  title: 'Water Quality',
+                  description:
+                      'Pristine water, frequent small changes. Many species triggered by cooler water change.',
+                ),
+                const Divider(),
+                _ConditionItem(
+                  title: 'Temperature',
+                  description:
+                      'Slight increase (1-2°C) can trigger breeding. Simulate rainy season.',
+                ),
+                const Divider(),
+                _ConditionItem(
+                  title: 'Ratio',
+                  description:
+                      'Usually 1 male to 2-3 females. Reduces stress on single female.',
+                ),
+                const Divider(),
+                _ConditionItem(
+                  title: 'Privacy',
+                  description:
+                      'Dim lighting, hiding spots, separate breeding tank often helps.',
+                ),
+              ],
             ),
           ),
 
@@ -197,92 +194,88 @@ class BreedingGuideScreen extends StatelessWidget {
           Text('Easiest Fish to Breed', style: AppTypography.headlineMedium),
           const SizedBox(height: AppSpacing.md),
 
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                children: [
-                  _EasyBreederRow(
-                    fish: 'Guppies',
-                    difficulty: 'Very Easy',
-                    notes:
-                        'Will breed constantly. Separate sexes to control population.',
-                  ),
-                  const Divider(),
-                  _EasyBreederRow(
-                    fish: 'Platies',
-                    difficulty: 'Very Easy',
-                    notes: 'Prolific livebearers. Fry large enough to survive.',
-                  ),
-                  const Divider(),
-                  _EasyBreederRow(
-                    fish: 'Convict Cichlids',
-                    difficulty: 'Easy',
-                    notes: 'Aggressive parents protect fry. Cave spawners.',
-                  ),
-                  const Divider(),
-                  _EasyBreederRow(
-                    fish: 'Bristlenose Plecos',
-                    difficulty: 'Easy',
-                    notes: 'Male guards eggs in cave. Large fry.',
-                  ),
-                  const Divider(),
-                  _EasyBreederRow(
-                    fish: 'Cherry Shrimp',
-                    difficulty: 'Easy',
-                    notes:
-                        'Breed readily in planted tanks. No intervention needed.',
-                  ),
-                  const Divider(),
-                  _EasyBreederRow(
-                    fish: 'Corydoras',
-                    difficulty: 'Moderate',
-                    notes:
-                        'Cool water change triggers spawning. Eggs on glass.',
-                  ),
-                  const Divider(),
-                  _EasyBreederRow(
-                    fish: 'Bettas',
-                    difficulty: 'Moderate',
-                    notes:
-                        'Male builds bubble nest. Remove female after spawning.',
-                  ),
-                ],
-              ),
+          AppCard(
+            padding: AppCardPadding.standard,
+            child: Column(
+              children: [
+                _EasyBreederRow(
+                  fish: 'Guppies',
+                  difficulty: 'Very Easy',
+                  notes:
+                      'Will breed constantly. Separate sexes to control population.',
+                ),
+                const Divider(),
+                _EasyBreederRow(
+                  fish: 'Platies',
+                  difficulty: 'Very Easy',
+                  notes: 'Prolific livebearers. Fry large enough to survive.',
+                ),
+                const Divider(),
+                _EasyBreederRow(
+                  fish: 'Convict Cichlids',
+                  difficulty: 'Easy',
+                  notes: 'Aggressive parents protect fry. Cave spawners.',
+                ),
+                const Divider(),
+                _EasyBreederRow(
+                  fish: 'Bristlenose Plecos',
+                  difficulty: 'Easy',
+                  notes: 'Male guards eggs in cave. Large fry.',
+                ),
+                const Divider(),
+                _EasyBreederRow(
+                  fish: 'Cherry Shrimp',
+                  difficulty: 'Easy',
+                  notes:
+                      'Breed readily in planted tanks. No intervention needed.',
+                ),
+                const Divider(),
+                _EasyBreederRow(
+                  fish: 'Corydoras',
+                  difficulty: 'Moderate',
+                  notes:
+                      'Cool water change triggers spawning. Eggs on glass.',
+                ),
+                const Divider(),
+                _EasyBreederRow(
+                  fish: 'Bettas',
+                  difficulty: 'Moderate',
+                  notes:
+                      'Male builds bubble nest. Remove female after spawning.',
+                ),
+              ],
             ),
           ),
 
           const SizedBox(height: AppSpacing.lg),
 
           // Warning
-          Card(
-            color: AppColors.warning.withOpacity(0.1),
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Icon(Icons.warning_amber, color: AppColors.warning),
-                      const SizedBox(width: AppSpacing.sm),
-                      Text(
-                        'Before You Breed',
-                        style: AppTypography.headlineSmall,
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 12),
-                  Text(
-                    '• Have a plan for the fry — can you home them?\n'
-                    '• Breeding tanks and supplies add cost\n'
-                    '• Livebearers can quickly overpopulate\n'
-                    '• Quality over quantity — cull runts humanely\n'
-                    '• Don\'t release into wild — ever',
-                    style: AppTypography.bodyMedium,
-                  ),
-                ],
-              ),
+          AppCard(
+            backgroundColor: AppColors.warning.withOpacity(0.1),
+            padding: AppCardPadding.standard,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Icon(Icons.warning_amber, color: AppColors.warning),
+                    const SizedBox(width: AppSpacing.sm),
+                    Text(
+                      'Before You Breed',
+                      style: AppTypography.headlineSmall,
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  '• Have a plan for the fry — can you home them?\n'
+                  '• Breeding tanks and supplies add cost\n'
+                  '• Livebearers can quickly overpopulate\n'
+                  '• Quality over quantity — cull runts humanely\n'
+                  '• Don\'t release into wild — ever',
+                  style: AppTypography.bodyMedium,
+                ),
+              ],
             ),
           ),
 
