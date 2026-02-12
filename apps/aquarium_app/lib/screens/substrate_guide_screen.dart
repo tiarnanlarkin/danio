@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
+import '../widgets/core/app_card.dart';
 
 class SubstrateGuideScreen extends StatelessWidget {
   const SubstrateGuideScreen({super.key});
@@ -12,31 +13,29 @@ class SubstrateGuideScreen extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         children: [
           // Intro
-          Card(
-            color: AppColors.info.withOpacity(0.1),
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Icon(Icons.layers, color: AppColors.info),
-                      const SizedBox(width: AppSpacing.sm),
-                      Text(
-                        'Why Substrate Matters',
-                        style: AppTypography.headlineSmall,
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 12),
-                  Text(
-                    'Substrate affects water chemistry, plant growth, fish behavior, and aesthetics. '
-                    'Choose based on your tank inhabitants and goals.',
-                    style: AppTypography.bodyMedium,
-                  ),
-                ],
-              ),
+          AppCard(
+            backgroundColor: AppColors.info.withOpacity(0.1),
+            padding: AppCardPadding.standard,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Icon(Icons.layers, color: AppColors.info),
+                    const SizedBox(width: AppSpacing.sm),
+                    Text(
+                      'Why Substrate Matters',
+                      style: AppTypography.headlineSmall,
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  'Substrate affects water chemistry, plant growth, fish behavior, and aesthetics. '
+                  'Choose based on your tank inhabitants and goals.',
+                  style: AppTypography.bodyMedium,
+                ),
+              ],
             ),
           ),
 
@@ -214,100 +213,96 @@ class SubstrateGuideScreen extends StatelessWidget {
           Text('Layering Substrates', style: AppTypography.headlineMedium),
           const SizedBox(height: AppSpacing.md),
 
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Dirted Tank (Walstad Method)',
-                    style: AppTypography.labelLarge,
-                  ),
-                  const SizedBox(height: AppSpacing.sm),
-                  _LayerRow(
-                    layer: 'Top',
-                    material: 'Sand or fine gravel cap (3-5cm)',
-                    color: Colors.brown.shade300,
-                  ),
-                  _LayerRow(
-                    layer: 'Bottom',
-                    material: 'Organic potting soil (2-3cm)',
-                    color: Colors.brown.shade800,
-                  ),
-                  const SizedBox(height: AppSpacing.sm),
-                  Text(
-                    'Low-tech method. Soil provides nutrients, cap prevents clouding. '
-                    'No CO2 or fertilizers needed for easy plants.',
-                    style: AppTypography.bodySmall,
-                  ),
+          AppCard(
+            padding: AppCardPadding.standard,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Dirted Tank (Walstad Method)',
+                  style: AppTypography.labelLarge,
+                ),
+                const SizedBox(height: AppSpacing.sm),
+                _LayerRow(
+                  layer: 'Top',
+                  material: 'Sand or fine gravel cap (3-5cm)',
+                  color: Colors.brown.shade300,
+                ),
+                _LayerRow(
+                  layer: 'Bottom',
+                  material: 'Organic potting soil (2-3cm)',
+                  color: Colors.brown.shade800,
+                ),
+                const SizedBox(height: AppSpacing.sm),
+                Text(
+                  'Low-tech method. Soil provides nutrients, cap prevents clouding. '
+                  'No CO2 or fertilizers needed for easy plants.',
+                  style: AppTypography.bodySmall,
+                ),
 
-                  const SizedBox(height: 20),
+                const SizedBox(height: 20),
 
-                  Text('High-Tech Planted', style: AppTypography.labelLarge),
-                  const SizedBox(height: AppSpacing.sm),
-                  _LayerRow(
-                    layer: 'Top',
-                    material: 'Aquasoil (5-8cm)',
-                    color: Colors.brown.shade600,
-                  ),
-                  _LayerRow(
-                    layer: 'Middle',
-                    material: 'Power Sand / Pumice (optional, 1-2cm)',
-                    color: Colors.grey.shade400,
-                  ),
-                  _LayerRow(
-                    layer: 'Bottom',
-                    material: 'Substrate fertilizer (optional)',
-                    color: Colors.brown.shade900,
-                  ),
-                  const SizedBox(height: AppSpacing.sm),
-                  Text(
-                    'For maximum plant growth. Power sand adds drainage and bacterial surface area.',
-                    style: AppTypography.bodySmall,
-                  ),
-                ],
-              ),
+                Text('High-Tech Planted', style: AppTypography.labelLarge),
+                const SizedBox(height: AppSpacing.sm),
+                _LayerRow(
+                  layer: 'Top',
+                  material: 'Aquasoil (5-8cm)',
+                  color: Colors.brown.shade600,
+                ),
+                _LayerRow(
+                  layer: 'Middle',
+                  material: 'Power Sand / Pumice (optional, 1-2cm)',
+                  color: Colors.grey.shade400,
+                ),
+                _LayerRow(
+                  layer: 'Bottom',
+                  material: 'Substrate fertilizer (optional)',
+                  color: Colors.brown.shade900,
+                ),
+                const SizedBox(height: AppSpacing.sm),
+                Text(
+                  'For maximum plant growth. Power sand adds drainage and bacterial surface area.',
+                  style: AppTypography.bodySmall,
+                ),
+              ],
             ),
           ),
 
           const SizedBox(height: AppSpacing.lg),
 
           // Tips
-          Card(
-            color: AppColors.warning.withOpacity(0.1),
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Icon(Icons.lightbulb, color: AppColors.warning),
-                      const SizedBox(width: AppSpacing.sm),
-                      Text('Pro Tips', style: AppTypography.headlineSmall),
-                    ],
-                  ),
-                  const SizedBox(height: 12),
-                  _TipItem(
-                    text: 'Rinse all substrate before use — even "pre-washed"',
-                  ),
-                  _TipItem(
-                    text: 'Slope substrate higher in back for depth illusion',
-                  ),
-                  _TipItem(text: 'Use substrate dividers to create zones'),
-                  _TipItem(
-                    text: 'Never vacuum planted areas deeply — disturbs roots',
-                  ),
-                  _TipItem(text: 'Dark substrate makes fish colors pop'),
-                  _TipItem(
-                    text:
-                        'Calculate amount: L × W × depth (cm) ÷ 1000 = litres needed',
-                  ),
+          AppCard(
+            backgroundColor: AppColors.warning.withOpacity(0.1),
+            padding: AppCardPadding.standard,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Icon(Icons.lightbulb, color: AppColors.warning),
+                    const SizedBox(width: AppSpacing.sm),
+                    Text('Pro Tips', style: AppTypography.headlineSmall),
                 ],
               ),
-            ),
+              const SizedBox(height: 12),
+              _TipItem(
+                text: 'Rinse all substrate before use — even "pre-washed"',
+              ),
+              _TipItem(
+                text: 'Slope substrate higher in back for depth illusion',
+              ),
+              _TipItem(text: 'Use substrate dividers to create zones'),
+              _TipItem(
+                text: 'Never vacuum planted areas deeply — disturbs roots',
+              ),
+              _TipItem(text: 'Dark substrate makes fish colors pop'),
+              _TipItem(
+                text:
+                    'Calculate amount: L × W × depth (cm) ÷ 1000 = litres needed',
+              ),
+            ],
           ),
+        ),
 
           const SizedBox(height: AppSpacing.xxl),
         ],
