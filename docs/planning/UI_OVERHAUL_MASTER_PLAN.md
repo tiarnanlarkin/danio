@@ -414,8 +414,9 @@ class MascotBubble extends StatelessWidget {
 ## 📋 Implementation Checklist
 
 ### Week 1: Foundation + Room Identity
-- [ ] Add all dependencies to pubspec.yaml
-- [ ] Create `app_animations.dart` utility
+- [x] Add all dependencies to pubspec.yaml
+- [x] Create `app_animations.dart` utility
+- [x] Create `haptic_helper.dart` utility
 - [ ] Design room background system
 - [ ] Implement room transitions
 - [ ] Add basic ambient elements to Living Room
