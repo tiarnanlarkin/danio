@@ -1,13 +1,17 @@
 import 'package:aquarium_app/theme/app_theme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'dart:math' as math;
 import 'dart:ui';
 import '../theme/room_themes.dart';
 import 'ambient/ambient_bubbles.dart';
+import 'ambient/ambient_overlay.dart';
+import 'ambient/swaying_plant.dart';
 import 'effects/ripple_container.dart';
 
 /// Themeable room scene - supports multiple visual styles
-class LivingRoomScene extends StatelessWidget {
+/// Includes day/night ambient lighting overlay based on real time.
+class LivingRoomScene extends ConsumerWidget {
   final String tankName;
   final double tankVolume;
   final double? temperature;
@@ -40,21 +44,23 @@ class LivingRoomScene extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final w = constraints.maxWidth;
-        final h = constraints.maxHeight.isFinite
-            ? constraints.maxHeight
-            : w * 1.4;
+  Widget build(BuildContext context, WidgetRef ref) {
+    // Wrap entire scene with day/night ambient lighting overlay
+    return AmbientLightingOverlay(
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final w = constraints.maxWidth;
+          final h = constraints.maxHeight.isFinite
+              ? constraints.maxHeight
+              : w * 1.4;
 
-        return SizedBox(
-          width: w,
-          height: h,
-          child: Stack(
-            children: [
-              // === LAYER 1: Organic abstract background ===
-              Positioned.fill(child: _OrganicBackground(theme: theme)),
+          return SizedBox(
+            width: w,
+            height: h,
+            child: Stack(
+              children: [
+                // === LAYER 1: Organic abstract background ===
+                Positioned.fill(child: _OrganicBackground(theme: theme)),
 
               // === LAYER 2: Decorative elements ===
               // Stars/sparkles for whimsical themes
@@ -917,37 +923,49 @@ class _ThemedAquarium extends StatelessWidget {
               ),
             ),
 
-            // Plants
+            // Plants with gentle swaying animation
             Positioned(
               bottom: height * 0.15,
               left: width * 0.08,
-              child: _SoftPlant(
-                height: height * 0.5,
-                color: theme.plantPrimary,
+              child: SwayingPlantTall(
+                index: 0,
+                child: _SoftPlant(
+                  height: height * 0.5,
+                  color: theme.plantPrimary,
+                ),
               ),
             ),
             Positioned(
               bottom: height * 0.15,
               left: width * 0.22,
-              child: _SoftPlant(
-                height: height * 0.35,
-                color: theme.plantSecondary,
+              child: SwayingPlantSmall(
+                index: 1,
+                child: _SoftPlant(
+                  height: height * 0.35,
+                  color: theme.plantSecondary,
+                ),
               ),
             ),
             Positioned(
               bottom: height * 0.15,
               right: width * 0.1,
-              child: _SoftPlant(
-                height: height * 0.55,
-                color: theme.plantPrimary,
+              child: SwayingPlantTall(
+                index: 2,
+                child: _SoftPlant(
+                  height: height * 0.55,
+                  color: theme.plantPrimary,
+                ),
               ),
             ),
             Positioned(
               bottom: height * 0.15,
               right: width * 0.28,
-              child: _SoftPlant(
-                height: height * 0.4,
-                color: theme.plantSecondary,
+              child: SwayingPlant(
+                index: 3,
+                child: _SoftPlant(
+                  height: height * 0.4,
+                  color: theme.plantSecondary,
+                ),
               ),
             ),
 
