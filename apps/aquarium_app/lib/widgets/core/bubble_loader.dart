@@ -84,7 +84,7 @@ class _BubbleLoaderState extends State<BubbleLoader> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
-    final bubbleColor = widget.color ?? AppColors.aqua;
+    final bubbleColor = widget.color ?? AppColors.accent;
     
     return Column(
       mainAxisSize: MainAxisSize.min,

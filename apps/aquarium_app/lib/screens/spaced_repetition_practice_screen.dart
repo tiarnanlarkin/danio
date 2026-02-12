@@ -1,5 +1,4 @@
 /// Enhanced Practice Screen with full Spaced Repetition System
-import '../widgets/core/bubble_loader.dart';
 /// Implements review sessions, adaptive difficulty, and progress tracking
 library;
 
@@ -8,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'dart:async';
 import '../models/spaced_repetition.dart';
 import '../models/exercises.dart';
+import '../widgets/core/bubble_loader.dart';
 import '../providers/spaced_repetition_provider.dart';
 import '../providers/user_profile_provider.dart';
 import '../providers/inventory_provider.dart';

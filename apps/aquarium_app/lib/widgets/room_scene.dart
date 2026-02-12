@@ -4,6 +4,7 @@ import 'dart:math' as math;
 import 'dart:ui';
 import '../theme/room_themes.dart';
 import 'ambient/ambient_bubbles.dart';
+import 'effects/ripple_container.dart';
 
 /// Themeable room scene - supports multiple visual styles
 class LivingRoomScene extends StatelessWidget {
@@ -85,7 +86,7 @@ class LivingRoomScene extends StatelessWidget {
                 top: h * 0.28,
                 left: w * 0.1,
                 right: w * 0.1,
-                child: GestureDetector(
+                child: RippleContainer(
                   onTap: onTankTap,
                   child: _ThemedAquarium(
                     width: w * 0.8,

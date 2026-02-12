@@ -17,7 +17,7 @@ if (keystorePropertiesFile.exists()) {
 android {
     namespace = "com.tiarnanlarkin.aquarium.aquarium_app"
     compileSdk = flutter.compileSdkVersion
-    ndkVersion = flutter.ndkVersion
+    ndkVersion = "28.2.13676358" // Override to use available NDK
 
     compileOptions {
         isCoreLibraryDesugaringEnabled = true

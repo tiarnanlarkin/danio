@@ -1,5 +1,4 @@
 // Story player screen - Interactive narrative experience
-import '../widgets/core/bubble_loader.dart';
 // Full-screen Duolingo-style story interface with animations
 
 library;
@@ -8,6 +7,7 @@ import 'package:aquarium_app/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/story.dart';
+import '../widgets/core/bubble_loader.dart';
 import '../models/user_profile.dart';
 import '../data/stories.dart';
 import '../providers/user_profile_provider.dart';

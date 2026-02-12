@@ -1,5 +1,4 @@
 /// Activity Feed Screen - Dedicated screen for friend activities
-import '../widgets/core/bubble_loader.dart';
 /// Shows chronological feed of all friend activities with filtering
 library;
 
@@ -8,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/friend.dart';
 import '../providers/friends_provider.dart';
 import '../theme/app_theme.dart';
+import '../widgets/core/bubble_loader.dart';
 import '../widgets/empty_state.dart';
 import '../widgets/error_state.dart';
 import 'friend_comparison_screen.dart';
