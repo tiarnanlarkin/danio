@@ -1,11 +1,12 @@
-/// Streak display widget with fire emoji and pulsing animation
-/// Shows current streak count with engaging animations
+/// Streak display widget with animated fire effect
+/// Shows current streak count with engaging flame animations
 library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/user_profile_provider.dart';
 import '../theme/app_theme.dart';
+import 'animated_flame.dart';
 
 class StreakDisplay extends ConsumerStatefulWidget {
   final double size;
@@ -23,63 +24,9 @@ class StreakDisplay extends ConsumerStatefulWidget {
   ConsumerState<StreakDisplay> createState() => _StreakDisplayState();
 }
 
-class _StreakDisplayState extends ConsumerState<StreakDisplay>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation<double> _scaleAnimation;
-  late Animation<double> _glowAnimation;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-      duration: const Duration(milliseconds: 1500),
-      vsync: this,
-    );
-
-    _scaleAnimation = TweenSequence<double>([
-      TweenSequenceItem(
-        tween: Tween<double>(
-          begin: 1.0,
-          end: 1.15,
-        ).chain(CurveTween(curve: Curves.easeOut)),
-        weight: 30,
-      ),
-      TweenSequenceItem(
-        tween: Tween<double>(
-          begin: 1.15,
-          end: 1.0,
-        ).chain(CurveTween(curve: Curves.easeIn)),
-        weight: 30,
-      ),
-      TweenSequenceItem(tween: ConstantTween<double>(1.0), weight: 40),
-    ]).animate(_controller);
-
-    _glowAnimation = TweenSequence<double>([
-      TweenSequenceItem(
-        tween: Tween<double>(
-          begin: 0.3,
-          end: 0.8,
-        ).chain(CurveTween(curve: Curves.easeOut)),
-        weight: 50,
-      ),
-      TweenSequenceItem(
-        tween: Tween<double>(
-          begin: 0.8,
-          end: 0.3,
-        ).chain(CurveTween(curve: Curves.easeIn)),
-        weight: 50,
-      ),
-    ]).animate(_controller);
-
-    _controller.repeat();
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
+class _StreakDisplayState extends ConsumerState<StreakDisplay> {
+  int? _previousStreak;
+  bool _showCelebration = false;
 
   @override
   Widget build(BuildContext context) {
@@ -90,100 +37,96 @@ class _StreakDisplayState extends ConsumerState<StreakDisplay>
     }
 
     final hasStreak = profile.currentStreak > 0;
+    final currentStreak = profile.currentStreak;
+
+    // Detect streak increment for celebration
+    if (_previousStreak != null && currentStreak > _previousStreak!) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          setState(() => _showCelebration = true);
+        }
+      });
+    }
+    _previousStreak = currentStreak;
 
     return GestureDetector(
       onTap: widget.onTap,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          AnimatedBuilder(
-            animation: _controller,
-            builder: (context, child) {
-              return Stack(
-                alignment: Alignment.center,
-                children: [
-                  // Glow effect for active streaks
-                  if (hasStreak)
-                    Container(
-                      width: widget.size * 1.4,
-                      height: widget.size * 1.4,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        gradient: RadialGradient(
-                          colors: [
-                            const Color(
-                              0xFFFF6B35,
-                            ).withOpacity(_glowAnimation.value),
-                            Colors.transparent,
-                          ],
-                        ),
-                      ),
+          Stack(
+            alignment: Alignment.center,
+            children: [
+              if (hasStreak)
+                // Animated flame for active streaks
+                AnimatedFlame(
+                  size: widget.size,
+                  streakCount: currentStreak,
+                  showCelebration: _showCelebration,
+                  onCelebrationComplete: () {
+                    if (mounted) {
+                      setState(() => _showCelebration = false);
+                    }
+                  },
+                )
+              else
+                // Dormant state - no streak
+                Container(
+                  width: widget.size,
+                  height: widget.size,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.grey.withOpacity(0.1),
+                  ),
+                  child: Center(
+                    child: Text(
+                      '💤',
+                      style: TextStyle(fontSize: widget.size * 0.5),
                     ),
+                  ),
+                ),
 
-                  // Fire emoji with scale animation
-                  Transform.scale(
-                    scale: hasStreak ? _scaleAnimation.value : 1.0,
-                    child: Container(
-                      width: widget.size,
-                      height: widget.size,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: hasStreak
-                            ? Colors.orange.withOpacity(0.15)
-                            : Colors.grey.withOpacity(0.1),
+              // Streak count badge
+              if (hasStreak)
+                Positioned(
+                  right: 0,
+                  bottom: 0,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 6,
+                      vertical: 2,
+                    ),
+                    decoration: BoxDecoration(
+                      gradient: const LinearGradient(
+                        colors: [Color(0xFFFF6B35), Color(0xFFF7931E)],
                       ),
-                      child: Center(
-                        child: Text(
-                          hasStreak ? '🔥' : '💤',
-                          style: TextStyle(fontSize: widget.size * 0.5),
+                      borderRadius: AppRadius.smallRadius,
+                      border: Border.all(color: Colors.white, width: 2),
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppOverlays.black20,
+                          blurRadius: 4,
+                          offset: const Offset(0, 2),
                         ),
+                      ],
+                    ),
+                    child: Text(
+                      '$currentStreak',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 11,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
                   ),
-
-                  // Streak count badge
-                  if (hasStreak)
-                    Positioned(
-                      right: 0,
-                      bottom: 0,
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 6,
-                          vertical: 2,
-                        ),
-                        decoration: BoxDecoration(
-                          gradient: const LinearGradient(
-                            colors: [Color(0xFFFF6B35), Color(0xFFF7931E)],
-                          ),
-                          borderRadius: AppRadius.smallRadius,
-                          border: Border.all(color: Colors.white, width: 2),
-                          boxShadow: [
-                            BoxShadow(
-                              color: AppOverlays.black20,
-                              blurRadius: 4,
-                              offset: const Offset(0, 2),
-                            ),
-                          ],
-                        ),
-                        child: Text(
-                          '${profile.currentStreak}',
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 11,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ),
-                ],
-              );
-            },
+                ),
+            ],
           ),
           if (widget.showLabel) ...[
             const SizedBox(height: 6),
             Text(
               hasStreak
-                  ? '${profile.currentStreak} day streak!'
+                  ? '$currentStreak day streak!'
                   : 'No streak yet',
               style: AppTypography.bodySmall.copyWith(
                 color: hasStreak ? AppColors.textPrimary : AppColors.textHint,
@@ -192,7 +135,7 @@ class _StreakDisplayState extends ConsumerState<StreakDisplay>
               ),
               textAlign: TextAlign.center,
             ),
-            if (profile.longestStreak > profile.currentStreak)
+            if (profile.longestStreak > currentStreak)
               Text(
                 'Best: ${profile.longestStreak} days',
                 style: AppTypography.bodySmall.copyWith(
@@ -304,14 +247,18 @@ class StreakCard extends ConsumerWidget {
                   ),
                 ),
 
-                // Icon
-                Icon(
-                  hasStreak ? Icons.local_fire_department : Icons.flag,
-                  color: hasStreak
-                      ? const Color(0xFFFF6B35)
-                      : AppColors.textHint,
-                  size: 24,
-                ),
+                // Animated flame or flag icon
+                if (hasStreak)
+                  AnimatedFlame(
+                    size: 32,
+                    streakCount: profile.currentStreak,
+                  )
+                else
+                  Icon(
+                    Icons.flag,
+                    color: AppColors.textHint,
+                    size: 24,
+                  ),
               ],
             ),
           ),
