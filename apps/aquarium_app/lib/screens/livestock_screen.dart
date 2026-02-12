@@ -121,110 +121,141 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
           return Column(
             children: [
               Expanded(
-                child: ListView(
-                  padding: const EdgeInsets.all(16),
-                  children: [
-                    // Summary card
+                child: CustomScrollView(
+                  slivers: [
+                    // Header padding
+                    const SliverPadding(
+                      padding: EdgeInsets.only(top: 16, left: 16, right: 16),
+                      sliver: SliverToBoxAdapter(child: SizedBox.shrink()),
+                    ),
+                    
+                    // Summary card (when not in select mode)
                     if (!_isSelectMode)
-                      AppCard(
-                        padding: AppCardPadding.standard,
-                        child: Row(
-                          children: [
-                            Icon(
-                              Icons.pets,
-                              color: AppColors.primary,
-                              size: 32,
-                            ),
-                            const SizedBox(width: AppSpacing.md),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                      SliverPadding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        sliver: SliverToBoxAdapter(
+                          child: AppCard(
+                            padding: AppCardPadding.standard,
+                            child: Row(
                               children: [
-                                Text(
-                                  '$totalCount total',
-                                  style: AppTypography.headlineMedium,
+                                Icon(
+                                  Icons.pets,
+                                  color: AppColors.primary,
+                                  size: 32,
                                 ),
-                                Text(
-                                  '${livestock.length} species',
-                                  style: AppTypography.bodyMedium,
+                                const SizedBox(width: AppSpacing.md),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      '$totalCount total',
+                                      style: AppTypography.headlineMedium,
+                                    ),
+                                    Text(
+                                      '${livestock.length} species',
+                                      style: AppTypography.bodyMedium,
+                                    ),
+                                  ],
                                 ),
                               ],
                             ),
-                          ],
+                          ),
                         ),
                       ),
-                    if (!_isSelectMode) const SizedBox(height: AppSpacing.md),
+                    if (!_isSelectMode)
+                      const SliverPadding(
+                        padding: EdgeInsets.only(top: AppSpacing.md),
+                        sliver: SliverToBoxAdapter(child: SizedBox.shrink()),
+                      ),
 
-                    // Selection info banner
+                    // Selection info banner (when in select mode)
                     if (_isSelectMode)
-                      AppCard(
-                        backgroundColor: AppOverlays.primary10,
-                        padding: AppCardPadding.standard,
-                        child: Row(
-                          children: [
-                            Icon(Icons.checklist, color: AppColors.primary),
-                            const SizedBox(width: 12),
-                            Text(
-                              '${_selectedLivestockIds.length} selected',
-                              style: AppTypography.labelLarge.copyWith(
-                                color: AppColors.primary,
-                              ),
-                            ),
-                            const Spacer(),
-                            if (_selectedLivestockIds.length <
-                                livestock.length)
-                              TextButton(
-                                onPressed: () {
-                                  setState(() {
-                                    _selectedLivestockIds.addAll(
-                                      livestock.map((l) => l.id),
-                                    );
-                                  });
-                                },
-                                child: const Text('Select All'),
-                              )
-                            else
-                              TextButton(
-                                onPressed: () {
-                                  setState(() {
-                                    _selectedLivestockIds.clear();
-                                  });
-                                },
-                                child: const Text('Clear'),
-                              ),
-                          ],
-                        ),
-                      ),
-                    if (_isSelectMode) const SizedBox(height: AppSpacing.md),
-
-                    // List with staggered animation
-                    ...livestock.asMap().entries.map(
-                      (entry) {
-                        final index = entry.key;
-                        final l = entry.value;
-                        return _LivestockCard(
-                          livestock: l,
-                          tank: tank,
-                          allLivestock: livestock,
-                          isSelectMode: _isSelectMode,
-                          isSelected: _selectedLivestockIds.contains(l.id),
-                          onTap: _isSelectMode
-                              ? () => _toggleLivestockSelection(l.id)
-                              : () => Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (_) => LivestockDetailScreen(
-                                      tankId: widget.tankId,
-                                      livestock: l,
-                                    ),
+                      SliverPadding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        sliver: SliverToBoxAdapter(
+                          child: AppCard(
+                            backgroundColor: AppOverlays.primary10,
+                            padding: AppCardPadding.standard,
+                            child: Row(
+                              children: [
+                                Icon(Icons.checklist, color: AppColors.primary),
+                                const SizedBox(width: 12),
+                                Text(
+                                  '${_selectedLivestockIds.length} selected',
+                                  style: AppTypography.labelLarge.copyWith(
+                                    color: AppColors.primary,
                                   ),
                                 ),
-                          onEdit: () => _showEditDialog(context, ref, l),
-                          onDelete: () => _confirmDelete(context, ref, l),
-                        )
-                            .animate()
-                            .fadeIn(delay: (50 * index).ms, duration: 300.ms)
-                            .slideX(begin: 0.1, end: 0, delay: (50 * index).ms, duration: 300.ms);
-                      },
+                                const Spacer(),
+                                if (_selectedLivestockIds.length < livestock.length)
+                                  TextButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        _selectedLivestockIds.addAll(
+                                          livestock.map((l) => l.id),
+                                        );
+                                      });
+                                    },
+                                    child: const Text('Select All'),
+                                  )
+                                else
+                                  TextButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        _selectedLivestockIds.clear();
+                                      });
+                                    },
+                                    child: const Text('Clear'),
+                                  ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    if (_isSelectMode)
+                      const SliverPadding(
+                        padding: EdgeInsets.only(top: AppSpacing.md),
+                        sliver: SliverToBoxAdapter(child: SizedBox.shrink()),
+                      ),
+
+                    // Livestock list with lazy loading (SliverList.builder)
+                    SliverPadding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      sliver: SliverList.builder(
+                        itemCount: livestock.length,
+                        itemBuilder: (context, index) {
+                          final l = livestock[index];
+                          return _LivestockCard(
+                            livestock: l,
+                            tank: tank,
+                            allLivestock: livestock,
+                            isSelectMode: _isSelectMode,
+                            isSelected: _selectedLivestockIds.contains(l.id),
+                            onTap: _isSelectMode
+                                ? () => _toggleLivestockSelection(l.id)
+                                : () => Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) => LivestockDetailScreen(
+                                        tankId: widget.tankId,
+                                        livestock: l,
+                                      ),
+                                    ),
+                                  ),
+                            onEdit: () => _showEditDialog(context, ref, l),
+                            onDelete: () => _confirmDelete(context, ref, l),
+                          )
+                              .animate()
+                              .fadeIn(delay: Duration(milliseconds: (50 * index).clamp(0, 500)), duration: 300.ms)
+                              .slideX(begin: 0.1, end: 0, delay: Duration(milliseconds: (50 * index).clamp(0, 500)), duration: 300.ms);
+                        },
+                      ),
+                    ),
+                    
+                    // Bottom padding
+                    const SliverPadding(
+                      padding: EdgeInsets.only(bottom: 16),
+                      sliver: SliverToBoxAdapter(child: SizedBox.shrink()),
                     ),
                   ],
                 ),
