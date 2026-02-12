@@ -183,6 +183,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 tankVolume: currentTank.volumeLitres,
                 theme: ref.watch(currentRoomThemeProvider),
                 isNewUser: _isNewUser(ref),
+                useRiveFish: false, // Disable broken Rive fish, use static drawn fish
                 onTankTap: () => _navigateToTankDetail(context, currentTank),
                 onTestKitTap: () => _showWaterParams(context),
                 onFoodTap: () => _showFeedingInfo(context),

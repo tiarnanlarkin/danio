@@ -370,21 +370,38 @@ class _CozyRoomPainter extends CustomPainter {
     return luminance < 0.3;
   }
 
+  // Cozy room uses warm base colors regardless of theme
+  Color get _wallColor => _isDarkTheme 
+      ? const Color(0xFF3D4A5C) // Cozy dark blue-gray
+      : const Color(0xFFF5EDE5); // Warm cream
+
+  Color get _wallAccent => _isDarkTheme
+      ? const Color(0xFF4A5568) // Lighter accent
+      : const Color(0xFFEDE5D8); // Soft beige
+
+  Color get _floorColor => _isDarkTheme
+      ? const Color(0xFF5C4A3D) // Dark wood
+      : const Color(0xFFD4B896); // Warm wood
+
+  Color get _trimColor => _isDarkTheme
+      ? const Color(0xFF6B5B4F) // Dark trim
+      : const Color(0xFF8B7355); // Wood trim
+
   @override
   void paint(Canvas canvas, Size size) {
     final w = size.width;
     final h = size.height;
 
-    // === BASE WALL GRADIENT ===
+    // === BASE WALL - WARM CREAM/COZY GRADIENT ===
     final wallGradient = LinearGradient(
       begin: Alignment.topCenter,
       end: Alignment.bottomCenter,
       colors: [
-        theme.background1,
-        theme.background2,
-        theme.background3,
+        _wallColor,
+        _wallAccent,
+        Color.lerp(_wallAccent, _floorColor, 0.3)!,
       ],
-      stops: const [0.0, 0.5, 1.0],
+      stops: const [0.0, 0.6, 1.0],
     );
     
     canvas.drawRect(
@@ -392,27 +409,41 @@ class _CozyRoomPainter extends CustomPainter {
       Paint()..shader = wallGradient.createShader(Rect.fromLTWH(0, 0, w, h)),
     );
 
-    // === SUBTLE WALL TEXTURE (vertical stripes like wallpaper) ===
+    // === VISIBLE WALL TEXTURE (subtle vertical stripes) ===
     final texturePaint = Paint()
-      ..color = theme.primaryWave.withOpacity(0.03)
-      ..strokeWidth = 1;
+      ..color = (_isDarkTheme ? Colors.white : Colors.brown).withOpacity(0.05)
+      ..strokeWidth = 1.5;
     
-    for (var x = 0.0; x < w; x += 30) {
-      canvas.drawLine(Offset(x, 0), Offset(x, h * 0.7), texturePaint);
+    for (var x = 0.0; x < w; x += 25) {
+      canvas.drawLine(Offset(x, 0), Offset(x, h * 0.62), texturePaint);
     }
 
-    // === FLOOR ===
-    final floorTop = h * 0.68;
+    // === WAINSCOTING / WALL PANEL (lower wall section) ===
+    final panelTop = h * 0.45;
+    final panelPaint = Paint()
+      ..color = Color.lerp(_wallAccent, _floorColor, 0.15)!;
+    canvas.drawRect(
+      Rect.fromLTWH(0, panelTop, w, h * 0.17),
+      panelPaint,
+    );
+    
+    // Panel trim line
+    canvas.drawLine(
+      Offset(0, panelTop),
+      Offset(w, panelTop),
+      Paint()
+        ..color = _trimColor.withOpacity(0.4)
+        ..strokeWidth = 3,
+    );
+
+    // === WOODEN FLOOR (visible at bottom) ===
+    final floorTop = h * 0.62;
     final floorGradient = LinearGradient(
       begin: Alignment.topCenter,
       end: Alignment.bottomCenter,
       colors: [
-        _isDarkTheme 
-            ? theme.sand.withOpacity(0.3)
-            : theme.sand.withOpacity(0.8),
-        _isDarkTheme
-            ? theme.sand.withOpacity(0.2)
-            : theme.sand,
+        _floorColor,
+        Color.lerp(_floorColor, Colors.brown, 0.2)!,
       ],
     );
     
@@ -421,42 +452,120 @@ class _CozyRoomPainter extends CustomPainter {
       Paint()..shader = floorGradient.createShader(Rect.fromLTWH(0, floorTop, w, h)),
     );
 
-    // Floor boards (subtle horizontal lines)
+    // Floor boards (VISIBLE horizontal lines)
     final floorLinePaint = Paint()
-      ..color = _isDarkTheme 
-          ? Colors.black.withOpacity(0.1)
-          : Colors.brown.withOpacity(0.08)
-      ..strokeWidth = 1;
+      ..color = (_isDarkTheme ? Colors.black : Colors.brown).withOpacity(0.15)
+      ..strokeWidth = 1.5;
     
-    for (var y = floorTop; y < h; y += 20) {
+    for (var y = floorTop + 15; y < h; y += 18) {
       canvas.drawLine(Offset(0, y), Offset(w, y), floorLinePaint);
     }
+    
+    // Vertical floor board joints
+    final jointPaint = Paint()
+      ..color = (_isDarkTheme ? Colors.black : Colors.brown).withOpacity(0.08)
+      ..strokeWidth = 1;
+    for (var x = 0.0; x < w; x += 60) {
+      canvas.drawLine(Offset(x, floorTop), Offset(x, h), jointPaint);
+    }
 
-    // === BASEBOARD / TRIM ===
-    final baseboardPaint = Paint()
-      ..color = _isDarkTheme
-          ? theme.textSecondary.withOpacity(0.15)
-          : theme.textSecondary.withOpacity(0.2);
+    // === BASEBOARD / TRIM (VISIBLE) ===
+    final baseboardRect = Rect.fromLTWH(0, floorTop - 6, w, 10);
     canvas.drawRect(
-      Rect.fromLTWH(0, floorTop - 4, w, 8),
-      baseboardPaint,
+      baseboardRect,
+      Paint()..color = _trimColor,
+    );
+    // Baseboard highlight
+    canvas.drawLine(
+      Offset(0, floorTop - 6),
+      Offset(w, floorTop - 6),
+      Paint()
+        ..color = Colors.white.withOpacity(0.2)
+        ..strokeWidth = 1,
     );
 
-    // === WINDOW WITH CURTAINS (top right) ===
+    // === WINDOW ON LEFT SIDE (visible, not covered by UI) ===
     _drawWindow(canvas, w, h);
+
+    // === COZY RUG under tank area ===
+    _drawRug(canvas, w, h, floorTop);
 
     // === WARM LIGHTING EFFECTS ===
     _drawLightingEffects(canvas, w, h);
 
-    // === DECORATIVE SHELF (top area) ===
+    // === DECORATIVE ELEMENTS ===
     _drawShelf(canvas, w, h);
+    _drawPicture(canvas, w, h);
+  }
+  
+  void _drawRug(Canvas canvas, double w, double h, double floorTop) {
+    // Cozy rug under the tank area
+    final rugRect = RRect.fromRectAndRadius(
+      Rect.fromLTWH(w * 0.05, floorTop + 8, w * 0.9, h * 0.12),
+      const Radius.circular(8),
+    );
+    
+    // Rug base
+    canvas.drawRRect(
+      rugRect,
+      Paint()..color = theme.accentBlob.withOpacity(_isDarkTheme ? 0.25 : 0.35),
+    );
+    
+    // Rug pattern (simple stripes)
+    final patternPaint = Paint()
+      ..color = theme.accentBlob2.withOpacity(0.3)
+      ..strokeWidth = 3;
+    for (var x = w * 0.1; x < w * 0.9; x += 20) {
+      canvas.drawLine(
+        Offset(x, floorTop + 15),
+        Offset(x, floorTop + h * 0.10),
+        patternPaint,
+      );
+    }
+    
+    // Rug border
+    canvas.drawRRect(
+      rugRect,
+      Paint()
+        ..color = theme.accentBlob.withOpacity(0.5)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 2,
+    );
+  }
+  
+  void _drawPicture(Canvas canvas, double w, double h) {
+    // Small framed picture on wall (left side, above tank)
+    final frameLeft = w * 0.02;
+    final frameTop = h * 0.22;
+    final frameWidth = w * 0.12;
+    final frameHeight = h * 0.08;
+    
+    // Frame
+    final frameRect = RRect.fromRectAndRadius(
+      Rect.fromLTWH(frameLeft, frameTop, frameWidth, frameHeight),
+      const Radius.circular(2),
+    );
+    canvas.drawRRect(
+      frameRect,
+      Paint()..color = _trimColor,
+    );
+    
+    // Picture inside
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(
+        Rect.fromLTWH(frameLeft + 3, frameTop + 3, frameWidth - 6, frameHeight - 6),
+        const Radius.circular(1),
+      ),
+      Paint()..color = theme.waterMid.withOpacity(0.5),
+    );
   }
 
   void _drawWindow(Canvas canvas, double w, double h) {
-    final windowLeft = w * 0.60;
-    final windowTop = h * 0.04;
-    final windowWidth = w * 0.35;
-    final windowHeight = h * 0.18;
+    // Window on LEFT side of room (visible, not covered by UI)
+    final windowLeft = w * 0.02;
+    final windowTop = h * 0.06;
+    final windowWidth = w * 0.22;
+    final windowHeight = h * 0.14;
 
     // Window light glow (outside light coming in)
     final windowGlow = Paint()
