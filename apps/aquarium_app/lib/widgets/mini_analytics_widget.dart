@@ -9,6 +9,7 @@ import '../models/analytics.dart';
 import '../models/learning.dart';
 import '../services/analytics_service.dart';
 import '../data/lesson_content.dart';
+import '../screens/analytics_screen.dart';
 
 class MiniAnalyticsWidget extends StatelessWidget {
   final UserProfile profile;
@@ -44,7 +45,7 @@ class MiniAnalyticsWidget extends StatelessWidget {
                 context,
                 MaterialPageRoute(
                   builder: (context) =>
-                      const Placeholder(), // Replace with AnalyticsScreen()
+                      const AnalyticsScreen(),
                 ),
               );
             },
@@ -134,7 +135,7 @@ class MiniAnalyticsWidget extends StatelessWidget {
                           context,
                           MaterialPageRoute(
                             builder: (context) =>
-                                const Placeholder(), // Replace with AnalyticsScreen()
+                                const AnalyticsScreen(),
                           ),
                         );
                       },
