@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'dart:math' as math;
 import 'dart:ui';
 import '../theme/room_themes.dart';
+import 'ambient/ambient_bubbles.dart';
 
 /// Themeable room scene - supports multiple visual styles
 class LivingRoomScene extends StatelessWidget {
@@ -966,12 +967,15 @@ class _ThemedAquarium extends StatelessWidget {
               child: _SoftFish(size: 20, color: theme.fish3),
             ),
 
-            // Bubbles
+            // Static bubbles (decorative)
             Positioned(
               right: width * 0.18,
               bottom: height * 0.2,
               child: _SoftBubbles(height: height * 0.5),
             ),
+
+            // Animated floating bubbles
+            const AmbientBubblesSubtle(bubbleCount: 12),
 
             // Light reflection
             Positioned(
