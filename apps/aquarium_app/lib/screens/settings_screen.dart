@@ -114,6 +114,15 @@ class SettingsScreen extends ConsumerWidget {
               ),
             ),
           ),
+          SwitchListTile(
+            secondary: const Icon(Icons.wb_twilight),
+            title: const Text('Day/Night Ambiance'),
+            subtitle: const Text('Subtle lighting based on time of day'),
+            value: settings.ambientLightingEnabled,
+            onChanged: (value) => ref
+                .read(settingsProvider.notifier)
+                .setAmbientLightingEnabled(value),
+          ),
 
           const Divider(),
 

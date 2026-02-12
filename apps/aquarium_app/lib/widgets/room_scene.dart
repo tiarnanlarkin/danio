@@ -8,6 +8,7 @@ import 'ambient/ambient_bubbles.dart';
 import 'ambient/ambient_overlay.dart';
 import 'ambient/swaying_plant.dart';
 import 'effects/ripple_container.dart';
+import 'room/interactive_object.dart';
 
 /// Themeable room scene - supports multiple visual styles
 /// Includes day/night ambient lighting overlay based on real time.
@@ -25,6 +26,9 @@ class LivingRoomScene extends ConsumerWidget {
   final VoidCallback? onPlantTap;
   final VoidCallback? onStatsTap;
   final VoidCallback? onThemeTap;
+  final VoidCallback? onJournalTap;
+  final VoidCallback? onCalendarTap;
+  final bool isNewUser;
 
   const LivingRoomScene({
     super.key,
@@ -41,6 +45,9 @@ class LivingRoomScene extends ConsumerWidget {
     this.onPlantTap,
     this.onStatsTap,
     this.onThemeTap,
+    this.onJournalTap,
+    this.onCalendarTap,
+    this.isNewUser = false,
   });
 
   @override
@@ -162,6 +169,29 @@ class LivingRoomScene extends ConsumerWidget {
 
               // Action buttons removed - now using SpeedDialFAB in home_screen
 
+              // === LAYER 5: Interactive objects ===
+              // Journal object (left side of scene)
+              if (onJournalTap != null)
+                Positioned(
+                  bottom: h * 0.25,
+                  left: w * 0.05,
+                  child: LivingRoomObjects.journal(
+                    onTap: onJournalTap!,
+                    isNewUser: isNewUser,
+                  ),
+                ),
+
+              // Calendar/Schedule object (right side of scene)
+              if (onCalendarTap != null)
+                Positioned(
+                  bottom: h * 0.25,
+                  right: w * 0.05,
+                  child: LivingRoomObjects.calendar(
+                    onTap: onCalendarTap!,
+                    isNewUser: isNewUser,
+                  ),
+                ),
+
               // Theme switcher hint (top center)
               Positioned(
                 top: 8,
@@ -204,7 +234,8 @@ class LivingRoomScene extends ConsumerWidget {
             ],
           ),
         );
-      },
+        },
+      ),
     );
   }
 }
