@@ -857,3 +857,62 @@ class LearningStats {
     required this.achievementsUnlocked,
   });
 }
+
+/// Level up event data
+class LevelUpEvent {
+  final int newLevel;
+  final String levelTitle;
+  final DateTime timestamp;
+
+  const LevelUpEvent({
+    required this.newLevel,
+    required this.levelTitle,
+    required this.timestamp,
+  });
+}
+
+/// Provider that tracks level changes and emits level-up events
+/// Use this in UI widgets to trigger level-up celebrations
+final levelUpEventProvider = StateNotifierProvider<LevelUpEventNotifier, LevelUpEvent?>((ref) {
+  return LevelUpEventNotifier(ref);
+});
+
+class LevelUpEventNotifier extends StateNotifier<LevelUpEvent?> {
+  LevelUpEventNotifier(this.ref) : super(null) {
+    // Watch for profile changes and detect level ups
+    ref.listen<AsyncValue<UserProfile?>>(userProfileProvider, (previous, next) {
+      final prevProfile = previous?.value;
+      final nextProfile = next.value;
+      
+      if (prevProfile != null && nextProfile != null) {
+        final prevLevel = prevProfile.currentLevel;
+        final nextLevel = nextProfile.currentLevel;
+        
+        // Level up detected!
+        if (nextLevel > prevLevel) {
+          state = LevelUpEvent(
+            newLevel: nextLevel,
+            levelTitle: nextProfile.levelTitle,
+            timestamp: DateTime.now(),
+          );
+        }
+      }
+    });
+  }
+
+  final Ref ref;
+
+  /// Clear the level up event after it's been handled
+  void clearEvent() {
+    state = null;
+  }
+  
+  /// Manually trigger a level up event (for testing)
+  void triggerLevelUp(int level, String title) {
+    state = LevelUpEvent(
+      newLevel: level,
+      levelTitle: title,
+      timestamp: DateTime.now(),
+    );
+  }
+}

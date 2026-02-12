@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:confetti/confetti.dart';
 import '../widgets/celebrations/confetti_overlay.dart';
+import '../widgets/celebrations/level_up_overlay.dart';
 import '../theme/app_theme.dart';
 
 /// State for active celebrations
@@ -111,15 +112,16 @@ class CelebrationNotifier extends StateNotifier<CelebrationState> {
     });
   }
   
-  /// Trigger a level up celebration
-  void levelUp(int level) {
+  /// Trigger a level up celebration (basic confetti version)
+  /// For the enhanced overlay, use showLevelUpOverlay() with a BuildContext
+  void levelUp(int level, {String? levelTitle}) {
     _disposeController();
     _controller = ConfettiController(duration: const Duration(seconds: 4));
     
     state = CelebrationState(
       isActive: true,
       title: 'Level $level!',
-      subtitle: 'Keep up the great work! 🎉',
+      subtitle: levelTitle ?? 'Keep up the great work! 🎉',
       level: CelebrationLevel.levelUp,
       confettiController: _controller,
     );
@@ -132,6 +134,20 @@ class CelebrationNotifier extends StateNotifier<CelebrationState> {
         dismiss();
       }
     });
+  }
+  
+  /// Show enhanced level up overlay with full-screen animation
+  /// This is the preferred method when a BuildContext is available
+  void showLevelUpOverlay(BuildContext context, int level, {String? levelTitle}) {
+    // Dismiss any existing celebration
+    dismiss();
+    
+    // Show the enhanced level up overlay
+    LevelUpOverlay.show(
+      context,
+      newLevel: level,
+      levelTitle: levelTitle,
+    );
   }
   
   /// Trigger a milestone celebration (big achievement)
@@ -388,9 +404,14 @@ extension CelebrationExtension on WidgetRef {
   void celebrateAchievement(String title, {String? subtitle}) =>
       read(celebrationProvider.notifier).achievement(title, subtitle: subtitle);
   
-  /// Quick access to trigger level up celebration
-  void celebrateLevelUp(int level) =>
-      read(celebrationProvider.notifier).levelUp(level);
+  /// Quick access to trigger level up celebration (basic)
+  void celebrateLevelUp(int level, {String? levelTitle}) =>
+      read(celebrationProvider.notifier).levelUp(level, levelTitle: levelTitle);
+  
+  /// Quick access to trigger enhanced level up overlay
+  /// Requires BuildContext for the full-screen overlay
+  void showLevelUpOverlay(BuildContext context, int level, {String? levelTitle}) =>
+      read(celebrationProvider.notifier).showLevelUpOverlay(context, level, levelTitle: levelTitle);
   
   /// Quick access to trigger milestone celebration
   void celebrateMilestone(String title, {String? subtitle}) =>
