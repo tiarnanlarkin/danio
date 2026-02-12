@@ -329,7 +329,7 @@ class MiniTankScene extends StatelessWidget {
                   end: Alignment.bottomRight,
                   colors: [
                     AppColors.accent.withOpacity(0.2),
-                    AppColors.primary.withOpacity(0.3),
+                    AppOverlays.primary30,
                     AppColors.primaryDark.withOpacity(0.4),
                   ],
                 ),
@@ -340,7 +340,7 @@ class MiniTankScene extends StatelessWidget {
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: AppColors.primary.withOpacity(0.2),
+                    color: AppOverlays.primary20,
                     blurRadius: 8,
                     offset: const Offset(0, 4),
                   ),
