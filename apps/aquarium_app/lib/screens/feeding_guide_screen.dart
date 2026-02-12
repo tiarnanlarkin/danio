@@ -14,7 +14,7 @@ class FeedingGuideScreen extends StatelessWidget {
         children: [
           // Golden rule
           AppCard(
-            backgroundColor: AppColors.warning.withOpacity(0.1),
+            backgroundColor: AppOverlays.warning10,
             padding: AppCardPadding.standard,
             child: Column(
               children: [
@@ -178,7 +178,7 @@ class FeedingGuideScreen extends StatelessWidget {
 
           // Fasting
           AppCard(
-            backgroundColor: AppColors.info.withOpacity(0.1),
+            backgroundColor: AppOverlays.info10,
             padding: AppCardPadding.standard,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -244,7 +244,7 @@ class _FrequencyCard extends StatelessWidget {
         trailing: Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
           decoration: BoxDecoration(
-            color: AppColors.primary.withOpacity(0.1),
+            color: AppOverlays.primary10,
             borderRadius: AppRadius.mediumRadius,
           ),
           child: Text(

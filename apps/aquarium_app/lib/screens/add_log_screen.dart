@@ -332,7 +332,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
               decoration: BoxDecoration(
                 color: _bulkEntryMode
-                    ? AppColors.primary.withOpacity(0.1)
+                    ? AppOverlays.primary10
                     : AppColors.surfaceVariant,
                 borderRadius: AppRadius.smallRadius,
               ),
@@ -376,7 +376,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: AppColors.info.withOpacity(0.1),
+              color: AppOverlays.info10,
               borderRadius: AppRadius.smallRadius,
               border: Border.all(color: AppColors.info.withOpacity(0.3)),
             ),

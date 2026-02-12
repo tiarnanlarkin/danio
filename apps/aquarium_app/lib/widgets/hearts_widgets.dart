@@ -30,7 +30,7 @@ class HeartIndicator extends ConsumerWidget {
       ),
       decoration: BoxDecoration(
         color: hearts == 0
-            ? AppColors.error.withOpacity(0.1)
+            ? AppOverlays.error10
             : AppColors.error.withOpacity(0.15),
         borderRadius: BorderRadius.circular(compact ? 12 : 16),
         border: Border.all(
@@ -106,7 +106,7 @@ class _DetailedHeartsDisplayState extends ConsumerState<DetailedHeartsDisplay> {
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            AppColors.error.withOpacity(0.1),
+            AppOverlays.error10,
             AppColors.error.withOpacity(0.05),
           ],
         ),
@@ -316,7 +316,7 @@ class _OutOfHeartsModalState extends ConsumerState<OutOfHeartsModal> {
               width: 100,
               height: 100,
               decoration: BoxDecoration(
-                color: AppColors.error.withOpacity(0.1),
+                color: AppOverlays.error10,
                 shape: BoxShape.circle,
               ),
               child: const Center(

@@ -14,7 +14,7 @@ class HardscapeGuideScreen extends StatelessWidget {
         children: [
           // Intro
           AppCard(
-            backgroundColor: AppColors.info.withOpacity(0.1),
+            backgroundColor: AppOverlays.info10,
             padding: AppCardPadding.standard,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -273,7 +273,7 @@ class HardscapeGuideScreen extends StatelessWidget {
 
           // Warning
           AppCard(
-            backgroundColor: AppColors.warning.withOpacity(0.1),
+            backgroundColor: AppOverlays.warning10,
             padding: AppCardPadding.standard,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -488,7 +488,7 @@ class _PrepStep extends StatelessWidget {
             width: 20,
             height: 20,
             decoration: BoxDecoration(
-              color: AppColors.primary.withOpacity(0.1),
+              color: AppOverlays.primary10,
               shape: BoxShape.circle,
             ),
             child: Center(

@@ -17,7 +17,7 @@ class EmergencyGuideScreen extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         children: [
           AppCard(
-            backgroundColor: AppColors.error.withOpacity(0.1),
+            backgroundColor: AppOverlays.error10,
             padding: AppCardPadding.standard,
             child: Row(
               children: [
@@ -296,7 +296,7 @@ class _EmergencyCard extends StatelessWidget {
                           width: 18,
                           height: 18,
                           decoration: BoxDecoration(
-                            color: AppColors.error.withOpacity(0.1),
+                            color: AppOverlays.error10,
                             shape: BoxShape.circle,
                           ),
                           child: Center(
@@ -321,7 +321,7 @@ class _EmergencyCard extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
-                    color: AppColors.info.withOpacity(0.1),
+                    color: AppOverlays.info10,
                     borderRadius: AppRadius.smallRadius,
                   ),
                   child: Row(

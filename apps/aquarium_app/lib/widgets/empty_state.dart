@@ -141,14 +141,14 @@ class _EmptyStateState extends State<EmptyState>
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                         colors: [
-                          AppColors.primary.withOpacity(0.1),
+                          AppOverlays.primary10,
                           AppColors.primary.withOpacity(0.05),
                         ],
                       ),
                       shape: BoxShape.circle,
                       boxShadow: [
                         BoxShadow(
-                          color: AppColors.primary.withOpacity(0.1),
+                          color: AppOverlays.primary10,
                           blurRadius: 20,
                           offset: const Offset(0, 10),
                         ),

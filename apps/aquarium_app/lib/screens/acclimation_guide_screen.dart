@@ -14,7 +14,7 @@ class AcclimationGuideScreen extends StatelessWidget {
         children: [
           // Intro
           AppCard(
-            backgroundColor: AppColors.info.withOpacity(0.1),
+            backgroundColor: AppOverlays.info10,
             padding: AppCardPadding.standard,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -255,7 +255,7 @@ class _StepCard extends StatelessWidget {
               width: 32,
               height: 32,
               decoration: BoxDecoration(
-                color: AppColors.primary.withOpacity(0.1),
+                color: AppOverlays.primary10,
                 shape: BoxShape.circle,
               ),
               child: Center(

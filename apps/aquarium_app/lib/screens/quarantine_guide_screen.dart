@@ -14,7 +14,7 @@ class QuarantineGuideScreen extends StatelessWidget {
         children: [
           // Why quarantine
           AppCard(
-            backgroundColor: AppColors.warning.withOpacity(0.1),
+            backgroundColor: AppOverlays.warning10,
             padding: AppCardPadding.standard,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -233,7 +233,7 @@ class QuarantineGuideScreen extends StatelessWidget {
 
           // Tips
           AppCard(
-            backgroundColor: AppColors.info.withOpacity(0.1),
+            backgroundColor: AppOverlays.info10,
             padding: AppCardPadding.standard,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -338,7 +338,7 @@ class _ProtocolStep extends StatelessWidget {
               width: 50,
               height: 50,
               decoration: BoxDecoration(
-                color: AppColors.primary.withOpacity(0.1),
+                color: AppOverlays.primary10,
                 borderRadius: AppRadius.smallRadius,
               ),
               child: Column(

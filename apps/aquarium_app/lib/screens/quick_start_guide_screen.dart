@@ -13,7 +13,7 @@ class QuickStartGuideScreen extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         children: [
           AppCard(
-            backgroundColor: AppColors.primary.withOpacity(0.1),
+            backgroundColor: AppOverlays.primary10,
             padding: AppCardPadding.standard,
             child: Column(
               children: [
@@ -248,7 +248,7 @@ class QuickStartGuideScreen extends StatelessWidget {
           const SizedBox(height: AppSpacing.lg),
 
           AppCard(
-            backgroundColor: AppColors.error.withOpacity(0.1),
+            backgroundColor: AppOverlays.error10,
             padding: AppCardPadding.standard,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -402,7 +402,7 @@ class _NumberedStep extends StatelessWidget {
             width: 20,
             height: 20,
             decoration: BoxDecoration(
-              color: AppColors.primary.withOpacity(0.1),
+              color: AppOverlays.primary10,
               shape: BoxShape.circle,
             ),
             child: Center(
@@ -433,7 +433,7 @@ class _TipBox extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
-        color: AppColors.info.withOpacity(0.1),
+        color: AppOverlays.info10,
         borderRadius: AppRadius.smallRadius,
       ),
       child: Row(
@@ -457,7 +457,7 @@ class _WarningBox extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
-        color: AppColors.error.withOpacity(0.1),
+        color: AppOverlays.error10,
         borderRadius: AppRadius.smallRadius,
       ),
       child: Row(

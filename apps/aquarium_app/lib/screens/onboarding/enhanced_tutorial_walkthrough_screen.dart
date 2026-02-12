@@ -559,7 +559,7 @@ class _EnhancedTutorialWalkthroughScreenState
   Widget _buildDemoTankCard() {
     return Card(
       elevation: _useDemoData ? 4 : 1,
-      color: _useDemoData ? AppColors.accent.withOpacity(0.1) : null,
+      color: _useDemoData ? AppOverlays.accent10 : null,
       shape: RoundedRectangleBorder(
         borderRadius: AppRadius.mediumRadius,
         side: BorderSide(
@@ -618,8 +618,8 @@ class _EnhancedTutorialWalkthroughScreenState
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            AppColors.primary.withOpacity(0.1),
-            AppColors.accent.withOpacity(0.1),
+            AppOverlays.primary10,
+            AppOverlays.accent10,
           ],
         ),
         borderRadius: AppRadius.mediumRadius,
@@ -784,7 +784,7 @@ class _TankTypeCard extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
             color: isSelected
-                ? AppColors.primary.withOpacity(0.1)
+                ? AppOverlays.primary10
                 : Colors.grey[100],
             borderRadius: AppRadius.mediumRadius,
             border: Border.all(
@@ -848,7 +848,7 @@ class _WaterTypeCard extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: isSelected
-              ? AppColors.accent.withOpacity(0.1)
+              ? AppOverlays.accent10
               : Colors.grey[100],
           borderRadius: AppRadius.mediumRadius,
           border: Border.all(

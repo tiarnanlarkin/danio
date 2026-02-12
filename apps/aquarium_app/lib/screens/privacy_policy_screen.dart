@@ -31,7 +31,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                   colors: [
-                    AppColors.primary.withOpacity(0.1),
+                    AppOverlays.primary10,
                     AppColors.secondary.withOpacity(0.1),
                   ],
                 ),
@@ -42,7 +42,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: AppColors.primary.withOpacity(0.2),
+                      color: AppOverlays.primary20,
                       borderRadius: AppRadius.mediumRadius,
                     ),
                     child: const Icon(
@@ -260,7 +260,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: AppColors.success.withOpacity(0.1),
+        color: AppOverlays.success10,
         borderRadius: AppRadius.mediumRadius,
         border: Border.all(color: AppColors.success.withOpacity(0.3)),
       ),
@@ -360,7 +360,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.primary.withOpacity(0.05),
         borderRadius: AppRadius.mediumRadius,
-        border: Border.all(color: AppColors.primary.withOpacity(0.2)),
+        border: Border.all(color: AppOverlays.primary20),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -400,7 +400,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: AppColors.primary.withOpacity(0.1),
+              color: AppOverlays.primary10,
               borderRadius: AppRadius.smallRadius,
             ),
             child: Icon(icon, color: AppColors.primary, size: 20),

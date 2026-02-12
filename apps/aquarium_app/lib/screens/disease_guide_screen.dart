@@ -47,7 +47,7 @@ class _DiseaseGuideScreenState extends State<DiseaseGuideScreen> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Card(
-              color: AppColors.warning.withOpacity(0.1),
+              color: AppOverlays.warning10,
               child: Padding(
                 padding: const EdgeInsets.all(12),
                 child: Row(

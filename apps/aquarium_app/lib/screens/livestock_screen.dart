@@ -157,7 +157,7 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
                     // Selection info banner
                     if (_isSelectMode)
                       AppCard(
-                        backgroundColor: AppColors.primary.withOpacity(0.1),
+                        backgroundColor: AppOverlays.primary10,
                         padding: AppCardPadding.standard,
                         child: Row(
                           children: [
@@ -614,7 +614,7 @@ class _LivestockCard extends StatelessWidget {
             : Stack(
                 children: [
                   CircleAvatar(
-                    backgroundColor: AppColors.primary.withOpacity(0.1),
+                    backgroundColor: AppOverlays.primary10,
                     child: const Icon(Icons.set_meal, color: AppColors.primary),
                   ),
                   if (hasIssues)
@@ -860,7 +860,7 @@ class _AddLivestockSheetState extends State<_AddLivestockSheet> {
                 decoration: BoxDecoration(
                   color: AppColors.primary.withOpacity(0.05),
                   borderRadius: AppRadius.smallRadius,
-                  border: Border.all(color: AppColors.primary.withOpacity(0.2)),
+                  border: Border.all(color: AppOverlays.primary20),
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,

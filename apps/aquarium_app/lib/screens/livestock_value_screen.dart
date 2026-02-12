@@ -93,7 +93,7 @@ class _LivestockValueScreenState extends ConsumerState<LivestockValueScreen> {
             children: [
               // Total value card
               AppCard(
-                backgroundColor: AppColors.primary.withOpacity(0.1),
+                backgroundColor: AppOverlays.primary10,
                 padding: AppCardPadding.spacious,
                 child: Column(
                   children: [
@@ -120,7 +120,7 @@ class _LivestockValueScreenState extends ConsumerState<LivestockValueScreen> {
               const SizedBox(height: AppSpacing.sm),
 
               AppCard(
-                backgroundColor: AppColors.warning.withOpacity(0.1),
+                backgroundColor: AppOverlays.warning10,
                 padding: AppCardPadding.compact,
                 child: Row(
                   children: [
@@ -152,7 +152,7 @@ class _LivestockValueScreenState extends ConsumerState<LivestockValueScreen> {
                           width: 40,
                           height: 40,
                           decoration: BoxDecoration(
-                            color: AppColors.primary.withOpacity(0.1),
+                            color: AppOverlays.primary10,
                             borderRadius: AppRadius.smallRadius,
                           ),
                           child: Icon(

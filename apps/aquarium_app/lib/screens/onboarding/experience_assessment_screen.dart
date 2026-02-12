@@ -234,7 +234,7 @@ class _ExperienceAssessmentScreenState
                                     ),
                                     borderRadius: AppRadius.mediumRadius,
                                     color: isSelected
-                                        ? AppColors.primary.withOpacity(0.1)
+                                        ? AppOverlays.primary10
                                         : AppColors.surface,
                                   ),
                                   child: Row(

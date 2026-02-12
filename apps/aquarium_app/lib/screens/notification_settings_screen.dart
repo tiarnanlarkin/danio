@@ -179,7 +179,7 @@ class NotificationSettingsScreen extends ConsumerWidget {
                   child: Container(
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: AppColors.primary.withOpacity(0.1),
+                      color: AppOverlays.primary10,
                       borderRadius: AppRadius.mediumRadius,
                     ),
                     child: Column(

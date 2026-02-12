@@ -391,7 +391,7 @@ class _EnhancedQuizScreenState extends ConsumerState<EnhancedQuizScreen>
                         vertical: 6,
                       ),
                       decoration: BoxDecoration(
-                        color: AppColors.success.withOpacity(0.1),
+                        color: AppOverlays.success10,
                         borderRadius: AppRadius.mediumRadius,
                       ),
                       child: Row(
@@ -504,8 +504,8 @@ class _EnhancedQuizScreenState extends ConsumerState<EnhancedQuizScreen>
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: isCorrect
-              ? AppColors.success.withOpacity(0.1)
-              : AppColors.info.withOpacity(0.1),
+              ? AppOverlays.success10
+              : AppOverlays.info10,
           borderRadius: AppRadius.mediumRadius,
           border: Border.all(
             color: isCorrect
@@ -718,7 +718,7 @@ class _EnhancedQuizScreenState extends ConsumerState<EnhancedQuizScreen>
                       borderRadius: AppRadius.largeRadius,
                       boxShadow: [
                         BoxShadow(
-                          color: AppColors.primary.withOpacity(0.3),
+                          color: AppOverlays.primary30,
                           blurRadius: 20,
                           offset: const Offset(0, 10),
                         ),

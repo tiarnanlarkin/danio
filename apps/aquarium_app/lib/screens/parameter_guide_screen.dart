@@ -14,7 +14,7 @@ class ParameterGuideScreen extends StatelessWidget {
         children: [
           // Intro
           AppCard(
-            backgroundColor: AppColors.info.withOpacity(0.1),
+            backgroundColor: AppOverlays.info10,
             padding: AppCardPadding.standard,
             child: Row(
               children: [

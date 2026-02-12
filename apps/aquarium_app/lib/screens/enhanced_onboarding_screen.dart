@@ -318,7 +318,7 @@ class _FeatureChip extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(
-        color: AppColors.primary.withOpacity(0.1),
+        color: AppOverlays.primary10,
         borderRadius: AppRadius.largeRadius,
       ),
       child: Row(
@@ -511,7 +511,7 @@ class _SelectionCard extends StatelessWidget {
         padding: EdgeInsets.all(compact ? 16 : 20),
         decoration: BoxDecoration(
           color: isSelected
-              ? AppColors.primary.withOpacity(0.1)
+              ? AppOverlays.primary10
               : AppColors.surface,
           borderRadius: AppRadius.mediumRadius,
           border: Border.all(

@@ -352,7 +352,7 @@ class _EnhancedPlacementTestScreenState
                     vertical: 4,
                   ),
                   decoration: BoxDecoration(
-                    color: AppColors.accent.withOpacity(0.1),
+                    color: AppOverlays.accent10,
                     borderRadius: AppRadius.mediumRadius,
                   ),
                   child: Text(
@@ -452,7 +452,7 @@ class _EnhancedPlacementTestScreenState
         iconColor = Colors.red;
       }
     } else if (isSelected) {
-      backgroundColor = AppColors.accent.withOpacity(0.1);
+      backgroundColor = AppOverlays.accent10;
       borderColor = AppColors.accent;
     }
 

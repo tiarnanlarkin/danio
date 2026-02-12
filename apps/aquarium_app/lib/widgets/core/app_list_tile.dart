@@ -147,7 +147,7 @@ class _AppListTileState extends State<AppListTile> {
     // Determine colors
     Color? bgColor;
     if (widget.isSelected) {
-      bgColor = widget.selectedColor ?? AppColors.primary.withOpacity(0.1);
+      bgColor = widget.selectedColor ?? AppOverlays.primary10;
     } else if (_isPressed && _isInteractive) {
       bgColor = isDark ? AppOverlays.white5 : AppOverlays.black5;
     } else {

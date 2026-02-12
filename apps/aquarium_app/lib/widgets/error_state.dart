@@ -37,7 +37,7 @@ class ErrorState extends StatelessWidget {
               width: 100,
               height: 100,
               decoration: BoxDecoration(
-                color: AppColors.error.withOpacity(0.1),
+                color: AppOverlays.error10,
                 shape: BoxShape.circle,
               ),
               child: Icon(icon, size: 50, color: AppColors.error),
@@ -146,7 +146,7 @@ class ErrorBanner extends StatelessWidget {
       margin: const EdgeInsets.all(AppSpacing.md),
       padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
-        color: AppColors.error.withOpacity(0.1),
+        color: AppOverlays.error10,
         borderRadius: AppRadius.mediumRadius,
         border: Border.all(color: AppColors.error.withOpacity(0.3), width: 1),
       ),

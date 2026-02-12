@@ -94,7 +94,7 @@ class _WaterChangeCalculatorScreenState
         padding: const EdgeInsets.all(16),
         children: [
           AppCard(
-            backgroundColor: AppColors.info.withOpacity(0.1),
+            backgroundColor: AppOverlays.info10,
             padding: AppCardPadding.standard,
             child: Row(
               children: [
@@ -179,7 +179,7 @@ class _WaterChangeCalculatorScreenState
 
           if (_changePercent != null && _changeVolume != null) ...[
             AppCard(
-              backgroundColor: AppColors.success.withOpacity(0.1),
+              backgroundColor: AppOverlays.success10,
               padding: AppCardPadding.spacious,
               child: Column(
                 children: [
@@ -341,7 +341,7 @@ class _StepRow extends StatelessWidget {
             width: 20,
             height: 20,
             decoration: BoxDecoration(
-              color: AppColors.primary.withOpacity(0.1),
+              color: AppOverlays.primary10,
               shape: BoxShape.circle,
             ),
             child: Center(

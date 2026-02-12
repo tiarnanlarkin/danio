@@ -344,7 +344,7 @@ class _NavBarItem extends StatelessWidget {
                 duration: AppDurations.short,
                 padding: EdgeInsets.all(isSelected ? AppSpacing.sm : 0),
                 decoration: BoxDecoration(
-                  color: isSelected ? AppColors.primary.withOpacity(0.1) : null,
+                  color: isSelected ? AppOverlays.primary10 : null,
                   borderRadius: AppRadius.smallRadius,
                 ),
                 child: Badge(

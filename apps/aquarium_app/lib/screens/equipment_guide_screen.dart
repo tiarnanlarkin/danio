@@ -409,7 +409,7 @@ class _EquipmentCard extends StatelessWidget {
                   width: double.infinity,
                   padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
-                    color: AppColors.info.withOpacity(0.1),
+                    color: AppOverlays.info10,
                     borderRadius: AppRadius.smallRadius,
                   ),
                   child: Column(

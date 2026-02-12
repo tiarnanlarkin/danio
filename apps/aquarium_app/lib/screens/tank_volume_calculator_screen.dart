@@ -160,7 +160,7 @@ class _TankVolumeCalculatorScreenState
             // Result
             if (_volume != null) ...[
               AppCard(
-                backgroundColor: AppColors.primary.withOpacity(0.1),
+                backgroundColor: AppOverlays.primary10,
                 padding: AppCardPadding.spacious,
                 child: Column(
                     children: [

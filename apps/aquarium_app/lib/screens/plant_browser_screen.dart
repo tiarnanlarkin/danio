@@ -220,7 +220,7 @@ class _PlantCard extends StatelessWidget {
           width: 44,
           height: 44,
           decoration: BoxDecoration(
-            color: AppColors.success.withOpacity(0.1),
+            color: AppOverlays.success10,
             borderRadius: AppRadius.smallRadius,
           ),
           child: const Icon(Icons.eco, color: AppColors.success),
@@ -321,7 +321,7 @@ class _PlantDetailSheet extends StatelessWidget {
                   width: 60,
                   height: 60,
                   decoration: BoxDecoration(
-                    color: AppColors.success.withOpacity(0.1),
+                    color: AppOverlays.success10,
                     borderRadius: AppRadius.mediumRadius,
                   ),
                   child: const Icon(

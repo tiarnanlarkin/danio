@@ -14,7 +14,7 @@ class SubstrateGuideScreen extends StatelessWidget {
         children: [
           // Intro
           AppCard(
-            backgroundColor: AppColors.info.withOpacity(0.1),
+            backgroundColor: AppOverlays.info10,
             padding: AppCardPadding.standard,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -272,7 +272,7 @@ class SubstrateGuideScreen extends StatelessWidget {
 
           // Tips
           AppCard(
-            backgroundColor: AppColors.warning.withOpacity(0.1),
+            backgroundColor: AppOverlays.warning10,
             padding: AppCardPadding.standard,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

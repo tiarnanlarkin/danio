@@ -152,7 +152,7 @@ class _CompactActivityTile extends ConsumerWidget {
             // Small avatar
             CircleAvatar(
               radius: 16,
-              backgroundColor: AppColors.primary.withOpacity(0.2),
+              backgroundColor: AppOverlays.primary20,
               child: Text(
                 activity.friendAvatarEmoji ?? '🐠',
                 style: const TextStyle(fontSize: 16),

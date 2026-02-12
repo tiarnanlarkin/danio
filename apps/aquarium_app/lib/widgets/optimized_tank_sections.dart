@@ -71,7 +71,7 @@ class LivestockSection extends ConsumerWidget {
                 final item = livestock[index];
                 return ListTile(
                   leading: CircleAvatar(
-                    backgroundColor: AppColors.primary.withOpacity(0.1),
+                    backgroundColor: AppOverlays.primary10,
                     child: const Icon(
                       Icons.pets,
                       color: AppColors.primary,

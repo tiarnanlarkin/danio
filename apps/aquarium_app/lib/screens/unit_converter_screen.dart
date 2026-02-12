@@ -337,7 +337,7 @@ class _HardnessConverterState extends State<_HardnessConverter> {
 
           const SizedBox(height: AppSpacing.lg),
           AppCard(
-            backgroundColor: AppColors.info.withOpacity(0.1),
+            backgroundColor: AppOverlays.info10,
             padding: AppCardPadding.compact,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

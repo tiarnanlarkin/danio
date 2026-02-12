@@ -212,7 +212,7 @@ class _SpeciesCard extends StatelessWidget {
           width: 44,
           height: 44,
           decoration: BoxDecoration(
-            color: AppColors.primary.withOpacity(0.1),
+            color: AppOverlays.primary10,
             borderRadius: AppRadius.smallRadius,
           ),
           child: const Icon(Icons.set_meal, color: AppColors.primary),
@@ -313,7 +313,7 @@ class _SpeciesDetailSheet extends StatelessWidget {
                   width: 60,
                   height: 60,
                   decoration: BoxDecoration(
-                    color: AppColors.primary.withOpacity(0.1),
+                    color: AppOverlays.primary10,
                     borderRadius: AppRadius.mediumRadius,
                   ),
                   child: const Icon(
@@ -413,7 +413,7 @@ class _SpeciesDetailSheet extends StatelessWidget {
                     .map(
                       (c) => Chip(
                         label: Text(c, style: AppTypography.bodySmall),
-                        backgroundColor: AppColors.success.withOpacity(0.1),
+                        backgroundColor: AppOverlays.success10,
                         side: BorderSide.none,
                       ),
                     )
@@ -432,7 +432,7 @@ class _SpeciesDetailSheet extends StatelessWidget {
                     .map(
                       (c) => Chip(
                         label: Text(c, style: AppTypography.bodySmall),
-                        backgroundColor: AppColors.error.withOpacity(0.1),
+                        backgroundColor: AppOverlays.error10,
                         side: BorderSide.none,
                       ),
                     )

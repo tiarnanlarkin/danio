@@ -178,7 +178,7 @@ class TermsOfServiceScreen extends StatelessWidget {
             decoration: BoxDecoration(
               color: highlighted
                   ? Colors.orange[100]
-                  : AppColors.primary.withOpacity(0.1),
+                  : AppOverlays.primary10,
               borderRadius: AppRadius.smallRadius,
             ),
             child: Icon(

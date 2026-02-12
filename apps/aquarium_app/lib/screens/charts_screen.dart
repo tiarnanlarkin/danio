@@ -714,7 +714,7 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
       return Container(
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
-          color: AppColors.success.withOpacity(0.1),
+          color: AppOverlays.success10,
           borderRadius: AppRadius.mediumRadius,
           border: Border.all(color: AppColors.success.withOpacity(0.3)),
         ),
@@ -742,7 +742,7 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: AppColors.warning.withOpacity(0.1),
+        color: AppOverlays.warning10,
         borderRadius: AppRadius.mediumRadius,
         border: Border.all(color: AppColors.warning.withOpacity(0.3)),
       ),
@@ -874,7 +874,7 @@ class _ChartControlChip extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
         decoration: BoxDecoration(
           color: isActive
-              ? AppColors.primary.withOpacity(0.1)
+              ? AppOverlays.primary10
               : AppColors.surfaceVariant,
           borderRadius: AppRadius.largeRadius,
           border: isActive

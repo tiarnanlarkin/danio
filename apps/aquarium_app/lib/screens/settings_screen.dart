@@ -854,7 +854,7 @@ class SettingsScreen extends ConsumerWidget {
         width: 48,
         height: 48,
         decoration: BoxDecoration(
-          color: AppColors.primary.withOpacity(0.1),
+          color: AppOverlays.primary10,
           shape: BoxShape.circle,
         ),
         child: const Icon(Icons.water_drop, color: AppColors.primary),

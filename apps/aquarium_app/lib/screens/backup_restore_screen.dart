@@ -44,7 +44,7 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
         padding: const EdgeInsets.all(16),
         children: [
           AppCard(
-            backgroundColor: AppColors.info.withOpacity(0.1),
+            backgroundColor: AppOverlays.info10,
             padding: AppCardPadding.standard,
             child: Row(
               children: [
@@ -256,7 +256,7 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
           const SizedBox(height: AppSpacing.lg),
 
           AppCard(
-            backgroundColor: AppColors.warning.withOpacity(0.1),
+            backgroundColor: AppOverlays.warning10,
             padding: AppCardPadding.standard,
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,

@@ -270,7 +270,7 @@ class _PlacementTestScreenState extends ConsumerState<PlacementTestScreen> {
           icon = Icons.cancel;
         }
       } else if (isSelected) {
-        backgroundColor = AppColors.accent.withOpacity(0.1);
+        backgroundColor = AppOverlays.accent10;
         borderColor = AppColors.accent;
       }
 

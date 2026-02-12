@@ -285,10 +285,10 @@ class _CompatibilityCheckerScreenState
                   if (_selectedSpecies.length >= 2) ...[
                     AppCard(
                       backgroundColor: badIssues > 0
-                          ? AppColors.error.withOpacity(0.1)
+                          ? AppOverlays.error10
                           : warningIssues > 0
-                          ? AppColors.warning.withOpacity(0.1)
-                          : AppColors.success.withOpacity(0.1),
+                          ? AppOverlays.warning10
+                          : AppOverlays.success10,
                       padding: AppCardPadding.standard,
                       child: Row(
                         children: [

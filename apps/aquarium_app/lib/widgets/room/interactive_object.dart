@@ -209,7 +209,7 @@ class _InteractiveObjectState extends State<InteractiveObject>
   Widget _buildObjectWithAnimation() {
     final glowColor = widget.glowColor ?? 
         widget.iconColor?.withOpacity(0.5) ?? 
-        Colors.white.withOpacity(0.3);
+        AppOverlays.white30;
 
     final glowIntensity = widget.isNewUser ? 0.6 : 0.3;
     final glowRadius = widget.isNewUser ? 20.0 : 12.0;

@@ -220,7 +220,7 @@ class _TutorialOverlayState extends ConsumerState<TutorialOverlay>
                         vertical: 4,
                       ),
                       decoration: BoxDecoration(
-                        color: AppColors.accent.withOpacity(0.1),
+                        color: AppOverlays.accent10,
                         borderRadius: AppRadius.mediumRadius,
                       ),
                       child: Text(

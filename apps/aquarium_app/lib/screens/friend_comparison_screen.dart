@@ -130,7 +130,7 @@ class _FriendComparisonScreenState
                       height: 50,
                       decoration: BoxDecoration(
                         color: isSelected
-                            ? AppColors.primary.withOpacity(0.2)
+                            ? AppOverlays.primary20
                             : Colors.grey.shade100,
                         shape: BoxShape.circle,
                         border: isSelected

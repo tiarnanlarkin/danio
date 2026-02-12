@@ -312,7 +312,7 @@ class _ProfileCreationScreenState extends ConsumerState<ProfileCreationScreen> {
           child: Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: isSelected ? AppColors.accent.withOpacity(0.1) : null,
+              color: isSelected ? AppOverlays.accent10 : null,
               borderRadius: AppRadius.mediumRadius,
               border: Border.all(
                 color: isSelected ? AppColors.accent : Colors.grey[300]!,
@@ -418,7 +418,7 @@ class _ProfileCreationScreenState extends ConsumerState<ProfileCreationScreen> {
         child: Container(
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
-            color: isSelected ? AppColors.primary.withOpacity(0.1) : null,
+            color: isSelected ? AppOverlays.primary10 : null,
             borderRadius: AppRadius.mediumRadius,
             border: Border.all(
               color: isSelected ? AppColors.primary : Colors.grey[300]!,

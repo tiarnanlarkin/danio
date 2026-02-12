@@ -108,7 +108,7 @@ class AmbientLightingOverlay extends ConsumerWidget {
                       radius: 1.2,
                       colors: [
                         Colors.transparent,
-                        Colors.black.withOpacity(0.15),
+                        AppOverlays.black15,
                       ],
                     ),
                   ),
@@ -215,7 +215,7 @@ class AmbientTimeIndicator extends ConsumerWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
-        color: Colors.black.withOpacity(0.3),
+        color: AppOverlays.black30,
         borderRadius: BorderRadius.circular(12),
       ),
       child: Row(

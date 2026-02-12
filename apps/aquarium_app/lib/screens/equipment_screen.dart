@@ -153,7 +153,7 @@ class EquipmentScreen extends ConsumerWidget {
               // Summary card
               if (overdue > 0)
                 AppCard(
-                  backgroundColor: AppColors.warning.withOpacity(0.1),
+                  backgroundColor: AppOverlays.warning10,
                   padding: AppCardPadding.standard,
                   child: Row(
                     children: [
@@ -445,7 +445,7 @@ class _EquipmentCard extends StatelessWidget {
             leading: CircleAvatar(
               backgroundColor: isOverdue
                   ? AppColors.warning.withOpacity(0.2)
-                  : AppColors.primary.withOpacity(0.1),
+                  : AppOverlays.primary10,
               child: Icon(
                 _getIcon(equipment.type),
                 color: isOverdue ? AppColors.warning : AppColors.primary,

@@ -459,7 +459,7 @@ class _ExpenseTile extends StatelessWidget {
             width: 40,
             height: 40,
             decoration: BoxDecoration(
-              color: AppColors.primary.withOpacity(0.1),
+              color: AppOverlays.primary10,
               borderRadius: AppRadius.smallRadius,
             ),
             child: Icon(

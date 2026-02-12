@@ -435,7 +435,7 @@ class _TypeCard extends StatelessWidget {
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
               color: isSelected
-                  ? AppColors.primary.withOpacity(0.1)
+                  ? AppOverlays.primary10
                   : AppColors.surfaceVariant,
               borderRadius: AppRadius.mediumRadius,
               border: Border.all(
@@ -876,7 +876,7 @@ class _WaterTypeOption extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
             color: isSelected
-                ? AppColors.primary.withOpacity(0.1)
+                ? AppOverlays.primary10
                 : AppColors.surfaceVariant,
             borderRadius: AppRadius.mediumRadius,
             border: Border.all(

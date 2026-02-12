@@ -321,7 +321,7 @@ class QuickStartTipsCard extends StatelessWidget {
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: [
-              AppColors.accent.withOpacity(0.1),
+              AppOverlays.accent10,
               AppColors.primary.withOpacity(0.05),
             ],
             begin: Alignment.topLeft,

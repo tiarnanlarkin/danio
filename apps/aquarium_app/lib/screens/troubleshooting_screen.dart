@@ -247,7 +247,7 @@ class TroubleshootingScreen extends StatelessWidget {
           const SizedBox(height: AppSpacing.lg),
 
           AppCard(
-            backgroundColor: AppColors.info.withOpacity(0.1),
+            backgroundColor: AppOverlays.info10,
             padding: AppCardPadding.standard,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -300,7 +300,7 @@ class _ProblemCard extends StatelessWidget {
           width: 40,
           height: 40,
           decoration: BoxDecoration(
-            color: AppColors.warning.withOpacity(0.1),
+            color: AppOverlays.warning10,
             borderRadius: AppRadius.smallRadius,
           ),
           child: const Icon(Icons.help_outline, color: AppColors.warning),

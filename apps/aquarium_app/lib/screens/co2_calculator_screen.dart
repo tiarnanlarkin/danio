@@ -66,7 +66,7 @@ class _Co2CalculatorScreenState extends State<Co2CalculatorScreen> {
         padding: const EdgeInsets.all(16),
         children: [
           AppCard(
-            backgroundColor: AppColors.info.withOpacity(0.1),
+            backgroundColor: AppOverlays.info10,
             padding: AppCardPadding.standard,
             child: Row(
               children: [

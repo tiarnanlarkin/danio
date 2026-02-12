@@ -134,7 +134,7 @@ class _TermCard extends StatelessWidget {
                     vertical: 2,
                   ),
                   decoration: BoxDecoration(
-                    color: AppColors.primary.withOpacity(0.1),
+                    color: AppOverlays.primary10,
                     borderRadius: AppRadius.smallRadius,
                   ),
                   child: Text(

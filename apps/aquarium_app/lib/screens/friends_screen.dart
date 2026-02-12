@@ -325,7 +325,7 @@ class _FriendListTile extends ConsumerWidget {
                 children: [
                   CircleAvatar(
                     radius: 28,
-                    backgroundColor: AppColors.primary.withOpacity(0.2),
+                    backgroundColor: AppOverlays.primary20,
                     child: Text(
                       friend.avatarEmoji ?? '🐠',
                       style: const TextStyle(fontSize: 28),
@@ -512,7 +512,7 @@ class _ActivityTile extends StatelessWidget {
             // Avatar
             CircleAvatar(
               radius: 20,
-              backgroundColor: AppColors.primary.withOpacity(0.2),
+              backgroundColor: AppOverlays.primary20,
               child: Text(
                 activity.friendAvatarEmoji ?? '🐠',
                 style: const TextStyle(fontSize: 20),

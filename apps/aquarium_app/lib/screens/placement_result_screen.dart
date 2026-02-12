@@ -296,7 +296,7 @@ class PlacementResultScreen extends ConsumerWidget {
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            AppColors.accent.withOpacity(0.1),
+            AppOverlays.accent10,
             AppColors.accent.withOpacity(0.05),
           ],
         ),

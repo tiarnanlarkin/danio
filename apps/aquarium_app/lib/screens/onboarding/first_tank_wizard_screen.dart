@@ -304,7 +304,7 @@ class _FirstTankWizardScreenState extends ConsumerState<FirstTankWizardScreen> {
                       ),
                       borderRadius: AppRadius.mediumRadius,
                       color: isSelected
-                          ? AppColors.primary.withOpacity(0.1)
+                          ? AppOverlays.primary10
                           : AppColors.surface,
                     ),
                     child: Row(
@@ -381,9 +381,9 @@ class _FirstTankWizardScreenState extends ConsumerState<FirstTankWizardScreen> {
           Container(
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
-              color: AppColors.primary.withOpacity(0.1),
+              color: AppOverlays.primary10,
               borderRadius: AppRadius.mediumRadius,
-              border: Border.all(color: AppColors.primary.withOpacity(0.3)),
+              border: Border.all(color: AppOverlays.primary30),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -403,7 +403,7 @@ class _FirstTankWizardScreenState extends ConsumerState<FirstTankWizardScreen> {
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: AppColors.accent.withOpacity(0.1),
+              color: AppOverlays.accent10,
               borderRadius: AppRadius.mediumRadius,
             ),
             child: Row(

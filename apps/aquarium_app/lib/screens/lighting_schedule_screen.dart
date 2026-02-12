@@ -82,7 +82,7 @@ class _LightingScheduleScreenState extends State<LightingScheduleScreen> {
         padding: const EdgeInsets.all(16),
         children: [
           AppCard(
-            backgroundColor: AppColors.info.withOpacity(0.1),
+            backgroundColor: AppOverlays.info10,
             padding: AppCardPadding.standard,
             child: Row(
               children: [
@@ -238,8 +238,8 @@ class _LightingScheduleScreenState extends State<LightingScheduleScreen> {
           // Recommendation
           AppCard(
             backgroundColor: _hasAlgaeIssues
-                ? AppColors.warning.withOpacity(0.1)
-                : AppColors.success.withOpacity(0.1),
+                ? AppOverlays.warning10
+                : AppOverlays.success10,
             padding: AppCardPadding.standard,
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -285,7 +285,7 @@ class _LightingScheduleScreenState extends State<LightingScheduleScreen> {
           if (_hasCO2) ...[
             const SizedBox(height: AppSpacing.md),
             AppCard(
-              backgroundColor: AppColors.info.withOpacity(0.1),
+              backgroundColor: AppOverlays.info10,
               padding: AppCardPadding.standard,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

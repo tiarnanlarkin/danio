@@ -194,7 +194,7 @@ class _TutorialWalkthroughScreenState
           Container(
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
-              color: AppColors.accent.withOpacity(0.1),
+              color: AppOverlays.accent10,
               shape: BoxShape.circle,
             ),
             child: Icon(step.icon, size: 48, color: AppColors.accent),
@@ -490,7 +490,7 @@ class _TankTypeCard extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
             color: isSelected
-                ? AppColors.primary.withOpacity(0.1)
+                ? AppOverlays.primary10
                 : Colors.grey[100],
             borderRadius: AppRadius.mediumRadius,
             border: Border.all(
@@ -553,7 +553,7 @@ class _WaterTypeCard extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: isSelected
-              ? AppColors.accent.withOpacity(0.1)
+              ? AppOverlays.accent10
               : Colors.grey[100],
           borderRadius: AppRadius.mediumRadius,
           border: Border.all(

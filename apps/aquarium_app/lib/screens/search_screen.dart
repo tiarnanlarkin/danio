@@ -383,7 +383,7 @@ class _ResultTile extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 8),
       child: ListTile(
         leading: CircleAvatar(
-          backgroundColor: AppColors.primary.withOpacity(0.1),
+          backgroundColor: AppOverlays.primary10,
           child: Icon(result.icon, color: AppColors.primary, size: 20),
         ),
         title: Text(result.title),

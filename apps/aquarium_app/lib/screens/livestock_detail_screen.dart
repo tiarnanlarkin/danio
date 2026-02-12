@@ -117,7 +117,7 @@ class _HeaderCard extends StatelessWidget {
               children: [
                 CircleAvatar(
                   radius: 32,
-                  backgroundColor: AppColors.primary.withOpacity(0.1),
+                  backgroundColor: AppOverlays.primary10,
                   child: const Icon(
                     Icons.set_meal,
                     size: 32,

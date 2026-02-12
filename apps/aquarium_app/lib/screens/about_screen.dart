@@ -30,7 +30,7 @@ class AboutScreen extends StatelessWidget {
                 borderRadius: AppRadius.largeRadius,
                 boxShadow: [
                   BoxShadow(
-                    color: AppColors.primary.withOpacity(0.3),
+                    color: AppOverlays.primary30,
                     blurRadius: 20,
                     offset: const Offset(0, 10),
                   ),
@@ -170,7 +170,7 @@ class _FeatureItem extends StatelessWidget {
             width: 40,
             height: 40,
             decoration: BoxDecoration(
-              color: AppColors.primary.withOpacity(0.1),
+              color: AppOverlays.primary10,
               borderRadius: AppRadius.smallRadius,
             ),
             child: Icon(icon, color: AppColors.primary, size: 20),

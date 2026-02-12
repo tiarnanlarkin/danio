@@ -15,7 +15,7 @@ class AmbientBubbles extends StatelessWidget {
         child: FloatingBubbles.alwaysRepeating(
           noOfBubbles: bubbleCount,
           colorsOfBubbles: [
-            Colors.white.withOpacity(0.3),
+            AppOverlays.white30,
             Colors.lightBlue.withOpacity(0.2),
             Colors.cyan.withOpacity(0.15),
           ],
@@ -41,7 +41,7 @@ class AmbientBubblesSubtle extends StatelessWidget {
         child: FloatingBubbles.alwaysRepeating(
           noOfBubbles: bubbleCount,
           colorsOfBubbles: [
-            Colors.white.withOpacity(0.2),
+            AppOverlays.white20,
             Colors.lightBlue.withOpacity(0.15),
           ],
           sizeFactor: 0.08,

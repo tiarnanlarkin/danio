@@ -14,7 +14,7 @@ class AlgaeGuideScreen extends StatelessWidget {
         children: [
           // Intro
           AppCard(
-            backgroundColor: AppColors.info.withOpacity(0.1),
+            backgroundColor: AppOverlays.info10,
             padding: AppCardPadding.standard,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -344,7 +344,7 @@ class _AlgaeCard extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
-                    color: AppColors.info.withOpacity(0.1),
+                    color: AppOverlays.info10,
                     borderRadius: AppRadius.smallRadius,
                   ),
                   child: Row(
@@ -393,7 +393,7 @@ class _CrewCard extends StatelessWidget {
               width: 36,
               height: 36,
               decoration: BoxDecoration(
-                color: AppColors.success.withOpacity(0.1),
+                color: AppOverlays.success10,
                 borderRadius: AppRadius.smallRadius,
               ),
               child: const Icon(

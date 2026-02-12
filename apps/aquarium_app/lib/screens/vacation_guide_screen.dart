@@ -13,7 +13,7 @@ class VacationGuideScreen extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         children: [
           AppCard(
-            backgroundColor: AppColors.info.withOpacity(0.1),
+            backgroundColor: AppOverlays.info10,
             padding: AppCardPadding.standard,
             child: Row(
               children: [
@@ -223,7 +223,7 @@ class VacationGuideScreen extends StatelessWidget {
           const SizedBox(height: AppSpacing.md),
 
           AppCard(
-            backgroundColor: AppColors.warning.withOpacity(0.1),
+            backgroundColor: AppOverlays.warning10,
             padding: AppCardPadding.standard,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -448,7 +448,7 @@ class _OptionCard extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: AppColors.info.withOpacity(0.1),
+                color: AppOverlays.info10,
                 borderRadius: AppRadius.smallRadius,
               ),
               child: Row(
@@ -503,7 +503,7 @@ class _NumberedStep extends StatelessWidget {
             width: 20,
             height: 20,
             decoration: BoxDecoration(
-              color: AppColors.primary.withOpacity(0.1),
+              color: AppOverlays.primary10,
               shape: BoxShape.circle,
             ),
             child: Center(
