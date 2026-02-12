@@ -1785,7 +1785,7 @@ class _SparklineCard extends StatelessWidget {
         decoration: BoxDecoration(
           color: AppColors.surfaceVariant,
           borderRadius: AppRadius.mediumRadius,
-          border: Border.all(color: AppColors.surfaceVariant.withOpacity(0.6)),
+          border: Border.all(color: AppOverlays.surfaceVariant60),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

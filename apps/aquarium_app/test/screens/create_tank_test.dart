@@ -79,7 +79,7 @@ void main() {
       expect(find.text('My Test Tank'), findsOneWidget);
     });
 
-    testWidgets('shows volume input options', (tester) async {
+    testWidgets('can navigate to size page', (tester) async {
       await tester.pumpWidget(
         ProviderScope(
           child: MaterialApp(
@@ -90,12 +90,23 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      // Should find volume-related UI (gallons or liters)
-      final hasGallons = find.textContaining('gallon').evaluate().isNotEmpty;
-      final hasLiters = find.textContaining('liter').evaluate().isNotEmpty;
-      final hasVolume = find.textContaining('Volume').evaluate().isNotEmpty;
+      // First enter a tank name (required to proceed)
+      final nameField = find.byType(TextField).first;
+      await tester.enterText(nameField, 'Test Tank');
+      await tester.pumpAndSettle();
+
+      // Tap Next button to go to size page
+      final nextButton = find.text('Next');
+      if (nextButton.evaluate().isNotEmpty) {
+        await tester.tap(nextButton);
+        await tester.pumpAndSettle();
+      }
+
+      // Now should see size-related UI
+      final hasTankSize = find.textContaining('Tank size').evaluate().isNotEmpty;
+      final hasLitres = find.textContaining('litres').evaluate().isNotEmpty;
       
-      expect(hasGallons || hasLiters || hasVolume, isTrue);
+      expect(hasTankSize || hasLitres, isTrue);
     });
   });
 }

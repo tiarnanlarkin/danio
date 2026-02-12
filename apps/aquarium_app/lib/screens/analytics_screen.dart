@@ -421,7 +421,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                     dotData: const FlDotData(show: false),
                     belowBarData: BarAreaData(
                       show: true,
-                      color: Colors.blue.withOpacity(0.1),
+                      color: AppOverlays.blue10,
                     ),
                   ),
                 ],
@@ -585,7 +585,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                 },
                 dataSets: [
                   RadarDataSet(
-                    fillColor: Colors.blue.withOpacity(0.2),
+                    fillColor: AppOverlays.blue20,
                     borderColor: Colors.blue,
                     dataEntries: topics
                         .map(

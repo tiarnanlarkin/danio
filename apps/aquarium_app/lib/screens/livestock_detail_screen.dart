@@ -523,7 +523,7 @@ class _ParamPill extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.surfaceVariant,
         borderRadius: AppRadius.mediumRadius,
-        border: Border.all(color: AppColors.surfaceVariant.withOpacity(0.6)),
+        border: Border.all(color: AppOverlays.surfaceVariant60),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -662,7 +662,7 @@ class _NoSpeciesDataCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: AppColors.surfaceVariant.withOpacity(0.5),
+      color: AppOverlays.surfaceVariant50,
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(

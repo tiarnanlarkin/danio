@@ -294,21 +294,21 @@ class PlacementResultScreen extends ConsumerWidget {
       margin: const EdgeInsets.symmetric(horizontal: 16),
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
+        gradient: const LinearGradient(
           colors: [
             AppOverlays.accent10,
-            AppColors.accent.withOpacity(0.05),
+            AppOverlays.accent5,
           ],
         ),
         borderRadius: AppRadius.mediumRadius,
-        border: Border.all(color: AppColors.accent.withOpacity(0.3)),
+        border: Border.all(color: AppOverlays.accent30),
       ),
       child: Row(
         children: [
           Container(
             padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: AppColors.accent.withOpacity(0.2),
+            decoration: const BoxDecoration(
+              color: AppOverlays.accent20,
               shape: BoxShape.circle,
             ),
             child: const Icon(Icons.star, color: AppColors.accent, size: 32),

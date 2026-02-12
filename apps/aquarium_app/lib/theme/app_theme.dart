@@ -305,6 +305,7 @@ class AppOverlays {
   // Surface variant overlays (AppColors.surfaceVariant = 0xFFF0EBE3)
   static const Color surfaceVariant30 = Color(0x4DF0EBE3);  // 30%
   static const Color surfaceVariant50 = Color(0x80F0EBE3);  // 50%
+  static const Color surfaceVariant60 = Color(0x99F0EBE3);  // 60%
   
   // Text hint overlays (AppColors.textHint = 0xFF5D6F76)
   static const Color textHint30 = Color(0x4D5D6F76);  // 30%
@@ -319,12 +320,31 @@ class AppOverlays {
   static const Color success20 = Color(0x335AAF7A);  // 20%
   
   // Error color overlays (AppColors.error = 0xFFD96A6A)
+  static const Color error5 = Color(0x0DD96A6A);   // 5%
   static const Color error10 = Color(0x1AD96A6A);  // 10%
+  static const Color error15 = Color(0x26D96A6A);  // 15%
   static const Color error20 = Color(0x33D96A6A);  // 20%
+  static const Color error30 = Color(0x4DD96A6A);  // 30%
+  static const Color error50 = Color(0x80D96A6A);  // 50%
   
   // Accent color overlays (AppColors.accent = 0xFF85C7DE)
+  static const Color accent5 = Color(0x0D85C7DE);   // 5%
   static const Color accent10 = Color(0x1A85C7DE);  // 10%
   static const Color accent20 = Color(0x3385C7DE);  // 20%
+  static const Color accent30 = Color(0x4D85C7DE);  // 30%
+  static const Color accent80 = Color(0xCC85C7DE);  // 80%
+  
+  // Primary color additional overlays
+  static const Color primary80 = Color(0xCC3D7068);  // 80%
+  
+  // Orange/warning overlays (for locked states etc.)
+  static const Color orange10 = Color(0x1AFF9800);  // 10%
+  static const Color orange20 = Color(0x33FF9800);  // 20%
+  static const Color orange30 = Color(0x4DFF9800);  // 30%
+  
+  // Blue overlays (Colors.blue = 0xFF2196F3)
+  static const Color blue10 = Color(0x1A2196F3);  // 10%
+  static const Color blue20 = Color(0x332196F3);  // 20%
   
   // Info color overlays (AppColors.info = 0xFF5C9FBF)
   static const Color info10 = Color(0x1A5C9FBF);  // 10%

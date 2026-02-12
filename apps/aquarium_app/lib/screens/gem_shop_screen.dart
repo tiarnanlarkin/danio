@@ -33,6 +33,14 @@ class GemShopColors {
     0xFF5FD9CF,
   ); // Turquoise - matches gemPrimary
   static const cosmeticsColor = Color(0xFFFFD700); // Gold
+  
+  // Pre-computed overlays for performance
+  static const gemPrimary20 = Color(0x335FD9CF);  // 20%
+  static const gemPrimary30 = Color(0x4D5FD9CF);  // 30%
+  static const gemPrimary50 = Color(0x805FD9CF);  // 50%
+  static const gemGlow20 = Color(0x3395E1D3);     // 20%
+  static const powerUpColor80 = Color(0xCCFF7B7B); // 80%
+  static const textSecondary30 = Color(0x4DC5C5D5); // 30%
 }
 
 /// Main Gem Shop Screen
@@ -352,7 +360,7 @@ class _GemShopScreenState extends ConsumerState<GemShopScreen>
                       child: Text(
                         'Not enough gems! Complete lessons to earn more.',
                         style: TextStyle(
-                          color: GemShopColors.powerUpColor.withOpacity(0.8),
+                          color: GemShopColors.powerUpColor80,
                           fontSize: 12,
                           fontStyle: FontStyle.italic,
                         ),
@@ -376,8 +384,7 @@ class _GemShopScreenState extends ConsumerState<GemShopScreen>
                       : null,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: GemShopColors.gemPrimary,
-                    disabledBackgroundColor: GemShopColors.textSecondary
-                        .withOpacity(0.3),
+                    disabledBackgroundColor: GemShopColors.textSecondary30,
                     shape: RoundedRectangleBorder(
                       borderRadius: AppRadius.mediumRadius,
                     ),
@@ -625,20 +632,20 @@ class _GemBalanceChip extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
-          gradient: LinearGradient(
+          gradient: const LinearGradient(
             colors: [
-              GemShopColors.gemPrimary.withOpacity(0.3),
-              GemShopColors.gemGlow.withOpacity(0.2),
+              GemShopColors.gemPrimary30,
+              GemShopColors.gemGlow20,
             ],
           ),
           borderRadius: AppRadius.largeRadius,
           border: Border.all(
-            color: GemShopColors.gemPrimary.withOpacity(0.5),
+            color: GemShopColors.gemPrimary50,
             width: 2,
           ),
-          boxShadow: [
+          boxShadow: const [
             BoxShadow(
-              color: GemShopColors.gemPrimary.withOpacity(0.3),
+              color: GemShopColors.gemPrimary30,
               blurRadius: 10,
               spreadRadius: 1,
             ),

@@ -31,12 +31,12 @@ class HeartIndicator extends ConsumerWidget {
       decoration: BoxDecoration(
         color: hearts == 0
             ? AppOverlays.error10
-            : AppColors.error.withOpacity(0.15),
+            : AppOverlays.error15,
         borderRadius: BorderRadius.circular(compact ? 12 : 16),
         border: Border.all(
           color: hearts == 0
               ? AppColors.error
-              : AppColors.error.withOpacity(0.3),
+              : AppOverlays.error30,
         ),
       ),
       child: Row(
@@ -47,7 +47,7 @@ class HeartIndicator extends ConsumerWidget {
             size: compact ? 14 : 16,
             color: hearts > 0
                 ? AppColors.error
-                : AppColors.error.withOpacity(0.5),
+                : AppOverlays.error50,
           ),
           SizedBox(width: compact ? 4 : 6),
           Text(
@@ -107,11 +107,11 @@ class _DetailedHeartsDisplayState extends ConsumerState<DetailedHeartsDisplay> {
         gradient: LinearGradient(
           colors: [
             AppOverlays.error10,
-            AppColors.error.withOpacity(0.05),
+            AppOverlays.error5,
           ],
         ),
         borderRadius: AppRadius.mediumRadius,
-        border: Border.all(color: AppColors.error.withOpacity(0.2)),
+        border: Border.all(color: AppOverlays.error20),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -125,7 +125,7 @@ class _DetailedHeartsDisplayState extends ConsumerState<DetailedHeartsDisplay> {
                     filled ? Icons.favorite : Icons.favorite_border,
                     color: filled
                         ? AppColors.error
-                        : AppColors.error.withOpacity(0.3),
+                        : AppOverlays.error30,
                     size: 32,
                   ),
                 ),
@@ -434,7 +434,7 @@ class CompactHeartsDisplay extends ConsumerWidget {
                 filled ? Icons.favorite : Icons.favorite_border,
                 color: filled
                     ? AppColors.error
-                    : AppColors.error.withOpacity(0.3),
+                    : AppOverlays.error30,
                 size: 20,
               ),
             ),

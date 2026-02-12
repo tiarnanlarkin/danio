@@ -326,14 +326,14 @@ class _ReviewCardsBanner extends ConsumerWidget {
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
             gradient: LinearGradient(
-              colors: [AppColors.accent, AppColors.accent.withOpacity(0.8)],
+              colors: [AppColors.accent, AppOverlays.accent80],
             ),
             borderRadius: AppRadius.mediumRadius,
-            boxShadow: [
+            boxShadow: const [
               BoxShadow(
-                color: AppColors.accent.withOpacity(0.3),
+                color: AppOverlays.accent30,
                 blurRadius: 8,
-                offset: const Offset(0, 4),
+                offset: Offset(0, 4),
               ),
             ],
           ),
@@ -427,14 +427,14 @@ class _PracticeCard extends ConsumerWidget {
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
             gradient: LinearGradient(
-              colors: [AppColors.primary, AppColors.primary.withOpacity(0.8)],
+              colors: [AppColors.primary, AppOverlays.primary80],
             ),
             borderRadius: AppRadius.mediumRadius,
-            boxShadow: [
+            boxShadow: const [
               BoxShadow(
                 color: AppOverlays.primary30,
                 blurRadius: 8,
-                offset: const Offset(0, 4),
+                offset: Offset(0, 4),
               ),
             ],
           ),
@@ -532,17 +532,17 @@ class _StreakCard extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: 16),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.orange.withOpacity(0.1),
+        color: AppOverlays.orange10,
         borderRadius: AppRadius.mediumRadius,
-        border: Border.all(color: Colors.orange.withOpacity(0.3)),
+        border: Border.all(color: AppOverlays.orange30),
       ),
       child: Row(
         children: [
           Container(
             width: 48,
             height: 48,
-            decoration: BoxDecoration(
-              color: Colors.orange.withOpacity(0.2),
+            decoration: const BoxDecoration(
+              color: AppOverlays.orange20,
               shape: BoxShape.circle,
             ),
             child: const Icon(
@@ -633,7 +633,7 @@ class _LearningPathCard extends StatelessWidget {
             height: 48,
             decoration: BoxDecoration(
               color: isComplete
-                  ? AppColors.success.withOpacity(0.2)
+                  ? AppOverlays.success20
                   : AppOverlays.primary10,
               borderRadius: AppRadius.mediumRadius,
             ),
@@ -693,7 +693,7 @@ class _LearningPathCard extends StatelessWidget {
                   height: 32,
                   decoration: BoxDecoration(
                     color: isCompleted
-                        ? AppColors.success.withOpacity(0.2)
+                        ? AppOverlays.success20
                         : isUnlocked
                         ? AppOverlays.primary10
                         : AppColors.surfaceVariant,

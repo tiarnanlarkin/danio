@@ -419,7 +419,7 @@ class StreakFlameDisplay extends StatelessWidget {
               .animate(onPlay: (c) => c.repeat(reverse: true))
               .shimmer(
                 duration: 2.seconds,
-                color: const Color(0xFFFFCA28).withOpacity(0.3),
+                color: const Color(0x4DFFCA28),  // 30% amber
               ),
         ],
       ],

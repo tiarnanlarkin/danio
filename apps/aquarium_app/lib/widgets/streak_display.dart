@@ -76,7 +76,7 @@ class _StreakDisplayState extends ConsumerState<StreakDisplay> {
                   height: widget.size,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: Colors.grey.withOpacity(0.1),
+                    color: AppOverlays.black10,
                   ),
                   child: Center(
                     child: Text(
@@ -173,26 +173,26 @@ class StreakCard extends ConsumerWidget {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: hasStreak
-              ? [
-                  const Color(0xFFFF6B35).withOpacity(0.15),
-                  const Color(0xFFF7931E).withOpacity(0.10),
+              ? const [
+                  Color(0x26FF6B35),  // 15% orange
+                  Color(0x1AF7931E),  // 10% orange
                 ]
               : [
-                  Colors.white.withOpacity(0.95),
-                  Colors.white.withOpacity(0.88),
+                  AppOverlays.white95,
+                  AppOverlays.white88,
                 ],
         ),
         borderRadius: AppRadius.mediumRadius,
-        boxShadow: [
+        boxShadow: const [
           BoxShadow(
-            color: Colors.black.withOpacity(0.08),
+            color: AppOverlays.black8,
             blurRadius: 12,
-            offset: const Offset(0, 4),
+            offset: Offset(0, 4),
           ),
         ],
         border: Border.all(
           color: hasStreak
-              ? const Color(0xFFFF6B35).withOpacity(0.3)
+              ? const Color(0x4DFF6B35)  // 30% orange
               : AppOverlays.white60,
           width: 1.5,
         ),
