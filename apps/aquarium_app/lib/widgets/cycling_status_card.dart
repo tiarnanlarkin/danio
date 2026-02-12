@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../models/models.dart';
 import '../theme/app_theme.dart';
+import 'core/app_card.dart';
 
 /// Cycling status for a tank
 enum CyclingStatus {
@@ -88,42 +89,62 @@ class CyclingStatusCard extends StatelessWidget {
       return const SizedBox.shrink();
     }
 
-    return Card(
-      margin: EdgeInsets.zero,
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                _StatusIcon(status: status),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        _statusTitle(status),
-                        style: AppTypography.labelLarge,
+    final statusColor = _getStatusColor(status);
+    
+    return AppCard(
+      border: Border.all(color: statusColor, width: 2),
+      backgroundColor: statusColor.withOpacity(0.05),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              _StatusIcon(status: status),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      _statusTitle(status),
+                      style: AppTypography.labelLarge.copyWith(
+                        color: statusColor,
+                        fontWeight: FontWeight.bold,
                       ),
-                      Text(
-                        _statusSubtitle(status, tankAgeDays),
-                        style: AppTypography.bodySmall,
-                      ),
-                    ],
-                  ),
+                    ),
+                    Text(
+                      _statusSubtitle(status, tankAgeDays),
+                      style: AppTypography.bodySmall,
+                    ),
+                  ],
                 ),
-              ],
-            ),
-            const SizedBox(height: 12),
-            _CyclingProgressBar(status: status),
-            const SizedBox(height: 12),
-            Text(_statusAdvice(status), style: AppTypography.bodySmall),
-          ],
-        ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          _CyclingProgressBar(status: status),
+          const SizedBox(height: 12),
+          Text(_statusAdvice(status), style: AppTypography.bodySmall),
+        ],
       ),
     );
+  }
+
+  Color _getStatusColor(CyclingStatus status) {
+    switch (status) {
+      case CyclingStatus.notStarted:
+        return AppColors.textHint;
+      case CyclingStatus.earlyStage:
+        return AppColors.warning;
+      case CyclingStatus.midCycle:
+        return AppColors.paramWarning;
+      case CyclingStatus.almostDone:
+        return AppColors.info;
+      case CyclingStatus.cycled:
+        return AppColors.success;
+      case CyclingStatus.unknown:
+        return AppColors.textHint;
+    }
   }
 
   String _statusTitle(CyclingStatus status) {

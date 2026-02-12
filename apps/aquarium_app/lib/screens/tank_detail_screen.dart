@@ -25,6 +25,7 @@ import 'maintenance_checklist_screen.dart';
 import 'photo_gallery_screen.dart';
 import 'livestock_value_screen.dart';
 import '../widgets/cycling_status_card.dart';
+import '../widgets/empty_state.dart';
 import '../utils/app_feedback.dart';
 
 const _uuid = Uuid();
@@ -923,8 +924,9 @@ class _LogsList extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: AppCard(
           padding: AppCardPadding.spacious,
-          child: Center(
-            child: Text('No logs yet', style: AppTypography.bodyMedium),
+          child: CompactEmptyState(
+            icon: Icons.history,
+            message: 'No activity logged yet',
           ),
         ),
       );
@@ -1052,8 +1054,9 @@ class _LivestockPreview extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: AppCard(
           padding: AppCardPadding.spacious,
-          child: Center(
-            child: Text('No livestock yet', style: AppTypography.bodyMedium),
+          child: CompactEmptyState(
+            icon: Icons.set_meal,
+            message: 'No fish or invertebrates added yet',
           ),
         ),
       );
@@ -1111,8 +1114,9 @@ class _EquipmentPreview extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: AppCard(
           padding: AppCardPadding.spacious,
-          child: Center(
-            child: Text('No equipment yet', style: AppTypography.bodyMedium),
+          child: CompactEmptyState(
+            icon: Icons.settings,
+            message: 'No equipment tracked yet',
           ),
         ),
       );

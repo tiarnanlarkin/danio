@@ -121,14 +121,28 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 ),
                 child: Row(
                   children: [
-                    Text(
-                      'Living Room',
-                      style: AppTypography.headlineSmall.copyWith(
-                        color: Colors.white,
-                        shadows: [
-                          Shadow(
-                            color: AppOverlays.black50,
-                            blurRadius: 4,
+                    GestureDetector(
+                      onTap: () => _showRoomSwitcher(context),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            'Living Room',
+                            style: AppTypography.headlineSmall.copyWith(
+                              color: Colors.white,
+                              shadows: [
+                                Shadow(
+                                  color: AppOverlays.black50,
+                                  blurRadius: 4,
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(width: 4),
+                          Icon(
+                            Icons.keyboard_arrow_down,
+                            color: AppOverlays.white70,
+                            size: 20,
                           ),
                         ],
                       ),
@@ -301,6 +315,70 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       MaterialPageRoute(
         builder: (_) =>
             AddLogScreen(tankId: tank.id, initialType: LogType.waterChange),
+      ),
+    );
+  }
+
+  void _showRoomSwitcher(BuildContext context) {
+    final rooms = [
+      ('Study', Icons.auto_stories, '📚', 0),
+      ('Living Room', Icons.weekend, '🛋️', 1),
+      ('Friends', Icons.people, '👥', 2),
+      ('Leaderboard', Icons.leaderboard, '🏆', 3),
+      ('Workshop', Icons.build, '🔧', 4),
+      ('Shop Street', Icons.storefront, '🏪', 5),
+    ];
+
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) => Container(
+        decoration: BoxDecoration(
+          color: Theme.of(context).scaffoldBackgroundColor,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+        ),
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Center(
+              child: Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade300,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+            Text('Switch Room', style: AppTypography.headlineSmall),
+            const SizedBox(height: 12),
+            ...rooms.map((room) => ListTile(
+              leading: Text(room.$3, style: const TextStyle(fontSize: 24)),
+              title: Text(room.$1),
+              trailing: room.$1 == 'Living Room' 
+                  ? const Icon(Icons.check, color: AppColors.primary)
+                  : null,
+              onTap: () {
+                Navigator.pop(ctx);
+                // Navigate via HouseNavigator's PageController
+                final navigator = context.findAncestorStateOfType<State>();
+                if (navigator != null) {
+                  // For now, show a snackbar - full navigation requires PageController access
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Swipe to navigate to ${room.$1}'),
+                      duration: const Duration(seconds: 2),
+                    ),
+                  );
+                }
+              },
+            )),
+            SizedBox(height: MediaQuery.of(context).padding.bottom + 8),
+          ],
+        ),
       ),
     );
   }
