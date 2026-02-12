@@ -1,9 +1,9 @@
 # 🐠 AQUARIUM APP — MASTER ROADMAP
 
-**Version:** 4.0  
+**Version:** 5.0  
 **Created:** 2026-02-13  
 **Status:** Single Source of Truth  
-**Sections:** Performance, UI, UX Excellence, User Flow, Gamification, Testing
+**Sections:** Performance, UI, UX, Gamification, Testing & Development Workflow
 
 ---
 
@@ -17,7 +17,7 @@
 | **Species Database** | 122 | Comprehensive |
 | **Plant Database** | 52 | Comprehensive |
 | **Achievements** | 55 | All implemented |
-| **Test Coverage** | Unit: Good, Widget: None, E2E: None | Gaps in UI testing |
+| **Test Coverage** | Unit: Good, Widget: Starting, E2E: None | Building test suite |
 | **UI Grade** | B- | Solid foundation, needs polish |
 | **UX Grade** | C+ | Onboarding too long, nav inconsistent |
 
@@ -32,6 +32,7 @@
 - ✅ Day/night ambient lighting
 - ✅ Mascot speech bubble system
 - ✅ 94% Card → AppCard migration
+- ✅ Widget test infrastructure ready
 
 ### What's Left by Category
 | Category | Priority | Hours | Status |
@@ -41,9 +42,9 @@
 | **User Flow** | P1 | 8-12h | 🟡 High |
 | **Gamification Excellence** | P1-P2 | 12-18h | 🟡 High |
 | **Microinteractions** | P2 | 8-12h | 🟢 Medium |
+| **Test Suite Development** | P1-P2 | 15-20h | 🟡 High |
 | **Logic/Architecture** | P2 | 8-10h | 🟢 Medium |
-| **Automated Testing** | P2-P3 | 20-30h | 🔵 Ongoing |
-| **Total** | | **71-104 hours** | |
+| **Total** | | **66-94 hours** | |
 
 ---
 
@@ -70,7 +71,6 @@ theme_gallery_screen.dart — 14 calls
 **Fix:** Add pre-computed alpha colors to `app_theme.dart`:
 ```dart
 static const Color primaryAlpha10 = Color(0x1A2196F3);
-static const Color primaryAlpha20 = Color(0x332196F3);
 static const Color overlayLight50 = Color(0x80FFFFFF);
 static const Color overlayDark50 = Color(0x80000000);
 ```
@@ -84,12 +84,276 @@ static const Color overlayDark50 = Color(0x80000000);
 
 ---
 
-# 🎨 UI POLISH
+# 🧪 TEST SUITE & DEVELOPMENT WORKFLOW
 
-## Current State
-- **Design System:** Excellent foundation but ~0% adoption
-- **Component Library:** 94% Card → AppCard complete, 339 inline widgets remain
-- **Theming:** Dark mode works, 30+ hardcoded colors leak through
+## Why Widget Tests Are Game-Changing
+
+### Old Workflow (Emulator) ❌
+```
+Start emulator (~2 min) → Build app (~1 min) → Install (~30s) → 
+Navigate manually → Take screenshot → Analyze → Repeat
+Total: 3-5 minutes per check
+```
+
+### New Workflow (Widget Tests) ✅
+```
+Write test → Run `flutter test` → See results in 3 seconds → Fix → Repeat
+Total: 3-10 seconds per check
+```
+
+| Aspect | Emulator | Widget Tests |
+|--------|----------|--------------|
+| **Speed** | 3-5 min/check | 3-10 sec/check |
+| **Automation** | Manual navigation | Fully automated |
+| **Reliability** | Flaky, timing issues | Deterministic |
+| **CI/CD Ready** | Complex setup | Works out of box |
+| **Debugging** | Screenshots, guessing | Clear assertions |
+
+## What Widget Tests Can Do
+
+### ✅ Can Test (No Emulator Needed)
+- Screen rendering and layout
+- Button taps and interactions
+- Text input and forms
+- Navigation flows
+- State changes (Riverpod)
+- Loading states
+- Error states
+- Empty states
+- Form validation
+- Conditional UI
+
+### ❌ Still Needs Emulator
+- Camera/photo picker
+- Push notifications
+- File system access
+- Real performance profiling
+- Platform-specific features
+
+## Test Suite Architecture
+
+```
+test/
+├── widget_test.dart              # App boot test ✅
+├── screens/
+│   ├── create_tank_test.dart     # ✅ Started
+│   ├── home_screen_test.dart     # Priority
+│   ├── learn_screen_test.dart    # Priority
+│   ├── settings_test.dart        # Priority
+│   ├── tank_detail_test.dart     # Priority
+│   └── add_log_test.dart         # Priority
+├── widgets/
+│   ├── app_card_test.dart
+│   ├── app_button_test.dart
+│   ├── empty_state_test.dart
+│   └── celebration_test.dart
+├── flows/
+│   ├── onboarding_flow_test.dart
+│   ├── create_tank_flow_test.dart
+│   └── complete_lesson_flow_test.dart
+├── models/                        # ✅ 7 files exist
+├── services/                      # ✅ 5 files exist
+└── providers/                     # ✅ 1 file exists
+```
+
+## Priority Test Suite (P1)
+
+### Phase 1: Core Screens (8h)
+| Screen | Tests | Purpose |
+|--------|-------|---------|
+| `home_screen` | 5-7 | Dashboard renders, tanks display, nav works |
+| `create_tank_screen` | 5-7 | Form inputs, validation, creation flow |
+| `learn_screen` | 5-7 | Lessons display, progress, navigation |
+| `add_log_screen` | 5-7 | Parameter input, validation, saving |
+| `settings_screen` | 3-5 | Settings render, toggles work |
+
+### Phase 2: User Flows (6h)
+| Flow | Tests | Purpose |
+|------|-------|---------|
+| Onboarding | 5-7 | Complete flow from welcome to home |
+| Create Tank | 3-5 | Full tank creation journey |
+| Complete Lesson | 3-5 | Start to finish with XP |
+| Log Parameters | 3-5 | Add water test, see in history |
+
+### Phase 3: Components (4h)
+| Component | Tests | Purpose |
+|-----------|-------|---------|
+| AppCard | 3-4 | Variants render correctly |
+| AppEmptyState | 3-4 | All types display properly |
+| Celebrations | 2-3 | Confetti, XP popup trigger |
+| Forms | 3-4 | Validation, error states |
+
+## Test Development Commands
+
+```bash
+# Run all tests
+flutter test
+
+# Run specific test file
+flutter test test/screens/create_tank_test.dart
+
+# Run with verbose output
+flutter test --reporter expanded
+
+# Run tests matching pattern
+flutter test --name "CreateTank"
+
+# Generate coverage report
+flutter test --coverage
+```
+
+## Example Test Pattern
+
+```dart
+import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:aquarium_app/screens/home_screen.dart';
+import 'package:aquarium_app/theme/app_theme.dart';
+
+void main() {
+  group('HomeScreen', () {
+    setUp(() {
+      SharedPreferences.setMockInitialValues({
+        'onboarding_completed': true,
+      });
+    });
+
+    testWidgets('displays tank cards when tanks exist', (tester) async {
+      await tester.pumpWidget(
+        ProviderScope(
+          child: MaterialApp(
+            theme: AppTheme.light,
+            home: const HomeScreen(),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      // Verify tanks are displayed
+      expect(find.byType(TankCard), findsWidgets);
+    });
+
+    testWidgets('shows empty state when no tanks', (tester) async {
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            tankListProvider.overrideWithValue([]), // Empty
+          ],
+          child: MaterialApp(
+            theme: AppTheme.light,
+            home: const HomeScreen(),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      // Verify empty state
+      expect(find.text('Create your first tank'), findsOneWidget);
+    });
+
+    testWidgets('navigates to create tank on FAB tap', (tester) async {
+      await tester.pumpWidget(
+        ProviderScope(
+          child: MaterialApp(
+            theme: AppTheme.light,
+            home: const HomeScreen(),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      // Tap FAB
+      await tester.tap(find.byType(FloatingActionButton));
+      await tester.pumpAndSettle();
+
+      // Verify navigation (or dialog)
+      expect(find.byType(CreateTankScreen), findsOneWidget);
+    });
+  });
+}
+```
+
+## AI-Assisted Test Development Workflow
+
+### How Claude Can Help
+
+1. **Write Tests** — Claude writes widget tests based on screen requirements
+2. **Run Tests** — User runs `flutter test`, shares results
+3. **Fix Issues** — Claude analyzes failures, fixes code or tests
+4. **Iterate** — Repeat until all tests pass
+
+### Workflow Example
+```
+User: "Test the create tank screen"
+
+Claude: *writes test file*
+
+User: *runs* `flutter test test/screens/create_tank_test.dart`
+       *shares output*
+
+Claude: "4/5 passed. The volume test failed because the label is 
+        'Tank Size' not 'Volume'. Let me fix that..."
+        *updates test*
+
+User: *runs again*
+       "All tests passed!"
+
+Claude: "Great! Let's add tests for validation errors next..."
+```
+
+## Current Test Coverage
+
+### Existing Tests ✅
+| Area | Files | Assertions |
+|------|-------|------------|
+| Models | 7 | ~300 |
+| Services | 5 | ~400 |
+| Providers | 1 | ~50 |
+| Widget (app boot) | 1 | ~10 |
+| **Total** | **14** | **~760** |
+
+### Target Coverage (3 months)
+| Area | Current | Target |
+|------|---------|--------|
+| Unit (models/services) | 35% | 70% |
+| Widget (screens) | 0% | 50% |
+| Integration (flows) | 0% | 30% |
+| E2E (Patrol) | 0% | 5 journeys |
+
+## E2E Testing (Future)
+
+### Option 1: Maestro (YAML-based)
+```yaml
+# test_flows/create_tank.yaml
+appId: com.tiarnanlarkin.aquarium.aquarium_app
+---
+- launchApp
+- tapOn: "Create Tank"
+- inputText:
+    id: "tank_name_field"
+    text: "My Test Tank"
+- tapOn: "Freshwater"
+- tapOn: "Create"
+- assertVisible: "My Test Tank"
+```
+
+### Option 2: Patrol (Dart-based)
+```dart
+patrolTest('User can create tank', ($) async {
+  await $.tap(find.text('Create Tank'));
+  await $.enterText(find.byKey(Key('tank_name')), 'My Tank');
+  await $.tap(find.text('Create'));
+  expect(find.text('My Tank'), findsOneWidget);
+});
+```
+
+**Recommendation:** Start with widget tests (no emulator), add E2E later for critical journeys.
+
+---
+
+# 🎨 UI POLISH
 
 ## P1 — Visual Consistency
 | Issue | Count | Fix Time |
@@ -105,383 +369,127 @@ static const Color overlayDark50 = Color(0x80000000);
 |-----------|--------|----------|
 | AppCard | ✅ Done | - |
 | AppListTile | ✅ Done | - |
-| NavListTile | ✅ Done | - |
 | AppButton (with variants) | ⏳ Needed | Medium |
-| AppTextField | ⏳ Needed | Medium |
 | AppEmptyState | ⏳ Needed | High |
 
 ---
 
-# ✨ MICROINTERACTIONS (Every Tap Should Delight)
-
-## Why It Matters
-Best-in-class apps make every interaction feel alive:
-- **Asana:** Unicorn flies across screen on task completion
-- **Tinder:** Physics-based card swipe
-- **Telegram:** Message bounce on send
-- **Calm:** Slow fade transitions matching brand
-
-## Microinteraction Checklist
+# ✨ MICROINTERACTIONS
 
 ### P1 — High Impact, Low Effort
 | Interaction | Status | Hours |
 |-------------|--------|-------|
 | Button press scale (0.95x) + haptic | ⏳ | 2h |
 | Hero animations (tank cards → detail) | ⏳ | 3h |
-| Error shake animation on invalid input | ⏳ | 1h |
-| Check mark bounce on task completion | ⏳ | 1h |
+| Error shake animation | ⏳ | 1h |
+| Check mark bounce on completion | ⏳ | 1h |
 
 ### P2 — Medium Effort
 | Interaction | Status | Hours |
 |-------------|--------|-------|
-| Pull-to-refresh with custom indicator | ⏳ | 2h |
-| Skeleton shimmer enhancement | ⏳ | 1h |
-| Page slide transitions (improve) | ✅ Partial | 2h |
+| Pull-to-refresh | ⏳ | 2h |
 | Swipe-to-delete on lists | ⏳ | 3h |
-
-### P3 — Polish
-| Interaction | Status | Hours |
-|-------------|--------|-------|
-| Sound effects (optional) | ⏳ | 2h |
-| Parallax on room transitions | ⏳ | 3h |
-| Scroll fade-in for list items | ⏳ | 2h |
+| Skeleton shimmer enhancement | ⏳ | 1h |
 
 ---
 
-# 🎭 EMPTY STATES (Turn Nothing Into Something)
+# 🎭 EMPTY STATES
 
-## Why It Matters
-Empty states are:
-- First impression for new users
-- Opportunity to guide next action
-- Brand personality moment
-
-## Three Types
-
-### 1. Informational
-**Use when:** User needs context
-**Example:** "Water tests will appear here once you log them"
-
-### 2. Action-Oriented  
-**Use when:** User should do something
-**Example:** "No tanks yet! Create your first tank" + CTA button
-
-### 3. Celebratory
-**Use when:** Empty = success
-**Example:** "All caught up! 🎉 Your tank is in great shape"
-
-## Priority Empty States to Design
-
-| Screen | Current | Target | Priority |
-|--------|---------|--------|----------|
-| No tanks | Generic | Mascot + empty fishbowl + "Create first tank!" | P1 |
-| No livestock | Text only | Fish silhouettes + "Add your first fish!" | P1 |
-| No logs | Text only | Journal illustration + "Start logging!" | P1 |
-| No achievements | Text only | Trophy case + "Complete lessons to earn!" | P2 |
-| All tasks done | Nothing | Celebratory mascot relaxing | P2 |
-| Search no results | Generic | "No fish found" + filter suggestions | P2 |
-
-## Empty State Component
-```dart
-class AppEmptyState extends StatelessWidget {
-  final String illustration;  // Asset path or mascot
-  final String headline;      // "No tanks yet!"
-  final String? subtext;      // Optional helper text
-  final String ctaLabel;      // "Create your first tank"
-  final VoidCallback onCtaPressed;
-  final bool showMascot;      // Use Finn instead of illustration
-}
-```
+## Priority Empty States
+| Screen | Target | Priority |
+|--------|--------|----------|
+| No tanks | Mascot + fishbowl + CTA | P1 |
+| No livestock | Fish silhouettes + CTA | P1 |
+| No logs | Journal illustration + CTA | P1 |
+| All tasks done | Celebratory mascot | P2 |
 
 ---
 
-# 🧠 THE HOOK MODEL (Habit Formation)
+# 🧠 HOOK MODEL & GAMIFICATION
 
-## What It Is
-Nir Eyal's model explains why apps like Duolingo become daily habits:
-
-```
-TRIGGER → ACTION → VARIABLE REWARD → INVESTMENT → (repeat)
-```
-
-## Current vs Target
-
-| Stage | Current | Upgrade |
-|-------|---------|---------|
-| **Trigger** | Basic reminders | "Your streak is at risk! 🔥" + smart alerts |
-| **Action** | Log water, complete lesson | One-tap quick log, 30-second lessons |
-| **Reward** | XP, gems (predictable) | **Variable rewards** (see below) |
-| **Investment** | Tank data, streaks | Photo memories, social sharing |
-
-## Variable Rewards (The Secret Sauce)
-
-**Why:** Predictable rewards become boring. Variable rewards create anticipation.
-
-### P1 — Quick Wins
+## Variable Rewards (Missing)
 | Feature | Description | Hours |
 |---------|-------------|-------|
-| Mystery gem bonus | Random 2x-5x multiplier on some actions | 3h |
-| Daily challenge | Different challenge each day | 4h |
-| Combo multiplier | Consecutive quiz answers = 2x, 3x XP | 2h |
-
-### P2 — Medium Effort
-| Feature | Description | Hours |
-|---------|-------------|-------|
-| Hidden achievements | Discover unexpectedly | 3h |
-| Mascot mood variations | Finn reacts differently each session | 2h |
-| Weekly treasure chest | Random reward | 4h |
-
-### P3 — Future
-| Feature | Description | Hours |
-|---------|-------------|-------|
-| Weekly league | Compete with 30 random users | 8h |
-| Friend challenges | Challenge friends to beat streak | 6h |
-| Seasonal events | Limited-time challenges | 10h |
-
----
-
-# 🎮 GAMIFICATION EXCELLENCE
-
-## Current vs Duolingo Comparison
-
-| Feature | Duolingo | Aquarium App | Gap |
-|---------|----------|--------------|-----|
-| Streak protection | ✅ Freeze item | ✅ Have | None |
-| Streak celebration | 🔥 Fire intensifies | Basic | Enhance |
-| League system | ✅ Weekly competition | ❌ None | Major |
-| Variable rewards | ✅ Mystery chests | ❌ None | Add |
-| Daily challenges | ✅ Different each day | ❌ None | Add |
-| Combo multiplier | ✅ Answer streaks | ❌ None | Add |
-| Achievement celebration | ✅ Full-screen | ❌ None | Add |
+| Mystery gem bonus | Random 2x-5x multiplier | 3h |
+| Daily challenge | Different each day | 4h |
+| Combo multiplier | Quiz streak = 2x, 3x XP | 2h |
 
 ## Gamification Upgrades
-
-### P1 — High Impact
-| Feature | Impact | Hours |
-|---------|--------|-------|
-| Achievement unlock celebration (full-screen + confetti) | 🔥 Major | 3h |
-| Streak intensity animation (fire grows at 7, 30, 100 days) | High | 2h |
-| Combo multiplier in quizzes | High | 2h |
-| Daily challenge system | High | 4h |
-
-### P2 — Medium Impact
-| Feature | Impact | Hours |
-|---------|--------|-------|
-| Mystery bonus rewards | Medium | 3h |
-| Milestone celebrations (100 XP, 1000 XP, etc.) | Medium | 2h |
-| Achievement tiers (Bronze → Silver → Gold) | Medium | 4h |
-| Streak calendar visualization | Medium | 3h |
-
-## Streak Psychology
-
-**Key stats:**
-- Users with 7+ day streaks are **2.3x more likely** to return daily
-- Apps with streaks + milestones see **40-60% higher DAU**
-- Loss aversion makes streaks powerful — users feel losses 2x more than gains
-
-**Upgrades:**
-- [ ] "Streak at risk!" notification 2 hours before midnight
-- [ ] Streak recovery option (one-time, costs gems)
-- [ ] Streak milestones: 7, 14, 30, 60, 100, 365 days
-- [ ] Visual streak calendar showing history
+| Feature | Priority | Hours |
+|---------|----------|-------|
+| Achievement unlock celebration | P1 | 3h |
+| Streak intensity animation | P1 | 2h |
+| Daily challenge system | P1 | 4h |
+| Milestone celebrations | P2 | 2h |
 
 ---
 
 # 🚶 USER FLOW
 
 ## Onboarding Overhaul
-
-### Current Flow (Too Long)
-```
-Welcome → Experience → Goals → Tank Type → Tank Name → Tank Size → 
-Tank Setup → Assessment → Results → Home (12-25 taps)
-```
-
-### Target Flow (Duolingo-Style)
-```
-Welcome (1 tap) → Goal (1 tap) → Tank basics (2-3 taps) → 
-Celebration → Home (6-8 taps)
-```
-
-### Implementation
 | Task | Priority | Hours |
 |------|----------|-------|
-| Reduce onboarding to 4-5 screens | P1 | 3-4h |
-| Add "Skip, I'm experienced" link | P1 | 1h |
-| Add back button to all screens | P1 | 30 min |
-| Move assessment to optional | P2 | 2h |
+| Reduce to 4-5 screens | P1 | 3-4h |
+| Add "Skip" option | P1 | 1h |
+| Add back buttons | P1 | 30 min |
 
-## Navigation Consistency
-
-| Task | Current | Target | Hours |
-|------|---------|--------|-------|
-| Migrate to GoRouter | 105 Navigator.push | 0 | 4-6h |
-| Deep linking support | None | Full | Included |
-
-## Settings Restructure
-
-**Current:** 47+ items in one list
-
-**Target:** 7 categories
-```
-Settings
-├── Account & Profile
-├── Tank Preferences  
-├── Learning & Goals
-├── Notifications
-├── Appearance
-├── Data & Privacy
-└── About & Support
-```
-
----
-
-# 🎯 PERSONALIZATION
-
-## Personalization Tiers
-
-### Tier 1: Basic ✅ (Have)
-- User's name in greetings
-- Goal-based content
-- Experience level
-
-### Tier 2: Behavioral (Partial)
-| Feature | Status | Hours |
-|---------|--------|-------|
-| Recently used tools | ⏳ | 2h |
-| "Continue where you left off" | ⏳ | 2h |
-| Favorite species | ⏳ | 3h |
-
-### Tier 3: Contextual (Opportunity)
-| Feature | Status | Hours |
-|---------|--------|-------|
-| Time-of-day greeting | ⏳ | 1h |
-| Tank age milestones | ⏳ | 2h |
-| Streak-aware mascot dialogue | ⏳ | 2h |
-| Parameter trend alerts | ⏳ | 4h |
-
----
-
-# 🧪 AUTOMATED TESTING
-
-## Current State
-| Type | Files | Assertions | Status |
-|------|-------|------------|--------|
-| Unit Tests | 24 | 1,158 | ✅ Good |
-| Widget Tests | 0 | 0 | 🔴 Missing |
-| Integration Tests | 0 | 0 | 🔴 Missing |
-| Golden Tests | 0 | 0 | 🔴 Missing |
-| E2E Tests | 0 | 0 | 🔴 Missing |
-
-## Testing Strategy
-
-### Testing Pyramid
-```
-        /\        E2E (Patrol) — 5-10 critical journeys
-       /  \       
-      /    \      Widget Tests — 20-30 core screens
-     /------\     
-    /        \    
-   /----------\   Unit Tests — 1,158+ assertions ✅
-```
-
-### Frameworks
-| Type | Framework | Setup |
-|------|-----------|-------|
-| Widget | flutter_test (built-in) | Ready |
-| Golden | alchemist | `alchemist: ^0.10.0` |
-| E2E | Patrol | `patrol: ^3.0.0` |
-
-### Implementation Plan
-| Phase | Focus | Hours |
-|-------|-------|-------|
-| Phase 1 | Widget tests for 5 core screens | 8h |
-| Phase 2 | Golden tests for 10 components | 6h |
-| Phase 3 | E2E tests for 5 user journeys | 10h |
-| Phase 4 | CI/CD integration | 4h |
-| **Total** | | **28h** |
+## Navigation
+| Task | Current | Target |
+|------|---------|--------|
+| GoRouter migration | 105 Navigator.push | 0 |
 
 ---
 
 # 🧠 LOGIC & ARCHITECTURE
 
-## Issues to Address
-
 ### P1 — Error Handling
-| Issue | Fix |
-|-------|-----|
-| Unhandled async errors | Add try/catch |
-| No offline indicator | Add connectivity banner |
-| Silent failures | Add user feedback |
+- Add try/catch to async operations
+- Add offline connectivity banner
+- Add user-friendly error messages
 
 ### P2 — State Management
-| Issue | Fix |
-|-------|-----|
-| Heavy setState screens (31, 16, 14 calls) | Migrate to Riverpod |
-| Provider over-watching | Use `select()` |
-
-### P2 — Large Files to Split
-| File | Lines | Action |
-|------|-------|--------|
-| local_json_storage_service | 28,409 | Split by domain |
-| user_profile_provider | 29,193 | Split by feature |
-| spaced_repetition_provider | 21,552 | Consider splitting |
+- Migrate heavy setState screens to Riverpod
+- Split large files (>20k lines)
 
 ---
 
 # ⏱️ TIME ESTIMATES
 
-## By Priority
 | Priority | Hours | Calendar |
 |----------|-------|----------|
 | P0 Critical | 5-7h | 1-2 days |
-| P1 High | 25-35h | 1 week |
-| P2 Medium | 30-40h | 1-2 weeks |
-| P3 Future | 20-30h | Ongoing |
-| **Total** | **80-112h** | **4-6 weeks** |
-
-## By Category
-| Category | P0 | P1 | P2 | P3 | Total |
-|----------|----|----|----|----|-------|
-| Performance | 5-7h | - | - | - | 5-7h |
-| UI Polish | - | 6-8h | 4-6h | - | 10-14h |
-| Microinteractions | - | 7-9h | 6-8h | 4-6h | 17-23h |
-| Gamification | - | 11-14h | 8-12h | - | 19-26h |
-| User Flow | - | 5-7h | 4-6h | - | 9-13h |
-| Testing | - | - | 18-22h | 6-10h | 24-32h |
-| Logic | - | 2-3h | 4-6h | - | 6-9h |
+| P1 High | 30-40h | 1-2 weeks |
+| P2 Medium | 25-35h | 1-2 weeks |
+| P3 Future | 15-25h | Ongoing |
+| **Total** | **75-107h** | **4-6 weeks** |
 
 ---
 
 # 🚀 IMPLEMENTATION ROADMAP
 
-## Week 1-2: Performance + Quick Wins
+## Week 1-2: Performance + Testing Foundation
 - [ ] Fix withOpacity() in top 5 files
 - [ ] Convert livestock_screen to ListView.builder
+- [ ] Write widget tests for 5 core screens
 - [ ] Remove duplicate Water Change Calculator
-- [ ] Add button press feedback (scale + haptic)
-- [ ] Add achievement unlock celebration
 
 ## Week 3-4: Gamification + User Flow
-- [ ] Implement daily challenge system
-- [ ] Add combo multiplier in quizzes
+- [ ] Achievement unlock celebration
+- [ ] Daily challenge system
 - [ ] Reduce onboarding to 4-5 screens
-- [ ] Add "Skip" option for experienced users
-- [ ] Design 3 priority empty states
+- [ ] Widget tests for user flows
 
 ## Week 5-6: Microinteractions + Polish
-- [ ] Hero animations for tank cards
-- [ ] Error shake animations
+- [ ] Button press feedback
+- [ ] Hero animations
+- [ ] Empty states with mascot
 - [ ] Streak intensity upgrades
-- [ ] Time-of-day greeting
-- [ ] "Continue where you left off"
 
-## Week 7-8: Testing + Architecture
-- [ ] Set up widget testing framework
-- [ ] Write tests for 5 core screens
-- [ ] Set up golden testing
+## Week 7-8: Architecture + E2E
 - [ ] Begin GoRouter migration
-- [ ] Restructure Settings screen
+- [ ] Settings restructure
+- [ ] Set up Maestro/Patrol for E2E
+- [ ] CI/CD integration
 
 ---
 
@@ -490,44 +498,26 @@ Settings
 ## After P0+P1 (2 weeks)
 | Metric | Current | Target |
 |--------|---------|--------|
-| Performance issues | 4 critical | 0 |
-| Onboarding taps | 12-25 | 6-8 |
+| Widget test coverage | 0% | 30% |
+| Performance issues | 4 | 0 |
 | Achievement celebration | None | Full-screen |
-| Daily challenge | None | Active |
 
 ## After All (6-8 weeks)
 | Metric | Current | Target |
 |--------|---------|--------|
+| Widget test coverage | 0% | 60% |
 | UI Grade | B- | A- |
-| UX Grade | C+ | B+ |
-| Microinteractions | 20% | 80% |
-| Variable rewards | 0 | 5+ types |
-| Test Coverage (widget) | 0% | 60% |
-| DAU/MAU ratio | ? | 40%+ |
+| Onboarding taps | 12-25 | 6-8 |
+| E2E journeys tested | 0 | 5 |
 
 ---
 
-# 📚 RESEARCH SOURCES
+# 📚 RESOURCES
 
-- [Duolingo UX Breakdown](https://userguiding.com/blog/duolingo-onboarding-ux)
-- [Hook Model by Nir Eyal](https://growthmethod.com/hooked-model/)
-- [Streaks & Milestones Psychology](https://www.plotline.so/blog/streaks-for-gamification-in-mobile-apps)
-- [Empty State UX](https://www.eleken.co/blog-posts/empty-state-ux)
-- [Mobile UX Examples 2025](https://www.eleken.co/blog-posts/mobile-ux-design-examples)
-- [Patrol Testing Framework](https://patrol.leancode.co/)
-
----
-
-# 🏆 WHAT MAKES YOU UNIQUE
-
-**No competitor combines:**
-- 50+ structured lessons with spaced repetition
-- Full tank management (CRUD, photos, equipment)
-- XP/gems/hearts/streaks gamification
-- Room navigation metaphor
-- Mascot personality
-
-**You are "Duolingo for fishkeeping" — own it!**
+- [Flutter Testing Docs](https://docs.flutter.dev/testing)
+- [Patrol Framework](https://patrol.leancode.co/)
+- [Maestro Testing](https://maestro.dev/)
+- [Widget Test Best Practices](https://www.browserstack.com/guide/flutter-test-automation)
 
 ---
 
