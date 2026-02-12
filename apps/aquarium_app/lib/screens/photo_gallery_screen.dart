@@ -61,48 +61,72 @@ class PhotoGalleryScreen extends ConsumerWidget {
             grouped.putIfAbsent(month, () => []).add(photo);
           }
 
-          return ListView.builder(
-            padding: const EdgeInsets.all(16),
-            itemCount: grouped.length,
-            itemBuilder: (ctx, i) {
-              final month = grouped.keys.elementAt(i);
-              final monthPhotos = grouped[month]!;
-
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8),
-                    child: Row(
-                      children: [
-                        Text(month, style: AppTypography.headlineSmall),
-                        const SizedBox(width: AppSpacing.sm),
-                        Text(
-                          '${monthPhotos.length} photos',
-                          style: AppTypography.bodySmall,
-                        ),
-                      ],
+          // Build list of slivers for each month group
+          final months = grouped.keys.toList();
+          
+          return CustomScrollView(
+            slivers: [
+              // Top padding
+              const SliverPadding(
+                padding: EdgeInsets.only(top: 16),
+                sliver: SliverToBoxAdapter(child: SizedBox.shrink()),
+              ),
+              
+              // For each month, add header + grid
+              for (int i = 0; i < months.length; i++) ...[
+                // Month header
+                SliverPadding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  sliver: SliverToBoxAdapter(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      child: Row(
+                        children: [
+                          Text(months[i], style: AppTypography.headlineSmall),
+                          const SizedBox(width: AppSpacing.sm),
+                          Text(
+                            '${grouped[months[i]]!.length} photos',
+                            style: AppTypography.bodySmall,
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                  GridView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 3,
-                          crossAxisSpacing: 4,
-                          mainAxisSpacing: 4,
-                        ),
-                    itemCount: monthPhotos.length,
-                    itemBuilder: (ctx, j) => _PhotoThumbnail(
-                      photo: monthPhotos[j],
-                      onTap: () => _showPhotoViewer(context, monthPhotos, j),
+                ),
+                
+                // Photo grid (lazy loaded via SliverGrid.builder)
+                SliverPadding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  sliver: SliverGrid.builder(
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 3,
+                      crossAxisSpacing: 4,
+                      mainAxisSpacing: 4,
                     ),
+                    itemCount: grouped[months[i]]!.length,
+                    itemBuilder: (ctx, j) {
+                      final monthPhotos = grouped[months[i]]!;
+                      return _PhotoThumbnail(
+                        photo: monthPhotos[j],
+                        onTap: () => _showPhotoViewer(context, monthPhotos, j),
+                      );
+                    },
                   ),
-                  const SizedBox(height: AppSpacing.md),
-                ],
-              );
-            },
+                ),
+                
+                // Spacing after each month
+                const SliverPadding(
+                  padding: EdgeInsets.only(bottom: AppSpacing.md),
+                  sliver: SliverToBoxAdapter(child: SizedBox.shrink()),
+                ),
+              ],
+              
+              // Bottom padding
+              const SliverPadding(
+                padding: EdgeInsets.only(bottom: 16),
+                sliver: SliverToBoxAdapter(child: SizedBox.shrink()),
+              ),
+            ],
           );
         },
       ),
