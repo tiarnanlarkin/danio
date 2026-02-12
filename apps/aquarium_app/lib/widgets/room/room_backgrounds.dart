@@ -161,20 +161,9 @@ class RoomBackground extends StatelessWidget {
   }
 
   Widget _buildAmbientEffects() {
-    switch (roomType) {
-      case RoomType.livingRoom:
-        return const _DustMotes(color: RoomBackgroundColors.livingRoomAccent);
-      case RoomType.study:
-        return const _DustMotes(color: RoomBackgroundColors.studyGold);
-      case RoomType.workshop:
-        return const _SparkParticles(color: RoomBackgroundColors.workshopOrange);
-      case RoomType.shopStreet:
-        return const _SunbeamEffect();
-      case RoomType.trophyRoom:
-        return const _SpotlightShimmer();
-      case RoomType.friends:
-        return const _WindowLightRays();
-    }
+    // Disabled repeating animations - they cause ANR on some devices
+    // TODO: Re-enable with optimized non-repeating versions
+    return const SizedBox.shrink();
   }
 }
 
