@@ -509,8 +509,8 @@ class _EnhancedQuizScreenState extends ConsumerState<EnhancedQuizScreen>
           borderRadius: AppRadius.mediumRadius,
           border: Border.all(
             color: isCorrect
-                ? AppColors.success.withOpacity(0.3)
-                : AppColors.info.withOpacity(0.3),
+                ? AppOverlays.success30
+                : AppOverlays.info30,
           ),
         ),
         child: Row(

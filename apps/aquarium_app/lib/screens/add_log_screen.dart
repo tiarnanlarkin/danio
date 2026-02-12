@@ -378,7 +378,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
             decoration: BoxDecoration(
               color: AppOverlays.info10,
               borderRadius: AppRadius.smallRadius,
-              border: Border.all(color: AppColors.info.withOpacity(0.3)),
+              border: Border.all(color: AppOverlays.info30),
             ),
             child: Row(
               children: [
@@ -673,7 +673,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
               label: Text('$percent%'),
               selected: isSelected,
               onSelected: (_) => setState(() => _waterChangePercent = percent),
-              selectedColor: AppColors.secondary.withOpacity(0.3),
+              selectedColor: AppOverlays.secondary30,
             );
           }).toList(),
         ),

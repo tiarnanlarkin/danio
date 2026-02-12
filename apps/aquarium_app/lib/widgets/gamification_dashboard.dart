@@ -326,7 +326,7 @@ class _DailyGoalProgress extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                 decoration: BoxDecoration(
-                  color: AppColors.success.withOpacity(0.2),
+                  color: AppOverlays.success20,
                   borderRadius: AppRadius.smallRadius,
                 ),
                 child: Row(

@@ -318,6 +318,7 @@ class AppOverlays {
   static const Color peru50 = Color(0x80CD853F);         // Peru/tan 50%
   
   // Success color overlays (AppColors.success = 0xFF5AAF7A)
+  static const Color success5 = Color(0x0D5AAF7A);   // 5%
   static const Color success10 = Color(0x1A5AAF7A);  // 10%
   static const Color success20 = Color(0x335AAF7A);  // 20%
   
@@ -442,6 +443,169 @@ class AppShadows {
       offset: Offset(0, 2),
     ),
   ];
+  
+  // Premium soft shadows (inspired by high-end app designs)
+  static const List<BoxShadow> dreamySoft = [
+    BoxShadow(
+      color: Color(0x0A000000), // 4%
+      blurRadius: 20,
+      spreadRadius: 0,
+      offset: Offset(0, 8),
+    ),
+    BoxShadow(
+      color: Color(0x05000000), // 2%
+      blurRadius: 40,
+      spreadRadius: 0,
+      offset: Offset(0, 16),
+    ),
+  ];
+  
+  static const List<BoxShadow> glassLight = [
+    BoxShadow(
+      color: Color(0x10FFFFFF), // White inner glow
+      blurRadius: 1,
+      spreadRadius: 0,
+      offset: Offset(0, 1),
+    ),
+    BoxShadow(
+      color: Color(0x08000000),
+      blurRadius: 16,
+      offset: Offset(0, 4),
+    ),
+  ];
+  
+  static const List<BoxShadow> glassDark = [
+    BoxShadow(
+      color: Color(0x20FFFFFF), // White inner glow
+      blurRadius: 1,
+      spreadRadius: 0,
+      offset: Offset(0, 1),
+    ),
+    BoxShadow(
+      color: Color(0x40000000),
+      blurRadius: 20,
+      offset: Offset(0, 8),
+    ),
+  ];
+  
+  // Cozy warm shadow (for room/home elements)
+  static const List<BoxShadow> cozyWarm = [
+    BoxShadow(
+      color: Color(0x15D4A574), // Warm gold tint
+      blurRadius: 24,
+      spreadRadius: 0,
+      offset: Offset(0, 10),
+    ),
+    BoxShadow(
+      color: Color(0x08000000),
+      blurRadius: 8,
+      offset: Offset(0, 2),
+    ),
+  ];
+}
+
+/// Premium glassmorphism decoration presets
+class GlassStyles {
+  // Frosted glass for light mode
+  static BoxDecoration frostedLight({
+    BorderRadius? borderRadius,
+    Color? tintColor,
+  }) {
+    return BoxDecoration(
+      color: (tintColor ?? Colors.white).withOpacity(0.7),
+      borderRadius: borderRadius ?? AppRadius.largeRadius,
+      border: Border.all(
+        color: Colors.white.withOpacity(0.4),
+        width: 1.5,
+      ),
+      boxShadow: AppShadows.glassLight,
+    );
+  }
+  
+  // Frosted glass for dark mode
+  static BoxDecoration frostedDark({
+    BorderRadius? borderRadius,
+    Color? tintColor,
+  }) {
+    return BoxDecoration(
+      color: (tintColor ?? const Color(0xFF1A1A2E)).withOpacity(0.6),
+      borderRadius: borderRadius ?? AppRadius.largeRadius,
+      border: Border.all(
+        color: Colors.white.withOpacity(0.1),
+        width: 1,
+      ),
+      boxShadow: AppShadows.glassDark,
+    );
+  }
+  
+  // Soft puffy card (cotton candy style)
+  static BoxDecoration softPuffy({
+    required bool isDark,
+    BorderRadius? borderRadius,
+    Color? backgroundColor,
+  }) {
+    return BoxDecoration(
+      color: backgroundColor ?? (isDark ? const Color(0xFF2A2A3E) : Colors.white),
+      borderRadius: borderRadius ?? BorderRadius.circular(24),
+      boxShadow: AppShadows.dreamySoft,
+    );
+  }
+  
+  // Gradient glass with aurora effect
+  static BoxDecoration auroraGlass({
+    required bool isDark,
+    BorderRadius? borderRadius,
+  }) {
+    return BoxDecoration(
+      gradient: LinearGradient(
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+        colors: isDark
+            ? [
+                const Color(0xFF1A3A4A).withOpacity(0.8),
+                const Color(0xFF0D2030).withOpacity(0.9),
+              ]
+            : [
+                const Color(0xFFE8F4F8).withOpacity(0.9),
+                const Color(0xFFF0F8FF).withOpacity(0.95),
+              ],
+      ),
+      borderRadius: borderRadius ?? AppRadius.largeRadius,
+      border: Border.all(
+        color: isDark
+            ? const Color(0xFF3D9F8B).withOpacity(0.3)
+            : const Color(0xFF5FBFB3).withOpacity(0.2),
+        width: 1,
+      ),
+      boxShadow: [
+        BoxShadow(
+          color: isDark
+              ? const Color(0xFF3D9F8B).withOpacity(0.15)
+              : const Color(0xFF3D7068).withOpacity(0.08),
+          blurRadius: 20,
+          offset: const Offset(0, 8),
+        ),
+      ],
+    );
+  }
+  
+  // Cozy room card (warm home feeling)
+  static BoxDecoration cozyCard({
+    required bool isDark,
+    BorderRadius? borderRadius,
+  }) {
+    return BoxDecoration(
+      color: isDark ? const Color(0xFF2D2B3A) : const Color(0xFFFFFBF5),
+      borderRadius: borderRadius ?? BorderRadius.circular(20),
+      border: Border.all(
+        color: isDark
+            ? const Color(0xFFD4A574).withOpacity(0.15)
+            : const Color(0xFFD4A574).withOpacity(0.1),
+        width: 1,
+      ),
+      boxShadow: AppShadows.cozyWarm,
+    );
+  }
 }
 
 class AppTheme {

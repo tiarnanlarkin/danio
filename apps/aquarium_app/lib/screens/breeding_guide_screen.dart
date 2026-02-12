@@ -402,7 +402,7 @@ class _FryStageCard extends StatelessWidget {
               width: 60,
               padding: const EdgeInsets.symmetric(vertical: 8),
               decoration: BoxDecoration(
-                color: AppColors.secondary.withOpacity(0.1),
+                color: AppOverlays.secondary10,
                 borderRadius: AppRadius.smallRadius,
               ),
               child: Center(

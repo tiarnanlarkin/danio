@@ -1,134 +1,265 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import '../models/models.dart';
 import '../providers/tank_provider.dart';
 import '../theme/app_theme.dart';
 
-class TankCard extends ConsumerWidget {
+class TankCard extends ConsumerStatefulWidget {
   final Tank tank;
   final VoidCallback? onTap;
 
   const TankCard({super.key, required this.tank, this.onTap});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<TankCard> createState() => _TankCardState();
+}
+
+class _TankCardState extends ConsumerState<TankCard> 
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _scaleAnimation;
+  bool _isPressed = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 150),
+      vsync: this,
+    );
+    _scaleAnimation = Tween<double>(begin: 1.0, end: 0.97).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  void _handleTapDown(TapDownDetails details) {
+    setState(() => _isPressed = true);
+    _controller.forward();
+  }
+
+  void _handleTapUp(TapUpDetails details) {
+    setState(() => _isPressed = false);
+    _controller.reverse();
+  }
+
+  void _handleTapCancel() {
+    setState(() => _isPressed = false);
+    _controller.reverse();
+  }
+
+  void _handleTap() {
+    HapticFeedback.lightImpact();
+    widget.onTap?.call();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final tank = widget.tank;
     final tasksAsync = ref.watch(tasksProvider(tank.id));
     final logsAsync = ref.watch(logsProvider(tank.id));
     final equipmentAsync = ref.watch(equipmentProvider(tank.id));
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Hero(
       tag: 'tank-card-${tank.id}',
-      child: Card(
-        margin: const EdgeInsets.only(bottom: 16),
-        clipBehavior: Clip.antiAlias,
-        child: InkWell(
-          onTap: onTap,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Header with tank image or gradient
-              Container(
-                height: 100,
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                      AppOverlays.primary80,
-                      AppOverlays.secondary60,
-                    ],
-                  ),
+      child: AnimatedBuilder(
+        animation: _scaleAnimation,
+        builder: (context, child) {
+          return Transform.scale(
+            scale: _scaleAnimation.value,
+            child: child,
+          );
+        },
+        child: GestureDetector(
+          onTapDown: _handleTapDown,
+          onTapUp: _handleTapUp,
+          onTapCancel: _handleTapCancel,
+          onTap: _handleTap,
+          child: Container(
+            margin: const EdgeInsets.only(bottom: 16),
+            decoration: BoxDecoration(
+              color: isDark ? const Color(0xFF1E2030) : Colors.white,
+              borderRadius: BorderRadius.circular(24),
+              boxShadow: [
+                // Soft close shadow
+                BoxShadow(
+                  color: Colors.black.withOpacity(isDark ? 0.3 : 0.06),
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
                 ),
-              child: Stack(
-                children: [
-                  // Tank icon
-                  Positioned(
-                    right: 16,
-                    bottom: 16,
-                    child: Icon(
-                      Icons.water,
-                      size: 48,
-                      color: AppOverlays.white30,
-                    ),
-                  ),
-                  // Tank name
-                  Positioned(
-                    left: 16,
-                    bottom: 16,
-                    right: 80,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          tank.name,
-                          style: AppTypography.headlineSmall.copyWith(
-                            color: Colors.white,
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        const SizedBox(height: AppSpacing.xs),
-                        Text(
-                          '${tank.volumeLitres.toStringAsFixed(0)}L • ${tank.type.name}',
-                          style: AppTypography.bodySmall.copyWith(
-                            color: AppOverlays.white90,
-                          ),
-                        ),
+                // Medium distance shadow
+                BoxShadow(
+                  color: Colors.black.withOpacity(isDark ? 0.2 : 0.04),
+                  blurRadius: 24,
+                  offset: const Offset(0, 8),
+                ),
+                // Colored glow based on tank
+                BoxShadow(
+                  color: AppColors.primary.withOpacity(isDark ? 0.15 : 0.08),
+                  blurRadius: 32,
+                  offset: const Offset(0, 12),
+                ),
+              ],
+            ),
+            clipBehavior: Clip.antiAlias,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Premium header with glassmorphism overlay
+                Container(
+                  height: 110,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        AppColors.primary.withOpacity(0.9),
+                        AppColors.secondary.withOpacity(0.8),
                       ],
                     ),
                   ),
-                ],
-              ),
-            ),
-
-            // Body
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Quick stats row
-                  Row(
+                  child: Stack(
                     children: [
-                      _StatChip(
-                        icon: Icons.calendar_today,
-                        label: _formatAge(tank.startDate),
-                        tooltip: 'Tank age',
+                      // Decorative water pattern
+                      Positioned.fill(
+                        child: CustomPaint(
+                          painter: _WaterPatternPainter(),
+                        ),
                       ),
-                      const SizedBox(width: AppSpacing.sm),
-                      logsAsync.when(
-                        loading: () => const SizedBox.shrink(),
-                        error: (_, __) => const SizedBox.shrink(),
-                        data: (logs) {
-                          final lastTest = logs
-                              .where((l) => l.type == LogType.waterTest)
-                              .firstOrNull;
-                          if (lastTest == null) return const SizedBox.shrink();
-                          return _StatChip(
-                            icon: Icons.science_outlined,
-                            label: _formatRelativeDate(lastTest.timestamp),
-                            tooltip: 'Last water test',
-                          );
-                        },
+                      // Glassmorphism overlay for depth
+                      Positioned(
+                        right: -20,
+                        bottom: -20,
+                        child: Container(
+                          width: 100,
+                          height: 100,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            gradient: RadialGradient(
+                              colors: [
+                                Colors.white.withOpacity(0.15),
+                                Colors.transparent,
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                      // Tank icon with glow
+                      Positioned(
+                        right: 16,
+                        bottom: 16,
+                        child: Container(
+                          padding: const EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            color: Colors.white.withOpacity(0.15),
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          child: Icon(
+                            Icons.water_drop_rounded,
+                            size: 28,
+                            color: Colors.white.withOpacity(0.9),
+                          ),
+                        ),
+                      ),
+                      // Tank name with better typography
+                      Positioned(
+                        left: 20,
+                        bottom: 16,
+                        right: 80,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              tank.name,
+                              style: AppTypography.headlineSmall.copyWith(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w600,
+                                letterSpacing: -0.3,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            const SizedBox(height: 4),
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 8, 
+                                vertical: 3,
+                              ),
+                              decoration: BoxDecoration(
+                                color: Colors.white.withOpacity(0.2),
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: Text(
+                                '${tank.volumeLitres.toStringAsFixed(0)}L • ${tank.type.name}',
+                                style: AppTypography.labelSmall.copyWith(
+                                  color: Colors.white.withOpacity(0.95),
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ],
                   ),
+                ),
 
-                  const SizedBox(height: 12),
+                // Body with improved spacing
+                Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Quick stats row with pill styling
+                      Row(
+                        children: [
+                          _StatChip(
+                            icon: Icons.schedule_rounded,
+                            label: _formatAge(tank.startDate),
+                            tooltip: 'Tank age',
+                          ),
+                          const SizedBox(width: AppSpacing.sm),
+                          logsAsync.when(
+                            loading: () => const SizedBox.shrink(),
+                            error: (_, __) => const SizedBox.shrink(),
+                            data: (logs) {
+                              final lastTest = logs
+                                  .where((l) => l.type == LogType.waterTest)
+                                  .firstOrNull;
+                              if (lastTest == null) return const SizedBox.shrink();
+                              return _StatChip(
+                                icon: Icons.science_outlined,
+                                label: _formatRelativeDate(lastTest.timestamp),
+                                tooltip: 'Last water test',
+                              );
+                            },
+                          ),
+                        ],
+                      ),
 
-                  // Status badges
-                  _StatusBadgesRow(
-                    tasksAsync: tasksAsync,
-                    logsAsync: logsAsync,
-                    equipmentAsync: equipmentAsync,
+                      const SizedBox(height: 14),
+
+                      // Status badges
+                      _StatusBadgesRow(
+                        tasksAsync: tasksAsync,
+                        logsAsync: logsAsync,
+                        equipmentAsync: equipmentAsync,
+                      ),
+                    ],
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
-      ),
       ),
     );
   }
@@ -298,28 +429,61 @@ class _Badge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
-        borderRadius: AppRadius.smallRadius,
-        border: Border.all(color: color.withOpacity(0.3)),
+        color: color.withOpacity(isDark ? 0.15 : 0.08),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: color.withOpacity(isDark ? 0.3 : 0.2),
+          width: 1,
+        ),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 12, color: color),
-          const SizedBox(width: AppSpacing.xs),
+          Icon(icon, size: 13, color: color),
+          const SizedBox(width: 5),
           Text(
             label,
-            style: AppTypography.bodySmall.copyWith(
+            style: AppTypography.labelSmall.copyWith(
               color: color,
-              fontWeight: FontWeight.w500,
-              fontSize: 11,
+              fontWeight: FontWeight.w600,
             ),
           ),
         ],
       ),
     );
   }
+}
+
+/// Custom painter for decorative water pattern on card header
+class _WaterPatternPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = Colors.white.withOpacity(0.06)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.5;
+
+    // Draw subtle wave lines
+    for (var i = 0; i < 4; i++) {
+      final y = size.height * (0.3 + i * 0.2);
+      final path = Path();
+      path.moveTo(0, y);
+      
+      for (var x = 0.0; x < size.width; x += 40) {
+        path.quadraticBezierTo(
+          x + 20, y - 8 + (i % 2 == 0 ? 0 : 16),
+          x + 40, y,
+        );
+      }
+      
+      canvas.drawPath(path, paint);
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
