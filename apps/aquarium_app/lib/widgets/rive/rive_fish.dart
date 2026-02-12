@@ -178,17 +178,10 @@ class _RiveFishState extends State<RiveFish> {
   @override
   Widget build(BuildContext context) {
     if (_artboard == null) {
-      // Loading placeholder
+      // Loading placeholder - transparent to not show loading spinners everywhere
       return SizedBox(
         width: widget.size,
         height: widget.size,
-        child: const Center(
-          child: SizedBox(
-            width: 20,
-            height: 20,
-            child: CircularProgressIndicator(strokeWidth: 2),
-          ),
-        ),
       );
     }
 
@@ -205,6 +198,10 @@ class _RiveFishState extends State<RiveFish> {
               child: Rive(
                 artboard: _artboard!,
                 fit: BoxFit.contain,
+                // Use artboard size for proper scaling
+                useArtboardSize: false,
+                // Antialiasing can sometimes cause edge artifacts
+                antialiasing: true,
               ),
             ),
           ),

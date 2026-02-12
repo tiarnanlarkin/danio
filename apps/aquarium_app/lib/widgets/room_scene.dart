@@ -1009,31 +1009,128 @@ class _ThemedAquarium extends StatelessWidget {
             ),
 
             // Fish - Rive animated or static drawn
+            // BACK LAYER FISH (behind plants) - smaller, more distant
             if (useRiveFish) ...[
-              // Animated Rive fish
+              // Small fish in back - behind the tall left plant
               Positioned(
-                top: height * 0.15,
-                left: width * 0.1,
-                child: RiveFish(
-                  fishType: RiveFishType.puffer,
-                  size: height * 0.35,
+                top: height * 0.25,
+                left: width * 0.02,
+                child: Opacity(
+                  opacity: 0.7, // Slightly faded to appear further back
+                  child: RiveFish(
+                    fishType: RiveFishType.emotional,
+                    size: height * 0.18,
+                  ),
                 ),
               ),
+              // Small fish in back - behind right plant
               Positioned(
                 top: height * 0.35,
-                right: width * 0.05,
+                right: width * 0.02,
+                child: Opacity(
+                  opacity: 0.7,
+                  child: RiveFish(
+                    fishType: RiveFishType.joystick,
+                    size: height * 0.16,
+                    flipHorizontal: true,
+                  ),
+                ),
+              ),
+            ],
+
+            // Plants with gentle swaying animation
+            Positioned(
+              bottom: height * 0.15,
+              left: width * 0.08,
+              child: SwayingPlantTall(
+                index: 0,
+                child: _SoftPlant(
+                  height: height * 0.5,
+                  color: theme.plantPrimary,
+                ),
+              ),
+            ),
+            Positioned(
+              bottom: height * 0.15,
+              left: width * 0.22,
+              child: SwayingPlantSmall(
+                index: 1,
+                child: _SoftPlant(
+                  height: height * 0.35,
+                  color: theme.plantSecondary,
+                ),
+              ),
+            ),
+            Positioned(
+              bottom: height * 0.15,
+              right: width * 0.1,
+              child: SwayingPlantTall(
+                index: 2,
+                child: _SoftPlant(
+                  height: height * 0.55,
+                  color: theme.plantPrimary,
+                ),
+              ),
+            ),
+            Positioned(
+              bottom: height * 0.15,
+              right: width * 0.28,
+              child: SwayingPlant(
+                index: 3,
+                child: _SoftPlant(
+                  height: height * 0.4,
+                  color: theme.plantSecondary,
+                ),
+              ),
+            ),
+
+            // FRONT LAYER FISH (in front of plants) - main fish, larger
+            if (useRiveFish) ...[
+              // Main puffer fish - upper left, swimming right
+              Positioned(
+                top: height * 0.12,
+                left: width * 0.25,
+                child: RiveFish(
+                  fishType: RiveFishType.puffer,
+                  size: height * 0.28,
+                ),
+              ),
+              // Joystick fish - mid right area, swimming left
+              Positioned(
+                top: height * 0.38,
+                right: width * 0.15,
                 child: RiveFish(
                   fishType: RiveFishType.joystick,
-                  size: height * 0.3,
+                  size: height * 0.24,
                   flipHorizontal: true,
                 ),
               ),
+              // Emotional fish - center bottom, interactive
               Positioned(
-                top: height * 0.5,
-                left: width * 0.35,
+                top: height * 0.55,
+                left: width * 0.38,
                 child: RiveFish(
                   fishType: RiveFishType.emotional,
-                  size: height * 0.25,
+                  size: height * 0.22,
+                ),
+              ),
+              // Extra small puffer - upper right for variety
+              Positioned(
+                top: height * 0.08,
+                right: width * 0.25,
+                child: RiveFish(
+                  fishType: RiveFishType.puffer,
+                  size: height * 0.18,
+                  flipHorizontal: true,
+                ),
+              ),
+              // Extra joystick fish - lower left
+              Positioned(
+                top: height * 0.48,
+                left: width * 0.12,
+                child: RiveFish(
+                  fishType: RiveFishType.joystick,
+                  size: height * 0.20,
                 ),
               ),
             ] else ...[
