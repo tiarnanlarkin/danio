@@ -74,7 +74,7 @@ class _SpacedRepetitionPracticeScreenState
               width: 120,
               height: 120,
               decoration: BoxDecoration(
-                color: AppColors.success.withOpacity(0.1),
+                color: AppOverlays.success10,
                 shape: BoxShape.circle,
               ),
               child: const Center(
@@ -755,7 +755,7 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: AppColors.error.withOpacity(0.1),
+                color: AppOverlays.error10,
                 borderRadius: AppRadius.smallRadius,
               ),
               child: Text(
@@ -860,12 +860,12 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: lastResult.correct
-            ? AppColors.success.withOpacity(0.1)
-            : AppColors.error.withOpacity(0.1),
+            ? AppOverlays.success10
+            : AppOverlays.error10,
         borderRadius: AppRadius.mediumRadius,
         border: Border.all(
           color: lastResult.correct
-              ? AppColors.success.withOpacity(0.3)
+              ? AppOverlays.success30
               : AppColors.error.withOpacity(0.3),
         ),
       ),
@@ -1036,10 +1036,10 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
                 color: accuracy >= 80
-                    ? AppColors.success.withOpacity(0.1)
+                    ? AppOverlays.success10
                     : accuracy >= 60
-                    ? AppColors.warning.withOpacity(0.1)
-                    : AppColors.error.withOpacity(0.1),
+                    ? AppOverlays.warning10
+                    : AppOverlays.error10,
                 borderRadius: AppRadius.mediumRadius,
               ),
               child: Column(

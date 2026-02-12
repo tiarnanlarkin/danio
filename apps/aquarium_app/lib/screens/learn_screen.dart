@@ -30,7 +30,7 @@ class LearnScreen extends ConsumerWidget {
           SliverToBoxAdapter(
             child: Container(
               height: 320,
-              color: AppColors.primary.withOpacity(0.1),
+              color: AppOverlays.primary10,
             ),
           ),
           // Skeleton learning paths header
@@ -52,7 +52,7 @@ class LearnScreen extends ConsumerWidget {
                       width: 48,
                       height: 48,
                       decoration: BoxDecoration(
-                        color: AppColors.primary.withOpacity(0.1),
+                        color: AppOverlays.primary10,
                         borderRadius: AppRadius.mediumRadius,
                       ),
                       child: const Center(
@@ -432,7 +432,7 @@ class _PracticeCard extends ConsumerWidget {
             borderRadius: AppRadius.mediumRadius,
             boxShadow: [
               BoxShadow(
-                color: AppColors.primary.withOpacity(0.3),
+                color: AppOverlays.primary30,
                 blurRadius: 8,
                 offset: const Offset(0, 4),
               ),
@@ -634,7 +634,7 @@ class _LearningPathCard extends StatelessWidget {
             decoration: BoxDecoration(
               color: isComplete
                   ? AppColors.success.withOpacity(0.2)
-                  : AppColors.primary.withOpacity(0.1),
+                  : AppOverlays.primary10,
               borderRadius: AppRadius.mediumRadius,
             ),
             child: Center(
@@ -695,7 +695,7 @@ class _LearningPathCard extends StatelessWidget {
                     color: isCompleted
                         ? AppColors.success.withOpacity(0.2)
                         : isUnlocked
-                        ? AppColors.primary.withOpacity(0.1)
+                        ? AppOverlays.primary10
                         : AppColors.surfaceVariant,
                     shape: BoxShape.circle,
                   ),

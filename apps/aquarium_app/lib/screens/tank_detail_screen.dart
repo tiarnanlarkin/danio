@@ -73,7 +73,7 @@ class TankDetailScreen extends ConsumerWidget {
             children: placeholders.take(5).map((log) {
               return ListTile(
                 leading: CircleAvatar(
-                  backgroundColor: AppColors.primary.withOpacity(0.2),
+                  backgroundColor: AppOverlays.primary20,
                   child: const Icon(Icons.science, color: AppColors.primary, size: 20),
                 ),
                 title: Text(log.title ?? 'Activity placeholder'),
@@ -1267,7 +1267,7 @@ class _EquipmentPreview extends StatelessWidget {
             ),
             child: Card(
               margin: EdgeInsets.zero,
-              color: isOverdue ? AppColors.warning.withOpacity(0.1) : null,
+              color: isOverdue ? AppOverlays.warning10 : null,
               child: Padding(
                 padding: const EdgeInsets.all(12),
                 child: Column(

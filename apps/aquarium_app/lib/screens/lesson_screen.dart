@@ -68,7 +68,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
-                  color: AppColors.info.withOpacity(0.2),
+                  color: AppOverlays.info20,
                   borderRadius: AppRadius.smallRadius,
                 ),
                 child: Text(
@@ -98,7 +98,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
                   vertical: 6,
                 ),
                 decoration: BoxDecoration(
-                  color: AppColors.accent.withOpacity(0.2),
+                  color: AppOverlays.accent20,
                   borderRadius: AppRadius.mediumRadius,
                 ),
                 child: Row(
@@ -246,9 +246,9 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
         return Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: AppColors.primary.withOpacity(0.1),
+            color: AppOverlays.primary10,
             borderRadius: AppRadius.mediumRadius,
-            border: Border.all(color: AppColors.primary.withOpacity(0.3)),
+            border: Border.all(color: AppOverlays.primary30),
           ),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -271,9 +271,9 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
         return Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: AppColors.success.withOpacity(0.1),
+            color: AppOverlays.success10,
             borderRadius: AppRadius.mediumRadius,
-            border: Border.all(color: AppColors.success.withOpacity(0.3)),
+            border: Border.all(color: AppOverlays.success30),
           ),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -303,9 +303,9 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
         return Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: AppColors.warning.withOpacity(0.1),
+            color: AppOverlays.warning10,
             borderRadius: AppRadius.mediumRadius,
-            border: Border.all(color: AppColors.warning.withOpacity(0.3)),
+            border: Border.all(color: AppOverlays.warning30),
           ),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -335,9 +335,9 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
         return Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: Colors.purple.withOpacity(0.1),
+            color: AppOverlays.purple10,
             borderRadius: AppRadius.mediumRadius,
-            border: Border.all(color: Colors.purple.withOpacity(0.3)),
+            border: Border.all(color: AppOverlays.purple30),
           ),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -474,16 +474,16 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
 
                 if (_answered) {
                   if (isCorrect) {
-                    bgColor = AppColors.success.withOpacity(0.1);
+                    bgColor = AppOverlays.success10;
                     borderColor = AppColors.success;
                     icon = Icons.check_circle;
                   } else if (isSelected && !isCorrect) {
-                    bgColor = AppColors.error.withOpacity(0.1);
+                    bgColor = AppOverlays.error10;
                     borderColor = AppColors.error;
                     icon = Icons.cancel;
                   }
                 } else if (isSelected) {
-                  bgColor = AppColors.primary.withOpacity(0.1);
+                  bgColor = AppOverlays.primary10;
                   borderColor = AppColors.primary;
                 }
 
@@ -551,7 +551,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
                 Container(
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    color: AppColors.info.withOpacity(0.1),
+                    color: AppOverlays.info10,
                     borderRadius: AppRadius.mediumRadius,
                   ),
                   child: Row(
@@ -687,8 +687,8 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
                     height: 120,
                     decoration: BoxDecoration(
                       color: passed
-                          ? AppColors.success.withOpacity(0.1)
-                          : AppColors.warning.withOpacity(0.1),
+                          ? AppOverlays.success10
+                          : AppOverlays.warning10,
                       shape: BoxShape.circle,
                     ),
                     child: Center(

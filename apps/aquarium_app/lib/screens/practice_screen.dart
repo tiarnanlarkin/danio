@@ -38,7 +38,7 @@ class PracticeScreen extends ConsumerWidget {
               width: 120,
               height: 120,
               decoration: BoxDecoration(
-                color: AppColors.success.withOpacity(0.1),
+                color: AppOverlays.success10,
                 shape: BoxShape.circle,
               ),
               child: const Center(
@@ -126,9 +126,9 @@ class PracticeScreen extends ConsumerWidget {
         Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: AppColors.info.withOpacity(0.1),
+            color: AppOverlays.info10,
             borderRadius: AppRadius.mediumRadius,
-            border: Border.all(color: AppColors.info.withOpacity(0.3)),
+            border: Border.all(color: AppOverlays.info30),
           ),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -257,7 +257,7 @@ class PracticeScreen extends ConsumerWidget {
                     vertical: 6,
                   ),
                   decoration: BoxDecoration(
-                    color: AppColors.accent.withOpacity(0.2),
+                    color: AppOverlays.accent20,
                     borderRadius: AppRadius.mediumRadius,
                   ),
                   child: Row(
@@ -423,7 +423,7 @@ class _PracticeLessonScreenState extends ConsumerState<PracticeLessonScreen> {
                   vertical: 6,
                 ),
                 decoration: BoxDecoration(
-                  color: AppColors.accent.withOpacity(0.2),
+                  color: AppOverlays.accent20,
                   borderRadius: AppRadius.mediumRadius,
                 ),
                 child: Row(
@@ -457,7 +457,7 @@ class _PracticeLessonScreenState extends ConsumerState<PracticeLessonScreen> {
           Container(
             width: double.infinity,
             padding: const EdgeInsets.all(12),
-            color: AppColors.info.withOpacity(0.1),
+            color: AppOverlays.info10,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -561,9 +561,9 @@ class _PracticeLessonScreenState extends ConsumerState<PracticeLessonScreen> {
         return Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: AppColors.primary.withOpacity(0.1),
+            color: AppOverlays.primary10,
             borderRadius: AppRadius.mediumRadius,
-            border: Border.all(color: AppColors.primary.withOpacity(0.3)),
+            border: Border.all(color: AppOverlays.primary30),
           ),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -585,9 +585,9 @@ class _PracticeLessonScreenState extends ConsumerState<PracticeLessonScreen> {
         return Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: AppColors.success.withOpacity(0.1),
+            color: AppOverlays.success10,
             borderRadius: AppRadius.mediumRadius,
-            border: Border.all(color: AppColors.success.withOpacity(0.3)),
+            border: Border.all(color: AppOverlays.success30),
           ),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -616,9 +616,9 @@ class _PracticeLessonScreenState extends ConsumerState<PracticeLessonScreen> {
         return Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: AppColors.warning.withOpacity(0.1),
+            color: AppOverlays.warning10,
             borderRadius: AppRadius.mediumRadius,
-            border: Border.all(color: AppColors.warning.withOpacity(0.3)),
+            border: Border.all(color: AppOverlays.warning30),
           ),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -647,9 +647,9 @@ class _PracticeLessonScreenState extends ConsumerState<PracticeLessonScreen> {
         return Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: Colors.purple.withOpacity(0.1),
+            color: AppOverlays.purple10,
             borderRadius: AppRadius.mediumRadius,
-            border: Border.all(color: Colors.purple.withOpacity(0.3)),
+            border: Border.all(color: AppOverlays.purple30),
           ),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,

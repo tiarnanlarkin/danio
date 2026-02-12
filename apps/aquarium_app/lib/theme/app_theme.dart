@@ -328,7 +328,19 @@ class AppOverlays {
   
   // Info color overlays (AppColors.info = 0xFF5C9FBF)
   static const Color info10 = Color(0x1A5C9FBF);  // 10%
+  static const Color info20 = Color(0x335C9FBF);  // 20%
   static const Color info30 = Color(0x4D5C9FBF);  // 30%
+  
+  // Warning color overlays (AppColors.warning = 0xFFC99524)
+  static const Color warning10 = Color(0x1AC99524);  // 10%
+  static const Color warning30 = Color(0x4DC99524);  // 30%
+  
+  // Success additional overlays
+  static const Color success30 = Color(0x4D5AAF7A);  // 30%
+  
+  // Purple overlays (Colors.purple = 0xFF9C27B0)
+  static const Color purple10 = Color(0x1A9C27B0);  // 10%
+  static const Color purple30 = Color(0x4D9C27B0);  // 30%
 }
 
 class AppRadius {
