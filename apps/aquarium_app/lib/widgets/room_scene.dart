@@ -1736,21 +1736,36 @@ class _ThemedAquarium extends StatelessWidget {
                 ),
               ),
             ] else ...[
-              // Static drawn fish (original)
-              Positioned(
-                top: height * 0.22,
-                left: width * 0.2,
-                child: _SoftFish(size: 28, color: theme.fish1),
+              // Animated swimming fish
+              _AnimatedSwimmingFish(
+                size: 28,
+                color: theme.fish1,
+                tankWidth: width,
+                tankHeight: height,
+                baseTop: 0.22,
+                swimSpeed: 10.0,
+                verticalBob: 12.0,
+                startOffset: 0.0,
               ),
-              Positioned(
-                top: height * 0.4,
-                right: width * 0.18,
-                child: _SoftFish(size: 24, color: theme.fish2, flip: true),
+              _AnimatedSwimmingFish(
+                size: 24,
+                color: theme.fish2,
+                tankWidth: width,
+                tankHeight: height,
+                baseTop: 0.40,
+                swimSpeed: 8.0,
+                verticalBob: 18.0,
+                startOffset: 0.6,
               ),
-              Positioned(
-                top: height * 0.55,
-                left: width * 0.45,
-                child: _SoftFish(size: 20, color: theme.fish3),
+              _AnimatedSwimmingFish(
+                size: 20,
+                color: theme.fish3,
+                tankWidth: width,
+                tankHeight: height,
+                baseTop: 0.55,
+                swimSpeed: 12.0,
+                verticalBob: 10.0,
+                startOffset: 0.3,
               ),
             ],
 
@@ -1956,6 +1971,108 @@ class _FishPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
+
+/// Animated fish that swims smoothly across the tank
+class _AnimatedSwimmingFish extends StatefulWidget {
+  final double size;
+  final Color color;
+  final double swimSpeed; // seconds for one swim cycle
+  final double verticalBob; // how much to bob up/down
+  final double startOffset; // 0-1, where in the animation to start
+  final double tankWidth;
+  final double tankHeight;
+  final double baseTop; // base Y position (0-1 of tank height)
+
+  const _AnimatedSwimmingFish({
+    required this.size,
+    required this.color,
+    required this.tankWidth,
+    required this.tankHeight,
+    this.swimSpeed = 8.0,
+    this.verticalBob = 15.0,
+    this.startOffset = 0.0,
+    this.baseTop = 0.3,
+  });
+
+  @override
+  State<_AnimatedSwimmingFish> createState() => _AnimatedSwimmingFishState();
+}
+
+class _AnimatedSwimmingFishState extends State<_AnimatedSwimmingFish>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _swimAnimation;
+  late Animation<double> _bobAnimation;
+  bool _facingRight = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: Duration(milliseconds: (widget.swimSpeed * 1000).toInt()),
+      vsync: this,
+    );
+
+    // Swim horizontally across tank
+    _swimAnimation = Tween<double>(begin: -0.1, end: 1.1).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.linear),
+    );
+
+    // Gentle vertical bobbing
+    _bobAnimation = Tween<double>(begin: -1.0, end: 1.0).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeInOutSine),
+    );
+
+    // Start at offset position
+    _controller.value = widget.startOffset;
+
+    _controller.addStatusListener((status) {
+      if (status == AnimationStatus.completed) {
+        setState(() {
+          _facingRight = !_facingRight;
+        });
+        _controller.reverse();
+      } else if (status == AnimationStatus.dismissed) {
+        setState(() {
+          _facingRight = !_facingRight;
+        });
+        _controller.forward();
+      }
+    });
+
+    _controller.forward();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _controller,
+      builder: (context, child) {
+        final swimX = _swimAnimation.value * widget.tankWidth;
+        final bobY = _bobAnimation.value * widget.verticalBob;
+        final baseY = widget.baseTop * widget.tankHeight;
+
+        return Positioned(
+          left: swimX - widget.size,
+          top: baseY + bobY,
+          child: Transform.scale(
+            scaleX: _facingRight ? 1 : -1,
+            child: _SoftFish(
+              size: widget.size,
+              color: widget.color,
+            ),
+          ),
+        );
+      },
+    );
+  }
 }
 
 class _SoftBubbles extends StatelessWidget {
