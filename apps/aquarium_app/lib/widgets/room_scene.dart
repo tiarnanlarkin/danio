@@ -480,7 +480,7 @@ class _CozyRoomPainter extends CustomPainter {
       Offset(0, floorTop - 6),
       Offset(w, floorTop - 6),
       Paint()
-        ..color = Colors.white.withOpacity(0.2)
+        ..color = AppColors.whiteAlpha20
         ..strokeWidth = 1,
     );
 
@@ -1796,9 +1796,9 @@ class _ThemedAquarium extends StatelessWidget {
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     colors: [
-                      Colors.white.withOpacity(0.0),
-                      Colors.white.withOpacity(0.35),
-                      Colors.white.withOpacity(0.0),
+                      Colors.transparent,
+                      AppColors.whiteAlpha35,
+                      Colors.transparent,
                     ],
                   ),
                   borderRadius: const BorderRadius.vertical(

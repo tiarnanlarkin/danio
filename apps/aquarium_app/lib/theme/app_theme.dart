@@ -70,6 +70,67 @@ class AppColors {
     0xFF9DAAB5,
   ); // Lighter gray (WCAG AA: 6.46:1 on #1A2634, 5.34:1 on #243447)
 
+  // ============================================================================
+  // PRE-COMPUTED ALPHA COLORS
+  // ============================================================================
+  // Instead of using .withOpacity() (which creates new Color objects on every
+  // build and causes GC pressure), use these pre-computed alpha colors.
+  //
+  // Naming convention: [color]Alpha[opacity]
+  // Example: whiteAlpha50 = white at 50% opacity (0x80 = 128/255 ≈ 0.5)
+  //
+  // Alpha hex values:
+  // 0.05 = 0x0D, 0.08 = 0x14, 0.10 = 0x1A, 0.12 = 0x1F, 0.15 = 0x26,
+  // 0.20 = 0x33, 0.25 = 0x40, 0.30 = 0x4D, 0.35 = 0x59, 0.40 = 0x66,
+  // 0.50 = 0x80, 0.60 = 0x99, 0.70 = 0xB3, 0.80 = 0xCC, 0.85 = 0xD9,
+  // 0.90 = 0xE6, 0.95 = 0xF2
+  // ============================================================================
+
+  // White with alpha (most common for overlays, glassmorphism)
+  static const Color whiteAlpha05 = Color(0x0DFFFFFF);
+  static const Color whiteAlpha08 = Color(0x14FFFFFF);
+  static const Color whiteAlpha10 = Color(0x1AFFFFFF);
+  static const Color whiteAlpha12 = Color(0x1FFFFFFF);
+  static const Color whiteAlpha15 = Color(0x26FFFFFF);
+  static const Color whiteAlpha20 = Color(0x33FFFFFF);
+  static const Color whiteAlpha25 = Color(0x40FFFFFF);
+  static const Color whiteAlpha30 = Color(0x4DFFFFFF);
+  static const Color whiteAlpha35 = Color(0x59FFFFFF);
+  static const Color whiteAlpha40 = Color(0x66FFFFFF);
+  static const Color whiteAlpha50 = Color(0x80FFFFFF);
+  static const Color whiteAlpha60 = Color(0x99FFFFFF);
+  static const Color whiteAlpha70 = Color(0xB3FFFFFF);
+  static const Color whiteAlpha80 = Color(0xCCFFFFFF);
+  static const Color whiteAlpha85 = Color(0xD9FFFFFF);
+  static const Color whiteAlpha90 = Color(0xE6FFFFFF);
+  static const Color whiteAlpha95 = Color(0xF2FFFFFF);
+
+  // Black with alpha (for shadows, darkening overlays)
+  static const Color blackAlpha05 = Color(0x0D000000);
+  static const Color blackAlpha08 = Color(0x14000000);
+  static const Color blackAlpha10 = Color(0x1A000000);
+  static const Color blackAlpha12 = Color(0x1F000000);
+  static const Color blackAlpha15 = Color(0x26000000);
+  static const Color blackAlpha20 = Color(0x33000000);
+  static const Color blackAlpha25 = Color(0x40000000);
+  static const Color blackAlpha30 = Color(0x4D000000);
+  static const Color blackAlpha35 = Color(0x59000000);
+  static const Color blackAlpha40 = Color(0x66000000);
+  static const Color blackAlpha50 = Color(0x80000000);
+  static const Color blackAlpha60 = Color(0x99000000);
+  static const Color blackAlpha70 = Color(0xB3000000);
+  static const Color blackAlpha80 = Color(0xCC000000);
+  static const Color blackAlpha85 = Color(0xD9000000);
+  static const Color blackAlpha90 = Color(0xE6000000);
+
+  // Primary color with alpha (for subtle tints)
+  static const Color primaryAlpha10 = Color(0x1A3D7068);
+  static const Color primaryAlpha15 = Color(0x263D7068);
+  static const Color primaryAlpha20 = Color(0x333D7068);
+  static const Color primaryAlpha30 = Color(0x4D3D7068);
+  static const Color primaryAlpha40 = Color(0x663D7068);
+  static const Color primaryAlpha50 = Color(0x803D7068);
+
   // Gradients
   static const LinearGradient primaryGradient = LinearGradient(
     begin: Alignment.topLeft,

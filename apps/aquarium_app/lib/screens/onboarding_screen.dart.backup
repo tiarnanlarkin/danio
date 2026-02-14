@@ -118,7 +118,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                   shape: BoxShape.circle,
                   gradient: RadialGradient(
                     colors: [
-                      AppColors.whiteAlpha15,
+                      Colors.white.withOpacity(0.15),
                       Colors.transparent,
                     ],
                   ),
@@ -135,7 +135,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                   shape: BoxShape.circle,
                   gradient: RadialGradient(
                     colors: [
-                      AppColors.whiteAlpha10,
+                      Colors.white.withOpacity(0.1),
                       Colors.transparent,
                     ],
                   ),
@@ -156,7 +156,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                         TextButton(
                           onPressed: _completeOnboarding,
                           style: TextButton.styleFrom(
-                            foregroundColor: AppColors.whiteAlpha80,
+                            foregroundColor: Colors.white.withOpacity(0.8),
                           ),
                           child: const Text('Skip'),
                         ),
@@ -206,10 +206,10 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                     width: 160,
                     height: 160,
                     decoration: BoxDecoration(
-                      color: AppColors.whiteAlpha15,
+                      color: Colors.white.withOpacity(0.15),
                       borderRadius: BorderRadius.circular(40),
                       border: Border.all(
-                        color: AppColors.whiteAlpha30,
+                        color: Colors.white.withOpacity(0.3),
                         width: 1.5,
                       ),
                     ),
@@ -242,7 +242,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
               Text(
                 page.description,
                 style: AppTypography.bodyLarge.copyWith(
-                  color: AppColors.whiteAlpha85,
+                  color: Colors.white.withOpacity(0.85),
                   height: 1.5,
                 ),
                 textAlign: TextAlign.center,
@@ -280,12 +280,12 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                   decoration: BoxDecoration(
                     color: _currentPage == index
                         ? Colors.white
-                        : AppColors.whiteAlpha40,
+                        : Colors.white.withOpacity(0.4),
                     borderRadius: BorderRadius.circular(5),
                     boxShadow: _currentPage == index
                         ? [
                             BoxShadow(
-                              color: AppColors.whiteAlpha50,
+                              color: Colors.white.withOpacity(0.5),
                               blurRadius: 8,
                             ),
                           ]
@@ -403,10 +403,10 @@ class _GlassButton extends StatelessWidget {
             child: Container(
               padding: const EdgeInsets.symmetric(vertical: 16),
               decoration: BoxDecoration(
-                color: AppColors.whiteAlpha15,
+                color: Colors.white.withOpacity(0.15),
                 borderRadius: BorderRadius.circular(16),
                 border: Border.all(
-                  color: AppColors.whiteAlpha25,
+                  color: Colors.white.withOpacity(0.25),
                 ),
               ),
               child: Center(child: child),
@@ -472,12 +472,12 @@ class _PrimaryButtonState extends State<_PrimaryButton>
                 borderRadius: BorderRadius.circular(16),
                 boxShadow: [
                   BoxShadow(
-                    color: AppColors.blackAlpha15,
+                    color: Colors.black.withOpacity(0.15),
                     blurRadius: 20,
                     offset: const Offset(0, 8),
                   ),
                   BoxShadow(
-                    color: AppColors.whiteAlpha80,
+                    color: Colors.white.withOpacity(0.8),
                     blurRadius: 1,
                     offset: const Offset(0, -1),
                   ),

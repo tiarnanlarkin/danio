@@ -184,24 +184,24 @@ class _GlassCardState extends State<GlassCard> with SingleTickerProviderStateMix
     return BoxDecoration(
       color: tint != null
           ? tint.withOpacity(isDark ? 0.15 : 0.25)
-          : (isDark ? Colors.white.withOpacity(0.08) : Colors.white.withOpacity(0.7)),
+          : (isDark ? AppColors.whiteAlpha08 : AppColors.whiteAlpha70),
       borderRadius: radius,
       border: Border.all(
         color: isDark 
-            ? Colors.white.withOpacity(0.12) 
-            : Colors.white.withOpacity(0.5),
+            ? AppColors.whiteAlpha12 
+            : AppColors.whiteAlpha50,
         width: 1.5,
       ),
       boxShadow: [
         // Subtle inner glow
         BoxShadow(
-          color: Colors.white.withOpacity(isDark ? 0.05 : 0.2),
+          color: isDark ? AppColors.whiteAlpha05 : AppColors.whiteAlpha20,
           blurRadius: 1,
           offset: const Offset(0, 1),
         ),
         // Main shadow
         BoxShadow(
-          color: Colors.black.withOpacity(isDark ? 0.3 : 0.06),
+          color: isDark ? AppColors.blackAlpha30 : AppColors.blackAlpha05,
           blurRadius: 20,
           offset: const Offset(0, 8),
         ),
@@ -217,21 +217,21 @@ class _GlassCardState extends State<GlassCard> with SingleTickerProviderStateMix
       boxShadow: [
         // First layer - close soft shadow
         BoxShadow(
-          color: Colors.black.withOpacity(isDark ? 0.2 : 0.04),
+          color: isDark ? AppColors.blackAlpha20 : AppColors.blackAlpha05,
           blurRadius: 8,
           spreadRadius: 0,
           offset: const Offset(0, 2),
         ),
         // Second layer - medium distance
         BoxShadow(
-          color: Colors.black.withOpacity(isDark ? 0.15 : 0.03),
+          color: isDark ? AppColors.blackAlpha15 : Color(0x08000000), // 0.03
           blurRadius: 20,
           spreadRadius: 0,
           offset: const Offset(0, 8),
         ),
         // Third layer - far, very soft
         BoxShadow(
-          color: Colors.black.withOpacity(isDark ? 0.1 : 0.02),
+          color: isDark ? AppColors.blackAlpha10 : Color(0x05000000), // 0.02
           blurRadius: 40,
           spreadRadius: 0,
           offset: const Offset(0, 16),
@@ -369,17 +369,17 @@ class SoftCard extends StatelessWidget {
         borderRadius: radius,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(isDark ? 0.2 : 0.04),
+            color: isDark ? AppColors.blackAlpha20 : AppColors.blackAlpha05,
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
           BoxShadow(
-            color: Colors.black.withOpacity(isDark ? 0.15 : 0.03),
+            color: isDark ? AppColors.blackAlpha15 : const Color(0x08000000), // 0.03
             blurRadius: 20,
             offset: const Offset(0, 8),
           ),
           BoxShadow(
-            color: Colors.black.withOpacity(isDark ? 0.1 : 0.02),
+            color: isDark ? AppColors.blackAlpha10 : const Color(0x05000000), // 0.02
             blurRadius: 40,
             offset: const Offset(0, 16),
           ),
