@@ -229,6 +229,8 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
                         itemCount: livestock.length,
                         itemBuilder: (context, index) {
                           final l = livestock[index];
+                          final reduceMotion = MediaQuery.of(context).disableAnimations;
+                          
                           return _LivestockCard(
                             livestock: l,
                             tank: tank,
@@ -249,9 +251,17 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
                             onEdit: () => _showEditDialog(context, ref, l),
                             onDelete: () => _confirmDelete(context, ref, l),
                           )
-                              .animate()
-                              .fadeIn(delay: Duration(milliseconds: (50 * index).clamp(0, 500)), duration: 300.ms)
-                              .slideX(begin: 0.1, end: 0, delay: Duration(milliseconds: (50 * index).clamp(0, 500)), duration: 300.ms);
+                              .animate(autoPlay: !reduceMotion)
+                              .fadeIn(
+                                duration: reduceMotion ? 0.ms : 300.ms,
+                                delay: reduceMotion ? 0.ms : (index * 50).ms,
+                              )
+                              .slideY(
+                                begin: reduceMotion ? 0 : 0.2,
+                                end: 0,
+                                duration: reduceMotion ? 0.ms : 300.ms,
+                                delay: reduceMotion ? 0.ms : (index * 50).ms,
+                              );
                         },
                       ),
                     ),

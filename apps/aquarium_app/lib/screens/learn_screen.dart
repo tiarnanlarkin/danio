@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import '../data/lesson_content.dart';
 import '../data/species_database.dart';
@@ -200,6 +201,7 @@ class LearnScreen extends ConsumerWidget {
                     final completedInPath = path.lessons
                         .where((l) => profile.completedLessons.contains(l.id))
                         .length;
+                    final reduceMotion = MediaQuery.of(context).disableAnimations;
 
                     return Padding(
                       padding: const EdgeInsets.symmetric(
@@ -222,7 +224,18 @@ class LearnScreen extends ConsumerWidget {
                             ),
                           );
                         },
-                      ),
+                      )
+                          .animate(autoPlay: !reduceMotion)
+                          .fadeIn(
+                            duration: reduceMotion ? 0.ms : 300.ms,
+                            delay: reduceMotion ? 0.ms : (index * 50).ms,
+                          )
+                          .slideY(
+                            begin: reduceMotion ? 0 : 0.2,
+                            end: 0,
+                            duration: reduceMotion ? 0.ms : 300.ms,
+                            delay: reduceMotion ? 0.ms : (index * 50).ms,
+                          ),
                     );
                   }, childCount: LessonContent.allPaths.length),
                 ),
