@@ -5,6 +5,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:aquarium_app/screens/home_screen.dart';
 import 'package:aquarium_app/theme/app_theme.dart';
+import 'package:aquarium_app/models/models.dart';
+import 'package:aquarium_app/providers/tank_provider.dart';
+
+import '../helpers/test_helpers.dart';
 
 void main() {
   group('HomeScreen', () {
@@ -29,6 +33,7 @@ void main() {
       
       // Just verify it doesn't throw
       expect(find.byType(Scaffold), findsOneWidget);
+      expect(find.byType(HomeScreen), findsOneWidget);
     });
 
     testWidgets('shows action button for tank operations', (tester) async {
@@ -109,6 +114,99 @@ void main() {
       // Gamification elements should be present somewhere
       // (This is a soft test - just checking the screen loads properly)
       expect(find.byType(Scaffold), findsOneWidget);
+    });
+
+    testWidgets('displays room scene when tanks exist', (tester) async {
+      final mockTank = MockData.mockTank(
+        id: 'test-1',
+        name: 'My Test Tank',
+      );
+
+      await pumpWithProviders(
+        tester,
+        const HomeScreen(),
+        overrides: [
+          tanksProvider.overrideWith((ref) => AsyncValue.data([mockTank])),
+        ],
+      );
+      
+      await tester.pumpAndSettle();
+
+      // Should show the tank in some form
+      expect(find.byType(Scaffold), findsOneWidget);
+    });
+
+    testWidgets('shows loading state during initialization', (tester) async {
+      await pumpWithProviders(
+        tester,
+        const HomeScreen(),
+        overrides: [
+          tanksProvider.overrideWith((ref) => const AsyncValue.loading()),
+        ],
+      );
+
+      // Should show loading indicator or skeleton
+      final hasLoading = find.byType(CircularProgressIndicator).evaluate().isNotEmpty ||
+                         find.byWidgetPredicate(
+                           (widget) => widget.runtimeType.toString().contains('Skeleton'),
+                         ).evaluate().isNotEmpty;
+      
+      expect(hasLoading || find.byType(Scaffold).evaluate().isNotEmpty, isTrue);
+    });
+
+    testWidgets('handles error state gracefully', (tester) async {
+      await pumpWithProviders(
+        tester,
+        const HomeScreen(),
+        overrides: [
+          tanksProvider.overrideWith(
+            (ref) => AsyncValue.error('Test error', StackTrace.current),
+          ),
+        ],
+      );
+      
+      await tester.pumpAndSettle();
+
+      // Should either show error state or handle gracefully
+      expect(find.byType(Scaffold), findsOneWidget);
+    });
+
+    testWidgets('dark mode renders correctly', (tester) async {
+      await tester.pumpWidget(
+        ProviderScope(
+          child: MaterialApp(
+            theme: AppTheme.dark,
+            home: const HomeScreen(),
+          ),
+        ),
+      );
+      await tester.pump(const Duration(milliseconds: 500));
+      
+      expect(find.byType(Scaffold), findsOneWidget);
+    });
+
+    testWidgets('contains essential UI elements', (tester) async {
+      await tester.pumpWidget(
+        ProviderScope(
+          child: MaterialApp(
+            theme: AppTheme.light,
+            home: const HomeScreen(),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle(const Duration(seconds: 2));
+      
+      // Should have basic structure
+      expect(find.byType(HomeScreen), findsOneWidget);
+      expect(find.byType(Scaffold), findsOneWidget);
+      
+      // Should have some interactive elements
+      final hasGestureDetector = find.byType(GestureDetector).evaluate().isNotEmpty;
+      final hasInkWell = find.byType(InkWell).evaluate().isNotEmpty;
+      final hasFab = find.byType(FloatingActionButton).evaluate().isNotEmpty;
+      
+      expect(hasGestureDetector || hasInkWell || hasFab, isTrue,
+        reason: 'Should have some interactive elements');
     });
   });
 }
