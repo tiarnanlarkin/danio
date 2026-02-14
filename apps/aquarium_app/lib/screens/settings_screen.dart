@@ -1150,7 +1150,7 @@ class _SectionHeader extends StatelessWidget {
                 end: Alignment.bottomCenter,
                 colors: [
                   AppColors.primary,
-                  AppColors.primary.withOpacity(0.5),
+                  AppColors.primaryAlpha50,
                 ],
               ),
               borderRadius: BorderRadius.circular(2),

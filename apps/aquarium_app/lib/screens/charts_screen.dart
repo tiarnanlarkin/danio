@@ -716,7 +716,7 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
         decoration: BoxDecoration(
           color: AppOverlays.success10,
           borderRadius: AppRadius.mediumRadius,
-          border: Border.all(color: AppColors.success.withOpacity(0.3)),
+          border: Border.all(color: AppColors.successAlpha30),
         ),
         child: Row(
           children: [
@@ -744,7 +744,7 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
       decoration: BoxDecoration(
         color: AppOverlays.warning10,
         borderRadius: AppRadius.mediumRadius,
-        border: Border.all(color: AppColors.warning.withOpacity(0.3)),
+        border: Border.all(color: AppColors.warningAlpha30),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
