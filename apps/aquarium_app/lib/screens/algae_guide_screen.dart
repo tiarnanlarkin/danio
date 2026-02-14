@@ -382,10 +382,10 @@ class _CrewCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      margin: const EdgeInsets.only(bottom: 8),
-      child: Padding(
-        padding: const EdgeInsets.all(12),
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: AppCard(
+        padding: AppCardPadding.compact,
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
