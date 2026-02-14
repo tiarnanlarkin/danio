@@ -148,7 +148,7 @@ class EquipmentScreen extends ConsumerWidget {
 
           return RefreshIndicator(
             onRefresh: () async {
-              ref.invalidate(equipmentProvider(widget.tankId));
+              ref.invalidate(equipmentProvider(tankId));
               await Future.delayed(const Duration(milliseconds: 500));
             },
             child: ListView(

@@ -865,7 +865,7 @@ class _NetPainter extends CustomPainter {
 
     // Net mesh lines
     final meshPaint = Paint()
-      ..color = AppColors.studyGoldAlpha60
+      ..color = AppColors.studyGoldAlpha40
       ..strokeWidth = 0.5;
 
     for (var i = 0.2; i < 0.9; i += 0.15) {
