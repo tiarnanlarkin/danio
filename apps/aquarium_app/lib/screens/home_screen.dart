@@ -179,6 +179,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             // The room scene
             Positioned.fill(
               child: LivingRoomScene(
+                tankId: currentTank.id,
                 tankName: currentTank.name,
                 tankVolume: currentTank.volumeLitres,
                 theme: ref.watch(currentRoomThemeProvider),

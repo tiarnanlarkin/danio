@@ -15,6 +15,7 @@ import 'rive/rive_water_effect.dart';
 /// Themeable room scene - supports multiple visual styles
 /// Includes day/night ambient lighting overlay based on real time.
 class LivingRoomScene extends ConsumerWidget {
+  final String tankId;
   final String tankName;
   final double tankVolume;
   final double? temperature;
@@ -36,6 +37,7 @@ class LivingRoomScene extends ConsumerWidget {
 
   const LivingRoomScene({
     super.key,
+    required this.tankId,
     required this.tankName,
     required this.tankVolume,
     required this.theme,
@@ -130,13 +132,16 @@ class LivingRoomScene extends ConsumerWidget {
                 top: h * 0.26,
                 left: w * 0.1,
                 right: w * 0.1,
-                child: RippleContainer(
-                  onTap: onTankTap,
-                  child: _ThemedAquarium(
-                    width: w * 0.8,
-                    height: h * 0.30,
-                    theme: theme,
-                    useRiveFish: useRiveFish,
+                child: Hero(
+                  tag: 'tank-card-$tankId',
+                  child: RippleContainer(
+                    onTap: onTankTap,
+                    child: _ThemedAquarium(
+                      width: w * 0.8,
+                      height: h * 0.30,
+                      theme: theme,
+                      useRiveFish: useRiveFish,
+                    ),
                   ),
                 ),
               ),
@@ -411,7 +416,7 @@ class _CozyRoomPainter extends CustomPainter {
 
     // === VISIBLE WALL TEXTURE (subtle vertical stripes) ===
     final texturePaint = Paint()
-      ..color = (_isDarkTheme ? AppColors.whiteAlpha05 : AppColors.brownAlpha05)
+      ..color = (_isDarkTheme ? AppColors.whiteAlpha05 : AppColors.blackAlpha05)
       ..strokeWidth = 1.5;
     
     for (var x = 0.0; x < w; x += 25) {
