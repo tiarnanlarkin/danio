@@ -9,6 +9,7 @@ import '../widgets/empty_state.dart';
 import '../widgets/error_state.dart';
 import '../widgets/skeleton_loader.dart';
 import 'friend_comparison_screen.dart';
+import '../widgets/mascot/mascot_widgets.dart';
 
 /// Social features screen - friends list and activity feed
 class FriendsScreen extends ConsumerStatefulWidget {
@@ -200,11 +201,12 @@ class _FriendsListView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     if (friends.isEmpty) {
-      return EmptyState(
+      return EmptyState.withMascot(
         icon: Icons.people_outline,
         title: 'No friends yet',
         message:
             'Add friends to compare progress and share your aquarium journey!',
+        mascotContext: MascotContext.encouragement,
         actionLabel: 'Tap + above to add friends',
         onAction: () {
           AppFeedback.showInfo(context, 'Tap the + icon above to add friends');
@@ -463,10 +465,11 @@ class _ActivityFeedView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (activities.isEmpty) {
-      return const EmptyState(
+      return EmptyState.withMascot(
         icon: Icons.feed_outlined,
         title: 'No recent activity',
         message: 'Your friends\' achievements will appear here once they start learning!',
+        mascotContext: MascotContext.encouragement,
       );
     }
 

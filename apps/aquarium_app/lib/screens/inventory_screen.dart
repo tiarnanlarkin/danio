@@ -8,6 +8,7 @@ import '../providers/inventory_provider.dart';
 import '../providers/hearts_provider.dart';
 import '../widgets/empty_state.dart';
 import '../widgets/error_state.dart';
+import '../widgets/mascot/mascot_widgets.dart';
 
 /// Inventory colors - warm treasure chest theme
 class InventoryColors {
@@ -347,10 +348,11 @@ class _InventoryGrid extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (items.isEmpty) {
-      return EmptyState(
+      return EmptyState.withMascot(
         icon: Icons.inventory_2_outlined,
         title: emptyTitle,
         message: emptyMessage,
+        mascotContext: MascotContext.encouragement,
       );
     }
 

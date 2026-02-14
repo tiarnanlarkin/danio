@@ -11,6 +11,7 @@ import '../widgets/core/bubble_loader.dart';
 import '../widgets/empty_state.dart';
 import '../widgets/error_state.dart';
 import 'friend_comparison_screen.dart';
+import '../widgets/mascot/mascot_widgets.dart';
 
 /// Standalone activity feed screen
 class ActivityFeedScreen extends ConsumerStatefulWidget {
@@ -219,10 +220,11 @@ class _ActivityFeedView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (activities.isEmpty) {
-      return EmptyState(
+      return EmptyState.withMascot(
         icon: Icons.feed_outlined,
         title: 'No activities yet',
         message: 'Your friends\' achievements and progress will appear here',
+        mascotContext: MascotContext.encouragement,
         actionLabel: 'Add friends to see activity',
       );
     }

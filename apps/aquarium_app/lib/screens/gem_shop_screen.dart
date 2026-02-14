@@ -10,6 +10,7 @@ import '../data/shop_catalog.dart';
 import '../theme/app_theme.dart';
 import '../widgets/empty_state.dart';
 import 'inventory_screen.dart';
+import '../widgets/mascot/mascot_widgets.dart';
 
 /// Gem Shop colors - jewel/treasure theme (WCAG AA compliant)
 class GemShopColors {
@@ -428,10 +429,11 @@ class _ShopItemGrid extends ConsumerWidget {
     final items = ShopCatalog.getByCategory(category);
 
     if (items.isEmpty) {
-      return const EmptyState(
+      return EmptyState.withMascot(
         icon: Icons.shopping_bag_outlined,
         title: 'No items available',
         message: 'Check back later for new items in this category!',
+        mascotContext: MascotContext.encouragement,
       );
     }
 

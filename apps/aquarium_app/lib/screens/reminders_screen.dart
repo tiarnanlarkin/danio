@@ -7,6 +7,7 @@ import '../theme/app_theme.dart';
 import '../utils/app_feedback.dart';
 import '../widgets/empty_state.dart';
 import '../widgets/core/bubble_loader.dart';
+import '../widgets/mascot/mascot_widgets.dart';
 
 class RemindersScreen extends ConsumerStatefulWidget {
   const RemindersScreen({super.key});
@@ -162,11 +163,12 @@ class _RemindersScreenState extends ConsumerState<RemindersScreen> {
       body: _isLoading
           ? const Center(child: BubbleLoader())
           : _reminders.isEmpty
-          ? EmptyState(
+          ? EmptyState.withMascot(
               icon: Icons.notifications_none,
               title: 'No reminders set',
               message:
                   'Set up reminders for feeding, water changes, and maintenance tasks',
+              mascotContext: MascotContext.encouragement,
               actionLabel: 'Add Reminder',
               onAction: _addReminder,
             )

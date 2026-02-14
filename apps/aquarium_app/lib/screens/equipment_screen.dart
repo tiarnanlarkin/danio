@@ -20,6 +20,7 @@ import '../utils/skeleton_placeholders.dart';
 import '../widgets/core/app_card.dart';
 import '../widgets/empty_state.dart';
 import '../widgets/error_state.dart';
+import '../widgets/mascot/mascot_widgets.dart';
 
 const _uuid = Uuid();
 
@@ -128,10 +129,11 @@ class EquipmentScreen extends ConsumerWidget {
         ),
         data: (equipment) {
           if (equipment.isEmpty) {
-            return EmptyState(
+            return EmptyState.withMascot(
               icon: Icons.settings,
               title: 'No equipment yet',
               message: 'Add your filters, heaters, lights, and other gear to track maintenance schedules',
+              mascotContext: MascotContext.noEquipment,
               actionLabel: 'Add Equipment',
               onAction: () => _showAddDialog(context, ref),
               tips: const [

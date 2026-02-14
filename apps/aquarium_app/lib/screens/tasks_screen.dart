@@ -13,6 +13,7 @@ import '../theme/app_theme.dart';
 import '../utils/app_feedback.dart';
 import '../widgets/empty_state.dart';
 import '../widgets/error_state.dart';
+import '../widgets/mascot/mascot_widgets.dart';
 
 const _uuid = Uuid();
 
@@ -35,11 +36,12 @@ class TasksScreen extends ConsumerWidget {
         ),
         data: (tasks) {
           if (tasks.isEmpty) {
-            return EmptyState(
+            return EmptyState.withMascot(
               icon: Icons.task_alt,
               title: 'No tasks yet',
               message:
                   'Set up reminders for water changes, testing, and maintenance to keep your tank healthy',
+              mascotContext: MascotContext.encouragement,
               actionLabel: 'Add Task',
               onAction: () => _showAddDialog(context, ref),
             );
