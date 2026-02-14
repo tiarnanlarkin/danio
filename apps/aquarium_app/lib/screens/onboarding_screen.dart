@@ -1,19 +1,24 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../services/onboarding_service.dart';
 import '../theme/app_theme.dart';
+import '../models/user_profile.dart';
+import '../models/tank.dart';
+import '../providers/user_profile_provider.dart';
 import 'onboarding/profile_creation_screen.dart';
 import 'onboarding/experience_assessment_screen.dart';
+import 'house_navigator.dart';
 
-class OnboardingScreen extends StatefulWidget {
+class OnboardingScreen extends ConsumerStatefulWidget {
   const OnboardingScreen({super.key});
 
   @override
-  State<OnboardingScreen> createState() => _OnboardingScreenState();
+  ConsumerState<OnboardingScreen> createState() => _OnboardingScreenState();
 }
 
-class _OnboardingScreenState extends State<OnboardingScreen>
+class _OnboardingScreenState extends ConsumerState<OnboardingScreen>
     with SingleTickerProviderStateMixin {
   final PageController _pageController = PageController();
   int _currentPage = 0;
@@ -147,18 +152,30 @@ class _OnboardingScreenState extends State<OnboardingScreen>
             SafeArea(
               child: Column(
                 children: [
-                  // Top bar with skip
+                  // Top bar with skip and quick start
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
+                        // Quick Start - prominent button
+                        TextButton.icon(
+                          onPressed: _quickStart,
+                          style: TextButton.styleFrom(
+                            foregroundColor: Colors.white,
+                            backgroundColor: AppColors.whiteAlpha15,
+                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                          ),
+                          icon: const Icon(Icons.flash_on, size: 20),
+                          label: const Text('Quick Start'),
+                        ),
+                        // Skip - goes to profile creation
                         TextButton(
                           onPressed: _completeOnboarding,
                           style: TextButton.styleFrom(
                             foregroundColor: AppColors.whiteAlpha80,
                           ),
-                          child: const Text('Skip'),
+                          child: const Text('Skip Intro'),
                         ),
                       ],
                     ),
@@ -365,6 +382,38 @@ class _OnboardingScreenState extends State<OnboardingScreen>
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(builder: (_) => const ExperienceAssessmentScreen()),
       );
+    }
+  }
+
+  /// Quick Start - Create default profile and skip all onboarding
+  Future<void> _quickStart() async {
+    try {
+      HapticFeedback.mediumImpact();
+      
+      // Create default beginner profile
+      await ref.read(userProfileProvider.notifier).createProfile(
+        name: 'Aquarist', // Default name
+        experienceLevel: ExperienceLevel.beginner,
+        primaryTankType: TankType.freshwater,
+        goals: [UserGoal.keepFishAlive, UserGoal.beautifulDisplay],
+      );
+
+      // Mark onboarding as complete
+      final service = await OnboardingService.getInstance();
+      await service.completeOnboarding();
+
+      if (mounted) {
+        // Go straight to main app
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (_) => const HouseNavigator()),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Quick start failed: $e')),
+        );
+      }
     }
   }
 }
