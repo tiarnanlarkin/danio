@@ -52,7 +52,7 @@ class ThemeGalleryScreen extends ConsumerWidget {
                       vertical: 4,
                     ),
                     decoration: BoxDecoration(
-                      color: AppColors.success.withOpacity(0.15),
+                      color: AppColors.successAlpha15,
                       borderRadius: AppRadius.smallRadius,
                     ),
                     child: Text(
