@@ -593,18 +593,20 @@ class _AddEquipmentSheetState extends State<_AddEquipmentSheet> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.only(
-        left: 16,
-        right: 16,
-        top: 16,
-        bottom: MediaQuery.of(context).viewInsets.bottom + 16,
-      ),
-      child: SingleChildScrollView(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
+    return FocusTraversalGroup(
+      policy: OrderedTraversalPolicy(),
+      child: Padding(
+        padding: EdgeInsets.only(
+          left: 16,
+          right: 16,
+          top: 16,
+          bottom: MediaQuery.of(context).viewInsets.bottom + 16,
+        ),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
             Text(
               widget.existing != null ? 'Edit Equipment' : 'Add Equipment',
               style: AppTypography.headlineMedium,
@@ -670,6 +672,7 @@ class _AddEquipmentSheetState extends State<_AddEquipmentSheet> {
             ),
           ],
         ),
+      ),
       ),
     );
   }

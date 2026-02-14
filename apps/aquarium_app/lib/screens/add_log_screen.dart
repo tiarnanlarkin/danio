@@ -172,26 +172,28 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(AppSpacing.md),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Type selector
-            _TypeSelector(
-              selected: _type,
-              onChanged: (type) => setState(() => _type = type),
-            ),
+      body: FocusTraversalGroup(
+        policy: OrderedTraversalPolicy(),
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(AppSpacing.md),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Type selector
+              _TypeSelector(
+                selected: _type,
+                onChanged: (type) => setState(() => _type = type),
+              ),
 
-            const SizedBox(height: AppSpacing.lg),
+              const SizedBox(height: AppSpacing.lg),
 
-            // Type-specific form
-            if (_type == LogType.waterTest) _buildWaterTestForm(),
-            if (_type == LogType.waterChange) _buildWaterChangeForm(),
-            if (_type == LogType.observation) _buildObservationForm(),
-            if (_type == LogType.medication) _buildMedicationForm(),
+              // Type-specific form
+              if (_type == LogType.waterTest) _buildWaterTestForm(),
+              if (_type == LogType.waterChange) _buildWaterChangeForm(),
+              if (_type == LogType.observation) _buildObservationForm(),
+              if (_type == LogType.medication) _buildMedicationForm(),
 
-            const SizedBox(height: AppSpacing.lg),
+              const SizedBox(height: AppSpacing.lg),
 
             // Photos
             Text('Photos (optional)', style: AppTypography.headlineSmall),
@@ -280,6 +282,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
               onChanged: (v) => _notes = v,
             ),
           ],
+        ),
         ),
       ),
     );

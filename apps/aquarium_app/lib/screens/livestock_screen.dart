@@ -821,18 +821,20 @@ class _AddLivestockSheetState extends State<_AddLivestockSheet> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.only(
-        left: 16,
-        right: 16,
-        top: 16,
-        bottom: MediaQuery.of(context).viewInsets.bottom + 16,
-      ),
-      child: SingleChildScrollView(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
+    return FocusTraversalGroup(
+      policy: OrderedTraversalPolicy(),
+      child: Padding(
+        padding: EdgeInsets.only(
+          left: 16,
+          right: 16,
+          top: 16,
+          bottom: MediaQuery.of(context).viewInsets.bottom + 16,
+        ),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
             Text(
               widget.existing != null ? 'Edit Livestock' : 'Add Livestock',
               style: AppTypography.headlineMedium,
@@ -965,6 +967,7 @@ class _AddLivestockSheetState extends State<_AddLivestockSheet> {
             ),
           ],
         ),
+      ),
       ),
     );
   }

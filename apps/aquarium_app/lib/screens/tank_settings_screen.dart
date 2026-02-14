@@ -94,10 +94,12 @@ class _TankSettingsScreenState extends ConsumerState<TankSettingsScreen> {
               ),
             ],
           ),
-          body: Form(
-            key: _formKey,
-            child: ListView(
-              padding: const EdgeInsets.all(AppSpacing.md),
+          body: FocusTraversalGroup(
+            policy: OrderedTraversalPolicy(),
+            child: Form(
+              key: _formKey,
+              child: ListView(
+                padding: const EdgeInsets.all(AppSpacing.md),
               children: [
                 Text('Basics', style: AppTypography.headlineSmall),
                 const SizedBox(height: 12),
@@ -332,6 +334,7 @@ class _TankSettingsScreenState extends ConsumerState<TankSettingsScreen> {
                 ),
                 const SizedBox(height: AppSpacing.lg),
               ],
+            ),
             ),
           ),
         );
