@@ -148,7 +148,7 @@ class _XpProgressBarState extends ConsumerState<XpProgressBar>
                           ),
                           boxShadow: [
                             BoxShadow(
-                              color: AppColors.primary.withOpacity(0.4),
+                              color: AppColors.primaryAlpha40,
                               blurRadius: 8,
                               offset: const Offset(0, 2),
                             ),
@@ -271,13 +271,13 @@ class XpProgressCard extends ConsumerWidget {
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
               colors: [
-                AppColors.warning.withOpacity(0.15),
+                AppColors.warningAlpha15,
                 AppColors.secondary.withOpacity(0.1),
               ],
             ),
             borderRadius: AppRadius.mediumRadius,
             border: Border.all(
-              color: AppColors.warning.withOpacity(0.3),
+              color: AppColors.warningAlpha30,
               width: 1.5,
             ),
           ),
