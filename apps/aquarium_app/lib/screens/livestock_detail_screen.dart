@@ -5,6 +5,7 @@ import '../models/models.dart';
 import '../providers/tank_provider.dart';
 import '../services/compatibility_service.dart';
 import '../theme/app_theme.dart';
+import '../widgets/core/app_card.dart';
 
 class LivestockDetailScreen extends ConsumerWidget {
   final String tankId;
@@ -107,15 +108,14 @@ class _HeaderCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.md),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                CircleAvatar(
+    return AppCard(
+      padding: AppCardPadding.standard,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              CircleAvatar(
                   radius: 32,
                   backgroundColor: AppOverlays.primary10,
                   child: const Icon(
@@ -186,8 +186,7 @@ class _HeaderCard extends StatelessWidget {
             ],
           ],
         ),
-      ),
-    );
+      );
   }
 
   Color _temperamentColor(String temperament) {
@@ -276,11 +275,10 @@ class _CompatibilityCard extends StatelessWidget {
         break;
     }
 
-    return Card(
-      color: color.withOpacity(0.05),
-      child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.md),
-        child: Column(
+    return AppCard(
+      padding: AppCardPadding.standard,
+      backgroundColor: color.withOpacity(0.05),
+      child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
@@ -306,8 +304,7 @@ class _CompatibilityCard extends StatelessWidget {
             ],
           ],
         ),
-      ),
-    );
+      );
   }
 }
 
@@ -375,15 +372,14 @@ class _CareGuideCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.md),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                const Icon(Icons.auto_stories, color: AppColors.primary),
+    return AppCard(
+      padding: AppCardPadding.standard,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              const Icon(Icons.auto_stories, color: AppColors.primary),
                 const SizedBox(width: AppSpacing.sm),
                 Text('Care Guide', style: AppTypography.headlineSmall),
               ],
@@ -416,12 +412,11 @@ class _CareGuideCard extends StatelessWidget {
             ),
           ],
         ),
-      ),
-    );
+      );
   }
 }
 
-class _CareRow extends StatelessWidget {
+class _CareRow extends StatelessWidget{
   final IconData icon;
   final String label;
   final String value;
@@ -464,15 +459,14 @@ class _ParametersCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.md),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                const Icon(Icons.science, color: AppColors.primary),
+    return AppCard(
+      padding: AppCardPadding.standard,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              const Icon(Icons.science, color: AppColors.primary),
                 const SizedBox(width: AppSpacing.sm),
                 Text('Ideal Parameters', style: AppTypography.headlineSmall),
               ],
@@ -504,8 +498,7 @@ class _ParametersCard extends StatelessWidget {
             ),
           ],
         ),
-      ),
-    );
+      );
   }
 }
 
@@ -551,15 +544,14 @@ class _CompatibilityNotesCard extends StatelessWidget {
       return const SizedBox.shrink();
     }
 
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.md),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                const Icon(Icons.groups, color: AppColors.primary),
+    return AppCard(
+      padding: AppCardPadding.standard,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              const Icon(Icons.groups, color: AppColors.primary),
                 const SizedBox(width: AppSpacing.sm),
                 Text('Tank Mates', style: AppTypography.headlineSmall),
               ],
@@ -628,8 +620,7 @@ class _CompatibilityNotesCard extends StatelessWidget {
             ],
           ],
         ),
-      ),
-    );
+      );
   }
 }
 
@@ -661,16 +652,15 @@ class _NoSpeciesDataCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      color: AppOverlays.surfaceVariant50,
-      child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.md),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                const Icon(Icons.info_outline, color: AppColors.textSecondary),
+    return AppCard(
+      padding: AppCardPadding.standard,
+      backgroundColor: AppOverlays.surfaceVariant50,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              const Icon(Icons.info_outline, color: AppColors.textSecondary),
                 const SizedBox(width: AppSpacing.sm),
                 Text(
                   'Species info not found',
@@ -690,7 +680,6 @@ class _NoSpeciesDataCard extends StatelessWidget {
             ),
           ],
         ),
-      ),
-    );
+      );
   }
 }
