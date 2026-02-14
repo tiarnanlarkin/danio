@@ -758,7 +758,7 @@ class _LightPainter extends CustomPainter {
       canvas.drawRect(
         panelRect.inflate(4),
         Paint()
-          ..color = Colors.yellow.withOpacity(0.3 * brightness)
+          ..color = AppColors.yellowAlpha08
           ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 8),
       );
     }
@@ -774,7 +774,7 @@ class _LightPainter extends CustomPainter {
     // LED dots
     final ledPaint = Paint()
       ..color = isOn
-          ? Colors.white.withOpacity(brightness)
+          ? AppColors.whiteAlpha08
           : const Color(0xFF718096);
 
     for (var x = panelRect.left + 6; x < panelRect.right - 6; x += 8) {
@@ -851,7 +851,7 @@ class _NetPainter extends CustomPainter {
     canvas.drawPath(
       framePath,
       Paint()
-        ..color = const Color(0xFF68D391).withOpacity(0.4)
+        ..color = AppColors.studyGoldAlpha40
         ..style = PaintingStyle.fill,
     );
 
@@ -865,7 +865,7 @@ class _NetPainter extends CustomPainter {
 
     // Net mesh lines
     final meshPaint = Paint()
-      ..color = const Color(0xFF68D391).withOpacity(0.6)
+      ..color = AppColors.studyGoldAlpha60
       ..strokeWidth = 0.5;
 
     for (var i = 0.2; i < 0.9; i += 0.15) {

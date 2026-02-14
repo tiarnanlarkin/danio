@@ -239,6 +239,21 @@ class AppColors {
   static const Color woodBrownAlpha40 = Color(0x668B7355);
   static const Color woodBrownAlpha50 = Color(0x808B7355);
 
+  // Yellow color with alpha (for hobby items gold highlights)
+  static const Color yellowAlpha08 = Color(0x14FFFF00); // 3%
+  static const Color yellowAlpha15 = Color(0x26FFFF00); // 8%
+  static const Color yellowAlpha20 = Color(0x33FFFF00); // 20%
+  static const Color yellowAlpha30 = Color(0x4DFFFF00); // 30%
+  static const Color yellowAlpha40 = Color(0x66FFFF00); // 40%
+
+  // Study gold color with alpha
+  static const Color studyGoldAlpha05 = Color(0x0DD4A574); // 3%
+  static const Color studyGoldAlpha10 = Color(0x19D4A574); // 6%
+  static const Color studyGoldAlpha15 = Color(0x26D4A574); // 10%
+  static const Color studyGoldAlpha20 = Color(0x33D4A574); // 20%
+  static const Color studyGoldAlpha30 = Color(0x4DD4A574); // 30%
+  static const Color studyGoldAlpha40 = Color(0x66D4A574); // 40%
+
   // Cozy room colors with alpha (for theme variations)
   static const Color cozyGreen05 = Color(0x0D4CAF50);  // livingRoomPlant at 3%
   static const Color cozyGreen08 = Color(0x144CAF50);  // 8%
