@@ -177,8 +177,9 @@ class _LogsScreenState extends ConsumerState<LogsScreen> {
         59,
         999,
       );
-      if (log.timestamp.isBefore(start) || log.timestamp.isAfter(end))
+      if (log.timestamp.isBefore(start) || log.timestamp.isAfter(end)) {
         return false;
+      }
     }
 
     return true;

@@ -263,7 +263,6 @@ class _AppButtonState extends State<AppButton> with SingleTickerProviderStateMix
   }
 
   Color _getBackgroundColor(bool isDark) {
-  Color _getBackgroundColor(bool isDark) {
     if (!_isEnabled) {
       return isDark ? AppOverlays.white10 : AppOverlays.black10;
     }

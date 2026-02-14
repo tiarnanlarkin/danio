@@ -13,10 +13,10 @@ class DifficultySettingsScreen extends StatefulWidget {
   final Function(UserSkillProfile) onProfileUpdated;
 
   const DifficultySettingsScreen({
-    Key? key,
+    super.key,
     required this.skillProfile,
     required this.onProfileUpdated,
-  }) : super(key: key);
+  });
 
   @override
   State<DifficultySettingsScreen> createState() =>

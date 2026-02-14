@@ -1644,7 +1644,7 @@ class _EmptyRoomScene extends StatelessWidget {
           right: 20,
           child: Opacity(
             opacity: 0.5,
-            child: Container(
+            child: SizedBox(
               width: 40,
               height: 80,
               child: Column(

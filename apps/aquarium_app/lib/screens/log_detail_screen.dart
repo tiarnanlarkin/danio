@@ -204,8 +204,9 @@ class LogDetailScreen extends ConsumerWidget {
     if (log.type == LogType.waterTest && log.waterTest != null) {
       final t = log.waterTest!;
       final parts = <String>[];
-      if (t.temperature != null)
+      if (t.temperature != null) {
         parts.add('${t.temperature!.toStringAsFixed(1)}°C');
+      }
       if (t.ph != null) parts.add('pH ${t.ph!.toStringAsFixed(1)}');
       if (t.ammonia != null) parts.add('NH₃ ${t.ammonia}');
       if (t.nitrite != null) parts.add('NO₂ ${t.nitrite}');

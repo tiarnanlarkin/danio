@@ -109,8 +109,9 @@ class _TankSettingsScreenState extends ConsumerState<TankSettingsScreen> {
                   textCapitalization: TextCapitalization.words,
                   onChanged: (v) => _name = v,
                   validator: (v) {
-                    if (v == null || v.trim().isEmpty)
+                    if (v == null || v.trim().isEmpty) {
                       return 'Please enter a name';
+                    }
                     return null;
                   },
                 ),
@@ -159,8 +160,9 @@ class _TankSettingsScreenState extends ConsumerState<TankSettingsScreen> {
                   onChanged: (v) => _volumeLitres = double.tryParse(v) ?? 0,
                   validator: (v) {
                     final parsed = double.tryParse((v ?? '').trim());
-                    if (parsed == null || parsed <= 0)
+                    if (parsed == null || parsed <= 0) {
                       return 'Enter a valid volume';
+                    }
                     return null;
                   },
                 ),

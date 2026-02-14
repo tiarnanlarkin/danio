@@ -13,11 +13,11 @@ class DifficultyBadge extends StatelessWidget {
   final double size;
 
   const DifficultyBadge({
-    Key? key,
+    super.key,
     required this.difficulty,
     this.showLabel = true,
     this.size = 1.0,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -59,11 +59,11 @@ class SkillLevelIndicator extends StatelessWidget {
   final bool showPercentage;
 
   const SkillLevelIndicator({
-    Key? key,
+    super.key,
     required this.skillLevel,
     this.label,
     this.showPercentage = true,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -118,10 +118,10 @@ class PerformanceTrendWidget extends StatelessWidget {
   final bool showLabel;
 
   const PerformanceTrendWidget({
-    Key? key,
+    super.key,
     required this.trend,
     this.showLabel = true,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -172,10 +172,10 @@ class SkillLevelUpAnimation extends StatefulWidget {
   final VoidCallback onComplete;
 
   const SkillLevelUpAnimation({
-    Key? key,
+    super.key,
     required this.message,
     required this.onComplete,
-  }) : super(key: key);
+  });
 
   @override
   State<SkillLevelUpAnimation> createState() => _SkillLevelUpAnimationState();
@@ -286,11 +286,11 @@ class DifficultyChangeNotification extends StatelessWidget {
   final String reason;
 
   const DifficultyChangeNotification({
-    Key? key,
+    super.key,
     required this.oldLevel,
     required this.newLevel,
     required this.reason,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -349,8 +349,7 @@ class MasteryBadge extends StatelessWidget {
   final bool hasMastery;
   final double size;
 
-  const MasteryBadge({Key? key, required this.hasMastery, this.size = 1.0})
-    : super(key: key);
+  const MasteryBadge({super.key, required this.hasMastery, this.size = 1.0});
 
   @override
   Widget build(BuildContext context) {

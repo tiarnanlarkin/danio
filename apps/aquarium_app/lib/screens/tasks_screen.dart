@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
 import '../models/models.dart';
-import '../models/learning.dart';
 import '../providers/storage_provider.dart';
 import '../providers/tank_provider.dart';
 import '../providers/user_profile_provider.dart';
@@ -325,8 +324,9 @@ class _TaskHistoryDialog extends ConsumerWidget {
             final completions =
                 logs.where((l) => l.type == LogType.taskCompleted).where((l) {
                   // Prefer ID match. Fall back to title match for older entries.
-                  if (l.relatedTaskId != null)
+                  if (l.relatedTaskId != null) {
                     return l.relatedTaskId == task.id;
+                  }
                   return (l.title ?? '') == task.title;
                 }).toList()..sort((a, b) => b.timestamp.compareTo(a.timestamp));
 
