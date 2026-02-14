@@ -7,6 +7,7 @@ import '../providers/user_profile_provider.dart';
 import '../widgets/tutorial_overlay.dart';
 import '../widgets/offline_indicator.dart';
 import '../widgets/sync_indicator.dart';
+import '../widgets/celebrations/level_up_listener.dart';
 import 'home_screen.dart';
 import 'learn_screen.dart';
 import 'workshop_screen.dart';
@@ -174,8 +175,9 @@ class _HouseNavigatorState extends ConsumerState<HouseNavigator> {
   Widget build(BuildContext context) {
     final currentRoom = ref.watch(currentRoomProvider);
 
-    return Scaffold(
-      body: Stack(
+    return LevelUpListener(
+      child: Scaffold(
+        body: Stack(
         children: [
           // === Main PageView ===
           PageView(
@@ -276,7 +278,8 @@ class _HouseNavigatorState extends ConsumerState<HouseNavigator> {
           ),
         ],
       ),
-    );
+      ), // Close Scaffold
+    ); // Close LevelUpListener
   }
 }
 
