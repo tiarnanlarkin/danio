@@ -149,6 +149,7 @@ class AppColors {
   static const Color primaryAlpha50 = Color(0x803D7068);
   static const Color primaryAlpha60 = Color(0x993D7068);
   static const Color primaryAlpha70 = Color(0xB33D7068);
+  static const Color primaryAlpha90 = Color(0xE63D7068);
 
   // Primary Light with alpha
   static const Color primaryLightAlpha10 = Color(0x1A5B9A8B);
@@ -166,6 +167,7 @@ class AppColors {
   static const Color secondaryAlpha30 = Color(0x4D9F6847);
   static const Color secondaryAlpha40 = Color(0x669F6847);
   static const Color secondaryAlpha50 = Color(0x809F6847);
+  static const Color secondaryAlpha90 = Color(0xE69F6847);
 
   // Accent color with alpha
   static const Color accentAlpha10 = Color(0x1A85C7DE);
@@ -518,6 +520,7 @@ class AppOverlays {
   // Text hint overlays (AppColors.textHint = 0xFF5D6F76)
   static const Color textHint30 = Color(0x4D5D6F76);  // 30%
   static const Color textHint50 = Color(0x805D6F76);  // 50%
+  static const Color textHintAlpha80 = Color(0xCC5D6F76);  // 80%
   
   // Custom color overlays for specific UI elements
   static const Color forestGreen50 = Color(0x80228B22);  // Forest green 50%
