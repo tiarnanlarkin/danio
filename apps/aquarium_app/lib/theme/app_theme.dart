@@ -237,6 +237,20 @@ class AppColors {
   static const Color woodBrownAlpha40 = Color(0x668B7355);
   static const Color woodBrownAlpha50 = Color(0x808B7355);
 
+  // Cozy room colors with alpha (for theme variations)
+  static const Color cozyGreen05 = Color(0x0D4CAF50);  // livingRoomPlant at 3%
+  static const Color cozyGreen08 = Color(0x144CAF50);  // 8%
+  static const Color cozyGreen10 = Color(0x1A4CAF50);  // 10%
+  static const Color cozyGreen15 = Color(0x264CAF50);  // 15%
+  static const Color cozyGreen20 = Color(0x334CAF50);  // 20%
+  static const Color cozyGreen30 = Color(0x4D4CAF50);  // 30%
+
+  static const Color cozyBlue05 = Color(0x0D87CEEB);  // shopSky at 3%
+  static const Color cozyBlue08 = Color(0x1487CEEB);  // 8%
+  static const Color cozyBlue10 = Color(0x1A87CEEB);  // 10%
+  static const Color cozyBlue15 = Color(0x2687CEEB);  // 15%
+  static const Color cozyBlue20 = Color(0x3387CEEB);  // 20%
+
   // Dark mode background with alpha
   static const Color backgroundDarkAlpha10 = Color(0x1A1A2634);
   static const Color backgroundDarkAlpha20 = Color(0x331A2634);

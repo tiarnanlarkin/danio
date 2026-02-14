@@ -130,7 +130,7 @@ class _CozyRoomPainter extends CustomPainter {
 
     // Floor boards hint (subtle)
     final floorPaint = Paint()
-      ..color = const Color(0xFF3D6B4A).withOpacity(0.1)
+      ..color = const Color(0xFF3D6B4A).withOpacity(0.08)
       ..strokeWidth = 1;
     
     for (var y = h * 0.7; y < h; y += 25) {
@@ -147,7 +147,7 @@ class _CozyRoomPainter extends CustomPainter {
         center: Alignment.topRight,
         radius: 0.8,
         colors: [
-          const Color(0xFFFFF8E7).withOpacity(0.3),
+          AppColors.whiteAlpha30,
           Colors.transparent,
         ],
       ).createShader(Rect.fromLTWH(0, 0, w, h));
@@ -181,7 +181,7 @@ class _CozyRoomPainter extends CustomPainter {
         center: Alignment.topLeft,
         radius: 0.5,
         colors: [
-          const Color(0xFF87CEEB).withOpacity(0.15),
+          AppColors.whiteAlpha15,
           Colors.transparent,
         ],
       ).createShader(Rect.fromLTWH(0, 0, w, h));
@@ -201,8 +201,8 @@ class _CozyRoomPainter extends CustomPainter {
         center: Alignment.center,
         radius: 0.3,
         colors: [
-          const Color(0xFFFFD54F).withOpacity(0.25),
-          const Color(0xFFFFB74D).withOpacity(0.1),
+          AppColors.whiteAlpha25,
+          AppColors.whiteAlpha10,
           Colors.transparent,
         ],
       ).createShader(Rect.fromLTWH(0, 0, w, h));
@@ -248,7 +248,7 @@ class _CozyRoomPainter extends CustomPainter {
 
     // Window frame hint
     final framePaint = Paint()
-      ..color = const Color(0xFF8B7355).withOpacity(0.2)
+      ..color = AppColors.woodBrownAlpha20
       ..strokeWidth = 3
       ..style = PaintingStyle.stroke;
     
@@ -283,7 +283,7 @@ class _CozyRoomPainter extends CustomPainter {
 
   void _drawPlantSilhouette(Canvas canvas, Offset position, double height) {
     final paint = Paint()
-      ..color = const Color(0xFF2D5A4A).withOpacity(0.15);
+      ..color = AppColors.whiteAlpha15;
     
     // Simple leaf shapes
     for (var i = 0; i < 5; i++) {
