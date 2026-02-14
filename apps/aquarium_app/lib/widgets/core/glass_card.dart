@@ -294,7 +294,7 @@ class _GlassCardState extends State<GlassCard> with SingleTickerProviderStateMix
         ),
         // Subtle dark shadow
         BoxShadow(
-          color: Colors.black.withOpacity(isDark ? 0.15 : 0.04),
+          color: isDark ? AppColors.blackAlpha15 : AppColors.blackAlpha05,
           blurRadius: 8,
           offset: const Offset(0, 2),
         ),

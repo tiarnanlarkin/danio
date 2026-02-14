@@ -391,7 +391,7 @@ class _StudyRoomPainter extends CustomPainter {
           Offset(bookX + bookWidth / 2, bookBaseY - bookHeight + 5),
           Offset(bookX + bookWidth / 2, bookBaseY - 5),
           Paint()
-            ..color = Colors.white.withOpacity(0.2)
+            ..color = AppColors.whiteAlpha20
             ..strokeWidth = 1,
         );
 
@@ -473,7 +473,7 @@ class _StudyRoomPainter extends CustomPainter {
         Rect.fromLTWH(w * 0.25, deskTop - 15, 40, 25),
         const Radius.circular(2),
       ),
-      Paint()..color = Colors.white.withOpacity(0.9),
+      Paint()..color = AppColors.whiteAlpha90,
     );
     // Book spine
     canvas.drawLine(

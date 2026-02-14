@@ -218,7 +218,7 @@ class _CozyRoomPainter extends CustomPainter {
 
     // Stars hint
     final starPaint = Paint()
-      ..color = Colors.white.withOpacity(0.3);
+      ..color = AppColors.whiteAlpha30;
     
     final random = math.Random(42);
     for (var i = 0; i < 8; i++) {
@@ -270,7 +270,7 @@ class _CozyRoomPainter extends CustomPainter {
     final h = size.height;
     
     final texturePaint = Paint()
-      ..color = Colors.black.withOpacity(0.02);
+      ..color = const Color(0x05000000);
     
     for (var y = 0.0; y < h; y += 50) {
       canvas.drawLine(

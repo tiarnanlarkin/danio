@@ -576,7 +576,7 @@ class GlassStyles {
       color: (tintColor ?? Colors.white).withOpacity(0.7),
       borderRadius: borderRadius ?? AppRadius.largeRadius,
       border: Border.all(
-        color: Colors.white.withOpacity(0.4),
+        color: AppColors.whiteAlpha40,
         width: 1.5,
       ),
       boxShadow: AppShadows.glassLight,
@@ -592,7 +592,7 @@ class GlassStyles {
       color: (tintColor ?? const Color(0xFF1A1A2E)).withOpacity(0.6),
       borderRadius: borderRadius ?? AppRadius.largeRadius,
       border: Border.all(
-        color: Colors.white.withOpacity(0.1),
+        color: AppColors.whiteAlpha10,
         width: 1,
       ),
       boxShadow: AppShadows.glassDark,

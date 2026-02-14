@@ -1214,7 +1214,7 @@ class _LearnCard extends StatelessWidget {
                   offset: const Offset(0, 8),
                 ),
                 BoxShadow(
-                  color: Colors.black.withOpacity(isDark ? 0.3 : 0.1),
+                  color: isDark ? AppColors.blackAlpha30 : AppColors.blackAlpha10,
                   blurRadius: 8,
                   offset: const Offset(0, 2),
                 ),
