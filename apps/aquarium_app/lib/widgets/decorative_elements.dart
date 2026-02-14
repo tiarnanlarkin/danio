@@ -162,7 +162,7 @@ class NotebookCard extends StatelessWidget {
           borderRadius: AppRadius.smallRadius,
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.08),
+              color: AppColors.blackAlpha08,
               blurRadius: 12,
               offset: const Offset(2, 4),
             ),

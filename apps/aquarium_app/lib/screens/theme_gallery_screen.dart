@@ -532,7 +532,7 @@ class _ThemeCard extends StatelessWidget {
                 ]
               : [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.08),
+                    color: AppColors.blackAlpha08,
                     blurRadius: 8,
                     offset: const Offset(0, 4),
                   ),

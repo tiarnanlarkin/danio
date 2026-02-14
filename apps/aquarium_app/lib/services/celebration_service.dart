@@ -374,7 +374,7 @@ class _CelebrationOverlayWrapperState extends ConsumerState<CelebrationOverlayWr
               Text(
                 celebration.subtitle!,
                 style: TextStyle(
-                  color: Colors.white.withOpacity(0.9),
+                  color: AppColors.whiteAlpha90,
                   fontSize: 16,
                 ),
                 textAlign: TextAlign.center,
@@ -384,7 +384,7 @@ class _CelebrationOverlayWrapperState extends ConsumerState<CelebrationOverlayWr
             Text(
               'Tap to dismiss',
               style: TextStyle(
-                color: Colors.white.withOpacity(0.7),
+                color: AppColors.whiteAlpha70,
                 fontSize: 12,
               ),
             ),

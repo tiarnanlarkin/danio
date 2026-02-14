@@ -630,7 +630,7 @@ class _LearningPathCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: isDark ? AppColors.blackAlpha30 : AppColors.blackAlpha05,
+            color: Colors.black.withOpacity(isDark ? 0.3 : 0.05),
             blurRadius: 12,
             offset: const Offset(0, 4),
           ),
@@ -706,7 +706,7 @@ class _LearningPathCard extends StatelessWidget {
                       height: 8,
                       decoration: BoxDecoration(
                         color: isDark 
-                            ? AppColors.whiteAlpha10
+                            ? Colors.white.withOpacity(0.1)
                             : AppColors.surfaceVariant,
                         borderRadius: BorderRadius.circular(4),
                       ),
@@ -741,7 +741,7 @@ class _LearningPathCard extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                     decoration: BoxDecoration(
                       color: isDark
-                          ? AppColors.whiteAlpha10
+                          ? Colors.white.withOpacity(0.1)
                           : AppColors.surfaceVariant,
                       borderRadius: BorderRadius.circular(10),
                     ),

@@ -415,9 +415,9 @@ class MiniTankScene extends StatelessWidget {
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                           colors: [
-                            Colors.white.withOpacity(0.0),
+                            Colors.transparent,
                             AppOverlays.white30,
-                            Colors.white.withOpacity(0.0),
+                            Colors.transparent,
                           ],
                         ),
                         borderRadius: const BorderRadius.vertical(
