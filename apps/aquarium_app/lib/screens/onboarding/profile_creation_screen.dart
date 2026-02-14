@@ -536,7 +536,7 @@ class _ProfileCreationScreenState extends ConsumerState<ProfileCreationScreen> {
             }
           });
         },
-        selectedColor: AppColors.accent.withOpacity(0.2),
+        selectedColor: AppColors.accentAlpha20,
         checkmarkColor: AppColors.accent,
         side: BorderSide(
           color: isSelected ? AppColors.accent : Colors.grey[300]!,

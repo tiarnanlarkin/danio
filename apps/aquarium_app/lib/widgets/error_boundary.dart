@@ -101,7 +101,7 @@ class _DefaultErrorScreen extends StatelessWidget {
                   width: 120,
                   height: 120,
                   decoration: BoxDecoration(
-                    color: AppColors.error.withOpacity(0.1),
+                    color: AppColors.errorAlpha10,
                     shape: BoxShape.circle,
                   ),
                   child: const Icon(

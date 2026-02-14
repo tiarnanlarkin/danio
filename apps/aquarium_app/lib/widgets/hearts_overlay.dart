@@ -124,8 +124,8 @@ class _HeartsChangeOverlayState extends State<HeartsChangeOverlay>
                       ),
                       decoration: BoxDecoration(
                         color: widget.gained
-                            ? AppColors.success.withOpacity(0.95)
-                            : AppColors.error.withOpacity(0.95),
+                            ? AppColors.successAlpha95
+                            : AppColors.errorAlpha95,
                         borderRadius: AppRadius.largeRadius,
                         boxShadow: [
                           BoxShadow(
@@ -234,7 +234,7 @@ class _HeartsStatusBannerState extends ConsumerState<HeartsStatusBanner> {
             left: 0,
             right: 0,
             child: Material(
-              color: AppColors.error.withOpacity(0.9),
+              color: AppColors.errorAlpha90,
               child: Padding(
                 padding: const EdgeInsets.symmetric(
                   vertical: 8,

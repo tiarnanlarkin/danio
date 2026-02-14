@@ -63,7 +63,7 @@ class _ThermometerPainter extends CustomPainter {
       ..style = PaintingStyle.fill;
 
     final outlinePaint = Paint()
-      ..color = AppColors.textHint.withOpacity(0.5)
+      ..color = AppOverlays.textHint50
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1.5;
 
@@ -116,7 +116,7 @@ class _ThermometerPainter extends CustomPainter {
 
     // Tick marks
     final tickPaint = Paint()
-      ..color = AppColors.textHint.withOpacity(0.4)
+      ..color = AppOverlays.textHintAlpha40
       ..strokeWidth = 1;
 
     for (var i = 0; i < 5; i++) {
@@ -238,7 +238,7 @@ class _TestTubeRackPainter extends CustomPainter {
       ..color = AppOverlays.white60
       ..style = PaintingStyle.fill;
     final outlinePaint = Paint()
-      ..color = AppColors.textHint.withOpacity(0.4)
+      ..color = AppOverlays.textHintAlpha40
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1;
 
@@ -515,7 +515,7 @@ class _FoodJarPainter extends CustomPainter {
     canvas.drawRRect(
       jarRect,
       Paint()
-        ..color = AppColors.textHint.withOpacity(0.4)
+        ..color = AppOverlays.textHintAlpha40
         ..style = PaintingStyle.stroke
         ..strokeWidth = 1.5,
     );
@@ -946,7 +946,7 @@ class _BucketPainter extends CustomPainter {
           size.width * 0.84,
           waterHeight,
         ),
-        Paint()..color = AppColors.accent.withOpacity(0.6),
+        Paint()..color = AppColors.accentAlpha60,
       );
     }
 

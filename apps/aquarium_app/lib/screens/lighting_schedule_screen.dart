@@ -398,7 +398,7 @@ class _TimelineBar extends StatelessWidget {
                     bottom: 0,
                     child: Container(
                       decoration: BoxDecoration(
-                        color: AppColors.warning.withOpacity(0.6),
+                        color: AppColors.warningAlpha60,
                         borderRadius: AppRadius.smallRadius,
                       ),
                     ),

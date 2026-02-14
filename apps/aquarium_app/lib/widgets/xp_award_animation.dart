@@ -101,13 +101,13 @@ class _XpAwardAnimationState extends State<XpAwardAnimation>
                   gradient: LinearGradient(
                     colors: [
                       AppColors.warning,
-                      AppColors.warning.withOpacity(0.8),
+                      AppColors.warningAlpha80,
                     ],
                   ),
                   borderRadius: AppRadius.largeRadius,
                   boxShadow: [
                     BoxShadow(
-                      color: AppColors.warning.withOpacity(0.4),
+                      color: AppColors.warningAlpha40,
                       blurRadius: 20,
                       offset: const Offset(0, 8),
                     ),

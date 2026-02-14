@@ -34,6 +34,7 @@ class AppColors {
     0xFFD96A6A,
   ); // Darker coral red (4.51:1 ratio)
   static const Color info = Color(0xFF5C9FBF); // Darker blue (4.50:1 ratio)
+  static const Color xp = Color(0xFFD4A574); // Gold for XP/experience points
 
   // Parameter status colors (legacy compatibility) - WCAG AA compliant
   static const Color paramSafe = Color(0xFF5AAF7A);
@@ -140,7 +141,9 @@ class AppColors {
 
   // Primary color with alpha (for subtle tints)
   static const Color primaryAlpha05 = Color(0x0D3D7068);
+  static const Color primaryAlpha08 = Color(0x143D7068);
   static const Color primaryAlpha10 = Color(0x1A3D7068);
+  static const Color primaryAlpha12 = Color(0x1F3D7068);
   static const Color primaryAlpha15 = Color(0x263D7068);
   static const Color primaryAlpha20 = Color(0x333D7068);
   static const Color primaryAlpha25 = Color(0x403D7068);
@@ -149,6 +152,7 @@ class AppColors {
   static const Color primaryAlpha50 = Color(0x803D7068);
   static const Color primaryAlpha60 = Color(0x993D7068);
   static const Color primaryAlpha70 = Color(0xB33D7068);
+  static const Color primaryAlpha85 = Color(0xD93D7068);
   static const Color primaryAlpha90 = Color(0xE63D7068);
 
   // Primary Light with alpha
@@ -157,6 +161,9 @@ class AppColors {
   static const Color primaryLightAlpha30 = Color(0x4D5B9A8B);
   static const Color primaryLightAlpha40 = Color(0x665B9A8B);
   static const Color primaryLightAlpha50 = Color(0x805B9A8B);
+
+  // Primary Dark with alpha
+  static const Color primaryDarkAlpha40 = Color(0x662D5248);
 
   // Secondary color with alpha
   static const Color secondaryAlpha05 = Color(0x0D9F6847);
@@ -175,6 +182,7 @@ class AppColors {
   static const Color accentAlpha30 = Color(0x4D85C7DE);
   static const Color accentAlpha40 = Color(0x6685C7DE);
   static const Color accentAlpha50 = Color(0x8085C7DE);
+  static const Color accentAlpha60 = Color(0x9985C7DE);
 
   // Success color with alpha
   static const Color successAlpha10 = Color(0x1A5AAF7A);
@@ -183,6 +191,8 @@ class AppColors {
   static const Color successAlpha30 = Color(0x4D5AAF7A);
   static const Color successAlpha40 = Color(0x665AAF7A);
   static const Color successAlpha50 = Color(0x805AAF7A);
+  static const Color successAlpha80 = Color(0xCC5AAF7A);
+  static const Color successAlpha95 = Color(0xF25AAF7A);
   static const Color successAlpha100 = Color(0xFF5AAF7A);
 
   // Warning color with alpha
@@ -194,14 +204,20 @@ class AppColors {
   static const Color warningAlpha30 = Color(0x4DC99524);
   static const Color warningAlpha40 = Color(0x66C99524);
   static const Color warningAlpha50 = Color(0x80C99524);
+  static const Color warningAlpha60 = Color(0x99C99524);
+  static const Color warningAlpha70 = Color(0xB3C99524);
+  static const Color warningAlpha80 = Color(0xCCC99524);
 
   // Error color with alpha
+  static const Color errorAlpha05 = Color(0x0DD96A6A);
   static const Color errorAlpha10 = Color(0x1AD96A6A);
   static const Color errorAlpha15 = Color(0x26D96A6A);
   static const Color errorAlpha20 = Color(0x33D96A6A);
   static const Color errorAlpha30 = Color(0x4DD96A6A);
   static const Color errorAlpha40 = Color(0x66D96A6A);
   static const Color errorAlpha50 = Color(0x80D96A6A);
+  static const Color errorAlpha90 = Color(0xE6D96A6A);
+  static const Color errorAlpha95 = Color(0xF2D96A6A);
   static const Color errorAlpha100 = Color(0xFFD96A6A);
 
   // Info color with alpha
@@ -255,6 +271,9 @@ class AppColors {
   static const Color studyGoldAlpha20 = Color(0x33D4A574); // 20%
   static const Color studyGoldAlpha30 = Color(0x4DD4A574); // 30%
   static const Color studyGoldAlpha40 = Color(0x66D4A574); // 40%
+
+  // XP color with alpha (same as studyGold - 0xD4A574)
+  static const Color xpAlpha20 = Color(0x33D4A574); // 20%
 
   // Cozy room colors with alpha (for theme variations)
   static const Color cozyGreen05 = Color(0x0D4CAF50);  // livingRoomPlant at 3%
@@ -519,6 +538,7 @@ class AppOverlays {
   
   // Text hint overlays (AppColors.textHint = 0xFF5D6F76)
   static const Color textHint30 = Color(0x4D5D6F76);  // 30%
+  static const Color textHintAlpha40 = Color(0x665D6F76);  // 40%
   static const Color textHint50 = Color(0x805D6F76);  // 50%
   static const Color textHintAlpha80 = Color(0xCC5D6F76);  // 80%
   

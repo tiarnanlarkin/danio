@@ -276,7 +276,7 @@ class XpProgressCard extends ConsumerWidget {
               end: Alignment.bottomRight,
               colors: [
                 AppColors.warningAlpha15,
-                AppColors.secondary.withOpacity(0.1),
+                AppColors.secondaryAlpha10,
               ],
             ),
             borderRadius: AppRadius.mediumRadius,

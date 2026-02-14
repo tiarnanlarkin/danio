@@ -631,17 +631,15 @@ class _EnhancedQuizScreenState extends ConsumerState<EnhancedQuizScreen>
                                 : LinearGradient(
                                     colors: [
                                       AppColors.warning,
-                                      AppColors.warning.withOpacity(0.7),
+                                      AppColors.warningAlpha70,
                                     ],
                                   ),
                             shape: BoxShape.circle,
                             boxShadow: [
                               BoxShadow(
-                                color:
-                                    (passed
-                                            ? AppColors.primary
-                                            : AppColors.warning)
-                                        .withOpacity(0.3),
+                                color: passed
+                                    ? AppColors.primaryAlpha30
+                                    : AppColors.warningAlpha30,
                                 blurRadius: 20,
                                 offset: const Offset(0, 10),
                               ),

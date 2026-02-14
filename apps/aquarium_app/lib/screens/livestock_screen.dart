@@ -654,11 +654,11 @@ class _LivestockCard extends StatelessWidget {
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
       color: isSelected
-          ? AppColors.primary.withOpacity(0.15)
+          ? AppColors.primaryAlpha15
           : (level == CompatibilityLevel.incompatible
-                ? AppColors.error.withOpacity(0.05)
+                ? AppColors.errorAlpha05
                 : (level == CompatibilityLevel.warning
-                      ? AppColors.warning.withOpacity(0.05)
+                      ? AppColors.warningAlpha05
                       : null)),
       child: ListTile(
         leading: isSelectMode
@@ -918,7 +918,7 @@ class _AddLivestockSheetState extends State<_AddLivestockSheet> {
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: AppColors.primary.withOpacity(0.05),
+                  color: AppColors.primaryAlpha05,
                   borderRadius: AppRadius.smallRadius,
                   border: Border.all(color: AppOverlays.primary20),
                 ),

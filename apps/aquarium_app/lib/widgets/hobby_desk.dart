@@ -332,9 +332,9 @@ class MiniTankScene extends StatelessWidget {
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                   colors: [
-                    AppColors.accent.withOpacity(0.2),
+                    AppColors.accentAlpha20,
                     AppOverlays.primary30,
-                    AppColors.primaryDark.withOpacity(0.4),
+                    AppColors.primaryDarkAlpha40,
                   ],
                 ),
                 borderRadius: AppRadius.xsRadius,

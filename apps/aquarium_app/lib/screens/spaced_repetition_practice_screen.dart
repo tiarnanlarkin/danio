@@ -288,7 +288,7 @@ class _SpacedRepetitionPracticeScreenState
         decoration: BoxDecoration(
           color: enabled
               ? AppColors.surface
-              : AppColors.surface.withOpacity(0.5),
+              : AppColors.whiteAlpha50,
           borderRadius: AppRadius.mediumRadius,
           border: Border.all(
             color: enabled ? color.withOpacity(0.3) : AppColors.surfaceVariant,

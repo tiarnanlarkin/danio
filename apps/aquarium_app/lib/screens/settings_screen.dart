@@ -1219,8 +1219,8 @@ class _LearnCard extends StatelessWidget {
                 end: Alignment.bottomRight,
                 colors: [
                   AppColors.primary,
-                  AppColors.primary.withOpacity(0.85),
-                  AppColors.secondary.withOpacity(0.9),
+                  AppColors.primaryAlpha85,
+                  AppColors.secondaryAlpha90,
                 ],
               ),
               borderRadius: BorderRadius.circular(20),

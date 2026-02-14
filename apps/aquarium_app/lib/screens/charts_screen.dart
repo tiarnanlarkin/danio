@@ -362,7 +362,7 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
 
     if (targets != null) {
       final range = _getTargetRange(targets, _selectedParam);
-      final targetColor = AppColors.textHint.withOpacity(0.8);
+      final targetColor = AppOverlays.textHintAlpha80;
 
       if (range.min != null) {
         bars.add(

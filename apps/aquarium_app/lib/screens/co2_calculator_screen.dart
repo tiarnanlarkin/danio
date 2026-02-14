@@ -314,7 +314,7 @@ class _Co2CalculatorScreenState extends State<Co2CalculatorScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
               decoration: BoxDecoration(
                 color: v >= 20 && v <= 30
-                    ? AppColors.success.withOpacity(0.2)
+                    ? AppColors.successAlpha20
                     : null,
                 borderRadius: AppRadius.xsRadius,
               ),

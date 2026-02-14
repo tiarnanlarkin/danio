@@ -199,7 +199,7 @@ class XpCounter extends StatelessWidget {
         Container(
           padding: EdgeInsets.all(compact ? 4 : 6),
           decoration: BoxDecoration(
-            color: AppColors.xp.withOpacity(0.2),
+            color: AppColors.xpAlpha20,
             shape: BoxShape.circle,
           ),
           child: Text(

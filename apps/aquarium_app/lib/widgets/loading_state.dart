@@ -109,7 +109,7 @@ class _ShimmerLoadingState extends State<ShimmerLoading>
               end: Alignment.centerRight,
               colors: [
                 AppColors.surfaceVariant,
-                AppColors.surfaceVariant.withOpacity(0.5),
+                AppOverlays.surfaceVariant50,
                 AppColors.surfaceVariant,
               ],
               stops: [

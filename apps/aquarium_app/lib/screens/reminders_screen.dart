@@ -423,7 +423,7 @@ class _ReminderTile extends StatelessWidget {
       ),
       child: Card(
         margin: const EdgeInsets.only(bottom: 8),
-        color: isOverdue ? AppColors.error.withOpacity(0.05) : null,
+        color: isOverdue ? AppColors.errorAlpha05 : null,
         child: ListTile(
           leading: Container(
             width: 40,

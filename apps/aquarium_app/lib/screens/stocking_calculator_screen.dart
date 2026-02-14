@@ -334,7 +334,7 @@ class _StockingCalculatorScreenState extends State<StockingCalculatorScreen> {
             Container(
               width: double.infinity,
               padding: const EdgeInsets.all(AppSpacing.md),
-              color: AppColors.surfaceVariant.withOpacity(0.5),
+              color: AppOverlays.surfaceVariant50,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [

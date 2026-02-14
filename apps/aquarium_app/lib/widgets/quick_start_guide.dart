@@ -327,7 +327,7 @@ class QuickStartTipsCard extends StatelessWidget {
           gradient: LinearGradient(
             colors: [
               AppOverlays.accent10,
-              AppColors.primary.withOpacity(0.05),
+              AppColors.primaryAlpha05,
             ],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
@@ -344,7 +344,7 @@ class QuickStartTipsCard extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
-                      color: AppColors.accent.withOpacity(0.2),
+                      color: AppColors.accentAlpha20,
                       borderRadius: AppRadius.smallRadius,
                     ),
                     child: const Icon(

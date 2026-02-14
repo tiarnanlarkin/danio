@@ -623,7 +623,7 @@ class _EnhancedTutorialWalkthroughScreenState
           ],
         ),
         borderRadius: AppRadius.mediumRadius,
-        border: Border.all(color: AppColors.accent.withOpacity(0.3)),
+        border: Border.all(color: AppColors.accentAlpha30),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

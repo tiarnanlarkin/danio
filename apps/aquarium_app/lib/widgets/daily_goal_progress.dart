@@ -135,7 +135,7 @@ class _CircularProgressPainter extends CustomPainter {
     // Completion glow effect
     if (isCompleted) {
       final glowPaint = Paint()
-        ..color = AppColors.success.withOpacity(0.3)
+        ..color = AppColors.successAlpha30
         ..style = PaintingStyle.stroke
         ..strokeWidth = 12
         ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 4);

@@ -730,7 +730,7 @@ class _LearningPathCard extends StatelessWidget {
                           decoration: BoxDecoration(
                             gradient: LinearGradient(
                               colors: isComplete
-                                  ? [AppColors.success, AppColors.success.withOpacity(0.8)]
+                                  ? [AppColors.success, AppColors.successAlpha80]
                                   : [AppColors.primary, AppColors.secondary],
                             ),
                             borderRadius: BorderRadius.circular(4),

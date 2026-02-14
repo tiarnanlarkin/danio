@@ -476,7 +476,7 @@ class _EnhancedPlacementTestScreenState
               boxShadow: isSelected && !showResult
                   ? [
                       BoxShadow(
-                        color: AppColors.accent.withOpacity(0.3),
+                        color: AppColors.accentAlpha30,
                         blurRadius: 8,
                         offset: const Offset(0, 2),
                       ),

@@ -443,13 +443,13 @@ class _EquipmentCard extends StatelessWidget {
 
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
-      color: isOverdue ? AppColors.warning.withOpacity(0.05) : null,
+      color: isOverdue ? AppColors.warningAlpha05 : null,
       child: Column(
         children: [
           ListTile(
             leading: CircleAvatar(
               backgroundColor: isOverdue
-                  ? AppColors.warning.withOpacity(0.2)
+                  ? AppColors.warningAlpha20
                   : AppOverlays.primary10,
               child: Icon(
                 _getIcon(equipment.type),
