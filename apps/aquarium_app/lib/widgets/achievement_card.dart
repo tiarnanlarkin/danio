@@ -5,17 +5,21 @@ import 'package:aquarium_app/theme/app_theme.dart';
 
 import 'package:flutter/material.dart';
 import '../models/achievements.dart';
+import 'effects/sparkle_effect.dart';
 
 class AchievementCard extends StatelessWidget {
   final Achievement achievement;
   final AchievementProgress progress;
   final VoidCallback onTap;
+  /// Whether to show sparkle effect (for newly unlocked)
+  final bool showSparkle;
 
   const AchievementCard({
     super.key,
     required this.achievement,
     required this.progress,
     required this.onTap,
+    this.showSparkle = false,
   });
 
   @override
@@ -27,7 +31,7 @@ class AchievementCard extends StatelessWidget {
     // Get rarity color
     final rarityColor = _getRarityColor(achievement.rarity);
 
-    return GestureDetector(
+    final card = GestureDetector(
       onTap: onTap,
       child: Container(
         decoration: BoxDecoration(
@@ -185,6 +189,12 @@ class AchievementCard extends StatelessWidget {
         ),
       ),
     );
+
+    // Return card with optional sparkle effect
+    if (showSparkle) {
+      return SparkleEffect(child: card);
+    }
+    return card;
   }
 
   Color _getRarityColor(AchievementRarity rarity) {
