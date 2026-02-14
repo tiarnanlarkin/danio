@@ -20,6 +20,11 @@ class ShopColors {
   static const glassBorder = Color(0x30FFFFFF);
   static const textPrimary = Color(0xFFF5F5F5);
   static const textSecondary = Color(0xFFB8D4B8);
+  
+  // Pre-computed alpha variants for performance
+  static const accentAlpha20 = Color(0x33F0C040); // 20% opacity
+  static const textSecondaryAlpha50 = Color(0x80B8D4B8); // 50% opacity
+  static const textSecondaryAlpha70 = Color(0xB3B8D4B8); // 70% opacity
 }
 
 /// Shop Street Room - Wishlist & Shopping
@@ -405,7 +410,7 @@ class _ShopSection extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: color.withOpacity(0.2),
+                    color: Color((color.value & 0x00FFFFFF) | 0x33000000), // 20% opacity
                     borderRadius: AppRadius.mediumRadius,
                   ),
                   child: Icon(icon, color: color, size: 28),
@@ -441,7 +446,7 @@ class _ShopSection extends StatelessWidget {
                   ),
                   decoration: BoxDecoration(
                     color: itemCount > 0
-                        ? ShopColors.accent.withOpacity(0.2)
+                        ? ShopColors.accentAlpha20
                         : ShopColors.glassCard,
                     borderRadius: AppRadius.mediumRadius,
                   ),
@@ -511,7 +516,7 @@ class _BudgetCard extends StatelessWidget {
                     const Spacer(),
                     Icon(
                       Icons.edit,
-                      color: ShopColors.textSecondary.withOpacity(0.5),
+                      color: ShopColors.textSecondaryAlpha50,
                       size: 18,
                     ),
                   ],
@@ -634,7 +639,7 @@ class _LocalShopsCard extends StatelessWidget {
                     child: Text(
                       'No shops added yet',
                       style: TextStyle(
-                        color: ShopColors.textSecondary.withOpacity(0.7),
+                        color: ShopColors.textSecondaryAlpha70,
                       ),
                     ),
                   ),
@@ -732,7 +737,7 @@ class _ShopTile extends StatelessWidget {
               ),
             IconButton(
               icon: const Icon(Icons.close, size: 18),
-              color: ShopColors.textSecondary.withOpacity(0.5),
+              color: ShopColors.textSecondaryAlpha50,
               onPressed: onDelete,
             ),
           ],
