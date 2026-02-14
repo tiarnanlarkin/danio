@@ -201,18 +201,21 @@ class _GlassCardState extends State<GlassCard> with SingleTickerProviderStateMix
         ),
         // Main shadow
         BoxShadow(
-          color: isDark ? AppColors.blackAlpha30 : AppColors.blackAlpha05,
+          color: isDark ? AppColors.blackAlpha20 : AppColors.blackAlpha08,
           blurRadius: 20,
           offset: const Offset(0, 8),
         ),
-      ],
+        ],
     );
   }
 
   BoxDecoration _softDecoration(bool isDark, BorderRadius radius) {
     return BoxDecoration(
-      color: widget.tintColor?.withOpacity(0.9) ??
-          (isDark ? const Color(0xFF2A2A3E) : Colors.white),
+      color: widget.tintColor != null
+          ? widget.tintColor == const Color(0xFF2A2A3E)
+              ? AppColors.primaryAlpha90
+              : AppColors.whiteAlpha90
+          : (isDark ? AppColors.whiteAlpha08 : AppColors.whiteAlpha70),
       borderRadius: radius,
       boxShadow: [
         // First layer - close soft shadow
@@ -224,14 +227,14 @@ class _GlassCardState extends State<GlassCard> with SingleTickerProviderStateMix
         ),
         // Second layer - medium distance
         BoxShadow(
-          color: isDark ? AppColors.blackAlpha15 : Color(0x08000000), // 0.03
+          color: isDark ? AppColors.blackAlpha15 : AppColors.blackAlpha03,
           blurRadius: 20,
           spreadRadius: 0,
           offset: const Offset(0, 8),
         ),
         // Third layer - far, very soft
         BoxShadow(
-          color: isDark ? AppColors.blackAlpha10 : Color(0x05000000), // 0.02
+          color: isDark ? AppColors.blackAlpha10 : AppColors.blackAlpha02,
           blurRadius: 40,
           spreadRadius: 0,
           offset: const Offset(0, 16),
@@ -247,12 +250,12 @@ class _GlassCardState extends State<GlassCard> with SingleTickerProviderStateMix
         end: Alignment.bottomRight,
         colors: isDark
             ? [
-                const Color(0xFF1A3A4A).withOpacity(0.85),
+                AppColors.primaryAlpha85,
                 const Color(0xFF0D2030).withOpacity(0.95),
               ]
             : [
-                const Color(0xFFE8F4F8).withOpacity(0.9),
-                const Color(0xFFF0F8FF).withOpacity(0.95),
+                AppColors.primaryAlpha90,
+                AppColors.whiteAlpha95,
               ],
       ),
       borderRadius: radius,
@@ -281,14 +284,14 @@ class _GlassCardState extends State<GlassCard> with SingleTickerProviderStateMix
       borderRadius: radius,
       border: Border.all(
         color: isDark
-            ? const Color(0xFFD4A574).withOpacity(0.2)
-            : const Color(0xFFD4A574).withOpacity(0.12),
+            ? AppColors.warningAlpha20
+            : AppColors.warningAlpha12,
         width: 1,
       ),
       boxShadow: [
         // Warm gold tinted shadow
         BoxShadow(
-          color: const Color(0xFFD4A574).withOpacity(isDark ? 0.15 : 0.1),
+          color: isDark ? AppColors.warningAlpha15 : AppColors.warningAlpha10,
           blurRadius: 24,
           offset: const Offset(0, 10),
         ),
@@ -309,9 +312,9 @@ class _GlassCardState extends State<GlassCard> with SingleTickerProviderStateMix
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
         colors: [
-          tint.withOpacity(isDark ? 0.12 : 0.08),
-          (isDark ? Colors.black : Colors.white).withOpacity(isDark ? 0.3 : 0.8),
-          tint.withOpacity(isDark ? 0.08 : 0.05),
+          isDark ? AppColors.primaryAlpha12 : AppColors.primaryAlpha08,
+          isDark ? AppColors.blackAlpha30 : AppColors.blackAlpha80,
+          isDark ? AppColors.primaryAlpha08 : AppColors.primaryAlpha05,
         ],
         stops: const [0.0, 0.5, 1.0],
       ),

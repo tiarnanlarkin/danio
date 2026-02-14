@@ -119,6 +119,8 @@ class AppColors {
   static const Color whiteAlpha95 = Color(0xF2FFFFFF);
 
   // Black with alpha (for shadows, darkening overlays)
+  static const Color blackAlpha02 = Color(0x05000000); // 3%
+  static const Color blackAlpha03 = Color(0x08000000); // 3%
   static const Color blackAlpha05 = Color(0x0D000000);
   static const Color blackAlpha08 = Color(0x14000000);
   static const Color blackAlpha10 = Color(0x1A000000);
@@ -181,7 +183,9 @@ class AppColors {
   static const Color successAlpha50 = Color(0x805AAF7A);
 
   // Warning color with alpha
+  static const Color warningAlpha05 = Color(0x0DC99524); // 3%
   static const Color warningAlpha10 = Color(0x1AC99524);
+  static const Color warningAlpha12 = Color(0x1FC99524); // 7%
   static const Color warningAlpha15 = Color(0x26C99524);
   static const Color warningAlpha20 = Color(0x33C99524);
   static const Color warningAlpha30 = Color(0x4DC99524);
