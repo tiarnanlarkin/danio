@@ -195,7 +195,7 @@ class _NotebookLinesPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = const Color(0xFFE8E4DC).withOpacity(0.5)
+      ..color = AppColors.errorAlpha50
       ..strokeWidth = 1;
 
     // Horizontal lines
@@ -327,11 +327,11 @@ class _ShelfBracket extends StatelessWidget {
           colors: isDark
               ? [
                   const Color(0xFF3D2E22),
-                  const Color(0xFF3D2E22).withOpacity(0),
+                  AppColors.successAlpha100,
                 ]
               : [
                   const Color(0xFFC49A6C),
-                  const Color(0xFFC49A6C).withOpacity(0),
+                  AppColors.successAlpha100,
                 ],
         ),
         borderRadius: const BorderRadius.vertical(bottom: Radius.circular(8)),

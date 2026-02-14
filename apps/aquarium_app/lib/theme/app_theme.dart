@@ -181,6 +181,7 @@ class AppColors {
   static const Color successAlpha30 = Color(0x4D5AAF7A);
   static const Color successAlpha40 = Color(0x665AAF7A);
   static const Color successAlpha50 = Color(0x805AAF7A);
+  static const Color successAlpha100 = Color(0xFF5AAF7A);
 
   // Warning color with alpha
   static const Color warningAlpha05 = Color(0x0DC99524); // 3%
@@ -199,6 +200,7 @@ class AppColors {
   static const Color errorAlpha30 = Color(0x4DD96A6A);
   static const Color errorAlpha40 = Color(0x66D96A6A);
   static const Color errorAlpha50 = Color(0x80D96A6A);
+  static const Color errorAlpha100 = Color(0xFFD96A6A);
 
   // Info color with alpha
   static const Color infoAlpha10 = Color(0x1A5C9FBF);
