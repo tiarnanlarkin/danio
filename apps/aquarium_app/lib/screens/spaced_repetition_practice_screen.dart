@@ -42,7 +42,6 @@ class _SpacedRepetitionPracticeScreenState
     }
 
     final dueCount = srState.stats.dueCards;
-    // final weakCount = srState.stats.weakCards; // TODO: Display weak cards count
 
     return Scaffold(
       appBar: AppBar(

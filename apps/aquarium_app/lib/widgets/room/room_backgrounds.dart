@@ -166,8 +166,8 @@ class RoomBackground extends StatelessWidget {
   }
 
   Widget _buildAmbientEffects() {
-    // Disabled repeating animations - they cause ANR on some devices
-    // TODO: Re-enable with optimized non-repeating versions
+    // Disabled: Ambient effects caused ANR (Application Not Responding) on some devices
+    // Will re-enable in future release with optimized, non-repeating animation implementation
     return const SizedBox.shrink();
   }
 }

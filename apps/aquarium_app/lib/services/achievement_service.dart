@@ -129,9 +129,8 @@ class AchievementService {
       case 'water_chemistry_master':
       case 'plants_master':
       case 'livestock_master':
-        // These require specific path/category completion
-        // For now, mark as requiring manual implementation based on actual lesson structure
-        // TODO: Implement based on LessonContent.allPaths structure
+        // Not implemented: Requires LessonContent.allPaths integration
+        // Deferred to future release when lesson path system is finalized
         shouldUnlock = false;
         break;
 
