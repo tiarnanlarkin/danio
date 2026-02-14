@@ -105,7 +105,7 @@ class _AppButtonState extends State<AppButton> with SingleTickerProviderStateMix
       duration: AppDurations.short,
       vsync: this,
     );
-    _scaleAnimation = Tween<double>(begin: 1.0, end: 0.96).animate(
+    _scaleAnimation = Tween<double>(begin: 1.0, end: 0.95).animate(
       CurvedAnimation(parent: _scaleController, curve: AppCurves.standard),
     );
   }
@@ -150,19 +150,13 @@ class _AppButtonState extends State<AppButton> with SingleTickerProviderStateMix
       button: true,
       enabled: _isEnabled,
       label: widget.semanticsLabel ?? widget.label,
-      child: AnimatedBuilder(
-        animation: _scaleAnimation,
-        builder: (context, child) {
-          return Transform.scale(
-            scale: _scaleAnimation.value,
-            child: child,
-          );
-        },
-        child: GestureDetector(
-          onTapDown: _handleTapDown,
-          onTapUp: _handleTapUp,
-          onTapCancel: _handleTapCancel,
-          onTap: _handleTap,
+      child: GestureDetector(
+        onTapDown: _handleTapDown,
+        onTapUp: _handleTapUp,
+        onTapCancel: _handleTapCancel,
+        onTap: _handleTap,
+        child: ScaleTransition(
+          scale: _scaleAnimation,
           child: AnimatedContainer(
             duration: AppDurations.short,
             height: _getHeight(),
