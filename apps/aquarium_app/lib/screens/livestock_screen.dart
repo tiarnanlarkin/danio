@@ -649,9 +649,15 @@ class _LivestockCard extends StatelessWidget {
             ? Checkbox(value: isSelected, onChanged: (_) => onTap())
             : Stack(
                 children: [
-                  CircleAvatar(
-                    backgroundColor: AppOverlays.primary10,
-                    child: const Icon(Icons.set_meal, color: AppColors.primary),
+                  Hero(
+                    tag: 'livestock-${livestock.id}',
+                    child: Material(
+                      type: MaterialType.transparency,
+                      child: CircleAvatar(
+                        backgroundColor: AppOverlays.primary10,
+                        child: const Icon(Icons.set_meal, color: AppColors.primary),
+                      ),
+                    ),
                   ),
                   if (hasIssues)
                     Positioned(

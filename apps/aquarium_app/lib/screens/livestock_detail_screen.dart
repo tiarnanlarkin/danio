@@ -115,16 +115,22 @@ class _HeaderCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              CircleAvatar(
-                  radius: 32,
-                  backgroundColor: AppOverlays.primary10,
-                  child: const Icon(
-                    Icons.set_meal,
-                    size: 32,
-                    color: AppColors.primary,
+              Hero(
+                tag: 'livestock-${livestock.id}',
+                child: Material(
+                  type: MaterialType.transparency,
+                  child: CircleAvatar(
+                    radius: 32,
+                    backgroundColor: AppOverlays.primary10,
+                    child: const Icon(
+                      Icons.set_meal,
+                      size: 32,
+                      color: AppColors.primary,
+                    ),
                   ),
                 ),
-                const SizedBox(width: AppSpacing.md),
+              ),
+              const SizedBox(width: AppSpacing.md),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,

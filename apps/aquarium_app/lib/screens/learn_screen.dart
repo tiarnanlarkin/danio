@@ -763,29 +763,35 @@ class _LearningPathCard extends StatelessWidget {
               final isUnlocked = lesson.isUnlocked(userCompletedLessons);
 
               return ListTile(
-                leading: Container(
-                  width: 32,
-                  height: 32,
-                  decoration: BoxDecoration(
-                    color: isCompleted
-                        ? AppOverlays.success20
-                        : isUnlocked
-                        ? AppOverlays.primary10
-                        : AppColors.surfaceVariant,
-                    shape: BoxShape.circle,
-                  ),
-                  child: Icon(
-                    isCompleted
-                        ? Icons.check
-                        : isUnlocked
-                        ? Icons.play_arrow
-                        : Icons.lock,
-                    size: 18,
-                    color: isCompleted
-                        ? AppColors.success
-                        : isUnlocked
-                        ? AppColors.primary
-                        : AppColors.textHint,
+                leading: Hero(
+                  tag: 'lesson-${lesson.id}',
+                  child: Material(
+                    type: MaterialType.transparency,
+                    child: Container(
+                      width: 32,
+                      height: 32,
+                      decoration: BoxDecoration(
+                        color: isCompleted
+                            ? AppOverlays.success20
+                            : isUnlocked
+                            ? AppOverlays.primary10
+                            : AppColors.surfaceVariant,
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        isCompleted
+                            ? Icons.check
+                            : isUnlocked
+                            ? Icons.play_arrow
+                            : Icons.lock,
+                        size: 18,
+                        color: isCompleted
+                            ? AppColors.success
+                            : isUnlocked
+                            ? AppColors.primary
+                            : AppColors.textHint,
+                      ),
+                    ),
                   ),
                 ),
                 title: Text(

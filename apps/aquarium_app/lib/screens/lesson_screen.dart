@@ -144,8 +144,17 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
           child: ListView(
             padding: const EdgeInsets.all(20),
             children: [
-              // Lesson title
-              Text(widget.lesson.title, style: AppTypography.headlineLarge),
+              // Lesson title with Hero animation
+              Hero(
+                tag: 'lesson-${widget.lesson.id}',
+                child: Material(
+                  type: MaterialType.transparency,
+                  child: Text(
+                    widget.lesson.title,
+                    style: AppTypography.headlineLarge,
+                  ),
+                ),
+              ),
               const SizedBox(height: AppSpacing.sm),
               Row(
                 children: [
