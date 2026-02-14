@@ -7,6 +7,10 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../models/achievements.dart';
 
+/// Modal showing detailed achievement information when tapped.
+///
+/// Displays full description, progress tracking, unlock date, XP reward,
+/// and rarity-specific styling. Used in the achievements grid view.
 class AchievementDetailModal extends StatelessWidget {
   final Achievement achievement;
   final AchievementProgress progress;

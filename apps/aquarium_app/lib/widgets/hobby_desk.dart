@@ -284,6 +284,10 @@ class ItemDetailPopup extends StatelessWidget {
   }
 }
 
+/// Data model for a label-value row in item detail displays.
+///
+/// Simple struct holding label text, value text, and optional color styling
+/// for display in item detail lists.
 class ItemDetailRow {
   final String label;
   final String value;

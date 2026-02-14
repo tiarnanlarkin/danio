@@ -5,6 +5,12 @@ library;
 import 'dart:math' as math;
 import '../models/spaced_repetition.dart';
 
+/// Service for intelligent review scheduling and prioritization.
+///
+/// Implements spaced repetition algorithms with priority scoring based on:
+/// - Card strength and success rate
+/// - Due date urgency
+/// - Mixed practice sessions combining due and strong cards
 class ReviewQueueService {
   /// Calculate priority score for a review card (higher = more urgent)
   /// Factors: due date, strength, review history

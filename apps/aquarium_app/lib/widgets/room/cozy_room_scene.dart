@@ -32,6 +32,9 @@ class CozyRoomScene extends StatelessWidget {
   }
 }
 
+/// Visual style variations for the cozy room scene.
+///
+/// Defines color schemes and lighting for different moods/times of day.
 enum RoomStyle {
   livingRoom,
   cozyNight,

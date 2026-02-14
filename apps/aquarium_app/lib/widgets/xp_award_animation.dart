@@ -5,6 +5,11 @@ library;
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
 
+/// Animated floating "+XP" text shown when user earns experience points.
+///
+/// Displays XP amount that slides upward while fading out and scaling.
+/// Calls [onComplete] callback when animation finishes. Used for immediate
+/// visual feedback on XP gains.
 class XpAwardAnimation extends StatefulWidget {
   final int xpAmount;
   final VoidCallback? onComplete;

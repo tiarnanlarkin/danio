@@ -8,6 +8,10 @@ import 'package:confetti/confetti.dart';
 import 'dart:math';
 import '../models/achievements.dart';
 
+/// Overlay notification system for achievement unlocks with confetti animation.
+///
+/// Shows a celebratory popup when achievements are unlocked. Manages its own
+/// overlay entry and confetti controller for non-blocking visual feedback.
 class AchievementNotification {
   static OverlayEntry? _currentOverlay;
   static ConfettiController? _confettiController;

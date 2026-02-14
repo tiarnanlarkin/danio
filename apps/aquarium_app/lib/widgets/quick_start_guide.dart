@@ -6,6 +6,11 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../theme/app_theme.dart';
 
+/// Interactive onboarding guide showing key app features.
+///
+/// Displays step-by-step overlay tooltips highlighting main UI elements after
+/// initial onboarding. Persists completion state to avoid re-showing. Dismissable
+/// at any time.
 class QuickStartGuide extends StatefulWidget {
   final Widget child;
 

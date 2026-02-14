@@ -7,6 +7,13 @@ import '../models/user_profile.dart';
 import '../models/learning.dart';
 import '../models/leaderboard.dart';
 
+/// Service for aggregating user analytics and generating AI-like insights.
+///
+/// Provides comprehensive progress analysis including:
+/// - Daily and weekly XP trends
+/// - Topic performance tracking
+/// - Learning time pattern detection
+/// - Predictive milestones and recommendations
 class AnalyticsService {
   /// Generate complete analytics summary for a user
   static AnalyticsSummary generateSummary({

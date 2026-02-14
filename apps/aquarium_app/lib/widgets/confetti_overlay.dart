@@ -5,6 +5,11 @@ library;
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
 
+/// Wrapper widget that displays celebratory confetti animation over its child.
+///
+/// Triggers particle animation when [show] is true. Particles fall with physics-based
+/// motion including gravity, rotation, and randomized colors. Calls [onComplete]
+/// when animation finishes.
 class ConfettiOverlay extends StatefulWidget {
   final Widget child;
   final bool show;
@@ -127,6 +132,10 @@ class _ConfettiOverlayState extends State<ConfettiOverlay>
   }
 }
 
+/// Data model for a single confetti particle with physics properties.
+///
+/// Stores position, velocity, rotation, and visual properties for
+/// physics-based animation calculations.
 class ConfettiParticle {
   final Color color;
   final Offset position; // 0-1 normalized
@@ -145,6 +154,10 @@ class ConfettiParticle {
   });
 }
 
+/// Custom painter that renders confetti particles with rotation and fading.
+///
+/// Draws each particle as a small rotated rectangle with opacity based on
+/// animation progress. Skips off-screen particles for performance.
 class ConfettiPainter extends CustomPainter {
   final List<ConfettiParticle> particles;
   final double progress;

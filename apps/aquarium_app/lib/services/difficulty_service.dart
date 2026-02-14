@@ -5,6 +5,10 @@ library;
 import 'dart:math';
 import '../models/adaptive_difficulty.dart';
 
+/// Service for adaptive difficulty management and skill level calculation.
+///
+/// Implements AI-powered difficulty adjustments based on user performance,
+/// including mid-lesson adaptations and personalized recommendations.
 class DifficultyService {
   /// Calculate skill level for a topic based on performance history
   /// Returns a value between 0.0 (beginner) and 1.0 (expert)

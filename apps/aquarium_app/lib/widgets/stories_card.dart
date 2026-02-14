@@ -10,6 +10,10 @@ import '../models/user_profile.dart';
 import '../data/stories.dart';
 import '../screens/stories_screen.dart';
 
+/// Card displaying Instagram-style stories access with progress ring.
+///
+/// Shows daily tips and educational content in story format. Displays completion
+/// percentage and highlights next unlocked story. Taps navigate to full stories screen.
 class StoriesCard extends ConsumerWidget {
   final UserProfile profile;
 

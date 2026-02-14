@@ -6,6 +6,10 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
 
+/// Full-screen celebration dialog shown when user levels up.
+///
+/// Features confetti animation, level badge with scale animation, total XP display,
+/// level title, and optional unlock message for new features or rewards.
 class LevelUpDialog extends StatefulWidget {
   final int newLevel;
   final String levelTitle;

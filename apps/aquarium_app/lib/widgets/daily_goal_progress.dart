@@ -9,6 +9,10 @@ import '../models/daily_goal.dart';
 import '../providers/user_profile_provider.dart';
 import '../theme/app_theme.dart';
 
+/// Circular progress indicator showing daily XP goal completion.
+///
+/// Displays current XP progress toward daily goal with percentage indicator
+/// and optional label. Updates reactively as user earns XP throughout the day.
 class DailyGoalProgress extends ConsumerWidget {
   final double size;
   final bool showLabel;

@@ -5,6 +5,10 @@ import 'storage_service.dart';
 
 const _uuid = Uuid();
 
+/// Service for generating sample tank data for onboarding and demos.
+///
+/// Provides pre-populated freshwater tank setups with realistic livestock,
+/// equipment, logs, and tasks. Used for first-time user experience and testing.
 class SampleData {
   static Future<Tank> seedFreshwaterDemo(StorageService storage) async {
     final now = DateTime.now();

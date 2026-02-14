@@ -21,6 +21,10 @@ final heartsServiceProvider = Provider<HeartsService>((ref) {
   return HeartsService(ref);
 });
 
+/// Service for managing the hearts/lives system.
+///
+/// Handles heart deduction on incorrect answers, auto-refill timing,
+/// and practice mode rewards. Integrates with user profile state.
 class HeartsService {
   final Ref ref;
 

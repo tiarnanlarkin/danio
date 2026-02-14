@@ -79,6 +79,10 @@ class ExerciseWidget extends StatelessWidget {
 // 1. MULTIPLE CHOICE WIDGET
 // ==========================================
 
+/// Interactive multiple choice question widget with answer validation.
+///
+/// Displays question text and clickable answer options. Shows visual feedback
+/// (green/red borders) after submission. Supports images and hints.
 class MultipleChoiceWidget extends StatefulWidget {
   final MultipleChoiceExercise exercise;
   final Function(int) onAnswer;
@@ -254,6 +258,10 @@ class _MultipleChoiceWidgetState extends State<MultipleChoiceWidget>
 // 2. FILL IN THE BLANK WIDGET
 // ==========================================
 
+/// Fill-in-the-blank exercise with word bank or text input modes.
+///
+/// Displays sentence with blanks that user fills by selecting from word bank
+/// or typing. Shows validation feedback and supports multiple blanks per question.
 class FillBlankWidget extends StatefulWidget {
   final FillBlankExercise exercise;
   final Function(List<String>) onAnswer;
@@ -546,6 +554,10 @@ class _FillBlankWidgetState extends State<FillBlankWidget> {
 // 3. TRUE/FALSE WIDGET
 // ==========================================
 
+/// Simple true/false question widget with large button options.
+///
+/// Displays statement and two clear answer buttons (True/False) with icons.
+/// Shows validation feedback after submission with color-coded borders.
 class TrueFalseWidget extends StatelessWidget {
   final TrueFalseExercise exercise;
   final Function(bool) onAnswer;
@@ -655,6 +667,10 @@ class TrueFalseWidget extends StatelessWidget {
 // 4. MATCHING WIDGET
 // ==========================================
 
+/// Interactive drag-and-match exercise pairing left and right items.
+///
+/// Users tap items on left and right to create pairs. Shows visual connection
+/// lines between matched items. Validates all pairs on submission.
 class MatchingWidget extends StatefulWidget {
   final MatchingExercise exercise;
   final Function(Map<int, int>) onAnswer;
@@ -899,6 +915,10 @@ class _MatchingWidgetState extends State<MatchingWidget> {
 // 5. ORDERING/SEQUENCING WIDGET
 // ==========================================
 
+/// Drag-and-drop ordering exercise for sequencing items.
+///
+/// Users reorder items by dragging into correct sequence. Shows position numbers
+/// and validation feedback. Supports arbitrary list ordering challenges.
 class OrderingWidget extends StatefulWidget {
   final OrderingExercise exercise;
   final Function(List<int>) onAnswer;

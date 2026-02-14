@@ -7,6 +7,10 @@ import 'package:flutter/material.dart';
 import '../models/adaptive_difficulty.dart';
 import '../services/difficulty_service.dart';
 
+/// Badge displaying lesson difficulty level with color-coded styling.
+///
+/// Shows difficulty as colored chip (green=easy, blue=medium, orange=hard,
+/// pink=expert). Supports optional text label and size customization.
 class DifficultyBadge extends StatelessWidget {
   final DifficultyLevel difficulty;
   final bool showLabel;

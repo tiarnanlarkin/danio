@@ -7,6 +7,11 @@ import 'package:flutter/material.dart';
 import '../models/achievements.dart';
 import 'effects/sparkle_effect.dart';
 
+/// Displays an achievement card in grid layout showing locked/unlocked state.
+///
+/// Shows achievement icon, title, description, and progress bar. Locked
+/// achievements are displayed with reduced opacity. Newly unlocked achievements
+/// can display sparkle effects.
 class AchievementCard extends StatelessWidget {
   final Achievement achievement;
   final AchievementProgress progress;

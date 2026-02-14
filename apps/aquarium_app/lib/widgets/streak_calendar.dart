@@ -9,6 +9,10 @@ import '../models/daily_goal.dart';
 import '../providers/user_profile_provider.dart';
 import '../theme/app_theme.dart';
 
+/// GitHub-style calendar showing daily learning streak history.
+///
+/// Visualizes daily goal completion over time with color-coded squares.
+/// Intensity indicates XP earned each day. Includes weekday labels and tooltips.
 class StreakCalendar extends ConsumerWidget {
   final int weeks;
   final double cellSize;

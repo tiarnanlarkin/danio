@@ -7,6 +7,10 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import '../utils/performance_monitor.dart';
 
+/// Development overlay displaying real-time performance metrics.
+///
+/// Shows FPS, frame time, memory usage, and frame drops. Toggleable via [showOverlay]
+/// flag. For development and debugging use only—not shown in release builds.
 class AppPerformanceOverlay extends StatefulWidget {
   final Widget child;
   final bool showOverlay;

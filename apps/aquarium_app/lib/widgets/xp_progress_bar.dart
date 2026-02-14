@@ -7,6 +7,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/user_profile_provider.dart';
 import '../theme/app_theme.dart';
 
+/// Animated progress bar showing XP toward next level.
+///
+/// Displays current level, XP progress with smooth fill animation, and optional
+/// labels showing XP amounts. Animates smoothly when XP increases.
 class XpProgressBar extends ConsumerStatefulWidget {
   final double height;
   final bool showLabels;

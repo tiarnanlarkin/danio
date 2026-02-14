@@ -25,6 +25,11 @@ Future<void> showAchievementUnlockedDialog({
   );
 }
 
+/// Full-screen celebratory dialog for major achievement unlocks.
+///
+/// Features confetti animation, achievement icon with scale/fade transitions,
+/// XP and gem rewards display, and rarity-based styling. Modal presentation
+/// requires user acknowledgment.
 class AchievementUnlockedDialog extends StatefulWidget {
   final Achievement achievement;
   final int xpAwarded;

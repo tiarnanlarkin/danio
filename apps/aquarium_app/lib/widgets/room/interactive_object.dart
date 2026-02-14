@@ -59,6 +59,9 @@ class InteractiveObject extends StatefulWidget {
   State<InteractiveObject> createState() => _InteractiveObjectState();
 }
 
+/// Animation styles for interactive object "tap me" hints.
+///
+/// Defines different visual attention-getting behaviors for interactive elements.
 enum InteractiveAnimationStyle {
   pulse,   // Gentle glow pulse
   bounce,  // Subtle bounce
