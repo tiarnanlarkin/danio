@@ -219,6 +219,20 @@ class AppColors {
   static const Color textPrimaryAlpha50 = Color(0x802D3436);
   static const Color textPrimaryAlpha70 = Color(0xB32D3436);
 
+  // Wood/Brown colors (for cozy room furniture, floors, trim)
+  static const Color woodBrown = Color(0xFF8B7355);
+  static const Color woodBrownAlpha05 = Color(0x0D8B7355);
+  static const Color woodBrownAlpha08 = Color(0x148B7355);
+  static const Color woodBrownAlpha10 = Color(0x1A8B7355);
+  static const Color woodBrownAlpha12 = Color(0x1F8B7355);
+  static const Color woodBrownAlpha15 = Color(0x268B7355);
+  static const Color woodBrownAlpha20 = Color(0x338B7355);
+  static const Color woodBrownAlpha25 = Color(0x408B7355);
+  static const Color woodBrownAlpha30 = Color(0x4D8B7355);
+  static const Color woodBrownAlpha35 = Color(0x598B7355);
+  static const Color woodBrownAlpha40 = Color(0x668B7355);
+  static const Color woodBrownAlpha50 = Color(0x808B7355);
+
   // Dark mode background with alpha
   static const Color backgroundDarkAlpha10 = Color(0x1A1A2634);
   static const Color backgroundDarkAlpha20 = Color(0x331A2634);

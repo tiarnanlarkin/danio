@@ -411,7 +411,7 @@ class _CozyRoomPainter extends CustomPainter {
 
     // === VISIBLE WALL TEXTURE (subtle vertical stripes) ===
     final texturePaint = Paint()
-      ..color = (_isDarkTheme ? Colors.white : Colors.brown).withOpacity(0.05)
+      ..color = (_isDarkTheme ? AppColors.whiteAlpha05 : AppColors.brownAlpha05)
       ..strokeWidth = 1.5;
     
     for (var x = 0.0; x < w; x += 25) {
@@ -454,7 +454,7 @@ class _CozyRoomPainter extends CustomPainter {
 
     // Floor boards (VISIBLE horizontal lines)
     final floorLinePaint = Paint()
-      ..color = (_isDarkTheme ? Colors.black : Colors.brown).withOpacity(0.15)
+      ..color = (_isDarkTheme ? AppColors.blackAlpha15 : AppColors.woodBrownAlpha15)
       ..strokeWidth = 1.5;
     
     for (var y = floorTop + 15; y < h; y += 18) {
@@ -463,7 +463,7 @@ class _CozyRoomPainter extends CustomPainter {
     
     // Vertical floor board joints
     final jointPaint = Paint()
-      ..color = (_isDarkTheme ? Colors.black : Colors.brown).withOpacity(0.08)
+      ..color = (_isDarkTheme ? AppColors.blackAlpha08 : AppColors.woodBrownAlpha08)
       ..strokeWidth = 1;
     for (var x = 0.0; x < w; x += 60) {
       canvas.drawLine(Offset(x, floorTop), Offset(x, h), jointPaint);
@@ -574,12 +574,12 @@ class _CozyRoomPainter extends CustomPainter {
         radius: 1.0,
         colors: _isDarkTheme
             ? [
-                const Color(0xFF4A6080).withOpacity(0.3), // Moonlight blue
+                AppColors.whiteAlpha30, // Moonlight blue
                 Colors.transparent,
               ]
             : [
-                const Color(0xFFFFF8E7).withOpacity(0.4), // Warm sunlight
-                const Color(0xFFFFEDD5).withOpacity(0.2),
+                AppColors.whiteAlpha40, // Warm sunlight
+                AppColors.whiteAlpha20,
                 Colors.transparent,
               ],
       ).createShader(Rect.fromLTWH(
@@ -630,7 +630,7 @@ class _CozyRoomPainter extends CustomPainter {
       Paint()
         ..color = _isDarkTheme
             ? theme.textSecondary.withOpacity(0.3)
-            : const Color(0xFF8B7355).withOpacity(0.5)
+            : AppColors.whiteAlpha50
         ..style = PaintingStyle.stroke
         ..strokeWidth = 3,
     );
@@ -639,7 +639,7 @@ class _CozyRoomPainter extends CustomPainter {
     final crossPaint = Paint()
       ..color = _isDarkTheme
           ? theme.textSecondary.withOpacity(0.25)
-          : const Color(0xFF8B7355).withOpacity(0.4)
+          : AppColors.whiteAlpha40
       ..strokeWidth = 2;
     
     // Vertical bar
@@ -706,7 +706,7 @@ class _CozyRoomPainter extends CustomPainter {
       Paint()
         ..color = _isDarkTheme
             ? theme.textSecondary.withOpacity(0.3)
-            : const Color(0xFF8B7355).withOpacity(0.6)
+            : AppColors.whiteAlpha60
         ..strokeWidth = 3
         ..strokeCap = StrokeCap.round,
     );
@@ -731,8 +731,8 @@ class _CozyRoomPainter extends CustomPainter {
           center: Alignment.center,
           radius: 0.5,
           colors: [
-            const Color(0xFFFFD54F).withOpacity(0.25),
-            const Color(0xFFFFB74D).withOpacity(0.12),
+            AppColors.whiteAlpha25,
+            AppColors.whiteAlpha12,
             Colors.transparent,
           ],
         ).createShader(Rect.fromLTWH(0, h * 0.2, w * 0.5, h * 0.5));
@@ -748,7 +748,7 @@ class _CozyRoomPainter extends CustomPainter {
 
       // Small lamp icon hint
       final lampPaint = Paint()
-        ..color = const Color(0xFFFFD54F).withOpacity(0.6);
+        ..color = AppColors.whiteAlpha60;
       canvas.drawCircle(
         Offset(w * 0.08, h * 0.38),
         6,

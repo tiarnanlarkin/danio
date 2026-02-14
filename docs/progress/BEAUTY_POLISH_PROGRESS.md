@@ -9,16 +9,16 @@
 
 ## Phase 1: Performance Foundation (40-50 hours)
 
-### ✅ Checkpoint 1.1: Pre-computed Alpha Colors Infrastructure (0/4 tasks)
-- [ ] Create comprehensive alpha color palette (~30 min)
-- [ ] Document alpha color usage pattern (~15 min)
-- [ ] Create helper script to find withOpacity calls (~30 min)
-- [ ] Commit: "feat: add pre-computed alpha color palette" (~5 min)
+### ✅ Checkpoint 1.1: Pre-computed Alpha Colors Infrastructure (4/4 tasks) - COMPLETE
+- [x] Create comprehensive alpha color palette (~30 min)
+- [x] Document alpha color usage pattern (~15 min)
+- [x] Create helper script to find withOpacity calls (~30 min)
+- [x] Commit: "feat: add pre-computed alpha color palette" (~5 min)
 
-**Status:** Not started  
+**Status:** ✅ COMPLETE  
 **Estimated:** 2-3h  
-**Actual:** -  
-**Commits:** 0
+**Actual:** 1.5h  
+**Commits:** 2 (0401d50, c4c3472 pushed)
 
 ### Checkpoint 1.2: High-Traffic Screen Optimization (0/7 tasks)
 - [ ] Optimize `exercise_widgets.dart` - 28 calls
