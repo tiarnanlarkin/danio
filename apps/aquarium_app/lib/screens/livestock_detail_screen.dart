@@ -229,9 +229,9 @@ class _InfoChip extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       decoration: BoxDecoration(
-        color: c.withOpacity(0.1),
+        color: Color((c.value & 0x00FFFFFF) | 0x19000000), // 10% opacity
         borderRadius: AppRadius.mediumRadius,
-        border: Border.all(color: c.withOpacity(0.3)),
+        border: Border.all(color: Color((c.value & 0x00FFFFFF) | 0x4D000000)), // 30% opacity
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -277,7 +277,7 @@ class _CompatibilityCard extends StatelessWidget {
 
     return AppCard(
       padding: AppCardPadding.standard,
-      backgroundColor: color.withOpacity(0.05),
+      backgroundColor: Color((color.value & 0x00FFFFFF) | 0x0D000000), // 5% opacity
       child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -636,9 +636,9 @@ class _CompanionChip extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: Color((color.value & 0x00FFFFFF) | 0x19000000), // 10% opacity
         borderRadius: AppRadius.mediumRadius,
-        border: Border.all(color: color.withOpacity(0.3)),
+        border: Border.all(color: Color((color.value & 0x00FFFFFF) | 0x4D000000)), // 30% opacity
       ),
       child: Text(name, style: AppTypography.bodySmall.copyWith(color: color)),
     );
