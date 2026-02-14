@@ -460,7 +460,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           color: Theme.of(context).scaffoldBackgroundColor,
           borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
         ),
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(AppSpacing.md),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -570,7 +570,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       context: context,
       backgroundColor: Colors.transparent,
       builder: (ctx) => Container(
-        margin: const EdgeInsets.all(16),
+        margin: const EdgeInsets.all(AppSpacing.md),
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
           color: Theme.of(context).scaffoldBackgroundColor,
@@ -684,7 +684,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       context: context,
       backgroundColor: Colors.transparent,
       builder: (ctx) => Container(
-        margin: const EdgeInsets.all(16),
+        margin: const EdgeInsets.all(AppSpacing.md),
         child: ItemDetailPopup(
           title: title,
           icon: icon,
@@ -702,7 +702,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
       builder: (ctx) => Container(
-        margin: const EdgeInsets.all(16),
+        margin: const EdgeInsets.all(AppSpacing.md),
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
           color: Theme.of(context).scaffoldBackgroundColor,
@@ -767,7 +767,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
       builder: (ctx) => Container(
-        margin: const EdgeInsets.all(16),
+        margin: const EdgeInsets.all(AppSpacing.md),
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
           color: Theme.of(context).scaffoldBackgroundColor,
@@ -1136,7 +1136,7 @@ class _TankPickerSheetState extends ConsumerState<_TankPickerSheet> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.all(16),
+      margin: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
         color: Theme.of(context).scaffoldBackgroundColor,
         borderRadius: AppRadius.largeRadius,
@@ -1399,7 +1399,7 @@ class _SelectionModePanel extends StatelessWidget {
             children: [
               // Header
               Container(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.all(AppSpacing.md),
                 decoration: BoxDecoration(
                   color: AppOverlays.primary10,
                   borderRadius: const BorderRadius.only(
@@ -1674,7 +1674,7 @@ class _EmptyRoomScene extends StatelessWidget {
         Center(
           child: NotebookCard(
             rotation: 1.5,
-            padding: const EdgeInsets.all(24),
+            padding: const EdgeInsets.all(AppSpacing.lg),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [

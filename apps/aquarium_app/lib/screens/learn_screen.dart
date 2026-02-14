@@ -323,7 +323,7 @@ class _ReviewCardsBanner extends ConsumerWidget {
         },
         borderRadius: AppRadius.mediumRadius,
         child: Container(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(AppSpacing.md),
           decoration: BoxDecoration(
             gradient: LinearGradient(
               colors: [AppColors.accent, AppOverlays.accent80],
@@ -424,7 +424,7 @@ class _PracticeCard extends ConsumerWidget {
         },
         borderRadius: AppRadius.mediumRadius,
         child: Container(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(AppSpacing.md),
           decoration: BoxDecoration(
             gradient: LinearGradient(
               colors: [AppColors.primary, AppOverlays.primary80],
@@ -530,7 +530,7 @@ class _StreakCard extends StatelessWidget {
 
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16),
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
         color: AppOverlays.orange10,
         borderRadius: AppRadius.mediumRadius,

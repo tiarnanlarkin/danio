@@ -463,7 +463,7 @@ class TankDetailScreen extends ConsumerWidget {
               // Quick stats
               SliverToBoxAdapter(
                 child: Padding(
-                  padding: const EdgeInsets.all(16),
+                  padding: const EdgeInsets.all(AppSpacing.md),
                   child: _QuickStats(tank: tank, logsAsync: logsAllAsync),
                 ),
               ),
@@ -1334,7 +1334,7 @@ class _DashboardLoadingCard extends StatelessWidget {
     return Card(
       margin: EdgeInsets.zero,
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(AppSpacing.md),
         child: Row(
           children: [
             Text(title, style: AppTypography.headlineSmall),
@@ -1366,7 +1366,7 @@ class _LatestSnapshotCard extends StatelessWidget {
       return Card(
         margin: EdgeInsets.zero,
         child: Padding(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(AppSpacing.md),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -1387,7 +1387,7 @@ class _LatestSnapshotCard extends StatelessWidget {
     return Card(
       margin: EdgeInsets.zero,
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(AppSpacing.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -1623,7 +1623,7 @@ class _TrendsRow extends StatelessWidget {
       return Card(
         margin: EdgeInsets.zero,
         child: Padding(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(AppSpacing.md),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -1653,7 +1653,7 @@ class _TrendsRow extends StatelessWidget {
     return Card(
       margin: EdgeInsets.zero,
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(AppSpacing.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -1875,7 +1875,7 @@ class _AlertsCard extends StatelessWidget {
       return Card(
         margin: EdgeInsets.zero,
         child: Padding(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(AppSpacing.md),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -2050,7 +2050,7 @@ class _AlertsCard extends StatelessWidget {
       return Card(
         margin: EdgeInsets.zero,
         child: Padding(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(AppSpacing.md),
           child: Row(
             children: [
               const Icon(Icons.check_circle, color: AppColors.success),
@@ -2080,7 +2080,7 @@ class _AlertsCard extends StatelessWidget {
     return Card(
       margin: EdgeInsets.zero,
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(AppSpacing.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
