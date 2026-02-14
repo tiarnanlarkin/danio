@@ -88,61 +88,86 @@ class _LivestockValueScreenState extends ConsumerState<LivestockValueScreen> {
           final totalValue = _calculateTotal(livestock);
           final totalAnimals = livestock.fold(0, (sum, l) => sum + l.count);
 
-          return ListView(
+          // Calculate total items: total card + spacing + info card + spacing + title + spacing + livestock items + spacing + tips title + spacing + tips card
+          final totalItems = 6 + livestock.length + 4;
+
+          return ListView.builder(
             padding: const EdgeInsets.all(AppSpacing.md),
-            children: [
+            itemCount: totalItems,
+            itemBuilder: (context, index) {
               // Total value card
-              AppCard(
-                backgroundColor: AppOverlays.primary10,
-                padding: AppCardPadding.spacious,
-                child: Column(
-                  children: [
-                    Text(
-                      'Estimated Total Value',
-                      style: AppTypography.labelLarge,
-                    ),
-                    const SizedBox(height: AppSpacing.sm),
-                    Text(
-                      '$_currency${totalValue.toStringAsFixed(2)}',
-                      style: AppTypography.headlineLarge.copyWith(
-                        color: AppColors.primary,
+              if (index == 0) {
+                return AppCard(
+                  backgroundColor: AppOverlays.primary10,
+                  padding: AppCardPadding.spacious,
+                  child: Column(
+                    children: [
+                      Text(
+                        'Estimated Total Value',
+                        style: AppTypography.labelLarge,
                       ),
-                    ),
-                    const SizedBox(height: AppSpacing.xs),
-                    Text(
-                      '$totalAnimals animals',
-                      style: AppTypography.bodySmall,
-                    ),
-                  ],
-                ),
-              ),
-
-              const SizedBox(height: AppSpacing.sm),
-
-              AppCard(
-                backgroundColor: AppOverlays.warning10,
-                padding: AppCardPadding.compact,
-                child: Row(
-                  children: [
-                    Icon(Icons.info, size: 18, color: AppColors.warning),
-                    const SizedBox(width: AppSpacing.sm),
-                    Expanded(
-                      child: Text(
-                        'Enter prices below to calculate total value. Useful for insurance or selling.',
+                      const SizedBox(height: AppSpacing.sm),
+                      Text(
+                        '$_currency${totalValue.toStringAsFixed(2)}',
+                        style: AppTypography.headlineLarge.copyWith(
+                          color: AppColors.primary,
+                        ),
+                      ),
+                      const SizedBox(height: AppSpacing.xs),
+                      Text(
+                        '$totalAnimals animals',
                         style: AppTypography.bodySmall,
                       ),
-                    ),
-                  ],
-                ),
-              ),
+                    ],
+                  ),
+                );
+              }
 
-              const SizedBox(height: AppSpacing.lg),
+              // Spacing
+              if (index == 1) {
+                return const SizedBox(height: AppSpacing.sm);
+              }
 
-              Text('Livestock Prices', style: AppTypography.headlineSmall),
-              const SizedBox(height: 12),
+              // Info card
+              if (index == 2) {
+                return AppCard(
+                  backgroundColor: AppOverlays.warning10,
+                  padding: AppCardPadding.compact,
+                  child: Row(
+                    children: [
+                      Icon(Icons.info, size: 18, color: AppColors.warning),
+                      const SizedBox(width: AppSpacing.sm),
+                      Expanded(
+                        child: Text(
+                          'Enter prices below to calculate total value. Useful for insurance or selling.',
+                          style: AppTypography.bodySmall,
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              }
 
-              ...livestock.map(
-                (item) => Padding(
+              // Spacing
+              if (index == 3) {
+                return const SizedBox(height: AppSpacing.lg);
+              }
+
+              // Section title
+              if (index == 4) {
+                return Text('Livestock Prices', style: AppTypography.headlineSmall);
+              }
+
+              // Spacing
+              if (index == 5) {
+                return const SizedBox(height: 12);
+              }
+
+              // Livestock items
+              if (index < 6 + livestock.length) {
+                final itemIndex = index - 6;
+                final item = livestock[itemIndex];
+                return Padding(
                   padding: const EdgeInsets.only(bottom: 8),
                   child: AppCard(
                     padding: AppCardPadding.compact,
@@ -217,38 +242,50 @@ class _LivestockValueScreenState extends ConsumerState<LivestockValueScreen> {
                       ],
                     ),
                   ),
-                ),
-              ),
+                );
+              }
 
-              const SizedBox(height: AppSpacing.lg),
+              // Spacing after livestock items
+              if (index == 6 + livestock.length) {
+                return const SizedBox(height: AppSpacing.lg);
+              }
 
-              // Tips
-              Text('Pricing Tips', style: AppTypography.headlineSmall),
-              const SizedBox(height: 12),
+              // Tips section title
+              if (index == 7 + livestock.length) {
+                return Text('Pricing Tips', style: AppTypography.headlineSmall);
+              }
 
-              AppCard(
-                padding: AppCardPadding.standard,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: const [
-                    _TipRow(
-                      text:
-                          'Check local fish store prices for common species',
-                    ),
-                    _TipRow(
-                      text: 'Online retailers often have different pricing',
-                    ),
-                    _TipRow(text: 'Rare or breeding pairs are worth more'),
-                    _TipRow(text: 'Consider age and size when estimating'),
-                    _TipRow(
-                      text: 'Shrimp colonies can be valued per individual',
-                    ),
-                  ],
-                ),
-              ),
+              // Spacing
+              if (index == 8 + livestock.length) {
+                return const SizedBox(height: 12);
+              }
 
-              const SizedBox(height: AppSpacing.xxl),
-            ],
+              // Tips card
+              if (index == 9 + livestock.length) {
+                return AppCard(
+                  padding: AppCardPadding.standard,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: const [
+                      _TipRow(
+                        text: 'Check local fish store prices for common species',
+                      ),
+                      _TipRow(
+                        text: 'Online retailers often have different pricing',
+                      ),
+                      _TipRow(text: 'Rare or breeding pairs are worth more'),
+                      _TipRow(text: 'Consider age and size when estimating'),
+                      _TipRow(
+                        text: 'Shrimp colonies can be valued per individual',
+                      ),
+                    ],
+                  ),
+                );
+              }
+
+              // Final spacing
+              return const SizedBox(height: AppSpacing.xxl);
+            },
           );
         },
       ),

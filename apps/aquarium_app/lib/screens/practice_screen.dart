@@ -74,11 +74,16 @@ class PracticeScreen extends ConsumerWidget {
     WidgetRef ref,
     List<LessonProgress> weakLessons,
   ) {
-    return ListView(
+    // Calculate total items: header + info + spacing + title + spacing + lesson cards
+    final totalItems = 5 + weakLessons.length;
+
+    return ListView.builder(
       padding: const EdgeInsets.all(20),
-      children: [
+      itemCount: totalItems,
+      itemBuilder: (context, index) {
         // Header
-        Container(
+        if (index == 0) {
+          return Container(
           padding: const EdgeInsets.all(AppSpacing.md),
           decoration: BoxDecoration(
             gradient: AppColors.primaryGradient,
@@ -119,11 +124,12 @@ class PracticeScreen extends ConsumerWidget {
               ),
             ],
           ),
-        ),
-        const SizedBox(height: AppSpacing.lg),
+          );
+        }
 
-        // Info card explaining spaced repetition
-        Container(
+        // Info card
+        if (index == 1) {
+          return Container(
           padding: const EdgeInsets.all(AppSpacing.md),
           decoration: BoxDecoration(
             color: AppOverlays.info10,
@@ -155,36 +161,48 @@ class PracticeScreen extends ConsumerWidget {
               ),
             ],
           ),
-        ),
-        const SizedBox(height: AppSpacing.lg),
-
-        // Lessons to review
-        Text(
-          'Lessons needing review (${weakLessons.length})',
-          style: AppTypography.headlineSmall,
-        ),
-        const SizedBox(height: 12),
-
-        ...weakLessons.map((progress) {
-          final lesson = _findLessonById(progress.lessonId);
-          if (lesson == null) return const SizedBox.shrink();
-
-          final path = _findPathForLesson(lesson.id);
-          final strength = progress.currentStrength;
-
-          return Padding(
-            padding: const EdgeInsets.only(bottom: 12),
-            child: _buildLessonCard(
-              context,
-              ref,
-              lesson,
-              path?.title ?? 'Unknown Path',
-              strength,
-              progress,
-            ),
           );
-        }),
-      ],
+        }
+
+        // Spacing
+        if (index == 2) {
+          return const SizedBox(height: AppSpacing.lg);
+        }
+
+        // Section title
+        if (index == 3) {
+          return Text(
+            'Lessons needing review (${weakLessons.length})',
+            style: AppTypography.headlineSmall,
+          );
+        }
+
+        // Spacing
+        if (index == 4) {
+          return const SizedBox(height: 12);
+        }
+
+        // Lesson cards
+        final lessonIndex = index - 5;
+        final progress = weakLessons[lessonIndex];
+        final lesson = _findLessonById(progress.lessonId);
+        if (lesson == null) return const SizedBox.shrink();
+
+        final path = _findPathForLesson(lesson.id);
+        final strength = progress.currentStrength;
+
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 12),
+          child: _buildLessonCard(
+            context,
+            ref,
+            lesson,
+            path?.title ?? 'Unknown Path',
+            strength,
+            progress,
+          ),
+        );
+      },
     );
   }
 

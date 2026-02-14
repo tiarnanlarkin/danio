@@ -24,93 +24,117 @@ class NotificationSettingsScreen extends ConsumerWidget {
             return const Center(child: Text('No profile found'));
           }
 
-          return ListView(
-            children: [
-              // Header
-              Padding(
-                padding: const EdgeInsets.all(AppSpacing.md),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Icon(
-                      Icons.notifications_active,
-                      size: 48,
-                      color: AppColors.primary,
-                    ),
-                    const SizedBox(height: AppSpacing.sm),
-                    Text(
-                      'Streak Reminders',
-                      style: AppTypography.headlineMedium,
-                    ),
-                    const SizedBox(height: AppSpacing.sm),
-                    Text(
-                      'Get daily notifications to help maintain your learning streak.',
-                      style: AppTypography.bodyMedium.copyWith(
-                        color: AppColors.textSecondary,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+          // Build item list based on whether reminders are enabled
+          final baseItems = 3; // Header, divider, main toggle
+          final additionalItems = profile.streakRemindersEnabled ? 10 : 0; // Divider, section header, 3 time settings, divider, info, test button, spacing
+          final totalItems = baseItems + additionalItems;
 
-              const Divider(),
+          return ListView.builder(
+            itemCount: totalItems,
+            itemBuilder: (context, index) {
+              // Header
+              if (index == 0) {
+                return Padding(
+                  padding: const EdgeInsets.all(AppSpacing.md),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Icon(
+                        Icons.notifications_active,
+                        size: 48,
+                        color: AppColors.primary,
+                      ),
+                      const SizedBox(height: AppSpacing.sm),
+                      Text(
+                        'Streak Reminders',
+                        style: AppTypography.headlineMedium,
+                      ),
+                      const SizedBox(height: AppSpacing.sm),
+                      Text(
+                        'Get daily notifications to help maintain your learning streak.',
+                        style: AppTypography.bodyMedium.copyWith(
+                          color: AppColors.textSecondary,
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              }
+
+              // Divider
+              if (index == 1) {
+                return const Divider();
+              }
 
               // Main toggle
-              SwitchListTile(
-                secondary: const Icon(Icons.notifications),
-                title: const Text('Streak Reminders'),
-                subtitle: Text(
-                  profile.streakRemindersEnabled
-                      ? 'Enabled - You\'ll get daily reminders'
-                      : 'Disabled - No streak reminders',
-                ),
-                value: profile.streakRemindersEnabled,
-                onChanged: (value) async {
-                  if (value) {
-                    // Request permission when enabling
-                    final service = NotificationService();
-                    await service.initialize();
-                    final granted = await service.requestPermissions();
+              if (index == 2) {
+                return SwitchListTile(
+                  secondary: const Icon(Icons.notifications),
+                  title: const Text('Streak Reminders'),
+                  subtitle: Text(
+                    profile.streakRemindersEnabled
+                        ? 'Enabled - You\'ll get daily reminders'
+                        : 'Disabled - No streak reminders',
+                  ),
+                  value: profile.streakRemindersEnabled,
+                  onChanged: (value) async {
+                    if (value) {
+                      // Request permission when enabling
+                      final service = NotificationService();
+                      await service.initialize();
+                      final granted = await service.requestPermissions();
 
-                    if (!granted) {
-                      if (context.mounted) {
-                        AppFeedback.showWarning(
+                      if (!granted) {
+                        if (context.mounted) {
+                          AppFeedback.showWarning(
+                            context,
+                            'Notification permission denied. Please enable in settings.',
+                          );
+                        }
+                        return;
+                      }
+                    }
+
+                    await ref
+                        .read(userProfileProvider.notifier)
+                        .updateProfile(streakRemindersEnabled: value);
+
+                    // Reschedule notifications
+                    await _updateNotifications(ref);
+
+                    if (context.mounted) {
+                      if (value) {
+                        AppFeedback.showSuccess(
                           context,
-                          'Notification permission denied. Please enable in settings.',
+                          'Streak reminders enabled!',
+                        );
+                      } else {
+                        AppFeedback.showInfo(
+                          context,
+                          'Streak reminders disabled',
                         );
                       }
-                      return;
                     }
-                  }
+                  },
+                );
+              }
 
-                  await ref
-                      .read(userProfileProvider.notifier)
-                      .updateProfile(streakRemindersEnabled: value);
+              // If reminders disabled, we're done
+              if (!profile.streakRemindersEnabled) {
+                return const SizedBox.shrink();
+              }
 
-                  // Reschedule notifications
-                  await _updateNotifications(ref);
+              // Additional items when enabled
+              final enabledIndex = index - baseItems;
 
-                  if (context.mounted) {
-                    if (value) {
-                      AppFeedback.showSuccess(
-                        context,
-                        'Streak reminders enabled!',
-                      );
-                    } else {
-                      AppFeedback.showInfo(
-                        context,
-                        'Streak reminders disabled',
-                      );
-                    }
-                  }
-                },
-              ),
+              // Divider
+              if (enabledIndex == 0) {
+                return const Divider();
+              }
 
-              if (profile.streakRemindersEnabled) ...[
-                const Divider(),
-
-                // Notification times section
-                Padding(
+              // Notification times section header
+              if (enabledIndex == 1) {
+                return Padding(
                   padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
                   child: Text(
                     'Reminder Times',
@@ -118,10 +142,12 @@ class NotificationSettingsScreen extends ConsumerWidget {
                       color: AppColors.textSecondary,
                     ),
                   ),
-                ),
+                );
+              }
 
-                // Morning notification
-                ListTile(
+              // Morning notification
+              if (enabledIndex == 2) {
+                return ListTile(
                   leading: const Icon(Icons.wb_sunny),
                   title: const Text('Morning Reminder'),
                   subtitle: Text(
@@ -135,10 +161,12 @@ class NotificationSettingsScreen extends ConsumerWidget {
                     profile.morningReminderTime ?? '09:00',
                     'morningReminderTime',
                   ),
-                ),
+                );
+              }
 
-                // Evening notification
-                ListTile(
+              // Evening notification
+              if (enabledIndex == 3) {
+                return ListTile(
                   leading: const Icon(Icons.wb_twilight),
                   title: const Text('Evening Reminder'),
                   subtitle: Text(
@@ -152,10 +180,12 @@ class NotificationSettingsScreen extends ConsumerWidget {
                     profile.eveningReminderTime ?? '19:00',
                     'eveningReminderTime',
                   ),
-                ),
+                );
+              }
 
-                // Night notification
-                ListTile(
+              // Night notification
+              if (enabledIndex == 4) {
+                return ListTile(
                   leading: const Icon(Icons.nightlight),
                   title: const Text('Late Night Reminder'),
                   subtitle: Text(
@@ -169,12 +199,17 @@ class NotificationSettingsScreen extends ConsumerWidget {
                     profile.nightReminderTime ?? '23:00',
                     'nightReminderTime',
                   ),
-                ),
+                );
+              }
 
-                const Divider(),
+              // Divider
+              if (enabledIndex == 5) {
+                return const Divider();
+              }
 
-                // Info section
-                Padding(
+              // Info section
+              if (enabledIndex == 6) {
+                return Padding(
                   padding: const EdgeInsets.all(AppSpacing.md),
                   child: Container(
                     padding: const EdgeInsets.all(AppSpacing.md),
@@ -217,10 +252,12 @@ class NotificationSettingsScreen extends ConsumerWidget {
                       ],
                     ),
                   ),
-                ),
+                );
+              }
 
-                // Test notification button
-                Padding(
+              // Test notification button
+              if (enabledIndex == 7) {
+                return Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: OutlinedButton.icon(
                     icon: const Icon(Icons.send),
@@ -238,10 +275,12 @@ class NotificationSettingsScreen extends ConsumerWidget {
                       }
                     },
                   ),
-                ),
-                const SizedBox(height: AppSpacing.md),
-              ],
-            ],
+                );
+              }
+
+              // Final spacing
+              return const SizedBox(height: AppSpacing.md);
+            },
           );
         },
       ),

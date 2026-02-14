@@ -6,7 +6,7 @@ import '../models/models.dart';
 import '../providers/tank_provider.dart';
 import '../theme/app_theme.dart';
 import 'livestock_detail_screen.dart';
-import 'tank_detail_screen.dart';
+import 'tank_detail/tank_detail_screen.dart';
 
 class SearchScreen extends ConsumerStatefulWidget {
   const SearchScreen({super.key});

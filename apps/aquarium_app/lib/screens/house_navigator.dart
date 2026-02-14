@@ -8,7 +8,7 @@ import '../widgets/tutorial_overlay.dart';
 import '../widgets/offline_indicator.dart';
 import '../widgets/sync_indicator.dart';
 import '../widgets/celebrations/level_up_listener.dart';
-import 'home_screen.dart';
+import 'home/home_screen.dart';
 import 'learn_screen.dart';
 import 'workshop_screen.dart';
 import 'shop_street_screen.dart';

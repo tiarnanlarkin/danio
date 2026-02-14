@@ -138,48 +138,69 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
   }
 
   Widget _buildLesson() {
+    // Calculate total items: title + spacing + time row + spacing + sections + final spacing
+    final totalItems = 4 + widget.lesson.sections.length + 1;
+
     return Column(
       children: [
         Expanded(
-          child: ListView(
+          child: ListView.builder(
             padding: const EdgeInsets.all(20),
-            children: [
+            itemCount: totalItems,
+            itemBuilder: (context, index) {
               // Lesson title with Hero animation
-              Hero(
-                tag: 'lesson-${widget.lesson.id}',
-                child: Material(
-                  type: MaterialType.transparency,
-                  child: Text(
-                    widget.lesson.title,
-                    style: AppTypography.headlineLarge,
-                  ),
-                ),
-              ),
-              const SizedBox(height: AppSpacing.sm),
-              Row(
-                children: [
-                  Icon(Icons.timer, size: 16, color: AppColors.textSecondary),
-                  const SizedBox(width: AppSpacing.xs),
-                  Text(
-                    '${widget.lesson.estimatedMinutes} min read',
-                    style: AppTypography.bodySmall.copyWith(
-                      color: AppColors.textSecondary,
+              if (index == 0) {
+                return Hero(
+                  tag: 'lesson-${widget.lesson.id}',
+                  child: Material(
+                    type: MaterialType.transparency,
+                    child: Text(
+                      widget.lesson.title,
+                      style: AppTypography.headlineLarge,
                     ),
                   ),
-                ],
-              ),
-              const SizedBox(height: AppSpacing.lg),
+                );
+              }
+
+              // Spacing after title
+              if (index == 1) {
+                return const SizedBox(height: AppSpacing.sm);
+              }
+
+              // Time estimate row
+              if (index == 2) {
+                return Row(
+                  children: [
+                    Icon(Icons.timer, size: 16, color: AppColors.textSecondary),
+                    const SizedBox(width: AppSpacing.xs),
+                    Text(
+                      '${widget.lesson.estimatedMinutes} min read',
+                      style: AppTypography.bodySmall.copyWith(
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
+                  ],
+                );
+              }
+
+              // Spacing before sections
+              if (index == 3) {
+                return const SizedBox(height: AppSpacing.lg);
+              }
 
               // Lesson sections
-              ...widget.lesson.sections.map((section) {
+              if (index < 4 + widget.lesson.sections.length) {
+                final sectionIndex = index - 4;
+                final section = widget.lesson.sections[sectionIndex];
                 return Padding(
                   padding: const EdgeInsets.only(bottom: 16),
                   child: _buildSection(section),
                 );
-              }),
+              }
 
-              const SizedBox(height: 40),
-            ],
+              // Final spacing
+              return const SizedBox(height: 40);
+            },
           ),
         ),
 
@@ -463,84 +484,95 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
         ),
 
         Expanded(
-          child: ListView(
+          child: ListView.builder(
             padding: const EdgeInsets.symmetric(horizontal: 20),
-            children: [
-              const SizedBox(height: 20),
-              Text(question.question, style: AppTypography.headlineMedium),
-              const SizedBox(height: AppSpacing.lg),
+            itemCount: 3 + question.options.length + (_answered && question.explanation != null ? 2 : 0), // spacing + question + spacing + options + (spacing + explanation if answered)
+            itemBuilder: (context, index) {
+              // Spacing at top
+              if (index == 0) {
+                return const SizedBox(height: 20);
+              }
+
+              // Question text
+              if (index == 1) {
+                return Text(question.question, style: AppTypography.headlineMedium);
+              }
+
+              // Spacing after question
+              if (index == 2) {
+                return const SizedBox(height: AppSpacing.lg);
+              }
 
               // Answer options
-              ...question.options.asMap().entries.map((entry) {
-                final index = entry.key;
-                final option = entry.value;
-                final isSelected = _selectedAnswer == index;
-                final isCorrect = index == question.correctIndex;
+              final optionIndex = index - 3;
+              final option = question.options[optionIndex];
+              final isSelected = _selectedAnswer == optionIndex;
+              final isCorrect = optionIndex == question.correctIndex;
 
-                Color? bgColor;
-                Color? borderColor;
-                IconData? icon;
+              Color? bgColor;
+              Color? borderColor;
+              IconData? icon;
 
-                if (_answered) {
-                  if (isCorrect) {
-                    bgColor = AppOverlays.success10;
-                    borderColor = AppColors.success;
-                    icon = Icons.check_circle;
-                  } else if (isSelected && !isCorrect) {
-                    bgColor = AppOverlays.error10;
-                    borderColor = AppColors.error;
-                    icon = Icons.cancel;
-                  }
-                } else if (isSelected) {
-                  bgColor = AppOverlays.primary10;
-                  borderColor = AppColors.primary;
+              if (_answered) {
+                if (isCorrect) {
+                  bgColor = AppOverlays.success10;
+                  borderColor = AppColors.success;
+                  icon = Icons.check_circle;
+                } else if (isSelected && !isCorrect) {
+                  bgColor = AppOverlays.error10;
+                  borderColor = AppColors.error;
+                  icon = Icons.cancel;
                 }
+              } else if (isSelected) {
+                bgColor = AppOverlays.primary10;
+                borderColor = AppColors.primary;
+              }
 
-                return Padding(
-                  padding: const EdgeInsets.only(bottom: 12),
-                  child: InkWell(
-                    onTap: _answered
-                        ? null
-                        : () => setState(() => _selectedAnswer = index),
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 12),
+                child: InkWell(
+                  onTap: _answered
+                      ? null
+                      : () => setState(() => _selectedAnswer = optionIndex),
                     borderRadius: AppRadius.mediumRadius,
-                    child: Container(
-                      padding: const EdgeInsets.all(AppSpacing.md),
-                      decoration: BoxDecoration(
-                        color: bgColor ?? AppColors.surface,
-                        borderRadius: AppRadius.mediumRadius,
-                        border: Border.all(
-                          color: borderColor ?? AppColors.surfaceVariant,
-                          width: borderColor != null ? 2 : 1,
-                        ),
+                  child: Container(
+                    padding: const EdgeInsets.all(AppSpacing.md),
+                    decoration: BoxDecoration(
+                      color: bgColor ?? AppColors.surface,
+                      borderRadius: AppRadius.mediumRadius,
+                      border: Border.all(
+                        color: borderColor ?? AppColors.surfaceVariant,
+                        width: borderColor != null ? 2 : 1,
                       ),
-                      child: Row(
-                        children: [
-                          Container(
-                            width: 32,
-                            height: 32,
-                            decoration: BoxDecoration(
-                              color: isSelected && !_answered
-                                  ? AppColors.primary
-                                  : AppColors.surfaceVariant,
-                              shape: BoxShape.circle,
-                            ),
-                            child: Center(
-                              child: icon != null
-                                  ? Icon(
-                                      icon,
-                                      size: 20,
-                                      color: isCorrect
-                                          ? AppColors.success
-                                          : AppColors.error,
-                                    )
-                                  : Text(
-                                      String.fromCharCode(65 + index),
-                                      style: AppTypography.labelLarge.copyWith(
-                                        color: isSelected && !_answered
-                                            ? Colors.white
-                                            : AppColors.textSecondary,
-                                      ),
+                    ),
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 32,
+                          height: 32,
+                          decoration: BoxDecoration(
+                            color: isSelected && !_answered
+                                ? AppColors.primary
+                                : AppColors.surfaceVariant,
+                            shape: BoxShape.circle,
+                          ),
+                          child: Center(
+                            child: icon != null
+                                ? Icon(
+                                    icon,
+                                    size: 20,
+                                    color: isCorrect
+                                        ? AppColors.success
+                                        : AppColors.error,
+                                  )
+                                : Text(
+                                    String.fromCharCode(65 + optionIndex),
+                                    style: AppTypography.labelLarge.copyWith(
+                                      color: isSelected && !_answered
+                                          ? Colors.white
+                                          : AppColors.textSecondary,
                                     ),
+                                  ),
                             ),
                           ),
                           const SizedBox(width: 12),
@@ -552,33 +584,41 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
                     ),
                   ),
                 );
-              }),
 
               // Explanation (after answering)
-              if (_answered && question.explanation != null) ...[
-                const SizedBox(height: AppSpacing.md),
-                Container(
-                  padding: const EdgeInsets.all(AppSpacing.md),
-                  decoration: BoxDecoration(
-                    color: AppOverlays.info10,
-                    borderRadius: AppRadius.mediumRadius,
-                  ),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Icon(Icons.info_outline, color: AppColors.info),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: Text(
-                          question.explanation!,
-                          style: AppTypography.bodyMedium,
+              if (_answered && question.explanation != null) {
+                // Spacing before explanation
+                if (index == 3 + question.options.length) {
+                  return const SizedBox(height: AppSpacing.md);
+                }
+
+                // Explanation content
+                if (index == 4 + question.options.length) {
+                  return Container(
+                    padding: const EdgeInsets.all(AppSpacing.md),
+                    decoration: BoxDecoration(
+                      color: AppOverlays.info10,
+                      borderRadius: AppRadius.mediumRadius,
+                    ),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Icon(Icons.info_outline, color: AppColors.info),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Text(
+                            question.explanation!,
+                            style: AppTypography.bodyMedium,
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ],
+                      ],
+                    ),
+                  );
+                }
+              }
+
+              return const SizedBox.shrink();
+            },
           ),
         ),
 

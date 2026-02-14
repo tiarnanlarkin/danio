@@ -152,6 +152,17 @@ class _RemindersScreenState extends ConsumerState<RemindersScreen> {
     );
   }
 
+  int _calculateItemCount(List<_Reminder> overdue, List<_Reminder> upcoming) {
+    int count = 0;
+    if (overdue.isNotEmpty) {
+      count += 1 + overdue.length + 1; // header + items + spacing
+    }
+    if (upcoming.isNotEmpty) {
+      count += 1 + upcoming.length; // header + items
+    }
+    return count;
+  }
+
   @override
   Widget build(BuildContext context) {
     final now = DateTime.now();
@@ -172,38 +183,65 @@ class _RemindersScreenState extends ConsumerState<RemindersScreen> {
               actionLabel: 'Add Reminder',
               onAction: _addReminder,
             )
-          : ListView(
+          : ListView.builder(
               padding: const EdgeInsets.all(AppSpacing.md),
-              children: [
-                if (overdue.isNotEmpty) ...[
-                  _SectionHeader(
-                    title: 'Overdue',
-                    count: overdue.length,
-                    color: AppColors.error,
-                  ),
-                  ...overdue.map(
-                    (r) => _ReminderTile(
+              itemCount: _calculateItemCount(overdue, upcoming),
+              itemBuilder: (context, index) {
+                int currentIndex = 0;
+
+                // Overdue section
+                if (overdue.isNotEmpty) {
+                  // Overdue header
+                  if (index == currentIndex) {
+                    return _SectionHeader(
+                      title: 'Overdue',
+                      count: overdue.length,
+                      color: AppColors.error,
+                    );
+                  }
+                  currentIndex++;
+
+                  // Overdue items
+                  if (index < currentIndex + overdue.length) {
+                    final r = overdue[index - currentIndex];
+                    return _ReminderTile(
                       reminder: r,
                       isOverdue: true,
                       onComplete: () => _toggleReminder(_reminders.indexOf(r)),
                       onDelete: () => _deleteReminder(_reminders.indexOf(r)),
-                    ),
-                  ),
-                  const SizedBox(height: AppSpacing.lg),
-                ],
+                    );
+                  }
+                  currentIndex += overdue.length;
 
-                if (upcoming.isNotEmpty) ...[
-                  _SectionHeader(title: 'Upcoming', count: upcoming.length),
-                  ...upcoming.map(
-                    (r) => _ReminderTile(
+                  // Spacing after overdue
+                  if (index == currentIndex) {
+                    return const SizedBox(height: AppSpacing.lg);
+                  }
+                  currentIndex++;
+                }
+
+                // Upcoming section
+                if (upcoming.isNotEmpty) {
+                  // Upcoming header
+                  if (index == currentIndex) {
+                    return _SectionHeader(title: 'Upcoming', count: upcoming.length);
+                  }
+                  currentIndex++;
+
+                  // Upcoming items
+                  if (index < currentIndex + upcoming.length) {
+                    final r = upcoming[index - currentIndex];
+                    return _ReminderTile(
                       reminder: r,
                       isOverdue: false,
                       onComplete: () => _toggleReminder(_reminders.indexOf(r)),
                       onDelete: () => _deleteReminder(_reminders.indexOf(r)),
-                    ),
-                  ),
-                ],
-              ],
+                    );
+                  }
+                }
+
+                return const SizedBox.shrink();
+              },
             ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: _addReminder,

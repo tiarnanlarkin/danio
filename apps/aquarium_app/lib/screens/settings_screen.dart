@@ -53,7 +53,7 @@ import 'tank_volume_calculator_screen.dart';
 import 'vacation_guide_screen.dart';
 import 'unit_converter_screen.dart';
 import 'learn_screen.dart';
-import 'tank_detail_screen.dart';
+import 'tank_detail/tank_detail_screen.dart';
 import '../providers/tank_provider.dart';
 import '../providers/user_profile_provider.dart';
 import '../widgets/room_navigation.dart';
