@@ -658,21 +658,21 @@ class _LearningPathCard extends StatelessWidget {
               gradient: isComplete
                   ? LinearGradient(
                       colors: [
-                        AppColors.success.withOpacity(0.2),
-                        AppColors.success.withOpacity(0.1),
+                        AppColors.successAlpha20,
+                        AppColors.successAlpha10,
                       ],
                     )
                   : LinearGradient(
                       colors: [
-                        AppColors.primary.withOpacity(0.15),
-                        AppColors.primary.withOpacity(0.08),
+                        AppColors.primaryAlpha15,
+                        AppColors.primaryAlpha10,
                       ],
                     ),
               borderRadius: BorderRadius.circular(16),
               border: Border.all(
                 color: isComplete
-                    ? AppColors.success.withOpacity(0.3)
-                    : AppColors.primary.withOpacity(0.15),
+                    ? AppColors.successAlpha30
+                    : AppColors.primaryAlpha15,
                 width: 1,
               ),
             ),
@@ -724,8 +724,7 @@ class _LearningPathCard extends StatelessWidget {
                             boxShadow: progress > 0
                                 ? [
                                     BoxShadow(
-                                      color: (isComplete ? AppColors.success : AppColors.primary)
-                                          .withOpacity(0.4),
+                                      color: isComplete ? AppColors.successAlpha40 : AppColors.primaryAlpha40,
                                       blurRadius: 4,
                                       offset: const Offset(0, 1),
                                     ),
