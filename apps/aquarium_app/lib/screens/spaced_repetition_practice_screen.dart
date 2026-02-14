@@ -866,7 +866,7 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
         border: Border.all(
           color: lastResult.correct
               ? AppOverlays.success30
-              : AppColors.error.withOpacity(0.3),
+              : AppColors.errorAlpha30,
         ),
       ),
       child: Column(
