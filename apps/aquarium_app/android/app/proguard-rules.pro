@@ -18,3 +18,7 @@
 
 ## Keep data classes (adjust package name as needed)
 -keep class com.tiarnanlarkin.aquarium.aquarium_app.** { *; }
+
+## Play Core (deferred components - not used but required by Flutter)
+-dontwarn com.google.android.play.core.**
+-keep class com.google.android.play.core.** { *; }
