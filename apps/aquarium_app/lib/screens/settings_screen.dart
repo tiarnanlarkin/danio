@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -639,7 +640,7 @@ class SettingsScreen extends ConsumerWidget {
           // Danger zone
           _SectionHeader(title: 'Danger Zone', color: AppColors.error),
           AppListTile(
-            leading: Icon(
+            leading: const Icon(
               Icons.delete_forever_outlined,
               color: AppColors.error,
             ),
@@ -648,9 +649,25 @@ class SettingsScreen extends ConsumerWidget {
             isDestructive: true,
             onTap: () => _confirmClearData(context),
           ),
+          // Debug crash button (only in debug mode)
+          if (kDebugMode)
+            AppListTile(
+              leading: const Icon(
+                Icons.bug_report_outlined,
+                color: Colors.orange,
+              ),
+              title: 'Test Error Boundary',
+              subtitle: 'Trigger a crash to test error handling',
+              onTap: () => _triggerTestCrash(),
+            ),
         ],
       ),
     );
+  }
+
+  void _triggerTestCrash() {
+    // Intentionally throw an error to test the error boundary
+    throw Exception('Test crash triggered from settings screen');
   }
 
   Future<void> _toggleNotifications(

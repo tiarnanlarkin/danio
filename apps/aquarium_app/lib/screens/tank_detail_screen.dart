@@ -322,6 +322,7 @@ class TankDetailScreen extends ConsumerWidget {
                   IconButton(
                     icon: const Icon(Icons.checklist, color: Colors.white),
                     tooltip: 'Checklist',
+                    semanticLabel: 'View maintenance checklist',
                     onPressed: () => Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -338,6 +339,7 @@ class TankDetailScreen extends ConsumerWidget {
                       color: Colors.white,
                     ),
                     tooltip: 'Gallery',
+                    semanticLabel: 'View photo gallery',
                     onPressed: () => Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -351,6 +353,7 @@ class TankDetailScreen extends ConsumerWidget {
                   IconButton(
                     icon: const Icon(Icons.book_outlined, color: Colors.white),
                     tooltip: 'Journal',
+                    semanticLabel: 'View tank journal',
                     onPressed: () => Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -361,6 +364,7 @@ class TankDetailScreen extends ConsumerWidget {
                   IconButton(
                     icon: const Icon(Icons.show_chart, color: Colors.white),
                     tooltip: 'Charts',
+                    semanticLabel: 'View tank charts and analytics',
                     onPressed: () => Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -2271,6 +2275,7 @@ class _QuickAddFabState extends State<_QuickAddFab>
         FloatingActionButton(
           onPressed: _toggle,
           tooltip: 'Quick actions menu',
+          heroTag: 'main_fab_${widget.tankId}',
           child: AnimatedRotation(
             turns: _isExpanded ? 0.125 : 0,
             duration: const Duration(milliseconds: 200),

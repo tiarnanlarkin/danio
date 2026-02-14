@@ -266,6 +266,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         color: AppOverlays.white90,
                       ),
                       tooltip: 'Settings',
+                      semanticLabel: 'Open settings',
                       onPressed: () => Navigator.push(
                         context,
                         RoomSlideRoute(page: const SettingsScreen()),
@@ -721,6 +722,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 IconButton(
                   icon: const Icon(Icons.close),
                   tooltip: 'Close',
+                  semanticLabel: 'Close progress details',
                   onPressed: () => Navigator.pop(ctx),
                 ),
               ],
