@@ -1,8 +1,11 @@
 #!/bin/bash
 # Helper script to count withOpacity() calls in the codebase
-# Usage: ./scripts/count_withopacity.sh
+# Usage: ./scripts/count_withopacity.sh (or: bash scripts/count_withopacity.sh from repo root)
 
-cd "$(dirname "$0")/../apps/aquarium_app" || exit
+# Change to repo root if needed
+if [ "$(basename "$0")" != "count_withopacity.sh" ]; then
+  cd "$(dirname "$0")/.." || exit
+fi
 
 echo "🔍 Counting withOpacity() calls in lib/"
 echo "=========================================="
