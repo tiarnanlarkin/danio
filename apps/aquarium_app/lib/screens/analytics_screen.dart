@@ -16,6 +16,7 @@ import '../services/analytics_service.dart';
 import '../data/lesson_content.dart';
 import '../widgets/skeleton_loader.dart';
 import '../widgets/error_state.dart';
+import '../widgets/core/app_card.dart';
 
 class AnalyticsScreen extends StatefulWidget {
   const AnalyticsScreen({super.key});
@@ -576,8 +577,9 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                 ),
                 tickBorderData: const BorderSide(color: Colors.transparent),
                 getTitle: (index, angle) {
-                  if (index >= topics.length)
+                  if (index >= topics.length) {
                     return const RadarChartTitle(text: '');
+                  }
                   return RadarChartTitle(
                     text: topics[index].topicName.split(' ').first,
                     angle: angle,
@@ -744,10 +746,10 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
         break;
     }
 
-    return Card(
-      margin: const EdgeInsets.only(bottom: 12),
-      child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.md),
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: AppCard(
+        padding: AppCardPadding.standard,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -825,10 +827,10 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
   }
 
   Widget _buildTopicCard(TopicPerformance topic) {
-    return Card(
-      margin: const EdgeInsets.only(bottom: 12),
-      child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.md),
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: AppCard(
+        padding: AppCardPadding.standard,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -925,11 +927,11 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
   }
 
   Widget _buildPredictionCard(Prediction prediction) {
-    return Card(
-      margin: const EdgeInsets.only(bottom: 12),
-      color: Colors.blue[50],
-      child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.md),
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: AppCard(
+        padding: AppCardPadding.standard,
+        backgroundColor: Colors.blue[50],
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
