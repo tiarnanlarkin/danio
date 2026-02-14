@@ -30,7 +30,7 @@ class _TankComparisonScreenState extends ConsumerState<TankComparisonScreen> {
           if (tanks.length < 2) {
             return Center(
               child: Padding(
-                padding: const EdgeInsets.all(32),
+                padding: const EdgeInsets.all(AppSpacing.xl),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -66,7 +66,7 @@ class _TankComparisonScreenState extends ConsumerState<TankComparisonScreen> {
               : tanks[1];
 
           return ListView(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(AppSpacing.md),
             children: [
               // Tank selectors
               Row(
@@ -175,7 +175,7 @@ class _ComparisonSection extends StatelessWidget {
     return Card(
       margin: const EdgeInsets.only(bottom: 16),
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(AppSpacing.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

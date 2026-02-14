@@ -28,7 +28,7 @@ class NotificationSettingsScreen extends ConsumerWidget {
             children: [
               // Header
               Padding(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.all(AppSpacing.md),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -175,9 +175,9 @@ class NotificationSettingsScreen extends ConsumerWidget {
 
                 // Info section
                 Padding(
-                  padding: const EdgeInsets.all(16),
+                  padding: const EdgeInsets.all(AppSpacing.md),
                   child: Container(
-                    padding: const EdgeInsets.all(16),
+                    padding: const EdgeInsets.all(AppSpacing.md),
                     decoration: BoxDecoration(
                       color: AppOverlays.primary10,
                       borderRadius: AppRadius.mediumRadius,

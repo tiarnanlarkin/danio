@@ -57,7 +57,7 @@ class TasksScreen extends ConsumerWidget {
           final disabled = tasks.where((t) => !t.isEnabled).toList();
 
           return ListView(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(AppSpacing.md),
             children: [
               if (overdue.isNotEmpty) ...[
                 _SectionHeader(
@@ -650,7 +650,7 @@ class _AddTaskSheetState extends State<_AddTaskSheet> {
               },
               borderRadius: AppRadius.mediumRadius,
               child: Container(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.all(AppSpacing.md),
                 decoration: BoxDecoration(
                   color: AppColors.surfaceVariant,
                   borderRadius: AppRadius.mediumRadius,

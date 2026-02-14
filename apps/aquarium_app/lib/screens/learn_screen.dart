@@ -163,7 +163,7 @@ class LearnScreen extends ConsumerWidget {
                 const SliverFillRemaining(
                   child: Center(
                     child: Padding(
-                      padding: EdgeInsets.all(32),
+                      padding: EdgeInsets.all(AppSpacing.xl),
                       child: Text(
                         'Complete onboarding to start your learning journey!',
                         textAlign: TextAlign.center,

@@ -10,7 +10,7 @@ class AcclimationGuideScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: const Text('Fish Acclimation Guide')),
       body: ListView(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(AppSpacing.md),
         children: [
           // Intro
           AppCard(
@@ -247,7 +247,7 @@ class _StepCard extends StatelessWidget {
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(AppSpacing.md),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

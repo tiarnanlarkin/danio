@@ -216,7 +216,7 @@ class _SearchResults extends StatelessWidget {
         .toList();
 
     return ListView(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(AppSpacing.md),
       children: [
         if (tankResults.isNotEmpty) ...[
           _SectionHeader(title: 'Tanks', count: tankResults.length),

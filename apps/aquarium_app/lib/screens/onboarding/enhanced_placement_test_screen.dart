@@ -209,7 +209,7 @@ class _EnhancedPlacementTestScreenState
               // Question content
               Expanded(
                 child: SingleChildScrollView(
-                  padding: const EdgeInsets.all(16),
+                  padding: const EdgeInsets.all(AppSpacing.md),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
@@ -465,7 +465,7 @@ class _EnhancedPlacementTestScreenState
           borderRadius: AppRadius.mediumRadius,
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 200),
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(AppSpacing.md),
             decoration: BoxDecoration(
               color: backgroundColor,
               borderRadius: AppRadius.mediumRadius,
@@ -558,7 +558,7 @@ class _EnhancedPlacementTestScreenState
           ),
         ),
         child: Padding(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(AppSpacing.md),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -601,7 +601,7 @@ class _EnhancedPlacementTestScreenState
 
   Widget _buildNavigationButtons(bool isAnswered) {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
         color: Colors.white,
         boxShadow: [

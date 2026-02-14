@@ -48,7 +48,7 @@ class _DosingCalculatorScreenState extends State<DosingCalculatorScreen> {
     return Scaffold(
       appBar: AppBar(title: const Text('Dosing Calculator')),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(AppSpacing.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

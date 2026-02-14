@@ -83,7 +83,7 @@ class _AchievementsScreenState extends ConsumerState<AchievementsScreen> {
         children: [
           // Progress header
           Container(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(AppSpacing.md),
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topLeft,
@@ -133,7 +133,7 @@ class _AchievementsScreenState extends ConsumerState<AchievementsScreen> {
           // Filters
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.all(8),
+            padding: const EdgeInsets.all(AppSpacing.sm),
             child: Row(
               children: [
                 // Filter by lock status
@@ -241,7 +241,7 @@ class _AchievementsScreenState extends ConsumerState<AchievementsScreen> {
                     ),
                   )
                 : GridView.builder(
-                    padding: const EdgeInsets.all(16),
+                    padding: const EdgeInsets.all(AppSpacing.md),
                     gridDelegate:
                         const SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 2,

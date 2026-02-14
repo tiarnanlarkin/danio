@@ -41,7 +41,7 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
     return Scaffold(
       appBar: AppBar(title: const Text('Backup & Restore')),
       body: ListView(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(AppSpacing.md),
         children: [
           AppCard(
             backgroundColor: AppOverlays.info10,
@@ -70,7 +70,7 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
             error: (e, _) => Text('Error: $e'),
             data: (tanks) => Card(
               child: Padding(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.all(AppSpacing.md),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [

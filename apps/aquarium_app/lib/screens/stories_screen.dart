@@ -83,7 +83,7 @@ class _StoriesScreenState extends ConsumerState<StoriesScreen> {
           // Filters and sorting
           SliverToBoxAdapter(
             child: Container(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(AppSpacing.md),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -227,7 +227,7 @@ class _StoriesScreenState extends ConsumerState<StoriesScreen> {
     }
 
     return SliverPadding(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(AppSpacing.md),
       sliver: SliverList(
         delegate: SliverChildBuilderDelegate((context, index) {
           final story = sortedStories[index];
@@ -293,7 +293,7 @@ class StoryCard extends StatelessWidget {
           onTap: onTap,
           borderRadius: AppRadius.mediumRadius,
           child: Container(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(AppSpacing.md),
             decoration: BoxDecoration(
               borderRadius: AppRadius.mediumRadius,
               border: Border.all(

@@ -66,7 +66,7 @@ class _SpacedRepetitionPracticeScreenState
 
     return Center(
       child: Padding(
-        padding: const EdgeInsets.all(32),
+        padding: const EdgeInsets.all(AppSpacing.xl),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -285,7 +285,7 @@ class _SpacedRepetitionPracticeScreenState
       onTap: enabled && count > 0 ? () => _startSession(mode) : null,
       borderRadius: AppRadius.mediumRadius,
       child: Container(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(AppSpacing.md),
         decoration: BoxDecoration(
           color: enabled
               ? AppColors.surface
@@ -362,7 +362,7 @@ class _SpacedRepetitionPracticeScreenState
 
   Widget _buildMasteryBreakdown(SpacedRepetitionState srState) {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
         color: AppColors.surface,
         borderRadius: AppRadius.mediumRadius,
@@ -596,7 +596,7 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
           children: [
             // Enhanced progress bar with stats
             Container(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(AppSpacing.md),
               decoration: BoxDecoration(
                 color: AppColors.surface,
                 boxShadow: [
@@ -722,7 +722,7 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
 
           // Question card
           Container(
-            padding: const EdgeInsets.all(24),
+            padding: const EdgeInsets.all(AppSpacing.lg),
             decoration: BoxDecoration(
               color: AppColors.surface,
               borderRadius: AppRadius.mediumRadius,

@@ -99,7 +99,7 @@ class EquipmentScreen extends ConsumerWidget {
     final placeholders = SkeletonPlaceholders.equipmentList;
     return Skeletonizer(
       child: ListView(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(AppSpacing.md),
         children: placeholders
             .map((e) => _EquipmentCard(
                   equipment: e,
@@ -145,7 +145,7 @@ class EquipmentScreen extends ConsumerWidget {
           final overdue = equipment.where((e) => e.isMaintenanceOverdue).length;
 
           return ListView(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(AppSpacing.md),
             children: [
               // Summary card
               if (overdue > 0)

@@ -48,7 +48,7 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
     return Scaffold(
       appBar: AppBar(title: const Text('Difficulty Settings'), elevation: 0),
       body: ListView(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(AppSpacing.md),
         children: [
           _buildOverallSkillCard(),
           const SizedBox(height: AppSpacing.lg),

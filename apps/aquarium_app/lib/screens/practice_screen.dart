@@ -30,7 +30,7 @@ class PracticeScreen extends ConsumerWidget {
   Widget _buildEmptyState(BuildContext context) {
     return Center(
       child: Padding(
-        padding: const EdgeInsets.all(32),
+        padding: const EdgeInsets.all(AppSpacing.xl),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -79,7 +79,7 @@ class PracticeScreen extends ConsumerWidget {
       children: [
         // Header
         Container(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(AppSpacing.md),
           decoration: BoxDecoration(
             gradient: AppColors.primaryGradient,
             borderRadius: AppRadius.mediumRadius,
@@ -124,7 +124,7 @@ class PracticeScreen extends ConsumerWidget {
 
         // Info card explaining spaced repetition
         Container(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(AppSpacing.md),
           decoration: BoxDecoration(
             color: AppOverlays.info10,
             borderRadius: AppRadius.mediumRadius,
@@ -220,7 +220,7 @@ class PracticeScreen extends ConsumerWidget {
       },
       borderRadius: AppRadius.mediumRadius,
       child: Container(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(AppSpacing.md),
         decoration: BoxDecoration(
           color: AppColors.surface,
           borderRadius: AppRadius.mediumRadius,
@@ -559,7 +559,7 @@ class _PracticeLessonScreenState extends ConsumerState<PracticeLessonScreen> {
         );
       case LessonSectionType.keyPoint:
         return Container(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(AppSpacing.md),
           decoration: BoxDecoration(
             color: AppOverlays.primary10,
             borderRadius: AppRadius.mediumRadius,
@@ -583,7 +583,7 @@ class _PracticeLessonScreenState extends ConsumerState<PracticeLessonScreen> {
         );
       case LessonSectionType.tip:
         return Container(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(AppSpacing.md),
           decoration: BoxDecoration(
             color: AppOverlays.success10,
             borderRadius: AppRadius.mediumRadius,
@@ -614,7 +614,7 @@ class _PracticeLessonScreenState extends ConsumerState<PracticeLessonScreen> {
         );
       case LessonSectionType.warning:
         return Container(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(AppSpacing.md),
           decoration: BoxDecoration(
             color: AppOverlays.warning10,
             borderRadius: AppRadius.mediumRadius,
@@ -645,7 +645,7 @@ class _PracticeLessonScreenState extends ConsumerState<PracticeLessonScreen> {
         );
       case LessonSectionType.funFact:
         return Container(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(AppSpacing.md),
           decoration: BoxDecoration(
             color: AppOverlays.purple10,
             borderRadius: AppRadius.mediumRadius,

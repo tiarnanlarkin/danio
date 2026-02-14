@@ -10,7 +10,7 @@ class TermsOfServiceScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: const Text('Terms of Service')),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(24),
+        padding: const EdgeInsets.all(AppSpacing.lg),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -123,7 +123,7 @@ class TermsOfServiceScreen extends StatelessWidget {
             const SizedBox(height: AppSpacing.xl),
 
             Container(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(AppSpacing.md),
               decoration: BoxDecoration(
                 color: Colors.blue[50],
                 borderRadius: AppRadius.mediumRadius,
@@ -161,7 +161,7 @@ class TermsOfServiceScreen extends StatelessWidget {
     bool highlighted = false,
   }) {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
         color: highlighted ? Colors.orange[50] : Colors.grey[50],
         borderRadius: AppRadius.mediumRadius,

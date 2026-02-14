@@ -79,7 +79,7 @@ class _LightingScheduleScreenState extends State<LightingScheduleScreen> {
     return Scaffold(
       appBar: AppBar(title: const Text('Lighting Schedule')),
       body: ListView(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(AppSpacing.md),
         children: [
           AppCard(
             backgroundColor: AppOverlays.info10,

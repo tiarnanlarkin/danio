@@ -234,13 +234,13 @@ class _ActivityFeedView extends StatelessWidget {
       },
       child: ListView.builder(
         controller: scrollController,
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(AppSpacing.md),
         itemCount: activities.length + (hasMore ? 1 : 0),
         itemBuilder: (context, index) {
           if (index >= activities.length) {
             // Loading indicator for "load more"
             return const Padding(
-              padding: EdgeInsets.all(16),
+              padding: EdgeInsets.all(AppSpacing.md),
               child: Center(child: CircularProgressIndicator()),
             );
           }

@@ -264,7 +264,7 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
               // Bulk action buttons
               if (_isSelectMode && _selectedLivestockIds.isNotEmpty)
                 Container(
-                  padding: const EdgeInsets.all(16),
+                  padding: const EdgeInsets.all(AppSpacing.md),
                   decoration: BoxDecoration(
                     color: Colors.white,
                     boxShadow: [
@@ -463,7 +463,7 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
     final placeholders = SkeletonPlaceholders.livestockList;
     return Skeletonizer(
       child: ListView(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(AppSpacing.md),
         children: [
           // Skeleton summary card
           AppCard(

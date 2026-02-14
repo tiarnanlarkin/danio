@@ -244,7 +244,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
 
       case LessonSectionType.keyPoint:
         return Container(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(AppSpacing.md),
           decoration: BoxDecoration(
             color: AppOverlays.primary10,
             borderRadius: AppRadius.mediumRadius,
@@ -269,7 +269,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
 
       case LessonSectionType.tip:
         return Container(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(AppSpacing.md),
           decoration: BoxDecoration(
             color: AppOverlays.success10,
             borderRadius: AppRadius.mediumRadius,
@@ -301,7 +301,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
 
       case LessonSectionType.warning:
         return Container(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(AppSpacing.md),
           decoration: BoxDecoration(
             color: AppOverlays.warning10,
             borderRadius: AppRadius.mediumRadius,
@@ -333,7 +333,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
 
       case LessonSectionType.funFact:
         return Container(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(AppSpacing.md),
           decoration: BoxDecoration(
             color: AppOverlays.purple10,
             borderRadius: AppRadius.mediumRadius,
@@ -495,7 +495,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
                         : () => setState(() => _selectedAnswer = index),
                     borderRadius: AppRadius.mediumRadius,
                     child: Container(
-                      padding: const EdgeInsets.all(16),
+                      padding: const EdgeInsets.all(AppSpacing.md),
                       decoration: BoxDecoration(
                         color: bgColor ?? AppColors.surface,
                         borderRadius: AppRadius.mediumRadius,
@@ -549,7 +549,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
               if (_answered && question.explanation != null) ...[
                 const SizedBox(height: AppSpacing.md),
                 Container(
-                  padding: const EdgeInsets.all(16),
+                  padding: const EdgeInsets.all(AppSpacing.md),
                   decoration: BoxDecoration(
                     color: AppOverlays.info10,
                     borderRadius: AppRadius.mediumRadius,
@@ -678,7 +678,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
         Expanded(
           child: Center(
             child: Padding(
-              padding: const EdgeInsets.all(32),
+              padding: const EdgeInsets.all(AppSpacing.xl),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [

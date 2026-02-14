@@ -218,7 +218,7 @@ class _EnhancedOnboardingScreenState
 
             // Navigation buttons
             Padding(
-              padding: const EdgeInsets.all(24),
+              padding: const EdgeInsets.all(AppSpacing.lg),
               child: Row(
                 children: [
                   if (_currentPage > 0)

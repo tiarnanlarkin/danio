@@ -70,7 +70,7 @@ class _Co2CalculatorScreenState extends State<Co2CalculatorScreen> {
     return Scaffold(
       appBar: AppBar(title: const Text('CO2 Calculator')),
       body: ListView(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(AppSpacing.md),
         children: [
           AppCard(
             backgroundColor: AppOverlays.info10,

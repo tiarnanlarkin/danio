@@ -501,7 +501,7 @@ class _EnhancedQuizScreenState extends ConsumerState<EnhancedQuizScreen>
     return ScaleTransition(
       scale: _feedbackScale,
       child: Container(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(AppSpacing.md),
         decoration: BoxDecoration(
           color: isCorrect
               ? AppOverlays.success10
@@ -610,7 +610,7 @@ class _EnhancedQuizScreenState extends ConsumerState<EnhancedQuizScreen>
         Expanded(
           child: Center(
             child: Padding(
-              padding: const EdgeInsets.all(32),
+              padding: const EdgeInsets.all(AppSpacing.xl),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -712,7 +712,7 @@ class _EnhancedQuizScreenState extends ConsumerState<EnhancedQuizScreen>
 
                   // XP earned card
                   Container(
-                    padding: const EdgeInsets.all(24),
+                    padding: const EdgeInsets.all(AppSpacing.lg),
                     decoration: BoxDecoration(
                       gradient: AppColors.primaryGradient,
                       borderRadius: AppRadius.largeRadius,

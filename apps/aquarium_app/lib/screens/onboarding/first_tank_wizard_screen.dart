@@ -131,7 +131,7 @@ class _FirstTankWizardScreenState extends ConsumerState<FirstTankWizardScreen> {
 
             // Navigation buttons
             Padding(
-              padding: const EdgeInsets.all(24),
+              padding: const EdgeInsets.all(AppSpacing.lg),
               child: Row(
                 children: [
                   if (_currentStep > 0)
@@ -162,7 +162,7 @@ class _FirstTankWizardScreenState extends ConsumerState<FirstTankWizardScreen> {
 
   Widget _buildNameStep() {
     return Padding(
-      padding: const EdgeInsets.all(24),
+      padding: const EdgeInsets.all(AppSpacing.lg),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -210,7 +210,7 @@ class _FirstTankWizardScreenState extends ConsumerState<FirstTankWizardScreen> {
 
   Widget _buildSizeStep() {
     return Padding(
-      padding: const EdgeInsets.all(24),
+      padding: const EdgeInsets.all(AppSpacing.lg),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -262,7 +262,7 @@ class _FirstTankWizardScreenState extends ConsumerState<FirstTankWizardScreen> {
 
   Widget _buildTypeStep() {
     return Padding(
-      padding: const EdgeInsets.all(24),
+      padding: const EdgeInsets.all(AppSpacing.lg),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -353,7 +353,7 @@ class _FirstTankWizardScreenState extends ConsumerState<FirstTankWizardScreen> {
 
   Widget _buildSampleDataStep() {
     return Padding(
-      padding: const EdgeInsets.all(24),
+      padding: const EdgeInsets.all(AppSpacing.lg),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -401,7 +401,7 @@ class _FirstTankWizardScreenState extends ConsumerState<FirstTankWizardScreen> {
           ),
           const SizedBox(height: AppSpacing.lg),
           Container(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(AppSpacing.md),
             decoration: BoxDecoration(
               color: AppOverlays.accent10,
               borderRadius: AppRadius.mediumRadius,

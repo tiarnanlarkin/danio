@@ -9,7 +9,7 @@ class FaqScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: const Text('FAQ')),
       body: ListView(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(AppSpacing.md),
         children: const [
           _FaqSection(
             title: 'Getting Started',
@@ -240,7 +240,7 @@ class _FaqItemState extends State<_FaqItem> {
         onTap: () => setState(() => _expanded = !_expanded),
         borderRadius: AppRadius.mediumRadius,
         child: Padding(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(AppSpacing.md),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

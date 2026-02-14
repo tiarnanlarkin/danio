@@ -171,7 +171,7 @@ class _RemindersScreenState extends ConsumerState<RemindersScreen> {
               onAction: _addReminder,
             )
           : ListView(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(AppSpacing.md),
               children: [
                 if (overdue.isNotEmpty) ...[
                   _SectionHeader(
@@ -290,7 +290,7 @@ class _EmptyState extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Padding(
-        padding: const EdgeInsets.all(32),
+        padding: const EdgeInsets.all(AppSpacing.xl),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [

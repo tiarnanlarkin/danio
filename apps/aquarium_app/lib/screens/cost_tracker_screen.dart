@@ -127,7 +127,7 @@ class _CostTrackerScreenState extends ConsumerState<CostTrackerScreen> {
       body: _expenses.isEmpty
           ? _EmptyState(onAdd: _addExpense)
           : ListView(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(AppSpacing.md),
               children: [
                 // Summary cards
                 Row(
@@ -309,7 +309,7 @@ class _EmptyState extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Padding(
-        padding: const EdgeInsets.all(32),
+        padding: const EdgeInsets.all(AppSpacing.xl),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -360,7 +360,7 @@ class _SummaryCard extends StatelessWidget {
     return Card(
       color: color.withOpacity(0.1),
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(AppSpacing.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

@@ -48,7 +48,7 @@ class _SpeciesBrowserScreenState extends ConsumerState<SpeciesBrowserScreen> {
       body: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(AppSpacing.md),
             child: TextField(
               decoration: InputDecoration(
                 hintText: 'Search fish by name...',
@@ -107,7 +107,7 @@ class _SpeciesBrowserScreenState extends ConsumerState<SpeciesBrowserScreen> {
 
           Expanded(
             child: ListView.builder(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(AppSpacing.md),
               itemCount: species.length,
               itemBuilder: (ctx, i) => _SpeciesCard(
                 species: species[i],

@@ -231,7 +231,7 @@ class _FriendsListView extends ConsumerWidget {
       children: [
         // Search bar
         Padding(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(AppSpacing.md),
           child: TextField(
             controller: searchController,
             decoration: InputDecoration(
@@ -471,7 +471,7 @@ class _ActivityFeedView extends StatelessWidget {
     }
 
     return ListView.builder(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(AppSpacing.md),
       itemCount: activities.length,
       itemBuilder: (context, index) {
         final activity = activities[index];

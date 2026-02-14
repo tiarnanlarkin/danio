@@ -97,7 +97,7 @@ class _TankSettingsScreenState extends ConsumerState<TankSettingsScreen> {
           body: Form(
             key: _formKey,
             child: ListView(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(AppSpacing.md),
               children: [
                 Text('Basics', style: AppTypography.headlineSmall),
                 const SizedBox(height: 12),

@@ -63,7 +63,7 @@ class _LivestockValueScreenState extends ConsumerState<LivestockValueScreen> {
           if (livestock.isEmpty) {
             return Center(
               child: Padding(
-                padding: const EdgeInsets.all(32),
+                padding: const EdgeInsets.all(AppSpacing.xl),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -89,7 +89,7 @@ class _LivestockValueScreenState extends ConsumerState<LivestockValueScreen> {
           final totalAnimals = livestock.fold(0, (sum, l) => sum + l.count);
 
           return ListView(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(AppSpacing.md),
             children: [
               // Total value card
               AppCard(

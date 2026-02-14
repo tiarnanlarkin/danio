@@ -95,7 +95,7 @@ class LeaderboardScreen extends ConsumerWidget {
     final minutes = timeLeft.inMinutes % 60;
 
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: _leagueColors(league),
@@ -151,7 +151,7 @@ class LeaderboardScreen extends ConsumerWidget {
     }
 
     return Container(
-      margin: const EdgeInsets.all(16),
+      margin: const EdgeInsets.all(AppSpacing.md),
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: willPromote ? Colors.green.shade50 : Colors.red.shade50,

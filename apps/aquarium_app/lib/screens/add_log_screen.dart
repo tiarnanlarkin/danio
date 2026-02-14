@@ -173,7 +173,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
         ],
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(AppSpacing.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -239,7 +239,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
               onTap: _pickDateTime,
               borderRadius: AppRadius.mediumRadius,
               child: Container(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.all(AppSpacing.md),
                 decoration: BoxDecoration(
                   color: AppColors.surfaceVariant,
                   borderRadius: AppRadius.mediumRadius,
@@ -420,7 +420,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
         // Bulk entry mode - compact grid
         if (_bulkEntryMode) ...[
           Container(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(AppSpacing.md),
             decoration: BoxDecoration(
               color: AppColors.surfaceVariant,
               borderRadius: AppRadius.mediumRadius,
@@ -1110,7 +1110,7 @@ class _PhotoGrid extends StatelessWidget {
               child: InkWell(
                 onTap: () => onRemove(path),
                 child: Container(
-                  padding: const EdgeInsets.all(4),
+                  padding: const EdgeInsets.all(AppSpacing.xs),
                   decoration: BoxDecoration(
                     color: AppOverlays.black60,
                     borderRadius: AppRadius.pillRadius,

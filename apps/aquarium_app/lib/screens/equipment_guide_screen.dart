@@ -9,7 +9,7 @@ class EquipmentGuideScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: const Text('Equipment Guide')),
       body: ListView(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(AppSpacing.md),
         children: [
           // Filters
           _EquipmentSection(

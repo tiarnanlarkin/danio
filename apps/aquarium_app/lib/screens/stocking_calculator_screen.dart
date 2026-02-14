@@ -140,7 +140,7 @@ class _StockingCalculatorScreenState extends State<StockingCalculatorScreen> {
         children: [
           // Tank setup
           Padding(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(AppSpacing.md),
             child: Row(
               children: [
                 Expanded(
@@ -194,7 +194,7 @@ class _StockingCalculatorScreenState extends State<StockingCalculatorScreen> {
             child: Card(
               color: _stockingColor.withOpacity(0.1),
               child: Padding(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.all(AppSpacing.md),
                 child: Column(
                   children: [
                     Row(
@@ -293,7 +293,7 @@ class _StockingCalculatorScreenState extends State<StockingCalculatorScreen> {
                     ),
                   )
                 : ListView.builder(
-                    padding: const EdgeInsets.all(16),
+                    padding: const EdgeInsets.all(AppSpacing.md),
                     itemCount: _stock.length,
                     itemBuilder: (ctx, i) {
                       final entry = _stock[i];
@@ -333,7 +333,7 @@ class _StockingCalculatorScreenState extends State<StockingCalculatorScreen> {
           if (_stock.isNotEmpty)
             Container(
               width: double.infinity,
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(AppSpacing.md),
               color: AppColors.surfaceVariant.withOpacity(0.5),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
