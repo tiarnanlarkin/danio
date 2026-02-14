@@ -163,25 +163,27 @@ class _FriendFilterBar extends StatelessWidget {
           bottom: BorderSide(color: Colors.grey.shade300, width: 1),
         ),
       ),
-      child: ListView(
+      child: ListView.builder(
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(horizontal: 16),
-        children: [
-          // "All" chip
-          Padding(
-            padding: const EdgeInsets.only(right: 8),
-            child: FilterChip(
-              label: const Text('All'),
-              selected: selectedFriendId == null,
-              onSelected: (_) => onFriendSelected(null),
-              avatar: selectedFriendId == null
-                  ? const Icon(Icons.check, size: 16)
-                  : const Icon(Icons.people, size: 16),
-            ),
-          ),
-
-          // Friend chips
-          ...friends.map((friend) {
+        itemCount: friends.length + 1, // +1 for "All" chip
+        itemBuilder: (context, index) {
+          if (index == 0) {
+            // "All" chip
+            return Padding(
+              padding: const EdgeInsets.only(right: 8),
+              child: FilterChip(
+                label: const Text('All'),
+                selected: selectedFriendId == null,
+                onSelected: (_) => onFriendSelected(null),
+                avatar: selectedFriendId == null
+                    ? const Icon(Icons.check, size: 16)
+                    : const Icon(Icons.people, size: 16),
+              ),
+            );
+          } else {
+            // Friend chips
+            final friend = friends[index - 1];
             final isSelected = friend.id == selectedFriendId;
             return Padding(
               padding: const EdgeInsets.only(right: 8),
@@ -196,8 +198,8 @@ class _FriendFilterBar extends StatelessWidget {
                 ),
               ),
             );
-          }),
-        ],
+          }
+        },
       ),
     );
   }

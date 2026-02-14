@@ -126,75 +126,138 @@ class _CostTrackerScreenState extends ConsumerState<CostTrackerScreen> {
       ),
       body: _expenses.isEmpty
           ? _EmptyState(onAdd: _addExpense)
-          : ListView(
+          : ListView.builder(
               padding: const EdgeInsets.all(AppSpacing.md),
-              children: [
-                // Summary cards
-                Row(
-                  children: [
-                    Expanded(
-                      child: _SummaryCard(
-                        title: 'This Month',
-                        amount: _thisMonth,
-                        currency: _currency,
-                        color: AppColors.primary,
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: _SummaryCard(
-                        title: 'This Year',
-                        amount: _thisYear,
-                        currency: _currency,
-                        color: AppColors.secondary,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 12),
-                _SummaryCard(
-                  title: 'All Time Total',
-                  amount: _totalSpent,
-                  currency: _currency,
-                  color: AppColors.success,
-                ),
-
-                const SizedBox(height: AppSpacing.lg),
-
-                // Category breakdown
-                if (_byCategory.isNotEmpty) ...[
-                  Text('By Category', style: AppTypography.headlineSmall),
-                  const SizedBox(height: 12),
-                  ...(_byCategory.entries.toList()
-                        ..sort((a, b) => b.value.compareTo(a.value)))
-                      .map(
-                        (e) => _CategoryBar(
-                          category: e.key,
-                          amount: e.value,
-                          total: _totalSpent,
-                          currency: _currency,
-                        ),
-                      ),
-                  const SizedBox(height: AppSpacing.lg),
-                ],
-
-                // Recent expenses
-                Text('Recent Expenses', style: AppTypography.headlineSmall),
-                const SizedBox(height: 12),
-                ..._expenses.asMap().entries.map(
-                  (e) => _ExpenseTile(
-                    expense: e.value,
-                    currency: _currency,
-                    onDelete: () => _deleteExpense(e.key),
-                  ),
-                ),
-              ],
+              itemCount: _buildItemCount(),
+              itemBuilder: (context, index) {
+                return _buildListItem(index);
+              },
             ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: _addExpense,
         icon: const Icon(Icons.add),
         label: const Text('Add Expense'),
       ),
+    );
+  }
+
+  int _buildItemCount() {
+    final sortedCategories = _byCategory.entries.toList()
+      ..sort((a, b) => b.value.compareTo(a.value));
+    
+    int count = 0;
+    count += 3; // Summary cards row, spacing, all-time card
+    count += 1; // Spacing after summary
+    
+    if (_byCategory.isNotEmpty) {
+      count += 2; // "By Category" header + spacing
+      count += sortedCategories.length; // Category bars
+      count += 1; // Spacing after categories
+    }
+    
+    count += 2; // "Recent Expenses" header + spacing
+    count += _expenses.length; // Expense tiles
+    
+    return count;
+  }
+
+  Widget _buildListItem(int index) {
+    final sortedCategories = _byCategory.entries.toList()
+      ..sort((a, b) => b.value.compareTo(a.value));
+    
+    int currentIndex = 0;
+    
+    // Summary cards row
+    if (index == currentIndex++) {
+      return Row(
+        children: [
+          Expanded(
+            child: _SummaryCard(
+              title: 'This Month',
+              amount: _thisMonth,
+              currency: _currency,
+              color: AppColors.primary,
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: _SummaryCard(
+              title: 'This Year',
+              amount: _thisYear,
+              currency: _currency,
+              color: AppColors.secondary,
+            ),
+          ),
+        ],
+      );
+    }
+    
+    // Spacing
+    if (index == currentIndex++) {
+      return const SizedBox(height: 12);
+    }
+    
+    // All-time total card
+    if (index == currentIndex++) {
+      return _SummaryCard(
+        title: 'All Time Total',
+        amount: _totalSpent,
+        currency: _currency,
+        color: AppColors.success,
+      );
+    }
+    
+    // Spacing
+    if (index == currentIndex++) {
+      return const SizedBox(height: AppSpacing.lg);
+    }
+    
+    // Category breakdown section
+    if (_byCategory.isNotEmpty) {
+      // "By Category" header
+      if (index == currentIndex++) {
+        return Text('By Category', style: AppTypography.headlineSmall);
+      }
+      
+      // Spacing
+      if (index == currentIndex++) {
+        return const SizedBox(height: 12);
+      }
+      
+      // Category bars
+      if (index < currentIndex + sortedCategories.length) {
+        final categoryEntry = sortedCategories[index - currentIndex];
+        return _CategoryBar(
+          category: categoryEntry.key,
+          amount: categoryEntry.value,
+          total: _totalSpent,
+          currency: _currency,
+        );
+      }
+      currentIndex += sortedCategories.length;
+      
+      // Spacing
+      if (index == currentIndex++) {
+        return const SizedBox(height: AppSpacing.lg);
+      }
+    }
+    
+    // "Recent Expenses" header
+    if (index == currentIndex++) {
+      return Text('Recent Expenses', style: AppTypography.headlineSmall);
+    }
+    
+    // Spacing
+    if (index == currentIndex++) {
+      return const SizedBox(height: 12);
+    }
+    
+    // Expense tiles
+    final expenseIndex = index - currentIndex;
+    return _ExpenseTile(
+      expense: _expenses[expenseIndex],
+      currency: _currency,
+      onDelete: () => _deleteExpense(expenseIndex),
     );
   }
 

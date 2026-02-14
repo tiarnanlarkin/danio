@@ -98,17 +98,19 @@ class EquipmentScreen extends ConsumerWidget {
   Widget _buildSkeletonList() {
     final placeholders = SkeletonPlaceholders.equipmentList;
     return Skeletonizer(
-      child: ListView(
+      child: ListView.builder(
         padding: const EdgeInsets.all(AppSpacing.md),
-        children: placeholders
-            .map((e) => _EquipmentCard(
-                  equipment: e,
-                  onEdit: () {},
-                  onService: () {},
-                  onHistory: () {},
-                  onDelete: () {},
-                ))
-            .toList(),
+        itemCount: placeholders.length,
+        itemBuilder: (context, index) {
+          final equipment = placeholders[index];
+          return _EquipmentCard(
+            equipment: equipment,
+            onEdit: () {},
+            onService: () {},
+            onHistory: () {},
+            onDelete: () {},
+          );
+        },
       ),
     );
   }
@@ -150,47 +152,47 @@ class EquipmentScreen extends ConsumerWidget {
               ref.invalidate(equipmentProvider(tankId));
               await Future.delayed(const Duration(milliseconds: 500));
             },
-            child: ListView(
+            child: ListView.builder(
               padding: const EdgeInsets.all(AppSpacing.md),
-              children: [
-              // Summary card
-              if (overdue > 0)
-                AppCard(
-                  backgroundColor: AppOverlays.warning10,
-                  padding: AppCardPadding.standard,
-                  child: Row(
-                    children: [
-                      Icon(
-                        Icons.warning_amber,
-                        color: AppColors.warning,
-                        size: 32,
-                      ),
-                      const SizedBox(width: AppSpacing.md),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              '$overdue maintenance overdue',
-                              style: AppTypography.labelLarge,
-                            ),
-                            Text(
-                              'Check equipment below',
-                              style: AppTypography.bodySmall,
-                            ),
-                          ],
+              itemCount: equipment.length + (overdue > 0 ? 2 : 0), // +2 for warning card and spacing if overdue
+              itemBuilder: (context, index) {
+                // Summary card
+                if (overdue > 0 && index == 0) {
+                  return AppCard(
+                    backgroundColor: AppOverlays.warning10,
+                    padding: AppCardPadding.standard,
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.warning_amber,
+                          color: AppColors.warning,
+                          size: 32,
                         ),
-                      ),
-                    ],
-                  ),
-                ),
-              if (overdue > 0) const SizedBox(height: AppSpacing.md),
-
-              // List with staggered animation
-              ...equipment.asMap().entries.map(
-                (entry) {
-                  final index = entry.key;
-                  final e = entry.value;
+                        const SizedBox(width: AppSpacing.md),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                '$overdue maintenance overdue',
+                                style: AppTypography.labelLarge,
+                              ),
+                              Text(
+                                'Check equipment below',
+                                style: AppTypography.bodySmall,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                } else if (overdue > 0 && index == 1) {
+                  return const SizedBox(height: AppSpacing.md);
+                } else {
+                  // List with staggered animation
+                  final equipmentIndex = overdue > 0 ? index - 2 : index;
+                  final e = equipment[equipmentIndex];
                   return _EquipmentCard(
                     equipment: e,
                     onEdit: () => _showEditDialog(context, ref, e),
@@ -199,11 +201,10 @@ class EquipmentScreen extends ConsumerWidget {
                     onDelete: () => _confirmDelete(context, ref, e),
                   )
                       .animate()
-                      .fadeIn(delay: (50 * index).ms, duration: 300.ms)
-                      .slideX(begin: 0.1, end: 0, delay: (50 * index).ms, duration: 300.ms);
-                },
-              ),
-            ],
+                      .fadeIn(delay: (50 * equipmentIndex).ms, duration: 300.ms)
+                      .slideX(begin: 0.1, end: 0, delay: (50 * equipmentIndex).ms, duration: 300.ms);
+                }
+              },
             ),
           );
         },

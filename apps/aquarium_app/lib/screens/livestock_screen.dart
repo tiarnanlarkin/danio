@@ -477,37 +477,43 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
   Widget _buildSkeletonList() {
     final placeholders = SkeletonPlaceholders.livestockList;
     return Skeletonizer(
-      child: ListView(
+      child: ListView.builder(
         padding: const EdgeInsets.all(AppSpacing.md),
-        children: [
-          // Skeleton summary card
-          AppCard(
-            padding: AppCardPadding.standard,
-            child: Row(
-              children: [
-                Icon(Icons.pets, color: AppColors.primary, size: 32),
-                const SizedBox(width: AppSpacing.md),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('50 total', style: AppTypography.headlineMedium),
-                    Text('5 species', style: AppTypography.bodyMedium),
-                  ],
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: AppSpacing.md),
-          // Skeleton livestock cards
-          ...placeholders.map((l) => _LivestockCard(
-                livestock: l,
-                tank: null,
-                allLivestock: placeholders,
-                onTap: () {},
-                onEdit: () {},
-                onDelete: () {},
-              )),
-        ],
+        itemCount: placeholders.length + 2, // +2 for summary card and spacing
+        itemBuilder: (context, index) {
+          if (index == 0) {
+            // Skeleton summary card
+            return AppCard(
+              padding: AppCardPadding.standard,
+              child: Row(
+                children: [
+                  Icon(Icons.pets, color: AppColors.primary, size: 32),
+                  const SizedBox(width: AppSpacing.md),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('50 total', style: AppTypography.headlineMedium),
+                      Text('5 species', style: AppTypography.bodyMedium),
+                    ],
+                  ),
+                ],
+              ),
+            );
+          } else if (index == 1) {
+            return const SizedBox(height: AppSpacing.md);
+          } else {
+            // Skeleton livestock cards
+            final livestock = placeholders[index - 2];
+            return _LivestockCard(
+              livestock: livestock,
+              tank: null,
+              allLivestock: placeholders,
+              onTap: () {},
+              onEdit: () {},
+              onDelete: () {},
+            );
+          }
+        },
       ),
     );
   }
