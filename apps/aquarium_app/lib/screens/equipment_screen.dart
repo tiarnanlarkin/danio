@@ -146,9 +146,14 @@ class EquipmentScreen extends ConsumerWidget {
 
           final overdue = equipment.where((e) => e.isMaintenanceOverdue).length;
 
-          return ListView(
-            padding: const EdgeInsets.all(AppSpacing.md),
-            children: [
+          return RefreshIndicator(
+            onRefresh: () async {
+              ref.invalidate(equipmentProvider(widget.tankId));
+              await Future.delayed(const Duration(milliseconds: 500));
+            },
+            child: ListView(
+              padding: const EdgeInsets.all(AppSpacing.md),
+              children: [
               // Summary card
               if (overdue > 0)
                 AppCard(
@@ -200,6 +205,7 @@ class EquipmentScreen extends ConsumerWidget {
                 },
               ),
             ],
+            ),
           );
         },
       ),

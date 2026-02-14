@@ -118,10 +118,15 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
           final totalCount = livestock.fold<int>(0, (sum, l) => sum + l.count);
           final tank = tankAsync.asData?.value;
 
-          return Column(
-            children: [
-              Expanded(
-                child: CustomScrollView(
+          return RefreshIndicator(
+            onRefresh: () async {
+              ref.invalidate(livestockProvider(widget.tankId));
+              await Future.delayed(const Duration(milliseconds: 500));
+            },
+            child: Column(
+              children: [
+                Expanded(
+                  child: CustomScrollView(
                   slivers: [
                     // Header padding
                     const SliverPadding(
@@ -307,6 +312,7 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
                   ),
                 ),
             ],
+            ),
           );
         },
       ),

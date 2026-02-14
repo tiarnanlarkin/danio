@@ -84,16 +84,22 @@ class _LogsScreenState extends ConsumerState<LogsScreen> {
             }
           }
 
-          return Column(
-            children: [
-              _FiltersSummaryBar(
-                typeFilters: _typeFilters,
-                dateRange: _dateRange,
-                onClear: hasAnyFilters ? _clearFilters : null,
-                onEdit: () => _openFilters(context),
-              ),
-              Expanded(
-                child: ListView.separated(
+          return RefreshIndicator(
+            onRefresh: () async {
+              ref.invalidate(allLogsProvider(widget.tankId));
+              // Wait for new data to load
+              await Future.delayed(const Duration(milliseconds: 500));
+            },
+            child: Column(
+              children: [
+                _FiltersSummaryBar(
+                  typeFilters: _typeFilters,
+                  dateRange: _dateRange,
+                  onClear: hasAnyFilters ? _clearFilters : null,
+                  onEdit: () => _openFilters(context),
+                ),
+                Expanded(
+                  child: ListView.separated(
                   padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
                   itemCount: filtered.length,
                   separatorBuilder: (_, __) => const SizedBox(height: AppSpacing.sm),
@@ -137,6 +143,7 @@ class _LogsScreenState extends ConsumerState<LogsScreen> {
                 ),
               ),
             ],
+            ),
           );
         },
       ),
