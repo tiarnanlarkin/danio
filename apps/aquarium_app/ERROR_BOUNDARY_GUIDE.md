@@ -232,33 +232,34 @@ void main() async {
 
 ### Test Error Boundary Works:
 
-1. **Add test error trigger:**
-```dart
-// In any screen, add a button to test:
-ElevatedButton(
-  onPressed: () {
-    throw Exception('Test error boundary');
-  },
-  child: Text('Test Error'),
-)
-```
+1. **Use the built-in test button (debug mode only):**
+   - Navigate to Settings
+   - Scroll to the "Danger Zone" section
+   - Tap "Test Error Boundary" (only visible in debug mode)
+   - App should show friendly error screen (NOT red debug screen)
+   - Tap "Try Again" to recover
 
 2. **Expected behavior:**
-   - Tap button
-   - App shows friendly error screen (NOT red debug screen)
-   - Tap "Restart App"
-   - App returns to normal state
+   - Tap test button
+   - App shows friendly error screen with apologetic message
+   - Error details visible in debug mode via "Show Technical Details" button
+   - Tap "Try Again" to return to normal state
 
-3. **Remove test code after verification**
+3. **Verify error handling:**
+   - No red debug screens appear
+   - User sees friendly, branded error UI
+   - Recovery button works correctly
+   - Technical details available in debug builds only
 
 ## Success Criteria
 
 - ✅ App wrapped with ErrorBoundary
 - ✅ Test crash shows friendly error screen
-- ✅ Restart button works
+- ✅ Recovery ("Try Again") button works
 - ✅ No red debug screens in production
-- ✅ Errors logged (console or Crashlytics)
+- ✅ Errors logged (console in debug, Crashlytics ready in production)
 - ✅ User data remains safe
+- ✅ Test button available in debug mode for easy verification
 
 ## Notes
 
@@ -267,15 +268,80 @@ ElevatedButton(
 - For network errors, use proper error handling in services
 - ErrorBoundary is a last resort - fix bugs when found
 - Consider adding analytics tracking for error frequency
+- Test button is only visible in debug mode (`kDebugMode`)
+
+## Customization
+
+### Custom Error UI
+
+You can provide a custom error screen via the `errorBuilder` parameter:
+
+```dart
+ErrorBoundary(
+  errorBuilder: (error) => MyCustomErrorScreen(error: error),
+  child: MyApp(),
+)
+```
+
+### Crashlytics Integration
+
+To enable Firebase Crashlytics in production, update the GlobalErrorHandler in `main.dart`:
+
+```dart
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  if (kReleaseMode) {
+    // Initialize Firebase
+    await Firebase.initializeApp();
+
+    GlobalErrorHandler.initialize(
+      onError: (error, stack) {
+        FirebaseCrashlytics.instance.recordError(error, stack);
+      },
+    );
+  }
+
+  runApp(
+    ErrorBoundary(
+      child: const ProviderScope(child: AquariumApp()),
+    ),
+  );
+}
+```
+
+## Implementation Status
+
+✅ **Completed:**
+- ErrorBoundary widget created (`lib/widgets/error_boundary.dart`)
+- Integrated in main.dart wrapping the entire app
+- GlobalErrorHandler initialized for catching framework and async errors
+- Default error screen with friendly UI
+- Test button added to Settings (debug mode only)
+- Recovery functionality implemented
+
+## Testing Checklist
+
+- [ ] Build app in debug mode
+- [ ] Navigate to Settings → Danger Zone
+- [ ] Tap "Test Error Boundary"
+- [ ] Verify friendly error screen appears
+- [ ] Verify no red debug screen
+- [ ] Tap "Try Again" to recover
+- [ ] Verify app returns to normal state
+- [ ] (Optional) Tap "Show Technical Details" to see error info
+- [ ] Build release APK to ensure production builds work
 
 ## Commit Message
 
 ```
-feat: add error boundary for graceful error handling
+feat: implement error boundary system
 
 - Created ErrorBoundary widget to catch Flutter errors
 - Shows friendly error screen instead of red debug screen
 - Provides restart functionality
 - Logs errors for debugging
 - Prevents app crashes from showing raw stack traces to users
+- Added test button in Settings (debug mode only) for verification
+- Updated documentation with implementation status and testing guide
 ```
