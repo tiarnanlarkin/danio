@@ -1,0 +1,544 @@
+1. Product vision & positioning
+
+What this app is
+
+A personal aquarium operating system for hobbyists.
+
+Freshwater first, marine later.
+
+Combines record-keeping, guidance, and maintenance into a single spatial, game-like interface.
+
+Not a simulator, not a social feed, not a shop first.
+
+Who it’s for
+
+Adult hobbyists who:
+
+Want structure without spreadsheets.
+
+Want guidance without forum hunting.
+
+Like playful UI but still care about correctness.
+
+Beginners → intermediate keepers.
+
+Advanced users later via “advanced rooms” (CO₂, high-tech planted, reef).
+
+What it replaces
+
+Notes apps
+
+Excel sheets
+
+Reminder apps
+
+Bookmark folders
+
+Half-trusted advice from forums
+
+2. Competitive landscape (summary)
+Existing aquarium apps (2024–2025)
+
+Common examples:
+
+Aquarium Note / Aquarimate / FishBrain (partial overlap)
+
+General pet care apps
+
+Forum-based platforms
+
+Observed gaps
+
+Flat list-based UIs (no mental model of the tank)
+
+Weak or no equipment management
+
+No real AI identification or validation
+
+No predictive guidance (only static care sheets)
+
+Poor onboarding for beginners
+
+No sense of “state” of the aquarium
+
+Your app’s differentiation
+
+Spatial metaphor (rooms, shelves, objects)
+
+Object-level management (filter ≠ tank ≠ fish)
+
+AI used for:
+
+Identification
+
+Validation
+
+Trend detection
+
+Gentle coaching
+
+Accuracy gates (doesn’t pretend to know when it doesn’t)
+
+3. Core feature set
+A. Tanks as first-class objects
+
+Each tank stores:
+
+Volume (L), dimensions
+
+Freshwater flag
+
+Start date
+
+Target ranges (temp, pH, GH/KH)
+
+Equipment list
+
+Livestock list
+
+Logs and tasks
+
+Everything else hangs off the tank.
+
+B. Livestock management
+
+Add via:
+
+Text search (preferred)
+
+Photo upload (high-accuracy gated)
+
+Each livestock entry:
+
+Species (scientific + common)
+
+Count
+
+Size estimate
+
+Temperament flags
+
+Source & date added
+
+Compatibility checks vs tank
+
+AI flags:
+
+Overcrowding risk
+
+Temp/pH mismatch
+
+Schooling minimums
+
+C. Equipment management (key differentiator)
+
+Each equipment item is its own object:
+
+Filter
+
+Heater
+
+Light
+
+CO₂ (optional/advanced)
+
+Air pump
+
+Feeder
+
+Each has:
+
+Model/type
+
+Settings
+
+Maintenance schedule
+
+Logs
+
+Warnings
+
+Example:
+
+Filter → media layout → clean schedule → last cleaned → flow notes
+
+This is rare in current apps.
+
+D. Logs & notebook
+
+Per tank:
+
+Temperature log
+
+Water test log (NH₃, NO₂, NO₃, pH, GH, KH)
+
+Events (water change %, new fish, treatments)
+
+Photos (before/after)
+
+Graphs are simple, readable, optional.
+
+E. Tasks & reminders
+
+Generated from:
+
+Tank type
+
+Equipment
+
+Livestock
+
+Examples:
+
+Weekly water change reminder
+
+Monthly filter media check
+
+Quarantine observation window
+
+User can:
+
+Snooze
+
+Disable
+
+Convert to recurring
+
+F. Shops & ordering (non-invasive)
+
+Nearby shops (map/list)
+
+Deal comparison (read-only)
+
+External checkout only
+
+Delivery tracking via tracking number
+
+This stays optional and clean.
+
+4. AI strategy (where it actually helps)
+1. Identification (but honest)
+
+Fish/plant photo ID with:
+
+Confidence score
+
+Top candidates
+
+Hard gate below confidence threshold
+
+“Unknown organism” allowed
+
+AI never silently guesses.
+
+2. Compatibility & validation
+
+AI compares:
+
+Tank parameters
+
+Livestock requirements
+
+Stocking density heuristics
+
+Outputs:
+
+Clear warnings
+
+Reasons, not rules
+
+3. Pattern detection (quiet intelligence)
+
+AI looks at:
+
+Water test trends
+
+Temperature drift
+
+Event timing
+
+Examples:
+
+“Nitrates rising faster after filter clean”
+
+“Temperature fluctuates at night”
+
+No panic alerts. Just signals.
+
+4. Maintenance coaching
+
+Contextual tips:
+
+“This is normal during cycling”
+
+“Algae pattern matches excess light duration”
+
+This replaces forum searching.
+
+5. Explain-what-you-see mode (later)
+
+User asks:
+
+“Why are my plants melting?”
+
+“Is this ich?”
+
+AI uses:
+
+Tank data
+
+Photos
+
+Recent events
+
+Answers are grounded in their aquarium, not generic advice.
+
+5. UI / UX system
+Core principle
+
+Everything is a toy, but nothing is dumbed down.
+
+Spatial metaphor
+
+Home = Display Room
+
+Shelves = tanks
+
+Click tank → Tank Room
+
+Click object → Management panel
+
+This reduces cognitive load.
+
+Visual style
+
+Based on your references:
+
+Isometric / 2.5D
+
+Soft lighting
+
+Rounded edges
+
+Clear affordances
+
+Sticker-like action labels (FEED, CLEAN, TEST)
+
+No clutter, no realism obsession.
+
+Mini-interactions
+
+Maintenance tasks feel like:
+
+Small scenes
+
+Short animations
+
+Clear completion feedback
+
+Example:
+
+Cleaning filter = tap media → mark cleaned → satisfying animation
+
+Progressive complexity
+
+Beginners see fewer objects
+
+Advanced toggles unlock:
+
+CO₂
+
+PAR
+
+Flow rates
+
+Marine later
+
+6. AI-dev-friendly architecture (important)
+Core rules
+
+Contract-first
+
+Typed everywhere
+
+No free-text AI responses
+
+Hard file ownership
+
+Suggested stack (example)
+
+Frontend: Flutter
+
+3D rooms: Unity (embedded)
+
+Backend: Supabase
+
+AI gateway: serverless functions
+
+Data contracts: JSON Schema
+
+APIs: OpenAPI
+
+Why this works for AI coding agents
+
+Clear boundaries
+
+Regeneratable clients
+
+Small, isolated changes
+
+Testable outputs
+
+Claude can be told:
+
+“Update schema X, regenerate client, add screen Y, don’t touch Unity.”
+
+Prompt-safe repo layout
+/contracts
+  /schemas
+  openapi.yaml
+
+/apps
+  /flutter_app
+  /unity_rooms
+
+/services
+  /ai_gateway
+
+/docs
+  architecture.md
+  ui_rules.md
+
+
+Agents behave better with constraints than freedom.
+
+7. Phased roadmap
+Phase 0 – Concept lock (1–2 weeks)
+
+Finalise:
+
+Tank model
+
+Equipment model
+
+Log model
+
+Define AI confidence gates
+
+Lock visual style guide
+
+Output
+
+Schemas
+
+UX wireframes
+
+Prompt rules
+
+Phase 1 – Core MVP (6–8 weeks)
+
+Account + auth
+
+Create tank
+
+Display Room (static)
+
+Tank Room (static)
+
+Add livestock (text only)
+
+Notebook (manual entry)
+
+Tasks & reminders
+
+No AI yet.
+
+Phase 2 – Spatial interaction (4–6 weeks)
+
+Unity rooms live
+
+Clickable objects
+
+Equipment management panels
+
+Inventory cupboard
+
+This is where it feels different.
+
+Phase 3 – AI foundations (4–6 weeks)
+
+Identification (plants first)
+
+Compatibility checks
+
+Confidence gating
+
+AI explanations tied to user data
+
+Accuracy > coverage.
+
+Phase 4 – Intelligence layer (4–6 weeks)
+
+Trend detection
+
+Contextual coaching
+
+Predictive hints
+
+Photo-based issue analysis (experimental)
+
+Phase 5 – Polish & trust (4 weeks)
+
+Animations
+
+Microcopy
+
+Error handling
+
+Data export
+
+Privacy review
+
+Performance tuning
+
+Phase 6 – Public launch
+
+Freshwater only
+
+No social feed
+
+No reef yet
+
+Strong onboarding
+
+Marine becomes Phase 7.
+
+8. “Customer-ready” definition
+
+You can call it 100% polished when:
+
+A beginner can set up a tank without external research
+
+An intermediate user replaces their spreadsheet
+
+AI never overstates certainty
+
+UI explains itself without tutorials
+
+No core task requires typing long text
+
+Data is portable
+
+App feels calm, not noisy
+
+Final note for Claude handoff
+
+If you pass this roadmap to Claude, frame the instruction as:
+
+“Build iteratively”
+
+“Respect contracts”
+
+“No clever shortcuts”
+
+“Accuracy beats speed”
