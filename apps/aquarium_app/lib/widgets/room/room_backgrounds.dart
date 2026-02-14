@@ -21,6 +21,11 @@ class RoomBackgroundColors {
   static const livingRoomGradient3 = Color(0xFF3D7A6C); // Deep teal
   static const livingRoomAccent = Color(0xFFFFF8E7); // Cream
   static const livingRoomPlant = Color(0xFF4CAF50); // Plant green
+  static const livingRoomPlantAlpha08 = Color(0x0D4CAF50); // 3%
+  static const livingRoomAccentAlpha06 = Color(0x0AFFF8E7); // 3%
+  static const livingRoomAccentAlpha10 = Color(0x1AFFF8E7); // 10%
+  static const livingRoomAccentAlpha15 = Color(0x26FFF8E7); // 15%
+  static const livingRoomAccentAlpha20 = Color(0x33FFF8E7); // 20%
 
   // Study - Library/learning with deep greens and wood tones
   static const studyGradient1 = Color(0xFF2D3A4F); // Deep blue-gray

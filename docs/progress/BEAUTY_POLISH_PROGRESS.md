@@ -20,19 +20,35 @@
 **Actual:** 1.5h  
 **Commits:** 2 (0401d50, c4c3472 pushed)
 
-### Checkpoint 1.2: High-Traffic Screen Optimization (0/7 tasks)
+### Checkpoint 1.2: High-Traffic Screen Optimization (0/13 tasks)
 - [ ] Optimize `exercise_widgets.dart` - 28 calls
 - [ ] Optimize `home_screen.dart` - 22 calls
-- [ ] Optimize `room_scene.dart` - 16 calls
+- [x] Optimize `room_scene.dart` - 42 calls (71% reduction)
 - [ ] Optimize `lesson_screen.dart` - 16 calls
-- [ ] Optimize `theme_gallery_screen.dart` - 14 calls
-- [ ] Optimize remaining top 10 files - ~70 calls
+- [ ] Optimize `theme_gallery_screen.dart` - 13 calls
+- [ ] Optimize `cozy_room_scene.dart` - 13 calls
+- [ ] Optimize `decorative_elements.dart` - 12 calls
+- [ ] Optimize `study_room_scene.dart` - 10 calls
+- [ ] Optimize `hobby_items.dart` - 10 calls
+- [ ] Optimize `hobby_desk.dart` - 9 calls
+- [x] Optimize `glass_card.dart` - 18 calls (55% reduction)
+- [ ] Optimize `tank_detail_screen.dart` - 8 calls
+- [ ] Optimize `animated_flame.dart` - 6 calls
+- [ ] Optimize `sparkle_effect.dart` - 5 calls
+- [ ] Optimize `study_screen.dart` - 9 calls
+- [ ] Optimize `room_backgrounds.dart` - 4 calls
 - [ ] Performance benchmark after top files
 
-**Status:** Not started  
+**Status:** 🔄 IN PROGRESS (3/13 files complete)
 **Estimated:** 8-10h  
-**Actual:** -  
-**Commits:** 0
+**Actual:** 3h
+**Commits:** 3 (0401d50, c4c3472, 76f9efe pushed)
+
+**Progress Summary:**
+- ✅ room_scene.dart: 42→12 calls (71% reduction)
+- ✅ glass_card.dart: 18→8 calls (55% reduction)
+- ✅ room_backgrounds.dart: 4 calls eliminated (4 of 36 were documented, added alpha variants)
+- ⏳ Other 10 files pending
 
 ### Checkpoint 1.3: Complete withOpacity Elimination (0/3 tasks)
 **Status:** Not started  
