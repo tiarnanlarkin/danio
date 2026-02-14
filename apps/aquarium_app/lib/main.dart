@@ -18,6 +18,7 @@ import 'services/xp_animation_service.dart';
 import 'theme/app_theme.dart';
 import 'utils/performance_monitor.dart';
 import 'widgets/performance_overlay.dart';
+import 'widgets/error_boundary.dart';
 
 // Global navigator key for notification navigation
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
@@ -29,6 +30,19 @@ const bool _showPerformanceOverlay = false; // Set to true to show FPS overlay
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize global error handler
+  GlobalErrorHandler.initialize(
+    onError: (error, stack) {
+      // In production, send to crash reporting service
+      // e.g., FirebaseCrashlytics.instance.recordError(error, stack);
+      
+      // Log to console in debug mode
+      if (kDebugMode) {
+        debugPrint('Global error caught: $error\n$stack');
+      }
+    },
+  );
 
   // Start performance monitoring in debug mode if enabled
   if (_enablePerformanceMonitoring) {
@@ -60,7 +74,11 @@ void main() async {
     },
   );
 
-  runApp(const ProviderScope(child: AquariumApp()));
+  runApp(
+    ErrorBoundary(
+      child: const ProviderScope(child: AquariumApp()),
+    ),
+  );
 }
 
 class AquariumApp extends ConsumerWidget {
