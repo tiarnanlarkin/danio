@@ -8,9 +8,16 @@ class FaqScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('FAQ')),
-      body: ListView(
+      body: ListView.builder(
         padding: const EdgeInsets.all(AppSpacing.md),
-        children: const [
+        itemCount: _buildItems().length,
+        itemBuilder: (context, index) => _buildItems()[index],
+      ),
+    );
+  }
+
+  List<Widget> _buildItems() {
+    return const [
           _FaqSection(
             title: 'Getting Started',
             items: [
@@ -191,9 +198,7 @@ class FaqScreen extends StatelessWidget {
           ),
 
           SizedBox(height: AppSpacing.xxl),
-        ],
-      ),
-    );
+        ];
   }
 }
 
