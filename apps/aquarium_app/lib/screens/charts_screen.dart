@@ -688,7 +688,7 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
 
     // Check pH against targets
     final targets = tank.targets;
-    if (targets != null && latestTest.ph != null) {
+    if (latestTest.ph != null) {
       if (targets.phMin != null && latestTest.ph! < targets.phMin!) {
         issues.add('📉 pH below target (${latestTest.ph})');
       } else if (targets.phMax != null && latestTest.ph! > targets.phMax!) {
@@ -697,7 +697,7 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
     }
 
     // Check temperature against targets
-    if (targets != null && latestTest.temperature != null) {
+    if (latestTest.temperature != null) {
       if (targets.tempMin != null &&
           latestTest.temperature! < targets.tempMin!) {
         issues.add('🥶 Temperature too low (${latestTest.temperature}°C)');

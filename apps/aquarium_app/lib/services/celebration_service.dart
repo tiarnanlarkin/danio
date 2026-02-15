@@ -8,6 +8,7 @@ import 'package:confetti/confetti.dart';
 import '../widgets/celebrations/confetti_overlay.dart';
 import '../widgets/celebrations/level_up_overlay.dart';
 import '../theme/app_theme.dart';
+import '../providers/reduced_motion_provider.dart';
 
 /// State for active celebrations
 class CelebrationState {
@@ -59,17 +60,26 @@ enum CelebrationLevel {
 
 /// Provider for celebration state
 final celebrationProvider = StateNotifierProvider<CelebrationNotifier, CelebrationState>(
-  (ref) => CelebrationNotifier(),
+  (ref) => CelebrationNotifier(ref),
 );
 
 /// Notifier for managing celebrations
 class CelebrationNotifier extends StateNotifier<CelebrationState> {
-  CelebrationNotifier() : super(const CelebrationState());
+  CelebrationNotifier(this._ref) : super(const CelebrationState());
   
+  final Ref _ref;
   ConfettiController? _controller;
   
   /// Trigger a standard confetti burst
+  /// With reduced motion: skips confetti, shows simple success indicator
   void confetti({Duration duration = const Duration(seconds: 2)}) {
+    final reducedMotion = _ref.read(reducedMotionProvider);
+    
+    if (reducedMotion.disableDecorativeAnimations) {
+      // Skip confetti animation entirely for reduced motion
+      return;
+    }
+    
     _disposeController();
     _controller = ConfettiController(duration: duration);
     
@@ -90,9 +100,16 @@ class CelebrationNotifier extends StateNotifier<CelebrationState> {
   }
   
   /// Trigger an achievement celebration with title overlay
+  /// With reduced motion: simplified overlay, no confetti
   void achievement(String title, {String? subtitle}) {
+    final reducedMotion = _ref.read(reducedMotionProvider);
+    
     _disposeController();
-    _controller = ConfettiController(duration: const Duration(seconds: 3));
+    
+    // Skip confetti for reduced motion, but still show title
+    if (!reducedMotion.disableDecorativeAnimations) {
+      _controller = ConfettiController(duration: const Duration(seconds: 3));
+    }
     
     state = CelebrationState(
       isActive: true,
@@ -102,10 +119,14 @@ class CelebrationNotifier extends StateNotifier<CelebrationState> {
       confettiController: _controller,
     );
     
-    _controller!.play();
+    _controller?.play();
     
-    // Auto-dismiss after animation
-    Future.delayed(const Duration(seconds: 4), () {
+    // Auto-dismiss after animation (shorter for reduced motion)
+    final dismissDelay = reducedMotion.isEnabled
+        ? const Duration(seconds: 2)
+        : const Duration(seconds: 4);
+    
+    Future.delayed(dismissDelay, () {
       if (mounted) {
         dismiss();
       }

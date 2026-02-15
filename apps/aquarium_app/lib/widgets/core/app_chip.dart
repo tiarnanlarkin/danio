@@ -16,13 +16,13 @@ enum AppChipVariant {
 
 /// Size variants for chips
 enum AppChipSize {
-  /// Small: 24dp height
+  /// Small: 32dp height (compact visual, 48dp touch target)
   small,
   
-  /// Medium: 32dp height (default)
+  /// Medium: 36dp height (default, 48dp touch target)
   medium,
   
-  /// Large: 40dp height
+  /// Large: 40dp height (48dp touch target)
   large,
 }
 
@@ -100,6 +100,11 @@ class AppChip extends StatelessWidget {
     
     final isInteractive = onTap != null && !isDisabled;
     
+    // Material Design 3: Ensure minimum 48dp touch target
+    // Visual height can be smaller, but touch area must be 48dp
+    final visualHeight = _getHeight();
+    final minTouchTarget = AppTouchTargets.minimum;
+    
     return Semantics(
       button: isInteractive,
       selected: isSelected,
@@ -110,56 +115,63 @@ class AppChip extends StatelessWidget {
           HapticFeedback.selectionClick();
           onTap!();
         } : null,
-        child: AnimatedContainer(
-          duration: AppDurations.short,
-          height: _getHeight(),
-          padding: _getPadding(),
-          decoration: BoxDecoration(
-            color: _getBackgroundColor(effectiveColor, isDark),
-            borderRadius: BorderRadius.circular(_getHeight() / 2),
-            border: _getBorder(effectiveColor, isDark),
+        child: Container(
+          // Ensure minimum touch target height
+          constraints: BoxConstraints(
+            minHeight: minTouchTarget,
           ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              if (showCheckmark && isSelected) ...[
-                Icon(
-                  Icons.check,
-                  size: _getIconSize(),
-                  color: _getForegroundColor(effectiveColor, isDark),
+          alignment: Alignment.center,
+          child: AnimatedContainer(
+            duration: AppDurations.short,
+            height: visualHeight,
+            padding: _getPadding(),
+            decoration: BoxDecoration(
+              color: _getBackgroundColor(effectiveColor, isDark),
+              borderRadius: BorderRadius.circular(visualHeight / 2),
+              border: _getBorder(effectiveColor, isDark),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (showCheckmark && isSelected) ...[
+                  Icon(
+                    Icons.check,
+                    size: _getIconSize(),
+                    color: _getForegroundColor(effectiveColor, isDark),
+                  ),
+                  SizedBox(width: AppSpacing.xs),
+                ] else if (icon != null) ...[
+                  Icon(
+                    icon,
+                    size: _getIconSize(),
+                    color: _getForegroundColor(effectiveColor, isDark),
+                  ),
+                  SizedBox(width: AppSpacing.xs),
+                ],
+                Text(
+                  label,
+                  style: _getTextStyle(effectiveColor, isDark),
                 ),
-                SizedBox(width: AppSpacing.xs),
-              ] else if (icon != null) ...[
-                Icon(
-                  icon,
-                  size: _getIconSize(),
-                  color: _getForegroundColor(effectiveColor, isDark),
-                ),
-                SizedBox(width: AppSpacing.xs),
-              ],
-              Text(
-                label,
-                style: _getTextStyle(effectiveColor, isDark),
-              ),
-              if (onDeleted != null) ...[
-                SizedBox(width: AppSpacing.xs),
-                Semantics(
-                  label: 'Delete $label',
-                  button: true,
-                  child: GestureDetector(
-                    onTap: () {
-                      HapticFeedback.lightImpact();
-                      onDeleted!();
-                    },
-                    child: Icon(
-                      deleteIcon ?? Icons.close,
-                      size: _getIconSize(),
-                      color: _getForegroundColor(effectiveColor, isDark),
+                if (onDeleted != null) ...[
+                  SizedBox(width: AppSpacing.xs),
+                  Semantics(
+                    label: 'Delete $label',
+                    button: true,
+                    child: GestureDetector(
+                      onTap: () {
+                        HapticFeedback.lightImpact();
+                        onDeleted!();
+                      },
+                      child: Icon(
+                        deleteIcon ?? Icons.close,
+                        size: _getIconSize(),
+                        color: _getForegroundColor(effectiveColor, isDark),
+                      ),
                     ),
                   ),
-                ),
+                ],
               ],
-            ],
+            ),
           ),
         ),
       ),
@@ -167,13 +179,14 @@ class AppChip extends StatelessWidget {
   }
 
   double _getHeight() {
+    // Visual heights - touch target is enforced by wrapper
     switch (size) {
       case AppChipSize.small:
-        return 24;
+        return 32; // Increased from 24dp for better readability
       case AppChipSize.medium:
-        return 32;
+        return 36; // Increased from 32dp
       case AppChipSize.large:
-        return 40;
+        return 40; // Unchanged
     }
   }
 

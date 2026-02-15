@@ -163,12 +163,18 @@ class MiniFabOption extends StatelessWidget {
           ),
         ),
         const SizedBox(width: AppSpacing.sm),
-        FloatingActionButton.small(
-          heroTag: label,
-          backgroundColor: color,
-          tooltip: label,
-          onPressed: onTap,
-          child: Icon(icon, size: 20),
+        // Material Design 3: Use 48x48 minimum touch target
+        // FloatingActionButton.small is 40x40, so we use regular FAB with smaller visuals
+        SizedBox(
+          width: AppTouchTargets.minimum,
+          height: AppTouchTargets.minimum,
+          child: FloatingActionButton(
+            heroTag: label,
+            backgroundColor: color,
+            tooltip: label,
+            onPressed: onTap,
+            child: Icon(icon, size: 20),
+          ),
         ),
       ],
     );

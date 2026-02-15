@@ -1898,14 +1898,13 @@ class _PlantPainter extends CustomPainter {
 class _SoftFish extends StatelessWidget {
   final double size;
   final Color color;
-  final bool flip;
 
-  const _SoftFish({required this.size, required this.color, this.flip = false});
+  const _SoftFish({required this.size, required this.color});
 
   @override
   Widget build(BuildContext context) {
     return Transform.scale(
-      scaleX: flip ? -1 : 1,
+      scaleX: 1,
       child: SizedBox(
         width: size * 2,
         height: size,

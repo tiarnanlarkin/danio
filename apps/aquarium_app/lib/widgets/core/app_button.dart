@@ -22,13 +22,13 @@ enum AppButtonVariant {
 
 /// Button sizes
 enum AppButtonSize {
-  /// Small: 32dp height, compact padding
+  /// Small: 48dp height (Material Design 3 minimum)
   small,
   
-  /// Medium: 44dp height (default)
+  /// Medium: 48dp height (default, same as small for consistency)
   medium,
   
-  /// Large: 52dp height, prominent actions
+  /// Large: 56dp height (tablet/prominent actions)
   large,
 }
 
@@ -213,13 +213,14 @@ class _AppButtonState extends State<AppButton> with SingleTickerProviderStateMix
   }
 
   double _getHeight() {
+    // Material Design 3 compliant heights
     switch (widget.size) {
       case AppButtonSize.small:
-        return 32;
+        return AppTouchTargets.minimum; // 48dp
       case AppButtonSize.medium:
-        return 44;
+        return AppTouchTargets.minimum; // 48dp
       case AppButtonSize.large:
-        return 52;
+        return AppTouchTargets.medium; // 56dp
     }
   }
 
@@ -341,6 +342,7 @@ class _AppButtonState extends State<AppButton> with SingleTickerProviderStateMix
 }
 
 /// Icon-only button variant for toolbar actions
+/// Material Design 3 compliant: minimum 48x48dp touch targets
 class AppIconButton extends StatelessWidget {
   final IconData icon;
   final VoidCallback? onPressed;
@@ -367,10 +369,13 @@ class AppIconButton extends StatelessWidget {
     final isDark = theme.brightness == Brightness.dark;
     final isEnabled = onPressed != null;
     
-    final double buttonSize = size == AppButtonSize.small ? 36 : 
-                              size == AppButtonSize.medium ? 44 : 52;
+    // Material Design 3: minimum 48x48dp touch targets
+    final double buttonSize = size == AppButtonSize.small ? AppTouchTargets.minimum : 
+                              size == AppButtonSize.medium ? AppTouchTargets.minimum : 
+                              AppTouchTargets.medium;
     final double iconSize = size == AppButtonSize.small ? AppIconSizes.sm : 
-                            size == AppButtonSize.medium ? AppIconSizes.md : AppIconSizes.lg;
+                            size == AppButtonSize.medium ? AppIconSizes.md : 
+                            AppIconSizes.lg;
 
     // Require semantic label for icon-only buttons
     assert(

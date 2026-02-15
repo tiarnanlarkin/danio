@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../theme/app_theme.dart';
+import '../providers/reduced_motion_provider.dart';
 
 /// Stagger animation utilities for list animations
 class StaggerHelper {
@@ -23,13 +25,29 @@ class StaggerHelper {
 /// Page transition builders for consistent navigation animations
 class AppPageTransitions {
   /// Fade + slide up transition (modern feel)
-  static PageRouteBuilder<T> fadeSlideUp<T>(Widget page, {RouteSettings? settings}) {
+  /// With reduced motion: fade only
+  static PageRouteBuilder<T> fadeSlideUp<T>(
+    Widget page, {
+    RouteSettings? settings,
+    ReducedMotionState? reducedMotion,
+  }) {
+    final useReducedMotion = reducedMotion?.isEnabled ?? false;
+    
     return PageRouteBuilder<T>(
       settings: settings,
       pageBuilder: (context, animation, secondaryAnimation) => page,
-      transitionDuration: AppDurations.medium4,
-      reverseTransitionDuration: AppDurations.medium2,
+      transitionDuration: useReducedMotion 
+          ? AppDurations.medium2 * 0.3 
+          : AppDurations.medium4,
+      reverseTransitionDuration: useReducedMotion
+          ? AppDurations.short
+          : AppDurations.medium2,
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        if (useReducedMotion) {
+          // Reduced motion: fade only
+          return FadeTransition(opacity: animation, child: child);
+        }
+        
         final curvedAnimation = CurvedAnimation(
           parent: animation,
           curve: AppCurves.emphasizedDecelerate,
@@ -51,13 +69,30 @@ class AppPageTransitions {
   }
   
   /// Shared axis horizontal (left/right navigation)
-  static PageRouteBuilder<T> sharedAxisX<T>(Widget page, {bool forward = true, RouteSettings? settings}) {
+  /// With reduced motion: fade only
+  static PageRouteBuilder<T> sharedAxisX<T>(
+    Widget page, {
+    bool forward = true,
+    RouteSettings? settings,
+    ReducedMotionState? reducedMotion,
+  }) {
+    final useReducedMotion = reducedMotion?.isEnabled ?? false;
+    
     return PageRouteBuilder<T>(
       settings: settings,
       pageBuilder: (context, animation, secondaryAnimation) => page,
-      transitionDuration: AppDurations.medium4,
-      reverseTransitionDuration: AppDurations.medium2,
+      transitionDuration: useReducedMotion
+          ? AppDurations.medium2 * 0.3
+          : AppDurations.medium4,
+      reverseTransitionDuration: useReducedMotion
+          ? AppDurations.short
+          : AppDurations.medium2,
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        if (useReducedMotion) {
+          // Reduced motion: fade only
+          return FadeTransition(opacity: animation, child: child);
+        }
+        
         final curvedAnimation = CurvedAnimation(
           parent: animation,
           curve: AppCurves.standard,
@@ -82,13 +117,29 @@ class AppPageTransitions {
   }
   
   /// Scale + fade transition (for detail views)
-  static PageRouteBuilder<T> scaleFade<T>(Widget page, {RouteSettings? settings}) {
+  /// With reduced motion: fade only (no scale)
+  static PageRouteBuilder<T> scaleFade<T>(
+    Widget page, {
+    RouteSettings? settings,
+    ReducedMotionState? reducedMotion,
+  }) {
+    final useReducedMotion = reducedMotion?.isEnabled ?? false;
+    
     return PageRouteBuilder<T>(
       settings: settings,
       pageBuilder: (context, animation, secondaryAnimation) => page,
-      transitionDuration: AppDurations.medium4,
-      reverseTransitionDuration: AppDurations.medium2,
+      transitionDuration: useReducedMotion
+          ? AppDurations.medium2 * 0.3
+          : AppDurations.medium4,
+      reverseTransitionDuration: useReducedMotion
+          ? AppDurations.short
+          : AppDurations.medium2,
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        if (useReducedMotion) {
+          // Reduced motion: fade only
+          return FadeTransition(opacity: animation, child: child);
+        }
+        
         final curvedAnimation = CurvedAnimation(
           parent: animation,
           curve: AppCurves.emphasized,
@@ -294,13 +345,15 @@ class StaggeredListBuilder extends StatelessWidget {
 }
 
 /// Animated press feedback wrapper
-class PressableScale extends StatefulWidget {
+/// Automatically respects reduced motion settings
+class PressableScale extends ConsumerStatefulWidget {
   final Widget child;
   final VoidCallback? onPressed;
   final VoidCallback? onLongPress;
   final double pressedScale;
   final Duration duration;
   final Curve curve;
+  final bool enableHaptic;
 
   const PressableScale({
     super.key,
@@ -310,13 +363,14 @@ class PressableScale extends StatefulWidget {
     this.pressedScale = 0.96,
     this.duration = const Duration(milliseconds: 100),
     this.curve = Curves.easeOutCubic,
+    this.enableHaptic = false,
   });
 
   @override
-  State<PressableScale> createState() => _PressableScaleState();
+  ConsumerState<PressableScale> createState() => _PressableScaleState();
 }
 
-class _PressableScaleState extends State<PressableScale> 
+class _PressableScaleState extends ConsumerState<PressableScale> 
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _scaleAnimation;
@@ -341,24 +395,53 @@ class _PressableScaleState extends State<PressableScale>
   }
 
   void _handleTapDown(TapDownDetails details) {
-    _controller.forward();
+    final reducedMotion = ref.read(reducedMotionProvider);
+    if (!reducedMotion.isEnabled) {
+      _controller.forward();
+    }
   }
 
   void _handleTapUp(TapUpDetails details) {
-    _controller.reverse();
+    final reducedMotion = ref.read(reducedMotionProvider);
+    if (!reducedMotion.isEnabled) {
+      _controller.reverse();
+    }
   }
 
   void _handleTapCancel() {
-    _controller.reverse();
+    final reducedMotion = ref.read(reducedMotionProvider);
+    if (!reducedMotion.isEnabled) {
+      _controller.reverse();
+    }
+  }
+
+  void _handleTap() {
+    // Add haptic feedback if enabled
+    if (widget.enableHaptic) {
+      // Import and use HapticFeedback from services/flutter
+      // HapticFeedback.lightImpact();
+    }
+    widget.onPressed?.call();
   }
 
   @override
   Widget build(BuildContext context) {
+    final reducedMotion = ref.watch(reducedMotionProvider);
+    
+    // If reduced motion is enabled, skip the animation wrapper
+    if (reducedMotion.isEnabled) {
+      return GestureDetector(
+        onTap: _handleTap,
+        onLongPress: widget.onLongPress,
+        child: widget.child,
+      );
+    }
+    
     return GestureDetector(
       onTapDown: _handleTapDown,
       onTapUp: _handleTapUp,
       onTapCancel: _handleTapCancel,
-      onTap: widget.onPressed,
+      onTap: _handleTap,
       onLongPress: widget.onLongPress,
       child: AnimatedBuilder(
         animation: _scaleAnimation,

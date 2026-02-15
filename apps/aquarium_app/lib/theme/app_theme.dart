@@ -424,6 +424,68 @@ class AppSpacing {
   static const double xxl = 48;
 }
 
+/// Material Design 3 Touch Target Sizes
+/// Ensures all interactive elements are accessible and easy to tap
+class AppTouchTargets {
+  // Minimum touch target size (Material Design 3)
+  static const double minimum = 48.0;
+  
+  // Standard touch target sizes
+  static const double small = 48.0;    // Compact devices minimum
+  static const double medium = 56.0;   // Default for most buttons
+  static const double large = 64.0;    // Tablet/important actions
+  
+  // Icon sizes within touch targets
+  static const double iconSmall = 20.0;
+  static const double iconMedium = 24.0;
+  static const double iconLarge = 28.0;
+  
+  // Padding to achieve minimum touch target
+  static const double paddingFor24Icon = 12.0; // (48 - 24) / 2
+  static const double paddingFor20Icon = 14.0; // (48 - 20) / 2
+  
+  /// Get adaptive touch target size based on screen width
+  static double adaptive(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
+    if (width >= 600) {
+      return large; // Tablet
+    } else if (width <= 360) {
+      return minimum; // Compact phone
+    } else {
+      return medium; // Standard phone
+    }
+  }
+  
+  /// Get adaptive icon size based on screen width
+  static double adaptiveIcon(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
+    if (width >= 600) {
+      return iconLarge; // Tablet
+    } else if (width <= 360) {
+      return iconSmall; // Compact phone
+    } else {
+      return iconMedium; // Standard phone
+    }
+  }
+}
+
+/// Material Design 3 minimum padding for touch targets
+class AppTouchPadding {
+  // Padding to achieve 48dp minimum from smaller elements
+  static const EdgeInsets for24Icon = EdgeInsets.all(12.0);
+  static const EdgeInsets for20Icon = EdgeInsets.all(14.0);
+  static const EdgeInsets for16Icon = EdgeInsets.all(16.0);
+  
+  // Horizontal padding for buttons
+  static const EdgeInsets buttonHorizontal = EdgeInsets.symmetric(
+    horizontal: 16.0,
+    vertical: 12.0,
+  );
+  
+  // Minimum padding for any interactive element
+  static const EdgeInsets minimum = EdgeInsets.all(4.0);
+}
+
 /// Animation durations (Material 3 aligned)
 class AppDurations {
   static const Duration extraShort = Duration(milliseconds: 50);

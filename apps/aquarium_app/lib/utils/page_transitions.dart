@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
 
 /// Smooth, consistent page transitions for the app
+/// All transitions respect reduced motion when enabled
 class AppPageRoute {
   /// Slide transition from right (default push)
-  static PageRoute slide(Widget page) {
+  /// With reduced motion: fade only
+  static PageRoute slide(Widget page, {bool reducedMotion = false}) {
+    if (reducedMotion) {
+      return fade(page);
+    }
+    
     return PageRouteBuilder(
       pageBuilder: (context, animation, secondaryAnimation) => page,
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
@@ -22,19 +28,26 @@ class AppPageRoute {
     );
   }
 
-  /// Fade transition
-  static PageRoute fade(Widget page) {
+  /// Fade transition (used for all transitions when reduced motion is enabled)
+  static PageRoute fade(Widget page, {bool reducedMotion = false}) {
     return PageRouteBuilder(
       pageBuilder: (context, animation, secondaryAnimation) => page,
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
         return FadeTransition(opacity: animation, child: child);
       },
-      transitionDuration: const Duration(milliseconds: 250),
+      transitionDuration: reducedMotion 
+          ? const Duration(milliseconds: 100)
+          : const Duration(milliseconds: 250),
     );
   }
 
   /// Scale transition (good for modals)
-  static PageRoute scale(Widget page) {
+  /// With reduced motion: fade only (no scale)
+  static PageRoute scale(Widget page, {bool reducedMotion = false}) {
+    if (reducedMotion) {
+      return fade(page, reducedMotion: true);
+    }
+    
     return PageRouteBuilder(
       pageBuilder: (context, animation, secondaryAnimation) => page,
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
@@ -63,7 +76,12 @@ class AppPageRoute {
   }
 
   /// Slide up transition (good for bottom sheets converted to full screen)
-  static PageRoute slideUp(Widget page) {
+  /// With reduced motion: fade only
+  static PageRoute slideUp(Widget page, {bool reducedMotion = false}) {
+    if (reducedMotion) {
+      return fade(page, reducedMotion: true);
+    }
+    
     return PageRouteBuilder(
       pageBuilder: (context, animation, secondaryAnimation) => page,
       transitionsBuilder: (context, animation, secondaryAnimation, child) {

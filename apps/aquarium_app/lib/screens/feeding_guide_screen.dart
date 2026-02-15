@@ -9,9 +9,16 @@ class FeedingGuideScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Feeding Guide')),
-      body: ListView(
+      body: ListView.builder(
         padding: const EdgeInsets.all(AppSpacing.md),
-        children: [
+        itemCount: _buildItems().length,
+        itemBuilder: (context, index) => _buildItems()[index],
+      ),
+    );
+  }
+
+  List<Widget> _buildItems() {
+    return [
           // Golden rule
           AppCard(
             backgroundColor: AppOverlays.warning10,
@@ -217,9 +224,7 @@ class FeedingGuideScreen extends StatelessWidget {
           ),
 
           const SizedBox(height: AppSpacing.xxl),
-        ],
-      ),
-    );
+    ];
   }
 }
 

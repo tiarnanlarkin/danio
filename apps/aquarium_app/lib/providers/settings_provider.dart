@@ -11,12 +11,14 @@ class AppSettings {
   final bool useMetric;
   final bool notificationsEnabled;
   final bool ambientLightingEnabled;
+  final bool hapticFeedbackEnabled;
 
   const AppSettings({
     this.themeMode = AppThemeMode.system,
     this.useMetric = true,
     this.notificationsEnabled = false,
     this.ambientLightingEnabled = true,
+    this.hapticFeedbackEnabled = true,
   });
 
   AppSettings copyWith({
@@ -24,12 +26,14 @@ class AppSettings {
     bool? useMetric,
     bool? notificationsEnabled,
     bool? ambientLightingEnabled,
+    bool? hapticFeedbackEnabled,
   }) {
     return AppSettings(
       themeMode: themeMode ?? this.themeMode,
       useMetric: useMetric ?? this.useMetric,
       notificationsEnabled: notificationsEnabled ?? this.notificationsEnabled,
       ambientLightingEnabled: ambientLightingEnabled ?? this.ambientLightingEnabled,
+      hapticFeedbackEnabled: hapticFeedbackEnabled ?? this.hapticFeedbackEnabled,
     );
   }
 
@@ -55,6 +59,7 @@ class SettingsNotifier extends StateNotifier<AppSettings> {
   static const _useMetricKey = 'use_metric';
   static const _notificationsKey = 'notifications_enabled';
   static const _ambientLightingKey = 'ambient_lighting_enabled';
+  static const _hapticFeedbackKey = 'haptic_feedback_enabled';
 
   Future<void> _loadSettings() async {
     try {
@@ -64,6 +69,7 @@ class SettingsNotifier extends StateNotifier<AppSettings> {
       final useMetric = prefs.getBool(_useMetricKey) ?? true;
       final notificationsEnabled = prefs.getBool(_notificationsKey) ?? false;
       final ambientLightingEnabled = prefs.getBool(_ambientLightingKey) ?? true;
+      final hapticFeedbackEnabled = prefs.getBool(_hapticFeedbackKey) ?? true;
 
       state = AppSettings(
         themeMode: AppThemeMode
@@ -71,6 +77,7 @@ class SettingsNotifier extends StateNotifier<AppSettings> {
         useMetric: useMetric,
         notificationsEnabled: notificationsEnabled,
         ambientLightingEnabled: ambientLightingEnabled,
+        hapticFeedbackEnabled: hapticFeedbackEnabled,
       );
     } catch (e) {
       // If loading fails, keep default settings
@@ -117,6 +124,16 @@ class SettingsNotifier extends StateNotifier<AppSettings> {
       await prefs.setBool(_ambientLightingKey, enabled);
     } catch (e) {
       debugPrint('Failed to save ambient lighting preference: $e');
+    }
+  }
+
+  Future<void> setHapticFeedbackEnabled(bool enabled) async {
+    state = state.copyWith(hapticFeedbackEnabled: enabled);
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setBool(_hapticFeedbackKey, enabled);
+    } catch (e) {
+      debugPrint('Failed to save haptic feedback preference: $e');
     }
   }
 }

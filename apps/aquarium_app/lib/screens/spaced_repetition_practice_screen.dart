@@ -603,7 +603,7 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
       onPopInvoked: (bool didPop) async {
         if (!didPop) {
           final shouldPop = await _showExitDialog();
-          if (shouldPop == true && mounted) {
+          if (shouldPop == true && mounted && context.mounted) {
             Navigator.of(context).pop();
           }
         }

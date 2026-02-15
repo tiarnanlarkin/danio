@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'providers/settings_provider.dart';
 import 'providers/user_profile_provider.dart';
 import 'providers/spaced_repetition_provider.dart';
-import 'screens/house_navigator.dart';
+import 'screens/tab_navigator.dart';
 import 'screens/onboarding_screen.dart';
 import 'screens/onboarding/profile_creation_screen.dart';
 import 'screens/learn_screen.dart';
@@ -275,7 +275,7 @@ class _AppRouterState extends ConsumerState<_AppRouter>
     } else if (_needsProfile) {
       return const ProfileCreationScreen();
     } else {
-      return const HouseNavigator();
+      return const TabNavigator();
     }
   }
 }

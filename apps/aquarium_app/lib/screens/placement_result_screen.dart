@@ -65,7 +65,7 @@ class PlacementResultScreen extends ConsumerWidget {
                       path,
                       recommendation,
                     );
-                  }).toList(),
+                  }),
                 ],
               ),
             ),

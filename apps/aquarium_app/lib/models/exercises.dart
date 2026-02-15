@@ -292,7 +292,7 @@ class MatchingExercise extends Exercise {
   /// Right column items (values)
   final List<String> rightItems;
 
-  /// Correct pairs: Map<leftIndex, rightIndex>
+  /// Correct pairs: Map&lt;leftIndex, rightIndex&gt;
   final Map<int, int> correctPairs;
 
   /// Optional images for visual matching
