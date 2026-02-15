@@ -9,13 +9,18 @@ class StudyColors {
   // Background gradient - warm study atmosphere
   static const background1 = Color(0xFF2D3A4F); // Deep blue-gray
   static const background2 = Color(0xFF1F2937); // Darker blue
+  static const background2Alpha30 = Color(0x4D1F2937); // 30%
   static const background3 = Color(0xFF1A202C); // Deep navy
 
   // Accent colors
   static const gold = Color(0xFFD4A574); // Warm gold
+  static const goldAlpha05 = Color(0x0DD4A574); // 5%
+  static const goldAlpha15 = Color(0x26D4A574); // 15%
+  static const goldAlpha40 = Color(0x66D4A574); // 40%
   static const goldLight = Color(0xFFE8C89E); // Light gold
   static const amber = Color(0xFFB8860B); // Dark amber
   static const cream = Color(0xFFFFF8E7); // Warm cream
+  static const creamAlpha90 = Color(0xE6FFF8E7); // 90%
 
   // Glass card
   static const glassCard = Color(0x20FFFFFF);
@@ -31,6 +36,7 @@ class StudyColors {
   static const bookGreen = Color(0xFF3A6B4A);
   static const plantGreen = Color(0xFF4A7C59);
   static const wood = Color(0xFF5D4E37);
+  static const woodAlpha30 = Color(0x4D5D4E37); // 30%
   static const woodLight = Color(0xFF7A6548);
 }
 
@@ -210,8 +216,8 @@ class _StudyBackgroundPainter extends CustomPainter {
         center: const Alignment(0.5, 0.2),
         radius: 0.8,
         colors: [
-          StudyColors.gold.withOpacity(0.15),
-          StudyColors.gold.withOpacity(0.05),
+          StudyColors.goldAlpha15,
+          StudyColors.goldAlpha05,
           Colors.transparent,
         ],
       ).createShader(Rect.fromLTWH(0, 0, size.width, size.height));
@@ -219,7 +225,7 @@ class _StudyBackgroundPainter extends CustomPainter {
 
     // Decorative wave at bottom
     final wavePaint = Paint()
-      ..color = StudyColors.wood.withOpacity(0.3)
+      ..color = StudyColors.woodAlpha30
       ..style = PaintingStyle.fill;
 
     final wave = Path()
@@ -256,7 +262,7 @@ class _FloatingElement extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Icon(icon, size: size, color: StudyColors.gold.withOpacity(0.4));
+    return Icon(icon, size: size, color: StudyColors.goldAlpha40);
   }
 }
 
@@ -408,7 +414,7 @@ class _DeskPainter extends CustomPainter {
       Paint()
         ..shader =
             RadialGradient(
-              colors: [StudyColors.gold.withOpacity(0.4), Colors.transparent],
+              colors: [StudyColors.goldAlpha40, Colors.transparent],
             ).createShader(
               Rect.fromCircle(
                 center: Offset(size.width * 0.7, size.height * 0.35),
@@ -444,12 +450,12 @@ class _DeskPainter extends CustomPainter {
       ..close();
     canvas.drawPath(
       bookRight,
-      Paint()..color = StudyColors.cream.withOpacity(0.9),
+      Paint()..color = StudyColors.creamAlpha90,
     );
 
     // Text lines on book
     final linePaint = Paint()
-      ..color = StudyColors.background2.withOpacity(0.3)
+      ..color = StudyColors.background2Alpha30
       ..strokeWidth = 1;
     for (var i = 0; i < 4; i++) {
       final y = size.height * 0.44 + i * 3;

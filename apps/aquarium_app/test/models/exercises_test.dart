@@ -1,5 +1,6 @@
 /// Unit tests for all exercise types
 /// Tests validation logic, serialization, and edge cases
+library;
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:aquarium_app/models/exercises.dart';

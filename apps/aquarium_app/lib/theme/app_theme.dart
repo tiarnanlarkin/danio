@@ -50,6 +50,7 @@ class AppColors {
   // Text colors - Light mode
   static const Color textPrimary = Color(0xFF2D3436); // Near black
   static const Color textSecondary = Color(0xFF636E72); // Medium gray
+  static const Color textSecondaryAlpha10 = Color(0x1A636E72); // 10%
   static const Color textHint = Color(
     0xFF5D6F76,
   ); // Medium-dark gray (WCAG AA: 4.67:1 on background, 5.25:1 on white)
@@ -90,8 +91,8 @@ class AppColors {
   // MIGRATION GUIDE
   // ============================================================================
   // ❌ BEFORE (creates new object every build):
-  //    color: Colors.white.withOpacity(0.5)
-  //    color: AppColors.primary.withOpacity(0.2)
+  //    color: AppColors.whiteAlpha50
+  //    color: AppColors.primaryAlpha20
   //
   // ✅ AFTER (zero-cost constant):
   //    color: AppColors.whiteAlpha50

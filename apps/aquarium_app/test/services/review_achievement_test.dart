@@ -1,4 +1,6 @@
 /// Tests for review-related achievement unlocking
+library;
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:aquarium_app/services/achievement_service.dart';
 import 'package:aquarium_app/models/achievements.dart';

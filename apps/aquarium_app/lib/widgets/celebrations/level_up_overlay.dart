@@ -339,13 +339,38 @@ class _LevelUpOverlayState extends State<LevelUpOverlay>
                   
                   const SizedBox(height: AppSpacing.xl),
                   
-                  // Tap to dismiss hint
+                  // Continue button instead of just tap hint
+                  FadeTransition(
+                    opacity: _overlayFade,
+                    child: ElevatedButton(
+                      onPressed: _dismiss,
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 32,
+                          vertical: 16,
+                        ),
+                        backgroundColor: const Color(0xFF8B5CF6),
+                        foregroundColor: Colors.white,
+                      ),
+                      child: const Text(
+                        'Continue',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+                  
+                  const SizedBox(height: AppSpacing.sm),
+                  
+                  // Tap anywhere hint
                   FadeTransition(
                     opacity: _overlayFade,
                     child: Text(
-                      'Tap to continue',
+                      'or tap anywhere',
                       style: AppTypography.bodySmall.copyWith(
-                        color: AppOverlays.white70,
+                        color: AppOverlays.white50,
                       ),
                     ),
                   ),

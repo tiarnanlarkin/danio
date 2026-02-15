@@ -177,7 +177,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             onLoadDemo: () async {
               final actions = ref.read(tankActionsProvider);
               final demoTank = await actions.seedDemoTankIfEmpty();
-              if (context.mounted) {
+              if (mounted) {
                 _navigateToTankDetail(context, demoTank);
               }
             },
@@ -229,9 +229,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 ),
                 child: Row(
                   children: [
-                    GestureDetector(
-                      onTap: () => _showRoomSwitcher(context),
-                      child: Row(
+                    Semantics(
+                      label: 'Living Room, switch room',
+                      button: true,
+                      child: GestureDetector(
+                        onTap: () => _showRoomSwitcher(context),
+                        child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Text(
@@ -254,6 +257,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                           ),
                         ],
                       ),
+                      ),
                     ),
                     const Spacer(),
                     // Hearts indicator
@@ -261,26 +265,34 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       padding: EdgeInsets.only(right: 8),
                       child: HeartIndicator(compact: true),
                     ),
-                    IconButton(
-                      icon: Icon(
-                        Icons.search,
-                        color: AppOverlays.white90,
-                      ),
-                      tooltip: 'Search',
-                      onPressed: () => Navigator.push(
-                        context,
-                        RoomSlideRoute(page: const SearchScreen()),
+                    Semantics(
+                      label: 'Search',
+                      button: true,
+                      child: IconButton(
+                        icon: Icon(
+                          Icons.search,
+                          color: AppOverlays.white90,
+                        ),
+                        tooltip: 'Search',
+                        onPressed: () => Navigator.push(
+                          context,
+                          RoomSlideRoute(page: const SearchScreen()),
+                        ),
                       ),
                     ),
-                    IconButton(
-                      icon: Icon(
-                        Icons.settings_outlined,
-                        color: AppOverlays.white90,
-                      ),
-                      tooltip: 'Settings',
-                      onPressed: () => Navigator.push(
-                        context,
-                        RoomSlideRoute(page: const SettingsScreen()),
+                    Semantics(
+                      label: 'Settings',
+                      button: true,
+                      child: IconButton(
+                        icon: Icon(
+                          Icons.settings_outlined,
+                          color: AppOverlays.white90,
+                        ),
+                        tooltip: 'Settings',
+                        onPressed: () => Navigator.push(
+                          context,
+                          RoomSlideRoute(page: const SettingsScreen()),
+                        ),
                       ),
                     ),
                   ],
@@ -730,10 +742,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 const SizedBox(width: 12),
                 Text('Your Progress', style: AppTypography.headlineSmall),
                 const Spacer(),
-                IconButton(
-                  icon: const Icon(Icons.close),
-                  tooltip: 'Close',
-                  onPressed: () => Navigator.pop(ctx),
+                Semantics(
+                  label: 'Close progress',
+                  button: true,
+                  child: IconButton(
+                    icon: const Icon(Icons.close),
+                    tooltip: 'Close',
+                    onPressed: () => Navigator.pop(ctx),
+                  ),
                 ),
               ],
             ),
@@ -795,10 +811,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 const SizedBox(width: 12),
                 Text('Daily Goal', style: AppTypography.headlineSmall),
                 const Spacer(),
-                IconButton(
-                  icon: const Icon(Icons.close),
-                  tooltip: 'Close',
-                  onPressed: () => Navigator.pop(ctx),
+                Semantics(
+                  label: 'Close daily goal',
+                  button: true,
+                  child: IconButton(
+                    icon: const Icon(Icons.close),
+                    tooltip: 'Close',
+                    onPressed: () => Navigator.pop(ctx),
+                  ),
                 ),
               ],
             ),

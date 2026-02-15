@@ -2,6 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:aquarium_app/screens/tank_detail/tank_detail_screen.dart';
+import 'package:aquarium_app/screens/tank_detail/widgets/quick_stats.dart';
+import 'package:aquarium_app/screens/tank_detail/widgets/alerts_card.dart';
+import 'package:aquarium_app/screens/tank_detail/widgets/equipment_preview.dart';
+import 'package:aquarium_app/screens/tank_detail/widgets/livestock_preview.dart';
+import 'package:aquarium_app/screens/tank_detail/widgets/logs_list.dart';
+import 'package:aquarium_app/screens/tank_detail/widgets/quick_add_fab.dart';
 import 'package:aquarium_app/models/models.dart';
 import 'package:aquarium_app/providers/tank_provider.dart';
 import 'package:aquarium_app/theme/app_theme.dart';
@@ -230,9 +236,9 @@ void main() {
         Livestock(
           id: 'live-1',
           tankId: 'test-tank-1',
-          species: 'Neon Tetra',
+          commonName: 'Neon Tetra',
           count: 10,
-          addedDate: DateTime.now(),
+          dateAdded: DateTime.now(),
           createdAt: DateTime.now(),
           updatedAt: DateTime.now(),
         ),
@@ -353,8 +359,9 @@ void main() {
           tankId: 'test-tank-1',
           title: 'Clean filter',
           isEnabled: true,
-          nextDue: DateTime.now().subtract(const Duration(days: 1)), // Overdue
-          repeatInterval: 7,
+          recurrence: RecurrenceType.weekly,
+          dueDate: DateTime.now().subtract(const Duration(days: 1)), // Overdue
+          intervalDays: 7,
           createdAt: DateTime.now(),
           updatedAt: DateTime.now(),
         ),
@@ -363,8 +370,9 @@ void main() {
           tankId: 'test-tank-1',
           title: 'Test water',
           isEnabled: true,
-          nextDue: DateTime.now(), // Due today
-          repeatInterval: 7,
+          recurrence: RecurrenceType.weekly,
+          dueDate: DateTime.now(), // Due today
+          intervalDays: 7,
           createdAt: DateTime.now(),
           updatedAt: DateTime.now(),
         ),

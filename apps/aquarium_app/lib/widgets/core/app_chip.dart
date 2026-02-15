@@ -143,15 +143,19 @@ class AppChip extends StatelessWidget {
               ),
               if (onDeleted != null) ...[
                 SizedBox(width: AppSpacing.xs),
-                GestureDetector(
-                  onTap: () {
-                    HapticFeedback.lightImpact();
-                    onDeleted!();
-                  },
-                  child: Icon(
-                    deleteIcon ?? Icons.close,
-                    size: _getIconSize(),
-                    color: _getForegroundColor(effectiveColor, isDark),
+                Semantics(
+                  label: 'Delete $label',
+                  button: true,
+                  child: GestureDetector(
+                    onTap: () {
+                      HapticFeedback.lightImpact();
+                      onDeleted!();
+                    },
+                    child: Icon(
+                      deleteIcon ?? Icons.close,
+                      size: _getIconSize(),
+                      color: _getForegroundColor(effectiveColor, isDark),
+                    ),
                   ),
                 ),
               ],

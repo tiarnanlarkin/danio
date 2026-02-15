@@ -294,9 +294,14 @@ mixin ErrorHandlerMixin<T extends StatefulWidget> on State<T> {
               style: const TextStyle(color: Colors.white),
             ),
           ),
-          IconButton(
-            icon: const Icon(Icons.close, color: Colors.white),
-            onPressed: clearError,
+          Semantics(
+            label: 'Close error message',
+            button: true,
+            child: IconButton(
+              icon: const Icon(Icons.close, color: Colors.white),
+              onPressed: clearError,
+              tooltip: 'Close error message',
+            ),
           ),
         ],
       ),

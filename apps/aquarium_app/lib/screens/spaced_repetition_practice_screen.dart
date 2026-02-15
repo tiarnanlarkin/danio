@@ -585,7 +585,7 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
               onPressed: () async {
                 final shouldExit = await _showExitDialog();
                 if (shouldExit == true && mounted) {
-                  Navigator.of(context).pop();
+                  Navigator.of(this.context).pop();
                 }
               },
             ),

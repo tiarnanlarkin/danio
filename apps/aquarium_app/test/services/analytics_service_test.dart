@@ -1,5 +1,6 @@
 /// Tests for Analytics Service
 /// Validates stats aggregation, trend calculation, and insight generation
+library;
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:aquarium_app/models/analytics.dart';

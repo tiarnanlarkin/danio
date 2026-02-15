@@ -62,7 +62,12 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
       appBar: AppBar(
         title: Row(
           children: [
-            Text(widget.pathTitle),
+            Flexible(
+              child: Text(
+                widget.pathTitle,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
             if (widget.isPracticeMode) ...[
               const SizedBox(width: AppSpacing.sm),
               Container(
@@ -462,7 +467,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
                     style: AppTypography.labelLarge,
                   ),
                   Text(
-                    '${_correctAnswers} correct',
+                    '$_correctAnswers correct',
                     style: AppTypography.bodyMedium.copyWith(
                       color: AppColors.success,
                     ),
@@ -678,7 +683,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
                                 if (result == 'practice' && mounted) {
                                   // Navigate to practice mode - pop and push again with practice flag
                                   Navigator.of(context).pop();
-                                } else {
+                                } else if (mounted) {
                                   // Wait or go back
                                   Navigator.of(context).pop();
                                 }
@@ -863,8 +868,13 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
         }
 
         // Navigate back after all animations complete
+        // Use post-frame callback to ensure state is settled
         if (mounted) {
-          Navigator.of(context).pop();
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (mounted && Navigator.of(context).canPop()) {
+              Navigator.of(context).pop();
+            }
+          });
         }
       },
     );

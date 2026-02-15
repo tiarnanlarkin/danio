@@ -53,9 +53,6 @@ class _CozyRoomPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final w = size.width;
-    final h = size.height;
-
     // Draw background gradient
     _drawBackground(canvas, size);
     

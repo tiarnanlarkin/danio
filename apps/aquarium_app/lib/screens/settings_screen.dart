@@ -1359,9 +1359,9 @@ class _GoalOptionState extends State<_GoalOption> {
               .read(userProfileProvider.notifier)
               .setDailyGoal(widget.goal);
           if (mounted) {
-            Navigator.pop(context);
+            Navigator.pop(this.context);
             AppFeedback.showSuccess(
-              context,
+              this.context,
               'Daily goal updated to ${widget.goal} XP',
             );
           }

@@ -1,4 +1,5 @@
 /// Tests for Story models
+library;
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:aquarium_app/models/story.dart';

@@ -4,6 +4,7 @@
 /// ```dart
 /// import 'package:aquarium_app/widgets/core/core_widgets.dart';
 /// ```
+library;
 
 export 'app_button.dart';
 export 'app_card.dart';

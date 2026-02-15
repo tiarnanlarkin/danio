@@ -165,11 +165,16 @@ class ErrorBanner extends StatelessWidget {
           if (onAction != null && actionLabel != null)
             TextButton(onPressed: onAction, child: Text(actionLabel!)),
           if (onDismiss != null)
-            IconButton(
-              icon: const Icon(Icons.close, size: 18),
-              onPressed: onDismiss,
-              padding: EdgeInsets.zero,
-              constraints: const BoxConstraints(),
+            Semantics(
+              label: 'Dismiss error',
+              button: true,
+              child: IconButton(
+                icon: const Icon(Icons.close, size: 18),
+                onPressed: onDismiss,
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(),
+                tooltip: 'Dismiss',
+              ),
             ),
         ],
       ),

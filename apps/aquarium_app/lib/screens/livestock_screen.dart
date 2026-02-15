@@ -346,7 +346,7 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
         .toList();
 
     if (availableTanks.isEmpty) {
-      if (mounted) {
+      if (context.mounted) {
         AppFeedback.showError(context, 'No other tanks available to move to');
       }
       return;
@@ -371,7 +371,7 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
       ),
     );
 
-    if (selectedTank == null || !mounted) return;
+    if (selectedTank == null || !context.mounted) return;
 
     try {
       final actions = ref.read(tankActionsProvider);
@@ -381,7 +381,7 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
         selectedTank.id,
       );
 
-      if (mounted) {
+      if (context.mounted) {
         setState(() {
           _isSelectMode = false;
           _selectedLivestockIds.clear();
@@ -392,7 +392,7 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
         );
       }
     } catch (e) {
-      if (mounted) {
+      if (context.mounted) {
         AppFeedback.showError(
           context,
           'Failed to move livestock. Please try again.',
@@ -435,7 +435,7 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
       ),
     );
 
-    if (confirmed != true || !mounted) return;
+    if (confirmed != true || !context.mounted) return;
 
     try {
       final actions = ref.read(tankActionsProvider);
@@ -443,7 +443,7 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
         actions.softDeleteLivestock(id, widget.tankId);
       }
 
-      if (mounted) {
+      if (context.mounted) {
         setState(() {
           _isSelectMode = false;
           _selectedLivestockIds.clear();

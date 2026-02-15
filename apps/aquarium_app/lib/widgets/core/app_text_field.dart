@@ -337,13 +337,18 @@ class _AppTextFieldState extends State<AppTextField> {
     }
 
     if (widget.obscureText) {
-      return IconButton(
-        icon: Icon(
-          _obscureText ? Icons.visibility_off : Icons.visibility,
-          color: _getIconColor(isDark),
-          size: AppIconSizes.md,
+      return Semantics(
+        label: _obscureText ? 'Show password' : 'Hide password',
+        button: true,
+        child: IconButton(
+          icon: Icon(
+            _obscureText ? Icons.visibility_off : Icons.visibility,
+            color: _getIconColor(isDark),
+            size: AppIconSizes.md,
+          ),
+          onPressed: () => setState(() => _obscureText = !_obscureText),
+          tooltip: _obscureText ? 'Show password' : 'Hide password',
         ),
-        onPressed: () => setState(() => _obscureText = !_obscureText),
       );
     }
 
@@ -471,10 +476,16 @@ class _AppSearchFieldState extends State<AppSearchField> {
       prefixIcon: Icons.search,
       textInputAction: TextInputAction.search,
       autofillHints: null,
+      semanticsLabel: 'Search field',
       suffix: _hasText
-          ? IconButton(
-              icon: Icon(Icons.clear, size: AppIconSizes.sm),
-              onPressed: _clear,
+          ? Semantics(
+              label: 'Clear search',
+              button: true,
+              child: IconButton(
+                icon: Icon(Icons.clear, size: AppIconSizes.sm),
+                onPressed: _clear,
+                tooltip: 'Clear search',
+              ),
             )
           : null,
       onChanged: widget.onChanged,

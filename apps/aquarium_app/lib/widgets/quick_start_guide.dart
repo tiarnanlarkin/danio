@@ -23,7 +23,6 @@ class QuickStartGuide extends StatefulWidget {
 class _QuickStartGuideState extends State<QuickStartGuide> {
   OverlayEntry? _overlayEntry;
   int _currentStep = 0;
-  bool _isGuideActive = false;
 
   final List<_GuideStep> _steps = [
     _GuideStep(
@@ -76,7 +75,6 @@ class _QuickStartGuideState extends State<QuickStartGuide> {
 
   void _showGuide() {
     setState(() {
-      _isGuideActive = true;
       _currentStep = 0;
     });
     _showOverlay();
@@ -264,7 +262,6 @@ class _QuickStartGuideState extends State<QuickStartGuide> {
   void _dismissGuide() async {
     _overlayEntry?.remove();
     _overlayEntry = null;
-    setState(() => _isGuideActive = false);
 
     // Mark as seen
     final prefs = await SharedPreferences.getInstance();
@@ -297,7 +294,7 @@ class _GuideStep {
   });
 }
 
-enum _GuidePosition { top, bottom, left, right }
+enum _GuidePosition { top, bottom, left }
 
 /// Widget to mark guide targets
 class GuideTarget extends StatelessWidget {

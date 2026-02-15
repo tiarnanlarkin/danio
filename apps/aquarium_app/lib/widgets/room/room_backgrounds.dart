@@ -32,35 +32,58 @@ class RoomBackgroundColors {
   static const studyGradient2 = Color(0xFF1F2937); // Darker blue
   static const studyGradient3 = Color(0xFF1A202C); // Deep navy
   static const studyWood = Color(0xFF5D4E37); // Wood brown
+  static const studyWoodAlpha10 = Color(0x1A5D4E37); // 10%
+  static const studyWoodAlpha15 = Color(0x265D4E37); // 15%
   static const studyGold = Color(0xFFD4A574); // Warm gold
+  static const studyGoldAlpha00 = Color(0x00D4A574); // 0% (transparent)
+  static const studyGoldAlpha12 = Color(0x1FD4A574); // 12%
 
   // Workshop - Industrial with concrete grey and orange accents
   static const workshopGradient1 = Color(0xFF5D4E37); // Warm brown
+  static const workshopGradient1Alpha20 = Color(0x335D4E37); // 20%
   static const workshopGradient2 = Color(0xFF4A3F2E); // Darker brown
   static const workshopGradient3 = Color(0xFF3D3425); // Deep brown
   static const workshopOrange = Color(0xFFE07C3E); // Orange accent
+  static const workshopOrangeAlpha15 = Color(0x26E07C3E); // 15%
   static const workshopMetal = Color(0xFF6B7280); // Steel gray
+  static const workshopMetalAlpha08 = Color(0x146B7280); // 8%
 
   // Shop Street - Outdoor market with sky blue and sunny feel
   static const shopGradient1 = Color(0xFF4A7C59); // Forest green
   static const shopGradient2 = Color(0xFF3D6B4A); // Darker green
   static const shopGradient3 = Color(0xFF2F5A3B); // Deep green
   static const shopSky = Color(0xFF87CEEB); // Sky blue
+  static const shopSkyAlpha00 = Color(0x0087CEEB); // 0% (transparent)
+  static const shopSkyAlpha20 = Color(0x3387CEEB); // 20%
   static const shopSunny = Color(0xFFF0C040); // Sunny yellow
+  static const shopSunnyAlpha00 = Color(0x00F0C040); // 0% (transparent)
+  static const shopSunnyAlpha12 = Color(0x1FF0C040); // 12%
+  static const shopSunnyAlpha15 = Color(0x26F0C040); // 15%
 
   // Trophy Room - Achievement hall with dark purple and gold
   static const trophyGradient1 = Color(0xFF3D2B5A); // Deep purple
   static const trophyGradient2 = Color(0xFF2D1F47); // Darker purple
   static const trophyGradient3 = Color(0xFF1F1433); // Near black purple
   static const trophyGold = Color(0xFFFFD700); // Gold
+  static const trophyGoldAlpha00 = Color(0x00FFD700); // 0% (transparent)
+  static const trophyGoldAlpha06 = Color(0x0FFFD700); // 6%
+  static const trophyGoldAlpha08 = Color(0x14FFD700); // 8%
+  static const trophyGoldAlpha10 = Color(0x1AFFD700); // 10%
   static const trophySpotlight = Color(0xFFFFE57F); // Light gold
+  static const trophySpotlightAlpha00 = Color(0x00FFE57F); // 0% (transparent)
+  static const trophySpotlightAlpha08 = Color(0x14FFE57F); // 8%
 
   // Friends - Social/bright with warm yellows
   static const friendsGradient1 = Color(0xFFF5D76E); // Warm yellow
   static const friendsGradient2 = Color(0xFFE8C547); // Medium yellow
   static const friendsGradient3 = Color(0xFFD4A520); // Deep yellow
   static const friendsWindow = Color(0xFFFFF9E6); // Window light
+  static const friendsWindowAlpha00 = Color(0x00FFF9E6); // 0% (transparent)
+  static const friendsWindowAlpha15 = Color(0x26FFF9E6); // 15%
+  static const friendsWindowAlpha20 = Color(0x33FFF9E6); // 20%
   static const friendsCozy = Color(0xFFFFE4B5); // Moccasin
+  static const friendsCozyAlpha00 = Color(0x00FFE4B5); // 0% (transparent)
+  static const friendsCozyAlpha15 = Color(0x26FFE4B5); // 15%
 }
 
 /// Universal room background widget that renders themed backgrounds
@@ -205,7 +228,7 @@ class _LivingRoomPainter extends CustomPainter {
 
     // Plant shadow on left side
     final shadowPaint = Paint()
-      ..color = RoomBackgroundColors.livingRoomPlant.withOpacity(0.08);
+      ..color = RoomBackgroundColors.livingRoomPlantAlpha08;
 
     final plantShadow = Path()
       ..moveTo(0, h * 0.4)
@@ -226,7 +249,7 @@ class _LivingRoomPainter extends CustomPainter {
 
     // Soft cream accent blob (cozy warm spot)
     final creamPaint = Paint()
-      ..color = RoomBackgroundColors.livingRoomAccent.withOpacity(0.06);
+      ..color = RoomBackgroundColors.livingRoomAccentAlpha06;
     
     canvas.drawOval(
       Rect.fromCenter(
@@ -266,7 +289,7 @@ class _StudyPainter extends CustomPainter {
 
     // Bookshelf silhouette on left
     final shelfPaint = Paint()
-      ..color = RoomBackgroundColors.studyWood.withOpacity(0.15);
+      ..color = RoomBackgroundColors.studyWoodAlpha15;
 
     // Tall bookshelf shape
     final shelf = Path()
@@ -279,7 +302,7 @@ class _StudyPainter extends CustomPainter {
 
     // Shelf dividers
     final dividerPaint = Paint()
-      ..color = RoomBackgroundColors.studyWood.withOpacity(0.1)
+      ..color = RoomBackgroundColors.studyWoodAlpha10
       ..strokeWidth = 2;
 
     for (var y = h * 0.2; y < h * 0.85; y += h * 0.15) {
@@ -292,7 +315,7 @@ class _StudyPainter extends CustomPainter {
       AppOverlays.bookRed12, // Red
       AppOverlays.bookBlue12, // Blue
       AppOverlays.bookGreen12, // Green
-      RoomBackgroundColors.studyGold.withOpacity(0.12), // Gold
+      RoomBackgroundColors.studyGoldAlpha12, // Gold
     ];
 
     var bookX = w * 0.02;
@@ -320,8 +343,8 @@ class _StudyPainter extends CustomPainter {
         center: Alignment.topRight,
         radius: 0.8,
         colors: [
-          RoomBackgroundColors.studyGold.withOpacity(0.12),
-          RoomBackgroundColors.studyGold.withOpacity(0.0),
+          RoomBackgroundColors.studyGoldAlpha12,
+          RoomBackgroundColors.studyGoldAlpha00,
         ],
       ).createShader(Rect.fromLTWH(0, 0, w, h));
 
@@ -368,7 +391,7 @@ class _WorkshopPainter extends CustomPainter {
 
     // Tool silhouettes on wall (pegboard feel)
     final toolPaint = Paint()
-      ..color = RoomBackgroundColors.workshopMetal.withOpacity(0.08);
+      ..color = RoomBackgroundColors.workshopMetalAlpha08;
 
     // Wrench silhouette
     canvas.drawCircle(
@@ -402,7 +425,7 @@ class _WorkshopPainter extends CustomPainter {
 
     // Workbench at bottom
     final benchPaint = Paint()
-      ..color = RoomBackgroundColors.workshopGradient1.withOpacity(0.2);
+      ..color = RoomBackgroundColors.workshopGradient1Alpha20;
 
     final bench = Path()
       ..moveTo(0, h * 0.88)
@@ -414,7 +437,7 @@ class _WorkshopPainter extends CustomPainter {
 
     // Orange accent stripe
     final accentPaint = Paint()
-      ..color = RoomBackgroundColors.workshopOrange.withOpacity(0.15)
+      ..color = RoomBackgroundColors.workshopOrangeAlpha15
       ..strokeWidth = 3;
 
     canvas.drawLine(
@@ -456,8 +479,8 @@ class _ShopStreetPainter extends CustomPainter {
         begin: Alignment.topCenter,
         end: Alignment.bottomCenter,
         colors: [
-          RoomBackgroundColors.shopSky.withOpacity(0.2),
-          RoomBackgroundColors.shopSky.withOpacity(0.0),
+          RoomBackgroundColors.shopSkyAlpha20,
+          RoomBackgroundColors.shopSkyAlpha00,
         ],
       ).createShader(Rect.fromLTWH(0, 0, w, h * 0.4));
 
@@ -487,7 +510,7 @@ class _ShopStreetPainter extends CustomPainter {
 
     // Awning shapes (striped effect)
     final awningPaint = Paint()
-      ..color = RoomBackgroundColors.shopSunny.withOpacity(0.15);
+      ..color = RoomBackgroundColors.shopSunnyAlpha15;
 
     // Left awning
     final leftAwning = Path()
@@ -549,8 +572,8 @@ class _TrophyRoomPainter extends CustomPainter {
         center: Alignment.topCenter,
         radius: 1.2,
         colors: [
-          RoomBackgroundColors.trophySpotlight.withOpacity(0.08),
-          RoomBackgroundColors.trophySpotlight.withOpacity(0.0),
+          RoomBackgroundColors.trophySpotlightAlpha08,
+          RoomBackgroundColors.trophySpotlightAlpha00,
         ],
       ).createShader(Rect.fromLTWH(0, 0, w, h));
 
@@ -562,8 +585,8 @@ class _TrophyRoomPainter extends CustomPainter {
         begin: Alignment.topCenter,
         end: Alignment.bottomCenter,
         colors: [
-          RoomBackgroundColors.trophyGold.withOpacity(0.1),
-          RoomBackgroundColors.trophyGold.withOpacity(0.0),
+          RoomBackgroundColors.trophyGoldAlpha10,
+          RoomBackgroundColors.trophyGoldAlpha00,
         ],
       ).createShader(Rect.fromLTWH(0, 0, w * 0.4, h));
 
@@ -584,7 +607,7 @@ class _TrophyRoomPainter extends CustomPainter {
 
     // Trophy pedestal silhouettes
     final pedestalPaint = Paint()
-      ..color = RoomBackgroundColors.trophyGold.withOpacity(0.08);
+      ..color = RoomBackgroundColors.trophyGoldAlpha08;
 
     // Center pedestal
     canvas.drawRRect(
@@ -601,7 +624,7 @@ class _TrophyRoomPainter extends CustomPainter {
 
     // Trophy cup silhouette
     final cupPaint = Paint()
-      ..color = RoomBackgroundColors.trophyGold.withOpacity(0.1);
+      ..color = RoomBackgroundColors.trophyGoldAlpha10;
 
     final cup = Path()
       ..moveTo(w * 0.44, h * 0.78)
@@ -617,7 +640,7 @@ class _TrophyRoomPainter extends CustomPainter {
 
     // Decorative gold frame border
     final framePaint = Paint()
-      ..color = RoomBackgroundColors.trophyGold.withOpacity(0.06)
+      ..color = RoomBackgroundColors.trophyGoldAlpha06
       ..style = PaintingStyle.stroke
       ..strokeWidth = 8;
 
@@ -662,8 +685,8 @@ class _FriendsPainter extends CustomPainter {
         center: const Alignment(-0.7, -0.7),
         radius: 1.0,
         colors: [
-          RoomBackgroundColors.friendsWindow.withOpacity(0.2),
-          RoomBackgroundColors.friendsWindow.withOpacity(0.0),
+          RoomBackgroundColors.friendsWindowAlpha20,
+          RoomBackgroundColors.friendsWindowAlpha00,
         ],
       ).createShader(Rect.fromLTWH(0, 0, w, h));
 
@@ -701,8 +724,8 @@ class _FriendsPainter extends CustomPainter {
         center: const Alignment(0.8, 0.8),
         radius: 0.8,
         colors: [
-          RoomBackgroundColors.friendsCozy.withOpacity(0.15),
-          RoomBackgroundColors.friendsCozy.withOpacity(0.0),
+          RoomBackgroundColors.friendsCozyAlpha15,
+          RoomBackgroundColors.friendsCozyAlpha00,
         ],
       ).createShader(Rect.fromLTWH(0, 0, w, h));
 
@@ -914,156 +937,6 @@ class _AnimatedSpark extends StatelessWidget {
       },
     );
   }
-}
-
-/// Sunbeam effect - for outdoor shop street
-class _SunbeamEffect extends StatelessWidget {
-  const _SunbeamEffect();
-
-  @override
-  Widget build(BuildContext context) {
-    return IgnorePointer(
-      child: CustomPaint(
-        painter: _SunbeamPainter(),
-        size: Size.infinite,
-      )
-          .animate(onPlay: (c) => c.repeat(reverse: true))
-          .fadeIn(begin: 0.4, duration: const Duration(seconds: 4))
-          .then()
-          .fadeOut(begin: 0.6, duration: const Duration(seconds: 4)),
-    );
-  }
-}
-
-class _SunbeamPainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final w = size.width;
-    final h = size.height;
-
-    // Sun rays from top-right corner
-    final rayPaint = Paint()
-      ..shader = LinearGradient(
-        begin: Alignment.topRight,
-        end: Alignment.bottomLeft,
-        colors: [
-          RoomBackgroundColors.shopSunny.withOpacity(0.12),
-          RoomBackgroundColors.shopSunny.withOpacity(0.0),
-        ],
-      ).createShader(Rect.fromLTWH(0, 0, w, h));
-
-    // Draw multiple rays
-    for (var i = 0; i < 3; i++) {
-      final angle = -0.3 - (i * 0.15);
-      canvas.save();
-      canvas.translate(w, 0);
-      canvas.rotate(angle);
-
-      canvas.drawRect(
-        Rect.fromLTWH(-w * 0.1, 0, w * 0.08, h * 1.5),
-        rayPaint,
-      );
-
-      canvas.restore();
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
-}
-
-/// Spotlight shimmer - for trophy room prestige
-class _SpotlightShimmer extends StatelessWidget {
-  const _SpotlightShimmer();
-
-  @override
-  Widget build(BuildContext context) {
-    return IgnorePointer(
-      child: Stack(
-        children: [
-          // Central shimmer
-          Positioned(
-            top: 0,
-            left: 0,
-            right: 0,
-            child: Container(
-              height: 200,
-              decoration: BoxDecoration(
-                gradient: RadialGradient(
-                  center: Alignment.topCenter,
-                  radius: 1.5,
-                  colors: [
-                    RoomBackgroundColors.trophyGold.withOpacity(0.08),
-                    RoomBackgroundColors.trophyGold.withOpacity(0.0),
-                  ],
-                ),
-              ),
-            )
-                .animate(onPlay: (c) => c.repeat(reverse: true))
-                .fade(
-                  begin: 0.3,
-                  end: 1.0,
-                  duration: const Duration(seconds: 3),
-                ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-/// Window light rays - for friends social warmth
-class _WindowLightRays extends StatelessWidget {
-  const _WindowLightRays();
-
-  @override
-  Widget build(BuildContext context) {
-    return IgnorePointer(
-      child: CustomPaint(
-        painter: _WindowRaysPainter(),
-        size: Size.infinite,
-      )
-          .animate(onPlay: (c) => c.repeat(reverse: true))
-          .fade(
-            begin: 0.5,
-            end: 1.0,
-            duration: const Duration(seconds: 5),
-            curve: Curves.easeInOut,
-          ),
-    );
-  }
-}
-
-class _WindowRaysPainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final w = size.width;
-    final h = size.height;
-
-    // Light rays from window area
-    final rayPaint = Paint()
-      ..shader = LinearGradient(
-        begin: const Alignment(-0.8, -0.8),
-        end: const Alignment(0.5, 0.5),
-        colors: [
-          RoomBackgroundColors.friendsWindow.withOpacity(0.15),
-          RoomBackgroundColors.friendsWindow.withOpacity(0.0),
-        ],
-      ).createShader(Rect.fromLTWH(0, 0, w * 0.6, h * 0.6));
-
-    // Draw diagonal ray
-    final ray = Path()
-      ..moveTo(0, 0)
-      ..lineTo(w * 0.4, 0)
-      ..lineTo(w * 0.7, h * 0.6)
-      ..lineTo(w * 0.3, h * 0.5)
-      ..close();
-
-    canvas.drawPath(ray, rayPaint);
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
 
 // ============================================================================

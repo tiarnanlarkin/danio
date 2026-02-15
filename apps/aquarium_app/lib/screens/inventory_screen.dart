@@ -18,6 +18,7 @@ class InventoryColors {
   static const goldAccent = Color(0xFFFFD700); // Gold
   static const consumableColor = Color(0xFF4CAF50); // Green for consumables
   static const activeColor = Color(0xFF2196F3); // Blue for active items
+  static const activeColorAlpha20 = Color(0x332196F3); // 20%
   static const permanentColor = Color(0xFFE91E63); // Pink for permanent items
   static const glassCard = Color(0x15FFFFFF);
   static const glassBorder = Color(0x30FFFFFF);
@@ -538,7 +539,7 @@ class _ExpiryTimer extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
-        color: InventoryColors.activeColor.withOpacity(0.2),
+        color: InventoryColors.activeColorAlpha20,
         borderRadius: AppRadius.smallRadius,
       ),
       child: Row(

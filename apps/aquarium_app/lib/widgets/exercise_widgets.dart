@@ -173,15 +173,20 @@ class _MultipleChoiceWidgetState extends State<MultipleChoiceWidget>
       child: AnimatedScale(
         scale: isSelected && !widget.isAnswered ? 0.98 : 1.0,
         duration: const Duration(milliseconds: 100),
-        child: InkWell(
-          onTap: widget.isAnswered
-              ? null
-              : () {
-                  _controller.forward().then((_) => _controller.reverse());
-                  widget.onAnswer(index);
-                },
-          borderRadius: AppRadius.mediumRadius,
-          child: AnimatedContainer(
+        child: Semantics(
+          label: 'Answer option ${index + 1}: $option${isSelected ? ', selected' : ''}${widget.isAnswered && isCorrect ? ', correct' : ''}${widget.isAnswered && isSelected && !isCorrect ? ', incorrect' : ''}',
+          button: true,
+          enabled: !widget.isAnswered,
+          selected: isSelected,
+          child: InkWell(
+            onTap: widget.isAnswered
+                ? null
+                : () {
+                    _controller.forward().then((_) => _controller.reverse());
+                    widget.onAnswer(index);
+                  },
+            borderRadius: AppRadius.mediumRadius,
+            child: AnimatedContainer(
             duration: const Duration(milliseconds: 300),
             curve: Curves.easeInOut,
             padding: const EdgeInsets.all(16),
@@ -247,6 +252,7 @@ class _MultipleChoiceWidgetState extends State<MultipleChoiceWidget>
                 ),
               ],
             ),
+          ),
           ),
         ),
       ),
@@ -373,10 +379,6 @@ class _FillBlankWidgetState extends State<FillBlankWidget> {
   }
 
   Widget _buildBlankInput(int index) {
-    final isCorrect =
-        widget.isAnswered &&
-        widget.exercise.validate(_controllers.map((c) => c.text).toList());
-
     final thisBlankCorrect =
         widget.isAnswered &&
         _controllers[index].text.toLowerCase() ==
@@ -433,7 +435,6 @@ class _FillBlankWidgetState extends State<FillBlankWidget> {
 
   Widget _buildWordBankMode() {
     final parts = widget.exercise.getSentenceParts();
-    final usedWords = <String>{};
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -618,10 +619,15 @@ class TrueFalseWidget extends StatelessWidget {
     return AnimatedScale(
       scale: isSelected && !isAnswered ? 0.98 : 1.0,
       duration: const Duration(milliseconds: 100),
-      child: InkWell(
-        onTap: isAnswered ? null : () => onAnswer(value),
-        borderRadius: AppRadius.mediumRadius,
-        child: AnimatedContainer(
+      child: Semantics(
+        label: '$label${isSelected ? ', selected' : ''}${isAnswered && isCorrect ? ', correct' : ''}${isAnswered && isSelected && !isCorrect ? ', incorrect' : ''}',
+        button: true,
+        enabled: !isAnswered,
+        selected: isSelected,
+        child: InkWell(
+          onTap: isAnswered ? null : () => onAnswer(value),
+          borderRadius: AppRadius.mediumRadius,
+          child: AnimatedContainer(
           duration: const Duration(milliseconds: 300),
           padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 20),
           decoration: BoxDecoration(
@@ -656,6 +662,7 @@ class TrueFalseWidget extends StatelessWidget {
                 ),
               ),
             ],
+          ),
           ),
         ),
       ),
@@ -804,10 +811,15 @@ class _MatchingWidgetState extends State<MatchingWidget> {
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
-      child: InkWell(
-        onTap: () => _onLeftTap(index),
-        borderRadius: AppRadius.mediumRadius,
-        child: AnimatedContainer(
+      child: Semantics(
+        label: 'Match item: $text${isSelected ? ', selected' : ''}${isPaired ? ', paired' : ''}${widget.isAnswered && isPaired ? (isCorrect ? ', correct' : ', incorrect') : ''}',
+        button: true,
+        enabled: true,
+        selected: isSelected || isPaired,
+        child: InkWell(
+          onTap: () => _onLeftTap(index),
+          borderRadius: AppRadius.mediumRadius,
+          child: AnimatedContainer(
           duration: const Duration(milliseconds: 200),
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
@@ -843,6 +855,7 @@ class _MatchingWidgetState extends State<MatchingWidget> {
               ),
             ],
           ),
+          ),
         ),
       ),
     );
@@ -875,10 +888,15 @@ class _MatchingWidgetState extends State<MatchingWidget> {
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
-      child: InkWell(
-        onTap: () => _onRightTap(index),
-        borderRadius: AppRadius.mediumRadius,
-        child: AnimatedContainer(
+      child: Semantics(
+        label: 'Match target: $text${isPaired ? ', paired' : ''}${widget.isAnswered && isPaired ? (isCorrect ? ', correct' : ', incorrect') : ''}',
+        button: true,
+        enabled: true,
+        selected: isPaired,
+        child: InkWell(
+          onTap: () => _onRightTap(index),
+          borderRadius: AppRadius.mediumRadius,
+          child: AnimatedContainer(
           duration: const Duration(milliseconds: 200),
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
@@ -904,6 +922,7 @@ class _MatchingWidgetState extends State<MatchingWidget> {
                       : AppColors.accent,
                 ),
             ],
+          ),
           ),
         ),
       ),

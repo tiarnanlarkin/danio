@@ -1,5 +1,6 @@
 /// Tests for Spaced Repetition Models
 /// Validates forgetting curve, strength adjustments, and review scheduling
+library;
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:aquarium_app/models/spaced_repetition.dart';

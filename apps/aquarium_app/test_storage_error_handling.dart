@@ -1,6 +1,7 @@
 #!/usr/bin/env dart
 /// Test script for storage service error handling
 /// This simulates various corruption scenarios and verifies recovery
+library;
 
 import 'dart:io';
 import 'dart:convert';

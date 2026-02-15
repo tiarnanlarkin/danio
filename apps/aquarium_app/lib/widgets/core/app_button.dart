@@ -372,10 +372,17 @@ class AppIconButton extends StatelessWidget {
     final double iconSize = size == AppButtonSize.small ? AppIconSizes.sm : 
                             size == AppButtonSize.medium ? AppIconSizes.md : AppIconSizes.lg;
 
+    // Require semantic label for icon-only buttons
+    assert(
+      semanticsLabel != null,
+      'AppIconButton requires a semanticsLabel for accessibility. '
+      'Provide a descriptive label like "Back", "Settings", "Delete", etc.',
+    );
+
     return Semantics(
       button: true,
       enabled: isEnabled,
-      label: semanticsLabel ?? 'Button',
+      label: semanticsLabel!,
       child: Material(
         color: backgroundColor ?? Colors.transparent,
         borderRadius: BorderRadius.circular(buttonSize / 2),

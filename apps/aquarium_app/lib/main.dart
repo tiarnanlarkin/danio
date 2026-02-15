@@ -199,8 +199,19 @@ class _AppRouterState extends ConsumerState<_AppRouter>
     // Check profile status
     bool profileExists = false;
     if (onboardingCompleted) {
-      // Wait for profile provider to load
-      await Future.delayed(const Duration(milliseconds: 100));
+      // Wait for profile provider to actually finish loading (not just a timeout!)
+      final profileAsync = ref.read(userProfileProvider);
+      
+      // If still loading, wait for it to complete
+      if (profileAsync is AsyncLoading) {
+        // Wait up to 2 seconds for profile to load
+        for (int i = 0; i < 20; i++) {
+          await Future.delayed(const Duration(milliseconds: 100));
+          final current = ref.read(userProfileProvider);
+          if (current is! AsyncLoading) break;
+        }
+      }
+      
       final profile = ref.read(userProfileProvider).value;
       profileExists = profile != null;
     }

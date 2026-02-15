@@ -36,9 +36,15 @@ class AchievementCard extends StatelessWidget {
     // Get rarity color
     final rarityColor = _getRarityColor(achievement.rarity);
 
-    final card = GestureDetector(
-      onTap: onTap,
-      child: Container(
+    final card = Semantics(
+      label: achievement.isHidden && isLocked
+          ? 'Hidden achievement, locked'
+          : '${achievement.name}, ${isLocked ? 'locked' : 'unlocked'}, ${achievement.description}',
+      button: true,
+      enabled: true,
+      child: GestureDetector(
+        onTap: onTap,
+        child: Container(
         decoration: BoxDecoration(
           borderRadius: AppRadius.mediumRadius,
           border: Border.all(
@@ -193,6 +199,7 @@ class AchievementCard extends StatelessWidget {
           ],
         ),
       ),
+    ),
     );
 
     // Return card with optional sparkle effect

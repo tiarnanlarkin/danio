@@ -1,5 +1,6 @@
 /// Tests for Review Queue Service
 /// Validates intelligent scheduling, prioritization, and adaptive algorithms
+library;
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:aquarium_app/models/spaced_repetition.dart';

@@ -1,4 +1,5 @@
 /// Tests for Achievement Service
+library;
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:aquarium_app/models/achievements.dart';

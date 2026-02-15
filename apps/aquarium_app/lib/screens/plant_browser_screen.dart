@@ -173,7 +173,7 @@ class _PlantBrowserScreenState extends ConsumerState<PlantBrowserScreen> {
       }
     }
 
-    if (!mounted) return;
+    if (!context.mounted) return;
 
     showModalBottomSheet(
       context: context,
@@ -360,11 +360,11 @@ class _PlantDetailSheet extends StatelessWidget {
               children: [
                 _StatChip(label: plant.difficulty, icon: Icons.speed),
                 _StatChip(
-                  label: plant.lightLevel + ' Light',
+                  label: '${plant.lightLevel} Light',
                   icon: Icons.wb_sunny,
                 ),
                 _StatChip(
-                  label: plant.growthRate + ' Growth',
+                  label: '${plant.growthRate} Growth',
                   icon: Icons.trending_up,
                 ),
                 _StatChip(label: plant.placement, icon: Icons.layers),

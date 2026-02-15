@@ -8,6 +8,7 @@ import 'package:confetti/confetti.dart';
 import '../../models/models.dart';
 import '../../providers/tank_provider.dart';
 import '../../theme/app_theme.dart';
+import '../../services/onboarding_service.dart';
 import '../house_navigator.dart';
 
 class EnhancedTutorialWalkthroughScreen extends ConsumerStatefulWidget {
@@ -125,7 +126,13 @@ class _EnhancedTutorialWalkthroughScreenState
     }
   }
 
-  void _skipTutorial() {
+  Future<void> _skipTutorial() async {
+    // Mark onboarding as complete
+    final service = await OnboardingService.getInstance();
+    await service.completeOnboarding();
+    
+    if (!mounted) return;
+    
     Navigator.of(context).pushAndRemoveUntil(
       MaterialPageRoute(builder: (_) => const HouseNavigator()),
       (route) => false,
@@ -164,6 +171,12 @@ class _EnhancedTutorialWalkthroughScreenState
         barrierDismissible: false,
         builder: (context) => _SuccessDialog(tankName: tankName),
       );
+
+      if (!mounted) return;
+
+      // Mark onboarding as complete
+      final service = await OnboardingService.getInstance();
+      await service.completeOnboarding();
 
       if (!mounted) return;
 

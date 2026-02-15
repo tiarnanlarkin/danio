@@ -17,6 +17,7 @@ import 'lesson_screen.dart';
 import 'parameter_guide_screen.dart';
 import 'practice_screen.dart';
 import 'spaced_repetition_practice_screen.dart';
+import 'onboarding/profile_creation_screen.dart';
 
 /// The main learning hub - shows learning paths and progress
 /// Features a cozy illustrated "Study Room" header
@@ -161,13 +162,44 @@ class LearnScreen extends ConsumerWidget {
 
               // === Content below the scene ===
               if (profile == null)
-                const SliverFillRemaining(
+                SliverFillRemaining(
                   child: Center(
                     child: Padding(
-                      padding: EdgeInsets.all(AppSpacing.xl),
-                      child: Text(
-                        'Complete onboarding to start your learning journey!',
-                        textAlign: TextAlign.center,
+                      padding: const EdgeInsets.all(AppSpacing.xl),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Icon(
+                            Icons.person_add,
+                            size: 64,
+                            color: AppColors.textSecondary,
+                          ),
+                          const SizedBox(height: AppSpacing.md),
+                          const Text(
+                            'Complete your profile setup to start learning!',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(fontSize: 18),
+                          ),
+                          const SizedBox(height: AppSpacing.lg),
+                          ElevatedButton.icon(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => const ProfileCreationScreen(),
+                                ),
+                              );
+                            },
+                            icon: const Icon(Icons.arrow_forward),
+                            label: const Text('Create Profile'),
+                            style: ElevatedButton.styleFrom(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 32,
+                                vertical: 16,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),

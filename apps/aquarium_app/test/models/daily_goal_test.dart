@@ -1,4 +1,5 @@
 /// Unit tests for daily goal and streak calculation logic
+library;
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:aquarium_app/models/daily_goal.dart';

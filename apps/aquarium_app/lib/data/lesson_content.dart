@@ -1,5 +1,16 @@
 /// Lesson content for the learning system
 /// The "Duolingo for fishkeeping" curriculum
+///
+/// ⚠️ LEGACY FILE - 212KB startup cost
+/// 
+/// NEW APPROACH: Use lazy-loaded chunks in lib/data/lessons/
+/// - Each learning path is a separate file (20-40KB each)
+/// - Use LessonProvider for lazy loading (lib/providers/lesson_provider.dart)
+/// - Skeleton states available (lib/widgets/lesson_skeleton.dart)
+/// 
+/// This file remains for backward compatibility. Gradually migrate to:
+/// - ref.watch(lessonProvider) for Riverpod screens
+/// - lessonContentLazy.loadPath(pathId) for non-Riverpod code
 library;
 
 import '../models/tank.dart'; // For TankType enum
@@ -7,6 +18,8 @@ import '../models/learning.dart';
 import '../models/user_profile.dart';
 
 /// All learning paths available in the app
+/// ⚠️ WARNING: Loading all paths at once = 347KB of data
+/// Consider using LessonProvider for lazy loading instead
 class LessonContent {
   static List<LearningPath> get allPaths => [
     nitrogenCyclePath,

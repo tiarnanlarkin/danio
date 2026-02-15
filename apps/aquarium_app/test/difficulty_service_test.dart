@@ -1,5 +1,6 @@
 /// Tests for adaptive difficulty service
 /// Validates skill calculation, difficulty recommendations, and edge cases
+library;
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:aquarium_app/models/adaptive_difficulty.dart';
