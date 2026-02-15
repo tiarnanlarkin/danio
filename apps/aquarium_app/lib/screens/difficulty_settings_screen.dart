@@ -47,9 +47,16 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Difficulty Settings'), elevation: 0),
-      body: ListView(
+      body: ListView.builder(
         padding: const EdgeInsets.all(AppSpacing.md),
-        children: [
+        itemCount: _buildItems().length,
+        itemBuilder: (context, index) => _buildItems()[index],
+      ),
+    );
+  }
+
+  List<Widget> _buildItems() {
+    return [
           _buildOverallSkillCard(),
           const SizedBox(height: AppSpacing.lg),
           _buildTopicSkillsSection(),
@@ -59,9 +66,7 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
           _buildManualOverridesSection(),
           const SizedBox(height: AppSpacing.lg),
           _buildRecommendationsSection(),
-        ],
-      ),
-    );
+    ];
   }
 
   /// Overall skill level card
