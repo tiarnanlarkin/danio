@@ -297,37 +297,38 @@ class _EnhancedQuizScreenState extends ConsumerState<EnhancedQuizScreen>
 
             // Quiz content
             Expanded(
-              child: ListView(
+              child: ListView.builder(
                 padding: const EdgeInsets.all(20),
-                children: [
-                  // Exercise type badge
-                  _buildExerciseTypeBadge(exercise.type),
-                  const SizedBox(height: AppSpacing.md),
-
-                  // Question
-                  Text(exercise.question, style: AppTypography.headlineMedium),
-                  const SizedBox(height: AppSpacing.lg),
-
-                  // Exercise widget
-                  ExerciseWidget(
-                    exercise: exercise,
-                    onAnswer: _onAnswer,
-                    isAnswered: _currentAnswered,
-                    isCorrect: isCorrect,
-                    userAnswer: _userAnswers[_currentExerciseIndex],
-                  ),
-
-                  // Explanation (after answering)
-                  if (_currentAnswered && exercise.explanation != null) ...[
-                    const SizedBox(height: AppSpacing.lg),
-                    _buildExplanation(
-                      exercise.explanation!,
-                      isCorrect ?? false,
-                    ),
-                  ],
-
-                  const SizedBox(height: 100), // Space for bottom button
-                ],
+                itemCount: _currentAnswered && exercise.explanation != null ? 7 : 5,
+                itemBuilder: (context, index) {
+                  switch (index) {
+                    case 0:
+                      return _buildExerciseTypeBadge(exercise.type);
+                    case 1:
+                      return const SizedBox(height: AppSpacing.md);
+                    case 2:
+                      return Text(exercise.question, style: AppTypography.headlineMedium);
+                    case 3:
+                      return const SizedBox(height: AppSpacing.lg);
+                    case 4:
+                      return ExerciseWidget(
+                        exercise: exercise,
+                        onAnswer: _onAnswer,
+                        isAnswered: _currentAnswered,
+                        isCorrect: isCorrect,
+                        userAnswer: _userAnswers[_currentExerciseIndex],
+                      );
+                    case 5:
+                      return const SizedBox(height: AppSpacing.lg);
+                    case 6:
+                      return _buildExplanation(
+                        exercise.explanation!,
+                        isCorrect ?? false,
+                      );
+                    default:
+                      return const SizedBox(height: 100);
+                  }
+                },
               ),
             ),
 
