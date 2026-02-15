@@ -10,6 +10,7 @@ import '../data/achievements.dart';
 import '../providers/achievement_provider.dart';
 import '../widgets/achievement_card.dart';
 import '../widgets/achievement_detail_modal.dart';
+// import '../services/firebase_analytics_service.dart';
 
 class AchievementsScreen extends ConsumerStatefulWidget {
   const AchievementsScreen({super.key});
@@ -23,6 +24,12 @@ class _AchievementsScreenState extends ConsumerState<AchievementsScreen> {
   AchievementRarity? _selectedRarity;
   AchievementSortBy _sortBy = AchievementSortBy.rarity;
   FilterMode _filterMode = FilterMode.all;
+
+  @override
+  void initState() {
+    super.initState();
+    // FirebaseAnalyticsService().logScreenView('achievements');
+  }
 
   @override
   Widget build(BuildContext context) {

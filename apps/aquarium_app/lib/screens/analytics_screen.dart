@@ -17,6 +17,7 @@ import '../data/lesson_content.dart';
 import '../widgets/skeleton_loader.dart';
 import '../widgets/error_state.dart';
 import '../widgets/core/app_card.dart';
+// import '../services/firebase_analytics_service.dart';
 
 class AnalyticsScreen extends StatefulWidget {
   const AnalyticsScreen({super.key});
@@ -29,6 +30,12 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
   AnalyticsTimeRange _selectedRange = AnalyticsTimeRange.last30Days;
   DateTime? _customStart;
   DateTime? _customEnd;
+
+  @override
+  void initState() {
+    super.initState();
+    // FirebaseAnalyticsService().logScreenView('analytics');
+  }
 
   @override
   Widget build(BuildContext context) {

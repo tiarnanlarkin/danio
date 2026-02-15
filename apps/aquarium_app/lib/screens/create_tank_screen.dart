@@ -13,6 +13,7 @@ import '../utils/app_feedback.dart';
 import '../utils/haptic_feedback.dart';
 import '../utils/accessibility_utils.dart';
 import '../widgets/core/app_button.dart';
+// import '../services/firebase_analytics_service.dart';
 
 class CreateTankScreen extends ConsumerStatefulWidget {
   const CreateTankScreen({super.key});
@@ -38,6 +39,12 @@ class _CreateTankScreenState extends ConsumerState<CreateTankScreen> {
   DateTime _startDate = DateTime.now();
   String _waterType = 'tropical'; // 'tropical' or 'coldwater'
   WaterTargets _targets = WaterTargets.freshwaterTropical();
+
+  @override
+  void initState() {
+    super.initState();
+    // FirebaseAnalyticsService().logScreenView('create_tank');
+  }
 
   @override
   void dispose() {

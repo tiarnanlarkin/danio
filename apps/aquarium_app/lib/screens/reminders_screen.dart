@@ -8,6 +8,7 @@ import '../utils/app_feedback.dart';
 import '../widgets/empty_state.dart';
 import '../widgets/core/bubble_loader.dart';
 import '../widgets/mascot/mascot_widgets.dart';
+// import '../services/firebase_analytics_service.dart';
 
 class RemindersScreen extends ConsumerStatefulWidget {
   const RemindersScreen({super.key});
@@ -23,6 +24,7 @@ class _RemindersScreenState extends ConsumerState<RemindersScreen> {
   @override
   void initState() {
     super.initState();
+    // FirebaseAnalyticsService().logScreenView('reminders');
     _loadReminders();
   }
 

@@ -18,6 +18,7 @@ import '../services/xp_animation_service.dart';
 import '../theme/app_theme.dart';
 import '../utils/app_feedback.dart';
 import '../widgets/core/app_button.dart';
+// import '../services/firebase_analytics_service.dart';
 
 const _uuid = Uuid();
 
@@ -68,6 +69,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
   @override
   void initState() {
     super.initState();
+    // FirebaseAnalyticsService().logScreenView('add_log');
 
     final existing = widget.existingLog;
     if (existing != null) {

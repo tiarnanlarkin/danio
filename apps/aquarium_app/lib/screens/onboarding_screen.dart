@@ -10,6 +10,7 @@ import '../providers/user_profile_provider.dart';
 import 'onboarding/profile_creation_screen.dart';
 import 'onboarding/experience_assessment_screen.dart';
 import 'house_navigator.dart';
+// import '../services/firebase_analytics_service.dart';
 
 class OnboardingScreen extends ConsumerStatefulWidget {
   const OnboardingScreen({super.key});
@@ -54,6 +55,8 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen>
   @override
   void initState() {
     super.initState();
+    // FirebaseAnalyticsService().logScreenView('onboarding');
+    // FirebaseAnalyticsService().logTutorialBegin();
     
     _contentController = AnimationController(
       duration: const Duration(milliseconds: 600),
@@ -89,7 +92,6 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen>
   @override
   Widget build(BuildContext context) {
     final page = _pages[_currentPage];
-    final isDark = Theme.of(context).brightness == Brightness.dark;
     
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.light,

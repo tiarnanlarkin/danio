@@ -22,6 +22,7 @@ import '../../widgets/error_state.dart';
 import '../../widgets/hearts_widgets.dart';
 import '../../widgets/gamification_dashboard.dart';
 import '../../utils/app_feedback.dart';
+// import '../../services/firebase_analytics_service.dart';
 import '../add_log_screen.dart';
 import '../create_tank_screen.dart';
 import '../journal_screen.dart';
@@ -51,6 +52,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   int _currentTankIndex = 0;
   bool _isSelectMode = false;
   final Set<String> _selectedTankIds = {};
+
+  @override
+  void initState() {
+    super.initState();
+    // FirebaseAnalyticsService().logScreenView('home');
+  }
 
   void _toggleSelectMode() {
     setState(() {

@@ -15,6 +15,7 @@ import '../services/backup_service.dart';
 import '../theme/app_theme.dart';
 import '../utils/app_feedback.dart';
 import '../widgets/core/app_card.dart';
+// import '../services/firebase_analytics_service.dart';
 
 const _uuid = Uuid();
 
@@ -33,6 +34,12 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
 
   String _progressStatus = '';
   double _progressValue = 0.0;
+
+  @override
+  void initState() {
+    super.initState();
+    // FirebaseAnalyticsService().logScreenView('backup_restore');
+  }
 
   @override
   Widget build(BuildContext context) {
