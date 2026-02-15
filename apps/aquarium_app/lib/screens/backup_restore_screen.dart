@@ -47,9 +47,16 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
 
     return Scaffold(
       appBar: AppBar(title: const Text('Backup & Restore')),
-      body: ListView(
+      body: ListView.builder(
         padding: const EdgeInsets.all(AppSpacing.md),
-        children: [
+        itemCount: _buildItems(tanksAsync).length,
+        itemBuilder: (context, index) => _buildItems(tanksAsync)[index],
+      ),
+    );
+  }
+
+  List<Widget> _buildItems(AsyncValue<List<dynamic>> tanksAsync) {
+    return [
           AppCard(
             backgroundColor: AppOverlays.info10,
             padding: AppCardPadding.standard,
@@ -288,9 +295,7 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
           ),
 
           const SizedBox(height: AppSpacing.xxl),
-        ],
-      ),
-    );
+    ];
   }
 
   Future<void> _exportData(List<dynamic> tanks) async {
