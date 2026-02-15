@@ -10,6 +10,7 @@ import 'dart:io';
 import '../models/wishlist.dart';
 import '../widgets/core/app_list_tile.dart';
 import '../providers/settings_provider.dart';
+import '../providers/reduced_motion_provider.dart';
 import 'about_screen.dart';
 import 'notification_settings_screen.dart';
 import 'acclimation_guide_screen.dart';
@@ -69,8 +70,15 @@ class SettingsScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(title: const Text('Settings')),
-      body: ListView(
-        children: [
+      body: ListView.builder(
+        itemCount: _buildItems(context, ref, settings).length,
+        itemBuilder: (context, index) => _buildItems(context, ref, settings)[index],
+      ),
+    );
+  }
+
+  List<Widget> _buildItems(BuildContext context, WidgetRef ref, AppSettings settings) {
+    return [
           // Learning System (Duolingo-style)
           _SectionHeader(title: 'Learn'),
           _LearnCard(ref: ref),
@@ -123,6 +131,21 @@ class SettingsScreen extends ConsumerWidget {
             onChanged: (value) => ref
                 .read(settingsProvider.notifier)
                 .setAmbientLightingEnabled(value),
+          ),
+
+          const Divider(),
+
+          // Accessibility
+          _SectionHeader(title: 'Accessibility'),
+          _ReducedMotionToggle(ref: ref),
+          SwitchListTile(
+            secondary: const Icon(Icons.vibration),
+            title: const Text('Haptic Feedback'),
+            subtitle: const Text('Vibration for important interactions'),
+            value: settings.hapticFeedbackEnabled,
+            onChanged: (value) => ref
+                .read(settingsProvider.notifier)
+                .setHapticFeedbackEnabled(value),
           ),
 
           const Divider(),
@@ -660,9 +683,7 @@ class SettingsScreen extends ConsumerWidget {
               subtitle: 'Trigger a crash to test error handling',
               onTap: () => _triggerTestCrash(),
             ),
-        ],
-      ),
-    );
+    ];
   }
 
   void _triggerTestCrash() {
@@ -1410,6 +1431,75 @@ class _DifficultySettingsWrapperState
     return DifficultySettingsScreen(
       skillProfile: _profile,
       onProfileUpdated: _onProfileUpdated,
+    );
+  }
+}
+
+/// Reduced motion toggle with system setting detection
+class _ReducedMotionToggle extends ConsumerWidget {
+  final WidgetRef ref;
+  
+  const _ReducedMotionToggle({required this.ref});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final reducedMotion = ref.watch(reducedMotionProvider);
+    
+    return Column(
+      children: [
+        SwitchListTile(
+          secondary: const Icon(Icons.accessibility_new),
+          title: const Text('Reduce Motion'),
+          subtitle: Text(
+            reducedMotion.systemPreference
+                ? 'System setting detected - animations simplified'
+                : reducedMotion.userOverride == true
+                    ? 'Manually enabled - animations simplified'
+                    : 'Minimize animations for comfort',
+          ),
+          value: reducedMotion.isEnabled,
+          onChanged: (value) async {
+            if (value == reducedMotion.systemPreference) {
+              // Setting to match system - clear override
+              await ref.read(reducedMotionProvider.notifier).setUserPreference(null);
+            } else {
+              // Manual override
+              await ref.read(reducedMotionProvider.notifier).setUserPreference(value);
+            }
+            
+            if (context.mounted) {
+              AppFeedback.showInfo(
+                context,
+                value 
+                    ? 'Reduced motion enabled - animations simplified'
+                    : 'Reduced motion disabled - full animations',
+              );
+            }
+          },
+        ),
+        if (reducedMotion.systemPreference && reducedMotion.userOverride == false)
+          Padding(
+            padding: const EdgeInsets.fromLTRB(72, 0, 16, 12),
+            child: Text(
+              'ℹ️ Your system has animations disabled, but you\'ve manually enabled them in this app.',
+              style: AppTypography.bodySmall.copyWith(
+                color: AppColors.textSecondary,
+                fontStyle: FontStyle.italic,
+              ),
+            ),
+          ),
+        if (reducedMotion.isEnabled)
+          Padding(
+            padding: const EdgeInsets.fromLTRB(72, 0, 16, 12),
+            child: Text(
+              'Benefits: Reduces motion sickness, improves battery life, and makes the app more comfortable for users with vestibular disorders.',
+              style: AppTypography.bodySmall.copyWith(
+                color: AppColors.success,
+                fontStyle: FontStyle.italic,
+              ),
+            ),
+          ),
+      ],
     );
   }
 }
