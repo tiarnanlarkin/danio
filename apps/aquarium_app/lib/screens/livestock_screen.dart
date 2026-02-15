@@ -341,6 +341,8 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
     List<Livestock> allLivestock,
   ) async {
     final tanksAsync = await ref.read(tanksProvider.future);
+    if (!context.mounted) return;
+    
     final availableTanks = tanksAsync
         .where((t) => t.id != widget.tankId)
         .toList();
