@@ -13,9 +13,16 @@ class EmergencyGuideScreen extends StatelessWidget {
         backgroundColor: AppColors.error,
         foregroundColor: Colors.white,
       ),
-      body: ListView(
+      body: ListView.builder(
         padding: const EdgeInsets.all(AppSpacing.md),
-        children: [
+        itemCount: _buildItems().length,
+        itemBuilder: (context, index) => _buildItems()[index],
+      ),
+    );
+  }
+
+  List<Widget> _buildItems() {
+    return [
           AppCard(
             backgroundColor: AppOverlays.error10,
             padding: AppCardPadding.standard,
@@ -211,9 +218,7 @@ class EmergencyGuideScreen extends StatelessWidget {
           ),
 
           const SizedBox(height: AppSpacing.xxl),
-        ],
-      ),
-    );
+    ];
   }
 }
 
