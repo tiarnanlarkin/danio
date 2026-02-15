@@ -98,9 +98,20 @@ class _TankSettingsScreenState extends ConsumerState<TankSettingsScreen> {
             policy: OrderedTraversalPolicy(),
             child: Form(
               key: _formKey,
-              child: ListView(
+              child: ListView.builder(
                 padding: const EdgeInsets.all(AppSpacing.md),
-              children: [
+                itemCount: _buildItems(tank).length,
+                itemBuilder: (context, index) => _buildItems(tank)[index],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  List<Widget> _buildItems(Tank tank) {
+    return [
                 Text('Basics', style: AppTypography.headlineSmall),
                 const SizedBox(height: 12),
                 TextFormField(
@@ -335,13 +346,7 @@ class _TankSettingsScreenState extends ConsumerState<TankSettingsScreen> {
                   label: const Text('Delete tank'),
                 ),
                 const SizedBox(height: AppSpacing.lg),
-              ],
-            ),
-            ),
-          ),
-        );
-      },
-    );
+    ];
   }
 
   bool _closeTo(double? a, double? b, {double epsilon = 0.6}) {
