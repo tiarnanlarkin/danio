@@ -9,9 +9,16 @@ class HardscapeGuideScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Hardscape Guide')),
-      body: ListView(
+      body: ListView.builder(
         padding: const EdgeInsets.all(AppSpacing.md),
-        children: [
+        itemCount: _buildItems().length,
+        itemBuilder: (context, index) => _buildItems()[index],
+      ),
+    );
+  }
+
+  List<Widget> _buildItems() {
+    return [
           // Intro
           AppCard(
             backgroundColor: AppOverlays.info10,
@@ -300,9 +307,7 @@ class HardscapeGuideScreen extends StatelessWidget {
           ),
 
           const SizedBox(height: AppSpacing.xxl),
-        ],
-      ),
-    );
+    ];
   }
 }
 
