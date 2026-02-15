@@ -69,9 +69,16 @@ class _Co2CalculatorScreenState extends State<Co2CalculatorScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('CO2 Calculator')),
-      body: ListView(
+      body: ListView.builder(
         padding: const EdgeInsets.all(AppSpacing.md),
-        children: [
+        itemCount: _buildItems().length,
+        itemBuilder: (context, index) => _buildItems()[index],
+      ),
+    );
+  }
+
+  List<Widget> _buildItems() {
+    return [
           AppCard(
             backgroundColor: AppOverlays.info10,
             padding: AppCardPadding.standard,
@@ -299,9 +306,7 @@ class _Co2CalculatorScreenState extends State<Co2CalculatorScreen> {
           ),
 
           const SizedBox(height: AppSpacing.xxl),
-        ],
-      ),
-    );
+    ];
   }
 
   DataRow _buildRow(String ph, List<int> values) {
