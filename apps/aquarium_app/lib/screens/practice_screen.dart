@@ -491,36 +491,54 @@ class _PracticeLessonScreenState extends ConsumerState<PracticeLessonScreen> {
             ),
           ),
         Expanded(
-          child: ListView(
-            padding: const EdgeInsets.all(20),
-            children: [
-              // Lesson title
-              Text(widget.lesson.title, style: AppTypography.headlineLarge),
-              const SizedBox(height: AppSpacing.sm),
-              Row(
-                children: [
-                  Icon(Icons.timer, size: 16, color: AppColors.textSecondary),
-                  const SizedBox(width: AppSpacing.xs),
-                  Text(
-                    '${widget.lesson.estimatedMinutes} min read',
-                    style: AppTypography.bodySmall.copyWith(
-                      color: AppColors.textSecondary,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: AppSpacing.lg),
+          child: Builder(
+            builder: (context) {
+              // Build flat list of items for ListView.builder
+              final items = <_LessonViewItem>[];
+              
+              items.add(_LessonViewItem.title(widget.lesson.title));
+              items.add(_LessonViewItem.spacer(AppSpacing.sm));
+              items.add(_LessonViewItem.timeInfo(widget.lesson.estimatedMinutes));
+              items.add(_LessonViewItem.spacer(AppSpacing.lg));
+              
+              items.addAll(widget.lesson.sections.map((section) => 
+                _LessonViewItem.section(section)
+              ));
+              
+              items.add(_LessonViewItem.spacer(40));
 
-              // Lesson sections
-              ...widget.lesson.sections.map((section) {
-                return Padding(
-                  padding: const EdgeInsets.only(bottom: 16),
-                  child: _buildSection(section),
-                );
-              }),
-
-              const SizedBox(height: 40),
-            ],
+              return ListView.builder(
+                padding: const EdgeInsets.all(20),
+                itemCount: items.length,
+                itemBuilder: (context, index) {
+                  final item = items[index];
+                  
+                  if (item.isTitle) {
+                    return Text(item.titleText!, style: AppTypography.headlineLarge);
+                  } else if (item.isTimeInfo) {
+                    return Row(
+                      children: [
+                        Icon(Icons.timer, size: 16, color: AppColors.textSecondary),
+                        const SizedBox(width: AppSpacing.xs),
+                        Text(
+                          '${item.estimatedMinutes} min read',
+                          style: AppTypography.bodySmall.copyWith(
+                            color: AppColors.textSecondary,
+                          ),
+                        ),
+                      ],
+                    );
+                  } else if (item.isSpacer) {
+                    return SizedBox(height: item.spacerHeight);
+                  } else {
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 16),
+                      child: _buildSection(item.sectionData!),
+                    );
+                  }
+                },
+              );
+            },
           ),
         ),
 
@@ -788,4 +806,37 @@ class _PracticeLessonScreenState extends ConsumerState<PracticeLessonScreen> {
       }
     }
   }
+}
+
+/// Helper class to represent items in the lesson view (title, time info, section, or spacer)
+class _LessonViewItem {
+  final bool isTitle;
+  final bool isTimeInfo;
+  final bool isSpacer;
+  final String? titleText;
+  final int? estimatedMinutes;
+  final double? spacerHeight;
+  final LessonSection? sectionData;
+
+  _LessonViewItem._({
+    this.isTitle = false,
+    this.isTimeInfo = false,
+    this.isSpacer = false,
+    this.titleText,
+    this.estimatedMinutes,
+    this.spacerHeight,
+    this.sectionData,
+  });
+
+  factory _LessonViewItem.title(String text) =>
+      _LessonViewItem._(isTitle: true, titleText: text);
+
+  factory _LessonViewItem.timeInfo(int minutes) =>
+      _LessonViewItem._(isTimeInfo: true, estimatedMinutes: minutes);
+
+  factory _LessonViewItem.spacer(double height) =>
+      _LessonViewItem._(isSpacer: true, spacerHeight: height);
+
+  factory _LessonViewItem.section(LessonSection section) =>
+      _LessonViewItem._(sectionData: section);
 }

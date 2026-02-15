@@ -7,6 +7,7 @@ import '../providers/tank_provider.dart';
 import '../theme/app_theme.dart';
 import 'livestock_detail_screen.dart';
 import 'tank_detail/tank_detail_screen.dart';
+// import '../services/firebase_analytics_service.dart';
 
 class SearchScreen extends ConsumerStatefulWidget {
   const SearchScreen({super.key});
@@ -18,6 +19,12 @@ class SearchScreen extends ConsumerStatefulWidget {
 class _SearchScreenState extends ConsumerState<SearchScreen> {
   final _searchController = TextEditingController();
   String _query = '';
+
+  @override
+  void initState() {
+    super.initState();
+    // FirebaseAnalyticsService().logScreenView('search');
+  }
 
   @override
   void dispose() {
@@ -215,32 +222,46 @@ class _SearchResults extends StatelessWidget {
         .where((r) => r.type == _ResultType.species)
         .toList();
 
-    return ListView(
+    // Build flat list of items for ListView.builder
+    final items = <_SearchListItem>[];
+    
+    if (tankResults.isNotEmpty) {
+      items.add(_SearchListItem.header(title: 'Tanks', count: tankResults.length));
+      items.addAll(tankResults.map((r) => _SearchListItem.result(r)));
+      items.add(_SearchListItem.spacer());
+    }
+    
+    if (livestockResults.isNotEmpty) {
+      items.add(_SearchListItem.header(title: 'Livestock', count: livestockResults.length));
+      items.addAll(livestockResults.map((r) => _SearchListItem.result(r)));
+      items.add(_SearchListItem.spacer());
+    }
+    
+    if (equipmentResults.isNotEmpty) {
+      items.add(_SearchListItem.header(title: 'Equipment', count: equipmentResults.length));
+      items.addAll(equipmentResults.map((r) => _SearchListItem.result(r)));
+      items.add(_SearchListItem.spacer());
+    }
+    
+    if (speciesResultsList.isNotEmpty) {
+      items.add(_SearchListItem.header(title: 'Species Database', count: speciesResultsList.length));
+      items.addAll(speciesResultsList.map((r) => _SearchListItem.result(r)));
+    }
+
+    return ListView.builder(
       padding: const EdgeInsets.all(AppSpacing.md),
-      children: [
-        if (tankResults.isNotEmpty) ...[
-          _SectionHeader(title: 'Tanks', count: tankResults.length),
-          ...tankResults.map((r) => _ResultTile(result: r)),
-          const SizedBox(height: AppSpacing.md),
-        ],
-        if (livestockResults.isNotEmpty) ...[
-          _SectionHeader(title: 'Livestock', count: livestockResults.length),
-          ...livestockResults.map((r) => _ResultTile(result: r)),
-          const SizedBox(height: AppSpacing.md),
-        ],
-        if (equipmentResults.isNotEmpty) ...[
-          _SectionHeader(title: 'Equipment', count: equipmentResults.length),
-          ...equipmentResults.map((r) => _ResultTile(result: r)),
-          const SizedBox(height: AppSpacing.md),
-        ],
-        if (speciesResultsList.isNotEmpty) ...[
-          _SectionHeader(
-            title: 'Species Database',
-            count: speciesResultsList.length,
-          ),
-          ...speciesResultsList.map((r) => _ResultTile(result: r)),
-        ],
-      ],
+      itemCount: items.length,
+      itemBuilder: (context, index) {
+        final item = items[index];
+        
+        if (item.isHeader) {
+          return _SectionHeader(title: item.headerTitle!, count: item.headerCount!);
+        } else if (item.isSpacer) {
+          return const SizedBox(height: AppSpacing.md);
+        } else {
+          return _ResultTile(result: item.result!);
+        }
+      },
     );
   }
 
@@ -349,6 +370,39 @@ class _SearchResult {
     required this.icon,
     required this.onTap,
   });
+}
+
+/// Helper class to represent items in the search results list (header, result, or spacer)
+class _SearchListItem {
+  final bool isHeader;
+  final bool isSpacer;
+  final String? headerTitle;
+  final int? headerCount;
+  final _SearchResult? result;
+
+  _SearchListItem._({
+    this.isHeader = false,
+    this.isSpacer = false,
+    this.headerTitle,
+    this.headerCount,
+    this.result,
+  });
+
+  factory _SearchListItem.header({
+    required String title,
+    required int count,
+  }) =>
+      _SearchListItem._(
+        isHeader: true,
+        headerTitle: title,
+        headerCount: count,
+      );
+
+  factory _SearchListItem.result(_SearchResult result) =>
+      _SearchListItem._(result: result);
+
+  factory _SearchListItem.spacer() =>
+      _SearchListItem._(isSpacer: true);
 }
 
 class _SectionHeader extends StatelessWidget {

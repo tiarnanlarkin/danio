@@ -7,7 +7,7 @@ import '../services/celebration_service.dart';
 import '../theme/app_theme.dart';
 import '../utils/app_feedback.dart';
 import '../widgets/mascot/mascot_widgets.dart';
-import 'home_screen.dart';
+import 'home/home_screen.dart';
 
 /// Enhanced onboarding that personalizes the app experience
 /// Asks about experience level, tank type, and goals
@@ -363,8 +363,10 @@ class _ExperiencePage extends StatelessWidget {
           ),
           const SizedBox(height: AppSpacing.xl),
           Expanded(
-            child: ListView(
-              children: ExperienceLevel.values.map((level) {
+            child: ListView.builder(
+              itemCount: ExperienceLevel.values.length,
+              itemBuilder: (context, index) {
+                final level = ExperienceLevel.values[index];
                 final isSelected = selected == level;
                 return Padding(
                   padding: const EdgeInsets.only(bottom: 16),
@@ -376,7 +378,7 @@ class _ExperiencePage extends StatelessWidget {
                     onTap: () => onSelect(level),
                   ),
                 );
-              }).toList(),
+              },
             ),
           ),
         ],
@@ -412,8 +414,10 @@ class _TankTypePage extends StatelessWidget {
           ),
           const SizedBox(height: AppSpacing.xl),
           Expanded(
-            child: ListView(
-              children: TankType.values.map((type) {
+            child: ListView.builder(
+              itemCount: TankType.values.length,
+              itemBuilder: (context, index) {
+                final type = TankType.values[index];
                 final isSelected = selected == type;
                 return Padding(
                   padding: const EdgeInsets.only(bottom: 12),
@@ -426,7 +430,7 @@ class _TankTypePage extends StatelessWidget {
                     compact: true,
                   ),
                 );
-              }).toList(),
+              },
             ),
           ),
         ],
@@ -459,8 +463,10 @@ class _GoalsPage extends StatelessWidget {
           ),
           const SizedBox(height: AppSpacing.xl),
           Expanded(
-            child: ListView(
-              children: UserGoal.values.map((goal) {
+            child: ListView.builder(
+              itemCount: UserGoal.values.length,
+              itemBuilder: (context, index) {
+                final goal = UserGoal.values[index];
                 final isSelected = selected.contains(goal);
                 return Padding(
                   padding: const EdgeInsets.only(bottom: 12),
@@ -473,7 +479,7 @@ class _GoalsPage extends StatelessWidget {
                     compact: true,
                   ),
                 );
-              }).toList(),
+              },
             ),
           ),
         ],

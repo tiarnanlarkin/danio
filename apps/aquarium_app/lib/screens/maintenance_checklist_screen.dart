@@ -155,115 +155,121 @@ class _MaintenanceChecklistScreenState
           ),
         ],
       ),
-      body: ListView(
-        padding: const EdgeInsets.all(AppSpacing.md),
-        children: [
-          // Progress summary
-          AppCard(
-            padding: AppCardPadding.standard,
-            child: Column(
-              children: [
-                Row(
+      body: Builder(
+        builder: (context) {
+          // Build flat list of items for ListView.builder
+          final items = <_ChecklistItem>[];
+          
+          // Progress summary card
+          items.add(_ChecklistItem.progressCard(
+            weeklyProgress: weeklyProgress,
+            monthlyProgress: monthlyProgress,
+            weeklyComplete: _weeklyComplete,
+            weeklyTotal: _weeklyItems.length,
+            monthlyComplete: _monthlyComplete,
+            monthlyTotal: _monthlyItems.length,
+          ));
+          items.add(_ChecklistItem.spacer(AppSpacing.lg));
+          
+          // Weekly section
+          items.add(_ChecklistItem.sectionHeader(
+            title: 'Weekly Tasks',
+            isComplete: _weeklyComplete == _weeklyItems.length,
+          ));
+          items.add(_ChecklistItem.spacer(12));
+          items.addAll(_weeklyItems.map((item) => _ChecklistItem.weeklyTask(
+            item: item,
+            checked: _weeklyChecks[item.id] ?? false,
+            onTap: () => _toggleWeekly(item.id),
+          )));
+          items.add(_ChecklistItem.spacer(AppSpacing.lg));
+          
+          // Monthly section
+          items.add(_ChecklistItem.sectionHeader(
+            title: 'Monthly Tasks',
+            isComplete: _monthlyComplete == _monthlyItems.length,
+          ));
+          items.add(_ChecklistItem.spacer(12));
+          items.addAll(_monthlyItems.map((item) => _ChecklistItem.monthlyTask(
+            item: item,
+            checked: _monthlyChecks[item.id] ?? false,
+            onTap: () => _toggleMonthly(item.id),
+          )));
+          items.add(_ChecklistItem.spacer(AppSpacing.xxl));
+
+          return ListView.builder(
+            padding: const EdgeInsets.all(AppSpacing.md),
+            itemCount: items.length,
+            itemBuilder: (context, index) {
+              final item = items[index];
+              
+              if (item.isProgressCard) {
+                return AppCard(
+                  padding: AppCardPadding.standard,
+                  child: Column(
+                    children: [
+                      Row(
+                        children: [
+                          Expanded(
+                            child: _ProgressCircle(
+                              label: 'Weekly',
+                              progress: item.weeklyProgress!,
+                              count: '${item.weeklyComplete}/${item.weeklyTotal}',
+                            ),
+                          ),
+                          Expanded(
+                            child: _ProgressCircle(
+                              label: 'Monthly',
+                              progress: item.monthlyProgress!,
+                              count: '${item.monthlyComplete}/${item.monthlyTotal}',
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 12),
+                      Text(
+                        DateFormat('MMMM d, y').format(DateTime.now()),
+                        style: AppTypography.bodySmall,
+                      ),
+                    ],
+                  ),
+                );
+              } else if (item.isSectionHeader) {
+                return Row(
                   children: [
-                    Expanded(
-                      child: _ProgressCircle(
-                        label: 'Weekly',
-                        progress: weeklyProgress,
-                        count: '$_weeklyComplete/${_weeklyItems.length}',
+                    Text(item.sectionTitle!, style: AppTypography.headlineSmall),
+                    const Spacer(),
+                    if (item.sectionComplete!)
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 4,
+                        ),
+                        decoration: BoxDecoration(
+                          color: AppColors.success,
+                          borderRadius: AppRadius.mediumRadius,
+                        ),
+                        child: Text(
+                          '✓ Complete!',
+                          style: AppTypography.bodySmall.copyWith(
+                            color: Colors.white,
+                          ),
+                        ),
                       ),
-                    ),
-                    Expanded(
-                      child: _ProgressCircle(
-                        label: 'Monthly',
-                        progress: monthlyProgress,
-                        count: '$_monthlyComplete/${_monthlyItems.length}',
-                      ),
-                    ),
                   ],
-                ),
-                const SizedBox(height: 12),
-                Text(
-                  DateFormat('MMMM d, y').format(DateTime.now()),
-                  style: AppTypography.bodySmall,
-                ),
-              ],
-            ),
-          ),
-
-          const SizedBox(height: AppSpacing.lg),
-
-          // Weekly tasks
-          Row(
-            children: [
-              Text('Weekly Tasks', style: AppTypography.headlineSmall),
-              const Spacer(),
-              if (_weeklyComplete == _weeklyItems.length)
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 4,
-                  ),
-                  decoration: BoxDecoration(
-                    color: AppColors.success,
-                    borderRadius: AppRadius.mediumRadius,
-                  ),
-                  child: Text(
-                    '✓ Complete!',
-                    style: AppTypography.bodySmall.copyWith(
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-            ],
-          ),
-          const SizedBox(height: 12),
-
-          ..._weeklyItems.map(
-            (item) => _TaskTile(
-              item: item,
-              checked: _weeklyChecks[item.id] ?? false,
-              onTap: () => _toggleWeekly(item.id),
-            ),
-          ),
-
-          const SizedBox(height: AppSpacing.lg),
-
-          // Monthly tasks
-          Row(
-            children: [
-              Text('Monthly Tasks', style: AppTypography.headlineSmall),
-              const Spacer(),
-              if (_monthlyComplete == _monthlyItems.length)
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 4,
-                  ),
-                  decoration: BoxDecoration(
-                    color: AppColors.success,
-                    borderRadius: AppRadius.mediumRadius,
-                  ),
-                  child: Text(
-                    '✓ Complete!',
-                    style: AppTypography.bodySmall.copyWith(
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-            ],
-          ),
-          const SizedBox(height: 12),
-
-          ..._monthlyItems.map(
-            (item) => _TaskTile(
-              item: item,
-              checked: _monthlyChecks[item.id] ?? false,
-              onTap: () => _toggleMonthly(item.id),
-            ),
-          ),
-
-          const SizedBox(height: AppSpacing.xxl),
-        ],
+                );
+              } else if (item.isSpacer) {
+                return SizedBox(height: item.spacerHeight);
+              } else {
+                return _TaskTile(
+                  item: item.taskItem!,
+                  checked: item.taskChecked!,
+                  onTap: item.taskOnTap!,
+                );
+              }
+            },
+          );
+        },
       ),
     );
   }
@@ -294,6 +300,104 @@ class _MaintenanceChecklistScreenState
       ),
     );
   }
+}
+
+/// Helper class to represent items in the checklist (progress card, section header, task, or spacer)
+class _ChecklistItem {
+  final bool isProgressCard;
+  final bool isSectionHeader;
+  final bool isSpacer;
+  
+  // Progress card fields
+  final double? weeklyProgress;
+  final double? monthlyProgress;
+  final int? weeklyComplete;
+  final int? weeklyTotal;
+  final int? monthlyComplete;
+  final int? monthlyTotal;
+  
+  // Section header fields
+  final String? sectionTitle;
+  final bool? sectionComplete;
+  
+  // Spacer fields
+  final double? spacerHeight;
+  
+  // Task fields
+  final _CheckItem? taskItem;
+  final bool? taskChecked;
+  final VoidCallback? taskOnTap;
+
+  _ChecklistItem._({
+    this.isProgressCard = false,
+    this.isSectionHeader = false,
+    this.isSpacer = false,
+    this.weeklyProgress,
+    this.monthlyProgress,
+    this.weeklyComplete,
+    this.weeklyTotal,
+    this.monthlyComplete,
+    this.monthlyTotal,
+    this.sectionTitle,
+    this.sectionComplete,
+    this.spacerHeight,
+    this.taskItem,
+    this.taskChecked,
+    this.taskOnTap,
+  });
+
+  factory _ChecklistItem.progressCard({
+    required double weeklyProgress,
+    required double monthlyProgress,
+    required int weeklyComplete,
+    required int weeklyTotal,
+    required int monthlyComplete,
+    required int monthlyTotal,
+  }) =>
+      _ChecklistItem._(
+        isProgressCard: true,
+        weeklyProgress: weeklyProgress,
+        monthlyProgress: monthlyProgress,
+        weeklyComplete: weeklyComplete,
+        weeklyTotal: weeklyTotal,
+        monthlyComplete: monthlyComplete,
+        monthlyTotal: monthlyTotal,
+      );
+
+  factory _ChecklistItem.sectionHeader({
+    required String title,
+    required bool isComplete,
+  }) =>
+      _ChecklistItem._(
+        isSectionHeader: true,
+        sectionTitle: title,
+        sectionComplete: isComplete,
+      );
+
+  factory _ChecklistItem.spacer(double height) =>
+      _ChecklistItem._(isSpacer: true, spacerHeight: height);
+
+  factory _ChecklistItem.weeklyTask({
+    required _CheckItem item,
+    required bool checked,
+    required VoidCallback onTap,
+  }) =>
+      _ChecklistItem._(
+        taskItem: item,
+        taskChecked: checked,
+        taskOnTap: onTap,
+      );
+
+  factory _ChecklistItem.monthlyTask({
+    required _CheckItem item,
+    required bool checked,
+    required VoidCallback onTap,
+  }) =>
+      _ChecklistItem._(
+        taskItem: item,
+        taskChecked: checked,
+        taskOnTap: onTap,
+      );
 }
 
 class _CheckItem {

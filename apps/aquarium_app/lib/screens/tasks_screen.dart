@@ -57,81 +57,74 @@ class TasksScreen extends ConsumerWidget {
               .toList();
           final disabled = tasks.where((t) => !t.isEnabled).toList();
 
-          return ListView(
+          // Build flat list of items for ListView.builder
+          final items = <_TaskListItem>[];
+          
+          if (overdue.isNotEmpty) {
+            items.add(_TaskListItem.header(
+              title: 'Overdue',
+              color: AppColors.warning,
+              count: overdue.length,
+            ));
+            items.addAll(overdue.map((t) => _TaskListItem.task(t)));
+            items.add(_TaskListItem.spacer());
+          }
+          
+          if (dueToday.isNotEmpty) {
+            items.add(_TaskListItem.header(
+              title: 'Due Today',
+              color: AppColors.info,
+              count: dueToday.length,
+            ));
+            items.addAll(dueToday.map((t) => _TaskListItem.task(t)));
+            items.add(_TaskListItem.spacer());
+          }
+          
+          if (upcoming.isNotEmpty) {
+            items.add(_TaskListItem.header(
+              title: 'Upcoming',
+              color: AppColors.textSecondary,
+              count: upcoming.length,
+            ));
+            items.addAll(upcoming.map((t) => _TaskListItem.task(t)));
+            items.add(_TaskListItem.spacer());
+          }
+          
+          if (disabled.isNotEmpty) {
+            items.add(_TaskListItem.header(
+              title: 'Disabled',
+              color: AppColors.textHint,
+              count: disabled.length,
+            ));
+            items.addAll(disabled.map((t) => _TaskListItem.task(t)));
+          }
+
+          return ListView.builder(
             padding: const EdgeInsets.all(AppSpacing.md),
-            children: [
-              if (overdue.isNotEmpty) ...[
-                _SectionHeader(
-                  title: 'Overdue',
-                  color: AppColors.warning,
-                  count: overdue.length,
-                ),
-                ...overdue.map(
-                  (t) => _TaskCard(
-                    task: t,
-                    onComplete: () => _completeTask(ref, t),
-                    onSnooze: () => _showSnoozeDialog(context, ref, t),
-                    onEdit: () => _showEditDialog(context, ref, t),
-                    onDelete: () => _confirmDelete(context, ref, t),
-                    onHistory: () => _showTaskHistoryDialog(context, t),
-                  ),
-                ),
-                const SizedBox(height: AppSpacing.md),
-              ],
-              if (dueToday.isNotEmpty) ...[
-                _SectionHeader(
-                  title: 'Due Today',
-                  color: AppColors.info,
-                  count: dueToday.length,
-                ),
-                ...dueToday.map(
-                  (t) => _TaskCard(
-                    task: t,
-                    onComplete: () => _completeTask(ref, t),
-                    onSnooze: () => _showSnoozeDialog(context, ref, t),
-                    onEdit: () => _showEditDialog(context, ref, t),
-                    onDelete: () => _confirmDelete(context, ref, t),
-                    onHistory: () => _showTaskHistoryDialog(context, t),
-                  ),
-                ),
-                const SizedBox(height: AppSpacing.md),
-              ],
-              if (upcoming.isNotEmpty) ...[
-                _SectionHeader(
-                  title: 'Upcoming',
-                  color: AppColors.textSecondary,
-                  count: upcoming.length,
-                ),
-                ...upcoming.map(
-                  (t) => _TaskCard(
-                    task: t,
-                    onComplete: () => _completeTask(ref, t),
-                    onSnooze: () => _showSnoozeDialog(context, ref, t),
-                    onEdit: () => _showEditDialog(context, ref, t),
-                    onDelete: () => _confirmDelete(context, ref, t),
-                    onHistory: () => _showTaskHistoryDialog(context, t),
-                  ),
-                ),
-                const SizedBox(height: AppSpacing.md),
-              ],
-              if (disabled.isNotEmpty) ...[
-                _SectionHeader(
-                  title: 'Disabled',
-                  color: AppColors.textHint,
-                  count: disabled.length,
-                ),
-                ...disabled.map(
-                  (t) => _TaskCard(
-                    task: t,
-                    onComplete: () => _completeTask(ref, t),
-                    onSnooze: () => _showSnoozeDialog(context, ref, t),
-                    onEdit: () => _showEditDialog(context, ref, t),
-                    onDelete: () => _confirmDelete(context, ref, t),
-                    onHistory: () => _showTaskHistoryDialog(context, t),
-                  ),
-                ),
-              ],
-            ],
+            itemCount: items.length,
+            itemBuilder: (context, index) {
+              final item = items[index];
+              
+              if (item.isHeader) {
+                return _SectionHeader(
+                  title: item.headerTitle!,
+                  color: item.headerColor!,
+                  count: item.headerCount!,
+                );
+              } else if (item.isSpacer) {
+                return const SizedBox(height: AppSpacing.md);
+              } else {
+                final t = item.task!;
+                return _TaskCard(
+                  task: t,
+                  onComplete: () => _completeTask(ref, t),
+                  onSnooze: () => _showSnoozeDialog(context, ref, t),
+                  onEdit: () => _showEditDialog(context, ref, t),
+                  onDelete: () => _confirmDelete(context, ref, t),
+                  onHistory: () => _showTaskHistoryDialog(context, t),
+                );
+              }
+            },
           );
         },
       ),
@@ -298,6 +291,43 @@ class TasksScreen extends ConsumerWidget {
       builder: (_) => _TaskHistoryDialog(tankId: tankId, task: task),
     );
   }
+}
+
+/// Helper class to represent items in the task list (header, task, or spacer)
+class _TaskListItem {
+  final bool isHeader;
+  final bool isSpacer;
+  final String? headerTitle;
+  final Color? headerColor;
+  final int? headerCount;
+  final Task? task;
+
+  _TaskListItem._({
+    this.isHeader = false,
+    this.isSpacer = false,
+    this.headerTitle,
+    this.headerColor,
+    this.headerCount,
+    this.task,
+  });
+
+  factory _TaskListItem.header({
+    required String title,
+    required Color color,
+    required int count,
+  }) =>
+      _TaskListItem._(
+        isHeader: true,
+        headerTitle: title,
+        headerColor: color,
+        headerCount: count,
+      );
+
+  factory _TaskListItem.task(Task task) =>
+      _TaskListItem._(task: task);
+
+  factory _TaskListItem.spacer() =>
+      _TaskListItem._(isSpacer: true);
 }
 
 class _TaskHistoryDialog extends ConsumerWidget {

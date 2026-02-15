@@ -211,60 +211,67 @@ class _ExperienceAssessmentScreenState
 
                     // Options
                     Expanded(
-                      child: ListView(
-                        children: question.options.entries.map((entry) {
-                          final isSelected =
-                              _answers[_currentQuestion] == entry.key;
-                          return Padding(
-                            padding: const EdgeInsets.only(bottom: 12),
-                            child: Material(
-                              color: Colors.transparent,
-                              child: InkWell(
-                                onTap: () => _selectAnswer(entry.key),
-                                borderRadius: AppRadius.mediumRadius,
-                                child: AnimatedContainer(
-                                  duration: const Duration(milliseconds: 200),
-                                  padding: const EdgeInsets.all(20),
-                                  decoration: BoxDecoration(
-                                    border: Border.all(
-                                      color: isSelected
-                                          ? AppColors.primary
-                                          : AppColors.border,
-                                      width: 2,
-                                    ),
+                      child: Builder(
+                        builder: (context) {
+                          final optionsList = question.options.entries.toList();
+                          return ListView.builder(
+                            itemCount: optionsList.length,
+                            itemBuilder: (context, index) {
+                              final entry = optionsList[index];
+                              final isSelected =
+                                  _answers[_currentQuestion] == entry.key;
+                              return Padding(
+                                padding: const EdgeInsets.only(bottom: 12),
+                                child: Material(
+                                  color: Colors.transparent,
+                                  child: InkWell(
+                                    onTap: () => _selectAnswer(entry.key),
                                     borderRadius: AppRadius.mediumRadius,
-                                    color: isSelected
-                                        ? AppOverlays.primary10
-                                        : AppColors.surface,
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      Expanded(
-                                        child: Text(
-                                          entry.value,
-                                          style: AppTypography.bodyLarge
-                                              .copyWith(
-                                                color: isSelected
-                                                    ? AppColors.primary
-                                                    : AppColors.textPrimary,
-                                                fontWeight: isSelected
-                                                    ? FontWeight.w600
-                                                    : FontWeight.normal,
-                                              ),
+                                    child: AnimatedContainer(
+                                      duration: const Duration(milliseconds: 200),
+                                      padding: const EdgeInsets.all(20),
+                                      decoration: BoxDecoration(
+                                        border: Border.all(
+                                          color: isSelected
+                                              ? AppColors.primary
+                                              : AppColors.border,
+                                          width: 2,
                                         ),
+                                        borderRadius: AppRadius.mediumRadius,
+                                        color: isSelected
+                                            ? AppOverlays.primary10
+                                            : AppColors.surface,
                                       ),
-                                      if (isSelected)
-                                        Icon(
-                                          Icons.check_circle,
-                                          color: AppColors.primary,
-                                        ),
-                                    ],
+                                      child: Row(
+                                        children: [
+                                          Expanded(
+                                            child: Text(
+                                              entry.value,
+                                              style: AppTypography.bodyLarge
+                                                  .copyWith(
+                                                    color: isSelected
+                                                        ? AppColors.primary
+                                                        : AppColors.textPrimary,
+                                                    fontWeight: isSelected
+                                                        ? FontWeight.w600
+                                                        : FontWeight.normal,
+                                                  ),
+                                            ),
+                                          ),
+                                          if (isSelected)
+                                            Icon(
+                                              Icons.check_circle,
+                                              color: AppColors.primary,
+                                            ),
+                                        ],
+                                      ),
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ),
+                              );
+                            },
                           );
-                        }).toList(),
+                        },
                       ),
                     ),
 
