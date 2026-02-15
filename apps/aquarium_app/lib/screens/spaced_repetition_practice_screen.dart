@@ -125,35 +125,62 @@ class _SpacedRepetitionPracticeScreenState
     BuildContext context,
     SpacedRepetitionState srState,
   ) {
-    return ListView(
+    return ListView.builder(
       padding: const EdgeInsets.all(20),
-      children: [
-        // Stats Overview Card
-        _buildStatsCard(srState),
-        const SizedBox(height: 20),
+      itemCount: _getPracticeHomeItemCount(srState),
+      itemBuilder: (context, index) => _buildPracticeHomeItem(
+        context,
+        index,
+        srState,
+      ),
+    );
+  }
 
-        // Quick Start Section
-        Text('Quick Start', style: AppTypography.headlineSmall),
-        const SizedBox(height: 12),
-        _buildModeCard(
+  int _getPracticeHomeItemCount(SpacedRepetitionState srState) {
+    // Stats card + spacer + section header + spacer +
+    // 4 mode cards + 3 spacers + spacer +
+    // mastery section (conditional) = 11 base items + 3 if totalCards > 0
+    return srState.stats.totalCards > 0 ? 15 : 12;
+  }
+
+  Widget _buildPracticeHomeItem(
+    BuildContext context,
+    int index,
+    SpacedRepetitionState srState,
+  ) {
+    switch (index) {
+      case 0: // Stats Overview Card
+        return _buildStatsCard(srState);
+      case 1:
+        return const SizedBox(height: 20);
+      case 2: // Quick Start Section
+        return Text('Quick Start', style: AppTypography.headlineSmall);
+      case 3:
+        return const SizedBox(height: 12);
+      case 4: // Standard Practice
+        return _buildModeCard(
           icon: Icons.fitness_center,
           title: 'Standard Practice',
           description: '10 cards, mixed difficulty',
           count: srState.stats.dueCards.clamp(0, 10),
           mode: ReviewSessionMode.standard,
           color: AppColors.primary,
-        ),
-        const SizedBox(height: 12),
-        _buildModeCard(
+        );
+      case 5:
+        return const SizedBox(height: 12);
+      case 6: // Quick Review
+        return _buildModeCard(
           icon: Icons.flash_on,
           title: 'Quick Review',
           description: '5 cards, fast session',
           count: srState.stats.dueCards.clamp(0, 5),
           mode: ReviewSessionMode.quick,
           color: AppColors.accent,
-        ),
-        const SizedBox(height: 12),
-        _buildModeCard(
+        );
+      case 7:
+        return const SizedBox(height: 12);
+      case 8: // Intensive Practice
+        return _buildModeCard(
           icon: Icons.trending_down,
           title: 'Intensive Practice',
           description: 'Focus on weak concepts',
@@ -161,27 +188,29 @@ class _SpacedRepetitionPracticeScreenState
           mode: ReviewSessionMode.intensive,
           color: AppColors.warning,
           enabled: srState.stats.weakCards > 0,
-        ),
-        const SizedBox(height: 12),
-        _buildModeCard(
+        );
+      case 9:
+        return const SizedBox(height: 12);
+      case 10: // Mixed Practice
+        return _buildModeCard(
           icon: Icons.shuffle,
           title: 'Mixed Practice',
           description: 'Due + strong cards (spaced practice)',
           count: srState.stats.totalCards.clamp(0, 10),
           mode: ReviewSessionMode.mixed,
           color: AppColors.secondary,
-        ),
-
-        const SizedBox(height: AppSpacing.lg),
-
-        // Mastery Progress
-        if (srState.stats.totalCards > 0) ...[
-          Text('Mastery Progress', style: AppTypography.headlineSmall),
-          const SizedBox(height: 12),
-          _buildMasteryBreakdown(srState),
-        ],
-      ],
-    );
+        );
+      case 11:
+        return const SizedBox(height: 12);
+      case 12:
+        return const SizedBox(height: AppSpacing.lg);
+      case 13: // Mastery Progress header (only if totalCards > 0)
+        return Text('Mastery Progress', style: AppTypography.headlineSmall);
+      case 14:
+        return const SizedBox(height: 12);
+      default: // case 15: Mastery breakdown
+        return _buildMasteryBreakdown(srState);
+    }
   }
 
   Widget _buildStatsCard(SpacedRepetitionState srState) {
@@ -569,10 +598,15 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
         ? (correctSoFar / cardsReviewed * 100).round()
         : 0;
 
-    return WillPopScope(
-      onWillPop: () async {
-        final shouldPop = await _showExitDialog();
-        return shouldPop ?? false;
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (bool didPop) async {
+        if (!didPop) {
+          final shouldPop = await _showExitDialog();
+          if (shouldPop == true && mounted) {
+            Navigator.of(context).pop();
+          }
+        }
       },
       child: Scaffold(
         appBar: AppBar(
