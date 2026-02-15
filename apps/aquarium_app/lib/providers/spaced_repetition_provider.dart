@@ -237,7 +237,7 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
       // Extract quiz questions as review cards (limit to 5 to avoid overwhelming)
       if (quizQuestions != null && quizQuestions.isNotEmpty) {
         int questionIndex = 0;
-        for (final question in quizQuestions.take(5)) {
+        for (final _ in quizQuestions.take(5)) {
           final conceptId = '${lessonId}_quiz_q$questionIndex';
 
           // Check if card already exists

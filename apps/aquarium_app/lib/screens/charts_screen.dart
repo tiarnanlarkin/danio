@@ -602,8 +602,6 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
       return const Center(child: Text('No data available'));
     }
 
-    final xMax = (logs.length <= 1) ? 0.0 : (logs.length - 1).toDouble();
-
     return LineChart(
       LineChartData(
         minY: minY * 0.9,
@@ -689,8 +687,8 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
     }
 
     // Check pH against targets
-    if (tank.targets != null && latestTest.ph != null) {
-      final targets = tank.targets!;
+    final targets = tank.targets;
+    if (targets != null && latestTest.ph != null) {
       if (targets.phMin != null && latestTest.ph! < targets.phMin!) {
         issues.add('📉 pH below target (${latestTest.ph})');
       } else if (targets.phMax != null && latestTest.ph! > targets.phMax!) {
@@ -699,8 +697,7 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
     }
 
     // Check temperature against targets
-    if (tank.targets != null && latestTest.temperature != null) {
-      final targets = tank.targets!;
+    if (targets != null && latestTest.temperature != null) {
       if (targets.tempMin != null &&
           latestTest.temperature! < targets.tempMin!) {
         issues.add('🥶 Temperature too low (${latestTest.temperature}°C)');

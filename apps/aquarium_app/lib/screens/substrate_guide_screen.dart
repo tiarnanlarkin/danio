@@ -341,7 +341,7 @@ class _SubstrateCard extends StatelessWidget {
           width: 40,
           height: 40,
           decoration: BoxDecoration(
-            color: Colors.brown.withOpacity(0.2),
+            color: AppOverlays.brown20,
             borderRadius: AppRadius.smallRadius,
           ),
           child: const Icon(Icons.layers, color: Colors.brown),

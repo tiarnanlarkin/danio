@@ -311,8 +311,8 @@ class _StudyRoomPainter extends CustomPainter {
         center: Alignment.center,
         radius: 0.6,
         colors: [
-          const Color(0xFFFFD54F).withOpacity(0.35),
-          const Color(0xFFFFB74D).withOpacity(0.15),
+          AppOverlays.goldenYellow35,
+          AppOverlays.orangeYellow15,
           Colors.transparent,
         ],
       ).createShader(Rect.fromLTWH(0, h * 0.3, w * 0.5, h * 0.5));
@@ -327,7 +327,7 @@ class _StudyRoomPainter extends CustomPainter {
         begin: Alignment.topCenter,
         end: Alignment.bottomCenter,
         colors: [
-          const Color(0xFF87CEEB).withOpacity(0.2),
+          AppOverlays.skyBlue20,
           Colors.transparent,
         ],
       ).createShader(Rect.fromLTWH(0, 0, w, h * 0.5));
@@ -464,7 +464,7 @@ class _StudyRoomPainter extends CustomPainter {
     canvas.drawCircle(
       Offset(w * 0.15, deskTop - 38),
       8,
-      Paint()..color = const Color(0xFFFFD54F).withOpacity(0.8),
+      Paint()..color = AppOverlays.goldenYellow80,
     );
 
     // Open book on desk

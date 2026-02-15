@@ -619,7 +619,7 @@ class _ProgressChartSection extends StatelessWidget {
             dotData: const FlDotData(show: true),
             belowBarData: BarAreaData(
               show: true,
-              color: Colors.blue.withOpacity(0.1),
+              color: AppOverlays.blue10,
             ),
           ),
           // Friend line (orange)
@@ -632,7 +632,7 @@ class _ProgressChartSection extends StatelessWidget {
             dotData: const FlDotData(show: true),
             belowBarData: BarAreaData(
               show: true,
-              color: Colors.orange.withOpacity(0.1),
+              color: AppOverlays.orange10,
             ),
           ),
         ],

@@ -289,9 +289,9 @@ class _StudyPainter extends CustomPainter {
     // Book shapes on shelves
     final bookPaint = Paint()..style = PaintingStyle.fill;
     final bookColors = [
-      const Color(0xFF8B3A3A).withOpacity(0.12), // Red
-      const Color(0xFF3A5A8B).withOpacity(0.12), // Blue
-      const Color(0xFF3A6B4A).withOpacity(0.12), // Green
+      AppOverlays.bookRed12, // Red
+      AppOverlays.bookBlue12, // Blue
+      AppOverlays.bookGreen12, // Green
       RoomBackgroundColors.studyGold.withOpacity(0.12), // Gold
     ];
 

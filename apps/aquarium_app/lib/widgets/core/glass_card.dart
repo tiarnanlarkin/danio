@@ -270,7 +270,7 @@ class _GlassCardState extends State<GlassCard> with SingleTickerProviderStateMix
         BoxShadow(
           color: isDark
               ? const Color(0xFF3D9F8B).withOpacity(0.2)
-              : const Color(0xFF3D7068).withOpacity(0.1),
+              : AppColors.primaryAlpha10,
           blurRadius: 24,
           offset: const Offset(0, 8),
         ),

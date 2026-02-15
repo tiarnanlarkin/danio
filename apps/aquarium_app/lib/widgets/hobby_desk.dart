@@ -41,13 +41,13 @@ class HobbyDesk extends StatelessWidget {
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: [
-            const Color(0xFFDEB887).withOpacity(0.3),
-            const Color(0xFFD2B48C).withOpacity(0.4),
+            AppOverlays.burlyWood30,
+            AppOverlays.tan40,
           ],
         ),
         borderRadius: AppRadius.mediumRadius,
         border: Border.all(
-          color: const Color(0xFFC4A574).withOpacity(0.5),
+          color: AppOverlays.darkGold50,
           width: 2,
         ),
       ),
@@ -364,8 +364,8 @@ class MiniTankScene extends StatelessWidget {
                           begin: Alignment.topCenter,
                           end: Alignment.bottomCenter,
                           colors: [
-                            const Color(0xFF8B7355).withOpacity(0.6),
-                            const Color(0xFF6B5344).withOpacity(0.8),
+                            AppOverlays.darkWood60,
+                            AppOverlays.deepWood80,
                           ],
                         ),
                         borderRadius: const BorderRadius.vertical(
@@ -565,7 +565,7 @@ class _SimpleFishPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = Colors.orange.withOpacity(0.7)
+      ..color = AppOverlays.orange70
       ..style = PaintingStyle.fill;
 
     // Body

@@ -44,9 +44,31 @@ import 'widgets/stocking_indicator.dart';
 
 const _uuid = Uuid();
 
+/// Tank detail screen displaying comprehensive tank information and management tools.
+///
+/// Displays a dashboard with tank overview, parameters, livestock, equipment,
+/// tasks, logs, and various management tools. Provides quick actions via FAB
+/// menu for adding logs, livestock, equipment, and tasks.
+///
+/// Navigation:
+/// - From: Home screen tank card, tank list
+/// - To: Logs, livestock, equipment, charts, settings, and various detail screens
+///
+/// Features:
+/// - Real-time parameter display and trends
+/// - Livestock and equipment previews
+/// - Upcoming tasks and maintenance reminders
+/// - Recent logs and quick add actions
+/// - Tank analytics and charts
+/// - Cycling status tracking
+/// - Cost tracking and journal access
 class TankDetailScreen extends ConsumerWidget {
+  /// Unique identifier for the tank to display.
   final String tankId;
 
+  /// Creates a tank detail screen.
+  ///
+  /// The [tankId] parameter is required and must reference a valid tank.
   const TankDetailScreen({super.key, required this.tankId});
 
   // Skeleton loading builders

@@ -217,7 +217,7 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
                         vertical: 4,
                       ),
                       decoration: BoxDecoration(
-                        color: Colors.amber.withOpacity(0.2),
+                        color: AppOverlays.amber20,
                         borderRadius: AppRadius.mediumRadius,
                       ),
                       child: Row(

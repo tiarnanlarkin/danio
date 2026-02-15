@@ -597,6 +597,81 @@ class AppOverlays {
   // Purple overlays (Colors.purple = 0xFF9C27B0)
   static const Color purple10 = Color(0x1A9C27B0);  // 10%
   static const Color purple30 = Color(0x4D9C27B0);  // 30%
+  
+  // Amber overlays (Colors.amber = 0xFFFFC107)
+  static const Color amber20 = Color(0x33FFC107);  // 20%
+  static const Color amber30 = Color(0x4DFFC107);  // 30%
+  
+  // Orange overlays (Colors.orange = 0xFFFF9800) - extended
+  static const Color orange40 = Color(0x66FF9800);  // 40%
+  static const Color orange50 = Color(0x80FF9800);  // 50%
+  static const Color orange70 = Color(0xB3FF9800);  // 70%
+  static const Color orange90 = Color(0xE6FF9800);  // 90%
+  
+  // Grey overlays (Colors.grey = 0xFF9E9E9E)
+  static const Color grey10 = Color(0x1A9E9E9E);  // 10%
+  static const Color grey20 = Color(0x339E9E9E);  // 20%
+  static const Color grey30 = Color(0x4D9E9E9E);  // 30%
+  
+  // Brown overlays (Colors.brown = 0xFF795548)
+  static const Color brown20 = Color(0x33795548);  // 20%
+  static const Color brown30 = Color(0x4D795548);  // 30%
+  
+  // Red overlays (Colors.red = 0xFFF44336)
+  static const Color red20 = Color(0x33F44336);  // 20%
+  static const Color red50 = Color(0x80F44336);  // 50%
+  
+  // Green overlays (Colors.green = 0xFF4CAF50)
+  static const Color green10 = Color(0x1A4CAF50);  // 10%
+  static const Color green20 = Color(0x334CAF50);  // 20%
+  static const Color green90 = Color(0xE64CAF50);  // 90%
+  
+  // Cyan overlays (Colors.cyan = 0xFF00BCD4)
+  static const Color cyan15 = Color(0x2600BCD4);  // 15%
+  static const Color cyan20 = Color(0x3300BCD4);  // 20%
+  
+  // Light Blue overlays (Colors.lightBlue = 0xFF03A9F4)
+  static const Color lightBlue15 = Color(0x2603A9F4);  // 15%
+  static const Color lightBlue20 = Color(0x3303A9F4);  // 20%
+  
+  // Golden Yellow overlays (0xFFFFD54F - study room warm light)
+  static const Color goldenYellow08 = Color(0x14FFD54F);  // 8%
+  static const Color goldenYellow35 = Color(0x59FFD54F);  // 35%
+  static const Color goldenYellow80 = Color(0xCCFFD54F);  // 80%
+  
+  // Orange Yellow overlays (0xFFFFB74D - study room accent)
+  static const Color orangeYellow15 = Color(0x26FFB74D);  // 15%
+  
+  // Sky Blue overlays (0xFF87CEEB - already partially defined as cozyBlue)
+  static const Color skyBlue05 = Color(0x0D87CEEB);  // 5%
+  static const Color skyBlue20 = Color(0x3387CEEB);  // 20%
+  
+  // Teal Green overlays (0xFF5FBFB3 - cozy room aqua accent)
+  static const Color tealGreen20 = Color(0x335FBFB3);  // 20%
+  
+  // Desk wood tones (hobby desk gradients)
+  static const Color burlyWood30 = Color(0x4DDEB887);  // 30% - 0xFFDEB887
+  static const Color tan40 = Color(0x66D2B48C);  // 40% - 0xFFD2B48C
+  static const Color darkGold50 = Color(0x80C4A574);  // 50% - 0xFFC4A574
+  static const Color darkWood30 = Color(0x4D8B7355);  // 30% - 0xFF8B7355
+  static const Color darkWood60 = Color(0x998B7355);  // 60% - 0xFF8B7355
+  static const Color deepWood80 = Color(0xCC6B5344);  // 80% - 0xFF6B5344
+  static const Color copperBrown70 = Color(0xB3B87333);  // 70% - 0xFFB87333
+  
+  // Nature greens and browns (cozy room plants/furniture)
+  static const Color forestGreen08 = Color(0x143D6B4A);  // 8% - 0xFF3D6B4A
+  static const Color darkBrown10 = Color(0x1A5D4E37);  // 10% - 0xFF5D4E37
+  
+  // Book colors (subtle for shelves)
+  static const Color bookRed12 = Color(0x1F8B3A3A);  // 12% - 0xFF8B3A3A
+  static const Color bookBlue12 = Color(0x1F3A5A8B);  // 12% - 0xFF3A5A8B
+  static const Color bookGreen12 = Color(0x1F3A6B4A);  // 12% - 0xFF3A6B4A
+  
+  // Soft neutrals (decorative accents)
+  static const Color lightGrey80 = Color(0xCCE8E8F0);  // 80% - 0xFFE8E8F0
+  static const Color cream15 = Color(0x26FFF8E7);  // 15% - 0xFFFFF8E7
+  static const Color lightBlueGrey80 = Color(0xCCE8F4F8);  // 80% - 0xFFE8F4F8
+  static const Color lightBlueGrey90 = Color(0xE6E8F4F8);  // 90% - 0xFFE8F4F8
 }
 
 class AppRadius {
@@ -810,7 +885,7 @@ class GlassStyles {
         BoxShadow(
           color: isDark
               ? const Color(0xFF3D9F8B).withOpacity(0.15)
-              : const Color(0xFF3D7068).withOpacity(0.08),
+              : AppColors.primaryAlpha08,
           blurRadius: 20,
           offset: const Offset(0, 8),
         ),

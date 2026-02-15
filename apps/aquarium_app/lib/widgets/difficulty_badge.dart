@@ -248,7 +248,7 @@ class _SkillLevelUpAnimationState extends State<SkillLevelUpAnimation>
                 borderRadius: AppRadius.mediumRadius,
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.orange.withOpacity(0.5),
+                    color: AppOverlays.orange50,
                     blurRadius: 20,
                     spreadRadius: 5,
                   ),
@@ -368,7 +368,7 @@ class MasteryBadge extends StatelessWidget {
         borderRadius: BorderRadius.circular(12 * size),
         boxShadow: [
           BoxShadow(
-            color: Colors.amber.withOpacity(0.3),
+            color: AppOverlays.amber30,
             blurRadius: 8,
             spreadRadius: 2,
           ),

@@ -540,9 +540,9 @@ class _StreakBadge extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       decoration: BoxDecoration(
-        color: Colors.orange.withOpacity(0.2),
+        color: AppOverlays.orange20,
         borderRadius: AppRadius.mediumRadius,
-        border: Border.all(color: Colors.orange.withOpacity(0.4)),
+        border: Border.all(color: AppOverlays.orange40),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,

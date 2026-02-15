@@ -197,7 +197,7 @@ class _StoryPlayerScreenState extends ConsumerState<StoryPlayerScreen>
             Container(
               padding: const EdgeInsets.all(AppSpacing.md),
               decoration: BoxDecoration(
-                color: Colors.amber.withOpacity(0.2),
+                color: AppOverlays.amber20,
                 borderRadius: AppRadius.mediumRadius,
                 border: Border.all(color: Colors.amber, width: 2),
               ),
@@ -451,8 +451,8 @@ class _StoryPlayerScreenState extends ConsumerState<StoryPlayerScreen>
     return Positioned.fill(
       child: Container(
         color: _isCorrectChoice == true
-            ? Colors.green.withOpacity(0.9)
-            : Colors.orange.withOpacity(0.9),
+            ? AppOverlays.green90
+            : AppOverlays.orange90,
         child: Center(
           child: Padding(
             padding: const EdgeInsets.all(AppSpacing.xl),

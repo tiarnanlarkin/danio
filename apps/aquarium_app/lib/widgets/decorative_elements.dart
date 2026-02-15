@@ -417,8 +417,8 @@ class WindowDecoration extends StatelessWidget {
       height: height,
       decoration: BoxDecoration(
         color: isDark
-            ? const Color(0xFF1A2634).withOpacity(0.5)
-            : const Color(0xFFE8F4F8).withOpacity(0.8),
+            ? AppColors.backgroundDarkAlpha50
+            : AppOverlays.lightBlueGrey80,
         borderRadius: AppRadius.smallRadius,
         border: Border.all(
           color: isDark

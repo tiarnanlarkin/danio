@@ -25,7 +25,6 @@ class _FirstTankWizardScreenState extends ConsumerState<FirstTankWizardScreen> {
   String _tankName = '';
   double _volumeLitres = 0;
   TankType _tankType = TankType.freshwater;
-  bool _useSampleData = false;
 
   final _nameController = TextEditingController();
   final _volumeLitresController = TextEditingController();

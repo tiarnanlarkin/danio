@@ -194,7 +194,7 @@ class StoriesCard extends ConsumerWidget {
                           vertical: 4,
                         ),
                         decoration: BoxDecoration(
-                          color: Colors.amber.withOpacity(0.3),
+                          color: AppOverlays.amber30,
                           borderRadius: AppRadius.smallRadius,
                         ),
                         child: Row(

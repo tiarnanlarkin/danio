@@ -17,8 +17,8 @@ class AmbientBubbles extends StatelessWidget {
           noOfBubbles: bubbleCount,
           colorsOfBubbles: [
             AppOverlays.white30,
-            Colors.lightBlue.withOpacity(0.2),
-            Colors.cyan.withOpacity(0.15),
+            AppOverlays.lightBlue20,
+            AppOverlays.cyan15,
           ],
           sizeFactor: 0.12,
           speed: BubbleSpeed.slow,
@@ -43,7 +43,7 @@ class AmbientBubblesSubtle extends StatelessWidget {
           noOfBubbles: bubbleCount,
           colorsOfBubbles: [
             AppOverlays.white20,
-            Colors.lightBlue.withOpacity(0.15),
+            AppOverlays.lightBlue15,
           ],
           sizeFactor: 0.08,
           speed: BubbleSpeed.slow,

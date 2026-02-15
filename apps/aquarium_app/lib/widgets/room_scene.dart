@@ -722,7 +722,7 @@ class _CozyRoomPainter extends CustomPainter {
       canvas.drawCircle(
         Offset(windowLeft + windowWidth * 0.7, windowTop + windowHeight * 0.3),
         8,
-        Paint()..color = const Color(0xFFE8E8F0).withOpacity(0.8),
+        Paint()..color = AppOverlays.lightGrey80,
       );
     }
   }
@@ -766,7 +766,7 @@ class _CozyRoomPainter extends CustomPainter {
           center: Alignment.topRight,
           radius: 1.2,
           colors: [
-            const Color(0xFFFFF8E7).withOpacity(0.15),
+            AppOverlays.cream15,
             Colors.transparent,
           ],
         ).createShader(Rect.fromLTWH(0, 0, w, h));
@@ -802,7 +802,7 @@ class _CozyRoomPainter extends CustomPainter {
     final shelfPaint = Paint()
       ..color = _isDarkTheme
           ? theme.textSecondary.withOpacity(0.2)
-          : const Color(0xFF8B7355).withOpacity(0.3);
+          : AppOverlays.darkWood30;
     
     // Shelf surface
     canvas.drawRRect(
@@ -861,7 +861,7 @@ class _RoomPlantPainter extends CustomPainter {
     final h = size.height;
 
     // Plant pot
-    final potPaint = Paint()..color = const Color(0xFFB87333).withOpacity(0.7);
+    final potPaint = Paint()..color = AppOverlays.copperBrown70;
     final potPath = Path()
       ..moveTo(w * 0.25, h * 0.75)
       ..lineTo(w * 0.3, h)
@@ -1825,7 +1825,7 @@ class _ThemedAquarium extends StatelessWidget {
                   borderRadius: AppRadius.xsRadius,
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.amber.withOpacity(0.3),
+                      color: AppOverlays.amber30,
                       blurRadius: 25,
                       spreadRadius: 10,
                       offset: const Offset(0, 15),

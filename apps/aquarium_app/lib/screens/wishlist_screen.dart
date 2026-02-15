@@ -231,55 +231,7 @@ class WishlistScreen extends ConsumerWidget {
   }
 }
 
-class _EmptyState extends StatelessWidget {
-  final WishlistCategory category;
-  final VoidCallback onAdd;
-
-  const _EmptyState({required this.category, required this.onAdd});
-
-  @override
-  Widget build(BuildContext context) {
-    final emoji = switch (category) {
-      WishlistCategory.fish => '🐠',
-      WishlistCategory.plant => '🌱',
-      WishlistCategory.equipment => '🔧',
-    };
-
-    final text = switch (category) {
-      WishlistCategory.fish => 'No fish on your wishlist yet',
-      WishlistCategory.plant => 'No plants on your wishlist yet',
-      WishlistCategory.equipment => 'No equipment on your wishlist yet',
-    };
-
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.xl),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(emoji, style: const TextStyle(fontSize: 64)),
-            const SizedBox(height: AppSpacing.md),
-            Text(
-              text,
-              style: AppTypography.bodyLarge.copyWith(
-                color: AppColors.textSecondary,
-              ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: AppSpacing.lg),
-            ElevatedButton.icon(
-              onPressed: onAdd,
-              icon: const Icon(Icons.add),
-              label: const Text('Add your first item'),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _WishlistItemCard extends StatelessWidget {
+class _WishlistItemCard extends StatelessWidget{
   final WishlistItem item;
   final Color accentColor;
   final VoidCallback onTap;

@@ -504,8 +504,9 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
               }
 
               // Answer options
-              final optionIndex = index - 3;
-              final option = question.options[optionIndex];
+              if (index >= 3 && index < 3 + question.options.length) {
+                final optionIndex = index - 3;
+                final option = question.options[optionIndex];
               final isSelected = _selectedAnswer == optionIndex;
               final isCorrect = optionIndex == question.correctIndex;
 
@@ -584,6 +585,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
                     ),
                   ),
                 );
+              }
 
               // Explanation (after answering)
               if (_answered && question.explanation != null) {

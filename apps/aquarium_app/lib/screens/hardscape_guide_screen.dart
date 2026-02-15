@@ -330,7 +330,7 @@ class _RockCard extends StatelessWidget {
           width: 40,
           height: 40,
           decoration: BoxDecoration(
-            color: Colors.grey.withOpacity(0.2),
+            color: AppOverlays.grey20,
             borderRadius: AppRadius.smallRadius,
           ),
           child: const Icon(Icons.terrain, color: Colors.grey),
@@ -398,7 +398,7 @@ class _WoodCard extends StatelessWidget {
           width: 40,
           height: 40,
           decoration: BoxDecoration(
-            color: Colors.brown.withOpacity(0.2),
+            color: AppOverlays.brown20,
             borderRadius: AppRadius.smallRadius,
           ),
           child: const Icon(Icons.park, color: Colors.brown),

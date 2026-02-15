@@ -133,7 +133,7 @@ class _CozyRoomPainter extends CustomPainter {
 
     // Floor boards hint (subtle)
     final floorPaint = Paint()
-      ..color = const Color(0xFF3D6B4A).withOpacity(0.08)
+      ..color = AppOverlays.forestGreen08
       ..strokeWidth = 1;
     
     for (var y = h * 0.7; y < h; y += 25) {
@@ -237,7 +237,7 @@ class _CozyRoomPainter extends CustomPainter {
 
     // Sun rays
     final rayPaint = Paint()
-      ..color = const Color(0xFFFFD54F).withOpacity(0.08);
+      ..color = AppOverlays.goldenYellow08;
     
     for (var i = 0; i < 5; i++) {
       final startX = w * (0.6 + i * 0.08);
@@ -317,7 +317,7 @@ class _CozyRoomPainter extends CustomPainter {
     final h = size.height;
     
     final shelfPaint = Paint()
-      ..color = const Color(0xFF5D4E37).withOpacity(0.1)
+      ..color = AppOverlays.darkBrown10
       ..strokeWidth = 2;
     
     // Simple shelf line
@@ -338,8 +338,8 @@ class _CozyRoomPainter extends CustomPainter {
         center: Alignment.center,
         radius: 0.4,
         colors: [
-          const Color(0xFF5FBFB3).withOpacity(0.2),
-          const Color(0xFF3D7068).withOpacity(0.1),
+          AppOverlays.tealGreen20,
+          AppColors.primaryAlpha10,
           Colors.transparent,
         ],
       ).createShader(Rect.fromLTWH(0, 0, w, h));
@@ -355,7 +355,7 @@ class _CozyRoomPainter extends CustomPainter {
 
     // Subtle water reflection lines
     final waterPaint = Paint()
-      ..color = const Color(0xFF87CEEB).withOpacity(0.05)
+      ..color = AppOverlays.skyBlue05
       ..strokeWidth = 1;
     
     for (var i = 0; i < 3; i++) {

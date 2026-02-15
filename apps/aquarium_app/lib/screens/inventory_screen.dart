@@ -579,10 +579,10 @@ class _HeartsChip extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
-        color: Colors.red.withOpacity(0.2),
+        color: AppOverlays.red20,
         borderRadius: AppRadius.mediumRadius,
         border: Border.all(
-          color: Colors.red.withOpacity(0.5),
+          color: AppOverlays.red50,
           width: 2,
         ),
       ),

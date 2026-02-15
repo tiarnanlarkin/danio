@@ -83,31 +83,4 @@ class LeaderboardReset {
   }
   */
 
-  /// Check if two dates are in the same week (Monday-Sunday)
-  bool _isSameWeek(DateTime date1, DateTime date2) {
-    final monday1 = _getMondayOfWeek(date1);
-    final monday2 = _getMondayOfWeek(date2);
-
-    return monday1.year == monday2.year &&
-        monday1.month == monday2.month &&
-        monday1.day == monday2.day;
-  }
-
-  /// Get the Monday of the week containing the given date
-  DateTime _getMondayOfWeek(DateTime date) {
-    final daysFromMonday = date.weekday - 1;
-    return DateTime(
-      date.year,
-      date.month,
-      date.day,
-    ).subtract(Duration(days: daysFromMonday));
-  }
-
-  /// Determine league based on weekly XP
-  League _calculateLeagueFromXP(int weeklyXP) {
-    if (weeklyXP >= League.diamond.minWeeklyXP) return League.diamond;
-    if (weeklyXP >= League.gold.minWeeklyXP) return League.gold;
-    if (weeklyXP >= League.silver.minWeeklyXP) return League.silver;
-    return League.bronze;
-  }
 }

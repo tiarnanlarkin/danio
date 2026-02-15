@@ -59,6 +59,7 @@ class MascotBubble extends StatefulWidget {
     VoidCallback? onTap,
     VoidCallback? onDismiss,
     bool showDismiss = false,
+    bool animateEntrance = true,
     MascotSize size = MascotSize.medium,
     MascotPosition position = MascotPosition.left,
   }) {
@@ -69,6 +70,7 @@ class MascotBubble extends StatefulWidget {
       onTap: onTap,
       onDismiss: onDismiss,
       showDismiss: showDismiss,
+      animateEntrance: animateEntrance,
       size: size,
       position: position,
     );

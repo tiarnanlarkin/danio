@@ -86,7 +86,6 @@ class ReviewQueueService {
 
     // Mix: 80% due, 20% strong (or all due if not enough strong cards)
     final dueCount = (sessionSize * 0.8).round();
-    final strongCount = sessionSize - dueCount;
 
     final mixed = <ReviewCard>[];
 
