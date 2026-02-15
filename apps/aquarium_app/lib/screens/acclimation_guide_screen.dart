@@ -9,9 +9,16 @@ class AcclimationGuideScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Fish Acclimation Guide')),
-      body: ListView(
+      body: ListView.builder(
         padding: const EdgeInsets.all(AppSpacing.md),
-        children: [
+        itemCount: _buildItems().length,
+        itemBuilder: (context, index) => _buildItems()[index],
+      ),
+    );
+  }
+
+  List<Widget> _buildItems() {
+    return [
           // Intro
           AppCard(
             backgroundColor: AppOverlays.info10,
@@ -221,9 +228,7 @@ class AcclimationGuideScreen extends StatelessWidget {
           ),
 
           const SizedBox(height: AppSpacing.xxl),
-        ],
-      ),
-    );
+    ];
   }
 }
 
