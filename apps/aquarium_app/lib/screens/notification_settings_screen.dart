@@ -93,6 +93,19 @@ class NotificationSettingsScreen extends ConsumerWidget {
                         }
                         return;
                       }
+
+                      // Advisory: inform user if exact alarms are unavailable
+                      // (Android 12+ requires explicit user approval in Settings →
+                      // Apps → Special app access → Alarms & reminders).
+                      // The app will still work with slightly imprecise timings.
+                      final canExact = await service.canScheduleExactAlarms();
+                      if (!canExact && context.mounted) {
+                        AppFeedback.showInfo(
+                          context,
+                          'Reminders will fire at approximately the chosen time. '
+                          'For exact timing, enable "Alarms & reminders" in app settings.',
+                        );
+                      }
                     }
 
                     await ref

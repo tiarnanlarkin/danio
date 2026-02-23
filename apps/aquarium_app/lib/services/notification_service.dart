@@ -1,3 +1,4 @@
+import 'dart:io' show Platform;
 import 'package:flutter/material.dart'; // For TimeOfDay
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/timezone.dart' as tz;
@@ -58,6 +59,41 @@ class NotificationService {
       },
     );
     _initialized = true;
+  }
+
+  // ==================== EXACT ALARM HELPERS ====================
+
+  /// Returns true if the app currently has permission to schedule exact alarms
+  /// on Android 12+ (API 31+).
+  ///
+  /// On Android < 12, exact alarms are always available.
+  /// On iOS or other platforms, returns true (not applicable).
+  Future<bool> canScheduleExactAlarms() async {
+    if (!Platform.isAndroid) return true;
+
+    final android = _plugin
+        .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin
+        >();
+    if (android == null) return true;
+
+    try {
+      return await android.canScheduleExactNotifications() ?? false;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  /// Returns the best available [AndroidScheduleMode] for this device.
+  ///
+  /// Uses [exactAllowWhileIdle] when exact alarm permission is granted,
+  /// otherwise falls back to [inexactAllowWhileIdle] so notifications
+  /// still fire (slightly later) instead of silently dropping.
+  Future<AndroidScheduleMode> _bestScheduleMode() async {
+    final canExact = await canScheduleExactAlarms();
+    return canExact
+        ? AndroidScheduleMode.exactAllowWhileIdle
+        : AndroidScheduleMode.inexactAllowWhileIdle;
   }
 
   /// Request notification permissions (iOS mainly).
@@ -128,7 +164,7 @@ class NotificationService {
           presentSound: true,
         ),
       ),
-      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+      androidScheduleMode: await _bestScheduleMode(),
       uiLocalNotificationDateInterpretation:
           UILocalNotificationDateInterpretation.absoluteTime,
     );
@@ -265,7 +301,7 @@ class NotificationService {
           presentSound: true,
         ),
       ),
-      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+      androidScheduleMode: await _bestScheduleMode(),
       uiLocalNotificationDateInterpretation:
           UILocalNotificationDateInterpretation.absoluteTime,
       matchDateTimeComponents: DateTimeComponents.time, // Repeat daily
@@ -318,7 +354,7 @@ class NotificationService {
           presentSound: true,
         ),
       ),
-      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+      androidScheduleMode: await _bestScheduleMode(),
       uiLocalNotificationDateInterpretation:
           UILocalNotificationDateInterpretation.absoluteTime,
       matchDateTimeComponents: DateTimeComponents.time, // Repeat daily
@@ -349,6 +385,9 @@ class NotificationService {
 
     final tzScheduledDate = tz.TZDateTime.from(scheduledDate, tz.local);
 
+    // Use a dedicated channel for the urgent night reminder so that
+    // Importance.max is honoured (channel importance can only be set once
+    // per channel ID — sharing with Importance.high would cap it).
     await _plugin.zonedSchedule(
       _nightNotificationId,
       '⚠️ Don\'t lose your streak!',
@@ -356,14 +395,13 @@ class NotificationService {
       tzScheduledDate,
       const NotificationDetails(
         android: AndroidNotificationDetails(
-          'streak_reminders',
-          'Streak Reminders',
+          'streak_reminders_urgent',
+          'Urgent Streak Reminders',
           channelDescription:
-              'Daily reminders to maintain your learning streak',
+              'High-priority last-chance reminders to save your streak',
           importance: Importance.max,
           priority: Priority.max,
           icon: '@mipmap/ic_launcher',
-          sound: RawResourceAndroidNotificationSound('notification'),
         ),
         iOS: DarwinNotificationDetails(
           presentAlert: true,
@@ -371,7 +409,7 @@ class NotificationService {
           presentSound: true,
         ),
       ),
-      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+      androidScheduleMode: await _bestScheduleMode(),
       uiLocalNotificationDateInterpretation:
           UILocalNotificationDateInterpretation.absoluteTime,
       matchDateTimeComponents: DateTimeComponents.time, // Repeat daily
@@ -482,7 +520,7 @@ class NotificationService {
           presentSound: true,
         ),
       ),
-      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+      androidScheduleMode: await _bestScheduleMode(),
       uiLocalNotificationDateInterpretation:
           UILocalNotificationDateInterpretation.absoluteTime,
       matchDateTimeComponents: DateTimeComponents.time, // Repeat daily
