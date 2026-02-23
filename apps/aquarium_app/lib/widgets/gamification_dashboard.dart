@@ -40,6 +40,7 @@ class GamificationDashboard extends ConsumerWidget {
         final todayXp = dailyGoal?.earnedXp ?? 0;
         final goalXp = profile.dailyXpGoal;
         final progress = goalXp > 0 ? (todayXp / goalXp).clamp(0.0, 1.0) : 0.0;
+        final confidenceScore = ref.watch(tankConfidenceScoreProvider);
 
         final content = Padding(
           padding: const EdgeInsets.all(16),
@@ -92,6 +93,10 @@ class GamificationDashboard extends ConsumerWidget {
                 goal: goalXp,
                 progress: progress,
               ),
+              const SizedBox(height: AppSpacing.sm),
+
+              // Row 4: Tank Confidence Score
+              _TankConfidenceScore(score: confidenceScore),
             ],
           ),
         );
@@ -432,6 +437,73 @@ class _MiniStat extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// PHASE 3.3 — Tank Confidence Score display
+// ─────────────────────────────────────────────────────────────────────────────
+
+/// Compact inline widget that displays the tank confidence score (0–100).
+/// Uses a thin progress bar with colour gradient (red → amber → green).
+class _TankConfidenceScore extends StatelessWidget {
+  final int score;
+
+  const _TankConfidenceScore({required this.score});
+
+  Color get _barColor {
+    if (score >= 70) return AppColors.success;
+    if (score >= 40) return Colors.orange;
+    return AppColors.error;
+  }
+
+  String get _label {
+    if (score >= 80) return 'Expert 🦈';
+    if (score >= 60) return 'Confident 🐠';
+    if (score >= 40) return 'Growing 🌱';
+    if (score >= 20) return 'Learning 🐣';
+    return 'Beginner 🐡';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final pct = score / 100.0;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            const Text('🏅', style: TextStyle(fontSize: 16)),
+            const SizedBox(width: 6),
+            Text(
+              'Tank Confidence',
+              style: AppTypography.labelMedium.copyWith(
+                color: AppColors.textPrimary,
+              ),
+            ),
+            const Spacer(),
+            Text(
+              '$score — $_label',
+              style: AppTypography.labelSmall.copyWith(
+                color: _barColor,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 6),
+        ClipRRect(
+          borderRadius: AppRadius.xsRadius,
+          child: LinearProgressIndicator(
+            value: pct,
+            minHeight: 6,
+            backgroundColor: AppColors.surfaceVariant,
+            valueColor: AlwaysStoppedAnimation<Color>(_barColor),
+          ),
+        ),
+      ],
     );
   }
 }

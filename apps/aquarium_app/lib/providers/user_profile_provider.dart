@@ -916,3 +916,33 @@ class LevelUpEventNotifier extends StateNotifier<LevelUpEvent?> {
     );
   }
 }
+
+/// Provider for Tank Confidence Score — a composite progress metric (0–100).
+///
+/// Weights:
+///   - Lessons completed  40 pts  (ratio vs ~50 total lessons)
+///   - XP level           30 pts  (level / 7 max levels)
+///   - Streak consistency 20 pts  (longest streak / 30 days = full)
+///   - Achievements       10 pts  (unlocked / ~20 achievements)
+final tankConfidenceScoreProvider = Provider<int>((ref) {
+  final profile = ref.watch(userProfileProvider).value;
+  if (profile == null) return 0;
+
+  // Lessons completed score (40 pts)
+  const approxTotalLessons = 50;
+  final lessonRatio = (profile.completedLessons.length / approxTotalLessons).clamp(0.0, 1.0);
+  final lessonScore = lessonRatio * 40;
+
+  // XP level score (30 pts) — 7 levels total
+  const maxLevel = 7;
+  final levelScore = (profile.currentLevel / maxLevel).clamp(0.0, 1.0) * 30;
+
+  // Streak consistency score (20 pts) — 30+ days = full
+  final streakScore = (profile.longestStreak / 30).clamp(0.0, 1.0) * 20;
+
+  // Achievement score (10 pts) — 20+ achievements = full
+  const approxTotalAchievements = 20;
+  final achievementScore = (profile.achievements.length / approxTotalAchievements).clamp(0.0, 1.0) * 10;
+
+  return (lessonScore + levelScore + streakScore + achievementScore).round().clamp(0, 100);
+});
