@@ -21,7 +21,10 @@ import '../models/user_profile.dart';
 /// ⚠️ WARNING: Loading all paths at once = 347KB of data
 /// Consider using LessonProvider for lazy loading instead
 class LessonContent {
-  static List<LearningPath> get allPaths => [
+  // Cached list to avoid creating a new List<> on every call to allPaths.
+  // Individual paths are static finals (lazily initialised once), but the
+  // wrapping list was reallocated on every getter invocation.
+  static final List<LearningPath> _allPathsCache = [
     nitrogenCyclePath,
     waterParametersPath,
     firstFishPath,
@@ -32,6 +35,8 @@ class LessonContent {
     speciesCarePath,
     advancedTopicsPath,
   ];
+
+  static List<LearningPath> get allPaths => _allPathsCache;
 
   // ==========================================
   // NITROGEN CYCLE PATH - The Most Important!
