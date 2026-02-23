@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'dart:ui';
 import '../theme/app_theme.dart';
+import '../theme/room_identity.dart';
 import '../utils/app_feedback.dart';
 import '../providers/user_profile_provider.dart';
 import '../widgets/room/interactive_object.dart';
@@ -27,7 +28,7 @@ class WorkshopColors {
   static const accent = Color(0xFFA0AEC0); // Steel blue
   static const accentWarm = Color(0xFFD4A574); // Warm gold
   // Phase 2.1 — room identity: Workshop → purple/indigo accent
-  static const accentRoom = Color(0xFF9C78FF); // Soft purple/indigo
+  static const accentRoom = RoomIdentity.workshopAccent;
   static const accentRoomDark = Color(0xFF7C4DFF); // Deep indigo
   static const wood = Color(0xFF7A6548); // Light wood
   static const metal = Color(0xFF6B7280); // Steel gray

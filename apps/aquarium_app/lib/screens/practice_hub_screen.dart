@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/spaced_repetition_provider.dart';
 import '../providers/user_profile_provider.dart';
 import '../theme/app_theme.dart';
+import '../theme/room_identity.dart';
 import '../widgets/hearts_widgets.dart';
 import 'spaced_repetition_practice_screen.dart';
 import 'practice_screen.dart';
@@ -21,7 +22,9 @@ class PracticeHubScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('🧪 Practice'),
+        title: const Text('🧪 Lab'),
+        backgroundColor: RoomIdentity.labTint,
+        surfaceTintColor: Colors.transparent,
         actions: const [
           Padding(
             padding: EdgeInsets.only(right: 8),
@@ -45,7 +48,7 @@ class PracticeHubScreen extends ConsumerWidget {
   }
 
   int _getPracticeHubItemCount(int dueCards, int totalCards) {
-    // Hero card (1) + spacer + stats row + spacer + 
+    // Hero card (1) + spacer + stats row + spacer +
     // section header + spacer + 3 practice cards + 2 spacers +
     // section header + spacer + 3 progress cards + 2 spacers = 19 items
     return 19;
@@ -160,9 +163,7 @@ class PracticeHubScreen extends ConsumerWidget {
           onTap: () {
             Navigator.push(
               context,
-              MaterialPageRoute(
-                builder: (context) => const PracticeScreen(),
-              ),
+              MaterialPageRoute(builder: (context) => const PracticeScreen()),
             );
           },
         );
@@ -178,9 +179,7 @@ class PracticeHubScreen extends ConsumerWidget {
           onTap: () {
             Navigator.push(
               context,
-              MaterialPageRoute(
-                builder: (context) => const PracticeScreen(),
-              ),
+              MaterialPageRoute(builder: (context) => const PracticeScreen()),
             );
           },
         );
@@ -264,8 +263,7 @@ class PracticeHubScreen extends ConsumerWidget {
                   ],
                 ),
               ),
-              if (onTap != null)
-                Icon(Icons.arrow_forward_ios, color: color),
+              if (onTap != null) Icon(Icons.arrow_forward_ios, color: color),
             ],
           ),
         ),
@@ -273,7 +271,10 @@ class PracticeHubScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildStatsRow(BuildContext context, {required List<_StatItem> stats}) {
+  Widget _buildStatsRow(
+    BuildContext context, {
+    required List<_StatItem> stats,
+  }) {
     return Row(
       children: stats.map((stat) {
         return Expanded(
@@ -368,9 +369,5 @@ class _StatItem {
   final String value;
   final Color color;
 
-  _StatItem({
-    required this.label,
-    required this.value,
-    required this.color,
-  });
+  _StatItem({required this.label, required this.value, required this.color});
 }

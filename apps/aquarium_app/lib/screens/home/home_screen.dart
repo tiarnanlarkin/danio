@@ -7,6 +7,7 @@ import '../../providers/tank_provider.dart';
 import '../../providers/room_theme_provider.dart';
 import '../../providers/user_profile_provider.dart';
 import '../../theme/app_theme.dart';
+import '../../theme/room_identity.dart';
 import '../../widgets/core/bubble_loader.dart';
 import '../house_navigator.dart';
 import '../../theme/room_themes.dart';
@@ -138,16 +139,18 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         color: AppOverlays.primary15,
                         borderRadius: AppRadius.smallRadius,
                       ),
-                      child: const Icon(Icons.set_meal_rounded,
-                          color: AppColors.primary, size: 20),
+                      child: const Icon(
+                        Icons.set_meal_rounded,
+                        color: AppColors.primary,
+                        size: 20,
+                      ),
                     ),
                     const SizedBox(width: 12),
                     Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Community Tank',
-                            style: AppTypography.labelLarge),
+                        Text('Community Tank', style: AppTypography.labelLarge),
                         Text('200L', style: AppTypography.bodySmall),
                       ],
                     ),
@@ -197,7 +200,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 tankVolume: currentTank.volumeLitres,
                 theme: ref.watch(currentRoomThemeProvider),
                 isNewUser: _isNewUser(ref),
-                useRiveFish: false, // Disable broken Rive fish, use static drawn fish
+                useRiveFish:
+                    false, // Disable broken Rive fish, use static drawn fish
                 onTankTap: () => _navigateToTankDetail(context, currentTank),
                 onTestKitTap: () => _showWaterParams(context),
                 onFoodTap: () => _showFeedingInfo(context),
@@ -231,33 +235,46 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 child: Row(
                   children: [
                     Semantics(
-                      label: 'Living Room, switch room',
+                      label: '${RoomIdentity.livingRoomName}, switch room',
                       button: true,
                       child: GestureDetector(
                         onTap: () => _showRoomSwitcher(context),
-                        child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            'Living Room',
-                            style: AppTypography.headlineSmall.copyWith(
-                              color: Colors.white,
-                              shadows: [
-                                Shadow(
-                                  color: AppOverlays.black50,
-                                  blurRadius: 4,
-                                ),
-                              ],
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: AppSpacing.sm,
+                            vertical: 4,
+                          ),
+                          decoration: BoxDecoration(
+                            color: AppOverlays.black20,
+                            borderRadius: AppRadius.pillRadius,
+                            border: Border.all(
+                              color: RoomIdentity.livingRoomAccent,
                             ),
                           ),
-                          const SizedBox(width: 4),
-                          Icon(
-                            Icons.keyboard_arrow_down,
-                            color: AppOverlays.white70,
-                            size: 20,
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                RoomIdentity.livingRoomName,
+                                style: AppTypography.headlineSmall.copyWith(
+                                  color: Colors.white,
+                                  shadows: [
+                                    Shadow(
+                                      color: AppOverlays.black50,
+                                      blurRadius: 4,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(width: 4),
+                              Icon(
+                                Icons.keyboard_arrow_down,
+                                color: AppOverlays.white70,
+                                size: 20,
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
+                        ),
                       ),
                     ),
                     const Spacer(),
@@ -270,10 +287,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       label: 'Search',
                       button: true,
                       child: IconButton(
-                        icon: Icon(
-                          Icons.search,
-                          color: AppOverlays.white90,
-                        ),
+                        icon: Icon(Icons.search, color: AppOverlays.white90),
                         tooltip: 'Search',
                         onPressed: () => Navigator.push(
                           context,
@@ -424,21 +438,17 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     // Navigation to other rooms (Learn, Workshop, Shop, etc.) is handled
     // by HouseNavigator's swipe/tab system, not a BottomNavigationBar here.
     // Note: FAB is handled inside _buildLivingRoomScreen() Stack, not here
-    return Scaffold(
-      body: _buildLivingRoomScreen(),
-    );
+    return Scaffold(body: _buildLivingRoomScreen());
   }
 
   void _navigateToCreateTank(BuildContext context) {
-    Navigator.of(context).push(
-      ModalScaleRoute(page: const CreateTankScreen()),
-    );
+    Navigator.of(context).push(ModalScaleRoute(page: const CreateTankScreen()));
   }
 
   void _navigateToTankDetail(BuildContext context, Tank tank) {
-    Navigator.of(context).push(
-      TankDetailRoute(page: TankDetailScreen(tankId: tank.id)),
-    );
+    Navigator.of(
+      context,
+    ).push(TankDetailRoute(page: TankDetailScreen(tankId: tank.id)));
   }
 
   void _navigateToQuickTest(BuildContext context, Tank tank) {
@@ -458,15 +468,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   void _navigateToJournal(BuildContext context, String tankId) {
-    Navigator.of(context).push(
-      RoomSlideRoute(page: JournalScreen(tankId: tankId)),
-    );
+    Navigator.of(
+      context,
+    ).push(RoomSlideRoute(page: JournalScreen(tankId: tankId)));
   }
 
   void _navigateToSchedule(BuildContext context) {
-    Navigator.of(context).push(
-      RoomSlideRoute(page: const RemindersScreen()),
-    );
+    Navigator.of(context).push(RoomSlideRoute(page: const RemindersScreen()));
   }
 
   /// Check if user is new to show more prominent animations
@@ -479,11 +487,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   void _showRoomSwitcher(BuildContext context) {
     final rooms = [
-      ('Library', Icons.auto_stories, '📚', 0),
-      ('Living Room', Icons.weekend, '🛋️', 1),
+      (RoomIdentity.libraryName, Icons.auto_stories, '📚', 0),
+      (RoomIdentity.livingRoomName, Icons.weekend, '🛋️', 1),
       ('Friends', Icons.people, '👥', 2),
       ('Leaderboard', Icons.leaderboard, '🏆', 3),
-      ('Workshop', Icons.build, '🔧', 4),
+      (RoomIdentity.workshopName, Icons.build, '🔧', 4),
       ('Shop Street', Icons.storefront, '🏪', 5),
     ];
 
@@ -850,10 +858,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   void _showStreakCalendar(BuildContext context) {
-    Navigator.push(
-      context,
-      RoomSlideRoute(page: const StreakCalendarScreen()),
-    );
+    Navigator.push(context, RoomSlideRoute(page: const StreakCalendarScreen()));
   }
 
   Future<void> _bulkDelete(BuildContext context, List<Tank> allTanks) async {
@@ -943,14 +948,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       setState(() {
         _selectedTankIds.clear();
       });
-      
+
       Navigator.push(
         context,
-        MaterialPageRoute(
-          builder: (context) => const BackupRestoreScreen(),
-        ),
+        MaterialPageRoute(builder: (context) => const BackupRestoreScreen()),
       );
     }
   }
-
 }

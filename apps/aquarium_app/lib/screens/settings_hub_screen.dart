@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/user_profile_provider.dart';
 import '../theme/app_theme.dart';
+import '../theme/room_identity.dart';
 import 'settings_screen.dart';
 import 'friends_screen.dart';
 import 'leaderboard_screen.dart';
@@ -25,7 +26,9 @@ class SettingsHubScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('⚙️ Settings & More'),
+        title: const Text('🧥 Closet'),
+        backgroundColor: RoomIdentity.closetTint,
+        surfaceTintColor: Colors.transparent,
       ),
       body: ListView.builder(
         padding: const EdgeInsets.all(16),
@@ -55,9 +58,7 @@ class SettingsHubScreen extends ConsumerWidget {
         onTap: () {
           Navigator.push(
             context,
-            MaterialPageRoute(
-              builder: (context) => const FriendsScreen(),
-            ),
+            MaterialPageRoute(builder: (context) => const FriendsScreen()),
           );
         },
       ),
@@ -73,9 +74,7 @@ class SettingsHubScreen extends ConsumerWidget {
         onTap: () {
           Navigator.push(
             context,
-            MaterialPageRoute(
-              builder: (context) => const LeaderboardScreen(),
-            ),
+            MaterialPageRoute(builder: (context) => const LeaderboardScreen()),
           );
         },
       ),
@@ -95,9 +94,7 @@ class SettingsHubScreen extends ConsumerWidget {
         onTap: () {
           Navigator.push(
             context,
-            MaterialPageRoute(
-              builder: (context) => const ShopStreetScreen(),
-            ),
+            MaterialPageRoute(builder: (context) => const ShopStreetScreen()),
           );
         },
       ),
@@ -113,9 +110,7 @@ class SettingsHubScreen extends ConsumerWidget {
         onTap: () {
           Navigator.push(
             context,
-            MaterialPageRoute(
-              builder: (context) => const AchievementsScreen(),
-            ),
+            MaterialPageRoute(builder: (context) => const AchievementsScreen()),
           );
         },
       ),
@@ -131,13 +126,11 @@ class SettingsHubScreen extends ConsumerWidget {
         title: 'Workshop',
         subtitle: 'Calculators, guides, and planning tools',
         icon: Icons.build,
-        iconColor: AppColors.info,
+        iconColor: RoomIdentity.workshopAccent,
         onTap: () {
           Navigator.push(
             context,
-            MaterialPageRoute(
-              builder: (context) => const WorkshopScreen(),
-            ),
+            MaterialPageRoute(builder: (context) => const WorkshopScreen()),
           );
         },
       ),
@@ -153,9 +146,7 @@ class SettingsHubScreen extends ConsumerWidget {
         onTap: () {
           Navigator.push(
             context,
-            MaterialPageRoute(
-              builder: (context) => const AnalyticsScreen(),
-            ),
+            MaterialPageRoute(builder: (context) => const AnalyticsScreen()),
           );
         },
       ),
@@ -175,9 +166,7 @@ class SettingsHubScreen extends ConsumerWidget {
         onTap: () {
           Navigator.push(
             context,
-            MaterialPageRoute(
-              builder: (context) => const SettingsScreen(),
-            ),
+            MaterialPageRoute(builder: (context) => const SettingsScreen()),
           );
         },
       ),
@@ -211,9 +200,7 @@ class SettingsHubScreen extends ConsumerWidget {
         onTap: () {
           Navigator.push(
             context,
-            MaterialPageRoute(
-              builder: (context) => const AboutScreen(),
-            ),
+            MaterialPageRoute(builder: (context) => const AboutScreen()),
           );
         },
       ),

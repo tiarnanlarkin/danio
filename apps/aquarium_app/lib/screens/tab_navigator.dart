@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../theme/app_theme.dart';
+import '../theme/room_identity.dart';
 import '../providers/spaced_repetition_provider.dart';
 import '../widgets/offline_indicator.dart';
 import '../widgets/sync_indicator.dart';
@@ -136,10 +137,7 @@ class _TabNavigatorState extends ConsumerState<TabNavigator> {
                   bottom: false,
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
-                    children: const [
-                      OfflineIndicator(),
-                      SyncIndicator(),
-                    ],
+                    children: const [OfflineIndicator(), SyncIndicator()],
                   ),
                 ),
               ),
@@ -164,37 +162,37 @@ class _TabNavigatorState extends ConsumerState<TabNavigator> {
               HapticFeedback.selectionClick();
             },
             destinations: [
-              // Learn tab
+              // Library tab
               const NavigationDestination(
                 icon: Icon(Icons.auto_stories_outlined),
                 selectedIcon: Icon(Icons.auto_stories),
-                label: 'Learn',
+                label: RoomIdentity.libraryName,
               ),
-              // Quiz tab with badge for due cards
+              // Lab tab with badge for due cards
               NavigationDestination(
                 icon: Badge(
                   isLabelVisible: dueCardsCount > 0,
                   label: Text(dueCardsCount > 99 ? '99+' : '$dueCardsCount'),
-                  child: const Icon(Icons.quiz_outlined),
+                  child: const Icon(Icons.biotech_outlined),
                 ),
                 selectedIcon: Badge(
                   isLabelVisible: dueCardsCount > 0,
                   label: Text(dueCardsCount > 99 ? '99+' : '$dueCardsCount'),
-                  child: const Icon(Icons.quiz),
+                  child: const Icon(Icons.biotech),
                 ),
-                label: 'Quiz',
+                label: RoomIdentity.labName,
               ),
-              // Tank tab
+              // Home tab (Living Room)
               const NavigationDestination(
-                icon: Icon(Icons.water_outlined),
-                selectedIcon: Icon(Icons.water),
-                label: 'Tank',
+                icon: Icon(Icons.weekend_outlined),
+                selectedIcon: Icon(Icons.weekend),
+                label: 'Home',
               ),
-              // Settings tab
+              // Closet tab (settings)
               const NavigationDestination(
-                icon: Icon(Icons.settings_outlined),
-                selectedIcon: Icon(Icons.settings),
-                label: 'Settings',
+                icon: Icon(Icons.checkroom_outlined),
+                selectedIcon: Icon(Icons.checkroom),
+                label: RoomIdentity.closetName,
               ),
             ],
           ),

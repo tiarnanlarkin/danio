@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
+import '../theme/room_identity.dart';
 import '../screens/rooms/study_screen.dart';
 import '../screens/workshop_screen.dart';
 import '../screens/shop_street_screen.dart';
@@ -33,9 +34,9 @@ class RoomNavigation extends StatelessWidget {
               Expanded(
                 child: _RoomCard(
                   emoji: '📚',
-                  name: 'Study',
+                  name: RoomIdentity.libraryName,
                   description: 'Learn & guides',
-                  color: const Color(0xFF1A237E),
+                  color: RoomIdentity.libraryAccent,
                   onTap: () => Navigator.push(
                     context,
                     MaterialPageRoute(builder: (_) => const StudyScreen()),
@@ -46,9 +47,9 @@ class RoomNavigation extends StatelessWidget {
               Expanded(
                 child: _RoomCard(
                   emoji: '🔧',
-                  name: 'Workshop',
+                  name: RoomIdentity.workshopName,
                   description: 'Tools & calculators',
-                  color: const Color(0xFF5D4037),
+                  color: RoomIdentity.workshopAccent,
                   onTap: () => Navigator.push(
                     context,
                     MaterialPageRoute(builder: (_) => const WorkshopScreen()),

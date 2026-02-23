@@ -12,6 +12,7 @@ import '../providers/gems_provider.dart';
 import '../providers/user_profile_provider.dart';
 import '../providers/spaced_repetition_provider.dart';
 import '../theme/app_theme.dart';
+import '../theme/room_identity.dart';
 import '../widgets/core/fish_loader.dart';
 import '../widgets/study_room_scene.dart';
 import '../widgets/hearts_widgets.dart';
@@ -32,10 +33,7 @@ class LearnScreen extends ConsumerWidget {
         slivers: [
           // Skeleton header
           SliverToBoxAdapter(
-            child: Container(
-              height: 320,
-              color: AppOverlays.primary10,
-            ),
+            child: Container(height: 320, color: AppOverlays.primary10),
           ),
           // Skeleton learning paths header
           SliverToBoxAdapter(
@@ -48,7 +46,10 @@ class LearnScreen extends ConsumerWidget {
           SliverList(
             delegate: SliverChildBuilderDelegate(
               (context, index) => Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 8,
+                ),
                 child: Card(
                   margin: EdgeInsets.zero,
                   child: ListTile(
@@ -127,7 +128,8 @@ class LearnScreen extends ConsumerWidget {
                         completedLessons: completedLessons,
                         totalLessons: totalLessons,
                         isNewUser: !(profile?.hasSeenTutorial ?? false),
-                        onMicroscopeTap: () => _navigateToWaterChemistry(context),
+                        onMicroscopeTap: () =>
+                            _navigateToWaterChemistry(context),
                         onGlobeTap: () => _showRandomFishFact(context),
                       ),
                       // No back button - LearnScreen is Room 0 in HouseNavigator
@@ -137,16 +139,30 @@ class LearnScreen extends ConsumerWidget {
                         top: MediaQuery.of(context).padding.top + 16,
                         left: 0,
                         right: 0,
-                        child: const Center(
-                          child: Text(
-                            '📚 Study',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                              shadows: [
-                                Shadow(color: Colors.black45, blurRadius: 8),
-                              ],
+                        child: Center(
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: AppSpacing.md,
+                              vertical: AppSpacing.xs,
+                            ),
+                            decoration: BoxDecoration(
+                              color: AppOverlays.black30,
+                              borderRadius: AppRadius.pillRadius,
+                              border: Border.all(
+                                color: RoomIdentity.libraryAccent,
+                                width: 1,
+                              ),
+                            ),
+                            child: const Text(
+                              '📚 Library',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                shadows: [
+                                  Shadow(color: Colors.black45, blurRadius: 8),
+                                ],
+                              ),
                             ),
                           ),
                         ),
@@ -237,41 +253,44 @@ class LearnScreen extends ConsumerWidget {
                     final completedInPath = path.lessons
                         .where((l) => profile.completedLessons.contains(l.id))
                         .length;
-                    final reduceMotion = MediaQuery.of(context).disableAnimations;
+                    final reduceMotion = MediaQuery.of(
+                      context,
+                    ).disableAnimations;
 
                     return Padding(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 16,
                         vertical: 8,
                       ),
-                      child: _LearningPathCard(
-                        path: path,
-                        completedLessons: completedInPath,
-                        totalLessons: path.lessons.length,
-                        userCompletedLessons: profile.completedLessons,
-                        onLessonTap: (lesson) {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => LessonScreen(
-                                lesson: lesson,
-                                pathTitle: path.title,
+                      child:
+                          _LearningPathCard(
+                                path: path,
+                                completedLessons: completedInPath,
+                                totalLessons: path.lessons.length,
+                                userCompletedLessons: profile.completedLessons,
+                                onLessonTap: (lesson) {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) => LessonScreen(
+                                        lesson: lesson,
+                                        pathTitle: path.title,
+                                      ),
+                                    ),
+                                  );
+                                },
+                              )
+                              .animate(autoPlay: !reduceMotion)
+                              .fadeIn(
+                                duration: reduceMotion ? 0.ms : 300.ms,
+                                delay: reduceMotion ? 0.ms : (index * 50).ms,
+                              )
+                              .slideY(
+                                begin: reduceMotion ? 0 : 0.2,
+                                end: 0,
+                                duration: reduceMotion ? 0.ms : 300.ms,
+                                delay: reduceMotion ? 0.ms : (index * 50).ms,
                               ),
-                            ),
-                          );
-                        },
-                      )
-                          .animate(autoPlay: !reduceMotion)
-                          .fadeIn(
-                            duration: reduceMotion ? 0.ms : 300.ms,
-                            delay: reduceMotion ? 0.ms : (index * 50).ms,
-                          )
-                          .slideY(
-                            begin: reduceMotion ? 0 : 0.2,
-                            end: 0,
-                            duration: reduceMotion ? 0.ms : 300.ms,
-                            delay: reduceMotion ? 0.ms : (index * 50).ms,
-                          ),
                     );
                   }, childCount: LessonContent.allPaths.length),
                 ),
@@ -287,9 +306,9 @@ class LearnScreen extends ConsumerWidget {
 
   /// Navigate to water chemistry/parameter guide
   void _navigateToWaterChemistry(BuildContext context) {
-    Navigator.of(context).push(
-      MaterialPageRoute(builder: (_) => const ParameterGuideScreen()),
-    );
+    Navigator.of(
+      context,
+    ).push(MaterialPageRoute(builder: (_) => const ParameterGuideScreen()));
   }
 
   /// Show a random fish fact in a dialog
@@ -326,10 +345,7 @@ class LearnScreen extends ConsumerWidget {
             const Expanded(child: Text('Fish Fact!')),
           ],
         ),
-        content: Text(
-          fact,
-          style: AppTypography.bodyLarge,
-        ),
+        content: Text(fact, style: AppTypography.bodyLarge),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(),
@@ -583,7 +599,13 @@ class _StreakCard extends ConsumerWidget {
         streak <= 1 && longestStreak >= 5 && streak < longestStreak;
 
     if (streakWasRecentlyBroken) {
-      return _buildBrokenStreakCard(context, ref, streak, longestStreak, hasFreeze);
+      return _buildBrokenStreakCard(
+        context,
+        ref,
+        streak,
+        longestStreak,
+        hasFreeze,
+      );
     }
 
     if (streak == 0) return const SizedBox.shrink();
@@ -643,10 +665,12 @@ class _StreakCard extends ConsumerWidget {
                         hasFreeze
                             ? 'Streak freeze ready — 1 skip per week covered 🧊'
                             : usedFreezeThisWeek
-                                ? 'Streak freeze used this week'
-                                : 'No streak freeze this week',
+                            ? 'Streak freeze used this week'
+                            : 'No streak freeze this week',
                         style: AppTypography.bodySmall.copyWith(
-                          color: hasFreeze ? AppColors.info : AppColors.textHint,
+                          color: hasFreeze
+                              ? AppColors.info
+                              : AppColors.textHint,
                         ),
                       ),
                     ),
@@ -749,7 +773,9 @@ class _StreakCard extends ConsumerWidget {
     final gems = ref.read(gemBalanceProvider);
     if (gems < 10) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Not enough gems. Earn more by completing lessons!')),
+        const SnackBar(
+          content: Text('Not enough gems. Earn more by completing lessons!'),
+        ),
       );
       return;
     }
@@ -775,16 +801,20 @@ class _StreakCard extends ConsumerWidget {
     );
 
     if (confirmed == true) {
-      await ref.read(gemsProvider.notifier).spendGems(
-        amount: 10,
-        itemId: 'streak_freeze',
-        itemName: 'Streak Freeze',
-      );
+      await ref
+          .read(gemsProvider.notifier)
+          .spendGems(
+            amount: 10,
+            itemId: 'streak_freeze',
+            itemName: 'Streak Freeze',
+          );
       await ref.read(userProfileProvider.notifier).addStreakFreeze();
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('🧊 Streak freeze activated! One missed day is covered.'),
+            content: Text(
+              '🧊 Streak freeze activated! One missed day is covered.',
+            ),
             backgroundColor: AppColors.info,
           ),
         );
@@ -895,7 +925,7 @@ class _LearningPathCard extends StatelessWidget {
                     child: Container(
                       height: 8,
                       decoration: BoxDecoration(
-                        color: isDark 
+                        color: isDark
                             ? AppColors.whiteAlpha10
                             : AppColors.surfaceVariant,
                         borderRadius: BorderRadius.circular(4),
@@ -907,14 +937,19 @@ class _LearningPathCard extends StatelessWidget {
                           decoration: BoxDecoration(
                             gradient: LinearGradient(
                               colors: isComplete
-                                  ? [AppColors.success, AppColors.successAlpha80]
+                                  ? [
+                                      AppColors.success,
+                                      AppColors.successAlpha80,
+                                    ]
                                   : [AppColors.primary, AppColors.secondary],
                             ),
                             borderRadius: BorderRadius.circular(4),
                             boxShadow: progress > 0
                                 ? [
                                     BoxShadow(
-                                      color: isComplete ? AppColors.successAlpha40 : AppColors.primaryAlpha40,
+                                      color: isComplete
+                                          ? AppColors.successAlpha40
+                                          : AppColors.primaryAlpha40,
                                       blurRadius: 4,
                                       offset: const Offset(0, 1),
                                     ),
@@ -927,7 +962,10 @@ class _LearningPathCard extends StatelessWidget {
                   ),
                   const SizedBox(width: 12),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 3,
+                    ),
                     decoration: BoxDecoration(
                       color: isDark
                           ? AppColors.whiteAlpha10
@@ -937,7 +975,9 @@ class _LearningPathCard extends StatelessWidget {
                     child: Text(
                       '$completedLessons/$totalLessons',
                       style: AppTypography.labelSmall.copyWith(
-                        color: isDark ? AppColors.textSecondaryDark : AppColors.textSecondary,
+                        color: isDark
+                            ? AppColors.textSecondaryDark
+                            : AppColors.textSecondary,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -1038,7 +1078,9 @@ class _DailyPlanCard extends ConsumerWidget {
 
     // ── Tank action tip ──
     // Seed by day-of-year so it stays stable all day
-    final dayOfYear = DateTime.now().difference(DateTime(DateTime.now().year)).inDays;
+    final dayOfYear = DateTime.now()
+        .difference(DateTime(DateTime.now().year))
+        .inDays;
     final tipIndex = dayOfYear % DailyTips.all.length;
     final tip = DailyTips.all[tipIndex];
 
@@ -1077,7 +1119,10 @@ class _DailyPlanCard extends ConsumerWidget {
           // Header
           Padding(
             padding: const EdgeInsets.fromLTRB(
-              AppSpacing.md, AppSpacing.md, AppSpacing.md, AppSpacing.sm,
+              AppSpacing.md,
+              AppSpacing.md,
+              AppSpacing.md,
+              AppSpacing.sm,
             ),
             child: Row(
               children: [
@@ -1092,7 +1137,10 @@ class _DailyPlanCard extends ConsumerWidget {
                 ),
                 const Spacer(),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 3,
+                  ),
                   decoration: BoxDecoration(
                     color: tasksCompleted == totalTasks
                         ? AppColors.success.withOpacity(0.15)
@@ -1124,19 +1172,21 @@ class _DailyPlanCard extends ConsumerWidget {
             subtitle: suggestedLesson != null
                 ? '${suggestedLesson.estimatedMinutes} min · ${suggestedLesson.xpReward} XP'
                 : 'Start a new path below',
-            isDone: suggestedLesson == null ||
+            isDone:
+                suggestedLesson == null ||
                 profile.completedLessons.contains(suggestedLesson.id),
-            onTap: suggestedLesson != null &&
+            onTap:
+                suggestedLesson != null &&
                     !profile.completedLessons.contains(suggestedLesson.id)
                 ? () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => LessonScreen(
-                          lesson: suggestedLesson,
-                          pathTitle: _pathTitleFor(suggestedLesson),
-                        ),
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => LessonScreen(
+                        lesson: suggestedLesson,
+                        pathTitle: _pathTitleFor(suggestedLesson),
                       ),
-                    )
+                    ),
+                  )
                 : null,
           ),
 
@@ -1146,15 +1196,17 @@ class _DailyPlanCard extends ConsumerWidget {
             title: reviewDue > 0
                 ? 'Quick Quiz — $reviewDue card${reviewDue == 1 ? '' : 's'} ready'
                 : 'Quick Quiz — all cards reviewed!',
-            subtitle: reviewDue > 0 ? 'Tap to review now' : 'Come back tomorrow',
+            subtitle: reviewDue > 0
+                ? 'Tap to review now'
+                : 'Come back tomorrow',
             isDone: reviewDue == 0 && srState.stats.totalCards > 0,
             onTap: reviewDue > 0
                 ? () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => const SpacedRepetitionPracticeScreen(),
-                      ),
-                    )
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const SpacedRepetitionPracticeScreen(),
+                    ),
+                  )
                 : null,
           ),
 
@@ -1247,7 +1299,11 @@ class _DailyTask extends StatelessWidget {
               ),
               child: Center(
                 child: isDone
-                    ? const Icon(Icons.check, size: 16, color: AppColors.success)
+                    ? const Icon(
+                        Icons.check,
+                        size: 16,
+                        color: AppColors.success,
+                      )
                     : Text(emoji, style: const TextStyle(fontSize: 14)),
               ),
             ),

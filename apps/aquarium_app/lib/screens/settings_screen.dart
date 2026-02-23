@@ -37,6 +37,7 @@ import 'parameter_guide_screen.dart';
 import '../services/notification_service.dart';
 import '../services/onboarding_service.dart';
 import '../theme/app_theme.dart';
+import '../theme/room_identity.dart';
 import '../utils/app_feedback.dart';
 import 'onboarding_screen.dart';
 import 'shop_street_screen.dart';
@@ -72,9 +73,9 @@ class SettingsScreen extends ConsumerWidget {
     return Scaffold(
       // Closet — grey/neutral accent (Phase 2.1 room identity)
       appBar: RoomHeader(
-        title: 'Closet',
+        title: RoomIdentity.closetName,
         subtitle: 'Settings & preferences',
-        backgroundColor: AppColors.surfaceVariant,
+        backgroundColor: RoomIdentity.closetTint,
         showDivider: true,
         onBack: Navigator.canPop(context)
             ? () => Navigator.of(context).pop()
@@ -82,617 +83,584 @@ class SettingsScreen extends ConsumerWidget {
       ),
       body: ListView.builder(
         itemCount: _buildItems(context, ref, settings).length,
-        itemBuilder: (context, index) => _buildItems(context, ref, settings)[index],
+        itemBuilder: (context, index) =>
+            _buildItems(context, ref, settings)[index],
       ),
     );
   }
 
-  List<Widget> _buildItems(BuildContext context, WidgetRef ref, AppSettings settings) {
+  List<Widget> _buildItems(
+    BuildContext context,
+    WidgetRef ref,
+    AppSettings settings,
+  ) {
     return [
-          // Learning System (Duolingo-style)
-          _SectionHeader(title: 'Learn'),
-          _LearnCard(ref: ref),
+      // Learning System (Duolingo-style)
+      _SectionHeader(title: 'Learn'),
+      _LearnCard(ref: ref),
 
-          // Daily Goal Settings
-          NavListTile(
-            icon: Icons.flag,
-            title: 'Daily Goal',
-            subtitle: 'Set your daily XP target',
-            onTap: () => _showDailyGoalPicker(context, ref),
+      // Daily Goal Settings
+      NavListTile(
+        icon: Icons.flag,
+        title: 'Daily Goal',
+        subtitle: 'Set your daily XP target',
+        onTap: () => _showDailyGoalPicker(context, ref),
+      ),
+
+      // House Navigation (Rooms)
+      _SectionHeader(title: 'Explore'),
+      const RoomNavigation(),
+
+      // Appearance
+      _SectionHeader(title: 'Appearance'),
+      NavListTile(
+        icon: Icons.palette_outlined,
+        title: 'Light/Dark Mode',
+        subtitle: _themeModeLabel(settings.themeMode),
+        onTap: () => _showThemePicker(context, ref, settings.themeMode),
+      ),
+      NavListTile(
+        icon: Icons.color_lens_outlined,
+        title: 'Room Themes',
+        subtitle: 'Customize your living room style',
+        onTap: () => Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => const ThemeGalleryScreen()),
+        ),
+      ),
+      NavListTile(
+        icon: Icons.tune,
+        title: 'Difficulty Settings',
+        subtitle: 'Adjust app complexity level',
+        onTap: () => Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => const _DifficultySettingsWrapper()),
+        ),
+      ),
+      SwitchListTile(
+        secondary: const Icon(Icons.wb_twilight),
+        title: const Text('Day/Night Ambiance'),
+        subtitle: const Text('Subtle lighting based on time of day'),
+        value: settings.ambientLightingEnabled,
+        onChanged: (value) => ref
+            .read(settingsProvider.notifier)
+            .setAmbientLightingEnabled(value),
+      ),
+
+      const Divider(),
+
+      // Accessibility
+      _SectionHeader(title: 'Accessibility'),
+      _ReducedMotionToggle(ref: ref),
+      SwitchListTile(
+        secondary: const Icon(Icons.vibration),
+        title: const Text('Haptic Feedback'),
+        subtitle: const Text('Vibration for important interactions'),
+        value: settings.hapticFeedbackEnabled,
+        onChanged: (value) =>
+            ref.read(settingsProvider.notifier).setHapticFeedbackEnabled(value),
+      ),
+
+      const Divider(),
+
+      // Notifications
+      _SectionHeader(title: 'Notifications'),
+      NavListTile(
+        icon: Icons.notifications_active,
+        title: 'Streak Reminders',
+        subtitle: 'Daily notifications to maintain your streak',
+        onTap: () => Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => const NotificationSettingsScreen()),
+        ),
+      ),
+      SwitchListTile(
+        secondary: const Icon(Icons.notifications_outlined),
+        title: const Text('Task Reminders'),
+        subtitle: const Text('Get notified when tasks are due'),
+        value: settings.notificationsEnabled,
+        onChanged: (value) => _toggleNotifications(context, ref, value),
+      ),
+      if (settings.notificationsEnabled)
+        AppListTile(
+          leading: SizedBox(width: AppSpacing.lg),
+          title: 'Test Notification',
+          subtitle: 'Send a test notification',
+          onTap: () => _testNotification(context),
+        ),
+
+      const Divider(),
+
+      // Tools
+      _SectionHeader(title: 'Tools'),
+      NavListTile(
+        icon: Icons.notifications_active,
+        title: 'Reminders',
+        subtitle: 'Schedule maintenance tasks',
+        onTap: () => Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => const RemindersScreen()),
+        ),
+      ),
+      NavListTile(
+        icon: Icons.favorite,
+        title: 'Fish Wishlist',
+        subtitle: 'Track fish you want to keep',
+        onTap: () => Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) =>
+                const WishlistScreen(category: WishlistCategory.fish),
           ),
-
-          // House Navigation (Rooms)
-          _SectionHeader(title: 'Explore'),
-          const RoomNavigation(),
-
-          // Appearance
-          _SectionHeader(title: 'Appearance'),
-          NavListTile(
-            icon: Icons.palette_outlined,
-            title: 'Light/Dark Mode',
-            subtitle: _themeModeLabel(settings.themeMode),
-            onTap: () => _showThemePicker(context, ref, settings.themeMode),
+        ),
+      ),
+      NavListTile(
+        icon: Icons.compare,
+        title: 'Compare Tanks',
+        subtitle: 'Side-by-side tank comparison',
+        onTap: () => Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => const TankComparisonScreen()),
+        ),
+      ),
+      NavListTile(
+        icon: Icons.calculate_outlined,
+        title: 'Water Change Calculator',
+        subtitle: 'Calculate how much water to change',
+        onTap: () => Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => const WaterChangeCalculatorScreen(),
           ),
+        ),
+      ),
+      NavListTile(
+        icon: Icons.bubble_chart,
+        title: 'CO2 Calculator',
+        subtitle: 'Calculate CO2 from pH and KH',
+        onTap: () => Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => const Co2CalculatorScreen()),
+        ),
+      ),
+      NavListTile(
+        icon: Icons.science_outlined,
+        title: 'Dosing Calculator',
+        subtitle: 'Calculate fertilizer & medication doses',
+        onTap: () => Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => const DosingCalculatorScreen()),
+        ),
+      ),
+      NavListTile(
+        icon: Icons.straighten,
+        title: 'Unit Converter',
+        subtitle: 'Volume, temperature, length, hardness',
+        onTap: () => Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => const UnitConverterScreen()),
+        ),
+      ),
+      NavListTile(
+        icon: Icons.view_in_ar,
+        title: 'Tank Volume Calculator',
+        subtitle: 'Calculate volume for any tank shape',
+        onTap: () => Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => const TankVolumeCalculatorScreen()),
+        ),
+      ),
+      NavListTile(
+        icon: Icons.account_balance_wallet,
+        title: 'Cost Tracker',
+        subtitle: 'Track aquarium expenses',
+        onTap: () => Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => const CostTrackerScreen()),
+        ),
+      ),
+      NavListTile(
+        icon: Icons.compare_arrows,
+        title: 'Compatibility Checker',
+        subtitle: 'Check if fish work together',
+        onTap: () => Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => const CompatibilityCheckerScreen()),
+        ),
+      ),
+      NavListTile(
+        icon: Icons.lightbulb,
+        title: 'Lighting Schedule',
+        subtitle: 'Optimize light duration for your setup',
+        onTap: () => Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => const LightingScheduleScreen()),
+        ),
+      ),
+      NavListTile(
+        icon: Icons.bar_chart,
+        title: 'Stocking Calculator',
+        subtitle: 'Check if your tank is overstocked',
+        onTap: () => Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => const StockingCalculatorScreen()),
+        ),
+      ),
+
+      const Divider(),
+
+      // Shop Street
+      _SectionHeader(title: 'Shop'),
+      NavListTile(
+        icon: Icons.storefront,
+        title: 'Shop Street',
+        subtitle: 'Find aquarium supplies online',
+        onTap: () => Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => const ShopStreetScreen()),
+        ),
+      ),
+
+      const Divider(),
+
+      // About section
+      _SectionHeader(title: 'About'),
+      AppListTile(
+        leading: const Icon(Icons.water_drop),
+        title: 'Aquarium',
+        subtitle: 'Version 0.1.0',
+      ),
+      AppListTile(
+        leading: const Icon(Icons.info_outline),
+        title: 'About',
+        onTap: () => _showAboutDialog(context),
+      ),
+
+      const Divider(),
+
+      // Data section
+      _SectionHeader(title: 'Data'),
+      AppListTile(
+        leading: const Icon(Icons.upload_outlined),
+        title: 'Export All Data',
+        subtitle: 'Share your aquarium data as JSON',
+        onTap: () => _exportData(context),
+      ),
+      AppListTile(
+        leading: const Icon(Icons.download_outlined),
+        title: 'Import Data',
+        subtitle: 'Restore from a backup file',
+        onTap: () => _importData(context),
+      ),
+      AppListTile(
+        leading: const Icon(Icons.photo_library_outlined),
+        title: 'Photo Storage',
+        subtitle: 'View where photos are stored',
+        onTap: () => _showPhotoStorageInfo(context),
+      ),
+
+      const Divider(),
+
+      // Guides & Education section (expandable)
+      _SectionHeader(title: 'Guides & Education'),
+
+      // Essential - Quick start and emergency
+      ExpansionTile(
+        leading: const Icon(Icons.star, color: AppColors.primary),
+        title: const Text('Essential Guides'),
+        subtitle: const Text('Start here - critical knowledge'),
+        children: [
           NavListTile(
-            icon: Icons.color_lens_outlined,
-            title: 'Room Themes',
-            subtitle: 'Customize your living room style',
+            icon: Icons.rocket_launch,
+            title: 'Quick Start Guide',
+            subtitle: 'Setting up your first aquarium',
             onTap: () => Navigator.push(
               context,
-              MaterialPageRoute(builder: (_) => const ThemeGalleryScreen()),
+              MaterialPageRoute(builder: (_) => const QuickStartGuideScreen()),
             ),
           ),
           NavListTile(
-            icon: Icons.tune,
-            title: 'Difficulty Settings',
-            subtitle: 'Adjust app complexity level',
+            icon: Icons.emergency,
+            iconColor: AppColors.error,
+            title: 'Emergency Guide',
+            subtitle: 'Urgent problems & immediate actions',
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const EmergencyGuideScreen()),
+            ),
+          ),
+          NavListTile(
+            icon: Icons.autorenew,
+            title: 'Nitrogen Cycle Guide',
+            subtitle: 'Learn how to cycle your tank',
             onTap: () => Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (_) => const _DifficultySettingsWrapper(),
+                builder: (_) => const NitrogenCycleGuideScreen(),
               ),
             ),
           ),
-          SwitchListTile(
-            secondary: const Icon(Icons.wb_twilight),
-            title: const Text('Day/Night Ambiance'),
-            subtitle: const Text('Subtle lighting based on time of day'),
-            value: settings.ambientLightingEnabled,
-            onChanged: (value) => ref
-                .read(settingsProvider.notifier)
-                .setAmbientLightingEnabled(value),
-          ),
+        ],
+      ),
 
-          const Divider(),
-
-          // Accessibility
-          _SectionHeader(title: 'Accessibility'),
-          _ReducedMotionToggle(ref: ref),
-          SwitchListTile(
-            secondary: const Icon(Icons.vibration),
-            title: const Text('Haptic Feedback'),
-            subtitle: const Text('Vibration for important interactions'),
-            value: settings.hapticFeedbackEnabled,
-            onChanged: (value) => ref
-                .read(settingsProvider.notifier)
-                .setHapticFeedbackEnabled(value),
-          ),
-
-          const Divider(),
-
-          // Notifications
-          _SectionHeader(title: 'Notifications'),
+      // Water & Parameters
+      ExpansionTile(
+        leading: const Icon(Icons.water_drop, color: AppColors.info),
+        title: const Text('Water & Parameters'),
+        subtitle: const Text('Water quality and chemistry'),
+        children: [
           NavListTile(
-            icon: Icons.notifications_active,
-            title: 'Streak Reminders',
-            subtitle: 'Daily notifications to maintain your streak',
+            icon: Icons.analytics_outlined,
+            title: 'Water Parameters Guide',
+            subtitle: 'Ideal ranges for common fish',
             onTap: () => Navigator.push(
               context,
-              MaterialPageRoute(
-                builder: (_) => const NotificationSettingsScreen(),
-              ),
+              MaterialPageRoute(builder: (_) => const ParameterGuideScreen()),
             ),
           ),
-          SwitchListTile(
-            secondary: const Icon(Icons.notifications_outlined),
-            title: const Text('Task Reminders'),
-            subtitle: const Text('Get notified when tasks are due'),
-            value: settings.notificationsEnabled,
-            onChanged: (value) => _toggleNotifications(context, ref, value),
-          ),
-          if (settings.notificationsEnabled)
-            AppListTile(
-              leading: SizedBox(width: AppSpacing.lg),
-              title: 'Test Notification',
-              subtitle: 'Send a test notification',
-              onTap: () => _testNotification(context),
-            ),
-
-          const Divider(),
-
-          // Tools
-          _SectionHeader(title: 'Tools'),
           NavListTile(
-            icon: Icons.notifications_active,
-            title: 'Reminders',
-            subtitle: 'Schedule maintenance tasks',
+            icon: Icons.grass,
+            title: 'Algae Guide',
+            subtitle: 'Identify and control common algae',
             onTap: () => Navigator.push(
               context,
-              MaterialPageRoute(builder: (_) => const RemindersScreen()),
+              MaterialPageRoute(builder: (_) => const AlgaeGuideScreen()),
+            ),
+          ),
+        ],
+      ),
+
+      // Fish Care
+      ExpansionTile(
+        leading: const Icon(Icons.set_meal, color: AppColors.success),
+        title: const Text('Fish Care'),
+        subtitle: const Text('Feeding, health, and wellbeing'),
+        children: [
+          NavListTile(
+            icon: Icons.restaurant,
+            title: 'Feeding Guide',
+            subtitle: 'How much, how often, what types',
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const FeedingGuideScreen()),
+            ),
+          ),
+          NavListTile(
+            icon: Icons.healing,
+            title: 'Fish Disease Guide',
+            subtitle: 'Identify and treat common diseases',
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const DiseaseGuideScreen()),
+            ),
+          ),
+          NavListTile(
+            icon: Icons.sync_alt,
+            title: 'Acclimation Guide',
+            subtitle: 'How to safely add new fish',
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const AcclimationGuideScreen()),
+            ),
+          ),
+          NavListTile(
+            icon: Icons.local_hospital,
+            title: 'Quarantine Guide',
+            subtitle: 'Setup, protocol, medications',
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const QuarantineGuideScreen()),
             ),
           ),
           NavListTile(
             icon: Icons.favorite,
-            title: 'Fish Wishlist',
-            subtitle: 'Track fish you want to keep',
+            title: 'Breeding Guide',
+            subtitle: 'Methods, conditioning, raising fry',
             onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const BreedingGuideScreen()),
+            ),
+          ),
+        ],
+      ),
+
+      // Tank Setup & Design
+      ExpansionTile(
+        leading: const Icon(Icons.landscape, color: AppColors.warning),
+        title: const Text('Tank Setup & Design'),
+        subtitle: const Text('Equipment, substrate, hardscape'),
+        children: [
+          NavListTile(
+            icon: Icons.build,
+            title: 'Equipment Guide',
+            subtitle: 'Filters, heaters, lights, CO2, testing',
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const EquipmentGuideScreen()),
+            ),
+          ),
+          NavListTile(
+            icon: Icons.layers,
+            title: 'Substrate Guide',
+            subtitle: 'Types, recommendations, layering',
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const SubstrateGuideScreen()),
+            ),
+          ),
+          NavListTile(
+            icon: Icons.terrain,
+            title: 'Hardscape Guide',
+            subtitle: 'Rocks, driftwood, aquascaping tips',
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const HardscapeGuideScreen()),
+            ),
+          ),
+        ],
+      ),
+
+      // Planning & Travel
+      ExpansionTile(
+        leading: const Icon(Icons.flight_takeoff),
+        title: const Text('Planning & Travel'),
+        subtitle: const Text('Vacation prep and maintenance'),
+        children: [
+          NavListTile(
+            icon: Icons.flight,
+            title: 'Vacation Planning',
+            subtitle: 'Prepare your tank for time away',
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const VacationGuideScreen()),
+            ),
+          ),
+        ],
+      ),
+
+      // Reference Materials
+      ExpansionTile(
+        leading: const Icon(Icons.library_books),
+        title: const Text('Reference'),
+        subtitle: const Text('Databases, glossary, FAQ'),
+        children: [
+          NavListTile(
+            icon: Icons.set_meal,
+            title: 'Fish Database',
+            subtitle: '45+ species with care info',
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const SpeciesBrowserScreen()),
+            ),
+          ),
+          NavListTile(
+            icon: Icons.eco,
+            title: 'Plant Database',
+            subtitle: '20+ aquarium plants with care info',
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const PlantBrowserScreen()),
+            ),
+          ),
+          NavListTile(
+            icon: Icons.menu_book,
+            title: 'Glossary',
+            subtitle: '50+ aquarium terms explained',
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const GlossaryScreen()),
+            ),
+          ),
+          NavListTile(
+            icon: Icons.quiz,
+            title: 'FAQ',
+            subtitle: 'Frequently asked questions',
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const FaqScreen()),
+            ),
+          ),
+          NavListTile(
+            icon: Icons.build_circle,
+            title: 'Troubleshooting',
+            subtitle: 'Common problems & solutions',
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const TroubleshootingScreen()),
+            ),
+          ),
+        ],
+      ),
+
+      const Divider(),
+
+      // Help & Support section (app-related)
+      _SectionHeader(title: 'Help & Support'),
+      AppListTile(
+        leading: const Icon(Icons.replay_outlined),
+        title: 'Replay Onboarding',
+        subtitle: 'See the intro screens again',
+        onTap: () => _replayOnboarding(context),
+      ),
+      AppListTile(
+        leading: const Icon(Icons.auto_awesome),
+        title: 'Add Sample Tank',
+        subtitle: 'Explore the app with demo data',
+        onTap: () async {
+          final actions = ref.read(tankActionsProvider);
+          final demoTank = await actions.addDemoTank();
+          if (context.mounted) {
+            AppFeedback.showSuccess(context, 'Sample tank added!');
+            Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (_) =>
-                    const WishlistScreen(category: WishlistCategory.fish),
+                builder: (_) => TankDetailScreen(tankId: demoTank.id),
               ),
-            ),
-          ),
-          NavListTile(
-            icon: Icons.compare,
-            title: 'Compare Tanks',
-            subtitle: 'Side-by-side tank comparison',
-            onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(builder: (_) => const TankComparisonScreen()),
-            ),
-          ),
-          NavListTile(
-            icon: Icons.calculate_outlined,
-            title: 'Water Change Calculator',
-            subtitle: 'Calculate how much water to change',
-            onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (_) => const WaterChangeCalculatorScreen(),
-              ),
-            ),
-          ),
-          NavListTile(
-            icon: Icons.bubble_chart,
-            title: 'CO2 Calculator',
-            subtitle: 'Calculate CO2 from pH and KH',
-            onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(builder: (_) => const Co2CalculatorScreen()),
-            ),
-          ),
-          NavListTile(
-            icon: Icons.science_outlined,
-            title: 'Dosing Calculator',
-            subtitle: 'Calculate fertilizer & medication doses',
-            onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(builder: (_) => const DosingCalculatorScreen()),
-            ),
-          ),
-          NavListTile(
-            icon: Icons.straighten,
-            title: 'Unit Converter',
-            subtitle: 'Volume, temperature, length, hardness',
-            onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(builder: (_) => const UnitConverterScreen()),
-            ),
-          ),
-          NavListTile(
-            icon: Icons.view_in_ar,
-            title: 'Tank Volume Calculator',
-            subtitle: 'Calculate volume for any tank shape',
-            onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (_) => const TankVolumeCalculatorScreen(),
-              ),
-            ),
-          ),
-          NavListTile(
-            icon: Icons.account_balance_wallet,
-            title: 'Cost Tracker',
-            subtitle: 'Track aquarium expenses',
-            onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(builder: (_) => const CostTrackerScreen()),
-            ),
-          ),
-          NavListTile(
-            icon: Icons.compare_arrows,
-            title: 'Compatibility Checker',
-            subtitle: 'Check if fish work together',
-            onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (_) => const CompatibilityCheckerScreen(),
-              ),
-            ),
-          ),
-          NavListTile(
-            icon: Icons.lightbulb,
-            title: 'Lighting Schedule',
-            subtitle: 'Optimize light duration for your setup',
-            onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(builder: (_) => const LightingScheduleScreen()),
-            ),
-          ),
-          NavListTile(
-            icon: Icons.bar_chart,
-            title: 'Stocking Calculator',
-            subtitle: 'Check if your tank is overstocked',
-            onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (_) => const StockingCalculatorScreen(),
-              ),
-            ),
-          ),
+            );
+          }
+        },
+      ),
+      NavListTile(
+        icon: Icons.backup,
+        title: 'Backup & Restore',
+        subtitle: 'Export or import your tank data',
+        onTap: () => Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => const BackupRestoreScreen()),
+        ),
+      ),
+      NavListTile(
+        icon: Icons.info_outline,
+        title: 'About',
+        subtitle: 'Version info and features',
+        onTap: () => Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => const AboutScreen()),
+        ),
+      ),
 
-          const Divider(),
+      const Divider(),
 
-          // Shop Street
-          _SectionHeader(title: 'Shop'),
-          NavListTile(
-            icon: Icons.storefront,
-            title: 'Shop Street',
-            subtitle: 'Find aquarium supplies online',
-            onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(builder: (_) => const ShopStreetScreen()),
-            ),
-          ),
-
-          const Divider(),
-
-          // About section
-          _SectionHeader(title: 'About'),
-          AppListTile(
-            leading: const Icon(Icons.water_drop),
-            title: 'Aquarium',
-            subtitle: 'Version 0.1.0',
-          ),
-          AppListTile(
-            leading: const Icon(Icons.info_outline),
-            title: 'About',
-            onTap: () => _showAboutDialog(context),
-          ),
-
-          const Divider(),
-
-          // Data section
-          _SectionHeader(title: 'Data'),
-          AppListTile(
-            leading: const Icon(Icons.upload_outlined),
-            title: 'Export All Data',
-            subtitle: 'Share your aquarium data as JSON',
-            onTap: () => _exportData(context),
-          ),
-          AppListTile(
-            leading: const Icon(Icons.download_outlined),
-            title: 'Import Data',
-            subtitle: 'Restore from a backup file',
-            onTap: () => _importData(context),
-          ),
-          AppListTile(
-            leading: const Icon(Icons.photo_library_outlined),
-            title: 'Photo Storage',
-            subtitle: 'View where photos are stored',
-            onTap: () => _showPhotoStorageInfo(context),
-          ),
-
-          const Divider(),
-
-          // Guides & Education section (expandable)
-          _SectionHeader(title: 'Guides & Education'),
-
-          // Essential - Quick start and emergency
-          ExpansionTile(
-            leading: const Icon(Icons.star, color: AppColors.primary),
-            title: const Text('Essential Guides'),
-            subtitle: const Text('Start here - critical knowledge'),
-            children: [
-              NavListTile(
-                icon: Icons.rocket_launch,
-                title: 'Quick Start Guide',
-                subtitle: 'Setting up your first aquarium',
-                onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => const QuickStartGuideScreen(),
-                  ),
-                ),
-              ),
-              NavListTile(
-                icon: Icons.emergency,
-                iconColor: AppColors.error,
-                title: 'Emergency Guide',
-                subtitle: 'Urgent problems & immediate actions',
-                onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => const EmergencyGuideScreen(),
-                  ),
-                ),
-              ),
-              NavListTile(
-                icon: Icons.autorenew,
-                title: 'Nitrogen Cycle Guide',
-                subtitle: 'Learn how to cycle your tank',
-                onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => const NitrogenCycleGuideScreen(),
-                  ),
-                ),
-              ),
-            ],
-          ),
-
-          // Water & Parameters
-          ExpansionTile(
-            leading: const Icon(Icons.water_drop, color: AppColors.info),
-            title: const Text('Water & Parameters'),
-            subtitle: const Text('Water quality and chemistry'),
-            children: [
-              NavListTile(
-                icon: Icons.analytics_outlined,
-                title: 'Water Parameters Guide',
-                subtitle: 'Ideal ranges for common fish',
-                onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => const ParameterGuideScreen(),
-                  ),
-                ),
-              ),
-              NavListTile(
-                icon: Icons.grass,
-                title: 'Algae Guide',
-                subtitle: 'Identify and control common algae',
-                onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => const AlgaeGuideScreen()),
-                ),
-              ),
-            ],
-          ),
-
-          // Fish Care
-          ExpansionTile(
-            leading: const Icon(Icons.set_meal, color: AppColors.success),
-            title: const Text('Fish Care'),
-            subtitle: const Text('Feeding, health, and wellbeing'),
-            children: [
-              NavListTile(
-                icon: Icons.restaurant,
-                title: 'Feeding Guide',
-                subtitle: 'How much, how often, what types',
-                onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => const FeedingGuideScreen()),
-                ),
-              ),
-              NavListTile(
-                icon: Icons.healing,
-                title: 'Fish Disease Guide',
-                subtitle: 'Identify and treat common diseases',
-                onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => const DiseaseGuideScreen()),
-                ),
-              ),
-              NavListTile(
-                icon: Icons.sync_alt,
-                title: 'Acclimation Guide',
-                subtitle: 'How to safely add new fish',
-                onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => const AcclimationGuideScreen(),
-                  ),
-                ),
-              ),
-              NavListTile(
-                icon: Icons.local_hospital,
-                title: 'Quarantine Guide',
-                subtitle: 'Setup, protocol, medications',
-                onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => const QuarantineGuideScreen(),
-                  ),
-                ),
-              ),
-              NavListTile(
-                icon: Icons.favorite,
-                title: 'Breeding Guide',
-                subtitle: 'Methods, conditioning, raising fry',
-                onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => const BreedingGuideScreen(),
-                  ),
-                ),
-              ),
-            ],
-          ),
-
-          // Tank Setup & Design
-          ExpansionTile(
-            leading: const Icon(Icons.landscape, color: AppColors.warning),
-            title: const Text('Tank Setup & Design'),
-            subtitle: const Text('Equipment, substrate, hardscape'),
-            children: [
-              NavListTile(
-                icon: Icons.build,
-                title: 'Equipment Guide',
-                subtitle: 'Filters, heaters, lights, CO2, testing',
-                onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => const EquipmentGuideScreen(),
-                  ),
-                ),
-              ),
-              NavListTile(
-                icon: Icons.layers,
-                title: 'Substrate Guide',
-                subtitle: 'Types, recommendations, layering',
-                onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => const SubstrateGuideScreen(),
-                  ),
-                ),
-              ),
-              NavListTile(
-                icon: Icons.terrain,
-                title: 'Hardscape Guide',
-                subtitle: 'Rocks, driftwood, aquascaping tips',
-                onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => const HardscapeGuideScreen(),
-                  ),
-                ),
-              ),
-            ],
-          ),
-
-          // Planning & Travel
-          ExpansionTile(
-            leading: const Icon(Icons.flight_takeoff),
-            title: const Text('Planning & Travel'),
-            subtitle: const Text('Vacation prep and maintenance'),
-            children: [
-              NavListTile(
-                icon: Icons.flight,
-                title: 'Vacation Planning',
-                subtitle: 'Prepare your tank for time away',
-                onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => const VacationGuideScreen(),
-                  ),
-                ),
-              ),
-            ],
-          ),
-
-          // Reference Materials
-          ExpansionTile(
-            leading: const Icon(Icons.library_books),
-            title: const Text('Reference'),
-            subtitle: const Text('Databases, glossary, FAQ'),
-            children: [
-              NavListTile(
-                icon: Icons.set_meal,
-                title: 'Fish Database',
-                subtitle: '45+ species with care info',
-                onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => const SpeciesBrowserScreen(),
-                  ),
-                ),
-              ),
-              NavListTile(
-                icon: Icons.eco,
-                title: 'Plant Database',
-                subtitle: '20+ aquarium plants with care info',
-                onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => const PlantBrowserScreen()),
-                ),
-              ),
-              NavListTile(
-                icon: Icons.menu_book,
-                title: 'Glossary',
-                subtitle: '50+ aquarium terms explained',
-                onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => const GlossaryScreen()),
-                ),
-              ),
-              NavListTile(
-                icon: Icons.quiz,
-                title: 'FAQ',
-                subtitle: 'Frequently asked questions',
-                onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => const FaqScreen()),
-                ),
-              ),
-              NavListTile(
-                icon: Icons.build_circle,
-                title: 'Troubleshooting',
-                subtitle: 'Common problems & solutions',
-                onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => const TroubleshootingScreen(),
-                  ),
-                ),
-              ),
-            ],
-          ),
-
-          const Divider(),
-
-          // Help & Support section (app-related)
-          _SectionHeader(title: 'Help & Support'),
-          AppListTile(
-            leading: const Icon(Icons.replay_outlined),
-            title: 'Replay Onboarding',
-            subtitle: 'See the intro screens again',
-            onTap: () => _replayOnboarding(context),
-          ),
-          AppListTile(
-            leading: const Icon(Icons.auto_awesome),
-            title: 'Add Sample Tank',
-            subtitle: 'Explore the app with demo data',
-            onTap: () async {
-              final actions = ref.read(tankActionsProvider);
-              final demoTank = await actions.addDemoTank();
-              if (context.mounted) {
-                AppFeedback.showSuccess(context, 'Sample tank added!');
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => TankDetailScreen(tankId: demoTank.id),
-                  ),
-                );
-              }
-            },
-          ),
-          NavListTile(
-            icon: Icons.backup,
-            title: 'Backup & Restore',
-            subtitle: 'Export or import your tank data',
-            onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(builder: (_) => const BackupRestoreScreen()),
-            ),
-          ),
-          NavListTile(
-            icon: Icons.info_outline,
-            title: 'About',
-            subtitle: 'Version info and features',
-            onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(builder: (_) => const AboutScreen()),
-            ),
-          ),
-
-          const Divider(),
-
-          // Danger zone
-          _SectionHeader(title: 'Danger Zone', color: AppColors.error),
-          AppListTile(
-            leading: const Icon(
-              Icons.delete_forever_outlined,
-              color: AppColors.error,
-            ),
-            title: 'Clear All Data',
-            subtitle: 'Delete all tanks, logs, and settings',
-            isDestructive: true,
-            onTap: () => _confirmClearData(context),
-          ),
-          // Debug crash button (only in debug mode)
-          if (kDebugMode)
-            AppListTile(
-              leading: const Icon(
-                Icons.bug_report_outlined,
-                color: Colors.orange,
-              ),
-              title: 'Test Error Boundary',
-              subtitle: 'Trigger a crash to test error handling',
-              onTap: () => _triggerTestCrash(),
-            ),
+      // Danger zone
+      _SectionHeader(title: 'Danger Zone', color: AppColors.error),
+      AppListTile(
+        leading: const Icon(
+          Icons.delete_forever_outlined,
+          color: AppColors.error,
+        ),
+        title: 'Clear All Data',
+        subtitle: 'Delete all tanks, logs, and settings',
+        isDestructive: true,
+        onTap: () => _confirmClearData(context),
+      ),
+      // Debug crash button (only in debug mode)
+      if (kDebugMode)
+        AppListTile(
+          leading: const Icon(Icons.bug_report_outlined, color: Colors.orange),
+          title: 'Test Error Boundary',
+          subtitle: 'Trigger a crash to test error handling',
+          onTap: () => _triggerTestCrash(),
+        ),
     ];
   }
 
@@ -1196,10 +1164,7 @@ class _SectionHeader extends StatelessWidget {
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
-                colors: [
-                  AppColors.primary,
-                  AppColors.primaryAlpha50,
-                ],
+                colors: [AppColors.primary, AppColors.primaryAlpha50],
               ),
               borderRadius: BorderRadius.circular(2),
             ),
@@ -1208,7 +1173,11 @@ class _SectionHeader extends StatelessWidget {
           Text(
             title.toUpperCase(),
             style: AppTypography.labelLarge.copyWith(
-              color: color ?? (isDark ? AppColors.textSecondaryDark : AppColors.textSecondary),
+              color:
+                  color ??
+                  (isDark
+                      ? AppColors.textSecondaryDark
+                      : AppColors.textSecondary),
               letterSpacing: 1.2,
               fontWeight: FontWeight.w600,
             ),
@@ -1262,7 +1231,9 @@ class _LearnCard extends StatelessWidget {
                   offset: const Offset(0, 8),
                 ),
                 BoxShadow(
-                  color: isDark ? AppColors.blackAlpha30 : AppColors.blackAlpha10,
+                  color: isDark
+                      ? AppColors.blackAlpha30
+                      : AppColors.blackAlpha10,
                   blurRadius: 8,
                   offset: const Offset(0, 2),
                 ),
@@ -1277,7 +1248,11 @@ class _LearnCard extends StatelessWidget {
                     color: AppOverlays.white20,
                     borderRadius: AppRadius.mediumRadius,
                   ),
-                  child: const Icon(Icons.school, color: Colors.white, size: 28),
+                  child: const Icon(
+                    Icons.school,
+                    color: Colors.white,
+                    size: 28,
+                  ),
                 ),
                 const SizedBox(width: AppSpacing.md),
                 Expanded(
@@ -1448,13 +1423,13 @@ class _DifficultySettingsWrapperState
 /// Reduced motion toggle with system setting detection
 class _ReducedMotionToggle extends ConsumerWidget {
   final WidgetRef ref;
-  
+
   const _ReducedMotionToggle({required this.ref});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final reducedMotion = ref.watch(reducedMotionProvider);
-    
+
     return Column(
       children: [
         SwitchListTile(
@@ -1464,30 +1439,35 @@ class _ReducedMotionToggle extends ConsumerWidget {
             reducedMotion.systemPreference
                 ? 'System setting detected - animations simplified'
                 : reducedMotion.userOverride == true
-                    ? 'Manually enabled - animations simplified'
-                    : 'Minimize animations for comfort',
+                ? 'Manually enabled - animations simplified'
+                : 'Minimize animations for comfort',
           ),
           value: reducedMotion.isEnabled,
           onChanged: (value) async {
             if (value == reducedMotion.systemPreference) {
               // Setting to match system - clear override
-              await ref.read(reducedMotionProvider.notifier).setUserPreference(null);
+              await ref
+                  .read(reducedMotionProvider.notifier)
+                  .setUserPreference(null);
             } else {
               // Manual override
-              await ref.read(reducedMotionProvider.notifier).setUserPreference(value);
+              await ref
+                  .read(reducedMotionProvider.notifier)
+                  .setUserPreference(value);
             }
-            
+
             if (context.mounted) {
               AppFeedback.showInfo(
                 context,
-                value 
+                value
                     ? 'Reduced motion enabled - animations simplified'
                     : 'Reduced motion disabled - full animations',
               );
             }
           },
         ),
-        if (reducedMotion.systemPreference && reducedMotion.userOverride == false)
+        if (reducedMotion.systemPreference &&
+            reducedMotion.userOverride == false)
           Padding(
             padding: const EdgeInsets.fromLTRB(72, 0, 16, 12),
             child: Text(
