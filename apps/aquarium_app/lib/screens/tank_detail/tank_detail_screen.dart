@@ -75,7 +75,7 @@ class TankDetailScreen extends ConsumerWidget {
   static Widget _buildTaskSkeletonPreview() {
     return Skeletonizer(
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
+        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
         child: AppCard(
           padding: AppCardPadding.none,
           child: Column(
@@ -98,7 +98,7 @@ class TankDetailScreen extends ConsumerWidget {
     final placeholders = SkeletonPlaceholders.logsList;
     return Skeletonizer(
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
+        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
         child: AppCard(
           padding: AppCardPadding.none,
           child: Column(
@@ -106,7 +106,7 @@ class TankDetailScreen extends ConsumerWidget {
               return ListTile(
                 leading: CircleAvatar(
                   backgroundColor: AppOverlays.primary20,
-                  child: const Icon(Icons.science, color: AppColors.primary, size: 20),
+                  child: const Icon(Icons.science, color: AppColors.primary, size: AppIconSizes.sm),
                 ),
                 title: Text(log.title ?? 'Activity placeholder'),
                 subtitle: Text(DateFormat('MMM d, h:mm a').format(log.timestamp)),
@@ -124,7 +124,7 @@ class TankDetailScreen extends ConsumerWidget {
         height: 100,
         child: ListView.builder(
           scrollDirection: Axis.horizontal,
-          padding: const EdgeInsets.symmetric(horizontal: 16),
+          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
           itemCount: 4,
           itemBuilder: (context, index) {
             return Container(
@@ -133,7 +133,7 @@ class TankDetailScreen extends ConsumerWidget {
               child: Card(
                 margin: EdgeInsets.zero,
                 child: Padding(
-                  padding: const EdgeInsets.all(12),
+                  padding: const EdgeInsets.all(AppSpacing.sm2),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -158,7 +158,7 @@ class TankDetailScreen extends ConsumerWidget {
         height: 100,
         child: ListView.builder(
           scrollDirection: Axis.horizontal,
-          padding: const EdgeInsets.symmetric(horizontal: 16),
+          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
           itemCount: 4,
           itemBuilder: (context, index) {
             return Container(
@@ -167,7 +167,7 @@ class TankDetailScreen extends ConsumerWidget {
               child: Card(
                 margin: EdgeInsets.zero,
                 child: Padding(
-                  padding: const EdgeInsets.all(12),
+                  padding: const EdgeInsets.all(AppSpacing.sm2),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -503,7 +503,7 @@ class TankDetailScreen extends ConsumerWidget {
               // Action buttons
               SliverToBoxAdapter(
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
                   child: Row(
                     children: [
                       Expanded(
@@ -545,7 +545,7 @@ class TankDetailScreen extends ConsumerWidget {
               // Dashboard: latest snapshot
               SliverToBoxAdapter(
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
                   child: logsAllAsync.when(
                     loading: () => const DashboardLoadingCard(
                       title: 'Latest Water Snapshot',
@@ -561,7 +561,7 @@ class TankDetailScreen extends ConsumerWidget {
               // Dashboard: trends
               SliverToBoxAdapter(
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
                   child: logsAllAsync.when(
                     loading: () => const DashboardLoadingCard(title: 'Trends'),
                     error: (_, __) => const SizedBox.shrink(),
@@ -585,7 +585,7 @@ class TankDetailScreen extends ConsumerWidget {
               // Dashboard: alerts
               SliverToBoxAdapter(
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
                   child: logsAllAsync.when(
                     loading: () => const DashboardLoadingCard(title: 'Alerts'),
                     error: (_, __) => const SizedBox.shrink(),

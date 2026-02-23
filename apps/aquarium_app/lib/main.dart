@@ -15,16 +15,11 @@ import 'services/notification_service.dart';
 import 'services/hearts_service.dart';
 import 'services/celebration_service.dart';
 import 'services/xp_animation_service.dart';
-// import 'services/firebase_analytics_service.dart';
+import 'services/supabase_service.dart';
 import 'theme/app_theme.dart';
 import 'utils/performance_monitor.dart';
 import 'widgets/performance_overlay.dart';
 import 'widgets/error_boundary.dart';
-
-// Firebase imports (uncomment when Firebase is configured)
-// import 'package:firebase_core/firebase_core.dart';
-// import 'package:firebase_crashlytics/firebase_crashlytics.dart';
-// import 'dart:async';
 
 // Global navigator key for notification navigation
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
@@ -37,26 +32,11 @@ const bool _showPerformanceOverlay = false; // Set to true to show FPS overlay
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Initialize Firebase (uncomment when configured - see docs/setup/FIREBASE_SETUP_GUIDE.md)
-  // await Firebase.initializeApp();
-
-  // Initialize Firebase Crashlytics (uncomment when Firebase is configured)
-  // FlutterError.onError = (errorDetails) {
-  //   FirebaseCrashlytics.instance.recordFlutterFatalError(errorDetails);
-  // };
-  // 
-  // // Pass all uncaught asynchronous errors to Crashlytics
-  // PlatformDispatcher.instance.onError = (error, stack) {
-  //   FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
-  //   return true;
-  // };
+  // TODO: Configure Firebase — see docs/FIREBASE_SETUP_GUIDE.md
 
   // Initialize global error handler
   GlobalErrorHandler.initialize(
     onError: (error, stack) {
-      // Send to Firebase Crashlytics when enabled
-      // FirebaseCrashlytics.instance.recordError(error, stack);
-      
       // Log to console in debug mode
       if (kDebugMode) {
         debugPrint('Global error caught: $error\n$stack');
@@ -64,8 +44,10 @@ void main() async {
     },
   );
 
-  // Initialize Firebase Analytics (uncomment when Firebase is configured)
-  // await FirebaseAnalyticsService().initialize();
+
+  // Initialize Supabase (safe to call — returns false if credentials are
+  // placeholders, and the app continues in offline-only mode).
+  await SupabaseService.initialize();
 
   // Start performance monitoring in debug mode if enabled
   if (_enablePerformanceMonitoring) {
@@ -118,9 +100,7 @@ class AquariumApp extends ConsumerWidget {
       theme: AppTheme.light,
       darkTheme: AppTheme.dark,
       themeMode: settings.flutterThemeMode,
-      // Add Firebase Analytics observer when configured
       // navigatorObservers: [
-      //   FirebaseAnalyticsService().observer,
       // ],
       home: XpAnimationListener(
         child: CelebrationOverlayWrapper(

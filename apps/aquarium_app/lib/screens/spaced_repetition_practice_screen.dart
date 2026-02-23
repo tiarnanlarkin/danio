@@ -13,7 +13,6 @@ import '../providers/user_profile_provider.dart';
 import '../providers/inventory_provider.dart';
 import '../services/review_queue_service.dart';
 import '../theme/app_theme.dart';
-import '../widgets/confetti_overlay.dart';
 
 class SpacedRepetitionPracticeScreen extends ConsumerStatefulWidget {
   const SpacedRepetitionPracticeScreen({super.key});
@@ -126,7 +125,7 @@ class _SpacedRepetitionPracticeScreenState
     SpacedRepetitionState srState,
   ) {
     return ListView.builder(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(AppSpacing.lg2),
       itemCount: _getPracticeHomeItemCount(srState),
       itemBuilder: (context, index) => _buildPracticeHomeItem(
         context,
@@ -215,7 +214,7 @@ class _SpacedRepetitionPracticeScreenState
 
   Widget _buildStatsCard(SpacedRepetitionState srState) {
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(AppSpacing.lg2),
       decoration: BoxDecoration(
         gradient: AppColors.primaryGradient,
         borderRadius: AppRadius.mediumRadius,
@@ -225,7 +224,7 @@ class _SpacedRepetitionPracticeScreenState
         children: [
           Row(
             children: [
-              const Icon(Icons.auto_graph, color: Colors.white, size: 32),
+              const Icon(Icons.auto_graph, color: Colors.white, size: AppIconSizes.lg),
               const SizedBox(width: 12),
               Expanded(
                 child: Column(
@@ -283,7 +282,7 @@ class _SpacedRepetitionPracticeScreenState
   Widget _buildStatItem(String label, String value, IconData icon) {
     return Column(
       children: [
-        Icon(icon, color: Colors.white70, size: 20),
+        Icon(icon, color: Colors.white70, size: AppIconSizes.sm),
         const SizedBox(height: AppSpacing.xs),
         Text(
           value,
@@ -320,16 +319,16 @@ class _SpacedRepetitionPracticeScreenState
               : AppColors.whiteAlpha50,
           borderRadius: AppRadius.mediumRadius,
           border: Border.all(
-            color: enabled ? color.withOpacity(0.3) : AppColors.surfaceVariant,
+            color: enabled ? color.withAlpha(76) : AppColors.surfaceVariant,
           ),
         ),
         child: Row(
           children: [
             Container(
-              padding: const EdgeInsets.all(12),
+              padding: const EdgeInsets.all(AppSpacing.sm2),
               decoration: BoxDecoration(
                 color: enabled
-                    ? color.withOpacity(0.1)
+                    ? color.withAlpha(26)
                     : AppColors.surfaceVariant,
                 borderRadius: AppRadius.mediumRadius,
               ),
@@ -363,7 +362,7 @@ class _SpacedRepetitionPracticeScreenState
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
               decoration: BoxDecoration(
                 color: enabled && count > 0
-                    ? color.withOpacity(0.2)
+                    ? color.withAlpha(51)
                     : AppColors.surfaceVariant,
                 borderRadius: AppRadius.mediumRadius,
               ),
@@ -676,7 +675,7 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
                       children: [
                         Icon(
                           Icons.check_circle,
-                          size: 16,
+                          size: AppIconSizes.xs,
                           color: AppColors.success,
                         ),
                         const SizedBox(width: AppSpacing.xs),
@@ -687,7 +686,7 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
                           ),
                         ),
                         const SizedBox(width: AppSpacing.md),
-                        Icon(Icons.cancel, size: 16, color: AppColors.error),
+                        Icon(Icons.cancel, size: AppIconSizes.xs, color: AppColors.error),
                         const SizedBox(width: AppSpacing.xs),
                         Text(
                           '${cardsReviewed - correctSoFar} incorrect',
@@ -723,7 +722,7 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
 
   Widget _buildCardContent() {
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(AppSpacing.lg2),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -786,7 +785,7 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
           if (_errorMessage != null) ...[
             const SizedBox(height: AppSpacing.md),
             Container(
-              padding: const EdgeInsets.all(12),
+              padding: const EdgeInsets.all(AppSpacing.sm2),
               decoration: BoxDecoration(
                 color: AppOverlays.error10,
                 borderRadius: AppRadius.smallRadius,
@@ -808,7 +807,7 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
 
   Widget _buildAnswerButtons() {
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(AppSpacing.lg2),
       decoration: BoxDecoration(
         color: Theme.of(context).scaffoldBackgroundColor,
         boxShadow: [
@@ -890,7 +889,7 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
     final lastResult = widget.session.results.last;
 
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(AppSpacing.lg2),
       decoration: BoxDecoration(
         color: lastResult.correct
             ? AppOverlays.success10
@@ -1066,7 +1065,7 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
           // Score display
           Center(
             child: Container(
-              padding: const EdgeInsets.all(20),
+              padding: const EdgeInsets.all(AppSpacing.lg2),
               decoration: BoxDecoration(
                 color: accuracy >= 80
                     ? AppOverlays.success10
@@ -1205,7 +1204,7 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
             ),
             const SizedBox(height: AppSpacing.md),
             Container(
-              padding: const EdgeInsets.all(12),
+              padding: const EdgeInsets.all(AppSpacing.sm2),
               decoration: BoxDecoration(
                 color: AppColors.surfaceVariant,
                 borderRadius: AppRadius.smallRadius,
@@ -1217,7 +1216,7 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
                     children: [
                       const Icon(
                         Icons.check_circle,
-                        size: 16,
+                        size: AppIconSizes.xs,
                         color: AppColors.success,
                       ),
                       const SizedBox(width: 6),
@@ -1232,7 +1231,7 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
                     children: [
                       const Icon(
                         Icons.pending,
-                        size: 16,
+                        size: AppIconSizes.xs,
                         color: AppColors.textSecondary,
                       ),
                       const SizedBox(width: 6),

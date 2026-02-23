@@ -50,11 +50,11 @@ class _TutorialOverlayState extends ConsumerState<TutorialOverlay>
     super.initState();
     _animationController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 300),
+      duration: AppDurations.medium4,
     );
     _fadeAnimation = CurvedAnimation(
       parent: _animationController,
-      curve: Curves.easeInOut,
+      curve: AppCurves.standard,
     );
     _animationController.forward();
   }
@@ -201,12 +201,12 @@ class _TutorialOverlayState extends ConsumerState<TutorialOverlay>
         opacity: _fadeAnimation,
         child: Card(
           color: Colors.white,
-          elevation: 8,
+          elevation: AppElevation.level3,
           shape: RoundedRectangleBorder(
             borderRadius: AppRadius.mediumRadius,
           ),
           child: Padding(
-            padding: const EdgeInsets.all(20),
+            padding: const EdgeInsets.all(AppSpacing.lg2),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,

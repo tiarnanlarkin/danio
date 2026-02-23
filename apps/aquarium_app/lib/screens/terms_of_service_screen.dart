@@ -131,7 +131,7 @@ class TermsOfServiceScreen extends StatelessWidget {
               ),
               child: Row(
                 children: [
-                  Icon(Icons.info_outline, color: Colors.blue[700], size: 24),
+                  Icon(Icons.info_outline, color: Colors.blue[700], size: AppIconSizes.md),
                   const SizedBox(width: AppSpacing.md),
                   Expanded(
                     child: Text(
@@ -184,7 +184,7 @@ class TermsOfServiceScreen extends StatelessWidget {
             child: Icon(
               icon,
               color: highlighted ? Colors.orange[700] : AppColors.primary,
-              size: 20,
+              size: AppIconSizes.sm,
             ),
           ),
           const SizedBox(width: AppSpacing.md),
@@ -261,7 +261,7 @@ class TermsOfServiceScreen extends StatelessWidget {
   Widget _buildContactRow(IconData icon, String text) {
     return Row(
       children: [
-        Icon(icon, size: 16, color: Colors.grey[600]),
+        Icon(icon, size: AppIconSizes.xs, color: Colors.grey[600]),
         const SizedBox(width: AppSpacing.sm),
         Expanded(
           child: Text(text, style: TextStyle(color: Colors.grey[800])),

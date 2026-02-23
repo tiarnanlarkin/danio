@@ -3,6 +3,7 @@
 /// Reduces memory footprint by 60-80% compared to full-resolution loading
 library;
 
+import '../theme/app_theme.dart';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -53,7 +54,7 @@ class OptimizedNetworkImage extends StatelessWidget {
       memCacheWidth: cacheWidth,
       memCacheHeight: cacheHeight,
       fadeInDuration: fadeIn
-          ? const Duration(milliseconds: 300)
+          ? AppDurations.medium4
           : Duration.zero,
       placeholder: (context, url) =>
           placeholder ??
@@ -64,7 +65,7 @@ class OptimizedNetworkImage extends StatelessWidget {
               child: CircularProgressIndicator(
                 strokeWidth: 2,
                 valueColor: AlwaysStoppedAnimation<Color>(
-                  Theme.of(context).primaryColor.withOpacity(0.5),
+                  Theme.of(context).primaryColor.withAlpha(128),
                 ),
               ),
             ),
@@ -74,7 +75,7 @@ class OptimizedNetworkImage extends StatelessWidget {
           Icon(
             Icons.broken_image_outlined,
             color: Colors.grey.shade400,
-            size: 48,
+            size: AppIconSizes.xl,
           ),
     );
 

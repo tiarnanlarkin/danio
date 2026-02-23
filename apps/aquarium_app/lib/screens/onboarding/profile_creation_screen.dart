@@ -10,7 +10,7 @@ import '../../providers/user_profile_provider.dart';
 import '../../theme/app_theme.dart';
 import 'enhanced_placement_test_screen.dart';
 import '../../utils/accessibility_utils.dart';
-import '../house_navigator.dart';
+import '../tab_navigator.dart';
 
 class ProfileCreationScreen extends ConsumerStatefulWidget {
   const ProfileCreationScreen({super.key});
@@ -52,7 +52,7 @@ class _ProfileCreationScreenState extends ConsumerState<ProfileCreationScreen> {
 
       // Create default profile for dev/testing
       await profileNotifier.createProfile(
-        name: 'Dev User',
+        name: 'Aquarist',
         experienceLevel: ExperienceLevel.beginner,
         primaryTankType: TankType.freshwater,
         goals: [UserGoal.keepFishAlive],
@@ -60,9 +60,9 @@ class _ProfileCreationScreenState extends ConsumerState<ProfileCreationScreen> {
 
       if (!mounted) return;
 
-      // Skip to HouseNavigator (main app shell with navigation)
+      // Skip to TabNavigator (main app shell with navigation)
       Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (context) => const HouseNavigator()),
+        MaterialPageRoute(builder: (context) => const TabNavigator()),
         (route) => false,
       );
     } catch (e) {
@@ -416,7 +416,7 @@ class _ProfileCreationScreenState extends ConsumerState<ProfileCreationScreen> {
         onTap: () => setState(() => _selectedTankType = type),
         borderRadius: AppRadius.mediumRadius,
         child: Container(
-          padding: const EdgeInsets.all(12),
+          padding: const EdgeInsets.all(AppSpacing.sm2),
           decoration: BoxDecoration(
             color: isSelected ? AppOverlays.primary10 : null,
             borderRadius: AppRadius.mediumRadius,

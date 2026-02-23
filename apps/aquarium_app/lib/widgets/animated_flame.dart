@@ -2,6 +2,7 @@
 /// Features multiple flame tongues, dynamic intensity, and celebration effects
 library;
 
+import '../theme/app_theme.dart';
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -58,7 +59,7 @@ class _AnimatedFlameState extends State<AnimatedFlame>
 
     // Glow pulse controller
     _glowController = AnimationController(
-      duration: const Duration(milliseconds: 1500),
+      duration: AppDurations.celebration,
       vsync: this,
     )..repeat(reverse: true);
 
@@ -74,12 +75,12 @@ class _AnimatedFlameState extends State<AnimatedFlame>
       return TweenSequence<double>([
         TweenSequenceItem(
           tween: Tween<double>(begin: 0.85, end: 1.0)
-              .chain(CurveTween(curve: Curves.easeInOut)),
+              .chain(CurveTween(curve: AppCurves.standard)),
           weight: 50,
         ),
         TweenSequenceItem(
           tween: Tween<double>(begin: 1.0, end: 0.85)
-              .chain(CurveTween(curve: Curves.easeInOut)),
+              .chain(CurveTween(curve: AppCurves.standard)),
           weight: 50,
         ),
       ]).animate(
@@ -91,18 +92,18 @@ class _AnimatedFlameState extends State<AnimatedFlame>
     });
 
     _glowAnimation = Tween<double>(begin: 0.4, end: 0.8).animate(
-      CurvedAnimation(parent: _glowController, curve: Curves.easeInOut),
+      CurvedAnimation(parent: _glowController, curve: AppCurves.standard),
     );
 
     _celebrationScale = TweenSequence<double>([
       TweenSequenceItem(
         tween: Tween<double>(begin: 1.0, end: 1.3)
-            .chain(CurveTween(curve: Curves.easeOut)),
+            .chain(CurveTween(curve: AppCurves.standardDecelerate)),
         weight: 40,
       ),
       TweenSequenceItem(
         tween: Tween<double>(begin: 1.3, end: 1.0)
-            .chain(CurveTween(curve: Curves.elasticOut)),
+            .chain(CurveTween(curve: AppCurves.elastic)),
         weight: 60,
       ),
     ]).animate(_celebrationController);

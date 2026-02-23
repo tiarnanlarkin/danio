@@ -361,7 +361,7 @@ class _RockCard extends StatelessWidget {
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Icon(Icons.check, size: 16, color: AppColors.success),
+                        Icon(Icons.check, size: AppIconSizes.xs, color: AppColors.success),
                         const SizedBox(width: AppSpacing.sm),
                         Expanded(
                           child: Text(t, style: AppTypography.bodySmall),
@@ -429,7 +429,7 @@ class _WoodCard extends StatelessWidget {
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Icon(Icons.check, size: 16, color: AppColors.success),
+                        Icon(Icons.check, size: AppIconSizes.xs, color: AppColors.success),
                         const SizedBox(width: AppSpacing.sm),
                         Expanded(
                           child: Text(t, style: AppTypography.bodySmall),
@@ -529,7 +529,7 @@ class _TipCard extends StatelessWidget {
     return Card(
       margin: const EdgeInsets.only(bottom: 8),
       child: Padding(
-        padding: const EdgeInsets.all(12),
+        padding: const EdgeInsets.all(AppSpacing.sm2),
         child: Row(
           children: [
             Icon(icon, color: AppColors.primary),

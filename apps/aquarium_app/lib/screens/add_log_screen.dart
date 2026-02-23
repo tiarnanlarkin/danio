@@ -18,7 +18,6 @@ import '../services/xp_animation_service.dart';
 import '../theme/app_theme.dart';
 import '../utils/app_feedback.dart';
 import '../widgets/core/app_button.dart';
-// import '../services/firebase_analytics_service.dart';
 
 const _uuid = Uuid();
 
@@ -69,7 +68,6 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
   @override
   void initState() {
     super.initState();
-    // FirebaseAnalyticsService().logScreenView('add_log');
 
     final existing = widget.existingLog;
     if (existing != null) {
@@ -345,7 +343,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
                 children: [
                   Icon(
                     Icons.dashboard_outlined,
-                    size: 16,
+                    size: AppIconSizes.xs,
                     color: _bulkEntryMode
                         ? AppColors.primary
                         : AppColors.textSecondary,
@@ -378,7 +376,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
         if (hasPrefilledValues && widget.existingLog == null) ...[
           const SizedBox(height: 12),
           Container(
-            padding: const EdgeInsets.all(12),
+            padding: const EdgeInsets.all(AppSpacing.sm2),
             decoration: BoxDecoration(
               color: AppOverlays.info10,
               borderRadius: AppRadius.smallRadius,
@@ -386,7 +384,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
             ),
             child: Row(
               children: [
-                Icon(Icons.history, size: 16, color: AppColors.info),
+                Icon(Icons.history, size: AppIconSizes.xs, color: AppColors.info),
                 const SizedBox(width: AppSpacing.sm),
                 Expanded(
                   child: Text(
@@ -1119,7 +1117,7 @@ class _PhotoGrid extends StatelessWidget {
                     color: AppOverlays.black60,
                     borderRadius: AppRadius.pillRadius,
                   ),
-                  child: const Icon(Icons.close, size: 16, color: Colors.white),
+                  child: const Icon(Icons.close, size: AppIconSizes.xs, color: Colors.white),
                 ),
               ),
             ),

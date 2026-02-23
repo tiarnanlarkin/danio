@@ -190,9 +190,9 @@ class _StockingCalculatorScreenState extends State<StockingCalculatorScreen> {
 
           // Stocking meter
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
             child: Card(
-              color: _stockingColor.withOpacity(0.1),
+              color: _stockingColor.withAlpha(26),
               child: Padding(
                 padding: const EdgeInsets.all(AppSpacing.md),
                 child: Column(
@@ -240,7 +240,7 @@ class _StockingCalculatorScreenState extends State<StockingCalculatorScreen> {
 
           // Search
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
             child: TextField(
               decoration: InputDecoration(
                 hintText: 'Search fish to add...',
@@ -270,7 +270,7 @@ class _StockingCalculatorScreenState extends State<StockingCalculatorScreen> {
                   final species = _searchResults[i];
                   return ListTile(
                     dense: true,
-                    leading: const Icon(Icons.add_circle_outline, size: 20),
+                    leading: const Icon(Icons.add_circle_outline, size: AppIconSizes.sm),
                     title: Text(species.commonName),
                     subtitle: Text(
                       '${species.adultSizeCm.toStringAsFixed(0)}cm adult',

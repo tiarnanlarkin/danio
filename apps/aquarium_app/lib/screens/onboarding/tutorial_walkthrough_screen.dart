@@ -7,7 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../models/models.dart';
 import '../../providers/tank_provider.dart';
 import '../../theme/app_theme.dart';
-import '../house_navigator.dart';
+import '../tab_navigator.dart';
 
 class TutorialWalkthroughScreen extends ConsumerStatefulWidget {
   const TutorialWalkthroughScreen({super.key});
@@ -62,8 +62,8 @@ class _TutorialWalkthroughScreenState
   void _nextStep() {
     if (_currentStep < _steps.length - 1) {
       _pageController.nextPage(
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeInOut,
+        duration: AppDurations.medium4,
+        curve: AppCurves.standard,
       );
     } else {
       // Move to tank creation form
@@ -74,8 +74,8 @@ class _TutorialWalkthroughScreenState
   void _previousStep() {
     if (_currentStep > 0 && _currentStep < _steps.length) {
       _pageController.previousPage(
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeInOut,
+        duration: AppDurations.medium4,
+        curve: AppCurves.standard,
       );
     } else if (_currentStep == _steps.length) {
       setState(() => _currentStep = _steps.length - 1);
@@ -84,7 +84,7 @@ class _TutorialWalkthroughScreenState
 
   void _skipTutorial() {
     Navigator.of(context).pushAndRemoveUntil(
-      MaterialPageRoute(builder: (_) => const HouseNavigator()),
+      MaterialPageRoute(builder: (_) => const TabNavigator()),
       (route) => false,
     );
   }
@@ -119,12 +119,12 @@ class _TutorialWalkthroughScreenState
         ),
       );
 
-      await Future.delayed(const Duration(milliseconds: 500));
+      await Future.delayed(AppDurations.long2);
 
       if (!mounted) return;
 
       Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (_) => const HouseNavigator()),
+        MaterialPageRoute(builder: (_) => const TabNavigator()),
         (route) => false,
       );
     } catch (e) {
@@ -192,12 +192,12 @@ class _TutorialWalkthroughScreenState
 
           // Icon
           Container(
-            padding: const EdgeInsets.all(20),
+            padding: const EdgeInsets.all(AppSpacing.lg2),
             decoration: BoxDecoration(
               color: AppOverlays.accent10,
               shape: BoxShape.circle,
             ),
-            child: Icon(step.icon, size: 48, color: AppColors.accent),
+            child: Icon(step.icon, size: AppIconSizes.xl, color: AppColors.accent),
           ),
           const SizedBox(height: AppSpacing.lg),
 

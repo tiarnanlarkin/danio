@@ -17,7 +17,7 @@ import '../utils/app_feedback.dart';
 import '../utils/skeleton_placeholders.dart';
 import '../widgets/core/app_card.dart';
 import '../widgets/empty_state.dart';
-import '../widgets/error_state.dart';
+import '../widgets/core/app_states.dart';
 import '../widgets/mascot/mascot_widgets.dart';
 import 'livestock_detail_screen.dart';
 
@@ -90,9 +90,9 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
       ),
       body: livestockAsync.when(
         loading: () => _buildSkeletonList(),
-        error: (err, _) => ErrorState(
-          message: 'Failed to load livestock',
-          details: 'Please check your connection and try again',
+        error: (err, _) => AppErrorState(
+          title: 'Failed to load livestock',
+          message: 'Please check your connection and try again',
           onRetry: () => ref.invalidate(livestockProvider(widget.tankId)),
         ),
         data: (livestock) {
@@ -120,7 +120,7 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
           return RefreshIndicator(
             onRefresh: () async {
               ref.invalidate(livestockProvider(widget.tankId));
-              await Future.delayed(const Duration(milliseconds: 500));
+              await Future.delayed(AppDurations.long2);
             },
             child: Column(
               children: [
@@ -136,7 +136,7 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
                     // Summary card (when not in select mode)
                     if (!_isSelectMode)
                       SliverPadding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
                         sliver: SliverToBoxAdapter(
                           child: AppCard(
                             padding: AppCardPadding.standard,
@@ -175,7 +175,7 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
                     // Selection info banner (when in select mode)
                     if (_isSelectMode)
                       SliverPadding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
                         sliver: SliverToBoxAdapter(
                           child: AppCard(
                             backgroundColor: AppOverlays.primary10,
@@ -224,7 +224,7 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
 
                     // Livestock list with lazy loading (SliverList.builder)
                     SliverPadding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
                       sliver: SliverList.builder(
                         itemCount: livestock.length,
                         itemBuilder: (context, index) {
@@ -300,7 +300,7 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
                             foregroundColor: Colors.white,
                             padding: const EdgeInsets.symmetric(vertical: 16),
                           ),
-                          icon: const Icon(Icons.move_down, size: 20),
+                          icon: const Icon(Icons.move_down, size: AppIconSizes.sm),
                           label: const Text('Move to Tank'),
                         ),
                       ),
@@ -313,7 +313,7 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
                             foregroundColor: Colors.white,
                             padding: const EdgeInsets.symmetric(vertical: 16),
                           ),
-                          icon: const Icon(Icons.delete_outline, size: 20),
+                          icon: const Icon(Icons.delete_outline, size: AppIconSizes.sm),
                           label: const Text('Delete'),
                         ),
                       ),
@@ -489,7 +489,7 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
               padding: AppCardPadding.standard,
               child: Row(
                 children: [
-                  Icon(Icons.pets, color: AppColors.primary, size: 32),
+                  Icon(Icons.pets, color: AppColors.primary, size: AppIconSizes.lg),
                   const SizedBox(width: AppSpacing.md),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -874,7 +874,7 @@ class _AddLivestockSheetState extends State<_AddLivestockSheet> {
                     ? Icon(
                         Icons.check_circle,
                         color: AppColors.success,
-                        size: 20,
+                        size: AppIconSizes.sm,
                       )
                     : null,
               ),
@@ -918,7 +918,7 @@ class _AddLivestockSheetState extends State<_AddLivestockSheet> {
             if (_selectedSpecies != null) ...[
               const SizedBox(height: AppSpacing.sm),
               Container(
-                padding: const EdgeInsets.all(12),
+                padding: const EdgeInsets.all(AppSpacing.sm2),
                 decoration: BoxDecoration(
                   color: AppColors.primaryAlpha05,
                   borderRadius: AppRadius.smallRadius,
@@ -931,7 +931,7 @@ class _AddLivestockSheetState extends State<_AddLivestockSheet> {
                       children: [
                         const Icon(
                           Icons.info_outline,
-                          size: 16,
+                          size: AppIconSizes.xs,
                           color: AppColors.primary,
                         ),
                         const SizedBox(width: 6),

@@ -173,7 +173,7 @@ class _FeatureItem extends StatelessWidget {
               color: AppOverlays.primary10,
               borderRadius: AppRadius.smallRadius,
             ),
-            child: Icon(icon, color: AppColors.primary, size: 20),
+            child: Icon(icon, color: AppColors.primary, size: AppIconSizes.sm),
           ),
           const SizedBox(width: AppSpacing.md),
           Expanded(

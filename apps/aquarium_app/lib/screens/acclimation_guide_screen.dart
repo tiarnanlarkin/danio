@@ -332,7 +332,7 @@ class _TipCard extends StatelessWidget {
         padding: AppCardPadding.compact,
         child: Row(
           children: [
-            Icon(icon, color: AppColors.primary, size: 24),
+            Icon(icon, color: AppColors.primary, size: AppIconSizes.md),
             const SizedBox(width: 12),
             Expanded(child: Text(tip, style: AppTypography.bodyMedium)),
           ],

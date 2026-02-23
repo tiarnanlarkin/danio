@@ -109,7 +109,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Icon(Icons.star, size: 16, color: AppColors.accent),
+                    const Icon(Icons.star, size: AppIconSizes.xs, color: AppColors.accent),
                     const SizedBox(width: AppSpacing.xs),
                     Text(
                       '${widget.lesson.xpReward} XP',
@@ -150,7 +150,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
       children: [
         Expanded(
           child: ListView.builder(
-            padding: const EdgeInsets.all(20),
+            padding: const EdgeInsets.all(AppSpacing.lg2),
             itemCount: totalItems,
             itemBuilder: (context, index) {
               // Lesson title with Hero animation
@@ -176,7 +176,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
               if (index == 2) {
                 return Row(
                   children: [
-                    Icon(Icons.timer, size: 16, color: AppColors.textSecondary),
+                    Icon(Icons.timer, size: AppIconSizes.xs, color: AppColors.textSecondary),
                     const SizedBox(width: AppSpacing.xs),
                     Text(
                       '${widget.lesson.estimatedMinutes} min read',
@@ -211,7 +211,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
 
         // Bottom action
         Container(
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.all(AppSpacing.lg2),
           decoration: BoxDecoration(
             color: Theme.of(context).scaffoldBackgroundColor,
             boxShadow: [
@@ -246,7 +246,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
                           child: CircularProgressIndicator(
                             strokeWidth: 2,
                             valueColor: AlwaysStoppedAnimation<Color>(
-                              Colors.white,
+                              AppColors.onPrimary,
                             ),
                           ),
                         ),
@@ -288,7 +288,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Icon(Icons.lightbulb, color: AppColors.primary, size: 24),
+              Icon(Icons.lightbulb, color: AppColors.primary, size: AppIconSizes.md),
               const SizedBox(width: 12),
               Expanded(
                 child: Text(
@@ -313,7 +313,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Icon(Icons.tips_and_updates, color: AppColors.success, size: 24),
+              Icon(Icons.tips_and_updates, color: AppColors.success, size: AppIconSizes.md),
               const SizedBox(width: 12),
               Expanded(
                 child: Column(
@@ -345,7 +345,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Icon(Icons.warning_amber, color: AppColors.warning, size: 24),
+              Icon(Icons.warning_amber, color: AppColors.warning, size: AppIconSizes.md),
               const SizedBox(width: 12),
               Expanded(
                 child: Column(
@@ -437,7 +437,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
             borderRadius: AppRadius.mediumRadius,
           ),
           child: Center(
-            child: Icon(Icons.image, size: 48, color: AppColors.textHint),
+            child: Icon(Icons.image, size: AppIconSizes.xl, color: AppColors.textHint),
           ),
         );
     }
@@ -455,7 +455,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
       children: [
         // Progress
         Padding(
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.all(AppSpacing.lg2),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -566,7 +566,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
                             child: icon != null
                                 ? Icon(
                                     icon,
-                                    size: 20,
+                                    size: AppIconSizes.sm,
                                     color: isCorrect
                                         ? AppColors.success
                                         : AppColors.error,
@@ -575,7 +575,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
                                     String.fromCharCode(65 + optionIndex),
                                     style: AppTypography.labelLarge.copyWith(
                                       color: isSelected && !_answered
-                                          ? Colors.white
+                                          ? AppColors.onPrimary
                                           : AppColors.textSecondary,
                                     ),
                                   ),
@@ -631,7 +631,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
 
         // Bottom action
         Container(
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.all(AppSpacing.lg2),
           decoration: BoxDecoration(
             color: Theme.of(context).scaffoldBackgroundColor,
             boxShadow: [
@@ -771,19 +771,19 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
 
                   // XP earned
                   Container(
-                    padding: const EdgeInsets.all(20),
+                    padding: const EdgeInsets.all(AppSpacing.lg2),
                     decoration: BoxDecoration(
                       gradient: AppColors.primaryGradient,
                       borderRadius: AppRadius.mediumRadius,
                     ),
                     child: Column(
                       children: [
-                        const Icon(Icons.star, color: Colors.white, size: 40),
+                        const Icon(Icons.star, color: AppColors.onPrimary, size: 40),
                         const SizedBox(height: AppSpacing.sm),
                         Text(
                           '+$totalXp XP',
                           style: AppTypography.headlineMedium.copyWith(
-                            color: Colors.white,
+                            color: AppColors.onPrimary,
                           ),
                         ),
                         if (bonusXp > 0) ...[
@@ -806,7 +806,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
 
         // Bottom action
         Container(
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.all(AppSpacing.lg2),
           child: SafeArea(
             child: ElevatedButton(
               onPressed: _isCompletingLesson
@@ -825,7 +825,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
                           child: CircularProgressIndicator(
                             strokeWidth: 2,
                             valueColor: AlwaysStoppedAnimation<Color>(
-                              Colors.white,
+                              AppColors.onPrimary,
                             ),
                           ),
                         ),

@@ -9,7 +9,7 @@ import '../../models/models.dart';
 import '../../providers/tank_provider.dart';
 import '../../theme/app_theme.dart';
 import '../../services/onboarding_service.dart';
-import '../house_navigator.dart';
+import '../tab_navigator.dart';
 
 class EnhancedTutorialWalkthroughScreen extends ConsumerStatefulWidget {
   const EnhancedTutorialWalkthroughScreen({super.key});
@@ -77,12 +77,12 @@ class _EnhancedTutorialWalkthroughScreenState
     );
 
     _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _animationController, curve: Curves.easeIn),
+      CurvedAnimation(parent: _animationController, curve: AppCurves.standardAccelerate),
     );
 
     _slideAnimation =
         Tween<Offset>(begin: const Offset(0, 0.3), end: Offset.zero).animate(
-          CurvedAnimation(parent: _animationController, curve: Curves.easeOut),
+          CurvedAnimation(parent: _animationController, curve: AppCurves.standardDecelerate),
         );
 
     _animationController.forward();
@@ -99,8 +99,8 @@ class _EnhancedTutorialWalkthroughScreenState
   void _nextStep() {
     if (_currentStep < _steps.length - 1) {
       _pageController.nextPage(
-        duration: const Duration(milliseconds: 400),
-        curve: Curves.easeInOut,
+        duration: AppDurations.long1,
+        curve: AppCurves.standard,
       );
       // Trigger animation for next page
       _animationController.reset();
@@ -116,8 +116,8 @@ class _EnhancedTutorialWalkthroughScreenState
   void _previousStep() {
     if (_currentStep > 0 && _currentStep < _steps.length) {
       _pageController.previousPage(
-        duration: const Duration(milliseconds: 400),
-        curve: Curves.easeInOut,
+        duration: AppDurations.long1,
+        curve: AppCurves.standard,
       );
     } else if (_currentStep == _steps.length) {
       setState(() => _currentStep = _steps.length - 1);
@@ -134,7 +134,7 @@ class _EnhancedTutorialWalkthroughScreenState
     if (!mounted) return;
     
     Navigator.of(context).pushAndRemoveUntil(
-      MaterialPageRoute(builder: (_) => const HouseNavigator()),
+      MaterialPageRoute(builder: (_) => const TabNavigator()),
       (route) => false,
     );
   }
@@ -181,7 +181,7 @@ class _EnhancedTutorialWalkthroughScreenState
       if (!mounted) return;
 
       Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (_) => const HouseNavigator()),
+        MaterialPageRoute(builder: (_) => const TabNavigator()),
         (route) => false,
       );
     } catch (e) {
@@ -267,8 +267,8 @@ class _EnhancedTutorialWalkthroughScreenState
   Widget _buildAnimatedProgressBar() {
     return TweenAnimationBuilder<double>(
       tween: Tween(begin: 0.0, end: (_currentStep + 1) / (_steps.length + 1)),
-      duration: const Duration(milliseconds: 500),
-      curve: Curves.easeOut,
+      duration: AppDurations.long2,
+      curve: AppCurves.standardDecelerate,
       builder: (context, value, child) => Column(
         children: [
           LinearProgressIndicator(
@@ -319,7 +319,7 @@ class _EnhancedTutorialWalkthroughScreenState
               TweenAnimationBuilder<double>(
                 tween: Tween(begin: 0.0, end: 1.0),
                 duration: const Duration(milliseconds: 600),
-                curve: Curves.elasticOut,
+                curve: AppCurves.elastic,
                 builder: (context, value, child) => Transform.scale(
                   scale: value,
                   child: Text(
@@ -334,7 +334,7 @@ class _EnhancedTutorialWalkthroughScreenState
               Container(
                 padding: const EdgeInsets.all(AppSpacing.lg),
                 decoration: BoxDecoration(
-                  color: step.color.withOpacity(0.1),
+                  color: step.color.withAlpha(26),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(step.icon, size: 56, color: step.color),
@@ -388,7 +388,7 @@ class _EnhancedTutorialWalkthroughScreenState
                     TweenAnimationBuilder<double>(
                       tween: Tween(begin: 0.0, end: 1.0),
                       duration: const Duration(milliseconds: 600),
-                      curve: Curves.easeOut,
+                      curve: AppCurves.standardDecelerate,
                       builder: (context, value, child) =>
                           Opacity(opacity: value, child: child),
                       child: Column(
@@ -533,8 +533,8 @@ class _EnhancedTutorialWalkthroughScreenState
                     // Create button with animation
                     TweenAnimationBuilder<double>(
                       tween: Tween(begin: 0.9, end: 1.0),
-                      duration: const Duration(milliseconds: 300),
-                      curve: Curves.easeOut,
+                      duration: AppDurations.medium4,
+                      curve: AppCurves.standardDecelerate,
                       builder: (context, value, child) =>
                           Transform.scale(scale: value, child: child),
                       child: FilledButton.icon(
@@ -571,7 +571,7 @@ class _EnhancedTutorialWalkthroughScreenState
 
   Widget _buildDemoTankCard() {
     return Card(
-      elevation: _useDemoData ? 4 : 1,
+      elevation: _useDemoData ? AppElevation.level2 : AppElevation.level1,
       color: _useDemoData ? AppOverlays.accent10 : null,
       shape: RoundedRectangleBorder(
         borderRadius: AppRadius.mediumRadius,
@@ -627,7 +627,7 @@ class _EnhancedTutorialWalkthroughScreenState
 
   Widget _buildDemoTankPreview() {
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(AppSpacing.lg2),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
@@ -661,7 +661,7 @@ class _EnhancedTutorialWalkthroughScreenState
           _buildPreviewRow(Icons.water_drop, 'Freshwater Community'),
           const SizedBox(height: AppSpacing.md),
           Container(
-            padding: const EdgeInsets.all(12),
+            padding: const EdgeInsets.all(AppSpacing.sm2),
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: AppRadius.smallRadius,
@@ -671,7 +671,7 @@ class _EnhancedTutorialWalkthroughScreenState
                 const Icon(
                   Icons.lightbulb_outline,
                   color: Colors.orange,
-                  size: 20,
+                  size: AppIconSizes.sm,
                 ),
                 const SizedBox(width: AppSpacing.sm),
                 Expanded(
@@ -790,10 +790,10 @@ class _TankTypeCard extends StatelessWidget {
       onTap: isDisabled ? null : onTap,
       borderRadius: AppRadius.mediumRadius,
       child: AnimatedOpacity(
-        duration: const Duration(milliseconds: 200),
+        duration: AppDurations.medium2,
         opacity: isDisabled ? 0.5 : 1.0,
         child: AnimatedContainer(
-          duration: const Duration(milliseconds: 200),
+          duration: AppDurations.medium2,
           padding: const EdgeInsets.all(AppSpacing.md),
           decoration: BoxDecoration(
             color: isSelected
@@ -857,7 +857,7 @@ class _WaterTypeCard extends StatelessWidget {
       onTap: onTap,
       borderRadius: AppRadius.mediumRadius,
       child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
+        duration: AppDurations.medium2,
         padding: const EdgeInsets.all(AppSpacing.md),
         decoration: BoxDecoration(
           color: isSelected
@@ -930,7 +930,7 @@ class _SuccessDialogState extends State<_SuccessDialog>
     );
     _scaleAnimation = CurvedAnimation(
       parent: _controller,
-      curve: Curves.elasticOut,
+      curve: AppCurves.elastic,
     );
     _controller.forward();
     _confettiController.play();

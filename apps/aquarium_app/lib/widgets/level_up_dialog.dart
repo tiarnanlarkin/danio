@@ -66,7 +66,7 @@ class _LevelUpDialogState extends State<LevelUpDialog>
 
     _scaleAnimation = CurvedAnimation(
       parent: _scaleController,
-      curve: Curves.elasticOut,
+      curve: AppCurves.elastic,
     );
 
     // Confetti animation (continuous loop)
@@ -210,7 +210,7 @@ class _LevelUpDialogState extends State<LevelUpDialog>
                             const Icon(
                               Icons.lock_open,
                               color: Colors.white,
-                              size: 20,
+                              size: AppIconSizes.sm,
                             ),
                             const SizedBox(width: 12),
                             Expanded(
@@ -241,7 +241,7 @@ class _LevelUpDialogState extends State<LevelUpDialog>
                           shape: RoundedRectangleBorder(
                             borderRadius: AppRadius.largeRadius,
                           ),
-                          elevation: 0,
+                          elevation: AppElevation.level0,
                         ),
                         child: const Text(
                           'Continue',

@@ -13,7 +13,7 @@ class LivestockPreview extends StatelessWidget {
   Widget build(BuildContext context) {
     if (livestock.isEmpty) {
       return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
+        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
         child: AppCard(
           padding: AppCardPadding.spacious,
           child: CompactEmptyState(
@@ -28,7 +28,7 @@ class LivestockPreview extends StatelessWidget {
       height: 100,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.symmetric(horizontal: 16),
+        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
         itemCount: livestock.length,
         itemBuilder: (context, index) {
           final l = livestock[index];
@@ -40,7 +40,7 @@ class LivestockPreview extends StatelessWidget {
             child: Card(
               margin: EdgeInsets.zero,
               child: Padding(
-                padding: const EdgeInsets.all(12),
+                padding: const EdgeInsets.all(AppSpacing.sm2),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [

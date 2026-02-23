@@ -337,7 +337,7 @@ class _IssueRow extends StatelessWidget {
                 issue.level == CompatibilityLevel.incompatible
                     ? Icons.error_outline
                     : Icons.warning_amber_outlined,
-                size: 16,
+                size: AppIconSizes.xs,
                 color: color,
               ),
               const SizedBox(width: AppSpacing.sm),

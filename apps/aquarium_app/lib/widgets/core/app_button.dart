@@ -317,7 +317,7 @@ class _AppButtonState extends State<AppButton> with SingleTickerProviderStateMix
           BoxShadow(
             color: (widget.variant == AppButtonVariant.primary 
                 ? AppColors.primary 
-                : AppColors.error).withOpacity(0.3),
+                : AppColors.error).withAlpha(76),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),

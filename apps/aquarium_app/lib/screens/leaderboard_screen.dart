@@ -109,14 +109,14 @@ class LeaderboardScreen extends ConsumerWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(_leagueIcon(league), color: Colors.white, size: 32),
+              Icon(_leagueIcon(league), color: AppColors.onPrimary, size: AppIconSizes.lg),
               const SizedBox(width: AppSpacing.sm),
               Text(
                 '${league.displayName} League',
                 style: const TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
-                  color: Colors.white,
+                  color: AppColors.onPrimary,
                 ),
               ),
             ],
@@ -152,7 +152,7 @@ class LeaderboardScreen extends ConsumerWidget {
 
     return Container(
       margin: const EdgeInsets.all(AppSpacing.md),
-      padding: const EdgeInsets.all(12),
+      padding: const EdgeInsets.all(AppSpacing.sm2),
       decoration: BoxDecoration(
         color: willPromote ? Colors.green.shade50 : Colors.red.shade50,
         borderRadius: AppRadius.smallRadius,
@@ -202,7 +202,7 @@ class LeaderboardScreen extends ConsumerWidget {
         margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
         decoration: BoxDecoration(
           color: isCurrentUser
-              ? Theme.of(context).primaryColor.withOpacity(0.1)
+              ? Theme.of(context).primaryColor.withAlpha(26)
               : null,
           borderRadius: AppRadius.smallRadius,
           border: isCurrentUser
@@ -251,7 +251,7 @@ class LeaderboardScreen extends ConsumerWidget {
           ),
           subtitle: Row(
             children: [
-              Icon(_leagueIcon(league), size: 16, color: Colors.grey.shade600),
+              Icon(_leagueIcon(league), size: AppIconSizes.xs, color: Colors.grey.shade600),
               const SizedBox(width: AppSpacing.xs),
               Text(league.displayName),
             ],
@@ -268,9 +268,9 @@ class LeaderboardScreen extends ConsumerWidget {
                 ),
               ),
               if (isPromotionZone && league != League.diamond)
-                const Icon(Icons.arrow_upward, color: Colors.green, size: 16)
+                const Icon(Icons.arrow_upward, color: Colors.green, size: AppIconSizes.xs)
               else if (isDemotionZone && league != League.bronze)
-                const Icon(Icons.arrow_downward, color: Colors.red, size: 16),
+                const Icon(Icons.arrow_downward, color: Colors.red, size: AppIconSizes.xs),
             ],
           ),
         ),

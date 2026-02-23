@@ -13,7 +13,7 @@ import '../models/gem_transaction.dart';
 import '../models/leaderboard.dart'; // For League and WeekPeriod
 import '../models/shop_item.dart'; // For InventoryItem
 import '../models/spaced_repetition.dart'; // For ConceptType
-import '../data/lesson_content.dart'; // For finding lessons
+import 'lesson_provider.dart';
 import 'gems_provider.dart';
 import 'spaced_repetition_provider.dart'; // For creating review cards
 import '../services/offline_aware_service.dart';
@@ -446,8 +446,8 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
         spacedRepetitionProvider.notifier,
       );
 
-      // Find the lesson in lesson content
-      final lesson = _findLessonById(lessonId);
+      // Find the lesson in lesson content (lazy-loads path if needed)
+      final lesson = await _findLessonById(lessonId);
       if (lesson == null) return; // Lesson not found, skip
 
       // Extract reviewable concepts from lesson
@@ -469,14 +469,21 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
     }
   }
 
-  /// Find a lesson by ID from all learning paths
-  Lesson? _findLessonById(String lessonId) {
-    // Import LessonContent at top
-    for (final path in LessonContent.allPaths) {
-      for (final lesson in path.lessons) {
-        if (lesson.id == lessonId) {
-          return lesson;
-        }
+  /// Find a lesson by ID using the lazy lesson provider.
+  /// First checks already-loaded paths, then loads the required path on demand.
+  Future<Lesson?> _findLessonById(String lessonId) async {
+    final lessonNotifier = ref.read(lessonProvider.notifier);
+
+    // 1. Check already-loaded paths first (no I/O)
+    final cached = ref.read(lessonProvider).getLesson(lessonId);
+    if (cached != null) return cached;
+
+    // 2. Find which path contains this lesson via lightweight metadata
+    for (final meta in LessonProvider.allPathMetadata) {
+      if (meta.lessonIds.contains(lessonId)) {
+        // Load only the required path
+        await lessonNotifier.loadPath(meta.id);
+        return ref.read(lessonProvider).getLesson(lessonId);
       }
     }
     return null;
@@ -916,33 +923,3 @@ class LevelUpEventNotifier extends StateNotifier<LevelUpEvent?> {
     );
   }
 }
-
-/// Provider for Tank Confidence Score — a composite progress metric (0–100).
-///
-/// Weights:
-///   - Lessons completed  40 pts  (ratio vs ~50 total lessons)
-///   - XP level           30 pts  (level / 7 max levels)
-///   - Streak consistency 20 pts  (longest streak / 30 days = full)
-///   - Achievements       10 pts  (unlocked / ~20 achievements)
-final tankConfidenceScoreProvider = Provider<int>((ref) {
-  final profile = ref.watch(userProfileProvider).value;
-  if (profile == null) return 0;
-
-  // Lessons completed score (40 pts)
-  const approxTotalLessons = 50;
-  final lessonRatio = (profile.completedLessons.length / approxTotalLessons).clamp(0.0, 1.0);
-  final lessonScore = lessonRatio * 40;
-
-  // XP level score (30 pts) — 7 levels total
-  const maxLevel = 7;
-  final levelScore = (profile.currentLevel / maxLevel).clamp(0.0, 1.0) * 30;
-
-  // Streak consistency score (20 pts) — 30+ days = full
-  final streakScore = (profile.longestStreak / 30).clamp(0.0, 1.0) * 20;
-
-  // Achievement score (10 pts) — 20+ achievements = full
-  const approxTotalAchievements = 20;
-  final achievementScore = (profile.achievements.length / approxTotalAchievements).clamp(0.0, 1.0) * 10;
-
-  return (lessonScore + levelScore + streakScore + achievementScore).round().clamp(0, 100);
-});

@@ -70,11 +70,11 @@ class _GlassCardState extends State<GlassCard> with SingleTickerProviderStateMix
   void initState() {
     super.initState();
     _controller = AnimationController(
-      duration: const Duration(milliseconds: 100),
+      duration: AppDurations.short,
       vsync: this,
     );
     _scaleAnimation = Tween<double>(begin: 1.0, end: 0.98).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
+      CurvedAnimation(parent: _controller, curve: AppCurves.standard),
     );
   }
 
@@ -179,7 +179,7 @@ class _GlassCardState extends State<GlassCard> with SingleTickerProviderStateMix
     final tint = widget.tintColor;
     return BoxDecoration(
       color: tint != null
-          ? tint.withOpacity(isDark ? 0.15 : 0.25)
+          ? tint.withAlpha(isDark ? 38 : 64)
           : (isDark ? AppColors.whiteAlpha08 : AppColors.whiteAlpha70),
       borderRadius: radius,
       border: Border.all(
@@ -247,7 +247,7 @@ class _GlassCardState extends State<GlassCard> with SingleTickerProviderStateMix
         colors: isDark
             ? [
                 AppColors.primaryAlpha85,
-                const Color(0xFF0D2030).withOpacity(0.95),
+                const Color(0xFF0D2030).withAlpha(242),
               ]
             : [
                 AppColors.primaryAlpha90,
@@ -257,15 +257,15 @@ class _GlassCardState extends State<GlassCard> with SingleTickerProviderStateMix
       borderRadius: radius,
       border: Border.all(
         color: isDark
-            ? const Color(0xFF5FBFB3).withOpacity(0.25)
-            : const Color(0xFF5FBFB3).withOpacity(0.15),
+            ? const Color(0xFF5FBFB3).withAlpha(64)
+            : const Color(0xFF5FBFB3).withAlpha(38),
         width: 1,
       ),
       boxShadow: [
         // Teal glow
         BoxShadow(
           color: isDark
-              ? const Color(0xFF3D9F8B).withOpacity(0.2)
+              ? const Color(0xFF3D9F8B).withAlpha(51)
               : AppColors.primaryAlpha10,
           blurRadius: 24,
           offset: const Offset(0, 8),
@@ -316,12 +316,12 @@ class _GlassCardState extends State<GlassCard> with SingleTickerProviderStateMix
       ),
       borderRadius: radius,
       border: Border.all(
-        color: tint.withOpacity(isDark ? 0.15 : 0.1),
+        color: tint.withAlpha(isDark ? 38 : 26),
         width: 1,
       ),
       boxShadow: [
         BoxShadow(
-          color: tint.withOpacity(isDark ? 0.1 : 0.06),
+          color: tint.withAlpha(isDark ? 26 : 15),
           blurRadius: 20,
           offset: const Offset(0, 8),
         ),

@@ -161,7 +161,7 @@ class _AppListTileState extends State<AppListTile> {
             : (isDark ? AppColors.textPrimaryDark : AppColors.textPrimary);
 
     final subtitleColor = widget.isDisabled
-        ? (isDark ? AppColors.textHintDark : AppColors.textHint).withOpacity(0.6)
+        ? (isDark ? AppColors.textHintDark : AppColors.textHint).withAlpha(153)
         : (isDark ? AppColors.textSecondaryDark : AppColors.textSecondary);
 
     Widget tile = Container(

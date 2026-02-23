@@ -10,18 +10,7 @@ import '../models/achievements.dart';
 import '../services/review_queue_service.dart';
 import '../services/notification_service.dart';
 import 'achievement_provider.dart';
-import 'package:flutter/foundation.dart' show compute;
 import 'package:flutter/material.dart';
-
-// Top-level decode helpers required by compute() (must not be closures).
-List<ReviewCard> _decodeCards(String json) {
-  final decoded = jsonDecode(json) as List;
-  return decoded.map((c) => ReviewCard.fromJson(c as Map<String, dynamic>)).toList();
-}
-
-String _encodeCards(List<ReviewCard> cards) {
-  return jsonEncode(cards.map((c) => c.toJson()).toList());
-}
 
 // Provider for spaced repetition state
 final spacedRepetitionProvider =
@@ -87,17 +76,13 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
     try {
       final prefs = await SharedPreferences.getInstance();
 
-      // Load cards — offload JSON decode to a background isolate so that
-      // large card sets do not block the main thread during startup.
+      // Load cards
       final cardsJson = prefs.getString(_storageKey);
       List<ReviewCard> cards = [];
 
       if (cardsJson != null) {
-        try {
-          cards = await compute(_decodeCards, cardsJson);
-        } catch (e) {
-          debugPrint('⚠️  SR cards decode failed, starting fresh: $e');
-        }
+        final decoded = jsonDecode(cardsJson) as List;
+        cards = decoded.map((c) => ReviewCard.fromJson(c)).toList();
       }
 
       // Load stats data
@@ -150,8 +135,8 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
     try {
       final prefs = await SharedPreferences.getInstance();
 
-      // Save cards — offload JSON encode to a background isolate.
-      final cardsJson = await compute(_encodeCards, state.cards);
+      // Save cards
+      final cardsJson = jsonEncode(state.cards.map((c) => c.toJson()).toList());
       await prefs.setString(_storageKey, cardsJson);
 
       // Save stats

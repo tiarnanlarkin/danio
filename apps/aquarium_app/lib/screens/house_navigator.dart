@@ -39,23 +39,18 @@ class _HouseNavigatorState extends ConsumerState<HouseNavigator> {
   bool _tutorialShown = false;
 
   // Room definitions
-  // Phase 2.1 — cozy room identity accent colours applied:
-  //   Library (Study)   → teal/blue   (AppColors.primaryLight 0xFF5B9A8B)
-  //   Living Room       → warm amber  (AppColors.secondaryLight 0xFFE8A87C)
-  //   Workshop          → purple/indigo (0xFF9C78FF)
-  //   Closet (Settings) → grey/neutral (accessed outside nav — see SettingsScreen)
   static const List<RoomInfo> _rooms = [
     RoomInfo(
-      name: 'Library',
+      name: 'Study',
       icon: Icons.auto_stories,
       emoji: '📚',
-      color: Color(0xFF5B9A8B), // Teal/blue — Library accent
+      color: Color(0xFF2D3A4F), // Deep blue
     ),
     RoomInfo(
       name: 'Living Room',
       icon: Icons.weekend,
       emoji: '🛋️',
-      color: Color(0xFFE8A87C), // Warm amber — Living Room accent
+      color: Color(0xFF5B9A8B), // Teal
     ),
     RoomInfo(
       name: 'Friends',
@@ -73,7 +68,7 @@ class _HouseNavigatorState extends ConsumerState<HouseNavigator> {
       name: 'Workshop',
       icon: Icons.build,
       emoji: '🔧',
-      color: Color(0xFF9C78FF), // Purple/indigo — Workshop accent
+      color: Color(0xFF5D4E37), // Brown
     ),
     RoomInfo(
       name: 'Shop Street',
@@ -112,7 +107,7 @@ class _HouseNavigatorState extends ConsumerState<HouseNavigator> {
     _tutorialShown = true;
 
     // Wait a bit for UI to settle
-    await Future.delayed(const Duration(milliseconds: 500));
+    await Future.delayed(AppDurations.long2);
 
     if (!mounted) return;
 
@@ -126,7 +121,7 @@ class _HouseNavigatorState extends ConsumerState<HouseNavigator> {
           targetKey: _livingRoomKey,
         ),
         TutorialStep(
-          title: 'Library 📚',
+          title: 'Study Room 📚',
           description:
               'Start your aquarium journey here! Learn through interactive lessons and practice with spaced repetition.',
           targetKey: _studyRoomKey,
@@ -171,8 +166,8 @@ class _HouseNavigatorState extends ConsumerState<HouseNavigator> {
   void _goToRoom(int index) {
     _pageController.animateToPage(
       index,
-      duration: const Duration(milliseconds: 400),
-      curve: Curves.easeOutCubic,
+      duration: AppDurations.long1,
+      curve: AppCurves.emphasized,
     );
   }
 
@@ -361,7 +356,7 @@ class _RoomIndicatorBar extends ConsumerWidget {
                 clipBehavior: Clip.none,
                 children: [
                   AnimatedContainer(
-                    duration: const Duration(milliseconds: 200),
+                    duration: AppDurations.medium2,
                     constraints: const BoxConstraints(
                       minWidth: 44,
                       minHeight: 44,
@@ -372,7 +367,7 @@ class _RoomIndicatorBar extends ConsumerWidget {
                     ),
                     decoration: BoxDecoration(
                       color: isSelected
-                          ? room.color.withOpacity(0.9)
+                          ? room.color.withAlpha(230)
                           : AppOverlays.white10,
                       borderRadius: AppRadius.largeRadius,
                       border: Border.all(

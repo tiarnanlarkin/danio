@@ -99,14 +99,14 @@ class _AchievementNotificationWidgetState
 
     _scaleAnimation = CurvedAnimation(
       parent: _animationController,
-      curve: Curves.elasticOut,
+      curve: AppCurves.elastic,
     );
 
     _slideAnimation =
         Tween<Offset>(begin: const Offset(0, -1), end: Offset.zero).animate(
           CurvedAnimation(
             parent: _animationController,
-            curve: Curves.easeOutCubic,
+            curve: AppCurves.emphasized,
           ),
         );
 
@@ -191,7 +191,7 @@ class _AchievementNotificationWidgetState
                               end: Alignment.bottomRight,
                               colors: [
                                 rarityColor,
-                                rarityColor.withOpacity(0.7),
+                                rarityColor.withAlpha(178),
                               ],
                             ),
                             borderRadius: const BorderRadius.vertical(

@@ -1,166 +1,72 @@
 import 'package:flutter/material.dart';
 import '../../theme/app_theme.dart';
 
-/// A standardised header widget used at the top of each room screen.
+/// Screen header for room-based screens.
 ///
-/// Provides a consistent layout: optional back button, room title,
-/// optional subtitle, and optional trailing action(s).
-///
-/// Tokens used:
-/// - [AppTypography.headline] for the title
-/// - [AppTypography.body] for the subtitle
-/// - [AppSpacing.s16] for horizontal padding
-/// - [AppColors.primary] / dark-mode equivalents for text colour
-///
-/// Accessibility:
-/// - Title is wrapped in [Semantics] with `header: true`
-/// - Back button declares a semantic label "Back"
+/// Displays a room emoji, title, and optional subtitle slot.
 ///
 /// Example:
 /// ```dart
 /// RoomHeader(
-///   title: 'Living Room',
-///   subtitle: 'Tank: 60L Planted',
-///   onBack: () => Navigator.pop(context),
-///   trailing: [
-///     IconButton(icon: Icon(Icons.settings), onPressed: openSettings),
-///   ],
+///   emoji: '🐠',
+///   title: 'My Aquarium',
+///   subtitle: Text('3 fish, 2 plants'),
 /// )
 /// ```
-class RoomHeader extends StatelessWidget implements PreferredSizeWidget {
-  /// Room / screen title (required).
+class RoomHeader extends StatelessWidget {
+  /// Emoji displayed before the title
+  final String emoji;
+
+  /// Header title text
   final String title;
 
-  /// Optional subtitle beneath the title (e.g. tank name or status).
-  final String? subtitle;
+  /// Optional subtitle widget (flexible slot)
+  final Widget? subtitle;
 
-  /// Callback for the back button. If null, the button is omitted.
-  final VoidCallback? onBack;
-
-  /// Optional widgets placed in the trailing (right) side of the header.
-  ///
-  /// Typically [IconButton] widgets for settings, add, share, etc.
-  final List<Widget>? trailing;
-
-  /// Background colour of the header bar. Defaults to the scaffold background.
-  final Color? backgroundColor;
-
-  /// Whether to draw a separator line beneath the header. Defaults to false.
-  final bool showDivider;
+  /// Optional trailing widget (e.g. settings icon)
+  final Widget? trailing;
 
   const RoomHeader({
     super.key,
+    required this.emoji,
     required this.title,
     this.subtitle,
-    this.onBack,
     this.trailing,
-    this.backgroundColor,
-    this.showDivider = false,
   });
 
   @override
-  Size get preferredSize =>
-      Size.fromHeight(subtitle != null ? 72.0 : 56.0);
-
-  @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-
-    final titleColor =
-        isDark ? AppColors.textPrimaryDark : AppColors.textPrimary;
-    final subtitleColor =
-        isDark ? AppColors.textSecondaryDark : AppColors.textSecondary;
-    final bgColor = backgroundColor ??
-        (isDark ? AppColors.backgroundDark : AppColors.background);
-
-    return Semantics(
-      container: true,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.md,
+        vertical: AppSpacing.sm2,
+      ),
+      child: Row(
         children: [
-          Container(
-            height: subtitle != null ? 72.0 : 56.0,
-            color: bgColor,
-            padding: EdgeInsets.symmetric(horizontal: AppSpacing.s16),
-            child: Row(
+          Text(
+            emoji,
+            style: const TextStyle(fontSize: 28),
+          ),
+          const SizedBox(width: AppSpacing.sm2),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
               children: [
-                // ── Back button ────────────────────────────────────────────
-                if (onBack != null)
-                  Semantics(
-                    label: 'Back',
-                    button: true,
-                    child: Material(
-                      color: Colors.transparent,
-                      borderRadius: AppRadius.pillRadius,
-                      child: InkWell(
-                        onTap: onBack,
-                        borderRadius: AppRadius.pillRadius,
-                        child: Container(
-                          width: AppTouchTargets.minimum,
-                          height: AppTouchTargets.minimum,
-                          alignment: Alignment.center,
-                          child: Icon(
-                            Icons.arrow_back_ios_new,
-                            size: AppIconSizes.sm,
-                            color: titleColor,
-                          ),
-                        ),
-                      ),
-                    ),
-                  )
-                else
-                  const SizedBox(width: AppSpacing.xs),
-
-                // ── Title / Subtitle ───────────────────────────────────────
-                Expanded(
-                  child: Semantics(
-                    header: true,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          title,
-                          style: AppTypography.headline.copyWith(
-                            color: titleColor,
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        if (subtitle != null) ...[
-                          const SizedBox(height: 2),
-                          Text(
-                            subtitle!,
-                            style: AppTypography.body.copyWith(
-                              color: subtitleColor,
-                            ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ],
-                      ],
-                    ),
+                Text(
+                  title,
+                  style: AppTypography.headlineSmall.copyWith(
+                    color: Theme.of(context).colorScheme.onSurface,
                   ),
                 ),
-
-                // ── Trailing actions ───────────────────────────────────────
-                if (trailing != null)
-                  Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: trailing!,
-                  ),
+                if (subtitle != null) ...[
+                  const SizedBox(height: AppSpacing.xs),
+                  subtitle!,
+                ],
               ],
             ),
           ),
-
-          // ── Optional divider ─────────────────────────────────────────────
-          if (showDivider)
-            Divider(
-              height: 1,
-              thickness: 1,
-              color: isDark ? AppColors.borderDark : AppColors.border,
-            ),
+          if (trailing != null) trailing!,
         ],
       ),
     );

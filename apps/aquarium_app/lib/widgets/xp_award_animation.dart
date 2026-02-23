@@ -32,7 +32,7 @@ class _XpAwardAnimationState extends State<XpAwardAnimation>
     super.initState();
 
     _controller = AnimationController(
-      duration: const Duration(milliseconds: 1500),
+      duration: AppDurations.celebration,
       vsync: this,
     );
 
@@ -40,7 +40,7 @@ class _XpAwardAnimationState extends State<XpAwardAnimation>
     _slideAnimation = Tween<Offset>(
       begin: Offset.zero,
       end: const Offset(0, -1.5),
-    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic));
+    ).animate(CurvedAnimation(parent: _controller, curve: AppCurves.emphasized));
 
     // Fade out animation (starts fading after 50% of animation)
     _fadeAnimation = Tween<double>(begin: 1.0, end: 0.0).animate(
@@ -56,14 +56,14 @@ class _XpAwardAnimationState extends State<XpAwardAnimation>
         tween: Tween<double>(
           begin: 0.5,
           end: 1.2,
-        ).chain(CurveTween(curve: Curves.easeOut)),
+        ).chain(CurveTween(curve: AppCurves.standardDecelerate)),
         weight: 30,
       ),
       TweenSequenceItem(
         tween: Tween<double>(
           begin: 1.2,
           end: 1.0,
-        ).chain(CurveTween(curve: Curves.easeInOut)),
+        ).chain(CurveTween(curve: AppCurves.standard)),
         weight: 20,
       ),
       TweenSequenceItem(tween: Tween<double>(begin: 1.0, end: 1.0), weight: 50),
@@ -116,7 +116,7 @@ class _XpAwardAnimationState extends State<XpAwardAnimation>
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Icon(Icons.star, color: Colors.white, size: 24),
+                    const Icon(Icons.star, color: Colors.white, size: AppIconSizes.md),
                     const SizedBox(width: AppSpacing.sm),
                     Text(
                       '+${widget.xpAmount} XP',

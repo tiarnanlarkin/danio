@@ -51,12 +51,12 @@ class AchievementCard extends StatelessWidget {
             color: isLocked ? Colors.grey.shade300 : rarityColor,
             width: isLocked ? 1 : 3,
           ),
-          color: isLocked ? Colors.grey.shade100 : rarityColor.withOpacity(0.1),
+          color: isLocked ? Colors.grey.shade100 : rarityColor.withAlpha(26),
           boxShadow: isLocked
               ? []
               : [
                   BoxShadow(
-                    color: rarityColor.withOpacity(0.3),
+                    color: rarityColor.withAlpha(76),
                     blurRadius: 8,
                     offset: const Offset(0, 2),
                   ),
@@ -93,7 +93,7 @@ class AchievementCard extends StatelessWidget {
                         child: const Center(
                           child: Icon(
                             Icons.lock,
-                            size: 48,
+                            size: AppIconSizes.xl,
                             color: Colors.white70,
                           ),
                         ),

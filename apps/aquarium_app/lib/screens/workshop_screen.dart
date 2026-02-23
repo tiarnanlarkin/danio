@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'dart:ui';
 import '../theme/app_theme.dart';
-import '../theme/room_identity.dart';
 import '../utils/app_feedback.dart';
 import '../providers/user_profile_provider.dart';
 import '../widgets/room/interactive_object.dart';
@@ -12,7 +11,6 @@ import 'dosing_calculator_screen.dart';
 import 'compatibility_checker_screen.dart';
 // import 'equipment_screen.dart'; // Requires tankId - use settings instead
 import 'cost_tracker_screen.dart';
-import 'aquarium_supply_screen.dart';
 import 'water_change_calculator_screen.dart';
 import 'stocking_calculator_screen.dart';
 import 'unit_converter_screen.dart';
@@ -21,21 +19,34 @@ import 'lighting_schedule_screen.dart';
 // charts_screen.dart requires tankId - accessed from tank detail screen
 
 /// Workshop colors - practical maker space theme
+/// Adapts slightly for dark mode to maintain readability
 class WorkshopColors {
+  WorkshopColors._();
+
   static const background1 = Color(0xFF5D4E37); // Warm brown
   static const background2 = Color(0xFF4A3F2E); // Darker brown
   static const background3 = Color(0xFF3D3425); // Deep brown
   static const accent = Color(0xFFA0AEC0); // Steel blue
   static const accentWarm = Color(0xFFD4A574); // Warm gold
-  // Phase 2.1 — room identity: Workshop → purple/indigo accent
-  static const accentRoom = RoomIdentity.workshopAccent;
-  static const accentRoomDark = Color(0xFF7C4DFF); // Deep indigo
   static const wood = Color(0xFF7A6548); // Light wood
   static const metal = Color(0xFF6B7280); // Steel gray
   static const glassCard = Color(0x20FFFFFF);
   static const glassBorder = Color(0x30FFFFFF);
   static const textPrimary = Color(0xFFF5F5F5);
   static const textSecondary = Color(0xFFB8B0A0);
+
+  // Dark mode adjustments — lighter/desaturated browns
+  static const background1Dark = Color(0xFF6E5F48); // Lighter warm brown
+  static const background2Dark = Color(0xFF5B5039); // Lighter mid brown
+  static const background3Dark = Color(0xFF4E4430); // Lighter base brown
+
+  /// Returns gradient colors adapted to current brightness
+  static List<Color> gradientColors(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return isDark
+        ? [background1Dark, background2Dark, background3Dark]
+        : [background1, background2, background3];
+  }
 }
 
 /// Workshop Room - Tools & Calculators
@@ -45,15 +56,11 @@ class WorkshopScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Container(
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [
-            WorkshopColors.background1,
-            WorkshopColors.background2,
-            WorkshopColors.background3,
-          ],
+          colors: WorkshopColors.gradientColors(context),
         ),
       ),
       child: SafeArea(
@@ -196,18 +203,6 @@ class WorkshopScreen extends ConsumerWidget {
                       ),
                     ),
                   ),
-                  _ToolCard(
-                    icon: Icons.inventory_2_outlined,
-                    title: 'Supplies',
-                    subtitle: 'Stock & low alerts',
-                    color: Colors.orange.shade400,
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => const AquariumSupplyScreen(),
-                      ),
-                    ),
-                  ),
                 ]),
               ),
             ),
@@ -239,26 +234,22 @@ class _WorkshopHeader extends ConsumerWidget {
     final isNewUser = !(profile?.hasSeenTutorial ?? false);
 
     return Padding(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(AppSpacing.lg2),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
               Container(
-                padding: const EdgeInsets.all(12),
+                padding: const EdgeInsets.all(AppSpacing.sm2),
                 decoration: BoxDecoration(
-                  // Phase 2.1 — Workshop room identity: purple/indigo accent
-                  color: const Color(0x309C78FF),
+                  color: WorkshopColors.glassCard,
                   borderRadius: AppRadius.mediumRadius,
-                  border: Border.all(
-                    color: WorkshopColors.accentRoom,
-                    width: 1,
-                  ),
+                  border: Border.all(color: WorkshopColors.glassBorder),
                 ),
                 child: const Icon(
                   Icons.build,
-                  color: WorkshopColors.accentRoom,
+                  color: WorkshopColors.accentWarm,
                   size: 28,
                 ),
               ),
@@ -366,10 +357,10 @@ class _ToolCard extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
-                    color: color.withOpacity(0.2),
+                    color: color.withAlpha(51),
                     borderRadius: AppRadius.mediumRadius,
                   ),
-                  child: Icon(icon, color: color, size: 24),
+                  child: Icon(icon, color: color, size: AppIconSizes.md),
                 ),
                 const Spacer(),
                 Text(
@@ -401,13 +392,13 @@ class _QuickConversions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
       child: ClipRRect(
         borderRadius: AppRadius.largeRadius,
         child: BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
           child: Container(
-            padding: const EdgeInsets.all(20),
+            padding: const EdgeInsets.all(AppSpacing.lg2),
             decoration: BoxDecoration(
               color: WorkshopColors.glassCard,
               borderRadius: AppRadius.largeRadius,

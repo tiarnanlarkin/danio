@@ -76,7 +76,7 @@ class SelectionModePanel extends StatelessWidget {
                     ),
                     const SizedBox(width: AppSpacing.sm),
                     IconButton(
-                      icon: const Icon(Icons.close, size: 20),
+                      icon: const Icon(Icons.close, size: AppIconSizes.sm),
                       tooltip: 'Cancel selection',
                       onPressed: onCancel,
                       padding: EdgeInsets.zero,
@@ -137,13 +137,13 @@ class SelectionModePanel extends StatelessWidget {
                 onPressed: selectedIds.isEmpty ? null : onDeleteSelected,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.error,
-                  foregroundColor: Colors.white,
+                  foregroundColor: AppColors.onPrimary,
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   shape: RoundedRectangleBorder(
                     borderRadius: AppRadius.mediumRadius,
                   ),
                 ),
-                icon: const Icon(Icons.delete_outline, size: 20),
+                icon: const Icon(Icons.delete_outline, size: AppIconSizes.sm),
                 label: const Text('Delete'),
               ),
             ),
@@ -153,13 +153,13 @@ class SelectionModePanel extends StatelessWidget {
                 onPressed: selectedIds.isEmpty ? null : onExportSelected,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.primary,
-                  foregroundColor: Colors.white,
+                  foregroundColor: AppColors.onPrimary,
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   shape: RoundedRectangleBorder(
                     borderRadius: AppRadius.mediumRadius,
                   ),
                 ),
-                icon: const Icon(Icons.file_download_outlined, size: 20),
+                icon: const Icon(Icons.file_download_outlined, size: AppIconSizes.sm),
                 label: const Text('Export'),
               ),
             ),

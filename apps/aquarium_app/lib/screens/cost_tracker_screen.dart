@@ -378,7 +378,7 @@ class _EmptyState extends StatelessWidget {
           children: [
             Icon(
               Icons.account_balance_wallet_outlined,
-              size: 64,
+              size: AppIconSizes.xxl,
               color: AppColors.textHint,
             ),
             const SizedBox(height: AppSpacing.md),
@@ -421,7 +421,7 @@ class _SummaryCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: color.withOpacity(0.1),
+      color: color.withAlpha(26),
       child: Padding(
         padding: const EdgeInsets.all(AppSpacing.md),
         child: Column(
@@ -513,7 +513,7 @@ class _ExpenseTile extends StatelessWidget {
         alignment: Alignment.centerRight,
         padding: const EdgeInsets.only(right: 16),
         color: AppColors.error,
-        child: const Icon(Icons.delete, color: Colors.white),
+        child: const Icon(Icons.delete, color: AppColors.onPrimary),
       ),
       child: Card(
         margin: const EdgeInsets.only(bottom: 8),
@@ -528,7 +528,7 @@ class _ExpenseTile extends StatelessWidget {
             child: Icon(
               _categoryIcon(expense.category),
               color: AppColors.primary,
-              size: 20,
+              size: AppIconSizes.sm,
             ),
           ),
           title: Text(expense.description, style: AppTypography.labelLarge),

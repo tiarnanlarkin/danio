@@ -18,7 +18,7 @@ import '../utils/app_feedback.dart';
 import '../utils/skeleton_placeholders.dart';
 import '../widgets/core/app_card.dart';
 import '../widgets/empty_state.dart';
-import '../widgets/error_state.dart';
+import '../widgets/core/app_states.dart';
 import '../widgets/mascot/mascot_widgets.dart';
 
 const _uuid = Uuid();
@@ -123,9 +123,9 @@ class EquipmentScreen extends ConsumerWidget {
       appBar: AppBar(title: const Text('Equipment')),
       body: equipmentAsync.when(
         loading: () => _buildSkeletonList(),
-        error: (err, _) => ErrorState(
-          message: 'Failed to load equipment',
-          details: 'Please check your connection and try again.',
+        error: (err, _) => AppErrorState(
+          title: 'Failed to load equipment',
+          message: 'Please check your connection and try again.',
           onRetry: () => ref.invalidate(equipmentProvider(tankId)),
         ),
         data: (equipment) {
@@ -150,7 +150,7 @@ class EquipmentScreen extends ConsumerWidget {
           return RefreshIndicator(
             onRefresh: () async {
               ref.invalidate(equipmentProvider(tankId));
-              await Future.delayed(const Duration(milliseconds: 500));
+              await Future.delayed(AppDurations.long2);
             },
             child: ListView.builder(
               padding: const EdgeInsets.all(AppSpacing.md),
@@ -367,7 +367,7 @@ class _EquipmentHistoryDialog extends ConsumerWidget {
         width: double.maxFinite,
         child: logsAsync.when(
           loading: () => const Padding(
-            padding: EdgeInsets.all(12),
+            padding: EdgeInsets.all(AppSpacing.sm2),
             child: Center(child: CircularProgressIndicator()),
           ),
           error: (err, _) => Text('Error loading history: $err'),

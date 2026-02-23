@@ -7,11 +7,15 @@ import '../data/shop_catalog.dart';
 import '../providers/inventory_provider.dart';
 import '../providers/hearts_provider.dart';
 import '../widgets/empty_state.dart';
-import '../widgets/error_state.dart';
+import '../widgets/core/app_states.dart';
 import '../widgets/mascot/mascot_widgets.dart';
 
 /// Inventory colors - warm treasure chest theme
+/// Adapts slightly for dark mode to maintain readability
 class InventoryColors {
+  InventoryColors._();
+
+  // Light/default theme colors
   static const background1 = Color(0xFF2D1B4E); // Deep purple
   static const background2 = Color(0xFF1F1337); // Darker purple
   static const background3 = Color(0xFF150D26); // Deepest purple
@@ -24,6 +28,19 @@ class InventoryColors {
   static const glassBorder = Color(0x30FFFFFF);
   static const textPrimary = Color(0xFFF5F5F5);
   static const textSecondary = Color(0xFFB8B8D8);
+
+  // Dark mode adjustments — lighter/desaturated gradients for readability
+  static const background1Dark = Color(0xFF3A2660); // Lighter purple
+  static const background2Dark = Color(0xFF2A1C48); // Lighter mid
+  static const background3Dark = Color(0xFF1E1435); // Lighter base
+
+  /// Returns gradient colors adapted to current brightness
+  static List<Color> gradientColors(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return isDark
+        ? [background1Dark, background2Dark, background3Dark]
+        : [background1, background2, background3];
+  }
 }
 
 /// Main Inventory Screen - View and USE owned items
@@ -55,23 +72,21 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen>
     final inventoryAsync = ref.watch(inventoryProvider);
     final heartsState = ref.watch(heartsStateProvider);
 
+    final gradientColors = InventoryColors.gradientColors(context);
+
     return Container(
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
-          colors: [
-            InventoryColors.background1,
-            InventoryColors.background2,
-            InventoryColors.background3,
-          ],
+          colors: gradientColors,
         ),
       ),
       child: Scaffold(
         backgroundColor: Colors.transparent,
         appBar: AppBar(
           backgroundColor: Colors.transparent,
-          elevation: 0,
+          elevation: AppElevation.level0,
           title: const Text(
             '🎒 My Items',
             style: TextStyle(
@@ -113,9 +128,9 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen>
           loading: () => const Center(
             child: CircularProgressIndicator(color: InventoryColors.goldAccent),
           ),
-          error: (e, _) => ErrorState(
-            message: 'Failed to load inventory',
-            details: 'Please check your connection and try again.',
+          error: (e, _) => AppErrorState(
+            title: 'Failed to load inventory',
+            message: 'Please check your connection and try again.',
             onRetry: () => ref.invalidate(inventoryProvider),
           ),
           data: (inventory) {
@@ -236,7 +251,9 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen>
           builder: (ctx) => BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
             child: AlertDialog(
-              backgroundColor: InventoryColors.background2,
+              backgroundColor: Theme.of(context).brightness == Brightness.dark
+                  ? InventoryColors.background2Dark
+                  : InventoryColors.background2,
               shape: RoundedRectangleBorder(
                 borderRadius: AppRadius.largeRadius,
                 side: const BorderSide(color: InventoryColors.glassBorder),
@@ -269,7 +286,7 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen>
                   ),
                   const SizedBox(height: AppSpacing.md),
                   Container(
-                    padding: const EdgeInsets.all(12),
+                    padding: const EdgeInsets.all(AppSpacing.sm2),
                     decoration: BoxDecoration(
                       color: InventoryColors.glassCard,
                       borderRadius: AppRadius.mediumRadius,
@@ -315,7 +332,7 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen>
                   child: const Text(
                     'Use Now',
                     style: TextStyle(
-                      color: Colors.white,
+                      color: AppColors.onPrimary,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -418,12 +435,12 @@ class _InventoryItemCard extends StatelessWidget {
             color: InventoryColors.glassCard,
             borderRadius: AppRadius.largeRadius,
             border: Border.all(
-              color: accentColor.withOpacity(0.5),
+              color: accentColor.withAlpha(128),
               width: 2,
             ),
           ),
           child: Padding(
-            padding: const EdgeInsets.all(12),
+            padding: const EdgeInsets.all(AppSpacing.sm2),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -448,7 +465,7 @@ class _InventoryItemCard extends StatelessWidget {
                         child: Text(
                           'x${item.quantity}',
                           style: const TextStyle(
-                            color: Colors.white,
+                            color: AppColors.onPrimary,
                             fontSize: 12,
                             fontWeight: FontWeight.bold,
                           ),
@@ -499,7 +516,7 @@ class _InventoryItemCard extends StatelessWidget {
                       child: const Text(
                         'USE',
                         style: TextStyle(
-                          color: Colors.white,
+                          color: AppColors.onPrimary,
                           fontWeight: FontWeight.bold,
                           fontSize: 12,
                         ),
@@ -548,7 +565,7 @@ class _ExpiryTimer extends StatelessWidget {
           const Icon(
             Icons.timer,
             color: InventoryColors.activeColor,
-            size: 16,
+            size: AppIconSizes.xs,
           ),
           const SizedBox(width: AppSpacing.xs),
           Text(

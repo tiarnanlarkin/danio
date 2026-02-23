@@ -53,7 +53,7 @@ class LevelUpOverlay extends StatefulWidget {
       barrierDismissible: true,
       barrierLabel: 'Level Up',
       barrierColor: Colors.transparent,
-      transitionDuration: const Duration(milliseconds: 300),
+      transitionDuration: AppDurations.medium4,
       pageBuilder: (context, animation, secondaryAnimation) {
         return LevelUpOverlay(
           newLevel: newLevel,
@@ -108,11 +108,11 @@ class _LevelUpOverlayState extends State<LevelUpOverlay>
     // Overlay fade (300ms)
     _overlayController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 300),
+      duration: AppDurations.medium4,
     );
     _overlayFade = CurvedAnimation(
       parent: _overlayController,
-      curve: Curves.easeOut,
+      curve: AppCurves.standardDecelerate,
     );
     
     // "LEVEL UP!" text bounce scale (600ms)
@@ -123,12 +123,12 @@ class _LevelUpOverlayState extends State<LevelUpOverlay>
     _textScale = TweenSequence<double>([
       TweenSequenceItem(
         tween: Tween(begin: 0.0, end: 1.2)
-            .chain(CurveTween(curve: Curves.easeOut)),
+            .chain(CurveTween(curve: AppCurves.standardDecelerate)),
         weight: 60,
       ),
       TweenSequenceItem(
         tween: Tween(begin: 1.2, end: 1.0)
-            .chain(CurveTween(curve: Curves.elasticOut)),
+            .chain(CurveTween(curve: AppCurves.elastic)),
         weight: 40,
       ),
     ]).animate(_textController);
@@ -136,7 +136,7 @@ class _LevelUpOverlayState extends State<LevelUpOverlay>
     // Level number appearance (500ms)
     _levelController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 500),
+      duration: AppDurations.long2,
     );
     _levelScale = CurvedAnimation(
       parent: _levelController,
@@ -144,16 +144,16 @@ class _LevelUpOverlayState extends State<LevelUpOverlay>
     );
     _levelFade = CurvedAnimation(
       parent: _levelController,
-      curve: Curves.easeIn,
+      curve: AppCurves.standardAccelerate,
     );
     
     // Glow pulse (continuous)
     _glowController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1500),
+      duration: AppDurations.celebration,
     );
     _glowPulse = Tween<double>(begin: 0.5, end: 1.0).animate(
-      CurvedAnimation(parent: _glowController, curve: Curves.easeInOut),
+      CurvedAnimation(parent: _glowController, curve: AppCurves.standard),
     );
     
     // Particle animation (2 seconds)
@@ -200,19 +200,19 @@ class _LevelUpOverlayState extends State<LevelUpOverlay>
     // Step 1: Fade in overlay
     _overlayController.forward();
     
-    await Future.delayed(const Duration(milliseconds: 200));
+    await Future.delayed(AppDurations.medium2);
     
     // Step 2: "LEVEL UP!" text bounces in
     _textController.forward();
     
-    await Future.delayed(const Duration(milliseconds: 300));
+    await Future.delayed(AppDurations.medium4);
     
     // Step 3: Level number appears with glow
     _levelController.forward();
     _glowController.repeat(reverse: true);
     
     // Step 4: Fire confetti and sparkles
-    await Future.delayed(const Duration(milliseconds: 200));
+    await Future.delayed(AppDurations.medium2);
     _leftConfettiController.play();
     _rightConfettiController.play();
     _particleController.forward();

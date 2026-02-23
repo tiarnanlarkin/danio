@@ -73,7 +73,7 @@ class TankSwitcher extends StatelessWidget {
                   child: const Icon(
                     Icons.set_meal_rounded, // Fish icon
                     color: AppColors.primary,
-                    size: 20,
+                    size: AppIconSizes.sm,
                   ),
                 ),
                 const SizedBox(width: 12),

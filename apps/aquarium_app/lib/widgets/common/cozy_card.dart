@@ -2,70 +2,40 @@ import 'package:flutter/material.dart';
 import '../../theme/app_theme.dart';
 import '../core/app_card.dart';
 
-/// A warm, rounded card that fits the cosy aquarium app aesthetic.
+/// A warm, cozy-styled card wrapper around [AppCard].
 ///
-/// Built on [AppCard] with opinionated defaults:
-/// - Rounded corners (AppRadius.lg = 24 dp)
-/// - Elevated variant with AppShadows.soft
-/// - Standard padding (AppSpacing.md = 16 dp)
-/// - Warm background tint in dark mode
-///
-/// Use this as the default content container across room screens and dashboards.
+/// Provides rounded xl corners, a soft warm shadow, and a warm background tint
+/// inspired by the app's cozy room aesthetic.
 ///
 /// Example:
 /// ```dart
 /// CozyCard(
-///   semanticsLabel: 'Tank overview',
-///   onTap: () => navigateToDetail(),
-///   child: TankSummaryWidget(),
+///   child: Text('Welcome home!'),
 /// )
 /// ```
 class CozyCard extends StatelessWidget {
-  /// Primary content of the card.
+  /// Card content
   final Widget child;
 
-  /// Custom inner padding. Defaults to [AppSpacing.md] on all sides.
-  final EdgeInsets? padding;
-
-  /// External margin around the card.
-  final EdgeInsets? margin;
-
-  /// Custom border radius. Defaults to [AppRadius.largeRadius] (24 dp).
-  final BorderRadius? borderRadius;
-
-  /// Custom background colour. Overrides the theme default.
-  final Color? backgroundColor;
-
-  /// Callback when the card is tapped. Makes the card interactive.
+  /// Optional tap handler
   final VoidCallback? onTap;
 
-  /// Callback when the card is long-pressed.
-  final VoidCallback? onLongPress;
+  /// Custom padding (defaults to spacious)
+  final EdgeInsets? padding;
 
-  /// Accessibility label describing the card contents.
-  ///
-  /// Strongly recommended when [onTap] is provided — screen readers
-  /// will announce this as the button's name.
-  final String? semanticsLabel;
+  /// Optional header widget
+  final Widget? header;
 
-  /// Width constraint. Expands to parent width when null.
-  final double? width;
-
-  /// Height constraint. Wraps content height when null.
-  final double? height;
+  /// Optional footer widget
+  final Widget? footer;
 
   const CozyCard({
     super.key,
     required this.child,
-    this.padding,
-    this.margin,
-    this.borderRadius,
-    this.backgroundColor,
     this.onTap,
-    this.onLongPress,
-    this.semanticsLabel,
-    this.width,
-    this.height,
+    this.padding,
+    this.header,
+    this.footer,
   });
 
   @override
@@ -74,17 +44,16 @@ class CozyCard extends StatelessWidget {
 
     return AppCard(
       variant: AppCardVariant.elevated,
-      borderRadius: borderRadius ?? AppRadius.largeRadius,
-      customPadding: padding ?? const EdgeInsets.all(AppSpacing.md),
-      margin: margin,
-      backgroundColor: backgroundColor ??
-          (isDark ? const Color(0xFF2D2B3A) : const Color(0xFFFFFBF5)),
-      boxShadow: AppShadows.soft,
+      padding: AppCardPadding.spacious,
+      customPadding: padding,
+      borderRadius: BorderRadius.circular(AppRadius.xl),
+      backgroundColor: isDark
+          ? const Color(0xFF2D2B3A) // warm dark surface
+          : const Color(0xFFFFFBF5), // warm cream
+      boxShadow: AppShadows.cozyWarm,
       onTap: onTap,
-      onLongPress: onLongPress,
-      semanticsLabel: semanticsLabel,
-      width: width,
-      height: height,
+      header: header,
+      footer: footer,
       child: child,
     );
   }

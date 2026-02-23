@@ -77,7 +77,7 @@ class _PlantBrowserScreenState extends ConsumerState<PlantBrowserScreen> {
           // Filters
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.symmetric(horizontal: 16),
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
             child: Row(
               children: [
                 FilterChip(
@@ -105,7 +105,7 @@ class _PlantBrowserScreenState extends ConsumerState<PlantBrowserScreen> {
 
           // Results count
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
             child: Row(
               children: [
                 Text('${plants.length} plants', style: AppTypography.bodySmall),
@@ -250,7 +250,7 @@ class _PlantCard extends StatelessWidget {
             ),
           ],
         ),
-        trailing: const Icon(Icons.chevron_right, size: 20),
+        trailing: const Icon(Icons.chevron_right, size: AppIconSizes.sm),
       ),
     );
   }
@@ -267,7 +267,7 @@ class _MiniChip extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: color.withAlpha(26),
         borderRadius: AppRadius.smallRadius,
       ),
       child: Text(
@@ -292,11 +292,11 @@ class _PlantDetailSheet extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: Theme.of(context).scaffoldBackgroundColor,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(AppRadius.lg)),
       ),
       child: SingleChildScrollView(
         controller: scrollController,
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(AppSpacing.lg2),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -409,7 +409,7 @@ class _PlantDetailSheet extends StatelessWidget {
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Icon(Icons.eco, size: 16, color: AppColors.success),
+                        Icon(Icons.eco, size: AppIconSizes.xs, color: AppColors.success),
                         const SizedBox(width: AppSpacing.sm),
                         Expanded(
                           child: Text(tip, style: AppTypography.bodyMedium),

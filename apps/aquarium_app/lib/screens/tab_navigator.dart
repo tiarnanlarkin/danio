@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../theme/app_theme.dart';
-import '../theme/room_identity.dart';
 import '../providers/spaced_repetition_provider.dart';
 import '../widgets/offline_indicator.dart';
 import '../widgets/sync_indicator.dart';
@@ -11,6 +10,7 @@ import 'home/home_screen.dart';
 import 'learn_screen.dart';
 import 'practice_hub_screen.dart';
 import 'settings_hub_screen.dart';
+import 'smart_screen.dart';
 
 /// Provider for current tab index
 final currentTabProvider = StateProvider<int>((ref) => 0); // Start at Learn tab
@@ -33,6 +33,7 @@ class _TabNavigatorState extends ConsumerState<TabNavigator> {
     GlobalKey<NavigatorState>(), // Learn
     GlobalKey<NavigatorState>(), // Quiz
     GlobalKey<NavigatorState>(), // Tank
+    GlobalKey<NavigatorState>(), // Smart
     GlobalKey<NavigatorState>(), // Settings
   ];
 
@@ -115,9 +116,19 @@ class _TabNavigatorState extends ConsumerState<TabNavigator> {
                       );
                     },
                   ),
-                  // Tab 3: Settings
+                  // Tab 3: Smart
                   Navigator(
                     key: _navigatorKeys[3],
+                    onGenerateRoute: (settings) {
+                      return MaterialPageRoute(
+                        builder: (context) => const SmartScreen(),
+                        settings: settings,
+                      );
+                    },
+                  ),
+                  // Tab 4: Settings
+                  Navigator(
+                    key: _navigatorKeys[4],
                     onGenerateRoute: (settings) {
                       return MaterialPageRoute(
                         builder: (context) => const SettingsHubScreen(),
@@ -137,7 +148,10 @@ class _TabNavigatorState extends ConsumerState<TabNavigator> {
                   bottom: false,
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
-                    children: const [OfflineIndicator(), SyncIndicator()],
+                    children: const [
+                      OfflineIndicator(),
+                      SyncIndicator(),
+                    ],
                   ),
                 ),
               ),
@@ -162,37 +176,43 @@ class _TabNavigatorState extends ConsumerState<TabNavigator> {
               HapticFeedback.selectionClick();
             },
             destinations: [
-              // Library tab
+              // Learn tab
               const NavigationDestination(
                 icon: Icon(Icons.auto_stories_outlined),
                 selectedIcon: Icon(Icons.auto_stories),
-                label: RoomIdentity.libraryName,
+                label: 'Learn',
               ),
-              // Lab tab with badge for due cards
+              // Quiz tab with badge for due cards
               NavigationDestination(
                 icon: Badge(
                   isLabelVisible: dueCardsCount > 0,
                   label: Text(dueCardsCount > 99 ? '99+' : '$dueCardsCount'),
-                  child: const Icon(Icons.biotech_outlined),
+                  child: const Icon(Icons.quiz_outlined),
                 ),
                 selectedIcon: Badge(
                   isLabelVisible: dueCardsCount > 0,
                   label: Text(dueCardsCount > 99 ? '99+' : '$dueCardsCount'),
-                  child: const Icon(Icons.biotech),
+                  child: const Icon(Icons.quiz),
                 ),
-                label: RoomIdentity.labName,
+                label: 'Quiz',
               ),
-              // Home tab (Living Room)
+              // Tank tab
               const NavigationDestination(
-                icon: Icon(Icons.weekend_outlined),
-                selectedIcon: Icon(Icons.weekend),
-                label: 'Home',
+                icon: Icon(Icons.water_outlined),
+                selectedIcon: Icon(Icons.water),
+                label: 'Tank',
               ),
-              // Closet tab (settings)
+              // Smart tab
               const NavigationDestination(
-                icon: Icon(Icons.checkroom_outlined),
-                selectedIcon: Icon(Icons.checkroom),
-                label: RoomIdentity.closetName,
+                icon: Icon(Icons.psychology_outlined),
+                selectedIcon: Icon(Icons.psychology),
+                label: 'Smart',
+              ),
+              // Settings tab
+              const NavigationDestination(
+                icon: Icon(Icons.settings_outlined),
+                selectedIcon: Icon(Icons.settings),
+                label: 'Settings',
               ),
             ],
           ),

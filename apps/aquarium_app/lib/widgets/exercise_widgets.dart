@@ -111,7 +111,7 @@ class _MultipleChoiceWidgetState extends State<MultipleChoiceWidget>
   void initState() {
     super.initState();
     _controller = AnimationController(
-      duration: const Duration(milliseconds: 200),
+      duration: AppDurations.medium2,
       vsync: this,
     );
   }
@@ -167,7 +167,7 @@ class _MultipleChoiceWidgetState extends State<MultipleChoiceWidget>
       padding: const EdgeInsets.only(bottom: 12),
       child: AnimatedScale(
         scale: isSelected && !widget.isAnswered ? 0.98 : 1.0,
-        duration: const Duration(milliseconds: 100),
+        duration: AppDurations.short,
         child: Semantics(
           label: 'Answer option ${index + 1}: $option${isSelected ? ', selected' : ''}${widget.isAnswered && isCorrect ? ', correct' : ''}${widget.isAnswered && isSelected && !isCorrect ? ', incorrect' : ''}',
           button: true,
@@ -182,8 +182,8 @@ class _MultipleChoiceWidgetState extends State<MultipleChoiceWidget>
                   },
             borderRadius: AppRadius.mediumRadius,
             child: AnimatedContainer(
-            duration: const Duration(milliseconds: 300),
-            curve: Curves.easeInOut,
+            duration: AppDurations.medium4,
+            curve: AppCurves.standard,
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
               color: bgColor ?? AppColors.surface,
@@ -205,7 +205,7 @@ class _MultipleChoiceWidgetState extends State<MultipleChoiceWidget>
             child: Row(
               children: [
                 AnimatedContainer(
-                  duration: const Duration(milliseconds: 300),
+                  duration: AppDurations.medium4,
                   width: 40,
                   height: 40,
                   decoration: BoxDecoration(
@@ -218,7 +218,7 @@ class _MultipleChoiceWidgetState extends State<MultipleChoiceWidget>
                     child: icon != null
                         ? Icon(
                             icon,
-                            size: 24,
+                            size: AppIconSizes.md,
                             color: isCorrect
                                 ? AppColors.success
                                 : AppColors.error,
@@ -521,7 +521,7 @@ class _FillBlankWidgetState extends State<FillBlankWidget> {
   Widget _buildWordBankChip(String word, bool isUsed) {
     return AnimatedOpacity(
       opacity: isUsed && !widget.isAnswered ? 0.3 : 1.0,
-      duration: const Duration(milliseconds: 200),
+      duration: AppDurations.medium2,
       child: ActionChip(
         label: Text(word),
         onPressed: isUsed && !widget.isAnswered
@@ -613,7 +613,7 @@ class TrueFalseWidget extends StatelessWidget {
 
     return AnimatedScale(
       scale: isSelected && !isAnswered ? 0.98 : 1.0,
-      duration: const Duration(milliseconds: 100),
+      duration: AppDurations.short,
       child: Semantics(
         label: '$label${isSelected ? ', selected' : ''}${isAnswered && isCorrect ? ', correct' : ''}${isAnswered && isSelected && !isCorrect ? ', incorrect' : ''}',
         button: true,
@@ -623,7 +623,7 @@ class TrueFalseWidget extends StatelessWidget {
           onTap: isAnswered ? null : () => onAnswer(value),
           borderRadius: AppRadius.mediumRadius,
           child: AnimatedContainer(
-          duration: const Duration(milliseconds: 300),
+          duration: AppDurations.medium4,
           padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 20),
           decoration: BoxDecoration(
             color: bgColor ?? AppColors.surface,
@@ -645,7 +645,7 @@ class TrueFalseWidget extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(icon, size: 32, color: iconColor),
+              Icon(icon, size: AppIconSizes.lg, color: iconColor),
               const SizedBox(width: 12),
               Text(
                 label,
@@ -815,7 +815,7 @@ class _MatchingWidgetState extends State<MatchingWidget> {
           onTap: () => _onLeftTap(index),
           borderRadius: AppRadius.mediumRadius,
           child: AnimatedContainer(
-          duration: const Duration(milliseconds: 200),
+          duration: AppDurations.medium2,
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
             color: bgColor ?? AppColors.surface,
@@ -832,7 +832,7 @@ class _MatchingWidgetState extends State<MatchingWidget> {
                   widget.isAnswered
                       ? (isCorrect ? Icons.check_circle : Icons.cancel)
                       : Icons.link,
-                  size: 20,
+                  size: AppIconSizes.sm,
                   color: widget.isAnswered
                       ? (isCorrect ? AppColors.success : AppColors.error)
                       : AppColors.accent,
@@ -892,7 +892,7 @@ class _MatchingWidgetState extends State<MatchingWidget> {
           onTap: () => _onRightTap(index),
           borderRadius: AppRadius.mediumRadius,
           child: AnimatedContainer(
-          duration: const Duration(milliseconds: 200),
+          duration: AppDurations.medium2,
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
             color: bgColor ?? AppColors.surface,
@@ -911,7 +911,7 @@ class _MatchingWidgetState extends State<MatchingWidget> {
                   widget.isAnswered
                       ? (isCorrect ? Icons.check_circle : Icons.cancel)
                       : Icons.link,
-                  size: 20,
+                  size: AppIconSizes.sm,
                   color: widget.isAnswered
                       ? (isCorrect ? AppColors.success : AppColors.error)
                       : AppColors.accent,
@@ -1047,7 +1047,7 @@ class _OrderingWidgetState extends State<OrderingWidget> {
       key: ValueKey(itemIndex),
       padding: const EdgeInsets.only(bottom: 12),
       child: AnimatedContainer(
-        duration: const Duration(milliseconds: 300),
+        duration: AppDurations.medium4,
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: bgColor ?? AppColors.surface,
@@ -1111,7 +1111,7 @@ class ExplanationCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AnimatedContainer(
-      duration: const Duration(milliseconds: 300),
+      duration: AppDurations.medium4,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: AppOverlays.info10,

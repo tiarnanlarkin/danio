@@ -219,11 +219,11 @@ class AppChip extends StatelessWidget {
     
     switch (variant) {
       case AppChipVariant.filled:
-        return isSelected ? baseColor : baseColor.withOpacity(0.15);
+        return isSelected ? baseColor : baseColor.withAlpha(38);
       case AppChipVariant.outlined:
-        return isSelected ? baseColor.withOpacity(0.15) : Colors.transparent;
+        return isSelected ? baseColor.withAlpha(38) : Colors.transparent;
       case AppChipVariant.tonal:
-        return isSelected ? baseColor.withOpacity(0.25) : baseColor.withOpacity(0.1);
+        return isSelected ? baseColor.withAlpha(64) : baseColor.withAlpha(26);
     }
   }
 
@@ -238,7 +238,7 @@ class AppChip extends StatelessWidget {
     }
     
     return Border.all(
-      color: isSelected ? baseColor : baseColor.withOpacity(0.5),
+      color: isSelected ? baseColor : baseColor.withAlpha(128),
       width: isSelected ? 1.5 : 1,
     );
   }
@@ -430,7 +430,7 @@ class _PulsingDotState extends State<_PulsingDot> with SingleTickerProviderState
   void initState() {
     super.initState();
     _controller = AnimationController(
-      duration: const Duration(milliseconds: 1500),
+      duration: AppDurations.celebration,
       vsync: this,
     )..repeat();
   }

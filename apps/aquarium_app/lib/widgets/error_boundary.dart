@@ -106,7 +106,7 @@ class _DefaultErrorScreen extends StatelessWidget {
                   ),
                   child: const Icon(
                     Icons.error_outline,
-                    size: 64,
+                    size: AppIconSizes.xxl,
                     color: AppColors.error,
                   ),
                 ),
@@ -146,7 +146,7 @@ class _DefaultErrorScreen extends StatelessWidget {
                       foregroundColor: Colors.white,
                       padding: const EdgeInsets.symmetric(vertical: 16),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(AppRadius.md2),
                       ),
                     ),
                     child: const Text(
@@ -215,7 +215,7 @@ class GlobalErrorHandler {
       }
       
       // In production, you would send to crash reporting service
-      // e.g., FirebaseCrashlytics.instance.recordFlutterError(details);
+      
     };
     
     // Catch errors outside of Flutter framework
@@ -228,7 +228,7 @@ class GlobalErrorHandler {
       }
       
       // In production, send to crash reporting
-      // e.g., FirebaseCrashlytics.instance.recordError(error, stack);
+      
       
       return true; // Mark as handled
     };

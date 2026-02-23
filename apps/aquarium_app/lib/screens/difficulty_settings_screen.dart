@@ -46,7 +46,7 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Difficulty Settings'), elevation: 0),
+      appBar: AppBar(title: const Text('Difficulty Settings'), elevation: AppElevation.level0),
       body: ListView.builder(
         padding: const EdgeInsets.all(AppSpacing.md),
         itemCount: _buildItems().length,
@@ -95,7 +95,7 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
                   decoration: BoxDecoration(
                     color: Color(
                       _difficultyService.getDifficultyColor(difficulty),
-                    ).withOpacity(0.2),
+                    ).withAlpha(51),
                     borderRadius: AppRadius.largeRadius,
                     border: Border.all(
                       color: Color(
@@ -165,7 +165,7 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
           child: Center(
             child: Column(
               children: const [
-                Icon(Icons.school_outlined, size: 48, color: Colors.grey),
+                Icon(Icons.school_outlined, size: AppIconSizes.xl, color: Colors.grey),
                 SizedBox(height: AppSpacing.sm),
                 Text(
                   'No lesson data yet',
@@ -283,7 +283,7 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: color.withAlpha(26),
         borderRadius: AppRadius.mediumRadius,
       ),
       child: Row(
@@ -380,7 +380,7 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
             decoration: BoxDecoration(
               color: Color(
                 _difficultyService.getDifficultyColor(record.difficulty),
-              ).withOpacity(0.2),
+              ).withAlpha(51),
               borderRadius: AppRadius.smallRadius,
             ),
             child: Center(
@@ -409,7 +409,7 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
             decoration: BoxDecoration(
-              color: _getScoreColor(scorePercent).withOpacity(0.2),
+              color: _getScoreColor(scorePercent).withAlpha(51),
               borderRadius: AppRadius.mediumRadius,
             ),
             child: Text(
@@ -615,7 +615,7 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
           padding: AppCardPadding.standard,
           child: Row(
             children: [
-              const Icon(Icons.check_circle, color: Colors.green, size: 32),
+              const Icon(Icons.check_circle, color: Colors.green, size: AppIconSizes.lg),
               const SizedBox(width: 12),
               Expanded(
                 child: Text(

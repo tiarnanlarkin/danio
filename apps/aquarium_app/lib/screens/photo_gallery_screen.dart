@@ -7,7 +7,7 @@ import '../models/models.dart';
 import '../providers/tank_provider.dart';
 import '../theme/app_theme.dart';
 import '../widgets/optimized_image.dart';
-import '../widgets/error_state.dart';
+import '../widgets/core/app_states.dart';
 
 class PhotoGalleryScreen extends ConsumerWidget {
   final String tankId;
@@ -27,9 +27,9 @@ class PhotoGalleryScreen extends ConsumerWidget {
       appBar: AppBar(title: Text('$tankName Gallery')),
       body: logsAsync.when(
         loading: () => const Center(child: BubbleLoader()),
-        error: (e, _) => ErrorState(
-          message: 'Failed to load photos',
-          details: 'Please check your connection and try again.',
+        error: (e, _) => AppErrorState(
+          title: 'Failed to load photos',
+          message: 'Please check your connection and try again.',
           onRetry: () => ref.invalidate(allLogsProvider(tankId)),
         ),
         data: (logs) {
@@ -81,7 +81,7 @@ class PhotoGalleryScreen extends ConsumerWidget {
               for (int i = 0; i < months.length; i++) ...[
                 // Month header
                 SliverPadding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
                   sliver: SliverToBoxAdapter(
                     child: Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8),
@@ -101,7 +101,7 @@ class PhotoGalleryScreen extends ConsumerWidget {
                 
                 // Photo grid (lazy loaded via SliverGrid.builder)
                 SliverPadding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
                   sliver: SliverGrid.builder(
                     gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 3,
@@ -164,7 +164,7 @@ class _EmptyGallery extends StatelessWidget {
           children: [
             Icon(
               Icons.photo_library_outlined,
-              size: 64,
+              size: AppIconSizes.xxl,
               color: AppColors.textHint,
             ),
             const SizedBox(height: AppSpacing.md),

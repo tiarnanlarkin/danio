@@ -57,7 +57,7 @@ class _TankPickerSheetState extends ConsumerState<TankPickerSheet> {
 
           // Header
           Padding(
-            padding: const EdgeInsets.all(20),
+            padding: const EdgeInsets.all(AppSpacing.lg2),
             child: Row(
               children: [
                 Icon(Icons.water_drop, color: AppColors.primary),
@@ -174,7 +174,7 @@ class _TankPickerSheetState extends ConsumerState<TankPickerSheet> {
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
               child: Row(
                 children: [
-                  Icon(Icons.info_outline, size: 16, color: AppColors.info),
+                  Icon(Icons.info_outline, size: AppIconSizes.xs, color: AppColors.info),
                   const SizedBox(width: AppSpacing.sm),
                   Expanded(
                     child: Text(

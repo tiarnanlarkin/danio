@@ -16,7 +16,7 @@ class LogsList extends StatelessWidget {
   Widget build(BuildContext context) {
     if (logs.isEmpty) {
       return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
+        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
         child: AppCard(
           padding: AppCardPadding.spacious,
           child: CompactEmptyState(
@@ -28,7 +28,7 @@ class LogsList extends StatelessWidget {
     }
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
       child: AppCard(
         padding: AppCardPadding.none,
         child: Column(
@@ -58,11 +58,11 @@ class LogTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       leading: CircleAvatar(
-        backgroundColor: _getLogColor(log.type).withOpacity(0.2),
+        backgroundColor: _getLogColor(log.type).withAlpha(51),
         child: Icon(
           _getLogIcon(log.type),
           color: _getLogColor(log.type),
-          size: 20,
+          size: AppIconSizes.sm,
         ),
       ),
       title: Text(_getLogTitle(log)),

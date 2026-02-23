@@ -67,7 +67,7 @@ class _QuickStartGuideState extends State<QuickStartGuide> {
 
     if (!hasSeenGuide && mounted) {
       // Delay to let UI settle
-      Future.delayed(const Duration(milliseconds: 500), () {
+      Future.delayed(AppDurations.long2, () {
         if (mounted) _showGuide();
       });
     }
@@ -139,19 +139,19 @@ class _QuickStartGuideState extends State<QuickStartGuide> {
       bottom: 100,
       child: TweenAnimationBuilder<double>(
         tween: Tween(begin: 0.0, end: 1.0),
-        duration: const Duration(milliseconds: 400),
-        curve: Curves.easeOut,
+        duration: AppDurations.long1,
+        curve: AppCurves.standardDecelerate,
         builder: (context, value, child) => Transform.scale(
           scale: 0.8 + (0.2 * value),
           child: Opacity(opacity: value, child: child),
         ),
         child: Card(
-          elevation: 8,
+          elevation: AppElevation.level3,
           shape: RoundedRectangleBorder(
             borderRadius: AppRadius.mediumRadius,
           ),
           child: Padding(
-            padding: const EdgeInsets.all(20),
+            padding: const EdgeInsets.all(AppSpacing.lg2),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -316,7 +316,7 @@ class QuickStartTipsCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      elevation: 2,
+      elevation: AppElevation.level1,
       margin: const EdgeInsets.all(16),
       shape: RoundedRectangleBorder(borderRadius: AppRadius.mediumRadius),
       child: Container(
@@ -347,7 +347,7 @@ class QuickStartTipsCard extends StatelessWidget {
                     child: const Icon(
                       Icons.lightbulb_outline,
                       color: AppColors.accent,
-                      size: 24,
+                      size: AppIconSizes.md,
                     ),
                   ),
                   const SizedBox(width: 12),
@@ -397,7 +397,7 @@ class QuickStartTipsCard extends StatelessWidget {
                   const SizedBox(width: AppSpacing.sm),
                   IconButton(
                     onPressed: () => _dismissCard(context),
-                    icon: const Icon(Icons.close, size: 20),
+                    icon: const Icon(Icons.close, size: AppIconSizes.sm),
                     tooltip: 'Dismiss',
                     color: Colors.grey,
                   ),
@@ -417,7 +417,7 @@ class QuickStartTipsCard extends StatelessWidget {
   }) {
     return Row(
       children: [
-        Icon(icon, size: 20, color: color),
+        Icon(icon, size: AppIconSizes.sm, color: color),
         const SizedBox(width: 12),
         Expanded(child: Text(text, style: const TextStyle(fontSize: 14))),
       ],

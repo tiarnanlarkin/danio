@@ -93,7 +93,7 @@ class CyclingStatusCard extends StatelessWidget {
     
     return AppCard(
       border: Border.all(color: statusColor, width: 2),
-      backgroundColor: statusColor.withOpacity(0.05),
+      backgroundColor: statusColor.withAlpha(13),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -240,7 +240,7 @@ class _StatusIcon extends StatelessWidget {
       width: 40,
       height: 40,
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: color.withAlpha(26),
         shape: BoxShape.circle,
       ),
       child: Icon(icon, color: color, size: AppIconSizes.md - 2),

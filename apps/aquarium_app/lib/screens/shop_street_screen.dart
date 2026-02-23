@@ -5,10 +5,14 @@ import 'dart:ui';
 import '../models/wishlist.dart';
 import '../providers/wishlist_provider.dart';
 import '../theme/app_theme.dart';
+import 'gem_shop_screen.dart';
 import 'wishlist_screen.dart';
 
 /// Shop Street colors - fresh outdoor market theme
+/// Adapts slightly for dark mode to maintain readability
 class ShopColors {
+  ShopColors._();
+
   static const background1 = Color(0xFF4A7C59); // Forest green
   static const background2 = Color(0xFF3D6B4A); // Darker green
   static const background3 = Color(0xFF2F5A3B); // Deep green
@@ -20,11 +24,24 @@ class ShopColors {
   static const glassBorder = Color(0x30FFFFFF);
   static const textPrimary = Color(0xFFF5F5F5);
   static const textSecondary = Color(0xFFB8D4B8);
-  
+
   // Pre-computed alpha variants for performance
   static const accentAlpha20 = Color(0x33F0C040); // 20% opacity
   static const textSecondaryAlpha50 = Color(0x80B8D4B8); // 50% opacity
   static const textSecondaryAlpha70 = Color(0xB3B8D4B8); // 70% opacity
+
+  // Dark mode adjustments — slightly lighter/desaturated greens
+  static const background1Dark = Color(0xFF5A8E6A); // Lighter forest green
+  static const background2Dark = Color(0xFF4D7D5C); // Lighter mid green
+  static const background3Dark = Color(0xFF3F6C4D); // Lighter base green
+
+  /// Returns gradient colors adapted to current brightness
+  static List<Color> gradientColors(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return isDark
+        ? [background1Dark, background2Dark, background3Dark]
+        : [background1, background2, background3];
+  }
 }
 
 /// Shop Street Room - Wishlist & Shopping
@@ -40,15 +57,11 @@ class ShopStreetScreen extends ConsumerWidget {
     final shops = ref.watch(localShopsProvider);
 
     return Container(
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
-          colors: [
-            ShopColors.background1,
-            ShopColors.background2,
-            ShopColors.background3,
-          ],
+          colors: ShopColors.gradientColors(context),
         ),
       ),
       child: SafeArea(
@@ -60,7 +73,7 @@ class ShopStreetScreen extends ConsumerWidget {
 
             // Shop sections
             SliverPadding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
+              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
               sliver: SliverList(
                 delegate: SliverChildListDelegate([
                   _ShopSection(
@@ -107,6 +120,20 @@ class ShopStreetScreen extends ConsumerWidget {
                         builder: (_) => const WishlistScreen(
                           category: WishlistCategory.equipment,
                         ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  _ShopSection(
+                    title: '💎 Gem Shop',
+                    subtitle: 'Spend gems on rewards & cosmetics',
+                    icon: Icons.diamond,
+                    color: Colors.purple.shade300,
+                    itemCount: 0,
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const GemShopScreen(),
                       ),
                     ),
                   ),
@@ -332,11 +359,11 @@ class _ShopHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(AppSpacing.lg2),
       child: Row(
         children: [
           Container(
-            padding: const EdgeInsets.all(12),
+            padding: const EdgeInsets.all(AppSpacing.sm2),
             decoration: BoxDecoration(
               color: ShopColors.glassCard,
               borderRadius: AppRadius.mediumRadius,
@@ -399,7 +426,7 @@ class _ShopSection extends StatelessWidget {
         child: BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
           child: Container(
-            padding: const EdgeInsets.all(20),
+            padding: const EdgeInsets.all(AppSpacing.lg2),
             decoration: BoxDecoration(
               color: ShopColors.glassCard,
               borderRadius: AppRadius.largeRadius,
@@ -408,7 +435,7 @@ class _ShopSection extends StatelessWidget {
             child: Row(
               children: [
                 Container(
-                  padding: const EdgeInsets.all(12),
+                  padding: const EdgeInsets.all(AppSpacing.sm2),
                   decoration: BoxDecoration(
                     color: Color((color.value & 0x00FFFFFF) | 0x33000000), // 20% opacity
                     borderRadius: AppRadius.mediumRadius,
@@ -489,7 +516,7 @@ class _BudgetCard extends StatelessWidget {
         child: BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
           child: Container(
-            padding: const EdgeInsets.all(20),
+            padding: const EdgeInsets.all(AppSpacing.lg2),
             decoration: BoxDecoration(
               color: ShopColors.glassCard,
               borderRadius: AppRadius.largeRadius,
@@ -608,7 +635,7 @@ class _LocalShopsCard extends StatelessWidget {
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
         child: Container(
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.all(AppSpacing.lg2),
           decoration: BoxDecoration(
             color: ShopColors.glassCard,
             borderRadius: AppRadius.largeRadius,
@@ -701,7 +728,7 @@ class _ShopTile extends StatelessWidget {
               child: const Icon(
                 Icons.store,
                 color: ShopColors.textSecondary,
-                size: 20,
+                size: AppIconSizes.sm,
               ),
             ),
             const SizedBox(width: 12),

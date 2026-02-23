@@ -360,7 +360,7 @@ class InfoCard extends StatelessWidget {
           Container(
             padding: EdgeInsets.all(AppSpacing.sm),
             decoration: BoxDecoration(
-              color: (iconColor ?? AppColors.primary).withOpacity(0.15),
+              color: (iconColor ?? AppColors.primary).withAlpha(38),
               borderRadius: AppRadius.smallRadius,
             ),
             child: Icon(
@@ -478,7 +478,7 @@ class _TrendBadge extends StatelessWidget {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: AppSpacing.xs),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.15),
+        color: color.withAlpha(38),
         borderRadius: AppRadius.smallRadius,
       ),
       child: Row(
@@ -527,7 +527,7 @@ class ActionCard extends StatelessWidget {
     
     return AppCard(
       variant: AppCardVariant.outlined,
-      border: Border.all(color: color.withOpacity(0.3), width: 1.5),
+      border: Border.all(color: color.withAlpha(76), width: 1.5),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

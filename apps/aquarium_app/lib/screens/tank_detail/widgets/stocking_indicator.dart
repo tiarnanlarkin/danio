@@ -46,13 +46,13 @@ class StockingIndicator extends StatelessWidget {
       child: Card(
         margin: EdgeInsets.zero,
         child: Padding(
-          padding: const EdgeInsets.all(12),
+          padding: const EdgeInsets.all(AppSpacing.sm2),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
                 children: [
-                  Icon(Icons.bar_chart, size: 16, color: color),
+                  Icon(Icons.bar_chart, size: AppIconSizes.xs, color: color),
                   const SizedBox(width: 6),
                   Text(
                     'Stocking: ${_levelLabel()}',

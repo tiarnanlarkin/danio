@@ -293,7 +293,7 @@ class _SetupCard extends StatelessWidget {
     return Card(
       margin: const EdgeInsets.only(bottom: 8),
       child: Padding(
-        padding: const EdgeInsets.all(12),
+        padding: const EdgeInsets.all(AppSpacing.sm2),
         child: Row(
           children: [
             Icon(icon, color: AppColors.primary),
@@ -398,7 +398,7 @@ class _SymptomRow extends StatelessWidget {
       child: Row(
         children: [
           Expanded(child: Text(symptom, style: AppTypography.bodyMedium)),
-          Icon(Icons.arrow_forward, size: 16, color: AppColors.textHint),
+          Icon(Icons.arrow_forward, size: AppIconSizes.xs, color: AppColors.textHint),
           const SizedBox(width: AppSpacing.sm),
           Expanded(
             child: Text(
@@ -430,7 +430,7 @@ class _MedCard extends StatelessWidget {
     return Card(
       margin: const EdgeInsets.only(bottom: 8),
       child: Padding(
-        padding: const EdgeInsets.all(12),
+        padding: const EdgeInsets.all(AppSpacing.sm2),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -460,7 +460,7 @@ class _TipItem extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(Icons.check, size: 16, color: AppColors.info),
+          Icon(Icons.check, size: AppIconSizes.xs, color: AppColors.info),
           const SizedBox(width: AppSpacing.sm),
           Expanded(child: Text(text, style: AppTypography.bodySmall)),
         ],

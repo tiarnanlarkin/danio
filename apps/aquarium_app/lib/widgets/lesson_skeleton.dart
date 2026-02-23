@@ -180,11 +180,11 @@ class _ShimmerAnimationState extends State<_ShimmerAnimation>
     super.initState();
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1500),
+      duration: AppDurations.celebration,
     )..repeat();
 
     _animation = Tween<double>(begin: -1.0, end: 2.0).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
+      CurvedAnimation(parent: _controller, curve: AppCurves.standard),
     );
   }
 
@@ -243,7 +243,7 @@ class LessonErrorWidget extends StatelessWidget {
           children: [
             const Icon(
               Icons.error_outline,
-              size: 64,
+              size: AppIconSizes.xxl,
               color: AppColors.error,
             ),
             const SizedBox(height: AppSpacing.md),

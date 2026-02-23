@@ -13,7 +13,6 @@ import '../utils/app_feedback.dart';
 import '../utils/haptic_feedback.dart';
 import '../utils/accessibility_utils.dart';
 import '../widgets/core/app_button.dart';
-// import '../services/firebase_analytics_service.dart';
 
 class CreateTankScreen extends ConsumerStatefulWidget {
   const CreateTankScreen({super.key});
@@ -43,7 +42,6 @@ class _CreateTankScreenState extends ConsumerState<CreateTankScreen> {
   @override
   void initState() {
     super.initState();
-    // FirebaseAnalyticsService().logScreenView('create_tank');
   }
 
   @override
@@ -189,8 +187,8 @@ class _CreateTankScreenState extends ConsumerState<CreateTankScreen> {
     if (_currentPage < 2) {
       AppHaptics.light();
       _pageController.nextPage(
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeInOut,
+        duration: AppDurations.medium4,
+        curve: AppCurves.standard,
       );
     }
   }
@@ -199,8 +197,8 @@ class _CreateTankScreenState extends ConsumerState<CreateTankScreen> {
     if (_currentPage > 0) {
       AppHaptics.light();
       _pageController.previousPage(
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeInOut,
+        duration: AppDurations.medium4,
+        curve: AppCurves.standard,
       );
     }
   }

@@ -72,7 +72,7 @@ class ThemeGalleryScreen extends ConsumerWidget {
 
           // Free theme grid
           SliverPadding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
             sliver: SliverGrid(
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
@@ -332,7 +332,7 @@ class ThemeGalleryScreen extends ConsumerWidget {
                 ),
                 borderRadius: AppRadius.mediumRadius,
               ),
-              child: const Icon(Icons.star, color: Colors.white, size: 20),
+              child: const Icon(Icons.star, color: Colors.white, size: AppIconSizes.sm),
             ),
             const SizedBox(width: 12),
             const Text('Premium Theme'),
@@ -390,7 +390,7 @@ class _CurrentThemePreview extends StatelessWidget {
             child: CustomPaint(
               size: const Size(double.infinity, 60),
               painter: _WavePainter(
-                color: theme.primaryWave.withOpacity(0.4),
+                color: theme.primaryWave.withAlpha(102),
                 offset: 0,
               ),
             ),
@@ -402,7 +402,7 @@ class _CurrentThemePreview extends StatelessWidget {
             child: CustomPaint(
               size: const Size(double.infinity, 60),
               painter: _WavePainter(
-                color: theme.secondaryWave.withOpacity(0.6),
+                color: theme.secondaryWave.withAlpha(153),
                 offset: 30,
               ),
             ),
@@ -417,7 +417,7 @@ class _CurrentThemePreview extends StatelessWidget {
               height: 80,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: theme.accentBlob.withOpacity(0.3),
+                color: theme.accentBlob.withAlpha(76),
               ),
             ),
           ),
@@ -429,7 +429,7 @@ class _CurrentThemePreview extends StatelessWidget {
               height: 40,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: theme.accentBlob2.withOpacity(0.4),
+                color: theme.accentBlob2.withAlpha(102),
               ),
             ),
           ),
@@ -474,7 +474,7 @@ class _CurrentThemePreview extends StatelessWidget {
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Icon(Icons.check_circle, size: 16, color: Colors.white),
+                  const Icon(Icons.check_circle, size: AppIconSizes.xs, color: Colors.white),
                   const SizedBox(width: 6),
                   Text(
                     'Current: ${theme.name}',
@@ -515,7 +515,7 @@ class _ThemeCard extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
+        duration: AppDurations.medium2,
         decoration: BoxDecoration(
           borderRadius: AppRadius.largeRadius,
           border: Border.all(
@@ -525,7 +525,7 @@ class _ThemeCard extends StatelessWidget {
           boxShadow: isSelected
               ? [
                   BoxShadow(
-                    color: theme.accentBlob.withOpacity(0.3),
+                    color: theme.accentBlob.withAlpha(76),
                     blurRadius: 12,
                     spreadRadius: 2,
                   ),
@@ -552,7 +552,7 @@ class _ThemeCard extends StatelessWidget {
                     color: AppOverlays.black40,
                     child: Center(
                       child: Container(
-                        padding: const EdgeInsets.all(12),
+                        padding: const EdgeInsets.all(AppSpacing.sm2),
                         decoration: BoxDecoration(
                           color: AppOverlays.black50,
                           shape: BoxShape.circle,
@@ -604,7 +604,7 @@ class _ThemeCard extends StatelessWidget {
                     ),
                     child: const Icon(
                       Icons.check,
-                      size: 16,
+                      size: AppIconSizes.xs,
                       color: Colors.white,
                     ),
                   ),
@@ -693,12 +693,12 @@ class _MiniRoomPreview extends StatelessWidget {
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                   colors: [
-                    theme.waterTop.withOpacity(0.5),
-                    theme.waterMid.withOpacity(0.3),
+                    theme.waterTop.withAlpha(128),
+                    theme.waterMid.withAlpha(76),
                   ],
                 ),
                 border: Border.all(
-                  color: theme.sand.withOpacity(0.8),
+                  color: theme.sand.withAlpha(204),
                   width: 2,
                 ),
                 borderRadius: BorderRadius.circular(2),
@@ -714,7 +714,7 @@ class _MiniRoomPreview extends StatelessWidget {
               width: 70,
               height: 10,
               decoration: BoxDecoration(
-                color: theme.sand.withOpacity(0.8),
+                color: theme.sand.withAlpha(204),
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
@@ -818,8 +818,8 @@ class _MiniRoomPreview extends StatelessWidget {
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
-                    theme.sand.withOpacity(0.6),
-                    theme.sand.withOpacity(0.8),
+                    theme.sand.withAlpha(153),
+                    theme.sand.withAlpha(204),
                   ],
                 ),
               ),
@@ -835,7 +835,7 @@ class _MiniRoomPreview extends StatelessWidget {
               height: 20,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: theme.accentBlob.withOpacity(0.3),
+                color: theme.accentBlob.withAlpha(76),
               ),
             ),
           ),
@@ -878,7 +878,7 @@ class _MiniFish extends StatelessWidget {
       decoration: BoxDecoration(
         color: color,
         borderRadius: const BorderRadius.horizontal(
-          left: Radius.circular(12),
+          left: Radius.circular(AppRadius.md2),
           right: Radius.circular(6),
         ),
       ),

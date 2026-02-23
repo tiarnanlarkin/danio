@@ -50,7 +50,7 @@ class _StoryPlayerScreenState extends ConsumerState<StoryPlayerScreen>
     _textOpacity = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(
         parent: _textAnimationController,
-        curve: Curves.easeInOut,
+        curve: AppCurves.standard,
       ),
     );
 
@@ -63,7 +63,7 @@ class _StoryPlayerScreenState extends ConsumerState<StoryPlayerScreen>
         Tween<Offset>(begin: const Offset(0, 0.3), end: Offset.zero).animate(
           CurvedAnimation(
             parent: _choiceAnimationController,
-            curve: Curves.easeOutCubic,
+            curve: AppCurves.emphasized,
           ),
         );
 
@@ -519,12 +519,12 @@ class _ChoiceButton extends StatelessWidget {
     return Material(
       color: Colors.white,
       borderRadius: AppRadius.mediumRadius,
-      elevation: 4,
+      elevation: AppElevation.level2,
       child: InkWell(
         onTap: onPressed,
         borderRadius: AppRadius.mediumRadius,
         child: Container(
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.all(AppSpacing.lg2),
           decoration: BoxDecoration(
             borderRadius: AppRadius.mediumRadius,
             border: Border.all(color: Colors.blue.shade200, width: 2),
@@ -545,7 +545,7 @@ class _ChoiceButton extends StatelessWidget {
               Icon(
                 Icons.arrow_forward_ios,
                 color: Colors.blue.shade700,
-                size: 20,
+                size: AppIconSizes.sm,
               ),
             ],
           ),

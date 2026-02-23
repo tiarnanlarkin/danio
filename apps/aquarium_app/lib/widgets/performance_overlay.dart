@@ -59,7 +59,7 @@ class _AppPerformanceOverlayState extends State<AppPerformanceOverlay> {
 
   void _startMonitoring() {
     performanceMonitor.startMonitoring();
-    _updateTimer = Timer.periodic(const Duration(milliseconds: 500), (_) {
+    _updateTimer = Timer.periodic(AppDurations.long2, (_) {
       if (mounted) {
         setState(() {
           _fps = performanceMonitor.currentFPS;
@@ -227,7 +227,7 @@ class _PerformanceDebugScreenState extends State<PerformanceDebugScreen> {
           children: [
             Icon(
               report.meetsTarget ? Icons.check_circle : Icons.warning,
-              size: 48,
+              size: AppIconSizes.xl,
               color: report.meetsTarget ? Colors.green : Colors.red,
             ),
             const SizedBox(height: AppSpacing.sm),

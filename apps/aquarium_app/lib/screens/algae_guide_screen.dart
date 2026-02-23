@@ -417,7 +417,7 @@ class _AlgaeCard extends StatelessWidget {
           width: 40,
           height: 40,
           decoration: BoxDecoration(
-            color: color.withOpacity(0.3),
+            color: color.withAlpha(76),
             borderRadius: AppRadius.smallRadius,
             border: Border.all(color: color, width: 2),
           ),
@@ -464,7 +464,7 @@ class _AlgaeCard extends StatelessWidget {
                   ),
                   child: Row(
                     children: [
-                      Icon(Icons.shield, size: 16, color: AppColors.info),
+                      Icon(Icons.shield, size: AppIconSizes.xs, color: AppColors.info),
                       const SizedBox(width: AppSpacing.sm),
                       Expanded(
                         child: Text(
@@ -514,7 +514,7 @@ class _CrewCard extends StatelessWidget {
               child: const Icon(
                 Icons.pest_control,
                 color: AppColors.success,
-                size: 20,
+                size: AppIconSizes.sm,
               ),
             ),
             const SizedBox(width: 12),
@@ -551,7 +551,7 @@ class _ChecklistItem extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
         children: [
-          Icon(Icons.check_box_outlined, size: 20, color: AppColors.success),
+          Icon(Icons.check_box_outlined, size: AppIconSizes.sm, color: AppColors.success),
           const SizedBox(width: 12),
           Expanded(child: Text(text, style: AppTypography.bodyMedium)),
         ],

@@ -9,8 +9,7 @@ import '../models/tank.dart';
 import '../providers/user_profile_provider.dart';
 import 'onboarding/profile_creation_screen.dart';
 import 'onboarding/experience_assessment_screen.dart';
-import 'house_navigator.dart';
-// import '../services/firebase_analytics_service.dart';
+import 'tab_navigator.dart';
 
 class OnboardingScreen extends ConsumerStatefulWidget {
   const OnboardingScreen({super.key});
@@ -55,8 +54,6 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen>
   @override
   void initState() {
     super.initState();
-    // FirebaseAnalyticsService().logScreenView('onboarding');
-    // FirebaseAnalyticsService().logTutorialBegin();
     
     _contentController = AnimationController(
       duration: const Duration(milliseconds: 600),
@@ -64,13 +61,13 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen>
     );
     
     _contentFade = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _contentController, curve: Curves.easeOut),
+      CurvedAnimation(parent: _contentController, curve: AppCurves.standardDecelerate),
     );
     
     _contentSlide = Tween<Offset>(
       begin: const Offset(0, 0.1),
       end: Offset.zero,
-    ).animate(CurvedAnimation(parent: _contentController, curve: Curves.easeOut));
+    ).animate(CurvedAnimation(parent: _contentController, curve: AppCurves.standardDecelerate));
     
     _contentController.forward();
   }
@@ -100,7 +97,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen>
           children: [
             // Static gradient background (animated caused ANR)
             AnimatedContainer(
-              duration: const Duration(milliseconds: 500),
+              duration: AppDurations.long2,
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.topLeft,
@@ -108,7 +105,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen>
                   colors: [
                     page.gradientColors[0],
                     page.gradientColors[1],
-                    page.gradientColors[0].withOpacity(0.8),
+                    page.gradientColors[0].withAlpha(204),
                   ],
                 ),
               ),
@@ -168,7 +165,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen>
                             backgroundColor: AppColors.whiteAlpha15,
                             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                           ),
-                          icon: const Icon(Icons.flash_on, size: 20),
+                          icon: const Icon(Icons.flash_on, size: AppIconSizes.sm),
                           label: const Text('Quick Start'),
                         ),
                         // Skip - goes to profile creation
@@ -287,12 +284,12 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen>
                 onTap: () {
                   _pageController.animateToPage(
                     index,
-                    duration: const Duration(milliseconds: 400),
-                    curve: Curves.easeInOut,
+                    duration: AppDurations.long1,
+                    curve: AppCurves.standard,
                   );
                 },
                 child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 300),
+                  duration: AppDurations.medium4,
                   margin: const EdgeInsets.symmetric(horizontal: 5),
                   width: _currentPage == index ? 32 : 10,
                   height: 10,
@@ -327,8 +324,8 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen>
                     onTap: () {
                       HapticFeedback.lightImpact();
                       _pageController.previousPage(
-                        duration: const Duration(milliseconds: 400),
-                        curve: Curves.easeInOut,
+                        duration: AppDurations.long1,
+                        curve: AppCurves.standard,
                       );
                     },
                     child: const Text(
@@ -354,8 +351,8 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen>
                       : () {
                           HapticFeedback.lightImpact();
                           _pageController.nextPage(
-                            duration: const Duration(milliseconds: 400),
-                            curve: Curves.easeInOut,
+                            duration: AppDurations.long1,
+                            curve: AppCurves.standard,
                           );
                         },
                   child: Text(
@@ -406,8 +403,9 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen>
 
       if (mounted) {
         // Go straight to main app
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (_) => const HouseNavigator()),
+        Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (_) => const TabNavigator()),
+          (route) => false,
         );
       }
     } catch (e) {
@@ -488,11 +486,11 @@ class _PrimaryButtonState extends State<_PrimaryButton>
   void initState() {
     super.initState();
     _controller = AnimationController(
-      duration: const Duration(milliseconds: 100),
+      duration: AppDurations.short,
       vsync: this,
     );
     _scaleAnimation = Tween<double>(begin: 1.0, end: 0.95).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
+      CurvedAnimation(parent: _controller, curve: AppCurves.standard),
     );
   }
 

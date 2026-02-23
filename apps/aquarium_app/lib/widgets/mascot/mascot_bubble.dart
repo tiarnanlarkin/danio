@@ -95,21 +95,21 @@ class _MascotBubbleState extends State<MascotBubble>
     
     // Bubble entrance animation
     _bubbleController = AnimationController(
-      duration: const Duration(milliseconds: 500),
+      duration: AppDurations.long2,
       vsync: this,
     );
     
     _scaleAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(
         parent: _bubbleController,
-        curve: Curves.elasticOut,
+        curve: AppCurves.elastic,
       ),
     );
     
     _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(
         parent: _bubbleController,
-        curve: const Interval(0.0, 0.5, curve: Curves.easeOut),
+        curve: const Interval(0.0, 0.5, curve: AppCurves.standardDecelerate),
       ),
     );
     
@@ -119,7 +119,7 @@ class _MascotBubbleState extends State<MascotBubble>
     ).animate(
       CurvedAnimation(
         parent: _bubbleController,
-        curve: Curves.easeOutCubic,
+        curve: AppCurves.emphasized,
       ),
     );
     
@@ -132,7 +132,7 @@ class _MascotBubbleState extends State<MascotBubble>
     _fishBobAnimation = Tween<double>(begin: -4, end: 4).animate(
       CurvedAnimation(
         parent: _fishController,
-        curve: Curves.easeInOut,
+        curve: AppCurves.standard,
       ),
     );
     
@@ -234,14 +234,14 @@ class _MascotBubbleState extends State<MascotBubble>
           decoration: BoxDecoration(
             color: AppColors.surface,
             borderRadius: BorderRadius.only(
-              topLeft: const Radius.circular(20),
-              topRight: const Radius.circular(20),
+              topLeft: const Radius.circular(AppRadius.lg),
+              topRight: const Radius.circular(AppRadius.lg),
               bottomLeft: widget.position == MascotPosition.left
                   ? const Radius.circular(4)
-                  : const Radius.circular(20),
+                  : const Radius.circular(AppRadius.lg),
               bottomRight: widget.position == MascotPosition.right
                   ? const Radius.circular(4)
-                  : const Radius.circular(20),
+                  : const Radius.circular(AppRadius.lg),
             ),
             boxShadow: [
               BoxShadow(
@@ -272,7 +272,7 @@ class _MascotBubbleState extends State<MascotBubble>
                   onTap: widget.onDismiss,
                   child: Icon(
                     Icons.close,
-                    size: 16,
+                    size: AppIconSizes.xs,
                     color: AppColors.textHint,
                   ),
                 ),
@@ -419,7 +419,7 @@ class _MascotAvatarState extends State<MascotAvatar>
     );
     
     _bobAnimation = Tween<double>(begin: -3, end: 3).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
+      CurvedAnimation(parent: _controller, curve: AppCurves.standard),
     );
     
     if (widget.animate) {

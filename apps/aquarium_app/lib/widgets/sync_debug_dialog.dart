@@ -62,7 +62,7 @@ class SyncDebugDialog extends ConsumerWidget {
                     children: [
                       const Icon(
                         Icons.warning_amber,
-                        size: 16,
+                        size: AppIconSizes.xs,
                         color: Colors.orange,
                       ),
                       const SizedBox(width: AppSpacing.sm),
@@ -93,7 +93,7 @@ class SyncDebugDialog extends ConsumerWidget {
                   padding: const EdgeInsets.only(bottom: 4),
                   child: Row(
                     children: [
-                      Icon(_getActionIcon(action.type), size: 16),
+                      Icon(_getActionIcon(action.type), size: AppIconSizes.xs),
                       const SizedBox(width: AppSpacing.sm),
                       Expanded(
                         child: Column(
@@ -124,7 +124,7 @@ class SyncDebugDialog extends ConsumerWidget {
               const Divider(),
               const SizedBox(height: AppSpacing.sm),
               Container(
-                padding: const EdgeInsets.all(12),
+                padding: const EdgeInsets.all(AppSpacing.sm2),
                 decoration: BoxDecoration(
                   color: Colors.red.shade50,
                   borderRadius: AppRadius.smallRadius,
@@ -227,7 +227,7 @@ class _InfoRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Icon(icon, size: 20, color: color ?? Colors.blue),
+        Icon(icon, size: AppIconSizes.sm, color: color ?? Colors.blue),
         const SizedBox(width: 12),
         Expanded(
           child: Text(

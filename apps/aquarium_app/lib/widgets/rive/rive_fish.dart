@@ -6,6 +6,7 @@
 // - joystick_fish.riv: Interactive blinking and eye tracking
 // - emotional_fish.riv: Cursor tracking fish
 
+import '../../theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:rive/rive.dart';
 
@@ -221,7 +222,7 @@ class _RiveFishState extends State<RiveFish> {
     if (widget.tint != null) {
       child = ColorFiltered(
         colorFilter: ColorFilter.mode(
-          widget.tint!.withOpacity(0.3),
+          widget.tint!.withAlpha(76),
           BlendMode.srcATop,
         ),
         child: child,
@@ -281,7 +282,7 @@ class _PositionedRiveFishState extends State<PositionedRiveFish>
         end: 10,
       ).animate(CurvedAnimation(
         parent: _swimController,
-        curve: Curves.easeInOut,
+        curve: AppCurves.standard,
       ));
     } else {
       _swimController = AnimationController(vsync: this);

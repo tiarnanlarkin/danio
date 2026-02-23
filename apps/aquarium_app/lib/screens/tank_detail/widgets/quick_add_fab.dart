@@ -32,12 +32,12 @@ class _QuickAddFabState extends State<QuickAddFab>
   void initState() {
     super.initState();
     _controller = AnimationController(
-      duration: const Duration(milliseconds: 200),
+      duration: AppDurations.medium2,
       vsync: this,
     );
     _expandAnimation = CurvedAnimation(
       parent: _controller,
-      curve: Curves.easeOut,
+      curve: AppCurves.standardDecelerate,
     );
   }
 
@@ -114,7 +114,7 @@ class _QuickAddFabState extends State<QuickAddFab>
           heroTag: 'main_fab_${widget.tankId}',
           child: AnimatedRotation(
             turns: _isExpanded ? 0.125 : 0,
-            duration: const Duration(milliseconds: 200),
+            duration: AppDurations.medium2,
             child: const Icon(Icons.add),
           ),
         ),
@@ -173,7 +173,7 @@ class MiniFabOption extends StatelessWidget {
             backgroundColor: color,
             tooltip: label,
             onPressed: onTap,
-            child: Icon(icon, size: 20),
+            child: Icon(icon, size: AppIconSizes.sm),
           ),
         ),
       ],

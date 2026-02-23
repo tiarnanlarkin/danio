@@ -84,7 +84,7 @@ class _Co2CalculatorScreenState extends State<Co2CalculatorScreen> {
             padding: AppCardPadding.standard,
             child: Row(
               children: [
-                Icon(Icons.bubble_chart, size: 32, color: AppColors.info),
+                Icon(Icons.bubble_chart, size: AppIconSizes.lg, color: AppColors.info),
                 const SizedBox(width: 12),
                 Expanded(
                   child: Text(
@@ -141,7 +141,7 @@ class _Co2CalculatorScreenState extends State<Co2CalculatorScreen> {
 
           // Result
           AppCard(
-            backgroundColor: _co2Color.withOpacity(0.1),
+            backgroundColor: _co2Color.withAlpha(26),
             padding: AppCardPadding.spacious,
             child: Column(
               children: [

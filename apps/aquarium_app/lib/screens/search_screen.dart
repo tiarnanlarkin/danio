@@ -7,7 +7,6 @@ import '../providers/tank_provider.dart';
 import '../theme/app_theme.dart';
 import 'livestock_detail_screen.dart';
 import 'tank_detail/tank_detail_screen.dart';
-// import '../services/firebase_analytics_service.dart';
 
 class SearchScreen extends ConsumerStatefulWidget {
   const SearchScreen({super.key});
@@ -23,7 +22,6 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
   @override
   void initState() {
     super.initState();
-    // FirebaseAnalyticsService().logScreenView('search');
   }
 
   @override
@@ -79,7 +77,7 @@ class _EmptySearchState extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(Icons.search, size: 64, color: AppColors.textHint),
+          Icon(Icons.search, size: AppIconSizes.xxl, color: AppColors.textHint),
           const SizedBox(height: AppSpacing.md),
           Text('Search your aquarium data', style: AppTypography.bodyMedium),
           const SizedBox(height: AppSpacing.sm),
@@ -200,7 +198,7 @@ class _SearchResults extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.search_off, size: 64, color: AppColors.textHint),
+            Icon(Icons.search_off, size: AppIconSizes.xxl, color: AppColors.textHint),
             const SizedBox(height: AppSpacing.md),
             Text('No results for "$query"', style: AppTypography.bodyMedium),
           ],
@@ -276,7 +274,7 @@ class _SearchResults extends StatelessWidget {
         expand: false,
         builder: (_, scrollController) => SingleChildScrollView(
           controller: scrollController,
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.all(AppSpacing.lg2),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -438,11 +436,11 @@ class _ResultTile extends StatelessWidget {
       child: ListTile(
         leading: CircleAvatar(
           backgroundColor: AppOverlays.primary10,
-          child: Icon(result.icon, color: AppColors.primary, size: 20),
+          child: Icon(result.icon, color: AppColors.primary, size: AppIconSizes.sm),
         ),
         title: Text(result.title),
         subtitle: Text(result.subtitle, style: AppTypography.bodySmall),
-        trailing: const Icon(Icons.chevron_right, size: 20),
+        trailing: const Icon(Icons.chevron_right, size: AppIconSizes.sm),
         onTap: result.onTap,
       ),
     );

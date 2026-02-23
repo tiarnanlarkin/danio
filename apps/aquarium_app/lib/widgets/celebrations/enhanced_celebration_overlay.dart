@@ -39,7 +39,7 @@ class _EnhancedCelebrationOverlayWrapperState
     
     _scaleAnimation = CurvedAnimation(
       parent: _animationController,
-      curve: Curves.elasticOut,
+      curve: AppCurves.elastic,
     );
     
     _fadeAnimation = Tween<double>(
@@ -47,7 +47,7 @@ class _EnhancedCelebrationOverlayWrapperState
       end: 1.0,
     ).animate(CurvedAnimation(
       parent: _animationController,
-      curve: Curves.easeIn,
+      curve: AppCurves.standardAccelerate,
     ));
     
     _slideAnimation = Tween<Offset>(
@@ -55,7 +55,7 @@ class _EnhancedCelebrationOverlayWrapperState
       end: Offset.zero,
     ).animate(CurvedAnimation(
       parent: _animationController,
-      curve: Curves.easeOutCubic,
+      curve: AppCurves.emphasized,
     ));
   }
   
@@ -109,7 +109,7 @@ class _EnhancedCelebrationOverlayWrapperState
                 child: FadeTransition(
                   opacity: _fadeAnimation,
                   child: Container(
-                    color: Colors.black.withOpacity(0.6),
+                    color: AppColors.blackAlpha05,
                   ),
                 ),
               ),
@@ -163,7 +163,7 @@ class _EnhancedCelebrationOverlayWrapperState
           borderRadius: AppRadius.xlRadius,
           boxShadow: [
             BoxShadow(
-              color: gradientColors.first.withOpacity(0.5),
+              color: gradientColors.first.withAlpha(128),
               blurRadius: 40,
               spreadRadius: 8,
             ),
@@ -182,7 +182,7 @@ class _EnhancedCelebrationOverlayWrapperState
                   TweenAnimationBuilder<double>(
                     tween: Tween(begin: 0.0, end: 1.0),
                     duration: const Duration(milliseconds: 600),
-                    curve: Curves.elasticOut,
+                    curve: AppCurves.elastic,
                     builder: (context, value, child) {
                       return Transform.scale(
                         scale: value,
@@ -218,7 +218,7 @@ class _EnhancedCelebrationOverlayWrapperState
                     Text(
                       celebration.subtitle!,
                       style: TextStyle(
-                        color: Colors.white.withOpacity(0.9),
+                        color: AppColors.whiteAlpha05,
                         fontSize: 18,
                         height: 1.4,
                       ),
@@ -239,7 +239,7 @@ class _EnhancedCelebrationOverlayWrapperState
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: Colors.black.withOpacity(0.2),
+                color: AppColors.blackAlpha05,
                 borderRadius: const BorderRadius.only(
                   bottomLeft: Radius.circular(AppRadius.xl),
                   bottomRight: Radius.circular(AppRadius.xl),
@@ -250,14 +250,14 @@ class _EnhancedCelebrationOverlayWrapperState
                 children: [
                   Icon(
                     Icons.touch_app,
-                    color: Colors.white.withOpacity(0.7),
-                    size: 16,
+                    color: AppColors.whiteAlpha05,
+                    size: AppIconSizes.xs,
                   ),
                   const SizedBox(width: 8),
                   Text(
                     'Tap anywhere to dismiss',
                     style: TextStyle(
-                      color: Colors.white.withOpacity(0.7),
+                      color: AppColors.whiteAlpha05,
                       fontSize: 14,
                     ),
                   ),

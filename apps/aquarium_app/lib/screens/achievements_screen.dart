@@ -10,7 +10,6 @@ import '../data/achievements.dart';
 import '../providers/achievement_provider.dart';
 import '../widgets/achievement_card.dart';
 import '../widgets/achievement_detail_modal.dart';
-// import '../services/firebase_analytics_service.dart';
 
 class AchievementsScreen extends ConsumerStatefulWidget {
   const AchievementsScreen({super.key});
@@ -28,7 +27,6 @@ class _AchievementsScreenState extends ConsumerState<AchievementsScreen> {
   @override
   void initState() {
     super.initState();
-    // FirebaseAnalyticsService().logScreenView('achievements');
   }
 
   @override
@@ -227,7 +225,7 @@ class _AchievementsScreenState extends ConsumerState<AchievementsScreen> {
                       children: [
                         const Icon(
                           Icons.search_off,
-                          size: 64,
+                          size: AppIconSizes.xxl,
                           color: Colors.grey,
                         ),
                         const SizedBox(height: AppSpacing.md),

@@ -6,7 +6,7 @@ import '../theme/app_theme.dart';
 import '../utils/app_feedback.dart';
 import '../utils/debouncer.dart';
 import '../widgets/empty_state.dart';
-import '../widgets/error_state.dart';
+import '../widgets/core/app_states.dart';
 import '../widgets/skeleton_loader.dart';
 import 'friend_comparison_screen.dart';
 import '../widgets/mascot/mascot_widgets.dart';
@@ -31,7 +31,7 @@ class _FriendsScreenState extends ConsumerState<FriendsScreen>
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
     _searchDebouncer = TextDebouncer(
-      delay: const Duration(milliseconds: 300),
+      delay: AppDurations.medium4,
       onChanged: (value) => setState(() => _searchQuery = value),
     );
   }
@@ -52,7 +52,7 @@ class _FriendsScreenState extends ConsumerState<FriendsScreen>
     return Scaffold(
       appBar: AppBar(
         title: const Text('Friends'),
-        elevation: 0,
+        elevation: AppElevation.level0,
         bottom: TabBar(
           controller: _tabController,
           tabs: const [
@@ -74,9 +74,9 @@ class _FriendsScreenState extends ConsumerState<FriendsScreen>
           // Friends Tab
           friendsAsync.when(
             loading: () => const SkeletonList(itemCount: 5, itemHeight: 80),
-            error: (e, _) => ErrorState(
-              message: 'Unable to load friends',
-              details: 'Please check your connection and try again.',
+            error: (e, _) => AppErrorState(
+              title: 'Unable to load friends',
+              message: 'Please check your connection and try again.',
               onRetry: () => ref.read(friendsProvider.notifier).reload(),
             ),
             data: (friends) => _FriendsListView(
@@ -90,9 +90,9 @@ class _FriendsScreenState extends ConsumerState<FriendsScreen>
           // Activity Feed Tab
           activitiesAsync.when(
             loading: () => const SkeletonList(itemCount: 6, itemHeight: 100),
-            error: (e, _) => ErrorState(
-              message: 'Unable to load activity feed',
-              details: 'Please check your connection and try again.',
+            error: (e, _) => AppErrorState(
+              title: 'Unable to load activity feed',
+              message: 'Please check your connection and try again.',
               onRetry: () =>
                   ref.read(friendActivitiesProvider.notifier).reload(),
             ),
@@ -133,14 +133,14 @@ class _FriendsScreenState extends ConsumerState<FriendsScreen>
             ),
             const SizedBox(height: AppSpacing.md),
             Container(
-              padding: const EdgeInsets.all(12),
+              padding: const EdgeInsets.all(AppSpacing.sm2),
               decoration: BoxDecoration(
                 color: Colors.blue.shade50,
                 borderRadius: AppRadius.smallRadius,
               ),
               child: const Row(
                 children: [
-                  Icon(Icons.info_outline, size: 20, color: Colors.blue),
+                  Icon(Icons.info_outline, size: AppIconSizes.sm, color: Colors.blue),
                   SizedBox(width: AppSpacing.sm),
                   Expanded(
                     child: Text(
@@ -259,7 +259,7 @@ class _FriendsListView extends ConsumerWidget {
 
         // Friends count
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
+          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
           child: Row(
             children: [
               Text(
@@ -319,7 +319,7 @@ class _FriendListTile extends ConsumerWidget {
         },
         borderRadius: AppRadius.mediumRadius,
         child: Padding(
-          padding: const EdgeInsets.all(12),
+          padding: const EdgeInsets.all(AppSpacing.sm2),
           child: Row(
             children: [
               // Avatar
@@ -422,7 +422,7 @@ class _FriendListTile extends ConsumerWidget {
                       style: const TextStyle(
                         fontSize: 11,
                         fontWeight: FontWeight.bold,
-                        color: Colors.white,
+                        color: AppColors.onPrimary,
                       ),
                     ),
                   ),
@@ -495,7 +495,7 @@ class _ActivityTile extends StatelessWidget {
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
       child: Padding(
-        padding: const EdgeInsets.all(12),
+        padding: const EdgeInsets.all(AppSpacing.sm2),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -606,7 +606,7 @@ class _ErrorView extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Icon(Icons.error_outline, size: 64, color: Colors.red),
+          const Icon(Icons.error_outline, size: AppIconSizes.xxl, color: Colors.red),
           const SizedBox(height: AppSpacing.md),
           Text(message),
           const SizedBox(height: AppSpacing.md),

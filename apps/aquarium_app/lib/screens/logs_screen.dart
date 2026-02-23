@@ -11,7 +11,7 @@ import '../providers/tank_provider.dart';
 import '../theme/app_theme.dart';
 import '../utils/skeleton_placeholders.dart';
 import '../widgets/empty_state.dart';
-import '../widgets/error_state.dart';
+import '../widgets/core/app_states.dart';
 import '../widgets/mascot/mascot_widgets.dart';
 import 'add_log_screen.dart';
 import 'log_detail_screen.dart';
@@ -47,8 +47,8 @@ class _LogsScreenState extends ConsumerState<LogsScreen> {
       ),
       body: logsAsync.when(
         loading: () => _buildSkeletonList(),
-        error: (err, _) => ErrorState(
-          message: 'Failed to load logs',
+        error: (err, _) => AppErrorState(
+          title: 'Failed to load logs',
           onRetry: () => ref.invalidate(allLogsProvider(widget.tankId)),
         ),
         data: (logs) {
@@ -88,7 +88,7 @@ class _LogsScreenState extends ConsumerState<LogsScreen> {
             onRefresh: () async {
               ref.invalidate(allLogsProvider(widget.tankId));
               // Wait for new data to load
-              await Future.delayed(const Duration(milliseconds: 500));
+              await Future.delayed(AppDurations.long2);
             },
             child: Column(
               children: [
@@ -111,11 +111,11 @@ class _LogsScreenState extends ConsumerState<LogsScreen> {
                         leading: CircleAvatar(
                           backgroundColor: _getLogColor(
                             log.type,
-                          ).withOpacity(0.2),
+                          ).withAlpha(51),
                           child: Icon(
                             _getLogIcon(log.type),
                             color: _getLogColor(log.type),
-                            size: 20,
+                            size: AppIconSizes.sm,
                           ),
                         ),
                         title: Text(_titleFor(log)),
@@ -216,11 +216,11 @@ class _LogsScreenState extends ConsumerState<LogsScreen> {
                   child: ListTile(
                     leading: CircleAvatar(
                       backgroundColor:
-                          _getLogColor(log.type).withOpacity(0.2),
+                          _getLogColor(log.type).withAlpha(51),
                       child: Icon(
                         _getLogIcon(log.type),
                         color: _getLogColor(log.type),
-                        size: 20,
+                        size: AppIconSizes.sm,
                       ),
                     ),
                     title: Text(_titleFor(log)),

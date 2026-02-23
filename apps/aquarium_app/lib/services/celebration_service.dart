@@ -367,7 +367,7 @@ class _CelebrationOverlayWrapperState extends ConsumerState<CelebrationOverlayWr
           borderRadius: AppRadius.xlRadius,
           boxShadow: [
             BoxShadow(
-              color: gradientColors.first.withOpacity(0.4),
+              color: gradientColors.first.withAlpha(102),
               blurRadius: 30,
               spreadRadius: 5,
             ),

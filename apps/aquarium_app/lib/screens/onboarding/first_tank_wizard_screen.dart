@@ -4,7 +4,7 @@ import '../../models/models.dart';
 import '../../providers/tank_provider.dart';
 import '../../services/celebration_service.dart';
 import '../../theme/app_theme.dart';
-import '../house_navigator.dart';
+import '../tab_navigator.dart';
 
 /// Step-by-step wizard for creating first tank
 class FirstTankWizardScreen extends ConsumerStatefulWidget {
@@ -40,8 +40,8 @@ class _FirstTankWizardScreenState extends ConsumerState<FirstTankWizardScreen> {
   void _nextStep() {
     if (_currentStep < 3) {
       _pageController.nextPage(
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeInOut,
+        duration: AppDurations.medium4,
+        curve: AppCurves.standard,
       );
     } else {
       _createTank();
@@ -51,8 +51,8 @@ class _FirstTankWizardScreenState extends ConsumerState<FirstTankWizardScreen> {
   void _previousStep() {
     if (_currentStep > 0) {
       _pageController.previousPage(
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeInOut,
+        duration: AppDurations.medium4,
+        curve: AppCurves.standard,
       );
     }
   }
@@ -90,10 +90,10 @@ class _FirstTankWizardScreenState extends ConsumerState<FirstTankWizardScreen> {
       );
       
       // Navigate after celebration starts
-      Future.delayed(const Duration(milliseconds: 500), () {
+      Future.delayed(AppDurations.long2, () {
         if (mounted) {
           Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute(builder: (_) => const HouseNavigator()),
+            MaterialPageRoute(builder: (_) => const TabNavigator()),
             (route) => false,
           );
         }
@@ -166,7 +166,7 @@ class _FirstTankWizardScreenState extends ConsumerState<FirstTankWizardScreen> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           const SizedBox(height: AppSpacing.xl),
-          Icon(Icons.edit_rounded, size: 64, color: AppColors.primary),
+          Icon(Icons.edit_rounded, size: AppIconSizes.xxl, color: AppColors.primary),
           const SizedBox(height: AppSpacing.lg),
           Text(
             'Name Your Tank',
@@ -214,7 +214,7 @@ class _FirstTankWizardScreenState extends ConsumerState<FirstTankWizardScreen> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           const SizedBox(height: AppSpacing.xl),
-          Icon(Icons.straighten_rounded, size: 64, color: AppColors.primary),
+          Icon(Icons.straighten_rounded, size: AppIconSizes.xxl, color: AppColors.primary),
           const SizedBox(height: AppSpacing.lg),
           Text(
             'Tank Size',
@@ -266,7 +266,7 @@ class _FirstTankWizardScreenState extends ConsumerState<FirstTankWizardScreen> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           const SizedBox(height: AppSpacing.xl),
-          Icon(Icons.waves_rounded, size: 64, color: AppColors.primary),
+          Icon(Icons.waves_rounded, size: AppIconSizes.xxl, color: AppColors.primary),
           const SizedBox(height: AppSpacing.lg),
           Text(
             'Water Type',
@@ -292,8 +292,8 @@ class _FirstTankWizardScreenState extends ConsumerState<FirstTankWizardScreen> {
                   onTap: () => setState(() => _tankType = type),
                   borderRadius: AppRadius.mediumRadius,
                   child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 200),
-                    padding: const EdgeInsets.all(20),
+                    duration: AppDurations.medium2,
+                    padding: const EdgeInsets.all(AppSpacing.lg2),
                     decoration: BoxDecoration(
                       border: Border.all(
                         color: isSelected
@@ -378,7 +378,7 @@ class _FirstTankWizardScreenState extends ConsumerState<FirstTankWizardScreen> {
           ),
           const SizedBox(height: 40),
           Container(
-            padding: const EdgeInsets.all(20),
+            padding: const EdgeInsets.all(AppSpacing.lg2),
             decoration: BoxDecoration(
               color: AppOverlays.primary10,
               borderRadius: AppRadius.mediumRadius,

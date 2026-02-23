@@ -86,7 +86,7 @@ class _LightingScheduleScreenState extends State<LightingScheduleScreen> {
             padding: AppCardPadding.standard,
             child: Row(
               children: [
-                Icon(Icons.lightbulb, size: 32, color: AppColors.info),
+                Icon(Icons.lightbulb, size: AppIconSizes.lg, color: AppColors.info),
                 const SizedBox(width: 12),
                 Expanded(
                   child: Text(

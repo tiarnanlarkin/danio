@@ -432,7 +432,7 @@ class _StatCard extends StatelessWidget {
       ),
       child: Column(
         children: [
-          Icon(icon, color: color, size: 32),
+          Icon(icon, color: color, size: AppIconSizes.lg),
           const SizedBox(height: AppSpacing.sm),
           Text(
             value,

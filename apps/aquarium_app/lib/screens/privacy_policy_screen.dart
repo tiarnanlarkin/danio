@@ -25,7 +25,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
           children: [
             // Header
             Container(
-              padding: const EdgeInsets.all(20),
+              padding: const EdgeInsets.all(AppSpacing.lg2),
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.topLeft,
@@ -40,7 +40,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
               child: Row(
                 children: [
                   Container(
-                    padding: const EdgeInsets.all(12),
+                    padding: const EdgeInsets.all(AppSpacing.sm2),
                     decoration: BoxDecoration(
                       color: AppOverlays.primary20,
                       borderRadius: AppRadius.mediumRadius,
@@ -258,7 +258,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
 
   Widget _buildSummaryCard() {
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(AppSpacing.lg2),
       decoration: BoxDecoration(
         color: AppOverlays.success10,
         borderRadius: AppRadius.mediumRadius,
@@ -272,7 +272,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
               const Icon(
                 Icons.check_circle,
                 color: AppColors.success,
-                size: 24,
+                size: AppIconSizes.md,
               ),
               const SizedBox(width: AppSpacing.sm),
               Text('Summary (TL;DR)', style: AppTypography.labelLarge),
@@ -365,7 +365,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, color: AppColors.primary, size: 24),
+          Icon(icon, color: AppColors.primary, size: AppIconSizes.md),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
@@ -403,7 +403,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
               color: AppOverlays.primary10,
               borderRadius: AppRadius.smallRadius,
             ),
-            child: Icon(icon, color: AppColors.primary, size: 20),
+            child: Icon(icon, color: AppColors.primary, size: AppIconSizes.sm),
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -438,7 +438,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Icon(icon, color: AppColors.success, size: 24),
+          Icon(icon, color: AppColors.success, size: AppIconSizes.md),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
@@ -473,7 +473,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
         children: [
           Row(
             children: [
-              const Icon(Icons.email, color: AppColors.primary, size: 24),
+              const Icon(Icons.email, color: AppColors.primary, size: AppIconSizes.md),
               const SizedBox(width: 12),
               Expanded(
                 child: Column(

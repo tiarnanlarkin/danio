@@ -34,12 +34,12 @@ class _SpeedDialFABState extends State<SpeedDialFAB>
   void initState() {
     super.initState();
     _controller = AnimationController(
-      duration: const Duration(milliseconds: 250),
+      duration: AppDurations.medium3,
       vsync: this,
     );
     _expandAnimation = CurvedAnimation(
       parent: _controller,
-      curve: Curves.easeOutBack,
+      curve: AppCurves.standardDecelerate,
       reverseCurve: Curves.easeInBack,
     );
   }
@@ -137,7 +137,7 @@ class _SpeedDialFABState extends State<SpeedDialFAB>
           builder: (context, child) {
             final progress = _expandAnimation.value;
             // Stagger the animation slightly for each button
-            final staggeredProgress = Curves.easeOut.transform(
+            final staggeredProgress = AppCurves.standardDecelerate.transform(
               ((progress * count) - i).clamp(0.0, 1.0),
             );
 
@@ -205,11 +205,11 @@ class _MainFAB extends StatelessWidget {
                 gradient: LinearGradient(
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
-                  colors: [backgroundColor, backgroundColor.withOpacity(0.8)],
+                  colors: [backgroundColor, backgroundColor.withAlpha(204)],
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: backgroundColor.withOpacity(0.4),
+                    color: backgroundColor.withAlpha(102),
                     blurRadius: 12 + (animation.value * 8),
                     spreadRadius: animation.value * 2,
                     offset: const Offset(0, 4),
@@ -217,7 +217,7 @@ class _MainFAB extends StatelessWidget {
                 ],
               ),
               child: AnimatedSwitcher(
-                duration: const Duration(milliseconds: 200),
+                duration: AppDurations.medium2,
                 child: Icon(
                   isOpen ? openIcon : closedIcon,
                   key: ValueKey(isOpen),
@@ -252,11 +252,11 @@ class _ActionButtonState extends State<_ActionButton>
   void initState() {
     super.initState();
     _scaleController = AnimationController(
-      duration: const Duration(milliseconds: 150),
+      duration: AppDurations.medium1,
       vsync: this,
     );
     _scaleAnimation = Tween<double>(begin: 1.0, end: 0.95).animate(
-      CurvedAnimation(parent: _scaleController, curve: Curves.easeOutCubic),
+      CurvedAnimation(parent: _scaleController, curve: AppCurves.emphasized),
     );
   }
 
@@ -340,7 +340,7 @@ class _ActionButtonState extends State<_ActionButton>
                   boxShadow: [
                     BoxShadow(
                       color: (widget.action.backgroundColor ?? AppColors.primary)
-                          .withOpacity(0.3),
+                          .withAlpha(76),
                       blurRadius: 8,
                       offset: const Offset(0, 2),
                     ),
@@ -349,7 +349,7 @@ class _ActionButtonState extends State<_ActionButton>
                 child: Icon(
                   widget.action.icon,
                   color: widget.action.foregroundColor ?? AppColors.primary,
-                  size: 24,
+                  size: AppIconSizes.md,
                 ),
               ),
             ],

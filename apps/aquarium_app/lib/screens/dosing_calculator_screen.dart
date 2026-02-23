@@ -220,7 +220,7 @@ class _DosingCalculatorScreenState extends State<DosingCalculatorScreen> {
                     children: [
                       Icon(
                         Icons.science_outlined,
-                        size: 48,
+                        size: AppIconSizes.xl,
                         color: AppColors.textHint,
                       ),
                       const SizedBox(height: AppSpacing.md),
@@ -286,7 +286,7 @@ class _ProductPreset extends StatelessWidget {
           subtitle: Text(
             '${dose.toStringAsFixed(0)} ml per ${per.toStringAsFixed(0)} L',
           ),
-          trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+          trailing: const Icon(Icons.arrow_forward_ios, size: AppIconSizes.xs),
         ),
       ),
     );

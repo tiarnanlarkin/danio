@@ -11,7 +11,7 @@ import '../models/user_profile.dart';
 import '../data/stories.dart';
 import '../providers/user_profile_provider.dart';
 import '../widgets/skeleton_loader.dart';
-import '../widgets/error_state.dart';
+import '../widgets/core/app_states.dart';
 import 'story_player_screen.dart';
 
 enum StorySortOrder { newest, difficulty, completion }
@@ -104,9 +104,9 @@ class _StoriesScreenState extends ConsumerState<StoriesScreen> {
               ),
             ),
             error: (err, stack) => SliverFillRemaining(
-              child: ErrorState(
-                message: 'Unable to load stories',
-                details: 'Please check your connection and try again.',
+              child: AppErrorState(
+                title: 'Unable to load stories',
+                message: 'Please check your connection and try again.',
                 onRetry: () => ref.invalidate(userProfileProvider),
               ),
             ),
@@ -287,7 +287,7 @@ class StoryCard extends StatelessWidget {
       opacity: isUnlocked ? 1.0 : 0.6,
       child: Material(
         color: Colors.white,
-        elevation: isUnlocked ? 4 : 2,
+        elevation: isUnlocked ? AppElevation.level2 : AppElevation.level1,
         borderRadius: AppRadius.mediumRadius,
         child: InkWell(
           onTap: onTap,
@@ -316,7 +316,7 @@ class StoryCard extends StatelessWidget {
                       decoration: BoxDecoration(
                         color: _getDifficultyColor(
                           story.difficulty,
-                        ).withOpacity(0.1),
+                        ).withAlpha(26),
                         borderRadius: AppRadius.mediumRadius,
                       ),
                       child: Center(
@@ -347,13 +347,13 @@ class StoryCard extends StatelessWidget {
                                 const Icon(
                                   Icons.check_circle,
                                   color: Colors.green,
-                                  size: 24,
+                                  size: AppIconSizes.md,
                                 )
                               else if (!isUnlocked)
                                 const Icon(
                                   Icons.lock,
                                   color: Colors.grey,
-                                  size: 24,
+                                  size: AppIconSizes.md,
                                 ),
                             ],
                           ),
@@ -425,7 +425,7 @@ class StoryCard extends StatelessWidget {
                         ),
                         const Icon(
                           Icons.arrow_forward,
-                          size: 16,
+                          size: AppIconSizes.xs,
                           color: Colors.blue,
                         ),
                       ],
@@ -439,7 +439,7 @@ class StoryCard extends StatelessWidget {
                       children: [
                         const Icon(
                           Icons.lock_outline,
-                          size: 16,
+                          size: AppIconSizes.xs,
                           color: Colors.grey,
                         ),
                         const SizedBox(width: AppSpacing.xs),
@@ -470,9 +470,9 @@ class StoryCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: color.withAlpha(26),
         borderRadius: AppRadius.mediumRadius,
-        border: Border.all(color: color.withOpacity(0.3)),
+        border: Border.all(color: color.withAlpha(76)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,

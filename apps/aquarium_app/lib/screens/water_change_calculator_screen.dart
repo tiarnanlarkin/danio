@@ -107,7 +107,7 @@ class _WaterChangeCalculatorScreenState
             padding: AppCardPadding.standard,
             child: Row(
               children: [
-                Icon(Icons.calculate, size: 32, color: AppColors.info),
+                Icon(Icons.calculate, size: AppIconSizes.lg, color: AppColors.info),
                 const SizedBox(width: 12),
                 Expanded(
                   child: Text(
@@ -241,7 +241,7 @@ class _WaterChangeCalculatorScreenState
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Icon(Icons.lightbulb, color: AppColors.warning, size: 20),
+                  Icon(Icons.lightbulb, color: AppColors.warning, size: AppIconSizes.sm),
                   const SizedBox(width: 12),
                   Expanded(
                     child: Text(

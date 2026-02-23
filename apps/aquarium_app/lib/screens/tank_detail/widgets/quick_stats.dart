@@ -90,7 +90,7 @@ class StatItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Icon(icon, color: AppColors.primary, size: 24),
+        Icon(icon, color: AppColors.primary, size: AppIconSizes.md),
         const SizedBox(height: AppSpacing.sm),
         Text(value, style: AppTypography.headlineSmall),
         Text(label, style: AppTypography.bodySmall),

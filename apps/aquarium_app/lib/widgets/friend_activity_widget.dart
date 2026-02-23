@@ -29,7 +29,7 @@ class FriendActivityWidget extends ConsumerWidget {
 
         return Card(
           margin: const EdgeInsets.all(16),
-          elevation: 2,
+          elevation: AppElevation.level1,
           shape: RoundedRectangleBorder(
             borderRadius: AppRadius.mediumRadius,
           ),
@@ -56,7 +56,7 @@ class FriendActivityWidget extends ConsumerWidget {
                       const Icon(
                         Icons.feed,
                         color: AppColors.primary,
-                        size: 20,
+                        size: AppIconSizes.sm,
                       ),
                       const SizedBox(width: AppSpacing.sm),
                       const Text(
@@ -69,7 +69,7 @@ class FriendActivityWidget extends ConsumerWidget {
                       const Spacer(),
                       Icon(
                         Icons.arrow_forward_ios,
-                        size: 16,
+                        size: AppIconSizes.xs,
                         color: Colors.grey.shade400,
                       ),
                     ],
@@ -254,7 +254,7 @@ class FriendActivityBanner extends ConsumerWidget {
           margin: const EdgeInsets.symmetric(vertical: 8),
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.symmetric(horizontal: 16),
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
             itemCount: activities.take(10).length,
             itemBuilder: (context, index) {
               final activity = activities[index];
@@ -296,7 +296,7 @@ class _BannerActivityCard extends ConsumerWidget {
           },
           borderRadius: AppRadius.mediumRadius,
           child: Padding(
-            padding: const EdgeInsets.all(12),
+            padding: const EdgeInsets.all(AppSpacing.sm2),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,

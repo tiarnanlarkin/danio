@@ -136,7 +136,7 @@ class _DetailedHeartsDisplayState extends ConsumerState<DetailedHeartsDisplay> {
           if (timeUntilRefill != null) ...[
             Row(
               children: [
-                Icon(Icons.schedule, size: 16, color: AppColors.textSecondary),
+                Icon(Icons.schedule, size: AppIconSizes.xs, color: AppColors.textSecondary),
                 const SizedBox(width: 6),
                 Text(
                   'Next heart in ${heartsService.formatTimeRemaining(timeUntilRefill)}',
@@ -192,14 +192,14 @@ class _HeartAnimationState extends State<HeartAnimation>
         tween: Tween<double>(
           begin: 0.0,
           end: 1.3,
-        ).chain(CurveTween(curve: Curves.easeOut)),
+        ).chain(CurveTween(curve: AppCurves.standardDecelerate)),
         weight: 40,
       ),
       TweenSequenceItem(
         tween: Tween<double>(
           begin: 1.3,
           end: 1.0,
-        ).chain(CurveTween(curve: Curves.easeIn)),
+        ).chain(CurveTween(curve: AppCurves.standardAccelerate)),
         weight: 20,
       ),
       TweenSequenceItem(tween: Tween<double>(begin: 1.0, end: 0.8), weight: 40),
@@ -208,14 +208,14 @@ class _HeartAnimationState extends State<HeartAnimation>
     _fadeAnimation = Tween<double>(begin: 1.0, end: 0.0).animate(
       CurvedAnimation(
         parent: _controller,
-        curve: const Interval(0.6, 1.0, curve: Curves.easeIn),
+        curve: const Interval(0.6, 1.0, curve: AppCurves.standardAccelerate),
       ),
     );
 
     _slideAnimation = Tween<Offset>(
       begin: Offset.zero,
       end: Offset(0, widget.gained ? -0.5 : 0.5),
-    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
+    ).animate(CurvedAnimation(parent: _controller, curve: AppCurves.standardDecelerate));
 
     _controller.forward().then((_) {
       widget.onComplete?.call();
@@ -245,7 +245,7 @@ class _HeartAnimationState extends State<HeartAnimation>
                   Icon(
                     widget.gained ? Icons.favorite : Icons.heart_broken,
                     color: widget.gained ? AppColors.success : AppColors.error,
-                    size: 64,
+                    size: AppIconSizes.xxl,
                   ),
                   const SizedBox(width: AppSpacing.sm),
                   Text(
@@ -435,7 +435,7 @@ class CompactHeartsDisplay extends ConsumerWidget {
                 color: filled
                     ? AppColors.error
                     : AppOverlays.error30,
-                size: 20,
+                size: AppIconSizes.sm,
               ),
             ),
           )

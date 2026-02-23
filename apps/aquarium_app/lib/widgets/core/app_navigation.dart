@@ -163,7 +163,7 @@ class AppBackButton extends StatelessWidget {
       label: semanticsLabel ?? 'Go back',
       button: true,
       child: IconButton(
-        icon: Icon(Icons.arrow_back_ios_new, size: 20),
+        icon: Icon(Icons.arrow_back_ios_new, size: AppIconSizes.sm),
         onPressed: onPressed ?? () => Navigator.of(context).maybePop(),
         color: color ?? (isDark ? AppColors.textPrimaryDark : AppColors.textPrimary),
         constraints: const BoxConstraints(minWidth: 48, minHeight: 48),

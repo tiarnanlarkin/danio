@@ -292,11 +292,11 @@ class AlertRow extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(bottom: 10),
       child: Container(
-        padding: const EdgeInsets.all(12),
+        padding: const EdgeInsets.all(AppSpacing.sm2),
         decoration: BoxDecoration(
-          color: c.withOpacity(0.10),
+          color: c.withAlpha(26),
           borderRadius: AppRadius.mediumRadius,
-          border: Border.all(color: c.withOpacity(0.25)),
+          border: Border.all(color: c.withAlpha(64)),
         ),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,

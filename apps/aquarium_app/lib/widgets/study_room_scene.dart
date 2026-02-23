@@ -107,19 +107,19 @@ class StudyRoomScene extends StatelessWidget {
               Positioned(
                 top: h * 0.1,
                 right: w * 0.1,
-                child: _FloatingElement(icon: Icons.auto_stories, size: 24),
+                child: _FloatingElement(icon: Icons.auto_stories, size: AppIconSizes.md),
               ),
               Positioned(
                 top: h * 0.25,
                 left: w * 0.08,
-                child: _FloatingElement(icon: Icons.star, size: 16),
+                child: _FloatingElement(icon: Icons.star, size: AppIconSizes.xs),
               ),
               Positioned(
                 bottom: h * 0.3,
                 right: w * 0.15,
                 child: _FloatingElement(
                   icon: Icons.lightbulb_outline,
-                  size: 20,
+                  size: AppIconSizes.sm,
                 ),
               ),
 
@@ -504,7 +504,7 @@ class _GlassBadge extends StatelessWidget {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(icon, color: StudyColors.gold, size: 20),
+              Icon(icon, color: StudyColors.gold, size: AppIconSizes.sm),
               const SizedBox(width: AppSpacing.sm),
               Column(
                 mainAxisSize: MainAxisSize.min,

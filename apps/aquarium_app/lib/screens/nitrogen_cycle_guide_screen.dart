@@ -217,7 +217,7 @@ class _CycleStage extends StatelessWidget {
               width: 40,
               height: 40,
               decoration: BoxDecoration(
-                color: color.withOpacity(0.1),
+                color: color.withAlpha(26),
                 shape: BoxShape.circle,
               ),
               child: Center(
@@ -257,7 +257,7 @@ class _CycleArrow extends StatelessWidget {
       child: Center(
         child: Column(
           children: [
-            Icon(Icons.arrow_downward, color: AppColors.textHint, size: 24),
+            Icon(Icons.arrow_downward, color: AppColors.textHint, size: AppIconSizes.md),
             Text('Bacteria convert', style: AppTypography.bodySmall),
           ],
         ),
@@ -384,7 +384,7 @@ class _CheckItem extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
         children: [
-          Icon(Icons.check_circle, color: AppColors.success, size: 20),
+          Icon(Icons.check_circle, color: AppColors.success, size: AppIconSizes.sm),
           const SizedBox(width: 12),
           Text(text, style: AppTypography.bodyMedium),
         ],
@@ -404,10 +404,10 @@ class _TipCard extends StatelessWidget {
     return Card(
       margin: const EdgeInsets.only(bottom: 8),
       child: Padding(
-        padding: const EdgeInsets.all(12),
+        padding: const EdgeInsets.all(AppSpacing.sm2),
         child: Row(
           children: [
-            Icon(icon, color: AppColors.primary, size: 24),
+            Icon(icon, color: AppColors.primary, size: AppIconSizes.md),
             const SizedBox(width: 12),
             Expanded(child: Text(tip, style: AppTypography.bodyMedium)),
           ],

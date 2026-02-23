@@ -163,13 +163,13 @@ class _Bubble extends StatelessWidget {
         shape: BoxShape.circle,
         gradient: RadialGradient(
           colors: [
-            color.withOpacity(0.8),
-            color.withOpacity(0.4),
+            color.withAlpha(204),
+            color.withAlpha(102),
           ],
           center: const Alignment(-0.3, -0.3),
         ),
         border: Border.all(
-          color: color.withOpacity(0.6),
+          color: color.withAlpha(153),
           width: 1,
         ),
       ),
@@ -184,7 +184,7 @@ class _Bubble extends StatelessWidget {
           begin: 0,
           end: -riseHeight * 0.9,
           duration: duration,
-          curve: Curves.easeOut,
+          curve: AppCurves.standardDecelerate,
         )
         .fadeOut(
           begin: 0.8,
@@ -195,7 +195,7 @@ class _Bubble extends StatelessWidget {
           begin: 1.0,
           end: 0.6,
           duration: duration,
-          curve: Curves.easeIn,
+          curve: AppCurves.standardAccelerate,
         );
   }
 }

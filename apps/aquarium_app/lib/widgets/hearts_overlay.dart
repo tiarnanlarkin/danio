@@ -16,7 +16,7 @@ final GlobalKey<NavigatorState> heartsOverlayKey = GlobalKey<NavigatorState>();
 Future<void> showHeartsChangeOverlay(
   BuildContext context, {
   required bool gained,
-  Duration duration = const Duration(milliseconds: 1500),
+  Duration duration = AppDurations.celebration,
 }) async {
   final overlay = Overlay.of(context);
 
@@ -66,7 +66,7 @@ class _HeartsChangeOverlayState extends State<HeartsChangeOverlay>
         tween: Tween<double>(
           begin: 0.0,
           end: 1.5,
-        ).chain(CurveTween(curve: Curves.elasticOut)),
+        ).chain(CurveTween(curve: AppCurves.elastic)),
         weight: 50,
       ),
       TweenSequenceItem(tween: Tween<double>(begin: 1.5, end: 1.0), weight: 20),
@@ -84,13 +84,13 @@ class _HeartsChangeOverlayState extends State<HeartsChangeOverlay>
     _slideAnimation = Tween<Offset>(
       begin: Offset.zero,
       end: Offset(0, widget.gained ? -0.3 : 0.3),
-    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic));
+    ).animate(CurvedAnimation(parent: _controller, curve: AppCurves.emphasized));
 
     // Slight rotation for drama
     _rotationAnimation = Tween<double>(
       begin: 0.0,
       end: widget.gained ? 0.1 : -0.1,
-    ).animate(CurvedAnimation(parent: _controller, curve: Curves.elasticOut));
+    ).animate(CurvedAnimation(parent: _controller, curve: AppCurves.elastic));
 
     _controller.forward();
   }
@@ -133,7 +133,7 @@ class _HeartsChangeOverlayState extends State<HeartsChangeOverlay>
                                 (widget.gained
                                         ? AppColors.success
                                         : AppColors.error)
-                                    .withOpacity(0.5),
+                                    .withAlpha(128),
                             blurRadius: 30,
                             spreadRadius: 10,
                           ),
@@ -243,7 +243,7 @@ class _HeartsStatusBannerState extends ConsumerState<HeartsStatusBanner> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Icon(Icons.favorite, color: Colors.white, size: 16),
+                    const Icon(Icons.favorite, color: Colors.white, size: AppIconSizes.xs),
                     const SizedBox(width: AppSpacing.sm),
                     Text(
                       'Next heart in ${heartsService.formatTimeRemaining(timeUntilRefill)}',

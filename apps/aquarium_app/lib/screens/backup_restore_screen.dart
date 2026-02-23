@@ -15,7 +15,6 @@ import '../services/backup_service.dart';
 import '../theme/app_theme.dart';
 import '../utils/app_feedback.dart';
 import '../widgets/core/app_card.dart';
-// import '../services/firebase_analytics_service.dart';
 
 const _uuid = Uuid();
 
@@ -38,7 +37,6 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
   @override
   void initState() {
     super.initState();
-    // FirebaseAnalyticsService().logScreenView('backup_restore');
   }
 
   @override
@@ -62,7 +60,7 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
             padding: AppCardPadding.standard,
             child: Row(
               children: [
-                Icon(Icons.backup, size: 32, color: AppColors.info),
+                Icon(Icons.backup, size: AppIconSizes.lg, color: AppColors.info),
                 const SizedBox(width: 12),
                 Expanded(
                   child: Text(

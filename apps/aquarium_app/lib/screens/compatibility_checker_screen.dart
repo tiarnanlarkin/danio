@@ -213,7 +213,7 @@ class _CompatibilityCheckerScreenState
           // Search results
           if (_searchResults.isNotEmpty)
             Container(
-              margin: const EdgeInsets.symmetric(horizontal: 16),
+              margin: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
               decoration: BoxDecoration(
                 color: Theme.of(context).cardColor,
                 borderRadius: AppRadius.mediumRadius,
@@ -244,7 +244,7 @@ class _CompatibilityCheckerScreenState
                     padding: AppCardPadding.spacious,
                     child: Column(
                       children: [
-                        Icon(Icons.pets, size: 48, color: AppColors.textHint),
+                        Icon(Icons.pets, size: AppIconSizes.xl, color: AppColors.textHint),
                         const SizedBox(height: 12),
                         Text(
                           'Add Fish to Check',
@@ -272,7 +272,7 @@ class _CompatibilityCheckerScreenState
                         .map(
                           (s) => Chip(
                             label: Text(s.commonName),
-                            deleteIcon: const Icon(Icons.close, size: 16),
+                            deleteIcon: const Icon(Icons.close, size: AppIconSizes.xs),
                             onDeleted: () => _removeSpecies(s),
                           ),
                         )

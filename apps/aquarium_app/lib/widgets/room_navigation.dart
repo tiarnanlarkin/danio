@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
-import '../theme/room_identity.dart';
 import '../screens/rooms/study_screen.dart';
 import '../screens/workshop_screen.dart';
 import '../screens/shop_street_screen.dart';
@@ -34,9 +33,9 @@ class RoomNavigation extends StatelessWidget {
               Expanded(
                 child: _RoomCard(
                   emoji: '📚',
-                  name: RoomIdentity.libraryName,
+                  name: 'Study',
                   description: 'Learn & guides',
-                  color: RoomIdentity.libraryAccent,
+                  color: const Color(0xFF1A237E),
                   onTap: () => Navigator.push(
                     context,
                     MaterialPageRoute(builder: (_) => const StudyScreen()),
@@ -47,9 +46,9 @@ class RoomNavigation extends StatelessWidget {
               Expanded(
                 child: _RoomCard(
                   emoji: '🔧',
-                  name: RoomIdentity.workshopName,
+                  name: 'Workshop',
                   description: 'Tools & calculators',
-                  color: RoomIdentity.workshopAccent,
+                  color: const Color(0xFF5D4037),
                   onTap: () => Navigator.push(
                     context,
                     MaterialPageRoute(builder: (_) => const WorkshopScreen()),
@@ -101,12 +100,12 @@ class _RoomCard extends StatelessWidget {
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [color, color.withOpacity(0.7)],
+            colors: [color, color.withAlpha(178)],
           ),
           borderRadius: AppRadius.mediumRadius,
           boxShadow: [
             BoxShadow(
-              color: color.withOpacity(0.3),
+              color: color.withAlpha(76),
               blurRadius: 8,
               offset: const Offset(0, 4),
             ),

@@ -17,7 +17,7 @@ class VacationGuideScreen extends StatelessWidget {
             padding: AppCardPadding.standard,
             child: Row(
               children: [
-                Icon(Icons.flight, size: 32, color: AppColors.info),
+                Icon(Icons.flight, size: AppIconSizes.lg, color: AppColors.info),
                 const SizedBox(width: 12),
                 Expanded(
                   child: Text(

@@ -252,10 +252,10 @@ class _ParameterSection extends StatelessWidget {
             width: 36,
             height: 36,
             decoration: BoxDecoration(
-              color: color.withOpacity(0.1),
+              color: color.withAlpha(26),
               borderRadius: AppRadius.smallRadius,
             ),
-            child: Icon(icon, color: color, size: 20),
+            child: Icon(icon, color: color, size: AppIconSizes.sm),
           ),
           title: Text(title, style: AppTypography.labelLarge),
           subtitle: Row(

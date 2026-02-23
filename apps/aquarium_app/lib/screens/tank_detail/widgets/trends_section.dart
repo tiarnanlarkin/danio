@@ -189,7 +189,7 @@ class SparklineCard extends StatelessWidget {
       borderRadius: AppRadius.mediumRadius,
       child: Container(
         width: 110,
-        padding: const EdgeInsets.all(12),
+        padding: const EdgeInsets.all(AppSpacing.sm2),
         decoration: BoxDecoration(
           color: AppColors.surfaceVariant,
           borderRadius: AppRadius.mediumRadius,
@@ -241,7 +241,7 @@ class MiniSparkline extends StatelessWidget {
             dotData: const FlDotData(show: false),
             belowBarData: BarAreaData(
               show: true,
-              color: color.withOpacity(0.10),
+              color: color.withAlpha(26),
             ),
           ),
         ],

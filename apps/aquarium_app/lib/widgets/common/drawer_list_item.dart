@@ -1,159 +1,93 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import '../../theme/app_theme.dart';
+import '../core/app_list_tile.dart';
 
-/// A navigation item for use inside a [Drawer].
+/// A drawer/navigation list item wrapping [NavListTile] with optional icon badge.
 ///
-/// Consistent layout: leading icon → label → optional badge count.
-/// Highlights the selected item with the app primary colour.
-///
-/// Tokens used:
-/// - [AppTypography.body] / [AppTypography.label] for text
-/// - [AppSpacing] for padding
-/// - [AppColors.primary] / [AppColors.primaryAlpha15] for selection state
-/// - [AppRadius.mediumRadius] for selection pill
-///
-/// Accessibility:
-/// - Wrapped in [Semantics] with `button: true` and `selected` state
-/// - Icon colour changes to communicate selection visually and semantically
+/// Designed for use in app drawers, settings lists, and navigation menus.
 ///
 /// Example:
 /// ```dart
 /// DrawerListItem(
-///   icon: Icons.water,
-///   label: 'My Tanks',
-///   isSelected: currentRoute == '/tanks',
-///   badge: pendingAlertsCount,
-///   onTap: () => navigateTo('/tanks'),
+///   icon: Icons.settings,
+///   title: 'Settings',
+///   badgeCount: 3,
+///   onTap: () => openSettings(),
 /// )
 /// ```
 class DrawerListItem extends StatelessWidget {
-  /// Leading icon.
+  /// Leading icon
   final IconData icon;
 
-  /// Label text.
-  final String label;
+  /// Item title
+  final String title;
 
-  /// Whether this item represents the current route/page.
-  final bool isSelected;
+  /// Optional subtitle
+  final String? subtitle;
 
-  /// Optional numeric badge (e.g. unread count). Hidden when 0 or null.
-  final int? badge;
-
-  /// Callback when the item is tapped.
-  final VoidCallback? onTap;
-
-  /// Custom icon colour. When null, uses [AppColors.primary] (selected) or
-  /// [AppColors.textSecondary] (unselected).
+  /// Icon color (defaults to theme secondary)
   final Color? iconColor;
 
-  /// Custom accessibility label. Defaults to [label].
-  final String? semanticsLabel;
+  /// Badge count (shown as a small numbered badge on the icon)
+  /// Set to 0 or null to hide.
+  final int? badgeCount;
+
+  /// Whether to show a dot badge instead of count
+  final bool showDotBadge;
+
+  /// Tap handler
+  final VoidCallback onTap;
 
   const DrawerListItem({
     super.key,
     required this.icon,
-    required this.label,
-    this.isSelected = false,
-    this.badge,
-    this.onTap,
+    required this.title,
+    this.subtitle,
     this.iconColor,
-    this.semanticsLabel,
+    this.badgeCount,
+    this.showDotBadge = false,
+    required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-
-    final effectiveIconColor = iconColor ??
-        (isSelected
-            ? AppColors.primary
-            : (isDark ? AppColors.textSecondaryDark : AppColors.textSecondary));
-
-    final labelColor = isSelected
-        ? AppColors.primary
-        : (isDark ? AppColors.textPrimaryDark : AppColors.textPrimary);
-
-    final bgColor = isSelected
-        ? (isDark ? AppColors.primaryAlpha15 : AppColors.primaryAlpha10)
-        : Colors.transparent;
-
-    return Semantics(
-      button: true,
-      selected: isSelected,
-      label: semanticsLabel ?? label,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacing.sm,
-          vertical: AppSpacing.xs,
+    Widget? badge;
+    if (showDotBadge) {
+      badge = Container(
+        width: 8,
+        height: 8,
+        decoration: const BoxDecoration(
+          color: AppColors.error,
+          shape: BoxShape.circle,
         ),
-        child: Material(
-          color: bgColor,
-          borderRadius: AppRadius.mediumRadius,
-          child: InkWell(
-            onTap: () {
-              HapticFeedback.selectionClick();
-              onTap?.call();
-            },
-            borderRadius: AppRadius.mediumRadius,
-            child: Container(
-              constraints: BoxConstraints(
-                minHeight: AppTouchTargets.minimum,
-              ),
-              padding: const EdgeInsets.symmetric(
-                horizontal: AppSpacing.md,
-                vertical: AppSpacing.sm,
-              ),
-              child: Row(
-                children: [
-                  // ── Icon ───────────────────────────────────────────────
-                  Icon(
-                    icon,
-                    size: AppIconSizes.md,
-                    color: effectiveIconColor,
-                  ),
-
-                  const SizedBox(width: AppSpacing.md),
-
-                  // ── Label ──────────────────────────────────────────────
-                  Expanded(
-                    child: Text(
-                      label,
-                      style: (isSelected
-                              ? AppTypography.label
-                              : AppTypography.body)
-                          .copyWith(color: labelColor),
-                    ),
-                  ),
-
-                  // ── Badge ──────────────────────────────────────────────
-                  if (badge != null && badge! > 0)
-                    Container(
-                      constraints: const BoxConstraints(minWidth: 20),
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: AppSpacing.xs,
-                        vertical: 2,
-                      ),
-                      decoration: BoxDecoration(
-                        color: AppColors.error,
-                        borderRadius: AppRadius.pillRadius,
-                      ),
-                      child: Text(
-                        badge! > 99 ? '99+' : badge.toString(),
-                        style: AppTypography.caption.copyWith(
-                          color: AppColors.onError,
-                          fontWeight: FontWeight.w700,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                ],
-              ),
-            ),
+      );
+    } else if (badgeCount != null && badgeCount! > 0) {
+      badge = Container(
+        padding: const EdgeInsets.symmetric(
+          horizontal: 6,
+          vertical: 2,
+        ),
+        decoration: BoxDecoration(
+          color: AppColors.error,
+          borderRadius: BorderRadius.circular(AppRadius.pill),
+        ),
+        child: Text(
+          badgeCount! > 99 ? '99+' : '$badgeCount',
+          style: AppTypography.labelSmall.copyWith(
+            color: AppColors.onError,
+            fontSize: 10,
           ),
         ),
-      ),
+      );
+    }
+
+    return NavListTile(
+      icon: icon,
+      title: title,
+      subtitle: subtitle,
+      iconColor: iconColor,
+      badge: badge,
+      onTap: onTap,
     );
   }
 }

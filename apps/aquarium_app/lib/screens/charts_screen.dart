@@ -75,7 +75,7 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(Icons.show_chart, size: 64, color: AppColors.textHint),
+                  Icon(Icons.show_chart, size: AppIconSizes.xxl, color: AppColors.textHint),
                   const SizedBox(height: AppSpacing.md),
                   Text(
                     'No water tests yet',
@@ -356,7 +356,7 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
             strokeColor: Colors.white,
           ),
         ),
-        belowBarData: BarAreaData(show: true, color: color.withOpacity(0.1)),
+        belowBarData: BarAreaData(show: true, color: color.withAlpha(26)),
       ),
     );
 
@@ -709,7 +709,7 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
 
     if (issues.isEmpty) {
       return Container(
-        padding: const EdgeInsets.all(12),
+        padding: const EdgeInsets.all(AppSpacing.sm2),
         decoration: BoxDecoration(
           color: AppOverlays.success10,
           borderRadius: AppRadius.mediumRadius,
@@ -720,7 +720,7 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
             Icon(
               Icons.check_circle_outline,
               color: AppColors.success,
-              size: 20,
+              size: AppIconSizes.sm,
             ),
             const SizedBox(width: 12),
             Expanded(
@@ -737,7 +737,7 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
     }
 
     return Container(
-      padding: const EdgeInsets.all(12),
+      padding: const EdgeInsets.all(AppSpacing.sm2),
       decoration: BoxDecoration(
         color: AppOverlays.warning10,
         borderRadius: AppRadius.mediumRadius,
@@ -751,7 +751,7 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
               Icon(
                 Icons.warning_amber_rounded,
                 color: AppColors.warning,
-                size: 20,
+                size: AppIconSizes.sm,
               ),
               const SizedBox(width: AppSpacing.sm),
               Text(
@@ -794,7 +794,7 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
                 return FilterChip(
                   label: Text(_getParamTitle(param)),
                   selected: isSelected,
-                  selectedColor: _getParamColor(param).withOpacity(0.3),
+                  selectedColor: _getParamColor(param).withAlpha(76),
                   onSelected: (selected) {
                     setState(() {
                       if (selected) {
@@ -883,7 +883,7 @@ class _ChartControlChip extends StatelessWidget {
           children: [
             Icon(
               icon,
-              size: 16,
+              size: AppIconSizes.xs,
               color: isActive ? AppColors.primary : AppColors.textSecondary,
             ),
             const SizedBox(width: 6),

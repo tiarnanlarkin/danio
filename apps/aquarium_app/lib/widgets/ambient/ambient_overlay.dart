@@ -51,7 +51,7 @@ class AmbientLightingOverlay extends ConsumerWidget {
     final effectiveOpacity = intensityOverride ?? config.overlayOpacity;
     
     // Apply easing to transition progress for smoother feel
-    final easedProgress = Curves.easeInOut.transform(progress);
+    final easedProgress = AppCurves.standard.transform(progress);
     
     return Stack(
       children: [
@@ -63,7 +63,7 @@ class AmbientLightingOverlay extends ConsumerWidget {
           Positioned.fill(
             child: IgnorePointer(
               child: AnimatedOpacity(
-                duration: const Duration(milliseconds: 500),
+                duration: AppDurations.long2,
                 opacity: easedProgress,
                 child: Container(
                   decoration: BoxDecoration(
@@ -86,7 +86,7 @@ class AmbientLightingOverlay extends ConsumerWidget {
           Positioned.fill(
             child: IgnorePointer(
               child: AnimatedOpacity(
-                duration: const Duration(milliseconds: 500),
+                duration: AppDurations.long2,
                 opacity: easedProgress,
                 child: Container(
                   color: config.overlayColor.withOpacity(effectiveOpacity),
@@ -100,7 +100,7 @@ class AmbientLightingOverlay extends ConsumerWidget {
           Positioned.fill(
             child: IgnorePointer(
               child: AnimatedOpacity(
-                duration: const Duration(milliseconds: 500),
+                duration: AppDurations.long2,
                 opacity: easedProgress * 0.3,
                 child: Container(
                   decoration: BoxDecoration(
@@ -217,7 +217,7 @@ class AmbientTimeIndicator extends ConsumerWidget {
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
         color: AppOverlays.black30,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(AppRadius.md2),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,

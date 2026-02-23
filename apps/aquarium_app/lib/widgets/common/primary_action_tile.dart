@@ -1,193 +1,98 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import '../../theme/app_theme.dart';
+import '../core/app_card.dart';
 
-/// A prominent, tappable action tile for primary user actions.
+/// A card-based action tile with icon, title, subtitle, and trailing action.
 ///
-/// Renders as a rounded card row: leading icon container → title + subtitle →
-/// optional badge → trailing chevron (or custom widget).
-///
-/// Compared to plain [ListTile], this widget uses:
-/// - [AppSpacing], [AppRadius], [AppColors] tokens throughout
-/// - Optional coloured icon background for visual hierarchy
-/// - Scale animation on tap (0.98×) for satisfying feedback
-/// - [Semantics] role `button`
+/// Combines [AppCard] with a Row layout for common list-action patterns
+/// (e.g. settings rows, feature tiles, dashboard actions).
 ///
 /// Example:
 /// ```dart
 /// PrimaryActionTile(
 ///   icon: Icons.water_drop,
-///   iconColor: AppColors.info,
-///   title: 'Log Water Change',
-///   subtitle: 'Last changed 6 days ago',
-///   onTap: () => logWaterChange(),
+///   title: 'Water Change',
+///   subtitle: 'Last done 3 days ago',
+///   trailing: Icon(Icons.chevron_right),
+///   onTap: () => doWaterChange(),
 /// )
 /// ```
-class PrimaryActionTile extends StatefulWidget {
-  /// Icon displayed in the coloured leading container.
+class PrimaryActionTile extends StatelessWidget {
+  /// Leading icon
   final IconData icon;
 
-  /// Colour of the icon. Defaults to [AppColors.primary].
+  /// Icon color (defaults to primary)
   final Color? iconColor;
 
-  /// Background colour of the icon container.
-  /// Defaults to [iconColor] at 15% opacity.
+  /// Icon background color (defaults to primary at 10%)
   final Color? iconBackgroundColor;
 
-  /// Primary text (required).
+  /// Primary text
   final String title;
 
-  /// Secondary text beneath the title.
+  /// Secondary text (optional)
   final String? subtitle;
 
-  /// Small badge text (e.g. count, status) shown before the trailing widget.
-  final String? badge;
-
-  /// Colour of the badge pill background. Defaults to [AppColors.primary].
-  final Color? badgeColor;
-
-  /// Custom trailing widget. Defaults to a chevron icon.
+  /// Trailing widget (e.g. chevron, switch, badge)
   final Widget? trailing;
 
-  /// Hides the chevron when [trailing] is null. Defaults to true.
-  final bool showChevron;
-
-  /// Callback when the tile is tapped.
+  /// Tap handler
   final VoidCallback? onTap;
-
-  /// Callback when the tile is long-pressed.
-  final VoidCallback? onLongPress;
-
-  /// Semantic label for accessibility. Defaults to [title].
-  final String? semanticsLabel;
-
-  /// Whether to provide haptic feedback on tap. Defaults to true.
-  final bool enableHaptics;
-
-  /// External margin. Defaults to none.
-  final EdgeInsets? margin;
 
   const PrimaryActionTile({
     super.key,
     required this.icon,
-    this.iconColor,
-    this.iconBackgroundColor,
     required this.title,
     this.subtitle,
-    this.badge,
-    this.badgeColor,
     this.trailing,
-    this.showChevron = true,
     this.onTap,
-    this.onLongPress,
-    this.semanticsLabel,
-    this.enableHaptics = true,
-    this.margin,
+    this.iconColor,
+    this.iconBackgroundColor,
   });
 
   @override
-  State<PrimaryActionTile> createState() => _PrimaryActionTileState();
-}
-
-class _PrimaryActionTileState extends State<PrimaryActionTile>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _scaleController;
-  late Animation<double> _scaleAnimation;
-
-  @override
-  void initState() {
-    super.initState();
-    _scaleController = AnimationController(
-      duration: AppDurations.short,
-      vsync: this,
-    );
-    _scaleAnimation = Tween<double>(begin: 1.0, end: 0.98).animate(
-      CurvedAnimation(parent: _scaleController, curve: AppCurves.standard),
-    );
-  }
-
-  @override
-  void dispose() {
-    _scaleController.dispose();
-    super.dispose();
-  }
-
-  bool get _isInteractive => widget.onTap != null || widget.onLongPress != null;
-
-  void _handleTap() {
-    if (widget.enableHaptics) HapticFeedback.selectionClick();
-    widget.onTap?.call();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
+    final primaryColor = Theme.of(context).colorScheme.primary;
+    final effectiveIconColor = iconColor ?? primaryColor;
 
-    final effectiveIconColor = widget.iconColor ?? AppColors.primary;
-    // Build icon background at 15% opacity using pre-constructed RGBA.
-    final iconBg = widget.iconBackgroundColor ??
-        Color.fromRGBO(
-          effectiveIconColor.red,
-          effectiveIconColor.green,
-          effectiveIconColor.blue,
-          0.15,
-        );
-
-    final titleColor =
-        isDark ? AppColors.textPrimaryDark : AppColors.textPrimary;
-    final subtitleColor =
-        isDark ? AppColors.textSecondaryDark : AppColors.textSecondary;
-    final chevronColor =
-        isDark ? AppColors.textHintDark : AppColors.textHint;
-
-    Widget content = Container(
-      margin: widget.margin,
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.s16,
-        vertical: AppSpacing.s12,
-      ),
-      decoration: BoxDecoration(
-        color: isDark ? AppColors.cardDark : AppColors.card,
-        borderRadius: AppRadius.mediumRadius,
-        boxShadow: AppShadows.soft,
-      ),
+    return AppCard(
+      variant: AppCardVariant.filled,
+      padding: AppCardPadding.standard,
+      onTap: onTap,
       child: Row(
         children: [
-          // ── Icon container ─────────────────────────────────────────────
           Container(
             width: 44,
             height: 44,
             decoration: BoxDecoration(
-              color: iconBg,
-              borderRadius: AppRadius.r12Radius,
+              color: iconBackgroundColor ?? effectiveIconColor.withAlpha(26), // ~10%
+              borderRadius: BorderRadius.circular(AppRadius.md2),
             ),
             child: Icon(
-              widget.icon,
+              icon,
               color: effectiveIconColor,
               size: AppIconSizes.md,
             ),
           ),
-
-          const SizedBox(width: AppSpacing.md),
-
-          // ── Title / subtitle ───────────────────────────────────────────
+          const SizedBox(width: AppSpacing.sm2),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  widget.title,
-                  style: AppTypography.titleSmall.copyWith(color: titleColor),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
+                  title,
+                  style: AppTypography.titleSmall.copyWith(
+                    color: Theme.of(context).colorScheme.onSurface,
+                  ),
                 ),
-                if (widget.subtitle != null) ...[
-                  const SizedBox(height: AppSpacing.xs),
+                if (subtitle != null) ...[
+                  const SizedBox(height: 2),
                   Text(
-                    widget.subtitle!,
-                    style: AppTypography.bodySmall.copyWith(color: subtitleColor),
+                    subtitle!,
+                    style: AppTypography.bodySmall.copyWith(
+                      color: Theme.of(context).colorScheme.onSurface.withAlpha(153), // ~60%
+                    ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -195,59 +100,12 @@ class _PrimaryActionTileState extends State<PrimaryActionTile>
               ],
             ),
           ),
-
-          // ── Badge ──────────────────────────────────────────────────────
-          if (widget.badge != null) ...[
+          if (trailing != null) ...[
             const SizedBox(width: AppSpacing.sm),
-            Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: AppSpacing.sm,
-                vertical: AppSpacing.xs,
-              ),
-              decoration: BoxDecoration(
-                color: widget.badgeColor ?? AppColors.primary,
-                borderRadius: AppRadius.pillRadius,
-              ),
-              child: Text(
-                widget.badge!,
-                style: AppTypography.labelSmall.copyWith(
-                  color: AppColors.onPrimary,
-                ),
-              ),
-            ),
-          ],
-
-          // ── Trailing / chevron ─────────────────────────────────────────
-          if (widget.trailing != null) ...[
-            const SizedBox(width: AppSpacing.sm),
-            widget.trailing!,
-          ] else if (widget.showChevron && _isInteractive) ...[
-            const SizedBox(width: AppSpacing.sm),
-            Icon(Icons.chevron_right, color: chevronColor, size: AppIconSizes.md),
+            trailing!,
           ],
         ],
       ),
     );
-
-    if (_isInteractive) {
-      content = Semantics(
-        button: true,
-        label: widget.semanticsLabel ?? widget.title,
-        hint: widget.subtitle,
-        child: ScaleTransition(
-          scale: _scaleAnimation,
-          child: GestureDetector(
-            onTapDown: (_) => _scaleController.forward(),
-            onTapUp: (_) => _scaleController.reverse(),
-            onTapCancel: () => _scaleController.reverse(),
-            onTap: _handleTap,
-            onLongPress: widget.onLongPress,
-            child: content,
-          ),
-        ),
-      );
-    }
-
-    return content;
   }
 }

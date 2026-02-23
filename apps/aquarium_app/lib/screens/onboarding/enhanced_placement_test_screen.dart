@@ -51,14 +51,14 @@ class _EnhancedPlacementTestScreenState
     );
     _celebrationController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 500),
+      duration: AppDurations.long2,
     );
     _shakeController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 500),
+      duration: AppDurations.long2,
     );
     _shakeAnimation = Tween<double>(begin: 0, end: 10).animate(
-      CurvedAnimation(parent: _shakeController, curve: Curves.elasticIn),
+      CurvedAnimation(parent: _shakeController, curve: AppCurves.elastic),
     );
   }
 
@@ -229,12 +229,12 @@ class _EnhancedPlacementTestScreenState
                           child: child,
                         ),
                         child: Card(
-                          elevation: 2,
+                          elevation: AppElevation.level1,
                           shape: RoundedRectangleBorder(
                             borderRadius: AppRadius.mediumRadius,
                           ),
                           child: Padding(
-                            padding: const EdgeInsets.all(20),
+                            padding: const EdgeInsets.all(AppSpacing.lg2),
                             child: Text(
                               _currentQuestion.question,
                               style: theme.textTheme.titleLarge?.copyWith(
@@ -293,8 +293,8 @@ class _EnhancedPlacementTestScreenState
   Widget _buildAnimatedProgressBar() {
     return TweenAnimationBuilder<double>(
       tween: Tween(begin: 0.0, end: _progress),
-      duration: const Duration(milliseconds: 500),
-      curve: Curves.easeOut,
+      duration: AppDurations.long2,
+      curve: AppCurves.standardDecelerate,
       builder: (context, value, child) => Column(
         children: [
           Stack(
@@ -312,7 +312,7 @@ class _EnhancedPlacementTestScreenState
                 Positioned.fill(
                   child: AnimatedOpacity(
                     opacity: 0.3,
-                    duration: const Duration(milliseconds: 500),
+                    duration: AppDurations.long2,
                     child: Container(
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
@@ -335,7 +335,7 @@ class _EnhancedPlacementTestScreenState
               children: [
                 Row(
                   children: [
-                    const Icon(Icons.quiz, size: 16, color: AppColors.accent),
+                    const Icon(Icons.quiz, size: AppIconSizes.xs, color: AppColors.accent),
                     const SizedBox(width: AppSpacing.xs),
                     Text(
                       '${(_progress * 100).round()}% Complete',
@@ -401,7 +401,7 @@ class _EnhancedPlacementTestScreenState
           ),
           backgroundColor: _getPathColor(
             _currentQuestion.pathId,
-          ).withOpacity(0.1),
+          ).withAlpha(26),
           side: BorderSide(color: _getPathColor(_currentQuestion.pathId)),
           visualDensity: VisualDensity.compact,
         ),
@@ -418,7 +418,7 @@ class _EnhancedPlacementTestScreenState
       return TweenAnimationBuilder<double>(
         tween: Tween(begin: 0.0, end: 1.0),
         duration: Duration(milliseconds: 300 + (index * 100)),
-        curve: Curves.easeOut,
+        curve: AppCurves.standardDecelerate,
         builder: (context, value, child) => Transform.translate(
           offset: Offset(0, 20 * (1 - value)),
           child: Opacity(opacity: value, child: child),
@@ -459,12 +459,12 @@ class _EnhancedPlacementTestScreenState
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
       child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
+        duration: AppDurations.medium2,
         child: InkWell(
           onTap: showResult ? null : () => _selectAnswer(index),
           borderRadius: AppRadius.mediumRadius,
           child: AnimatedContainer(
-            duration: const Duration(milliseconds: 200),
+            duration: AppDurations.medium2,
             padding: const EdgeInsets.all(AppSpacing.md),
             decoration: BoxDecoration(
               color: backgroundColor,
@@ -487,7 +487,7 @@ class _EnhancedPlacementTestScreenState
               children: [
                 // Letter indicator
                 AnimatedContainer(
-                  duration: const Duration(milliseconds: 200),
+                  duration: AppDurations.medium2,
                   width: 32,
                   height: 32,
                   decoration: BoxDecoration(
@@ -501,7 +501,7 @@ class _EnhancedPlacementTestScreenState
                       String.fromCharCode(65 + index), // A, B, C, D
                       style: TextStyle(
                         color: isSelected || (showResult && isCorrect)
-                            ? Colors.white
+                            ? AppColors.onPrimary
                             : Colors.black87,
                         fontWeight: FontWeight.bold,
                         fontSize: 14,
@@ -525,7 +525,7 @@ class _EnhancedPlacementTestScreenState
                   const SizedBox(width: AppSpacing.sm),
                   ScaleTransition(
                     scale: _celebrationController,
-                    child: Icon(icon, color: iconColor, size: 24),
+                    child: Icon(icon, color: iconColor, size: AppIconSizes.md),
                   ),
                 ],
               ],
@@ -541,14 +541,14 @@ class _EnhancedPlacementTestScreenState
 
     return TweenAnimationBuilder<double>(
       tween: Tween(begin: 0.0, end: 1.0),
-      duration: const Duration(milliseconds: 400),
-      curve: Curves.easeOut,
+      duration: AppDurations.long1,
+      curve: AppCurves.standardDecelerate,
       builder: (context, value, child) => Transform.scale(
         scale: 0.95 + (0.05 * value),
         child: Opacity(opacity: value, child: child),
       ),
       child: Card(
-        elevation: 4,
+        elevation: AppElevation.level2,
         color: isCorrect ? Colors.green[50] : Colors.blue[50],
         shape: RoundedRectangleBorder(
           borderRadius: AppRadius.mediumRadius,
@@ -567,7 +567,7 @@ class _EnhancedPlacementTestScreenState
                   Icon(
                     isCorrect ? Icons.celebration : Icons.school,
                     color: isCorrect ? Colors.green : Colors.blue,
-                    size: 24,
+                    size: AppIconSizes.md,
                   ),
                   const SizedBox(width: AppSpacing.sm),
                   Text(
@@ -582,7 +582,7 @@ class _EnhancedPlacementTestScreenState
               ),
               const SizedBox(height: 12),
               Container(
-                padding: const EdgeInsets.all(12),
+                padding: const EdgeInsets.all(AppSpacing.sm2),
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: AppRadius.smallRadius,

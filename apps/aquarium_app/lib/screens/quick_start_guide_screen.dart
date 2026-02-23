@@ -17,7 +17,7 @@ class QuickStartGuideScreen extends StatelessWidget {
             padding: AppCardPadding.standard,
             child: Column(
               children: [
-                Icon(Icons.rocket_launch, size: 48, color: AppColors.primary),
+                Icon(Icons.rocket_launch, size: AppIconSizes.xl, color: AppColors.primary),
                 const SizedBox(height: 12),
                 Text(
                   'Your First Aquarium',
@@ -438,7 +438,7 @@ class _TipBox extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Icon(Icons.lightbulb, size: 16, color: AppColors.info),
+          Icon(Icons.lightbulb, size: AppIconSizes.xs, color: AppColors.info),
           const SizedBox(width: AppSpacing.sm),
           Expanded(child: Text(text, style: AppTypography.bodySmall)),
         ],
@@ -462,7 +462,7 @@ class _WarningBox extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Icon(Icons.warning, size: 16, color: AppColors.error),
+          Icon(Icons.warning, size: AppIconSizes.xs, color: AppColors.error),
           const SizedBox(width: AppSpacing.sm),
           Expanded(
             child: Text(
@@ -491,7 +491,7 @@ class _MistakeItem extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(Icons.close, size: 16, color: AppColors.error),
+          Icon(Icons.close, size: AppIconSizes.xs, color: AppColors.error),
           const SizedBox(width: AppSpacing.sm),
           Expanded(
             child: RichText(

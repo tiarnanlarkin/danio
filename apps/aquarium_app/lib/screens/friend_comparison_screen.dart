@@ -269,15 +269,15 @@ class _UserCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      elevation: 2,
+      elevation: AppElevation.level1,
       child: Padding(
-        padding: const EdgeInsets.all(12),
+        padding: const EdgeInsets.all(AppSpacing.sm2),
         child: Column(
           children: [
             CircleAvatar(
               radius: 30,
               backgroundColor: (isUser ? Colors.blue : AppColors.primary)
-                  .withOpacity(0.2),
+                  .withAlpha(51),
               child: Text(emoji, style: const TextStyle(fontSize: 32)),
             ),
             const SizedBox(height: AppSpacing.sm),
@@ -305,7 +305,7 @@ class _UserCard extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(Icons.star, size: 16, color: Colors.amber.shade700),
+                Icon(Icons.star, size: AppIconSizes.xs, color: Colors.amber.shade700),
                 const SizedBox(width: AppSpacing.xs),
                 Text(
                   '$xp XP',
@@ -370,7 +370,7 @@ class _StatsComparisonSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16),
+          padding: EdgeInsets.symmetric(horizontal: AppSpacing.md),
           child: Text(
             'Stats Comparison',
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
@@ -424,7 +424,7 @@ class _StatComparisonRow extends StatelessWidget {
         children: [
           Row(
             children: [
-              Icon(icon, size: 20, color: color),
+              Icon(icon, size: AppIconSizes.sm, color: color),
               const SizedBox(width: AppSpacing.sm),
               Text(
                 label,
@@ -508,7 +508,7 @@ class _ProgressChartSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16),
+          padding: EdgeInsets.symmetric(horizontal: AppSpacing.md),
           child: Text(
             'Weekly Progress',
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
@@ -517,7 +517,7 @@ class _ProgressChartSection extends StatelessWidget {
         const SizedBox(height: 12),
         Container(
           height: 200,
-          margin: const EdgeInsets.symmetric(horizontal: 16),
+          margin: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
           padding: const EdgeInsets.all(AppSpacing.md),
           decoration: BoxDecoration(
             color: Colors.grey.shade50,
@@ -654,7 +654,7 @@ class _AchievementsSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16),
+          padding: EdgeInsets.symmetric(horizontal: AppSpacing.md),
           child: Text(
             'Achievements',
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
@@ -662,7 +662,7 @@ class _AchievementsSection extends StatelessWidget {
         ),
         const SizedBox(height: 12),
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
+          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
           child: Row(
             children: [
               Expanded(

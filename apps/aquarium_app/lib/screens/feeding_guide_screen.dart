@@ -344,7 +344,7 @@ class _FoodTypeCard extends StatelessWidget {
                     children: [
                       Icon(
                         Icons.lightbulb_outline,
-                        size: 16,
+                        size: AppIconSizes.xs,
                         color: AppColors.textSecondary,
                       ),
                       const SizedBox(width: AppSpacing.sm),
@@ -383,7 +383,7 @@ class _MistakeItem extends StatelessWidget {
         children: [
           Row(
             children: [
-              Icon(Icons.close, size: 16, color: AppColors.error),
+              Icon(Icons.close, size: AppIconSizes.xs, color: AppColors.error),
               const SizedBox(width: AppSpacing.sm),
               Text(mistake, style: AppTypography.labelLarge),
             ],

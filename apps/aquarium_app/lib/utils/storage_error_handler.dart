@@ -52,7 +52,7 @@ class StorageErrorHandler {
                 if (error.corruptedFilePath != null) ...[
                   const SizedBox(height: AppSpacing.md),
                   Container(
-                    padding: const EdgeInsets.all(12),
+                    padding: const EdgeInsets.all(AppSpacing.sm2),
                     decoration: BoxDecoration(
                       color: Colors.orange[50],
                       borderRadius: AppRadius.smallRadius,

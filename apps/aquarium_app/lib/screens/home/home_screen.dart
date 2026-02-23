@@ -7,7 +7,6 @@ import '../../providers/tank_provider.dart';
 import '../../providers/room_theme_provider.dart';
 import '../../providers/user_profile_provider.dart';
 import '../../theme/app_theme.dart';
-import '../../theme/room_identity.dart';
 import '../../widgets/core/bubble_loader.dart';
 import '../house_navigator.dart';
 import '../../theme/room_themes.dart';
@@ -19,11 +18,10 @@ import '../../widgets/room_scene.dart';
 import '../../widgets/speed_dial_fab.dart';
 import '../../widgets/daily_goal_progress.dart';
 import '../../widgets/streak_calendar.dart';
-import '../../widgets/error_state.dart';
+import '../../widgets/core/app_states.dart';
 import '../../widgets/hearts_widgets.dart';
 import '../../widgets/gamification_dashboard.dart';
 import '../../utils/app_feedback.dart';
-// import '../../services/firebase_analytics_service.dart';
 import '../add_log_screen.dart';
 import '../create_tank_screen.dart';
 import '../journal_screen.dart';
@@ -36,7 +34,6 @@ import 'widgets/tank_picker_sheet.dart';
 import 'widgets/xp_source_row.dart';
 import 'widgets/selection_mode_panel.dart';
 import 'widgets/empty_room_scene.dart';
-import 'widgets/today_board.dart';
 import '../backup_restore_screen.dart';
 import '../../utils/app_page_routes.dart';
 
@@ -58,7 +55,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    // FirebaseAnalyticsService().logScreenView('home');
   }
 
   void _toggleSelectMode() {
@@ -110,7 +106,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Icon(Icons.water, size: 48, color: AppColors.primary),
+                  const Icon(Icons.water, size: AppIconSizes.xl, color: AppColors.primary),
                   const SizedBox(height: AppSpacing.sm),
                   Text('Loading tanks...', style: AppTypography.bodyMedium),
                 ],
@@ -139,18 +135,16 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         color: AppOverlays.primary15,
                         borderRadius: AppRadius.smallRadius,
                       ),
-                      child: const Icon(
-                        Icons.set_meal_rounded,
-                        color: AppColors.primary,
-                        size: 20,
-                      ),
+                      child: const Icon(Icons.set_meal_rounded,
+                          color: AppColors.primary, size: AppIconSizes.sm),
                     ),
                     const SizedBox(width: 12),
                     Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Community Tank', style: AppTypography.labelLarge),
+                        Text('Community Tank',
+                            style: AppTypography.labelLarge),
                         Text('200L', style: AppTypography.bodySmall),
                       ],
                     ),
@@ -169,9 +163,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
     return tanksAsync.when(
       loading: () => _buildSkeletonRoom(),
-      error: (err, stack) => ErrorState(
-        message: 'Failed to load tanks',
-        details: 'Please check your connection and try again',
+      error: (err, stack) => AppErrorState(
+        title: 'Failed to load tanks',
+        message: 'Please check your connection and try again',
         onRetry: () => ref.invalidate(tanksProvider),
       ),
       data: (tanks) {
@@ -200,8 +194,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 tankVolume: currentTank.volumeLitres,
                 theme: ref.watch(currentRoomThemeProvider),
                 isNewUser: _isNewUser(ref),
-                useRiveFish:
-                    false, // Disable broken Rive fish, use static drawn fish
+                useRiveFish: false, // Disable broken Rive fish, use static drawn fish
                 onTankTap: () => _navigateToTankDetail(context, currentTank),
                 onTestKitTap: () => _showWaterParams(context),
                 onFoodTap: () => _showFeedingInfo(context),
@@ -235,46 +228,33 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 child: Row(
                   children: [
                     Semantics(
-                      label: '${RoomIdentity.livingRoomName}, switch room',
+                      label: 'Living Room, switch room',
                       button: true,
                       child: GestureDetector(
                         onTap: () => _showRoomSwitcher(context),
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: AppSpacing.sm,
-                            vertical: 4,
-                          ),
-                          decoration: BoxDecoration(
-                            color: AppOverlays.black20,
-                            borderRadius: AppRadius.pillRadius,
-                            border: Border.all(
-                              color: RoomIdentity.livingRoomAccent,
+                        child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            'Living Room',
+                            style: AppTypography.headlineSmall.copyWith(
+                              color: Colors.white,
+                              shadows: [
+                                Shadow(
+                                  color: AppOverlays.black50,
+                                  blurRadius: 4,
+                                ),
+                              ],
                             ),
                           ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(
-                                RoomIdentity.livingRoomName,
-                                style: AppTypography.headlineSmall.copyWith(
-                                  color: Colors.white,
-                                  shadows: [
-                                    Shadow(
-                                      color: AppOverlays.black50,
-                                      blurRadius: 4,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              const SizedBox(width: 4),
-                              Icon(
-                                Icons.keyboard_arrow_down,
-                                color: AppOverlays.white70,
-                                size: 20,
-                              ),
-                            ],
+                          const SizedBox(width: 4),
+                          Icon(
+                            Icons.keyboard_arrow_down,
+                            color: AppOverlays.white70,
+                            size: AppIconSizes.sm,
                           ),
-                        ),
+                        ],
+                      ),
                       ),
                     ),
                     const Spacer(),
@@ -287,7 +267,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       label: 'Search',
                       button: true,
                       child: IconButton(
-                        icon: Icon(Icons.search, color: AppOverlays.white90),
+                        icon: Icon(
+                          Icons.search,
+                          color: AppOverlays.white90,
+                        ),
                         tooltip: 'Search',
                         onPressed: () => Navigator.push(
                           context,
@@ -315,22 +298,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               ),
             ),
 
-            // Today Board — tasks preview card above GamificationDashboard
-            // Shows up to 3 upcoming/overdue tasks for the current tank
-            Positioned(
-              bottom: 156 + MediaQuery.of(context).padding.bottom,
-              left: 16,
-              right: 88, // leave room for FAB
-              child: TodayBoardCard(tankId: currentTank.id),
-            ),
-
-            // Tank switcher - clean card between tank and today board
+            // Tank switcher - clean card between tank and graph
             if (!_isSelectMode)
               Builder(
                 builder: (context) {
                   final bottomPadding = MediaQuery.of(context).padding.bottom;
                   return Positioned(
-                    bottom: 248 + bottomPadding, // Above today board
+                    bottom: 180 + bottomPadding, // Above gamification dashboard with FAB clearance
                     left: 16,
                     right: 88, // Leave room for speed dial FAB
                     child: TankSwitcher(
@@ -352,7 +326,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 builder: (context) {
                   final bottomPadding = MediaQuery.of(context).padding.bottom;
                   return Positioned(
-                    bottom: 248 + bottomPadding, // Above today board
+                    bottom: 180 + bottomPadding, // Above gamification dashboard
                     left: 16,
                     right: 16,
                     child: SelectionModePanel(
@@ -379,9 +353,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             ),
 
             // Speed Dial FAB - radial menu for quick actions
-            // Positioned alongside the tank switcher with safe area padding
+            // Positioned above the dashboard with safe area padding
             Positioned(
-              bottom: 238 + MediaQuery.of(context).padding.bottom,
+              bottom: 170 + MediaQuery.of(context).padding.bottom,
               right: 16,
               child: SpeedDialFAB(
                 closedIcon: Icons.water_drop_rounded,
@@ -391,7 +365,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     icon: Icons.add_rounded,
                     label: 'Add Tank',
                     backgroundColor: AppColors.primary,
-                    foregroundColor: Colors.white,
+                    foregroundColor: AppColors.onPrimary,
                     onPressed: () => _navigateToCreateTank(context),
                   ),
                   SpeedDialAction(
@@ -438,17 +412,21 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     // Navigation to other rooms (Learn, Workshop, Shop, etc.) is handled
     // by HouseNavigator's swipe/tab system, not a BottomNavigationBar here.
     // Note: FAB is handled inside _buildLivingRoomScreen() Stack, not here
-    return Scaffold(body: _buildLivingRoomScreen());
+    return Scaffold(
+      body: _buildLivingRoomScreen(),
+    );
   }
 
   void _navigateToCreateTank(BuildContext context) {
-    Navigator.of(context).push(ModalScaleRoute(page: const CreateTankScreen()));
+    Navigator.of(context).push(
+      ModalScaleRoute(page: const CreateTankScreen()),
+    );
   }
 
   void _navigateToTankDetail(BuildContext context, Tank tank) {
-    Navigator.of(
-      context,
-    ).push(TankDetailRoute(page: TankDetailScreen(tankId: tank.id)));
+    Navigator.of(context).push(
+      TankDetailRoute(page: TankDetailScreen(tankId: tank.id)),
+    );
   }
 
   void _navigateToQuickTest(BuildContext context, Tank tank) {
@@ -468,13 +446,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   void _navigateToJournal(BuildContext context, String tankId) {
-    Navigator.of(
-      context,
-    ).push(RoomSlideRoute(page: JournalScreen(tankId: tankId)));
+    Navigator.of(context).push(
+      RoomSlideRoute(page: JournalScreen(tankId: tankId)),
+    );
   }
 
   void _navigateToSchedule(BuildContext context) {
-    Navigator.of(context).push(RoomSlideRoute(page: const RemindersScreen()));
+    Navigator.of(context).push(
+      RoomSlideRoute(page: const RemindersScreen()),
+    );
   }
 
   /// Check if user is new to show more prominent animations
@@ -487,11 +467,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   void _showRoomSwitcher(BuildContext context) {
     final rooms = [
-      (RoomIdentity.libraryName, Icons.auto_stories, '📚', 0),
-      (RoomIdentity.livingRoomName, Icons.weekend, '🛋️', 1),
+      ('Study', Icons.auto_stories, '📚', 0),
+      ('Living Room', Icons.weekend, '🛋️', 1),
       ('Friends', Icons.people, '👥', 2),
       ('Leaderboard', Icons.leaderboard, '🏆', 3),
-      (RoomIdentity.workshopName, Icons.build, '🔧', 4),
+      ('Workshop', Icons.build, '🔧', 4),
       ('Shop Street', Icons.storefront, '🏪', 5),
     ];
 
@@ -501,7 +481,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       builder: (ctx) => Container(
         decoration: BoxDecoration(
           color: Theme.of(context).scaffoldBackgroundColor,
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(AppRadius.lg)),
         ),
         padding: const EdgeInsets.all(AppSpacing.md),
         child: Column(
@@ -614,7 +594,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       backgroundColor: Colors.transparent,
       builder: (ctx) => Container(
         margin: const EdgeInsets.all(AppSpacing.md),
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(AppSpacing.lg2),
         decoration: BoxDecoration(
           color: Theme.of(context).scaffoldBackgroundColor,
           borderRadius: AppRadius.largeRadius,
@@ -625,7 +605,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           children: [
             Row(
               children: [
-                const Icon(Icons.palette, size: 24),
+                const Icon(Icons.palette, size: AppIconSizes.md),
                 const SizedBox(width: 12),
                 Text('Room Theme', style: AppTypography.headlineSmall),
               ],
@@ -648,7 +628,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     },
                     child: Container(
                       width: 100,
-                      padding: const EdgeInsets.all(12),
+                      padding: const EdgeInsets.all(AppSpacing.sm2),
                       decoration: BoxDecoration(
                         borderRadius: AppRadius.mediumRadius,
                         border: Border.all(
@@ -746,7 +726,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       isScrollControlled: true,
       builder: (ctx) => Container(
         margin: const EdgeInsets.all(AppSpacing.md),
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(AppSpacing.lg2),
         decoration: BoxDecoration(
           color: Theme.of(context).scaffoldBackgroundColor,
           borderRadius: AppRadius.largeRadius,
@@ -815,7 +795,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       isScrollControlled: true,
       builder: (ctx) => Container(
         margin: const EdgeInsets.all(AppSpacing.md),
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(AppSpacing.lg2),
         decoration: BoxDecoration(
           color: Theme.of(context).scaffoldBackgroundColor,
           borderRadius: AppRadius.largeRadius,
@@ -858,7 +838,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   void _showStreakCalendar(BuildContext context) {
-    Navigator.push(context, RoomSlideRoute(page: const StreakCalendarScreen()));
+    Navigator.push(
+      context,
+      RoomSlideRoute(page: const StreakCalendarScreen()),
+    );
   }
 
   Future<void> _bulkDelete(BuildContext context, List<Tank> allTanks) async {
@@ -948,11 +931,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       setState(() {
         _selectedTankIds.clear();
       });
-
+      
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => const BackupRestoreScreen()),
+        MaterialPageRoute(
+          builder: (context) => const BackupRestoreScreen(),
+        ),
       );
     }
   }
+
 }

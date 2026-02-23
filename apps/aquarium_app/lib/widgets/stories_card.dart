@@ -41,7 +41,7 @@ class StoriesCard extends ConsumerWidget {
 
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      elevation: 4,
+      elevation: AppElevation.level2,
       shape: RoundedRectangleBorder(borderRadius: AppRadius.mediumRadius),
       child: InkWell(
         onTap: () {
@@ -51,7 +51,7 @@ class StoriesCard extends ConsumerWidget {
         },
         borderRadius: AppRadius.mediumRadius,
         child: Container(
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.all(AppSpacing.lg2),
           decoration: BoxDecoration(
             borderRadius: AppRadius.mediumRadius,
             gradient: LinearGradient(
@@ -66,7 +66,7 @@ class StoriesCard extends ConsumerWidget {
               Row(
                 children: [
                   Container(
-                    padding: const EdgeInsets.all(12),
+                    padding: const EdgeInsets.all(AppSpacing.sm2),
                     decoration: BoxDecoration(
                       color: AppOverlays.white20,
                       borderRadius: AppRadius.mediumRadius,
@@ -100,7 +100,7 @@ class StoriesCard extends ConsumerWidget {
                   const Icon(
                     Icons.arrow_forward_ios,
                     color: Colors.white,
-                    size: 20,
+                    size: AppIconSizes.sm,
                   ),
                 ],
               ),
@@ -150,7 +150,7 @@ class StoriesCard extends ConsumerWidget {
               if (suggestedStory != null) ...[
                 const SizedBox(height: AppSpacing.md),
                 Container(
-                  padding: const EdgeInsets.all(12),
+                  padding: const EdgeInsets.all(AppSpacing.sm2),
                   decoration: BoxDecoration(
                     color: AppOverlays.white15,
                     borderRadius: AppRadius.mediumRadius,

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import '../widgets/core/bubble_loader.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -12,7 +11,7 @@ import '../providers/inventory_provider.dart';
 import '../theme/app_theme.dart';
 import '../utils/app_feedback.dart';
 import '../widgets/empty_state.dart';
-import '../widgets/error_state.dart';
+import '../widgets/core/app_states.dart';
 import '../widgets/mascot/mascot_widgets.dart';
 
 const _uuid = Uuid();
@@ -30,8 +29,8 @@ class TasksScreen extends ConsumerWidget {
       appBar: AppBar(title: const Text('Tasks')),
       body: tasksAsync.when(
         loading: () => const Center(child: BubbleLoader()),
-        error: (err, _) => ErrorState(
-          message: 'Failed to load tasks',
+        error: (err, _) => AppErrorState(
+          title: 'Failed to load tasks',
           onRetry: () => ref.invalidate(tasksProvider(tankId)),
         ),
         data: (tasks) {
@@ -347,7 +346,7 @@ class _TaskHistoryDialog extends ConsumerWidget {
         width: double.maxFinite,
         child: logsAsync.when(
           loading: () => const Padding(
-            padding: EdgeInsets.all(12),
+            padding: EdgeInsets.all(AppSpacing.sm2),
             child: Center(child: CircularProgressIndicator()),
           ),
           error: (err, _) => Text('Error loading history: $err'),
@@ -447,7 +446,7 @@ class _SectionHeader extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
             decoration: BoxDecoration(
-              color: color.withOpacity(0.2),
+              color: color.withAlpha(51),
               borderRadius: AppRadius.mediumRadius,
             ),
             child: Text(
@@ -569,41 +568,10 @@ class _AddTaskSheet extends StatefulWidget {
 class _AddTaskSheetState extends State<_AddTaskSheet> {
   late TextEditingController _titleController;
   late TextEditingController _descController;
-  late TextEditingController _customDaysController;
   late RecurrenceType _recurrence;
   late bool _isEnabled;
   DateTime? _dueDate;
   bool _isSaving = false;
-  bool _showTemplates = false;
-
-  // 5 common task templates
-  static const _templates = [
-    (
-      title: 'Water Change',
-      desc: 'Change 20–30% of tank water',
-      recurrence: RecurrenceType.weekly,
-    ),
-    (
-      title: 'Filter Clean',
-      desc: 'Rinse filter media in tank water, check flow rate',
-      recurrence: RecurrenceType.monthly,
-    ),
-    (
-      title: 'Test Water',
-      desc: 'Test ammonia, nitrite, nitrate, pH',
-      recurrence: RecurrenceType.weekly,
-    ),
-    (
-      title: 'Feed Fish',
-      desc: 'Feed appropriate amount — remove uneaten food after 5 min',
-      recurrence: RecurrenceType.daily,
-    ),
-    (
-      title: 'Dose Fertiliser',
-      desc: 'Add liquid fertiliser for planted tank',
-      recurrence: RecurrenceType.weekly,
-    ),
-  ];
 
   @override
   void initState() {
@@ -613,9 +581,6 @@ class _AddTaskSheetState extends State<_AddTaskSheet> {
     );
     _descController = TextEditingController(
       text: widget.existing?.description ?? '',
-    );
-    _customDaysController = TextEditingController(
-      text: widget.existing?.intervalDays?.toString() ?? '',
     );
     _recurrence = widget.existing?.recurrence ?? RecurrenceType.none;
     _isEnabled = widget.existing?.isEnabled ?? true;
@@ -627,17 +592,7 @@ class _AddTaskSheetState extends State<_AddTaskSheet> {
   void dispose() {
     _titleController.dispose();
     _descController.dispose();
-    _customDaysController.dispose();
     super.dispose();
-  }
-
-  void _applyTemplate(({String title, String desc, RecurrenceType recurrence}) t) {
-    setState(() {
-      _titleController.text = t.title;
-      _descController.text = t.desc;
-      _recurrence = t.recurrence;
-      _showTemplates = false;
-    });
   }
 
   @override
@@ -654,49 +609,10 @@ class _AddTaskSheetState extends State<_AddTaskSheet> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    widget.existing != null ? 'Edit Task' : 'Add Task',
-                    style: AppTypography.headlineMedium,
-                  ),
-                ),
-                if (widget.existing == null)
-                  TextButton.icon(
-                    icon: Icon(
-                      _showTemplates ? Icons.close : Icons.library_books,
-                      size: 18,
-                    ),
-                    label: Text(_showTemplates ? 'Hide' : 'Templates'),
-                    onPressed: () => setState(() => _showTemplates = !_showTemplates),
-                  ),
-              ],
+            Text(
+              widget.existing != null ? 'Edit Task' : 'Add Task',
+              style: AppTypography.headlineMedium,
             ),
-
-            // Quick templates panel
-            if (_showTemplates && widget.existing == null) ...[
-              const SizedBox(height: AppSpacing.sm),
-              Container(
-                decoration: BoxDecoration(
-                  color: AppColors.surfaceVariant,
-                  borderRadius: AppRadius.mediumRadius,
-                ),
-                child: Column(
-                  children: _templates.map((t) => ListTile(
-                    dense: true,
-                    title: Text(t.title, style: AppTypography.labelLarge),
-                    subtitle: Text(t.desc, style: AppTypography.bodySmall, maxLines: 1, overflow: TextOverflow.ellipsis),
-                    trailing: Text(
-                      _recurrenceLabel(t.recurrence),
-                      style: AppTypography.bodySmall.copyWith(color: AppColors.primary),
-                    ),
-                    onTap: () => _applyTemplate(t),
-                  )).toList(),
-                ),
-              ),
-            ],
-
             const SizedBox(height: AppSpacing.md),
             TextFormField(
               controller: _titleController,
@@ -727,50 +643,29 @@ class _AddTaskSheetState extends State<_AddTaskSheet> {
                 _RecurrenceChip(
                   label: 'Once',
                   isSelected: _recurrence == RecurrenceType.none,
-                  onTap: () => setState(() => _recurrence = RecurrenceType.none),
+                  onTap: () =>
+                      setState(() => _recurrence = RecurrenceType.none),
                 ),
                 _RecurrenceChip(
                   label: 'Daily',
                   isSelected: _recurrence == RecurrenceType.daily,
-                  onTap: () => setState(() => _recurrence = RecurrenceType.daily),
+                  onTap: () =>
+                      setState(() => _recurrence = RecurrenceType.daily),
                 ),
                 _RecurrenceChip(
                   label: 'Weekly',
                   isSelected: _recurrence == RecurrenceType.weekly,
-                  onTap: () => setState(() => _recurrence = RecurrenceType.weekly),
-                ),
-                _RecurrenceChip(
-                  label: 'Biweekly',
-                  isSelected: _recurrence == RecurrenceType.biweekly,
-                  onTap: () => setState(() => _recurrence = RecurrenceType.biweekly),
+                  onTap: () =>
+                      setState(() => _recurrence = RecurrenceType.weekly),
                 ),
                 _RecurrenceChip(
                   label: 'Monthly',
                   isSelected: _recurrence == RecurrenceType.monthly,
-                  onTap: () => setState(() => _recurrence = RecurrenceType.monthly),
-                ),
-                _RecurrenceChip(
-                  label: 'Custom',
-                  isSelected: _recurrence == RecurrenceType.custom,
-                  onTap: () => setState(() => _recurrence = RecurrenceType.custom),
+                  onTap: () =>
+                      setState(() => _recurrence = RecurrenceType.monthly),
                 ),
               ],
             ),
-
-            // Custom interval field
-            if (_recurrence == RecurrenceType.custom) ...[
-              const SizedBox(height: 12),
-              TextFormField(
-                controller: _customDaysController,
-                decoration: const InputDecoration(
-                  labelText: 'Every N days',
-                  hintText: 'e.g., 10',
-                  suffixText: 'days',
-                ),
-                keyboardType: TextInputType.number,
-                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-              ),
-            ],
 
             const SizedBox(height: AppSpacing.md),
 
@@ -836,32 +731,11 @@ class _AddTaskSheetState extends State<_AddTaskSheet> {
     );
   }
 
-  String _recurrenceLabel(RecurrenceType r) {
-    switch (r) {
-      case RecurrenceType.none: return 'Once';
-      case RecurrenceType.daily: return 'Daily';
-      case RecurrenceType.weekly: return 'Weekly';
-      case RecurrenceType.biweekly: return 'Biweekly';
-      case RecurrenceType.monthly: return 'Monthly';
-      case RecurrenceType.custom: return 'Custom';
-    }
-  }
-
   Future<void> _save() async {
     final title = _titleController.text.trim();
     if (title.isEmpty) {
       AppFeedback.showWarning(context, 'Please enter a title');
       return;
-    }
-
-    // Validate custom interval
-    int? intervalDays;
-    if (_recurrence == RecurrenceType.custom) {
-      intervalDays = int.tryParse(_customDaysController.text.trim());
-      if (intervalDays == null || intervalDays < 1) {
-        AppFeedback.showWarning(context, 'Please enter a valid number of days');
-        return;
-      }
     }
 
     setState(() => _isSaving = true);
@@ -878,7 +752,6 @@ class _AddTaskSheetState extends State<_AddTaskSheet> {
             ? _descController.text.trim()
             : null,
         recurrence: _recurrence,
-        intervalDays: intervalDays,
         dueDate: _dueDate,
         isEnabled: _isEnabled,
         isAutoGenerated: widget.existing?.isAutoGenerated ?? false,

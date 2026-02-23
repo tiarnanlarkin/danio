@@ -56,12 +56,12 @@ class AchievementDetailModal extends StatelessWidget {
                 shape: BoxShape.circle,
                 color: isLocked
                     ? Colors.grey.shade200
-                    : rarityColor.withOpacity(0.2),
+                    : rarityColor.withAlpha(51),
                 boxShadow: isLocked
                     ? []
                     : [
                         BoxShadow(
-                          color: rarityColor.withOpacity(0.4),
+                          color: rarityColor.withAlpha(102),
                           blurRadius: 24,
                           spreadRadius: 4,
                         ),
@@ -87,7 +87,7 @@ class AchievementDetailModal extends StatelessWidget {
                           child: const Center(
                             child: Icon(
                               Icons.lock,
-                              size: 48,
+                              size: AppIconSizes.xl,
                               color: Colors.white,
                             ),
                           ),
@@ -219,8 +219,8 @@ class AchievementDetailModal extends StatelessWidget {
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                   colors: [
-                    rarityColor.withOpacity(0.2),
-                    rarityColor.withOpacity(0.1),
+                    rarityColor.withAlpha(51),
+                    rarityColor.withAlpha(26),
                   ],
                 ),
                 borderRadius: AppRadius.mediumRadius,
@@ -230,7 +230,7 @@ class AchievementDetailModal extends StatelessWidget {
                 children: [
                   Column(
                     children: [
-                      const Icon(Icons.star, color: Colors.amber, size: 32),
+                      const Icon(Icons.star, color: Colors.amber, size: AppIconSizes.lg),
                       const SizedBox(height: AppSpacing.xs),
                       Text(
                         '${achievement.rarity.xpReward} XP',
@@ -282,7 +282,7 @@ class AchievementDetailModal extends StatelessWidget {
             // Status
             if (isLocked)
               Container(
-                padding: const EdgeInsets.all(12),
+                padding: const EdgeInsets.all(AppSpacing.sm2),
                 decoration: BoxDecoration(
                   color: Colors.orange.shade50,
                   borderRadius: AppRadius.smallRadius,
@@ -306,7 +306,7 @@ class AchievementDetailModal extends StatelessWidget {
               )
             else
               Container(
-                padding: const EdgeInsets.all(12),
+                padding: const EdgeInsets.all(AppSpacing.sm2),
                 decoration: BoxDecoration(
                   color: Colors.green.shade50,
                   borderRadius: AppRadius.smallRadius,

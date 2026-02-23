@@ -252,7 +252,7 @@ class _MaintenanceChecklistScreenState
                         child: Text(
                           '✓ Complete!',
                           style: AppTypography.bodySmall.copyWith(
-                            color: Colors.white,
+                            color: AppColors.onPrimary,
                           ),
                         ),
                       ),

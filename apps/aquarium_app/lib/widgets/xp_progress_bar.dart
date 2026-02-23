@@ -45,7 +45,7 @@ class _XpProgressBarState extends ConsumerState<XpProgressBar>
     _progressAnimation = Tween<double>(
       begin: 0.0,
       end: 1.0,
-    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic));
+    ).animate(CurvedAnimation(parent: _controller, curve: AppCurves.emphasized));
   }
 
   @override
@@ -93,7 +93,7 @@ class _XpProgressBarState extends ConsumerState<XpProgressBar>
                       children: [
                         Icon(
                           Icons.workspace_premium,
-                          size: 16,
+                          size: AppIconSizes.xs,
                           color: AppColors.warning,
                         ),
                         const SizedBox(width: AppSpacing.xs),
@@ -210,7 +210,7 @@ class _ShimmerEffectState extends State<_ShimmerEffect>
   void initState() {
     super.initState();
     _shimmerController = AnimationController(
-      duration: const Duration(milliseconds: 1500),
+      duration: AppDurations.celebration,
       vsync: this,
     )..repeat();
   }
@@ -309,7 +309,7 @@ class XpProgressCard extends ConsumerWidget {
                               child: const Icon(
                                 Icons.workspace_premium,
                                 color: Colors.white,
-                                size: 20,
+                                size: AppIconSizes.sm,
                               ),
                             ),
                             const SizedBox(width: 12),

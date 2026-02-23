@@ -59,7 +59,7 @@ class _GlossaryScreenState extends State<GlossaryScreen> {
 
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.symmetric(horizontal: 16),
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
             child: Row(
               children: [
                 FilterChip(
@@ -89,7 +89,7 @@ class _GlossaryScreenState extends State<GlossaryScreen> {
           const SizedBox(height: AppSpacing.sm),
 
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
             child: Text(
               '${terms.length} terms',
               style: AppTypography.bodySmall,
@@ -119,7 +119,7 @@ class _TermCard extends StatelessWidget {
     return Card(
       margin: const EdgeInsets.only(bottom: 8),
       child: Padding(
-        padding: const EdgeInsets.all(12),
+        padding: const EdgeInsets.all(AppSpacing.sm2),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

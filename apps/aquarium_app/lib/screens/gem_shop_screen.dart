@@ -94,7 +94,7 @@ class _GemShopScreenState extends ConsumerState<GemShopScreen>
         backgroundColor: Colors.transparent,
         appBar: AppBar(
           backgroundColor: Colors.transparent,
-          elevation: 0,
+          elevation: AppElevation.level0,
           title: const Text(
             '💎 Gem Shop',
             style: TextStyle(
@@ -498,7 +498,7 @@ class _ShopItemCard extends ConsumerWidget {
                 borderRadius: AppRadius.largeRadius,
                 border: Border.all(
                   color: owned
-                      ? categoryColor.withOpacity(0.5)
+                      ? categoryColor.withAlpha(128)
                       : GemShopColors.glassBorder,
                   width: owned ? 2 : 1,
                 ),
@@ -551,7 +551,7 @@ class _ShopItemCard extends ConsumerWidget {
                             vertical: 6,
                           ),
                           decoration: BoxDecoration(
-                            color: categoryColor.withOpacity(0.2),
+                            color: categoryColor.withAlpha(51),
                             borderRadius: AppRadius.mediumRadius,
                           ),
                           child: Row(

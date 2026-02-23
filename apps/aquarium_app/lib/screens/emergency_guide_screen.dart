@@ -28,7 +28,7 @@ class EmergencyGuideScreen extends StatelessWidget {
             padding: AppCardPadding.standard,
             child: Row(
               children: [
-                Icon(Icons.emergency, size: 32, color: AppColors.error),
+                Icon(Icons.emergency, size: AppIconSizes.lg, color: AppColors.error),
                 const SizedBox(width: 12),
                 Expanded(
                   child: Text(
@@ -332,7 +332,7 @@ class _EmergencyCard extends StatelessWidget {
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Icon(Icons.update, size: 16, color: AppColors.info),
+                      Icon(Icons.update, size: AppIconSizes.xs, color: AppColors.info),
                       const SizedBox(width: AppSpacing.sm),
                       Expanded(
                         child: Text(

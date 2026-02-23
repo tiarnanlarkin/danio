@@ -45,17 +45,17 @@ class _DiseaseGuideScreenState extends State<DiseaseGuideScreen> {
 
           // Disclaimer
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
             child: Card(
               color: AppOverlays.warning10,
               child: Padding(
-                padding: const EdgeInsets.all(12),
+                padding: const EdgeInsets.all(AppSpacing.sm2),
                 child: Row(
                   children: [
                     Icon(
                       Icons.warning_amber,
                       color: AppColors.warning,
-                      size: 20,
+                      size: AppIconSizes.sm,
                     ),
                     const SizedBox(width: 12),
                     Expanded(
@@ -100,7 +100,7 @@ class _DiseaseCard extends StatelessWidget {
           width: 40,
           height: 40,
           decoration: BoxDecoration(
-            color: disease.severityColor.withOpacity(0.1),
+            color: disease.severityColor.withAlpha(26),
             borderRadius: AppRadius.smallRadius,
           ),
           child: Icon(disease.icon, color: disease.severityColor, size: 22),
@@ -178,7 +178,7 @@ class _DiseaseCard extends StatelessWidget {
                       children: [
                         Icon(
                           Icons.check_circle,
-                          size: 16,
+                          size: AppIconSizes.xs,
                           color: AppColors.success,
                         ),
                         const SizedBox(width: AppSpacing.sm),

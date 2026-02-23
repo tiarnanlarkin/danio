@@ -1753,7 +1753,7 @@ class _ThemedAquarium extends StatelessWidget {
                 startOffset: 0.0,
               ),
               _AnimatedSwimmingFish(
-                size: 24,
+                size: AppIconSizes.md,
                 color: theme.fish2,
                 tankWidth: width,
                 tankHeight: height,
@@ -1763,7 +1763,7 @@ class _ThemedAquarium extends StatelessWidget {
                 startOffset: 0.6,
               ),
               _AnimatedSwimmingFish(
-                size: 20,
+                size: AppIconSizes.sm,
                 color: theme.fish3,
                 tankWidth: width,
                 tankHeight: height,
@@ -2025,7 +2025,7 @@ class _AnimatedSwimmingFishState extends State<_AnimatedSwimmingFish>
 
     // Gentle vertical bobbing
     _bobAnimation = Tween<double>(begin: -1.0, end: 1.0).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeInOutSine),
+      CurvedAnimation(parent: _controller, curve: AppCurves.standardSine),
     );
 
     // Start at offset position

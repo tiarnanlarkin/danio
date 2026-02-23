@@ -13,11 +13,11 @@ import '../models/analytics.dart';
 import '../models/user_profile.dart';
 import '../models/learning.dart';
 import '../services/analytics_service.dart';
-import '../data/lesson_content.dart';
+import '../providers/lesson_provider.dart';
+import '../data/lesson_content_lazy.dart';
 import '../widgets/skeleton_loader.dart';
-import '../widgets/error_state.dart';
+import '../widgets/core/app_states.dart';
 import '../widgets/core/app_card.dart';
-// import '../services/firebase_analytics_service.dart';
 
 class AnalyticsScreen extends StatefulWidget {
   const AnalyticsScreen({super.key});
@@ -30,11 +30,18 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
   AnalyticsTimeRange _selectedRange = AnalyticsTimeRange.last30Days;
   DateTime? _customStart;
   DateTime? _customEnd;
+  late Future<AnalyticsSummary> _analyticsFuture;
 
   @override
   void initState() {
     super.initState();
-    // FirebaseAnalyticsService().logScreenView('analytics');
+    _analyticsFuture = _loadAnalytics();
+  }
+
+  void _refreshAnalytics() {
+    setState(() {
+      _analyticsFuture = _loadAnalytics();
+    });
   }
 
   @override
@@ -51,25 +58,25 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
         ],
       ),
       body: FutureBuilder<AnalyticsSummary>(
-        future: _loadAnalytics(),
+        future: _analyticsFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return _buildSkeletonLoader();
           }
 
           if (snapshot.hasError) {
-            return ErrorState(
-              message: 'Unable to load analytics data',
-              details: 'Please check your connection and try again.',
-              onRetry: () => setState(() {}), // Trigger rebuild to reload
+            return AppErrorState(
+              title: 'Unable to load analytics data',
+              message: 'Please check your connection and try again.',
+              onRetry: _refreshAnalytics,
             );
           }
 
           final summary = snapshot.data;
           if (summary == null) {
-            return const ErrorState(
-              message: 'No analytics data available',
-              details: 'Complete some lessons to see your progress analytics.',
+            return const AppErrorState(
+              title: 'No analytics data available',
+              message: 'Complete some lessons to see your progress analytics.',
             );
           }
 
@@ -107,7 +114,8 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
     // In a real app, you'd fetch the UserProfile from storage/state management
     // For now, create a sample profile
     final profile = _getSampleProfile();
-    final allPaths = LessonContent.allPaths;
+    // Lazy-load all paths for analytics (user explicitly navigated here)
+    final allPaths = await lessonContentLazy.getAllPaths();
 
     return AnalyticsService.generateSummary(
       profile: profile,
@@ -299,16 +307,16 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
     return Container(
       padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: color.withAlpha(26),
         borderRadius: AppRadius.mediumRadius,
-        border: Border.all(color: color.withOpacity(0.3)),
+        border: Border.all(color: color.withAlpha(76)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              Icon(icon, color: color, size: 24),
+              Icon(icon, color: color, size: AppIconSizes.md),
               const SizedBox(width: AppSpacing.sm),
               Expanded(
                 child: Text(
@@ -787,15 +795,15 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
             if (insight.recommendation != null) ...[
               const SizedBox(height: AppSpacing.sm),
               Container(
-                padding: const EdgeInsets.all(12),
+                padding: const EdgeInsets.all(AppSpacing.sm2),
                 decoration: BoxDecoration(
-                  color: color.withOpacity(0.1),
+                  color: color.withAlpha(26),
                   borderRadius: AppRadius.smallRadius,
-                  border: Border.all(color: color.withOpacity(0.3)),
+                  border: Border.all(color: color.withAlpha(76)),
                 ),
                 child: Row(
                   children: [
-                    Icon(Icons.lightbulb_outline, color: color, size: 20),
+                    Icon(Icons.lightbulb_outline, color: color, size: AppIconSizes.sm),
                     const SizedBox(width: AppSpacing.sm),
                     Expanded(
                       child: Text(
@@ -944,7 +952,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
           children: [
             Row(
               children: [
-                const Icon(Icons.auto_graph, color: Colors.blue, size: 24),
+                const Icon(Icons.auto_graph, color: Colors.blue, size: AppIconSizes.md),
                 const SizedBox(width: 12),
                 Expanded(
                   child: Text(

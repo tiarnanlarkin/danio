@@ -17,7 +17,11 @@ class GamificationDashboard extends ConsumerWidget {
   /// Callback when tapping the dashboard
   final VoidCallback? onTap;
 
-  const GamificationDashboard({super.key, this.showAsCard = true, this.onTap});
+  const GamificationDashboard({
+    super.key,
+    this.showAsCard = true,
+    this.onTap,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -36,7 +40,6 @@ class GamificationDashboard extends ConsumerWidget {
         final todayXp = dailyGoal?.earnedXp ?? 0;
         final goalXp = profile.dailyXpGoal;
         final progress = goalXp > 0 ? (todayXp / goalXp).clamp(0.0, 1.0) : 0.0;
-        final confidenceScore = ref.watch(tankConfidenceScoreProvider);
 
         final content = Padding(
           padding: const EdgeInsets.all(16),
@@ -89,10 +92,6 @@ class GamificationDashboard extends ConsumerWidget {
                 goal: goalXp,
                 progress: progress,
               ),
-              const SizedBox(height: AppSpacing.sm),
-
-              // Row 4: Tank Confidence Score
-              _TankConfidenceScore(score: confidenceScore),
             ],
           ),
         );
@@ -100,8 +99,10 @@ class GamificationDashboard extends ConsumerWidget {
         if (showAsCard) {
           return Card(
             margin: EdgeInsets.zero,
-            elevation: 2,
-            shape: RoundedRectangleBorder(borderRadius: AppRadius.mediumRadius),
+            elevation: AppElevation.level1,
+            shape: RoundedRectangleBorder(
+              borderRadius: AppRadius.mediumRadius,
+            ),
             child: InkWell(
               onTap: onTap,
               borderRadius: AppRadius.mediumRadius,
@@ -110,7 +111,10 @@ class GamificationDashboard extends ConsumerWidget {
           );
         }
 
-        return GestureDetector(onTap: onTap, child: content);
+        return GestureDetector(
+          onTap: onTap,
+          child: content,
+        );
       },
     );
   }
@@ -118,8 +122,10 @@ class GamificationDashboard extends ConsumerWidget {
   Widget _buildLoadingState() {
     return Card(
       margin: EdgeInsets.zero,
-      elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: AppRadius.mediumRadius),
+      elevation: AppElevation.level1,
+      shape: RoundedRectangleBorder(
+        borderRadius: AppRadius.mediumRadius,
+      ),
       child: const Padding(
         padding: EdgeInsets.all(24),
         child: Center(
@@ -136,8 +142,10 @@ class GamificationDashboard extends ConsumerWidget {
   Widget _buildErrorState() {
     return Card(
       margin: EdgeInsets.zero,
-      elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: AppRadius.mediumRadius),
+      elevation: AppElevation.level1,
+      shape: RoundedRectangleBorder(
+        borderRadius: AppRadius.mediumRadius,
+      ),
       child: const Padding(
         padding: EdgeInsets.all(16),
         child: Row(
@@ -184,9 +192,8 @@ class _StatItem extends StatelessWidget {
         Text(icon, style: const TextStyle(fontSize: 20)),
         const SizedBox(width: 6),
         Column(
-          crossAxisAlignment: alignRight
-              ? CrossAxisAlignment.end
-              : CrossAxisAlignment.start,
+          crossAxisAlignment:
+              alignRight ? CrossAxisAlignment.end : CrossAxisAlignment.start,
           children: [
             Text(
               value,
@@ -425,73 +432,6 @@ class _MiniStat extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// PHASE 3.3 — Tank Confidence Score display
-// ─────────────────────────────────────────────────────────────────────────────
-
-/// Compact inline widget that displays the tank confidence score (0–100).
-/// Uses a thin progress bar with colour gradient (red → amber → green).
-class _TankConfidenceScore extends StatelessWidget {
-  final int score;
-
-  const _TankConfidenceScore({required this.score});
-
-  Color get _barColor {
-    if (score >= 70) return AppColors.success;
-    if (score >= 40) return Colors.orange;
-    return AppColors.error;
-  }
-
-  String get _label {
-    if (score >= 80) return 'Expert 🦈';
-    if (score >= 60) return 'Confident 🐠';
-    if (score >= 40) return 'Growing 🌱';
-    if (score >= 20) return 'Learning 🐣';
-    return 'Beginner 🐡';
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final pct = score / 100.0;
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          children: [
-            const Text('🏅', style: TextStyle(fontSize: 16)),
-            const SizedBox(width: 6),
-            Text(
-              'Tank health summary',
-              style: AppTypography.labelMedium.copyWith(
-                color: AppColors.textPrimary,
-              ),
-            ),
-            const Spacer(),
-            Text(
-              '$score — $_label',
-              style: AppTypography.labelSmall.copyWith(
-                color: _barColor,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 6),
-        ClipRRect(
-          borderRadius: AppRadius.xsRadius,
-          child: LinearProgressIndicator(
-            value: pct,
-            minHeight: 6,
-            backgroundColor: AppColors.surfaceVariant,
-            valueColor: AlwaysStoppedAnimation<Color>(_barColor),
-          ),
-        ),
-      ],
     );
   }
 }

@@ -227,16 +227,16 @@ class ItemDetailPopup extends StatelessWidget {
         children: [
           // Header
           Container(
-            padding: const EdgeInsets.all(12),
+            padding: const EdgeInsets.all(AppSpacing.sm2),
             decoration: BoxDecoration(
-              color: color.withOpacity(0.1),
+              color: color.withAlpha(26),
               borderRadius: const BorderRadius.vertical(
                 top: Radius.circular(8),
               ),
             ),
             child: Row(
               children: [
-                Icon(icon, color: color, size: 20),
+                Icon(icon, color: color, size: AppIconSizes.sm),
                 const SizedBox(width: AppSpacing.sm),
                 Text(title, style: AppTypography.labelLarge),
                 const Spacer(),
@@ -255,7 +255,7 @@ class ItemDetailPopup extends StatelessWidget {
 
           // Content
           Padding(
-            padding: const EdgeInsets.all(12),
+            padding: const EdgeInsets.all(AppSpacing.sm2),
             child: Column(
               children: rows
                   .map(

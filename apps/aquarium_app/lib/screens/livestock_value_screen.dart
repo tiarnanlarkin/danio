@@ -67,7 +67,7 @@ class _LivestockValueScreenState extends ConsumerState<LivestockValueScreen> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(Icons.pets, size: 64, color: AppColors.textHint),
+                    Icon(Icons.pets, size: AppIconSizes.xxl, color: AppColors.textHint),
                     const SizedBox(height: AppSpacing.md),
                     Text(
                       'No Livestock Yet',
@@ -183,7 +183,7 @@ class _LivestockValueScreenState extends ConsumerState<LivestockValueScreen> {
                           child: Icon(
                             Icons.set_meal,
                             color: AppColors.primary,
-                            size: 20,
+                            size: AppIconSizes.sm,
                           ),
                         ),
                         const SizedBox(width: 12),

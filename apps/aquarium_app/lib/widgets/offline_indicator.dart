@@ -35,34 +35,24 @@ class OfflineIndicator extends ConsumerWidget {
 
     return Container(
       width: double.infinity,
-      margin: const EdgeInsets.fromLTRB(
-        AppSpacing.sm,
-        AppSpacing.xs,
-        AppSpacing.sm,
-        0,
-      ),
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.md,
-        vertical: AppSpacing.sm,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
-        color: AppColors.warningAlpha20,
-        borderRadius: AppRadius.mediumRadius,
-        border: Border.all(color: AppColors.warningAlpha40, width: 1),
+        color: Colors.orange.shade100,
+        border: Border(
+          bottom: BorderSide(color: Colors.orange.shade300, width: 1),
+        ),
       ),
       child: Row(
         children: [
-          const Icon(
-            Icons.cloud_off,
-            color: AppColors.warning,
-            size: AppIconSizes.sm,
-          ),
-          const SizedBox(width: AppSpacing.sm),
+          Icon(Icons.wifi_off, color: Colors.orange.shade900, size: AppIconSizes.sm),
+          const SizedBox(width: 12),
           Expanded(
             child: Text(
-              "Offline mode — logs save locally and sync when you're back online",
-              style: AppTypography.labelMedium.copyWith(
-                color: AppColors.textPrimary,
+              "You're offline - some features may not work",
+              style: TextStyle(
+                color: Colors.orange.shade900,
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
               ),
             ),
           ),
@@ -85,23 +75,23 @@ class OfflineIndicatorCompact extends ConsumerWidget {
     }
 
     return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.sm,
-        vertical: AppSpacing.xs,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
-        color: AppColors.warningAlpha20,
+        color: Colors.orange.shade100,
         borderRadius: AppRadius.mediumRadius,
-        border: Border.all(color: AppColors.warningAlpha30),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Icon(Icons.wifi_off, color: AppColors.warning, size: 14),
+          Icon(Icons.wifi_off, color: Colors.orange.shade900, size: 14),
           const SizedBox(width: AppSpacing.xs),
           Text(
             'Offline',
-            style: AppTypography.labelSmall.copyWith(color: AppColors.warning),
+            style: TextStyle(
+              color: Colors.orange.shade900,
+              fontSize: 12,
+              fontWeight: FontWeight.w500,
+            ),
           ),
         ],
       ),

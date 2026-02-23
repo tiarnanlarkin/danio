@@ -93,13 +93,13 @@ class _InteractiveObjectState extends State<InteractiveObject>
       end: 1.0,
     ).animate(CurvedAnimation(
       parent: _pulseController,
-      curve: Curves.easeInOut,
+      curve: AppCurves.standard,
     ));
 
     // Press animation (on tap)
     _pressController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 100),
+      duration: AppDurations.short,
     );
 
     _scaleAnimation = Tween<double>(
@@ -107,7 +107,7 @@ class _InteractiveObjectState extends State<InteractiveObject>
       end: 0.9,
     ).animate(CurvedAnimation(
       parent: _pressController,
-      curve: Curves.easeOut,
+      curve: AppCurves.standardDecelerate,
     ));
 
     // Start pulsing for new users, or with subtle animation for others
@@ -211,7 +211,7 @@ class _InteractiveObjectState extends State<InteractiveObject>
 
   Widget _buildObjectWithAnimation() {
     final glowColor = widget.glowColor ?? 
-        widget.iconColor?.withOpacity(0.5) ?? 
+        widget.iconColor?.withAlpha(128) ?? 
         AppOverlays.white30;
 
     final glowIntensity = widget.isNewUser ? 0.6 : 0.3;
@@ -263,7 +263,7 @@ class _InteractiveObjectState extends State<InteractiveObject>
 
   Widget _buildTooltip() {
     return AnimatedOpacity(
-      duration: const Duration(milliseconds: 200),
+      duration: AppDurations.medium2,
       opacity: _showTooltip || widget.showLabel ? 1.0 : 0.0,
       child: ClipRRect(
         borderRadius: AppRadius.smallRadius,

@@ -32,7 +32,7 @@ class SyncIndicator extends ConsumerWidget {
         );
       },
       child: AnimatedContainer(
-        duration: const Duration(milliseconds: 300),
+        duration: AppDurations.medium4,
         width: double.infinity,
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         decoration: BoxDecoration(
@@ -83,7 +83,7 @@ class SyncIndicator extends ConsumerWidget {
                     : isSyncing
                     ? Colors.blue.shade900
                     : Colors.grey.shade700,
-                size: 20,
+                size: AppIconSizes.sm,
               ),
             const SizedBox(width: 12),
             Expanded(
@@ -110,7 +110,7 @@ class SyncIndicator extends ConsumerWidget {
                 child: const Text('Retry'),
               )
             else
-              Icon(Icons.info_outline, size: 16, color: Colors.grey.shade600),
+              Icon(Icons.info_outline, size: AppIconSizes.xs, color: Colors.grey.shade600),
           ],
         ),
       ),

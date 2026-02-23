@@ -191,7 +191,7 @@ class WishlistScreen extends ConsumerWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Padding(
-              padding: const EdgeInsets.all(20),
+              padding: const EdgeInsets.all(AppSpacing.lg2),
               child: Row(
                 children: [
                   const Icon(Icons.check_circle, color: AppColors.success),
@@ -261,7 +261,7 @@ class _WishlistItemCard extends StatelessWidget{
                 width: 48,
                 height: 48,
                 decoration: BoxDecoration(
-                  color: accentColor.withOpacity(0.15),
+                  color: accentColor.withAlpha(38),
                   borderRadius: AppRadius.mediumRadius,
                 ),
                 child: Icon(_getCategoryIcon(), color: accentColor),

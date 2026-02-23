@@ -1,3 +1,4 @@
+import '../../theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
@@ -63,7 +64,7 @@ class SwayingPlant extends StatelessWidget {
           begin: -rotation,
           end: rotation,
           duration: duration,
-          curve: Curves.easeInOut,
+          curve: AppCurves.standard,
           alignment: Alignment.bottomCenter,
         ),
       ],

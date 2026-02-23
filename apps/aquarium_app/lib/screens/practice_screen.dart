@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/learning.dart';
 import '../models/lesson_progress.dart';
-import '../data/lesson_content.dart';
+import '../providers/lesson_provider.dart';
 import '../providers/user_profile_provider.dart';
 import '../services/xp_animation_service.dart';
 import '../theme/app_theme.dart';
@@ -10,11 +10,45 @@ import '../utils/app_feedback.dart';
 import 'lesson_screen.dart';
 
 /// Practice screen showing lessons that need review based on spaced repetition
-class PracticeScreen extends ConsumerWidget {
+class PracticeScreen extends ConsumerStatefulWidget {
   const PracticeScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<PracticeScreen> createState() => _PracticeScreenState();
+}
+
+class _PracticeScreenState extends ConsumerState<PracticeScreen> {
+  bool _pathsLoaded = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadRequiredPaths();
+  }
+
+  /// Ensure all paths containing weak lessons are loaded in the lesson provider.
+  Future<void> _loadRequiredPaths() async {
+    final weakLessons = ref
+        .read(userProfileProvider.notifier)
+        .getWeakestLessons();
+
+    final neededPathIds = <String>{};
+    for (final progress in weakLessons) {
+      for (final meta in LessonProvider.allPathMetadata) {
+        if (meta.lessonIds.contains(progress.lessonId)) {
+          neededPathIds.add(meta.id);
+          break;
+        }
+      }
+    }
+
+    final notifier = ref.read(lessonProvider.notifier);
+    await notifier.loadPaths(neededPathIds.toList());
+    if (mounted) setState(() => _pathsLoaded = true);
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final weakLessons = ref
         .read(userProfileProvider.notifier)
         .getWeakestLessons();
@@ -23,7 +57,9 @@ class PracticeScreen extends ConsumerWidget {
       appBar: AppBar(title: const Text('Practice')),
       body: weakLessons.isEmpty
           ? _buildEmptyState(context)
-          : _buildPracticeList(context, ref, weakLessons),
+          : !_pathsLoaded
+              ? const Center(child: CircularProgressIndicator())
+              : _buildPracticeList(context, ref, weakLessons),
     );
   }
 
@@ -78,7 +114,7 @@ class PracticeScreen extends ConsumerWidget {
     final totalItems = 5 + weakLessons.length;
 
     return ListView.builder(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(AppSpacing.lg2),
       itemCount: totalItems,
       itemBuilder: (context, index) {
         // Header
@@ -185,10 +221,10 @@ class PracticeScreen extends ConsumerWidget {
         // Lesson cards
         final lessonIndex = index - 5;
         final progress = weakLessons[lessonIndex];
-        final lesson = _findLessonById(progress.lessonId);
+        final lesson = _findLessonById(progress.lessonId, ref);
         if (lesson == null) return const SizedBox.shrink();
 
-        final path = _findPathForLesson(lesson.id);
+        final path = _findPathForLesson(lesson.id, ref);
         final strength = progress.currentStrength;
 
         return Padding(
@@ -383,17 +419,17 @@ class PracticeScreen extends ConsumerWidget {
     return '$months month${months == 1 ? '' : 's'} ago';
   }
 
-  Lesson? _findLessonById(String lessonId) {
-    for (final path in LessonContent.allPaths) {
-      for (final lesson in path.lessons) {
-        if (lesson.id == lessonId) return lesson;
-      }
-    }
-    return null;
+  /// Find a lesson by ID from already-loaded paths in the lesson provider.
+  /// Practice screen is reached after learn_screen, so paths with weak lessons
+  /// should already be loaded.
+  Lesson? _findLessonById(String lessonId, WidgetRef ref) {
+    return ref.read(lessonProvider).getLesson(lessonId);
   }
 
-  LearningPath? _findPathForLesson(String lessonId) {
-    for (final path in LessonContent.allPaths) {
+  /// Find the path containing a lesson from already-loaded paths.
+  LearningPath? _findPathForLesson(String lessonId, WidgetRef ref) {
+    final state = ref.read(lessonProvider);
+    for (final path in state.loadedPaths.values) {
       if (path.lessons.any((l) => l.id == lessonId)) {
         return path;
       }
@@ -447,7 +483,7 @@ class _PracticeLessonScreenState extends ConsumerState<PracticeLessonScreen> {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Icon(Icons.star, size: 16, color: AppColors.accent),
+                    const Icon(Icons.star, size: AppIconSizes.xs, color: AppColors.accent),
                     const SizedBox(width: AppSpacing.xs),
                     Text(
                       widget.isReview
@@ -474,12 +510,12 @@ class _PracticeLessonScreenState extends ConsumerState<PracticeLessonScreen> {
         if (widget.isReview)
           Container(
             width: double.infinity,
-            padding: const EdgeInsets.all(12),
+            padding: const EdgeInsets.all(AppSpacing.sm2),
             color: AppOverlays.info10,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(Icons.refresh, size: 16, color: AppColors.info),
+                Icon(Icons.refresh, size: AppIconSizes.xs, color: AppColors.info),
                 const SizedBox(width: AppSpacing.sm),
                 Text(
                   'Review Mode - Half XP',
@@ -508,7 +544,7 @@ class _PracticeLessonScreenState extends ConsumerState<PracticeLessonScreen> {
               items.add(_LessonViewItem.spacer(40));
 
               return ListView.builder(
-                padding: const EdgeInsets.all(20),
+                padding: const EdgeInsets.all(AppSpacing.lg2),
                 itemCount: items.length,
                 itemBuilder: (context, index) {
                   final item = items[index];
@@ -518,7 +554,7 @@ class _PracticeLessonScreenState extends ConsumerState<PracticeLessonScreen> {
                   } else if (item.isTimeInfo) {
                     return Row(
                       children: [
-                        Icon(Icons.timer, size: 16, color: AppColors.textSecondary),
+                        Icon(Icons.timer, size: AppIconSizes.xs, color: AppColors.textSecondary),
                         const SizedBox(width: AppSpacing.xs),
                         Text(
                           '${item.estimatedMinutes} min read',
@@ -544,7 +580,7 @@ class _PracticeLessonScreenState extends ConsumerState<PracticeLessonScreen> {
 
         // Bottom action
         Container(
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.all(AppSpacing.lg2),
           decoration: BoxDecoration(
             color: Theme.of(context).scaffoldBackgroundColor,
             boxShadow: [
@@ -604,7 +640,7 @@ class _PracticeLessonScreenState extends ConsumerState<PracticeLessonScreen> {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Icon(Icons.lightbulb, color: AppColors.primary, size: 24),
+              Icon(Icons.lightbulb, color: AppColors.primary, size: AppIconSizes.md),
               const SizedBox(width: 12),
               Expanded(
                 child: Text(
@@ -628,7 +664,7 @@ class _PracticeLessonScreenState extends ConsumerState<PracticeLessonScreen> {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Icon(Icons.tips_and_updates, color: AppColors.success, size: 24),
+              Icon(Icons.tips_and_updates, color: AppColors.success, size: AppIconSizes.md),
               const SizedBox(width: 12),
               Expanded(
                 child: Column(
@@ -659,7 +695,7 @@ class _PracticeLessonScreenState extends ConsumerState<PracticeLessonScreen> {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Icon(Icons.warning_amber, color: AppColors.warning, size: 24),
+              Icon(Icons.warning_amber, color: AppColors.warning, size: AppIconSizes.md),
               const SizedBox(width: 12),
               Expanded(
                 child: Column(
@@ -746,7 +782,7 @@ class _PracticeLessonScreenState extends ConsumerState<PracticeLessonScreen> {
             borderRadius: AppRadius.mediumRadius,
           ),
           child: Center(
-            child: Icon(Icons.image, size: 48, color: AppColors.textHint),
+            child: Icon(Icons.image, size: AppIconSizes.xl, color: AppColors.textHint),
           ),
         );
     }

@@ -19,7 +19,7 @@ class SoftBlob extends StatelessWidget {
   Widget build(BuildContext context) {
     return CustomPaint(
       size: Size(size, size),
-      painter: _BlobPainter(color: color.withOpacity(0.15), seed: seed),
+      painter: _BlobPainter(color: color.withAlpha(38), seed: seed),
     );
   }
 }
@@ -91,7 +91,7 @@ class PlantDecoration extends StatelessWidget {
       alignment: Alignment.center,
       child: CustomPaint(
         size: Size(height * 0.4, height),
-        painter: _PlantPainter(color: color.withOpacity(0.2)),
+        painter: _PlantPainter(color: color.withAlpha(51)),
       ),
     );
   }
@@ -495,12 +495,12 @@ class StatBubble extends StatelessWidget {
       width: size,
       height: size,
       decoration: BoxDecoration(
-        color: color.withOpacity(0.15),
+        color: color.withAlpha(38),
         shape: BoxShape.circle,
-        border: Border.all(color: color.withOpacity(0.3), width: 2),
+        border: Border.all(color: color.withAlpha(76), width: 2),
         boxShadow: [
           BoxShadow(
-            color: color.withOpacity(0.1),
+            color: color.withAlpha(26),
             blurRadius: 12,
             offset: const Offset(0, 4),
           ),
@@ -521,7 +521,7 @@ class StatBubble extends StatelessWidget {
             label,
             style: TextStyle(
               fontSize: size * 0.12,
-              color: color.withOpacity(0.8),
+              color: color.withAlpha(204),
             ),
           ),
         ],
@@ -545,7 +545,7 @@ class WaterWave extends StatelessWidget {
   Widget build(BuildContext context) {
     return CustomPaint(
       size: Size(double.infinity, height),
-      painter: _WavePainter(color: color.withOpacity(0.2)),
+      painter: _WavePainter(color: color.withAlpha(51)),
     );
   }
 }

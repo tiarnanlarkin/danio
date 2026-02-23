@@ -15,7 +15,7 @@ class TaskPreview extends StatelessWidget {
   Widget build(BuildContext context) {
     if (tasks.isEmpty) {
       return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
+        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
         child: AppCard(
           padding: AppCardPadding.spacious,
           child: Center(
@@ -29,7 +29,7 @@ class TaskPreview extends StatelessWidget {
     }
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
       child: AppCard(
         padding: AppCardPadding.none,
         child: Column(

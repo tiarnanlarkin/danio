@@ -150,7 +150,7 @@ class _ExperienceAssessmentScreenState
       _answers[_currentQuestion] = key;
     });
     // Auto-advance after selection (with small delay for visual feedback)
-    Future.delayed(const Duration(milliseconds: 300), () {
+    Future.delayed(AppDurations.medium4, () {
       if (mounted) _nextQuestion();
     });
   }
@@ -228,8 +228,8 @@ class _ExperienceAssessmentScreenState
                                     onTap: () => _selectAnswer(entry.key),
                                     borderRadius: AppRadius.mediumRadius,
                                     child: AnimatedContainer(
-                                      duration: const Duration(milliseconds: 200),
-                                      padding: const EdgeInsets.all(20),
+                                      duration: AppDurations.medium2,
+                                      padding: const EdgeInsets.all(AppSpacing.lg2),
                                       decoration: BoxDecoration(
                                         border: Border.all(
                                           color: isSelected
@@ -346,7 +346,7 @@ class _ExperienceAssessmentScreenState
                     children: [
                       Icon(
                         Icons.school_rounded,
-                        size: 20,
+                        size: AppIconSizes.sm,
                         color: AppColors.primary,
                       ),
                       const SizedBox(width: 12),

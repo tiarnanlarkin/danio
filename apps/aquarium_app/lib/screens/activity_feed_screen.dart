@@ -9,7 +9,7 @@ import '../providers/friends_provider.dart';
 import '../theme/app_theme.dart';
 import '../widgets/core/bubble_loader.dart';
 import '../widgets/empty_state.dart';
-import '../widgets/error_state.dart';
+import '../widgets/core/app_states.dart';
 import 'friend_comparison_screen.dart';
 import '../widgets/mascot/mascot_widgets.dart';
 
@@ -56,7 +56,7 @@ class _ActivityFeedScreenState extends ConsumerState<ActivityFeedScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Activity Feed'),
-        elevation: 0,
+        elevation: AppElevation.level0,
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),
@@ -99,8 +99,8 @@ class _ActivityFeedScreenState extends ConsumerState<ActivityFeedScreen> {
           Expanded(
             child: activitiesAsync.when(
               loading: () => const Center(child: BubbleLoader()),
-              error: (e, st) => ErrorState(
-                message: 'Error loading activities',
+              error: (e, st) => AppErrorState(
+                title: 'Error loading activities',
                 onRetry: () =>
                     ref.read(friendActivitiesProvider.notifier).reload(),
               ),
@@ -165,7 +165,7 @@ class _FriendFilterBar extends StatelessWidget {
       ),
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.symmetric(horizontal: 16),
+        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
         itemCount: friends.length + 1, // +1 for "All" chip
         itemBuilder: (context, index) {
           if (index == 0) {
@@ -177,8 +177,8 @@ class _FriendFilterBar extends StatelessWidget {
                 selected: selectedFriendId == null,
                 onSelected: (_) => onFriendSelected(null),
                 avatar: selectedFriendId == null
-                    ? const Icon(Icons.check, size: 16)
-                    : const Icon(Icons.people, size: 16),
+                    ? const Icon(Icons.check, size: AppIconSizes.xs)
+                    : const Icon(Icons.people, size: AppIconSizes.xs),
               ),
             );
           } else {
@@ -319,7 +319,7 @@ class _ActivityTile extends ConsumerWidget {
         },
         borderRadius: AppRadius.mediumRadius,
         child: Padding(
-          padding: const EdgeInsets.all(12),
+          padding: const EdgeInsets.all(AppSpacing.sm2),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

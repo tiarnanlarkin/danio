@@ -1,3 +1,4 @@
+import '../../theme/app_theme.dart';
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
@@ -240,7 +241,7 @@ class ShimmerEffect extends StatefulWidget {
     required this.child,
     this.isActive = true,
     this.shimmerColor = Colors.white,
-    this.duration = const Duration(milliseconds: 1500),
+    this.duration = AppDurations.celebration,
     this.angle = 0.4, // radians
   });
 

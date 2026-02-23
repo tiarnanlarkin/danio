@@ -31,7 +31,7 @@ class DifficultyBadge extends StatelessWidget {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 12 * size, vertical: 6 * size),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.2),
+        color: color.withAlpha(51),
         borderRadius: BorderRadius.circular(20 * size),
         border: Border.all(color: color, width: 2),
       ),
@@ -134,7 +134,7 @@ class PerformanceTrendWidget extends StatelessWidget {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: AppSpacing.sm + 2, vertical: AppSpacing.xs + 1),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: color.withAlpha(26),
         borderRadius: AppRadius.mediumRadius,
         border: Border.all(color: color, width: 1.5),
       ),
@@ -202,19 +202,19 @@ class _SkillLevelUpAnimationState extends State<SkillLevelUpAnimation>
     _scaleAnimation = Tween<double>(begin: 0.5, end: 1.2).animate(
       CurvedAnimation(
         parent: _controller,
-        curve: const Interval(0.0, 0.5, curve: Curves.elasticOut),
+        curve: const Interval(0.0, 0.5, curve: AppCurves.elastic),
       ),
     );
 
     _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(
         parent: _controller,
-        curve: const Interval(0.0, 0.3, curve: Curves.easeIn),
+        curve: const Interval(0.0, 0.3, curve: AppCurves.standardAccelerate),
       ),
     );
 
     _controller.forward().then((_) {
-      Future.delayed(const Duration(milliseconds: 500), () {
+      Future.delayed(AppDurations.long2, () {
         if (mounted) {
           widget.onComplete();
         }
@@ -305,7 +305,7 @@ class DifficultyChangeNotification extends StatelessWidget {
     return Container(
       padding: EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: color.withAlpha(26),
         borderRadius: AppRadius.mediumRadius,
         border: Border.all(color: color, width: 2),
       ),
@@ -321,7 +321,7 @@ class DifficultyChangeNotification extends StatelessWidget {
                   children: [
                     Text(oldLevel.emoji, style: const TextStyle(fontSize: 16)),
                     const SizedBox(width: AppSpacing.xs),
-                    Icon(Icons.arrow_forward, size: 16, color: color),
+                    Icon(Icons.arrow_forward, size: AppIconSizes.xs, color: color),
                     const SizedBox(width: AppSpacing.xs),
                     Text(newLevel.emoji, style: const TextStyle(fontSize: 16)),
                     const SizedBox(width: AppSpacing.sm),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
 import 'mascot/mascot_widgets.dart';
 
+/// Empty state widgets with mascot support
 /// Beautiful empty state widget for consistent UX
 ///
 /// Usage:
@@ -101,12 +102,12 @@ class _EmptyStateState extends State<EmptyState>
     _fadeAnimation = Tween<double>(
       begin: 0.0,
       end: 1.0,
-    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeIn));
+    ).animate(CurvedAnimation(parent: _controller, curve: AppCurves.standardAccelerate));
 
     _scaleAnimation = Tween<double>(
       begin: 0.8,
       end: 1.0,
-    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOutBack));
+    ).animate(CurvedAnimation(parent: _controller, curve: AppCurves.standardDecelerate));
 
     _controller.forward();
   }
@@ -203,7 +204,7 @@ class _EmptyStateState extends State<EmptyState>
                           children: [
                             Icon(
                               Icons.lightbulb_outline,
-                              size: 16,
+                              size: AppIconSizes.xs,
                               color: AppColors.info,
                             ),
                             const SizedBox(width: AppSpacing.sm),
@@ -301,7 +302,7 @@ class CompactEmptyState extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 48, color: AppColors.textHint),
+          Icon(icon, size: AppIconSizes.xl, color: AppColors.textHint),
           const SizedBox(height: AppSpacing.md),
           Text(
             message,

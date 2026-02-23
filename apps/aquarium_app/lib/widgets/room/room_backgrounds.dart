@@ -826,7 +826,7 @@ class _AnimatedDustMote extends StatelessWidget {
                   particle.driftY * 30,
                 ),
                 duration: Duration(seconds: 6 + (particle.speed * 4).toInt()),
-                curve: Curves.easeInOut,
+                curve: AppCurves.standard,
               )
               .then()
               .move(
@@ -836,7 +836,7 @@ class _AnimatedDustMote extends StatelessWidget {
                 ),
                 end: Offset.zero,
                 duration: Duration(seconds: 6 + (particle.speed * 4).toInt()),
-                curve: Curves.easeInOut,
+                curve: AppCurves.standard,
               )
               .fadeIn(duration: const Duration(seconds: 2))
               .then(delay: Duration(seconds: 8 + (particle.speed * 4).toInt()))
@@ -928,7 +928,7 @@ class _AnimatedSpark extends StatelessWidget {
               .scale(
                 begin: const Offset(0.5, 0.5),
                 end: const Offset(1.0, 1.0),
-                duration: const Duration(milliseconds: 200),
+                duration: AppDurations.medium2,
               )
               .then()
               .fadeOut(duration: const Duration(milliseconds: 800))

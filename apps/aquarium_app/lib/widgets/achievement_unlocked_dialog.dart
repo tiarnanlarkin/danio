@@ -69,12 +69,12 @@ class _AchievementUnlockedDialogState extends State<AchievementUnlockedDialog>
 
     _scaleAnimation = CurvedAnimation(
       parent: _animationController,
-      curve: Curves.elasticOut,
+      curve: AppCurves.elastic,
     );
 
     _fadeAnimation = CurvedAnimation(
       parent: _animationController,
-      curve: Curves.easeIn,
+      curve: AppCurves.standardAccelerate,
     );
 
     // Start animations
@@ -117,14 +117,14 @@ class _AchievementUnlockedDialogState extends State<AchievementUnlockedDialog>
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                         colors: [
-                          rarityColor.withOpacity(0.95),
-                          rarityColor.withOpacity(0.85),
+                          rarityColor.withAlpha(242),
+                          rarityColor.withAlpha(217),
                         ],
                       ),
                       borderRadius: AppRadius.xlRadius,
                       boxShadow: [
                         BoxShadow(
-                          color: rarityColor.withOpacity(0.5),
+                          color: rarityColor.withAlpha(128),
                           blurRadius: 40,
                           spreadRadius: 10,
                         ),
@@ -237,7 +237,7 @@ class _AchievementUnlockedDialogState extends State<AchievementUnlockedDialog>
                         // Rewards section
                         Container(
                           margin: const EdgeInsets.symmetric(horizontal: 24),
-                          padding: const EdgeInsets.all(20),
+                          padding: const EdgeInsets.all(AppSpacing.lg2),
                           decoration: BoxDecoration(
                             color: AppOverlays.white20,
                             borderRadius: AppRadius.largeRadius,
@@ -298,7 +298,7 @@ class _AchievementUnlockedDialogState extends State<AchievementUnlockedDialog>
                                 shape: RoundedRectangleBorder(
                                   borderRadius: AppRadius.mediumRadius,
                                 ),
-                                elevation: 8,
+                                elevation: AppElevation.level3,
                               ),
                               child: const Text(
                                 'Awesome!',

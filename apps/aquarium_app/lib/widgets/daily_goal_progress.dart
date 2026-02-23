@@ -247,7 +247,7 @@ class DailyGoalCard extends ConsumerWidget {
                   color: dailyGoal.isCompleted
                       ? AppColors.success
                       : AppColors.primary,
-                  size: 24,
+                  size: AppIconSizes.md,
                 ),
               ],
             ),

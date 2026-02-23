@@ -13,7 +13,7 @@ class EquipmentPreview extends StatelessWidget {
   Widget build(BuildContext context) {
     if (equipment.isEmpty) {
       return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
+        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
         child: AppCard(
           padding: AppCardPadding.spacious,
           child: CompactEmptyState(
@@ -28,7 +28,7 @@ class EquipmentPreview extends StatelessWidget {
       height: 100,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.symmetric(horizontal: 16),
+        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
         itemCount: equipment.length,
         itemBuilder: (context, index) {
           final e = equipment[index];
@@ -42,7 +42,7 @@ class EquipmentPreview extends StatelessWidget {
               margin: EdgeInsets.zero,
               color: isOverdue ? AppOverlays.warning10 : null,
               child: Padding(
-                padding: const EdgeInsets.all(12),
+                padding: const EdgeInsets.all(AppSpacing.sm2),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [

@@ -8,7 +8,6 @@ import '../utils/app_feedback.dart';
 import '../widgets/empty_state.dart';
 import '../widgets/core/bubble_loader.dart';
 import '../widgets/mascot/mascot_widgets.dart';
-// import '../services/firebase_analytics_service.dart';
 
 class RemindersScreen extends ConsumerStatefulWidget {
   const RemindersScreen({super.key});
@@ -24,7 +23,6 @@ class _RemindersScreenState extends ConsumerState<RemindersScreen> {
   @override
   void initState() {
     super.initState();
-    // FirebaseAnalyticsService().logScreenView('reminders');
     _loadReminders();
   }
 
@@ -336,7 +334,7 @@ class _EmptyState extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.notifications_none, size: 64, color: AppColors.textHint),
+            Icon(Icons.notifications_none, size: AppIconSizes.xxl, color: AppColors.textHint),
             const SizedBox(height: AppSpacing.md),
             Text('No Reminders Yet', style: AppTypography.headlineSmall),
             const SizedBox(height: AppSpacing.sm),
@@ -380,7 +378,7 @@ class _SectionHeader extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
             decoration: BoxDecoration(
-              color: (color ?? AppColors.primary).withOpacity(0.1),
+              color: (color ?? AppColors.primary).withAlpha(26),
               borderRadius: AppRadius.mediumRadius,
             ),
             child: Text(
@@ -470,13 +468,13 @@ class _ReminderTile extends StatelessWidget {
             height: 40,
             decoration: BoxDecoration(
               color: (isOverdue ? AppColors.error : AppColors.primary)
-                  .withOpacity(0.1),
+                  .withAlpha(26),
               borderRadius: AppRadius.smallRadius,
             ),
             child: Icon(
               _categoryIcon(),
               color: isOverdue ? AppColors.error : AppColors.primary,
-              size: 20,
+              size: AppIconSizes.sm,
             ),
           ),
           title: Text(reminder.title, style: AppTypography.labelLarge),
@@ -558,37 +556,38 @@ class _AddReminderSheetState extends State<_AddReminderSheet> {
   final _frequencies = ['daily', 'weekly', 'biweekly', 'monthly'];
 
   void _applyPreset(String preset) {
-    switch (preset) {
-      case 'water_change':
-        _titleController.text = 'Weekly water change';
-        _category = 'Water Change';
-        _isRecurring = true;
-        _frequency = 'weekly';
-        _notesController.text = 'Change 25-30% of tank water';
-        break;
-      case 'filter':
-        _titleController.text = 'Clean filter';
-        _category = 'Filter';
-        _isRecurring = true;
-        _frequency = 'monthly';
-        _notesController.text = 'Rinse filter media in old tank water';
-        break;
-      case 'test':
-        _titleController.text = 'Test water parameters';
-        _category = 'Testing';
-        _isRecurring = true;
-        _frequency = 'weekly';
-        _notesController.text = 'Check ammonia, nitrite, nitrate, pH';
-        break;
-      case 'feed':
-        _titleController.text = 'Daily feeding';
-        _category = 'Feeding';
-        _isRecurring = true;
-        _frequency = 'daily';
-        _dueTime = const TimeOfDay(hour: 9, minute: 0);
-        break;
-    }
-    setState(() {});
+    setState(() {
+      switch (preset) {
+        case 'water_change':
+          _titleController.text = 'Weekly water change';
+          _category = 'Water Change';
+          _isRecurring = true;
+          _frequency = 'weekly';
+          _notesController.text = 'Change 25-30% of tank water';
+          break;
+        case 'filter':
+          _titleController.text = 'Clean filter';
+          _category = 'Filter';
+          _isRecurring = true;
+          _frequency = 'monthly';
+          _notesController.text = 'Rinse filter media in old tank water';
+          break;
+        case 'test':
+          _titleController.text = 'Test water parameters';
+          _category = 'Testing';
+          _isRecurring = true;
+          _frequency = 'weekly';
+          _notesController.text = 'Check ammonia, nitrite, nitrate, pH';
+          break;
+        case 'feed':
+          _titleController.text = 'Daily feeding';
+          _category = 'Feeding';
+          _isRecurring = true;
+          _frequency = 'daily';
+          _dueTime = const TimeOfDay(hour: 9, minute: 0);
+          break;
+      }
+    });
   }
 
   @override
@@ -800,7 +799,7 @@ class _PresetChip extends StatelessWidget {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, size: 16, color: AppColors.primary),
+            Icon(icon, size: AppIconSizes.xs, color: AppColors.primary),
             const SizedBox(width: 6),
             Text(
               label,

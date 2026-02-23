@@ -40,7 +40,7 @@ class FishLoader extends StatelessWidget {
     Color? color,
   }) : this(
     key: key,
-    size: 24,
+    size: AppIconSizes.md,
     color: color,
     showBubbles: false,
   );
@@ -52,7 +52,7 @@ class FishLoader extends StatelessWidget {
     Color? color,
   }) : this(
     key: key,
-    size: 64,
+    size: AppIconSizes.xxl,
     showBubbles: true,
     message: message,
     color: color,
@@ -132,7 +132,7 @@ class _SwimmingFish extends StatelessWidget {
           begin: -size * 0.5,
           end: size * 0.5,
           duration: 1500.ms,
-          curve: Curves.easeInOut,
+          curve: AppCurves.standard,
         )
         // Subtle wave motion (up/down)
         .then()
@@ -140,14 +140,14 @@ class _SwimmingFish extends StatelessWidget {
           begin: 0,
           end: -size * 0.15,
           duration: 750.ms,
-          curve: Curves.easeInOut,
+          curve: AppCurves.standard,
         )
         .then()
         .moveY(
           begin: -size * 0.15,
           end: 0,
           duration: 750.ms,
-          curve: Curves.easeInOut,
+          curve: AppCurves.standard,
         )
         // Flip when changing direction
         .animate(onPlay: (controller) => controller.repeat())
@@ -186,9 +186,9 @@ class _SmallBubble extends StatelessWidget {
       height: 6,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        color: color.withOpacity(0.4),
+        color: color.withAlpha(102),
         border: Border.all(
-          color: color.withOpacity(0.6),
+          color: color.withAlpha(153),
           width: 0.5,
         ),
       ),
@@ -203,7 +203,7 @@ class _SmallBubble extends StatelessWidget {
           begin: 0,
           end: -20,
           duration: 1000.ms,
-          curve: Curves.easeOut,
+          curve: AppCurves.standardDecelerate,
         )
         .fadeOut(
           begin: 0.6,

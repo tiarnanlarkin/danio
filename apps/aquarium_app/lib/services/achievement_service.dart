@@ -6,7 +6,7 @@ import 'package:flutter/foundation.dart';
 import '../models/achievements.dart';
 import '../models/user_profile.dart';
 import '../data/achievements.dart';
-import '../data/lesson_content.dart';
+import '../providers/lesson_provider.dart';
 
 /// Statistics for achievement checking
 class AchievementStats {
@@ -277,10 +277,9 @@ class AchievementService {
         break;
 
       case 'teachers_pet':
-        // Count all lessons across all paths
-        final allLessons = LessonContent.allPaths
-            .expand((path) => path.lessons)
-            .map((l) => l.id)
+        // Count all lessons across all paths using lightweight metadata
+        final allLessons = LessonProvider.allPathMetadata
+            .expand((meta) => meta.lessonIds)
             .toSet();
         shouldUnlock =
             stats.completedLessonIds.length >= allLessons.length &&

@@ -41,7 +41,7 @@ class NotificationSettingsScreen extends ConsumerWidget {
                     children: [
                       const Icon(
                         Icons.notifications_active,
-                        size: 48,
+                        size: AppIconSizes.xl,
                         color: AppColors.primary,
                       ),
                       const SizedBox(height: AppSpacing.sm),
@@ -92,19 +92,6 @@ class NotificationSettingsScreen extends ConsumerWidget {
                           );
                         }
                         return;
-                      }
-
-                      // Advisory: inform user if exact alarms are unavailable
-                      // (Android 12+ requires explicit user approval in Settings →
-                      // Apps → Special app access → Alarms & reminders).
-                      // The app will still work with slightly imprecise timings.
-                      final canExact = await service.canScheduleExactAlarms();
-                      if (!canExact && context.mounted) {
-                        AppFeedback.showInfo(
-                          context,
-                          'Reminders will fire at approximately the chosen time. '
-                          'For exact timing, enable "Alarms & reminders" in app settings.',
-                        );
                       }
                     }
 
@@ -271,7 +258,7 @@ class NotificationSettingsScreen extends ConsumerWidget {
               // Test notification button
               if (enabledIndex == 7) {
                 return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
                   child: OutlinedButton.icon(
                     icon: const Icon(Icons.send),
                     label: const Text('Send Test Notification'),

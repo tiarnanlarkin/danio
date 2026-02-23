@@ -37,7 +37,7 @@ class PlacementResultScreen extends ConsumerWidget {
 
             // Per-path recommendations
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
+              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -150,16 +150,16 @@ class PlacementResultScreen extends ConsumerWidget {
       padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [color.withOpacity(0.1), color.withOpacity(0.05)],
+          colors: [color.withAlpha(26), color.withAlpha(13)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: AppRadius.mediumRadius,
-        border: Border.all(color: color.withOpacity(0.3)),
+        border: Border.all(color: color.withAlpha(76)),
       ),
       child: Column(
         children: [
-          Icon(icon, size: 64, color: color),
+          Icon(icon, size: AppIconSizes.xxl, color: color),
           const SizedBox(height: AppSpacing.md),
           Text(
             message,
@@ -180,7 +180,7 @@ class PlacementResultScreen extends ConsumerWidget {
               'Recommended Level: ${_getLevelName(level)}',
               style: const TextStyle(fontWeight: FontWeight.bold),
             ),
-            backgroundColor: color.withOpacity(0.2),
+            backgroundColor: color.withAlpha(51),
           ),
         ],
       ),
@@ -231,7 +231,7 @@ class PlacementResultScreen extends ConsumerWidget {
                   decoration: BoxDecoration(
                     color: _getSkipLevelColor(
                       recommendation.skipLevel,
-                    ).withOpacity(0.1),
+                    ).withAlpha(26),
                     borderRadius: AppRadius.largeRadius,
                   ),
                   child: Row(
@@ -257,7 +257,7 @@ class PlacementResultScreen extends ConsumerWidget {
             ),
             const SizedBox(height: 12),
             Container(
-              padding: const EdgeInsets.all(12),
+              padding: const EdgeInsets.all(AppSpacing.sm2),
               decoration: BoxDecoration(
                 color: Colors.grey[100],
                 borderRadius: AppRadius.smallRadius,
@@ -291,8 +291,8 @@ class PlacementResultScreen extends ConsumerWidget {
     }
 
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16),
-      padding: const EdgeInsets.all(20),
+      margin: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+      padding: const EdgeInsets.all(AppSpacing.lg2),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
           colors: [
@@ -306,12 +306,12 @@ class PlacementResultScreen extends ConsumerWidget {
       child: Row(
         children: [
           Container(
-            padding: const EdgeInsets.all(12),
+            padding: const EdgeInsets.all(AppSpacing.sm2),
             decoration: const BoxDecoration(
               color: AppOverlays.accent20,
               shape: BoxShape.circle,
             ),
-            child: const Icon(Icons.star, color: AppColors.accent, size: 32),
+            child: const Icon(Icons.star, color: AppColors.accent, size: AppIconSizes.lg),
           ),
           const SizedBox(width: AppSpacing.md),
           Expanded(

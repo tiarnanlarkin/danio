@@ -228,9 +228,9 @@ class ParamPill extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       decoration: BoxDecoration(
-        color: c.withOpacity(0.14),
+        color: c.withAlpha(36),
         borderRadius: AppRadius.mediumRadius,
-        border: Border.all(color: c.withOpacity(0.35)),
+        border: Border.all(color: c.withAlpha(89)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
