@@ -36,6 +36,24 @@ class AppColors {
   static const Color info = Color(0xFF5C9FBF); // Darker blue (4.50:1 ratio)
   static const Color xp = Color(0xFFD4A574); // Gold for XP/experience points
 
+  // ── Semantic "on" colours (roadmap requirement) ───────────────────────────
+  // Colours that sit ON TOP of their counterpart surfaces.
+  // Ensure 4.5:1 WCAG AA contrast against the base colour.
+  static const Color onPrimary    = Color(0xFFFFFFFF); // white on #3D7068
+  static const Color onSecondary  = Color(0xFFFFFFFF); // white on #9F6847
+  static const Color onSurface    = Color(0xFF2D3436); // textPrimary on surface
+  static const Color onBackground = Color(0xFF2D3436); // textPrimary on background
+  static const Color onError      = Color(0xFFFFFFFF); // white on #D96A6A
+  static const Color onSuccess    = Color(0xFFFFFFFF); // white on #5AAF7A
+  static const Color onWarning    = Color(0xFF2D3436); // dark on #C99524 (WCAG AA)
+  static const Color onInfo       = Color(0xFFFFFFFF); // white on #5C9FBF
+
+  // Dark mode on-colours
+  static const Color onPrimaryDark    = Color(0xFF1A2634); // backgroundDark on primaryLight
+  static const Color onSecondaryDark  = Color(0xFF1A2634); // backgroundDark on secondary
+  static const Color onSurfaceDark    = Color(0xFFF5F1EB); // textPrimaryDark on surfaceDark
+  static const Color onBackgroundDark = Color(0xFFF5F1EB); // textPrimaryDark on backgroundDark
+
   // Parameter status colors (legacy compatibility) - WCAG AA compliant
   static const Color paramSafe = Color(0xFF5AAF7A);
   static const Color paramWarning = Color(0xFFC99524);
@@ -333,6 +351,74 @@ class AppColors {
 class AppTypography {
   static const String fontFamily = 'SF Pro Display'; // Falls back to system
 
+  // ── Roadmap-aligned semantic aliases (max 10) ─────────────────────────────
+  // These are the canonical names used in lib/widgets/common/ and new code.
+  // Existing names (headlineLarge etc.) remain for backward compat.
+
+  /// Largest display text. Hero headings, splash screens.
+  static const TextStyle display = TextStyle(
+    fontSize: 40,
+    fontWeight: FontWeight.w700,
+    letterSpacing: -1.0,
+    height: 1.1,
+  );
+
+  /// Screen-level headline. AppBar titles, section headers.
+  static const TextStyle headline = TextStyle(
+    fontSize: 24,
+    fontWeight: FontWeight.w600,
+    letterSpacing: -0.3,
+    height: 1.25,
+  );
+
+  /// Card/modal titles.
+  static const TextStyle title = TextStyle(
+    fontSize: 18,
+    fontWeight: FontWeight.w600,
+    letterSpacing: -0.1,
+    height: 1.3,
+  );
+
+  // titleSmall already defined in the legacy section below (16px/w500).
+  // Alias: use AppTypography.titleSmall directly.
+
+  /// Default body copy.
+  static const TextStyle body = TextStyle(
+    fontSize: 15,
+    fontWeight: FontWeight.w400,
+    height: 1.5,
+  );
+
+  // bodySmall already defined in the legacy section below (13px/w400).
+  // Alias: use AppTypography.bodySmall directly.
+
+  /// Prominent label text, button labels.
+  static const TextStyle label = TextStyle(
+    fontSize: 14,
+    fontWeight: FontWeight.w600,
+    letterSpacing: 0.1,
+  );
+
+  // labelSmall already defined in the legacy section below (11px/w500/0.2 spacing).
+  // Alias: use AppTypography.labelSmall directly.
+
+  /// Image captions, fine print.
+  static const TextStyle caption = TextStyle(
+    fontSize: 12,
+    fontWeight: FontWeight.w400,
+    height: 1.4,
+  );
+
+  /// All-caps micro labels, category tags.
+  static const TextStyle overline = TextStyle(
+    fontSize: 10,
+    fontWeight: FontWeight.w600,
+    letterSpacing: 1.2,
+    height: 1.4,
+  );
+
+  // ── Legacy names (kept for backward compat) ───────────────────────────────
+
   // Headlines
   static const TextStyle headlineLarge = TextStyle(
     fontSize: 32,
@@ -416,12 +502,34 @@ class AppTypography {
 }
 
 class AppSpacing {
-  static const double xs = 4;
-  static const double sm = 8;
-  static const double md = 16;
-  static const double lg = 24;
-  static const double xl = 32;
+  // ── Core spacing scale ────────────────────────────────────────────────────
+  // Named tokens (legacy — keep for backward compat)
+  static const double xs  = 4;
+  static const double sm  = 8;
+  static const double md  = 16;
+  static const double lg  = 24;
+  static const double xl  = 32;
   static const double xxl = 48;
+
+  // ── Extended scale (roadmap: 4,8,12,16,20,24,32,40,48,64) ────────────────
+  // Numeric aliases for explicit spacing values:
+  static const double s4  = 4;   // == xs
+  static const double s8  = 8;   // == sm
+  static const double s12 = 12;  // between sm and md
+  static const double s16 = 16;  // == md
+  static const double s20 = 20;  // between md and lg
+  static const double s24 = 24;  // == lg
+  static const double s32 = 32;  // == xl
+  static const double s40 = 40;  // between xl and xxl
+  static const double s48 = 48;  // == xxl
+  static const double s64 = 64;  // extra large
+
+  // Semantic aliases
+  static const double none     = 0;
+  static const double tight    = s12;  // compact inner padding
+  static const double relaxed  = s20;  // generous inner padding
+  static const double loose    = s40;  // section spacing
+  static const double section  = s64;  // page-level sections
 }
 
 /// Material Design 3 Touch Target Sizes
@@ -738,19 +846,59 @@ class AppOverlays {
 }
 
 class AppRadius {
-  static const double xs = 4;
-  static const double sm = 8;
-  static const double md = 16;
-  static const double lg = 24;
-  static const double xl = 32;
+  // ── Core radius scale ─────────────────────────────────────────────────────
+  // Named tokens (legacy — keep for backward compat)
+  static const double xs   = 4;
+  static const double sm   = 8;
+  static const double md   = 16;
+  static const double lg   = 24;
+  static const double xl   = 32;
   static const double pill = 100;
 
-  static BorderRadius get xsRadius => BorderRadius.circular(xs);
-  static BorderRadius get smallRadius => BorderRadius.circular(sm);
+  // ── Extended scale (roadmap: 4,8,12,16,24,32) ────────────────────────────
+  static const double r4  = 4;   // == xs
+  static const double r8  = 8;   // == sm
+  static const double r12 = 12;  // between sm and md (new)
+  static const double r16 = 16;  // == md
+  static const double r24 = 24;  // == lg
+  static const double r32 = 32;  // == xl
+
+  // ── BorderRadius helpers ──────────────────────────────────────────────────
+  static BorderRadius get xsRadius     => BorderRadius.circular(xs);
+  static BorderRadius get smallRadius  => BorderRadius.circular(sm);
+  static BorderRadius get r12Radius    => BorderRadius.circular(r12);
   static BorderRadius get mediumRadius => BorderRadius.circular(md);
-  static BorderRadius get largeRadius => BorderRadius.circular(lg);
-  static BorderRadius get xlRadius => BorderRadius.circular(xl);
-  static BorderRadius get pillRadius => BorderRadius.circular(pill);
+  static BorderRadius get largeRadius  => BorderRadius.circular(lg);
+  static BorderRadius get xlRadius     => BorderRadius.circular(xl);
+  static BorderRadius get pillRadius   => BorderRadius.circular(pill);
+}
+
+/// Material Design 3 elevation scale.
+///
+/// Use these values for [BoxDecoration.boxShadow] elevation-equivalent
+/// or any API that accepts an elevation double.
+///
+/// Scale: 0, 1, 2, 4, 8, 16
+class AppElevation {
+  // ── Elevation values (dp) ─────────────────────────────────────────────────
+  static const double none    = 0;   // flat, no shadow
+  static const double low     = 1;   // hairline lift (nav bars)
+  static const double subtle  = 2;   // card resting state
+  static const double raised  = 4;   // floating element
+  static const double high    = 8;   // modal sheet, bottom bar
+  static const double overlay = 16;  // full-screen overlay, dialog
+
+  // ── BoxShadow equivalents ─────────────────────────────────────────────────
+  // Use these to manually render elevation with app-brand shadows.
+  // Prefer AppShadows.* for ready-made presets.
+  static List<BoxShadow> forLevel(double elevation) {
+    if (elevation <= 0) return [];
+    if (elevation <= 1) return AppShadows.subtle;
+    if (elevation <= 2) return AppShadows.soft;
+    if (elevation <= 4) return AppShadows.medium;
+    if (elevation <= 8) return AppShadows.elevated;
+    return AppShadows.elevated; // 16+
+  }
 }
 
 class AppShadows {
