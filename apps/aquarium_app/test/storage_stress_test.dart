@@ -17,7 +17,12 @@ import 'package:path/path.dart' as p;
 /// 5. Too many corrupted entities → corruption exception
 /// 6. clearAllData() → resets to healthy state
 /// 7. recoverFromCorruption() → deletes corrupted file, app continues
-/// 8. Large dataset → saves and reloads correctly (stress)
+/// 8. Save-read round-trip — multiple entity types
+/// 9. Large dataset stress (50 tanks)
+///
+/// Implementation note: LocalJsonStorageService is a singleton.
+/// To force a re-read of a file we just wrote, we call retryLoad()
+/// (which resets internal state to idle and re-reads from disk).
 ///
 /// Run: flutter test test/storage_stress_test.dart
 
@@ -35,9 +40,9 @@ Tank _makeTank(String id, {double volume = 100.0}) => Tank(
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  // Mock path_provider so LocalJsonStorageService writes to a temp dir in tests.
+  // Mock path_provider so LocalJsonStorageService writes to a temp dir.
   const pathProviderChannel = MethodChannel('plugins.flutter.io/path_provider');
-  const pathProviderMethodChannel =
+  const pathProviderFoundationChannel =
       MethodChannel('plugins.flutter.io/path_provider_foundation');
 
   late Directory testDir;
@@ -47,12 +52,9 @@ void main() {
     testDir = await Directory.systemTemp.createTemp('storage_stress_');
     dataFile = File(p.join(testDir.path, 'aquarium_data.json'));
 
-    // Register mock for both old and new path_provider channel names.
-    for (final channel in [pathProviderChannel, pathProviderMethodChannel]) {
+    for (final ch in [pathProviderChannel, pathProviderFoundationChannel]) {
       TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-          .setMockMethodCallHandler(channel, (call) async {
-        return testDir.path;
-      });
+          .setMockMethodCallHandler(ch, (_) async => testDir.path);
     }
   });
 
@@ -62,14 +64,12 @@ void main() {
     } catch (_) {}
   });
 
-  /// Reset storage singleton state between tests.
-  Future<void> resetStorage(LocalJsonStorageService s) async {
-    await s.clearAllData();
-    // Delete the data file so each test starts truly fresh.
-    if (await dataFile.exists()) await dataFile.delete();
-    // Also remove any backup files.
+  /// Wipe the data file + backup files; reset singleton to loaded/empty.
+  Future<void> freshStart(LocalJsonStorageService s) async {
+    await s.clearAllData(); // deletes file, clears in-memory, sets state=loaded
+    // Delete any backup files left by previous runs.
     await for (final f in testDir.list()) {
-      if (f.path.contains('.corrupted')) {
+      if (f.path.contains('.corrupted') || f.path.endsWith('.tmp')) {
         try {
           await (f as File).delete();
         } catch (_) {}
@@ -82,67 +82,72 @@ void main() {
 
     setUp(() async {
       storage = LocalJsonStorageService();
-      await resetStorage(storage);
+      await freshStart(storage);
     });
 
     // ── 1. Corrupted JSON ─────────────────────────────────────────────────
+    // After clearAllData() the singleton is in 'loaded' state.
+    // To make it re-read the file we wrote, call retryLoad() which
+    // resets internal state to idle and does a fresh disk read.
 
-    test('1a. Malformed JSON sets corrupted state and creates backup', () async {
+    test('1a. Malformed JSON → corrupted state + backup file created',
+        () async {
       await dataFile.writeAsString('{ "version": 1, INVALID }');
 
-      expect(
-        () => storage.getAllTanks(),
+      // retryLoad() forces re-read from disk → should detect corruption.
+      await expectLater(
+        storage.retryLoad(),
         throwsA(isA<StorageCorruptionException>()),
       );
-      await Future.delayed(Duration.zero); // allow async ops to settle
 
-      // State should be corrupted
       expect(storage.state, equals(StorageState.corrupted));
       expect(storage.hasError, isTrue);
-      expect(storage.lastError, isNotNull);
 
-      // A backup file should have been created
-      final backupFiles =
-          await testDir.list().where((f) => f.path.contains('.corrupted')).toList();
-      expect(backupFiles, isNotEmpty, reason: 'Backup file should be created');
+      final backupFiles = await testDir
+          .list()
+          .where((f) => f.path.contains('.corrupted'))
+          .toList();
+      expect(backupFiles, isNotEmpty, reason: 'Backup file must be created');
     });
 
-    test('1b. Non-object root JSON (array) throws corruption exception',
+    test('1b. Non-object root JSON (array) → StorageCorruptionException',
         () async {
       await dataFile.writeAsString('["array", "not", "object"]');
 
-      expect(
-        () => storage.getAllTanks(),
+      await expectLater(
+        storage.retryLoad(),
         throwsA(isA<StorageCorruptionException>()),
       );
+      expect(storage.state, equals(StorageState.corrupted));
     });
 
     // ── 2. Empty / Missing file ───────────────────────────────────────────
 
     test('2a. Empty file → fresh start, healthy state', () async {
       await dataFile.writeAsString('');
+      await storage.retryLoad();
 
-      final tanks = await storage.getAllTanks();
-      expect(tanks, isEmpty);
       expect(storage.state, equals(StorageState.loaded));
       expect(storage.hasError, isFalse);
+      final tanks = await storage.getAllTanks();
+      expect(tanks, isEmpty);
     });
 
     test('2b. Missing file → fresh start, healthy state', () async {
-      // Ensure file doesn't exist
       if (await dataFile.exists()) await dataFile.delete();
+      await storage.retryLoad();
 
-      final tanks = await storage.getAllTanks();
-      expect(tanks, isEmpty);
       expect(storage.state, equals(StorageState.loaded));
       expect(storage.hasError, isFalse);
+      final tanks = await storage.getAllTanks();
+      expect(tanks, isEmpty);
     });
 
     // ── 3. Partial corruption ─────────────────────────────────────────────
 
-    test('3. Partial corruption → valid entities loaded, bad ones skipped',
+    test('3. Partial corruption → valid entity loaded, bad one skipped',
         () async {
-      final validJson = jsonEncode({
+      final json = jsonEncode({
         'version': 1,
         'updatedAt': DateTime.now().toIso8601String(),
         'tanks': {
@@ -161,10 +166,8 @@ void main() {
             'createdAt': '2024-01-01T00:00:00.000Z',
             'updatedAt': '2024-01-01T00:00:00.000Z',
           },
-          'tank-bad': {
-            'id': 'tank-bad',
-            // Missing name, type, volumeLitres, startDate → will throw during parse
-          },
+          // tank-bad is missing all required fields → will be skipped
+          'tank-bad': {'id': 'tank-bad'},
         },
         'livestock': {},
         'equipment': {},
@@ -172,10 +175,10 @@ void main() {
         'tasks': {},
       });
 
-      await dataFile.writeAsString(validJson);
-      final tanks = await storage.getAllTanks();
+      await dataFile.writeAsString(json);
+      await storage.retryLoad();
 
-      // Only the valid tank should be loaded
+      final tanks = await storage.getAllTanks();
       expect(tanks.length, equals(1));
       expect(tanks.first.id, equals('tank-ok'));
       expect(storage.state, equals(StorageState.loaded));
@@ -183,28 +186,26 @@ void main() {
 
     // ── 4. Mass corruption → throws ───────────────────────────────────────
 
-    test('4. >10 corrupted entities triggers corruption exception', () async {
-      // Build 15 corrupt tank entries (no required fields)
+    test('4. >10 corrupted entities → StorageCorruptionException', () async {
       final badTanks = <String, dynamic>{};
       for (var i = 0; i < 15; i++) {
         badTanks['tank-$i'] = {'id': 'tank-$i'}; // missing all required fields
       }
 
-      final corruptData = jsonEncode({
+      await dataFile.writeAsString(jsonEncode({
         'version': 1,
         'tanks': badTanks,
         'livestock': {},
         'equipment': {},
         'logs': {},
         'tasks': {},
-      });
+      }));
 
-      await dataFile.writeAsString(corruptData);
-
-      expect(
-        () => storage.getAllTanks(),
+      await expectLater(
+        storage.retryLoad(),
         throwsA(isA<StorageCorruptionException>()),
       );
+      expect(storage.state, equals(StorageState.corrupted));
     });
 
     // ── 5. clearAllData() ─────────────────────────────────────────────────
@@ -213,11 +214,10 @@ void main() {
         () async {
       // Induce corruption
       await dataFile.writeAsString('bad json!');
-
-      try {
-        await storage.getAllTanks();
-      } catch (_) {}
-
+      await expectLater(
+        storage.retryLoad(),
+        throwsA(isA<StorageCorruptionException>()),
+      );
       expect(storage.hasError, isTrue);
 
       await storage.clearAllData();
@@ -230,22 +230,22 @@ void main() {
 
     // ── 6. recoverFromCorruption() ────────────────────────────────────────
 
-    test('6. recoverFromCorruption() allows app to continue with empty data',
+    test('6. recoverFromCorruption() → healthy state, can save new data',
         () async {
       await dataFile.writeAsString('totally broken');
-
-      try {
-        await storage.getAllTanks();
-      } catch (_) {}
-
+      await expectLater(
+        storage.retryLoad(),
+        throwsA(isA<StorageCorruptionException>()),
+      );
       expect(storage.hasError, isTrue);
 
       await storage.recoverFromCorruption();
 
       expect(storage.state, equals(StorageState.loaded));
       expect(storage.hasError, isFalse);
+      expect(await dataFile.exists(), isFalse);
 
-      // Can now save new data
+      // App should be able to save new data immediately after recovery.
       await storage.saveTank(_makeTank('recovery-tank'));
       final tanks = await storage.getAllTanks();
       expect(tanks.length, equals(1));
@@ -279,7 +279,7 @@ void main() {
       await storage.saveLivestock(livestock);
       await storage.saveEquipment(equipment);
 
-      // Simulate reload by resetting loaded state
+      // Force a full reload from disk.
       await storage.retryLoad();
 
       final tanks = await storage.getAllTanks();
@@ -296,23 +296,18 @@ void main() {
 
     // ── 8. Large dataset stress ───────────────────────────────────────────
 
-    test('8. Large dataset (50 tanks) saves and reloads without loss',
-        () async {
-      // Save 50 tanks
+    test('8. 50 tanks save, reload and delete correctly (stress)', () async {
       for (var i = 0; i < 50; i++) {
         await storage.saveTank(_makeTank('tank-$i', volume: 50.0 + i));
       }
 
-      // Verify all saved
       var tanks = await storage.getAllTanks();
       expect(tanks.length, equals(50));
 
-      // Reload and verify again
       await storage.retryLoad();
       tanks = await storage.getAllTanks();
       expect(tanks.length, equals(50));
 
-      // Delete one and verify count
       await storage.deleteTank('tank-0');
       tanks = await storage.getAllTanks();
       expect(tanks.length, equals(49));
