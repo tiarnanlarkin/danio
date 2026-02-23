@@ -17,11 +17,7 @@ class GamificationDashboard extends ConsumerWidget {
   /// Callback when tapping the dashboard
   final VoidCallback? onTap;
 
-  const GamificationDashboard({
-    super.key,
-    this.showAsCard = true,
-    this.onTap,
-  });
+  const GamificationDashboard({super.key, this.showAsCard = true, this.onTap});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -105,9 +101,7 @@ class GamificationDashboard extends ConsumerWidget {
           return Card(
             margin: EdgeInsets.zero,
             elevation: 2,
-            shape: RoundedRectangleBorder(
-              borderRadius: AppRadius.mediumRadius,
-            ),
+            shape: RoundedRectangleBorder(borderRadius: AppRadius.mediumRadius),
             child: InkWell(
               onTap: onTap,
               borderRadius: AppRadius.mediumRadius,
@@ -116,10 +110,7 @@ class GamificationDashboard extends ConsumerWidget {
           );
         }
 
-        return GestureDetector(
-          onTap: onTap,
-          child: content,
-        );
+        return GestureDetector(onTap: onTap, child: content);
       },
     );
   }
@@ -128,9 +119,7 @@ class GamificationDashboard extends ConsumerWidget {
     return Card(
       margin: EdgeInsets.zero,
       elevation: 2,
-      shape: RoundedRectangleBorder(
-        borderRadius: AppRadius.mediumRadius,
-      ),
+      shape: RoundedRectangleBorder(borderRadius: AppRadius.mediumRadius),
       child: const Padding(
         padding: EdgeInsets.all(24),
         child: Center(
@@ -148,9 +137,7 @@ class GamificationDashboard extends ConsumerWidget {
     return Card(
       margin: EdgeInsets.zero,
       elevation: 2,
-      shape: RoundedRectangleBorder(
-        borderRadius: AppRadius.mediumRadius,
-      ),
+      shape: RoundedRectangleBorder(borderRadius: AppRadius.mediumRadius),
       child: const Padding(
         padding: EdgeInsets.all(16),
         child: Row(
@@ -197,8 +184,9 @@ class _StatItem extends StatelessWidget {
         Text(icon, style: const TextStyle(fontSize: 20)),
         const SizedBox(width: 6),
         Column(
-          crossAxisAlignment:
-              alignRight ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+          crossAxisAlignment: alignRight
+              ? CrossAxisAlignment.end
+              : CrossAxisAlignment.start,
           children: [
             Text(
               value,
@@ -478,7 +466,7 @@ class _TankConfidenceScore extends StatelessWidget {
             const Text('🏅', style: TextStyle(fontSize: 16)),
             const SizedBox(width: 6),
             Text(
-              'Tank Confidence',
+              'Tank health summary',
               style: AppTypography.labelMedium.copyWith(
                 color: AppColors.textPrimary,
               ),

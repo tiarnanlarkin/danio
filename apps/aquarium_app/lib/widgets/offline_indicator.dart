@@ -35,27 +35,32 @@ class OfflineIndicator extends ConsumerWidget {
 
     return Container(
       width: double.infinity,
+      margin: const EdgeInsets.fromLTRB(
+        AppSpacing.sm,
+        AppSpacing.xs,
+        AppSpacing.sm,
+        0,
+      ),
       padding: const EdgeInsets.symmetric(
         horizontal: AppSpacing.md,
         vertical: AppSpacing.sm,
       ),
       decoration: BoxDecoration(
         color: AppColors.warningAlpha20,
-        border: const Border(
-          bottom: BorderSide(color: AppColors.warning, width: 1),
-        ),
+        borderRadius: AppRadius.mediumRadius,
+        border: Border.all(color: AppColors.warningAlpha40, width: 1),
       ),
       child: Row(
         children: [
           const Icon(
-            Icons.wifi_off,
+            Icons.cloud_off,
             color: AppColors.warning,
             size: AppIconSizes.sm,
           ),
           const SizedBox(width: AppSpacing.sm),
           Expanded(
             child: Text(
-              "You're offline — some features may not be available",
+              "Offline mode — logs save locally and sync when you're back online",
               style: AppTypography.labelMedium.copyWith(
                 color: AppColors.textPrimary,
               ),
@@ -92,17 +97,11 @@ class OfflineIndicatorCompact extends ConsumerWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Icon(
-            Icons.wifi_off,
-            color: AppColors.warning,
-            size: 14,
-          ),
+          const Icon(Icons.wifi_off, color: AppColors.warning, size: 14),
           const SizedBox(width: AppSpacing.xs),
           Text(
             'Offline',
-            style: AppTypography.labelSmall.copyWith(
-              color: AppColors.warning,
-            ),
+            style: AppTypography.labelSmall.copyWith(color: AppColors.warning),
           ),
         ],
       ),

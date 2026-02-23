@@ -20,11 +20,7 @@ class TodayBoardCard extends ConsumerWidget {
   final String tankId;
   final int maxItems;
 
-  const TodayBoardCard({
-    super.key,
-    required this.tankId,
-    this.maxItems = 3,
-  });
+  const TodayBoardCard({super.key, required this.tankId, this.maxItems = 3});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -39,13 +35,15 @@ class TodayBoardCard extends ConsumerWidget {
         final today = tasks
             .where((t) => t.isDueToday && t.isEnabled && !t.isOverdue)
             .toList();
-        final upcoming = tasks
-            .where((t) => !t.isOverdue && !t.isDueToday && t.isEnabled)
-            .toList()
-          ..sort(
-            (a, b) => (a.dueDate ?? DateTime(9999))
-                .compareTo(b.dueDate ?? DateTime(9999)),
-          );
+        final upcoming =
+            tasks
+                .where((t) => !t.isOverdue && !t.isDueToday && t.isEnabled)
+                .toList()
+              ..sort(
+                (a, b) => (a.dueDate ?? DateTime(9999)).compareTo(
+                  b.dueDate ?? DateTime(9999),
+                ),
+              );
 
         final combined = [
           ...overdue,
@@ -127,15 +125,13 @@ class _TodayBoardContent extends StatelessWidget {
           Row(
             children: [
               Icon(
-                hasOverdue
-                    ? Icons.warning_amber_rounded
-                    : Icons.today_rounded,
+                hasOverdue ? Icons.warning_amber_rounded : Icons.today_rounded,
                 size: 14,
                 color: hasOverdue ? AppColors.warning : AppColors.primary,
               ),
               const SizedBox(width: AppSpacing.xs),
               Text(
-                hasOverdue ? 'Needs attention' : 'Today',
+                hasOverdue ? 'Today board · Needs attention' : 'Today board',
                 style: AppTypography.labelSmall.copyWith(
                   color: hasOverdue ? AppColors.warning : AppColors.primary,
                   letterSpacing: 0.4,
@@ -143,7 +139,7 @@ class _TodayBoardContent extends StatelessWidget {
               ),
               const Spacer(),
               Text(
-                '${tasks.length} task${tasks.length == 1 ? '' : 's'}',
+                'Next ${tasks.length.clamp(0, 3)} task${tasks.length == 1 ? '' : 's'}',
                 style: AppTypography.labelSmall.copyWith(
                   color: AppColors.textSecondary,
                 ),
@@ -173,8 +169,8 @@ class _TaskRow extends StatelessWidget {
     final rowColor = isOverdue
         ? AppColors.error
         : isToday
-            ? AppColors.warning
-            : AppColors.textSecondary;
+        ? AppColors.warning
+        : AppColors.textSecondary;
 
     String dueLabel;
     if (isOverdue) {
@@ -202,8 +198,8 @@ class _TaskRow extends StatelessWidget {
               color: isOverdue
                   ? AppColors.error
                   : isToday
-                      ? AppColors.warning
-                      : AppColors.textHint,
+                  ? AppColors.warning
+                  : AppColors.textHint,
               shape: BoxShape.circle,
             ),
           ),
