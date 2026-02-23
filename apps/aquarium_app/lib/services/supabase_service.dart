@@ -29,8 +29,8 @@ class SupabaseService {
   //       3. Run the migration SQL from lib/supabase/migrations/001_initial.sql
   //       See also: aquarium-roadmap/cloud_setup.md
   // ---------------------------------------------------------------------------
-  static const String _supabaseUrl = 'https://YOUR_PROJECT_REF.supabase.co';
-  static const String _supabaseAnonKey = 'YOUR_SUPABASE_ANON_KEY';
+  static const String _supabaseUrl = 'https://fqmzaeutdvmqssdwduhu.supabase.co';
+  static const String _supabaseAnonKey = 'sb_publishable_P4lVc9-8Kee76CPva4MVyQ_TKFJ10rg';
 
   /// The underlying Supabase client.
   SupabaseClient get client => Supabase.instance.client;
