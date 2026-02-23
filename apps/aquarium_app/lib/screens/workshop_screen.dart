@@ -11,6 +11,7 @@ import 'dosing_calculator_screen.dart';
 import 'compatibility_checker_screen.dart';
 // import 'equipment_screen.dart'; // Requires tankId - use settings instead
 import 'cost_tracker_screen.dart';
+import 'aquarium_supply_screen.dart';
 import 'water_change_calculator_screen.dart';
 import 'stocking_calculator_screen.dart';
 import 'unit_converter_screen.dart';
@@ -25,6 +26,9 @@ class WorkshopColors {
   static const background3 = Color(0xFF3D3425); // Deep brown
   static const accent = Color(0xFFA0AEC0); // Steel blue
   static const accentWarm = Color(0xFFD4A574); // Warm gold
+  // Phase 2.1 — room identity: Workshop → purple/indigo accent
+  static const accentRoom = Color(0xFF9C78FF); // Soft purple/indigo
+  static const accentRoomDark = Color(0xFF7C4DFF); // Deep indigo
   static const wood = Color(0xFF7A6548); // Light wood
   static const metal = Color(0xFF6B7280); // Steel gray
   static const glassCard = Color(0x20FFFFFF);
@@ -191,6 +195,18 @@ class WorkshopScreen extends ConsumerWidget {
                       ),
                     ),
                   ),
+                  _ToolCard(
+                    icon: Icons.inventory_2_outlined,
+                    title: 'Supplies',
+                    subtitle: 'Stock & low alerts',
+                    color: Colors.orange.shade400,
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const AquariumSupplyScreen(),
+                      ),
+                    ),
+                  ),
                 ]),
               ),
             ),
@@ -231,13 +247,17 @@ class _WorkshopHeader extends ConsumerWidget {
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: WorkshopColors.glassCard,
+                  // Phase 2.1 — Workshop room identity: purple/indigo accent
+                  color: const Color(0x309C78FF),
                   borderRadius: AppRadius.mediumRadius,
-                  border: Border.all(color: WorkshopColors.glassBorder),
+                  border: Border.all(
+                    color: WorkshopColors.accentRoom,
+                    width: 1,
+                  ),
                 ),
                 child: const Icon(
                   Icons.build,
-                  color: WorkshopColors.accentWarm,
+                  color: WorkshopColors.accentRoom,
                   size: 28,
                 ),
               ),
