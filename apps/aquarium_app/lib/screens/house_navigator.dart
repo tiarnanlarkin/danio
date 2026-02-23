@@ -39,18 +39,23 @@ class _HouseNavigatorState extends ConsumerState<HouseNavigator> {
   bool _tutorialShown = false;
 
   // Room definitions
+  // Phase 2.1 — cozy room identity accent colours applied:
+  //   Library (Study)   → teal/blue   (AppColors.primaryLight 0xFF5B9A8B)
+  //   Living Room       → warm amber  (AppColors.secondaryLight 0xFFE8A87C)
+  //   Workshop          → purple/indigo (0xFF9C78FF)
+  //   Closet (Settings) → grey/neutral (accessed outside nav — see SettingsScreen)
   static const List<RoomInfo> _rooms = [
     RoomInfo(
-      name: 'Study',
+      name: 'Library',
       icon: Icons.auto_stories,
       emoji: '📚',
-      color: Color(0xFF2D3A4F), // Deep blue
+      color: Color(0xFF5B9A8B), // Teal/blue — Library accent
     ),
     RoomInfo(
       name: 'Living Room',
       icon: Icons.weekend,
       emoji: '🛋️',
-      color: Color(0xFF5B9A8B), // Teal
+      color: Color(0xFFE8A87C), // Warm amber — Living Room accent
     ),
     RoomInfo(
       name: 'Friends',
@@ -68,7 +73,7 @@ class _HouseNavigatorState extends ConsumerState<HouseNavigator> {
       name: 'Workshop',
       icon: Icons.build,
       emoji: '🔧',
-      color: Color(0xFF5D4E37), // Brown
+      color: Color(0xFF9C78FF), // Purple/indigo — Workshop accent
     ),
     RoomInfo(
       name: 'Shop Street',
@@ -121,7 +126,7 @@ class _HouseNavigatorState extends ConsumerState<HouseNavigator> {
           targetKey: _livingRoomKey,
         ),
         TutorialStep(
-          title: 'Study Room 📚',
+          title: 'Library 📚',
           description:
               'Start your aquarium journey here! Learn through interactive lessons and practice with spaced repetition.',
           targetKey: _studyRoomKey,

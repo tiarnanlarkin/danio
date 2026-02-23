@@ -35,6 +35,7 @@ import 'widgets/tank_picker_sheet.dart';
 import 'widgets/xp_source_row.dart';
 import 'widgets/selection_mode_panel.dart';
 import 'widgets/empty_room_scene.dart';
+import 'widgets/today_board.dart';
 import '../backup_restore_screen.dart';
 import '../../utils/app_page_routes.dart';
 
@@ -300,13 +301,22 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               ),
             ),
 
-            // Tank switcher - clean card between tank and graph
+            // Today Board — tasks preview card above GamificationDashboard
+            // Shows up to 3 upcoming/overdue tasks for the current tank
+            Positioned(
+              bottom: 156 + MediaQuery.of(context).padding.bottom,
+              left: 16,
+              right: 88, // leave room for FAB
+              child: TodayBoardCard(tankId: currentTank.id),
+            ),
+
+            // Tank switcher - clean card between tank and today board
             if (!_isSelectMode)
               Builder(
                 builder: (context) {
                   final bottomPadding = MediaQuery.of(context).padding.bottom;
                   return Positioned(
-                    bottom: 180 + bottomPadding, // Above gamification dashboard with FAB clearance
+                    bottom: 248 + bottomPadding, // Above today board
                     left: 16,
                     right: 88, // Leave room for speed dial FAB
                     child: TankSwitcher(
@@ -328,7 +338,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 builder: (context) {
                   final bottomPadding = MediaQuery.of(context).padding.bottom;
                   return Positioned(
-                    bottom: 180 + bottomPadding, // Above gamification dashboard
+                    bottom: 248 + bottomPadding, // Above today board
                     left: 16,
                     right: 16,
                     child: SelectionModePanel(
@@ -355,9 +365,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             ),
 
             // Speed Dial FAB - radial menu for quick actions
-            // Positioned above the dashboard with safe area padding
+            // Positioned alongside the tank switcher with safe area padding
             Positioned(
-              bottom: 170 + MediaQuery.of(context).padding.bottom,
+              bottom: 238 + MediaQuery.of(context).padding.bottom,
               right: 16,
               child: SpeedDialFAB(
                 closedIcon: Icons.water_drop_rounded,
@@ -469,7 +479,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   void _showRoomSwitcher(BuildContext context) {
     final rooms = [
-      ('Study', Icons.auto_stories, '📚', 0),
+      ('Library', Icons.auto_stories, '📚', 0),
       ('Living Room', Icons.weekend, '🛋️', 1),
       ('Friends', Icons.people, '👥', 2),
       ('Leaderboard', Icons.leaderboard, '🏆', 3),

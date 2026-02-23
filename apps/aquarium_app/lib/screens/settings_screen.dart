@@ -58,6 +58,7 @@ import 'tank_detail/tank_detail_screen.dart';
 import '../providers/tank_provider.dart';
 import '../providers/user_profile_provider.dart';
 import '../widgets/room_navigation.dart';
+import '../widgets/common/room_header.dart';
 import '../utils/accessibility_utils.dart';
 import '../models/adaptive_difficulty.dart';
 
@@ -69,7 +70,16 @@ class SettingsScreen extends ConsumerWidget {
     final settings = ref.watch(settingsProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Settings')),
+      // Closet — grey/neutral accent (Phase 2.1 room identity)
+      appBar: RoomHeader(
+        title: 'Closet',
+        subtitle: 'Settings & preferences',
+        backgroundColor: AppColors.surfaceVariant,
+        showDivider: true,
+        onBack: Navigator.canPop(context)
+            ? () => Navigator.of(context).pop()
+            : null,
+      ),
       body: ListView.builder(
         itemCount: _buildItems(context, ref, settings).length,
         itemBuilder: (context, index) => _buildItems(context, ref, settings)[index],
