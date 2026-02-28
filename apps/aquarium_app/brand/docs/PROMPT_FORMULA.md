@@ -119,3 +119,40 @@ chromatic shadows in cool purple-blue, painterly gradients, cel-shading,
 variable-weight dark linework, cosy golden-hour palette,
 aquarium teal accent, professional animation studio quality
 ```
+
+---
+
+## v2 Refinements (2026-02-28) — 8.2/10
+
+Key changes that improved score from 6.5 → 8.2:
+
+**Add to all prompts:**
+- `no outlines, no line art, fully painterly`
+- `volumetric lighting, god rays`
+- `subsurface scattering on fish scales`
+- `soft atmospheric depth, visible brushwork`
+
+**Remove from prompts:**
+- ~~`cel-shading`~~ (pulls toward cartoon, not painterly)
+- ~~`variable-weight dark linework`~~ (adds outlines)
+
+**Still to solve:**
+- Chromatic shadows need pushing harder: add `deep violet-indigo shadows in cool zones, warm ochre-amber in lit zones`
+- Character integration: add `atmospheric perspective, character integrated into scene lighting`
+
+### Updated Master Template (v2)
+```
+[SUBJECT], [POSE/ACTION], [SETTING],
+Pixar DreamWorks environment concept art style,
+no outlines, no line art, fully painterly,
+volumetric lighting with god rays, subsurface scattering,
+warm amber-gold key light from upper right,
+cool blue-slate ambient fill in shadows,
+deep violet-indigo shadows in cool zones, warm ochre-amber in lit zones,
+rich painterly gradients with visible brushwork,
+soft atmospheric depth, character integrated into scene lighting,
+golden-hour colour palette, aquarium teal-blue water tones,
+contrasting warm amber background tones,
+cosy aspirational mood, cinematic composition,
+professional animation studio background painting quality
+```
