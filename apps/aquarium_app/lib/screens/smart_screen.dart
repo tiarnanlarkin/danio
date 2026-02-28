@@ -173,21 +173,39 @@ class _OfflineBanner extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(AppSpacing.md),
+      padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
-        color: AppColors.warning.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(12.0),
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            AppColors.primary.withValues(alpha: 0.08),
+            DanioColors.topaz.withValues(alpha: 0.08),
+          ],
+        ),
+        borderRadius: BorderRadius.circular(16.0),
+        border: Border.all(
+          color: AppColors.primary.withValues(alpha: 0.15),
+        ),
       ),
-      child: const Row(
+      child: Column(
         children: [
-          Icon(Icons.cloud_off, color: AppColors.warning, size: AppIconSizes.sm),
-          SizedBox(width: AppSpacing.sm),
-          Expanded(
-            child: Text(
-              'AI features unavailable — no API key configured.\n'
-              'Rebuild with: flutter run --dart-define=OPENAI_API_KEY=sk-...',
-              style: TextStyle(fontSize: 12),
+          Icon(Icons.auto_awesome, color: AppColors.primary, size: AppIconSizes.lg),
+          const SizedBox(height: AppSpacing.sm),
+          Text(
+            'AI Features — Coming Soon! 🧠',
+            style: AppTypography.titleSmall.copyWith(
+              color: AppColors.primary,
+              fontWeight: FontWeight.bold,
             ),
+          ),
+          const SizedBox(height: AppSpacing.xs),
+          Text(
+            'Smart fish identification, health diagnostics, and personalised care plans are on the way.',
+            style: AppTypography.bodySmall.copyWith(
+              color: AppColors.textSecondary,
+            ),
+            textAlign: TextAlign.center,
           ),
         ],
       ),
