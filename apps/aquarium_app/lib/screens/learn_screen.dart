@@ -582,7 +582,7 @@ class _StreakCard extends StatelessWidget {
             ),
             child: const Icon(
               Icons.local_fire_department,
-              color: Colors.orange,
+              color: DanioColors.amberGold,
               size: 28,
             ),
           ),
@@ -594,14 +594,14 @@ class _StreakCard extends StatelessWidget {
                 Text(
                   '$streak day streak! 🔥',
                   style: AppTypography.labelLarge.copyWith(
-                    color: Colors.orange.shade700,
+                    color: AppColors.primary,
                   ),
                 ),
                 const SizedBox(height: 2),
                 Text(
                   'Keep learning (or logging) to maintain your streak',
                   style: AppTypography.bodySmall.copyWith(
-                    color: Colors.orange.shade600,
+                    color: AppColors.primaryLight,
                   ),
                 ),
                 if (hasFreeze || usedFreezeThisWeek) ...[
