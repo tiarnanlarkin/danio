@@ -23,7 +23,7 @@ class ShopColors {
   static const glassCard = Color(0x20FFFFFF);
   static const glassBorder = Color(0x30FFFFFF);
   static const textPrimary = Color(0xFFF5F5F5);
-  static const textSecondary = Color(0xFFB8D4B8);
+  static const textSecondary = Color(0xFFCDBFAE); // Warm secondary text
 
   // Pre-computed alpha variants for performance
   static const accentAlpha20 = Color(0x33F0C040); // 20% opacity

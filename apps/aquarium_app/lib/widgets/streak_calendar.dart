@@ -286,13 +286,13 @@ class _DayCell extends StatelessWidget {
       case 0:
         return AppColors.surfaceVariant;
       case 1:
-        return const Color(0xFFC6E7C6); // Light green
+        return const Color(0xFFFFE6B8); // Light amber
       case 2:
-        return const Color(0xFF9CD89C); // Medium-light green
+        return const Color(0xFFFFD28A); // Medium-light amber
       case 3:
-        return const Color(0xFF66BB6A); // Medium green
+        return const Color(0xFFFFB84D); // Medium amber
       case 4:
-        return const Color(0xFF43A047); // Dark green
+        return const Color(0xFFD97706); // Brand amber gold
       default:
         return AppColors.surfaceVariant;
     }
@@ -323,13 +323,13 @@ class _Legend extends StatelessWidget {
         const SizedBox(width: AppSpacing.xs),
         _LegendCell(color: AppColors.surfaceVariant, size: cellSize),
         const SizedBox(width: 2),
-        _LegendCell(color: const Color(0xFFC6E7C6), size: cellSize),
+        _LegendCell(color: const Color(0xFFFFE6B8), size: cellSize),
         const SizedBox(width: 2),
-        _LegendCell(color: const Color(0xFF9CD89C), size: cellSize),
+        _LegendCell(color: const Color(0xFFFFD28A), size: cellSize),
         const SizedBox(width: 2),
-        _LegendCell(color: const Color(0xFF66BB6A), size: cellSize),
+        _LegendCell(color: const Color(0xFFFFB84D), size: cellSize),
         const SizedBox(width: 2),
-        _LegendCell(color: const Color(0xFF43A047), size: cellSize),
+        _LegendCell(color: const Color(0xFFD97706), size: cellSize),
         const SizedBox(width: AppSpacing.xs),
         Text('More', style: TextStyle(fontSize: 10, color: AppColors.textHint)),
       ],

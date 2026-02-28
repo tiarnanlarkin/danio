@@ -15,10 +15,10 @@ enum RoomType {
 
 /// Theme-aware room background colors
 class RoomBackgroundColors {
-  // Living Room - Cozy home with warm greens and cream
+  // Living Room - Cozy home with warm amber and cream
   static const livingRoomGradient1 = AppColors.primary; // Brand amber
-  static const livingRoomGradient2 = Color(0xFF4A8B7C); // Medium teal
-  static const livingRoomGradient3 = Color(0xFF3D7A6C); // Deep teal
+  static const livingRoomGradient2 = Color(0xFFB8752A); // Warm amber mid
+  static const livingRoomGradient3 = Color(0xFF92400E); // Warm amber dark
   static const livingRoomAccent = Color(0xFFFFF8E7); // Cream
   static const livingRoomPlant = Color(0xFF4CAF50); // Plant green
   static const livingRoomPlantAlpha08 = Color(0x0D4CAF50); // 3%
@@ -48,17 +48,17 @@ class RoomBackgroundColors {
   static const workshopMetal = Color(0xFF6B7280); // Steel gray
   static const workshopMetalAlpha08 = Color(0x146B7280); // 8%
 
-  // Shop Street - Outdoor market with sky blue and sunny feel
-  static const shopGradient1 = Color(0xFF4A7C59); // Forest green
-  static const shopGradient2 = Color(0xFF3D6B4A); // Darker green
-  static const shopGradient3 = Color(0xFF2F5A3B); // Deep green
-  static const shopSky = Color(0xFF87CEEB); // Sky blue
-  static const shopSkyAlpha00 = Color(0x0087CEEB); // 0% (transparent)
-  static const shopSkyAlpha20 = Color(0x3387CEEB); // 20%
-  static const shopSunny = Color(0xFFF0C040); // Sunny yellow
-  static const shopSunnyAlpha00 = Color(0x00F0C040); // 0% (transparent)
-  static const shopSunnyAlpha12 = Color(0x1FF0C040); // 12%
-  static const shopSunnyAlpha15 = Color(0x26F0C040); // 15%
+  // Shop Street - Outdoor market with warm cream sky and emerald green
+  static const shopGradient1 = Color(0xFF2D8B57); // Emerald green
+  static const shopGradient2 = Color(0xFF236B47); // Darker emerald
+  static const shopGradient3 = Color(0xFF1A5A35); // Deep emerald
+  static const shopSky = Color(0xFFFFF0DC); // Warm cream sky
+  static const shopSkyAlpha00 = Color(0x00FFF0DC); // 0% (transparent)
+  static const shopSkyAlpha20 = Color(0x33FFF0DC); // 20%
+  static const shopSunny = Color(0xFFD97706); // Amber gold
+  static const shopSunnyAlpha00 = Color(0x00D97706); // 0% (transparent)
+  static const shopSunnyAlpha12 = Color(0x1FD97706); // 12%
+  static const shopSunnyAlpha15 = Color(0x26D97706); // 15%
 
   // Trophy Room - Achievement hall with dark purple and gold
   static const trophyGradient1 = Color(0xFF3D2B5A); // Deep purple
