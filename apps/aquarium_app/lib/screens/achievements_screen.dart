@@ -135,10 +135,20 @@ class _AchievementsScreenState extends ConsumerState<AchievementsScreen> {
             ),
           ),
 
-          // Filters
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.all(AppSpacing.sm),
+          // Filters with fade gradient to indicate scrollability
+          ShaderMask(
+            shaderCallback: (Rect bounds) {
+              return const LinearGradient(
+                begin: Alignment.centerLeft,
+                end: Alignment.centerRight,
+                colors: [Colors.white, Colors.white, Colors.transparent],
+                stops: [0.0, 0.85, 1.0],
+              ).createShader(bounds);
+            },
+            blendMode: BlendMode.dstIn,
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              padding: const EdgeInsets.all(AppSpacing.sm),
             child: Row(
               children: [
                 // Filter by lock status
@@ -214,6 +224,7 @@ class _AchievementsScreenState extends ConsumerState<AchievementsScreen> {
                 }),
               ],
             ),
+          ),
           ),
 
           // Achievement grid

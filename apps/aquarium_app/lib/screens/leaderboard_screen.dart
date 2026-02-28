@@ -266,10 +266,7 @@ class LeaderboardScreen extends ConsumerWidget {
                 ),
             ],
           ),
-          subtitle: Text(
-            '${entry.weeklyXp} XP this week',
-            style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
-          ),
+          subtitle: null,
           trailing: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.end,

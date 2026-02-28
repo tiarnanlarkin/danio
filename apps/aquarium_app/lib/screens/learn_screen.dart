@@ -724,7 +724,7 @@ class _LazyLearningPathCardState extends ConsumerState<_LazyLearningPathCard> {
                         AppColors.primaryAlpha10,
                       ],
                     ),
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(12),
               border: Border.all(
                 color: isComplete
                     ? AppColors.successAlpha30

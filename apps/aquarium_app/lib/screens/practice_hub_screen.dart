@@ -68,7 +68,7 @@ class PracticeHubScreen extends ConsumerWidget {
             title: 'Review Due Cards',
             subtitle: '$dueCards cards waiting for review',
             icon: Icons.replay,
-            color: AppColors.error,
+            color: AppColors.warning,
             onTap: () {
               Navigator.push(
                 context,
@@ -113,12 +113,12 @@ class PracticeHubScreen extends ConsumerWidget {
             _StatItem(
               label: 'Due Today',
               value: '$dueCards',
-              color: AppColors.error,
+              color: dueCards == 0 ? AppColors.textSecondary : AppColors.warning,
             ),
             _StatItem(
               label: 'Mastered',
               value: '${srState.stats.masteredCards}',
-              color: AppColors.success,
+              color: srState.stats.masteredCards == 0 ? AppColors.textSecondary : AppColors.success,
             ),
             _StatItem(
               label: 'Total Cards',

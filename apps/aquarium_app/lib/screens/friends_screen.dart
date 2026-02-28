@@ -62,6 +62,7 @@ class _FriendsScreenState extends ConsumerState<FriendsScreen>
         ),
         actions: [
           IconButton(
+            constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
             icon: const Icon(Icons.person_add),
             onPressed: () => _showAddFriendDialog(context),
             tooltip: 'Add Friend',
@@ -271,6 +272,7 @@ class _FriendsListView extends ConsumerWidget {
               prefixIcon: const Icon(Icons.search),
               suffixIcon: searchQuery.isNotEmpty
                   ? IconButton(
+                      constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
                       icon: const Icon(Icons.clear),
                       onPressed: () {
                         searchController.clear();
@@ -495,10 +497,12 @@ class _FriendListTile extends ConsumerWidget {
   }
 
   Color _getLevelColor(int level) {
-    if (level >= 7) return Colors.purple;
-    if (level >= 5) return Colors.orange;
-    if (level >= 3) return Colors.blue;
-    return Colors.green;
+    if (level >= 7) return const Color(0xFF9C27B0); // Guru+ — purple/platinum
+    if (level >= 6) return const Color(0xFFAB47BC); // Master — purple
+    if (level >= 5) return const Color(0xFFFFA726); // Expert — amber/gold
+    if (level >= 4) return const Color(0xFF26A69A); // Aquarist — teal/green
+    if (level >= 3) return const Color(0xFF42A5F5); // Hobbyist — blue
+    return const Color(0xFF9E9E9E); // Novice/Beginner — muted grey
   }
 }
 

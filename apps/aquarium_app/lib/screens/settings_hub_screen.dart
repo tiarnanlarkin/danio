@@ -287,6 +287,7 @@ class SettingsHubScreen extends ConsumerWidget {
           ),
           // Edit button
           IconButton(
+            constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
             icon: const Icon(Icons.edit),
             onPressed: () {
               Navigator.push(
