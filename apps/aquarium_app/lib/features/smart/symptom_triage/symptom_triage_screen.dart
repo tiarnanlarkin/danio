@@ -139,7 +139,7 @@ class _SymptomTriageScreenState extends ConsumerState<SymptomTriageScreen> {
     } on OpenAIException catch (e) {
       setState(() => _error = 'AI error: ${e.message}');
     } catch (e) {
-      setState(() => _error = 'Failed: $e');
+      setState(() => _error = 'Something went wrong while analyzing. Please try again.');
     } finally {
       if (mounted) setState(() => _streaming = false);
     }
@@ -363,7 +363,7 @@ class _SymptomTriageScreenState extends ConsumerState<SymptomTriageScreen> {
               ),
               const SizedBox(width: AppSpacing.sm),
               Text(
-                _diagnosis.isEmpty ? 'Analysing symptoms...' : 'Thinking...',
+                _diagnosis.isEmpty ? 'Analyzing symptoms…' : 'Generating diagnosis…',
                 style: theme.textTheme.bodySmall?.copyWith(
                   color: AppColors.textSecondary,
                 ),
