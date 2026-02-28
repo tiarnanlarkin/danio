@@ -1,189 +1,163 @@
-# Danio — Image Generation Prompt Formula
-> Derived from design reference `v2-t3kol-wjwpf.jpg`
-> Target model: Nano Banana Pro (gemini-3-pro-image-preview)
+# Danio — Official Art Style & Prompt Formula
+> **STATUS: LOCKED ✅** — Approved by Tiarnan, 2026-02-28
+> Reference image: brand/exports/r3-hero-21-01-53.png (9/10)
 
 ---
 
-## The Core Style DNA
+## The Danio Art Style (Locked)
+
+Pixar/DreamWorks concept art, fully painterly, vibrant jewel tones,
+warm amber-gold key light + cool blue-slate ambient fill, dense intricate detail throughout.
+
+**This style applies to ALL Danio assets. Do not deviate.**
+
+---
+
+## Style DNA
 
 | Element | Value |
 |---------|-------|
-| Art style | Pixar / DreamWorks concept art, cinematic animation background painting |
-| Technique | Digital cel-shading with painterly gradients, variable-weight linework |
-| Lighting | Warm primary (amber/gold) + cool ambient fill (blue-slate) — always this contrast |
-| Shadows | Chromatic, never grey — darks shift cool (blue-purple), lights stay amber |
-| Colours | Warm honey-amber #C8884A + cool slate #4A5A6B + teal accent #4A9A8C |
-| Mood | Cosy, intimate, aspirational — "sanctuary" feeling |
-| Depth | Layered z-depth with atmospheric perspective on backgrounds |
+| Art style | Pixar / DreamWorks environment concept art |
+| Technique | Fully painterly — NO outlines, NO cel-shading, NO line art |
+| Colours | Vibrant saturated jewel tones throughout |
+| Key light | Warm amber-gold (#C8884A) from above/upper-right |
+| Ambient fill | Cool blue-slate (#4A5A6B) |
+| Shadows | Deep violet-indigo (#2A3548) — chromatic, never grey |
+| Lit zones | Warm ochre-amber (#D4903A) |
+| Detail | Dense and intricate — every inch of frame equally rich |
+| Mood | Cosy, aspirational, premium |
+| Rendering | Subsurface scattering on fish, visible brushwork, volumetric god rays |
 
 ---
 
-## Master Template
+## The 6 Style Lock Phrases (ALWAYS include all 6)
 
 ```
-[SUBJECT], [POSE/ACTION], [SETTING],
-Pixar concept art style, cinematic animation illustration,
-warm amber-gold key lighting, cool blue-slate ambient fill,
-chromatic shadows in cool purple-blue, painterly gradients,
-variable-weight dark linework, cel-shading with soft gradient overlays,
-cosy and aspirational mood, warm golden-hour colour palette,
-aquarium blues and ambers, rich depth and layering,
-professional animation studio quality
+Pixar DreamWorks concept art style, fully painterly no outlines
+volumetric lighting with god rays
+warm amber-gold key light, cool blue-slate ambient fill
+deep violet-indigo chromatic shadows
+vibrant saturated jewel-tone colour palette
+rich expressive brushwork, subsurface scattering
 ```
 
 ---
 
-## Asset-Specific Formulas
+## AVOID (breaks the style)
+
+- `cel-shading` — pulls toward cartoon
+- `line art` / `outlines` / `linework` — wrong technique
+- `watercolour` — wrong technique
+- `photorealistic` — wrong technique
+- `3D render` — wrong technique
+- `anime` — wrong character direction
+- `flat design` — loses depth and chromatic lighting
+- `background room` (for scene assets) — always falls off in detail
+
+---
+
+## Danio Mascot Character Spec
+
+**Species:** Zebrafish / Danio rerio
+**Defining features:**
+- Horizontal cobalt-blue and silver stripes along body (non-negotiable)
+- Warm amber-gold body base tone
+- Vivid teal fins
+- Big expressive eyes with white catchlight
+- ¾ front-facing angle (NEVER pure side profile — loses personality)
+- Open-mouth joyful expression
+
+**Prompt anchor for mascot:**
+```
+zebrafish danio character, three-quarter front-facing angle, both eyes visible,
+horizontal cobalt-blue and silver stripe markings along body,
+warm amber-gold body, vivid teal fins, big expressive eyes with white catchlight
+```
+
+---
+
+## Asset Formulas
 
 ### App Icon
 ```
-[FISH] cartoon character, centered, confident pose,
-rounded square icon composition with warm amber gradient background,
-Pixar animation style, warm amber-gold key lighting, cool blue-slate shadow fill,
-chromatic shadows in blue-purple, bold variable-weight linework,
-cel-shading with painterly gradients, golden-hour palette,
-clean white highlight on eye, no text, icon-safe composition,
-professional animation studio quality, 1:1 square format
+Cute zebrafish danio cartoon character, three-quarter front-facing angle, both eyes visible,
+horizontal cobalt-blue and silver stripe markings along body, warm amber-gold body, vivid teal fins,
+big expressive eyes with white catchlight, joyful expression,
+rounded square icon composition, vibrant amber-orange radial glow background,
+Pixar DreamWorks concept art style, fully painterly no outlines,
+volumetric warm amber-gold key light, cool blue-slate shadow fill, deep violet chromatic shadows,
+vibrant saturated jewel-tone colours, subsurface scattering on scales,
+rich expressive brushwork, bold clear silhouette readable at small sizes,
+no text, icon-safe composition, professional animation studio quality, 1:1 square format
 ```
 
 ### Mascot (full body)
 ```
-Friendly [FISH] mascot character, full body, [EMOTION] expression,
-big expressive eyes with white catchlight, Pixar animation style,
-warm amber-gold key lighting from upper-left, cool blue-slate ambient fill,
-chromatic shadows in cool purple-blue, painterly gradients,
-bold dark linework, cel-shading, white background,
-cosy and approachable personality, golden-hour colour palette,
-aquarium teal accent tones, professional animation studio quality
+Friendly zebrafish danio mascot character, full body, three-quarter front-facing angle,
+both eyes visible, joyful excited expression,
+horizontal cobalt-blue and silver stripe markings along body,
+warm amber-gold body tone, vivid teal fins, big expressive eyes with white catchlight,
+vibrant saturated jewel-tone colours, Pixar DreamWorks concept art style, fully painterly no outlines,
+warm amber-gold key light from upper-left, cool blue-slate ambient fill,
+deep violet chromatic shadows, subsurface scattering on scales,
+rich painterly brushwork, white background,
+Duolingo-style mascot energy, professional animation studio quality
 ```
 
 ### Hero Illustration (scene)
 ```
-[SCENE], cosy home aquarium setting,
-Pixar/DreamWorks environment concept art, cinematic animation background painting,
-warm amber key light, cool blue-slate ambient fill,
-layered z-depth: foreground details, midground focal tank, background soft-focus,
-chromatic shadows in blue-purple, atmospheric perspective on background,
-painterly gradients, variable-weight linework, cel-shading,
-golden-hour warm palette with aquarium blue-teal accents,
-organised richness — curated detail without clutter,
-cosy aspirational mood, professional animation studio quality, 16:9 wide format
+Lush thriving home aquarium interior, danio zebrafish and colourful tropical fish,
+densely packed intricate coral formations in vibrant jewel tones — electric blue, deep magenta, rich purple, bright orange,
+swaying anemone tendrils, richly detailed aquatic plants with individual leaves in vibrant emerald and lime,
+layered depth foreground mid background all equally rich,
+driftwood with moss detail, fine gravel substrate, caustic light patterns on every surface,
+schools of neon tetras glowing bright, danio mascot character visible swimming through scene,
+Pixar DreamWorks concept art style, fully painterly no outlines,
+volumetric warm amber-gold key light from above, cool blue-slate ambient fill,
+deep violet-indigo chromatic shadows, subsurface scattering on fish scales,
+vibrant saturated jewel-tone colour palette throughout,
+rich expressive brushwork, golden-hour atmosphere,
+every inch filled with intricate lovingly rendered detail,
+cosy premium aspirational mood, 16:9 wide format, professional animation studio quality
 ```
 
 ### Feature Graphic (Play Store banner)
 ```
-[FOCAL SUBJECT] in [SETTING],
-cinematic Pixar concept art style, wide hero composition,
-dramatic warm amber-gold backlight, cool blue-slate fill shadows,
-chromatic shadows in purple-blue, deep layered depth,
-painterly gradients with cel-shading, golden-hour atmosphere,
-aquarium blue-teal water tones contrasting warm amber room tones,
-aspirational and premium mood, atmospheric perspective,
-professional animation studio quality, 16:9 widescreen format
+Stunning cosy living room with large beautifully aquascaped tank as centrepiece,
+warm bright aspirational interior, vibrant tropical fish through glowing tank glass,
+vivid jewel-tone coral inside tank — electric blues purples magentas emerald greens,
+warm amber-gold sunlight flooding through window, cool vivid blue-teal glow from tank,
+deep violet shadows in corners, richly detailed room — fish-keeping books, water testing kit,
+cosy reading chair, warm wooden shelving, danio mascot fish visible through tank glass,
+Pixar DreamWorks concept art style, fully painterly no outlines,
+volumetric god-ray lighting, vibrant saturated punchy colour palette,
+subsurface scattering, rich brushwork throughout, golden-hour atmosphere,
+aspirational premium cosy mood, cinematic 16:9 widescreen, professional animation studio quality
 ```
-
----
-
-## The 5 Style Lock Words (always include)
-1. `Pixar concept art style`
-2. `warm amber-gold key lighting, cool blue-slate ambient fill`
-3. `chromatic shadows in cool purple-blue`
-4. `painterly gradients, cel-shading`
-5. `cosy golden-hour palette`
-
----
-
-## Avoid (kills the style)
-- photorealistic, watercolour, flat design, neon, vibrant, 3D render, anime
 
 ---
 
 ## Colour Palette
+
 | Name | Hex | Use |
 |------|-----|-----|
 | Honey amber | #C8884A | Key light, warm surfaces |
+| Burnt umber | #7A4E28 | Shadows on warm surfaces |
 | Slate blue-grey | #4A5A6B | Ambient fill, cool areas |
-| Deep blue-violet | #2A3548 | Deep shadows |
-| Teal accent | #4A9A8C | Fish, water, aquarium glass |
-| Brass-gold | #B8862A | Highlights, metallic accents |
-| Cream-white | #F5EED8 | Hotspot highlights, catchlights |
+| Deep violet | #2A3548 | Deep chromatic shadows |
+| Teal accent | #4A9A8C | Fish fins, water, aquarium glass |
+| Cobalt blue | #2A5BAD | Danio stripe markings |
+| Emerald green | #2E8B57 | Aquatic plants |
+| Neon amber | #D4903A | Bounce light, warm floors |
+| Cream-white | #F5EED8 | Catchlights, hotspot highlights |
 
 ---
 
-## Validation Prompt (test style consistency)
-```
-A happy clownfish swimming near coral in a cosy home aquarium,
-Pixar concept art style, cinematic animation illustration,
-warm amber-gold key lighting, cool blue-slate ambient fill,
-chromatic shadows in cool purple-blue, painterly gradients, cel-shading,
-variable-weight dark linework, cosy golden-hour palette,
-aquarium teal accent, professional animation studio quality
-```
+## Best Reference Images (in repo)
 
----
+| File | Score | Why |
+|------|-------|-----|
+| `brand/exports/r3-hero-21-01-53.png` | 9/10 | Best style example — use as reference |
+| `brand/exports/style-validation-v6-20-55-25.png` | 8.4/10 | Style validation |
+| `brand/exports/r3-mascot-21-01-44.png` | 8/10 | Best mascot with correct danio stripes |
 
-## v2 Refinements (2026-02-28) — 8.2/10
-
-Key changes that improved score from 6.5 → 8.2:
-
-**Add to all prompts:**
-- `no outlines, no line art, fully painterly`
-- `volumetric lighting, god rays`
-- `subsurface scattering on fish scales`
-- `soft atmospheric depth, visible brushwork`
-
-**Remove from prompts:**
-- ~~`cel-shading`~~ (pulls toward cartoon, not painterly)
-- ~~`variable-weight dark linework`~~ (adds outlines)
-
-**Still to solve:**
-- Chromatic shadows need pushing harder: add `deep violet-indigo shadows in cool zones, warm ochre-amber in lit zones`
-- Character integration: add `atmospheric perspective, character integrated into scene lighting`
-
-### Updated Master Template (v2)
-```
-[SUBJECT], [POSE/ACTION], [SETTING],
-Pixar DreamWorks environment concept art style,
-no outlines, no line art, fully painterly,
-volumetric lighting with god rays, subsurface scattering,
-warm amber-gold key light from upper right,
-cool blue-slate ambient fill in shadows,
-deep violet-indigo shadows in cool zones, warm ochre-amber in lit zones,
-rich painterly gradients with visible brushwork,
-soft atmospheric depth, character integrated into scene lighting,
-golden-hour colour palette, aquarium teal-blue water tones,
-contrasting warm amber background tones,
-cosy aspirational mood, cinematic composition,
-professional animation studio background painting quality
-```
-
----
-
-## v6 Refinements (2026-02-28) — 8.4/10 ✅ CURRENT BEST
-
-Key insight: **remove the background room entirely**. Fill the whole frame with aquarium content — every depth plane stays equally rich and detailed.
-
-**What changed from v2:**
-- No background room (always fell off in detail)
-- Full-frame aquarium interior — foreground, mid, background all populated
-- Added: `densely packed`, `lush`, `abundantly detailed`, `every inch filled`
-- Added: `layered depth of foreground mid and background all equally rich`
-- Added: `driftwood with moss detail`, `fine gravel substrate`, `caustic light patterns on every surface`
-- Kept all v2 lighting locks
-
-### Master Template v6 (use this for all scene assets)
-```
-[SCENE: lush thriving aquarium interior / cosy tank scene],
-[SUBJECT: fish species and behaviour],
-densely packed intricate coral formations, swaying anemone tendrils,
-richly detailed aquatic plants with individual leaves,
-layered depth — foreground mid background all equally rich,
-driftwood with moss detail, fine gravel substrate, caustic light patterns,
-Pixar DreamWorks concept art style, fully painterly no outlines,
-volumetric lighting, warm amber-gold key light from above,
-cool blue-slate ambient fill, deep violet-indigo chromatic shadows,
-subsurface scattering on fish scales, rich expressive brushwork,
-golden-hour palette, teal blue water,
-every inch of the frame filled with intricate lovingly rendered detail,
-cosy premium aspirational mood, professional animation studio quality
-```
