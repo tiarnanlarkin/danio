@@ -59,6 +59,7 @@ class PrimaryActionTile extends StatelessWidget {
       variant: AppCardVariant.filled,
       padding: AppCardPadding.standard,
       onTap: onTap,
+      semanticsLabel: subtitle != null ? '$title\n$subtitle' : title,
       child: Row(
         children: [
           Container(

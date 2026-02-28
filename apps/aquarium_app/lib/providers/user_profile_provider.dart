@@ -40,7 +40,14 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
       final json = prefs.getString(_key);
 
       if (json != null) {
-        final profile = UserProfile.fromJson(jsonDecode(json));
+        var profile = UserProfile.fromJson(jsonDecode(json));
+        // Migrate daily goal: if still at legacy default (50), auto-scale
+        if (profile.dailyXpGoal == 50) {
+          profile = profile.copyWith(
+            dailyXpGoal: profile.recommendedDailyXpGoal,
+          );
+          await _save(profile);
+        }
         state = AsyncValue.data(profile);
       } else {
         state = const AsyncValue.data(null);

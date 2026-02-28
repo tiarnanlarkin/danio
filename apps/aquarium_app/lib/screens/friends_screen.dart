@@ -68,7 +68,30 @@ class _FriendsScreenState extends ConsumerState<FriendsScreen>
           ),
         ],
       ),
-      body: TabBarView(
+      body: Column(
+        children: [
+          // Demo data indicator
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 16),
+            color: Theme.of(context).colorScheme.surfaceContainerHighest,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.info_outline, size: 14, color: Theme.of(context).colorScheme.onSurfaceVariant),
+                const SizedBox(width: 6),
+                Text(
+                  'Demo data — connect your account for real friends',
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Expanded(
+            child: TabBarView(
         controller: _tabController,
         children: [
           // Friends Tab
@@ -97,6 +120,9 @@ class _FriendsScreenState extends ConsumerState<FriendsScreen>
                   ref.read(friendActivitiesProvider.notifier).reload(),
             ),
             data: (activities) => _ActivityFeedView(activities: activities),
+          ),
+        ],
+            ),
           ),
         ],
       ),
