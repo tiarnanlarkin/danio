@@ -168,7 +168,7 @@ class ConfettiPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     for (final particle in particles) {
       final paint = Paint()
-        ..color = particle.color.withOpacity(1.0 - progress)
+        ..color = particle.color.withValues(alpha: 1.0 - progress)
         ..style = PaintingStyle.fill;
 
       // Calculate position

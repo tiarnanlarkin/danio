@@ -357,7 +357,7 @@ class _StudyRoomPainter extends CustomPainter {
         Rect.fromLTWH(shelfLeft, shelfTop, shelfWidth, shelfHeight),
         const Radius.circular(4),
       ),
-      Paint()..color = shelfColor.withOpacity(0.7),
+      Paint()..color = shelfColor.withValues(alpha: 0.7),
     );
 
     // Shelves (3 rows)
@@ -383,7 +383,7 @@ class _StudyRoomPainter extends CustomPainter {
             Rect.fromLTWH(bookX, bookBaseY - bookHeight, bookWidth, bookHeight),
             const Radius.circular(1),
           ),
-          Paint()..color = bookColor.withOpacity(0.85),
+          Paint()..color = bookColor.withValues(alpha: 0.85),
         );
 
         // Book spine detail
@@ -423,13 +423,13 @@ class _StudyRoomPainter extends CustomPainter {
     // Desk leg (left)
     canvas.drawRect(
       Rect.fromLTWH(w * 0.05, deskTop + 8, 8, h - deskTop - 8),
-      Paint()..color = deskColor.withOpacity(0.8),
+      Paint()..color = deskColor.withValues(alpha: 0.8),
     );
     
     // Desk leg (right)
     canvas.drawRect(
       Rect.fromLTWH(w * 0.40, deskTop + 8, 8, h - deskTop - 8),
-      Paint()..color = deskColor.withOpacity(0.8),
+      Paint()..color = deskColor.withValues(alpha: 0.8),
     );
 
     // Desk lamp
@@ -547,7 +547,7 @@ class _StudyTile extends StatelessWidget {
         width: 44,
         height: 44,
         decoration: BoxDecoration(
-          color: color.withOpacity(0.1),
+          color: color.withValues(alpha: 0.1),
           borderRadius: AppRadius.mediumRadius,
         ),
         child: Icon(icon, color: color),
