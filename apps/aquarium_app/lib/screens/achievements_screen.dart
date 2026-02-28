@@ -142,7 +142,7 @@ class _AchievementsScreenState extends ConsumerState<AchievementsScreen> {
                 begin: Alignment.centerLeft,
                 end: Alignment.centerRight,
                 colors: [Colors.white, Colors.white, Colors.transparent],
-                stops: [0.0, 0.85, 1.0],
+                stops: [0.0, 0.65, 1.0],
               ).createShader(bounds);
             },
             blendMode: BlendMode.dstIn,

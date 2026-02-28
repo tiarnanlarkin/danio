@@ -266,7 +266,10 @@ class LeaderboardScreen extends ConsumerWidget {
                 ),
             ],
           ),
-          subtitle: null,
+          subtitle: Text(
+            isCurrentUser ? 'Rank #${entry.rank} · You' : 'Rank #${entry.rank}',
+            style: AppTypography.bodySmall.copyWith(color: AppColors.textSecondary),
+          ),
           trailing: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.end,

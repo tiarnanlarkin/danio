@@ -311,7 +311,7 @@ class SettingsHubScreen extends ConsumerWidget {
         style: const TextStyle(
           fontSize: 16,
           fontWeight: FontWeight.w600,
-          letterSpacing: -0.1,
+          letterSpacing: 0.5,
           height: 1.3,
         ).copyWith(
           color: AppColors.textSecondary,

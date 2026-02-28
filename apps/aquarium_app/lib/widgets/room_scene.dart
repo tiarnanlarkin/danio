@@ -148,28 +148,28 @@ class LivingRoomScene extends ConsumerWidget {
 
               // === LAYER 5: Glassmorphic UI cards ===
 
-              // Temperature gauge (top left)
+              // Temperature gauge (top left) — compact size
               Positioned(
                 top: h * 0.06,
                 left: w * 0.05,
                 child: GestureDetector(
                   onTap: onStatsTap,
                   child: _CircularTempGauge(
-                    size: w * 0.26,
+                    size: w * 0.18,
                     temperature: temperature ?? 25,
                     theme: theme,
                   ),
                 ),
               ),
 
-              // Water quality card (top right)
+              // Water quality card (top right) — positioned to avoid overlap with top bar
               Positioned(
-                top: h * 0.06,
+                top: h * 0.08,
                 right: w * 0.05,
                 child: GestureDetector(
                   onTap: onTestKitTap,
                   child: _WaterQualityCard(
-                    width: w * 0.36,
+                    width: w * 0.32,
                     ph: ph,
                     ammonia: ammonia,
                     nitrate: nitrate,
