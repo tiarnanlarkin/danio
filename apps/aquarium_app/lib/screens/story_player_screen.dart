@@ -366,7 +366,7 @@ class _StoryPlayerScreenState extends ConsumerState<StoryPlayerScreen>
         margin: const EdgeInsets.all(AppSpacing.lg),
         padding: const EdgeInsets.all(AppSpacing.lg),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: AppColors.surface,
           borderRadius: AppRadius.largeRadius,
           boxShadow: [
             BoxShadow(
@@ -396,7 +396,7 @@ class _StoryPlayerScreenState extends ConsumerState<StoryPlayerScreen>
                 style: const TextStyle(
                   fontSize: 18,
                   height: 1.6,
-                  color: Colors.black87,
+                  color: AppColors.textPrimary,
                 ),
               ),
             ],
@@ -414,7 +414,7 @@ class _StoryPlayerScreenState extends ConsumerState<StoryPlayerScreen>
           icon: const Icon(Icons.check_circle),
           label: const Text('Complete Story'),
           style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.green,
+            backgroundColor: AppColors.success,
             foregroundColor: Colors.white,
             padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
             textStyle: const TextStyle(
@@ -518,7 +518,7 @@ class _ChoiceButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: Colors.white,
+      color: AppColors.surface,
       borderRadius: AppRadius.mediumRadius,
       elevation: AppElevation.level2,
       child: InkWell(
@@ -528,7 +528,7 @@ class _ChoiceButton extends StatelessWidget {
           padding: const EdgeInsets.all(AppSpacing.lg2),
           decoration: BoxDecoration(
             borderRadius: AppRadius.mediumRadius,
-            border: Border.all(color: Colors.blue.shade200, width: 2),
+            border: Border.all(color: AppColors.accent, width: 2),
           ),
           child: Row(
             children: [
@@ -538,14 +538,14 @@ class _ChoiceButton extends StatelessWidget {
                   style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w500,
-                    color: Colors.black87,
+                    color: AppColors.textPrimary,
                   ),
                 ),
               ),
               const SizedBox(width: 12),
               Icon(
                 Icons.arrow_forward_ios,
-                color: Colors.blue.shade700,
+                color: AppColors.primary,
                 size: AppIconSizes.sm,
               ),
             ],
