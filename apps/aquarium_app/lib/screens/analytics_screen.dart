@@ -1138,7 +1138,7 @@ ${summary.insights.isNotEmpty ? '💡 Top Insights:\n${summary.insights.take(3).
 Generated: ${DateFormat('MMM d, yyyy').format(DateTime.now())}
 ''';
 
-    await Share.share(report, subject: 'My Aquarium Learning Progress');
+    await Share.share(report, subject: 'My Danio Learning Progress');
   }
 
   /// Sample profile for testing (replace with real data from state management)

@@ -383,7 +383,7 @@ class _EmptyState extends StatelessWidget {
             ),
             const SizedBox(height: AppSpacing.md),
             Text(
-              'Track Your Aquarium Expenses',
+              'Track Your Fishkeeping Expenses',
               style: AppTypography.headlineSmall,
             ),
             const SizedBox(height: AppSpacing.sm),
