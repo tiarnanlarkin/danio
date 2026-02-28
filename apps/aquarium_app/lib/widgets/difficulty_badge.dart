@@ -240,8 +240,8 @@ class _SkillLevelUpAnimationState extends State<SkillLevelUpAnimation>
             child: Container(
               padding: EdgeInsets.all(AppSpacing.lg),
               decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [Colors.amber.shade300, Colors.orange.shade400],
+                gradient: const LinearGradient(
+                  colors: [DanioColors.topaz, DanioColors.amberGold],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
@@ -362,8 +362,8 @@ class MasteryBadge extends StatelessWidget {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 10 * size, vertical: 5 * size),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [Colors.amber.shade300, Colors.orange.shade400],
+        gradient: const LinearGradient(
+          colors: [DanioColors.topaz, DanioColors.amberGold],
         ),
         borderRadius: BorderRadius.circular(12 * size),
         boxShadow: [

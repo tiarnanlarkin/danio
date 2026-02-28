@@ -151,7 +151,7 @@ class _AchievementNotificationWidgetState
                 Colors.green,
                 Colors.yellow,
                 Colors.purple,
-                Colors.orange,
+                DanioColors.amberGold,
                 Colors.pink,
               ],
             ),

@@ -284,19 +284,19 @@ class AchievementDetailModal extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(AppSpacing.sm2),
                 decoration: BoxDecoration(
-                  color: Colors.orange.shade50,
+                  color: DanioColors.creamWarm,
                   borderRadius: AppRadius.smallRadius,
-                  border: Border.all(color: Colors.orange.shade200),
+                  border: Border.all(color: Color(0xFFE8C07A)),
                 ),
                 child: Row(
                   children: [
-                    Icon(Icons.lock_outline, color: Colors.orange.shade700),
+                    Icon(Icons.lock_outline, color: AppColors.primary),
                     const SizedBox(width: 12),
                     Expanded(
                       child: Text(
                         'Keep learning to unlock this achievement!',
                         style: TextStyle(
-                          color: Colors.orange.shade700,
+                          color: AppColors.primary,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
