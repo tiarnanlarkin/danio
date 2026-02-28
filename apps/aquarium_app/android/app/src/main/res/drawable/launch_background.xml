@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Aquarium Hobbyist Launch Splash Screen -->
+<!-- Danio Launch Splash Screen -->
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- Background color - ocean blue -->
+    <!-- Background color - warm cream -->
     <item android:drawable="@color/splash_background" />
 
     <!-- App icon centered -->

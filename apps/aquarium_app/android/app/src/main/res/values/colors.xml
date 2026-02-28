@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Aquarium Hobbyist App Colors -->
+    <!-- Danio App Colors -->
     
-    <!-- Splash screen background - calm ocean blue -->
-    <color name="splash_background">#E3F2FD</color>
+    <!-- Splash screen background - warm cream -->
+    <color name="splash_background">#FFF5E8</color>
     
-    <!-- Primary app colors -->
-    <color name="aquarium_blue">#2980B9</color>
-    <color name="aquarium_light_blue">#3498DB</color>
-    <color name="aquarium_dark_blue">#1F618D</color>
+    <!-- Primary brand colors -->
+    <color name="danio_amber">#B45309</color>
+    <color name="danio_amber_light">#D97706</color>
+    <color name="danio_amber_dark">#92400E</color>
 </resources>
