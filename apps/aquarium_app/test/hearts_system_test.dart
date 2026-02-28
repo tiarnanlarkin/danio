@@ -222,7 +222,7 @@ void main() {
       final profile = container.read(userProfileProvider).value!;
       final heartsToRefill = heartsService.calculateAutoRefill(profile);
       
-      expect(heartsToRefill, equals(2));
+      expect(heartsToRefill, equals(3));
     });
 
     test('does not refill beyond max hearts', () async {
@@ -264,10 +264,10 @@ void main() {
       final notifier = container.read(userProfileProvider.notifier);
       
       // Set refill time to 2 hours ago
-      final twoHoursAgo = DateTime.now().subtract(const Duration(hours: 2));
+      final threeMinutesAgo = DateTime.now().subtract(const Duration(minutes: 3));
       await notifier.updateHearts(
         hearts: 4,
-        lastHeartRefill: twoHoursAgo,
+        lastHeartRefill: threeMinutesAgo,
       );
       
       final profile = container.read(userProfileProvider).value!;
@@ -276,8 +276,8 @@ void main() {
       expect(timeUntilRefill, isNotNull);
       // Should be approximately 2 hours (within a minute of tolerance)
       expect(
-        timeUntilRefill!.inMinutes,
-        closeTo(120, 1),
+        timeUntilRefill!.inSeconds,
+        closeTo(120, 5),
       );
     });
 

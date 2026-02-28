@@ -79,6 +79,23 @@ class _ActivityFeedScreenState extends ConsumerState<ActivityFeedScreen> {
       ),
       body: Column(
         children: [
+          // Preview banner
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+            color: AppColors.infoAlpha20,
+            child: const Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.auto_awesome, size: 16, color: AppColors.info),
+                SizedBox(width: 8),
+                Text(
+                  'Preview — social features coming soon',
+                  style: TextStyle(fontSize: 13, color: AppColors.info),
+                ),
+              ],
+            ),
+          ),
           // Friend Filter Chips
           friendsAsync.when(
             loading: () => const SizedBox.shrink(),

@@ -430,20 +430,23 @@ class _ProfileCreationScreenState extends ConsumerState<ProfileCreationScreen> {
             mainAxisSize: MainAxisSize.min,
             children: [
               ExcludeSemantics(
-                child: Text(type.emoji, style: const TextStyle(fontSize: 40)),
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Text(type.emoji, style: const TextStyle(fontSize: 32)),
+                ),
               ),
-              const SizedBox(height: 6),
+              const SizedBox(height: 4),
               ExcludeSemantics(
                 child: Text(
                   type.displayName,
                   style: const TextStyle(
-                    fontSize: 15,
+                    fontSize: 14,
                     fontWeight: FontWeight.w600,
                   ),
                   textAlign: TextAlign.center,
                 ),
               ),
-              const SizedBox(height: 3),
+              const SizedBox(height: 2),
               ExcludeSemantics(
                 child: Text(
                   type.description,

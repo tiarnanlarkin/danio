@@ -87,7 +87,7 @@ void main() {
       
       // With no tanks, should show some form of empty state or prompt
       // Check for common empty state patterns
-      final hasEmptyMessage = find.textContaining('tank').evaluate().isNotEmpty ||
+      final _ = find.textContaining('tank').evaluate().isNotEmpty ||
                               find.textContaining('create').evaluate().isNotEmpty ||
                               find.textContaining('first').evaluate().isNotEmpty;
       
@@ -106,10 +106,6 @@ void main() {
       );
       await tester.pump(const Duration(milliseconds: 500));
       
-      // Look for gamification indicators (XP, streaks, gems, hearts)
-      final hasXp = find.textContaining('XP').evaluate().isNotEmpty;
-      final hasStreak = find.byIcon(Icons.local_fire_department).evaluate().isNotEmpty;
-      final hasGems = find.textContaining('💎').evaluate().isNotEmpty;
       
       // Gamification elements should be present somewhere
       // (This is a soft test - just checking the screen loads properly)
@@ -126,7 +122,7 @@ void main() {
         tester,
         const HomeScreen(),
         overrides: [
-          tanksProvider.overrideWith((ref) => AsyncValue.data([mockTank])),
+          tanksProvider.overrideWith((ref) async => [mockTank]),
         ],
       );
       
@@ -141,7 +137,7 @@ void main() {
         tester,
         const HomeScreen(),
         overrides: [
-          tanksProvider.overrideWith((ref) => const AsyncValue.loading()),
+          tanksProvider.overrideWith((ref) => Future<List<Tank>>.delayed(const Duration(days: 1))),
         ],
       );
 
@@ -159,9 +155,10 @@ void main() {
         tester,
         const HomeScreen(),
         overrides: [
-          tanksProvider.overrideWith(
-            (ref) => AsyncValue.error('Test error', StackTrace.current),
-          ),
+          tanksProvider.overrideWith((ref) async => throw Exception('Test error')),
+
+
+
         ],
       );
       
