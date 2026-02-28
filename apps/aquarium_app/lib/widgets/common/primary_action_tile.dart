@@ -55,11 +55,17 @@ class PrimaryActionTile extends StatelessWidget {
     final primaryColor = Theme.of(context).colorScheme.primary;
     final effectiveIconColor = iconColor ?? primaryColor;
 
-    return AppCard(
+    final semanticLabel = subtitle != null ? '$title\n$subtitle' : title;
+
+    return Semantics(
+      label: semanticLabel,
+      button: onTap != null,
+      excludeSemantics: true,
+      child: AppCard(
       variant: AppCardVariant.filled,
       padding: AppCardPadding.standard,
       onTap: onTap,
-      semanticsLabel: subtitle != null ? '$title\n$subtitle' : title,
+
       child: Row(
         children: [
           Container(
@@ -107,6 +113,7 @@ class PrimaryActionTile extends StatelessWidget {
           ],
         ],
       ),
+    ),
     );
   }
 }
