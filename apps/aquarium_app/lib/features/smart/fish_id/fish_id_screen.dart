@@ -82,6 +82,14 @@ Identify this fish or aquatic plant. Return ONLY valid JSON with these fields:
 
     try {
       final bytes = await _selectedImage!.readAsBytes();
+
+      // TODO(privacy): Strip EXIF metadata before sending to OpenAI.
+      // image_picker with maxWidth/maxHeight re-encodes the image which
+      // strips most EXIF data on Android, but this is not guaranteed on
+      // all devices/OS versions. For robust EXIF removal, consider using
+      // the `image` package to decode and re-encode, or use a dedicated
+      // EXIF stripping package (e.g. `exif` or `native_exif`).
+      // Tracked in: https://github.com/TiarnanLarkin/Aquarium-App-Dev/issues
       final base64 = base64Encode(bytes);
 
       final result = await openai.visionAnalysis(
