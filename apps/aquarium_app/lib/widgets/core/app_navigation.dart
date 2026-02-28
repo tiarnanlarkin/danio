@@ -164,6 +164,7 @@ class AppBackButton extends StatelessWidget {
       button: true,
       child: IconButton(
         icon: Icon(Icons.arrow_back_ios_new, size: AppIconSizes.sm),
+        tooltip: 'Go back',
         onPressed: onPressed ?? () => Navigator.of(context).maybePop(),
         color: color ?? (isDark ? AppColors.textPrimaryDark : AppColors.textPrimary),
         constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
@@ -195,6 +196,7 @@ class AppCloseButton extends StatelessWidget {
       button: true,
       child: IconButton(
         icon: Icon(Icons.close, size: AppIconSizes.md),
+        tooltip: 'Close',
         onPressed: onPressed ?? () => Navigator.of(context).maybePop(),
         color: color ?? (isDark ? AppColors.textPrimaryDark : AppColors.textPrimary),
         constraints: const BoxConstraints(minWidth: 48, minHeight: 48),

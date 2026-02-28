@@ -287,6 +287,7 @@ class _CostTrackerScreenState extends ConsumerState<CostTrackerScreen> {
               title: const Text('Clear All Data'),
               trailing: IconButton(
                 icon: Icon(Icons.delete, color: AppColors.error),
+                tooltip: 'Clear all data',
                 onPressed: () {
                   Navigator.pop(ctx);
                   _confirmClear();

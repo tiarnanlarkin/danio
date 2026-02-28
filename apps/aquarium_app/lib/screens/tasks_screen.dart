@@ -490,6 +490,7 @@ class _TaskCard extends StatelessWidget {
             Icons.check_circle_outline,
             color: task.isEnabled ? AppColors.success : AppColors.textHint,
           ),
+          tooltip: 'Complete task',
           onPressed: task.isEnabled ? onComplete : null,
         ),
         title: Text(

@@ -511,6 +511,7 @@ class _ReminderTile extends StatelessWidget {
               Icons.check_circle_outline,
               color: isOverdue ? AppColors.error : AppColors.success,
             ),
+            tooltip: 'Complete reminder',
             onPressed: onComplete,
           ),
         ),
