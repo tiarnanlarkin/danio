@@ -16,7 +16,7 @@ final currentRoomThemeProvider = Provider<RoomTheme>((ref) {
 });
 
 class RoomThemeNotifier extends StateNotifier<RoomThemeType> {
-  RoomThemeNotifier() : super(RoomThemeType.ocean) {
+  RoomThemeNotifier() : super(RoomThemeType.golden) {
     _loadTheme();
   }
 
