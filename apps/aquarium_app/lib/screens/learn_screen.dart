@@ -114,8 +114,10 @@ class LearnScreen extends ConsumerWidget {
             slivers: [
               // === Study Room Scene Header ===
               SliverToBoxAdapter(
-                child: SizedBox(
-                  height: 200,
+                child: Padding(
+                  padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
+                  child: SizedBox(
+                    height: 200,
                   child: Stack(
                     children: [
                       // Study room illustration
@@ -132,6 +134,7 @@ class LearnScreen extends ConsumerWidget {
                       // Scene handles its own XP/streak/progress overlays internally
                     ],
                   ),
+                ),
                 ),
               ),
 

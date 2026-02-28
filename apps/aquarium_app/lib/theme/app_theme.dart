@@ -1245,6 +1245,7 @@ class AppTheme {
         onSurface: AppColors.textPrimaryDark,
         error: AppColors.error,
         onError: Colors.white,
+        surfaceTint: Colors.transparent,
       ),
 
       scaffoldBackgroundColor: AppColors.backgroundDark,
@@ -1332,6 +1333,13 @@ class AppTheme {
         selectedItemColor: AppColors.primaryLight,
         unselectedItemColor: AppColors.textHintDark,
         type: BottomNavigationBarType.fixed,
+        elevation: 0,
+      ),
+
+      navigationBarTheme: NavigationBarThemeData(
+        backgroundColor: AppColors.surfaceDark,
+        surfaceTintColor: Colors.transparent,
+        indicatorColor: AppColors.primaryDark,
         elevation: 0,
       ),
 

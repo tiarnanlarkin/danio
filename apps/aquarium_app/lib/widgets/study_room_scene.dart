@@ -82,6 +82,7 @@ class StudyRoomScene extends StatelessWidget {
           width: w,
           height: h,
           child: Stack(
+            clipBehavior: Clip.none,
             children: [
               // === Background gradient ===
               Positioned.fill(
@@ -180,8 +181,8 @@ class StudyRoomScene extends StatelessWidget {
               // Microscope - Water Chemistry Guide
               if (onMicroscopeTap != null)
                 Positioned(
-                  top: h * 0.62,
-                  right: w * 0.12,
+                  top: h * 0.30,
+                  right: w * 0.22,
                   child: StudyRoomObjects.microscope(
                     onTap: onMicroscopeTap!,
                     isNewUser: isNewUser,
@@ -191,7 +192,7 @@ class StudyRoomScene extends StatelessWidget {
               // Globe - Random Fish Facts
               if (onGlobeTap != null)
                 Positioned(
-                  top: h * 0.5,
+                  top: h * 0.18,
                   left: w * 0.48,
                   child: StudyRoomObjects.globe(
                     onTap: onGlobeTap!,

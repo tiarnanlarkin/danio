@@ -142,7 +142,7 @@ class _AchievementsScreenState extends ConsumerState<AchievementsScreen> {
                 begin: Alignment.centerLeft,
                 end: Alignment.centerRight,
                 colors: [Colors.white, Colors.white, Colors.transparent],
-                stops: [0.0, 0.65, 1.0],
+                stops: [0.0, 0.85, 1.0],
               ).createShader(bounds);
             },
             blendMode: BlendMode.dstIn,
@@ -257,7 +257,7 @@ class _AchievementsScreenState extends ConsumerState<AchievementsScreen> {
                     ),
                   )
                 : GridView.builder(
-                    padding: const EdgeInsets.all(AppSpacing.md),
+                    padding: const EdgeInsets.fromLTRB(AppSpacing.md, AppSpacing.md, AppSpacing.md, 80),
                     gridDelegate:
                         const SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 2,

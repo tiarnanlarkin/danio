@@ -31,7 +31,7 @@ class PracticeHubScreen extends ConsumerWidget {
         ],
       ),
       body: ListView.builder(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.fromLTRB(16, 16, 16, 100),
         itemCount: _getPracticeHubItemCount(dueCards, totalCards),
         itemBuilder: (context, index) => _buildPracticeHubItem(
           context,
@@ -242,7 +242,7 @@ class PracticeHubScreen extends ConsumerWidget {
           child: Row(
             children: [
               Container(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.fromLTRB(16, 16, 16, 100),
                 decoration: BoxDecoration(
                   color: color.withAlpha(26),
                   borderRadius: AppRadius.mediumRadius,
@@ -280,7 +280,7 @@ class PracticeHubScreen extends ConsumerWidget {
         return Expanded(
           child: Card(
             child: Padding(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.fromLTRB(16, 16, 16, 100),
               child: Column(
                 children: [
                   Text(

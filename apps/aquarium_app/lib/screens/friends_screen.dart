@@ -88,8 +88,7 @@ class _FriendsScreenState extends ConsumerState<FriendsScreen>
                       fontSize: 12,
                       color: Theme.of(context).colorScheme.onSurfaceVariant,
                     ),
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: 1,
+                    maxLines: 2,
                   ),
                 ),
               ],
@@ -318,6 +317,7 @@ class _FriendsListView extends ConsumerWidget {
                   ),
                 )
               : ListView.builder(
+                  padding: const EdgeInsets.only(bottom: 80),
                   itemCount: filteredFriends.length,
                   itemBuilder: (context, index) {
                     final friend = filteredFriends[index];
