@@ -25,12 +25,14 @@ class AddLogScreen extends ConsumerStatefulWidget {
   final String tankId;
   final LogType initialType;
   final LogEntry? existingLog;
+  final bool quickMode;
 
   const AddLogScreen({
     super.key,
     required this.tankId,
     this.initialType = LogType.waterTest,
     this.existingLog,
+    this.quickMode = false,
   });
 
   @override
@@ -44,6 +46,8 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
   bool _isSaving = false;
   bool _isPickingImages = false;
   bool _bulkEntryMode = false;
+  bool _quickModeExpanded = false;
+  String? _lastTestAgoText;
 
   // Photos
   final List<String> _photoPaths = [];
@@ -94,7 +98,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
         _waterChangePercent = existing.waterChangePercent;
       }
     } else {
-      _type = widget.initialType;
+      _type = widget.quickMode ? LogType.waterTest : widget.initialType;
       // Pre-fill last values for new logs
       _loadLastValues();
     }
@@ -114,6 +118,15 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
           });
 
       if (lastWaterTest != null && lastWaterTest.waterTest != null && mounted) {
+        // Calculate how long ago the last test was
+        final ago = DateTime.now().difference(lastWaterTest.timestamp);
+        if (ago.inDays > 0) {
+          _lastTestAgoText = '${ago.inDays} day${ago.inDays == 1 ? '' : 's'} ago';
+        } else if (ago.inHours > 0) {
+          _lastTestAgoText = '${ago.inHours} hour${ago.inHours == 1 ? '' : 's'} ago';
+        } else {
+          _lastTestAgoText = 'just now';
+        }
         final t = lastWaterTest.waterTest!;
         setState(() {
           _temperature = t.temperature;
@@ -155,6 +168,8 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
 
   @override
   Widget build(BuildContext context) {
+    if (widget.quickMode) return _buildQuickModeScaffold();
+
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.existingLog != null ? 'Edit Log' : _getTitle()),
@@ -282,6 +297,250 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
             ),
           ],
         ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildQuickModeScaffold() {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Quick Water Test'),
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(AppSpacing.md),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Pre-fill indicator
+            if (_lastTestAgoText != null && widget.existingLog == null)
+              Container(
+                padding: const EdgeInsets.all(AppSpacing.sm2),
+                margin: const EdgeInsets.only(bottom: AppSpacing.md),
+                decoration: BoxDecoration(
+                  color: AppOverlays.info10,
+                  borderRadius: AppRadius.smallRadius,
+                  border: Border.all(color: AppOverlays.info30),
+                ),
+                child: Row(
+                  children: [
+                    Icon(Icons.history, size: AppIconSizes.xs, color: AppColors.info),
+                    const SizedBox(width: AppSpacing.sm),
+                    Expanded(
+                      child: Text(
+                        'Pre-filled from last test ($_lastTestAgoText)',
+                        style: AppTypography.bodySmall.copyWith(
+                          color: AppColors.info,
+                        ),
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        setState(() {
+                          _ph = null;
+                          _ammonia = null;
+                          _nitrite = null;
+                          if (_quickModeExpanded) {
+                            _temperature = null;
+                            _nitrate = null;
+                            _gh = null;
+                            _kh = null;
+                            _phosphate = null;
+                          }
+                        });
+                      },
+                      style: TextButton.styleFrom(
+                        foregroundColor: AppColors.info,
+                        padding: const EdgeInsets.symmetric(horizontal: 8),
+                      ),
+                      child: const Text('Clear'),
+                    ),
+                  ],
+                ),
+              ),
+
+            // Essential 3 fields in a row
+            Text('Essential Parameters', style: AppTypography.headlineSmall),
+            const SizedBox(height: AppSpacing.sm),
+            Container(
+              padding: const EdgeInsets.all(AppSpacing.md),
+              decoration: BoxDecoration(
+                color: AppColors.surfaceVariant,
+                borderRadius: AppRadius.mediumRadius,
+              ),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: _CompactParamField(
+                      label: 'pH',
+                      value: _ph,
+                      onChanged: (v) => setState(() => _ph = v),
+                      decimal: true,
+                    ),
+                  ),
+                  const SizedBox(width: AppSpacing.sm),
+                  Expanded(
+                    child: _CompactParamField(
+                      label: 'NH₃',
+                      unit: 'ppm',
+                      value: _ammonia,
+                      onChanged: (v) => setState(() => _ammonia = v),
+                      decimal: true,
+                      warningThreshold: 0.25,
+                      dangerThreshold: 0.5,
+                    ),
+                  ),
+                  const SizedBox(width: AppSpacing.sm),
+                  Expanded(
+                    child: _CompactParamField(
+                      label: 'NO₂',
+                      unit: 'ppm',
+                      value: _nitrite,
+                      onChanged: (v) => setState(() => _nitrite = v),
+                      decimal: true,
+                      warningThreshold: 0.25,
+                      dangerThreshold: 0.5,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            const SizedBox(height: AppSpacing.md),
+
+            // Expand to show more parameters
+            if (!_quickModeExpanded)
+              Center(
+                child: TextButton.icon(
+                  onPressed: () => setState(() => _quickModeExpanded = true),
+                  icon: const Icon(Icons.expand_more, size: 18),
+                  label: const Text('More parameters'),
+                ),
+              ),
+
+            // Expanded fields
+            if (_quickModeExpanded) ...[
+              const Divider(),
+              const SizedBox(height: AppSpacing.sm),
+              Text('Additional Parameters', style: AppTypography.labelLarge),
+              const SizedBox(height: AppSpacing.sm),
+              Container(
+                padding: const EdgeInsets.all(AppSpacing.md),
+                decoration: BoxDecoration(
+                  color: AppColors.surfaceVariant,
+                  borderRadius: AppRadius.mediumRadius,
+                ),
+                child: Column(
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(
+                          child: _CompactParamField(
+                            label: 'Temp',
+                            unit: '°C',
+                            value: _temperature,
+                            onChanged: (v) => setState(() => _temperature = v),
+                          ),
+                        ),
+                        const SizedBox(width: AppSpacing.sm),
+                        Expanded(
+                          child: _CompactParamField(
+                            label: 'NO₃',
+                            unit: 'ppm',
+                            value: _nitrate,
+                            onChanged: (v) => setState(() => _nitrate = v),
+                            warningThreshold: 20,
+                            dangerThreshold: 40,
+                          ),
+                        ),
+                        const SizedBox(width: AppSpacing.sm),
+                        Expanded(
+                          child: _CompactParamField(
+                            label: 'GH',
+                            unit: 'dGH',
+                            value: _gh,
+                            onChanged: (v) => setState(() => _gh = v),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: _CompactParamField(
+                            label: 'KH',
+                            unit: 'dKH',
+                            value: _kh,
+                            onChanged: (v) => setState(() => _kh = v),
+                          ),
+                        ),
+                        const SizedBox(width: AppSpacing.sm),
+                        Expanded(
+                          child: _CompactParamField(
+                            label: 'PO₄',
+                            unit: 'ppm',
+                            value: _phosphate,
+                            onChanged: (v) => setState(() => _phosphate = v),
+                            decimal: true,
+                          ),
+                        ),
+                        const Expanded(child: SizedBox()),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+
+              const SizedBox(height: AppSpacing.md),
+
+              // Notes in expanded mode
+              Text('Notes (optional)', style: AppTypography.headlineSmall),
+              const SizedBox(height: AppSpacing.sm),
+              TextFormField(
+                initialValue: _notes,
+                decoration: const InputDecoration(
+                  hintText: 'Any observations or notes...',
+                ),
+                maxLines: 3,
+                onChanged: (v) => _notes = v,
+              ),
+
+              const SizedBox(height: AppSpacing.sm),
+              Center(
+                child: TextButton.icon(
+                  onPressed: () => setState(() => _quickModeExpanded = false),
+                  icon: const Icon(Icons.expand_less, size: 18),
+                  label: const Text('Fewer parameters'),
+                ),
+              ),
+            ],
+
+            const SizedBox(height: AppSpacing.lg),
+
+            // Prominent Log button
+            SizedBox(
+              width: double.infinity,
+              child: FilledButton.icon(
+                onPressed: _isSaving ? null : _save,
+                icon: _isSaving
+                    ? const SizedBox(
+                        width: 18,
+                        height: 18,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: Colors.white,
+                        ),
+                      )
+                    : const Icon(Icons.check),
+                label: const Text('Log'),
+                style: FilledButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  textStyle: AppTypography.labelLarge,
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
