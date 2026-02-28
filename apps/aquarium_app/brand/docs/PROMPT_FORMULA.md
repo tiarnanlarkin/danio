@@ -58,20 +58,22 @@ rich expressive brushwork, subsurface scattering
 
 ## Danio Mascot Character Spec
 
-**Species:** Zebrafish / Danio rerio
+**Design direction:** Warm amber-orange fish character — brand-first, not species-accurate.
 **Defining features:**
-- Horizontal cobalt-blue and silver stripes along body (non-negotiable)
-- Warm amber-gold body base tone
+- Warm amber-orange body (vibrant, not muted)
+- Stylised horizontal stripes — warm gold/cream contrast stripes (NOT cobalt blue)
 - Vivid teal fins
 - Big expressive eyes with white catchlight
 - ¾ front-facing angle (NEVER pure side profile — loses personality)
 - Open-mouth joyful expression
+- Slender elongated body shape
 
 **Prompt anchor for mascot:**
 ```
-zebrafish danio character, three-quarter front-facing angle, both eyes visible,
-horizontal cobalt-blue and silver stripe markings along body,
-warm amber-gold body, vivid teal fins, big expressive eyes with white catchlight
+friendly cartoon fish character, three-quarter front-facing angle, both eyes visible,
+vibrant warm amber-orange body, stylised horizontal cream-gold stripe markings,
+vivid teal fins, slender elongated body,
+big expressive eyes with white catchlight, open-mouth joyful expression
 ```
 
 ---
