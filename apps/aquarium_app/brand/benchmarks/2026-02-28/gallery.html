@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Danio Bake-Off Gallery</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #1a1a1a; color: #fff; font-family: -apple-system, sans-serif; padding: 24px; }
+  h1 { font-size: 28px; margin-bottom: 6px; color: #f5c842; }
+  .subtitle { color: #888; margin-bottom: 32px; font-size: 14px; }
+  h2 { font-size: 18px; color: #f5c842; margin: 32px 0 16px; border-bottom: 1px solid #333; padding-bottom: 8px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; }
+  .card { background: #242424; border-radius: 12px; overflow: hidden; border: 1px solid #333; }
+  .card img { width: 100%; aspect-ratio: 1; object-fit: contain; background: #2e2e2e; padding: 8px; }
+  .card .label { padding: 10px 12px; font-size: 13px; color: #ccc; }
+  .card .model { font-weight: 600; color: #fff; margin-bottom: 2px; }
+  .winner { border-color: #f5c842 !important; }
+  .winner .model::after { content: " 🏆"; }
+  .loser { opacity: 0.45; }
+</style>
+</head>
+<body>
+<h1>🐟 Danio Brand Bake-Off</h1>
+<p class="subtitle">28 Feb 2026 · 18 images · 5 models</p>
+
+<h2>App Icons</h2>
+<div class="grid">
+  <div class="card"><img src="images/app-icon-flux-schnell.png"><div class="label"><div class="model">Flux Schnell</div>Great fish, needs background</div></div>
+  <div class="card loser"><img src="images/app-icon-flux-dev.png"><div class="label"><div class="model">Flux Dev</div>Blurry ❌</div></div>
+  <div class="card"><img src="images/app-icon-flux-pro.png"><div class="label"><div class="model">Flux Pro</div>Cold grey bg, small fish</div></div>
+  <div class="card"><img src="images/app-icon-recraft-v3.png"><div class="label"><div class="model">Recraft V3</div>Pretty but wrong format</div></div>
+  <div class="card winner"><img src="images/app-icon-nano-banana-pro.png"><div class="label"><div class="model">Nano Banana Pro</div>Built like a real icon</div></div>
+</div>
+
+<h2>Mascots</h2>
+<div class="grid">
+  <div class="card"><img src="images/mascot-flux-schnell.png"><div class="label"><div class="model">Flux Schnell</div>Kawaii, charming</div></div>
+  <div class="card"><img src="images/mascot-recraft-v3.png"><div class="label"><div class="model">Recraft V3</div>3D with feet 😬</div></div>
+  <div class="card winner"><img src="images/mascot-nano-banana-pro.png"><div class="label"><div class="model">Nano Banana Pro</div>Dynamic, animatable</div></div>
+</div>
+
+<h2>Hero Illustrations</h2>
+<div class="grid">
+  <div class="card"><img src="images/hero-illustration-flux-schnell.png"><div class="label"><div class="model">Flux Schnell</div>Warm close-up photo</div></div>
+  <div class="card"><img src="images/hero-illustration-flux-dev.png"><div class="label"><div class="model">Flux Dev</div>Stylised full tank</div></div>
+  <div class="card"><img src="images/hero-illustration-flux-pro.png"><div class="label"><div class="model">Flux Pro</div>Wide, colourful school</div></div>
+  <div class="card"><img src="images/hero-illustration-recraft-v3.png"><div class="label"><div class="model">Recraft V3</div>Realistic angled shot</div></div>
+  <div class="card winner"><img src="images/hero-illustration-nano-banana-pro.png"><div class="label"><div class="model">Nano Banana Pro</div>Cosy living room scene</div></div>
+</div>
+
+<h2>Feature Graphics</h2>
+<div class="grid">
+  <div class="card"><img src="images/feature-graphic-flux-schnell.png"><div class="label"><div class="model">Flux Schnell</div>Wall-spanning amber tank</div></div>
+  <div class="card"><img src="images/feature-graphic-flux-dev.png"><div class="label"><div class="model">Flux Dev</div>Tabletop goldfish</div></div>
+  <div class="card winner"><img src="images/feature-graphic-flux-pro.png"><div class="label"><div class="model">Flux Pro</div>Dramatic sunset backlight</div></div>
+  <div class="card"><img src="images/feature-graphic-recraft-v3.png"><div class="label"><div class="model">Recraft V3</div>Natural aquascape</div></div>
+  <div class="card"><img src="images/feature-graphic-nano-banana-pro.png"><div class="label"><div class="model">Nano Banana Pro</div>Wrong app name on it</div></div>
+</div>
+</body>
+</html>
