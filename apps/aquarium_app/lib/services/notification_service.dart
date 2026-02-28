@@ -152,7 +152,7 @@ class NotificationService {
 
     await _plugin.show(
       0,
-      '🐟 Aquarium App',
+      '🐟 Danio',
       'Notifications are working!',
       const NotificationDetails(
         android: AndroidNotificationDetails(

@@ -19,7 +19,7 @@ class TermsOfServiceScreen extends StatelessWidget {
               icon: Icons.gavel,
               title: 'Terms of Service',
               content:
-                  'These terms govern your use of the Aquarium Hobbyist app. '
+                  'These terms govern your use of the Danio app. '
                   'Please read them carefully.',
             ),
 
@@ -135,7 +135,7 @@ class TermsOfServiceScreen extends StatelessWidget {
                   const SizedBox(width: AppSpacing.md),
                   Expanded(
                     child: Text(
-                      'By using Aquarium Hobbyist, you agree to these terms. '
+                      'By using Danio, you agree to these terms. '
                       'If you don\'t agree, please uninstall the app.',
                       style: AppTypography.bodySmall.copyWith(
                         color: Colors.blue[900],

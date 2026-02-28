@@ -187,11 +187,11 @@ class _LevelUpOverlayState extends State<LevelUpOverlay>
 
   Color _getSparkleColor(int index) {
     const colors = [
-      Color(0xFFFFD700), // Gold
-      Color(0xFFFFC107), // Amber
+      Color(0xFFE8A84A), // Gold
+      Color(0xFFD97706), // Amber
       Color(0xFFFFE082), // Light gold
       Color(0xFFFFFFFF), // White
-      Color(0xFFFFA000), // Deep gold
+      Color(0xFFB45309), // Deep gold
     ];
     return colors[index];
   }
@@ -349,7 +349,7 @@ class _LevelUpOverlayState extends State<LevelUpOverlay>
                           horizontal: 32,
                           vertical: 16,
                         ),
-                        backgroundColor: const Color(0xFF8B5CF6),
+                        backgroundColor: const Color(0xFF8B6BAE),
                         foregroundColor: Colors.white,
                       ),
                       child: const Text(
@@ -387,9 +387,9 @@ class _LevelUpOverlayState extends State<LevelUpOverlay>
     return ShaderMask(
       shaderCallback: (bounds) => const LinearGradient(
         colors: [
-          Color(0xFFFFD700), // Gold
-          Color(0xFFFFA500), // Orange
-          Color(0xFFFFD700), // Gold
+          Color(0xFFE8A84A), // Gold
+          Color(0xFFB45309), // Orange
+          Color(0xFFE8A84A), // Gold
         ],
         stops: [0.0, 0.5, 1.0],
       ).createShader(bounds),
@@ -402,11 +402,11 @@ class _LevelUpOverlayState extends State<LevelUpOverlay>
           letterSpacing: 4,
           shadows: [
             Shadow(
-              color: const Color(0xFFFFD700).withValues(alpha: 0.8),
+              color: const Color(0xFFE8A84A).withValues(alpha: 0.8),
               blurRadius: 20,
             ),
             Shadow(
-              color: const Color(0xFFFFA500).withValues(alpha: 0.6),
+              color: const Color(0xFFB45309).withValues(alpha: 0.6),
               blurRadius: 40,
             ),
           ],
@@ -428,14 +428,14 @@ class _LevelUpOverlayState extends State<LevelUpOverlay>
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
               colors: [
-                Color(0xFF6366F1), // Indigo
-                Color(0xFF8B5CF6), // Purple
+                Color(0xFF2A3548), // Indigo
+                Color(0xFF8B6BAE), // Purple
                 Color(0xFFD946EF), // Fuchsia
               ],
             ),
             boxShadow: [
               BoxShadow(
-                color: const Color(0xFF8B5CF6).withValues(
+                color: const Color(0xFF8B6BAE).withValues(
                   alpha: 0.4 + _glowPulse.value * 0.4,
                 ),
                 blurRadius: 30 + _glowPulse.value * 20,

@@ -252,7 +252,7 @@ class EnhancedCelebrationNotifier extends StateNotifier<EnhancedCelebrationState
       haptic: haptic,
       canShare: isPerfect,
       shareText: isPerfect 
-          ? 'Just got a perfect score on "$lessonTitle" in Aquarium App! 🐠💯'
+          ? 'Just got a perfect score on "$lessonTitle" in Danio! 🐠💯'
           : null,
     );
     
@@ -295,7 +295,7 @@ class EnhancedCelebrationNotifier extends StateNotifier<EnhancedCelebrationState
       sound: sound,
       haptic: haptic,
       canShare: streakDays >= 7,
-      shareText: 'I just hit a $streakDays-day learning streak in Aquarium App! 🔥🐠',
+      shareText: 'I just hit a $streakDays-day learning streak in Danio! 🔥🐠',
     );
     
     _playSound(sound);
@@ -330,7 +330,7 @@ class EnhancedCelebrationNotifier extends StateNotifier<EnhancedCelebrationState
       sound: sound,
       haptic: haptic,
       canShare: true,
-      shareText: 'Just unlocked "$achievementName" in Aquarium App! $achievementIcon',
+      shareText: 'Just unlocked "$achievementName" in Danio! $achievementIcon',
     );
     
     _playSound(sound);
@@ -363,7 +363,7 @@ class EnhancedCelebrationNotifier extends StateNotifier<EnhancedCelebrationState
         sound: CelebrationSound.fireworks,
         haptic: HapticPattern.epic,
         canShare: newLevel % 5 == 0, // Share every 5 levels
-        shareText: 'Just reached Level $newLevel in Aquarium App! 🐠🎊',
+        shareText: 'Just reached Level $newLevel in Danio! 🐠🎊',
       );
       
       _playSound(CelebrationSound.fireworks);
@@ -396,7 +396,7 @@ class EnhancedCelebrationNotifier extends StateNotifier<EnhancedCelebrationState
     try {
       await Share.share(
         state.shareText!,
-        subject: 'Aquarium App Achievement',
+        subject: 'Danio Achievement',
       );
     } catch (e) {
       debugPrint('Failed to share achievement: $e');

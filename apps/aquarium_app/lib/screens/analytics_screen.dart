@@ -1068,7 +1068,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
 
       await Share.shareXFiles([
         XFile(file.path),
-      ], subject: 'Aquarium App Analytics Export');
+      ], subject: 'Danio Analytics Export');
     } catch (e) {
       debugPrint('Export failed: $e');
     }
@@ -1117,7 +1117,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
 
       await Share.shareXFiles([
         XFile(file.path),
-      ], subject: 'Aquarium App Analytics Export (CSV)');
+      ], subject: 'Danio Analytics Export (CSV)');
     } catch (e) {
       debugPrint('CSV Export failed: $e');
     }

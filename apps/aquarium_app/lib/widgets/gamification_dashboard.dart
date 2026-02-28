@@ -53,7 +53,7 @@ class GamificationDashboard extends ConsumerWidget {
                     icon: '🔥',
                     value: '${profile.currentStreak}',
                     label: 'day streak',
-                    color: Colors.orange,
+                    color: DanioColors.amberGold,
                   ),
                   const Spacer(),
                   _StatItem(
@@ -74,7 +74,7 @@ class GamificationDashboard extends ConsumerWidget {
                     icon: '💎',
                     value: _formatNumber(gems),
                     label: 'gems',
-                    color: Colors.cyan,
+                    color: DanioColors.tealWater,
                   ),
                   const Spacer(),
                   _HeartsDisplay(
@@ -310,7 +310,7 @@ class _DailyGoalProgress extends StatelessWidget {
               '📊',
               style: TextStyle(
                 fontSize: 16,
-                color: isComplete ? Colors.green : null,
+                color: isComplete ? DanioColors.emeraldGreen : null,
               ),
             ),
             const SizedBox(width: 6),

@@ -62,17 +62,17 @@ class ConfettiColors {
   
   /// Gold/achievement colors
   static const List<Color> gold = [
-    Color(0xFFFFD700),
-    Color(0xFFFFC107),
+    Color(0xFFE8A84A),
+    Color(0xFFD97706),
     Color(0xFFFFE082),
     Colors.white,
-    Color(0xFFFFB300),
+    Color(0xFFB45309),
   ];
   
   /// Level up special colors
   static const List<Color> levelUp = [
-    Color(0xFF6366F1), // Indigo
-    Color(0xFF8B5CF6), // Purple
+    Color(0xFF2A3548), // Indigo
+    Color(0xFF8B6BAE), // Purple
     Color(0xFFA855F7), // Violet
     Color(0xFFD946EF), // Fuchsia
     Colors.white,

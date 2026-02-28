@@ -328,12 +328,12 @@ class _EnhancedCelebrationOverlayWrapperState
   List<Color> _getGradientColors(CelebrationLevel level) {
     return switch (level) {
       CelebrationLevel.levelUp => [
-        const Color(0xFF6366F1), 
-        const Color(0xFF8B5CF6),
+        const Color(0xFF2A3548), 
+        const Color(0xFF8B6BAE),
       ],
       CelebrationLevel.achievement => [
-        const Color(0xFFFFB300), 
-        const Color(0xFFFFD700),
+        const Color(0xFFB45309), 
+        const Color(0xFFE8A84A),
       ],
       CelebrationLevel.milestone => [
         AppColors.primary, 
@@ -341,7 +341,7 @@ class _EnhancedCelebrationOverlayWrapperState
       ],
       CelebrationLevel.epic => [
         const Color(0xFFD946EF), 
-        const Color(0xFF6366F1),
+        const Color(0xFF2A3548),
       ],
       CelebrationLevel.standard => [
         AppColors.primary, 

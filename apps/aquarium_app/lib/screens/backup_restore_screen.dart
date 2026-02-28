@@ -367,7 +367,7 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
       // Share the ZIP file
       final result = await Share.shareXFiles(
         [XFile(zipPath)],
-        subject: 'Aquarium App Backup',
+        subject: 'Danio Backup',
         text:
             'My aquarium backup - ${DateFormat('yyyy-MM-dd').format(DateTime.now())}',
       );

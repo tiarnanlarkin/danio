@@ -95,12 +95,12 @@ class PrivacyPolicyScreen extends StatelessWidget {
             // Sections
             _buildSection(
               'Introduction',
-              'Aquarium Hobbyist is committed to protecting your privacy. This Privacy Policy explains how we handle your information when you use our Android application.\n\nThe short version: We don\'t collect, transmit, or store any of your data on external servers. Everything stays on your device.',
+              'Danio is committed to protecting your privacy. This Privacy Policy explains how we handle your information when you use our Android application.\n\nThe short version: We don\'t collect, transmit, or store any of your data on external servers. Everything stays on your device.',
             ),
 
             _buildSection(
               'Information Collection and Storage',
-              'Aquarium Hobbyist stores the following information locally on your device only:',
+              'Danio stores the following information locally on your device only:',
             ),
 
             _buildBulletList([
@@ -137,7 +137,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
 
             _buildSection(
               'Third-Party Services',
-              'Aquarium Hobbyist v1.0 does not use any third-party services that collect data. No analytics (Google Analytics, Firebase, etc.), no advertising networks, no cloud sync, no social media integrations, no crash reporting.',
+              'Danio v1.0 does not use any third-party services that collect data. No analytics (Google Analytics, Firebase, etc.), no advertising networks, no cloud sync, no social media integrations, no crash reporting.',
             ),
 
             _buildSection(
@@ -210,7 +210,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
 
             _buildSection(
               'Children\'s Privacy',
-              'Aquarium Hobbyist does not collect any personal information from anyone, including children under 13. The app can be safely used by hobbyists of all ages.',
+              'Danio does not collect any personal information from anyone, including children under 13. The app can be safely used by hobbyists of all ages.',
             ),
 
             _buildSection(
@@ -232,7 +232,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
               child: Column(
                 children: [
                   Text(
-                    'Aquarium Hobbyist v1.0',
+                    'Danio v1.0',
                     style: AppTypography.bodySmall.copyWith(
                       color: AppColors.textSecondary,
                     ),
@@ -515,7 +515,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
   void _openOnlineVersion() async {
     // GitHub Pages URL once repo is pushed
     final url = Uri.parse(
-      'https://tiarnanlarkin.github.io/Aquarium-App-Dev/docs/privacy-policy.html',
+      'https://tiarnanlarkin.github.io/aquarium-app/docs/privacy-policy.html',
     );
     if (await canLaunchUrl(url)) {
       await launchUrl(url, mode: LaunchMode.externalApplication);

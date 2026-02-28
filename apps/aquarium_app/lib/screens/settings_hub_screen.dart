@@ -224,7 +224,7 @@ class SettingsHubScreen extends ConsumerWidget {
       // === App Version Footer ===
       Center(
         child: Text(
-          'Aquarium App v1.0.0',
+          'Danio v1.0.0',
           style: AppTypography.bodySmall.copyWith(
             color: AppColors.textSecondary,
           ),

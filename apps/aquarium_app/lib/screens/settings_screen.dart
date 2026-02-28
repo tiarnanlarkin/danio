@@ -944,7 +944,7 @@ class SettingsScreen extends ConsumerWidget {
 
       await Share.shareXFiles([
         XFile(dataFile.path),
-      ], subject: 'Aquarium App Data Export');
+      ], subject: 'Danio Data Export');
     } catch (e) {
       if (context.mounted) {
         AppFeedback.dismiss(context);
