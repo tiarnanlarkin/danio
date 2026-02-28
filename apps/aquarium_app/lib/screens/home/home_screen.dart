@@ -290,9 +290,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               },
             ),
 
-            // === 3. Room scene — clean hero, NO stat overlays ===
-            SizedBox(
-              height: 260,
+            // === 3. Room scene — fills available space ===
+            Expanded(
               child: Stack(
                 children: [
                   Positioned.fill(
@@ -385,7 +384,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             ),
 
             // === 5. Tank switcher + content below ===
-            Expanded(
+            SizedBox(
+              height: 72,
               child: Stack(
                 children: [
                   Padding(
