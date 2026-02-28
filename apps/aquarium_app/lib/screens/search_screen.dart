@@ -5,6 +5,7 @@ import '../data/species_database.dart';
 import '../models/models.dart';
 import '../providers/tank_provider.dart';
 import '../theme/app_theme.dart';
+import '../widgets/core/app_states.dart';
 import 'livestock_detail_screen.dart';
 import 'tank_detail/tank_detail_screen.dart';
 
@@ -62,7 +63,11 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
           ? _EmptySearchState()
           : tanksAsync.when(
               loading: () => const Center(child: BubbleLoader()),
-              error: (e, _) => Center(child: Text('Error: $e')),
+              error: (e, _) => AppErrorState(
+              title: 'Search failed',
+              onRetry: () => ref.invalidate(tanksProvider),
+              compact: true,
+            ),
               data: (tanks) =>
                   _SearchResults(query: _query, tanks: tanks, ref: ref),
             ),

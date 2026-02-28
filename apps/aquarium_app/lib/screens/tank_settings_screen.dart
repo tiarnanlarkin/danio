@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import '../models/models.dart';
 import '../providers/tank_provider.dart';
 import '../theme/app_theme.dart';
+import '../widgets/core/app_states.dart';
 import '../utils/app_feedback.dart';
 
 class TankSettingsScreen extends ConsumerStatefulWidget {
@@ -42,7 +43,10 @@ class _TankSettingsScreenState extends ConsumerState<TankSettingsScreen> {
           const Scaffold(body: Center(child: CircularProgressIndicator())),
       error: (err, _) => Scaffold(
         appBar: AppBar(title: const Text('Tank Settings')),
-        body: Center(child: Text('Error: $err')),
+        body: AppErrorState(
+          title: 'Failed to load tank settings',
+          onRetry: () => ref.invalidate(tankProvider(widget.tankId)),
+        ),
       ),
       data: (tank) {
         if (tank == null) {

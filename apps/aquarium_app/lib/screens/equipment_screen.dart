@@ -370,7 +370,11 @@ class _EquipmentHistoryDialog extends ConsumerWidget {
             padding: EdgeInsets.all(AppSpacing.sm2),
             child: Center(child: CircularProgressIndicator()),
           ),
-          error: (err, _) => Text('Error loading history: $err'),
+          error: (err, _) => AppErrorState(
+              title: 'Failed to load history',
+              compact: true,
+              onRetry: () => ref.invalidate(allLogsProvider(tankId)),
+            ),
           data: (logs) {
             final maintenance =
                 logs

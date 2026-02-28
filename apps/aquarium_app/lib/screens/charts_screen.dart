@@ -12,6 +12,7 @@ import '../models/models.dart';
 import '../providers/tank_provider.dart';
 import '../theme/app_theme.dart';
 import '../utils/app_feedback.dart';
+import '../widgets/core/app_states.dart';
 
 class ChartsScreen extends ConsumerStatefulWidget {
   final String tankId;
@@ -60,7 +61,11 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
       ),
       body: logsAsync.when(
         loading: () => const Center(child: BubbleLoader()),
-        error: (err, _) => Center(child: Text('Error: $err')),
+        error: (err, _) => AppErrorState(
+          title: 'Failed to load charts',
+          message: 'Could not load water test data.',
+          onRetry: () => ref.invalidate(allLogsProvider(widget.tankId)),
+        ),
         data: (logs) {
           final waterTests =
               logs
@@ -72,21 +77,31 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
 
           if (waterTests.isEmpty) {
             return Center(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(Icons.show_chart, size: AppIconSizes.xxl, color: AppColors.textHint),
-                  const SizedBox(height: AppSpacing.md),
-                  Text(
-                    'No water tests yet',
-                    style: AppTypography.headlineSmall,
-                  ),
-                  const SizedBox(height: AppSpacing.sm),
-                  Text(
-                    'Log some water tests to see trends',
-                    style: AppTypography.bodyMedium,
-                  ),
-                ],
+              child: Padding(
+                padding: const EdgeInsets.all(AppSpacing.xl),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.show_chart, size: AppIconSizes.xxl, color: AppColors.textHint),
+                    const SizedBox(height: AppSpacing.md),
+                    Text(
+                      'No water tests yet',
+                      style: AppTypography.headlineSmall,
+                    ),
+                    const SizedBox(height: AppSpacing.sm),
+                    Text(
+                      'Log water tests to track parameters over time and spot trends.',
+                      style: AppTypography.bodyMedium.copyWith(color: AppColors.textSecondary),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: AppSpacing.lg),
+                    FilledButton.icon(
+                      onPressed: () => Navigator.pop(context),
+                      icon: const Icon(Icons.science_outlined),
+                      label: const Text('Log a Water Test'),
+                    ),
+                  ],
+                ),
               ),
             );
           }

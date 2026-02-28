@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/models.dart';
 import '../providers/tank_provider.dart';
 import '../theme/app_theme.dart';
+import '../widgets/core/app_states.dart';
 
 class TankComparisonScreen extends ConsumerStatefulWidget {
   const TankComparisonScreen({super.key});
@@ -25,7 +26,10 @@ class _TankComparisonScreenState extends ConsumerState<TankComparisonScreen> {
       appBar: AppBar(title: const Text('Compare Tanks')),
       body: tanksAsync.when(
         loading: () => const Center(child: BubbleLoader()),
-        error: (e, _) => Center(child: Text('Error: $e')),
+        error: (e, _) => AppErrorState(
+          title: 'Failed to load tanks',
+          onRetry: () => ref.invalidate(tanksProvider),
+        ),
         data: (tanks) {
           if (tanks.length < 2) {
             return Center(

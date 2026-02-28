@@ -83,8 +83,8 @@ class TankDetailScreen extends ConsumerWidget {
               3,
               (_) => const ListTile(
                 leading: Icon(Icons.schedule, color: AppColors.textHint),
-                title: Text('Task loading placeholder'),
-                subtitle: Text('Due in some days'),
+                title: Text('Water change'),
+                subtitle: Text('Due tomorrow'),
                 trailing: Icon(Icons.check_circle_outline, color: AppColors.success),
               ),
             ),
@@ -108,7 +108,7 @@ class TankDetailScreen extends ConsumerWidget {
                   backgroundColor: AppOverlays.primary20,
                   child: const Icon(Icons.science, color: AppColors.primary, size: AppIconSizes.sm),
                 ),
-                title: Text(log.title ?? 'Activity placeholder'),
+                title: Text(log.title ?? 'Water test'),
                 subtitle: Text(DateFormat('MMM d, h:mm a').format(log.timestamp)),
               );
             }).toList(),

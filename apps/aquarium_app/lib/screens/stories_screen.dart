@@ -5,6 +5,7 @@ library;
 import 'package:aquarium_app/theme/app_theme.dart';
 
 import 'package:flutter/material.dart';
+import '../theme/app_theme.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/story.dart';
 import '../models/user_profile.dart';
@@ -221,8 +222,26 @@ class _StoriesScreenState extends ConsumerState<StoriesScreen> {
     }
 
     if (sortedStories.isEmpty) {
-      return const SliverFillRemaining(
-        child: Center(child: Text('No stories found')),
+      return SliverFillRemaining(
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(32),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.auto_stories_outlined, size: 56, color: AppColors.textHint),
+                const SizedBox(height: 16),
+                Text('No stories yet', style: AppTypography.titleMedium),
+                const SizedBox(height: 8),
+                Text(
+                  'Stories will appear as you progress through lessons and unlock new content.',
+                  textAlign: TextAlign.center,
+                  style: AppTypography.bodyMedium.copyWith(color: AppColors.textSecondary),
+                ),
+              ],
+            ),
+          ),
+        ),
       );
     }
 
