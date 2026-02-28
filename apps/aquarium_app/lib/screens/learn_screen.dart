@@ -31,7 +31,7 @@ class LearnScreen extends ConsumerWidget {
           // Skeleton header
           SliverToBoxAdapter(
             child: Container(
-              height: 320,
+              height: 200,
               color: AppOverlays.primary10,
             ),
           ),
@@ -115,7 +115,7 @@ class LearnScreen extends ConsumerWidget {
               // === Study Room Scene Header ===
               SliverToBoxAdapter(
                 child: SizedBox(
-                  height: 320,
+                  height: 200,
                   child: Stack(
                     children: [
                       // Study room illustration
@@ -815,6 +815,22 @@ class _LazyLearningPathCardState extends ConsumerState<_LazyLearningPathCard> {
                   ),
                 ],
               ),
+              // "Continue →" CTA for in-progress paths
+              if (progress > 0 && !isComplete)
+                Padding(
+                  padding: const EdgeInsets.only(top: 8),
+                  child: Row(
+                    children: [
+                      Text(
+                        'Continue \u2192',
+                        style: AppTypography.labelMedium.copyWith(
+                          color: AppColors.xp,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
             ],
           ),
           children: _buildExpandedContent(loadedPath, isLoading),

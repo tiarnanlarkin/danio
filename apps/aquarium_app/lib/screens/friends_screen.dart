@@ -414,7 +414,7 @@ class _FriendListTile extends ConsumerWidget {
                         Icon(
                           Icons.star,
                           size: 14,
-                          color: Colors.amber.shade700,
+                          color: AppColors.xp,
                         ),
                         const SizedBox(width: AppSpacing.xs),
                         Flexible(
@@ -429,7 +429,7 @@ class _FriendListTile extends ConsumerWidget {
                           const Icon(
                             Icons.local_fire_department,
                             size: 14,
-                            color: Colors.orange,
+                            color: AppColors.warning,
                           ),
                           const SizedBox(width: 2),
                           Flexible(
@@ -610,14 +610,14 @@ class _ActivityTile extends StatelessWidget {
                         Icon(
                           Icons.star,
                           size: 14,
-                          color: Colors.amber.shade700,
+                          color: AppColors.xp,
                         ),
                         const SizedBox(width: AppSpacing.xs),
                         Text(
                           '+${activity.xpEarned} XP',
                           style: TextStyle(
                             fontSize: 12,
-                            color: Colors.amber.shade900,
+                            color: AppColors.xp,
                             fontWeight: FontWeight.bold,
                           ),
                         ),

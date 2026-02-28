@@ -64,6 +64,7 @@ class AppColors {
     0xFF5D6F76,
   ); // Medium-dark gray (WCAG AA: 4.67:1 on background, 5.25:1 on white)
 
+  static const Color textDisabled = Color(0xFF484F58); // Disabled/muted text
   // Border colors
   static const Color border = Color(0xFFE0E0E0); // Light gray border
   static const Color borderDark = Color(0xFF3D4A5C); // Dark mode border

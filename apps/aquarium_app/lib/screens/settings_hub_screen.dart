@@ -305,12 +305,16 @@ class SettingsHubScreen extends ConsumerWidget {
 
   Widget _buildSectionHeader(String title) {
     return Padding(
-      padding: const EdgeInsets.only(left: AppSpacing.xs),
+      padding: const EdgeInsets.only(left: AppSpacing.xs, bottom: AppSpacing.xs),
       child: Text(
         title,
-        style: AppTypography.titleMedium.copyWith(
-          color: AppColors.textSecondary,
+        style: const TextStyle(
+          fontSize: 16,
           fontWeight: FontWeight.w600,
+          letterSpacing: -0.1,
+          height: 1.3,
+        ).copyWith(
+          color: AppColors.textSecondary,
         ),
       ),
     );

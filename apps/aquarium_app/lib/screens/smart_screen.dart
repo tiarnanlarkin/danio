@@ -115,10 +115,26 @@ class SmartScreen extends ConsumerWidget {
         expand: false,
         builder: (ctx, scrollController) {
           if (anomalies.isEmpty) {
-            return const Center(
+            return Center(
               child: Padding(
-                padding: EdgeInsets.all(AppSpacing.lg),
-                child: Text('No anomalies detected yet.'),
+                padding: const EdgeInsets.all(AppSpacing.lg),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.insights_outlined, size: 48, color: AppColors.textHint),
+                    const SizedBox(height: AppSpacing.sm),
+                    Text(
+                      'No anomalies detected yet',
+                      style: AppTypography.bodyMedium.copyWith(color: AppColors.textSecondary),
+                    ),
+                    const SizedBox(height: AppSpacing.xs),
+                    Text(
+                      'Log water tests regularly to enable smart analysis',
+                      style: AppTypography.bodySmall.copyWith(color: AppColors.textHint),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                ),
               ),
             );
           }
