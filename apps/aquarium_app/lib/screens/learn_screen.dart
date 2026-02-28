@@ -676,7 +676,7 @@ class _LazyLearningPathCardState extends ConsumerState<_LazyLearningPathCard> {
 
     return Container(
       decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF1E2030) : Colors.white,
+        color: isDark ? AppColors.surfaceDark : Colors.white,
         borderRadius: BorderRadius.circular(AppRadius.lg),
         boxShadow: [
           BoxShadow(

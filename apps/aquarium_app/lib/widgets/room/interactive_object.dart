@@ -381,8 +381,8 @@ class LivingRoomObjects {
       label: 'Schedule',
       onTap: onTap,
       size: 44,
-      iconColor: const Color(0xFF5B9A8B),
-      glowColor: const Color(0xFF5B9A8B),
+      iconColor: AppColors.primary,
+      glowColor: AppColors.primary,
       isNewUser: isNewUser,
       animationStyle: InteractiveAnimationStyle.pulse,
     );

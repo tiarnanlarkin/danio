@@ -19,7 +19,7 @@ class EmptyRoomScene extends StatelessWidget {
             gradient: LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
-              colors: [Color(0xFFF5EDE3), Color(0xFFEDE5DA)],
+              colors: [DanioColors.creamWarm, DanioColors.ivoryWhite],
             ),
           ),
         ),
@@ -35,9 +35,9 @@ class EmptyRoomScene extends StatelessWidget {
               gradient: const LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
-                colors: [Color(0xFF87CEEB), Color(0xFFB8E0F0)],
+                colors: [const Color(0xFFE8D8C8), const Color(0xFFF0E4D4)],
               ),
-              border: Border.all(color: const Color(0xFF8B7355), width: 6),
+              border: Border.all(color: AppColors.woodBrown, width: 6),
               borderRadius: AppRadius.xsRadius,
             ),
           ),

@@ -33,7 +33,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen>
       title: 'Track Your Aquariums',
       description:
           'Keep all your tanks in one place. Log water parameters, track trends, and never miss a water change.',
-      gradientColors: [Color(0xFF3D7068), Color(0xFF5B9A8B)],
+      gradientColors: [AppColors.primaryDark, AppColors.primary],
     ),
     _OnboardingPage(
       icon: Icons.pets_rounded,
@@ -47,7 +47,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen>
       title: 'Watch Your Tanks Thrive',
       description:
           'Smart tasks keep your tanks healthy. Complete tasks, view history, and watch your parameters over time.',
-      gradientColors: [Color(0xFF5C9FBF), Color(0xFF87CEEB)],
+      gradientColors: [DanioColors.tealWater, Color(0xFF8BC4CA)],
     ),
   ];
 
@@ -534,7 +534,7 @@ class _PrimaryButtonState extends State<_PrimaryButton>
               ),
               child: Center(
                 child: DefaultTextStyle(
-                  style: const TextStyle(color: Color(0xFF3D7068)),
+                  style: const TextStyle(color: AppColors.primary),
                   child: widget.child,
                 ),
               ),

@@ -44,25 +44,25 @@ class _HouseNavigatorState extends ConsumerState<HouseNavigator> {
       name: 'Study',
       icon: Icons.auto_stories,
       emoji: '📚',
-      color: Color(0xFF2D3A4F), // Deep blue
+      color: AppColors.secondaryDark, // Deep blue
     ),
     RoomInfo(
       name: 'Living Room',
       icon: Icons.weekend,
       emoji: '🛋️',
-      color: Color(0xFF5B9A8B), // Teal
+      color: AppColors.primary, // Brand amber
     ),
     RoomInfo(
       name: 'Friends',
       icon: Icons.people,
       emoji: '👥',
-      color: Color(0xFF9C27B0), // Purple
+      color: DanioColors.amethyst, // Purple
     ),
     RoomInfo(
       name: 'Leaderboard',
       icon: Icons.leaderboard,
       emoji: '🏆',
-      color: Color(0xFFFFD700), // Gold
+      color: DanioColors.topaz, // Gold
     ),
     RoomInfo(
       name: 'Workshop',
@@ -74,7 +74,7 @@ class _HouseNavigatorState extends ConsumerState<HouseNavigator> {
       name: 'Shop Street',
       icon: Icons.storefront,
       emoji: '🏪',
-      color: Color(0xFF4A7C59), // Green
+      color: DanioColors.emeraldGreen, // Green
     ),
   ];
 

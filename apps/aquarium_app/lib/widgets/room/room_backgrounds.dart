@@ -16,7 +16,7 @@ enum RoomType {
 /// Theme-aware room background colors
 class RoomBackgroundColors {
   // Living Room - Cozy home with warm greens and cream
-  static const livingRoomGradient1 = Color(0xFF5B9A8B); // Soft teal
+  static const livingRoomGradient1 = AppColors.primary; // Brand amber
   static const livingRoomGradient2 = Color(0xFF4A8B7C); // Medium teal
   static const livingRoomGradient3 = Color(0xFF3D7A6C); // Deep teal
   static const livingRoomAccent = Color(0xFFFFF8E7); // Cream
@@ -28,7 +28,7 @@ class RoomBackgroundColors {
   static const livingRoomAccentAlpha20 = Color(0x33FFF8E7); // 20%
 
   // Study - Library/learning with deep greens and wood tones
-  static const studyGradient1 = Color(0xFF2D3A4F); // Deep blue-gray
+  static const studyGradient1 = AppColors.secondaryDark; // Deep blue-gray
   static const studyGradient2 = Color(0xFF1F2937); // Darker blue
   static const studyGradient3 = Color(0xFF1A202C); // Deep navy
   static const studyWood = Color(0xFF5D4E37); // Wood brown

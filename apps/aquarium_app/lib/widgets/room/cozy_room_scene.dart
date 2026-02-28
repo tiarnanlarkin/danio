@@ -99,7 +99,7 @@ class _CozyRoomPainter extends CustomPainter {
     switch (style) {
       case RoomStyle.livingRoom:
         return [
-          const Color(0xFF5B9A8B), // Soft teal top
+          AppColors.primary, // Brand amber top
           const Color(0xFF4A8B7C), // Medium teal
           const Color(0xFF3D7A6C), // Deep teal bottom
         ];

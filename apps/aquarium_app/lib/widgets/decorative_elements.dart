@@ -11,7 +11,7 @@ class SoftBlob extends StatelessWidget {
   const SoftBlob({
     super.key,
     this.size = 200,
-    this.color = const Color(0xFF5B9A8B),
+    this.color = AppColors.primary,
     this.seed = 0,
   });
 
@@ -485,7 +485,7 @@ class StatBubble extends StatelessWidget {
     super.key,
     required this.value,
     required this.label,
-    this.color = const Color(0xFF5B9A8B),
+    this.color = AppColors.primary,
     this.size = 80,
   });
 

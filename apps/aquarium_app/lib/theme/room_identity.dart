@@ -18,7 +18,7 @@ class RoomIdentity {
 
   // Accent colors
   static const Color livingRoomAccent = Color(0xFFE8A87C); // warm amber
-  static const Color libraryAccent = Color(0xFF5B9A8B); // teal/blue
+  static const Color libraryAccent = AppColors.primary; // brand amber
   static const Color labAccent = Color(0xFF5AAF7A); // green
   static const Color workshopAccent = Color(0xFF9C78FF); // purple/indigo
   static const Color closetAccent = Color(0xFF9CA3AF); // neutral grey

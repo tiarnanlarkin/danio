@@ -308,13 +308,13 @@ class _MascotBubbleState extends State<MascotBubble>
         return const LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [Color(0xFF7FC8B6), Color(0xFF5B9A8B)],
+          colors: [AppColors.primaryLight, AppColors.primary],
         );
       case MascotMood.thinking:
         return const LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [Color(0xFF85C7DE), Color(0xFF5C9FBF)],
+          colors: [DanioColors.tealWater, const Color(0xFF4A8A92)],
         );
       case MascotMood.celebrating:
         return const LinearGradient(
@@ -481,11 +481,11 @@ class _MascotAvatarState extends State<MascotAvatar>
     switch (widget.mood) {
       case MascotMood.happy:
         return const LinearGradient(
-          colors: [Color(0xFF7FC8B6), Color(0xFF5B9A8B)],
+          colors: [AppColors.primaryLight, AppColors.primary],
         );
       case MascotMood.thinking:
         return const LinearGradient(
-          colors: [Color(0xFF85C7DE), Color(0xFF5C9FBF)],
+          colors: [DanioColors.tealWater, const Color(0xFF4A8A92)],
         );
       case MascotMood.celebrating:
         return const LinearGradient(

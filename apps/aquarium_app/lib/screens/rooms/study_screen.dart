@@ -438,7 +438,7 @@ class _StudyRoomPainter extends CustomPainter {
     // Lamp base
     canvas.drawOval(
       Rect.fromCenter(center: lampBase, width: 25, height: 8),
-      Paint()..color = const Color(0xFF2C3E50),
+      Paint()..color = AppColors.secondaryDark,
     );
     
     // Lamp arm
@@ -446,7 +446,7 @@ class _StudyRoomPainter extends CustomPainter {
       lampBase,
       Offset(w * 0.15, deskTop - 50),
       Paint()
-        ..color = const Color(0xFF2C3E50)
+        ..color = AppColors.secondaryDark
         ..strokeWidth = 3
         ..strokeCap = StrokeCap.round,
     );
