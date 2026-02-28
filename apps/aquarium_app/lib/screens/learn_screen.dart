@@ -262,7 +262,7 @@ class LearnScreen extends ConsumerWidget {
                   }, childCount: metadata.length),
                 ),
 
-                const SliverToBoxAdapter(child: SizedBox(height: 100)),
+                const SliverToBoxAdapter(child: SizedBox(height: 160)),
               ],
             ],
           );

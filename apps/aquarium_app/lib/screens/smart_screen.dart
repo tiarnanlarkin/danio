@@ -28,7 +28,7 @@ class SmartScreen extends ConsumerWidget {
         centerTitle: true,
       ),
       body: ListView(
-        padding: const EdgeInsets.all(AppSpacing.md),
+        padding: const EdgeInsets.fromLTRB(AppSpacing.md, AppSpacing.md, AppSpacing.md, 80),
         children: [
           // API status
           if (!openai.isConfigured)

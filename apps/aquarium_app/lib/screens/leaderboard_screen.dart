@@ -84,7 +84,7 @@ class LeaderboardScreen extends ConsumerWidget {
           Expanded(
             child: ListView.builder(
               itemCount: entries.length,
-              padding: const EdgeInsets.symmetric(vertical: 8),
+              padding: const EdgeInsets.only(top: 8, bottom: 80),
               itemBuilder: (context, index) {
                 final entry = entries[index];
                 return _buildLeaderboardTile(

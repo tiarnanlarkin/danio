@@ -29,7 +29,7 @@ class SettingsHubScreen extends ConsumerWidget {
         title: const Text('⚙️ Settings & More'),
       ),
       body: ListView.builder(
-        padding: const EdgeInsets.all(AppSpacing.md),
+        padding: const EdgeInsets.fromLTRB(AppSpacing.md, AppSpacing.md, AppSpacing.md, 80),
         itemCount: items.length,
         itemBuilder: (context, index) => items[index],
       ),

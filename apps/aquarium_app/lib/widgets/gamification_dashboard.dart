@@ -330,7 +330,7 @@ class _DailyGoalProgress extends StatelessWidget {
             const SizedBox(width: 6),
             Flexible(
               child: Text(
-                'Daily Goal: $current/$goal XP',
+                '$current/$goal XP',
                 style: AppTypography.labelMedium.copyWith(
                   color: isComplete ? AppColors.success : AppColors.textPrimary,
                   fontWeight: isComplete ? FontWeight.bold : FontWeight.normal,
