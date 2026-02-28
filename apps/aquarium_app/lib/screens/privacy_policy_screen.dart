@@ -515,7 +515,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
   void _openOnlineVersion() async {
     // GitHub Pages URL once repo is pushed
     final url = Uri.parse(
-      'https://tiarnanlarkin.github.io/aquarium-app/docs/privacy-policy.html',
+      'https://gist.github.com/tiarnanlarkin/ba344c0c023b4fd799227850963a35f3',
     );
     if (await canLaunchUrl(url)) {
       await launchUrl(url, mode: LaunchMode.externalApplication);
