@@ -6,6 +6,7 @@ import '../theme/app_theme.dart';
 import '../widgets/hearts_widgets.dart';
 import 'spaced_repetition_practice_screen.dart';
 import 'practice_screen.dart';
+import 'achievements_screen.dart';
 
 /// Practice Hub - Central location for all quiz and practice activities
 /// This is Tab 1 in the new navigation structure
@@ -179,7 +180,7 @@ class PracticeHubScreen extends ConsumerWidget {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => const PracticeScreen(),
+                builder: (_) => const AchievementsScreen(),
               ),
             );
           },

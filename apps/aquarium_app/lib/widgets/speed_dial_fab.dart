@@ -29,6 +29,7 @@ class _SpeedDialFABState extends State<SpeedDialFAB>
   late AnimationController _controller;
   late Animation<double> _expandAnimation;
   bool _isOpen = false;
+  OverlayEntry? _overlayEntry;
 
   @override
   void initState() {
@@ -46,6 +47,7 @@ class _SpeedDialFABState extends State<SpeedDialFAB>
 
   @override
   void dispose() {
+    _removeOverlay();
     _controller.dispose();
     super.dispose();
   }
@@ -55,8 +57,10 @@ class _SpeedDialFABState extends State<SpeedDialFAB>
       _isOpen = !_isOpen;
       if (_isOpen) {
         _controller.forward();
+        _showOverlay();
       } else {
         _controller.reverse();
+        _removeOverlay();
       }
     });
   }
@@ -65,7 +69,63 @@ class _SpeedDialFABState extends State<SpeedDialFAB>
     if (_isOpen) {
       setState(() => _isOpen = false);
       _controller.reverse();
+      _removeOverlay();
     }
+  }
+
+  /// Computes the centre of the main FAB in global screen coordinates.
+  Offset _fabCenter() {
+    final box = context.findRenderObject() as RenderBox?;
+    if (box == null) return Offset.zero;
+    // The FAB widget is a 56x56 circle — its centre in local coords is (28, 28)
+    return box.localToGlobal(const Offset(28, 28));
+  }
+
+  void _showOverlay() {
+    final bgColor = widget.backgroundColor ?? AppColors.primary;
+    final count = widget.actions.length;
+    const startAngle = 180.0;
+    const endAngle = 90.0;
+    final angleStep = (startAngle - endAngle) / (count - 1).clamp(1, 10);
+
+    _overlayEntry = OverlayEntry(
+      builder: (ctx) {
+        final center = _fabCenter();
+        return Stack(
+          children: [
+            // Full-screen scrim — closes the FAB on any outside tap
+            Positioned.fill(
+              child: GestureDetector(
+                onTap: _close,
+                behavior: HitTestBehavior.opaque,
+                child: const ColoredBox(color: Colors.transparent),
+              ),
+            ),
+
+            // Radial action buttons rendered in the Overlay layer
+            for (var i = 0; i < count; i++)
+              _OverlayActionButton(
+                action: widget.actions[i],
+                fabCenter: center,
+                angle: startAngle - (i * angleStep),
+                index: i,
+                total: count,
+                animation: _expandAnimation,
+                onPressed: () {
+                  _close();
+                  widget.actions[i].onPressed?.call();
+                },
+              ),
+          ],
+        );
+      },
+    );
+    Overlay.of(context).insert(_overlayEntry!);
+  }
+
+  void _removeOverlay() {
+    _overlayEntry?.remove();
+    _overlayEntry = null;
   }
 
   @override
@@ -73,95 +133,74 @@ class _SpeedDialFABState extends State<SpeedDialFAB>
     final bgColor = widget.backgroundColor ?? AppColors.primary;
     final fgColor = widget.foregroundColor ?? Colors.white;
 
-    return SizedBox(
-      width: 280,
-      height: 320,
-      child: Stack(
-        clipBehavior: Clip.none,
-        alignment: Alignment.bottomRight,
-        children: [
-          // Scrim/backdrop when open
-          if (_isOpen)
-            Positioned.fill(
-              child: GestureDetector(
-                onTap: _close,
-                child: Container(color: Colors.transparent),
-              ),
-            ),
-
-          // Action buttons in radial pattern
-          ..._buildActionButtons(bgColor),
-
-          // Main FAB
-          Positioned(
-            bottom: 0,
-            right: 0,
-            child: _MainFAB(
-              isOpen: _isOpen,
-              animation: _expandAnimation,
-              backgroundColor: bgColor,
-              foregroundColor: fgColor,
-              closedIcon: widget.closedIcon,
-              openIcon: widget.openIcon,
-              onPressed: _toggle,
-            ),
-          ),
-        ],
-      ),
+    // Only the main FAB button lives in the widget tree.
+    // Action buttons are rendered in the Overlay when open.
+    return _MainFAB(
+      isOpen: _isOpen,
+      animation: _expandAnimation,
+      backgroundColor: bgColor,
+      foregroundColor: fgColor,
+      closedIcon: widget.closedIcon,
+      openIcon: widget.openIcon,
+      onPressed: _toggle,
     );
   }
+}
 
-  List<Widget> _buildActionButtons(Color primaryColor) {
-    final count = widget.actions.length;
-    final buttons = <Widget>[];
+/// Renders a single action button inside the Overlay at an absolute screen position.
+class _OverlayActionButton extends StatelessWidget {
+  final SpeedDialAction action;
+  final Offset fabCenter;
+  final double angle;
+  final int index;
+  final int total;
+  final Animation<double> animation;
+  final VoidCallback onPressed;
 
-    // Fan angle: spread actions in an arc from bottom-right
-    // Start at 180° (left), end at 90° (up)
-    const startAngle = 180.0;
-    const endAngle = 90.0;
-    final angleStep = (startAngle - endAngle) / (count - 1).clamp(1, 10);
+  const _OverlayActionButton({
+    required this.action,
+    required this.fabCenter,
+    required this.angle,
+    required this.index,
+    required this.total,
+    required this.animation,
+    required this.onPressed,
+  });
 
-    for (var i = 0; i < count; i++) {
-      final action = widget.actions[i];
-      final angle = startAngle - (i * angleStep);
-      final radians = angle * (math.pi / 180);
+  @override
+  Widget build(BuildContext context) {
+    final radians = angle * (math.pi / 180);
+    const radius = 110.0;
+    final dx = radius * math.cos(radians);
+    final dy = radius * math.sin(radians); // positive y = downward in screen coords
 
-      // Distance from center
-      const radius = 110.0;
-      final x = radius * math.cos(radians);
-      final y = radius * math.sin(radians);
+    return AnimatedBuilder(
+      animation: animation,
+      builder: (ctx, child) {
+        final progress = animation.value;
+        final staggeredProgress = AppCurves.standardDecelerate.transform(
+          ((progress * total) - index).clamp(0.0, 1.0),
+        );
 
-      buttons.add(
-        AnimatedBuilder(
-          animation: _expandAnimation,
-          builder: (context, child) {
-            final progress = _expandAnimation.value;
-            // Stagger the animation slightly for each button
-            final staggeredProgress = AppCurves.standardDecelerate.transform(
-              ((progress * count) - i).clamp(0.0, 1.0),
-            );
+        // Button centre in screen coordinates (spread from FAB centre)
+        final bx = fabCenter.dx + (dx * progress);
+        final by = fabCenter.dy - (dy * progress); // subtract because screen y is inverted
 
-            return Positioned(
-              bottom: 8 + (-y * progress),
-              right: 8 + (-x * progress),
-              child: Transform.scale(
-                scale: staggeredProgress,
-                child: Opacity(opacity: staggeredProgress, child: child),
-              ),
-            );
-          },
-          child: _ActionButton(
-            action: action,
-            onPressed: () {
-              _close();
-              action.onPressed?.call();
-            },
+        return Positioned(
+          // Anchor to button centre (approximate: label+icon width ~180, height ~48)
+          left: bx - 180,
+          top: by - 24,
+          child: IgnorePointer(
+            ignoring: staggeredProgress < 0.5,
+            child: Transform.scale(
+              scale: staggeredProgress,
+              child: Opacity(opacity: staggeredProgress, child: child),
+            ),
           ),
-        ),
-      );
-    }
-
-    return buttons;
+        );
+      },
+      child: _ActionButton(action: action, onPressed: onPressed),
+    );
   }
 }
 
@@ -184,16 +223,20 @@ class _MainFAB extends StatelessWidget {
     required this.onPressed,
   });
 
+  void _handleTap() {
+    HapticFeedback.mediumImpact();
+    onPressed();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Semantics(
       button: true,
       label: isOpen ? 'Close quick actions menu' : 'Open quick actions menu',
+      onTap: _handleTap,
       child: GestureDetector(
-        onTap: () {
-          HapticFeedback.mediumImpact();
-          onPressed();
-        },
+        excludeFromSemantics: true,
+        onTap: _handleTap,
         child: AnimatedBuilder(
           animation: animation,
           builder: (context, child) {
@@ -288,7 +331,9 @@ class _ActionButtonState extends State<_ActionButton>
     return Semantics(
       button: true,
       label: widget.action.label,
+      onTap: _handleTap,
       child: GestureDetector(
+        excludeFromSemantics: true,
         onTapDown: _handleTapDown,
         onTapUp: _handleTapUp,
         onTapCancel: _handleTapCancel,

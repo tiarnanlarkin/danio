@@ -13,7 +13,7 @@ import '../services/hearts_service.dart';
 import '../providers/user_profile_provider.dart';
 import '../theme/app_theme.dart';
 // import '../services/firebase_analytics_service.dart';
-import 'dart:math' as math;
+
 
 class EnhancedQuizScreen extends ConsumerStatefulWidget {
   final EnhancedQuiz quiz;
@@ -296,39 +296,41 @@ class _EnhancedQuizScreenState extends ConsumerState<EnhancedQuizScreen>
             _buildProgressHeader(),
 
             // Quiz content
-            Expanded(
-              child: ListView.builder(
+            Flexible(
+              child: SingleChildScrollView(
                 padding: const EdgeInsets.all(20),
-                itemCount: _currentAnswered && exercise.explanation != null ? 7 : 5,
-                itemBuilder: (context, index) {
-                  switch (index) {
-                    case 0:
-                      return _buildExerciseTypeBadge(exercise.type);
-                    case 1:
-                      return const SizedBox(height: AppSpacing.md);
-                    case 2:
-                      return Text(exercise.question, style: AppTypography.headlineMedium);
-                    case 3:
-                      return const SizedBox(height: AppSpacing.lg);
-                    case 4:
-                      return ExerciseWidget(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildExerciseTypeBadge(exercise.type),
+                    const SizedBox(height: AppSpacing.md),
+                    RepaintBoundary(
+                      child: Text(
+                        exercise.question,
+                        key: ValueKey('question_${exercise.question.hashCode}'),
+                        style: AppTypography.headlineMedium,
+                      ),
+                    ),
+                    const SizedBox(height: AppSpacing.lg),
+                    DefaultTextStyle.merge(
+                      style: const TextStyle(color: Colors.black87),
+                      child: ExerciseWidget(
                         exercise: exercise,
                         onAnswer: _onAnswer,
                         isAnswered: _currentAnswered,
                         isCorrect: isCorrect,
                         userAnswer: _userAnswers[_currentExerciseIndex],
-                      );
-                    case 5:
-                      return const SizedBox(height: AppSpacing.lg);
-                    case 6:
-                      return _buildExplanation(
+                      ),
+                    ),
+                    if (_currentAnswered && exercise.explanation != null) ...[
+                      const SizedBox(height: AppSpacing.lg),
+                      _buildExplanation(
                         exercise.explanation!,
                         isCorrect ?? false,
-                      );
-                    default:
-                      return const SizedBox(height: 100);
-                  }
-                },
+                      ),
+                    ],
+                  ],
+                ),
               ),
             ),
 
@@ -611,166 +613,186 @@ class _EnhancedQuizScreenState extends ConsumerState<EnhancedQuizScreen>
     return Column(
       children: [
         Expanded(
-          child: Center(
-            child: Padding(
-              padding: const EdgeInsets.all(AppSpacing.xl),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  // Result emoji with animation
-                  TweenAnimationBuilder<double>(
-                    tween: Tween(begin: 0.0, end: 1.0),
-                    duration: const Duration(milliseconds: 800),
-                    curve: Curves.elasticOut,
-                    builder: (context, value, child) {
-                      return Transform.scale(
-                        scale: value,
-                        child: Container(
-                          width: 140,
-                          height: 140,
-                          decoration: BoxDecoration(
-                            gradient: passed
-                                ? AppColors.primaryGradient
-                                : LinearGradient(
-                                    colors: [
-                                      AppColors.warning,
-                                      AppColors.warningAlpha70,
-                                    ],
-                                  ),
-                            shape: BoxShape.circle,
-                            boxShadow: [
-                              BoxShadow(
-                                color: passed
-                                    ? AppColors.primaryAlpha30
-                                    : AppColors.warningAlpha30,
-                                blurRadius: 20,
-                                offset: const Offset(0, 10),
-                              ),
-                            ],
-                          ),
-                          child: Center(
-                            child: Text(
-                              passed ? '🎉' : '📚',
-                              style: const TextStyle(fontSize: 64),
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.xl,
+              vertical: AppSpacing.lg,
+            ),
+            child: Column(
+              children: [
+                const SizedBox(height: AppSpacing.md),
+
+                // Result emoji with animation
+                TweenAnimationBuilder<double>(
+                  tween: Tween(begin: 0.0, end: 1.0),
+                  duration: const Duration(milliseconds: 800),
+                  curve: Curves.elasticOut,
+                  builder: (context, value, child) {
+                    return Transform.scale(
+                      scale: value,
+                      child: Container(
+                        width: 120,
+                        height: 120,
+                        decoration: BoxDecoration(
+                          gradient: passed
+                              ? AppColors.primaryGradient
+                              : LinearGradient(
+                                  colors: [
+                                    AppColors.warning,
+                                    AppColors.warningAlpha70,
+                                  ],
+                                ),
+                          shape: BoxShape.circle,
+                          boxShadow: [
+                            BoxShadow(
+                              color: passed
+                                  ? AppColors.primaryAlpha30
+                                  : AppColors.warningAlpha30,
+                              blurRadius: 20,
+                              offset: const Offset(0, 10),
                             ),
+                          ],
+                        ),
+                        child: Center(
+                          child: Text(
+                            passed ? '🎉' : '📚',
+                            style: const TextStyle(fontSize: 52),
                           ),
                         ),
-                      );
-                    },
-                  ),
-                  const SizedBox(height: AppSpacing.xl),
+                      ),
+                    );
+                  },
+                ),
+                const SizedBox(height: AppSpacing.lg),
 
-                  // Title
-                  Text(
-                    passed ? 'Excellent work!' : 'Keep learning!',
-                    style: AppTypography.headlineLarge,
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 12),
+                // Title
+                Text(
+                  passed ? 'Excellent work!' : 'Keep learning!',
+                  style: AppTypography.headlineLarge,
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: AppSpacing.xs),
 
-                  // Score
-                  Text(
-                    'You got $_correctAnswers out of ${widget.quiz.maxScore} correct',
-                    style: AppTypography.bodyLarge.copyWith(
-                      color: AppColors.textSecondary,
-                    ),
-                    textAlign: TextAlign.center,
+                // Motivational subtext
+                Text(
+                  passed
+                      ? '🐠 Your aquarium knowledge is growing!'
+                      : '🐠 Every expert was once a beginner.',
+                  style: AppTypography.bodyMedium.copyWith(
+                    color: AppColors.textSecondary,
                   ),
-                  const SizedBox(height: AppSpacing.sm),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: AppSpacing.md),
 
-                  // Percentage with circular progress
-                  SizedBox(
-                    width: 100,
-                    height: 100,
-                    child: Stack(
-                      alignment: Alignment.center,
-                      children: [
-                        TweenAnimationBuilder<double>(
-                          tween: Tween(begin: 0.0, end: percentage / 100),
-                          duration: const Duration(milliseconds: 1500),
-                          curve: Curves.easeInOut,
-                          builder: (context, value, child) {
-                            return CircularProgressIndicator(
-                              value: value,
-                              strokeWidth: 8,
-                              backgroundColor: AppColors.surfaceVariant,
-                              valueColor: AlwaysStoppedAnimation<Color>(
-                                passed ? AppColors.success : AppColors.warning,
-                              ),
-                            );
-                          },
-                        ),
-                        Text(
-                          '$percentage%',
-                          style: AppTypography.headlineMedium.copyWith(
-                            fontWeight: FontWeight.bold,
+                // Score and percentage row
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    // Percentage with circular progress
+                    SizedBox(
+                      width: 80,
+                      height: 80,
+                      child: Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          TweenAnimationBuilder<double>(
+                            tween: Tween(begin: 0.0, end: percentage / 100),
+                            duration: const Duration(milliseconds: 1500),
+                            curve: Curves.easeInOut,
+                            builder: (context, value, child) {
+                              return CircularProgressIndicator(
+                                value: value,
+                                strokeWidth: 6,
+                                backgroundColor: AppColors.surfaceVariant,
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                  passed ? AppColors.success : AppColors.warning,
+                                ),
+                              );
+                            },
                           ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: AppSpacing.xl),
-
-                  // XP earned card
-                  Container(
-                    padding: const EdgeInsets.all(AppSpacing.lg),
-                    decoration: BoxDecoration(
-                      gradient: AppColors.primaryGradient,
-                      borderRadius: AppRadius.largeRadius,
-                      boxShadow: [
-                        BoxShadow(
-                          color: AppOverlays.primary30,
-                          blurRadius: 20,
-                          offset: const Offset(0, 10),
-                        ),
-                      ],
-                    ),
-                    child: Column(
-                      children: [
-                        const Icon(Icons.star, color: Colors.white, size: 48),
-                        const SizedBox(height: 12),
-                        Text(
-                          '+${widget.quiz.bonusXp + (passed ? bonusXp : 0)} XP',
-                          style: AppTypography.headlineLarge.copyWith(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        if (bonusXp > 0) ...[
-                          const SizedBox(height: AppSpacing.sm),
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 12,
-                              vertical: 6,
-                            ),
-                            decoration: BoxDecoration(
-                              color: AppOverlays.white20,
-                              borderRadius: AppRadius.mediumRadius,
-                            ),
-                            child: Text(
-                              'includes +$bonusXp passing bonus!',
-                              style: AppTypography.bodySmall.copyWith(
-                                color: Colors.white,
-                              ),
+                          Text(
+                            '$percentage%',
+                            style: AppTypography.labelLarge.copyWith(
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
                         ],
-                      ],
+                      ),
                     ),
-                  ),
-
-                  if (!passed) ...[
-                    const SizedBox(height: AppSpacing.lg),
+                    const SizedBox(width: AppSpacing.lg),
                     Text(
-                      'Pass with ${widget.quiz.passingScore}% to earn bonus XP!',
-                      style: AppTypography.bodyMedium.copyWith(
+                      '$_correctAnswers / ${widget.quiz.maxScore}\ncorrect',
+                      style: AppTypography.bodyLarge.copyWith(
                         color: AppColors.textSecondary,
                       ),
                       textAlign: TextAlign.center,
                     ),
                   ],
+                ),
+                const SizedBox(height: AppSpacing.lg),
+
+                // XP earned card
+                Container(
+                  padding: const EdgeInsets.all(AppSpacing.md),
+                  decoration: BoxDecoration(
+                    gradient: AppColors.primaryGradient,
+                    borderRadius: AppRadius.largeRadius,
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppOverlays.primary30,
+                        blurRadius: 20,
+                        offset: const Offset(0, 10),
+                      ),
+                    ],
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(Icons.star, color: Colors.white, size: 32),
+                      const SizedBox(width: AppSpacing.sm),
+                      Text(
+                        '+${widget.quiz.bonusXp + (passed ? bonusXp : 0)} XP',
+                        style: AppTypography.headlineMedium.copyWith(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      if (bonusXp > 0) ...[
+                        const SizedBox(width: AppSpacing.sm),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 4,
+                          ),
+                          decoration: BoxDecoration(
+                            color: AppOverlays.white20,
+                            borderRadius: AppRadius.mediumRadius,
+                          ),
+                          child: Text(
+                            '+$bonusXp bonus!',
+                            style: AppTypography.bodySmall.copyWith(
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+
+                if (!passed) ...[
+                  const SizedBox(height: AppSpacing.md),
+                  Text(
+                    'Pass with ${widget.quiz.passingScore}% to earn bonus XP!',
+                    style: AppTypography.bodyMedium.copyWith(
+                      color: AppColors.textSecondary,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
                 ],
-              ),
+              ],
             ),
           ),
         ),

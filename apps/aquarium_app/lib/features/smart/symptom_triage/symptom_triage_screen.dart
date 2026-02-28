@@ -75,8 +75,8 @@ class _SymptomTriageScreenState extends ConsumerState<SymptomTriageScreen> {
   Future<void> _runDiagnosis() async {
     final openai = ref.read(openAIServiceProvider);
     if (!openai.isConfigured) {
-      setState(() => _error = 'AI features require an OpenAI API key.\n'
-          'Rebuild with: flutter run --dart-define=OPENAI_API_KEY=sk-...');
+      setState(() => _error = 'AI features are not available right now. '
+          'Stay tuned for the next update!');
       return;
     }
 

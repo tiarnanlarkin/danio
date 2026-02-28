@@ -92,6 +92,9 @@ class SmartScreen extends ConsumerWidget {
               interaction: interaction,
             )),
           ],
+
+          const SizedBox(height: AppSpacing.md),
+          const _AquariumTipCard(),
         ],
       ),
     );
@@ -172,24 +175,34 @@ class SmartScreen extends ConsumerWidget {
 class _OfflineBanner extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(AppSpacing.md),
-      decoration: BoxDecoration(
-        color: AppColors.warning.withValues(alpha: 0.1),
+    final theme = Theme.of(context);
+    return Card(
+      shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12.0),
       ),
-      child: const Row(
-        children: [
-          Icon(Icons.cloud_off, color: AppColors.warning, size: AppIconSizes.sm),
-          SizedBox(width: AppSpacing.sm),
-          Expanded(
-            child: Text(
-              'AI features unavailable — no API key configured.\n'
-              'Rebuild with: flutter run --dart-define=OPENAI_API_KEY=sk-...',
-              style: TextStyle(fontSize: 12),
+      child: Padding(
+        padding: const EdgeInsets.all(AppSpacing.md),
+        child: Column(
+          children: [
+            const Text('🤖', style: TextStyle(fontSize: 32)),
+            const SizedBox(height: AppSpacing.sm),
+            Text(
+              'AI Features Coming Soon',
+              style: theme.textTheme.titleSmall?.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
             ),
-          ),
-        ],
+            const SizedBox(height: AppSpacing.xs),
+            Text(
+              'Smart features like species identification and health triage '
+              'are powered by AI. Stay tuned for the next update!',
+              textAlign: TextAlign.center,
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: AppColors.textSecondary,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -275,6 +288,58 @@ class _FeatureCard extends StatelessWidget {
               const Icon(Icons.chevron_right, color: AppColors.textSecondary),
             ],
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class _AquariumTipCard extends StatelessWidget {
+  const _AquariumTipCard();
+
+  static const _tips = [
+    'A healthy aquarium cycle takes 4–6 weeks. Patience is key!',
+    'Most tropical fish thrive between 24–26°C (75–79°F).',
+    'Test your water weekly — ammonia and nitrite should always read zero.',
+    'Live plants help absorb nitrates and give fish places to hide.',
+    'Overfeeding is the #1 cause of poor water quality. Feed small amounts.',
+    'A 10–20% water change each week keeps your tank in top shape.',
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final tip = _tips[DateTime.now().day % _tips.length];
+    return Card(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12.0),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(AppSpacing.md),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(Icons.lightbulb_outline,
+                    color: AppColors.warning, size: AppIconSizes.sm),
+                const SizedBox(width: AppSpacing.sm),
+                Text(
+                  'Did You Know?',
+                  style: theme.textTheme.titleSmall?.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: AppSpacing.sm),
+            Text(
+              tip,
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: AppColors.textSecondary,
+              ),
+            ),
+          ],
         ),
       ),
     );
