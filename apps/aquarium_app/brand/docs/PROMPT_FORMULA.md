@@ -163,3 +163,15 @@ aspirational premium cosy mood, cinematic 16:9 widescreen, professional animatio
 | `brand/exports/style-validation-v6-20-55-25.png` | 8.4/10 | Style validation |
 | `brand/exports/r3-mascot-21-01-44.png` | 8/10 | Best mascot with correct danio stripes |
 
+
+---
+
+## APPROVED FINALS (2026-02-28)
+
+| Asset | File | Score | Notes |
+|-------|------|-------|-------|
+| App Icon | FINAL-app-icon.png (r3) | ✅ Approved | Upright posture, smirk, vibrant orange/teal |
+| Mascot | r6-mascot-21-10-13.png | ✅ Approved | Chunky, joyful, cream stripe |
+| Hero | r7b-hero-21-17-30.png | 9/10 | Mascot front-centre, rich scene |
+| Feature Graphic | r7-feature-21-16-17.png | 8/10 | Mascot in tank, cosy room |
+
