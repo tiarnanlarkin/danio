@@ -129,33 +129,7 @@ class LearnScreen extends ConsumerWidget {
                         onMicroscopeTap: () => _navigateToWaterChemistry(context),
                         onGlobeTap: () => _showRandomFishFact(context),
                       ),
-                      // No back button - LearnScreen is Room 0 in HouseNavigator
-                      // Navigation between rooms is via swipe or room indicator bar
-                      // Title overlay
-                      Positioned(
-                        top: MediaQuery.of(context).padding.top + 16,
-                        left: 0,
-                        right: 0,
-                        child: const Center(
-                          child: Text(
-                            '📚 Study',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                              shadows: [
-                                Shadow(color: Colors.black45, blurRadius: 8),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                      // Hearts indicator
-                      Positioned(
-                        top: MediaQuery.of(context).padding.top + 12,
-                        right: 16,
-                        child: const HeartIndicator(compact: true),
-                      ),
+                      // Scene handles its own XP/streak/progress overlays internally
                     ],
                   ),
                 ),
