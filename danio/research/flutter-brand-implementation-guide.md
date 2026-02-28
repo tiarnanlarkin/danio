@@ -2063,3 +2063,362 @@ dependencies:
 
 *Guide updated: 2026-02-28 — Phase 2 expansion*
 *Covers: Typography · Colors · Mascot · Backgrounds · Cards · Animations · Gamification · Dark Mode · Onboarding · Micro-interactions · Haptics · Loading States · Navigation · Psychology*
+
+---
+
+## 16. ⚠️ Critical Accessibility Fix: Amber Contrast Failure
+
+### The Problem
+
+**Amber `#F59E0B` on white `#FFFFFF` = 2.1:1 contrast ratio — this FAILS WCAG AA.**
+
+WCAG AA requires **4.5:1 for normal text, 3:1 for large text**. Our primary amber fails both.
+This affects XP counter labels, streak numbers, and any amber-coloured text on light backgrounds.
+
+### Safe Amber Usage
+
+| Colour | Background | Contrast | WCAG AA Status |
+|--------|-----------|---------|----------------|
+| `#F59E0B` (Amber 500) | White | 2.1:1 | ❌ **FAILS** |
+| `#D97706` (Amber 600) | White | 3.0:1 | ⚠️ Large text only |
+| `#B45309` (Amber 700) | White | 4.7:1 | ✅ **PASSES** all text |
+| `#FBBF24` (Amber 400) | `#1C1917` dark | 7.2:1 | ✅ **PASSES** (dark mode) |
+| `#F59E0B` (Amber 500) | `#1C1917` dark | 4.8:1 | ✅ Passes (dark mode) |
+
+### Fix
+
+```dart
+class DanioColors {
+  // Use cases:
+  static const Color amberGold      = Color(0xFFC8884A);  // Decorative only (UI chrome, borders)
+  static const Color amberText      = Color(0xFFB45309);  // ← NEW: AA-safe for amber text on light
+  static const Color amberTextDark  = Color(0xFFFBBF24);  // ← NEW: AA-safe for amber text on dark
+  // ...
+}
+
+// XP counter — use amberText not amberGold:
+Text(
+  '$xp XP',
+  style: GoogleFonts.nunito(
+    color: isDarkMode ? DanioColors.amberTextDark : DanioColors.amberText,
+    fontWeight: FontWeight.w800,
+  ),
+)
+```
+
+### Built-in Accessibility Testing
+
+Add this to your widget tests — it runs contrast checks automatically:
+
+```dart
+// test/accessibility_test.dart
+import 'package:flutter_test/flutter_test.dart';
+
+void main() {
+  testWidgets('XP counter meets WCAG AA contrast', (tester) async {
+    await tester.pumpWidget(MaterialApp(
+      theme: DanioTheme.lightTheme,
+      home: const XpCounter(xp: 1500),
+    ));
+    expect(tester, meetsGuideline(textContrastGuideline));
+  });
+
+  testWidgets('Streak counter meets WCAG', (tester) async {
+    await tester.pumpWidget(MaterialApp(
+      theme: DanioTheme.lightTheme,
+      home: const StreakCounter(streakDays: 14),
+    ));
+    expect(tester, meetsGuideline(textContrastGuideline));
+    expect(tester, meetsGuideline(androidTapTargetGuideline));
+  });
+}
+```
+
+---
+
+## 17. Dark Mode v2: fromSeed + copyWith (Preferred Approach)
+
+The Phase 2 dark mode section used a fully manual `ColorScheme`. This is correct but verbose.
+A more maintainable approach: **let M3 generate the tonal palette, then override only the surfaces**:
+
+```dart
+// lib/theme/theme.dart — UPDATED dark theme approach
+
+static ThemeData get darkTheme {
+  // Let M3 generate the tonal palette from our amber seed
+  final darkScheme = ColorScheme.fromSeed(
+    seedColor: const Color(0xFFF59E0B), // Amber seed
+    brightness: Brightness.dark,
+  ).copyWith(
+    // Override surfaces to warm charcoal (M3 default is cold #1C1B1F)
+    surface:                   const Color(0xFF1C1917), // Warm charcoal (stone-950)
+    onSurface:                 const Color(0xFFFAF5F0), // Warm white
+    surfaceContainerHighest:   const Color(0xFF292524), // Stone-800
+    surfaceContainerHigh:      const Color(0xFF231F1E),
+    surfaceContainer:          const Color(0xFF1F1B1A),
+    surfaceContainerLow:       const Color(0xFF1A1614),
+    surfaceContainerLowest:    const Color(0xFF110E0C),
+    onSurfaceVariant:          const Color(0xFFCDBFAE), // Warm muted text
+    // Override amber text to be legible on dark surfaces
+    primary:                   const Color(0xFFFBBF24), // Amber-400 — passes on dark
+    onPrimary:                 const Color(0xFF3A1800),
+  );
+
+  return ThemeData(
+    useMaterial3: true,
+    colorScheme: darkScheme,
+    textTheme: DanioTypography.textTheme,
+    appBarTheme: AppBarTheme(
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+      titleTextStyle: GoogleFonts.fredoka(
+        fontSize: 20,
+        fontWeight: FontWeight.w600,
+        color: const Color(0xFFFAF5F0),
+      ),
+    ),
+  );
+}
+```
+
+**Why this is better:** M3 handles primary/secondary/tertiary tonal mapping automatically, so buttons, chips, and M3 components stay cohesive. You only override the cold surfaces.
+
+---
+
+## 18. Accessibility: Semantic Roles for Gamification Widgets
+
+Using Flutter 3.32's `SemanticsRole` API to make game elements screen-reader-friendly:
+
+```dart
+// lib/widgets/accessible_xp_counter.dart
+
+class AccessibleXpCounter extends StatelessWidget {
+  final int xp;
+  final int? xpGained;
+
+  const AccessibleXpCounter({super.key, required this.xp, this.xpGained});
+
+  @override
+  Widget build(BuildContext context) {
+    return Semantics(
+      label: 'XP total',
+      value: '$xp experience points',
+      // role: SemanticsRole.status,  // Uncomment when Flutter 3.32+ confirmed
+      child: XpCounter(xp: xp, xpGained: xpGained),
+    );
+  }
+}
+
+// lib/widgets/accessible_streak_counter.dart
+class AccessibleStreakCounter extends StatelessWidget {
+  final int streakDays;
+  final bool isActive;
+
+  @override
+  Widget build(BuildContext context) {
+    return Semantics(
+      label: 'Daily streak',
+      value: '$streakDays days',
+      hint: isActive ? 'Streak active' : 'Streak at risk — complete a lesson today',
+      child: StreakCounter(streakDays: streakDays, isActive: isActive),
+    );
+  }
+}
+
+// lib/widgets/accessible_progress_bar.dart
+class AccessibleProgressBar extends StatelessWidget {
+  final double progress;
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    return Semantics(
+      label: label,
+      value: '${(progress * 100).round()}%',
+      child: DanioProgressBar(progress: progress),
+    );
+  }
+}
+```
+
+### Live Announcements for XP Gains
+
+Screen reader users can't see the floating "+15 XP" animation. Announce it:
+
+```dart
+// When XP is awarded:
+void _awardXP(int amount) {
+  setState(() => _xp += amount);
+  
+  // Announce to screen readers
+  SemanticsService.announce(
+    'You earned $amount XP! Total: $_xp XP',
+    TextDirection.ltr,
+  );
+  
+  HapticService.xpGained();
+}
+
+// When achievement unlocked:
+void _unlockAchievement(String name) {
+  SemanticsService.announce(
+    'Achievement unlocked: $name',
+    TextDirection.ltr,
+  );
+  HapticService.streakMilestone(); // Dramatic haptic
+}
+```
+
+---
+
+## 19. Streak Milestone System
+
+Inspired by Duolingo's 600+ A/B-tested milestone animations. 
+
+### Milestone Thresholds
+
+| Day | Name | Mascot State | Celebration Level |
+|-----|------|-------------|------------------|
+| 3 | "Getting Started" | Happy | correct |
+| 7 | "One Week Wonder" | Excited | lessonComplete |
+| 14 | "Fortnight Fisher" | Excited + bubble burst | streakMilestone |
+| 30 | "Monthly Master" | Celebrating | streakMilestone |
+| 60 | "Dedicated Diver" | Celebrating + full confetti | levelUp |
+| 100 | "Century Club" | Special animation TBD | levelUp |
+| 365 | "Year of the Fish" | Legendary animation | levelUp |
+
+### Streak Milestone Widget
+
+```dart
+// lib/widgets/streak_milestone.dart
+
+class StreakMilestone extends StatelessWidget {
+  final int streakDays;
+  final VoidCallback onContinue;
+
+  const StreakMilestone({
+    super.key,
+    required this.streakDays,
+    required this.onContinue,
+  });
+
+  String get _milestoneName => switch (streakDays) {
+    3   => 'Getting Started! 🐠',
+    7   => 'One Week Wonder! 🌊',
+    14  => 'Fortnight Fisher! 🐟',
+    30  => 'Monthly Master! 🦈',
+    60  => 'Dedicated Diver! 🐙',
+    100 => 'Century Club! 🪸',
+    365 => 'Year of the Fish! 🌟',
+    _   => 'Streak Milestone! 💧',
+  };
+
+  CelebrationLevel get _celebrationLevel => switch (streakDays) {
+    <= 6  => CelebrationLevel.correct,
+    <= 13 => CelebrationLevel.lessonComplete,
+    <= 59 => CelebrationLevel.streakMilestone,
+    _     => CelebrationLevel.levelUp,
+  };
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        CelebrationOverlay(
+          level: _celebrationLevel,
+          onComplete: () {}, // Don't auto-dismiss — user taps Continue
+        ),
+        Center(
+          child: DanioCard(
+            variant: DanioCardVariant.elevated,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                DanioMascot(mood: MascotMood.celebrating, size: 160),
+                const SizedBox(height: 16),
+                Text(
+                  '$streakDays Days!',
+                  style: Theme.of(context).textTheme.displayLarge,
+                ),
+                Text(
+                  _milestoneName,
+                  style: Theme.of(context).textTheme.headlineMedium,
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 24),
+                ElevatedButton(
+                  onPressed: onContinue,
+                  child: const Text('Keep Going! 🔥'),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+```
+
+---
+
+## 20. Sound Design Palette
+
+Sound is Duolingo's invisible brand element — the "ding" is as recognisable as the green owl.
+Define Danio's signature sounds early; add them post-MVP.
+
+```yaml
+# pubspec.yaml (Phase 2 / P4)
+dependencies:
+  audioplayers: ^6.1.0  # For short SFX clips
+```
+
+### Sound Map
+
+| Event | Sound Style | Duration | Notes |
+|-------|------------|---------|-------|
+| Correct answer | Warm chime + bubble pop | 0.3s | Major key, bright |
+| Wrong answer | Low plonk | 0.3s | Minor key, gentle — not harsh |
+| Lesson complete | Rising fanfare + bubble burst | 1.5s | Triumphant but warm |
+| Streak milestone | Building swell + chime | 2s | Escalating drama |
+| Level up | Full fanfare + crowd cheer | 3s | The big moment |
+| Navigation tap | Soft bubble pop | 0.1s | Barely audible |
+| Streak protected | Shield "ding" | 0.5s | Protective, reassuring |
+| App open | Ambient water + chime | 1s | Signature brand sound |
+
+**Sound design brief:** Aquarium-adjacent. Warm, bubbly, oceanic. Major keys for positive, gentle minor for corrective. Never harsh, never startling. Think: coral reef at dawn, not action game.
+
+---
+
+## 21. App Store Creative Specifications
+
+### Screenshot Dimensions
+
+| Platform | Dimensions | Format |
+|---------|-----------|--------|
+| App Store (6.9" iPhone) | 1290 × 2796px | PNG/JPEG |
+| App Store (6.5" iPhone) | 1242 × 2688px | PNG/JPEG |
+| Google Play | 1080 × 1920px | PNG/JPEG |
+| Google Play Feature Graphic | 1024 × 500px | PNG/JPEG |
+
+### Danio Screenshot Sequence
+
+| # | Title | Caption (max 7 words) | Key UI Elements |
+|---|-------|----------------------|----------------|
+| 1 | Hero | "Learn Aquarium Keeping the Fun Way" | Mascot + painterly aquarium BG + app UI |
+| 2 | Gamification | "Earn XP, Grow Your Streak" | XP bar + streak counter + badge grid |
+| 3 | Content | "Real Fish, Real Knowledge" | Fish ID card + painterly art |
+| 4 | Learning | "Bite-Sized Lessons, Big Results" | Quiz screen + progress bar + mascot |
+| 5 | Dark mode | "Beautiful in Any Light" | Same UI in dark mode |
+
+**Text overlay style:**
+- Font: Fredoka Bold
+- Colour: White on dark backgrounds, Deep Violet on light
+- Position: Top 30% of screen (above device fold)
+- Background: Danio amber gradient band or transparent with shadow
+
+---
+
+*Guide last updated: 2026-02-28 — Phase 3 expansion (deep research)*
+*Total sections: 21 | Total: ~2,500+ lines*
+*Covers: Typography · Colors · Mascot · Backgrounds · Cards · Animation · Gamification · Dark Mode · Onboarding · Micro-interactions · Haptics · Loading · Navigation · Psychology · WCAG Fixes · Semantics · Milestones · Sound · Screenshots*
