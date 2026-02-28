@@ -16,7 +16,7 @@ import 'smart_screen.dart';
 final currentTabProvider = StateProvider<int>((ref) => 0); // Start at Learn tab
 
 /// The main app navigation - 4-tab bottom navigation
-/// Replaces the old HouseNavigator's 6-room swipe pattern
+/// Main app shell with bottom tab navigation
 class TabNavigator extends ConsumerStatefulWidget {
   const TabNavigator({super.key});
 

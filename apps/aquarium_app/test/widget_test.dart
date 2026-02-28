@@ -16,7 +16,6 @@ import 'package:aquarium_app/providers/storage_provider.dart';
 import 'package:aquarium_app/services/storage_service.dart';
 import 'package:aquarium_app/models/user_profile.dart';
 import 'package:aquarium_app/models/tank.dart';
-import 'package:aquarium_app/screens/house_navigator.dart';
 
 void main() {
   testWidgets('App boots and shows home screen', skip: true,

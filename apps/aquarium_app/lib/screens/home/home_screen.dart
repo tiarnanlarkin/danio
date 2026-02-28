@@ -10,7 +10,6 @@ import '../../providers/gems_provider.dart';
 import '../../providers/hearts_provider.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/core/bubble_loader.dart';
-import '../house_navigator.dart';
 import '../../theme/room_themes.dart';
 import '../../widgets/decorative_elements.dart';
 import '../../widgets/hobby_items.dart';
@@ -39,9 +38,13 @@ import 'widgets/empty_room_scene.dart';
 import '../backup_restore_screen.dart';
 import '../../utils/app_page_routes.dart';
 
-/// HomeScreen - The Living Room in the House Navigator
-/// This is just the tank management view - navigation between rooms
-/// is handled by HouseNavigator's swipe/tab system.
+/// Provider for current room index (kept for room-switching UI)
+final currentRoomProvider = StateProvider<int>(
+  (ref) => 1,
+); // Start at Living Room
+
+/// HomeScreen - The Living Room view
+/// Shows tank management and room-themed decorations.
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
 
@@ -479,9 +482,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // HomeScreen is the Living Room - it shows tank management only.
+    // HomeScreen shows tank management with room-themed decorations.
     // Navigation to other rooms (Learn, Workshop, Shop, etc.) is handled
-    // by HouseNavigator's swipe/tab system, not a BottomNavigationBar here.
+    // FAB is handled inside _buildLivingRoomScreen() Stack
     // Note: FAB is handled inside _buildLivingRoomScreen() Stack, not here
     return Scaffold(
       body: _buildLivingRoomScreen(),
@@ -503,7 +506,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   void _navigateToQuickTest(BuildContext context, Tank tank) {
     Navigator.of(context).push(
       ModalScaleRoute(
-        page: AddLogScreen(tankId: tank.id, initialType: LogType.waterTest),
+        page: AddLogScreen(tankId: tank.id, initialType: LogType.waterTest, quickMode: true),
       ),
     );
   }

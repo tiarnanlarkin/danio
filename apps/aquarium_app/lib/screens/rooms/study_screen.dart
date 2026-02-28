@@ -28,11 +28,11 @@ class StudyScreen extends ConsumerWidget {
       body: CustomScrollView(
         slivers: [
           // Header with illustrated study room
-          // No back button - navigation is via HouseNavigator swipe/tabs
+          // No back button - navigation is via TabNavigator
           SliverAppBar(
             expandedHeight: 200,
             pinned: true,
-            automaticallyImplyLeading: false, // No back button - we're in HouseNavigator
+            automaticallyImplyLeading: false, // No back button - we're in TabNavigator
             flexibleSpace: FlexibleSpaceBar(
               title: Text(
                 '📚 Study',
