@@ -1,5 +1,5 @@
-/// Profile creation screen for new users
-/// Part of the onboarding flow - collects user preferences and experience
+/// Simplified profile creation — name + experience level only
+/// Tank type, goals, and placement test are deferred to Settings
 library;
 
 import 'package:flutter/material.dart';
@@ -7,8 +7,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../models/tank.dart';
 import '../../models/user_profile.dart';
 import '../../providers/user_profile_provider.dart';
+import '../../services/celebration_service.dart';
 import '../../theme/app_theme.dart';
-import 'enhanced_placement_test_screen.dart';
 import '../../utils/accessibility_utils.dart';
 import '../tab_navigator.dart';
 
@@ -21,13 +21,8 @@ class ProfileCreationScreen extends ConsumerStatefulWidget {
 }
 
 class _ProfileCreationScreenState extends ConsumerState<ProfileCreationScreen> {
-  final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
-
   ExperienceLevel? _selectedExperience;
-  TankType? _selectedTankType;
-  final Set<UserGoal> _selectedGoals = {};
-
   bool _isSubmitting = false;
 
   @override
@@ -36,56 +31,13 @@ class _ProfileCreationScreenState extends ConsumerState<ProfileCreationScreen> {
     super.dispose();
   }
 
-  bool get _canSubmit {
-    // Experience level and tank type are required
-    // At least one goal should be selected
-    return _selectedExperience != null &&
-        _selectedTankType != null &&
-        _selectedGoals.isNotEmpty;
-  }
-
-  Future<void> _skipToHome() async {
-    setState(() => _isSubmitting = true);
-
-    try {
-      final profileNotifier = ref.read(userProfileProvider.notifier);
-
-      // Create default profile for dev/testing
-      await profileNotifier.createProfile(
-        name: 'Aquarist',
-        experienceLevel: ExperienceLevel.beginner,
-        primaryTankType: TankType.freshwater,
-        goals: [UserGoal.keepFishAlive],
-      );
-
-      if (!mounted) return;
-
-      // Skip to TabNavigator (main app shell with navigation)
-      Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (context) => const TabNavigator()),
-        (route) => false,
-      );
-    } catch (e) {
-      if (!mounted) return;
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Error skipping: $e'),
-          backgroundColor: Colors.red,
-        ),
-      );
-
-      setState(() => _isSubmitting = false);
-    }
-  }
+  bool get _canSubmit => _selectedExperience != null;
 
   Future<void> _createProfile() async {
     if (!_canSubmit) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text(
-            'Please select your experience level, tank type, and at least one goal',
-          ),
+          content: Text('Please select your experience level'),
           backgroundColor: Colors.red,
         ),
       );
@@ -102,28 +54,58 @@ class _ProfileCreationScreenState extends ConsumerState<ProfileCreationScreen> {
             ? null
             : _nameController.text.trim(),
         experienceLevel: _selectedExperience!,
-        primaryTankType: _selectedTankType!,
-        goals: _selectedGoals.toList(),
+        primaryTankType: TankType.freshwater, // Sensible default
+        goals: [UserGoal.keepFishAlive], // Sensible default
       );
 
       if (!mounted) return;
 
-      // Navigate to placement test
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(
-          builder: (context) => const EnhancedPlacementTestScreen(),
-        ),
-      );
+      // Celebrate!
+      ref.read(celebrationProvider.notifier).milestone(
+            'Welcome Aboard! 🐠',
+            subtitle: 'Your aquarium journey begins now!',
+          );
+
+      // Go straight to the app
+      Future.delayed(const Duration(milliseconds: 500), () {
+        if (mounted) {
+          Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(builder: (_) => const TabNavigator()),
+            (route) => false,
+          );
+        }
+      });
     } catch (e) {
       if (!mounted) return;
-
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Error creating profile: $e'),
           backgroundColor: Colors.red,
         ),
       );
+      setState(() => _isSubmitting = false);
+    }
+  }
 
+  Future<void> _skipToHome() async {
+    setState(() => _isSubmitting = true);
+    try {
+      await ref.read(userProfileProvider.notifier).createProfile(
+            name: 'Aquarist',
+            experienceLevel: ExperienceLevel.beginner,
+            primaryTankType: TankType.freshwater,
+            goals: [UserGoal.keepFishAlive],
+          );
+      if (!mounted) return;
+      Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(builder: (_) => const TabNavigator()),
+        (route) => false,
+      );
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error skipping: $e'), backgroundColor: Colors.red),
+      );
       setState(() => _isSubmitting = false);
     }
   }
@@ -132,9 +114,8 @@ class _ProfileCreationScreenState extends ConsumerState<ProfileCreationScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Create Your Profile'),
-        automaticallyImplyLeading:
-            false, // No back button - must complete onboarding
+        title: const Text('About You'),
+        automaticallyImplyLeading: false,
         actions: [
           TextButton(
             onPressed: _isSubmitting ? null : _skipToHome,
@@ -149,155 +130,97 @@ class _ProfileCreationScreenState extends ConsumerState<ProfileCreationScreen> {
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(AppSpacing.lg),
-        child: FocusTraversalGroup(
-          policy: OrderedTraversalPolicy(),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                // Welcome message
-                Text(
-                  'Welcome to Aquarium! 🐠',
-                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            // Header
+            Text(
+              "Let's get to know you 🐠",
+              style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: AppSpacing.sm),
-                Text(
-                  'Let\'s personalize your learning experience',
-                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: AppSpacing.sm),
+            Text(
+              'Just two quick things and you\'re in!',
+              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                     color: AppColors.textSecondary,
                   ),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: AppSpacing.xl),
-
-                // Name field (optional)
-                _buildNameField(),
-                const SizedBox(height: AppSpacing.lg),
-
-                // Experience level (required)
-                _buildExperienceLevelSection(),
-                const SizedBox(height: AppSpacing.lg),
-
-                // Tank type (required)
-                _buildTankTypeSection(),
-                const SizedBox(height: AppSpacing.lg),
-
-                // Goals (at least one required)
-                _buildGoalsSection(),
-                const SizedBox(height: AppSpacing.xl),
-
-                // Continue button
-                FocusTraversalOrder(
-                  order: const NumericFocusOrder(5.0),
-                  child: Semantics(
-                    label: A11yLabels.button(
-                      'Continue to knowledge assessment',
-                    ),
-                    button: true,
-                    enabled: !_isSubmitting && _canSubmit,
-                    child: FilledButton(
-                      onPressed: _isSubmitting ? null : _createProfile,
-                      style: FilledButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                      ),
-                      child: _isSubmitting
-                          ? const SizedBox(
-                              height: 20,
-                              width: 20,
-                              child: CircularProgressIndicator(strokeWidth: 2),
-                            )
-                          : const Text('Continue to Assessment'),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: AppSpacing.md),
-                Text(
-                  'Next: Quick knowledge check (2-3 minutes)',
-                  style: Theme.of(
-                    context,
-                  ).textTheme.bodySmall?.copyWith(color: AppColors.textHint),
-                  textAlign: TextAlign.center,
-                ),
-              ],
+              textAlign: TextAlign.center,
             ),
-          ),
-        ),
-      ),
-    );
-  }
+            const SizedBox(height: AppSpacing.xl),
 
-  Widget _buildNameField() {
-    return FocusTraversalOrder(
-      order: const NumericFocusOrder(1.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Semantics(
-            header: true,
-            child: Text(
-              'What should we call you? (Optional)',
-              style: Theme.of(
-                context,
-              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
-            ),
-          ),
-          const SizedBox(height: 12),
-          Semantics(
-            label: A11yLabels.textField('Your name'),
-            textField: true,
-            child: TextFormField(
-              controller: _nameController,
-              decoration: const InputDecoration(
-                hintText: 'Enter your name',
-                prefixIcon: Icon(Icons.person_outline),
-                border: OutlineInputBorder(),
+            // Name field
+            Semantics(
+              header: true,
+              child: Text(
+                'What should we call you?',
+                style: Theme.of(context)
+                    .textTheme
+                    .titleMedium
+                    ?.copyWith(fontWeight: FontWeight.w600),
               ),
-              textCapitalization: TextCapitalization.words,
             ),
-          ),
-        ],
-      ),
-    );
-  }
+            const SizedBox(height: 12),
+            Semantics(
+              label: A11yLabels.textField('Your name'),
+              textField: true,
+              child: TextFormField(
+                controller: _nameController,
+                decoration: const InputDecoration(
+                  hintText: 'Enter your name (optional)',
+                  prefixIcon: Icon(Icons.person_outline),
+                  border: OutlineInputBorder(),
+                ),
+                textCapitalization: TextCapitalization.words,
+                textInputAction: TextInputAction.done,
+              ),
+            ),
+            const SizedBox(height: AppSpacing.xl),
 
-  Widget _buildExperienceLevelSection() {
-    return FocusTraversalOrder(
-      order: const NumericFocusOrder(2.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Semantics(
-            header: true,
-            child: Row(
-              children: [
-                Text(
-                  'Experience Level',
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                const SizedBox(width: AppSpacing.xs),
-                const Text(
-                  '*',
-                  style: TextStyle(color: Colors.red, fontSize: 16),
-                ),
-              ],
+            // Experience level
+            Semantics(
+              header: true,
+              child: Text(
+                'Your fishkeeping experience',
+                style: Theme.of(context)
+                    .textTheme
+                    .titleMedium
+                    ?.copyWith(fontWeight: FontWeight.w600),
+              ),
             ),
-          ),
-          const SizedBox(height: 12),
-          ...ExperienceLevel.values.map((level) => _buildExperienceCard(level)),
-        ],
+            const SizedBox(height: 12),
+            ...ExperienceLevel.values.map((level) => _buildExperienceCard(level)),
+
+            const SizedBox(height: AppSpacing.xl),
+
+            // Continue button
+            Semantics(
+              label: A11yLabels.button('Continue to app'),
+              button: true,
+              enabled: !_isSubmitting && _canSubmit,
+              child: FilledButton(
+                onPressed: _isSubmitting ? null : _createProfile,
+                style: FilledButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                ),
+                child: _isSubmitting
+                    ? const SizedBox(
+                        height: 20, width: 20,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : const Text("Let's Go!"),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
 
   Widget _buildExperienceCard(ExperienceLevel level) {
     final isSelected = _selectedExperience == level;
-
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
       child: Semantics(
@@ -309,7 +232,8 @@ class _ProfileCreationScreenState extends ConsumerState<ProfileCreationScreen> {
         child: InkWell(
           onTap: () => setState(() => _selectedExperience = level),
           borderRadius: AppRadius.mediumRadius,
-          child: Container(
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
             padding: const EdgeInsets.all(AppSpacing.md),
             decoration: BoxDecoration(
               color: isSelected ? AppOverlays.accent10 : null,
@@ -322,10 +246,7 @@ class _ProfileCreationScreenState extends ConsumerState<ProfileCreationScreen> {
             child: Row(
               children: [
                 ExcludeSemantics(
-                  child: Text(
-                    level.emoji,
-                    style: const TextStyle(fontSize: 32),
-                  ),
+                  child: Text(level.emoji, style: const TextStyle(fontSize: 32)),
                 ),
                 const SizedBox(width: AppSpacing.md),
                 Expanded(
@@ -335,20 +256,14 @@ class _ProfileCreationScreenState extends ConsumerState<ProfileCreationScreen> {
                       ExcludeSemantics(
                         child: Text(
                           level.displayName,
-                          style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                          ),
+                          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                         ),
                       ),
                       const SizedBox(height: AppSpacing.xs),
                       ExcludeSemantics(
                         child: Text(
                           level.description,
-                          style: TextStyle(
-                            fontSize: 13,
-                            color: AppColors.textSecondary,
-                          ),
+                          style: TextStyle(fontSize: 13, color: AppColors.textSecondary),
                         ),
                       ),
                     ],
@@ -361,188 +276,6 @@ class _ProfileCreationScreenState extends ConsumerState<ProfileCreationScreen> {
               ],
             ),
           ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildTankTypeSection() {
-    return FocusTraversalOrder(
-      order: const NumericFocusOrder(3.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Semantics(
-            header: true,
-            child: Row(
-              children: [
-                Text(
-                  'Primary Tank Type',
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                const SizedBox(width: AppSpacing.xs),
-                const Text(
-                  '*',
-                  style: TextStyle(color: Colors.red, fontSize: 16),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 12),
-          Row(
-            children: [
-              Expanded(child: _buildTankTypeCard(TankType.freshwater)),
-              const SizedBox(width: 12),
-              Expanded(child: _buildTankTypeCard(TankType.marine)),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildTankTypeCard(TankType type) {
-    final isSelected = _selectedTankType == type;
-
-    return Semantics(
-      label: A11yLabels.selectableItem(type.displayName, isSelected),
-      hint: type.description,
-      button: true,
-      selected: isSelected,
-      onTap: () => setState(() => _selectedTankType = type),
-      child: InkWell(
-        onTap: () => setState(() => _selectedTankType = type),
-        borderRadius: AppRadius.mediumRadius,
-        child: Container(
-          padding: const EdgeInsets.all(AppSpacing.sm2),
-          decoration: BoxDecoration(
-            color: isSelected ? AppOverlays.primary10 : null,
-            borderRadius: AppRadius.mediumRadius,
-            border: Border.all(
-              color: isSelected ? AppColors.primary : Colors.grey[300]!,
-              width: 2,
-            ),
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ExcludeSemantics(
-                child: FittedBox(
-                  fit: BoxFit.scaleDown,
-                  child: Text(type.emoji, style: const TextStyle(fontSize: 32)),
-                ),
-              ),
-              const SizedBox(height: 4),
-              ExcludeSemantics(
-                child: Text(
-                  type.displayName,
-                  style: const TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-              const SizedBox(height: 2),
-              ExcludeSemantics(
-                child: Text(
-                  type.description,
-                  style: TextStyle(
-                    fontSize: 11,
-                    color: AppColors.textSecondary,
-                  ),
-                  textAlign: TextAlign.center,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-              if (isSelected) ...[
-                const SizedBox(height: 6),
-                const ExcludeSemantics(
-                  child: Icon(
-                    Icons.check_circle,
-                    color: AppColors.primary,
-                    size: 18,
-                  ),
-                ),
-              ],
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildGoalsSection() {
-    return FocusTraversalOrder(
-      order: const NumericFocusOrder(4.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Semantics(
-            header: true,
-            child: Row(
-              children: [
-                Text(
-                  'Your Goals (Select all that apply)',
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                const SizedBox(width: AppSpacing.xs),
-                const Text(
-                  '*',
-                  style: TextStyle(color: Colors.red, fontSize: 16),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 12),
-          Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            children: UserGoal.values
-                .map((goal) => _buildGoalChip(goal))
-                .toList(),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildGoalChip(UserGoal goal) {
-    final isSelected = _selectedGoals.contains(goal);
-
-    return Semantics(
-      label: A11yLabels.selectableItem(goal.displayName, isSelected),
-      button: true,
-      selected: isSelected,
-      child: FilterChip(
-        label: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ExcludeSemantics(child: Text(goal.emoji)),
-            const SizedBox(width: 6),
-            ExcludeSemantics(child: Text(goal.displayName)),
-          ],
-        ),
-        selected: isSelected,
-        onSelected: (selected) {
-          setState(() {
-            if (selected) {
-              _selectedGoals.add(goal);
-            } else {
-              _selectedGoals.remove(goal);
-            }
-          });
-        },
-        selectedColor: AppColors.accentAlpha20,
-        checkmarkColor: AppColors.accent,
-        side: BorderSide(
-          color: isSelected ? AppColors.accent : Colors.grey[300]!,
         ),
       ),
     );

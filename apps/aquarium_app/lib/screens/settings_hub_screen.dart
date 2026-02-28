@@ -12,6 +12,7 @@ import 'achievements_screen.dart';
 import 'analytics_screen.dart';
 import 'backup_restore_screen.dart';
 import 'about_screen.dart';
+import 'onboarding/enhanced_placement_test_screen.dart';
 
 /// Settings Hub - Consolidates all secondary features
 /// This is Tab 3 in the new navigation structure
@@ -40,6 +41,27 @@ class SettingsHubScreen extends ConsumerWidget {
     return [
       // === Profile Card ===
       _buildProfileCard(context, profile),
+
+      // === Complete Profile (shown if placement test not taken or no goals) ===
+      if (profile != null && (!profile.hasCompletedPlacementTest || profile.goals.length <= 1))
+        ...[
+          const SizedBox(height: AppSpacing.sm),
+          PrimaryActionTile(
+            icon: Icons.assignment_outlined,
+            title: 'Complete Your Profile',
+            subtitle: 'Take placement test, set tank type & goals',
+            iconColor: AppColors.warning,
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const EnhancedPlacementTestScreen(),
+                ),
+              );
+            },
+          ),
+        ],
 
       const SizedBox(height: AppSpacing.lg),
 
