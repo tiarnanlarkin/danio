@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:aquarium_app/models/models.dart';
@@ -65,7 +66,7 @@ void main() {
       expect(retrievedTank!.id, equals('test-tank-1'));
       expect(retrievedTank.name, startsWith('Tank Update'));
       
-      print('✅ Tank after concurrent saves: ${retrievedTank.name}');
+      debugPrint('✅ Tank after concurrent saves: ${retrievedTank.name}');
     });
 
     test('Concurrent mixed operations should maintain consistency', () async {
@@ -153,10 +154,10 @@ void main() {
       final retrievedEquipment = await storage.getEquipmentForTank('tank-2');
       expect(retrievedEquipment.length, equals(10));
 
-      print('✅ All concurrent operations completed successfully');
-      print('   Tanks: ${retrievedTanks.length}');
-      print('   Livestock in tank-1: ${retrievedLivestock.length}');
-      print('   Equipment in tank-2: ${retrievedEquipment.length}');
+      debugPrint('✅ All concurrent operations completed successfully');
+      debugPrint('   Tanks: ${retrievedTanks.length}');
+      debugPrint('   Livestock in tank-1: ${retrievedLivestock.length}');
+      debugPrint('   Equipment in tank-2: ${retrievedEquipment.length}');
     });
 
     test('Concurrent delete operations should not cause corruption', () async {
@@ -197,8 +198,8 @@ void main() {
         expect(tank!.name, equals('Tank $i'));
       }
 
-      print('✅ Concurrent deletes completed successfully');
-      print('   Remaining tanks: ${remainingTanks.length}');
+      debugPrint('✅ Concurrent deletes completed successfully');
+      debugPrint('   Remaining tanks: ${remainingTanks.length}');
     });
 
     test('Stress test: 100 concurrent operations', () async {
@@ -230,10 +231,10 @@ void main() {
       final tanks = await storage.getAllTanks();
       expect(tanks.length, equals(10)); // Should have 10 unique tanks
 
-      print('✅ Stress test completed');
-      print('   Operations: $operationCount');
-      print('   Time: ${stopwatch.elapsedMilliseconds}ms');
-      print('   Unique tanks: ${tanks.length}');
+      debugPrint('✅ Stress test completed');
+      debugPrint('   Operations: $operationCount');
+      debugPrint('   Time: ${stopwatch.elapsedMilliseconds}ms');
+      debugPrint('   Unique tanks: ${tanks.length}');
     });
 
     test('Verify atomic write (no partial saves)', () async {
@@ -276,7 +277,7 @@ void main() {
       expect(retrievedLivestock.length, equals(1));
       expect(retrievedLivestock.first.id, equals('atomic-livestock'));
 
-      print('✅ Atomic write verified');
+      debugPrint('✅ Atomic write verified');
     });
   });
 }

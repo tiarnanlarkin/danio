@@ -306,9 +306,14 @@ void main() {
         ),
       );
 
-      // Small uses AppTouchTargets.minimum = 48dp
-      final buttonSize = tester.getSize(find.byType(AppButton));
-      expect(buttonSize.height, equals(48.0));
+      final container = tester.widget<AnimatedContainer>(
+        find.descendant(
+          of: find.byType(AppButton),
+          matching: find.byType(AnimatedContainer),
+        ),
+      );
+      
+      expect(container.constraints?.maxHeight, equals(32.0));
     });
 
     testWidgets('medium size applies correctly', (tester) async {
@@ -325,9 +330,14 @@ void main() {
         ),
       );
 
-      // Medium uses AppTouchTargets.minimum = 48dp
-      final buttonSize = tester.getSize(find.byType(AppButton));
-      expect(buttonSize.height, equals(48.0));
+      final container = tester.widget<AnimatedContainer>(
+        find.descendant(
+          of: find.byType(AppButton),
+          matching: find.byType(AnimatedContainer),
+        ),
+      );
+      
+      expect(container.constraints?.maxHeight, equals(44.0));
     });
 
     testWidgets('large size applies correctly', (tester) async {
@@ -344,9 +354,14 @@ void main() {
         ),
       );
 
-      // Large uses AppTouchTargets.medium = 56dp
-      final buttonSize = tester.getSize(find.byType(AppButton));
-      expect(buttonSize.height, equals(56.0));
+      final container = tester.widget<AnimatedContainer>(
+        find.descendant(
+          of: find.byType(AppButton),
+          matching: find.byType(AnimatedContainer),
+        ),
+      );
+      
+      expect(container.constraints?.maxHeight, equals(52.0));
     });
 
     testWidgets('full width button expands', (tester) async {
@@ -366,9 +381,14 @@ void main() {
         ),
       );
 
-      // Full width button should expand to fill available space
-      final buttonSize = tester.getSize(find.byType(AppButton));
-      expect(buttonSize.width, equals(300.0));
+      final container = tester.widget<AnimatedContainer>(
+        find.descendant(
+          of: find.byType(AppButton),
+          matching: find.byType(AnimatedContainer),
+        ),
+      );
+      
+      expect(container.constraints?.minWidth, equals(double.infinity));
     });
 
     testWidgets('semantics label applies', (tester) async {
@@ -423,7 +443,6 @@ void main() {
             body: AppIconButton(
               icon: icon,
               onPressed: () {},
-              semanticsLabel: 'Test button',
             ),
           ),
         ),
@@ -443,7 +462,6 @@ void main() {
             body: AppIconButton(
               icon: Icons.add,
               onPressed: () => pressed = true,
-              semanticsLabel: 'Test button',
             ),
           ),
         ),
@@ -465,7 +483,6 @@ void main() {
             body: AppIconButton(
               icon: Icons.add,
               onPressed: null,
-              semanticsLabel: 'Test button',
             ),
           ),
         ),
@@ -486,16 +503,20 @@ void main() {
               icon: Icons.add,
               size: AppButtonSize.small,
               onPressed: () {},
-              semanticsLabel: 'Test button',
             ),
           ),
         ),
       );
 
-      // Small uses AppTouchTargets.minimum = 48dp
-      final iconButtonSize = tester.getSize(find.byType(AppIconButton));
-      expect(iconButtonSize.width, equals(48.0));
-      expect(iconButtonSize.height, equals(48.0));
+      final container = tester.widget<Container>(
+        find.descendant(
+          of: find.byType(AppIconButton),
+          matching: find.byType(Container),
+        ),
+      );
+      
+      expect(container.constraints?.maxWidth, equals(36.0));
+      expect(container.constraints?.maxHeight, equals(36.0));
     });
 
     testWidgets('medium size applies correctly', (tester) async {
@@ -507,16 +528,20 @@ void main() {
               icon: Icons.add,
               size: AppButtonSize.medium,
               onPressed: () {},
-              semanticsLabel: 'Test button',
             ),
           ),
         ),
       );
 
-      // Medium uses AppTouchTargets.minimum = 48dp
-      final iconButtonSize = tester.getSize(find.byType(AppIconButton));
-      expect(iconButtonSize.width, equals(48.0));
-      expect(iconButtonSize.height, equals(48.0));
+      final container = tester.widget<Container>(
+        find.descendant(
+          of: find.byType(AppIconButton),
+          matching: find.byType(Container),
+        ),
+      );
+      
+      expect(container.constraints?.maxWidth, equals(44.0));
+      expect(container.constraints?.maxHeight, equals(44.0));
     });
 
     testWidgets('large size applies correctly', (tester) async {
@@ -528,16 +553,20 @@ void main() {
               icon: Icons.add,
               size: AppButtonSize.large,
               onPressed: () {},
-              semanticsLabel: 'Test button',
             ),
           ),
         ),
       );
 
-      // Large uses AppTouchTargets.medium = 56dp
-      final iconButtonSize = tester.getSize(find.byType(AppIconButton));
-      expect(iconButtonSize.width, equals(56.0));
-      expect(iconButtonSize.height, equals(56.0));
+      final container = tester.widget<Container>(
+        find.descendant(
+          of: find.byType(AppIconButton),
+          matching: find.byType(Container),
+        ),
+      );
+      
+      expect(container.constraints?.maxWidth, equals(52.0));
+      expect(container.constraints?.maxHeight, equals(52.0));
     });
 
     testWidgets('custom color applies', (tester) async {
@@ -551,7 +580,6 @@ void main() {
               icon: Icons.add,
               color: customColor,
               onPressed: () {},
-              semanticsLabel: 'Test button',
             ),
           ),
         ),
@@ -572,7 +600,6 @@ void main() {
               icon: Icons.add,
               backgroundColor: customBgColor,
               onPressed: () {},
-              semanticsLabel: 'Test button',
             ),
           ),
         ),

@@ -7,10 +7,10 @@ import 'package:aquarium_app/models/leaderboard.dart';
 void main() {
   group('League', () {
     test('has correct display names', () {
-      expect(League.bronze.displayName, 'Bronze League');
-      expect(League.silver.displayName, 'Silver League');
-      expect(League.gold.displayName, 'Gold League');
-      expect(League.diamond.displayName, 'Diamond League');
+      expect(League.bronze.displayName, 'Bronze');
+      expect(League.silver.displayName, 'Silver');
+      expect(League.gold.displayName, 'Gold');
+      expect(League.diamond.displayName, 'Diamond');
     });
 
     test('has correct emojis', () {

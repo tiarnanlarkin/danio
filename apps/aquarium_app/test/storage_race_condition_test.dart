@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'dart:io';
 
 import 'package:aquarium_app/models/models.dart';
@@ -86,7 +87,7 @@ void main() {
         expect(tank.volumeLitres, equals(100.0 + i));
       }
 
-      print('✅ P0-1 Test passed: All 10 concurrent saves completed without corruption');
+      debugPrint('✅ P0-1 Test passed: All 10 concurrent saves completed without corruption');
     });
 
     test('P0-1: Rapid sequential saves should maintain data integrity', () async {
@@ -121,7 +122,7 @@ void main() {
       expect(finalTank!.name, equals('Updated Name 49'));
       expect(finalTank.volumeLitres, equals(99.0));
 
-      print('✅ P0-1 Test passed: 50 rapid sequential saves maintained data integrity');
+      debugPrint('✅ P0-1 Test passed: 50 rapid sequential saves maintained data integrity');
     });
 
     test('P0-1: Mixed concurrent operations should not deadlock', () async {
@@ -172,7 +173,7 @@ void main() {
       final allTanks = await storage.getAllTanks();
       expect(allTanks.length, equals(8)); // 10 created - 2 deleted
 
-      print('✅ P0-1 Test passed: Mixed concurrent operations completed without deadlock');
+      debugPrint('✅ P0-1 Test passed: Mixed concurrent operations completed without deadlock');
     });
   });
 }

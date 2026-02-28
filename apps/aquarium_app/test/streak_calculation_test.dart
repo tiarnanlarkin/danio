@@ -8,6 +8,7 @@ import 'package:aquarium_app/providers/user_profile_provider.dart';
 import 'package:aquarium_app/providers/gems_provider.dart';
 
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
   group('P0-4: User Streak Calculation', () {
     late ProviderContainer container;
 
