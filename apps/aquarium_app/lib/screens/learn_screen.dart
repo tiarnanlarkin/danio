@@ -750,7 +750,7 @@ class _LazyLearningPathCardState extends ConsumerState<_LazyLearningPathCard> {
                       ),
                       child: FractionallySizedBox(
                         alignment: Alignment.centerLeft,
-                        widthFactor: progress,
+                        widthFactor: progress.clamp(0.02, 1.0),
                         child: Container(
                           decoration: BoxDecoration(
                             gradient: LinearGradient(

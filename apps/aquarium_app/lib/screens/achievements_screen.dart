@@ -222,6 +222,8 @@ class _AchievementsScreenState extends ConsumerState<AchievementsScreen> {
                     ),
                   );
                 }),
+                // Extra padding so ShaderMask fade does not clip last chip
+                const SizedBox(width: 24),
               ],
             ),
           ),
