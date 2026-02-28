@@ -100,7 +100,7 @@ class UserProfile {
     this.hasCompletedPlacementTest = false,
     this.placementResultId,
     this.placementTestDate,
-    this.dailyXpGoal = 50,
+    this.dailyXpGoal = 100,
     this.dailyXpHistory = const {},
     this.hasStreakFreeze = true,
     this.streakFreezeUsedDate,
@@ -155,6 +155,13 @@ class UserProfile {
       }
     }
     return level;
+  }
+
+  /// Recommended daily XP goal based on current level.
+  /// Scales with progression: level * 50, minimum 100.
+  int get recommendedDailyXpGoal {
+    final level = currentLevel;
+    return (level * 50).clamp(100, 500);
   }
 
   int get xpToNextLevel {
@@ -418,7 +425,7 @@ class UserProfile {
       placementTestDate: json['placementTestDate'] != null
           ? DateTime.parse(json['placementTestDate'] as String)
           : null,
-      dailyXpGoal: json['dailyXpGoal'] as int? ?? 50,
+      dailyXpGoal: json['dailyXpGoal'] as int? ?? 100,
       dailyXpHistory:
           (json['dailyXpHistory'] as Map<String, dynamic>?)?.map(
             (key, value) => MapEntry(key, value as int),

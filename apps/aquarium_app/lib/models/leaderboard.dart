@@ -15,13 +15,13 @@ enum League {
   String get displayName {
     switch (this) {
       case League.bronze:
-        return 'Bronze League';
+        return 'Bronze';
       case League.silver:
-        return 'Silver League';
+        return 'Silver';
       case League.gold:
-        return 'Gold League';
+        return 'Gold';
       case League.diamond:
-        return 'Diamond League';
+        return 'Diamond';
     }
   }
 

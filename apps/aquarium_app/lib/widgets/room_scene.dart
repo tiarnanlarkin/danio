@@ -148,28 +148,28 @@ class LivingRoomScene extends ConsumerWidget {
 
               // === LAYER 5: Glassmorphic UI cards ===
 
-              // Temperature gauge (top left)
+              // Temperature gauge (top left) — compact size
               Positioned(
                 top: h * 0.06,
                 left: w * 0.05,
                 child: GestureDetector(
                   onTap: onStatsTap,
                   child: _CircularTempGauge(
-                    size: w * 0.26,
+                    size: w * 0.18,
                     temperature: temperature ?? 25,
                     theme: theme,
                   ),
                 ),
               ),
 
-              // Water quality card (top right)
+              // Water quality card (top right) — positioned to avoid overlap with top bar
               Positioned(
-                top: h * 0.06,
-                right: w * 0.05,
+                top: h * 0.02,
+                right: w * 0.02,
                 child: GestureDetector(
                   onTap: onTestKitTap,
                   child: _WaterQualityCard(
-                    width: w * 0.36,
+                    width: w * 0.44,
                     ph: ph,
                     ammonia: ammonia,
                     nitrate: nitrate,
@@ -1298,7 +1298,7 @@ class _WaterQualityCard extends StatelessWidget {
                       label: 'pH',
                       color: _getPhColor(ph),
                       theme: theme,
-                      size: 38,
+                      size: 34,
                     ),
                   ),
                   const SizedBox(width: 6),
@@ -1309,7 +1309,7 @@ class _WaterQualityCard extends StatelessWidget {
                       label: 'NH₃',
                       color: _getAmmoniaColor(ammonia),
                       theme: theme,
-                      size: 38,
+                      size: 34,
                     ),
                   ),
                   const SizedBox(width: 6),
@@ -1320,7 +1320,7 @@ class _WaterQualityCard extends StatelessWidget {
                       label: 'NO₃',
                       color: _getNitrateColor(nitrate),
                       theme: theme,
-                      size: 38,
+                      size: 34,
                     ),
                   ),
                 ],

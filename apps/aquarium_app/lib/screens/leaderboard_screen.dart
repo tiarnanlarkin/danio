@@ -57,6 +57,23 @@ class LeaderboardScreen extends ConsumerWidget {
       appBar: AppBar(title: const Text('Leaderboard'), centerTitle: true),
       body: Column(
         children: [
+          // Demo data indicator
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 16),
+            color: Colors.amber.shade50,
+            child: const Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.info_outline, size: 14, color: Colors.amber),
+                SizedBox(width: 6),
+                Text(
+                  'Demo leaderboard — rankings are simulated',
+                  style: TextStyle(fontSize: 12, color: Colors.amber),
+                ),
+              ],
+            ),
+          ),
           // Week timer and league header
           _buildHeader(context, currentWeek, currentEntry, league),
 
@@ -67,7 +84,7 @@ class LeaderboardScreen extends ConsumerWidget {
           Expanded(
             child: ListView.builder(
               itemCount: entries.length,
-              padding: const EdgeInsets.symmetric(vertical: 8),
+              padding: const EdgeInsets.only(top: 8, bottom: 80),
               itemBuilder: (context, index) {
                 final entry = entries[index];
                 return _buildLeaderboardTile(
@@ -249,12 +266,9 @@ class LeaderboardScreen extends ConsumerWidget {
                 ),
             ],
           ),
-          subtitle: Row(
-            children: [
-              Icon(_leagueIcon(league), size: AppIconSizes.xs, color: Colors.grey.shade600),
-              const SizedBox(width: AppSpacing.xs),
-              Text(league.displayName),
-            ],
+          subtitle: Text(
+            isCurrentUser ? 'Rank #${entry.rank} · You' : 'Rank #${entry.rank}',
+            style: AppTypography.bodySmall.copyWith(color: AppColors.textSecondary),
           ),
           trailing: Column(
             mainAxisAlignment: MainAxisAlignment.center,

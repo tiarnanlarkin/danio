@@ -31,7 +31,7 @@ class LearnScreen extends ConsumerWidget {
           // Skeleton header
           SliverToBoxAdapter(
             child: Container(
-              height: 320,
+              height: 200,
               color: AppOverlays.primary10,
             ),
           ),
@@ -114,8 +114,10 @@ class LearnScreen extends ConsumerWidget {
             slivers: [
               // === Study Room Scene Header ===
               SliverToBoxAdapter(
-                child: SizedBox(
-                  height: 320,
+                child: Padding(
+                  padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
+                  child: SizedBox(
+                    height: 200,
                   child: Stack(
                     children: [
                       // Study room illustration
@@ -129,35 +131,10 @@ class LearnScreen extends ConsumerWidget {
                         onMicroscopeTap: () => _navigateToWaterChemistry(context),
                         onGlobeTap: () => _showRandomFishFact(context),
                       ),
-                      // No back button - LearnScreen is Room 0 in HouseNavigator
-                      // Navigation between rooms is via swipe or room indicator bar
-                      // Title overlay
-                      Positioned(
-                        top: MediaQuery.of(context).padding.top + 16,
-                        left: 0,
-                        right: 0,
-                        child: const Center(
-                          child: Text(
-                            '📚 Study',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                              shadows: [
-                                Shadow(color: Colors.black45, blurRadius: 8),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                      // Hearts indicator
-                      Positioned(
-                        top: MediaQuery.of(context).padding.top + 12,
-                        right: 16,
-                        child: const HeartIndicator(compact: true),
-                      ),
+                      // Scene handles its own XP/streak/progress overlays internally
                     ],
                   ),
+                ),
                 ),
               ),
 
@@ -262,7 +239,7 @@ class LearnScreen extends ConsumerWidget {
                   }, childCount: metadata.length),
                 ),
 
-                const SliverToBoxAdapter(child: SizedBox(height: 100)),
+                const SliverToBoxAdapter(child: SizedBox(height: 160)),
               ],
             ],
           );
@@ -724,7 +701,7 @@ class _LazyLearningPathCardState extends ConsumerState<_LazyLearningPathCard> {
                         AppColors.primaryAlpha10,
                       ],
                     ),
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(12),
               border: Border.all(
                 color: isComplete
                     ? AppColors.successAlpha30
@@ -815,6 +792,22 @@ class _LazyLearningPathCardState extends ConsumerState<_LazyLearningPathCard> {
                   ),
                 ],
               ),
+              // "Continue →" CTA for in-progress paths
+              if (progress > 0 && !isComplete)
+                Padding(
+                  padding: const EdgeInsets.only(top: 8),
+                  child: Row(
+                    children: [
+                      Text(
+                        'Continue \u2192',
+                        style: AppTypography.labelMedium.copyWith(
+                          color: AppColors.xp,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
             ],
           ),
           children: _buildExpandedContent(loadedPath, isLoading),

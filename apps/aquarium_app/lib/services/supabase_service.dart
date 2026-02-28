@@ -23,14 +23,21 @@ class SupabaseService {
   }
 
   // ---------------------------------------------------------------------------
-  // TODO: Replace with your dedicated aquarium-app Supabase project credentials.
-  //       1. Create a project at https://supabase.com/dashboard
-  //       2. Copy the URL and anon key from Project Settings → API
-  //       3. Run the migration SQL from lib/supabase/migrations/001_initial.sql
-  //       See also: aquarium-roadmap/cloud_setup.md
+  // Configure via --dart-define at build time:
+  //   flutter build apk --dart-define=SUPABASE_URL=https://your-project.supabase.co \
+  //                      --dart-define=SUPABASE_ANON_KEY=your-anon-key
+  //
+  // If not provided, the app runs in offline-only mode (no cloud sync).
+  // See also: aquarium-roadmap/cloud_setup.md
   // ---------------------------------------------------------------------------
-  static const String _supabaseUrl = 'https://fqmzaeutdvmqssdwduhu.supabase.co';
-  static const String _supabaseAnonKey = 'sb_publishable_P4lVc9-8Kee76CPva4MVyQ_TKFJ10rg';
+  static const String _supabaseUrl = String.fromEnvironment(
+    'SUPABASE_URL',
+    defaultValue: '',
+  );
+  static const String _supabaseAnonKey = String.fromEnvironment(
+    'SUPABASE_ANON_KEY',
+    defaultValue: '',
+  );
 
   /// The underlying Supabase client.
   SupabaseClient get client => Supabase.instance.client;
@@ -55,11 +62,11 @@ class SupabaseService {
   static Future<bool> initialize() async {
     if (_instance != null) return true;
 
-    // Skip if credentials are still placeholders
-    if (_supabaseUrl.contains('YOUR_PROJECT_REF') ||
-        _supabaseAnonKey.contains('YOUR_SUPABASE_ANON_KEY')) {
-      debugPrint('[SupabaseService] Placeholder credentials detected — '
-          'running in offline-only mode.');
+    // Skip if credentials are not configured via --dart-define
+    if (_supabaseUrl.isEmpty || _supabaseAnonKey.isEmpty) {
+      debugPrint('[SupabaseService] No Supabase credentials configured — '
+          'running in offline-only mode. '
+          'Configure via --dart-define=SUPABASE_URL=... at build time.');
       return false;
     }
 

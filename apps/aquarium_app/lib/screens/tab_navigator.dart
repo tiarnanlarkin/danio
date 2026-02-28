@@ -84,6 +84,7 @@ class _TabNavigatorState extends ConsumerState<TabNavigator> {
               // === Main Tab Content ===
               // Each tab has its own Navigator to preserve state
               IndexedStack(
+                clipBehavior: Clip.hardEdge,
                 index: currentTab,
                 children: [
                   // Tab 0: Learn

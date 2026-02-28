@@ -31,7 +31,7 @@ class PracticeHubScreen extends ConsumerWidget {
         ],
       ),
       body: ListView.builder(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.fromLTRB(16, 16, 16, 100),
         itemCount: _getPracticeHubItemCount(dueCards, totalCards),
         itemBuilder: (context, index) => _buildPracticeHubItem(
           context,
@@ -68,7 +68,7 @@ class PracticeHubScreen extends ConsumerWidget {
             title: 'Review Due Cards',
             subtitle: '$dueCards cards waiting for review',
             icon: Icons.replay,
-            color: AppColors.error,
+            color: AppColors.warning,
             onTap: () {
               Navigator.push(
                 context,
@@ -113,12 +113,12 @@ class PracticeHubScreen extends ConsumerWidget {
             _StatItem(
               label: 'Due Today',
               value: '$dueCards',
-              color: AppColors.error,
+              color: dueCards == 0 ? AppColors.textSecondary : AppColors.warning,
             ),
             _StatItem(
               label: 'Mastered',
               value: '${srState.stats.masteredCards}',
-              color: AppColors.success,
+              color: srState.stats.masteredCards == 0 ? AppColors.textSecondary : AppColors.success,
             ),
             _StatItem(
               label: 'Total Cards',
@@ -195,7 +195,7 @@ class PracticeHubScreen extends ConsumerWidget {
         return _buildProgressCard(
           context,
           title: 'Study Streak',
-          value: '${profile?.currentStreak ?? 0} days',
+          value: '${profile?.currentStreak ?? 0} ${(profile?.currentStreak ?? 0) == 1 ? "day" : "days"}',
           icon: Icons.local_fire_department,
           color: AppColors.warning,
         );
@@ -242,7 +242,7 @@ class PracticeHubScreen extends ConsumerWidget {
           child: Row(
             children: [
               Container(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.fromLTRB(16, 16, 16, 100),
                 decoration: BoxDecoration(
                   color: color.withAlpha(26),
                   borderRadius: AppRadius.mediumRadius,
@@ -280,7 +280,7 @@ class PracticeHubScreen extends ConsumerWidget {
         return Expanded(
           child: Card(
             child: Padding(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.fromLTRB(16, 16, 16, 100),
               child: Column(
                 children: [
                   Text(

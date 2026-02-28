@@ -55,10 +55,17 @@ class PrimaryActionTile extends StatelessWidget {
     final primaryColor = Theme.of(context).colorScheme.primary;
     final effectiveIconColor = iconColor ?? primaryColor;
 
-    return AppCard(
+    final semanticLabel = subtitle != null ? '$title\n$subtitle' : title;
+
+    return Semantics(
+      label: semanticLabel,
+      button: onTap != null,
+      excludeSemantics: true,
+      child: AppCard(
       variant: AppCardVariant.filled,
       padding: AppCardPadding.standard,
       onTap: onTap,
+
       child: Row(
         children: [
           Container(
@@ -93,7 +100,7 @@ class PrimaryActionTile extends StatelessWidget {
                     style: AppTypography.bodySmall.copyWith(
                       color: Theme.of(context).colorScheme.onSurface.withAlpha(153), // ~60%
                     ),
-                    maxLines: 1,
+                    maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
                 ],
@@ -106,6 +113,7 @@ class PrimaryActionTile extends StatelessWidget {
           ],
         ],
       ),
+    ),
     );
   }
 }

@@ -28,7 +28,7 @@ class SmartScreen extends ConsumerWidget {
         centerTitle: true,
       ),
       body: ListView(
-        padding: const EdgeInsets.all(AppSpacing.md),
+        padding: const EdgeInsets.fromLTRB(AppSpacing.md, AppSpacing.md, AppSpacing.md, 80),
         children: [
           // API status
           if (!openai.isConfigured)
@@ -47,6 +47,7 @@ class SmartScreen extends ConsumerWidget {
             onTap: () => Navigator.of(context).push(
               MaterialPageRoute(builder: (_) => const FishIdScreen()),
             ),
+            isEnabled: openai.isConfigured,
           ).animate(delay: 0.ms).fadeIn().slideX(begin: 0.05),
 
           _FeatureCard(
@@ -57,6 +58,7 @@ class SmartScreen extends ConsumerWidget {
             onTap: () => Navigator.of(context).push(
               MaterialPageRoute(builder: (_) => const SymptomTriageScreen()),
             ),
+            isEnabled: openai.isConfigured,
           ).animate(delay: 50.ms).fadeIn().slideX(begin: 0.05),
 
           _FeatureCard(
@@ -67,6 +69,7 @@ class SmartScreen extends ConsumerWidget {
             onTap: () => Navigator.of(context).push(
               MaterialPageRoute(builder: (_) => const WeeklyPlanScreen()),
             ),
+            isEnabled: openai.isConfigured,
           ).animate(delay: 100.ms).fadeIn().slideX(begin: 0.05),
 
           _FeatureCard(
@@ -112,10 +115,26 @@ class SmartScreen extends ConsumerWidget {
         expand: false,
         builder: (ctx, scrollController) {
           if (anomalies.isEmpty) {
-            return const Center(
+            return Center(
               child: Padding(
-                padding: EdgeInsets.all(AppSpacing.lg),
-                child: Text('No anomalies detected yet.'),
+                padding: const EdgeInsets.all(AppSpacing.lg),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.insights_outlined, size: 48, color: AppColors.textHint),
+                    const SizedBox(height: AppSpacing.sm),
+                    Text(
+                      'No anomalies detected yet',
+                      style: AppTypography.bodyMedium.copyWith(color: AppColors.textSecondary),
+                    ),
+                    const SizedBox(height: AppSpacing.xs),
+                    Text(
+                      'Log water tests regularly to enable smart analysis',
+                      style: AppTypography.bodySmall.copyWith(color: AppColors.textHint),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                ),
               ),
             );
           }
@@ -236,6 +255,7 @@ class _FeatureCard extends StatelessWidget {
   final String subtitle;
   final Color color;
   final VoidCallback onTap;
+  final bool isEnabled;
 
   const _FeatureCard({
     required this.icon,
@@ -243,13 +263,18 @@ class _FeatureCard extends StatelessWidget {
     required this.subtitle,
     required this.color,
     required this.onTap,
+    this.isEnabled = true,
   });
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return Card(
+    return Opacity(
+      opacity: isEnabled ? 1.0 : 0.5,
+      child: IgnorePointer(
+        ignoring: !isEnabled,
+        child: Card(
       margin: const EdgeInsets.only(bottom: AppSpacing.sm),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12.0),
@@ -285,11 +310,16 @@ class _FeatureCard extends StatelessWidget {
                   ],
                 ),
               ),
-              const Icon(Icons.chevron_right, color: AppColors.textSecondary),
+              if (isEnabled)
+                const Icon(Icons.chevron_right, color: AppColors.textSecondary)
+              else
+                const Icon(Icons.lock_outline, color: AppColors.textHint, size: 18),
             ],
           ),
         ),
       ),
+    ),
+    ),
     );
   }
 }

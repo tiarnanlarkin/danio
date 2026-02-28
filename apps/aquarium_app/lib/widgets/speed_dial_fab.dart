@@ -77,8 +77,8 @@ class _SpeedDialFABState extends State<SpeedDialFAB>
   Offset _fabCenter() {
     final box = context.findRenderObject() as RenderBox?;
     if (box == null) return Offset.zero;
-    // The FAB widget is a 56x56 circle — its centre in local coords is (28, 28)
-    return box.localToGlobal(const Offset(28, 28));
+    // The FAB widget is a 48x48 circle — its centre in local coords is (24, 24)
+    return box.localToGlobal(const Offset(24, 24));
   }
 
   void _showOverlay() {
@@ -241,8 +241,8 @@ class _MainFAB extends StatelessWidget {
           animation: animation,
           builder: (context, child) {
             return Container(
-              width: 56,
-              height: 56,
+              width: 48,
+              height: 48,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 gradient: LinearGradient(
