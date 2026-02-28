@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../theme/app_theme.dart';
 import '../../../widgets/mascot/mascot_widgets.dart';
-import '../../../widgets/decorative_elements.dart';
 
 class EmptyRoomScene extends StatelessWidget {
   final VoidCallback onCreateTank;
@@ -11,175 +10,78 @@ class EmptyRoomScene extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        // Empty room background
-        Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [Color(0xFFF5EDE3), Color(0xFFEDE5DA)],
-            ),
-          ),
-        ),
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
-        // Window
-        Positioned(
-          top: 80,
-          right: 30,
-          child: Container(
-            width: 80,
-            height: 100,
-            decoration: BoxDecoration(
-              gradient: const LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [Color(0xFF87CEEB), Color(0xFFB8E0F0)],
-              ),
-              border: Border.all(color: const Color(0xFF8B7355), width: 6),
-              borderRadius: AppRadius.xsRadius,
-            ),
-          ),
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: isDark
+              ? [const Color(0xFF0D1B2A), const Color(0xFF1B2838)]
+              : [const Color(0xFFE8F4FD), const Color(0xFFF0F7FB)],
         ),
-
-        // Floor
-        Positioned(
-          bottom: 0,
-          left: 0,
-          right: 0,
-          child: Container(
-            height: 120,
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [Color(0xFFD4A574), Color(0xFFC49664)],
-              ),
-            ),
-          ),
-        ),
-
-        // Empty stand where tank should go
-        Positioned(
-          bottom: 100,
-          left: 40,
-          child: Container(
-            width: 200,
-            height: 50,
-            decoration: BoxDecoration(
-              gradient: const LinearGradient(
-                colors: [Color(0xFF5D4037), Color(0xFF4E342E)],
-              ),
-              borderRadius: AppRadius.xsRadius,
-              boxShadow: [
-                BoxShadow(
-                  color: AppOverlays.black30,
-                  blurRadius: 8,
-                  offset: const Offset(0, 4),
-                ),
-              ],
-            ),
-          ),
-        ),
-
-        // "Tank goes here" placeholder
-        Positioned(
-          bottom: 160,
-          left: 50,
-          child: Container(
-            width: 180,
-            height: 120,
-            decoration: BoxDecoration(
-              color: AppOverlays.surfaceVariant30,
-              borderRadius: AppRadius.smallRadius,
-              border: Border.all(
-                color: AppOverlays.textHint50,
-                width: 2,
-                style: BorderStyle.solid,
-              ),
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  Icons.water_drop_outlined,
-                  size: 40,
-                  color: AppOverlays.textHint50,
-                ),
-                const SizedBox(height: AppSpacing.sm),
-                Text(
-                  'Your tank here',
-                  style: AppTypography.bodySmall.copyWith(
-                    color: AppColors.textHint,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-
-        // Floor plant (waiting)
-        Positioned(
-          bottom: 80,
-          right: 20,
-          child: Opacity(
-            opacity: 0.5,
-            child: SizedBox(
-              width: 40,
-              height: 80,
-              child: Column(
-                children: [
-                  Container(
-                    width: 30,
-                    height: 50,
-                    decoration: BoxDecoration(
-                      color: AppOverlays.forestGreen50,
-                      borderRadius: AppRadius.mediumRadius,
-                    ),
-                  ),
-                  Container(
-                    width: 25,
-                    height: 20,
-                    decoration: BoxDecoration(
-                      color: AppOverlays.peru50,
-                      borderRadius: AppRadius.xsRadius,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-
-        // Call to action with Finn mascot
-        Center(
-          child: NotebookCard(
-            rotation: 1.5,
-            padding: const EdgeInsets.all(AppSpacing.lg),
+      ),
+      child: SafeArea(
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 32),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
+                // Water drop icon
+                Container(
+                  width: 100,
+                  height: 100,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: AppOverlays.primary10,
+                    border: Border.all(color: AppOverlays.primary30, width: 2),
+                  ),
+                  child: const Icon(
+                    Icons.water_drop_outlined,
+                    size: 48,
+                    color: AppColors.primary,
+                  ),
+                ),
+                const SizedBox(height: 24),
+
                 // Finn greeting
                 MascotBubble.fromContext(
                   context: MascotContext.noTanks,
                   size: MascotSize.small,
                 ),
                 const SizedBox(height: 16),
+
                 Text(
-                  'This room is waiting for\nyour first aquarium.',
+                  'Welcome to your aquarium!',
+                  style: AppTypography.headlineSmall.copyWith(
+                    color: AppColors.textPrimary,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'Add your first tank to start tracking\nwater parameters, livestock, and more.',
                   style: AppTypography.bodyMedium.copyWith(
                     color: AppColors.textSecondary,
                   ),
                   textAlign: TextAlign.center,
                 ),
-                const SizedBox(height: 20),
-                ElevatedButton.icon(
-                  onPressed: onCreateTank,
-                  icon: const Icon(Icons.add),
-                  label: const Text('Add Your Tank'),
+                const SizedBox(height: 32),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton.icon(
+                    onPressed: onCreateTank,
+                    icon: const Icon(Icons.add),
+                    label: const Text('Add Your Tank'),
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                    ),
+                  ),
                 ),
-                const SizedBox(height: AppSpacing.sm),
+                const SizedBox(height: 12),
                 TextButton(
                   onPressed: onLoadDemo,
                   child: const Text('Try a sample tank'),
@@ -188,7 +90,7 @@ class EmptyRoomScene extends StatelessWidget {
             ),
           ),
         ),
-      ],
+      ),
     );
   }
 }

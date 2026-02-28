@@ -81,7 +81,7 @@ class DailyGoalProgress extends ConsumerWidget {
             Text(
               '${dailyGoal.remainingXp} XP to go',
               style: AppTypography.bodySmall.copyWith(
-                color: AppColors.textHint,
+                color: AppColors.textSecondary,
                 fontSize: 10,
               ),
               textAlign: TextAlign.center,
