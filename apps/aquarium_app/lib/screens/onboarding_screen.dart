@@ -40,14 +40,14 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen>
       title: 'Manage Your Collection',
       description:
           'Add fish, plants, and equipment. Set maintenance schedules and get reminders when things need attention.',
-      gradientColors: [Color(0xFF9F6847), Color(0xFFD4A574)],
+      gradientColors: [DanioColors.coralAccent, DanioColors.topaz],
     ),
     _OnboardingPage(
       icon: Icons.auto_graph_rounded,
       title: 'Watch Your Tanks Thrive',
       description:
           'Smart tasks keep your tanks healthy. Complete tasks, view history, and watch your parameters over time.',
-      gradientColors: [DanioColors.tealWater, Color(0xFF8BC4CA)],
+      gradientColors: [DanioColors.tealWater, DanioColors.tealWater.withValues(alpha: 0.7)],
     ),
   ];
 
