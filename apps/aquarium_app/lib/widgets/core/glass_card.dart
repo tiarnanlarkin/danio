@@ -208,7 +208,7 @@ class _GlassCardState extends State<GlassCard> with SingleTickerProviderStateMix
   BoxDecoration _softDecoration(bool isDark, BorderRadius radius) {
     return BoxDecoration(
       color: widget.tintColor != null
-          ? widget.tintColor == const Color(0xFF2A2A3E)
+          ? widget.tintColor == const Color(0xFF2A2220)
               ? AppColors.primaryAlpha90
               : AppColors.whiteAlpha90
           : (isDark ? AppColors.whiteAlpha08 : AppColors.whiteAlpha70),
@@ -247,7 +247,7 @@ class _GlassCardState extends State<GlassCard> with SingleTickerProviderStateMix
         colors: isDark
             ? [
                 AppColors.primaryAlpha85,
-                const Color(0xFF0D2030).withAlpha(242),
+                const Color(0xFF1C1917).withAlpha(242),
               ]
             : [
                 AppColors.primaryAlpha90,
@@ -257,15 +257,15 @@ class _GlassCardState extends State<GlassCard> with SingleTickerProviderStateMix
       borderRadius: radius,
       border: Border.all(
         color: isDark
-            ? const Color(0xFF5FBFB3).withAlpha(64)
-            : const Color(0xFF5FBFB3).withAlpha(38),
+            ? const Color(0xFF5B9EA6).withAlpha(64)
+            : const Color(0xFF5B9EA6).withAlpha(38),
         width: 1,
       ),
       boxShadow: [
         // Teal glow
         BoxShadow(
           color: isDark
-              ? const Color(0xFF3D9F8B).withAlpha(51)
+              ? const Color(0xFF4A8A92).withAlpha(51)
               : AppColors.primaryAlpha10,
           blurRadius: 24,
           offset: const Offset(0, 8),
@@ -276,7 +276,7 @@ class _GlassCardState extends State<GlassCard> with SingleTickerProviderStateMix
 
   BoxDecoration _cozyDecoration(bool isDark, BorderRadius radius) {
     return BoxDecoration(
-      color: isDark ? const Color(0xFF2D2B3A) : const Color(0xFFFFFBF5),
+      color: isDark ? const Color(0xFF2A2220) : const Color(0xFFFFFBF5),
       borderRadius: radius,
       border: Border.all(
         color: isDark
@@ -364,7 +364,7 @@ class SoftCard extends StatelessWidget {
       margin: margin,
       padding: padding ?? const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: backgroundColor ?? (isDark ? const Color(0xFF2A2A3E) : Colors.white),
+        color: backgroundColor ?? (isDark ? const Color(0xFF2A2220) : Colors.white),
         borderRadius: radius,
         boxShadow: [
           BoxShadow(

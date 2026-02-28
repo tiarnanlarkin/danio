@@ -27,8 +27,8 @@ class GemShopColors {
   static const glassBorder = Color(0x30FFFFFF);
   static const textPrimary = Color(0xFFF5F5F5); // High contrast white
   static const textSecondary = Color(
-    0xFFC5C5D5,
-  ); // Improved contrast - lightened from B8B8C8
+    0xFFCDBFAE,
+  ); // Warm beige for brand consistency
   static const powerUpColor = Color(0xFFFF7B7B); // Red - Lightened slightly
   static const extrasColor = Color(
     0xFF5FD9CF,

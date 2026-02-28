@@ -116,7 +116,7 @@ class _CircularProgressPainter extends CustomPainter {
     final progressPaint = Paint()
       ..shader = LinearGradient(
         colors: isCompleted
-            ? [AppColors.success, const Color(0xFF66BB6A)]
+            ? [AppColors.success, DanioColors.amberGold]
             : [AppColors.primary, AppColors.secondary],
       ).createShader(Rect.fromCircle(center: center, radius: radius))
       ..style = PaintingStyle.stroke

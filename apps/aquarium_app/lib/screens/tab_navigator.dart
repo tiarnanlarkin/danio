@@ -194,7 +194,7 @@ class _TabNavigatorState extends ConsumerState<TabNavigator> {
                   label: Text(dueCardsCount > 99 ? '99+' : '$dueCardsCount'),
                   child: const Icon(Icons.quiz),
                 ),
-                label: 'Quiz',
+                label: 'Practice',
               ),
               // Tank tab
               const NavigationDestination(

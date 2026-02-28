@@ -27,7 +27,7 @@ class InventoryColors {
   static const glassCard = Color(0x15FFFFFF);
   static const glassBorder = Color(0x30FFFFFF);
   static const textPrimary = Color(0xFFF5F5F5);
-  static const textSecondary = Color(0xFFB8B8D8);
+  static const textSecondary = Color(0xFFCDBFAE);
 
   // Dark mode adjustments — lighter/desaturated gradients for readability
   static const background1Dark = Color(0xFF3A2660); // Lighter purple
