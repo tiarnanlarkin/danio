@@ -9,6 +9,7 @@ import '../providers/storage_provider.dart';
 import '../providers/tank_provider.dart';
 import '../services/image_cache_service.dart';
 import '../theme/app_theme.dart';
+import '../widgets/core/app_states.dart';
 import 'add_log_screen.dart';
 
 class LogDetailScreen extends ConsumerWidget {
@@ -26,7 +27,11 @@ class LogDetailScreen extends ConsumerWidget {
           const Scaffold(body: Center(child: BubbleLoader())),
       error: (err, _) => Scaffold(
         appBar: AppBar(title: const Text('Log')),
-        body: Center(child: Text('Error: $err')),
+        body: AppErrorState(
+          title: 'Failed to load log',
+          message: 'Could not load log details.',
+          onRetry: () => ref.invalidate(allLogsProvider(tankId)),
+        ),
       ),
       data: (logs) {
         final log = logs

@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/models.dart';
 import '../providers/tank_provider.dart';
 import '../theme/app_theme.dart';
+import '../widgets/core/app_states.dart';
 import '../widgets/core/app_card.dart';
 
 class LivestockValueScreen extends ConsumerStatefulWidget {
@@ -58,7 +59,11 @@ class _LivestockValueScreenState extends ConsumerState<LivestockValueScreen> {
       ),
       body: livestockAsync.when(
         loading: () => const Center(child: BubbleLoader()),
-        error: (e, _) => Center(child: Text('Error: $e')),
+        error: (e, _) => AppErrorState(
+          title: 'Failed to load livestock',
+          message: 'Could not load livestock data.',
+          onRetry: () => ref.invalidate(livestockProvider(widget.tankId)),
+        ),
         data: (livestock) {
           if (livestock.isEmpty) {
             return Center(

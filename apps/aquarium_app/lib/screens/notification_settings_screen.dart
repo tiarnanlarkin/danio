@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/user_profile_provider.dart';
 import '../services/notification_service.dart';
 import '../theme/app_theme.dart';
+import '../widgets/core/app_states.dart';
 import '../utils/app_feedback.dart';
 
 /// Screen for configuring streak reminder notifications
@@ -18,7 +19,10 @@ class NotificationSettingsScreen extends ConsumerWidget {
       appBar: AppBar(title: const Text('Notification Settings')),
       body: profileAsync.when(
         loading: () => const Center(child: BubbleLoader()),
-        error: (e, _) => Center(child: Text('Error: $e')),
+        error: (e, _) => AppErrorState(
+          title: 'Failed to load settings',
+          onRetry: () => ref.invalidate(userProfileProvider),
+        ),
         data: (profile) {
           if (profile == null) {
             return const Center(child: Text('No profile found'));

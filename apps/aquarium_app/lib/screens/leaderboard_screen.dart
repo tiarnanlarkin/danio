@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/leaderboard.dart';
 import '../data/mock_leaderboard.dart';
 import '../providers/user_profile_provider.dart';
+import '../widgets/core/app_states.dart';
 
 /// Duolingo-style competitive leaderboard
 class LeaderboardScreen extends ConsumerWidget {
@@ -41,8 +42,12 @@ class LeaderboardScreen extends ConsumerWidget {
       },
       loading: () =>
           const Scaffold(body: Center(child: BubbleLoader())),
-      error: (error, stack) =>
-          Scaffold(body: Center(child: Text('Error: $error'))),
+      error: (error, stack) => Scaffold(
+          body: AppErrorState(
+            title: 'Failed to load leaderboard',
+            onRetry: () => ref.invalidate(userProfileProvider),
+          ),
+        ),
     );
   }
 

@@ -14,6 +14,7 @@ import '../providers/tank_provider.dart';
 import '../services/backup_service.dart';
 import '../theme/app_theme.dart';
 import '../utils/app_feedback.dart';
+import '../widgets/core/app_states.dart';
 import '../widgets/core/app_card.dart';
 
 const _uuid = Uuid();
@@ -79,7 +80,12 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
 
           tanksAsync.when(
             loading: () => const Center(child: BubbleLoader()),
-            error: (e, _) => Text('Error: $e'),
+            error: (e, _) => AppErrorState(
+              title: 'Failed to load backups',
+              message: e.toString(),
+              onRetry: () => ref.invalidate(tanksProvider),
+              compact: true,
+            ),
             data: (tanks) => Card(
               child: Padding(
                 padding: const EdgeInsets.all(AppSpacing.md),

@@ -3,6 +3,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:intl/intl.dart';
 import '../../../models/models.dart';
 import '../../../widgets/core/app_card.dart';
+import '../../../widgets/empty_state.dart';
 import '../../../theme/app_theme.dart';
 
 class TaskPreview extends StatelessWidget {
@@ -18,11 +19,11 @@ class TaskPreview extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
         child: AppCard(
           padding: AppCardPadding.spacious,
-          child: Center(
-            child: Text(
-              'No tasks scheduled',
-              style: AppTypography.bodyMedium,
-            ),
+          child: CompactEmptyState(
+            icon: Icons.task_alt,
+            message: 'No tasks scheduled yet',
+            actionLabel: 'Add Task',
+            onAction: null, // Handled by parent screen
           ),
         ),
       );
