@@ -97,7 +97,7 @@ class WorkshopScreen extends ConsumerWidget {
                     icon: Icons.set_meal,
                     title: 'Stocking',
                     subtitle: 'Fish capacity',
-                    color: Colors.cyan.shade400,
+                    color: DanioColors.tealWater,
                     onTap: () => Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -195,7 +195,7 @@ class WorkshopScreen extends ConsumerWidget {
                     icon: Icons.attach_money,
                     title: 'Cost Tracker',
                     subtitle: 'Track expenses',
-                    color: Colors.teal.shade400,
+                    color: DanioColors.tealWater,
                     onTap: () => Navigator.push(
                       context,
                       MaterialPageRoute(
