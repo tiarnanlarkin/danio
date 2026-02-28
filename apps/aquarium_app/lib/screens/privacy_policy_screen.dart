@@ -62,7 +62,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
                         ),
                         const SizedBox(height: AppSpacing.xs),
                         Text(
-                          'Your data stays on your device',
+                          'Your privacy matters to us',
                           style: AppTypography.bodyMedium.copyWith(
                             color: AppColors.textSecondary,
                           ),
@@ -83,7 +83,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
 
             // Last Updated
             Text(
-              'Last Updated: February 6, 2025',
+              'Last Updated: February 28, 2026',
               style: AppTypography.bodySmall.copyWith(
                 color: AppColors.textSecondary,
                 fontStyle: FontStyle.italic,
@@ -95,7 +95,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
             // Sections
             _buildSection(
               'Introduction',
-              'Aquarium Hobbyist is committed to protecting your privacy. This Privacy Policy explains how we handle your information when you use our Android application.\n\nThe short version: We don\'t collect, transmit, or store any of your data on external servers. Everything stays on your device.',
+              'Aquarium Hobbyist is committed to protecting your privacy. This Privacy Policy explains how we handle your information when you use our Android application.\n\nThe short version: Your core aquarium data is stored locally on your device. Optional cloud sync and AI-powered features use third-party services (Supabase and OpenAI) as described below. You are always in control of what data is shared.',
             ),
 
             _buildSection(
@@ -116,8 +116,30 @@ class PrivacyPolicyScreen extends StatelessWidget {
 
             _buildHighlight(
               'How Is Data Stored?',
-              'All data is stored in JSON files and local database on your device. No cloud storage. No remote servers. No external databases.',
+              'Your aquarium data is stored locally in a database on your device. If you create an account, data can also be encrypted and synced to Supabase cloud servers (EU/US). Cloud sync is optional and user-initiated.',
               Icons.storage,
+            ),
+
+            _buildSection(
+              'Cloud Sync (Optional)',
+              'If you create an account, you may choose to sync your data to the cloud via Supabase (our backend provider). This includes:\n\n'
+              '• Tank configurations, livestock, and equipment records\n'
+              '• Water test logs and maintenance history\n'
+              '• Encrypted backups of your app data\n\n'
+              'Cloud sync is entirely optional. The app works fully offline without an account. You can delete your cloud account and all synced data at any time from the Account screen.',
+            ),
+
+            _buildSection(
+              'AI-Powered Features',
+              'Aquarium Hobbyist offers optional AI features powered by OpenAI:\n\n'
+              '• Fish/Plant Identification: Photos you take are sent to OpenAI\'s GPT-4o Vision API for analysis.\n'
+              '• Symptom Triage: Text descriptions are sent to OpenAI for care suggestions.\n'
+              '• Weekly Care Plans: Your tank data summary is sent to generate personalised advice.\n\n'
+              'When using AI features:\n'
+              '• Photos and text are transmitted to OpenAI\'s servers for processing\n'
+              '• OpenAI may temporarily process this data per their data usage policy\n'
+              '• We do not store your photos or AI queries on our servers\n'
+              '• AI features are optional — the app works without them',
             ),
 
             _buildSection(
@@ -126,18 +148,35 @@ class PrivacyPolicyScreen extends StatelessWidget {
             ),
 
             _buildBulletList([
-              'Personal identification information',
-              'Email addresses or phone numbers',
               'Location data',
-              'Usage analytics or statistics',
-              'Device information',
-              'Crash reports',
+              'Usage analytics or tracking statistics',
+              'Device fingerprinting information',
               'Advertising identifiers',
+              'Data from other apps on your device',
             ], isNegative: true),
 
             _buildSection(
               'Third-Party Services',
-              'Aquarium Hobbyist v1.0 does not use any third-party services that collect data. No analytics (Google Analytics, Firebase, etc.), no advertising networks, no cloud sync, no social media integrations, no crash reporting.',
+              'Aquarium Hobbyist uses the following third-party services:',
+            ),
+
+            _buildPermissionCard(
+              'Supabase (Cloud Sync & Auth)',
+              'Provides optional account creation, authentication, and encrypted cloud backup/sync. Data is stored on Supabase-managed servers. Only used if you create an account.',
+              Icons.cloud,
+            ),
+
+            _buildPermissionCard(
+              'OpenAI (AI Features)',
+              'Powers Fish ID, Symptom Triage, and AI care plans. Photos and text prompts are sent to OpenAI servers for processing. OpenAI\'s data usage policy applies. Only used when you actively use AI features.',
+              Icons.auto_awesome,
+            ),
+
+            const SizedBox(height: AppSpacing.md),
+
+            _buildSection(
+              'Services We Do NOT Use',
+              'No advertising networks, no Google Analytics or Firebase Analytics, no social media trackers, no crash reporting services.',
             ),
 
             _buildSection(
@@ -161,7 +200,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
 
             _buildHighlight(
               'Important',
-              'None of these permissions are used to transmit data off your device.',
+              'Permissions are only used for their stated purpose. Photos are only sent externally when you actively use AI identification features.',
               Icons.security,
             ),
 
@@ -186,6 +225,11 @@ class PrivacyPolicyScreen extends StatelessWidget {
               Icons.delete,
             ),
             _buildRightCard(
+              'Account Deletion',
+              'Delete your cloud account and all synced data from the Account screen',
+              Icons.person_remove,
+            ),
+            _buildRightCard(
               'Portability',
               'Backup files are in standard JSON format',
               Icons.sync_alt,
@@ -197,10 +241,11 @@ class PrivacyPolicyScreen extends StatelessWidget {
             ),
 
             _buildBulletList([
-              'Local storage only - data never leaves your device',
-              'No network transmission - app doesn\'t communicate with external servers',
-              'Protected by your device\'s security (lock screen, encryption)',
-              'No account system - no passwords to leak, no accounts to compromise',
+              'Core data stored locally, protected by your device\'s security',
+              'Cloud backups are encrypted before transmission',
+              'API communications use HTTPS/TLS encryption',
+              'Optional account system — the app works fully without one',
+              'AI features process data transiently — we don\'t store queries server-side',
             ]),
 
             _buildSection(
@@ -232,7 +277,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
               child: Column(
                 children: [
                   Text(
-                    'Aquarium Hobbyist v1.0',
+                    'Aquarium Hobbyist v2.0',
                     style: AppTypography.bodySmall.copyWith(
                       color: AppColors.textSecondary,
                     ),
@@ -279,12 +324,12 @@ class PrivacyPolicyScreen extends StatelessWidget {
             ],
           ),
           const SizedBox(height: AppSpacing.md),
-          _buildSummaryItem('All data stored locally on your device'),
-          _buildSummaryItem('No internet connection required'),
-          _buildSummaryItem('No analytics, ads, or tracking'),
+          _buildSummaryItem('Core data stored locally on your device'),
+          _buildSummaryItem('Optional cloud sync via Supabase (you choose)'),
+          _buildSummaryItem('AI Fish ID sends photos to OpenAI for processing'),
+          _buildSummaryItem('No ads or third-party tracking'),
           _buildSummaryItem('You own and control your data'),
-          _buildSummaryItem('Export backups anytime'),
-          _buildSummaryItem('Delete data anytime'),
+          _buildSummaryItem('Export backups or delete your account anytime'),
         ],
       ),
     );
