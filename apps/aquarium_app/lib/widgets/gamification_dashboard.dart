@@ -328,14 +328,17 @@ class _DailyGoalProgress extends StatelessWidget {
               ),
             ),
             const SizedBox(width: 6),
-            Text(
-              'Daily Goal: $current/$goal XP',
-              style: AppTypography.labelMedium.copyWith(
-                color: isComplete ? AppColors.success : AppColors.textPrimary,
-                fontWeight: isComplete ? FontWeight.bold : FontWeight.normal,
+            Flexible(
+              child: Text(
+                'Daily Goal: $current/$goal XP',
+                style: AppTypography.labelMedium.copyWith(
+                  color: isComplete ? AppColors.success : AppColors.textPrimary,
+                  fontWeight: isComplete ? FontWeight.bold : FontWeight.normal,
+                ),
+                overflow: TextOverflow.ellipsis,
               ),
             ),
-            const Spacer(),
+            const SizedBox(width: 4),
             if (isComplete)
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
