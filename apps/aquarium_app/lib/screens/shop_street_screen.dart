@@ -765,6 +765,7 @@ class _ShopTile extends StatelessWidget {
             IconButton(
               icon: const Icon(Icons.close, size: 18),
               color: ShopColors.textSecondaryAlpha50,
+              tooltip: 'Remove item',
               onPressed: onDelete,
             ),
           ],

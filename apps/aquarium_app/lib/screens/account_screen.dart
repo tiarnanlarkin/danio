@@ -152,6 +152,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                         ? Icons.visibility_off
                         : Icons.visibility,
                   ),
+                  tooltip: _obscurePassword ? 'Show password' : 'Hide password',
                   onPressed: () =>
                       setState(() => _obscurePassword = !_obscurePassword),
                 ),
@@ -484,6 +485,7 @@ class _SyncStatusCard extends ConsumerWidget {
         trailing: syncStatus == CloudSyncStatus.error
             ? IconButton(
                 icon: const Icon(Icons.refresh),
+                tooltip: 'Retry sync',
                 onPressed: () =>
                     ref.read(cloudSyncServiceProvider).syncNow(),
               )

@@ -273,6 +273,7 @@ class _FriendsListView extends ConsumerWidget {
                   ? IconButton(
                       constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
                       icon: const Icon(Icons.clear),
+                      tooltip: 'Clear search',
                       onPressed: () {
                         searchController.clear();
                         onSearchChanged('');

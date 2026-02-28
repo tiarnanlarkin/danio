@@ -304,6 +304,7 @@ class _StoryPlayerScreenState extends ConsumerState<StoryPlayerScreen>
             children: [
               IconButton(
                 icon: const Icon(Icons.close, color: Colors.white),
+                tooltip: 'Close story',
                 onPressed: () => _confirmExit(),
               ),
               Expanded(

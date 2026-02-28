@@ -311,6 +311,7 @@ class _StockingCalculatorScreenState extends State<StockingCalculatorScreen> {
                             children: [
                               IconButton(
                                 icon: const Icon(Icons.remove_circle_outline),
+                                tooltip: 'Decrease count',
                                 onPressed: () => _updateCount(entry, -1),
                               ),
                               Text(
@@ -319,6 +320,7 @@ class _StockingCalculatorScreenState extends State<StockingCalculatorScreen> {
                               ),
                               IconButton(
                                 icon: const Icon(Icons.add_circle_outline),
+                                tooltip: 'Increase count',
                                 onPressed: () => _updateCount(entry, 1),
                               ),
                             ],

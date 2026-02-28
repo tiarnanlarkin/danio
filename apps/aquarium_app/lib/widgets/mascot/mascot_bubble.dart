@@ -568,6 +568,7 @@ class MascotBanner extends StatelessWidget {
           if (onDismiss != null)
             IconButton(
               icon: const Icon(Icons.close, size: 18),
+              tooltip: 'Dismiss',
               onPressed: onDismiss,
               visualDensity: VisualDensity.compact,
               color: AppColors.textHint,

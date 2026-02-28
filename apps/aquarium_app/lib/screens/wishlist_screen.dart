@@ -465,6 +465,7 @@ class _AddEditItemSheetState extends State<_AddEditItemSheet> {
                       children: [
                         IconButton(
                           icon: const Icon(Icons.remove_circle_outline),
+                          tooltip: 'Decrease quantity',
                           onPressed: _quantity > 1
                               ? () => setState(() => _quantity--)
                               : null,
@@ -472,6 +473,7 @@ class _AddEditItemSheetState extends State<_AddEditItemSheet> {
                         Text('$_quantity', style: AppTypography.labelLarge),
                         IconButton(
                           icon: const Icon(Icons.add_circle_outline),
+                          tooltip: 'Increase quantity',
                           onPressed: () => setState(() => _quantity++),
                         ),
                       ],
