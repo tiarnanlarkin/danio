@@ -1,0 +1,142 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <!-- Background gradient -->
+    <radialGradient id="bgGrad" cx="50%" cy="45%" r="60%">
+      <stop offset="0%" stop-color="#F5A830"/>
+      <stop offset="60%" stop-color="#E8851A"/>
+      <stop offset="100%" stop-color="#C4610A"/>
+    </radialGradient>
+    <!-- Body gradient -->
+    <radialGradient id="bodyGrad" cx="40%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#FFB347"/>
+      <stop offset="50%" stop-color="#E8821A"/>
+      <stop offset="100%" stop-color="#C45F0A"/>
+    </radialGradient>
+    <!-- Belly gradient -->
+    <radialGradient id="bellyGrad" cx="50%" cy="30%" r="60%">
+      <stop offset="0%" stop-color="#FFD580"/>
+      <stop offset="100%" stop-color="#F5A830"/>
+    </radialGradient>
+    <!-- Eye white -->
+    <radialGradient id="eyeGrad" cx="38%" cy="35%" r="55%">
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="100%" stop-color="#E8E0D0"/>
+    </radialGradient>
+    <!-- Fin gradient -->
+    <linearGradient id="finGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2DBFAD"/>
+      <stop offset="100%" stop-color="#1A8F80"/>
+    </linearGradient>
+    <!-- Tail gradient -->
+    <linearGradient id="tailGrad" x1="100%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#25A896"/>
+      <stop offset="100%" stop-color="#157A6E"/>
+    </linearGradient>
+    <!-- Shadow filter -->
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="6" stdDeviation="8" flood-color="#7A3A00" flood-opacity="0.35"/>
+    </filter>
+    <!-- Glow filter for eye -->
+    <filter id="eyeGlow">
+      <feGaussianBlur stdDeviation="2" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+    <!-- Rounded rect clip -->
+    <clipPath id="iconClip">
+      <rect x="0" y="0" width="512" height="512" rx="115" ry="115"/>
+    </clipPath>
+  </defs>
+
+  <!-- Background -->
+  <rect x="0" y="0" width="512" height="512" rx="115" ry="115" fill="url(#bgGrad)"/>
+  <!-- Background inner glow -->
+  <ellipse cx="256" cy="220" rx="180" ry="140" fill="#FFD070" opacity="0.25"/>
+
+  <!-- === TAIL FIN === -->
+  <ellipse cx="390" cy="256" rx="62" ry="38" fill="url(#tailGrad)" transform="rotate(-10, 390, 256)" filter="url(#shadow)"/>
+  <ellipse cx="390" cy="256" rx="62" ry="38" fill="none" stroke="#0F6358" stroke-width="3" opacity="0.4" transform="rotate(-10, 390, 256)"/>
+  <!-- Tail fin detail lines -->
+  <line x1="340" y1="230" x2="440" y2="215" stroke="#1A8F80" stroke-width="2.5" opacity="0.5"/>
+  <line x1="338" y1="248" x2="445" y2="248" stroke="#1A8F80" stroke-width="2.5" opacity="0.5"/>
+  <line x1="340" y1="266" x2="443" y2="280" stroke="#1A8F80" stroke-width="2.5" opacity="0.5"/>
+
+  <!-- === BODY === -->
+  <ellipse cx="220" cy="265" rx="155" ry="108" fill="url(#bodyGrad)" filter="url(#shadow)"/>
+
+  <!-- === CREAM STRIPE — bold, full-length, crisp hard edges === -->
+  <!-- Main stripe band -->
+  <clipPath id="bodyClip">
+    <ellipse cx="220" cy="265" rx="155" ry="108"/>
+  </clipPath>
+  <rect x="68" y="248" width="307" height="34" rx="17" ry="17" fill="#FFF5D6" clip-path="url(#bodyClip)"/>
+  <!-- Stripe highlight top edge -->
+  <rect x="68" y="248" width="307" height="6" rx="3" ry="3" fill="#FFFFFF" opacity="0.7" clip-path="url(#bodyClip)"/>
+  <!-- Stripe shadow bottom edge -->
+  <rect x="68" y="276" width="307" height="6" rx="3" ry="3" fill="#D4B070" opacity="0.4" clip-path="url(#bodyClip)"/>
+
+  <!-- === BELLY highlight === -->
+  <ellipse cx="205" cy="305" rx="100" ry="48" fill="url(#bellyGrad)" opacity="0.45"/>
+
+  <!-- === DORSAL FIN (top) === -->
+  <path d="M 155 175 Q 195 120 245 148 Q 220 165 195 172 Z" fill="url(#finGrad)" filter="url(#shadow)"/>
+  <path d="M 155 175 Q 195 120 245 148 Q 220 165 195 172 Z" fill="none" stroke="#0F6358" stroke-width="2.5" opacity="0.5"/>
+  <!-- Dorsal fin rays -->
+  <line x1="175" y1="173" x2="188" y2="130" stroke="#1A8F80" stroke-width="2" opacity="0.5"/>
+  <line x1="200" y1="168" x2="212" y2="128" stroke="#1A8F80" stroke-width="2" opacity="0.5"/>
+  <line x1="222" y1="166" x2="232" y2="136" stroke="#1A8F80" stroke-width="2" opacity="0.5"/>
+
+  <!-- === PECTORAL FIN (side) === -->
+  <ellipse cx="168" cy="295" rx="42" ry="22" fill="url(#finGrad)" transform="rotate(-35, 168, 295)" opacity="0.9" filter="url(#shadow)"/>
+
+  <!-- === BODY shading overlay === -->
+  <ellipse cx="220" cy="240" rx="120" ry="55" fill="#FFD080" opacity="0.18"/>
+  <!-- Top body shadow -->
+  <ellipse cx="235" cy="195" rx="90" ry="30" fill="#C45F0A" opacity="0.15"/>
+
+  <!-- === HEAD === -->
+  <ellipse cx="118" cy="258" rx="80" ry="78" fill="url(#bodyGrad)"/>
+  <!-- Head highlight -->
+  <ellipse cx="105" cy="232" rx="42" ry="32" fill="#FFD080" opacity="0.25"/>
+
+  <!-- === MOUTH === -->
+  <!-- Open joyful mouth -->
+  <ellipse cx="68" cy="278" rx="26" ry="20" fill="#5A1A00"/>
+  <!-- Teeth top -->
+  <rect x="52" y="270" width="32" height="9" rx="4" ry="4" fill="#FFFEF0"/>
+  <!-- Mouth tongue/interior -->
+  <ellipse cx="68" cy="285" rx="18" ry="10" fill="#D44020"/>
+  <!-- Mouth smile curve highlight -->
+  <path d="M 46 272 Q 68 268 90 272" fill="none" stroke="#FFFFFF" stroke-width="3" opacity="0.5"/>
+
+  <!-- === EYE === -->
+  <!-- Eye socket shadow -->
+  <circle cx="110" cy="228" r="38" fill="#C45F0A" opacity="0.3"/>
+  <!-- Eye white -->
+  <circle cx="110" cy="226" r="34" fill="url(#eyeGrad)"/>
+  <!-- Iris -->
+  <circle cx="113" cy="228" r="22" fill="#2A5BAD"/>
+  <!-- Pupil -->
+  <circle cx="115" cy="230" r="13" fill="#0A1A3A"/>
+  <!-- Eye catchlight main -->
+  <circle cx="104" cy="220" r="8" fill="#FFFFFF"/>
+  <!-- Eye catchlight small -->
+  <circle cx="118" cy="235" r="4" fill="#FFFFFF" opacity="0.7"/>
+  <!-- Eye rim -->
+  <circle cx="110" cy="226" r="34" fill="none" stroke="#C45F0A" stroke-width="3" opacity="0.4"/>
+
+  <!-- === CHEEK blush === -->
+  <ellipse cx="82" cy="255" rx="18" ry="12" fill="#FF8050" opacity="0.3"/>
+
+  <!-- === BODY outline (subtle) === -->
+  <ellipse cx="220" cy="265" rx="155" ry="108" fill="none" stroke="#8B3A00" stroke-width="4" opacity="0.25"/>
+  <ellipse cx="118" cy="258" rx="80" ry="78" fill="none" stroke="#8B3A00" stroke-width="4" opacity="0.2"/>
+
+  <!-- === BUBBLES (decorative) === -->
+  <circle cx="420" cy="145" r="14" fill="none" stroke="#FFE5A0" stroke-width="3" opacity="0.5"/>
+  <circle cx="450" cy="108" r="9" fill="none" stroke="#FFE5A0" stroke-width="2.5" opacity="0.4"/>
+  <circle cx="400" cy="115" r="6" fill="none" stroke="#FFE5A0" stroke-width="2" opacity="0.35"/>
+  <!-- Bubble highlights -->
+  <circle cx="416" cy="141" r="4" fill="#FFFFFF" opacity="0.5"/>
+  <circle cx="447" cy="105" r="3" fill="#FFFFFF" opacity="0.4"/>
+
+</svg>
