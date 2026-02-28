@@ -16,8 +16,8 @@ class ShopColors {
   static const background1 = Color(0xFF4A7C59); // Forest green
   static const background2 = Color(0xFF3D6B4A); // Darker green
   static const background3 = Color(0xFF2F5A3B); // Deep green
-  static const accent = Color(0xFFF0C040); // Sunny yellow
-  static const accentLight = Color(0xFFFFF3C4); // Light yellow
+  static const accent = Color(0xFFD97706); // Sunny yellow
+  static const accentLight = Color(0xFFFFF0DC); // Light yellow
   static const wood = Color(0xFF8B7355); // Market stall wood
   static const awning = Color(0xFFE74C3C); // Red awning
   static const glassCard = Color(0x20FFFFFF);
@@ -26,9 +26,9 @@ class ShopColors {
   static const textSecondary = Color(0xFFCDBFAE); // Warm secondary text
 
   // Pre-computed alpha variants for performance
-  static const accentAlpha20 = Color(0x33F0C040); // 20% opacity
-  static const textSecondaryAlpha50 = Color(0x80B8D4B8); // 50% opacity
-  static const textSecondaryAlpha70 = Color(0xB3B8D4B8); // 70% opacity
+  static const accentAlpha20 = Color(0x33D97706); // 20% opacity
+  static const textSecondaryAlpha50 = Color(0x80CDBFAE); // 50% opacity
+  static const textSecondaryAlpha70 = Color(0xB3CDBFAE); // 70% opacity
 
   // Dark mode adjustments — slightly lighter/desaturated greens
   static const background1Dark = Color(0xFF5A8E6A); // Lighter forest green

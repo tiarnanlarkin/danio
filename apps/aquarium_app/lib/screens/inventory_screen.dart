@@ -19,7 +19,7 @@ class InventoryColors {
   static const background1 = Color(0xFF2D1B4E); // Deep purple
   static const background2 = Color(0xFF1F1337); // Darker purple
   static const background3 = Color(0xFF150D26); // Deepest purple
-  static const goldAccent = Color(0xFFFFD700); // Gold
+  static const goldAccent = Color(0xFFE8A84A); // Gold
   static const consumableColor = Color(0xFF4CAF50); // Green for consumables
   static const activeColor = Color(0xFF2196F3); // Blue for active items
   static const activeColorAlpha20 = Color(0x332196F3); // 20%
