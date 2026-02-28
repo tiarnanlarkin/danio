@@ -49,9 +49,6 @@ class _ProfileCreationScreenState extends ConsumerState<ProfileCreationScreen> {
     try {
       final profileNotifier = ref.read(userProfileProvider.notifier);
 
-      // Set default level based on experience:
-      // Beginner = level 1, Intermediate = level 5, Expert = level 10
-      // (Level is derived from XP, so we award starting XP)
       await profileNotifier.createProfile(
         name: _nameController.text.trim().isEmpty
             ? null
@@ -99,7 +96,6 @@ class _ProfileCreationScreenState extends ConsumerState<ProfileCreationScreen> {
             primaryTankType: TankType.freshwater,
             goals: [UserGoal.keepFishAlive],
           );
-
       if (!mounted) return;
       Navigator.of(context).pushAndRemoveUntil(
         MaterialPageRoute(builder: (_) => const TabNavigator()),
@@ -195,8 +191,7 @@ class _ProfileCreationScreenState extends ConsumerState<ProfileCreationScreen> {
               ),
             ),
             const SizedBox(height: 12),
-            ...ExperienceLevel.values
-                .map((level) => _buildExperienceCard(level)),
+            ...ExperienceLevel.values.map((level) => _buildExperienceCard(level)),
 
             const SizedBox(height: AppSpacing.xl),
 
@@ -212,8 +207,7 @@ class _ProfileCreationScreenState extends ConsumerState<ProfileCreationScreen> {
                 ),
                 child: _isSubmitting
                     ? const SizedBox(
-                        height: 20,
-                        width: 20,
+                        height: 20, width: 20,
                         child: CircularProgressIndicator(strokeWidth: 2),
                       )
                     : const Text("Let's Go!"),
@@ -227,7 +221,6 @@ class _ProfileCreationScreenState extends ConsumerState<ProfileCreationScreen> {
 
   Widget _buildExperienceCard(ExperienceLevel level) {
     final isSelected = _selectedExperience == level;
-
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
       child: Semantics(
@@ -253,10 +246,7 @@ class _ProfileCreationScreenState extends ConsumerState<ProfileCreationScreen> {
             child: Row(
               children: [
                 ExcludeSemantics(
-                  child: Text(
-                    level.emoji,
-                    style: const TextStyle(fontSize: 32),
-                  ),
+                  child: Text(level.emoji, style: const TextStyle(fontSize: 32)),
                 ),
                 const SizedBox(width: AppSpacing.md),
                 Expanded(
@@ -266,20 +256,14 @@ class _ProfileCreationScreenState extends ConsumerState<ProfileCreationScreen> {
                       ExcludeSemantics(
                         child: Text(
                           level.displayName,
-                          style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                          ),
+                          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                         ),
                       ),
                       const SizedBox(height: AppSpacing.xs),
                       ExcludeSemantics(
                         child: Text(
                           level.description,
-                          style: TextStyle(
-                            fontSize: 13,
-                            color: AppColors.textSecondary,
-                          ),
+                          style: TextStyle(fontSize: 13, color: AppColors.textSecondary),
                         ),
                       ),
                     ],

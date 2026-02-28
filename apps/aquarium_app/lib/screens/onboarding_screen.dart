@@ -28,23 +28,17 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen>
   @override
   void initState() {
     super.initState();
-
     _contentController = AnimationController(
       duration: const Duration(milliseconds: 600),
       vsync: this,
     );
-
     _contentFade = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(
-          parent: _contentController, curve: AppCurves.standardDecelerate),
+      CurvedAnimation(parent: _contentController, curve: AppCurves.standardDecelerate),
     );
-
     _contentSlide = Tween<Offset>(
       begin: const Offset(0, 0.1),
       end: Offset.zero,
-    ).animate(CurvedAnimation(
-        parent: _contentController, curve: AppCurves.standardDecelerate));
-
+    ).animate(CurvedAnimation(parent: _contentController, curve: AppCurves.standardDecelerate));
     _contentController.forward();
   }
 
@@ -58,7 +52,6 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen>
     HapticFeedback.mediumImpact();
     final service = await OnboardingService.getInstance();
     await service.completeOnboarding();
-
     if (mounted) {
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(builder: (_) => const ProfileCreationScreen()),
@@ -70,17 +63,14 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen>
   Future<void> _quickStart() async {
     try {
       HapticFeedback.mediumImpact();
-
       await ref.read(userProfileProvider.notifier).createProfile(
             name: 'Aquarist',
             experienceLevel: ExperienceLevel.beginner,
             primaryTankType: TankType.freshwater,
             goals: [UserGoal.keepFishAlive],
           );
-
       final service = await OnboardingService.getInstance();
       await service.completeOnboarding();
-
       if (mounted) {
         Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(builder: (_) => const TabNavigator()),
@@ -109,59 +99,38 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen>
                 gradient: LinearGradient(
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
-                  colors: [
-                    Color(0xFF3D7068),
-                    Color(0xFF5B9A8B),
-                    Color(0xFF3D7068),
-                  ],
+                  colors: [Color(0xFF3D7068), Color(0xFF5B9A8B), Color(0xFF3D7068)],
                 ),
               ),
             ),
-
             // Decorative orbs
             Positioned(
-              top: -100,
-              left: -50,
+              top: -100, left: -50,
               child: Container(
-                width: 250,
-                height: 250,
+                width: 250, height: 250,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  gradient: RadialGradient(
-                    colors: [
-                      AppColors.whiteAlpha15,
-                      Colors.transparent,
-                    ],
-                  ),
+                  gradient: RadialGradient(colors: [AppColors.whiteAlpha15, Colors.transparent]),
                 ),
               ),
             ),
             Positioned(
-              bottom: 100,
-              right: -80,
+              bottom: 100, right: -80,
               child: Container(
-                width: 200,
-                height: 200,
+                width: 200, height: 200,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  gradient: RadialGradient(
-                    colors: [
-                      AppColors.whiteAlpha10,
-                      Colors.transparent,
-                    ],
-                  ),
+                  gradient: RadialGradient(colors: [AppColors.whiteAlpha10, Colors.transparent]),
                 ),
               ),
             ),
-
             // Main content
             SafeArea(
               child: Column(
                 children: [
                   // Quick Start button
                   Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
@@ -170,17 +139,14 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen>
                           style: TextButton.styleFrom(
                             foregroundColor: Colors.white,
                             backgroundColor: AppColors.whiteAlpha15,
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 16, vertical: 8),
+                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                           ),
-                          icon: const Icon(Icons.flash_on,
-                              size: AppIconSizes.sm),
+                          icon: const Icon(Icons.flash_on, size: AppIconSizes.sm),
                           label: const Text('Quick Start'),
                         ),
                       ],
                     ),
                   ),
-
                   // Hero content
                   Expanded(
                     child: FadeTransition(
@@ -192,61 +158,40 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen>
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              // Icon
+                              // Glass icon
                               ClipRRect(
                                 borderRadius: BorderRadius.circular(40),
                                 child: BackdropFilter(
-                                  filter: ImageFilter.blur(
-                                      sigmaX: 10, sigmaY: 10),
+                                  filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
                                   child: Container(
-                                    width: 160,
-                                    height: 160,
+                                    width: 160, height: 160,
                                     decoration: BoxDecoration(
                                       color: AppColors.whiteAlpha15,
                                       borderRadius: BorderRadius.circular(40),
-                                      border: Border.all(
-                                        color: AppColors.whiteAlpha30,
-                                        width: 1.5,
-                                      ),
+                                      border: Border.all(color: AppColors.whiteAlpha30, width: 1.5),
                                     ),
-                                    child: const Icon(
-                                      Icons.water_drop_rounded,
-                                      size: 80,
-                                      color: Colors.white,
-                                    ),
+                                    child: const Icon(Icons.water_drop_rounded, size: 80, color: Colors.white),
                                   ),
                                 ),
                               ),
-
                               const SizedBox(height: 48),
-
-                              // App name
                               Text(
                                 'Aquarium',
                                 style: AppTypography.headlineLarge.copyWith(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w700,
-                                  letterSpacing: -0.5,
-                                  fontSize: 36,
+                                  color: Colors.white, fontWeight: FontWeight.w700,
+                                  letterSpacing: -0.5, fontSize: 36,
                                 ),
                                 textAlign: TextAlign.center,
                               ),
-
                               const SizedBox(height: 16),
-
-                              // Tagline
                               Text(
                                 'Learn fishkeeping the fun way',
                                 style: AppTypography.bodyLarge.copyWith(
-                                  color: AppColors.whiteAlpha85,
-                                  height: 1.5,
-                                  fontSize: 18,
+                                  color: AppColors.whiteAlpha85, height: 1.5, fontSize: 18,
                                 ),
                                 textAlign: TextAlign.center,
                               ),
-
                               const SizedBox(height: 32),
-
                               // Feature chips
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
@@ -264,7 +209,6 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen>
                       ),
                     ),
                   ),
-
                   // Get Started button
                   Padding(
                     padding: const EdgeInsets.fromLTRB(24, 16, 24, 32),
@@ -272,11 +216,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen>
                       onTap: _getStarted,
                       child: const Text(
                         'Get Started',
-                        style: TextStyle(
-                          color: Color(0xFF3D7068),
-                          fontWeight: FontWeight.w700,
-                          fontSize: 16,
-                        ),
+                        style: TextStyle(color: Color(0xFF3D7068), fontWeight: FontWeight.w700, fontSize: 16),
                       ),
                     ),
                   ),
@@ -306,13 +246,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen>
             children: [
               Icon(icon, size: 18, color: Colors.white),
               const SizedBox(width: 6),
-              Text(
-                label,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
+              Text(label, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600)),
             ],
           ),
         ),
@@ -324,9 +258,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen>
 class _PrimaryButton extends StatefulWidget {
   final VoidCallback onTap;
   final Widget child;
-
   const _PrimaryButton({required this.onTap, required this.child});
-
   @override
   State<_PrimaryButton> createState() => _PrimaryButtonState();
 }
@@ -339,10 +271,7 @@ class _PrimaryButtonState extends State<_PrimaryButton>
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      duration: AppDurations.short,
-      vsync: this,
-    );
+    _controller = AnimationController(duration: AppDurations.short, vsync: this);
     _scaleAnimation = Tween<double>(begin: 1.0, end: 0.95).animate(
       CurvedAnimation(parent: _controller, curve: AppCurves.standard),
     );
@@ -358,10 +287,7 @@ class _PrimaryButtonState extends State<_PrimaryButton>
   Widget build(BuildContext context) {
     return GestureDetector(
       onTapDown: (_) => _controller.forward(),
-      onTapUp: (_) {
-        _controller.reverse();
-        widget.onTap();
-      },
+      onTapUp: (_) { _controller.reverse(); widget.onTap(); },
       onTapCancel: () => _controller.reverse(),
       child: AnimatedBuilder(
         animation: _scaleAnimation,
@@ -375,16 +301,8 @@ class _PrimaryButtonState extends State<_PrimaryButton>
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(12),
                 boxShadow: [
-                  BoxShadow(
-                    color: AppColors.blackAlpha15,
-                    blurRadius: 20,
-                    offset: const Offset(0, 8),
-                  ),
-                  BoxShadow(
-                    color: AppColors.whiteAlpha80,
-                    blurRadius: 1,
-                    offset: const Offset(0, -1),
-                  ),
+                  BoxShadow(color: AppColors.blackAlpha15, blurRadius: 20, offset: const Offset(0, 8)),
+                  BoxShadow(color: AppColors.whiteAlpha80, blurRadius: 1, offset: const Offset(0, -1)),
                 ],
               ),
               child: Center(
