@@ -105,7 +105,7 @@ class _WeeklyPlanScreenState extends ConsumerState<WeeklyPlanScreen> {
     } on OpenAIException catch (e) {
       setState(() => _error = 'AI error: ${e.message}');
     } catch (e) {
-      setState(() => _error = 'Failed to generate plan: $e');
+      setState(() => _error = 'Something went wrong while creating your plan. Please try again.');
     } finally {
       if (mounted) setState(() => _loading = false);
     }
@@ -139,13 +139,25 @@ class _WeeklyPlanScreenState extends ConsumerState<WeeklyPlanScreen> {
   }
 
   Widget _buildLoading() {
-    return const Center(
+    return Center(
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          CircularProgressIndicator(),
-          SizedBox(height: AppSpacing.md),
-          Text('Generating your weekly plan...'),
+          const CircularProgressIndicator(),
+          const SizedBox(height: AppSpacing.md),
+          Text(
+            'Creating your plan…',
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          const SizedBox(height: AppSpacing.xs),
+          Text(
+            'Tailoring tasks to your tanks',
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+              color: AppColors.textSecondary,
+            ),
+          ),
         ],
       ),
     );
@@ -160,11 +172,16 @@ class _WeeklyPlanScreenState extends ConsumerState<WeeklyPlanScreen> {
           children: [
             const Icon(Icons.error_outline, size: 48, color: AppColors.error),
             const SizedBox(height: AppSpacing.md),
-            Text(_error!, textAlign: TextAlign.center),
+            Text(
+              _error!,
+              textAlign: TextAlign.center,
+              style: theme.textTheme.bodyMedium,
+            ),
             const SizedBox(height: AppSpacing.md),
-            FilledButton(
+            FilledButton.icon(
               onPressed: _generate,
-              child: const Text('Retry'),
+              icon: const Icon(Icons.refresh),
+              label: const Text('Try Again'),
             ),
           ],
         ),

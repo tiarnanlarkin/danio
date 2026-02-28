@@ -2,8 +2,6 @@
 // Duolingo-style story selection with difficulty filtering
 
 library;
-import 'package:aquarium_app/theme/app_theme.dart';
-
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -305,7 +303,7 @@ class StoryCard extends StatelessWidget {
     return Opacity(
       opacity: isUnlocked ? 1.0 : 0.6,
       child: Material(
-        color: Colors.white,
+        color: AppColors.surface,
         elevation: isUnlocked ? AppElevation.level2 : AppElevation.level1,
         borderRadius: AppRadius.mediumRadius,
         child: InkWell(
@@ -317,8 +315,8 @@ class StoryCard extends StatelessWidget {
               borderRadius: AppRadius.mediumRadius,
               border: Border.all(
                 color: isCompleted
-                    ? Colors.green.shade300
-                    : Colors.grey.shade200,
+                    ? AppColors.success
+                    : AppColors.border,
                 width: isCompleted ? 2 : 1,
               ),
             ),
@@ -365,13 +363,13 @@ class StoryCard extends StatelessWidget {
                               if (isCompleted)
                                 const Icon(
                                   Icons.check_circle,
-                                  color: Colors.green,
+                                  color: AppColors.success,
                                   size: AppIconSizes.md,
                                 )
                               else if (!isUnlocked)
                                 const Icon(
                                   Icons.lock,
-                                  color: Colors.grey,
+                                  color: AppColors.textDisabled,
                                   size: AppIconSizes.md,
                                 ),
                             ],
@@ -381,7 +379,7 @@ class StoryCard extends StatelessWidget {
                             story.description,
                             style: TextStyle(
                               fontSize: 14,
-                              color: Colors.grey.shade700,
+                              color: AppColors.textSecondary,
                             ),
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
@@ -405,7 +403,7 @@ class StoryCard extends StatelessWidget {
                     _buildInfoChip(
                       icon: Icons.access_time,
                       label: '${story.estimatedMinutes} min',
-                      color: Colors.blue,
+                      color: AppColors.info,
                     ),
                     _buildInfoChip(
                       icon: Icons.star,
@@ -427,7 +425,7 @@ class StoryCard extends StatelessWidget {
                             style: TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.w500,
-                              color: Colors.blue,
+                              color: AppColors.primary,
                             ),
                           ),
                         Text(
@@ -439,13 +437,13 @@ class StoryCard extends StatelessWidget {
                           style: const TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.bold,
-                            color: Colors.blue,
+                            color: AppColors.primary,
                           ),
                         ),
                         const Icon(
                           Icons.arrow_forward,
                           size: AppIconSizes.xs,
-                          color: Colors.blue,
+                          color: AppColors.primary,
                         ),
                       ],
                     ),
@@ -459,14 +457,14 @@ class StoryCard extends StatelessWidget {
                         const Icon(
                           Icons.lock_outline,
                           size: AppIconSizes.xs,
-                          color: Colors.grey,
+                          color: AppColors.textDisabled,
                         ),
                         const SizedBox(width: AppSpacing.xs),
                         Text(
                           _getLockReason(story),
                           style: TextStyle(
                             fontSize: 12,
-                            color: Colors.grey.shade600,
+                            color: AppColors.textSecondary,
                             fontStyle: FontStyle.italic,
                           ),
                         ),

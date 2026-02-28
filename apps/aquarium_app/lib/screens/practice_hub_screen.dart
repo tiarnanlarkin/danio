@@ -31,7 +31,7 @@ class PracticeHubScreen extends ConsumerWidget {
         ],
       ),
       body: ListView.builder(
-        padding: const EdgeInsets.fromLTRB(16, 16, 16, 100),
+        padding: const EdgeInsets.all(16),
         itemCount: _getPracticeHubItemCount(dueCards, totalCards),
         itemBuilder: (context, index) => _buildPracticeHubItem(
           context,
@@ -215,7 +215,7 @@ class PracticeHubScreen extends ConsumerWidget {
         return _buildProgressCard(
           context,
           title: 'Practice Accuracy',
-          value: '${_calculateAccuracy(srState)}%',
+          value: _calculateAccuracyLabel(srState),
           icon: Icons.track_changes,
           color: AppColors.info,
         );
@@ -242,7 +242,7 @@ class PracticeHubScreen extends ConsumerWidget {
           child: Row(
             children: [
               Container(
-                padding: const EdgeInsets.fromLTRB(16, 16, 16, 100),
+                padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
                   color: color.withAlpha(26),
                   borderRadius: AppRadius.mediumRadius,
@@ -280,7 +280,7 @@ class PracticeHubScreen extends ConsumerWidget {
         return Expanded(
           child: Card(
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(16, 16, 16, 100),
+              padding: const EdgeInsets.all(16),
               child: Column(
                 children: [
                   Text(
@@ -355,12 +355,11 @@ class PracticeHubScreen extends ConsumerWidget {
     );
   }
 
-  int _calculateAccuracy(SpacedRepetitionState state) {
-    final total = state.stats.reviewsToday;
-    if (total == 0) return 0;
-    // This is a placeholder - actual accuracy calculation would need
-    // to track correct/incorrect answers in the state
-    return 85; // Placeholder value
+  String _calculateAccuracyLabel(SpacedRepetitionState state) {
+    final total = state.stats.totalCards;
+    final mastered = state.stats.masteredCards;
+    if (total == 0) return '—';
+    return '${((mastered / total) * 100).round()}%';
   }
 }
 

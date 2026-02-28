@@ -61,7 +61,7 @@ Identify this fish or aquatic plant. Return ONLY valid JSON with these fields:
 
       await _identify();
     } catch (e) {
-      setState(() => _error = 'Failed to pick image: $e');
+      setState(() => _error = 'Could not load that image. Please try another photo.');
     }
   }
 
@@ -116,7 +116,7 @@ Identify this fish or aquatic plant. Return ONLY valid JSON with these fields:
       });
     } catch (e) {
       setState(() {
-        _error = 'Failed to identify: $e';
+        _error = 'Something went wrong during identification. Please try again.';
         _loading = false;
       });
     }
@@ -233,8 +233,17 @@ Identify this fish or aquatic plant. Return ONLY valid JSON with these fields:
             const CircularProgressIndicator(),
             const SizedBox(height: AppSpacing.md),
             Text(
-              'Analysing image with AI...',
-              style: Theme.of(context).textTheme.bodyMedium,
+              'Identifying your fish…',
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            const SizedBox(height: AppSpacing.xs),
+            Text(
+              'This usually takes a few seconds',
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                color: AppColors.textSecondary,
+              ),
             ),
           ],
         ),
@@ -247,14 +256,27 @@ Identify this fish or aquatic plant. Return ONLY valid JSON with these fields:
       color: AppColors.error.withValues(alpha: 0.1),
       child: Padding(
         padding: const EdgeInsets.all(AppSpacing.md),
-        child: Row(
+        child: Column(
           children: [
-            const Icon(Icons.error_outline, color: AppColors.error),
-            const SizedBox(width: AppSpacing.sm),
-            Expanded(
-              child: Text(
-                _error!,
-                style: const TextStyle(color: AppColors.error),
+            Row(
+              children: [
+                const Icon(Icons.error_outline, color: AppColors.error),
+                const SizedBox(width: AppSpacing.sm),
+                Expanded(
+                  child: Text(
+                    _error!,
+                    style: const TextStyle(color: AppColors.error),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: AppSpacing.sm),
+            SizedBox(
+              width: double.infinity,
+              child: OutlinedButton.icon(
+                onPressed: _identify,
+                icon: const Icon(Icons.refresh),
+                label: const Text('Try Again'),
               ),
             ),
           ],
