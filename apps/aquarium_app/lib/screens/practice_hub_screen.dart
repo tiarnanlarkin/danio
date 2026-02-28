@@ -195,7 +195,7 @@ class PracticeHubScreen extends ConsumerWidget {
         return _buildProgressCard(
           context,
           title: 'Study Streak',
-          value: '${profile?.currentStreak ?? 0} days',
+          value: '${profile?.currentStreak ?? 0} ${(profile?.currentStreak ?? 0) == 1 ? "day" : "days"}',
           icon: Icons.local_fire_department,
           color: AppColors.warning,
         );

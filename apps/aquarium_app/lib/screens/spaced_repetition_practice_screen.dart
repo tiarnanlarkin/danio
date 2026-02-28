@@ -115,6 +115,15 @@ class _SpacedRepetitionPracticeScreenState
                 ),
                 textAlign: TextAlign.center,
               ),
+              const SizedBox(height: AppSpacing.lg),
+              FilledButton.icon(
+                onPressed: () {
+                  // Navigate back and switch to Learn tab
+                  Navigator.of(context).pop();
+                },
+                icon: const Icon(Icons.auto_stories),
+                label: const Text('Start Learning'),
+              ),
             ],
           ],
         ),

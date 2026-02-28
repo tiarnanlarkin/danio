@@ -264,6 +264,7 @@ class _CelebrationOverlayWrapperState extends ConsumerState<CelebrationOverlayWr
     }
     
     return Stack(
+      clipBehavior: Clip.hardEdge,
       children: [
         widget.child,
         

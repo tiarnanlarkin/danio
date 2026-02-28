@@ -266,12 +266,9 @@ class LeaderboardScreen extends ConsumerWidget {
                 ),
             ],
           ),
-          subtitle: Row(
-            children: [
-              Icon(_leagueIcon(league), size: AppIconSizes.xs, color: Colors.grey.shade600),
-              const SizedBox(width: AppSpacing.xs),
-              Text(league.displayName),
-            ],
+          subtitle: Text(
+            '${entry.weeklyXp} XP this week',
+            style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
           ),
           trailing: Column(
             mainAxisAlignment: MainAxisAlignment.center,

@@ -521,8 +521,9 @@ class _GlassBadge extends StatelessWidget {
                   Text(
                     subtext,
                     style: const TextStyle(
-                      color: StudyColors.textSecondary,
-                      fontSize: 11,
+                      color: StudyColors.goldLight,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500,
                     ),
                   ),
                 ],

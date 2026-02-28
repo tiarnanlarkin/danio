@@ -47,6 +47,7 @@ class SmartScreen extends ConsumerWidget {
             onTap: () => Navigator.of(context).push(
               MaterialPageRoute(builder: (_) => const FishIdScreen()),
             ),
+            isEnabled: openai.isConfigured,
           ).animate(delay: 0.ms).fadeIn().slideX(begin: 0.05),
 
           _FeatureCard(
@@ -57,6 +58,7 @@ class SmartScreen extends ConsumerWidget {
             onTap: () => Navigator.of(context).push(
               MaterialPageRoute(builder: (_) => const SymptomTriageScreen()),
             ),
+            isEnabled: openai.isConfigured,
           ).animate(delay: 50.ms).fadeIn().slideX(begin: 0.05),
 
           _FeatureCard(
@@ -67,6 +69,7 @@ class SmartScreen extends ConsumerWidget {
             onTap: () => Navigator.of(context).push(
               MaterialPageRoute(builder: (_) => const WeeklyPlanScreen()),
             ),
+            isEnabled: openai.isConfigured,
           ).animate(delay: 100.ms).fadeIn().slideX(begin: 0.05),
 
           _FeatureCard(
@@ -236,6 +239,7 @@ class _FeatureCard extends StatelessWidget {
   final String subtitle;
   final Color color;
   final VoidCallback onTap;
+  final bool isEnabled;
 
   const _FeatureCard({
     required this.icon,
@@ -243,13 +247,18 @@ class _FeatureCard extends StatelessWidget {
     required this.subtitle,
     required this.color,
     required this.onTap,
+    this.isEnabled = true,
   });
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return Card(
+    return Opacity(
+      opacity: isEnabled ? 1.0 : 0.5,
+      child: IgnorePointer(
+        ignoring: !isEnabled,
+        child: Card(
       margin: const EdgeInsets.only(bottom: AppSpacing.sm),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12.0),
@@ -285,11 +294,16 @@ class _FeatureCard extends StatelessWidget {
                   ],
                 ),
               ),
-              const Icon(Icons.chevron_right, color: AppColors.textSecondary),
+              if (isEnabled)
+                const Icon(Icons.chevron_right, color: AppColors.textSecondary)
+              else
+                const Icon(Icons.lock_outline, color: AppColors.textHint, size: 18),
             ],
           ),
         ),
       ),
+    ),
+    ),
     );
   }
 }

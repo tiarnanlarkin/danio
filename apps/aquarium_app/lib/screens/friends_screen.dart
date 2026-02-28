@@ -389,6 +389,8 @@ class _FriendListTile extends ConsumerWidget {
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
                       ),
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
                     ),
                     const SizedBox(height: 2),
                     Text(
@@ -397,6 +399,8 @@ class _FriendListTile extends ConsumerWidget {
                         fontSize: 13,
                         color: Colors.grey.shade600,
                       ),
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
                     ),
                     const SizedBox(height: AppSpacing.xs),
                     Row(
@@ -407,21 +411,27 @@ class _FriendListTile extends ConsumerWidget {
                           color: Colors.amber.shade700,
                         ),
                         const SizedBox(width: AppSpacing.xs),
-                        Text(
-                          '${friend.totalXp} XP',
-                          style: const TextStyle(fontSize: 12),
+                        Flexible(
+                          child: Text(
+                            '${friend.totalXp} XP',
+                            style: const TextStyle(fontSize: 12),
+                            overflow: TextOverflow.ellipsis,
+                          ),
                         ),
-                        const SizedBox(width: 12),
                         if (friend.currentStreak > 0) ...[
+                          const SizedBox(width: 8),
                           const Icon(
                             Icons.local_fire_department,
                             size: 14,
                             color: Colors.orange,
                           ),
-                          const SizedBox(width: AppSpacing.xs),
-                          Text(
-                            '${friend.currentStreak} day streak',
-                            style: const TextStyle(fontSize: 12),
+                          const SizedBox(width: 2),
+                          Flexible(
+                            child: Text(
+                              '${friend.currentStreak}d 🔥',
+                              style: const TextStyle(fontSize: 12),
+                              overflow: TextOverflow.ellipsis,
+                            ),
                           ),
                         ],
                       ],
@@ -430,43 +440,49 @@ class _FriendListTile extends ConsumerWidget {
                 ),
               ),
 
-              // Status
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 8,
-                      vertical: 4,
-                    ),
-                    decoration: BoxDecoration(
-                      color: _getLevelColor(friend.currentLevel),
-                      borderRadius: AppRadius.mediumRadius,
-                    ),
-                    child: Text(
-                      friend.levelTitle,
-                      style: const TextStyle(
-                        fontSize: 11,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.onPrimary,
+              // Status - constrained to prevent overflow
+              ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 90),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 6,
+                        vertical: 2,
+                      ),
+                      decoration: BoxDecoration(
+                        color: _getLevelColor(friend.currentLevel),
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                      child: Text(
+                        friend.levelTitle,
+                        style: const TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.onPrimary,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
                       ),
                     ),
-                  ),
-                  const SizedBox(height: AppSpacing.xs),
-                  Text(
-                    friend.statusText,
-                    style: TextStyle(
-                      fontSize: 11,
-                      color: friend.isOnline
-                          ? Colors.green
-                          : Colors.grey.shade500,
+                    const SizedBox(height: 2),
+                    Text(
+                      friend.statusText,
+                      style: TextStyle(
+                        fontSize: 11,
+                        color: friend.isOnline
+                            ? Colors.green
+                            : Colors.grey.shade500,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-
-              const SizedBox(width: AppSpacing.sm),
-              const Icon(Icons.chevron_right, color: Colors.grey),
+              const Icon(Icons.chevron_right, size: 18, color: Colors.grey),
             ],
           ),
         ),

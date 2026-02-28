@@ -49,19 +49,23 @@ class GamificationDashboard extends ConsumerWidget {
               // Row 1: Streak and XP
               Row(
                 children: [
-                  _StatItem(
-                    icon: '🔥',
-                    value: '${profile.currentStreak}',
-                    label: 'day streak',
-                    color: Colors.orange,
+                  Flexible(
+                    child: _StatItem(
+                      icon: '🔥',
+                      value: '${profile.currentStreak}',
+                      label: 'streak',
+                      color: Colors.orange,
+                    ),
                   ),
                   const Spacer(),
-                  _StatItem(
-                    icon: '⭐',
-                    value: _formatNumber(profile.totalXp),
-                    label: 'XP',
-                    color: AppColors.accent,
-                    alignRight: true,
+                  Flexible(
+                    child: _StatItem(
+                      icon: '⭐',
+                      value: _formatNumber(profile.totalXp),
+                      label: 'XP',
+                      color: AppColors.accent,
+                      alignRight: true,
+                    ),
                   ),
                 ],
               ),
@@ -70,17 +74,21 @@ class GamificationDashboard extends ConsumerWidget {
               // Row 2: Gems and Hearts
               Row(
                 children: [
-                  _StatItem(
-                    icon: '💎',
-                    value: _formatNumber(gems),
-                    label: 'gems',
-                    color: Colors.cyan,
+                  Flexible(
+                    child: _StatItem(
+                      icon: '💎',
+                      value: _formatNumber(gems),
+                      label: 'gems',
+                      color: Colors.cyan,
+                    ),
                   ),
                   const Spacer(),
-                  _HeartsDisplay(
-                    current: heartsState.currentHearts,
-                    max: heartsState.maxHearts,
-                    timeUntilRefill: heartsState.timeUntilNextRefill,
+                  Flexible(
+                    child: _HeartsDisplay(
+                      current: heartsState.currentHearts,
+                      max: heartsState.maxHearts,
+                      timeUntilRefill: heartsState.timeUntilNextRefill,
+                    ),
                   ),
                 ],
               ),
@@ -201,12 +209,16 @@ class _StatItem extends StatelessWidget {
                 fontWeight: FontWeight.bold,
                 color: color,
               ),
+              overflow: TextOverflow.ellipsis,
+              maxLines: 1,
             ),
             Text(
               label,
               style: AppTypography.labelSmall.copyWith(
                 color: AppColors.textSecondary,
               ),
+              overflow: TextOverflow.ellipsis,
+              maxLines: 1,
             ),
           ],
         ),
@@ -263,10 +275,12 @@ class _HeartsDisplay extends StatelessWidget {
               )
             else
               Text(
-                'hearts',
+                '♥',
                 style: AppTypography.labelSmall.copyWith(
                   color: AppColors.textSecondary,
                 ),
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
               ),
           ],
         ),
