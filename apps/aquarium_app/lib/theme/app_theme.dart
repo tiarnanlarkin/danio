@@ -1,31 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 /// Aquarium App Theme - Soft, organic, calming design
 /// Inspired by glassmorphism, neumorphism, and aquatic aesthetics
 
 class AppColors {
-  // Primary palette - Aquatic blues/teals
+  // Primary palette - Danio Amber-Gold brand
   static const Color primary = Color(
-    0xFF3D7068,
-  ); // Deep teal (WCAG AA: 4.75:1 with white text)
+    0xFFB45309,
+  ); // Amber 700 (WCAG AA: 4.7:1 with white text)
   static const Color primaryLight = Color(
-    0xFF5B9A8B,
-  ); // Soft teal (for light backgrounds)
-  static const Color primaryDark = Color(0xFF2D5248); // Darker teal
+    0xFFD97706,
+  ); // Amber 600 (for light backgrounds)
+  static const Color primaryDark = Color(0xFF92400E); // Amber 800
 
-  // Secondary - Warm sand/coral accents
+  // Secondary - Blue-Slate
   static const Color secondary = Color(
-    0xFF9F6847,
-  ); // Warm amber (WCAG AA: 4.62:1 with white text)
+    0xFF4A5A6B,
+  ); // Blue-Slate
   static const Color secondaryLight = Color(
-    0xFFE8A87C,
-  ); // Soft coral/peach (for light backgrounds)
-  static const Color secondaryDark = Color(0xFF8A5838); // Darker amber
+    0xFF6B7F8E,
+  ); // lighter blue-slate
+  static const Color secondaryDark = Color(0xFF2A3548); // Deep Violet
 
   // Accent colors
-  static const Color accent = Color(0xFF85C7DE); // Sky blue
-  static const Color accentAlt = Color(0xFFC5A3FF); // Soft lavender
+  static const Color accent = Color(0xFF5B9EA6); // Teal Water
+  static const Color accentAlt = Color(0xFF8B6BAE); // Amethyst
 
   // Semantic colors - WCAG AA compliant (4.5:1 minimum contrast with white text)
   static const Color success = Color(0xFF5AAF7A); // Darker green (4.52:1 ratio)
@@ -34,7 +35,7 @@ class AppColors {
     0xFFD96A6A,
   ); // Darker coral red (4.51:1 ratio)
   static const Color info = Color(0xFF5C9FBF); // Darker blue (4.50:1 ratio)
-  static const Color xp = Color(0xFFD4A574); // Gold for XP/experience points
+  static const Color xp = Color(0xFFD97706); // Amber - matches brand
 
   // Semantic "on" colors — foreground on semantic backgrounds
   static const Color onPrimary = Color(0xFFFFFFFF);
@@ -51,9 +52,9 @@ class AppColors {
   static const Color paramDanger = Color(0xFFD96A6A);
 
   // Neutrals - Light mode
-  static const Color background = Color(0xFFF5F1EB); // Warm off-white
-  static const Color surface = Color(0xFFFFFFFF); // Pure white
-  static const Color surfaceVariant = Color(0xFFF0EBE3); // Subtle warm gray
+  static const Color background = Color(0xFFFFF5E8); // Warm Cream
+  static const Color surface = Color(0xFFFFFBF5); // Ivory White
+  static const Color surfaceVariant = Color(0xFFFFF0DC); // Warm tinted
   static const Color card = Color(0xFFFFFFFF);
 
   // Text colors - Light mode
@@ -69,17 +70,17 @@ class AppColors {
   static const Color borderDark = Color(0xFF3D4A5C); // Dark mode border
 
   // Dark mode colors
-  static const Color backgroundDark = Color(0xFF1A2634); // Deep blue-gray
-  static const Color surfaceDark = Color(0xFF243447); // Slightly lighter
-  static const Color surfaceVariantDark = Color(0xFF2D3E50);
-  static const Color cardDark = Color(0xFF2A3A4A);
+  static const Color backgroundDark = Color(0xFF1C1917); // Warm Charcoal (NOT cold blue-grey)
+  static const Color surfaceDark = Color(0xFF231F1E); // Slightly lighter
+  static const Color surfaceVariantDark = Color(0xFF292524);
+  static const Color cardDark = Color(0xFF2A2220);
 
   // Text colors - Dark mode
-  static const Color textPrimaryDark = Color(0xFFF5F1EB);
-  static const Color textSecondaryDark = Color(0xFFB8C5D0);
+  static const Color textPrimaryDark = Color(0xFFFAF5F0); // Warm white
+  static const Color textSecondaryDark = Color(0xFFCDBFAE);
   static const Color textHintDark = Color(
-    0xFF9DAAB5,
-  ); // Lighter gray (WCAG AA: 6.46:1 on #1A2634, 5.34:1 on #243447)
+    0xFF9A8F82,
+  ); // Lighter gray (WCAG AA compliant on dark backgrounds)
 
   // ============================================================================
   // PRE-COMPUTED ALPHA COLORS - PERFORMANCE OPTIMIZATION
@@ -149,42 +150,42 @@ class AppColors {
   static const Color blackAlpha85 = Color(0xD9000000);
   static const Color blackAlpha90 = Color(0xE6000000);
 
-  // Primary color with alpha (for subtle tints)
-  static const Color primaryAlpha05 = Color(0x0D3D7068);
-  static const Color primaryAlpha08 = Color(0x143D7068);
-  static const Color primaryAlpha10 = Color(0x1A3D7068);
-  static const Color primaryAlpha12 = Color(0x1F3D7068);
-  static const Color primaryAlpha15 = Color(0x263D7068);
-  static const Color primaryAlpha20 = Color(0x333D7068);
-  static const Color primaryAlpha25 = Color(0x403D7068);
-  static const Color primaryAlpha30 = Color(0x4D3D7068);
-  static const Color primaryAlpha40 = Color(0x663D7068);
-  static const Color primaryAlpha50 = Color(0x803D7068);
-  static const Color primaryAlpha60 = Color(0x993D7068);
-  static const Color primaryAlpha70 = Color(0xB33D7068);
-  static const Color primaryAlpha85 = Color(0xD93D7068);
-  static const Color primaryAlpha90 = Color(0xE63D7068);
+  // Primary color with alpha (Amber brand)
+  static const Color primaryAlpha05 = Color(0x0DB45309);
+  static const Color primaryAlpha08 = Color(0x14B45309);
+  static const Color primaryAlpha10 = Color(0x1AB45309);
+  static const Color primaryAlpha12 = Color(0x1FB45309);
+  static const Color primaryAlpha15 = Color(0x26B45309);
+  static const Color primaryAlpha20 = Color(0x33B45309);
+  static const Color primaryAlpha25 = Color(0x40B45309);
+  static const Color primaryAlpha30 = Color(0x4DB45309);
+  static const Color primaryAlpha40 = Color(0x66B45309);
+  static const Color primaryAlpha50 = Color(0x80B45309);
+  static const Color primaryAlpha60 = Color(0x99B45309);
+  static const Color primaryAlpha70 = Color(0xB3B45309);
+  static const Color primaryAlpha85 = Color(0xD9B45309);
+  static const Color primaryAlpha90 = Color(0xE6B45309);
 
   // Primary Light with alpha
-  static const Color primaryLightAlpha10 = Color(0x1A5B9A8B);
-  static const Color primaryLightAlpha20 = Color(0x335B9A8B);
-  static const Color primaryLightAlpha30 = Color(0x4D5B9A8B);
-  static const Color primaryLightAlpha40 = Color(0x665B9A8B);
-  static const Color primaryLightAlpha50 = Color(0x805B9A8B);
+  static const Color primaryLightAlpha10 = Color(0x1AD97706);
+  static const Color primaryLightAlpha20 = Color(0x33D97706);
+  static const Color primaryLightAlpha30 = Color(0x4DD97706);
+  static const Color primaryLightAlpha40 = Color(0x66D97706);
+  static const Color primaryLightAlpha50 = Color(0x80D97706);
 
   // Primary Dark with alpha
-  static const Color primaryDarkAlpha40 = Color(0x662D5248);
+  static const Color primaryDarkAlpha40 = Color(0x6692400E);
 
-  // Secondary color with alpha
-  static const Color secondaryAlpha05 = Color(0x0D9F6847);
-  static const Color secondaryAlpha10 = Color(0x1A9F6847);
-  static const Color secondaryAlpha15 = Color(0x269F6847);
-  static const Color secondaryAlpha20 = Color(0x339F6847);
-  static const Color secondaryAlpha25 = Color(0x409F6847);
-  static const Color secondaryAlpha30 = Color(0x4D9F6847);
-  static const Color secondaryAlpha40 = Color(0x669F6847);
-  static const Color secondaryAlpha50 = Color(0x809F6847);
-  static const Color secondaryAlpha90 = Color(0xE69F6847);
+  // Secondary color with alpha (Blue-Slate)
+  static const Color secondaryAlpha05 = Color(0x0D4A5A6B);
+  static const Color secondaryAlpha10 = Color(0x1A4A5A6B);
+  static const Color secondaryAlpha15 = Color(0x264A5A6B);
+  static const Color secondaryAlpha20 = Color(0x334A5A6B);
+  static const Color secondaryAlpha25 = Color(0x404A5A6B);
+  static const Color secondaryAlpha30 = Color(0x4D4A5A6B);
+  static const Color secondaryAlpha40 = Color(0x664A5A6B);
+  static const Color secondaryAlpha50 = Color(0x804A5A6B);
+  static const Color secondaryAlpha90 = Color(0xE64A5A6B);
 
   // Accent color with alpha
   static const Color accentAlpha10 = Color(0x1A85C7DE);
@@ -311,19 +312,19 @@ class AppColors {
   static const LinearGradient primaryGradient = LinearGradient(
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
-    colors: [Color(0xFF7FC8B6), Color(0xFF5B9A8B)],
+    colors: [Color(0xFFD97706), Color(0xFFB45309)],
   );
 
   static const LinearGradient warmGradient = LinearGradient(
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
-    colors: [Color(0xFFF5D0B5), Color(0xFFE8A87C)],
+    colors: [Color(0xFFFFF0DC), Color(0xFFE8C07A)],
   );
 
   static const LinearGradient oceanGradient = LinearGradient(
     begin: Alignment.topCenter,
     end: Alignment.bottomCenter,
-    colors: [Color(0xFF85C7DE), Color(0xFF5B9A8B)],
+    colors: [Color(0xFF8BC4CA), Color(0xFF5B9EA6)],
   );
 
   static const LinearGradient sunsetGradient = LinearGradient(
@@ -335,106 +336,125 @@ class AppColors {
   static const LinearGradient darkGradient = LinearGradient(
     begin: Alignment.topCenter,
     end: Alignment.bottomCenter,
-    colors: [Color(0xFF2D3E50), Color(0xFF1A2634)],
+    colors: [Color(0xFF292524), Color(0xFF1C1917)],
   );
 }
 
-class AppTypography {
-  static const String fontFamily = 'SF Pro Display'; // Falls back to system
+/// Danio brand colours — use these for new UI following the brand guide
+class DanioColors {
+  static const Color amberGold     = Color(0xFFC8884A);  // Decorative amber
+  static const Color amberText     = Color(0xFFB45309);  // Text on light (WCAG AA)
+  static const Color amberTextDark = Color(0xFFFBBF24);  // Text on dark (WCAG AA)
+  static const Color blueSlate     = Color(0xFF4A5A6B);
+  static const Color deepViolet    = Color(0xFF2A3548);
+  static const Color tealWater     = Color(0xFF5B9EA6);
+  static const Color coralAccent   = Color(0xFFE8734A);
+  static const Color seafoamLight  = Color(0xFFB8D8D0);
+  static const Color creamWarm     = Color(0xFFFFF5E8);
+  static const Color ivoryWhite    = Color(0xFFFFFBF5);
+  static const Color emeraldGreen  = Color(0xFF4CAF7D);
+  static const Color rubyRed       = Color(0xFFD94F5C);
+  static const Color sapphireBlue  = Color(0xFF4A7BC8);
+  static const Color amethyst      = Color(0xFF8B6BAE);
+  static const Color topaz         = Color(0xFFE8A84A);
+}
 
-  // Headlines
-  static const TextStyle headlineLarge = TextStyle(
+class AppTypography {
+  static const String fontFamily = 'Nunito'; // Base font family
+
+  // Headlines (Fredoka)
+  static TextStyle get headlineLarge => GoogleFonts.fredoka(
     fontSize: 32,
     fontWeight: FontWeight.w700,
     letterSpacing: -0.5,
     height: 1.2,
   );
 
-  static const TextStyle headlineMedium = TextStyle(
+  static TextStyle get headlineMedium => GoogleFonts.fredoka(
     fontSize: 24,
     fontWeight: FontWeight.w600,
     letterSpacing: -0.3,
     height: 1.3,
   );
 
-  static const TextStyle headlineSmall = TextStyle(
+  static TextStyle get headlineSmall => GoogleFonts.fredoka(
     fontSize: 20,
     fontWeight: FontWeight.w600,
     letterSpacing: -0.2,
     height: 1.3,
   );
 
-  // Titles (between headline and body)
-  static const TextStyle titleLarge = TextStyle(
+  // Titles (Fredoka for large, Nunito for medium/small)
+  static TextStyle get titleLarge => GoogleFonts.fredoka(
     fontSize: 22,
     fontWeight: FontWeight.w600,
     letterSpacing: -0.2,
     height: 1.3,
   );
 
-  static const TextStyle titleMedium = TextStyle(
+  static TextStyle get titleMedium => GoogleFonts.nunito(
     fontSize: 18,
-    fontWeight: FontWeight.w500,
+    fontWeight: FontWeight.w700,
     letterSpacing: -0.1,
     height: 1.3,
   );
 
-  static const TextStyle titleSmall = TextStyle(
+  static TextStyle get titleSmall => GoogleFonts.nunito(
     fontSize: 16,
-    fontWeight: FontWeight.w500,
+    fontWeight: FontWeight.w600,
     height: 1.3,
   );
 
-  // Body text
-  static const TextStyle bodyLarge = TextStyle(
+  // Body text (Nunito)
+  static TextStyle get bodyLarge => GoogleFonts.nunito(
     fontSize: 17,
     fontWeight: FontWeight.w400,
     height: 1.5,
   );
 
-  static const TextStyle bodyMedium = TextStyle(
+  static TextStyle get bodyMedium => GoogleFonts.nunito(
     fontSize: 15,
     fontWeight: FontWeight.w400,
     height: 1.5,
   );
 
-  static const TextStyle bodySmall = TextStyle(
+  static TextStyle get bodySmall => GoogleFonts.nunito(
     fontSize: 13,
     fontWeight: FontWeight.w400,
     height: 1.4,
   );
 
-  // Labels
-  static const TextStyle labelLarge = TextStyle(
+  // Labels (Nunito)
+  static TextStyle get labelLarge => GoogleFonts.nunito(
     fontSize: 15,
+    fontWeight: FontWeight.w700,
+    letterSpacing: 0.1,
+  );
+
+  static TextStyle get labelMedium => GoogleFonts.nunito(
+    fontSize: 13,
     fontWeight: FontWeight.w600,
     letterSpacing: 0.1,
   );
 
-  static const TextStyle labelMedium = TextStyle(
-    fontSize: 13,
-    fontWeight: FontWeight.w500,
-    letterSpacing: 0.1,
-  );
-
-  static const TextStyle labelSmall = TextStyle(
+  static TextStyle get labelSmall => GoogleFonts.nunito(
     fontSize: 11,
-    fontWeight: FontWeight.w500,
+    fontWeight: FontWeight.w600,
     letterSpacing: 0.2,
   );
 
   // ──────────────────────────────────────────────────────────────────
   // Semantic aliases — map to the canonical scale above
   // ──────────────────────────────────────────────────────────────────
-  static const TextStyle display = headlineLarge;
-  static const TextStyle headline = headlineMedium;
-  static const TextStyle title = titleMedium;
-  static const TextStyle body = bodyMedium;
-  static const TextStyle label = labelMedium;
-  static const TextStyle caption = bodySmall;
-  static const TextStyle overline = TextStyle(
+  static TextStyle get display => headlineLarge;
+  static TextStyle get headline => headlineMedium;
+  static TextStyle get title => titleMedium;
+  static TextStyle get body => bodyMedium;
+  static TextStyle get label => labelMedium;
+  static TextStyle get caption => bodySmall;
+  static TextStyle get overline => GoogleFonts.nunito(
     fontSize: 10,
-    fontWeight: FontWeight.w600,
+    fontWeight: FontWeight.w700,
     letterSpacing: 1.5,
     height: 1.4,
   );
@@ -609,25 +629,25 @@ class AppOverlays {
   static const Color black80 = Color(0xCC000000);  // 80%
   static const Color black90 = Color(0xE6000000);  // 90%
   
-  // Primary color overlays (AppColors.primary = 0xFF3D7068)
-  static const Color primary8 = Color(0x143D7068);   // 8%
-  static const Color primary10 = Color(0x1A3D7068);  // 10%
-  static const Color primary15 = Color(0x263D7068);  // 15%
-  static const Color primary20 = Color(0x333D7068);  // 20%
-  static const Color primary30 = Color(0x4D3D7068);  // 30%
-  static const Color primary50 = Color(0x803D7068);  // 50%
+  // Primary color overlays (AppColors.primary = 0xFFB45309 - Amber)
+  static const Color primary8 = Color(0x14B45309);   // 8%
+  static const Color primary10 = Color(0x1AB45309);  // 10%
+  static const Color primary15 = Color(0x26B45309);  // 15%
+  static const Color primary20 = Color(0x33B45309);  // 20%
+  static const Color primary30 = Color(0x4DB45309);  // 30%
+  static const Color primary50 = Color(0x80B45309);  // 50%
   
-  // Secondary color overlays (AppColors.secondary = 0xFF9F6847)
-  static const Color secondary10 = Color(0x1A9F6847);  // 10%
-  static const Color secondary20 = Color(0x339F6847);  // 20%
-  static const Color secondary30 = Color(0x4D9F6847);  // 30%
-  static const Color secondary60 = Color(0x999F6847);  // 60%
-  static const Color secondary80 = Color(0xCC9F6847);  // 80%
+  // Secondary color overlays (AppColors.secondary = 0xFF4A5A6B - Blue-Slate)
+  static const Color secondary10 = Color(0x1A4A5A6B);  // 10%
+  static const Color secondary20 = Color(0x334A5A6B);  // 20%
+  static const Color secondary30 = Color(0x4D4A5A6B);  // 30%
+  static const Color secondary60 = Color(0x994A5A6B);  // 60%
+  static const Color secondary80 = Color(0xCC4A5A6B);  // 80%
   
-  // Surface variant overlays (AppColors.surfaceVariant = 0xFFF0EBE3)
-  static const Color surfaceVariant30 = Color(0x4DF0EBE3);  // 30%
-  static const Color surfaceVariant50 = Color(0x80F0EBE3);  // 50%
-  static const Color surfaceVariant60 = Color(0x99F0EBE3);  // 60%
+  // Surface variant overlays (AppColors.surfaceVariant = 0xFFFFF0DC)
+  static const Color surfaceVariant30 = Color(0x4DFFF0DC);  // 30%
+  static const Color surfaceVariant50 = Color(0x80FFF0DC);  // 50%
+  static const Color surfaceVariant60 = Color(0x99FFF0DC);  // 60%
   
   // Text hint overlays (AppColors.textHint = 0xFF5D6F76)
   static const Color textHint30 = Color(0x4D5D6F76);  // 30%
@@ -652,15 +672,15 @@ class AppOverlays {
   static const Color error30 = Color(0x4DD96A6A);  // 30%
   static const Color error50 = Color(0x80D96A6A);  // 50%
   
-  // Accent color overlays (AppColors.accent = 0xFF85C7DE)
-  static const Color accent5 = Color(0x0D85C7DE);   // 5%
-  static const Color accent10 = Color(0x1A85C7DE);  // 10%
-  static const Color accent20 = Color(0x3385C7DE);  // 20%
-  static const Color accent30 = Color(0x4D85C7DE);  // 30%
-  static const Color accent80 = Color(0xCC85C7DE);  // 80%
+  // Accent color overlays (AppColors.accent = 0xFF5B9EA6 - Teal Water)
+  static const Color accent5 = Color(0x0D5B9EA6);   // 5%
+  static const Color accent10 = Color(0x1A5B9EA6);  // 10%
+  static const Color accent20 = Color(0x335B9EA6);  // 20%
+  static const Color accent30 = Color(0x4D5B9EA6);  // 30%
+  static const Color accent80 = Color(0xCC5B9EA6);  // 80%
   
   // Primary color additional overlays
-  static const Color primary80 = Color(0xCC3D7068);  // 80%
+  static const Color primary80 = Color(0xCCB45309);  // 80%
   
   // Orange/warning overlays (for locked states etc.)
   static const Color orange10 = Color(0x1AFF9800);  // 10%
@@ -677,8 +697,8 @@ class AppOverlays {
   static const Color info20 = Color(0x335C9FBF);  // 20%
   static const Color info30 = Color(0x4D5C9FBF);  // 30%
   
-  // Primary color additional overlays (AppColors.primary = 0xFF3D7068)
-  static const Color primary5 = Color(0x0D3D7068);  // 5%
+  // Primary color additional overlays (AppColors.primary = 0xFFB45309)
+  static const Color primary5 = Color(0x0DB45309);  // 5%
   
   // Warning color overlays (AppColors.warning = 0xFFC99524)
   static const Color warning10 = Color(0x1AC99524);  // 10%
@@ -825,7 +845,7 @@ class AppShadows {
 
   static const List<BoxShadow> glow = [
     BoxShadow(
-      color: AppOverlays.primary30,
+      color: Color(0x4DB45309), // Amber glow
       blurRadius: 20,
       offset: Offset(0, 4),
     ),
@@ -1004,7 +1024,7 @@ class GlassStyles {
     BorderRadius? borderRadius,
   }) {
     return BoxDecoration(
-      color: isDark ? const Color(0xFF2D2B3A) : const Color(0xFFFFFBF5),
+      color: isDark ? const Color(0xFF2A2220) : const Color(0xFFFFFBF5),
       borderRadius: borderRadius ?? BorderRadius.circular(AppRadius.lg),
       border: Border.all(
         color: isDark
@@ -1225,6 +1245,9 @@ class AppTheme {
           borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
         ),
       ),
+
+      // Text theme
+      textTheme: GoogleFonts.nunitoTextTheme(),
     );
   }
 
@@ -1362,9 +1385,13 @@ class AppTheme {
         contentTextStyle: AppTypography.bodyMedium.copyWith(
           color: AppColors.textPrimaryDark,
         ),
+
         shape: RoundedRectangleBorder(borderRadius: AppRadius.mediumRadius),
         behavior: SnackBarBehavior.floating,
       ),
+
+      // Text theme
+      textTheme: GoogleFonts.nunitoTextTheme(),
     );
   }
 }
