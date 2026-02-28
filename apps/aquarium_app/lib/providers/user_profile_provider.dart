@@ -40,14 +40,7 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
       final json = prefs.getString(_key);
 
       if (json != null) {
-        var profile = UserProfile.fromJson(jsonDecode(json));
-        // Migrate daily goal: if still at legacy default (50), auto-scale
-        if (profile.dailyXpGoal == 50) {
-          profile = profile.copyWith(
-            dailyXpGoal: profile.recommendedDailyXpGoal,
-          );
-          await _save(profile);
-        }
+        final profile = UserProfile.fromJson(jsonDecode(json));
         state = AsyncValue.data(profile);
       } else {
         state = const AsyncValue.data(null);
@@ -100,7 +93,6 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
     bool? dailyTipsEnabled,
     bool? streakRemindersEnabled,
     bool? hasSeenTutorial,
-    String? reminderTime,
     String? morningReminderTime,
     String? eveningReminderTime,
     String? nightReminderTime,
@@ -119,7 +111,6 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
       streakRemindersEnabled:
           streakRemindersEnabled ?? current.streakRemindersEnabled,
       hasSeenTutorial: hasSeenTutorial ?? current.hasSeenTutorial,
-      reminderTime: reminderTime ?? current.reminderTime,
       morningReminderTime: morningReminderTime ?? current.morningReminderTime,
       eveningReminderTime: eveningReminderTime ?? current.eveningReminderTime,
       nightReminderTime: nightReminderTime ?? current.nightReminderTime,

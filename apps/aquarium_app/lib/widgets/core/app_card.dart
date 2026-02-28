@@ -214,19 +214,17 @@ class _AppCardState extends State<AppCard> with SingleTickerProviderStateMixin {
     );
 
     if (_isInteractive) {
-      card = GestureDetector(
-        onTapDown: _handleTapDown,
-        onTapUp: _handleTapUp,
-        onTapCancel: _handleTapCancel,
-        onTap: _handleTap,
-        onLongPress: _handleLongPress,
-        child: card,
-      );
       card = Semantics(
-        label: widget.semanticsLabel,
+        label: widget.semanticsLabel ?? 'Interactive card',
         button: true,
-        excludeSemantics: widget.semanticsLabel != null,
-        child: card,
+        child: GestureDetector(
+          onTapDown: _handleTapDown,
+          onTapUp: _handleTapUp,
+          onTapCancel: _handleTapCancel,
+          onTap: _handleTap,
+          onLongPress: _handleLongPress,
+          child: card,
+        ),
       );
     } else if (widget.semanticsLabel != null) {
       card = Semantics(

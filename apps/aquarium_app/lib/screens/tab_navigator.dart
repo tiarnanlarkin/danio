@@ -16,7 +16,7 @@ import 'smart_screen.dart';
 final currentTabProvider = StateProvider<int>((ref) => 0); // Start at Learn tab
 
 /// The main app navigation - 4-tab bottom navigation
-/// Replaces the old HouseNavigator's 6-room swipe pattern
+/// Main tab-based navigation pattern
 class TabNavigator extends ConsumerStatefulWidget {
   const TabNavigator({super.key});
 
@@ -25,6 +25,9 @@ class TabNavigator extends ConsumerStatefulWidget {
 }
 
 class _TabNavigatorState extends ConsumerState<TabNavigator> {
+  // Track last back button press for double-tap-to-exit
+  DateTime? _lastBackPress;
+
   // Keys for each tab's navigator to preserve state
   final List<GlobalKey<NavigatorState>> _navigatorKeys = [
     GlobalKey<NavigatorState>(), // Learn
@@ -54,37 +57,33 @@ class _TabNavigatorState extends ConsumerState<TabNavigator> {
             return;
           }
 
-          // At tab root - show exit confirmation dialog
-          if (!context.mounted) return;
-          final shouldExit = await showDialog<bool>(
-            context: context,
-            builder: (ctx) => AlertDialog(
-              title: const Text('Exit app?'),
-              content: const Text('Are you sure you want to leave?'),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.of(ctx).pop(false),
-                  child: const Text('Stay'),
+          // At tab root - implement double-back-to-exit
+          final now = DateTime.now();
+          if (_lastBackPress == null ||
+              now.difference(_lastBackPress!) > const Duration(seconds: 2)) {
+            // First back press - show toast
+            _lastBackPress = now;
+            if (context.mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('Press back again to exit'),
+                  duration: Duration(seconds: 2),
+                  behavior: SnackBarBehavior.floating,
                 ),
-                TextButton(
-                  onPressed: () => Navigator.of(ctx).pop(true),
-                  child: const Text('Exit'),
-                ),
-              ],
-            ),
-          );
-          if (shouldExit == true) {
-            SystemNavigator.pop();
+              );
+            }
+            return;
           }
+
+          // Second back press within 2 seconds - exit app
+          SystemNavigator.pop();
         },
         child: Scaffold(
           body: Stack(
-            clipBehavior: Clip.hardEdge,
             children: [
               // === Main Tab Content ===
               // Each tab has its own Navigator to preserve state
               IndexedStack(
-                clipBehavior: Clip.hardEdge,
                 index: currentTab,
                 children: [
                   // Tab 0: Learn

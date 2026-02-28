@@ -38,8 +38,8 @@ class _WeeklyPlanScreenState extends ConsumerState<WeeklyPlanScreen> {
   Future<void> _generate() async {
     final openai = ref.read(openAIServiceProvider);
     if (!openai.isConfigured) {
-      setState(() => _error = 'AI features are not available right now. '
-          'Stay tuned for the next update!');
+      setState(() => _error = 'AI features require an OpenAI API key.\n'
+          'Rebuild with: flutter run --dart-define=OPENAI_API_KEY=sk-...');
       return;
     }
 

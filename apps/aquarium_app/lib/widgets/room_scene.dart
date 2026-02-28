@@ -148,28 +148,28 @@ class LivingRoomScene extends ConsumerWidget {
 
               // === LAYER 5: Glassmorphic UI cards ===
 
-              // Temperature gauge (top left) — compact size
+              // Temperature gauge (top left)
               Positioned(
                 top: h * 0.06,
                 left: w * 0.05,
                 child: GestureDetector(
                   onTap: onStatsTap,
                   child: _CircularTempGauge(
-                    size: w * 0.18,
+                    size: w * 0.26,
                     temperature: temperature ?? 25,
                     theme: theme,
                   ),
                 ),
               ),
 
-              // Water quality card (top right) — positioned to avoid overlap with top bar
+              // Water quality card (top right)
               Positioned(
-                top: h * 0.02,
-                right: w * 0.02,
+                top: h * 0.06,
+                right: w * 0.05,
                 child: GestureDetector(
                   onTap: onTestKitTap,
                   child: _WaterQualityCard(
-                    width: w * 0.44,
+                    width: w * 0.36,
                     ph: ph,
                     ammonia: ammonia,
                     nitrate: nitrate,
@@ -300,7 +300,7 @@ class _SparklePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = color.withOpacity(0.7)
+      ..color = color.withAlpha(178)
       ..style = PaintingStyle.fill;
 
     final center = Offset(size.width / 2, size.height / 2);
@@ -437,7 +437,7 @@ class _CozyRoomPainter extends CustomPainter {
       Offset(0, panelTop),
       Offset(w, panelTop),
       Paint()
-        ..color = _trimColor.withOpacity(0.4)
+        ..color = _trimColor.withAlpha(102)
         ..strokeWidth = 3,
     );
 
@@ -513,12 +513,12 @@ class _CozyRoomPainter extends CustomPainter {
     // Rug base
     canvas.drawRRect(
       rugRect,
-      Paint()..color = theme.accentBlob.withOpacity(_isDarkTheme ? 0.25 : 0.35),
+      Paint()..color = theme.accentBlob.withAlpha(_isDarkTheme ? 64 : 89),
     );
     
     // Rug pattern (simple stripes)
     final patternPaint = Paint()
-      ..color = theme.accentBlob2.withOpacity(0.3)
+      ..color = theme.accentBlob2.withAlpha(76)
       ..strokeWidth = 3;
     for (var x = w * 0.1; x < w * 0.9; x += 20) {
       canvas.drawLine(
@@ -532,7 +532,7 @@ class _CozyRoomPainter extends CustomPainter {
     canvas.drawRRect(
       rugRect,
       Paint()
-        ..color = theme.accentBlob.withOpacity(0.5)
+        ..color = theme.accentBlob.withAlpha(128)
         ..style = PaintingStyle.stroke
         ..strokeWidth = 2,
     );
@@ -561,7 +561,7 @@ class _CozyRoomPainter extends CustomPainter {
         Rect.fromLTWH(frameLeft + 3, frameTop + 3, frameWidth - 6, frameHeight - 6),
         const Radius.circular(1),
       ),
-      Paint()..color = theme.waterMid.withOpacity(0.5),
+      Paint()..color = theme.waterMid.withAlpha(128),
     );
   }
 
@@ -634,7 +634,7 @@ class _CozyRoomPainter extends CustomPainter {
       windowRect,
       Paint()
         ..color = _isDarkTheme
-            ? theme.textSecondary.withOpacity(0.3)
+            ? theme.textSecondary.withAlpha(76)
             : AppColors.whiteAlpha50
         ..style = PaintingStyle.stroke
         ..strokeWidth = 3,
@@ -643,7 +643,7 @@ class _CozyRoomPainter extends CustomPainter {
     // Window cross bars
     final crossPaint = Paint()
       ..color = _isDarkTheme
-          ? theme.textSecondary.withOpacity(0.25)
+          ? theme.textSecondary.withAlpha(64)
           : AppColors.whiteAlpha40
       ..strokeWidth = 2;
     
@@ -662,8 +662,8 @@ class _CozyRoomPainter extends CustomPainter {
 
     // === CURTAINS ===
     final curtainColor = _isDarkTheme
-        ? theme.accentBlob.withOpacity(0.4)
-        : theme.accentBlob.withOpacity(0.6);
+        ? theme.accentBlob.withAlpha(102)
+        : theme.accentBlob.withAlpha(153);
     final curtainPaint = Paint()..color = curtainColor;
 
     // Left curtain
@@ -710,7 +710,7 @@ class _CozyRoomPainter extends CustomPainter {
       Offset(windowLeft + windowWidth + 20, windowTop - 8),
       Paint()
         ..color = _isDarkTheme
-            ? theme.textSecondary.withOpacity(0.3)
+            ? theme.textSecondary.withAlpha(76)
             : AppColors.whiteAlpha60
         ..strokeWidth = 3
         ..strokeCap = StrokeCap.round,
@@ -780,8 +780,8 @@ class _CozyRoomPainter extends CustomPainter {
         center: Alignment.center,
         radius: 0.5,
         colors: [
-          theme.waterMid.withOpacity(_isDarkTheme ? 0.25 : 0.15),
-          theme.waterMid.withOpacity(_isDarkTheme ? 0.12 : 0.05),
+          theme.waterMid.withAlpha(_isDarkTheme ? 64 : 38),
+          theme.waterMid.withAlpha(_isDarkTheme ? 31 : 13),
           Colors.transparent,
         ],
       ).createShader(Rect.fromLTWH(w * 0.15, h * 0.25, w * 0.7, h * 0.4));
@@ -801,7 +801,7 @@ class _CozyRoomPainter extends CustomPainter {
     final shelfY = h * 0.10;
     final shelfPaint = Paint()
       ..color = _isDarkTheme
-          ? theme.textSecondary.withOpacity(0.2)
+          ? theme.textSecondary.withAlpha(51)
           : AppOverlays.darkWood30;
     
     // Shelf surface
@@ -880,7 +880,7 @@ class _RoomPlantPainter extends CustomPainter {
     );
 
     // Plant leaves
-    final leafPaint = Paint()..color = theme.plantPrimary.withOpacity(0.8);
+    final leafPaint = Paint()..color = theme.plantPrimary.withAlpha(204);
     
     // Multiple leaves going up
     for (var i = 0; i < 5; i++) {
@@ -947,11 +947,11 @@ class _ShelfPlantPainter extends CustomPainter {
         Rect.fromLTWH(w * 0.25, h * 0.6, w * 0.5, h * 0.4),
         const Radius.circular(4),
       ),
-      Paint()..color = const Color(0xFFD4A574).withOpacity(0.8),
+      Paint()..color = const Color(0xCCD4A574),
     );
 
     // Small succulent/plant
-    final leafPaint = Paint()..color = theme.plantSecondary.withOpacity(0.9);
+    final leafPaint = Paint()..color = theme.plantSecondary.withAlpha(230);
     for (var i = 0; i < 3; i++) {
       final angle = -0.3 + i * 0.3;
       canvas.drawOval(
@@ -1005,10 +1005,10 @@ class _StandPainter extends CustomPainter {
 
     final woodColor = _isDarkTheme
         ? const Color(0xFF3D3228)
-        : const Color(0xFF8B6914).withOpacity(0.7);
+        : const Color(0xB38B6914);
     final woodHighlight = _isDarkTheme
         ? const Color(0xFF4A3D30)
-        : const Color(0xFFA67C00).withOpacity(0.5);
+        : const Color(0x80A67C00);
 
     // Stand top surface
     final topRect = RRect.fromRectAndRadius(
@@ -1177,7 +1177,7 @@ class _TempGaugePainter extends CustomPainter {
       math.pi * 1.5,
       false,
       Paint()
-        ..color = theme.textSecondary.withOpacity(0.15)
+        ..color = theme.textSecondary.withAlpha(38)
         ..style = PaintingStyle.stroke
         ..strokeWidth = 8
         ..strokeCap = StrokeCap.round,
@@ -1298,7 +1298,7 @@ class _WaterQualityCard extends StatelessWidget {
                       label: 'pH',
                       color: _getPhColor(ph),
                       theme: theme,
-                      size: 34,
+                      size: 38,
                     ),
                   ),
                   const SizedBox(width: 6),
@@ -1309,7 +1309,7 @@ class _WaterQualityCard extends StatelessWidget {
                       label: 'NH₃',
                       color: _getAmmoniaColor(ammonia),
                       theme: theme,
-                      size: 34,
+                      size: 38,
                     ),
                   ),
                   const SizedBox(width: 6),
@@ -1320,7 +1320,7 @@ class _WaterQualityCard extends StatelessWidget {
                       label: 'NO₃',
                       color: _getNitrateColor(nitrate),
                       theme: theme,
-                      size: 34,
+                      size: 38,
                     ),
                   ),
                 ],
@@ -1405,7 +1405,7 @@ class _PieChartPainter extends CustomPainter {
     canvas.drawCircle(
       center,
       radius,
-      Paint()..color = theme.textSecondary.withOpacity(0.1),
+      Paint()..color = theme.textSecondary.withAlpha(26),
     );
 
     // Progress
@@ -1415,7 +1415,7 @@ class _PieChartPainter extends CustomPainter {
       -math.pi / 2,
       math.pi * 2 * progress,
       true,
-      Paint()..color = color.withOpacity(0.6),
+      Paint()..color = color.withAlpha(153),
     );
 
     // Inner circle (donut effect)
@@ -1471,7 +1471,7 @@ class _GlassBadge extends StatelessWidget {
                   vertical: 3,
                 ),
                 decoration: BoxDecoration(
-                  color: theme.accentBlob.withOpacity(0.4),
+                  color: theme.accentBlob.withAlpha(102),
                   borderRadius: AppRadius.mediumRadius,
                 ),
                 child: Text(
@@ -1515,7 +1515,7 @@ class _ThemedAquarium extends StatelessWidget {
         borderRadius: AppRadius.largeRadius,
         boxShadow: [
           BoxShadow(
-            color: theme.waterMid.withOpacity(0.4),
+            color: theme.waterMid.withAlpha(102),
             blurRadius: 30,
             spreadRadius: 5,
           ),
@@ -1958,7 +1958,7 @@ class _FishPainter extends CustomPainter {
         size.height * 0.15,
       )
       ..close();
-    canvas.drawPath(finPath, paint..color = color.withOpacity(0.8));
+    canvas.drawPath(finPath, paint..color = color.withAlpha(204));
 
     // Eye
     canvas.drawCircle(

@@ -158,7 +158,7 @@ class _ProfileCreationScreenState extends ConsumerState<ProfileCreationScreen> {
               children: [
                 // Welcome message
                 Text(
-                  'Welcome to Aquarium! 🐠',
+                  'Welcome to Danio! 🐠',
                   style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
@@ -391,12 +391,15 @@ class _ProfileCreationScreenState extends ConsumerState<ProfileCreationScreen> {
             ),
           ),
           const SizedBox(height: 12),
-          Row(
-            children: [
-              Expanded(child: _buildTankTypeCard(TankType.freshwater)),
-              const SizedBox(width: 12),
-              Expanded(child: _buildTankTypeCard(TankType.marine)),
-            ],
+          IntrinsicHeight(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Expanded(child: _buildTankTypeCard(TankType.freshwater)),
+                const SizedBox(width: 12),
+                Expanded(child: _buildTankTypeCard(TankType.marine)),
+              ],
+            ),
           ),
         ],
       ),
@@ -441,19 +444,23 @@ class _ProfileCreationScreenState extends ConsumerState<ProfileCreationScreen> {
                     fontWeight: FontWeight.w600,
                   ),
                   textAlign: TextAlign.center,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
               const SizedBox(height: 3),
-              ExcludeSemantics(
-                child: Text(
-                  type.description,
-                  style: TextStyle(
-                    fontSize: 11,
-                    color: AppColors.textSecondary,
+              Flexible(
+                child: ExcludeSemantics(
+                  child: Text(
+                    type.description,
+                    style: TextStyle(
+                      fontSize: 11,
+                      color: AppColors.textSecondary,
+                    ),
+                    textAlign: TextAlign.center,
+                    maxLines: 3,
+                    overflow: TextOverflow.ellipsis,
                   ),
-                  textAlign: TextAlign.center,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
                 ),
               ),
               if (isSelected) ...[

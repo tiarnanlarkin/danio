@@ -6,7 +6,6 @@ import '../theme/app_theme.dart';
 import '../widgets/hearts_widgets.dart';
 import 'spaced_repetition_practice_screen.dart';
 import 'practice_screen.dart';
-import 'achievements_screen.dart';
 
 /// Practice Hub - Central location for all quiz and practice activities
 /// This is Tab 1 in the new navigation structure
@@ -31,7 +30,7 @@ class PracticeHubScreen extends ConsumerWidget {
         ],
       ),
       body: ListView.builder(
-        padding: const EdgeInsets.fromLTRB(16, 16, 16, 100),
+        padding: const EdgeInsets.all(16),
         itemCount: _getPracticeHubItemCount(dueCards, totalCards),
         itemBuilder: (context, index) => _buildPracticeHubItem(
           context,
@@ -68,7 +67,7 @@ class PracticeHubScreen extends ConsumerWidget {
             title: 'Review Due Cards',
             subtitle: '$dueCards cards waiting for review',
             icon: Icons.replay,
-            color: AppColors.warning,
+            color: AppColors.error,
             onTap: () {
               Navigator.push(
                 context,
@@ -113,12 +112,12 @@ class PracticeHubScreen extends ConsumerWidget {
             _StatItem(
               label: 'Due Today',
               value: '$dueCards',
-              color: dueCards == 0 ? AppColors.textSecondary : AppColors.warning,
+              color: AppColors.error,
             ),
             _StatItem(
               label: 'Mastered',
               value: '${srState.stats.masteredCards}',
-              color: srState.stats.masteredCards == 0 ? AppColors.textSecondary : AppColors.success,
+              color: AppColors.success,
             ),
             _StatItem(
               label: 'Total Cards',
@@ -180,7 +179,7 @@ class PracticeHubScreen extends ConsumerWidget {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (_) => const AchievementsScreen(),
+                builder: (context) => const PracticeScreen(),
               ),
             );
           },
@@ -195,7 +194,7 @@ class PracticeHubScreen extends ConsumerWidget {
         return _buildProgressCard(
           context,
           title: 'Study Streak',
-          value: '${profile?.currentStreak ?? 0} ${(profile?.currentStreak ?? 0) == 1 ? "day" : "days"}',
+          value: '${profile?.currentStreak ?? 0} days',
           icon: Icons.local_fire_department,
           color: AppColors.warning,
         );
@@ -242,7 +241,7 @@ class PracticeHubScreen extends ConsumerWidget {
           child: Row(
             children: [
               Container(
-                padding: const EdgeInsets.fromLTRB(16, 16, 16, 100),
+                padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
                   color: color.withAlpha(26),
                   borderRadius: AppRadius.mediumRadius,
@@ -280,7 +279,7 @@ class PracticeHubScreen extends ConsumerWidget {
         return Expanded(
           child: Card(
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(16, 16, 16, 100),
+              padding: const EdgeInsets.all(16),
               child: Column(
                 children: [
                   Text(

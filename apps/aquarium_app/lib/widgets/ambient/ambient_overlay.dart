@@ -89,7 +89,7 @@ class AmbientLightingOverlay extends ConsumerWidget {
                 duration: AppDurations.long2,
                 opacity: easedProgress,
                 child: Container(
-                  color: config.overlayColor.withOpacity(effectiveOpacity),
+                  color: config.overlayColor.withAlpha((effectiveOpacity * 255).round()),
                 ),
               ),
             ),

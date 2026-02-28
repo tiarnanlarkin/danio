@@ -261,7 +261,7 @@ class _TestTubeRackPainter extends CustomPainter {
       canvas.drawPath(tubePath, outlinePaint);
 
       // Liquid fill
-      final fillPaint = Paint()..color = colors[i].withOpacity(0.8);
+      final fillPaint = Paint()..color = colors[i].withAlpha(204);
       final fillHeight = tubeHeight * 0.6;
       final fillPath = Path()
         ..moveTo(x + 2, size.height * 0.3 + tubeHeight - fillHeight)

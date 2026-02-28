@@ -29,7 +29,7 @@ class SettingsHubScreen extends ConsumerWidget {
         title: const Text('⚙️ Settings & More'),
       ),
       body: ListView.builder(
-        padding: const EdgeInsets.fromLTRB(AppSpacing.md, AppSpacing.md, AppSpacing.md, 80),
+        padding: const EdgeInsets.all(AppSpacing.md),
         itemCount: items.length,
         itemBuilder: (context, index) => items[index],
       ),
@@ -287,7 +287,6 @@ class SettingsHubScreen extends ConsumerWidget {
           ),
           // Edit button
           IconButton(
-            constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
             icon: const Icon(Icons.edit),
             onPressed: () {
               Navigator.push(
@@ -305,16 +304,12 @@ class SettingsHubScreen extends ConsumerWidget {
 
   Widget _buildSectionHeader(String title) {
     return Padding(
-      padding: const EdgeInsets.only(left: AppSpacing.xs, bottom: AppSpacing.xs),
+      padding: const EdgeInsets.only(left: AppSpacing.xs),
       child: Text(
         title,
-        style: const TextStyle(
-          fontSize: 16,
-          fontWeight: FontWeight.w600,
-          letterSpacing: 0.5,
-          height: 1.3,
-        ).copyWith(
+        style: AppTypography.titleMedium.copyWith(
           color: AppColors.textSecondary,
+          fontWeight: FontWeight.w600,
         ),
       ),
     );

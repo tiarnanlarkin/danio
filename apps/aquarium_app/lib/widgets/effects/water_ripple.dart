@@ -65,7 +65,7 @@ class RipplePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = Colors.white.withOpacity(0.3 * (1 - progress))
+      ..color = Colors.white.withAlpha((0.3 * (1 - progress) * 255).round())
       ..style = PaintingStyle.stroke
       ..strokeWidth = 2;
 
@@ -79,7 +79,7 @@ class RipplePainter extends CustomPainter {
         canvas.drawCircle(
           center,
           radius,
-          paint..color = Colors.white.withOpacity(opacity),
+          paint..color = Colors.white.withAlpha((opacity * 255).round()),
         );
       }
     }

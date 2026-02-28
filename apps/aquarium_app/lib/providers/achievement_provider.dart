@@ -205,11 +205,7 @@ class AchievementChecker {
               // Continue even if gem award fails
             }
 
-            // Show celebration dialog.
-            // Delay before showing to let any in-progress route transitions
-            // fully settle. Without this, stacking multiple dialogs triggers a
-            // _dependents.isEmpty assertion crash in Flutter's InheritedWidget.
-            await Future.delayed(const Duration(milliseconds: 350));
+            // Show celebration dialog
             final context = navigatorKey.currentContext;
             if (context != null && context.mounted) {
               await showAchievementUnlockedDialog(
@@ -217,8 +213,6 @@ class AchievementChecker {
                 achievement: result.achievement,
                 xpAwarded: result.xpAwarded,
               );
-              // Let the pop animation fully complete before the next dialog
-              await Future.delayed(const Duration(milliseconds: 350));
             }
 
             // Send notification

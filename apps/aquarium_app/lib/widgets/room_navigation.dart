@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
-import '../screens/rooms/study_screen.dart';
+import '../screens/learn_screen.dart';
 import '../screens/workshop_screen.dart';
 import '../screens/shop_street_screen.dart';
 
@@ -38,7 +38,7 @@ class RoomNavigation extends StatelessWidget {
                   color: const Color(0xFF1A237E),
                   onTap: () => Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (_) => const StudyScreen()),
+                    MaterialPageRoute(builder: (_) => const LearnScreen()),
                   ),
                 ),
               ),

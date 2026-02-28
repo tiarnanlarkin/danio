@@ -815,7 +815,7 @@ class _AnimatedDustMote extends StatelessWidget {
             height: particle.size,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: color.withOpacity(0.15 * particle.opacity),
+              color: color.withAlpha((0.15 * particle.opacity * 255).round()),
             ),
           )
               .animate(onPlay: (c) => c.repeat())
@@ -911,10 +911,10 @@ class _AnimatedSpark extends StatelessWidget {
             height: particle.size * 0.6,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: color.withOpacity(0.3 * particle.opacity),
+              color: color.withAlpha((0.3 * particle.opacity * 255).round()),
               boxShadow: [
                 BoxShadow(
-                  color: color.withOpacity(0.2),
+                  color: color.withAlpha(51),
                   blurRadius: 4,
                   spreadRadius: 1,
                 ),

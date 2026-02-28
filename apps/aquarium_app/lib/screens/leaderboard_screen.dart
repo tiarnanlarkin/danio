@@ -3,8 +3,8 @@ import '../widgets/core/bubble_loader.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/leaderboard.dart';
-import '../data/mock_leaderboard.dart';
 import '../providers/user_profile_provider.dart';
+import '../providers/social_provider.dart';
 
 /// Duolingo-style competitive leaderboard
 class LeaderboardScreen extends ConsumerWidget {
@@ -20,23 +20,34 @@ class LeaderboardScreen extends ConsumerWidget {
           return const Scaffold(body: Center(child: Text('No profile found')));
         }
 
-        // Generate leaderboard with current user
-        final entries = MockLeaderboard.generate(
-          currentUserId: 'current_user',
-          currentUsername: profile.name ?? 'You',
-          currentUserXP: profile.weeklyXP,
-          currentUserLeague: profile.league,
+        // Fetch leaderboard via social service (falls back to mock)
+        final params = LeaderboardParams(
+          userId: 'current_user',
+          username: profile.name ?? 'You',
+          weeklyXp: profile.weeklyXP,
+          league: profile.league,
         );
+        final leaderboardAsync = ref.watch(leaderboardProvider(params));
 
-        final currentWeek = WeekPeriod.current();
-        final currentEntry = entries.firstWhere((e) => e.isCurrentUser);
-
-        return _buildLeaderboard(
-          context,
-          entries,
-          currentWeek,
-          currentEntry,
-          profile.league,
+        return leaderboardAsync.when(
+          data: (entries) {
+            final currentWeek = WeekPeriod.current();
+            final currentEntry = entries.firstWhere(
+              (e) => e.isCurrentUser,
+              orElse: () => entries.first,
+            );
+            return _buildLeaderboard(
+              context,
+              entries,
+              currentWeek,
+              currentEntry,
+              profile.league,
+            );
+          },
+          loading: () =>
+              const Scaffold(body: Center(child: BubbleLoader())),
+          error: (error, stack) =>
+              Scaffold(body: Center(child: Text('Error: $error'))),
         );
       },
       loading: () =>
@@ -57,23 +68,6 @@ class LeaderboardScreen extends ConsumerWidget {
       appBar: AppBar(title: const Text('Leaderboard'), centerTitle: true),
       body: Column(
         children: [
-          // Demo data indicator
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 16),
-            color: Colors.amber.shade50,
-            child: const Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(Icons.info_outline, size: 14, color: Colors.amber),
-                SizedBox(width: 6),
-                Text(
-                  'Demo leaderboard — rankings are simulated',
-                  style: TextStyle(fontSize: 12, color: Colors.amber),
-                ),
-              ],
-            ),
-          ),
           // Week timer and league header
           _buildHeader(context, currentWeek, currentEntry, league),
 
@@ -84,7 +78,7 @@ class LeaderboardScreen extends ConsumerWidget {
           Expanded(
             child: ListView.builder(
               itemCount: entries.length,
-              padding: const EdgeInsets.only(top: 8, bottom: 80),
+              padding: const EdgeInsets.symmetric(vertical: 8),
               itemBuilder: (context, index) {
                 final entry = entries[index];
                 return _buildLeaderboardTile(
@@ -266,9 +260,12 @@ class LeaderboardScreen extends ConsumerWidget {
                 ),
             ],
           ),
-          subtitle: Text(
-            isCurrentUser ? 'Rank #${entry.rank} · You' : 'Rank #${entry.rank}',
-            style: AppTypography.bodySmall.copyWith(color: AppColors.textSecondary),
+          subtitle: Row(
+            children: [
+              Icon(_leagueIcon(league), size: AppIconSizes.xs, color: Colors.grey.shade600),
+              const SizedBox(width: AppSpacing.xs),
+              Text(league.displayName),
+            ],
           ),
           trailing: Column(
             mainAxisAlignment: MainAxisAlignment.center,

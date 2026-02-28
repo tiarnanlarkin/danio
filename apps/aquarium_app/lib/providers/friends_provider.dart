@@ -3,11 +3,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/friend.dart';
 import '../data/mock_friends.dart';
+import '../services/social_service.dart';
+import 'social_provider.dart';
 
 /// Provider for friends list
 final friendsProvider =
     StateNotifierProvider<FriendsNotifier, AsyncValue<List<Friend>>>((ref) {
-      return FriendsNotifier();
+      return FriendsNotifier(ref);
     });
 
 /// Provider for friend activities feed
@@ -16,7 +18,7 @@ final friendActivitiesProvider =
       FriendActivitiesNotifier,
       AsyncValue<List<FriendActivity>>
     >((ref) {
-      final notifier = FriendActivitiesNotifier();
+      final notifier = FriendActivitiesNotifier(ref);
 
       // Listen to friends changes to regenerate activities
       ref.listen<AsyncValue<List<Friend>>>(friendsProvider, (previous, next) {
@@ -34,51 +36,63 @@ final encouragementsProvider =
       EncouragementsNotifier,
       AsyncValue<List<FriendEncouragement>>
     >((ref) {
-      return EncouragementsNotifier();
+      return EncouragementsNotifier(ref);
     });
 
 class FriendsNotifier extends StateNotifier<AsyncValue<List<Friend>>> {
-  FriendsNotifier() : super(const AsyncValue.loading()) {
+  FriendsNotifier(this._ref) : super(const AsyncValue.loading()) {
     _load();
   }
+
+  final Ref _ref;
+  SocialService get _social => _ref.read(socialServiceProvider);
 
   static const _key = 'friends_list';
 
   Future<void> _load() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
-      final json = prefs.getString(_key);
+      // Try Supabase first; falls back to mock internally
+      final friends = await _social.getFriends();
 
-      List<Friend> friends;
-      if (json != null) {
-        final List<dynamic> decoded = jsonDecode(json);
-        friends = decoded
-            .map((e) => Friend.fromJson(e as Map<String, dynamic>))
-            .toList();
-      } else {
-        // Generate initial mock friends
-        friends = _generateMockFriends();
-        await _save(friends);
-      }
+      // Cache locally for next cold-start
+      await _saveToCache(friends);
 
       state = AsyncValue.data(friends);
     } catch (e, st) {
+      // If even the service fails, try local cache
+      try {
+        final cached = await _loadFromCache();
+        if (cached != null && cached.isNotEmpty) {
+          state = AsyncValue.data(cached);
+          return;
+        }
+      } catch (_) {}
       state = AsyncValue.error(e, st);
     }
   }
 
-  Future<void> _save(List<Friend> friends) async {
+  // -- Local cache helpers (SharedPreferences) --
+
+  Future<void> _saveToCache(List<Friend> friends) async {
     final prefs = await SharedPreferences.getInstance();
     final json = jsonEncode(friends.map((f) => f.toJson()).toList());
     await prefs.setString(_key, json);
   }
 
-  /// Generate 15 mock friends with diverse stats
-  List<Friend> _generateMockFriends() {
-    return generateMockFriends(count: 15);
+  Future<List<Friend>?> _loadFromCache() async {
+    final prefs = await SharedPreferences.getInstance();
+    final json = prefs.getString(_key);
+    if (json == null) return null;
+    final List<dynamic> decoded = jsonDecode(json);
+    return decoded
+        .map((e) => Friend.fromJson(e as Map<String, dynamic>))
+        .toList();
   }
 
-  /// Add a new friend (mock implementation)
+  /// Add a new friend by username.
+  ///
+  /// When live, this searches Supabase for the user and sends a friend
+  /// request. When offline/demo, it creates a mock friend locally.
   Future<void> addFriend(String username) async {
     final currentState = state.valueOrNull;
     if (currentState == null) return;
@@ -90,25 +104,37 @@ class FriendsNotifier extends StateNotifier<AsyncValue<List<Friend>>> {
       throw Exception('Already friends with $username');
     }
 
-    // Create new mock friend using mock_friends.dart
-    final newFriend = createMockFriend(username: username);
+    // Try real search + request
+    final results = await _social.searchUsers(username);
+    if (results.isNotEmpty) {
+      await _social.sendFriendRequest(results.first['id'] as String);
+      // Refresh list (request is pending; it won't show until accepted,
+      // but this keeps state fresh).
+      await _load();
+      return;
+    }
 
+    // Fallback: create mock friend locally
+    final newFriend = createMockFriend(username: username);
     final updatedFriends = [...currentState, newFriend];
-    await _save(updatedFriends);
+    await _saveToCache(updatedFriends);
     state = AsyncValue.data(updatedFriends);
   }
 
-  /// Remove a friend
+  /// Remove a friend.
   Future<void> removeFriend(String friendId) async {
+    // Try removing via Supabase
+    await _social.removeFriend(friendId);
+
+    // Also remove locally
     final currentState = state.valueOrNull;
     if (currentState == null) return;
-
     final updatedFriends = currentState.where((f) => f.id != friendId).toList();
-    await _save(updatedFriends);
+    await _saveToCache(updatedFriends);
     state = AsyncValue.data(updatedFriends);
   }
 
-  /// Search friends by username
+  /// Search friends by username (client-side filter on current list).
   List<Friend> searchFriends(String query) {
     final currentState = state.valueOrNull;
     if (currentState == null) return [];
@@ -123,12 +149,12 @@ class FriendsNotifier extends StateNotifier<AsyncValue<List<Friend>>> {
         .toList();
   }
 
-  /// Reload friends
+  /// Reload friends from source.
   Future<void> reload() async {
     await _load();
   }
 
-  /// Reset to mock data (for testing)
+  /// Reset to mock data (for testing).
   Future<void> reset() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove(_key);
@@ -138,58 +164,75 @@ class FriendsNotifier extends StateNotifier<AsyncValue<List<Friend>>> {
 
 class FriendActivitiesNotifier
     extends StateNotifier<AsyncValue<List<FriendActivity>>> {
-  FriendActivitiesNotifier() : super(const AsyncValue.loading()) {
+  FriendActivitiesNotifier(this._ref) : super(const AsyncValue.loading()) {
     _load();
   }
+
+  final Ref _ref;
+  SocialService get _social => _ref.read(socialServiceProvider);
 
   static const _key = 'friend_activities';
 
   Future<void> _load() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
-      final json = prefs.getString(_key);
-
-      List<FriendActivity> activities;
-      if (json != null) {
-        final List<dynamic> decoded = jsonDecode(json);
-        activities = decoded
-            .map((e) => FriendActivity.fromJson(e as Map<String, dynamic>))
-            .toList();
-      } else {
-        // Will be generated when friends load
-        activities = [];
-      }
-
+      final activities = await _social.getActivityFeed(limit: 50);
+      await _saveToCache(activities);
       state = AsyncValue.data(activities);
     } catch (e, st) {
+      try {
+        final cached = await _loadFromCache();
+        if (cached != null && cached.isNotEmpty) {
+          state = AsyncValue.data(cached);
+          return;
+        }
+      } catch (_) {}
       state = AsyncValue.error(e, st);
     }
   }
 
-  Future<void> _save(List<FriendActivity> activities) async {
+  Future<void> _saveToCache(List<FriendActivity> activities) async {
     final prefs = await SharedPreferences.getInstance();
     final json = jsonEncode(activities.map((a) => a.toJson()).toList());
     await prefs.setString(_key, json);
   }
 
-  /// Generate activities from friends list
+  Future<List<FriendActivity>?> _loadFromCache() async {
+    final prefs = await SharedPreferences.getInstance();
+    final json = prefs.getString(_key);
+    if (json == null) return null;
+    final List<dynamic> decoded = jsonDecode(json);
+    return decoded
+        .map((e) => FriendActivity.fromJson(e as Map<String, dynamic>))
+        .toList();
+  }
+
+  /// Regenerate activities from friends list.
+  ///
+  /// When live, this fetches from Supabase. When offline, it generates
+  /// mock activities from the provided friends list.
   Future<void> regenerateActivities(List<Friend> friends) async {
     if (friends.isEmpty) {
       state = const AsyncValue.data([]);
       return;
     }
 
-    // Use mock_friends.dart to generate activities
+    try {
+      final activities = await _social.getActivityFeed(limit: 50);
+      if (activities.isNotEmpty) {
+        await _saveToCache(activities);
+        state = AsyncValue.data(activities);
+        return;
+      }
+    } catch (_) {}
+
+    // Fallback: generate mock activities from provided friends
     final activities = generateMockActivities(friends, activitiesPerFriend: 4);
-
-    // Keep only last 50 activities
     final trimmedActivities = activities.take(50).toList();
-
-    await _save(trimmedActivities);
+    await _saveToCache(trimmedActivities);
     state = AsyncValue.data(trimmedActivities);
   }
 
-  /// Reload activities
+  /// Reload activities.
   Future<void> reload() async {
     await _load();
   }
@@ -197,83 +240,95 @@ class FriendActivitiesNotifier
 
 class EncouragementsNotifier
     extends StateNotifier<AsyncValue<List<FriendEncouragement>>> {
-  EncouragementsNotifier() : super(const AsyncValue.loading()) {
+  EncouragementsNotifier(this._ref) : super(const AsyncValue.loading()) {
     _load();
   }
+
+  final Ref _ref;
+  SocialService get _social => _ref.read(socialServiceProvider);
 
   static const _key = 'encouragements';
 
   Future<void> _load() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
-      final json = prefs.getString(_key);
-
-      List<FriendEncouragement> encouragements;
-      if (json != null) {
-        final List<dynamic> decoded = jsonDecode(json);
-        encouragements = decoded
-            .map((e) => FriendEncouragement.fromJson(e as Map<String, dynamic>))
-            .toList();
-      } else {
-        encouragements = [];
-      }
-
+      final encouragements = await _social.getUnreadEncouragements();
+      await _saveToCache(encouragements);
       state = AsyncValue.data(encouragements);
     } catch (e, st) {
+      try {
+        final cached = await _loadFromCache();
+        if (cached != null) {
+          state = AsyncValue.data(cached);
+          return;
+        }
+      } catch (_) {}
       state = AsyncValue.error(e, st);
     }
   }
 
-  Future<void> _save(List<FriendEncouragement> encouragements) async {
+  Future<void> _saveToCache(List<FriendEncouragement> encouragements) async {
     final prefs = await SharedPreferences.getInstance();
     final json = jsonEncode(encouragements.map((e) => e.toJson()).toList());
     await prefs.setString(_key, json);
   }
 
-  /// Send encouragement to a friend
+  Future<List<FriendEncouragement>?> _loadFromCache() async {
+    final prefs = await SharedPreferences.getInstance();
+    final json = prefs.getString(_key);
+    if (json == null) return null;
+    final List<dynamic> decoded = jsonDecode(json);
+    return decoded
+        .map((e) => FriendEncouragement.fromJson(e as Map<String, dynamic>))
+        .toList();
+  }
+
+  /// Send encouragement to a friend.
   Future<void> sendEncouragement({
     required String toUserId,
     required String emoji,
     String? message,
   }) async {
-    final currentState = state.valueOrNull ?? [];
+    await _social.sendEncouragement(
+      toUserId: toUserId,
+      emoji: emoji,
+      message: message,
+    );
 
+    // Also store locally for immediate UI feedback
+    final currentState = state.valueOrNull ?? [];
     final encouragement = FriendEncouragement(
       id: 'enc_${DateTime.now().millisecondsSinceEpoch}',
-      fromUserId: 'current_user',
+      fromUserId: _social.currentUserId,
       toUserId: toUserId,
       emoji: emoji,
       message: message,
       timestamp: DateTime.now(),
     );
-
     final updated = [encouragement, ...currentState];
-    await _save(updated);
+    await _saveToCache(updated);
     state = AsyncValue.data(updated);
   }
 
-  /// Mark encouragement as read
+  /// Mark encouragement as read.
   Future<void> markAsRead(String encouragementId) async {
+    await _social.markEncouragementRead(encouragementId);
+
     final currentState = state.valueOrNull;
     if (currentState == null) return;
-
     final updated = currentState.map((e) {
-      if (e.id == encouragementId) {
-        return e.copyWith(isRead: true);
-      }
+      if (e.id == encouragementId) return e.copyWith(isRead: true);
       return e;
     }).toList();
-
-    await _save(updated);
+    await _saveToCache(updated);
     state = AsyncValue.data(updated);
   }
 
-  /// Get unread count
+  /// Get unread count.
   int get unreadCount {
     final currentState = state.valueOrNull;
     if (currentState == null) return 0;
     return currentState
-        .where((e) => !e.isRead && e.toUserId == 'current_user')
+        .where((e) => !e.isRead && e.toUserId == _social.currentUserId)
         .length;
   }
 }

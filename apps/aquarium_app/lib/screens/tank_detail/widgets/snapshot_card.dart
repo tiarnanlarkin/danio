@@ -30,24 +30,10 @@ class LatestSnapshotCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text('Latest Water Snapshot', style: AppTypography.headlineSmall),
-              const SizedBox(height: AppSpacing.md),
-              Center(
-                child: Column(
-                  children: [
-                    Icon(Icons.water_drop_outlined, size: 48, color: AppColors.textHint),
-                    const SizedBox(height: AppSpacing.sm),
-                    Text(
-                      'No water tests logged yet',
-                      style: AppTypography.bodyMedium.copyWith(color: AppColors.textSecondary),
-                    ),
-                    const SizedBox(height: AppSpacing.sm2),
-                    Text(
-                      'Add a water test to see your parameters at a glance',
-                      style: AppTypography.bodySmall.copyWith(color: AppColors.textHint),
-                      textAlign: TextAlign.center,
-                    ),
-                  ],
-                ),
+              const SizedBox(height: AppSpacing.sm),
+              Text(
+                'No water tests logged yet.',
+                style: AppTypography.bodyMedium,
               ),
             ],
           ),

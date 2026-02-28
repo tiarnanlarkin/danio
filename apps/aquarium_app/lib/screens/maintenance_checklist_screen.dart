@@ -24,10 +24,6 @@ class _MaintenanceChecklistScreenState
     extends ConsumerState<MaintenanceChecklistScreen> {
   Map<String, bool> _weeklyChecks = {};
   Map<String, bool> _monthlyChecks = {};
-  // ignore: unused_field - reserved for future weekly reset logic
-  String? _lastResetWeek;
-  // ignore: unused_field - reserved for future monthly reset logic
-  String? _lastResetMonth;
 
   final _weeklyItems = [
     _CheckItem('water_test', 'Test water parameters', Icons.science),
@@ -75,9 +71,6 @@ class _MaintenanceChecklistScreenState
     final savedMonth = prefs.getString('${prefix}_month');
 
     setState(() {
-      _lastResetWeek = savedWeek;
-      _lastResetMonth = savedMonth;
-
       // Reset weekly if new week
       if (savedWeek != _currentWeek) {
         _weeklyChecks = {};

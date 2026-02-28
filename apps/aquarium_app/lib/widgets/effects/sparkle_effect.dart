@@ -181,7 +181,7 @@ class _SparklePainter extends CustomPainter {
         final y = particle.y * size.height;
         final sparkleSize = particle.size * scale;
         
-        _drawSparkle(canvas, Offset(x, y), sparkleSize, color.withOpacity(opacity.clamp(0.0, 1.0)));
+        _drawSparkle(canvas, Offset(x, y), sparkleSize, color.withAlpha((opacity.clamp(0.0, 1.0) * 255).round()));
       }
     }
   }
@@ -212,7 +212,7 @@ class _SparklePainter extends CustomPainter {
     
     // Add glow
     final glowPaint = Paint()
-      ..color = color.withOpacity(color.opacity * 0.3)
+      ..color = color.withAlpha((color.opacity * 0.3 * 255).round())
       ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 4);
     canvas.drawCircle(center, size * 0.8, glowPaint);
   }
@@ -301,9 +301,9 @@ class _ShimmerEffectState extends State<ShimmerEffect>
               end: Alignment.centerRight,
               colors: [
                 Colors.transparent,
-                widget.shimmerColor.withOpacity(0.3),
-                widget.shimmerColor.withOpacity(0.5),
-                widget.shimmerColor.withOpacity(0.3),
+                widget.shimmerColor.withAlpha(76),
+                widget.shimmerColor.withAlpha(128),
+                widget.shimmerColor.withAlpha(76),
                 Colors.transparent,
               ],
               stops: const [0.0, 0.35, 0.5, 0.65, 1.0],

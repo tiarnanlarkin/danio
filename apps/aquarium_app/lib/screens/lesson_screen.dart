@@ -63,13 +63,9 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
         title: Row(
           children: [
             Flexible(
-              child: FittedBox(
-                fit: BoxFit.scaleDown,
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  widget.pathTitle,
-                  style: AppTypography.titleMedium,
-                ),
+              child: Text(
+                widget.pathTitle,
+                overflow: TextOverflow.ellipsis,
               ),
             ),
             if (widget.isPracticeMode) ...[
@@ -147,8 +143,8 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
   }
 
   Widget _buildLesson() {
-    // Calculate total items: title + spacing + time row + spacing + sections + completion confirmation + final spacing
-    final totalItems = 4 + widget.lesson.sections.length + 2;
+    // Calculate total items: title + spacing + time row + spacing + sections + final spacing
+    final totalItems = 4 + widget.lesson.sections.length + 1;
 
     return Column(
       children: [
@@ -204,35 +200,6 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
                 return Padding(
                   padding: const EdgeInsets.only(bottom: 16),
                   child: _buildSection(section),
-                );
-              }
-
-              // Lesson completion confirmation
-              if (index == 4 + widget.lesson.sections.length) {
-                return Padding(
-                  padding: const EdgeInsets.only(bottom: AppSpacing.md),
-                  child: Container(
-                    padding: const EdgeInsets.all(AppSpacing.md),
-                    decoration: BoxDecoration(
-                      color: AppOverlays.success10,
-                      borderRadius: AppRadius.mediumRadius,
-                      border: Border.all(color: AppOverlays.success30),
-                    ),
-                    child: Row(
-                      children: [
-                        Icon(Icons.check_circle, color: AppColors.success, size: AppIconSizes.md),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: Text(
-                            "You've finished this lesson! Ready to test your knowledge?",
-                            style: AppTypography.bodyMedium.copyWith(
-                              color: AppColors.success,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
                 );
               }
 

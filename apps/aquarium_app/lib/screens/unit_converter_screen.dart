@@ -11,9 +11,6 @@ class UnitConverterScreen extends StatefulWidget {
 }
 
 class _UnitConverterScreenState extends State<UnitConverterScreen> {
-  // ignore: unused_field - used by onTap callback for future state tracking
-  int _selectedTab = 0;
-
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -21,9 +18,8 @@ class _UnitConverterScreenState extends State<UnitConverterScreen> {
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Unit Converter'),
-          bottom: TabBar(
-            onTap: (i) => setState(() => _selectedTab = i),
-            tabs: const [
+          bottom: const TabBar(
+            tabs: [
               Tab(text: 'Volume'),
               Tab(text: 'Temp'),
               Tab(text: 'Length'),

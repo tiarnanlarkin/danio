@@ -1,5 +1,5 @@
-name: aquarium_app
-description: "Personal aquarium management — track tanks, livestock, equipment & maintenance."
+name: danio
+description: "Danio — learn aquarium keeping through bite-sized lessons, spaced repetition, and smart tank management."
 publish_to: 'none'
 
 version: 1.0.0+1
@@ -18,8 +18,9 @@ dependencies:
   
   # Navigation
   
-  # Local storage (add when needed)
-  # hive_flutter: ^1.1.0
+  # Local storage
+  hive: ^2.2.3
+  hive_flutter: ^1.1.0
   
   # HTTP
   http: ^1.2.2
@@ -41,8 +42,7 @@ dependencies:
   skeletonizer: ^2.1.2
   floating_bubbles: ^2.6.2
   animations: ^2.0.11
-  lottie: ^3.0.0
-  
+
   # Audio & Haptics
   audioplayers: ^6.1.0
   vibration: ^2.0.0
@@ -82,6 +82,8 @@ dev_dependencies:
   integration_test:
     sdk: flutter
   flutter_lints: ^6.0.0
+  build_runner: ^2.4.13
+  hive_generator: ^2.0.1
 
 flutter:
   uses-material-design: true
@@ -89,3 +91,10 @@ flutter:
   assets:
     - assets/rive/
     - assets/audio/celebrations/
+    - assets/images/empty_states/
+    - assets/images/onboarding/
+    - assets/images/illustrations/
+    - assets/images/error_states/
+    - assets/images/features/
+    - assets/icons/badges/
+    - assets/animations/

@@ -157,7 +157,7 @@ class AchievementCard extends StatelessWidget {
                       fontWeight: FontWeight.bold,
                       color: isLocked ? Colors.grey : null,
                     ),
-                    maxLines: 2,
+                    maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
                   const SizedBox(height: AppSpacing.xs),

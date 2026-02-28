@@ -12,9 +12,8 @@ import '../providers/spaced_repetition_provider.dart';
 import '../providers/user_profile_provider.dart';
 import '../providers/inventory_provider.dart';
 import '../services/review_queue_service.dart';
-import '../providers/lesson_provider.dart';
-import '../models/learning.dart';
 import '../theme/app_theme.dart';
+import '../utils/concept_display_names.dart';
 
 class SpacedRepetitionPracticeScreen extends ConsumerStatefulWidget {
   const SpacedRepetitionPracticeScreen({super.key});
@@ -114,15 +113,6 @@ class _SpacedRepetitionPracticeScreenState
                   color: AppColors.textHint,
                 ),
                 textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: AppSpacing.lg),
-              FilledButton.icon(
-                onPressed: () {
-                  // Navigate back and switch to Learn tab
-                  Navigator.of(context).pop();
-                },
-                icon: const Icon(Icons.auto_stories),
-                label: const Text('Start Learning'),
               ),
             ],
           ],
@@ -595,22 +585,12 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
   void initState() {
     super.initState();
     _questionStartTime = DateTime.now();
-    // Pre-load lesson paths so _getQuestionText() can resolve conceptIds.
-    // This is a no-op if paths are already loaded.
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) {
-        ref.read(lessonProvider.notifier).preloadEssentials();
-      }
-    });
   }
 
   ReviewCard get _currentCard => widget.session.cards[_currentCardIndex];
 
   @override
   Widget build(BuildContext context) {
-    // Watch lessonProvider so the widget rebuilds when paths finish loading,
-    // ensuring _getQuestionText() resolves conceptIds to real content.
-    ref.watch(lessonProvider);
     final progress = (_currentCardIndex + 1) / widget.session.cards.length;
     final cardsReviewed = widget.session.results.length;
     final correctSoFar = widget.session.results.where((r) => r.correct).length;
@@ -975,34 +955,7 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
   }
 
   String _getQuestionText() {
-    final conceptId = _currentCard.conceptId;
-
-    // Parse conceptId to extract lesson ID and content reference
-    // Format: {lessonId}_section_{index} or {lessonId}_quiz_q{index}
-    final sectionMatch = RegExp(r'^(.+)_section_(\d+)$').firstMatch(conceptId);
-    final quizMatch = RegExp(r'^(.+)_quiz_q(\d+)$').firstMatch(conceptId);
-
-    if (sectionMatch != null) {
-      final lessonId = sectionMatch.group(1)!;
-      final sectionIndex = int.tryParse(sectionMatch.group(2)!) ?? 0;
-      final lesson = ref.read(lessonProvider).getLesson(lessonId);
-      if (lesson != null && sectionIndex < lesson.sections.length) {
-        return lesson.sections[sectionIndex].content;
-      }
-    } else if (quizMatch != null) {
-      final lessonId = quizMatch.group(1)!;
-      final questionIndex = int.tryParse(quizMatch.group(2)!) ?? 0;
-      final lesson = ref.read(lessonProvider).getLesson(lessonId);
-      if (lesson?.quiz != null &&
-          questionIndex < lesson!.quiz!.questions.length) {
-        return lesson.quiz!.questions[questionIndex].question;
-      }
-    }
-
-    // Fallback: format the concept ID into readable text
-    return conceptId
-        .replaceAll("_", " ")
-        .trim();
+    return conceptDisplayName(_currentCard.conceptId);
   }
 
   Future<void> _recordAnswer(bool correct) async {

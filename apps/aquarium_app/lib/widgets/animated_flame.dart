@@ -226,8 +226,8 @@ class _AnimatedFlameState extends State<AnimatedFlame>
         shape: BoxShape.circle,
         gradient: RadialGradient(
           colors: [
-            _flameColors[1].withOpacity(_glowAnimation.value * _flameIntensity),
-            _flameColors[2].withOpacity(_glowAnimation.value * 0.3),
+            _flameColors[1].withAlpha((_glowAnimation.value * _flameIntensity * 255).round()),
+            _flameColors[2].withAlpha((_glowAnimation.value * 0.3 * 255).round()),
             Colors.transparent,
           ],
           stops: const [0.0, 0.5, 1.0],
@@ -258,7 +258,7 @@ class _AnimatedFlameState extends State<AnimatedFlame>
                 shape: BoxShape.circle,
                 boxShadow: [
                   BoxShadow(
-                    color: _flameColors[1].withOpacity(0.5),
+                    color: _flameColors[1].withAlpha(128),
                     blurRadius: 4,
                     spreadRadius: 1,
                   ),
@@ -356,9 +356,9 @@ class FlamePainter extends CustomPainter {
       begin: Alignment.bottomCenter,
       end: Alignment.topCenter,
       colors: [
-        colors[colors.length - 1].withOpacity(0.9 - (index * 0.1)),
-        colors[(index * 2) % colors.length].withOpacity(0.85 - (index * 0.08)),
-        colors[0].withOpacity(0.7 - (index * 0.1)),
+        colors[colors.length - 1].withAlpha(((0.9 - index * 0.1) * 255).round()),
+        colors[(index * 2) % colors.length].withAlpha(((0.85 - index * 0.08) * 255).round()),
+        colors[0].withAlpha(((0.7 - index * 0.1) * 255).round()),
       ],
       stops: const [0.0, 0.4, 1.0],
     );

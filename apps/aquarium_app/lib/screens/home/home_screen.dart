@@ -6,11 +6,8 @@ import '../../models/models.dart';
 import '../../providers/tank_provider.dart';
 import '../../providers/room_theme_provider.dart';
 import '../../providers/user_profile_provider.dart';
-import '../../providers/gems_provider.dart';
-import '../../providers/hearts_provider.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/core/bubble_loader.dart';
-import '../house_navigator.dart';
 import '../../theme/room_themes.dart';
 import '../../widgets/decorative_elements.dart';
 import '../../widgets/hobby_items.dart';
@@ -41,7 +38,7 @@ import '../../utils/app_page_routes.dart';
 
 /// HomeScreen - The Living Room in the House Navigator
 /// This is just the tank management view - navigation between rooms
-/// is handled by HouseNavigator's swipe/tab system.
+/// is handled by TabNavigator's tab system.
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
 
@@ -186,287 +183,218 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
         final currentTank = tanks[_currentTankIndex % tanks.length];
 
-        // Providers for compact stats bar
-        final profileAsync = ref.watch(userProfileProvider);
-        final gemsAsync = ref.watch(gemsProvider);
-        final heartsState = ref.watch(heartsStateProvider);
-        final dailyGoal = ref.watch(todaysDailyGoalProvider);
-
-        return Column(
+        return Stack(
           children: [
-            // === 1. Top bar with room title + search/settings ===
-            Container(
-              padding: EdgeInsets.only(
-                top: MediaQuery.of(context).padding.top + 4,
-                left: 16,
-                right: 8,
-                bottom: 4,
+            // The room scene
+            Positioned.fill(
+              child: LivingRoomScene(
+                tankId: currentTank.id,
+                tankName: currentTank.name,
+                tankVolume: currentTank.volumeLitres,
+                theme: ref.watch(currentRoomThemeProvider),
+                isNewUser: _isNewUser(ref),
+                useRiveFish: false, // Disable broken Rive fish, use static drawn fish
+                onTankTap: () => _navigateToTankDetail(context, currentTank),
+                onTestKitTap: () => _showWaterParams(context),
+                onFoodTap: () => _showFeedingInfo(context),
+                onPlantTap: () => _showPlantInfo(context),
+                onStatsTap: () => _showStatsInfo(context),
+                onThemeTap: () => _showThemePicker(context, ref),
+                onJournalTap: () => _navigateToJournal(context, currentTank.id),
+                onCalendarTap: () => _navigateToSchedule(context),
               ),
-              color: Theme.of(context).colorScheme.surface,
-              child: Row(
-                children: [
-                  Semantics(
-                    label: 'Living Room, switch room',
-                    button: true,
-                    child: GestureDetector(
-                      onTap: () => _showRoomSwitcher(context),
-                      child: Row(
+            ),
+
+            // Top bar overlay
+            Positioned(
+              top: 0,
+              left: 0,
+              right: 0,
+              child: Container(
+                padding: EdgeInsets.only(
+                  top: MediaQuery.of(context).padding.top + 8,
+                  left: 16,
+                  right: 8,
+                  bottom: 8,
+                ),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [AppOverlays.black30, Colors.transparent],
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    Semantics(
+                      label: 'Living Room, switch room',
+                      button: true,
+                      child: GestureDetector(
+                        onTap: () => _showRoomSwitcher(context),
+                        child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Text(
                             'Living Room',
-                            style: AppTypography.headlineSmall,
+                            style: AppTypography.headlineSmall.copyWith(
+                              color: Colors.white,
+                              shadows: [
+                                Shadow(
+                                  color: AppOverlays.black50,
+                                  blurRadius: 4,
+                                ),
+                              ],
+                            ),
                           ),
                           const SizedBox(width: 4),
                           Icon(
                             Icons.keyboard_arrow_down,
-                            color: AppColors.textSecondary,
+                            color: AppOverlays.white70,
                             size: AppIconSizes.sm,
                           ),
                         ],
                       ),
-                    ),
-                  ),
-                  const Spacer(),
-                  Semantics(
-                    label: 'Search',
-                    button: true,
-                    child: IconButton(
-                      icon: const Icon(Icons.search),
-                      tooltip: 'Search',
-                      onPressed: () => Navigator.push(
-                        context,
-                        RoomSlideRoute(page: const SearchScreen()),
                       ),
                     ),
-                  ),
-                  Semantics(
-                    label: 'Settings',
-                    button: true,
-                    child: IconButton(
-                      icon: const Icon(Icons.settings_outlined),
-                      tooltip: 'Settings',
-                      onPressed: () => Navigator.push(
-                        context,
-                        RoomSlideRoute(page: const SettingsScreen()),
-                      ),
+                    const Spacer(),
+                    // Hearts indicator
+                    const Padding(
+                      padding: EdgeInsets.only(right: 8),
+                      child: HeartIndicator(compact: true),
                     ),
-                  ),
-                ],
-              ),
-            ),
-
-            // === 2. Compact stats bar (streak, XP, gems, hearts) ===
-            profileAsync.when(
-              loading: () => const SizedBox(height: 44),
-              error: (_, __) => const SizedBox(height: 44),
-              data: (profile) {
-                if (profile == null) return const SizedBox(height: 44);
-                final gems = gemsAsync.value?.balance ?? 0;
-                return GestureDetector(
-                  onTap: () => _showStatsDetails(context),
-                  child: Container(
-                    height: 44,
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
-                      border: Border(
-                        bottom: BorderSide(
-                          color: Theme.of(context).dividerColor.withValues(alpha: 0.1),
+                    Semantics(
+                      label: 'Search',
+                      button: true,
+                      child: IconButton(
+                        icon: Icon(
+                          Icons.search,
+                          color: AppOverlays.white90,
+                        ),
+                        tooltip: 'Search',
+                        onPressed: () => Navigator.push(
+                          context,
+                          RoomSlideRoute(page: const SearchScreen()),
                         ),
                       ),
                     ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        _CompactStat(icon: '🔥', value: '${profile.currentStreak}', color: AppColors.warning),
-                        _CompactStat(icon: '⭐', value: _formatXp(profile.totalXp), color: AppColors.accent),
-                        _CompactStat(icon: '💎', value: _formatXp(gems), color: AppColors.info),
-                        _CompactHearts(current: heartsState.currentHearts, max: heartsState.maxHearts),
-                      ],
+                    Semantics(
+                      label: 'Settings',
+                      button: true,
+                      child: IconButton(
+                        icon: Icon(
+                          Icons.settings_outlined,
+                          color: AppOverlays.white90,
+                        ),
+                        tooltip: 'Settings',
+                        onPressed: () => Navigator.push(
+                          context,
+                          RoomSlideRoute(page: const SettingsScreen()),
+                        ),
+                      ),
                     ),
-                  ),
-                );
-              },
-            ),
-
-            // === 3. Room scene — fills available space ===
-            Expanded(
-              child: Stack(
-                children: [
-                  Positioned.fill(
-                    child: LivingRoomScene(
-                      tankId: currentTank.id,
-                      tankName: currentTank.name,
-                      tankVolume: currentTank.volumeLitres,
-                      theme: ref.watch(currentRoomThemeProvider),
-                      isNewUser: _isNewUser(ref),
-                      useRiveFish: false,
-                      onTankTap: () => _navigateToTankDetail(context, currentTank),
-                      onTestKitTap: () => _showWaterParams(context),
-                      onFoodTap: () => _showFeedingInfo(context),
-                      onPlantTap: () => _showPlantInfo(context),
-                      onStatsTap: () => _showStatsInfo(context),
-                      onThemeTap: () => _showThemePicker(context, ref),
-                      onJournalTap: () => _navigateToJournal(context, currentTank.id),
-                      onCalendarTap: () => _navigateToSchedule(context),
-                    ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
 
-            // === 4. Daily goal progress below scene ===
-            profileAsync.when(
-              loading: () => const SizedBox.shrink(),
-              error: (_, __) => const SizedBox.shrink(),
-              data: (profile) {
-                if (profile == null) return const SizedBox.shrink();
-                final todayXp = dailyGoal?.earnedXp ?? 0;
-                final goalXp = profile.dailyXpGoal;
-                final progress = goalXp > 0 ? (todayXp / goalXp).clamp(0.0, 1.0) : 0.0;
-                final percentage = (progress * 100).round();
-                final isComplete = progress >= 1.0;
-                return Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
-                  child: Card(
-                    margin: EdgeInsets.zero,
-                    elevation: 0,
-                    shape: RoundedRectangleBorder(borderRadius: AppRadius.mediumRadius),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              Text('📈', style: const TextStyle(fontSize: 16)),
-                              const SizedBox(width: 6),
-                              Text(
-                                'Daily Goal: $todayXp/$goalXp XP',
-                                style: AppTypography.labelMedium.copyWith(
-                                  color: isComplete ? AppColors.success : AppColors.textPrimary,
-                                  fontWeight: isComplete ? FontWeight.bold : FontWeight.w500,
-                                ),
-                              ),
-                              const Spacer(),
-                              if (isComplete)
-                                Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                                  decoration: BoxDecoration(
-                                    color: AppOverlays.success20,
-                                    borderRadius: AppRadius.smallRadius,
-                                  ),
-                                  child: Text('✓ Done!', style: AppTypography.labelSmall.copyWith(color: AppColors.success, fontWeight: FontWeight.bold)),
-                                )
-                              else
-                                Text('$percentage%', style: AppTypography.labelSmall.copyWith(color: AppColors.textSecondary)),
-                            ],
-                          ),
-                          const SizedBox(height: 6),
-                          ClipRRect(
-                            borderRadius: AppRadius.xsRadius,
-                            child: LinearProgressIndicator(
-                              value: progress,
-                              minHeight: 6,
-                              backgroundColor: AppColors.surfaceVariant,
-                              valueColor: AlwaysStoppedAnimation<Color>(
-                                isComplete ? AppColors.success : AppColors.primary,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
+            // Tank switcher - clean card between tank and graph
+            if (!_isSelectMode)
+              Builder(
+                builder: (context) {
+                  final bottomPadding = MediaQuery.of(context).padding.bottom;
+                  return Positioned(
+                    bottom: 180 + bottomPadding, // Above gamification dashboard with FAB clearance
+                    left: 16,
+                    right: 88, // Leave room for speed dial FAB
+                    child: TankSwitcher(
+                      tanks: tanks,
+                      currentIndex: _currentTankIndex,
+                      onChanged: (index) {
+                        setState(() => _currentTankIndex = index);
+                      },
+                      onAddTank: () => _navigateToCreateTank(context),
+                      onLongPress: tanks.length > 1 ? _toggleSelectMode : null,
                     ),
-                  ),
-                );
-              },
-            ),
+                  );
+                },
+              ),
 
-            // === 5. Tank switcher + content below ===
-            SizedBox(
-              height: 72,
-              child: Stack(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 4, 16, 0),
-                    child: Column(
-                      children: [
-                        // Tank switcher
-                        if (!_isSelectMode)
-                          Padding(
-                            padding: const EdgeInsets.only(right: 72), // Room for FAB
-                            child: TankSwitcher(
-                              tanks: tanks,
-                              currentIndex: _currentTankIndex,
-                              onChanged: (index) {
-                                setState(() => _currentTankIndex = index);
-                              },
-                              onAddTank: () => _navigateToCreateTank(context),
-                              onLongPress: tanks.length > 1 ? _toggleSelectMode : null,
-                            ),
-                          ),
-
-                        // Selection mode UI
-                        if (_isSelectMode)
-                          SelectionModePanel(
-                            tanks: tanks,
-                            selectedIds: _selectedTankIds,
-                            onToggleSelection: _toggleTankSelection,
-                            onCancel: _toggleSelectMode,
-                            onDeleteSelected: () => _bulkDelete(context, tanks),
-                            onExportSelected: () => _bulkExport(context, tanks),
-                          ),
-                      ],
-                    ),
-                  ),
-
-                  // Speed Dial FAB
-                  Positioned(
-                    top: 0,
+            // Selection mode UI
+            if (_isSelectMode)
+              Builder(
+                builder: (context) {
+                  final bottomPadding = MediaQuery.of(context).padding.bottom;
+                  return Positioned(
+                    bottom: 180 + bottomPadding, // Above gamification dashboard
+                    left: 16,
                     right: 16,
-                    child: SpeedDialFAB(
-                      closedIcon: Icons.water_drop_rounded,
-                      openIcon: Icons.close_rounded,
-                      actions: [
-                        SpeedDialAction(
-                          icon: Icons.add_rounded,
-                          label: 'Add Tank',
-                          backgroundColor: AppColors.primary,
-                          foregroundColor: AppColors.onPrimary,
-                          onPressed: () => _navigateToCreateTank(context),
-                        ),
-                        SpeedDialAction(
-                          icon: Icons.restaurant_rounded,
-                          label: 'Feed',
-                          backgroundColor: const Color(0xFFFFF3E0),
-                          foregroundColor: const Color(0xFFE65100),
-                          onPressed: () => _showFeedingInfo(context),
-                        ),
-                        SpeedDialAction(
-                          icon: Icons.science_rounded,
-                          label: 'Quick Test',
-                          backgroundColor: const Color(0xFFE8F5E9),
-                          foregroundColor: const Color(0xFF2E7D32),
-                          onPressed: () => _navigateToQuickTest(context, currentTank),
-                        ),
-                        SpeedDialAction(
-                          icon: Icons.water_drop_rounded,
-                          label: 'Water Change',
-                          backgroundColor: const Color(0xFFE3F2FD),
-                          foregroundColor: const Color(0xFF1565C0),
-                          onPressed: () =>
-                              _navigateToWaterChange(context, currentTank),
-                        ),
-                        SpeedDialAction(
-                          icon: Icons.insights_rounded,
-                          label: 'Stats',
-                          backgroundColor: const Color(0xFFF3E5F5),
-                          foregroundColor: const Color(0xFF7B1FA2),
-                          onPressed: () => _showStatsInfo(context),
-                        ),
-                      ],
+                    child: SelectionModePanel(
+                      tanks: tanks,
+                      selectedIds: _selectedTankIds,
+                      onToggleSelection: _toggleTankSelection,
+                      onCancel: _toggleSelectMode,
+                      onDeleteSelected: () => _bulkDelete(context, tanks),
+                      onExportSelected: () => _bulkExport(context, tanks),
                     ),
+                  );
+                },
+              ),
+
+            // Gamification Dashboard - shows all stats at a glance
+            // Right margin avoids overlap with FAB
+            Positioned(
+              bottom: 16 + MediaQuery.of(context).padding.bottom,
+              left: 16,
+              right: 80, // Leave space for FAB
+              child: GamificationDashboard(
+                onTap: () => _showStatsDetails(context),
+              ),
+            ),
+
+            // Speed Dial FAB - radial menu for quick actions
+            // Positioned above the dashboard with safe area padding
+            Positioned(
+              bottom: 170 + MediaQuery.of(context).padding.bottom,
+              right: 16,
+              child: SpeedDialFAB(
+                closedIcon: Icons.water_drop_rounded,
+                openIcon: Icons.close_rounded,
+                actions: [
+                  SpeedDialAction(
+                    icon: Icons.add_rounded,
+                    label: 'Add Tank',
+                    backgroundColor: AppColors.primary,
+                    foregroundColor: AppColors.onPrimary,
+                    onPressed: () => _navigateToCreateTank(context),
+                  ),
+                  SpeedDialAction(
+                    icon: Icons.restaurant_rounded,
+                    label: 'Feed',
+                    backgroundColor: const Color(0xFFFFF3E0),
+                    foregroundColor: const Color(0xFFE65100),
+                    onPressed: () => _showFeedingInfo(context),
+                  ),
+                  SpeedDialAction(
+                    icon: Icons.science_rounded,
+                    label: 'Quick Test',
+                    backgroundColor: const Color(0xFFE8F5E9),
+                    foregroundColor: const Color(0xFF2E7D32),
+                    onPressed: () => _navigateToQuickTest(context, currentTank),
+                  ),
+                  SpeedDialAction(
+                    icon: Icons.water_drop_rounded,
+                    label: 'Water Change',
+                    backgroundColor: const Color(0xFFE3F2FD),
+                    foregroundColor: const Color(0xFF1565C0),
+                    onPressed: () =>
+                        _navigateToWaterChange(context, currentTank),
+                  ),
+                  SpeedDialAction(
+                    icon: Icons.insights_rounded,
+                    label: 'Stats',
+                    backgroundColor: const Color(0xFFF3E5F5),
+                    foregroundColor: const Color(0xFF7B1FA2),
+                    onPressed: () => _showStatsInfo(context),
                   ),
                 ],
               ),
@@ -481,7 +409,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   Widget build(BuildContext context) {
     // HomeScreen is the Living Room - it shows tank management only.
     // Navigation to other rooms (Learn, Workshop, Shop, etc.) is handled
-    // by HouseNavigator's swipe/tab system, not a BottomNavigationBar here.
+    // by TabNavigator's tab system, not a BottomNavigationBar here.
     // Note: FAB is handled inside _buildLivingRoomScreen() Stack, not here
     return Scaffold(
       body: _buildLivingRoomScreen(),
@@ -1012,63 +940,4 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     }
   }
 
-  String _formatXp(int number) {
-    if (number >= 10000) {
-      return '${(number / 1000).toStringAsFixed(1)}k';
-    } else if (number >= 1000) {
-      return '${(number / 1000).toStringAsFixed(1)}k';
-    }
-    return number.toString();
-  }
-}
-
-/// Compact stat for the top stats bar
-class _CompactStat extends StatelessWidget {
-  final String icon;
-  final String value;
-  final Color color;
-
-  const _CompactStat({required this.icon, required this.value, required this.color});
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Text(icon, style: const TextStyle(fontSize: 16)),
-        const SizedBox(width: 4),
-        Text(
-          value,
-          style: AppTypography.labelLarge.copyWith(
-            fontWeight: FontWeight.bold,
-            color: color,
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-/// Compact hearts display for the top stats bar
-class _CompactHearts extends StatelessWidget {
-  final int current;
-  final int max;
-
-  const _CompactHearts({required this.current, required this.max});
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: List.generate(max, (i) {
-        return Padding(
-          padding: const EdgeInsets.only(right: 1),
-          child: Text(
-            i < current ? '❤️' : '🤍',
-            style: const TextStyle(fontSize: 14),
-          ),
-        );
-      }),
-    );
-  }
 }

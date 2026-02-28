@@ -69,46 +69,42 @@ class _QuickAddFabState extends State<QuickAddFab>
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
-        // Mini FABs — IgnorePointer prevents collapsed (invisible) items
-        // from intercepting taps and appearing in the accessibility tree
-        IgnorePointer(
-          ignoring: !_isExpanded,
-          child: ScaleTransition(
-            scale: _expandAnimation,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                MiniFabOption(
-                  icon: Icons.science,
-                  label: 'Water Test',
-                  color: AppColors.primary,
-                  onTap: () => _handleAction(widget.onWaterTest),
-                ),
-                const SizedBox(height: AppSpacing.sm),
-                MiniFabOption(
-                  icon: Icons.water_drop,
-                  label: 'Water Change',
-                  color: AppColors.secondary,
-                  onTap: () => _handleAction(widget.onWaterChange),
-                ),
-                const SizedBox(height: AppSpacing.sm),
-                MiniFabOption(
-                  icon: Icons.restaurant,
-                  label: 'Log Feeding',
-                  color: Colors.orange,
-                  onTap: () => _handleAction(widget.onFeeding),
-                ),
-                const SizedBox(height: AppSpacing.sm),
-                MiniFabOption(
-                  icon: Icons.edit_note,
-                  label: 'Observation',
-                  color: Colors.purple,
-                  onTap: () => _handleAction(widget.onObservation),
-                ),
-                const SizedBox(height: 12),
-              ],
-            ),
+        // Mini FABs
+        ScaleTransition(
+          scale: _expandAnimation,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              MiniFabOption(
+                icon: Icons.science,
+                label: 'Water Test',
+                color: AppColors.primary,
+                onTap: () => _handleAction(widget.onWaterTest),
+              ),
+              const SizedBox(height: AppSpacing.sm),
+              MiniFabOption(
+                icon: Icons.water_drop,
+                label: 'Water Change',
+                color: AppColors.secondary,
+                onTap: () => _handleAction(widget.onWaterChange),
+              ),
+              const SizedBox(height: AppSpacing.sm),
+              MiniFabOption(
+                icon: Icons.restaurant,
+                label: 'Log Feeding',
+                color: Colors.orange,
+                onTap: () => _handleAction(widget.onFeeding),
+              ),
+              const SizedBox(height: AppSpacing.sm),
+              MiniFabOption(
+                icon: Icons.edit_note,
+                label: 'Observation',
+                color: Colors.purple,
+                onTap: () => _handleAction(widget.onObservation),
+              ),
+              const SizedBox(height: 12),
+            ],
           ),
         ),
         // Main FAB

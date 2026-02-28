@@ -82,7 +82,6 @@ class StudyRoomScene extends StatelessWidget {
           width: w,
           height: h,
           child: Stack(
-            clipBehavior: Clip.none,
             children: [
               // === Background gradient ===
               Positioned.fill(
@@ -181,8 +180,8 @@ class StudyRoomScene extends StatelessWidget {
               // Microscope - Water Chemistry Guide
               if (onMicroscopeTap != null)
                 Positioned(
-                  top: h * 0.30,
-                  right: w * 0.22,
+                  top: h * 0.62,
+                  right: w * 0.12,
                   child: StudyRoomObjects.microscope(
                     onTap: onMicroscopeTap!,
                     isNewUser: isNewUser,
@@ -192,7 +191,7 @@ class StudyRoomScene extends StatelessWidget {
               // Globe - Random Fish Facts
               if (onGlobeTap != null)
                 Positioned(
-                  top: h * 0.18,
+                  top: h * 0.5,
                   left: w * 0.48,
                   child: StudyRoomObjects.globe(
                     onTap: onGlobeTap!,
@@ -334,7 +333,7 @@ class _BookshelfPainter extends CustomPainter {
         // Book spine highlight
         canvas.drawRect(
           Rect.fromLTWH(x + 1, shelfY - bookHeight - 2, 2, bookHeight - 4),
-          Paint()..color = color.withOpacity(0.5),
+          Paint()..color = color.withAlpha(128),
         );
 
         x += bookWidth + 2 + random.nextDouble() * 4;
@@ -522,9 +521,8 @@ class _GlassBadge extends StatelessWidget {
                   Text(
                     subtext,
                     style: const TextStyle(
-                      color: StudyColors.goldLight,
-                      fontSize: 12,
-                      fontWeight: FontWeight.w500,
+                      color: StudyColors.textSecondary,
+                      fontSize: 11,
                     ),
                   ),
                 ],

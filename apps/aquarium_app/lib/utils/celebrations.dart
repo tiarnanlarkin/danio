@@ -218,7 +218,7 @@ class _ConfettiPainter extends CustomPainter {
       canvas.rotate(rotation);
 
       final paint = Paint()
-        ..color = particle.color.withOpacity(opacity)
+        ..color = particle.color.withAlpha((opacity * 255).round())
         ..style = PaintingStyle.fill;
 
       final rect = Rect.fromCenter(

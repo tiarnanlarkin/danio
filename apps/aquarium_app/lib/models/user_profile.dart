@@ -73,8 +73,6 @@ class UserProfile {
   final bool dailyTipsEnabled;
   final bool streakRemindersEnabled;
   final bool hasSeenTutorial; // Whether user has seen first-launch tutorial
-  final String?
-  reminderTime; // "09:00" format (deprecated - use morningReminderTime)
   final String? morningReminderTime; // "09:00" format
   final String? eveningReminderTime; // "19:00" format
   final String? nightReminderTime; // "23:00" format
@@ -100,7 +98,7 @@ class UserProfile {
     this.hasCompletedPlacementTest = false,
     this.placementResultId,
     this.placementTestDate,
-    this.dailyXpGoal = 100,
+    this.dailyXpGoal = 50,
     this.dailyXpHistory = const {},
     this.hasStreakFreeze = true,
     this.streakFreezeUsedDate,
@@ -114,7 +112,6 @@ class UserProfile {
     this.dailyTipsEnabled = true,
     this.streakRemindersEnabled = true,
     this.hasSeenTutorial = false,
-    this.reminderTime,
     this.morningReminderTime = '09:00',
     this.eveningReminderTime = '19:00',
     this.nightReminderTime = '23:00',
@@ -155,13 +152,6 @@ class UserProfile {
       }
     }
     return level;
-  }
-
-  /// Recommended daily XP goal based on current level.
-  /// Scales with progression: level * 50, minimum 100.
-  int get recommendedDailyXpGoal {
-    final level = currentLevel;
-    return (level * 50).clamp(100, 500);
   }
 
   int get xpToNextLevel {
@@ -274,7 +264,6 @@ class UserProfile {
     bool? dailyTipsEnabled,
     bool? streakRemindersEnabled,
     bool? hasSeenTutorial,
-    String? reminderTime,
     String? morningReminderTime,
     String? eveningReminderTime,
     String? nightReminderTime,
@@ -316,7 +305,6 @@ class UserProfile {
       streakRemindersEnabled:
           streakRemindersEnabled ?? this.streakRemindersEnabled,
       hasSeenTutorial: hasSeenTutorial ?? this.hasSeenTutorial,
-      reminderTime: reminderTime ?? this.reminderTime,
       morningReminderTime: morningReminderTime ?? this.morningReminderTime,
       eveningReminderTime: eveningReminderTime ?? this.eveningReminderTime,
       nightReminderTime: nightReminderTime ?? this.nightReminderTime,
@@ -359,7 +347,6 @@ class UserProfile {
     'dailyTipsEnabled': dailyTipsEnabled,
     'streakRemindersEnabled': streakRemindersEnabled,
     'hasSeenTutorial': hasSeenTutorial,
-    'reminderTime': reminderTime,
     'morningReminderTime': morningReminderTime,
     'eveningReminderTime': eveningReminderTime,
     'nightReminderTime': nightReminderTime,
@@ -425,7 +412,7 @@ class UserProfile {
       placementTestDate: json['placementTestDate'] != null
           ? DateTime.parse(json['placementTestDate'] as String)
           : null,
-      dailyXpGoal: json['dailyXpGoal'] as int? ?? 100,
+      dailyXpGoal: json['dailyXpGoal'] as int? ?? 50,
       dailyXpHistory:
           (json['dailyXpHistory'] as Map<String, dynamic>?)?.map(
             (key, value) => MapEntry(key, value as int),
@@ -457,7 +444,6 @@ class UserProfile {
       dailyTipsEnabled: json['dailyTipsEnabled'] as bool? ?? true,
       streakRemindersEnabled: json['streakRemindersEnabled'] as bool? ?? true,
       hasSeenTutorial: json['hasSeenTutorial'] as bool? ?? false,
-      reminderTime: json['reminderTime'] as String?,
       morningReminderTime: json['morningReminderTime'] as String? ?? '09:00',
       eveningReminderTime: json['eveningReminderTime'] as String? ?? '19:00',
       nightReminderTime: json['nightReminderTime'] as String? ?? '23:00',

@@ -175,7 +175,7 @@ class MascotHelper {
     // Onboarding
     MascotContext.welcome: [
       "Hi there! I'm Finn, your aquarium buddy! 🐠",
-      "Welcome to Aquarium! I'm Finn, and I'll help you along the way!",
+      "Welcome to Danio! I'm Finn, and I'll help you along the way!",
       "Hello, future fish keeper! I'm Finn! 👋",
     ],
     MascotContext.experienceQuestion: [

@@ -227,9 +227,7 @@ class _InteractiveObjectState extends State<InteractiveObject>
           // Glow effect
           if (widget.animationStyle == InteractiveAnimationStyle.pulse)
             BoxShadow(
-              color: glowColor.withOpacity(
-                _pulseAnimation.value * glowIntensity,
-              ),
+              color: glowColor.withAlpha((_pulseAnimation.value * glowIntensity * 255).round()),
               blurRadius: glowRadius + (_pulseAnimation.value * 10),
               spreadRadius: _pulseAnimation.value * 4,
             ),

@@ -16,7 +16,6 @@ import 'package:aquarium_app/providers/storage_provider.dart';
 import 'package:aquarium_app/services/storage_service.dart';
 import 'package:aquarium_app/models/user_profile.dart';
 import 'package:aquarium_app/models/tank.dart';
-import 'package:aquarium_app/screens/house_navigator.dart';
 
 void main() {
   testWidgets('App boots and shows home screen', (WidgetTester tester) async {
@@ -80,7 +79,7 @@ void main() {
     
     final hasAddYourTank = find.text('Add Your Tank').evaluate().isNotEmpty;
     final hasProfileScreen = find.text('Create Your Profile').evaluate().isNotEmpty ||
-                              find.text('Welcome to Aquarium!').evaluate().isNotEmpty;
+                              find.text('Welcome to Danio!').evaluate().isNotEmpty;
     
     // Accept either state as valid for now
     expect(hasAddYourTank || hasProfileScreen, isTrue,
