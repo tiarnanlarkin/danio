@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Style Progression — Danio</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #111; color: #fff; font-family: -apple-system, sans-serif; padding: 24px; }
+  h1 { color: #f5c842; margin-bottom: 24px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+  .card { background: #1e1e1e; border-radius: 12px; overflow: hidden; border: 1px solid #333; }
+  .card img { width: 100%; display: block; }
+  .card .info { padding: 14px; }
+  .card .version { font-size: 11px; color: #f5c842; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+  .card .score { font-size: 28px; font-weight: 700; margin-bottom: 4px; }
+  .card .desc { font-size: 13px; color: #aaa; line-height: 1.5; }
+  .best { border-color: #f5c842; }
+</style>
+</head>
+<body>
+<h1>🎨 Danio Style Progression</h1>
+<div class="grid">
+  <div class="card">
+    <img src="../exports/style-validation-2026-02-28-20-40-51.png">
+    <div class="info">
+      <div class="version">v1</div>
+      <div class="score">6.5/10</div>
+      <div class="desc">Original formula. Clean cel-shading. Too "children's book", line art visible.</div>
+    </div>
+  </div>
+  <div class="card best">
+    <img src="../exports/style-validation-v2-20-45-45.png">
+    <div class="info">
+      <div class="version">v2 — Current Best 🏆</div>
+      <div class="score">8.2/10</div>
+      <div class="desc">No outlines, painterly, volumetric lighting. Clean Pixar concept art. Cohesive throughout.</div>
+    </div>
+  </div>
+  <div class="card">
+    <img src="../exports/style-validation-v3-20-49-18.png">
+    <div class="info">
+      <div class="version">v3 — Hand-drawn attempt</div>
+      <div class="score">7.0/10</div>
+      <div class="desc">Ink underdrawing + painterly colour. Charming but background doesn't match foreground.</div>
+    </div>
+  </div>
+  <div class="card">
+    <img src="../exports/style-validation-v4-20-50-27.png">
+    <div class="info">
+      <div class="version">v4 — Ghibli attempt</div>
+      <div class="score">6.5/10</div>
+      <div class="desc">Studio Ghibli direction. Concept is strong, execution inconsistent.</div>
+    </div>
+  </div>
+  <div class="card">
+    <img src="../exports/style-validation-v5-20-52-08.png">
+    <div class="info">
+      <div class="version">v5 — v2 + detail attempt</div>
+      <div class="score">6.0/10</div>
+      <div class="desc">Tried to add hand-crafted detail to v2 base. Background still falls off.</div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

@@ -156,3 +156,34 @@ contrasting warm amber background tones,
 cosy aspirational mood, cinematic composition,
 professional animation studio background painting quality
 ```
+
+---
+
+## v6 Refinements (2026-02-28) — 8.4/10 ✅ CURRENT BEST
+
+Key insight: **remove the background room entirely**. Fill the whole frame with aquarium content — every depth plane stays equally rich and detailed.
+
+**What changed from v2:**
+- No background room (always fell off in detail)
+- Full-frame aquarium interior — foreground, mid, background all populated
+- Added: `densely packed`, `lush`, `abundantly detailed`, `every inch filled`
+- Added: `layered depth of foreground mid and background all equally rich`
+- Added: `driftwood with moss detail`, `fine gravel substrate`, `caustic light patterns on every surface`
+- Kept all v2 lighting locks
+
+### Master Template v6 (use this for all scene assets)
+```
+[SCENE: lush thriving aquarium interior / cosy tank scene],
+[SUBJECT: fish species and behaviour],
+densely packed intricate coral formations, swaying anemone tendrils,
+richly detailed aquatic plants with individual leaves,
+layered depth — foreground mid background all equally rich,
+driftwood with moss detail, fine gravel substrate, caustic light patterns,
+Pixar DreamWorks concept art style, fully painterly no outlines,
+volumetric lighting, warm amber-gold key light from above,
+cool blue-slate ambient fill, deep violet-indigo chromatic shadows,
+subsurface scattering on fish scales, rich expressive brushwork,
+golden-hour palette, teal blue water,
+every inch of the frame filled with intricate lovingly rendered detail,
+cosy premium aspirational mood, professional animation studio quality
+```
