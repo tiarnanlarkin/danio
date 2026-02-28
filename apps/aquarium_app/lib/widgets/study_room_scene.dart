@@ -7,7 +7,7 @@ import 'room/interactive_object.dart';
 /// Study room colors - cozy knowledge theme
 class StudyColors {
   // Background gradient - warm study atmosphere
-  static const background1 = Color(0xFF2D3A4F); // Deep blue-gray
+  static const Color background1 = Color(0xFF2A3548); // Deep blue-gray
   static const background2 = Color(0xFF1F2937); // Darker blue
   static const background2Alpha30 = Color(0x4D1F2937); // 30%
   static const background3 = Color(0xFF1A202C); // Deep navy
