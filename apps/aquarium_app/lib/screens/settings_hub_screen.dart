@@ -124,7 +124,7 @@ class SettingsHubScreen extends ConsumerWidget {
       const SizedBox(height: AppSpacing.lg),
 
       // === Section: Tools ===
-      _buildSectionHeader('Aquarium Tools'),
+      _buildSectionHeader('Tank Tools'),
       const SizedBox(height: AppSpacing.sm),
 
       PrimaryActionTile(

@@ -45,14 +45,14 @@ class AboutScreen extends StatelessWidget {
 
             const SizedBox(height: AppSpacing.lg),
 
-            Text('Aquarium Hobby App', style: AppTypography.headlineMedium),
+            Text('Danio', style: AppTypography.headlineMedium),
             const SizedBox(height: AppSpacing.xs),
             Text('Version 1.0.0', style: AppTypography.bodyMedium),
 
             const SizedBox(height: AppSpacing.xl),
 
             Text(
-              'Track your tanks, livestock, equipment, and maintenance in one calm, organized place.',
+              'Duolingo for Fishkeeping. Learn, track, and master the aquarium hobby — one lesson at a time. 🐟',
               style: AppTypography.bodyLarge,
               textAlign: TextAlign.center,
             ),
@@ -127,7 +127,7 @@ class AboutScreen extends StatelessWidget {
                   label: const Text('Licenses'),
                   onPressed: () => showLicensePage(
                     context: context,
-                    applicationName: 'Aquarium Hobby App',
+                    applicationName: 'Danio',
                     applicationVersion: '1.0.0',
                   ),
                 ),

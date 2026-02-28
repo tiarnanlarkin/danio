@@ -335,7 +335,7 @@ class SettingsScreen extends ConsumerWidget {
           _SectionHeader(title: 'About'),
           AppListTile(
             leading: const Icon(Icons.water_drop),
-            title: 'Aquarium',
+            title: 'Danio',
             subtitle: 'Version 0.1.0',
           ),
           AppListTile(
@@ -899,7 +899,7 @@ class SettingsScreen extends ConsumerWidget {
   void _showAboutDialog(BuildContext context) {
     showAboutDialog(
       context: context,
-      applicationName: 'Aquarium',
+      applicationName: 'Danio',
       applicationVersion: '0.1.0 (MVP)',
       applicationIcon: Container(
         width: 48,
