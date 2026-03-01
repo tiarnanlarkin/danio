@@ -721,6 +721,13 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
                     setState(() => _waterChangePercent = value);
                   }
                 },
+                validator: (v) {
+                  if (v != null && v.isNotEmpty) {
+                    final n = int.tryParse(v);
+                    if (n == null || n < 1 || n > 100) return '1-100 only';
+                  }
+                  return null;
+                },
               ),
             ),
           ],
