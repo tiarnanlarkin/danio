@@ -278,13 +278,13 @@ class _WelcomePage extends StatelessWidget {
           ),
           const SizedBox(height: 40),
           Text(
-            'Welcome to Aquarium',
+            'Welcome to Danio! 🐠',
             style: AppTypography.headlineLarge,
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: AppSpacing.md),
           Text(
-            "Let's personalize your experience.\n\nWe'll ask a few questions to tailor the app to your needs and help you succeed with your aquarium.",
+            "Your aquarium journey starts now!\n\nJust a few quick questions and we'll build your personalised learning path.",
             style: AppTypography.bodyLarge.copyWith(
               color: AppColors.textSecondary,
             ),
