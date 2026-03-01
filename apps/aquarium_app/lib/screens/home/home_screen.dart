@@ -221,7 +221,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         final currentTank = tanks[_currentTankIndex % tanks.length];
 
         return Stack(
-          fit: StackFit.expand,
           children: [
             // The room scene
             Positioned.fill(
@@ -646,9 +645,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     // Note: FAB is handled inside _buildLivingRoomScreen() Stack, not here
     return Scaffold(
       body: Stack(
-        fit: StackFit.expand,
         children: [
-          _buildLivingRoomScreen(),
+          Positioned.fill(child: _buildLivingRoomScreen()),
           if (_showWelcomeBanner)
             Positioned(
               top: MediaQuery.of(context).padding.top + AppSpacing.md,
