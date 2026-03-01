@@ -515,7 +515,8 @@ class _PrimaryButtonState extends State<_PrimaryButton>
             child: Container(
               padding: const EdgeInsets.symmetric(vertical: 18),
               decoration: BoxDecoration(
-                color: Colors.white,
+                // BUG-01 fix: amber background so white text is visible
+                color: AppColors.primary,
                 borderRadius: AppRadius.mediumRadius,
                 boxShadow: [
                   BoxShadow(
@@ -532,7 +533,7 @@ class _PrimaryButtonState extends State<_PrimaryButton>
               ),
               child: Center(
                 child: DefaultTextStyle(
-                  style: const TextStyle(color: AppColors.primary),
+                  style: const TextStyle(color: Colors.white),
                   child: widget.child,
                 ),
               ),

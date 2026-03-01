@@ -75,16 +75,18 @@ class LivingRoomScene extends ConsumerWidget {
             width: w,
             height: h,
             child: Stack(
+              // BUG-03: clip room scene children to prevent overflow into panel area
+              clipBehavior: Clip.hardEdge,
               children: [
                 // === LAYER 1: Cozy room background with walls, floor, window ===
                 Positioned.fill(child: _CozyRoomBackground(theme: theme)),
 
               // === LAYER 2: Decorative room elements (plants, shelves, lamp) ===
-              // Tall plant on left side
+              // Tall plant on left side — BUG-03: repositioned to stay above stand boundary
               Positioned(
-                bottom: h * 0.08,
+                bottom: h * 0.38,
                 left: w * 0.02,
-                child: _RoomPlant(height: h * 0.25, theme: theme),
+                child: _RoomPlant(height: h * 0.20, theme: theme),
               ),
               
               // Small plant on shelf (right)

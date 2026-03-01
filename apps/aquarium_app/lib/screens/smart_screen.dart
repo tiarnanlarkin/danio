@@ -84,7 +84,13 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
         centerTitle: true,
       ),
       body: ListView(
-        padding: EdgeInsets.all(AppSpacing.md),
+        // BUG-04: bottom padding so Anomaly History card isn't clipped by bottom nav
+        padding: EdgeInsets.only(
+          left: AppSpacing.md,
+          right: AppSpacing.md,
+          top: AppSpacing.md,
+          bottom: kBottomNavigationBarHeight + 16,
+        ),
         children: [
           // API status
           if (!openai.isConfigured)

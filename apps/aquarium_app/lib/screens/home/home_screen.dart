@@ -477,7 +477,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             ),
 
             BottomPlate(
-              peekHeight: 60,
+              peekHeight: 32,  // BUG-02: was 60, reduced to match peek-only collapsed state
               maxHeightFraction: 0.65,
               label: 'Your Progress',
               emoji: '🔥',
