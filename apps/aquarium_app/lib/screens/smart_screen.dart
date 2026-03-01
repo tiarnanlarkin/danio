@@ -9,6 +9,7 @@ import '../features/smart/symptom_triage/symptom_triage_screen.dart';
 import '../features/smart/weekly_plan/weekly_plan_screen.dart';
 import '../services/openai_service.dart';
 import '../theme/app_theme.dart';
+import '../widgets/compatibility_checker_widget.dart';
 
 /// Smart Hub - central screen for all AI-powered features.
 class SmartScreen extends ConsumerStatefulWidget {
@@ -123,6 +124,8 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
               MaterialPageRoute(builder: (_) => const WeeklyPlanScreen()),
             ),
           ).animate(delay: 100.ms).fadeIn().slideX(begin: 0.05),
+          // Compatibility Checker
+          if (openai.isConfigured) ...[const SizedBox(height: AppSpacing.sm), const CompatibilityCheckerWidget()],
 
           // Ask Danio - quick question
           if (openai.isConfigured) ...[
