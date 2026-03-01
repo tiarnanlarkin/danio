@@ -2,6 +2,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/learning.dart';
+import '../providers/lesson_provider.dart';
 import '../providers/user_profile_provider.dart';
 import '../providers/spaced_repetition_provider.dart';
 import '../providers/achievement_provider.dart';
@@ -868,12 +869,11 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
           }
         }
 
-        // Navigate back after all animations complete
-        // Use post-frame callback to ensure state is settled
+        // Show next lesson CTA or navigate back
         if (mounted) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            if (mounted && Navigator.of(context).canPop()) {
-              Navigator.of(context).pop();
+            if (mounted) {
+              _showNextLessonOrPop();
             }
           });
         }
@@ -900,18 +900,18 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
 
 
   /// Varied quiz passed messages based on score
-  static String _passedMessage(int percentage) {
+    static String _passedMessage(int percentage) {
     final messages = percentage == 100
-        ? const ['Perfect score! You're a natural! 🌟', 'Flawless! Your fish would be proud! 💯', '100%! Aquarium genius! 🧠']
+        ? const ["Perfect score! You're a natural!", "Flawless! Your fish would be proud!", "100%! Aquarium genius!"]
         : percentage >= 80
-            ? const ['Brilliant work! 🎉', 'Nailed it! 🐠', 'You're swimming through these! 🌊']
-            : const ['Nice job — you passed! 👏', 'Well done, keep building! 💪', 'Solid effort! 🐟'];
+            ? const ["Brilliant work!", "Nailed it!", "You're swimming through these!"]
+            : const ["Nice job - you passed!", "Well done, keep building!", "Solid effort!"];
     return messages[math.Random().nextInt(messages.length)];
   }
 
   /// Encouraging try-again messages
-  static String _tryAgainMessage() {
-    const messages = ['Almost there — give it another go! 💪', 'Every expert was once a beginner! 📚', 'Review and try again — you've got this! 🐠'];
+    static String _tryAgainMessage() {
+    const messages = ["Almost there - give it another go!", "Every expert was once a beginner!", "Review and try again - you've got this!"];
     return messages[math.Random().nextInt(messages.length)];
   }
 
@@ -933,6 +933,151 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
       default:
         return null;
     }
+  }
+
+  /// Find and show the next lesson, or just pop back
+  void _showNextLessonOrPop() {
+    final nextLesson = _findNextLesson();
+    if (nextLesson == null || widget.isPracticeMode) {
+      if (Navigator.of(context).canPop()) {
+        Navigator.of(context).pop();
+      }
+      return;
+    }
+
+    // Show next lesson bottom sheet
+    showModalBottomSheet<bool>(
+      context: context,
+      isDismissible: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (ctx) {
+        final theme = Theme.of(ctx);
+        return Padding(
+          padding: const EdgeInsets.all(AppSpacing.lg),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade300,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+              const SizedBox(height: AppSpacing.lg),
+              const Text('🎉', style: TextStyle(fontSize: 40)),
+              const SizedBox(height: AppSpacing.sm),
+              Text(
+                'Lesson Complete!',
+                style: theme.textTheme.titleLarge?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: AppSpacing.lg),
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(AppSpacing.md),
+                decoration: BoxDecoration(
+                  color: AppOverlays.primary20,
+                  borderRadius: AppRadius.mediumRadius,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Ready for the next one?',
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: Colors.grey.shade600,
+                      ),
+                    ),
+                    const SizedBox(height: AppSpacing.sm),
+                    Row(
+                      children: [
+                        const Icon(Icons.arrow_forward_rounded,
+                            color: AppColors.primary),
+                        const SizedBox(width: AppSpacing.sm),
+                        Expanded(
+                          child: Text(
+                            nextLesson.title,
+                            style: theme.textTheme.titleMedium?.copyWith(
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.primary,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: AppSpacing.lg),
+              Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: () => Navigator.of(ctx).pop(false),
+                      child: const Text('Back to Path'),
+                    ),
+                  ),
+                  const SizedBox(width: AppSpacing.md),
+                  Expanded(
+                    flex: 2,
+                    child: FilledButton(
+                      onPressed: () => Navigator.of(ctx).pop(true),
+                      child: const Text('Start Next Lesson'),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: AppSpacing.md),
+            ],
+          ),
+        );
+      },
+    ).then((startNext) {
+      if (!mounted) return;
+      if (startNext == true) {
+        // Replace current lesson screen with next lesson
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (_) => LessonScreen(
+              lesson: nextLesson,
+              pathTitle: widget.pathTitle,
+            ),
+          ),
+        );
+      } else {
+        // Go back to path
+        if (Navigator.of(context).canPop()) {
+          Navigator.of(context).pop();
+        }
+      }
+    });
+  }
+
+  /// Find the next lesson in the current learning path
+  Lesson? _findNextLesson() {
+    final lessonState = ref.read(lessonProvider);
+    // Search all loaded paths for the current lesson
+    for (final path in lessonState.loadedPaths.values) {
+      final lessons = path.lessons;
+      for (int i = 0; i < lessons.length; i++) {
+        if (lessons[i].id == widget.lesson.id && i + 1 < lessons.length) {
+          final nextLesson = lessons[i + 1];
+          // Check if user has already completed it
+          final profile = ref.read(userProfileProvider).value;
+          if (profile != null &&
+              profile.completedLessons.contains(nextLesson.id)) {
+            return null; // Already completed next lesson
+          }
+          return nextLesson;
+        }
+      }
+    }
+    return null;
   }
 
   Future<void> _completeLesson({int bonusXp = 0}) async {
