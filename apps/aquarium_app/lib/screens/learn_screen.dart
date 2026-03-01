@@ -119,8 +119,14 @@ class LearnScreen extends ConsumerWidget {
           );
           final completedLessons = profile?.completedLessons.length ?? 0;
 
-          return CustomScrollView(
-            slivers: [
+          return RefreshIndicator(
+            onRefresh: () async {
+              ref.invalidate(userProfileProvider);
+              ref.invalidate(learningStatsProvider);
+              ref.invalidate(pathMetadataProvider);
+            },
+            child: CustomScrollView(
+              slivers: [
               // === Study Room Scene Header ===
               SliverToBoxAdapter(
                 child: SizedBox(
@@ -298,7 +304,8 @@ class LearnScreen extends ConsumerWidget {
 
                 const SliverToBoxAdapter(child: SizedBox(height: 100)),
               ],
-            ],
+              ],
+            ),
           );
         },
       ),

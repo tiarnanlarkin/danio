@@ -340,8 +340,17 @@ class TankDetailScreen extends ConsumerWidget {
         }
 
         return Scaffold(
-          body: CustomScrollView(
-            slivers: [
+          body: RefreshIndicator(
+            onRefresh: () async {
+              ref.invalidate(tankProvider(tankId));
+              ref.invalidate(logsProvider(tankId));
+              ref.invalidate(allLogsProvider(tankId));
+              ref.invalidate(livestockProvider(tankId));
+              ref.invalidate(equipmentProvider(tankId));
+              ref.invalidate(tasksProvider(tankId));
+            },
+            child: CustomScrollView(
+              slivers: [
               // Header
               SliverAppBar(
                 expandedHeight: 180,
@@ -908,7 +917,8 @@ class TankDetailScreen extends ConsumerWidget {
               ),
 
               const SliverToBoxAdapter(child: SizedBox(height: 100)),
-            ],
+              ],
+            ),
           ),
           floatingActionButton: QuickAddFab(
             tankId: tankId,
