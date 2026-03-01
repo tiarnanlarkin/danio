@@ -20,6 +20,7 @@ class OptimizedNetworkImage extends StatelessWidget {
   final Widget? placeholder;
   final Widget? errorWidget;
   final BorderRadius? borderRadius;
+  final String? semanticLabel;
   final bool fadeIn;
 
   const OptimizedNetworkImage({
@@ -31,6 +32,7 @@ class OptimizedNetworkImage extends StatelessWidget {
     this.placeholder,
     this.errorWidget,
     this.borderRadius,
+    this.semanticLabel,
     this.fadeIn = true,
   });
 
@@ -97,6 +99,7 @@ class OptimizedAssetImage extends StatelessWidget {
   final double? height;
   final BoxFit fit;
   final BorderRadius? borderRadius;
+  final String? semanticLabel;
 
   const OptimizedAssetImage({
     super.key,
@@ -105,6 +108,7 @@ class OptimizedAssetImage extends StatelessWidget {
     this.height,
     this.fit = BoxFit.cover,
     this.borderRadius,
+    this.semanticLabel,
   });
 
   @override
@@ -124,6 +128,8 @@ class OptimizedAssetImage extends StatelessWidget {
       fit: fit,
       cacheWidth: cacheWidth,
       cacheHeight: cacheHeight,
+      semanticLabel: semanticLabel,
+      excludeFromSemantics: semanticLabel == null,
     );
 
     if (borderRadius != null) {
@@ -144,6 +150,7 @@ class OptimizedFileImage extends StatelessWidget {
   final double? height;
   final BoxFit fit;
   final BorderRadius? borderRadius;
+  final String? semanticLabel;
 
   const OptimizedFileImage({
     super.key,
@@ -152,6 +159,7 @@ class OptimizedFileImage extends StatelessWidget {
     this.height,
     this.fit = BoxFit.cover,
     this.borderRadius,
+    this.semanticLabel,
   });
 
   @override
@@ -171,6 +179,8 @@ class OptimizedFileImage extends StatelessWidget {
       fit: fit,
       cacheWidth: cacheWidth,
       cacheHeight: cacheHeight,
+      semanticLabel: semanticLabel,
+      excludeFromSemantics: semanticLabel == null,
     );
 
     if (borderRadius != null) {

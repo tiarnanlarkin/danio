@@ -241,6 +241,7 @@ class OptimizedImage extends StatelessWidget {
   final BoxFit fit;
   final Widget? placeholder;
   final Widget? errorWidget;
+  final String? semanticLabel;
 
   const OptimizedImage({
     super.key,
@@ -250,6 +251,7 @@ class OptimizedImage extends StatelessWidget {
     this.fit = BoxFit.cover,
     this.placeholder,
     this.errorWidget,
+    this.semanticLabel,
   });
 
   @override
@@ -259,6 +261,8 @@ class OptimizedImage extends StatelessWidget {
       width: width,
       height: height,
       fit: fit,
+      semanticLabel: semanticLabel,
+      excludeFromSemantics: semanticLabel == null,
       cacheWidth: width?.toInt(),
       cacheHeight: height?.toInt(),
       frameBuilder: placeholder != null
