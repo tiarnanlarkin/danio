@@ -68,12 +68,12 @@ class SettingsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final settings = ref.watch(settingsProvider);
+    final items = _buildItems(context, ref, settings);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Settings')),
-      body: ListView.builder(
-        itemCount: _buildItems(context, ref, settings).length,
-        itemBuilder: (context, index) => _buildItems(context, ref, settings)[index],
+      appBar: AppBar(title: const Text('Preferences')),
+      body: ListView(
+        children: items,
       ),
     );
   }
