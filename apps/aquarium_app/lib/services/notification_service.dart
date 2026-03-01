@@ -249,8 +249,8 @@ class NotificationService {
 
     await _plugin.zonedSchedule(
       _morningNotificationId,
-      '🔥 Good morning!',
-      'Start your $currentStreak-day streak with today\'s lesson',
+      '🎓 5 minutes to level up your fishkeeping today?',
+      'Your 🔥 $currentStreak-day streak is waiting. Let\'s go!',
       tzScheduledDate,
       const NotificationDetails(
         android: AndroidNotificationDetails(
@@ -302,8 +302,8 @@ class NotificationService {
 
     await _plugin.zonedSchedule(
       _eveningNotificationId,
-      '⏰ Keep your streak alive!',
-      'Just $xpNeeded XP to keep your $currentStreak-day streak!',
+      '🔥 Don\'t lose your streak! Complete a lesson today',
+      'Just $xpNeeded XP away from keeping your 🔥 $currentStreak-day streak alive!',
       tzScheduledDate,
       const NotificationDetails(
         android: AndroidNotificationDetails(
@@ -354,8 +354,8 @@ class NotificationService {
 
     await _plugin.zonedSchedule(
       _nightNotificationId,
-      '⚠️ Don\'t lose your streak!',
-      'Only 5 minutes left to save your $currentStreak-day streak!',
+      '🚨 Last chance today!',
+      '🔥 Your $currentStreak-day streak ends at midnight! A 5-minute lesson is all it takes',
       tzScheduledDate,
       const NotificationDetails(
         android: AndroidNotificationDetails(
@@ -538,11 +538,11 @@ class NotificationService {
 
     final isOverdue = daysSinceLastChange >= reminderThresholdDays;
     final title = isOverdue
-        ? '💧 Water change overdue!'
-        : '💧 Water change coming up';
+        ? '💧 Time for a water change! Your tank will thank you 🐠'
+        : '💧 Water change reminder';
     final body = isOverdue
-        ? '$tankName hasn\'t had a water change in $daysSinceLastChange days.'
-        : '$tankName is due for a water change soon.';
+        ? '💧 $tankName hasn\'t had fresh water in $daysSinceLastChange days. Your fish will love you for it!'
+        : '💧 $tankName is nearly due for a water change. Stay ahead of the game!';
 
     await _plugin.zonedSchedule(
       notificationId,
