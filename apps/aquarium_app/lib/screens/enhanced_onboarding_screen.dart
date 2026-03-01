@@ -144,7 +144,7 @@ class _EnhancedOnboardingScreenState
           children: [
             // Progress indicator with skip button
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg, vertical: AppSpacing.md),
               child: Row(
                 children: [
                   // Progress bars
@@ -154,7 +154,7 @@ class _EnhancedOnboardingScreenState
                         return Expanded(
                           child: Container(
                             height: 4,
-                            margin: EdgeInsets.only(right: index < 3 ? 8 : 0),
+                            margin: EdgeInsets.only(right: index < 3 ? AppSpacing.sm : 0),
                             decoration: BoxDecoration(
                               color: index <= _currentPage
                                   ? AppColors.primary
@@ -260,7 +260,7 @@ class _WelcomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 32),
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -316,7 +316,7 @@ class _FeatureChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.sm),
       decoration: BoxDecoration(
         color: AppOverlays.primary10,
         borderRadius: AppRadius.largeRadius,
@@ -345,7 +345,7 @@ class _ExperiencePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24),
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -369,7 +369,7 @@ class _ExperiencePage extends StatelessWidget {
                 final level = ExperienceLevel.values[index];
                 final isSelected = selected == level;
                 return Padding(
-                  padding: const EdgeInsets.only(bottom: 16),
+                  padding: const EdgeInsets.only(bottom: AppSpacing.md),
                   child: _SelectionCard(
                     emoji: level.emoji,
                     title: level.displayName,
@@ -396,7 +396,7 @@ class _TankTypePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24),
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -420,7 +420,7 @@ class _TankTypePage extends StatelessWidget {
                 final type = TankType.values[index];
                 final isSelected = selected == type;
                 return Padding(
-                  padding: const EdgeInsets.only(bottom: 12),
+                  padding: const EdgeInsets.only(bottom: AppSpacing.sm2),
                   child: _SelectionCard(
                     emoji: type.emoji,
                     title: type.displayName,
@@ -448,7 +448,7 @@ class _GoalsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24),
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -469,7 +469,7 @@ class _GoalsPage extends StatelessWidget {
                 final goal = UserGoal.values[index];
                 final isSelected = selected.contains(goal);
                 return Padding(
-                  padding: const EdgeInsets.only(bottom: 12),
+                  padding: const EdgeInsets.only(bottom: AppSpacing.sm2),
                   child: _SelectionCard(
                     emoji: goal.emoji,
                     title: goal.displayName,
@@ -514,7 +514,7 @@ class _SelectionCard extends StatelessWidget {
       borderRadius: AppRadius.mediumRadius,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
-        padding: EdgeInsets.all(compact ? 16 : 20),
+        padding: EdgeInsets.all(compact ? AppSpacing.md : AppSpacing.lg2),
         decoration: BoxDecoration(
           color: isSelected
               ? AppOverlays.primary10

@@ -28,6 +28,7 @@ import '../photo_gallery_screen.dart';
 import '../livestock_value_screen.dart';
 import '../../widgets/cycling_status_card.dart';
 import '../../utils/app_feedback.dart';
+import '../../utils/haptic_feedback.dart';
 
 import 'widgets/section_header.dart';
 import 'widgets/quick_stats.dart';
@@ -131,7 +132,7 @@ class TankDetailScreen extends ConsumerWidget {
           itemBuilder: (context, index) {
             return Container(
               width: 120,
-              margin: EdgeInsets.only(right: index < 3 ? 12 : 0),
+              margin: EdgeInsets.only(right: index < 3 ? AppSpacing.sm2 : 0),
               child: Card(
                 margin: EdgeInsets.zero,
                 child: Padding(
@@ -165,7 +166,7 @@ class TankDetailScreen extends ConsumerWidget {
           itemBuilder: (context, index) {
             return Container(
               width: 120,
-              margin: EdgeInsets.only(right: index < 3 ? 12 : 0),
+              margin: EdgeInsets.only(right: index < 3 ? AppSpacing.sm2 : 0),
               child: Card(
                 margin: EdgeInsets.zero,
                 child: Padding(
@@ -252,7 +253,8 @@ class TankDetailScreen extends ConsumerWidget {
 
     // Show success feedback
     if (context.mounted) {
-      AppFeedback.showSuccess(context, '${task.title} completed!');
+      AppHaptics.success();
+      AppFeedback.showSuccess(context, '\${task.title} completed!');
     }
   }
 
@@ -604,7 +606,7 @@ class TankDetailScreen extends ConsumerWidget {
                   loading: () => const SizedBox.shrink(),
                   error: (_, __) => const SizedBox.shrink(),
                   data: (logs) => Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                    padding: const EdgeInsets.fromLTRB(AppSpacing.md, 0, AppSpacing.md, AppSpacing.md),
                     child: CyclingStatusCard(tank: tank, logs: logs),
                   ),
                 ),
@@ -800,6 +802,7 @@ class TankDetailScreen extends ConsumerWidget {
     ref.invalidate(allLogsProvider(tankId));
 
     if (context.mounted) {
+      AppHaptics.success();
       AppFeedback.showSuccess(context, 'Feeding logged! 🐟');
     }
   }

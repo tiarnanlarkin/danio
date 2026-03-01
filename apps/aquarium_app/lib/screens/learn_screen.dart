@@ -37,7 +37,7 @@ class LearnScreen extends ConsumerWidget {
           // Skeleton learning paths header
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(16, 16, 16, 12),
+              padding: const EdgeInsets.fromLTRB(AppSpacing.md, AppSpacing.md, AppSpacing.md, AppSpacing.sm2),
               child: Text('Learning Paths', style: AppTypography.headlineSmall),
             ),
           ),
@@ -45,7 +45,7 @@ class LearnScreen extends ConsumerWidget {
           SliverList(
             delegate: SliverChildBuilderDelegate(
               (context, index) => Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.sm),
                 child: Card(
                   margin: EdgeInsets.zero,
                   child: ListTile(
@@ -193,7 +193,7 @@ class LearnScreen extends ConsumerWidget {
                 // Learning paths header with overall progress
                 SliverToBoxAdapter(
                   child: Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 16, 16, 4),
+                    padding: const EdgeInsets.fromLTRB(AppSpacing.md, AppSpacing.md, AppSpacing.md, AppSpacing.xs),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -362,7 +362,7 @@ class _ReviewCardsBanner extends ConsumerWidget {
     if (dueCount == 0) return const SizedBox.shrink();
 
     return Container(
-      margin: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+      margin: const EdgeInsets.fromLTRB(AppSpacing.md, AppSpacing.md, AppSpacing.md, 0),
       child: InkWell(
         onTap: () {
           Navigator.of(context).push(
@@ -465,7 +465,7 @@ class _PracticeCard extends ConsumerWidget {
     if (weakCount == 0) return const SizedBox.shrink();
 
     return Container(
-      margin: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+      margin: const EdgeInsets.fromLTRB(AppSpacing.md, AppSpacing.md, AppSpacing.md, 0),
       child: InkWell(
         onTap: () {
           Navigator.of(
@@ -811,7 +811,7 @@ class _LazyLearningPathCardState extends ConsumerState<_LazyLearningPathCard> {
                   const SizedBox(width: 12),
                   Container(
                     padding:
-                        const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                        const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: 3),
                     decoration: BoxDecoration(
                       color: isDark
                           ? AppColors.whiteAlpha10
@@ -843,7 +843,7 @@ class _LazyLearningPathCardState extends ConsumerState<_LazyLearningPathCard> {
       return [
         const Divider(height: 1),
         const Padding(
-          padding: EdgeInsets.symmetric(vertical: 24),
+          padding: EdgeInsets.symmetric(vertical: AppSpacing.lg),
           child: Center(
             child: SizedBox(
               width: 24,

@@ -35,7 +35,7 @@ class ThemeGalleryScreen extends ConsumerWidget {
                   ],
                 ),
               ),
-              titlePadding: const EdgeInsets.only(left: 16, bottom: 16),
+              titlePadding: const EdgeInsets.only(left: AppSpacing.md, bottom: AppSpacing.md),
             ),
             backgroundColor: RoomTheme.fromType(currentTheme).background1,
           ),
@@ -43,7 +43,7 @@ class ThemeGalleryScreen extends ConsumerWidget {
           // Section: Free Themes
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(20, 24, 20, 12),
+              padding: const EdgeInsets.fromLTRB(AppSpacing.lg2, AppSpacing.lg, AppSpacing.lg2, AppSpacing.sm2),
               child: Row(
                 children: [
                   Container(
@@ -105,7 +105,7 @@ class ThemeGalleryScreen extends ConsumerWidget {
           // Section: Premium Themes (Coming Soon)
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(20, 32, 20, 12),
+              padding: const EdgeInsets.fromLTRB(AppSpacing.lg2, AppSpacing.xl, AppSpacing.lg2, AppSpacing.sm2),
               child: Row(
                 children: [
                   Container(
@@ -143,7 +143,7 @@ class ThemeGalleryScreen extends ConsumerWidget {
 
           // Premium theme placeholder grid
           SliverPadding(
-            padding: const EdgeInsets.fromLTRB(16, 0, 16, 32),
+            padding: const EdgeInsets.fromLTRB(AppSpacing.md, 0, AppSpacing.md, AppSpacing.xl),
             sliver: SliverGrid(
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
@@ -466,7 +466,7 @@ class _CurrentThemePreview extends StatelessWidget {
             bottom: 60,
             left: 16,
             child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm2, vertical: 6),
               decoration: BoxDecoration(
                 color: AppOverlays.white20,
                 borderRadius: AppRadius.largeRadius,
