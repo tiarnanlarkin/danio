@@ -1,0 +1,32 @@
+# Build outputs
+build/
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+
+# Dependencies
+.pub-cache/
+
+# Generated files (too noisy)
+**/*.g.dart
+**/*.freezed.dart
+
+# Android/iOS native build files
+android/.gradle/
+android/app/build/
+ios/Pods/
+ios/.symlinks/
+
+# Assets (binary, not useful for context)
+assets/images/
+assets/animations/
+
+# Large data files
+lib/data/species_data.dart
+
+# Test files (deleted/stale)
+test/
+
+# IDE
+.idea/
+.vscode/
