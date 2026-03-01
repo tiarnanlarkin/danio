@@ -218,7 +218,7 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen>
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Couldn\'t use that item. Try again!'),
+          content: Text('Couldn\'t use that item, try again'),
           backgroundColor: Colors.red,
         ),
       );

@@ -58,7 +58,7 @@ class _DosingCalculatorScreenState extends State<DosingCalculatorScreen> {
             TextFormField(
               controller: _volumeController,
               decoration: const InputDecoration(
-                hintText: 'Enter tank volume',
+                hintText: 'e.g., 120 litres',
                 suffixText: 'L',
               ),
               keyboardType: const TextInputType.numberWithOptions(

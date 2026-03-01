@@ -240,7 +240,7 @@ class _GemShopScreenState extends ConsumerState<GemShopScreen>
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: const Text('Something went wrong. Please try again.'),
+          content: const Text('Something went wrong, please try again'),
           backgroundColor: Colors.red,
           duration: const Duration(seconds: 4),
           action: SnackBarAction(

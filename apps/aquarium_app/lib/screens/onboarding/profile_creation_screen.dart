@@ -252,7 +252,7 @@ class _ProfileCreationScreenState extends ConsumerState<ProfileCreationScreen> {
             child: TextFormField(
               controller: _nameController,
               decoration: const InputDecoration(
-                hintText: 'Enter your name',
+                hintText: 'e.g., Alex',
                 prefixIcon: Icon(Icons.person_outline),
                 border: OutlineInputBorder(),
               ),

@@ -328,7 +328,7 @@ class _TutorialWalkthroughScreenState
                   const SizedBox(height: AppSpacing.sm),
                   TextFormField(
                     decoration: const InputDecoration(
-                      hintText: 'Enter volume',
+                      hintText: 'e.g., 120 litres',
                       prefixIcon: Icon(Icons.straighten),
                       suffixText: 'litres',
                       border: OutlineInputBorder(),

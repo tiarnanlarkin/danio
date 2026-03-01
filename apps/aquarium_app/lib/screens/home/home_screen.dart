@@ -1612,7 +1612,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       if (mounted) {
         messenger.showSnackBar(
           const SnackBar(
-            content: Text('Couldn\'t delete those tanks. Try again in a moment.'),
+            content: Text('Couldn\'t delete those tanks, try again in a moment'),
           ),
         );
       }

@@ -487,7 +487,7 @@ class _SpacedRepetitionPracticeScreenState
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: const Text('Couldn\'t start the session. Try again!'),
+          content: const Text('Couldn\'t start the session, try again'),
           backgroundColor: Colors.red,
           duration: const Duration(seconds: 4),
           action: SnackBarAction(
@@ -998,7 +998,7 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
         // Card scheduling errors will not break review flow (handled in provider)
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: const Text('Couldn\'t record that answer. Try again!'),
+            content: const Text('Couldn\'t record that answer, try again'),
             backgroundColor: Colors.orange,
             duration: const Duration(seconds: 4),
             action: SnackBarAction(
