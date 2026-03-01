@@ -190,13 +190,54 @@ class LearnScreen extends ConsumerWidget {
                 // Practice card
                 SliverToBoxAdapter(child: _PracticeCard(profile: profile)),
 
-                // Learning paths header
+                // Learning paths header with overall progress
                 SliverToBoxAdapter(
                   child: Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 16, 16, 12),
-                    child: Text(
-                      'Learning Paths',
-                      style: AppTypography.headlineSmall,
+                    padding: const EdgeInsets.fromLTRB(16, 16, 16, 4),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Learning Paths',
+                          style: AppTypography.headlineSmall,
+                        ),
+                        const SizedBox(height: AppSpacing.sm),
+                        Builder(
+                          builder: (context) {
+                            final completedPaths = metadata.where((meta) {
+                              final done = meta.lessonIds
+                                  .where((id) => profile.completedLessons.contains(id))
+                                  .length;
+                              return done == meta.lessonIds.length && meta.lessonIds.isNotEmpty;
+                            }).length;
+                            final totalPaths = metadata.length;
+                            final progress = totalPaths > 0 ? completedPaths / totalPaths : 0.0;
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  '$completedPaths of $totalPaths paths complete',
+                                  style: AppTypography.bodySmall.copyWith(
+                                    color: AppColors.textSecondary,
+                                  ),
+                                ),
+                                const SizedBox(height: AppSpacing.xs),
+                                ClipRRect(
+                                  borderRadius: AppRadius.xsRadius,
+                                  child: LinearProgressIndicator(
+                                    value: progress,
+                                    backgroundColor: AppColors.surfaceVariant,
+                                    valueColor: const AlwaysStoppedAnimation<Color>(
+                                      AppColors.primary,
+                                    ),
+                                    minHeight: 6,
+                                  ),
+                                ),
+                              ],
+                            );
+                          },
+                        ),
+                      ],
                     ),
                   ),
                 ),
