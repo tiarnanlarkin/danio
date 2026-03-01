@@ -10,9 +10,13 @@ class IdentificationResult {
   final double tempMin;
   final double tempMax;
   final String hardness;
+  final double? maxSizeCm;
+  final String? diet;
+  final List<String> tankMates;
   final String compatibilityNotes;
   final List<String> careTips;
   final bool isPlant;
+  final String confidence; // high, medium, low
   final DateTime createdAt;
 
   const IdentificationResult({
@@ -24,9 +28,13 @@ class IdentificationResult {
     required this.tempMin,
     required this.tempMax,
     required this.hardness,
+    this.maxSizeCm,
+    this.diet,
+    this.tankMates = const [],
     required this.compatibilityNotes,
     required this.careTips,
     this.isPlant = false,
+    this.confidence = 'high',
     required this.createdAt,
   });
 
@@ -40,12 +48,19 @@ class IdentificationResult {
       tempMin: (json['temp_min'] as num?)?.toDouble() ?? 24,
       tempMax: (json['temp_max'] as num?)?.toDouble() ?? 28,
       hardness: json['hardness'] as String? ?? 'Moderate',
+      maxSizeCm: (json['max_size_cm'] as num?)?.toDouble(),
+      diet: json['diet'] as String?,
+      tankMates: (json['tank_mates'] as List<dynamic>?)
+              ?.map((e) => e.toString())
+              .toList() ??
+          [],
       compatibilityNotes: json['compatibility_notes'] as String? ?? '',
       careTips: (json['care_tips'] as List<dynamic>?)
               ?.map((e) => e.toString())
               .toList() ??
           [],
       isPlant: json['is_plant'] as bool? ?? false,
+      confidence: json['confidence'] as String? ?? 'high',
       createdAt: DateTime.now(),
     );
   }
@@ -59,9 +74,13 @@ class IdentificationResult {
     'temp_min': tempMin,
     'temp_max': tempMax,
     'hardness': hardness,
+    'max_size_cm': maxSizeCm,
+    'diet': diet,
+    'tank_mates': tankMates,
     'compatibility_notes': compatibilityNotes,
     'care_tips': careTips,
     'is_plant': isPlant,
+    'confidence': confidence,
     'created_at': createdAt.toIso8601String(),
   };
 }

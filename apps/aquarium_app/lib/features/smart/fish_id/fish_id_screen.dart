@@ -26,20 +26,34 @@ class _FishIdScreenState extends ConsumerState<FishIdScreen> {
   bool _loading = false;
   String? _error;
 
+  static const _systemPrompt =
+      'You are Danio AI, an expert aquarist and marine biologist with 20+ years '
+      'of experience in freshwater and marine fishkeeping. You identify species '
+      'from photos with high accuracy and provide practical, hobbyist-friendly '
+      'care information. If you are uncertain about the species, say so and '
+      'provide your best guess with a confidence note. Always prioritise the '
+      'safety and welfare of the animal.';
+
   static const _prompt = '''
-Identify this fish or aquatic plant. Return ONLY valid JSON with these fields:
+Identify the fish or aquatic plant in this image. Be specific — identify to species level where possible.
+
+Return ONLY valid JSON with these fields (no markdown, no explanation):
 {
-  "common_name": "string",
-  "scientific_name": "string",
-  "care_level": 1-5,
+  "common_name": "string — most widely-used common name",
+  "scientific_name": "string — binomial Latin name",
+  "care_level": 1-5 (1=bulletproof beginner, 5=expert only),
   "ph_min": number,
   "ph_max": number,
   "temp_min": number (°C),
   "temp_max": number (°C),
-  "hardness": "string description",
-  "compatibility_notes": "string",
-  "care_tips": ["tip1", "tip2", "tip3"],
-  "is_plant": boolean
+  "hardness": "string — e.g. 'Soft to moderate (2-12 dGH)'",
+  "max_size_cm": number,
+  "diet": "string — e.g. 'Omnivore — flakes, frozen bloodworm, blanched veg'",
+  "tank_mates": ["string — 3-5 compatible species by common name"],
+  "compatibility_notes": "string — temperament, schooling needs, aggression notes",
+  "care_tips": ["tip1", "tip2", "tip3" — practical, actionable tips],
+  "is_plant": boolean,
+  "confidence": "high|medium|low"
 }
 ''';
 
@@ -84,10 +98,25 @@ Identify this fish or aquatic plant. Return ONLY valid JSON with these fields:
       final bytes = await _selectedImage!.readAsBytes();
       final base64 = base64Encode(bytes);
 
-      final result = await openai.visionAnalysis(
-        base64Image: base64,
-        prompt: _prompt,
-        maxTokens: 512,
+      final result = await openai.chatCompletion(
+        messages: [
+          ChatMessage(role: 'system', content: _systemPrompt),
+          ChatMessage(
+            role: 'user',
+            content: [
+              {'type': 'text', 'text': _prompt},
+              {
+                'type': 'image_url',
+                'image_url': {
+                  'url': 'data:image/jpeg;base64,$base64',
+                  'detail': 'high',
+                },
+              },
+            ],
+          ),
+        ],
+        model: OpenAIModels.vision,
+        maxTokens: 1024,
       );
 
       // Parse JSON from the response — handle markdown code blocks.
@@ -266,7 +295,7 @@ Identify this fish or aquatic plant. Return ONLY valid JSON with these fields:
   Widget _buildResultCard(ThemeData theme, bool isDark) {
     final r = _result!;
     return Card(
-      elevation: 2,
+      elevation: AppElevation.level1,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12.0),
       ),
@@ -309,6 +338,43 @@ Identify this fish or aquatic plant. Return ONLY valid JSON with these fields:
             ),
             const Divider(height: AppSpacing.lg),
 
+            // Confidence indicator
+            if (r.confidence != 'high')
+              Padding(
+                padding: const EdgeInsets.only(bottom: AppSpacing.sm),
+                child: Row(
+                  children: [
+                    Icon(Icons.info_outline, size: 14,
+                        color: r.confidence == 'low' ? AppColors.warning : AppColors.textSecondary),
+                    const SizedBox(width: 4),
+                    Text(
+                      r.confidence == 'low'
+                          ? 'Low confidence — verify with another source'
+                          : 'Medium confidence',
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: r.confidence == 'low' ? AppColors.warning : AppColors.textSecondary,
+                        fontStyle: FontStyle.italic,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+            // Key stats row
+            if (r.maxSizeCm != null || r.diet != null) ...[
+              Wrap(
+                spacing: AppSpacing.sm,
+                runSpacing: AppSpacing.xs,
+                children: [
+                  if (r.maxSizeCm != null)
+                    _paramChip('Max Size', '${r.maxSizeCm!.toStringAsFixed(0)} cm'),
+                  if (r.diet != null)
+                    _paramChip('Diet', r.diet!),
+                ],
+              ),
+              const SizedBox(height: AppSpacing.md),
+            ],
+
             // Water parameters
             Text(
               'Water Parameters',
@@ -327,9 +393,29 @@ Identify this fish or aquatic plant. Return ONLY valid JSON with these fields:
             ),
             const SizedBox(height: AppSpacing.md),
 
+            // Tank mates
+            if (r.tankMates.isNotEmpty) ...[
+              Text(
+                'Compatible Tank Mates',
+                style: theme.textTheme.titleSmall
+                    ?.copyWith(fontWeight: FontWeight.w600),
+              ),
+              const SizedBox(height: AppSpacing.xs),
+              Wrap(
+                spacing: AppSpacing.xs,
+                runSpacing: AppSpacing.xs,
+                children: r.tankMates.map((mate) => Chip(
+                  label: Text(mate, style: theme.textTheme.bodySmall),
+                  visualDensity: VisualDensity.compact,
+                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                )).toList(),
+              ),
+              const SizedBox(height: AppSpacing.md),
+            ],
+
             // Compatibility
             Text(
-              'Compatibility',
+              'Compatibility Notes',
               style: theme.textTheme.titleSmall
                   ?.copyWith(fontWeight: FontWeight.w600),
             ),
