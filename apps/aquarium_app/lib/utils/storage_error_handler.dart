@@ -20,7 +20,7 @@ class StorageErrorHandler {
           title: const Row(
             children: [
               Icon(Icons.error_outline, color: Colors.red, size: 28),
-              SizedBox(width: 12),
+              SizedBox(width: AppSpacing.sm2),
               Text('Data Corrupted'),
             ],
           ),
@@ -138,7 +138,7 @@ class StorageErrorHandler {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Text('To help recover your data, please provide:'),
-                const SizedBox(height: 12),
+                const SizedBox(height: AppSpacing.sm2),
                 _InfoItem(
                   icon: Icons.bug_report,
                   text:

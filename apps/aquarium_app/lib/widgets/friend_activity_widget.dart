@@ -157,7 +157,7 @@ class _CompactActivityTile extends ConsumerWidget {
               ),
             ),
 
-            const SizedBox(width: 12),
+            const SizedBox(width: AppSpacing.sm2),
 
             // Activity content
             Expanded(
@@ -183,7 +183,7 @@ class _CompactActivityTile extends ConsumerWidget {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  const SizedBox(height: 2),
+                  const SizedBox(height: AppSpacing.xxs),
                   Row(
                     children: [
                       Text(
@@ -315,14 +315,14 @@ class _BannerActivityCard extends ConsumerWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: 6),
+                const SizedBox(height: AppSpacing.xs2),
                 Row(
                   children: [
                     Text(
                       activity.type.emoji,
                       style: Theme.of(context).textTheme.bodyLarge!.copyWith(),
                     ),
-                    const SizedBox(width: 6),
+                    const SizedBox(width: AppSpacing.xs2),
                     Expanded(
                       child: Text(
                         activity.description,

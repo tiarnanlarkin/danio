@@ -93,9 +93,9 @@ class _DosingCalculatorScreenState extends State<DosingCalculatorScreen> {
                     onChanged: (_) => setState(() {}),
                   ),
                 ),
-                const SizedBox(width: 12),
+                const SizedBox(width: AppSpacing.sm2),
                 const Text('per'),
-                const SizedBox(width: 12),
+                const SizedBox(width: AppSpacing.sm2),
                 SizedBox(
                   width: 100,
                   child: DropdownButtonFormField<double>(
@@ -132,7 +132,7 @@ class _DosingCalculatorScreenState extends State<DosingCalculatorScreen> {
                           color: AppColors.primary,
                           size: 32,
                         ),
-                        const SizedBox(width: 12),
+                        const SizedBox(width: AppSpacing.sm2),
                         Text(
                           '${_totalDose!.toStringAsFixed(2)} ml',
                           style: AppTypography.headlineLarge.copyWith(
@@ -166,7 +166,7 @@ class _DosingCalculatorScreenState extends State<DosingCalculatorScreen> {
 
               // Common products
               Text('Common Products', style: AppTypography.headlineSmall),
-              const SizedBox(height: 12),
+              const SizedBox(height: AppSpacing.sm2),
               _ProductPreset(
                 name: 'Seachem Prime',
                 dose: 5,

@@ -425,7 +425,7 @@ class _UsageChip extends StatelessWidget {
     return Row(
       children: [
         const Icon(Icons.bolt, size: AppIconSizes.xs, color: AppColors.primary),
-        const SizedBox(width: 4),
+        const SizedBox(width: AppSpacing.xs),
         Text(
           '$callCount AI call${callCount == 1 ? "" : "s"} this month',
           style: Theme.of(context).textTheme.bodySmall?.copyWith(

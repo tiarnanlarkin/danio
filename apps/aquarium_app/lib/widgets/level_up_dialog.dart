@@ -194,7 +194,7 @@ class _LevelUpDialogState extends State<LevelUpDialog>
 
                     // Unlock message (if any)
                     if (widget.unlockMessage != null) ...[
-                      const SizedBox(height: 20),
+                      const SizedBox(height: AppSpacing.lg2),
                       Container(
                         padding: EdgeInsets.all(AppSpacing.md),
                         decoration: BoxDecoration(
@@ -208,7 +208,7 @@ class _LevelUpDialogState extends State<LevelUpDialog>
                               color: Colors.white,
                               size: AppIconSizes.sm,
                             ),
-                            const SizedBox(width: 12),
+                            const SizedBox(width: AppSpacing.sm2),
                             Expanded(
                               child: Text(
                                 widget.unlockMessage!,

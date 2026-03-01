@@ -107,7 +107,7 @@ class _TrendChip extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         Text(label, style: AppTypography.bodySmall),
-        const SizedBox(height: 2),
+        const SizedBox(height: AppSpacing.xxs),
         Row(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -115,7 +115,7 @@ class _TrendChip extends StatelessWidget {
               '${latest.toStringAsFixed(decimals)}${unit != null ? ' $unit' : ''}',
               style: AppTypography.labelLarge.copyWith(color: color),
             ),
-            const SizedBox(width: 4),
+            const SizedBox(width: AppSpacing.xs),
             Text(
               arrow,
               style: TextStyle(

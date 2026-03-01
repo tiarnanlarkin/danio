@@ -1209,7 +1209,7 @@ class _SectionHeader extends StatelessWidget {
               borderRadius: BorderRadius.circular(2),
             ),
           ),
-          const SizedBox(width: 12),
+          const SizedBox(width: AppSpacing.sm2),
           Text(
             title.toUpperCase(),
             style: AppTypography.labelLarge.copyWith(
@@ -1304,7 +1304,7 @@ class _LearnCard extends StatelessWidget {
                           ),
                         ),
                         if (stats.currentStreak > 0) ...[
-                          const SizedBox(height: 2),
+                          const SizedBox(height: AppSpacing.xxs),
                           Text(
                             '🔥 ${stats.currentStreak} day streak',
                             style: AppTypography.bodySmall.copyWith(
@@ -1314,7 +1314,7 @@ class _LearnCard extends StatelessWidget {
                           if (profile != null &&
                               (profile.hasStreakFreeze ||
                                   profile.streakFreezeUsedThisWeek)) ...[
-                            const SizedBox(height: 2),
+                            const SizedBox(height: AppSpacing.xxs),
                             Text(
                               profile.hasStreakFreeze
                                   ? '🧊 Streak freeze available'

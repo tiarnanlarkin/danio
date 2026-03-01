@@ -387,7 +387,7 @@ class _EnhancedQuizScreenState extends ConsumerState<EnhancedQuizScreen>
                     // Hearts indicator (not shown in practice mode)
                     if (!widget.isPracticeMode) ...[
                       const HeartIndicator(compact: true),
-                      const SizedBox(width: 12),
+                      const SizedBox(width: AppSpacing.sm2),
                     ],
                     // Score indicator
                     Container(
@@ -422,7 +422,7 @@ class _EnhancedQuizScreenState extends ConsumerState<EnhancedQuizScreen>
                 ),
               ],
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.sm2),
             AnimatedBuilder(
               animation: _progressAnimation,
               builder: (context, child) {
@@ -489,7 +489,7 @@ class _EnhancedQuizScreenState extends ConsumerState<EnhancedQuizScreen>
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(icon, size: 16, color: color),
-          const SizedBox(width: 6),
+          const SizedBox(width: AppSpacing.xs2),
           Text(
             label,
             style: AppTypography.labelSmall.copyWith(
@@ -526,7 +526,7 @@ class _EnhancedQuizScreenState extends ConsumerState<EnhancedQuizScreen>
               color: isCorrect ? AppColors.success : AppColors.textSecondary,
               size: 24,
             ),
-            const SizedBox(width: 12),
+            const SizedBox(width: AppSpacing.sm2),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

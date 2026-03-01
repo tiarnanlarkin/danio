@@ -73,7 +73,7 @@ class LogDetailScreen extends ConsumerWidget {
                 Row(
                   children: [
                     Icon(_iconFor(log.type), color: AppColors.primary),
-                    const SizedBox(width: 10),
+                    const SizedBox(width: AppSpacing.sm3),
                     Expanded(
                       child: Text(
                         _titleFor(log),
@@ -82,7 +82,7 @@ class LogDetailScreen extends ConsumerWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: 6),
+                const SizedBox(height: AppSpacing.xs2),
                 Text(
                   DateFormat('MMM d, yyyy  •  h:mm a').format(log.timestamp),
                   style: AppTypography.bodySmall,
@@ -241,7 +241,7 @@ class _WaterTestCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text('Water Test', style: AppTypography.labelLarge),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.sm2),
             Wrap(
               spacing: 10,
               runSpacing: 10,
@@ -274,7 +274,7 @@ class _WaterTestCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(k, style: AppTypography.bodySmall),
-          const SizedBox(height: 2),
+          const SizedBox(height: AppSpacing.xxs),
           Text(
             unit == null ? value : '$value $unit',
             style: AppTypography.labelLarge,

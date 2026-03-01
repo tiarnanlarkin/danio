@@ -202,7 +202,7 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen>
           content: Row(
             children: [
               Text(shopItem.emoji, style: Theme.of(context).textTheme.headlineSmall!),
-              const SizedBox(width: 12),
+              const SizedBox(width: AppSpacing.sm2),
               Expanded(
                 child: Text(
                   _getUseSuccessMessage(shopItem),
@@ -260,7 +260,7 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen>
               title: Row(
                 children: [
                   Text(shopItem.emoji, style: Theme.of(context).textTheme.headlineMedium!),
-                  const SizedBox(width: 12),
+                  const SizedBox(width: AppSpacing.sm2),
                   Expanded(
                     child: Text(
                       'Use ${shopItem.name}?',
@@ -599,7 +599,7 @@ class _HeartsChip extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Text('❤️', style: Theme.of(context).textTheme.titleMedium!),
-          const SizedBox(width: 6),
+          const SizedBox(width: AppSpacing.xs2),
           Text(
             '$currentHearts/$maxHearts',
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(

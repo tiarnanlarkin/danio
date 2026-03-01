@@ -212,7 +212,7 @@ class _GemShopScreenState extends ConsumerState<GemShopScreen>
             content: Row(
               children: [
                 Text(item.emoji, style: Theme.of(context).textTheme.headlineSmall!),
-                const SizedBox(width: 12),
+                const SizedBox(width: AppSpacing.sm2),
                 Expanded(
                   child: Text(
                     'Purchased ${item.name}!',
@@ -274,7 +274,7 @@ class _GemShopScreenState extends ConsumerState<GemShopScreen>
               title: Row(
                 children: [
                   Text(item.emoji, style: Theme.of(context).textTheme.headlineMedium!),
-                  const SizedBox(width: 12),
+                  const SizedBox(width: AppSpacing.sm2),
                   Expanded(
                     child: Text(
                       item.name,
@@ -295,7 +295,7 @@ class _GemShopScreenState extends ConsumerState<GemShopScreen>
                       color: GemShopColors.textSecondary,
                     ),
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: AppSpacing.lg2),
                   Container(
                     padding: EdgeInsets.all(AppSpacing.md),
                     decoration: BoxDecoration(
@@ -510,7 +510,7 @@ class _ShopItemCard extends ConsumerWidget {
                             style: Theme.of(context).textTheme.headlineMedium!.copyWith(),
                           ),
                         ),
-                        const SizedBox(height: 12),
+                        const SizedBox(height: AppSpacing.sm2),
                         // Name
                         Text(
                           item.name,

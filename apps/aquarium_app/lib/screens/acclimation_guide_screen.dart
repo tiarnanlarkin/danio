@@ -36,7 +36,7 @@ class AcclimationGuideScreen extends StatelessWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: AppSpacing.sm2),
                 Text(
                   'Fish are sensitive to sudden changes in water chemistry and temperature. '
                   'Proper acclimation reduces stress and prevents shock, which can be fatal.',
@@ -272,7 +272,7 @@ class _StepCard extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(width: 12),
+            const SizedBox(width: AppSpacing.sm2),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -333,7 +333,7 @@ class _TipCard extends StatelessWidget {
         child: Row(
           children: [
             Icon(icon, color: AppColors.primary, size: AppIconSizes.md),
-            const SizedBox(width: 12),
+            const SizedBox(width: AppSpacing.sm2),
             Expanded(child: Text(tip, style: AppTypography.bodyMedium)),
           ],
         ),

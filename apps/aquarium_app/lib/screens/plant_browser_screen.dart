@@ -313,7 +313,7 @@ class _PlantDetailSheet extends StatelessWidget {
               ),
             ),
 
-            const SizedBox(height: 20),
+            const SizedBox(height: AppSpacing.lg2),
 
             // Header
             Row(
@@ -376,12 +376,12 @@ class _PlantDetailSheet extends StatelessWidget {
               ],
             ),
 
-            const SizedBox(height: 20),
+            const SizedBox(height: AppSpacing.lg2),
 
             // Description
             Text(plant.description, style: AppTypography.bodyLarge),
 
-            const SizedBox(height: 20),
+            const SizedBox(height: AppSpacing.lg2),
 
             // Details
             _DetailSection(
@@ -448,7 +448,7 @@ class _StatChip extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(icon, size: 14, color: AppColors.textSecondary),
-          const SizedBox(width: 6),
+          const SizedBox(width: AppSpacing.xs2),
           Text(label, style: AppTypography.bodySmall),
         ],
       ),
@@ -468,7 +468,7 @@ class _DetailSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(title, style: AppTypography.headlineSmall),
-        const SizedBox(height: 12),
+        const SizedBox(height: AppSpacing.sm2),
         ...children,
       ],
     );

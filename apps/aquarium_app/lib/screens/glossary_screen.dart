@@ -146,7 +146,7 @@ class _TermCard extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 6),
+            const SizedBox(height: AppSpacing.xs2),
             Text(term.definition, style: AppTypography.bodyMedium),
             if (term.example != null) ...[
               const SizedBox(height: AppSpacing.xs),

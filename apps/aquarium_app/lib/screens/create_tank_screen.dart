@@ -388,7 +388,7 @@ class _TypeSelector extends StatelessWidget {
             onTap: () => onChanged(TankType.freshwater),
           ),
         ),
-        const SizedBox(width: 12),
+        const SizedBox(width: AppSpacing.sm2),
         Expanded(
           child: _TypeCard(
             icon: Icons.waves,
@@ -403,7 +403,7 @@ class _TypeSelector extends StatelessWidget {
                   content: Row(
                     children: const [
                       Icon(Icons.waves, color: Colors.white),
-                      SizedBox(width: 12),
+                      SizedBox(width: AppSpacing.sm2),
                       Expanded(
                         child: Text(
                           'Marine tank support is coming soon! 🐠🦀🐙',
@@ -656,7 +656,7 @@ class _SizePageState extends State<_SizePage> {
                   ),
                 ),
               ),
-              const SizedBox(width: 12),
+              const SizedBox(width: AppSpacing.sm2),
               Expanded(
                 child: FocusTraversalOrder(
                   order: const NumericFocusOrder(3.0),
@@ -680,7 +680,7 @@ class _SizePageState extends State<_SizePage> {
                   ),
                 ),
               ),
-              const SizedBox(width: 12),
+              const SizedBox(width: AppSpacing.sm2),
               Expanded(
                 child: FocusTraversalOrder(
                   order: const NumericFocusOrder(4.0),
@@ -838,7 +838,7 @@ class _WaterTypePage extends StatelessWidget {
                           color: AppColors.textSecondary,
                         ),
                       ),
-                      const SizedBox(width: 12),
+                      const SizedBox(width: AppSpacing.sm2),
                       ExcludeSemantics(
                         child: Text(
                           '${startDate.day}/${startDate.month}/${startDate.year}',
@@ -896,7 +896,7 @@ class _WaterTypeSelector extends StatelessWidget {
           isSelected: selected == 'tropical',
           onTap: () => onChanged('tropical'),
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: AppSpacing.sm2),
         _WaterTypeOption(
           icon: '❄️',
           title: 'Coldwater',
@@ -967,7 +967,7 @@ class _WaterTypeOption extends StatelessWidget {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 2),
+                    const SizedBox(height: AppSpacing.xxs),
                     ExcludeSemantics(
                       child: Text(subtitle, style: AppTypography.bodySmall),
                     ),

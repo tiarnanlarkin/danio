@@ -194,7 +194,7 @@ class _HeaderCard extends StatelessWidget {
               ],
             ),
             if (species != null) ...[
-              const SizedBox(height: 12),
+              const SizedBox(height: AppSpacing.sm2),
               Row(
                 children: [
                   _InfoChip(
@@ -325,7 +325,7 @@ class _CompatibilityCard extends StatelessWidget {
               ),
             ],
             if (issues.isNotEmpty) ...[
-              const SizedBox(height: 12),
+              const SizedBox(height: AppSpacing.sm2),
               ...issues.map((issue) => _IssueRow(issue: issue)),
             ],
           ],
@@ -369,7 +369,7 @@ class _IssueRow extends StatelessWidget {
                       issue.title,
                       style: AppTypography.labelLarge.copyWith(color: color),
                     ),
-                    const SizedBox(height: 2),
+                    const SizedBox(height: AppSpacing.xxs),
                     Text(issue.description, style: AppTypography.bodySmall),
                     if (issue.suggestion != null) ...[
                       const SizedBox(height: AppSpacing.xs),
@@ -410,7 +410,7 @@ class _CareGuideCard extends StatelessWidget {
                 Text('Care Guide', style: AppTypography.headlineSmall),
               ],
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.sm2),
             Text(species.description, style: AppTypography.bodyMedium),
             const SizedBox(height: AppSpacing.md),
 
@@ -548,7 +548,7 @@ class _ParamPill extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(label, style: AppTypography.bodySmall),
-          const SizedBox(height: 2),
+          const SizedBox(height: AppSpacing.xxs),
           Text(
             unit == null ? value : '$value $unit',
             style: AppTypography.labelLarge,
@@ -583,7 +583,7 @@ class _CompatibilityNotesCard extends StatelessWidget {
               ],
             ),
             if (species.compatibleWith.isNotEmpty) ...[
-              const SizedBox(height: 12),
+              const SizedBox(height: AppSpacing.sm2),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [

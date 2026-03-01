@@ -36,7 +36,7 @@ class BreedingGuideScreen extends StatelessWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: AppSpacing.sm2),
                 Text(
                   'Breeding fish can be rewarding! Most fish breed readily in the right conditions. '
                   'Key factors: healthy parents, proper diet, and appropriate environment.',
@@ -273,7 +273,7 @@ class BreedingGuideScreen extends StatelessWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: AppSpacing.sm2),
                 Text(
                   '• Have a plan for the fry - can you home them?\n'
                   '• Breeding tanks and supplies add cost\n'
@@ -334,7 +334,7 @@ class _MethodCard extends StatelessWidget {
                     fontStyle: FontStyle.italic,
                   ),
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: AppSpacing.sm2),
                 ...tips.map(
                   (t) => Padding(
                     padding: const EdgeInsets.only(bottom: 4),
@@ -419,7 +419,7 @@ class _FryStageCard extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(width: 12),
+            const SizedBox(width: AppSpacing.sm2),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -471,7 +471,7 @@ class _EasyBreederRow extends StatelessWidget {
               ],
             ),
           ),
-          const SizedBox(width: 12),
+          const SizedBox(width: AppSpacing.sm2),
           Expanded(child: Text(notes, style: AppTypography.bodySmall)),
         ],
       ),

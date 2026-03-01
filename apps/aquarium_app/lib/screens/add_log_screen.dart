@@ -256,7 +256,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
                       Icons.calendar_today,
                       color: AppColors.textSecondary,
                     ),
-                    const SizedBox(width: 12),
+                    const SizedBox(width: AppSpacing.sm2),
                     Text(
                       '${_timestamp.day}/${_timestamp.month}/${_timestamp.year} at ${_timestamp.hour}:${_timestamp.minute.toString().padLeft(2, '0')}',
                       style: AppTypography.bodyLarge,
@@ -380,7 +380,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
 
         // Pre-fill indicator
         if (hasPrefilledValues && widget.existingLog == null) ...[
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.sm2),
           Container(
             padding: EdgeInsets.all(AppSpacing.sm2),
             decoration: BoxDecoration(
@@ -471,7 +471,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
                     ),
                   ],
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: AppSpacing.sm2),
                 Row(
                   children: [
                     Expanded(
@@ -510,7 +510,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
                     ),
                   ],
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: AppSpacing.sm2),
                 Row(
                   children: [
                     Expanded(
@@ -553,7 +553,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
                   idealRange: 'Ideal: 24–27°C',
                 ),
               ),
-              const SizedBox(width: 12),
+              const SizedBox(width: AppSpacing.sm2),
               Expanded(
                 child: _ParameterField(
                   label: 'pH',
@@ -572,7 +572,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
 
           // Nitrogen cycle
           Text('Nitrogen Cycle', style: AppTypography.labelLarge),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.sm2),
           Row(
             children: [
               Expanded(
@@ -586,7 +586,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
                   idealRange: 'Ideal: 0 ppm',
                 ),
               ),
-              const SizedBox(width: 12),
+              const SizedBox(width: AppSpacing.sm2),
               Expanded(
                 child: _ParameterField(
                   label: 'Nitrite (NO₂)',
@@ -600,7 +600,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
               ),
             ],
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.sm2),
           Row(
             children: [
               Expanded(
@@ -624,7 +624,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
 
           // Hardness
           Text('Hardness', style: AppTypography.labelLarge),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.sm2),
           Row(
             children: [
               Expanded(
@@ -636,7 +636,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
                   idealRange: 'Ideal: 4–8 dGH',
                 ),
               ),
-              const SizedBox(width: 12),
+              const SizedBox(width: AppSpacing.sm2),
               Expanded(
                 child: _ParameterField(
                   label: 'KH',
@@ -655,7 +655,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
 
           // Other
           Text('Other', style: AppTypography.labelLarge),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.sm2),
           Row(
             children: [
               Expanded(
@@ -684,7 +684,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
         const SizedBox(height: AppSpacing.md),
 
         Text('How much water did you change?', style: AppTypography.bodyMedium),
-        const SizedBox(height: 12),
+        const SizedBox(height: AppSpacing.sm2),
 
         // Preset buttons
         Wrap(
@@ -1064,7 +1064,7 @@ class _TypeChip extends StatelessWidget {
               size: 18,
               color: isSelected ? Colors.white : AppColors.textSecondary,
             ),
-            const SizedBox(width: 6),
+            const SizedBox(width: AppSpacing.xs2),
             Text(
               label,
               style: TextStyle(

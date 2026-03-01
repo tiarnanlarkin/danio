@@ -127,7 +127,7 @@ class StoriesCard extends ConsumerWidget {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 6),
+                  const SizedBox(height: AppSpacing.xs2),
                   ClipRRect(
                     borderRadius: AppRadius.xsRadius,
                     child: LinearProgressIndicator(
@@ -158,7 +158,7 @@ class StoriesCard extends ConsumerWidget {
                         suggestedStory.thumbnailImage ?? '📖',
                         style: Theme.of(context).textTheme.headlineSmall!,
                       ),
-                      const SizedBox(width: 12),
+                      const SizedBox(width: AppSpacing.sm2),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,

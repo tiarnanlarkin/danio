@@ -53,7 +53,7 @@ class StockingIndicator extends StatelessWidget {
               Row(
                 children: [
                   Icon(Icons.bar_chart, size: AppIconSizes.xs, color: color),
-                  const SizedBox(width: 6),
+                  const SizedBox(width: AppSpacing.xs2),
                   Text(
                     'Stocking: ${_levelLabel()}',
                     style: AppTypography.labelLarge.copyWith(color: color),
@@ -78,7 +78,7 @@ class StockingIndicator extends StatelessWidget {
               const SizedBox(height: AppSpacing.sm),
               Text(result.summary, style: AppTypography.bodySmall),
               if (result.warnings.isNotEmpty) ...[
-                const SizedBox(height: 6),
+                const SizedBox(height: AppSpacing.xs2),
                 ...result.warnings.map(
                   (w) => Row(
                     children: [

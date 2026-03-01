@@ -113,7 +113,7 @@ class _TankSettingsScreenState extends ConsumerState<TankSettingsScreen> {
   List<Widget> _buildItems(Tank tank) {
     return [
                 Text('Basics', style: AppTypography.headlineSmall),
-                const SizedBox(height: 12),
+                const SizedBox(height: AppSpacing.sm2),
                 TextFormField(
                   initialValue: _name,
                   decoration: const InputDecoration(labelText: 'Tank name'),
@@ -126,7 +126,7 @@ class _TankSettingsScreenState extends ConsumerState<TankSettingsScreen> {
                     return null;
                   },
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: AppSpacing.sm2),
                 DropdownButtonFormField<TankType>(
                   value: _type,
                   items: const [
@@ -153,7 +153,7 @@ class _TankSettingsScreenState extends ConsumerState<TankSettingsScreen> {
 
                 const SizedBox(height: AppSpacing.lg),
                 Text('Size', style: AppTypography.headlineSmall),
-                const SizedBox(height: 12),
+                const SizedBox(height: AppSpacing.sm2),
                 TextFormField(
                   initialValue: _volumeLitres > 0
                       ? _volumeLitres.toString()
@@ -177,7 +177,7 @@ class _TankSettingsScreenState extends ConsumerState<TankSettingsScreen> {
                     return null;
                   },
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: AppSpacing.sm2),
                 Row(
                   children: [
                     Expanded(
@@ -196,7 +196,7 @@ class _TankSettingsScreenState extends ConsumerState<TankSettingsScreen> {
                         onChanged: (v) => _lengthCm = double.tryParse(v),
                       ),
                     ),
-                    const SizedBox(width: 12),
+                    const SizedBox(width: AppSpacing.sm2),
                     Expanded(
                       child: TextFormField(
                         initialValue: _widthCm?.toString() ?? '',
@@ -213,7 +213,7 @@ class _TankSettingsScreenState extends ConsumerState<TankSettingsScreen> {
                         onChanged: (v) => _widthCm = double.tryParse(v),
                       ),
                     ),
-                    const SizedBox(width: 12),
+                    const SizedBox(width: AppSpacing.sm2),
                     Expanded(
                       child: TextFormField(
                         initialValue: _heightCm?.toString() ?? '',
@@ -240,7 +240,7 @@ class _TankSettingsScreenState extends ConsumerState<TankSettingsScreen> {
                   'This sets target ranges used by Alerts and Charts.',
                   style: AppTypography.bodySmall,
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: AppSpacing.sm2),
                 if (_type == TankType.freshwater)
                   Column(
                     children: [
@@ -265,7 +265,7 @@ class _TankSettingsScreenState extends ConsumerState<TankSettingsScreen> {
 
                 const SizedBox(height: AppSpacing.lg),
                 Text('Start date', style: AppTypography.headlineSmall),
-                const SizedBox(height: 12),
+                const SizedBox(height: AppSpacing.sm2),
                 InkWell(
                   onTap: () async {
                     final picked = await showDatePicker(
@@ -292,7 +292,7 @@ class _TankSettingsScreenState extends ConsumerState<TankSettingsScreen> {
                           Icons.calendar_today,
                           color: AppColors.textSecondary,
                         ),
-                        const SizedBox(width: 12),
+                        const SizedBox(width: AppSpacing.sm2),
                         Text(
                           DateFormat('MMM d, yyyy').format(_startDate),
                           style: AppTypography.bodyLarge,
@@ -310,7 +310,7 @@ class _TankSettingsScreenState extends ConsumerState<TankSettingsScreen> {
 
                 const SizedBox(height: AppSpacing.lg),
                 Text('Notes', style: AppTypography.headlineSmall),
-                const SizedBox(height: 12),
+                const SizedBox(height: AppSpacing.sm2),
                 TextFormField(
                   initialValue: _notes,
                   decoration: const InputDecoration(
@@ -323,7 +323,7 @@ class _TankSettingsScreenState extends ConsumerState<TankSettingsScreen> {
 
                 const SizedBox(height: AppSpacing.xl),
                 const Divider(),
-                const SizedBox(height: 12),
+                const SizedBox(height: AppSpacing.sm2),
                 Text(
                   'Danger zone',
                   style: AppTypography.headlineSmall.copyWith(
@@ -335,7 +335,7 @@ class _TankSettingsScreenState extends ConsumerState<TankSettingsScreen> {
                   'Deleting a tank removes all livestock, equipment, logs, and tasks for it.',
                   style: AppTypography.bodySmall,
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: AppSpacing.sm2),
                 OutlinedButton.icon(
                   style: OutlinedButton.styleFrom(
                     foregroundColor: AppColors.error,

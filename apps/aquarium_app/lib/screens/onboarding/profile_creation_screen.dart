@@ -245,7 +245,7 @@ class _ProfileCreationScreenState extends ConsumerState<ProfileCreationScreen> {
               ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
             ),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.sm2),
           Semantics(
             label: A11yLabels.textField('Your name'),
             textField: true,
@@ -288,7 +288,7 @@ class _ProfileCreationScreenState extends ConsumerState<ProfileCreationScreen> {
               ],
             ),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.sm2),
           ...ExperienceLevel.values.map((level) => _buildExperienceCard(level)),
         ],
       ),
@@ -388,13 +388,13 @@ class _ProfileCreationScreenState extends ConsumerState<ProfileCreationScreen> {
               ],
             ),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.sm2),
           IntrinsicHeight(
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Expanded(child: _buildTankTypeCard(TankType.freshwater)),
-                const SizedBox(width: 12),
+                const SizedBox(width: AppSpacing.sm2),
                 Expanded(child: _buildTankTypeCard(TankType.marine)),
               ],
             ),
@@ -433,7 +433,7 @@ class _ProfileCreationScreenState extends ConsumerState<ProfileCreationScreen> {
               ExcludeSemantics(
                 child: Text(type.emoji, style: Theme.of(context).textTheme.headlineMedium!.copyWith(fontSize: 40)),
               ),
-              SizedBox(height: 6),
+              SizedBox(height: AppSpacing.xs2),
               ExcludeSemantics(
                 child: Text(
                   type.displayName,
@@ -460,7 +460,7 @@ class _ProfileCreationScreenState extends ConsumerState<ProfileCreationScreen> {
                 ),
               ),
               if (isSelected) ...[
-                const SizedBox(height: 6),
+                const SizedBox(height: AppSpacing.xs2),
                 const ExcludeSemantics(
                   child: Icon(
                     Icons.check_circle,
@@ -500,7 +500,7 @@ class _ProfileCreationScreenState extends ConsumerState<ProfileCreationScreen> {
               ],
             ),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.sm2),
           Wrap(
             spacing: 8,
             runSpacing: 8,
@@ -525,7 +525,7 @@ class _ProfileCreationScreenState extends ConsumerState<ProfileCreationScreen> {
           mainAxisSize: MainAxisSize.min,
           children: [
             ExcludeSemantics(child: Text(goal.emoji)),
-            const SizedBox(width: 6),
+            const SizedBox(width: AppSpacing.xs2),
             ExcludeSemantics(child: Text(goal.displayName)),
           ],
         ),

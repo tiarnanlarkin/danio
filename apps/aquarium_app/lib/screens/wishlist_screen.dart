@@ -195,7 +195,7 @@ class WishlistScreen extends ConsumerWidget {
               child: Row(
                 children: [
                   const Icon(Icons.check_circle, color: AppColors.success),
-                  const SizedBox(width: 12),
+                  const SizedBox(width: AppSpacing.sm2),
                   Text('Purchased Items', style: AppTypography.headlineSmall),
                 ],
               ),
@@ -405,7 +405,7 @@ class _AddEditItemSheetState extends State<_AddEditItemSheet> {
                   _isEditing ? Icons.edit : Icons.add_circle,
                   color: widget.accentColor,
                 ),
-                const SizedBox(width: 12),
+                const SizedBox(width: AppSpacing.sm2),
                 Text(
                   _isEditing ? 'Edit Item' : 'Add to Wishlist',
                   style: AppTypography.headlineSmall,

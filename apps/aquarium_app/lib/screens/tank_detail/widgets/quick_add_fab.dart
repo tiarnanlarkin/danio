@@ -103,7 +103,7 @@ class _QuickAddFabState extends State<QuickAddFab>
                 color: AppColors.accentAlt,
                 onTap: () => _handleAction(widget.onObservation),
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: AppSpacing.sm2),
             ],
           ),
         ),

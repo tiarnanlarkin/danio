@@ -1484,7 +1484,7 @@ class PillButton extends StatelessWidget {
                   size: 18,
                   color: isSelected ? Colors.white : AppColors.textSecondary,
                 ),
-                const SizedBox(width: 6),
+                const SizedBox(width: AppSpacing.xs2),
               ],
               Text(
                 label,

@@ -19,7 +19,7 @@ class ParameterGuideScreen extends StatelessWidget {
             child: Row(
               children: [
                 Icon(Icons.info_outline, color: AppColors.textSecondary),
-                const SizedBox(width: 12),
+                const SizedBox(width: AppSpacing.sm2),
                 Expanded(
                   child: Text(
                     'Understanding your water parameters is key to keeping healthy fish. '
@@ -288,11 +288,11 @@ class _ParameterSection extends StatelessWidget {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: AppSpacing.sm2),
                   Text(description, style: AppTypography.bodyMedium),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: AppSpacing.sm2),
                   Text('Tips:', style: AppTypography.labelLarge),
-                  const SizedBox(height: 6),
+                  const SizedBox(height: AppSpacing.xs2),
                   ...tips.map(
                     (tip) => Padding(
                       padding: const EdgeInsets.only(bottom: 4),

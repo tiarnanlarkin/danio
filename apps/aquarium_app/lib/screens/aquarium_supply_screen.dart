@@ -353,7 +353,7 @@ class _AquariumSupplyScreenState extends ConsumerState<AquariumSupplyScreen>
                     borderRadius: BorderRadius.circular(2),
                   ),
                 ),
-                const SizedBox(width: 8),
+                const SizedBox(width: AppSpacing.sm),
                 Text(item.headerTitle!, style: AppTypography.labelLarge),
               ],
             ),
@@ -441,7 +441,7 @@ class _AquariumSupplyScreenState extends ConsumerState<AquariumSupplyScreen>
                           children: [
                             Icon(Icons.warning_amber_rounded,
                                 size: 16, color: AppColors.warning),
-                            const SizedBox(width: 8),
+                            const SizedBox(width: AppSpacing.sm),
                             Expanded(
                                 child: Text(
                                     '${i.name}: ${i.quantity} ${i.unit} left')),
@@ -699,7 +699,7 @@ class _SupplyItemSheetState extends State<_SupplyItemSheet> {
               textCapitalization: TextCapitalization.words,
               autofocus: true,
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.sm2),
 
             // Category dropdown
             DropdownButtonFormField<String>(
@@ -710,7 +710,7 @@ class _SupplyItemSheetState extends State<_SupplyItemSheet> {
                   .toList(),
               onChanged: (v) => setState(() => _category = v ?? _category),
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.sm2),
 
             Row(
               children: [
@@ -728,7 +728,7 @@ class _SupplyItemSheetState extends State<_SupplyItemSheet> {
                     ],
                   ),
                 ),
-                const SizedBox(width: 12),
+                const SizedBox(width: AppSpacing.sm2),
                 Expanded(
                   child: TextFormField(
                     controller: _unitCtrl,
@@ -738,7 +738,7 @@ class _SupplyItemSheetState extends State<_SupplyItemSheet> {
                 ),
               ],
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.sm2),
 
             TextFormField(
               controller: _thresholdCtrl,
@@ -753,7 +753,7 @@ class _SupplyItemSheetState extends State<_SupplyItemSheet> {
                 FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,2}'))
               ],
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.sm2),
 
             TextFormField(
               controller: _costCtrl,
@@ -767,7 +767,7 @@ class _SupplyItemSheetState extends State<_SupplyItemSheet> {
                 FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,2}'))
               ],
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.sm2),
 
             // Last purchased date
             InkWell(
@@ -791,7 +791,7 @@ class _SupplyItemSheetState extends State<_SupplyItemSheet> {
                   children: [
                     const Icon(Icons.calendar_today,
                         color: AppColors.textSecondary),
-                    const SizedBox(width: 12),
+                    const SizedBox(width: AppSpacing.sm2),
                     Text(
                       _lastPurchased != null
                           ? 'Last purchased: ${DateFormat('MMM d, yyyy').format(_lastPurchased!)}'
@@ -802,7 +802,7 @@ class _SupplyItemSheetState extends State<_SupplyItemSheet> {
                 ),
               ),
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.sm2),
 
             TextFormField(
               controller: _notesCtrl,

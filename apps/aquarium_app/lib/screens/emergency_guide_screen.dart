@@ -29,7 +29,7 @@ class EmergencyGuideScreen extends StatelessWidget {
             child: Row(
               children: [
                 Icon(Icons.emergency, size: AppIconSizes.lg, color: AppColors.error),
-                const SizedBox(width: 12),
+                const SizedBox(width: AppSpacing.sm2),
                 Expanded(
                   child: Text(
                     'Quick reference for urgent aquarium situations. When in doubt: large water change.',
@@ -199,7 +199,7 @@ class EmergencyGuideScreen extends StatelessWidget {
                   'Emergency Kit Checklist',
                   style: AppTypography.headlineSmall,
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: AppSpacing.sm2),
                 _CheckItem(
                   text: 'Extra dechlorinator (Seachem Prime recommended)',
                 ),
@@ -282,7 +282,7 @@ class _EmergencyCard extends StatelessWidget {
               children: [
                 Text('Symptoms:', style: AppTypography.labelLarge),
                 Text(symptoms, style: AppTypography.bodySmall),
-                const SizedBox(height: 12),
+                const SizedBox(height: AppSpacing.sm2),
                 Text(
                   'IMMEDIATE ACTIONS:',
                   style: AppTypography.labelLarge.copyWith(
@@ -320,7 +320,7 @@ class _EmergencyCard extends StatelessWidget {
                     ),
                   ),
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: AppSpacing.sm2),
                 Container(
                   padding: const EdgeInsets.all(AppSpacing.sm3),
                   decoration: BoxDecoration(

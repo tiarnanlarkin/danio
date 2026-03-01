@@ -160,7 +160,7 @@ class _LivestockValueScreenState extends ConsumerState<LivestockValueScreen> {
 
               // Spacing
               if (index == 5) {
-                return const SizedBox(height: 12);
+                return const SizedBox(height: AppSpacing.sm2);
               }
 
               // Livestock items
@@ -186,7 +186,7 @@ class _LivestockValueScreenState extends ConsumerState<LivestockValueScreen> {
                             size: AppIconSizes.sm,
                           ),
                         ),
-                        const SizedBox(width: 12),
+                        const SizedBox(width: AppSpacing.sm2),
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -257,7 +257,7 @@ class _LivestockValueScreenState extends ConsumerState<LivestockValueScreen> {
 
               // Spacing
               if (index == 8 + livestock.length) {
-                return const SizedBox(height: 12);
+                return const SizedBox(height: AppSpacing.sm2);
               }
 
               // Tips card

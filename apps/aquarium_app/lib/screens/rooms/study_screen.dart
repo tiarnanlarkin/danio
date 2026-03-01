@@ -517,7 +517,7 @@ class _SectionCard extends StatelessWidget {
               color: AppColors.textSecondary,
             ),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.sm2),
           AppCard(padding: AppCardPadding.none, child: child),
         ],
       ),

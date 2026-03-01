@@ -71,13 +71,13 @@ class TrendsRow extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.sm2),
             SizedBox(
               height: 110,
               child: ListView.separated(
                 scrollDirection: Axis.horizontal,
                 itemCount: params.length,
-                separatorBuilder: (_, __) => const SizedBox(width: 10),
+                separatorBuilder: (_, __) => const SizedBox(width: AppSpacing.sm3),
                 itemBuilder: (context, index) {
                   final p = params[index];
                   return SparklineCard(

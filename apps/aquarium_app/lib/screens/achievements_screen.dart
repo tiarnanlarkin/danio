@@ -352,7 +352,7 @@ class _AchievementsScreenState extends ConsumerState<AchievementsScreen> {
                                   achievement.icon,
                                   style: Theme.of(context).textTheme.headlineMedium!.copyWith(),
                                 ),
-                                const SizedBox(height: 8),
+                                const SizedBox(height: AppSpacing.sm),
                                 Text(
                                   achievement.name,
                                   style: AppTypography.labelSmall.copyWith(
@@ -384,7 +384,7 @@ class _AchievementsScreenState extends ConsumerState<AchievementsScreen> {
               ),
             ),
           ),
-          const SliverToBoxAdapter(child: SizedBox(height: 8)),
+          const SliverToBoxAdapter(child: SizedBox(height: AppSpacing.sm)),
         ],
 
         // Main grid (sorted: unlocked → in progress → locked)

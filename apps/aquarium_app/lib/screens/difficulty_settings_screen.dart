@@ -147,7 +147,7 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
           'Skills by Topic',
           style: Theme.of(context).textTheme.titleLarge!.copyWith(fontWeight: FontWeight.bold),
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: AppSpacing.sm2),
         ..._buildTopicSkillCards(),
       ],
     );
@@ -241,7 +241,7 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
                     ),
                 ],
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: AppSpacing.sm2),
               _buildSkillProgressBar(skillLevel),
               const SizedBox(height: AppSpacing.sm),
               if (history != null) _buildTopicStats(history),
@@ -321,7 +321,7 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
           'Performance History',
           style: Theme.of(context).textTheme.titleLarge!.copyWith(fontWeight: FontWeight.bold),
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: AppSpacing.sm2),
         _buildPerformanceHistoryCard(),
       ],
     );
@@ -356,7 +356,7 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
             'Recent Activity',
             style: Theme.of(context).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.bold),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.sm2),
           ...recentFive.map((record) => _buildHistoryItem(record)),
         ],
       ),
@@ -387,7 +387,7 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
               ),
             ),
           ),
-          const SizedBox(width: 12),
+          const SizedBox(width: AppSpacing.sm2),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -458,7 +458,7 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
           'Override automatic difficulty for specific topics',
           style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6)),
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: AppSpacing.sm2),
         AppCard(
           padding: AppCardPadding.standard,
           child: Column(
@@ -542,7 +542,7 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
           'AI Recommendations',
           style: Theme.of(context).textTheme.titleLarge!.copyWith(fontWeight: FontWeight.bold),
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: AppSpacing.sm2),
         ..._buildRecommendationCards(),
       ],
     );
@@ -577,7 +577,7 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
                         : Colors.orange,
                     size: 32,
                   ),
-                  const SizedBox(width: 12),
+                  const SizedBox(width: AppSpacing.sm2),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -612,7 +612,7 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
           child: Row(
             children: [
               const Icon(Icons.check_circle, color: AppColors.primary, size: AppIconSizes.lg),
-              const SizedBox(width: 12),
+              const SizedBox(width: AppSpacing.sm2),
               Expanded(
                 child: Text(
                   'No changes recommended. Keep up the great work!',

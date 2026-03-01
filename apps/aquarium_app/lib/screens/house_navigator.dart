@@ -389,7 +389,7 @@ class _RoomIndicatorBar extends ConsumerWidget {
                           style: TextStyle(fontSize: isSelected ? 18 : 16),
                         ),
                         if (isSelected) ...[
-                          const SizedBox(width: 6),
+                          const SizedBox(width: AppSpacing.xs2),
                           Text(
                             room.name,
                             style: Theme.of(context).textTheme.bodySmall!.copyWith(

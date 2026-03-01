@@ -152,11 +152,11 @@ class _SpacedRepetitionPracticeScreenState
       case 0: // Stats Overview Card
         return _buildStatsCard(srState);
       case 1:
-        return const SizedBox(height: 20);
+        return const SizedBox(height: AppSpacing.lg2);
       case 2: // Quick Start Section
         return Text('Quick Start', style: AppTypography.headlineSmall);
       case 3:
-        return const SizedBox(height: 12);
+        return const SizedBox(height: AppSpacing.sm2);
       case 4: // Standard Practice
         return _buildModeCard(
           icon: Icons.fitness_center,
@@ -167,7 +167,7 @@ class _SpacedRepetitionPracticeScreenState
           color: AppColors.primary,
         );
       case 5:
-        return const SizedBox(height: 12);
+        return const SizedBox(height: AppSpacing.sm2);
       case 6: // Quick Review
         return _buildModeCard(
           icon: Icons.flash_on,
@@ -178,7 +178,7 @@ class _SpacedRepetitionPracticeScreenState
           color: AppColors.accent,
         );
       case 7:
-        return const SizedBox(height: 12);
+        return const SizedBox(height: AppSpacing.sm2);
       case 8: // Intensive Practice
         return _buildModeCard(
           icon: Icons.trending_down,
@@ -190,7 +190,7 @@ class _SpacedRepetitionPracticeScreenState
           enabled: srState.stats.weakCards > 0,
         );
       case 9:
-        return const SizedBox(height: 12);
+        return const SizedBox(height: AppSpacing.sm2);
       case 10: // Mixed Practice
         return _buildModeCard(
           icon: Icons.shuffle,
@@ -201,13 +201,13 @@ class _SpacedRepetitionPracticeScreenState
           color: AppColors.secondary,
         );
       case 11:
-        return const SizedBox(height: 12);
+        return const SizedBox(height: AppSpacing.sm2);
       case 12:
         return const SizedBox(height: AppSpacing.lg);
       case 13: // Mastery Progress header (only if totalCards > 0)
         return Text('Mastery Progress', style: AppTypography.headlineSmall);
       case 14:
-        return const SizedBox(height: 12);
+        return const SizedBox(height: AppSpacing.sm2);
       default: // case 15: Mastery breakdown
         return _buildMasteryBreakdown(srState);
     }
@@ -226,7 +226,7 @@ class _SpacedRepetitionPracticeScreenState
           Row(
             children: [
               const Icon(Icons.auto_graph, color: Colors.white, size: AppIconSizes.lg),
-              const SizedBox(width: 12),
+              const SizedBox(width: AppSpacing.sm2),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -249,7 +249,7 @@ class _SpacedRepetitionPracticeScreenState
               ),
             ],
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: AppSpacing.lg2),
           Row(
             children: [
               Expanded(
@@ -777,7 +777,7 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
                     color: AppColors.textSecondary,
                   ),
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: AppSpacing.sm2),
                 Text(_getQuestionText(), style: AppTypography.headlineMedium),
               ],
             ),
@@ -800,7 +800,7 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
             ),
           ],
 
-          if (_showingAnswer) ...[const SizedBox(height: 20), _buildFeedback()],
+          if (_showingAnswer) ...[const SizedBox(height: AppSpacing.lg2), _buildFeedback()],
         ],
       ),
     );
@@ -829,7 +829,7 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
                 color: AppColors.textSecondary,
               ),
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.sm2),
             if (_isSubmitting)
               const Column(
                 children: [
@@ -859,7 +859,7 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
                       ),
                     ),
                   ),
-                  const SizedBox(width: 12),
+                  const SizedBox(width: AppSpacing.sm2),
                   Expanded(
                     child: ElevatedButton(
                       onPressed: () => _recordAnswer(true),
@@ -912,7 +912,7 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
                 color: lastResult.correct ? AppColors.success : AppColors.error,
                 size: 32,
               ),
-              const SizedBox(width: 12),
+              const SizedBox(width: AppSpacing.sm2),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -1097,7 +1097,7 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
               ),
             ),
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: AppSpacing.lg2),
 
           // Stats breakdown
           _buildStatRow('Cards Reviewed', '$totalCards'),
@@ -1189,7 +1189,7 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
         title: const Row(
           children: [
             Icon(Icons.exit_to_app, color: AppColors.warning),
-            SizedBox(width: 12),
+            SizedBox(width: AppSpacing.sm2),
             Text('Exit Session?'),
           ],
         ),
@@ -1217,7 +1217,7 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
                         size: AppIconSizes.xs,
                         color: AppColors.success,
                       ),
-                      const SizedBox(width: 6),
+                      const SizedBox(width: AppSpacing.xs2),
                       Text(
                         'Cards reviewed: $cardsReviewed',
                         style: AppTypography.bodySmall,
@@ -1232,7 +1232,7 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
                         size: AppIconSizes.xs,
                         color: AppColors.textSecondary,
                       ),
-                      const SizedBox(width: 6),
+                      const SizedBox(width: AppSpacing.xs2),
                       Text(
                         'Cards remaining: $cardsRemaining',
                         style: AppTypography.bodySmall,

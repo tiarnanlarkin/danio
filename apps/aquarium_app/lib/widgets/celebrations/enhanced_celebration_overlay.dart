@@ -251,7 +251,7 @@ class _EnhancedCelebrationOverlayWrapperState
                     color: AppColors.whiteAlpha05,
                     size: AppIconSizes.xs,
                   ),
-                  SizedBox(width: 8),
+                  SizedBox(width: AppSpacing.sm),
                   Text(
                     'Tap anywhere to dismiss',
                     style: Theme.of(context).textTheme.bodyLarge!.copyWith(

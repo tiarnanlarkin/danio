@@ -238,7 +238,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen>
                 ),
               ),
               
-              const SizedBox(height: 48),
+              const SizedBox(height: AppSpacing.xxl),
               
               // Title
               Text(
@@ -251,7 +251,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen>
                 textAlign: TextAlign.center,
               ),
               
-              const SizedBox(height: 16),
+              const SizedBox(height: AppSpacing.md),
               
               // Description
               Text(
@@ -311,7 +311,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen>
             ),
           ),
           
-          const SizedBox(height: 32),
+          const SizedBox(height: AppSpacing.xl),
           
           // Navigation buttons
           Row(
@@ -339,7 +339,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen>
               else
                 const Spacer(),
               
-              const SizedBox(width: 16),
+              const SizedBox(width: AppSpacing.md),
               
               // Next / Get Started
               Expanded(

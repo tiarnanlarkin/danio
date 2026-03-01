@@ -103,7 +103,7 @@ class _VolumeConverterState extends State<_VolumeConverter> {
           const SizedBox(height: AppSpacing.lg),
           if (_value != null) ...[
             Text('Conversions', style: AppTypography.headlineSmall),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.sm2),
             ..._units.keys.where((u) => u != _fromUnit).map((u) {
               final litres = _value! * _units[_fromUnit]!;
               final converted = litres / _units[u]!;
@@ -171,7 +171,7 @@ class _TemperatureConverterState extends State<_TemperatureConverter> {
           const SizedBox(height: AppSpacing.lg),
           if (_value != null) ...[
             Text('Conversions', style: AppTypography.headlineSmall),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.sm2),
             if (_fromUnit != '°C')
               _ConversionResult(
                 value: _toCelsius(_value!, _fromUnit),
@@ -271,7 +271,7 @@ class _LengthConverterState extends State<_LengthConverter> {
           const SizedBox(height: AppSpacing.lg),
           if (_value != null) ...[
             Text('Conversions', style: AppTypography.headlineSmall),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.sm2),
             ..._units.keys.where((u) => u != _fromUnit).map((u) {
               final cm = _value! * _units[_fromUnit]!;
               final converted = cm / _units[u]!;
@@ -347,7 +347,7 @@ class _HardnessConverterState extends State<_HardnessConverter> {
           const SizedBox(height: AppSpacing.lg),
           if (_value != null) ...[
             Text('Conversions', style: AppTypography.headlineSmall),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.sm2),
             ..._units.keys.where((u) => u != _fromUnit).map((u) {
               final dgh = _value! / _units[_fromUnit]!;
               final converted = dgh * _units[u]!;

@@ -88,7 +88,7 @@ class _Co2CalculatorScreenState extends State<Co2CalculatorScreen> {
             child: Row(
               children: [
                 Icon(Icons.bubble_chart, size: AppIconSizes.lg, color: AppColors.textSecondary),
-                const SizedBox(width: 12),
+                const SizedBox(width: AppSpacing.sm2),
                 Expanded(
                   child: Text(
                     'Calculate dissolved CO2 from your pH and KH readings. Optimal range is 20-30 ppm for planted tanks.',
@@ -171,7 +171,7 @@ class _Co2CalculatorScreenState extends State<Co2CalculatorScreen> {
 
           // Reference chart
           Text('CO2 Reference Chart', style: AppTypography.headlineSmall),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.sm2),
 
           AppCard(
             padding: AppCardPadding.standard,
@@ -214,7 +214,7 @@ class _Co2CalculatorScreenState extends State<Co2CalculatorScreen> {
           const SizedBox(height: AppSpacing.lg),
 
           Text('Drop Checker Colors', style: AppTypography.headlineSmall),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.sm2),
 
           AppCard(
             padding: AppCardPadding.standard,
@@ -242,7 +242,7 @@ class _Co2CalculatorScreenState extends State<Co2CalculatorScreen> {
           const SizedBox(height: AppSpacing.lg),
 
           Text('Tips', style: AppTypography.headlineSmall),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.sm2),
 
           AppCard(
             padding: AppCardPadding.standard,
@@ -270,7 +270,7 @@ class _Co2CalculatorScreenState extends State<Co2CalculatorScreen> {
 
           // pH/KH/CO2 relationship table
           Text('pH/KH/CO2 Table', style: AppTypography.headlineSmall),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.sm2),
 
           AppCard(
             padding: AppCardPadding.compact,
@@ -398,7 +398,7 @@ class _DropCheckerRow extends StatelessWidget {
               border: Border.all(color: Colors.black12),
             ),
           ),
-          const SizedBox(width: 12),
+          const SizedBox(width: AppSpacing.sm2),
           SizedBox(
             width: 60,
             child: Text(label, style: AppTypography.labelLarge),

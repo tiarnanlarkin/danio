@@ -35,7 +35,7 @@ class FeedingGuideScreen extends StatelessWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: AppSpacing.sm2),
                 Text(
                   'Feed only what fish can consume in 2-3 minutes. '
                   'Overfeeding is the #1 cause of poor water quality in aquariums.',
@@ -197,7 +197,7 @@ class FeedingGuideScreen extends StatelessWidget {
                     Text('Fasting Days', style: AppTypography.headlineSmall),
                   ],
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: AppSpacing.sm2),
                 Text(
                   'Skipping 1-2 feeding days per week is actually beneficial:',
                   style: AppTypography.bodyMedium,
@@ -331,7 +331,7 @@ class _FoodTypeCard extends StatelessWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: AppSpacing.sm2),
                 Container(
                   padding: EdgeInsets.all(AppSpacing.sm),
                   decoration: BoxDecoration(

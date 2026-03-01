@@ -55,7 +55,7 @@ class StreakCalendar extends ConsumerWidget {
             _Legend(cellSize: cellSize),
           ],
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: AppSpacing.sm2),
 
         // Calendar grid
         SingleChildScrollView(
@@ -322,13 +322,13 @@ class _Legend extends StatelessWidget {
         Text('Less', style: Theme.of(context).textTheme.labelSmall!.copyWith( color: AppColors.textHint)),
         const SizedBox(width: AppSpacing.xs),
         _LegendCell(color: AppColors.surfaceVariant, size: cellSize),
-        const SizedBox(width: 2),
+        const SizedBox(width: AppSpacing.xxs),
         _LegendCell(color: const Color(0xFFFFE6B8), size: cellSize),
-        const SizedBox(width: 2),
+        const SizedBox(width: AppSpacing.xxs),
         _LegendCell(color: const Color(0xFFFFD28A), size: cellSize),
-        const SizedBox(width: 2),
+        const SizedBox(width: AppSpacing.xxs),
         _LegendCell(color: const Color(0xFFFFB84D), size: cellSize),
-        const SizedBox(width: 2),
+        const SizedBox(width: AppSpacing.xxs),
         _LegendCell(color: const Color(0xFFD97706), size: cellSize),
         const SizedBox(width: AppSpacing.xs),
         Text('More', style: Theme.of(context).textTheme.labelSmall!.copyWith( color: AppColors.textHint)),
@@ -382,7 +382,7 @@ class StreakCalendarScreen extends ConsumerWidget {
                     color: const Color(0xFFFF6B35),
                   ),
                 ),
-                const SizedBox(width: 12),
+                const SizedBox(width: AppSpacing.sm2),
                 Expanded(
                   child: _StatCard(
                     label: 'Longest Streak',

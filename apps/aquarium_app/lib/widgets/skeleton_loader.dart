@@ -299,7 +299,7 @@ class SkeletonStoryCard extends StatelessWidget {
                       height: 14,
                       borderRadius: AppRadius.xsRadius,
                     ),
-                    const SizedBox(height: 12),
+                    const SizedBox(height: AppSpacing.sm2),
                     SkeletonBox(
                       width: 100,
                       height: 12,
@@ -342,7 +342,7 @@ class SkeletonAchievementCard extends StatelessWidget {
                 borderRadius: AppRadius.xlRadius,
               ),
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.sm2),
             SkeletonBox(
               width: double.infinity,
               height: 16,

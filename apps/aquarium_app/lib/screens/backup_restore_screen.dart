@@ -62,7 +62,7 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
             child: Row(
               children: [
                 Icon(Icons.backup, size: AppIconSizes.lg, color: AppColors.textSecondary),
-                const SizedBox(width: 12),
+                const SizedBox(width: AppSpacing.sm2),
                 Expanded(
                   child: Text(
                     'Export your tank data and photos as a ZIP file to back up or transfer to another device.',
@@ -76,7 +76,7 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
           const SizedBox(height: AppSpacing.lg),
 
           Text('Export Data', style: AppTypography.headlineSmall),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.sm2),
 
           tanksAsync.when(
             loading: () => const Center(child: BubbleLoader()),
@@ -174,7 +174,7 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
           const SizedBox(height: AppSpacing.lg),
 
           Text('Import Data', style: AppTypography.headlineSmall),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.sm2),
 
           AppCard(
             padding: AppCardPadding.standard,
@@ -198,7 +198,7 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
                   ),
                 ],
 
-                const SizedBox(height: 12),
+                const SizedBox(height: AppSpacing.sm2),
                 SizedBox(
                   width: double.infinity,
                   child: FilledButton.icon(
@@ -222,7 +222,7 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
           const SizedBox(height: AppSpacing.lg),
 
           Text('What Gets Exported', style: AppTypography.headlineSmall),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.sm2),
 
           AppCard(
             padding: AppCardPadding.standard,
@@ -278,7 +278,7 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Icon(Icons.warning, color: AppColors.warning),
-                const SizedBox(width: 12),
+                const SizedBox(width: AppSpacing.sm2),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -853,7 +853,7 @@ class _ExportItem extends StatelessWidget {
       child: Row(
         children: [
           Icon(icon, size: 18, color: AppColors.textSecondary),
-          const SizedBox(width: 12),
+          const SizedBox(width: AppSpacing.sm2),
           Expanded(child: Text(text, style: AppTypography.bodyMedium)),
           Icon(
             included ? Icons.check_circle : Icons.cancel,

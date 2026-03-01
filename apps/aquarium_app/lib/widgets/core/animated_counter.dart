@@ -221,7 +221,7 @@ class XpCounter extends StatelessWidget {
               color: AppColors.xp,
             ),
             if (showProgress && xpToNextLevel != null) ...[
-              const SizedBox(height: 2),
+              const SizedBox(height: AppSpacing.xxs),
               Text(
                 '${xpToNextLevel! - currentXp} to next level',
                 style: AppTypography.labelSmall.copyWith(

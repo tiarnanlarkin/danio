@@ -25,7 +25,7 @@ class SyncDebugDialog extends ConsumerWidget {
               value: '${syncState.queuedCount}',
               icon: Icons.queue,
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.sm2),
 
             // Last sync time
             if (syncState.lastSyncTime != null)
@@ -34,7 +34,7 @@ class SyncDebugDialog extends ConsumerWidget {
                 value: _formatDateTime(syncState.lastSyncTime!),
                 icon: Icons.sync,
               ),
-            if (syncState.lastSyncTime != null) const SizedBox(height: 12),
+            if (syncState.lastSyncTime != null) const SizedBox(height: AppSpacing.sm2),
 
             // Conflicts resolved
             _InfoRow(
@@ -43,7 +43,7 @@ class SyncDebugDialog extends ConsumerWidget {
               icon: Icons.merge,
               color: syncState.conflictsResolved > 0 ? Colors.orange : null,
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.sm2),
 
             // Recent conflicts
             if (syncState.hasConflicts) ...[
@@ -76,7 +76,7 @@ class SyncDebugDialog extends ConsumerWidget {
                   ),
                 ),
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: AppSpacing.sm2),
             ],
 
             // Queued actions detail
@@ -226,7 +226,7 @@ class _InfoRow extends StatelessWidget {
     return Row(
       children: [
         Icon(icon, size: AppIconSizes.sm, color: color ?? AppColors.primary),
-        const SizedBox(width: 12),
+        const SizedBox(width: AppSpacing.sm2),
         Expanded(
           child: Text(
             label,

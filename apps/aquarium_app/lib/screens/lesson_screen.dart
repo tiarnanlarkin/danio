@@ -207,7 +207,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
               }
 
               // Final spacing
-              return const SizedBox(height: 40);
+              return const SizedBox(height: AppSpacing.xl2);
             },
           ),
         ),
@@ -253,7 +253,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
                             ),
                           ),
                         ),
-                        SizedBox(width: 12),
+                        SizedBox(width: AppSpacing.sm2),
                         Text('Completing...'),
                       ],
                     )
@@ -292,7 +292,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Icon(Icons.lightbulb, color: AppColors.primary, size: AppIconSizes.md),
-              const SizedBox(width: 12),
+              const SizedBox(width: AppSpacing.sm2),
               Expanded(
                 child: Text(
                   section.content,
@@ -317,7 +317,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Icon(Icons.tips_and_updates, color: AppColors.success, size: AppIconSizes.md),
-              const SizedBox(width: 12),
+              const SizedBox(width: AppSpacing.sm2),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -349,7 +349,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Icon(Icons.warning_amber, color: AppColors.warning, size: AppIconSizes.md),
-              const SizedBox(width: 12),
+              const SizedBox(width: AppSpacing.sm2),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -381,7 +381,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text('🤓', style: Theme.of(context).textTheme.headlineSmall!),
-              const SizedBox(width: 12),
+              const SizedBox(width: AppSpacing.sm2),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -498,7 +498,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
             itemBuilder: (context, index) {
               // Spacing at top
               if (index == 0) {
-                return const SizedBox(height: 20);
+                return const SizedBox(height: AppSpacing.lg2);
               }
 
               // Question text
@@ -584,7 +584,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
                                   ),
                             ),
                           ),
-                          const SizedBox(width: 12),
+                          const SizedBox(width: AppSpacing.sm2),
                           Expanded(
                             child: Text(option, style: AppTypography.bodyLarge),
                           ),
@@ -614,7 +614,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Icon(Icons.info_outline, color: AppColors.textSecondary),
-                        const SizedBox(width: 12),
+                        const SizedBox(width: AppSpacing.sm2),
                         Expanded(
                           child: Text(
                             question.explanation!,
@@ -832,7 +832,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
                             ),
                           ),
                         ),
-                        SizedBox(width: 12),
+                        SizedBox(width: AppSpacing.sm2),
                         Text('Completing...'),
                       ],
                     )

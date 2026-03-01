@@ -476,7 +476,7 @@ class _FillBlankWidgetState extends State<FillBlankWidget> {
             color: AppColors.textSecondary,
           ),
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: AppSpacing.sm2),
         Wrap(
           spacing: 8,
           runSpacing: 8,
@@ -660,7 +660,7 @@ class TrueFalseWidget extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Icon(icon, size: AppIconSizes.lg, color: iconColor),
-              const SizedBox(width: 12),
+              const SizedBox(width: AppSpacing.sm2),
               Text(
                 label,
                 style: AppTypography.headlineSmall.copyWith(
@@ -1010,7 +1010,7 @@ class _OrderingWidgetState extends State<OrderingWidget> {
           child: Row(
             children: [
               Icon(Icons.touch_app, color: AppColors.textSecondary),
-              const SizedBox(width: 12),
+              const SizedBox(width: AppSpacing.sm2),
               Expanded(
                 child: Text(
                   'Drag items to reorder them',
@@ -1139,7 +1139,7 @@ class ExplanationCard extends StatelessWidget {
             isCorrect ? Icons.lightbulb_outline : Icons.info_outline,
             color: AppColors.textSecondary,
           ),
-          const SizedBox(width: 12),
+          const SizedBox(width: AppSpacing.sm2),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

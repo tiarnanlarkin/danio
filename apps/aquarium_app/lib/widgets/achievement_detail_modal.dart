@@ -186,7 +186,7 @@ class AchievementDetailModal extends StatelessWidget {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 12),
+                    const SizedBox(height: AppSpacing.sm2),
                     ClipRRect(
                       borderRadius: AppRadius.smallRadius,
                       child: LinearProgressIndicator(
@@ -289,7 +289,7 @@ class AchievementDetailModal extends StatelessWidget {
                 child: Row(
                   children: [
                     Icon(Icons.lock_outline, color: AppColors.primary),
-                    const SizedBox(width: 12),
+                    const SizedBox(width: AppSpacing.sm2),
                     Expanded(
                       child: Text(
                         'Keep learning to unlock this achievement!',
@@ -313,7 +313,7 @@ class AchievementDetailModal extends StatelessWidget {
                 child: Row(
                   children: [
                     Icon(Icons.check_circle, color: const Color(0xFFFFA000)),
-                    const SizedBox(width: 12),
+                    const SizedBox(width: AppSpacing.sm2),
                     Expanded(
                       child: Text(
                         'Achievement Unlocked!',

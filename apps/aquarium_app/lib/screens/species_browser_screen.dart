@@ -319,7 +319,7 @@ class _SpeciesDetailSheet extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: AppSpacing.lg2),
 
             // Header
             Row(
@@ -375,15 +375,15 @@ class _SpeciesDetailSheet extends StatelessWidget {
               ],
             ),
 
-            const SizedBox(height: 20),
+            const SizedBox(height: AppSpacing.lg2),
 
             Text(species.description, style: AppTypography.bodyLarge),
 
-            const SizedBox(height: 20),
+            const SizedBox(height: AppSpacing.lg2),
 
             // Parameters
             Text('Ideal Parameters', style: AppTypography.headlineSmall),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.sm2),
             AppCard(
               padding: AppCardPadding.compact,
               child: Column(
@@ -408,14 +408,14 @@ class _SpeciesDetailSheet extends StatelessWidget {
               ),
             ),
 
-            const SizedBox(height: 20),
+            const SizedBox(height: AppSpacing.lg2),
 
             // Diet
             Text('Diet', style: AppTypography.headlineSmall),
             const SizedBox(height: AppSpacing.sm),
             Text(species.diet, style: AppTypography.bodyMedium),
 
-            const SizedBox(height: 20),
+            const SizedBox(height: AppSpacing.lg2),
 
             // Compatibility
             if (species.compatibleWith.isNotEmpty) ...[
@@ -481,7 +481,7 @@ class _StatChip extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(icon, size: 14, color: AppColors.textSecondary),
-          const SizedBox(width: 6),
+          const SizedBox(width: AppSpacing.xs2),
           Text(label, style: AppTypography.bodySmall),
         ],
       ),

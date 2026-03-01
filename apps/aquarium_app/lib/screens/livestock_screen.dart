@@ -205,7 +205,7 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
                             child: Row(
                               children: [
                                 Icon(Icons.checklist, color: AppColors.primary),
-                                const SizedBox(width: 12),
+                                const SizedBox(width: AppSpacing.sm2),
                                 Text(
                                   '${_selectedLivestockIds.length} selected',
                                   style: AppTypography.labelLarge.copyWith(
@@ -328,7 +328,7 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
                           label: const Text('Move to Tank'),
                         ),
                       ),
-                      const SizedBox(width: 12),
+                      const SizedBox(width: AppSpacing.sm2),
                       Expanded(
                         child: ElevatedButton.icon(
                           onPressed: () => _bulkDelete(context, ref, livestock),
@@ -1000,11 +1000,11 @@ class _AddLivestockSheetState extends State<_AddLivestockSheet> {
                           size: AppIconSizes.xs,
                           color: AppColors.primary,
                         ),
-                        const SizedBox(width: 6),
+                        const SizedBox(width: AppSpacing.xs2),
                         Text('Species Info', style: AppTypography.labelLarge),
                       ],
                     ),
-                    const SizedBox(height: 6),
+                    const SizedBox(height: AppSpacing.xs2),
                     Text(
                       '${_selectedSpecies!.temperament} • ${_selectedSpecies!.adultSizeCm.toStringAsFixed(0)}cm adult • ${_selectedSpecies!.careLevel}',
                       style: AppTypography.bodySmall,
@@ -1021,7 +1021,7 @@ class _AddLivestockSheetState extends State<_AddLivestockSheet> {
               ),
             ],
 
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.sm2),
             TextFormField(
               controller: _scientificController,
               decoration: const InputDecoration(
@@ -1029,7 +1029,7 @@ class _AddLivestockSheetState extends State<_AddLivestockSheet> {
                 hintText: 'e.g., Paracheirodon innesi',
               ),
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.sm2),
             TextFormField(
               controller: _countController,
               decoration: InputDecoration(
@@ -1213,7 +1213,7 @@ class _BulkAddLivestockSheetState extends State<_BulkAddLivestockSheet> {
                 color: AppColors.textSecondary,
               ),
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.sm2),
             TextField(
               controller: _controller,
               maxLines: 8,
@@ -1224,7 +1224,7 @@ class _BulkAddLivestockSheetState extends State<_BulkAddLivestockSheet> {
               ),
               textCapitalization: TextCapitalization.words,
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.sm2),
             if (_items.isNotEmpty) ...[
               Text(
                 'Preview (${_items.length})',
@@ -1239,7 +1239,7 @@ class _BulkAddLivestockSheetState extends State<_BulkAddLivestockSheet> {
                       Expanded(
                         child: Text(i.name, style: AppTypography.bodyMedium),
                       ),
-                      const SizedBox(width: 12),
+                      const SizedBox(width: AppSpacing.sm2),
                       Text('×${i.count}', style: AppTypography.bodyMedium),
                     ],
                   ),
@@ -1445,7 +1445,7 @@ class _HealthChip extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(emoji, style: Theme.of(context).textTheme.labelSmall!),
-          const SizedBox(width: 4),
+          const SizedBox(width: AppSpacing.xs),
           Text(
             label,
             style: Theme.of(context).textTheme.bodySmall!.copyWith(
@@ -1510,7 +1510,7 @@ class _LastFedInfo extends ConsumerWidget {
           child: Row(
             children: [
               Icon(Icons.restaurant, size: 14, color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5)),
-              const SizedBox(width: 4),
+              const SizedBox(width: AppSpacing.xs),
               Text(
                 'Last fed: $timeAgo',
                 style: AppTypography.bodySmall.copyWith(

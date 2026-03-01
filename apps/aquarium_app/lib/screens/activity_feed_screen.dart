@@ -334,7 +334,7 @@ class _ActivityTile extends ConsumerWidget {
                 ),
               ),
 
-              const SizedBox(width: 12),
+              const SizedBox(width: AppSpacing.sm2),
 
               // Activity content
               Expanded(
@@ -360,7 +360,7 @@ class _ActivityTile extends ConsumerWidget {
                       ),
                     ),
 
-                    const SizedBox(height: 6),
+                    const SizedBox(height: AppSpacing.xs2),
 
                     // Activity description with emoji
                     Row(
@@ -381,7 +381,7 @@ class _ActivityTile extends ConsumerWidget {
                       ],
                     ),
 
-                    const SizedBox(height: 6),
+                    const SizedBox(height: AppSpacing.xs2),
 
                     // XP and time
                     Row(
@@ -400,7 +400,7 @@ class _ActivityTile extends ConsumerWidget {
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          const SizedBox(width: 12),
+                          const SizedBox(width: AppSpacing.sm2),
                         ],
                         Icon(
                           Icons.access_time,

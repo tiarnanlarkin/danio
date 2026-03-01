@@ -18,7 +18,7 @@ class AppFeedback {
         content: Row(
           children: [
             const Icon(Icons.check_circle, color: Colors.white, size: 20),
-            const SizedBox(width: 12),
+            const SizedBox(width: AppSpacing.sm2),
             Expanded(
               child: Text(
                 message,
@@ -48,7 +48,7 @@ class AppFeedback {
         content: Row(
           children: [
             const Icon(Icons.error_outline, color: Colors.white, size: 20),
-            const SizedBox(width: 12),
+            const SizedBox(width: AppSpacing.sm2),
             Expanded(
               child: Text(
                 message,
@@ -81,7 +81,7 @@ class AppFeedback {
         content: Row(
           children: [
             const Icon(Icons.warning_amber, color: Colors.black87, size: 20),
-            const SizedBox(width: 12),
+            const SizedBox(width: AppSpacing.sm2),
             Expanded(
               child: Text(
                 message,
@@ -106,7 +106,7 @@ class AppFeedback {
         content: Row(
           children: [
             const Icon(Icons.info_outline, color: Colors.white, size: 20),
-            const SizedBox(width: 12),
+            const SizedBox(width: AppSpacing.sm2),
             Expanded(
               child: Text(
                 message,
@@ -151,7 +151,7 @@ class AppFeedback {
                 valueColor: AlwaysStoppedAnimation(Colors.white),
               ),
             ),
-            const SizedBox(width: 12),
+            const SizedBox(width: AppSpacing.sm2),
             Expanded(
               child: Text(
                 message,

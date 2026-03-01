@@ -168,7 +168,7 @@ class _MascotBubbleState extends State<MascotBubble>
             children: [
               if (widget.position == MascotPosition.left) ...[
                 _buildMascot(dimensions),
-                const SizedBox(width: 8),
+                const SizedBox(width: AppSpacing.sm),
               ],
               Flexible(
                 child: ScaleTransition(
@@ -180,7 +180,7 @@ class _MascotBubbleState extends State<MascotBubble>
                 ),
               ),
               if (widget.position == MascotPosition.right) ...[
-                const SizedBox(width: 8),
+                const SizedBox(width: AppSpacing.sm),
                 _buildMascot(dimensions),
               ],
             ],

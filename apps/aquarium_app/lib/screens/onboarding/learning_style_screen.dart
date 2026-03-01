@@ -179,7 +179,7 @@ class _OptionCard extends StatelessWidget {
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-                    const SizedBox(height: 2),
+                    const SizedBox(height: AppSpacing.xxs),
                     Text(
                       option.subtitle,
                       style: AppTypography.bodySmall.copyWith(

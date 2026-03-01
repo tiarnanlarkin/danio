@@ -233,7 +233,7 @@ class _TutorialOverlayState extends ConsumerState<TutorialOverlay>
                     ),
                   ],
                 ),
-                SizedBox(height: 12),
+                SizedBox(height: AppSpacing.sm2),
 
                 // Title
                 Text(

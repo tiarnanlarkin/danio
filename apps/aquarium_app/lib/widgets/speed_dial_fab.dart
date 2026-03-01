@@ -124,7 +124,7 @@ class _SpeedDialFABState extends State<SpeedDialFAB>
                     animation: _controller,
                   ),
                   if (t > 0) ...[
-                    const SizedBox(width: 8),
+                    const SizedBox(width: AppSpacing.sm),
                     // × FAB (close)
                     Transform.scale(
                       scale: t,
@@ -238,7 +238,7 @@ class _PillButton extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               Icon(action.icon, color: fg, size: 24),
-              const SizedBox(width: 10),
+              const SizedBox(width: AppSpacing.sm3),
               Text(
                 action.label,
                 style: Theme.of(context).textTheme.titleMedium!.copyWith(

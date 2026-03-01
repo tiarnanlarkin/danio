@@ -111,7 +111,7 @@ class _DefaultErrorScreen extends StatelessWidget {
                   ),
                 ),
                 
-                const SizedBox(height: 32),
+                const SizedBox(height: AppSpacing.xl),
                 
                 // Title
                 Text(
@@ -123,7 +123,7 @@ class _DefaultErrorScreen extends StatelessWidget {
                   textAlign: TextAlign.center,
                 ),
                 
-                const SizedBox(height: 16),
+                const SizedBox(height: AppSpacing.md),
                 
                 // Message
                 Text(
@@ -134,7 +134,7 @@ class _DefaultErrorScreen extends StatelessWidget {
                   textAlign: TextAlign.center,
                 ),
                 
-                const SizedBox(height: 32),
+                const SizedBox(height: AppSpacing.xl),
                 
                 // Retry button
                 SizedBox(
@@ -158,11 +158,11 @@ class _DefaultErrorScreen extends StatelessWidget {
                   ),
                 ),
                 
-                const SizedBox(height: 16),
+                const SizedBox(height: AppSpacing.md),
                 
                 // Show error details in debug mode
                 if (kDebugMode) ...[
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.md),
                   OutlinedButton(
                     onPressed: () {
                       showDialog(
@@ -285,7 +285,7 @@ mixin ErrorHandlerMixin<T extends StatefulWidget> on State<T> {
       child: Row(
         children: [
           const Icon(Icons.error_outline, color: Colors.white),
-          const SizedBox(width: 12),
+          const SizedBox(width: AppSpacing.sm2),
           Expanded(
             child: Text(
               _errorMessage!,

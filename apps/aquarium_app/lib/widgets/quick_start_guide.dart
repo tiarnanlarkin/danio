@@ -194,7 +194,7 @@ class _QuickStartGuideState extends State<QuickStartGuide> {
                     color: Colors.black87,
                   ),
                 ),
-                SizedBox(height: 20),
+                SizedBox(height: AppSpacing.lg2),
 
                 // Navigation
                 Row(
@@ -347,7 +347,7 @@ class QuickStartTipsCard extends StatelessWidget {
                       size: AppIconSizes.md,
                     ),
                   ),
-                  const SizedBox(width: 12),
+                  const SizedBox(width: AppSpacing.sm2),
                   Expanded(
                     child: Text(
                       'Quick Start Guide',
@@ -364,13 +364,13 @@ class QuickStartTipsCard extends StatelessWidget {
                 text: 'Log your first water test to track trends',
                 color: AppColors.primary,
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: AppSpacing.sm2),
               _buildTipItem(
                 icon: Icons.task_alt,
                 text: 'Complete daily tasks to earn XP',
                 color: AppColors.primary,
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: AppSpacing.sm2),
               _buildTipItem(
                 icon: Icons.school,
                 text: 'Start a learning path to unlock features',
@@ -414,7 +414,7 @@ class QuickStartTipsCard extends StatelessWidget {
     return Row(
       children: [
         Icon(icon, size: AppIconSizes.sm, color: color),
-        SizedBox(width: 12),
+        SizedBox(width: AppSpacing.sm2),
         Expanded(child: Text(text, style: const TextStyle(fontSize: 14))),
       ],
     );

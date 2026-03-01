@@ -91,7 +91,7 @@ class ShopStreetScreen extends ConsumerWidget {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: AppSpacing.sm2),
                   _ShopSection(
                     title: '🌿 Plant Wishlist',
                     subtitle: 'Plants to add to your tank',
@@ -107,7 +107,7 @@ class ShopStreetScreen extends ConsumerWidget {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: AppSpacing.sm2),
                   _ShopSection(
                     title: '🛠️ Equipment Wishlist',
                     subtitle: 'Gear upgrades planned',
@@ -123,7 +123,7 @@ class ShopStreetScreen extends ConsumerWidget {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: AppSpacing.sm2),
                   _ShopSection(
                     title: '💎 Gem Shop',
                     subtitle: 'Spend gems on rewards & cosmetics',
@@ -528,7 +528,7 @@ class _BudgetCard extends StatelessWidget {
                       Icons.account_balance_wallet,
                       color: ShopColors.accent,
                     ),
-                    const SizedBox(width: 12),
+                    const SizedBox(width: AppSpacing.sm2),
                     Builder(builder: (context) => Text(
                       'Monthly Budget',
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
@@ -544,7 +544,7 @@ class _BudgetCard extends StatelessWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: AppSpacing.lg2),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -639,7 +639,7 @@ class _LocalShopsCard extends StatelessWidget {
               Row(
                 children: [
                   const Icon(Icons.location_on, color: ShopColors.awning),
-                  const SizedBox(width: 12),
+                  const SizedBox(width: AppSpacing.sm2),
                   Builder(builder: (context) => Text(
                     'Local Fish Shops',
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
@@ -670,7 +670,7 @@ class _LocalShopsCard extends StatelessWidget {
                     onDelete: () => onDeleteShop(shop),
                   ),
                 ),
-              const SizedBox(height: 12),
+              const SizedBox(height: AppSpacing.sm2),
               Center(
                 child: TextButton.icon(
                   onPressed: onAddShop,
@@ -722,7 +722,7 @@ class _ShopTile extends StatelessWidget {
                 size: AppIconSizes.sm,
               ),
             ),
-            const SizedBox(width: 12),
+            const SizedBox(width: AppSpacing.sm2),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

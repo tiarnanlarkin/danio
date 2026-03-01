@@ -139,12 +139,12 @@ class _DetailedHeartsDisplayState extends ConsumerState<DetailedHeartsDisplay> {
               ),
             ],
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.sm2),
           if (timeUntilRefill != null) ...[
             Row(
               children: [
                 Icon(Icons.schedule, size: AppIconSizes.xs, color: AppColors.textSecondary),
-                const SizedBox(width: 6),
+                const SizedBox(width: AppSpacing.xs2),
                 Text(
                   'Next heart in ${heartsService.formatTimeRemaining(timeUntilRefill)}',
                   style: AppTypography.bodySmall.copyWith(
@@ -330,7 +330,7 @@ class _OutOfHeartsModalState extends ConsumerState<OutOfHeartsModal> {
                 child: Text('💔', style: Theme.of(context).textTheme.headlineMedium!.copyWith(fontSize: 56)),
               ),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: AppSpacing.lg2),
 
             // Title
             Text(
@@ -338,7 +338,7 @@ class _OutOfHeartsModalState extends ConsumerState<OutOfHeartsModal> {
               style: AppTypography.headlineLarge,
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.sm2),
 
             // Description
             Text(
@@ -389,7 +389,7 @@ class _OutOfHeartsModalState extends ConsumerState<OutOfHeartsModal> {
                     minimumSize: const Size(double.infinity, 56),
                   ),
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: AppSpacing.sm2),
 
                 // Wait button
                 OutlinedButton(

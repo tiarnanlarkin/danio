@@ -349,7 +349,7 @@ class _ExperienceAssessmentScreenState
                         size: AppIconSizes.sm,
                         color: AppColors.primary,
                       ),
-                      const SizedBox(width: 12),
+                      const SizedBox(width: AppSpacing.sm2),
                       Text(path, style: AppTypography.bodyMedium),
                     ],
                   ),

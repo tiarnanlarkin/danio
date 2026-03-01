@@ -57,7 +57,7 @@ class _DiseaseGuideScreenState extends State<DiseaseGuideScreen> {
                       color: AppColors.warning,
                       size: AppIconSizes.sm,
                     ),
-                    const SizedBox(width: 12),
+                    const SizedBox(width: AppSpacing.sm2),
                     Expanded(
                       child: Text(
                         'This guide is for reference only. Consult an aquatic vet for serious cases.',

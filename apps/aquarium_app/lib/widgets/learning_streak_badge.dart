@@ -78,7 +78,7 @@ class LearningStreakBadge extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Text('\u{1F4DA}', style: Theme.of(context).textTheme.bodyLarge!),
-          const SizedBox(width: 4),
+          const SizedBox(width: AppSpacing.xs),
           Text(
             '$streak-day learning streak!',
             style: AppTypography.labelSmall.copyWith(

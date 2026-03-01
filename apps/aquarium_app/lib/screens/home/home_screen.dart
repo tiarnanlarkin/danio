@@ -161,7 +161,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       child: const Icon(Icons.set_meal_rounded,
                           color: AppColors.primary, size: AppIconSizes.sm),
                     ),
-                    const SizedBox(width: 12),
+                    const SizedBox(width: AppSpacing.sm2),
                     Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -400,7 +400,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         },
                       ),
                       if (lowHearts && hearts.currentHearts >= 0) ...[
-                        const SizedBox(height: 4),
+                        const SizedBox(height: AppSpacing.xs),
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm2, vertical: 6),
                           decoration: BoxDecoration(
@@ -657,10 +657,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: AppSpacing.sm2),
               Text('Let\'s set up your first tank! \u{1F420}',
                 style: Theme.of(context).textTheme.titleLarge!.copyWith( fontWeight: FontWeight.bold)),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppSpacing.md),
               TextField(
                 controller: nameC,
                 decoration: const InputDecoration(
@@ -669,7 +669,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   isDense: true,
                 ),
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: AppSpacing.sm2),
               TextField(
                 controller: sizeC,
                 keyboardType: TextInputType.number,
@@ -679,7 +679,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   isDense: true,
                 ),
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: AppSpacing.sm2),
               SegmentedButton<TankType>(
                 segments: const [
                   ButtonSegment(value: TankType.freshwater, label: Text('Freshwater')),
@@ -688,7 +688,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 selected: {tankType},
                 onSelectionChanged: (v) => setSheetState(() => tankType = v.first),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppSpacing.md),
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton.icon(
@@ -760,9 +760,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.sm2),
             Text('Quick Water Test', style: AppTypography.headlineSmall),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.md),
             Row(
               children: [
                 Expanded(child: TextField(
@@ -770,13 +770,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   keyboardType: const TextInputType.numberWithOptions(decimal: true),
                   decoration: const InputDecoration(labelText: 'pH', border: OutlineInputBorder(), isDense: true),
                 )),
-                const SizedBox(width: 8),
+                const SizedBox(width: AppSpacing.sm),
                 Expanded(child: TextField(
                   controller: tempC,
                   keyboardType: const TextInputType.numberWithOptions(decimal: true),
                   decoration: const InputDecoration(labelText: 'Temp (C)', border: OutlineInputBorder(), isDense: true),
                 )),
-                const SizedBox(width: 8),
+                const SizedBox(width: AppSpacing.sm),
                 Expanded(child: TextField(
                   controller: ammoniaC,
                   keyboardType: const TextInputType.numberWithOptions(decimal: true),
@@ -784,7 +784,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 )),
               ],
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.md),
             SizedBox(
               width: double.infinity,
               child: ElevatedButton.icon(
@@ -872,9 +872,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 ),
               ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.md),
             Text('Tank Toolbox 🔧', style: AppTypography.headlineSmall),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.sm2),
             ListTile(
               leading: const Icon(Icons.notifications_outlined),
               title: const Text('Reminders'),
@@ -1311,11 +1311,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             Row(
               children: [
                 const Icon(Icons.palette, size: AppIconSizes.md),
-                const SizedBox(width: 12),
+                const SizedBox(width: AppSpacing.sm2),
                 Text('Room Theme', style: AppTypography.headlineSmall),
               ],
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: AppSpacing.lg2),
             Wrap(
               spacing: 12,
               runSpacing: 12,
@@ -1440,7 +1440,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             Row(
               children: [
                 const Icon(Icons.insights, color: AppColors.primary),
-                const SizedBox(width: 12),
+                const SizedBox(width: AppSpacing.sm2),
                 Text('Your Progress', style: AppTypography.headlineSmall),
                 const Spacer(),
                 Semantics(
@@ -1454,7 +1454,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 ),
               ],
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: AppSpacing.lg2),
             // Gamification dashboard without card styling
             const GamificationDashboard(showAsCard: false),
             const SizedBox(height: AppSpacing.lg),
@@ -1471,7 +1471,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     label: const Text('Daily Goal'),
                   ),
                 ),
-                const SizedBox(width: 12),
+                const SizedBox(width: AppSpacing.sm2),
                 Expanded(
                   child: OutlinedButton.icon(
                     onPressed: () {
@@ -1484,7 +1484,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 ),
               ],
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: AppSpacing.lg2),
           ],
         ),
       ),
@@ -1509,7 +1509,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             Row(
               children: [
                 const Icon(Icons.flag, color: AppColors.primary),
-                const SizedBox(width: 12),
+                const SizedBox(width: AppSpacing.sm2),
                 Text('Daily Goal', style: AppTypography.headlineSmall),
                 const Spacer(),
                 Semantics(
@@ -1523,17 +1523,17 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 ),
               ],
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: AppSpacing.lg2),
             const DailyGoalProgress(size: 120),
-            const SizedBox(height: 20),
+            const SizedBox(height: AppSpacing.lg2),
             Text('Ways to earn XP:', style: AppTypography.labelLarge),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.sm2),
             XpSourceRow(icon: Icons.school, label: 'Complete lesson', xp: 50),
             XpSourceRow(icon: Icons.quiz, label: 'Pass quiz', xp: 25),
             XpSourceRow(icon: Icons.science, label: 'Log water test', xp: 10),
             XpSourceRow(icon: Icons.water_drop, label: 'Water change', xp: 10),
             XpSourceRow(icon: Icons.task_alt, label: 'Complete task', xp: 15),
-            const SizedBox(height: 20),
+            const SizedBox(height: AppSpacing.lg2),
           ],
         ),
       ),

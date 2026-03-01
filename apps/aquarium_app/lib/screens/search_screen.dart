@@ -293,7 +293,7 @@ class _SearchResults extends StatelessWidget {
                   ),
                 ),
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: AppSpacing.lg2),
               Text(species.commonName, style: AppTypography.headlineMedium),
               Text(
                 species.scientificName,

@@ -219,7 +219,7 @@ class _MaintenanceChecklistScreenState
                           ),
                         ],
                       ),
-                      const SizedBox(height: 12),
+                      const SizedBox(height: AppSpacing.sm2),
                       Text(
                         DateFormat('MMMM d, y').format(DateTime.now()),
                         style: AppTypography.bodySmall,

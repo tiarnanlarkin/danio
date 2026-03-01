@@ -575,7 +575,7 @@ class _EnhancedPlacementTestScreenState
                   ),
                 ],
               ),
-              SizedBox(height: 12),
+              SizedBox(height: AppSpacing.sm2),
               Container(
                 padding: EdgeInsets.all(AppSpacing.sm2),
                 decoration: BoxDecoration(

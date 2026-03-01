@@ -136,7 +136,7 @@ class _PracticeScreenState extends ConsumerState<PracticeScreen> {
                     color: Colors.white,
                     size: 32,
                   ),
-                  const SizedBox(width: 12),
+                  const SizedBox(width: AppSpacing.sm2),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -177,7 +177,7 @@ class _PracticeScreenState extends ConsumerState<PracticeScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Icon(Icons.lightbulb_outline, color: AppColors.textSecondary),
-              const SizedBox(width: 12),
+              const SizedBox(width: AppSpacing.sm2),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -216,7 +216,7 @@ class _PracticeScreenState extends ConsumerState<PracticeScreen> {
 
         // Spacing
         if (index == 4) {
-          return const SizedBox(height: 12);
+          return const SizedBox(height: AppSpacing.sm2);
         }
 
         // Lesson cards
@@ -331,7 +331,7 @@ class _PracticeScreenState extends ConsumerState<PracticeScreen> {
                 ),
               ],
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.sm2),
 
             // Strength indicator
             Row(
@@ -358,7 +358,7 @@ class _PracticeScreenState extends ConsumerState<PracticeScreen> {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 6),
+                      const SizedBox(height: AppSpacing.xs2),
                       ClipRRect(
                         borderRadius: AppRadius.xsRadius,
                         child: LinearProgressIndicator(
@@ -388,7 +388,7 @@ class _PracticeScreenState extends ConsumerState<PracticeScreen> {
                     color: AppColors.textHint,
                   ),
                 ),
-                const SizedBox(width: 12),
+                const SizedBox(width: AppSpacing.sm2),
                 Icon(Icons.calendar_today, size: 14, color: AppColors.textHint),
                 const SizedBox(width: AppSpacing.xs),
                 Text(
@@ -642,7 +642,7 @@ class _PracticeLessonScreenState extends ConsumerState<PracticeLessonScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Icon(Icons.lightbulb, color: AppColors.primary, size: AppIconSizes.md),
-              const SizedBox(width: 12),
+              const SizedBox(width: AppSpacing.sm2),
               Expanded(
                 child: Text(
                   section.content,
@@ -666,7 +666,7 @@ class _PracticeLessonScreenState extends ConsumerState<PracticeLessonScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Icon(Icons.tips_and_updates, color: AppColors.success, size: AppIconSizes.md),
-              const SizedBox(width: 12),
+              const SizedBox(width: AppSpacing.sm2),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -697,7 +697,7 @@ class _PracticeLessonScreenState extends ConsumerState<PracticeLessonScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Icon(Icons.warning_amber, color: AppColors.warning, size: AppIconSizes.md),
-              const SizedBox(width: 12),
+              const SizedBox(width: AppSpacing.sm2),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -728,7 +728,7 @@ class _PracticeLessonScreenState extends ConsumerState<PracticeLessonScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text('🤓', style: Theme.of(context).textTheme.headlineSmall!),
-              const SizedBox(width: 12),
+              const SizedBox(width: AppSpacing.sm2),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,

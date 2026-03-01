@@ -237,7 +237,7 @@ class NotificationSettingsScreen extends ConsumerWidget {
                             ),
                           ],
                         ),
-                        const SizedBox(height: 12),
+                        const SizedBox(height: AppSpacing.sm2),
                         _buildInfoRow(
                           '🌅',
                           'Morning reminder goes out every day',

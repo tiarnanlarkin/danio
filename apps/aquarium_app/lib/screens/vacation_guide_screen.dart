@@ -18,7 +18,7 @@ class VacationGuideScreen extends StatelessWidget {
             child: Row(
               children: [
                 Icon(Icons.flight, size: AppIconSizes.lg, color: AppColors.textSecondary),
-                const SizedBox(width: 12),
+                const SizedBox(width: AppSpacing.sm2),
                 Expanded(
                   child: Text(
                     'Planning ahead ensures your fish stay healthy while you\'re away. Most tanks can handle 1-2 weeks without intervention.',
@@ -335,7 +335,7 @@ class _ChecklistSection extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(title, style: AppTypography.headlineSmall),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.sm2),
             ...items.map(
               (item) => Padding(
                 padding: const EdgeInsets.only(bottom: AppSpacing.xs2),
@@ -403,7 +403,7 @@ class _OptionCard extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.sm2),
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -452,7 +452,7 @@ class _OptionCard extends StatelessWidget {
               child: Row(
                 children: [
                   Icon(Icons.lightbulb, size: 14, color: AppColors.textSecondary),
-                  const SizedBox(width: 6),
+                  const SizedBox(width: AppSpacing.xs2),
                   Expanded(child: Text(tip, style: AppTypography.bodySmall)),
                 ],
               ),

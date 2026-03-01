@@ -638,7 +638,7 @@ class _StreakCard extends StatelessWidget {
                     color: AppColors.primary,
                   ),
                 ),
-                const SizedBox(height: 2),
+                const SizedBox(height: AppSpacing.xxs),
                 Text(
                   'Keep learning to maintain your streak',
                   style: AppTypography.bodySmall.copyWith(
@@ -654,7 +654,7 @@ class _StreakCard extends StatelessWidget {
                         size: AppIconSizes.xs,
                         color: hasFreeze ? AppColors.info : AppColors.textHint,
                       ),
-                      const SizedBox(width: 6),
+                      const SizedBox(width: AppSpacing.xs2),
                       Expanded(
                         child: Text(
                           hasFreeze
@@ -834,7 +834,7 @@ class _LazyLearningPathCardState extends ConsumerState<_LazyLearningPathCard> {
                       ),
                     ),
                   ),
-                  const SizedBox(width: 12),
+                  const SizedBox(width: AppSpacing.sm2),
                   Container(
                     padding:
                         const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: 3),

@@ -142,15 +142,15 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                 Row(
                   children: [
                     Expanded(child: SkeletonCard(height: 80)),
-                    SizedBox(width: 12),
+                    SizedBox(width: AppSpacing.sm2),
                     Expanded(child: SkeletonCard(height: 80)),
                   ],
                 ),
-                SizedBox(height: 12),
+                SizedBox(height: AppSpacing.sm2),
                 Row(
                   children: [
                     Expanded(child: SkeletonCard(height: 80)),
-                    SizedBox(width: 12),
+                    SizedBox(width: AppSpacing.sm2),
                     Expanded(child: SkeletonCard(height: 80)),
                   ],
                 ),
@@ -186,7 +186,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
             'Time Range',
             style: Theme.of(context).textTheme.titleSmall!.copyWith(fontWeight: FontWeight.bold),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.sm2),
           Wrap(
             spacing: 8,
             runSpacing: 8,
@@ -245,7 +245,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                       : null,
                 ),
               ),
-              const SizedBox(width: 12),
+              const SizedBox(width: AppSpacing.sm2),
               Expanded(
                 child: _buildStatCard(
                   icon: Icons.local_fire_department,
@@ -256,7 +256,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
               ),
             ],
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.sm2),
           Row(
             children: [
               Expanded(
@@ -269,7 +269,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                       '${(summary.completionPercentage * 100).toStringAsFixed(0)}% complete',
                 ),
               ),
-              const SizedBox(width: 12),
+              const SizedBox(width: AppSpacing.sm2),
               Expanded(
                 child: _buildStatCard(
                   icon: Icons.schedule,
@@ -281,7 +281,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
             ],
           ),
           if (summary.longestStreak > summary.currentStreak) ...[
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.sm2),
             _buildStatCard(
               icon: Icons.emoji_events,
               label: 'Longest Streak',
@@ -687,7 +687,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
               },
             ),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.sm2),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -770,7 +770,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
             Row(
               children: [
                 Text(insight.type.emoji, style: Theme.of(context).textTheme.headlineSmall!),
-                const SizedBox(width: 12),
+                const SizedBox(width: AppSpacing.sm2),
                 Expanded(
                   child: Text(
                     insight.message,
@@ -861,7 +861,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                 Text(topic.trend.emoji, style: Theme.of(context).textTheme.titleLarge!),
               ],
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.sm2),
             Row(
               children: [
                 Expanded(
@@ -953,7 +953,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
             Row(
               children: [
                 const Icon(Icons.auto_graph, color: AppColors.info, size: AppIconSizes.md),
-                const SizedBox(width: 12),
+                const SizedBox(width: AppSpacing.sm2),
                 Expanded(
                   child: Text(
                     prediction.message,
@@ -991,7 +991,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
               ],
             ),
             if (prediction.recommendation != null) ...[
-              const SizedBox(height: 12),
+              const SizedBox(height: AppSpacing.sm2),
               Text(
                 prediction.recommendation!,
                 style: Theme.of(context).textTheme.bodySmall!.copyWith(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7)),

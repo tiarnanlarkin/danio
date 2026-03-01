@@ -346,7 +346,7 @@ Return ONLY valid JSON with these fields (no markdown, no explanation):
                   children: [
                     Icon(Icons.info_outline, size: 14,
                         color: r.confidence == 'low' ? AppColors.warning : AppColors.textSecondary),
-                    const SizedBox(width: 4),
+                    const SizedBox(width: AppSpacing.xs),
                     Text(
                       r.confidence == 'low'
                           ? 'Low confidence - verify with another source'

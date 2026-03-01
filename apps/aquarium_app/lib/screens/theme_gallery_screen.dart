@@ -63,7 +63,7 @@ class ThemeGalleryScreen extends ConsumerWidget {
                       ),
                     ),
                   ),
-                  const SizedBox(width: 10),
+                  const SizedBox(width: AppSpacing.sm3),
                   Text('Included Themes', style: AppTypography.headlineSmall),
                 ],
               ),
@@ -134,7 +134,7 @@ class ThemeGalleryScreen extends ConsumerWidget {
                       ],
                     ),
                   ),
-                  const SizedBox(width: 10),
+                  const SizedBox(width: AppSpacing.sm3),
                   Text('Coming Soon', style: AppTypography.headlineSmall),
                 ],
               ),
@@ -334,7 +334,7 @@ class ThemeGalleryScreen extends ConsumerWidget {
               ),
               child: const Icon(Icons.star, color: Colors.white, size: AppIconSizes.sm),
             ),
-            const SizedBox(width: 12),
+            const SizedBox(width: AppSpacing.sm2),
             const Text('Premium Theme'),
           ],
         ),
@@ -346,7 +346,7 @@ class ThemeGalleryScreen extends ConsumerWidget {
               'Premium themes are coming soon!',
               style: Theme.of(context).textTheme.titleMedium!,
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.sm2),
             Text(
               'Support the app and unlock exclusive themes with unique animations and special effects.',
               style: Theme.of(context).textTheme.bodyLarge!.copyWith(color: AppColors.textSecondary),
@@ -475,7 +475,7 @@ class _CurrentThemePreview extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   const Icon(Icons.check_circle, size: AppIconSizes.xs, color: Colors.white),
-                  const SizedBox(width: 6),
+                  const SizedBox(width: AppSpacing.xs2),
                   Text(
                     'Current: ${theme.name}',
                     style: Theme.of(context).textTheme.bodySmall!.copyWith(

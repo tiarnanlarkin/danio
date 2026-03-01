@@ -18,7 +18,7 @@ class QuickStartGuideScreen extends StatelessWidget {
             child: Column(
               children: [
                 Icon(Icons.rocket_launch, size: AppIconSizes.xl, color: AppColors.primary),
-                const SizedBox(height: 12),
+                const SizedBox(height: AppSpacing.sm2),
                 Text(
                   'Your First Aquarium',
                   style: AppTypography.headlineMedium,
@@ -127,7 +127,7 @@ class QuickStartGuideScreen extends StatelessWidget {
                   'This is the most important step! Cycling grows beneficial bacteria that keep your fish alive.',
                   style: AppTypography.bodyMedium,
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: AppSpacing.sm2),
                 _NumberedStep(
                   num: 1,
                   text: 'Add ammonia source (fish food or pure ammonia)',
@@ -263,7 +263,7 @@ class QuickStartGuideScreen extends StatelessWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: AppSpacing.sm2),
                 _MistakeItem(
                   mistake: 'Adding fish before cycling',
                   result: 'Fish die from ammonia poisoning',
@@ -339,7 +339,7 @@ class _StepCard extends StatelessWidget {
                     ),
                   ),
                 ),
-                const SizedBox(width: 12),
+                const SizedBox(width: AppSpacing.sm2),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,

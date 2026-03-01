@@ -101,7 +101,7 @@ class PlacementResultScreen extends ConsumerWidget {
                       style: Theme.of(context).textTheme.titleMedium!,
                     ),
                   ),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: AppSpacing.sm2),
                   OutlinedButton(
                     onPressed: () {
                       _showDetailedBreakdown(context, theme);
@@ -203,7 +203,7 @@ class PlacementResultScreen extends ConsumerWidget {
             Row(
               children: [
                 Text(path.emoji, style: const TextStyle(fontSize: 32)),
-                const SizedBox(width: 12),
+                const SizedBox(width: AppSpacing.sm2),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -256,7 +256,7 @@ class PlacementResultScreen extends ConsumerWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.sm2),
             Container(
               padding: EdgeInsets.all(AppSpacing.sm2),
               decoration: BoxDecoration(

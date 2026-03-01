@@ -85,7 +85,7 @@ class SyncIndicator extends ConsumerWidget {
                     : Colors.grey.shade700,
                 size: AppIconSizes.sm,
               ),
-            const SizedBox(width: 12),
+            const SizedBox(width: AppSpacing.sm2),
             Expanded(
               child: Text(
                 statusMessage,

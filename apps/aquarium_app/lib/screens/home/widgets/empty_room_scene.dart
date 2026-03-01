@@ -165,7 +165,7 @@ class EmptyRoomScene extends StatelessWidget {
                   context: MascotContext.noTanks,
                   size: MascotSize.small,
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: AppSpacing.md),
                 Text(
                   'Every great fishkeeper starts right here.\nLet\'s set up your first tank! 🐠',
                   style: AppTypography.bodyMedium.copyWith(
@@ -173,7 +173,7 @@ class EmptyRoomScene extends StatelessWidget {
                   ),
                   textAlign: TextAlign.center,
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: AppSpacing.lg2),
                 ElevatedButton.icon(
                   onPressed: onCreateTank,
                   icon: const Icon(Icons.add),

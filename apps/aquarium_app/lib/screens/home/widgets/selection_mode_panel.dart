@@ -59,7 +59,7 @@ class SelectionModePanel extends StatelessWidget {
                 child: Row(
                   children: [
                     Icon(Icons.checklist, color: AppColors.primary),
-                    const SizedBox(width: 12),
+                    const SizedBox(width: AppSpacing.sm2),
                     Text(
                       'Select Tanks',
                       style: AppTypography.labelLarge.copyWith(
@@ -127,7 +127,7 @@ class SelectionModePanel extends StatelessWidget {
           ),
         ),
 
-        const SizedBox(height: 12),
+        const SizedBox(height: AppSpacing.sm2),
 
         // Action buttons
         Row(
@@ -147,7 +147,7 @@ class SelectionModePanel extends StatelessWidget {
                 label: const Text('Delete'),
               ),
             ),
-            const SizedBox(width: 12),
+            const SizedBox(width: AppSpacing.sm2),
             Expanded(
               child: ElevatedButton.icon(
                 onPressed: selectedIds.isEmpty ? null : onExportSelected,

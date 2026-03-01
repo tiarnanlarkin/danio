@@ -111,7 +111,7 @@ class TermsOfServiceScreen extends StatelessWidget {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: AppSpacing.sm2),
                   TextButton(
                     onPressed: () => _showContactInfo(context),
                     child: const Text('Contact Us'),

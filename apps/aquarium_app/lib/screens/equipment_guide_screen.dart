@@ -326,7 +326,7 @@ class _EquipmentSection extends StatelessWidget {
             Text(title, style: AppTypography.headlineMedium),
           ],
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: AppSpacing.sm2),
         ...items.map((item) => _EquipmentCard(item: item)),
       ],
     );
@@ -407,7 +407,7 @@ class _EquipmentCard extends StatelessWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: AppSpacing.sm2),
                 Container(
                   width: double.infinity,
                   padding: const EdgeInsets.all(AppSpacing.sm3),

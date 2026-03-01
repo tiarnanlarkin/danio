@@ -377,7 +377,7 @@ class _TaskHistoryDialog extends ConsumerWidget {
                   'Completed ${task.completionCount} time${task.completionCount == 1 ? '' : 's'}',
                   style: AppTypography.bodySmall,
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: AppSpacing.sm2),
                 Flexible(
                   child: ListView.separated(
                     shrinkWrap: true,
@@ -626,7 +626,7 @@ class _AddTaskSheetState extends State<_AddTaskSheet> {
               textCapitalization: TextCapitalization.sentences,
               autofocus: true,
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.sm2),
             TextFormField(
               controller: _descController,
               decoration: const InputDecoration(
@@ -696,7 +696,7 @@ class _AddTaskSheetState extends State<_AddTaskSheet> {
                       Icons.calendar_today,
                       color: AppColors.textSecondary,
                     ),
-                    const SizedBox(width: 12),
+                    const SizedBox(width: AppSpacing.sm2),
                     Text(
                       _dueDate != null
                           ? DateFormat('MMM d, yyyy').format(_dueDate!)

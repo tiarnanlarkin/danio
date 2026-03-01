@@ -88,7 +88,7 @@ class _StoriesScreenState extends ConsumerState<StoriesScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   _buildFilterChips(),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: AppSpacing.sm2),
                   _buildSortDropdown(),
                 ],
               ),
@@ -149,7 +149,7 @@ class _StoriesScreenState extends ConsumerState<StoriesScreen> {
     return Row(
       children: [
         const Text('Sort by:', style: TextStyle(fontWeight: FontWeight.w500)),
-        const SizedBox(width: 12),
+        const SizedBox(width: AppSpacing.sm2),
         DropdownButton<StorySortOrder>(
           value: _sortOrder,
           underline: Container(),
@@ -370,7 +370,7 @@ class StoryCard extends StatelessWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: AppSpacing.sm2),
                 // Metadata chips
                 Wrap(
                   spacing: 8,

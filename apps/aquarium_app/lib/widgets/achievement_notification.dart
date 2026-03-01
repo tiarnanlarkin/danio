@@ -303,7 +303,7 @@ class _AchievementNotificationWidgetState
                                       color: Colors.amber,
                                       size: 32,
                                     ),
-                                    const SizedBox(width: 12),
+                                    const SizedBox(width: AppSpacing.sm2),
                                     Text(
                                       '+${widget.xpAwarded} XP',
                                       style: Theme.of(context).textTheme.headlineSmall!.copyWith(

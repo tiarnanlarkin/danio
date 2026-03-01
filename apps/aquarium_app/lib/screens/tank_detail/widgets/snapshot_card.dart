@@ -63,7 +63,7 @@ class LatestSnapshotCard extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.sm2),
 
             Wrap(
               spacing: 10,
@@ -245,7 +245,7 @@ class ParamPill extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(label, style: AppTypography.bodySmall),
-              const SizedBox(height: 2),
+              const SizedBox(height: AppSpacing.xxs),
               Text(
                 unit == null ? value : '$value $unit',
                 style: AppTypography.labelLarge,

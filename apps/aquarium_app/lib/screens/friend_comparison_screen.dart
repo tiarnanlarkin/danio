@@ -378,7 +378,7 @@ class _StatsComparisonSection extends StatelessWidget {
             style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
           )),
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: AppSpacing.sm2),
         ...stats.map((stat) {
           final (label, userValue, friendValue, icon, color) = stat;
           return _StatComparisonRow(
@@ -513,7 +513,7 @@ class _ProgressChartSection extends StatelessWidget {
             style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
           )),
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: AppSpacing.sm2),
         Container(
           height: 200,
           margin: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
@@ -659,7 +659,7 @@ class _AchievementsSection extends StatelessWidget {
             style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
           )),
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: AppSpacing.sm2),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
           child: Row(

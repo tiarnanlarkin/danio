@@ -36,7 +36,7 @@ class HardscapeGuideScreen extends StatelessWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: AppSpacing.sm2),
                 Text(
                   'Hardscape refers to rocks, driftwood, and other non-living decorative elements. '
                   'Good hardscape creates structure, hiding spots, and visual interest. '
@@ -292,7 +292,7 @@ class HardscapeGuideScreen extends StatelessWidget {
                     Text('Safety Notes', style: AppTypography.headlineSmall),
                   ],
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: AppSpacing.sm2),
                 Text(
                   '• Never use rocks from parking lots or roadsides (contaminated)\n'
                   '• Avoid metal ores or rocks with metallic veins\n'
@@ -533,7 +533,7 @@ class _TipCard extends StatelessWidget {
         child: Row(
           children: [
             Icon(icon, color: AppColors.primary),
-            const SizedBox(width: 12),
+            const SizedBox(width: AppSpacing.sm2),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

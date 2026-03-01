@@ -183,7 +183,7 @@ class _CostTrackerScreenState extends ConsumerState<CostTrackerScreen> {
               color: AppColors.primary,
             ),
           ),
-          const SizedBox(width: 12),
+          const SizedBox(width: AppSpacing.sm2),
           Expanded(
             child: _SummaryCard(
               title: 'This Year',
@@ -198,7 +198,7 @@ class _CostTrackerScreenState extends ConsumerState<CostTrackerScreen> {
     
     // Spacing
     if (index == currentIndex++) {
-      return const SizedBox(height: 12);
+      return const SizedBox(height: AppSpacing.sm2);
     }
     
     // All-time total card
@@ -225,7 +225,7 @@ class _CostTrackerScreenState extends ConsumerState<CostTrackerScreen> {
       
       // Spacing
       if (index == currentIndex++) {
-        return const SizedBox(height: 12);
+        return const SizedBox(height: AppSpacing.sm2);
       }
       
       // Category bars
@@ -253,7 +253,7 @@ class _CostTrackerScreenState extends ConsumerState<CostTrackerScreen> {
     
     // Spacing
     if (index == currentIndex++) {
-      return const SizedBox(height: 12);
+      return const SizedBox(height: AppSpacing.sm2);
     }
     
     // Expense tiles
@@ -633,7 +633,7 @@ class _AddExpenseSheetState extends State<_AddExpenseSheet> {
             ),
             autofocus: true,
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.sm2),
           TextField(
             controller: _amountController,
             decoration: InputDecoration(
@@ -646,7 +646,7 @@ class _AddExpenseSheetState extends State<_AddExpenseSheet> {
               FilteringTextInputFormatter.allow(RegExp(r'[\d.]')),
             ],
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.sm2),
           DropdownButtonFormField<String>(
             value: _category,
             decoration: const InputDecoration(
@@ -658,7 +658,7 @@ class _AddExpenseSheetState extends State<_AddExpenseSheet> {
                 .toList(),
             onChanged: (v) => setState(() => _category = v ?? 'Other'),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.sm2),
           ListTile(
             contentPadding: EdgeInsets.zero,
             title: const Text('Date'),

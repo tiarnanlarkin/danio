@@ -642,7 +642,7 @@ class _AddEquipmentSheetState extends State<_AddEquipmentSheet> {
               ),
               textCapitalization: TextCapitalization.words,
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.sm2),
             TextFormField(
               controller: _brandController,
               decoration: const InputDecoration(
@@ -651,7 +651,7 @@ class _AddEquipmentSheetState extends State<_AddEquipmentSheet> {
               ),
               textCapitalization: TextCapitalization.words,
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.sm2),
             TextFormField(
               controller: _intervalController,
               decoration: const InputDecoration(

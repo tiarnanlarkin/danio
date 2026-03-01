@@ -157,7 +157,7 @@ class _StockingCalculatorScreenState extends State<StockingCalculatorScreen> {
                     onChanged: (_) => setState(() {}),
                   ),
                 ),
-                const SizedBox(width: 12),
+                const SizedBox(width: AppSpacing.sm2),
                 Expanded(
                   flex: 2,
                   child: TextField(
@@ -174,7 +174,7 @@ class _StockingCalculatorScreenState extends State<StockingCalculatorScreen> {
                     onChanged: (_) => setState(() {}),
                   ),
                 ),
-                const SizedBox(width: 12),
+                const SizedBox(width: AppSpacing.sm2),
                 Column(
                   children: [
                     Text('Plants', style: Theme.of(context).textTheme.bodySmall!),
@@ -206,11 +206,11 @@ class _StockingCalculatorScreenState extends State<StockingCalculatorScreen> {
                             color: _stockingColor,
                           ),
                         ),
-                        const SizedBox(width: 12),
+                        const SizedBox(width: AppSpacing.sm2),
                         Text(_stockingLevel, style: AppTypography.labelLarge),
                       ],
                     ),
-                    const SizedBox(height: 12),
+                    const SizedBox(height: AppSpacing.sm2),
                     ClipRRect(
                       borderRadius: AppRadius.smallRadius,
                       child: LinearProgressIndicator(

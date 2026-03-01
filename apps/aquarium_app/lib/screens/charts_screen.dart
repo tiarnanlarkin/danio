@@ -217,14 +217,14 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
 
                 // Summary stats
                 Text('Summary', style: AppTypography.headlineSmall),
-                const SizedBox(height: 12),
+                const SizedBox(height: AppSpacing.sm2),
                 _SummaryCard(logs: waterTests, param: _selectedParam),
 
                 const SizedBox(height: AppSpacing.xl),
 
                 // Recent values table
                 Text('Recent Values', style: AppTypography.headlineSmall),
-                const SizedBox(height: 12),
+                const SizedBox(height: AppSpacing.sm2),
                 _ValuesTable(logs: waterTests.reversed.take(10).toList()),
               ],
             ),
@@ -727,7 +727,7 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
               color: AppColors.success,
               size: AppIconSizes.sm,
             ),
-            const SizedBox(width: 12),
+            const SizedBox(width: AppSpacing.sm2),
             Expanded(
               child: Text(
                 'All parameters within safe ranges ✓',
@@ -891,7 +891,7 @@ class _ChartControlChip extends StatelessWidget {
               size: AppIconSizes.xs,
               color: isActive ? AppColors.primary : AppColors.textSecondary,
             ),
-            const SizedBox(width: 6),
+            const SizedBox(width: AppSpacing.xs2),
             Text(
               label,
               style: Theme.of(context).textTheme.bodyMedium!.copyWith(

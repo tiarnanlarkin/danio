@@ -29,7 +29,7 @@ class QuarantineGuideScreen extends StatelessWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: AppSpacing.sm2),
                 Text(
                   'New fish often carry diseases or parasites that may not show symptoms immediately. '
                   'Quarantine protects your existing fish from potentially devastating infections. '
@@ -245,7 +245,7 @@ class QuarantineGuideScreen extends StatelessWidget {
                     Text('Pro Tips', style: AppTypography.headlineSmall),
                   ],
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: AppSpacing.sm2),
                 _TipItem(
                   text:
                       'Keep a cycled sponge filter in your main tank - move it to QT when needed',
@@ -297,7 +297,7 @@ class _SetupCard extends StatelessWidget {
         child: Row(
           children: [
             Icon(icon, color: AppColors.primary),
-            const SizedBox(width: 12),
+            const SizedBox(width: AppSpacing.sm2),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

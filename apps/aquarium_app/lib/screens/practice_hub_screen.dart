@@ -105,7 +105,7 @@ class PracticeHubScreen extends ConsumerWidget {
           );
         }
       case 1:
-        return const SizedBox(height: 24);
+        return const SizedBox(height: AppSpacing.lg);
       case 2: // Practice Stats
         return _buildStatsRow(
           context,
@@ -128,11 +128,11 @@ class PracticeHubScreen extends ConsumerWidget {
           ],
         );
       case 3:
-        return const SizedBox(height: 24);
+        return const SizedBox(height: AppSpacing.lg);
       case 4: // Section: Practice Modes
         return Text('Practice Modes', style: AppTypography.headlineSmall);
       case 5:
-        return const SizedBox(height: 12);
+        return const SizedBox(height: AppSpacing.sm2);
       case 6: // Spaced Repetition card
         return _buildPracticeCard(
           context,
@@ -150,7 +150,7 @@ class PracticeHubScreen extends ConsumerWidget {
           },
         );
       case 7:
-        return const SizedBox(height: 12);
+        return const SizedBox(height: AppSpacing.sm2);
       case 8: // Quick Practice card
         return _buildPracticeCard(
           context,
@@ -168,7 +168,7 @@ class PracticeHubScreen extends ConsumerWidget {
           },
         );
       case 9:
-        return const SizedBox(height: 12);
+        return const SizedBox(height: AppSpacing.sm2);
       case 10: // Achievements card
         return _buildPracticeCard(
           context,
@@ -186,11 +186,11 @@ class PracticeHubScreen extends ConsumerWidget {
           },
         );
       case 11:
-        return const SizedBox(height: 24);
+        return const SizedBox(height: AppSpacing.lg);
       case 12: // Section: Your Progress
         return Text('Your Progress', style: AppTypography.headlineSmall);
       case 13:
-        return const SizedBox(height: 12);
+        return const SizedBox(height: AppSpacing.sm2);
       case 14: // Study Streak card
         return _buildProgressCard(
           context,
@@ -200,7 +200,7 @@ class PracticeHubScreen extends ConsumerWidget {
           color: AppColors.warning,
         );
       case 15:
-        return const SizedBox(height: 12);
+        return const SizedBox(height: AppSpacing.sm2);
       case 16: // Cards Mastered card
         return _buildProgressCard(
           context,
@@ -210,7 +210,7 @@ class PracticeHubScreen extends ConsumerWidget {
           color: AppColors.success,
         );
       case 17:
-        return const SizedBox(height: 12);
+        return const SizedBox(height: AppSpacing.sm2);
       case 18: // Practice Accuracy card
         return _buildProgressCard(
           context,
@@ -249,13 +249,13 @@ class PracticeHubScreen extends ConsumerWidget {
                 ),
                 child: Icon(icon, size: 40, color: color),
               ),
-              const SizedBox(width: 16),
+              const SizedBox(width: AppSpacing.md),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(title, style: AppTypography.titleLarge),
-                    const SizedBox(height: 4),
+                    const SizedBox(height: AppSpacing.xs),
                     Text(
                       subtitle,
                       style: AppTypography.bodyMedium.copyWith(
@@ -290,7 +290,7 @@ class PracticeHubScreen extends ConsumerWidget {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  const SizedBox(height: 4),
+                  const SizedBox(height: AppSpacing.xs),
                   Text(
                     stat.label,
                     style: AppTypography.bodySmall.copyWith(

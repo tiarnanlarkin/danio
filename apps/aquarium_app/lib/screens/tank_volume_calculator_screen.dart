@@ -133,7 +133,7 @@ class _TankVolumeCalculatorScreenState
 
             // Shape selector
             Text('Tank Shape', style: AppTypography.headlineSmall),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.sm2),
             Wrap(
               spacing: 8,
               runSpacing: 8,
@@ -152,7 +152,7 @@ class _TankVolumeCalculatorScreenState
 
             // Dimensions
             Text('Dimensions', style: AppTypography.headlineSmall),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.sm2),
             _buildDimensionInputs(),
 
             const SizedBox(height: AppSpacing.xl),
@@ -250,13 +250,13 @@ class _TankVolumeCalculatorScreenState
               unit: unit,
               onChanged: (v) => setState(() => _length = v),
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.sm2),
             _DimensionField(
               label: 'Width',
               unit: unit,
               onChanged: (v) => setState(() => _width = v),
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.sm2),
             _DimensionField(
               label: 'Height',
               unit: unit,
@@ -273,7 +273,7 @@ class _TankVolumeCalculatorScreenState
               unit: unit,
               onChanged: (v) => setState(() => _diameter = v),
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.sm2),
             _DimensionField(
               label: 'Height',
               unit: unit,
@@ -290,19 +290,19 @@ class _TankVolumeCalculatorScreenState
               unit: unit,
               onChanged: (v) => setState(() => _bowLength = v),
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.sm2),
             _DimensionField(
               label: 'Width (back)',
               unit: unit,
               onChanged: (v) => setState(() => _bowWidth = v),
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.sm2),
             _DimensionField(
               label: 'Height',
               unit: unit,
               onChanged: (v) => setState(() => _bowHeight = v),
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.sm2),
             _DimensionField(
               label: 'Bow depth',
               unit: unit,
@@ -320,7 +320,7 @@ class _TankVolumeCalculatorScreenState
               unit: unit,
               onChanged: (v) => setState(() => _length = v),
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.sm2),
             _DimensionField(
               label: 'Height',
               unit: unit,
@@ -338,7 +338,7 @@ class _TankVolumeCalculatorScreenState
               hint: 'Both sides equal',
               onChanged: (v) => setState(() => _length = v),
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.sm2),
             _DimensionField(
               label: 'Height',
               unit: unit,

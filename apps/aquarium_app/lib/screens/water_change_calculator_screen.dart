@@ -108,7 +108,7 @@ class _WaterChangeCalculatorScreenState
             child: Row(
               children: [
                 Icon(Icons.calculate, size: AppIconSizes.lg, color: AppColors.textSecondary),
-                const SizedBox(width: 12),
+                const SizedBox(width: AppSpacing.sm2),
                 Expanded(
                   child: Text(
                     'Calculate exactly how much water to change to reach your target nitrate level.',
@@ -122,7 +122,7 @@ class _WaterChangeCalculatorScreenState
           const SizedBox(height: AppSpacing.lg),
 
           Text('Tank Info', style: AppTypography.headlineSmall),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.sm2),
 
           TextField(
             controller: _tankVolumeController,
@@ -139,7 +139,7 @@ class _WaterChangeCalculatorScreenState
           const SizedBox(height: AppSpacing.lg),
 
           Text('Nitrate Levels', style: AppTypography.headlineSmall),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.sm2),
 
           TextField(
             controller: _currentNitrateController,
@@ -154,7 +154,7 @@ class _WaterChangeCalculatorScreenState
             onChanged: (_) => _calculate(),
           ),
 
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.sm2),
 
           TextField(
             controller: _targetNitrateController,
@@ -169,7 +169,7 @@ class _WaterChangeCalculatorScreenState
             onChanged: (_) => _calculate(),
           ),
 
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.sm2),
 
           TextField(
             controller: _tapNitrateController,
@@ -196,7 +196,7 @@ class _WaterChangeCalculatorScreenState
                     'Water Change Needed',
                     style: AppTypography.labelLarge,
                   ),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: AppSpacing.sm2),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
@@ -242,7 +242,7 @@ class _WaterChangeCalculatorScreenState
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Icon(Icons.lightbulb, color: AppColors.warning, size: AppIconSizes.sm),
-                  const SizedBox(width: 12),
+                  const SizedBox(width: AppSpacing.sm2),
                   Expanded(
                     child: Text(
                       _recommendation!,
@@ -257,7 +257,7 @@ class _WaterChangeCalculatorScreenState
           const SizedBox(height: AppSpacing.lg),
 
           Text('Quick Reference', style: AppTypography.headlineSmall),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.sm2),
 
           AppCard(
             padding: AppCardPadding.standard,
@@ -280,7 +280,7 @@ class _WaterChangeCalculatorScreenState
           const SizedBox(height: AppSpacing.lg),
 
           Text('Multi-Change Strategy', style: AppTypography.headlineSmall),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.sm2),
 
           AppCard(
             padding: AppCardPadding.standard,
@@ -291,7 +291,7 @@ class _WaterChangeCalculatorScreenState
                   'For very high nitrates (>60 ppm), don\'t do one massive change. Instead:',
                   style: AppTypography.bodyMedium,
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: AppSpacing.sm2),
                 _StepRow(num: 1, text: 'Day 1: 30% water change'),
                 _StepRow(num: 2, text: 'Day 3: 25% water change'),
                 _StepRow(num: 3, text: 'Day 5: 20% water change'),

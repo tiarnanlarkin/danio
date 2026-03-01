@@ -304,7 +304,7 @@ class _TutorialWalkthroughScreenState
                               setState(() => _tankType = TankType.freshwater),
                         ),
                       ),
-                      const SizedBox(width: 12),
+                      const SizedBox(width: AppSpacing.sm2),
                       Expanded(
                         child: _TankTypeCard(
                           icon: Icons.waves,
@@ -382,7 +382,7 @@ class _TutorialWalkthroughScreenState
                     isSelected: _waterType == 'tropical',
                     onTap: () => setState(() => _waterType = 'tropical'),
                   ),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: AppSpacing.sm2),
                   _WaterTypeCard(
                     icon: '❄️',
                     label: 'Coldwater',
@@ -403,7 +403,7 @@ class _TutorialWalkthroughScreenState
                       style: Theme.of(context).textTheme.titleMedium!,
                     ),
                   ),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: AppSpacing.sm2),
                   OutlinedButton(
                     onPressed: _previousStep,
                     style: OutlinedButton.styleFrom(

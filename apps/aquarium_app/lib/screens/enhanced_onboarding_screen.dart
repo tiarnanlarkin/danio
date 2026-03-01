@@ -283,7 +283,7 @@ class _WelcomePage extends StatelessWidget {
             size: MascotSize.small,
             animateEntrance: true,
           ),
-          const SizedBox(height: 40),
+          const SizedBox(height: AppSpacing.xl2),
           Text(
             'Welcome to Danio! 🐠',
             style: AppTypography.headlineLarge,
@@ -302,9 +302,9 @@ class _WelcomePage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               _FeatureChip(icon: Icons.school, label: 'Learn'),
-              const SizedBox(width: 12),
+              const SizedBox(width: AppSpacing.sm2),
               _FeatureChip(icon: Icons.track_changes, label: 'Track'),
-              const SizedBox(width: 12),
+              const SizedBox(width: AppSpacing.sm2),
               _FeatureChip(icon: Icons.emoji_events, label: 'Achieve'),
             ],
           ),
@@ -332,7 +332,7 @@ class _FeatureChip extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(icon, size: 18, color: AppColors.primary),
-          const SizedBox(width: 6),
+          const SizedBox(width: AppSpacing.xs2),
           Text(
             label,
             style: AppTypography.labelLarge.copyWith(color: AppColors.primary),
@@ -356,7 +356,7 @@ class _ExperiencePage extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const SizedBox(height: 20),
+          const SizedBox(height: AppSpacing.lg2),
           Text(
             'How experienced are you with fishkeeping?',
             style: AppTypography.headlineMedium,
@@ -407,7 +407,7 @@ class _TankTypePage extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const SizedBox(height: 20),
+          const SizedBox(height: AppSpacing.lg2),
           Text(
             'What type of tank do you have (or want)?',
             style: AppTypography.headlineMedium,
@@ -459,7 +459,7 @@ class _GoalsPage extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const SizedBox(height: 20),
+          const SizedBox(height: AppSpacing.lg2),
           Text('What are your goals?', style: AppTypography.headlineMedium),
           const SizedBox(height: AppSpacing.sm),
           Text(

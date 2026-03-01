@@ -259,7 +259,7 @@ class TroubleshootingScreen extends StatelessWidget {
                     Text('General Tips', style: AppTypography.headlineSmall),
                   ],
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: AppSpacing.sm2),
                 Text(
                   '• When in doubt, do a water change\n'
                   '• Test water before making changes\n'
@@ -333,7 +333,7 @@ class _ProblemCard extends StatelessWidget {
                     ),
                   ),
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: AppSpacing.sm2),
                 Text(
                   'Solutions',
                   style: AppTypography.labelLarge.copyWith(
@@ -348,7 +348,7 @@ class _ProblemCard extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Icon(Icons.check, size: 14, color: AppColors.success),
-                        const SizedBox(width: 6),
+                        const SizedBox(width: AppSpacing.xs2),
                         Expanded(
                           child: Text(s, style: AppTypography.bodySmall),
                         ),

@@ -493,7 +493,7 @@ class _ReminderTile extends StatelessWidget {
                   if (reminder.isRecurring) ...[
                     const SizedBox(width: AppSpacing.sm),
                     Icon(Icons.repeat, size: 12, color: AppColors.textHint),
-                    const SizedBox(width: 2),
+                    const SizedBox(width: AppSpacing.xxs),
                     Text(reminder.frequency, style: AppTypography.bodySmall),
                   ],
                 ],
@@ -607,7 +607,7 @@ class _AddReminderSheetState extends State<_AddReminderSheet> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text('Add Reminder', style: AppTypography.headlineSmall),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.sm2),
 
             // Quick presets
             Text('Quick Presets', style: AppTypography.labelMedium),
@@ -649,7 +649,7 @@ class _AddReminderSheetState extends State<_AddReminderSheet> {
               ),
               autofocus: true,
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.sm2),
 
             DropdownButtonFormField<String>(
               value: _category,
@@ -662,7 +662,7 @@ class _AddReminderSheetState extends State<_AddReminderSheet> {
                   .toList(),
               onChanged: (v) => setState(() => _category = v ?? 'Other'),
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.sm2),
 
             Row(
               children: [
@@ -720,7 +720,7 @@ class _AddReminderSheetState extends State<_AddReminderSheet> {
                 onSelectionChanged: (v) => setState(() => _frequency = v.first),
               ),
 
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.sm2),
 
             TextField(
               controller: _notesController,
@@ -802,7 +802,7 @@ class _PresetChip extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Icon(icon, size: AppIconSizes.xs, color: AppColors.primary),
-            const SizedBox(width: 6),
+            const SizedBox(width: AppSpacing.xs2),
             Text(
               label,
               style: Theme.of(context).textTheme.bodyMedium!.copyWith(

@@ -206,7 +206,7 @@ class _PhaseHeader extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                const SizedBox(height: 4),
+                const SizedBox(height: AppSpacing.xs),
                 Text(subtitle, style: AppTypography.bodyMedium),
               ],
             ),
@@ -303,7 +303,7 @@ class _CycleDiagram extends StatelessWidget {
                           : null,
                     ),
                   ),
-                  const SizedBox(height: 4),
+                  const SizedBox(height: AppSpacing.xs),
                   Text(
                     phases[i],
                     style: AppTypography.bodySmall.copyWith(
@@ -470,7 +470,7 @@ class _LegendItem extends StatelessWidget {
             borderRadius: BorderRadius.circular(2),
           ),
         ),
-        const SizedBox(width: 4),
+        const SizedBox(width: AppSpacing.xs),
         Text(label, style: AppTypography.bodySmall.copyWith()),
       ],
     );

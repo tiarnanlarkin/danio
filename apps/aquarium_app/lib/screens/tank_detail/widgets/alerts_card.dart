@@ -212,13 +212,13 @@ class AlertsCard extends StatelessWidget {
           child: Row(
             children: [
               const Icon(Icons.check_circle, color: AppColors.success),
-              const SizedBox(width: 10),
+              const SizedBox(width: AppSpacing.sm3),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text('Alerts', style: AppTypography.headlineSmall),
-                    const SizedBox(height: 6),
+                    const SizedBox(height: AppSpacing.xs2),
                     Text(
                       'All looks stable based on your latest test.',
                       style: AppTypography.bodyMedium,
@@ -249,7 +249,7 @@ class AlertsCard extends StatelessWidget {
                 Text('${alerts.length}', style: AppTypography.bodySmall),
               ],
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.sm2),
             ...alerts.map((a) => AlertRow(item: a)),
           ],
         ),
@@ -302,7 +302,7 @@ class AlertRow extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Icon(_icon(), color: c),
-            const SizedBox(width: 10),
+            const SizedBox(width: AppSpacing.sm3),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

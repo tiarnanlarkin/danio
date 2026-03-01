@@ -159,7 +159,7 @@ class StudyRoomScene extends StatelessWidget {
                       subtext: levelTitle,
                     ),
                     if (currentStreak > 0) ...[
-                      const SizedBox(width: 8),
+                      const SizedBox(width: AppSpacing.sm),
                       _StreakBadge(streak: currentStreak),
                     ],
                   ],
@@ -557,7 +557,7 @@ class _StreakBadge extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text('🔥', style: Theme.of(context).textTheme.bodyLarge!),
-              const SizedBox(width: 4),
+              const SizedBox(width: AppSpacing.xs),
               Text(
                 '$streak',
                 style: Theme.of(context).textTheme.bodyLarge!.copyWith(
@@ -616,7 +616,7 @@ class _ProgressCard extends StatelessWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: AppSpacing.sm3),
               ClipRRect(
                 borderRadius: AppRadius.xsRadius,
                 child: LinearProgressIndicator(

@@ -563,7 +563,7 @@ class TankDetailScreen extends ConsumerWidget {
                               _navigateToAddLog(context, LogType.waterTest),
                         ),
                       ),
-                      const SizedBox(width: 12),
+                      const SizedBox(width: AppSpacing.sm2),
                       Expanded(
                         child: ActionButton(
                           icon: Icons.water_drop_outlined,
@@ -573,7 +573,7 @@ class TankDetailScreen extends ConsumerWidget {
                               _navigateToAddLog(context, LogType.waterChange),
                         ),
                       ),
-                      const SizedBox(width: 12),
+                      const SizedBox(width: AppSpacing.sm2),
                       Expanded(
                         child: ActionButton(
                           icon: Icons.note_add_outlined,
@@ -614,7 +614,7 @@ class TankDetailScreen extends ConsumerWidget {
                 ),
               ),
 
-              const SliverToBoxAdapter(child: SizedBox(height: 12)),
+              const SliverToBoxAdapter(child: SizedBox(height: AppSpacing.sm2)),
 
               // Dashboard: trends
               SliverToBoxAdapter(
@@ -648,7 +648,7 @@ class TankDetailScreen extends ConsumerWidget {
                 ),
               ),
 
-              const SliverToBoxAdapter(child: SizedBox(height: 12)),
+              const SliverToBoxAdapter(child: SizedBox(height: AppSpacing.sm2)),
 
               // Dashboard: alerts
               SliverToBoxAdapter(

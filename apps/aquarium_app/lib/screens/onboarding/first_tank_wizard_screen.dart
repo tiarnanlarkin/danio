@@ -173,7 +173,7 @@ class _FirstTankWizardScreenState extends ConsumerState<FirstTankWizardScreen> {
             style: AppTypography.headlineLarge,
             textAlign: TextAlign.center,
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.sm2),
           Text(
             'Give it a memorable name',
             style: AppTypography.bodyLarge.copyWith(
@@ -181,7 +181,7 @@ class _FirstTankWizardScreenState extends ConsumerState<FirstTankWizardScreen> {
             ),
             textAlign: TextAlign.center,
           ),
-          const SizedBox(height: 40),
+          const SizedBox(height: AppSpacing.xl2),
           TextField(
             controller: _nameController,
             decoration: InputDecoration(
@@ -221,7 +221,7 @@ class _FirstTankWizardScreenState extends ConsumerState<FirstTankWizardScreen> {
             style: AppTypography.headlineLarge,
             textAlign: TextAlign.center,
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.sm2),
           Text(
             'How many gallons/liters is your tank?',
             style: AppTypography.bodyLarge.copyWith(
@@ -229,7 +229,7 @@ class _FirstTankWizardScreenState extends ConsumerState<FirstTankWizardScreen> {
             ),
             textAlign: TextAlign.center,
           ),
-          const SizedBox(height: 40),
+          const SizedBox(height: AppSpacing.xl2),
           TextField(
             controller: _volumeLitresController,
             decoration: InputDecoration(
@@ -273,7 +273,7 @@ class _FirstTankWizardScreenState extends ConsumerState<FirstTankWizardScreen> {
             style: AppTypography.headlineLarge,
             textAlign: TextAlign.center,
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.sm2),
           Text(
             'What type of tank is this?',
             style: AppTypography.bodyLarge.copyWith(
@@ -281,7 +281,7 @@ class _FirstTankWizardScreenState extends ConsumerState<FirstTankWizardScreen> {
             ),
             textAlign: TextAlign.center,
           ),
-          const SizedBox(height: 40),
+          const SizedBox(height: AppSpacing.xl2),
           ...TankType.values.map((type) {
             final isSelected = _tankType == type;
             return Padding(
@@ -368,7 +368,7 @@ class _FirstTankWizardScreenState extends ConsumerState<FirstTankWizardScreen> {
             style: AppTypography.headlineLarge,
             textAlign: TextAlign.center,
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.sm2),
           Text(
             'Your tank is ready to be created',
             style: AppTypography.bodyLarge.copyWith(
@@ -376,7 +376,7 @@ class _FirstTankWizardScreenState extends ConsumerState<FirstTankWizardScreen> {
             ),
             textAlign: TextAlign.center,
           ),
-          const SizedBox(height: 40),
+          const SizedBox(height: AppSpacing.xl2),
           Container(
             padding: EdgeInsets.all(AppSpacing.lg2),
             decoration: BoxDecoration(
@@ -388,12 +388,12 @@ class _FirstTankWizardScreenState extends ConsumerState<FirstTankWizardScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 _buildSummaryRow('Name', _tankName),
-                const SizedBox(height: 12),
+                const SizedBox(height: AppSpacing.sm2),
                 _buildSummaryRow(
                   'Size',
                   '${_volumeLitres.toStringAsFixed(1)} liters (${(_volumeLitres * 0.264172).toStringAsFixed(1)} gallons)',
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: AppSpacing.sm2),
                 _buildSummaryRow('Type', _getTankTypeName(_tankType)),
               ],
             ),
@@ -408,7 +408,7 @@ class _FirstTankWizardScreenState extends ConsumerState<FirstTankWizardScreen> {
             child: Row(
               children: [
                 Icon(Icons.lightbulb_outline_rounded, color: AppColors.accent),
-                const SizedBox(width: 12),
+                const SizedBox(width: AppSpacing.sm2),
                 Expanded(
                   child: Text(
                     'After creating, you can add fish, equipment, and log water parameters!',

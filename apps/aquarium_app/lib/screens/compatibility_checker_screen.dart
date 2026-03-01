@@ -245,7 +245,7 @@ class _CompatibilityCheckerScreenState
                     child: Column(
                       children: [
                         Icon(Icons.set_meal, size: AppIconSizes.xl, color: AppColors.textHint),
-                        const SizedBox(height: 12),
+                        const SizedBox(height: AppSpacing.sm2),
                         Text(
                           'Add Fish to Check',
                           style: AppTypography.headlineSmall,
@@ -305,7 +305,7 @@ class _CompatibilityCheckerScreenState
                                 : AppColors.success,
                             size: 32,
                           ),
-                          const SizedBox(width: 12),
+                          const SizedBox(width: AppSpacing.sm2),
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,

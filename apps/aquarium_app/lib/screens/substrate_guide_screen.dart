@@ -29,7 +29,7 @@ class SubstrateGuideScreen extends StatelessWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: AppSpacing.sm2),
                 Text(
                   'Substrate affects water chemistry, plant growth, fish behavior, and aesthetics. '
                   'Choose based on your tank inhabitants and goals.',
@@ -240,7 +240,7 @@ class SubstrateGuideScreen extends StatelessWidget {
                   style: AppTypography.bodySmall,
                 ),
 
-                const SizedBox(height: 20),
+                const SizedBox(height: AppSpacing.lg2),
 
                 Text('High-Tech Planted', style: AppTypography.labelLarge),
                 const SizedBox(height: AppSpacing.sm),
@@ -284,7 +284,7 @@ class SubstrateGuideScreen extends StatelessWidget {
                     Text('Pro Tips', style: AppTypography.headlineSmall),
                 ],
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: AppSpacing.sm2),
               _TipItem(
                 text: 'Rinse all substrate before use - even "pre-washed"',
               ),
@@ -396,7 +396,7 @@ class _SubstrateCard extends StatelessWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: AppSpacing.sm2),
                 Container(
                   width: double.infinity,
                   padding: const EdgeInsets.all(AppSpacing.sm3),
@@ -453,7 +453,7 @@ class _TankTypeCard extends StatelessWidget {
               width: 100,
               child: Text(tankType, style: AppTypography.labelLarge),
             ),
-            const SizedBox(width: 12),
+            const SizedBox(width: AppSpacing.sm2),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -500,7 +500,7 @@ class _LayerRow extends StatelessWidget {
               borderRadius: AppRadius.xsRadius,
             ),
           ),
-          const SizedBox(width: 12),
+          const SizedBox(width: AppSpacing.sm2),
           Text('$layer: ', style: AppTypography.labelLarge),
           Expanded(child: Text(material, style: AppTypography.bodySmall)),
         ],

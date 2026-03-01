@@ -61,7 +61,7 @@ class _TankPickerSheetState extends ConsumerState<TankPickerSheet> {
             child: Row(
               children: [
                 Icon(Icons.water_drop, color: AppColors.primary),
-                const SizedBox(width: 12),
+                const SizedBox(width: AppSpacing.sm2),
                 Text('Your Tanks', style: AppTypography.headlineSmall),
                 const Spacer(),
                 if (_hasReordered)

@@ -87,7 +87,7 @@ class _LightingScheduleScreenState extends State<LightingScheduleScreen> {
             child: Row(
               children: [
                 Icon(Icons.lightbulb, size: AppIconSizes.lg, color: AppColors.textSecondary),
-                const SizedBox(width: 12),
+                const SizedBox(width: AppSpacing.sm2),
                 Expanded(
                   child: Text(
                     'Proper lighting duration prevents algae while keeping plants and fish healthy.',
@@ -101,7 +101,7 @@ class _LightingScheduleScreenState extends State<LightingScheduleScreen> {
           const SizedBox(height: AppSpacing.lg),
 
           Text('Tank Setup', style: AppTypography.headlineSmall),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.sm2),
 
           AppCard(
             padding: AppCardPadding.none,
@@ -145,7 +145,7 @@ class _LightingScheduleScreenState extends State<LightingScheduleScreen> {
           const SizedBox(height: AppSpacing.lg),
 
           Text('Schedule', style: AppTypography.headlineSmall),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.sm2),
 
           AppCard(
             padding: AppCardPadding.none,
@@ -221,7 +221,7 @@ class _LightingScheduleScreenState extends State<LightingScheduleScreen> {
                     ),
                   ],
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: AppSpacing.sm2),
                 _TimelineBar(
                   lightsOn: _lightsOn,
                   lightsOff: _lightsOff,
@@ -250,7 +250,7 @@ class _LightingScheduleScreenState extends State<LightingScheduleScreen> {
                       ? AppColors.warning
                       : AppColors.success,
                 ),
-                const SizedBox(width: 12),
+                const SizedBox(width: AppSpacing.sm2),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -268,7 +268,7 @@ class _LightingScheduleScreenState extends State<LightingScheduleScreen> {
           const SizedBox(height: AppSpacing.lg),
 
           Text('Quick Guide', style: AppTypography.headlineSmall),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.sm2),
 
           AppCard(
             padding: AppCardPadding.standard,

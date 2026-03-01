@@ -76,7 +76,7 @@ class TankSwitcher extends StatelessWidget {
                     size: AppIconSizes.sm,
                   ),
                 ),
-                const SizedBox(width: 12),
+                const SizedBox(width: AppSpacing.sm2),
 
                 // Tank info
                 Expanded(

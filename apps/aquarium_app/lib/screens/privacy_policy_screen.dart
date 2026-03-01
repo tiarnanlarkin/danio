@@ -338,7 +338,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
                         : AppColors.textSecondary,
                   ),
                 ),
-                const SizedBox(width: 12),
+                const SizedBox(width: AppSpacing.sm2),
                 Expanded(
                   child: Text(
                     item,
@@ -366,7 +366,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Icon(icon, color: AppColors.primary, size: AppIconSizes.md),
-          const SizedBox(width: 12),
+          const SizedBox(width: AppSpacing.sm2),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -405,7 +405,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
             ),
             child: Icon(icon, color: AppColors.primary, size: AppIconSizes.sm),
           ),
-          const SizedBox(width: 12),
+          const SizedBox(width: AppSpacing.sm2),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -439,13 +439,13 @@ class PrivacyPolicyScreen extends StatelessWidget {
       child: Row(
         children: [
           Icon(icon, color: AppColors.success, size: AppIconSizes.md),
-          const SizedBox(width: 12),
+          const SizedBox(width: AppSpacing.sm2),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(title, style: AppTypography.labelMedium),
-                const SizedBox(height: 2),
+                const SizedBox(height: AppSpacing.xxs),
                 Text(
                   description,
                   style: AppTypography.bodySmall.copyWith(
@@ -474,13 +474,13 @@ class PrivacyPolicyScreen extends StatelessWidget {
           Row(
             children: [
               const Icon(Icons.email, color: AppColors.primary, size: AppIconSizes.md),
-              const SizedBox(width: 12),
+              const SizedBox(width: AppSpacing.sm2),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text('Email', style: AppTypography.labelMedium),
-                    const SizedBox(height: 2),
+                    const SizedBox(height: AppSpacing.xxs),
                     Text(
                       'tiarnan.larkin@gmail.com',
                       style: AppTypography.bodyMedium.copyWith(

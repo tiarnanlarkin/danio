@@ -42,7 +42,7 @@ class RoomNavigation extends StatelessWidget {
                   ),
                 ),
               ),
-              const SizedBox(width: 12),
+              const SizedBox(width: AppSpacing.sm2),
               Expanded(
                 child: _RoomCard(
                   emoji: '🔧',
@@ -57,7 +57,7 @@ class RoomNavigation extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.sm2),
           _RoomCard(
             emoji: '🏪',
             name: 'Shop Street',

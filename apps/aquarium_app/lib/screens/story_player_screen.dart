@@ -537,7 +537,7 @@ class _ChoiceButton extends StatelessWidget {
                   ),
                 ),
               ),
-              const SizedBox(width: 12),
+              const SizedBox(width: AppSpacing.sm2),
               Icon(
                 Icons.arrow_forward_ios,
                 color: const Color(0xFFFFA000),

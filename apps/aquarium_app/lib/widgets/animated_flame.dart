@@ -408,7 +408,7 @@ class StreakFlameDisplay extends StatelessWidget {
           onCelebrationComplete: onCelebrationComplete,
         ),
         if (showCount && streakCount > 0) ...[
-          const SizedBox(height: 4),
+          const SizedBox(height: AppSpacing.xs),
           Text(
             '$streakCount',
             style: TextStyle(

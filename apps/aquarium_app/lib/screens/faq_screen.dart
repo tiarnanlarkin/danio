@@ -264,7 +264,7 @@ class _FaqItemState extends State<_FaqItem> {
                 ],
               ),
               if (_expanded) ...[
-                const SizedBox(height: 12),
+                const SizedBox(height: AppSpacing.sm2),
                 Text(widget.answer, style: AppTypography.bodyMedium),
               ],
             ],

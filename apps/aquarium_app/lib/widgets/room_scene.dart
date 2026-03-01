@@ -1299,7 +1299,7 @@ class _WaterQualityCard extends StatelessWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: AppSpacing.sm),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
@@ -1332,7 +1332,7 @@ class _WaterStat extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         Text(value, style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: color, fontWeight: FontWeight.bold)),
-        const SizedBox(height: 2),
+        const SizedBox(height: AppSpacing.xxs),
         Text(label, style: Theme.of(context).textTheme.labelSmall!.copyWith(color: Color(0xFFB0B8C8))),
       ],
     );
@@ -1374,7 +1374,7 @@ class _GlassBadge extends StatelessWidget {
                   fontWeight: FontWeight.w600,
                 ),
               ),
-              const SizedBox(width: 8),
+              const SizedBox(width: AppSpacing.sm),
               Container(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 8,

@@ -368,7 +368,7 @@ class _ToolCard extends StatelessWidget {
                     fontWeight: FontWeight.w600,
                   ),
                 ),
-                const SizedBox(height: 2),
+                const SizedBox(height: AppSpacing.xxs),
                 Text(
                   subtitle,
                   style: Theme.of(context).textTheme.bodySmall!.copyWith(

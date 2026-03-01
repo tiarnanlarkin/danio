@@ -33,7 +33,7 @@ class NitrogenCycleGuideScreen extends StatelessWidget {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: AppSpacing.sm2),
                   Text(
                     'The nitrogen cycle is the process by which beneficial bacteria convert toxic fish waste (ammonia) into less harmful substances. '
                     'A "cycled" tank has enough bacteria to process all the ammonia your fish produce.',
@@ -327,7 +327,7 @@ class _MethodCard extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.sm2),
             Row(
               children: [
                 Expanded(
@@ -383,7 +383,7 @@ class _CheckItem extends StatelessWidget {
       child: Row(
         children: [
           Icon(Icons.check_circle, color: AppColors.success, size: AppIconSizes.sm),
-          const SizedBox(width: 12),
+          const SizedBox(width: AppSpacing.sm2),
           Text(text, style: AppTypography.bodyMedium),
         ],
       ),
@@ -406,7 +406,7 @@ class _TipCard extends StatelessWidget {
         child: Row(
           children: [
             Icon(icon, color: AppColors.primary, size: AppIconSizes.md),
-            const SizedBox(width: 12),
+            const SizedBox(width: AppSpacing.sm2),
             Expanded(child: Text(tip, style: AppTypography.bodyMedium)),
           ],
         ),

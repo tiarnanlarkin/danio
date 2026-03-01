@@ -133,7 +133,7 @@ class _AchievementUnlockedDialogState extends State<AchievementUnlockedDialog>
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const SizedBox(height: 40),
+                        const SizedBox(height: AppSpacing.xl2),
 
                         // "Achievement Unlocked" header
                         Text(
@@ -213,7 +213,7 @@ class _AchievementUnlockedDialogState extends State<AchievementUnlockedDialog>
                           ),
                         ),
 
-                        const SizedBox(height: 12),
+                        const SizedBox(height: AppSpacing.sm2),
 
                         // Achievement description
                         Padding(
@@ -306,7 +306,7 @@ class _AchievementUnlockedDialogState extends State<AchievementUnlockedDialog>
                           ),
                         ),
 
-                        const SizedBox(height: 40),
+                        const SizedBox(height: AppSpacing.xl2),
                       ],
                     ),
                   ),

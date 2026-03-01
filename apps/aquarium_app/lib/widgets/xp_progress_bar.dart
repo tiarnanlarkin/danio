@@ -330,7 +330,7 @@ class XpProgressCard extends ConsumerWidget {
                                 size: AppIconSizes.sm,
                               ),
                             ),
-                            const SizedBox(width: 12),
+                            const SizedBox(width: AppSpacing.sm2),
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [

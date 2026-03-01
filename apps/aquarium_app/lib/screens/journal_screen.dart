@@ -181,7 +181,7 @@ class _JournalEntryCard extends StatelessWidget {
                     ),
                   ),
                 ),
-                const SizedBox(width: 12),
+                const SizedBox(width: AppSpacing.sm2),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -191,10 +191,10 @@ class _JournalEntryCard extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.sm2),
             Text(entry.notes ?? '', style: AppTypography.bodyMedium),
             if (entry.photoUrls != null && entry.photoUrls!.isNotEmpty) ...[
-              const SizedBox(height: 12),
+              const SizedBox(height: AppSpacing.sm2),
               Row(
                 children: [
                   Icon(Icons.image, size: AppIconSizes.xs, color: AppColors.textSecondary),

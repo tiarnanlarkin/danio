@@ -65,7 +65,7 @@ class GamificationDashboard extends ConsumerWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: AppSpacing.sm2),
 
               // Row 2: Gems, Today XP, and Hearts
               Row(
@@ -141,7 +141,7 @@ class GamificationDashboard extends ConsumerWidget {
                 color: Theme.of(context).colorScheme.surfaceContainerHigh,
                 borderRadius: AppRadius.xsRadius,
               )),
-              const SizedBox(height: 6),
+              const SizedBox(height: AppSpacing.xs2),
               Container(width: 48, height: 10, decoration: BoxDecoration(
                 color: Theme.of(context).colorScheme.surfaceContainerHighest,
                 borderRadius: AppRadius.xsRadius,
@@ -202,7 +202,7 @@ class _StatItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final rowChildren = [
       Text(icon, style: Theme.of(context).textTheme.titleLarge!.copyWith()),
-      const SizedBox(width: 4),
+      const SizedBox(width: AppSpacing.xs),
       Flexible(
         child: Text(
           value,
@@ -215,7 +215,7 @@ class _StatItem extends StatelessWidget {
           overflow: TextOverflow.ellipsis,
         ),
       ),
-      const SizedBox(width: 2),
+      const SizedBox(width: AppSpacing.xxs),
       Flexible(
         child: Text(
           label,
@@ -250,7 +250,7 @@ class _HeartsDisplay extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         Text('❤️', style: Theme.of(context).textTheme.titleLarge!),
-        const SizedBox(width: 4),
+        const SizedBox(width: AppSpacing.xs),
         Flexible(child: Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
@@ -330,7 +330,7 @@ class _DailyGoalProgress extends StatelessWidget {
                 color: isComplete ? DanioColors.emeraldGreen : null,
               ),
             ),
-            const SizedBox(width: 6),
+            const SizedBox(width: AppSpacing.xs2),
             Text(
               'Daily Goal: $current/$goal XP',
               style: AppTypography.labelMedium.copyWith(
@@ -421,7 +421,7 @@ class MiniGamificationDisplay extends ConsumerWidget {
           children: [
             // Streak
             _MiniStat(emoji: '🔥', value: profile.currentStreak),
-            const SizedBox(width: 12),
+            const SizedBox(width: AppSpacing.sm2),
             // Gems
             _MiniStat(emoji: '💎', value: gemsBalance),
           ],

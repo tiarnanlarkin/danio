@@ -250,7 +250,7 @@ class AlgaeGuideScreen extends StatelessWidget {
                       Text('Algae Basics', style: AppTypography.headlineSmall),
                     ],
                   ),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: AppSpacing.sm2),
                   Text(
                     'Some algae is normal and healthy - it means your tank is alive! '
                     'Problems occur when algae grows out of control due to imbalances in light, nutrients, or CO2.',
@@ -441,7 +441,7 @@ class _AlgaeCard extends StatelessWidget {
                   (c) => Text('• $c', style: AppTypography.bodySmall),
                 ),
 
-                const SizedBox(height: 12),
+                const SizedBox(height: AppSpacing.sm2),
 
                 Text(
                   'Solutions',
@@ -454,7 +454,7 @@ class _AlgaeCard extends StatelessWidget {
                   (s) => Text('• $s', style: AppTypography.bodySmall),
                 ),
 
-                const SizedBox(height: 12),
+                const SizedBox(height: AppSpacing.sm2),
 
                 Container(
                   padding: const EdgeInsets.all(AppSpacing.sm3),
@@ -517,7 +517,7 @@ class _CrewCard extends StatelessWidget {
                 size: AppIconSizes.sm,
               ),
             ),
-            const SizedBox(width: 12),
+            const SizedBox(width: AppSpacing.sm2),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -552,7 +552,7 @@ class _ChecklistItem extends StatelessWidget {
       child: Row(
         children: [
           Icon(Icons.check_box_outlined, size: AppIconSizes.sm, color: AppColors.success),
-          const SizedBox(width: 12),
+          const SizedBox(width: AppSpacing.sm2),
           Expanded(child: Text(text, style: AppTypography.bodyMedium)),
         ],
       ),
