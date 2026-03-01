@@ -169,11 +169,11 @@ class CyclingStatusCard extends StatelessWidget {
       case CyclingStatus.notStarted:
         return 'Add an ammonia source to begin';
       case CyclingStatus.earlyStage:
-        return 'Day $days — ammonia is being produced';
+        return 'Day $days - ammonia is being produced';
       case CyclingStatus.midCycle:
-        return 'Day $days — beneficial bacteria growing';
+        return 'Day $days - beneficial bacteria growing';
       case CyclingStatus.almostDone:
-        return 'Day $days — almost there!';
+        return 'Day $days - almost there!';
       case CyclingStatus.cycled:
         return 'Safe to add fish gradually';
       case CyclingStatus.unknown:

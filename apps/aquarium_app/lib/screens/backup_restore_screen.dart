@@ -282,7 +282,7 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
                       Text('Import Warning', style: AppTypography.labelLarge),
                       const SizedBox(height: AppSpacing.xs),
                       Text(
-                        'Importing data will ADD to your existing tanks — it won\'t overwrite or delete anything.',
+                        'Importing data will ADD to your existing tanks - it won\'t overwrite or delete anything.',
                         style: AppTypography.bodySmall,
                       ),
                     ],

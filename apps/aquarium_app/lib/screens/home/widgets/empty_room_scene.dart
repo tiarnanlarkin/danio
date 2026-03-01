@@ -167,7 +167,7 @@ class EmptyRoomScene extends StatelessWidget {
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  'Every great fishkeeper starts right here.\nLet's set up your first tank! 🐠',
+                  'Every great fishkeeper starts right here.\nLet\'s set up your first tank! 🐠',
                   style: AppTypography.bodyMedium.copyWith(
                     color: AppColors.textSecondary,
                   ),

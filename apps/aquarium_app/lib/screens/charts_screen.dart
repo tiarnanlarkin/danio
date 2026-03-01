@@ -532,7 +532,7 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
     }
 
     if (!context.mounted) return;
-    AppFeedback.showLoading(context, 'Preparing export…');
+    AppFeedback.showLoading(context, 'Preparing export...');
     var dismissLoadingInFinally = true;
 
     try {

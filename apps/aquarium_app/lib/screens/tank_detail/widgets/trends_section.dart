@@ -34,7 +34,7 @@ class TrendsRow extends StatelessWidget {
               Text('Trends', style: AppTypography.headlineSmall),
               const SizedBox(height: AppSpacing.sm),
               Text(
-                'No trend data yet — log a few water tests.',
+                'No trend data yet - log a few water tests.',
                 style: AppTypography.bodyMedium,
               ),
             ],
@@ -202,7 +202,7 @@ class SparklineCard extends StatelessWidget {
             const SizedBox(height: AppSpacing.sm),
             Expanded(
               child: values.length < 2
-                  ? Center(child: Text('—', style: AppTypography.bodySmall))
+                  ? Center(child: Text('-', style: AppTypography.bodySmall))
                   : MiniSparkline(values: values, color: _color()),
             ),
           ],

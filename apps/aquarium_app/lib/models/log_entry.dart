@@ -12,7 +12,7 @@ enum LogType {
   other,
 }
 
-/// Water test results — all nullable since not all tests done each time
+/// Water test results - all nullable since not all tests done each time
 class WaterTestResults {
   final double? temperature; // °C
   final double? ph;
@@ -102,7 +102,7 @@ class WaterTestResults {
   }
 }
 
-/// A log entry — water tests, events, observations
+/// A log entry - water tests, events, observations
 class LogEntry {
   final String id;
   final String tankId;

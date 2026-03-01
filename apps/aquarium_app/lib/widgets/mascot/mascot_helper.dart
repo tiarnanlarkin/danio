@@ -231,7 +231,7 @@ class MascotHelper {
       "Your fish are lucky to have you!",
       "Small steps lead to big results!",
       "You're building something amazing here!",
-      "One lesson at a time — that's how champions learn! 🏆",
+      "One lesson at a time - that's how champions learn! 🏆",
       "I believe in you! 💪",
     ],
     MascotContext.tip: [

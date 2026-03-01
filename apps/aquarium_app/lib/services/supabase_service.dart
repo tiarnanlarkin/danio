@@ -6,7 +6,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 /// Initialise once at app start via [SupabaseService.initialize].
 /// Access the shared instance via [SupabaseService.instance].
 ///
-/// All cloud features are additive — the app works without initialising
+/// All cloud features are additive - the app works without initialising
 /// Supabase (offline-first guarantee).
 class SupabaseService {
   SupabaseService._();
@@ -58,7 +58,7 @@ class SupabaseService {
     // Skip if credentials are still placeholders
     if (_supabaseUrl.contains('YOUR_PROJECT_REF') ||
         _supabaseAnonKey.contains('YOUR_SUPABASE_ANON_KEY')) {
-      debugPrint('[SupabaseService] Placeholder credentials detected — '
+      debugPrint('[SupabaseService] Placeholder credentials detected - '
           'running in offline-only mode.');
       return false;
     }

@@ -12,7 +12,7 @@ enum EquipmentType {
   other,
 }
 
-/// Equipment item — filters, heaters, lights, etc.
+/// Equipment item - filters, heaters, lights, etc.
 /// Each has its own maintenance schedule.
 class Equipment {
   final String id;

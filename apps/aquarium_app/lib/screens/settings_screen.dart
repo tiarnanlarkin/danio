@@ -912,7 +912,7 @@ class SettingsScreen extends ConsumerWidget {
       ),
       children: [
         const Text(
-          'Personal aquarium management — track tanks, livestock, equipment & maintenance.',
+          'Personal aquarium management - track tanks, livestock, equipment & maintenance.',
         ),
         const SizedBox(height: AppSpacing.md),
         const Text(
@@ -926,7 +926,7 @@ class SettingsScreen extends ConsumerWidget {
   Future<void> _exportData(BuildContext context) async {
     if (!context.mounted) return;
 
-    AppFeedback.showLoading(context, 'Preparing export…');
+    AppFeedback.showLoading(context, 'Preparing export...');
     var dismissLoadingInFinally = true;
 
     try {
@@ -996,7 +996,7 @@ class SettingsScreen extends ConsumerWidget {
       return;
     }
 
-    AppFeedback.showLoading(context, 'Importing data…');
+    AppFeedback.showLoading(context, 'Importing data...');
     var dismissLoadingInFinally = true;
 
     try {

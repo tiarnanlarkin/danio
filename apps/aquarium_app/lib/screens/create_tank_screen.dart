@@ -266,7 +266,7 @@ class _CreateTankScreenState extends ConsumerState<CreateTankScreen> {
         if (tanks.length <= 1) {
           ref.read(celebrationProvider.notifier).milestone(
             'Your First Tank! 🎉',
-            subtitle: 'Welcome to the hobby — your aquarium adventure has officially begun!',
+            subtitle: 'Welcome to the hobby - your aquarium adventure has officially begun!',
           );
         }
       }

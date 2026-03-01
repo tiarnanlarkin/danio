@@ -7,7 +7,7 @@ import '../services/cloud_backup_service.dart';
 import '../services/cloud_sync_service.dart';
 import '../theme/app_theme.dart';
 
-/// Account screen — sign-in / profile / sync management.
+/// Account screen - sign-in / profile / sync management.
 ///
 /// When signed out: shows email+password form and Google sign-in button.
 /// When signed in: shows profile info, sync status, backup/restore, sign-out.
@@ -111,7 +111,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
             const SizedBox(height: AppSpacing.xs),
             Text(
               'Sync your aquarium data across devices.\n'
-              'An account is optional — the app works fully offline.',
+              'An account is optional - the app works fully offline.',
               style: theme.textTheme.bodyMedium?.copyWith(
                 color: theme.colorScheme.onSurfaceVariant,
               ),
@@ -354,7 +354,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
   Future<void> _createBackup(BuildContext context) async {
     try {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Creating encrypted backup…')),
+        const SnackBar(content: Text('Creating encrypted backup...')),
       );
       await CloudBackupService.instance.createAndUploadBackup();
       if (context.mounted) {
@@ -396,7 +396,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
 
     try {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Restoring backup…')),
+        const SnackBar(content: Text('Restoring backup...')),
       );
       await CloudBackupService.instance.downloadAndRestoreBackup();
       if (context.mounted) {
@@ -460,15 +460,15 @@ class _SyncStatusCard extends ConsumerWidget {
         color = Colors.green;
       case CloudSyncStatus.syncing:
         icon = Icons.sync;
-        label = 'Syncing…';
+        label = 'Syncing...';
         color = AppColors.info;
       case CloudSyncStatus.offline:
         icon = Icons.cloud_off;
-        label = 'Offline — changes queued';
+        label = 'Offline - changes queued';
         color = Colors.orange;
       case CloudSyncStatus.error:
         icon = Icons.error_outline;
-        label = 'Sync error — tap to retry';
+        label = 'Sync error - tap to retry';
         color = Colors.red;
       case CloudSyncStatus.disabled:
         icon = Icons.cloud_off;

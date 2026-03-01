@@ -165,7 +165,7 @@ class SampleData {
       heightCm: 40,
       startDate: now.subtract(const Duration(days: 60)),
       targets: WaterTargets.freshwaterTropical(),
-      notes: 'Demo data — feel free to edit or delete.',
+      notes: 'Demo data - feel free to edit or delete.',
       createdAt: now,
       updatedAt: now,
     );

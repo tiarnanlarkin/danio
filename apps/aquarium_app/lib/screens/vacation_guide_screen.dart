@@ -91,7 +91,7 @@ class VacationGuideScreen extends StatelessWidget {
               'Do a large water change (30-50%)',
               'Clean filter media (in tank water)',
               'Trim plants if needed',
-              'Test water parameters — address any issues',
+              'Test water parameters - address any issues',
               'Check all equipment is working properly',
             ],
           ),
@@ -163,7 +163,7 @@ class VacationGuideScreen extends StatelessWidget {
               'Can cause ammonia spikes',
               'Fish often ignore them',
             ],
-            tip: 'Avoid these — they cause more problems than they solve.',
+            tip: 'Avoid these - they cause more problems than they solve.',
           ),
 
           _OptionCard(
@@ -176,7 +176,7 @@ class VacationGuideScreen extends StatelessWidget {
             ],
             cons: ['Risk of overfeeding', 'Must be trained', 'Availability'],
             tip:
-                'Pre-portion food in daily containers. Less is more — they WILL overfeed.',
+                'Pre-portion food in daily containers. Less is more - they WILL overfeed.',
           ),
 
           const SizedBox(height: AppSpacing.lg),
@@ -194,7 +194,7 @@ class VacationGuideScreen extends StatelessWidget {
                 ),
                 _BulletPoint(
                   text:
-                      'Write clear instructions — feeding only, no maintenance',
+                      'Write clear instructions - feeding only, no maintenance',
                 ),
                 _BulletPoint(
                   text: 'Show them where NOT to stick their hands',

@@ -6,7 +6,7 @@ import '../../services/supabase_service.dart';
 /// Authentication service wrapping Supabase Auth.
 ///
 /// Supports email+password and Google OAuth.
-/// All methods are safe to call when Supabase is not initialised —
+/// All methods are safe to call when Supabase is not initialised -
 /// they return appropriate error states without throwing.
 class AuthService {
   AuthService._();
@@ -87,7 +87,7 @@ class AuthService {
         redirectTo: 'io.supabase.aquariumapp://login-callback/',
       );
       if (success) {
-        // OAuth redirect flow — the actual user object arrives via
+        // OAuth redirect flow - the actual user object arrives via
         // authStateChanges after the browser redirect completes.
         return const AuthResult.pendingRedirect();
       }

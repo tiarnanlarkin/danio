@@ -41,7 +41,7 @@ class ParameterGuideScreen extends StatelessWidget {
             ideal: '0 ppm',
             danger: '>0.25 ppm',
             description:
-                'Produced by fish waste and decaying matter. Highly toxic — burns gills and causes stress. '
+                'Produced by fish waste and decaying matter. Highly toxic - burns gills and causes stress. '
                 'Should always be 0 in a cycled tank.',
             tips: [
               'If detected, do an immediate 25-50% water change',
@@ -95,7 +95,7 @@ class ParameterGuideScreen extends StatelessWidget {
                 'Measures acidity/alkalinity. Most tropical fish prefer 6.5-7.5. '
                 'Stability is more important than hitting a specific number.',
             tips: [
-              'Don\'t chase a specific pH — stability matters more',
+              'Don\'t chase a specific pH - stability matters more',
               'Driftwood and peat lower pH',
               'Crusite and limestone raise pH',
               'Test tap water to know your baseline',
@@ -126,7 +126,7 @@ class ParameterGuideScreen extends StatelessWidget {
             ideal: '4-8 dKH',
             danger: '<2 dKH',
             description:
-                'Measures buffering capacity — prevents pH crashes. Low KH means pH can swing dangerously.',
+                'Measures buffering capacity - prevents pH crashes. Low KH means pH can swing dangerously.',
             tips: [
               'Acts as pH buffer',
               'Low KH = risk of pH crash',

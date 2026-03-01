@@ -128,7 +128,7 @@ class _EmptyJournal extends StatelessWidget {
             Text('No journal entries yet', style: AppTypography.headlineSmall),
             const SizedBox(height: AppSpacing.sm),
             Text(
-              'Keep a diary of your tank\'s journey — observations, milestones, changes, and memories.',
+              'Keep a diary of your tank\'s journey - observations, milestones, changes, and memories.',
               style: AppTypography.bodyMedium,
               textAlign: TextAlign.center,
             ),

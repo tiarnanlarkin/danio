@@ -21,7 +21,7 @@ export '../core/app_text_field.dart' show AppTextField, AppSearchField;
 /// - [AppSpacing.s16] for horizontal content padding
 /// - [AppRadius.smallRadius] for container shape
 ///
-/// For password fields, set [obscureText] = true — a show/hide toggle
+/// For password fields, set [obscureText] = true - a show/hide toggle
 /// is automatically appended.
 ///
 /// Example:

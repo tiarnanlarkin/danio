@@ -33,7 +33,7 @@ class StockingCalculator {
       return const StockingResult(
         level: StockingLevel.understocked,
         percentFull: 0,
-        summary: 'No livestock — room for new additions!',
+        summary: 'No livestock - room for new additions!',
         suggestions: [
           'Consider starting with hardy species like tetras or guppies.',
         ],
@@ -79,7 +79,7 @@ class StockingCalculator {
           );
         }
       } else {
-        // Unknown species — estimate 5cm
+        // Unknown species - estimate 5cm
         sizeCm = l.sizeCm ?? 5.0;
       }
 
@@ -100,23 +100,23 @@ class StockingCalculator {
 
     if (percentFull < 30) {
       level = StockingLevel.understocked;
-      summary = 'Lightly stocked — plenty of room for growth or additions.';
+      summary = 'Lightly stocked - plenty of room for growth or additions.';
       suggestions.add('Consider adding more fish or plants.');
     } else if (percentFull < 60) {
       level = StockingLevel.good;
-      summary = 'Well balanced — healthy stocking level.';
+      summary = 'Well balanced - healthy stocking level.';
     } else if (percentFull < 80) {
       level = StockingLevel.moderate;
-      summary = 'Moderately stocked — keep up with maintenance.';
+      summary = 'Moderately stocked - keep up with maintenance.';
       suggestions.add('Stay on top of water changes.');
     } else if (percentFull < 100) {
       level = StockingLevel.heavy;
-      summary = 'Heavily stocked — requires diligent maintenance.';
+      summary = 'Heavily stocked - requires diligent maintenance.';
       warnings.add('Consider more frequent water changes.');
       suggestions.add('Good filtration is essential.');
     } else {
       level = StockingLevel.overstocked;
-      summary = 'Overstocked — risk of water quality issues.';
+      summary = 'Overstocked - risk of water quality issues.';
       warnings.add('Tank may be overstocked.');
       suggestions.add('Consider rehoming some fish or upgrading tank size.');
     }

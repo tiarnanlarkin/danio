@@ -58,7 +58,7 @@ class CompatibilityService {
             level: CompatibilityLevel.incompatible,
             title: 'Temperature too high',
             description:
-                '${species.commonName} prefers ${species.minTempC}–${species.maxTempC}°C, but tank target is ${tankMin.toStringAsFixed(0)}°C minimum.',
+                '${species.commonName} prefers ${species.minTempC}-${species.maxTempC}°C, but tank target is ${tankMin.toStringAsFixed(0)}°C minimum.',
             suggestion:
                 'Consider lowering tank temperature or choosing a different species.',
           ),
@@ -69,7 +69,7 @@ class CompatibilityService {
             level: CompatibilityLevel.incompatible,
             title: 'Temperature too low',
             description:
-                '${species.commonName} needs ${species.minTempC}–${species.maxTempC}°C, but tank target is ${tankMax.toStringAsFixed(0)}°C maximum.',
+                '${species.commonName} needs ${species.minTempC}-${species.maxTempC}°C, but tank target is ${tankMax.toStringAsFixed(0)}°C maximum.',
             suggestion:
                 'Consider raising tank temperature or choosing a different species.',
           ),
@@ -81,7 +81,7 @@ class CompatibilityService {
             level: CompatibilityLevel.warning,
             title: 'Temperature at edge of range',
             description:
-                '${species.commonName} prefers ${species.minTempC}–${species.maxTempC}°C. Tank targets (${tankMin.toStringAsFixed(0)}–${tankMax.toStringAsFixed(0)}°C) are workable but not ideal.',
+                '${species.commonName} prefers ${species.minTempC}-${species.maxTempC}°C. Tank targets (${tankMin.toStringAsFixed(0)}-${tankMax.toStringAsFixed(0)}°C) are workable but not ideal.',
           ),
         );
       }
@@ -98,7 +98,7 @@ class CompatibilityService {
             level: CompatibilityLevel.incompatible,
             title: 'pH too high',
             description:
-                '${species.commonName} prefers pH ${species.minPh}–${species.maxPh}, but tank target is ${tankPhMin.toStringAsFixed(1)} minimum.',
+                '${species.commonName} prefers pH ${species.minPh}-${species.maxPh}, but tank target is ${tankPhMin.toStringAsFixed(1)} minimum.',
             suggestion: 'This species needs softer, more acidic water.',
           ),
         );
@@ -108,7 +108,7 @@ class CompatibilityService {
             level: CompatibilityLevel.incompatible,
             title: 'pH too low',
             description:
-                '${species.commonName} needs pH ${species.minPh}–${species.maxPh}, but tank target is ${tankPhMax.toStringAsFixed(1)} maximum.',
+                '${species.commonName} needs pH ${species.minPh}-${species.maxPh}, but tank target is ${tankPhMax.toStringAsFixed(1)} maximum.',
             suggestion: 'This species needs harder, more alkaline water.',
           ),
         );
@@ -119,7 +119,7 @@ class CompatibilityService {
             level: CompatibilityLevel.warning,
             title: 'pH at edge of comfort zone',
             description:
-                '${species.commonName} prefers pH ${species.minPh}–${species.maxPh}. May adapt to tank pH, but not ideal.',
+                '${species.commonName} prefers pH ${species.minPh}-${species.maxPh}. May adapt to tank pH, but not ideal.',
           ),
         );
       }
@@ -137,7 +137,7 @@ class CompatibilityService {
               level: CompatibilityLevel.warning,
               title: 'Water may be too hard',
               description:
-                  '${species.commonName} prefers GH ${species.minGh}–${species.maxGh} dGH. Tank is harder at ${tankGhMin.toStringAsFixed(0)}+ dGH.',
+                  '${species.commonName} prefers GH ${species.minGh}-${species.maxGh} dGH. Tank is harder at ${tankGhMin.toStringAsFixed(0)}+ dGH.',
               suggestion:
                   'Consider using RO water or peat filtration to soften.',
             ),
@@ -148,7 +148,7 @@ class CompatibilityService {
               level: CompatibilityLevel.warning,
               title: 'Water may be too soft',
               description:
-                  '${species.commonName} prefers GH ${species.minGh}–${species.maxGh} dGH. Tank is softer at ${tankGhMax.toStringAsFixed(0)} dGH.',
+                  '${species.commonName} prefers GH ${species.minGh}-${species.maxGh} dGH. Tank is softer at ${tankGhMax.toStringAsFixed(0)} dGH.',
               suggestion:
                   'Consider adding mineral supplements or crushed coral.',
             ),

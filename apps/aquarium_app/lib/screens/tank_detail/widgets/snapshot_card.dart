@@ -163,7 +163,7 @@ class LatestSnapshotCard extends StatelessWidget {
   }
 
   String _fmt(double? v, {required int decimals}) {
-    if (v == null) return '—';
+    if (v == null) return '-';
     return v.toStringAsFixed(decimals);
   }
 

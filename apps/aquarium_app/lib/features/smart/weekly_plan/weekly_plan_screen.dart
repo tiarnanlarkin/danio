@@ -84,7 +84,7 @@ class _WeeklyPlanScreenState extends ConsumerState<WeeklyPlanScreen> {
           'Return ONLY valid JSON: '
           '{"days": [{"day": "Mon", "tasks": [{"task": "description", '
           '"duration_mins": 5, "priority": "normal"}]}]}. '
-          'Include all 7 days Mon–Sun.';
+          'Include all 7 days Mon-Sun.';
 
       final result = await openai.chatCompletion(
         messages: [
@@ -95,7 +95,7 @@ class _WeeklyPlanScreenState extends ConsumerState<WeeklyPlanScreen> {
                 'Create practical, tailored maintenance schedules based on the '
                 'specific tanks, species, and bioload provided. Consider tank '
                 'maturity, stocking density, and species-specific needs. '
-                'Prioritise water quality — ammonia/nitrite should always be 0. '
+                'Prioritise water quality - ammonia/nitrite should always be 0. '
                 'Always return valid JSON only, no markdown or explanation.',
           ),
           ChatMessage(role: 'user', content: prompt),

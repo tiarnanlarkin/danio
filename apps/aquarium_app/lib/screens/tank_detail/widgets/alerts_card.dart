@@ -40,7 +40,7 @@ class AlertsCard extends StatelessWidget {
               Text('Alerts', style: AppTypography.headlineSmall),
               const SizedBox(height: AppSpacing.sm),
               Text(
-                'No water tests yet — nothing to flag.',
+                'No water tests yet - nothing to flag.',
                 style: AppTypography.bodyMedium,
               ),
             ],

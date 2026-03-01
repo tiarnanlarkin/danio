@@ -116,7 +116,7 @@ class SubstrateGuideScreen extends StatelessWidget {
               'Holds nutrients',
             ],
             cons: [
-              'Very dusty — rinse thoroughly',
+              'Very dusty - rinse thoroughly',
               'No initial nutrients',
               'Heavy',
             ],
@@ -192,7 +192,7 @@ class SubstrateGuideScreen extends StatelessWidget {
             tankType: 'Shrimp',
             substrate: 'Aquasoil (for Caridina) or inert (for Neocaridina)',
             notes:
-                'Caridina need low pH — use buffering soil. Neocaridina adaptable.',
+                'Caridina need low pH - use buffering soil. Neocaridina adaptable.',
           ),
           _TankTypeCard(
             tankType: 'Biotope',
@@ -286,14 +286,14 @@ class SubstrateGuideScreen extends StatelessWidget {
               ),
               const SizedBox(height: 12),
               _TipItem(
-                text: 'Rinse all substrate before use — even "pre-washed"',
+                text: 'Rinse all substrate before use - even "pre-washed"',
               ),
               _TipItem(
                 text: 'Slope substrate higher in back for depth illusion',
               ),
               _TipItem(text: 'Use substrate dividers to create zones'),
               _TipItem(
-                text: 'Never vacuum planted areas deeply — disturbs roots',
+                text: 'Never vacuum planted areas deeply - disturbs roots',
               ),
               _TipItem(text: 'Dark substrate makes fish colors pop'),
               _TipItem(

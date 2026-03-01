@@ -1,4 +1,4 @@
-/// Today Board — Living Room Dashboard Panel
+/// Today Board - Living Room Dashboard Panel
 ///
 /// Compact overlay card showing upcoming tasks (today + next 2) for the
 /// active tank. Sits above the GamificationDashboard in the home screen Stack.

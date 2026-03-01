@@ -249,14 +249,14 @@ class _TankSettingsScreenState extends ConsumerState<TankSettingsScreen> {
                         groupValue: _waterType,
                         onChanged: (v) => setState(() => _waterType = v!),
                         title: const Text('Tropical'),
-                        subtitle: const Text('24–28°C • most community fish'),
+                        subtitle: const Text('24-28°C • most community fish'),
                       ),
                       RadioListTile<String>(
                         value: 'coldwater',
                         groupValue: _waterType,
                         onChanged: (v) => setState(() => _waterType = v!),
                         title: const Text('Coldwater'),
-                        subtitle: const Text('15–22°C • goldfish etc.'),
+                        subtitle: const Text('15-22°C • goldfish etc.'),
                       ),
                     ],
                   )
@@ -315,7 +315,7 @@ class _TankSettingsScreenState extends ConsumerState<TankSettingsScreen> {
                   initialValue: _notes,
                   decoration: const InputDecoration(
                     labelText: 'Notes',
-                    hintText: 'Anything you want to remember about this tank…',
+                    hintText: 'Anything you want to remember about this tank...',
                   ),
                   maxLines: 4,
                   onChanged: (v) => _notes = v,

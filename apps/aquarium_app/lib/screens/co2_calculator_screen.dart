@@ -150,7 +150,7 @@ class _Co2CalculatorScreenState extends State<Co2CalculatorScreen> {
                 Text(
                   _co2Level != null
                       ? '${_co2Level!.toStringAsFixed(1)} ppm'
-                      : '—',
+                      : '-',
                   style: AppTypography.headlineLarge.copyWith(
                     color: _co2Color,
                   ),
@@ -251,7 +251,7 @@ class _Co2CalculatorScreenState extends State<Co2CalculatorScreen> {
                       'Measure pH at the same time each day for consistency',
                 ),
                 _TipRow(
-                  text: 'KH stabilizes pH — don\'t let it drop below 2 dKH',
+                  text: 'KH stabilizes pH - don\'t let it drop below 2 dKH',
                 ),
                 _TipRow(text: 'CO2 drops at night when plants respire'),
                 _TipRow(text: 'Drop checkers lag ~2 hours behind actual CO2'),

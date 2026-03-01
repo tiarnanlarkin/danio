@@ -101,7 +101,7 @@ const _kCategories = [
   'General',
 ];
 
-/// Aquarium supply inventory screen — tracks product quantities, low-stock alerts,
+/// Aquarium supply inventory screen - tracks product quantities, low-stock alerts,
 /// and monthly expense summaries.
 class AquariumSupplyScreen extends ConsumerStatefulWidget {
   const AquariumSupplyScreen({super.key});
@@ -497,7 +497,7 @@ class _AquariumSupplyScreenState extends ConsumerState<AquariumSupplyScreen>
           content: TextField(
             controller: controller,
             maxLength: 3,
-            decoration: const InputDecoration(hintText: '£, \$, €…'),
+            decoration: const InputDecoration(hintText: '£, \$, €...'),
           ),
           actions: [
             TextButton(
@@ -582,7 +582,7 @@ class _SupplyCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              '${item.quantity} ${item.unit} — threshold: ${item.lowStockThreshold} ${item.unit}',
+              '${item.quantity} ${item.unit} - threshold: ${item.lowStockThreshold} ${item.unit}',
               style: AppTypography.bodySmall,
             ),
             if (item.lastPurchased != null)

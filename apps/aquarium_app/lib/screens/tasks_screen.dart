@@ -39,7 +39,7 @@ class TasksScreen extends ConsumerWidget {
               icon: Icons.task_alt,
               title: 'Set yourself up for success! ✅',
               message:
-                  'Add water changes, testing, and maintenance tasks — your fish will thank you',
+                  'Add water changes, testing, and maintenance tasks - your fish will thank you',
               mascotContext: MascotContext.encouragement,
               actionLabel: 'Add Task',
               onAction: () => _showAddDialog(context, ref),
@@ -341,7 +341,7 @@ class _TaskHistoryDialog extends ConsumerWidget {
     final logsAsync = ref.watch(allLogsProvider(tankId));
 
     return AlertDialog(
-      title: Text('History — ${task.title}'),
+      title: Text('History - ${task.title}'),
       content: SizedBox(
         width: double.maxFinite,
         child: logsAsync.when(

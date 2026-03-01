@@ -61,18 +61,18 @@ class HardscapeGuideScreen extends StatelessWidget {
             bestFor: 'Iwagumi, nature style, hard water tanks',
             tips: [
               'Very popular for iwagumi',
-              'Sharp edges — handle carefully',
+              'Sharp edges - handle carefully',
               'Not for soft water fish without buffering',
             ],
           ),
           _RockCard(
             name: 'Dragon Stone (Ohko)',
             description: 'Clay-based stone with holes and weathered texture.',
-            affectsWater: 'Inert — minimal effect',
+            affectsWater: 'Inert - minimal effect',
             bestFor: 'Planted tanks, nature style',
             tips: [
               'Lightweight',
-              'Soft — can be carved',
+              'Soft - can be carved',
               'Holes perfect for planting',
             ],
           ),
@@ -83,7 +83,7 @@ class HardscapeGuideScreen extends StatelessWidget {
             bestFor: 'Biological filtration, planted tanks, cichlid caves',
             tips: [
               'Excellent bacteria colonization',
-              'Very rough — can injure fish',
+              'Very rough - can injure fish',
               'Great for attaching plants',
             ],
           ),
@@ -93,7 +93,7 @@ class HardscapeGuideScreen extends StatelessWidget {
             affectsWater: 'Usually inert (test with vinegar first)',
             bestFor: 'Natural biotopes, riverbeds',
             tips: [
-              'Test for calcium — fizz = raises pH',
+              'Test for calcium - fizz = raises pH',
               'Smooth is safer for bottom dwellers',
               'Avoid collecting from polluted areas',
             ],
@@ -130,8 +130,8 @@ class HardscapeGuideScreen extends StatelessWidget {
             characteristics: 'Sinks immediately, releases tannins, very hard',
             bestFor: 'Blackwater tanks, plecos',
             tips: [
-              'Heavy tannin release — soak first',
-              'Very dense — sinks right away',
+              'Heavy tannin release - soak first',
+              'Very dense - sinks right away',
               'Won\'t rot quickly',
             ],
           ),
@@ -152,8 +152,8 @@ class HardscapeGuideScreen extends StatelessWidget {
             characteristics: 'Lightweight, floats initially, releases tannins',
             bestFor: 'Nature style, iwagumi accent, nano tanks',
             tips: [
-              'WILL float — soak for weeks or weigh down',
-              'Delicate — handle carefully',
+              'WILL float - soak for weeks or weigh down',
+              'Delicate - handle carefully',
               'Creates dramatic effect',
             ],
           ),
@@ -175,7 +175,7 @@ class HardscapeGuideScreen extends StatelessWidget {
             bestFor: 'Shrimp tanks, fry hiding',
             tips: [
               'Shrimp love it',
-              'Will decompose — replace every 6-12 months',
+              'Will decompose - replace every 6-12 months',
               'Biofilm grows on it (food for shrimp)',
             ],
           ),
@@ -207,7 +207,7 @@ class HardscapeGuideScreen extends StatelessWidget {
                 ),
                 _PrepStep(
                   step: '4',
-                  text: 'Test with vinegar — fizzing means calcium',
+                  text: 'Test with vinegar - fizzing means calcium',
                 ),
 
                 const SizedBox(height: AppSpacing.md),
@@ -221,7 +221,7 @@ class HardscapeGuideScreen extends StatelessWidget {
                 ),
                 _PrepStep(
                   step: '3',
-                  text: 'Soak in bucket — change water daily',
+                  text: 'Soak in bucket - change water daily',
                 ),
                 _PrepStep(
                   step: '4',
@@ -261,7 +261,7 @@ class HardscapeGuideScreen extends StatelessWidget {
           _TipCard(
             title: 'Height Variation',
             description:
-                'Vary heights — tall in back, short in front. Create depth.',
+                'Vary heights - tall in back, short in front. Create depth.',
             icon: Icons.trending_up,
           ),
           _TipCard(
@@ -296,10 +296,10 @@ class HardscapeGuideScreen extends StatelessWidget {
                 Text(
                   '• Never use rocks from parking lots or roadsides (contaminated)\n'
                   '• Avoid metal ores or rocks with metallic veins\n'
-                  '• Secure heavy rocks — they can crack glass if they fall\n'
+                  '• Secure heavy rocks - they can crack glass if they fall\n'
                   '• Test unknown rocks: vinegar fizz = calcium = affects water\n'
                   '• Don\'t collect wood from treated/painted sources\n'
-                  '• Weigh down floating wood — fish can get trapped',
+                  '• Weigh down floating wood - fish can get trapped',
                   style: AppTypography.bodyMedium,
                 ),
               ],

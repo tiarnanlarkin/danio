@@ -469,7 +469,7 @@ class SocialService {
       final rows = List<Map<String, dynamic>>.from(res);
 
       if (rows.isEmpty) {
-        // No leaderboard data yet — fall back to mock
+        // No leaderboard data yet - fall back to mock
         return MockLeaderboard.generate(
           currentUserId: currentUserId,
           currentUsername: currentUsername,

@@ -30,7 +30,7 @@ class ShopColors {
   static const textSecondaryAlpha50 = Color(0x80CDBFAE); // 50% opacity
   static const textSecondaryAlpha70 = Color(0xB3CDBFAE); // 70% opacity
 
-  // Dark mode adjustments — slightly lighter/desaturated greens
+  // Dark mode adjustments - slightly lighter/desaturated greens
   static const background1Dark = Color(0xFF5A8E6A); // Lighter forest green
   static const background2Dark = Color(0xFF4D7D5C); // Lighter mid green
   static const background3Dark = Color(0xFF3F6C4D); // Lighter base green

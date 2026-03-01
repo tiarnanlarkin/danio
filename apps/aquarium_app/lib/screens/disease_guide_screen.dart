@@ -402,7 +402,7 @@ final _allDiseases = [
       'Lower temperature (slows bacteria)',
       'Salt treatment (1 tbsp per 5 gallons)',
       'Antibiotics (kanamycin, furan-2)',
-      'Treat early — progresses fast',
+      'Treat early - progresses fast',
       'Remove carbon filtration during treatment',
     ],
     prevention: [
@@ -451,7 +451,7 @@ final _allDiseases = [
       'Eye may appear to "pop"',
     ],
     treatments: [
-      'If one eye: likely injury — clean water and time',
+      'If one eye: likely injury - clean water and time',
       'If both eyes: likely infection or water quality',
       'Improve water quality immediately',
       'Epsom salt (1 tbsp per 5 gallons)',

@@ -7,7 +7,7 @@ export '../core/app_button.dart' show AppButton, AppButtonVariant, AppButtonSize
 /// Standardised primary action button.
 ///
 /// Filled with [AppColors.primary]. Should be used for the single most
-/// important action on a screen or card. Use sparingly — one per view.
+/// important action on a screen or card. Use sparingly - one per view.
 ///
 /// Tokens used:
 /// - [AppColors.primary] fill colour

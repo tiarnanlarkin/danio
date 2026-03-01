@@ -52,7 +52,7 @@ class AboutScreen extends StatelessWidget {
             const SizedBox(height: AppSpacing.xl),
 
             Text(
-              'Duolingo for Fishkeeping. Learn, track, and master the aquarium hobby — one lesson at a time. 🐟',
+              'Duolingo for Fishkeeping. Learn, track, and master the aquarium hobby - one lesson at a time. 🐟',
               style: AppTypography.bodyLarge,
               textAlign: TextAlign.center,
             ),

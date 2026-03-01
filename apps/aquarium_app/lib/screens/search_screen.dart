@@ -315,8 +315,8 @@ class _SearchResults extends StatelessWidget {
               Text('Parameters', style: AppTypography.headlineSmall),
               const SizedBox(height: AppSpacing.sm),
               Text(
-                'Temperature: ${species.minTempC}–${species.maxTempC}°C\n'
-                'pH: ${species.minPh}–${species.maxPh}\n'
+                'Temperature: ${species.minTempC}-${species.maxTempC}°C\n'
+                'pH: ${species.minPh}-${species.maxPh}\n'
                 'Min tank: ${species.minTankLitres.toStringAsFixed(0)}L\n'
                 'School size: ${species.minSchoolSize}+',
                 style: AppTypography.bodyMedium,

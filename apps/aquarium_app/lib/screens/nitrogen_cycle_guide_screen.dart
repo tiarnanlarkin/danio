@@ -52,7 +52,7 @@ class NitrogenCycleGuideScreen extends StatelessWidget {
             _CycleStage(
               number: 1,
               title: 'Ammonia (NH₃)',
-              subtitle: 'Toxic — burns gills, causes stress',
+              subtitle: 'Toxic - burns gills, causes stress',
               description:
                   'Fish waste, uneaten food, and decaying plants produce ammonia. '
                   'Even small amounts (0.25 ppm+) are harmful.',
@@ -65,7 +65,7 @@ class NitrogenCycleGuideScreen extends StatelessWidget {
             _CycleStage(
               number: 2,
               title: 'Nitrite (NO₂)',
-              subtitle: 'Toxic — prevents oxygen absorption',
+              subtitle: 'Toxic - prevents oxygen absorption',
               description:
                   'Nitrosomonas bacteria convert ammonia to nitrite. '
                   'Still toxic but shows the cycle is progressing.',
@@ -78,7 +78,7 @@ class NitrogenCycleGuideScreen extends StatelessWidget {
             _CycleStage(
               number: 3,
               title: 'Nitrate (NO₃)',
-              subtitle: 'Safe in low amounts — removed by water changes',
+              subtitle: 'Safe in low amounts - removed by water changes',
               description:
                   'Nitrobacter bacteria convert nitrite to nitrate. '
                   'Nitrate is much less toxic and removed during water changes.',
@@ -159,20 +159,20 @@ class NitrogenCycleGuideScreen extends StatelessWidget {
             _TipCard(
               icon: Icons.thermostat,
               tip:
-                  'Keep temperature at 26-28°C — bacteria grow faster in warmth.',
+                  'Keep temperature at 26-28°C - bacteria grow faster in warmth.',
             ),
             _TipCard(
               icon: Icons.air,
-              tip: 'Run the filter 24/7 — bacteria live in the filter media.',
+              tip: 'Run the filter 24/7 - bacteria live in the filter media.',
             ),
             _TipCard(
               icon: Icons.cleaning_services,
               tip:
-                  'Never replace all filter media at once — you\'ll lose your bacteria.',
+                  'Never replace all filter media at once - you\'ll lose your bacteria.',
             ),
             _TipCard(
               icon: Icons.water_drop,
-              tip: 'Use dechlorinator — chlorine kills beneficial bacteria.',
+              tip: 'Use dechlorinator - chlorine kills beneficial bacteria.',
             ),
             _TipCard(
               icon: Icons.speed,

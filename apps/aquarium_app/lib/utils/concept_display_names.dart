@@ -67,8 +67,8 @@ const Map<String, String> _lessonTitles = {
 };
 
 /// Convert a raw concept ID like "nc_intro_section_2" or "nc_intro_quiz_q1"
-/// into a user-friendly display string like "Why New Tanks Kill Fish — Section 3"
-/// or "Why New Tanks Kill Fish — Quiz Q1".
+/// into a user-friendly display string like "Why New Tanks Kill Fish - Section 3"
+/// or "Why New Tanks Kill Fish - Quiz Q1".
 String conceptDisplayName(String conceptId) {
   // Try matching "{lessonId}_section_{n}"
   final sectionMatch = RegExp(r'^(.+)_section_(\d+)$').firstMatch(conceptId);
@@ -76,7 +76,7 @@ String conceptDisplayName(String conceptId) {
     final lessonId = sectionMatch.group(1)!;
     final sectionNum = int.parse(sectionMatch.group(2)!) + 1; // 0-indexed → 1-indexed
     final title = _lessonTitles[lessonId] ?? _titleFromId(lessonId);
-    return '$title — Key Point $sectionNum';
+    return '$title - Key Point $sectionNum';
   }
 
   // Try matching "{lessonId}_quiz_q{n}"
@@ -85,7 +85,7 @@ String conceptDisplayName(String conceptId) {
     final lessonId = quizMatch.group(1)!;
     final qNum = int.parse(quizMatch.group(2)!) + 1;
     final title = _lessonTitles[lessonId] ?? _titleFromId(lessonId);
-    return '$title — Quiz Q$qNum';
+    return '$title - Quiz Q$qNum';
   }
 
   // Fallback: try the whole string as a lesson ID

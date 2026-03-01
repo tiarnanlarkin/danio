@@ -43,14 +43,14 @@ class QuickStartGuideScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 _BulletPoint(
-                  text: 'Bigger is better — easier to maintain stable water',
+                  text: 'Bigger is better - easier to maintain stable water',
                 ),
                 _BulletPoint(text: 'Minimum 40L (10 gal) for beginners'),
                 _BulletPoint(
                   text: 'Consider where you\'ll put it (level, sturdy surface)',
                 ),
                 _BulletPoint(
-                  text: '1L of water = 1kg weight — plan accordingly',
+                  text: '1L of water = 1kg weight - plan accordingly',
                 ),
                 const SizedBox(height: AppSpacing.sm),
                 _TipBox(
@@ -106,7 +106,7 @@ class QuickStartGuideScreen extends StatelessWidget {
                 _NumberedStep(
                   num: 5,
                   text:
-                      'Fill with water — pour onto plate to avoid disturbing substrate',
+                      'Fill with water - pour onto plate to avoid disturbing substrate',
                 ),
                 _NumberedStep(num: 6, text: 'Add dechlorinator immediately'),
                 _NumberedStep(num: 7, text: 'Install filter and heater'),
@@ -161,17 +161,17 @@ class QuickStartGuideScreen extends StatelessWidget {
                 Text('Good beginner fish:', style: AppTypography.labelLarge),
                 _BulletPoint(text: 'Guppies, platies, mollies (livebearers)'),
                 _BulletPoint(
-                  text: 'Tetras (neons, cardinals) — need groups of 6+',
+                  text: 'Tetras (neons, cardinals) - need groups of 6+',
                 ),
-                _BulletPoint(text: 'Corydoras — need groups of 6+, need sand'),
-                _BulletPoint(text: 'Betta — single male only, no fin nippers'),
+                _BulletPoint(text: 'Corydoras - need groups of 6+, need sand'),
+                _BulletPoint(text: 'Betta - single male only, no fin nippers'),
                 _BulletPoint(text: 'Cherry barbs, zebra danios'),
                 const SizedBox(height: AppSpacing.sm),
                 Text('Consider:', style: AppTypography.labelLarge),
-                _BulletPoint(text: 'Adult size — research how big they get'),
-                _BulletPoint(text: 'Compatibility — will they get along?'),
-                _BulletPoint(text: 'Requirements — temperature, pH, space'),
-                _BulletPoint(text: 'Schooling needs — some need groups'),
+                _BulletPoint(text: 'Adult size - research how big they get'),
+                _BulletPoint(text: 'Compatibility - will they get along?'),
+                _BulletPoint(text: 'Requirements - temperature, pH, space'),
+                _BulletPoint(text: 'Schooling needs - some need groups'),
               ],
             ),
           ),
@@ -185,7 +185,7 @@ class QuickStartGuideScreen extends StatelessWidget {
               children: [
                 _NumberedStep(
                   num: 1,
-                  text: 'Buy from reputable store — avoid sick-looking fish',
+                  text: 'Buy from reputable store - avoid sick-looking fish',
                 ),
                 _NumberedStep(
                   num: 2,
@@ -198,14 +198,14 @@ class QuickStartGuideScreen extends StatelessWidget {
                 ),
                 _NumberedStep(
                   num: 4,
-                  text: 'Net fish into tank — discard bag water',
+                  text: 'Net fish into tank - discard bag water',
                 ),
                 _NumberedStep(num: 5, text: 'Keep lights off for a few hours'),
                 _NumberedStep(num: 6, text: 'Don\'t feed for 24 hours'),
                 const SizedBox(height: AppSpacing.sm),
                 _TipBox(
                   text:
-                      'Add fish slowly over weeks — don\'t stock all at once!',
+                      'Add fish slowly over weeks - don\'t stock all at once!',
                 ),
               ],
             ),

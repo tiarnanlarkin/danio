@@ -5,7 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 
-/// OpenAI API key — passed via dart-define at build time.
+/// OpenAI API key - passed via dart-define at build time.
 /// Usage: flutter run --dart-define=OPENAI_API_KEY=sk-...
 const String _apiKey = String.fromEnvironment('OPENAI_API_KEY');
 
@@ -61,7 +61,7 @@ class OpenAIService {
   final http.Client _client;
   DateTime _lastCallTime = DateTime.fromMillisecondsSinceEpoch(0);
 
-  /// Monthly usage tracking — resets on first call each month.
+  /// Monthly usage tracking - resets on first call each month.
   int _apiCallsThisMonth = 0;
   int _currentMonth = 0;
 
@@ -107,7 +107,7 @@ class OpenAIService {
     );
   }
 
-  /// Streaming chat completion — yields text chunks.
+  /// Streaming chat completion - yields text chunks.
   Stream<String> chatCompletionStream({
     required List<ChatMessage> messages,
     String model = OpenAIModels.chat,
@@ -159,7 +159,7 @@ class OpenAIService {
     }
   }
 
-  /// Vision analysis — send an image (base64) with a text prompt.
+  /// Vision analysis - send an image (base64) with a text prompt.
   Future<ChatResult> visionAnalysis({
     required String base64Image,
     required String prompt,
@@ -240,7 +240,7 @@ class OpenAIService {
         if (response.statusCode == 200) return response;
 
         if (response.statusCode == 429 && attempt < _maxRetries) {
-          // Rate limited — back off exponentially.
+          // Rate limited - back off exponentially.
           final delay = Duration(seconds: attempt * 2);
           debugPrint('OpenAI rate limited, retrying in ${delay.inSeconds}s');
           await Future<void>.delayed(delay);

@@ -485,19 +485,19 @@ class _ParametersCard extends StatelessWidget {
                 _ParamPill(
                   label: 'Temp',
                   value:
-                      '${species.minTempC.toStringAsFixed(0)}–${species.maxTempC.toStringAsFixed(0)}',
+                      '${species.minTempC.toStringAsFixed(0)}-${species.maxTempC.toStringAsFixed(0)}',
                   unit: '°C',
                 ),
                 _ParamPill(
                   label: 'pH',
                   value:
-                      '${species.minPh.toStringAsFixed(1)}–${species.maxPh.toStringAsFixed(1)}',
+                      '${species.minPh.toStringAsFixed(1)}-${species.maxPh.toStringAsFixed(1)}',
                 ),
                 if (species.minGh != null && species.maxGh != null)
                   _ParamPill(
                     label: 'GH',
                     value:
-                        '${species.minGh!.toStringAsFixed(0)}–${species.maxGh!.toStringAsFixed(0)}',
+                        '${species.minGh!.toStringAsFixed(0)}-${species.maxGh!.toStringAsFixed(0)}',
                     unit: 'dGH',
                   ),
               ],

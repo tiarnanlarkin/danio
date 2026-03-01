@@ -7,11 +7,11 @@ import '../services/cloud_sync_service.dart';
 /// Compact sync-status indicator designed to sit in an AppBar's actions.
 ///
 /// Shows:
-/// - ✓ cloud_done (green)  — synced
-/// - ↻ sync (blue)         — syncing
-/// - ☁ cloud_off (orange)  — offline (changes queued)
-/// - ✕ error (red)         — sync error
-/// - nothing               — cloud disabled / not signed in
+/// - ✓ cloud_done (green)  - synced
+/// - ↻ sync (blue)         - syncing
+/// - ☁ cloud_off (orange)  - offline (changes queued)
+/// - ✕ error (red)         - sync error
+/// - nothing               - cloud disabled / not signed in
 class SyncStatusWidget extends ConsumerWidget {
   const SyncStatusWidget({super.key});
 
@@ -33,12 +33,12 @@ class SyncStatusWidget extends ConsumerWidget {
       CloudSyncStatus.syncing => (
           Icons.sync,
           AppColors.primary,
-          'Syncing…',
+          'Syncing...',
         ),
       CloudSyncStatus.offline => (
           Icons.cloud_off_outlined,
           Colors.orange,
-          'Offline — changes queued',
+          'Offline - changes queued',
         ),
       CloudSyncStatus.error => (
           Icons.error_outline,

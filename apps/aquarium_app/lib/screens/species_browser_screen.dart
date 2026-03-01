@@ -375,11 +375,11 @@ class _SpeciesDetailSheet extends StatelessWidget {
                 children: [
                   _ParamRow(
                     label: 'Temperature',
-                    value: '${species.minTempC}–${species.maxTempC}°C',
+                    value: '${species.minTempC}-${species.maxTempC}°C',
                   ),
                   _ParamRow(
                     label: 'pH',
-                    value: '${species.minPh}–${species.maxPh}',
+                    value: '${species.minPh}-${species.maxPh}',
                   ),
                   _ParamRow(
                     label: 'Min tank size',

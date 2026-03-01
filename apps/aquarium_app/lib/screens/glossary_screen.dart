@@ -189,7 +189,7 @@ final _allTerms = [
   const _GlossaryTerm(
     term: 'Nitrite (NO₂)',
     definition:
-        'Intermediate product in the nitrogen cycle. Produced when bacteria convert ammonia. Toxic — should be 0 ppm.',
+        'Intermediate product in the nitrogen cycle. Produced when bacteria convert ammonia. Toxic - should be 0 ppm.',
     category: 'Chemistry',
   ),
   const _GlossaryTerm(
@@ -366,7 +366,7 @@ final _allTerms = [
   const _GlossaryTerm(
     term: 'Rhizome',
     definition:
-        'Horizontal stem from which roots and leaves grow. Never bury — attach to hardscape.',
+        'Horizontal stem from which roots and leaves grow. Never bury - attach to hardscape.',
     category: 'Plants',
     example: 'Java fern, anubias, bucephalandra.',
   ),
@@ -430,7 +430,7 @@ final _allTerms = [
   const _GlossaryTerm(
     term: 'Dropsy',
     definition:
-        'Symptom of organ failure — swollen body with raised scales (pinecone appearance).',
+        'Symptom of organ failure - swollen body with raised scales (pinecone appearance).',
     category: 'Disease',
   ),
   const _GlossaryTerm(

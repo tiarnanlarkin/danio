@@ -88,7 +88,7 @@ class AnomalyDetectorService {
     if (waterTests.isNotEmpty) {
       final latest = waterTests.first.waterTest!;
 
-      // Ammonia — any non-zero reading is critical
+      // Ammonia - any non-zero reading is critical
       if (latest.ammonia != null && latest.ammonia! > 0) {
         anomalies.add(Anomaly(
           id: _uuid.v4(),
@@ -100,7 +100,7 @@ class AnomalyDetectorService {
         ));
       }
 
-      // Nitrite — any non-zero reading is critical
+      // Nitrite - any non-zero reading is critical
       if (latest.nitrite != null && latest.nitrite! > 0) {
         anomalies.add(Anomaly(
           id: _uuid.v4(),
@@ -138,7 +138,7 @@ class AnomalyDetectorService {
                   'the nitrogen cycle. You understand how pH, ammonia, nitrite, '
                   'nitrate, temperature, and hardness interact. When explaining '
                   'anomalies, consider: tank cycling status, bioload, overfeeding, '
-                  'filter issues, and substrate disturbance. Be concise — '
+                  'filter issues, and substrate disturbance. Be concise - '
                   'hobbyists need clear, actionable advice, not lectures.',
             ),
             ChatMessage(
@@ -164,7 +164,7 @@ class AnomalyDetectorService {
         }
       } catch (e) {
         debugPrint('Anomaly AI explanation failed: $e');
-        // Continue without AI explanation — rules-based results are still valid.
+        // Continue without AI explanation - rules-based results are still valid.
       }
     }
 

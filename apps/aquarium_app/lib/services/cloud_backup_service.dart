@@ -10,7 +10,7 @@ import '../utils/model_serialization.dart' as serial;
 import 'local_json_storage_service.dart';
 import 'supabase_service.dart';
 
-/// Encrypted backup service — serialises all local data to JSON, encrypts with
+/// Encrypted backup service - serialises all local data to JSON, encrypts with
 /// AES-256 using a key derived from the user's UID + a salt, and uploads to
 /// Supabase Storage.
 ///
@@ -154,7 +154,7 @@ class CloudBackupService {
     LocalJsonStorageService storage,
     Map<String, dynamic> data,
   ) async {
-    // Import tanks — skip if already exists locally (local wins)
+    // Import tanks - skip if already exists locally (local wins)
     final tanksJson = data['tanks'] as List<dynamic>? ?? [];
     for (final tJson in tanksJson) {
       final map = tJson as Map<String, dynamic>;
@@ -182,7 +182,7 @@ class CloudBackupService {
       await storage.saveEquipment(equipment);
     }
 
-    // Import logs (always append — water test history is never overwritten)
+    // Import logs (always append - water test history is never overwritten)
     final logsJson = data['logs'] as List<dynamic>? ?? [];
     for (final logJson in logsJson) {
       final map = logJson as Map<String, dynamic>;

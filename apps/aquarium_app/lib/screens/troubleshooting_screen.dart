@@ -28,7 +28,7 @@ class TroubleshootingScreen extends StatelessWidget {
               'Substrate not rinsed',
             ],
             solutions: [
-              'Wait 24-48 hours — often clears on its own',
+              'Wait 24-48 hours - often clears on its own',
               'Check for dead fish or rotting plants',
               'Reduce feeding',
               'Do 25% water change',
@@ -61,8 +61,8 @@ class TroubleshootingScreen extends StatelessWidget {
             ],
             solutions: [
               'Increase aeration immediately',
-              'Test water — do water change if ammonia/nitrite present',
-              'Check heater — lower temp if too high',
+              'Test water - do water change if ammonia/nitrite present',
+              'Check heater - lower temp if too high',
               'Add airstone or lower water level for splash',
               'Check for gill flukes if water params OK',
             ],
@@ -116,7 +116,7 @@ class TroubleshootingScreen extends StatelessWidget {
               'Add bottled bacteria',
               'Reduce feeding',
               'Remove dead fish/plants',
-              'Don\'t clean filter media — just rinse in tank water',
+              'Don\'t clean filter media - just rinse in tank water',
             ],
           ),
           _ProblemCard(
@@ -128,7 +128,7 @@ class TroubleshootingScreen extends StatelessWidget {
               'Acidic substrate/driftwood',
             ],
             solutions: [
-              'Test KH — if below 4, raise it',
+              'Test KH - if below 4, raise it',
               'Add crushed coral to filter',
               'More frequent water changes',
               'Baking soda (carefully) to raise KH',
@@ -161,7 +161,7 @@ class TroubleshootingScreen extends StatelessWidget {
             ],
             solutions: [
               'Top up water level',
-              'Prime filter — tilt to release air',
+              'Prime filter - tilt to release air',
               'Clean impeller and housing',
               'Replace impeller if damaged',
               'Check intake isn\'t clogged',
@@ -176,7 +176,7 @@ class TroubleshootingScreen extends StatelessWidget {
               'Damaged during shipping',
             ],
             solutions: [
-              'Normal for new plants — wait for new growth',
+              'Normal for new plants - wait for new growth',
               'Remove dead leaves',
               'Check lighting and nutrients',
               'Add root tabs for root feeders',
@@ -222,7 +222,7 @@ class TroubleshootingScreen extends StatelessWidget {
               'Check water parameters',
               'Identify aggression and separate',
               'Add more hiding spots',
-              'Some fish (hatchetfish, etc.) are jumpers — always use lid',
+              'Some fish (hatchetfish, etc.) are jumpers - always use lid',
             ],
           ),
           _ProblemCard(
@@ -264,7 +264,7 @@ class TroubleshootingScreen extends StatelessWidget {
                   '• When in doubt, do a water change\n'
                   '• Test water before making changes\n'
                   '• Make changes gradually, not all at once\n'
-                  '• Observe fish behavior — they tell you when something\'s wrong\n'
+                  '• Observe fish behavior - they tell you when something\'s wrong\n'
                   '• Keep a log to track patterns\n'
                   '• Quarantine new additions',
                   style: AppTypography.bodyMedium,

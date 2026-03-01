@@ -716,7 +716,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
         Text('Observation', style: AppTypography.headlineSmall),
         const SizedBox(height: AppSpacing.sm),
         Text(
-          'Record anything you notice — fish behavior, algae, plant growth, etc.',
+          'Record anything you notice - fish behavior, algae, plant growth, etc.',
           style: AppTypography.bodyMedium,
         ),
         // Notes field is shown below

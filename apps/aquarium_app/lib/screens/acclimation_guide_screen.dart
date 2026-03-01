@@ -80,7 +80,7 @@ class AcclimationGuideScreen extends StatelessWidget {
             step: 3,
             title: 'Net and release',
             description:
-                'Net the fish and release into the tank. Discard the bag water — don\'t add it to your tank.',
+                'Net the fish and release into the tank. Discard the bag water - don\'t add it to your tank.',
             icon: Icons.catching_pokemon,
             duration: '1 min',
           ),
@@ -161,7 +161,7 @@ class AcclimationGuideScreen extends StatelessWidget {
           _TipCard(
             icon: Icons.no_food,
             tip:
-                'Don\'t feed new fish for 24 hours — they won\'t eat while stressed.',
+                'Don\'t feed new fish for 24 hours - they won\'t eat while stressed.',
           ),
           _TipCard(
             icon: Icons.visibility,
@@ -171,7 +171,7 @@ class AcclimationGuideScreen extends StatelessWidget {
           _TipCard(
             icon: Icons.water_drop,
             tip:
-                'Never add store water to your tank — it may contain diseases or parasites.',
+                'Never add store water to your tank - it may contain diseases or parasites.',
           ),
           _TipCard(
             icon: Icons.schedule,

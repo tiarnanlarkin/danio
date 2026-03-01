@@ -150,7 +150,7 @@ class EmergencyGuideScreen extends StatelessWidget {
             immediateActions: [
               'Wet hands before handling',
               'Gently return to tank',
-              'Even if appears dead, try — they can survive longer than you think',
+              'Even if appears dead, try - they can survive longer than you think',
               'Add stress coat/slime coat product',
               'Dim lights, provide hiding spots',
             ],

@@ -1,4 +1,4 @@
-/// Tank type — freshwater only for MVP
+/// Tank type - freshwater only for MVP
 enum TankType {
   freshwater,
   marine, // Later
@@ -73,7 +73,7 @@ class WaterTargets {
   }
 }
 
-/// A fish tank — the core object in the app
+/// A fish tank - the core object in the app
 class Tank {
   final String id;
   final String name;

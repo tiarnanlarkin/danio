@@ -178,7 +178,7 @@ class _RemindersScreenState extends ConsumerState<RemindersScreen> {
               icon: Icons.notifications_none,
               title: 'Never miss a thing! 🔔',
               message:
-                  'We'll nudge you for feeding, water changes, and maintenance — so you can relax',
+                  'We\'ll nudge you for feeding, water changes, and maintenance - so you can relax',
               mascotContext: MascotContext.encouragement,
               actionLabel: 'Add Reminder',
               onAction: _addReminder,

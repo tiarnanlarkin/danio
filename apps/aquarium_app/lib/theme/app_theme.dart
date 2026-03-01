@@ -37,7 +37,7 @@ class AppColors {
   static const Color info = Color(0xFF5C9FBF); // Darker blue (4.50:1 ratio)
   static const Color xp = Color(0xFFD97706); // Amber - matches brand
 
-  // Semantic "on" colors — foreground on semantic backgrounds
+  // Semantic "on" colors - foreground on semantic backgrounds
   static const Color onPrimary = Color(0xFFFFFFFF);
   static const Color onSecondary = Color(0xFFFFFFFF);
   static const Color onSurface = Color(0xFF2D3436); // textPrimary
@@ -340,7 +340,7 @@ class AppColors {
   );
 }
 
-/// Danio brand colours — use these for new UI following the brand guide
+/// Danio brand colours - use these for new UI following the brand guide
 class DanioColors {
   static const Color amberGold     = Color(0xFFC8884A);  // Decorative amber
   static const Color amberText     = Color(0xFFB45309);  // Text on light (WCAG AA)
@@ -444,7 +444,7 @@ class AppTypography {
   );
 
   // ──────────────────────────────────────────────────────────────────
-  // Semantic aliases — map to the canonical scale above
+  // Semantic aliases - map to the canonical scale above
   // ──────────────────────────────────────────────────────────────────
   static TextStyle get display => headlineLarge;
   static TextStyle get headline => headlineMedium;

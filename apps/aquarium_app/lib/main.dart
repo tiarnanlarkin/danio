@@ -33,7 +33,7 @@ const bool _showPerformanceOverlay = false; // Set to true to show FPS overlay
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // TODO: Configure Firebase — see docs/FIREBASE_SETUP_GUIDE.md
+  // TODO: Configure Firebase - see docs/FIREBASE_SETUP_GUIDE.md
 
   // Initialize global error handler
   GlobalErrorHandler.initialize(
@@ -50,11 +50,11 @@ void main() async {
   // App will NOT work properly if this fails.
   final storageInitialized = await HiveStorageService.initialize();
   if (!storageInitialized) {
-    debugPrint('[CRITICAL] Storage initialization failed — app may lose data!');
+    debugPrint('[CRITICAL] Storage initialization failed - app may lose data!');
     // Continue anyway to allow debugging, but warn user
   }
 
-  // Initialize Supabase (safe to call — returns false if credentials are
+  // Initialize Supabase (safe to call - returns false if credentials are
   // placeholders, and the app continues in offline-only mode).
   await SupabaseService.initialize();
 

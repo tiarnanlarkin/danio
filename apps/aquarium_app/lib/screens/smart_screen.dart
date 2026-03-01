@@ -10,7 +10,7 @@ import '../features/smart/weekly_plan/weekly_plan_screen.dart';
 import '../services/openai_service.dart';
 import '../theme/app_theme.dart';
 
-/// Smart Hub — central screen for all AI-powered features.
+/// Smart Hub - central screen for all AI-powered features.
 class SmartScreen extends ConsumerStatefulWidget {
   const SmartScreen({super.key});
 
@@ -124,7 +124,7 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
             ),
           ).animate(delay: 100.ms).fadeIn().slideX(begin: 0.05),
 
-          // Ask Danio — quick question
+          // Ask Danio - quick question
           if (openai.isConfigured) ...[
             const SizedBox(height: AppSpacing.md),
             Card(
@@ -397,7 +397,7 @@ class _OfflineBanner extends StatelessWidget {
           ),
           const SizedBox(height: AppSpacing.sm),
           Text(
-            'Features still work without AI — you can browse the fish '
+            'Features still work without AI - you can browse the fish '
             'database, log water parameters, and manage your tanks.',
             style: AppTypography.bodySmall.copyWith(
               color: AppColors.textHint,

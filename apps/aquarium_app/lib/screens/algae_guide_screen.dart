@@ -34,7 +34,7 @@ class AlgaeGuideScreen extends StatelessWidget {
         'Then do large water change and wipe clean',
         'Stabilize CO2 and nutrients',
       ],
-      prevention: 'Patience — often resolves on its own in mature tanks',
+      prevention: 'Patience - often resolves on its own in mature tanks',
     ),
     _AlgaeData(
       name: 'Green Water',
@@ -135,7 +135,7 @@ class AlgaeGuideScreen extends StatelessWidget {
         'Wipe off during water changes',
         'Increase light slightly',
       ],
-      prevention: 'Time — very common in cycling tanks and goes away',
+      prevention: 'Time - very common in cycling tanks and goes away',
     ),
     _AlgaeData(
       name: 'Green Fuzz Algae',
@@ -183,7 +183,7 @@ class AlgaeGuideScreen extends StatelessWidget {
     _CrewData(
       name: 'Otocinclus',
       eats: 'Diatoms, soft green algae',
-      notes: 'Peaceful, need groups of 6+. Sensitive — add to mature tanks only.',
+      notes: 'Peaceful, need groups of 6+. Sensitive - add to mature tanks only.',
     ),
     _CrewData(
       name: 'Siamese Algae Eater',
@@ -252,7 +252,7 @@ class AlgaeGuideScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 12),
                   Text(
-                    'Some algae is normal and healthy — it means your tank is alive! '
+                    'Some algae is normal and healthy - it means your tank is alive! '
                     'Problems occur when algae grows out of control due to imbalances in light, nutrients, or CO2.',
                     style: AppTypography.bodyMedium,
                   ),

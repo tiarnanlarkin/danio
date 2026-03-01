@@ -4,7 +4,7 @@ enum Temperament { peaceful, semiAggressive, aggressive }
 /// Health status for livestock tracking
 enum HealthStatus { healthy, sick, quarantine }
 
-/// Livestock entry — fish, snails, shrimp, etc.
+/// Livestock entry - fish, snails, shrimp, etc.
 class Livestock {
   final String id;
   final String tankId;

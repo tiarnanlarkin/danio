@@ -89,7 +89,7 @@ class ShopDirectory {
     ShopEntry(
       name: 'Buceplant',
       description:
-          'Aquascaping specialists — plants, hardscape, tissue cultures',
+          'Aquascaping specialists - plants, hardscape, tissue cultures',
       url: 'https://buceplant.com',
       region: 'US',
       categories: ['Plants', 'Hardscape', 'Aquascaping', 'Shrimp'],

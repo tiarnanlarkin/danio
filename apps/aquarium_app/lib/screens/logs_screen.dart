@@ -60,7 +60,7 @@ class _LogsScreenState extends ConsumerState<LogsScreen> {
             if (logs.isEmpty) {
               return EmptyState.withMascot(
                 icon: Icons.list_alt,
-                title: 'Start your tank's story! 📖',
+                title: 'Start your tank\'s story! 📖',
                 message:
                     'Start logging water tests, maintenance, and events to track your tank\'s history',
                 mascotContext: MascotContext.noLogs,
@@ -328,7 +328,7 @@ class _LogsScreenState extends ConsumerState<LogsScreen> {
                       label: Text(
                         workingRange == null
                             ? 'Any date'
-                            : '${DateFormat('MMM d').format(workingRange!.start)} – ${DateFormat('MMM d').format(workingRange!.end)}',
+                            : '${DateFormat('MMM d').format(workingRange!.start)} - ${DateFormat('MMM d').format(workingRange!.end)}',
                       ),
                     ),
 
@@ -534,7 +534,7 @@ class _FiltersSummaryBar extends StatelessWidget {
       chips.add(
         _Chip(
           label:
-              '${DateFormat('MMM d').format(dateRange!.start)}–${DateFormat('MMM d').format(dateRange!.end)}',
+              '${DateFormat('MMM d').format(dateRange!.start)}-${DateFormat('MMM d').format(dateRange!.end)}',
         ),
       );
     }

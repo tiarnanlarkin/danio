@@ -1250,7 +1250,7 @@ class _BulkAddLivestockSheetState extends State<_BulkAddLivestockSheet> {
                   : const Icon(Icons.playlist_add),
               label: Text(
                 _isSaving
-                    ? 'Adding…'
+                    ? 'Adding...'
                     : 'Add ${_items.isEmpty ? '' : '(${_items.length}) '}livestock',
               ),
             ),

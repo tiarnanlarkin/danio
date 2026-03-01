@@ -11,7 +11,7 @@ enum RecurrenceType {
 /// Task priority
 enum TaskPriority { low, normal, high }
 
-/// A task/reminder — can be auto-generated or user-created
+/// A task/reminder - can be auto-generated or user-created
 class Task {
   final String id;
   final String? tankId; // Null for global tasks

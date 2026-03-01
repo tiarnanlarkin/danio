@@ -74,7 +74,7 @@ class FaqScreen extends StatelessWidget {
                     '• Make sure you haven\'t killed beneficial bacteria (chlorinated water, over-cleaning)\n'
                     '• Reduce feeding\n'
                     '• Consider if the tank is overstocked\n'
-                    '• Be patient — the cycle may need to re-establish',
+                    '• Be patient - the cycle may need to re-establish',
               ),
             ],
           ),
@@ -86,20 +86,20 @@ class FaqScreen extends StatelessWidget {
                 question: 'How often should I feed my fish?',
                 answer:
                     'Most adult fish do well with 1-2 small feedings per day. Feed only what they can '
-                    'consume in 2-3 minutes. Overfeeding is the #1 beginner mistake — it pollutes water '
+                    'consume in 2-3 minutes. Overfeeding is the #1 beginner mistake - it pollutes water '
                     'and causes health issues.',
               ),
               _FaqItem(
                 question: 'My fish always seem hungry. Should I feed more?',
                 answer:
-                    'Fish are opportunistic and will always beg for food — it\'s instinct. '
+                    'Fish are opportunistic and will always beg for food - it\'s instinct. '
                     'A healthy fish with a slightly rounded belly is well-fed. Stick to your schedule '
                     'and don\'t fall for their tricks!',
               ),
               _FaqItem(
                 question: 'Can I use vacation feeders?',
                 answer:
-                    'Those white blocks are generally not recommended — they cloud water and cause '
+                    'Those white blocks are generally not recommended - they cloud water and cause '
                     'ammonia spikes. For short trips (up to 2 weeks), healthy adult fish can go without food. '
                     'For longer absences, use an automatic feeder (tested beforehand) or a fish sitter.',
               ),
@@ -122,7 +122,7 @@ class FaqScreen extends StatelessWidget {
               _FaqItem(
                 question: 'Do I need a heater?',
                 answer:
-                    'For tropical fish, yes — they need stable temperatures around 24-26°C. '
+                    'For tropical fish, yes - they need stable temperatures around 24-26°C. '
                     'Get a heater rated for your tank size (usually 3-5 watts per gallon). '
                     'Coldwater fish like goldfish don\'t need heaters at room temperature.',
               ),
@@ -130,7 +130,7 @@ class FaqScreen extends StatelessWidget {
                 question: 'How often should I clean the filter?',
                 answer:
                     'Rinse filter media in old tank water (never tap water!) every 2-4 weeks or when '
-                    'flow decreases. Never replace all media at once — you\'ll lose beneficial bacteria. '
+                    'flow decreases. Never replace all media at once - you\'ll lose beneficial bacteria. '
                     'Stagger replacements if you have multiple media types.',
               ),
             ],
@@ -146,7 +146,7 @@ class FaqScreen extends StatelessWidget {
                     '• White/gray: Bacterial bloom (often in new tanks, usually clears on its own)\n'
                     '• Green: Algae bloom (too much light/nutrients)\n'
                     '• After water change: Stirred up substrate or temperature difference\n\n'
-                    'Don\'t do massive water changes for bacterial blooms — just wait it out.',
+                    'Don\'t do massive water changes for bacterial blooms - just wait it out.',
               ),
               _FaqItem(
                 question: 'I have algae everywhere!',
@@ -163,7 +163,7 @@ class FaqScreen extends StatelessWidget {
                 question: 'My fish is sick. What do I do?',
                 answer:
                     '1. Observe symptoms carefully (spots, fins, behavior)\n'
-                    '2. Test water parameters — poor water is often the cause\n'
+                    '2. Test water parameters - poor water is often the cause\n'
                     '3. Do a water change (good first step for most issues)\n'
                     '4. Isolate sick fish if possible (quarantine tank)\n'
                     '5. Research the specific disease before medicating\n'

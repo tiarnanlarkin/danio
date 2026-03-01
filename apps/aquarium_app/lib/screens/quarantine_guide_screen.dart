@@ -55,7 +55,7 @@ class QuarantineGuideScreen extends StatelessWidget {
           _SetupCard(
             title: 'Filtration',
             description:
-                'Sponge filter recommended — easy to move, provides biological filtration, gentle flow.',
+                'Sponge filter recommended - easy to move, provides biological filtration, gentle flow.',
             icon: Icons.filter_alt,
           ),
           _SetupCard(
@@ -67,7 +67,7 @@ class QuarantineGuideScreen extends StatelessWidget {
           _SetupCard(
             title: 'Decor',
             description:
-                'Minimal — PVC pipes or cheap plants for hiding. Easy to sterilize between uses.',
+                'Minimal - PVC pipes or cheap plants for hiding. Easy to sterilize between uses.',
             icon: Icons.weekend,
           ),
           _SetupCard(
@@ -95,7 +95,7 @@ class QuarantineGuideScreen extends StatelessWidget {
             tasks: [
               'Add new fish to quarantine tank',
               'Observe closely for symptoms',
-              'Feed sparingly — watch for appetite',
+              'Feed sparingly - watch for appetite',
               'Test water every 2-3 days',
               'Note any unusual behavior',
             ],
@@ -248,7 +248,7 @@ class QuarantineGuideScreen extends StatelessWidget {
                 const SizedBox(height: 12),
                 _TipItem(
                   text:
-                      'Keep a cycled sponge filter in your main tank — move it to QT when needed',
+                      'Keep a cycled sponge filter in your main tank - move it to QT when needed',
                 ),
                 _TipItem(
                   text:
@@ -260,7 +260,7 @@ class QuarantineGuideScreen extends StatelessWidget {
                 ),
                 _TipItem(
                   text:
-                      'Quarantine plants too — they can carry snails, parasites, and pesticides',
+                      'Quarantine plants too - they can carry snails, parasites, and pesticides',
                 ),
                 _TipItem(
                   text:

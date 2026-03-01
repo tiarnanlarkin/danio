@@ -133,7 +133,7 @@ class EquipmentGuideScreen extends StatelessWidget {
                 ],
                 cons: ['Weak heating power', 'Can\'t adjust mid-cycle'],
                 bestFor: 'Planted tanks, small tanks',
-                maintenance: 'Minimal — check functionality occasionally.',
+                maintenance: 'Minimal - check functionality occasionally.',
               ),
             ],
           ),

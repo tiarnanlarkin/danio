@@ -321,7 +321,7 @@ class CloudSyncService {
     // Check for soft delete
     final deletedAt = record['deleted_at'] as String?;
     if (deletedAt != null) {
-      // Remote was soft-deleted — apply locally
+      // Remote was soft-deleted - apply locally
       await _deleteFromLocal(storage, table, recordId);
       return;
     }
@@ -641,7 +641,7 @@ class CloudSyncService {
 
   Future<void> _pushEntry(OfflineQueueEntry entry) async {
     if (entry.operation == 'delete') {
-      // Soft delete — set deleted_at
+      // Soft delete - set deleted_at
       await SupabaseService.instance
           .from(entry.table)
           .update({'deleted_at': DateTime.now().toIso8601String()})
@@ -683,7 +683,7 @@ class CloudSyncService {
         data: data,
       ));
     } catch (e) {
-      // Network error — queue for retry
+      // Network error - queue for retry
       await queueOfflineChange(OfflineQueueEntry(
         id: id,
         table: table,

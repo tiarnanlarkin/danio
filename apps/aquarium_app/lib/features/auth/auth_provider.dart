@@ -45,7 +45,7 @@ final authProvider = StateNotifierProvider<AuthNotifier, AuthState>((ref) {
   return AuthNotifier();
 });
 
-/// Convenience provider — true when a user is logged in.
+/// Convenience provider - true when a user is logged in.
 final isSignedInProvider = Provider<bool>((ref) {
   return ref.watch(authProvider).isSignedIn;
 });
@@ -122,7 +122,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
         error: result.errorMessage,
       );
     }
-    // On pendingRedirect, keep loading — the auth stream will update state.
+    // On pendingRedirect, keep loading - the auth stream will update state.
   }
 
   Future<void> resetPassword(String email) async {

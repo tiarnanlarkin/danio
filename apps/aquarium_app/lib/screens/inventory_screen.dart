@@ -29,7 +29,7 @@ class InventoryColors {
   static const textPrimary = Color(0xFFF5F5F5);
   static const textSecondary = Color(0xFFCDBFAE);
 
-  // Dark mode adjustments — lighter/desaturated gradients for readability
+  // Dark mode adjustments - lighter/desaturated gradients for readability
   static const background1Dark = Color(0xFF3A2660); // Lighter purple
   static const background2Dark = Color(0xFF2A1C48); // Lighter mid
   static const background3Dark = Color(0xFF1E1435); // Lighter base

@@ -133,7 +133,7 @@ class EquipmentScreen extends ConsumerWidget {
             return EmptyState.withMascot(
               icon: Icons.settings,
               title: 'Time to gear up! ⚙️',
-              message: 'Track your filters, heaters, and lights — we'll remind you when they need attention',
+              message: 'Track your filters, heaters, and lights - we\'ll remind you when they need attention',
               mascotContext: MascotContext.noEquipment,
               actionLabel: 'Add Equipment',
               onAction: () => _showAddDialog(context, ref),
@@ -362,7 +362,7 @@ class _EquipmentHistoryDialog extends ConsumerWidget {
     final logsAsync = ref.watch(allLogsProvider(tankId));
 
     return AlertDialog(
-      title: Text('History — ${equipment.name}'),
+      title: Text('History - ${equipment.name}'),
       content: SizedBox(
         width: double.maxFinite,
         child: logsAsync.when(
@@ -381,7 +381,7 @@ class _EquipmentHistoryDialog extends ConsumerWidget {
 
             if (maintenance.isEmpty) {
               return Text(
-                'No maintenance logs yet.\n\nTip: use “Mark Serviced” and it will show up here and in Recent Activity.',
+                'No maintenance logs yet.\n\nTip: use "Mark Serviced" and it will show up here and in Recent Activity.',
                 style: AppTypography.bodyMedium,
               );
             }

@@ -129,7 +129,7 @@ class _SymptomTriageScreenState extends ConsumerState<SymptomTriageScreen> {
                 '## 🩺 Immediate Actions\n'
                 '## 💊 Treatment Options\n'
                 '## 🔬 If It Doesn\'t Improve\n'
-                'Be concise and practical — this is for hobbyists, not academics. '
+                'Be concise and practical - this is for hobbyists, not academics. '
                 'Always mention if a water change should be done first.',
           ),
           ChatMessage(role: 'user', content: prompt),
@@ -206,7 +206,7 @@ class _SymptomTriageScreenState extends ConsumerState<SymptomTriageScreen> {
           // Step 2: Water parameters
           Step(
             title: const Text('Water Parameters'),
-            subtitle: const Text('Optional — improves accuracy'),
+            subtitle: const Text('Optional - improves accuracy'),
             isActive: _step >= 1,
             state: _step > 1 ? StepState.complete : StepState.indexed,
             content: _buildParamsStep(theme),
@@ -396,7 +396,7 @@ class _SymptomTriageScreenState extends ConsumerState<SymptomTriageScreen> {
               Expanded(
                 child: OutlinedButton.icon(
                   onPressed: () {
-                    // Save to journal — pop with the diagnosis text.
+                    // Save to journal - pop with the diagnosis text.
                     Navigator.of(context).pop(_diagnosis);
                   },
                   icon: const Icon(Icons.book),

@@ -263,7 +263,7 @@ class _WaterTestCard extends StatelessWidget {
   }
 
   Widget _kv(String k, String? v, String? unit) {
-    final value = (v == null || v == 'null') ? '—' : v;
+    final value = (v == null || v == 'null') ? '-' : v;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       decoration: BoxDecoration(
@@ -302,7 +302,7 @@ class _WaterChangeCard extends StatelessWidget {
             Text('Water Change', style: AppTypography.labelLarge),
             const SizedBox(height: AppSpacing.sm),
             Text(
-              percent != null ? '$percent%' : '—',
+              percent != null ? '$percent%' : '-',
               style: AppTypography.headlineSmall,
             ),
           ],

@@ -35,7 +35,7 @@ class WorkshopColors {
   static const textPrimary = Color(0xFFF5F5F5);
   static const textSecondary = Color(0xFFB8B0A0);
 
-  // Dark mode adjustments — lighter/desaturated browns
+  // Dark mode adjustments - lighter/desaturated browns
   static const background1Dark = Color(0xFF6E5F48); // Lighter warm brown
   static const background2Dark = Color(0xFF5B5039); // Lighter mid brown
   static const background3Dark = Color(0xFF4E4430); // Lighter base brown

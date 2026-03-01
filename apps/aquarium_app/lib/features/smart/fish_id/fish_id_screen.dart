@@ -35,23 +35,23 @@ class _FishIdScreenState extends ConsumerState<FishIdScreen> {
       'safety and welfare of the animal.';
 
   static const _prompt = '''
-Identify the fish or aquatic plant in this image. Be specific — identify to species level where possible.
+Identify the fish or aquatic plant in this image. Be specific - identify to species level where possible.
 
 Return ONLY valid JSON with these fields (no markdown, no explanation):
 {
-  "common_name": "string — most widely-used common name",
-  "scientific_name": "string — binomial Latin name",
+  "common_name": "string - most widely-used common name",
+  "scientific_name": "string - binomial Latin name",
   "care_level": 1-5 (1=bulletproof beginner, 5=expert only),
   "ph_min": number,
   "ph_max": number,
   "temp_min": number (°C),
   "temp_max": number (°C),
-  "hardness": "string — e.g. 'Soft to moderate (2-12 dGH)'",
+  "hardness": "string - e.g. 'Soft to moderate (2-12 dGH)'",
   "max_size_cm": number,
-  "diet": "string — e.g. 'Omnivore — flakes, frozen bloodworm, blanched veg'",
-  "tank_mates": ["string — 3-5 compatible species by common name"],
-  "compatibility_notes": "string — temperament, schooling needs, aggression notes",
-  "care_tips": ["tip1", "tip2", "tip3" — practical, actionable tips],
+  "diet": "string - e.g. 'Omnivore - flakes, frozen bloodworm, blanched veg'",
+  "tank_mates": ["string - 3-5 compatible species by common name"],
+  "compatibility_notes": "string - temperament, schooling needs, aggression notes",
+  "care_tips": ["tip1", "tip2", "tip3" - practical, actionable tips],
   "is_plant": boolean,
   "confidence": "high|medium|low"
 }
@@ -119,7 +119,7 @@ Return ONLY valid JSON with these fields (no markdown, no explanation):
         maxTokens: 1024,
       );
 
-      // Parse JSON from the response — handle markdown code blocks.
+      // Parse JSON from the response - handle markdown code blocks.
       var text = result.text.trim();
       if (text.startsWith('```')) {
         text = text.replaceAll(RegExp(r'^```\w*\n?'), '').replaceAll('```', '');
@@ -349,7 +349,7 @@ Return ONLY valid JSON with these fields (no markdown, no explanation):
                     const SizedBox(width: 4),
                     Text(
                       r.confidence == 'low'
-                          ? 'Low confidence — verify with another source'
+                          ? 'Low confidence - verify with another source'
                           : 'Medium confidence',
                       style: theme.textTheme.bodySmall?.copyWith(
                         color: r.confidence == 'low' ? AppColors.warning : AppColors.textSecondary,
@@ -386,8 +386,8 @@ Return ONLY valid JSON with these fields (no markdown, no explanation):
               spacing: AppSpacing.sm,
               runSpacing: AppSpacing.xs,
               children: [
-                _paramChip('pH', '${r.phMin}–${r.phMax}'),
-                _paramChip('Temp', '${r.tempMin}–${r.tempMax}°C'),
+                _paramChip('pH', '${r.phMin}-${r.phMax}'),
+                _paramChip('Temp', '${r.tempMin}-${r.tempMax}°C'),
                 _paramChip('Hardness', r.hardness),
               ],
             ),

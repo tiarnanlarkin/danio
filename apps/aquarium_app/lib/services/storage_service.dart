@@ -1,6 +1,6 @@
 import '../models/models.dart';
 
-/// Abstract storage interface — can be backed by memory, Hive, SQLite, etc.
+/// Abstract storage interface - can be backed by memory, Hive, SQLite, etc.
 abstract class StorageService {
   // Tanks
   Future<List<Tank>> getAllTanks();

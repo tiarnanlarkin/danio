@@ -59,10 +59,10 @@ class BreedingGuideScreen extends StatelessWidget {
             examples: 'Guppies, Mollies, Platies, Swordtails, Endlers',
             tips: [
               'Males have modified anal fin (gonopodium)',
-              'Females store sperm — can have multiple batches',
+              'Females store sperm - can have multiple batches',
               'Provide hiding spots (plants, breeding boxes)',
               'Separate pregnant females or provide dense plants',
-              'Adults will eat fry — protection needed',
+              'Adults will eat fry - protection needed',
             ],
           ),
           _MethodCard(
@@ -100,7 +100,7 @@ class BreedingGuideScreen extends StatelessWidget {
             examples: 'African Cichlids, Betta (some), Arowanas',
             tips: [
               'Female (usually) carries eggs in mouth',
-              'Don\'t feed holding parent — they fast',
+              'Don\'t feed holding parent - they fast',
               'Fry released after 2-4 weeks',
               'Can strip eggs from mouth if needed',
               'Holding female may be stressed',
@@ -116,7 +116,7 @@ class BreedingGuideScreen extends StatelessWidget {
               'Spawning embrace under nest',
               'Male guards nest and fry',
               'Remove female after spawning',
-              'Keep water still — bubbles fragile',
+              'Keep water still - bubbles fragile',
             ],
           ),
 
@@ -173,7 +173,7 @@ class BreedingGuideScreen extends StatelessWidget {
           _FryStageCard(
             stage: 'Day 1-3',
             title: 'Egg/Yolk Sac Stage',
-            feeding: 'No feeding needed — fry absorb yolk sac',
+            feeding: 'No feeding needed - fry absorb yolk sac',
             care: 'Keep water clean, gentle aeration, low light',
           ),
           _FryStageCard(
@@ -275,11 +275,11 @@ class BreedingGuideScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 12),
                 Text(
-                  '• Have a plan for the fry — can you home them?\n'
+                  '• Have a plan for the fry - can you home them?\n'
                   '• Breeding tanks and supplies add cost\n'
                   '• Livebearers can quickly overpopulate\n'
-                  '• Quality over quantity — cull runts humanely\n'
-                  '• Don\'t release into wild — ever',
+                  '• Quality over quantity - cull runts humanely\n'
+                  '• Don\'t release into wild - ever',
                   style: AppTypography.bodyMedium,
                 ),
               ],

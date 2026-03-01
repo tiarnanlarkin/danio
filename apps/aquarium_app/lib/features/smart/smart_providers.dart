@@ -119,7 +119,7 @@ final anomalyHistoryProvider =
 
 // ── Weekly Plan Cache ───────────────────────────────────────────────────
 
-/// Cached weekly plan — stored in shared prefs.
+/// Cached weekly plan - stored in shared prefs.
 class WeeklyPlanNotifier extends StateNotifier<WeeklyPlan?> {
   static const _key = 'weekly_plan_cache';
 
@@ -134,7 +134,7 @@ class WeeklyPlanNotifier extends StateNotifier<WeeklyPlan?> {
       try {
         state = WeeklyPlan.fromJson(jsonDecode(raw) as Map<String, dynamic>);
       } catch (_) {
-        // Corrupted — ignore
+        // Corrupted - ignore
       }
     }
   }
