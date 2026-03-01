@@ -252,7 +252,7 @@ class SubstrateGuideScreen extends StatelessWidget {
                 _LayerRow(
                   layer: 'Middle',
                   material: 'Power Sand / Pumice (optional, 1-2cm)',
-                  color: Colors.grey.shade400,
+                  color: Theme.of(context).colorScheme.onSurface.withOpacity(0.4),
                 ),
                 _LayerRow(
                   layer: 'Bottom',

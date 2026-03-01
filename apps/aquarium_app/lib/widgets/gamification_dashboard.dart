@@ -30,7 +30,7 @@ class GamificationDashboard extends ConsumerWidget {
     final heartsState = ref.watch(heartsStateProvider);
 
     return profileAsync.when(
-      loading: () => _buildLoadingState(),
+      loading: () => _buildLoadingState(context),
       error: (_, __) => _buildErrorState(),
       data: (profile) {
         if (profile == null) return const SizedBox.shrink();
@@ -125,7 +125,7 @@ class GamificationDashboard extends ConsumerWidget {
     );
   }
 
-  Widget _buildLoadingState() {
+  Widget _buildLoadingState(BuildContext context) {
     return Card(
       margin: EdgeInsets.zero,
       elevation: AppElevation.level1,
@@ -138,12 +138,12 @@ class GamificationDashboard extends ConsumerWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               Container(width: 32, height: 16, decoration: BoxDecoration(
-                color: Colors.grey.shade200,
+                color: Theme.of(context).colorScheme.surfaceContainerHigh,
                 borderRadius: BorderRadius.circular(4),
               )),
               const SizedBox(height: 6),
               Container(width: 48, height: 10, decoration: BoxDecoration(
-                color: Colors.grey.shade100,
+                color: Theme.of(context).colorScheme.surfaceContainerHighest,
                 borderRadius: BorderRadius.circular(4),
               )),
             ],
@@ -382,7 +382,7 @@ class _DailyGoalProgress extends StatelessWidget {
           child: LinearProgressIndicator(
             value: progress,
             minHeight: 8,
-            backgroundColor: AppColors.surfaceVariant,
+            backgroundColor: Theme.of(context).colorScheme.surfaceContainerHigh,
             valueColor: AlwaysStoppedAnimation<Color>(
               isComplete ? AppColors.success : AppColors.primary,
             ),

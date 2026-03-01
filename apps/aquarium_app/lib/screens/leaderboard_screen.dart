@@ -56,7 +56,7 @@ class LeaderboardScreen extends ConsumerWidget {
                 'leagues, and rankings are coming in a future update.',
                 textAlign: TextAlign.center,
                 style: theme.textTheme.bodyMedium?.copyWith(
-                  color: Colors.grey.shade600,
+                  color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
                   height: 1.5,
                 ),
               ),
@@ -64,12 +64,12 @@ class LeaderboardScreen extends ConsumerWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.construction, size: 16, color: Colors.grey.shade400),
+                  Icon(Icons.construction, size: 16, color: Theme.of(context).colorScheme.onSurface.withOpacity(0.4)),
                   const SizedBox(width: AppSpacing.sm),
                   Text(
                     'We\'re building this for you!',
                     style: theme.textTheme.bodySmall?.copyWith(
-                      color: Colors.grey.shade400,
+                      color: Theme.of(context).colorScheme.onSurface.withOpacity(0.4),
                       fontStyle: FontStyle.italic,
                     ),
                   ),

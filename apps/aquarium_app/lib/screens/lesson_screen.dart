@@ -964,7 +964,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
                 width: 40,
                 height: 4,
                 decoration: BoxDecoration(
-                  color: Colors.grey.shade300,
+                  color: Theme.of(context).colorScheme.outlineVariant,
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
@@ -991,7 +991,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
                     Text(
                       'Ready for the next one?',
                       style: theme.textTheme.bodyMedium?.copyWith(
-                        color: Colors.grey.shade600,
+                        color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
                       ),
                     ),
                     const SizedBox(height: AppSpacing.sm),

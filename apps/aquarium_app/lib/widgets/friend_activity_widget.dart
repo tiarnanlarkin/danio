@@ -70,7 +70,7 @@ class FriendActivityWidget extends ConsumerWidget {
                       Icon(
                         Icons.arrow_forward_ios,
                         size: AppIconSizes.xs,
-                        color: Colors.grey.shade400,
+                        color: Theme.of(context).colorScheme.onSurface.withOpacity(0.4),
                       ),
                     ],
                   ),
@@ -179,7 +179,7 @@ class _CompactActivityTile extends ConsumerWidget {
                         ),
                         TextSpan(
                           text: ' ${activity.type.displayName}',
-                          style: TextStyle(color: Colors.grey.shade600),
+                          style: TextStyle(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6)),
                         ),
                       ],
                     ),
@@ -225,7 +225,7 @@ class _CompactActivityTile extends ConsumerWidget {
             // Time
             Text(
               activity.timeAgo,
-              style: TextStyle(fontSize: 11, color: Colors.grey.shade500),
+              style: TextStyle(fontSize: 11, color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5)),
             ),
           ],
         ),
@@ -345,7 +345,7 @@ class _BannerActivityCard extends ConsumerWidget {
                 const SizedBox(height: AppSpacing.xs),
                 Text(
                   activity.timeAgo,
-                  style: TextStyle(fontSize: 10, color: Colors.grey.shade500),
+                  style: TextStyle(fontSize: 10, color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5)),
                 ),
               ],
             ),

@@ -168,7 +168,7 @@ class _QuickStartGuideState extends State<QuickStartGuide> {
                       decoration: BoxDecoration(
                         color: _currentStep == index
                             ? AppColors.accent
-                            : Colors.grey[300],
+                            : Theme.of(context).colorScheme.outlineVariant,
                         borderRadius: AppRadius.xsRadius,
                       ),
                     ),
@@ -206,7 +206,7 @@ class _QuickStartGuideState extends State<QuickStartGuide> {
                       'Step ${_currentStep + 1} of ${_steps.length}',
                       style: TextStyle(
                         fontSize: 13,
-                        color: Colors.grey[600],
+                        color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
                         fontWeight: FontWeight.w500,
                       ),
                     ),
@@ -399,7 +399,7 @@ class QuickStartTipsCard extends StatelessWidget {
                     onPressed: () => _dismissCard(context),
                     icon: const Icon(Icons.close, size: AppIconSizes.sm),
                     tooltip: 'Dismiss',
-                    color: Colors.grey,
+                    color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
                   ),
                 ],
               ),

@@ -42,7 +42,7 @@ class SyncIndicator extends ConsumerWidget {
               ? Colors.orange.shade100
               : isSyncing
               ? const Color(0xFFFFECB3)
-              : Colors.grey.shade100,
+              : Theme.of(context).colorScheme.surfaceContainerHighest,
           border: Border(
             bottom: BorderSide(
               color: isError
@@ -51,7 +51,7 @@ class SyncIndicator extends ConsumerWidget {
                   ? Colors.orange.shade300
                   : isSyncing
                   ? const Color(0xFFFFD54F)
-                  : Colors.grey.shade300,
+                  : Theme.of(context).colorScheme.outlineVariant,
               width: 1,
             ),
           ),
@@ -110,7 +110,7 @@ class SyncIndicator extends ConsumerWidget {
                 child: const Text('Retry'),
               )
             else
-              Icon(Icons.info_outline, size: AppIconSizes.xs, color: Colors.grey.shade600),
+              Icon(Icons.info_outline, size: AppIconSizes.xs, color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6)),
           ],
         ),
       ),
@@ -135,7 +135,7 @@ class SyncIndicatorCompact extends ConsumerWidget {
       decoration: BoxDecoration(
         color: syncState.isSyncing
             ? const Color(0xFFFFECB3)
-            : Colors.grey.shade200,
+            : Theme.of(context).colorScheme.surfaceContainerHigh,
         borderRadius: AppRadius.mediumRadius,
       ),
       child: Row(
