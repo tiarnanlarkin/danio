@@ -144,8 +144,8 @@ class AppEmptyState extends StatelessWidget {
     return AppEmptyState(
       key: key,
       icon: Icons.error_outline,
-      title: 'Something went wrong',
-      message: message ?? 'An unexpected error occurred. Please try again.',
+      title: 'Oops! Something went wrong',
+      message: message ?? 'That was not supposed to happen. Give it another try!',
       actionLabel: 'Try Again',
       onAction: onRetry,
       iconColor: AppColors.error,
@@ -479,8 +479,8 @@ class AppErrorState extends StatelessWidget {
     return AppErrorState(
       key: key,
       icon: Icons.wifi_off,
-      title: 'Connection Error',
-      message: 'Please check your internet connection and try again.',
+      title: 'No Connection',
+      message: 'Looks like you are offline. Check your connection and we will try again!',
       onRetry: onRetry,
     );
   }
@@ -495,7 +495,7 @@ class AppErrorState extends StatelessWidget {
       key: key,
       icon: Icons.cloud_off,
       title: 'Server Error',
-      message: 'Our servers are having trouble. Please try again later.',
+      message: 'Our servers are taking a quick break. Try again in a moment!',
       onRetry: onRetry,
       showReportLink: onReport != null,
       onReport: onReport,

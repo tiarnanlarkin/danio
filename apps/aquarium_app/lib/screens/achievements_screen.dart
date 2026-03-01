@@ -236,7 +236,7 @@ class _AchievementsScreenState extends ConsumerState<AchievementsScreen> {
                         ),
                         const SizedBox(height: AppSpacing.md),
                         Text(
-                          'No achievements found',
+                          'No achievements unlocked yet -- keep learning!',
                           style: Theme.of(
                             context,
                           ).textTheme.titleMedium?.copyWith(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5)),
