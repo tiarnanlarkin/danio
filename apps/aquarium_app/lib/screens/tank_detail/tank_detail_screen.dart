@@ -28,6 +28,7 @@ import '../maintenance_checklist_screen.dart';
 import '../photo_gallery_screen.dart';
 import '../livestock_value_screen.dart';
 import '../../widgets/cycling_status_card.dart';
+import '../../widgets/danio_daily_card.dart';
 import '../cycling_assistant_screen.dart';
 import '../../utils/app_feedback.dart';
 import '../../utils/haptic_feedback.dart';
@@ -691,6 +692,14 @@ class TankDetailScreen extends ConsumerWidget {
                       child: CyclingStatusCard(tank: tank, logs: logs),
                     ),
                   ),
+                ),
+              ),
+
+              // Danio Daily briefing
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(AppSpacing.md, 0, AppSpacing.md, AppSpacing.md),
+                  child: const DanioDailyCard(),
                 ),
               ),
 
