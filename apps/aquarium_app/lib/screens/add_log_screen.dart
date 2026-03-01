@@ -157,7 +157,9 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return GestureDetector(
+      onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+      child: Scaffold(
       appBar: AppBar(
         title: Text(widget.existingLog != null ? 'Edit Log' : _getTitle()),
         actions: [
@@ -286,6 +288,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
         ),
         ),
       ),
+    ),
     );
   }
 

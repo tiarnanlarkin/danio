@@ -53,7 +53,9 @@ class _CreateTankScreenState extends ConsumerState<CreateTankScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return GestureDetector(
+      onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+      child: Scaffold(
       appBar: AppBar(
         title: const Text('New Tank'),
         leading: Semantics(
@@ -168,6 +170,7 @@ class _CreateTankScreenState extends ConsumerState<CreateTankScreen> {
           ),
         ),
       ),
+    ),
     );
   }
 
@@ -393,7 +396,7 @@ class _TypeSelector extends StatelessWidget {
                   content: Row(
                     children: const [
                       Icon(Icons.waves, color: Colors.white),
-                      SizedBox(width: 12),
+                      const SizedBox(width: 12),
                       Expanded(
                         child: Text(
                           'Marine tank support is coming soon! 🐠🦀🐙',

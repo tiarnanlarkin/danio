@@ -67,13 +67,16 @@ class _Co2CalculatorScreenState extends State<Co2CalculatorScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return GestureDetector(
+      onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+      child: Scaffold(
       appBar: AppBar(title: const Text('CO2 Calculator')),
       body: ListView.builder(
         padding: const EdgeInsets.all(AppSpacing.md),
         itemCount: _buildItems().length,
         itemBuilder: (context, index) => _buildItems()[index],
       ),
+    ),
     );
   }
 

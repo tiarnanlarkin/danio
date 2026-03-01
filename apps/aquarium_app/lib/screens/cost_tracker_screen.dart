@@ -113,7 +113,9 @@ class _CostTrackerScreenState extends ConsumerState<CostTrackerScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return GestureDetector(
+      onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+      child: Scaffold(
       appBar: AppBar(
         title: const Text('Cost Tracker'),
         actions: [
@@ -138,6 +140,7 @@ class _CostTrackerScreenState extends ConsumerState<CostTrackerScreen> {
         icon: const Icon(Icons.add),
         label: const Text('Add Expense'),
       ),
+    ),
     );
   }
 

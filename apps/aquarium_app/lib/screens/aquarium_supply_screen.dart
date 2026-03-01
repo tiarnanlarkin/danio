@@ -246,7 +246,9 @@ class _AquariumSupplyScreenState extends ConsumerState<AquariumSupplyScreen>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return GestureDetector(
+      onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+      child: Scaffold(
       appBar: AppBar(
         title: const Text('Supplies & Inventory'),
         actions: [
@@ -285,6 +287,7 @@ class _AquariumSupplyScreenState extends ConsumerState<AquariumSupplyScreen>
         icon: const Icon(Icons.add),
         label: const Text('Add Product'),
       ),
+    ),
     );
   }
 

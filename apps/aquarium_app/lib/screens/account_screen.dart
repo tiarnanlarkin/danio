@@ -37,13 +37,16 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
     final auth = ref.watch(authProvider);
     final theme = Theme.of(context);
 
-    return Scaffold(
+    return GestureDetector(
+      onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+      child: Scaffold(
       appBar: AppBar(title: const Text('Account')),
       body: !SupabaseService.isInitialised
           ? _buildOfflineOnlyMessage(theme)
           : auth.isSignedIn
               ? _buildSignedInView(context, auth, theme)
               : _buildSignedOutView(context, auth, theme),
+    ),
     );
   }
 
