@@ -28,7 +28,7 @@ class WishlistScreen extends ConsumerWidget {
   Color get _accentColor {
     switch (category) {
       case WishlistCategory.fish:
-        return Colors.pink.shade400;
+        return DanioColors.coralAccent;
       case WishlistCategory.plant:
         return Colors.green.shade500;
       case WishlistCategory.equipment:

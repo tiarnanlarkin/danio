@@ -57,7 +57,7 @@ class StoriesCard extends ConsumerWidget {
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
-              colors: [Colors.purple.shade400, Colors.deepPurple.shade600],
+              colors: [AppColors.accentAlt, AppColors.secondaryDark],
             ),
           ),
           child: Column(

@@ -137,7 +137,7 @@ class SparklineCard extends StatelessWidget {
       case 'nitrite':
         return Colors.red;
       case 'ammonia':
-        return Colors.purple;
+        return AppColors.accentAlt;
       case 'ph':
         return AppColors.primary;
       case 'temp':
@@ -145,7 +145,7 @@ class SparklineCard extends StatelessWidget {
       case 'gh':
         return Colors.brown;
       case 'kh':
-        return Colors.indigo;
+        return AppColors.secondaryDark;
       case 'phosphate':
         return Colors.green;
       default:

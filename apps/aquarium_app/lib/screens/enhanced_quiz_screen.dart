@@ -459,7 +459,7 @@ class _EnhancedQuizScreenState extends ConsumerState<EnhancedQuizScreen>
       case ExerciseType.fillBlank:
         label = 'Fill in the Blank';
         icon = Icons.edit;
-        color = Colors.purple;
+        color = AppColors.accentAlt;
         break;
       case ExerciseType.trueFalse:
         label = 'True or False';

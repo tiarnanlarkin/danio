@@ -885,7 +885,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                             ? Colors.green
                             : topic.needsWork
                             ? Colors.orange
-                            : Colors.blue,
+                            : AppColors.info,
                       ),
                       const SizedBox(height: AppSpacing.xs),
                       Text(

@@ -121,7 +121,7 @@ class WorkshopScreen extends ConsumerWidget {
                     icon: Icons.medication_liquid,
                     title: 'Dosing',
                     subtitle: 'Fertilizer calculator',
-                    color: Colors.purple.shade300,
+                    color: AppColors.accentAlt,
                     onTap: () => Navigator.push(
                       context,
                       MaterialPageRoute(
