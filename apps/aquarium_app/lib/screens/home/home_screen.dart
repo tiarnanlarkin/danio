@@ -45,6 +45,7 @@ import '../../widgets/stage/bottom_plate.dart';
 import '../../widgets/stage/temp_panel_content.dart';
 import '../../widgets/stage/water_panel_content.dart';
 import '../../widgets/stage/ambient_tip_overlay.dart';
+import '../../widgets/stage/lighting_pulse.dart';
 import '../../painters/leather_grain_painter.dart';
 import '../../painters/saffiano_painter.dart';
 import '../../widgets/fun_loading_messages.dart';
@@ -220,7 +221,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           children: [
             // The room scene
             Positioned.fill(
-              child: LivingRoomScene(
+              child: LightingPulseWrapper(
+                child: LivingRoomScene(
                 tankId: currentTank.id,
                 tankName: currentTank.name,
                 tankVolume: currentTank.volumeLitres,
@@ -235,6 +237,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 onThemeTap: () => _showThemePicker(context, ref),
                 onJournalTap: () => _navigateToJournal(context, currentTank.id),
                 onCalendarTap: () => _navigateToSchedule(context),
+              ),
               ),
             ),
 

@@ -71,20 +71,23 @@ class _SwissArmyPanelState extends ConsumerState<SwissArmyPanel>
     super.dispose();
   }
 
+  bool _wasOpen = false;
+
   @override
   Widget build(BuildContext context) {
     final isOpen = ref.watch(
       stageProvider.select((s) => s.openPanels.contains(widget.panel)),
     );
 
-    // Drive animation
-    if (isOpen && !_anim.isCompleted) {
+    // Drive animation + haptics only on state change
+    if (isOpen && !_wasOpen) {
       _anim.forward();
       HapticFeedback.lightImpact();
-    } else if (!isOpen && _anim.value > 0) {
+    } else if (!isOpen && _wasOpen) {
       _anim.reverse();
       HapticFeedback.selectionClick();
     }
+    _wasOpen = isOpen;
 
     final screenWidth = MediaQuery.of(context).size.width;
     final panelWidth = screenWidth * 0.72;
