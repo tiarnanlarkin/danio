@@ -86,10 +86,12 @@ class EmptyState extends StatefulWidget {
 }
 
 class _EmptyStateState extends State<EmptyState>
-    with SingleTickerProviderStateMixin {
+    with TickerProviderStateMixin {
   late AnimationController _controller;
+  late AnimationController _floatController;
   late Animation<double> _fadeAnimation;
   late Animation<double> _scaleAnimation;
+  late Animation<double> _floatAnimation;
 
   @override
   void initState() {
@@ -98,6 +100,16 @@ class _EmptyStateState extends State<EmptyState>
       duration: const Duration(milliseconds: 600),
       vsync: this,
     );
+
+    // Gentle float animation for the icon
+    _floatController = AnimationController(
+      duration: const Duration(seconds: 2),
+      vsync: this,
+    );
+    _floatAnimation = Tween<double>(begin: -4.0, end: 4.0).animate(
+      CurvedAnimation(parent: _floatController, curve: Curves.easeInOut),
+    );
+    _floatController.repeat(reverse: true);
 
     _fadeAnimation = Tween<double>(
       begin: 0.0,
@@ -115,6 +127,7 @@ class _EmptyStateState extends State<EmptyState>
   @override
   void dispose() {
     _controller.dispose();
+    _floatController.dispose();
     super.dispose();
   }
 
@@ -130,11 +143,20 @@ class _EmptyStateState extends State<EmptyState>
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // Icon or custom illustration
+                // Icon or custom illustration with gentle float
                 if (widget.illustration != null)
                   widget.illustration!
                 else
-                  Container(
+                  AnimatedBuilder(
+                    animation: _floatAnimation,
+                    builder: (context, child) {
+                      final reduceMotion = MediaQuery.of(context).disableAnimations;
+                      return Transform.translate(
+                        offset: Offset(0, reduceMotion ? 0 : _floatAnimation.value),
+                        child: child,
+                      );
+                    },
+                    child: Container(
                     width: 120,
                     height: 120,
                     decoration: BoxDecoration(
@@ -160,6 +182,7 @@ class _EmptyStateState extends State<EmptyState>
                       size: 60,
                       color: AppColors.primary,
                     ),
+                  ),
                   ),
 
                 const SizedBox(height: AppSpacing.lg),
