@@ -207,7 +207,7 @@ class _StatItem extends StatelessWidget {
         child: Text(
           value,
           style: AppTypography.titleMedium.copyWith(
-            fontWeight: FontWeight.w800,
+            fontWeight: FontWeight.w700,
             color: Theme.of(context).brightness == Brightness.dark
                 ? AppColors.textPrimaryDark
                 : const Color(0xFF3D2B1F),
