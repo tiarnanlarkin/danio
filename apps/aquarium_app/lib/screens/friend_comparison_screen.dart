@@ -445,7 +445,7 @@ class _StatComparisonRow extends StatelessWidget {
                   textAlign: TextAlign.left,
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.bold,
-                    color: winner == 'user' ? Colors.green : Theme.of(context).colorScheme.onSurface.withOpacity(0.4),
+                    color: winner == 'user' ? Colors.green : Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
                   ),
                 ),
               ),
@@ -479,7 +479,7 @@ class _StatComparisonRow extends StatelessWidget {
                   textAlign: TextAlign.right,
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.bold,
-                    color: winner == 'friend' ? Colors.green : Theme.of(context).colorScheme.onSurface.withOpacity(0.4),
+                    color: winner == 'friend' ? Colors.green : Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
                   ),
                 ),
               ),

@@ -85,10 +85,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   Widget _buildSkeletonRoom() {
-    return Semantics(
-      liveRegion: true,
-      label: 'Loading your aquarium room',
-      child: Skeletonizer(
+    return Skeletonizer(
       child: Stack(
         children: [
           // Skeleton room background
@@ -166,7 +163,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           ),
         ],
       ),
-    ),
     );
   }
 
@@ -488,50 +484,46 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     top: MediaQuery.of(context).padding.top + 60,
                     left: 16,
                     right: 16,
-                    child: Semantics(
-                      label: 'Daily lesson reminder. Tap to dismiss',
-                      button: true,
-                      child: GestureDetector(
-                        onTap: () => setState(() => _dailyNudgeDismissed = true),
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: AppSpacing.md,
-                            vertical: AppSpacing.sm2,
-                          ),
-                          decoration: BoxDecoration(
-                            color: AppColors.primary.withAlpha(230),
-                            borderRadius: AppRadius.mediumRadius,
-                            boxShadow: [
-                              BoxShadow(
-                                color: AppOverlays.black20,
-                                blurRadius: 8,
-                                offset: const Offset(0, 2),
-                              ),
-                            ],
-                          ),
-                          child: Row(
-                            children: [
-                              Text(
-                                '\u{1F3AF}',
-                                style: Theme.of(context).textTheme.titleLarge!,
-                              ),
-                              const SizedBox(width: AppSpacing.sm),
-                              Expanded(
-                                child: Text(
-                                  "Start a quick lesson to earn XP today!",
-                                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                    color: AppColors.onPrimary,
-                                    fontWeight: FontWeight.w500,
-                                  ),
+                    child: GestureDetector(
+                      onTap: () => setState(() => _dailyNudgeDismissed = true),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: AppSpacing.md,
+                          vertical: AppSpacing.sm2,
+                        ),
+                        decoration: BoxDecoration(
+                          color: AppColors.primary.withAlpha(230),
+                          borderRadius: AppRadius.mediumRadius,
+                          boxShadow: [
+                            BoxShadow(
+                              color: AppOverlays.black20,
+                              blurRadius: 8,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        child: Row(
+                          children: [
+                            Text(
+                              '\u{1F3AF}',
+                              style: Theme.of(context).textTheme.titleLarge!,
+                            ),
+                            const SizedBox(width: AppSpacing.sm),
+                            Expanded(
+                              child: Text(
+                                "Start a quick lesson to earn XP today!",
+                                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                  color: AppColors.onPrimary,
+                                  fontWeight: FontWeight.w500,
                                 ),
                               ),
-                              Icon(
-                                Icons.close,
-                                size: 18,
-                                color: AppColors.onPrimary.withAlpha(180),
-                              ),
-                            ],
-                          ),
+                            ),
+                            Icon(
+                              Icons.close,
+                              size: 18,
+                              color: AppColors.onPrimary.withAlpha(180),
+                            ),
+                          ],
                         ),
                       ),
                     ),
@@ -916,6 +908,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           label: 'Water change',
           value: latestChange != null ? _timeAgo(latestChange.timestamp) : 'Log your first change!',
         ),
+      ],
+    );
+  }
+
   void _showWaterParams(BuildContext context) {
     final tankId = _getCurrentTankId();
     if (tankId == null) return;
@@ -927,128 +923,34 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final latestTest = waterTests.isNotEmpty ? waterTests.first : null;
     final wt = latestTest?.waterTest;
 
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: Colors.transparent,
-      isScrollControlled: true,
-      builder: (ctx) => Container(
-        margin: EdgeInsets.all(AppSpacing.md),
-        padding: EdgeInsets.all(AppSpacing.lg2),
-        decoration: BoxDecoration(
-          color: Theme.of(context).scaffoldBackgroundColor,
-          borderRadius: AppRadius.largeRadius,
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Center(
-              child: Column(
-                children: [
-                  const Text('\u{1F9EA}', style: TextStyle(fontSize: 40)),
-                  const SizedBox(height: AppSpacing.sm),
-                  Text('Water Parameters', style: AppTypography.headlineSmall),
-                ],
-              ),
-            ),
-            const SizedBox(height: AppSpacing.md),
-            Container(
-              width: double.infinity,
-              padding: EdgeInsets.all(AppSpacing.sm2),
-              decoration: BoxDecoration(
-                color: AppColors.accent.withAlpha(20),
-                borderRadius: AppRadius.mediumRadius,
-                border: Border.all(color: AppColors.accent.withAlpha(60)),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('\u{2705} Ideal Ranges (Freshwater)',
-                    style: AppTypography.labelMedium.copyWith(
-                      color: AppColors.accent,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  const SizedBox(height: AppSpacing.xs),
-                  Text(
-                    'pH 6.5-7.5  |  Ammonia 0 ppm  |  Nitrite 0 ppm  |  Nitrate <40 ppm',
-                    style: AppTypography.bodySmall.copyWith(color: AppColors.textSecondary),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: AppSpacing.md),
-            if (wt == null || !wt.hasValues) ...[
-              Center(
-                child: Padding(
-                  padding: EdgeInsets.symmetric(vertical: AppSpacing.lg),
-                  child: Column(
-                    children: [
-                      Text('No test results yet', style: AppTypography.bodyMedium),
-                      const SizedBox(height: AppSpacing.xs),
-                      Text('Log your first water test to see results here!',
-                        style: AppTypography.bodySmall.copyWith(color: AppColors.textSecondary),
-                        textAlign: TextAlign.center,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ] else ...[
-              _buildParamRow('pH', wt.ph?.toStringAsFixed(1) ?? '--', '6.5 - 7.5'),
-              _buildParamRow('Ammonia', wt.ammonia != null ? '${wt.ammonia!.toStringAsFixed(2)} ppm' : '--', '0 ppm'),
-              _buildParamRow('Nitrite', wt.nitrite != null ? '${wt.nitrite!.toStringAsFixed(2)} ppm' : '--', '0 ppm'),
-              _buildParamRow('Nitrate', wt.nitrate != null ? '${wt.nitrate!.toStringAsFixed(1)} ppm' : '--', '<40 ppm'),
-              const Divider(height: 24),
-              Text('Last tested: ${_timeAgo(latestTest!.timestamp)}',
-                style: AppTypography.bodySmall.copyWith(color: AppColors.textSecondary),
-              ),
-            ],
-            const SizedBox(height: AppSpacing.md),
-            Text('\u{1F41F} What this means for your fish',
-              style: AppTypography.labelMedium.copyWith(fontWeight: FontWeight.w600),
-            ),
-            const SizedBox(height: AppSpacing.xs),
-            Text(
-              'Stable water parameters are the single most important factor in fish health. Test weekly and after any changes to your tank.',
-              style: AppTypography.bodySmall.copyWith(color: AppColors.textSecondary),
-            ),
-            const SizedBox(height: AppSpacing.md),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton.icon(
-                onPressed: () {
-                  Navigator.pop(ctx);
-                  Navigator.push(context, AppPageRoutes.slide(
-                    AddLogScreen(tankId: tankId, initialType: LogType.waterTest),
-                  ));
-                },
-                icon: const Icon(Icons.science, size: 18),
-                label: const Text('Log Water Test'),
-              ),
-            ),
-            const SizedBox(height: AppSpacing.sm),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildParamRow(String label, String value, String ideal) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
-      child: Row(
-        children: [
-          Expanded(child: Text(label, style: AppTypography.bodyMedium)),
-          Text(value, style: AppTypography.labelLarge),
-          if (ideal.isNotEmpty) ...[
-            const SizedBox(width: AppSpacing.sm),
-            Text('(ideal: $ideal)',
-              style: AppTypography.bodySmall.copyWith(color: AppColors.textHint),
-            ),
-          ],
+    if (wt == null || !wt.hasValues) {
+      _showItemSheet(
+        context,
+        title: 'Water Tests',
+        icon: Icons.science,
+        color: AppColors.primary,
+        rows: [
+          const ItemDetailRow(label: 'No data yet', value: 'Log your first water test!'),
         ],
-      ),
+      );
+      return;
+    }
+
+    _showItemSheet(
+      context,
+      title: 'Water Tests',
+      icon: Icons.science,
+      color: AppColors.primary,
+      rows: [
+        ItemDetailRow(label: 'pH', value: wt.ph != null ? wt.ph!.toStringAsFixed(1) : '--'),
+        ItemDetailRow(label: 'Ammonia', value: wt.ammonia != null ? '${wt.ammonia!.toStringAsFixed(2)} ppm' : '--'),
+        ItemDetailRow(label: 'Nitrite', value: wt.nitrite != null ? '${wt.nitrite!.toStringAsFixed(2)} ppm' : '--'),
+        ItemDetailRow(label: 'Nitrate', value: wt.nitrate != null ? '${wt.nitrate!.toStringAsFixed(1)} ppm' : '--'),
+        ItemDetailRow(
+          label: 'Last tested',
+          value: _timeAgo(latestTest!.timestamp),
+        ),
+      ],
     );
   }
 
@@ -1068,167 +970,36 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         l.timestamp.month == today.month &&
         l.timestamp.day == today.day).length;
 
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: Colors.transparent,
-      isScrollControlled: true,
-      builder: (ctx) => Container(
-        margin: EdgeInsets.all(AppSpacing.md),
-        padding: EdgeInsets.all(AppSpacing.lg2),
-        decoration: BoxDecoration(
-          color: Theme.of(context).scaffoldBackgroundColor,
-          borderRadius: AppRadius.largeRadius,
+    _showItemSheet(
+      context,
+      title: 'Fish Food',
+      icon: Icons.restaurant,
+      color: AppColors.secondary,
+      rows: [
+        ItemDetailRow(label: 'Fed today', value: '$feedingsToday time${feedingsToday == 1 ? "" : "s"}'),
+        ItemDetailRow(
+          label: 'Last fed',
+          value: latestFeeding != null ? _timeAgo(latestFeeding.timestamp) : 'Not yet -- time to feed!',
         ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Center(
-              child: Column(
-                children: [
-                  const Text('\u{1F3A3}', style: TextStyle(fontSize: 40)),
-                  const SizedBox(height: AppSpacing.sm),
-                  Text('Feeding', style: AppTypography.headlineSmall),
-                ],
-              ),
-            ),
-            const SizedBox(height: AppSpacing.md),
-            Container(
-              width: double.infinity,
-              padding: EdgeInsets.all(AppSpacing.sm2),
-              decoration: BoxDecoration(
-                color: AppColors.secondary.withAlpha(20),
-                borderRadius: AppRadius.mediumRadius,
-                border: Border.all(color: AppColors.secondary.withAlpha(60)),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('\u{1F4CB} Feeding Guidelines',
-                    style: AppTypography.labelMedium.copyWith(
-                      color: AppColors.secondary,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  const SizedBox(height: AppSpacing.xs),
-                  Text(
-                    'Feed 2-3 times daily  |  Only what they eat in 2 min  |  Variety is key',
-                    style: AppTypography.bodySmall.copyWith(color: AppColors.textSecondary),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: AppSpacing.md),
-            _buildParamRow('Fed today', '$feedingsToday time${feedingsToday == 1 ? "" : "s"}', '2-3x'),
-            _buildParamRow(
-              'Last fed',
-              latestFeeding != null ? _timeAgo(latestFeeding.timestamp) : 'Not yet',
-              '',
-            ),
-            const SizedBox(height: AppSpacing.md),
-            Text('\u{1F41F} What this means for your fish',
-              style: AppTypography.labelMedium.copyWith(fontWeight: FontWeight.w600),
-            ),
-            const SizedBox(height: AppSpacing.xs),
-            Text(
-              'Overfeeding is the #1 cause of water quality issues. Feed small amounts your fish can finish in 2 minutes. Remove uneaten food promptly.',
-              style: AppTypography.bodySmall.copyWith(color: AppColors.textSecondary),
-            ),
-            const SizedBox(height: AppSpacing.md),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton.icon(
-                onPressed: () {
-                  Navigator.pop(ctx);
-                  if (tankId != null) {
-                    Navigator.push(context, AppPageRoutes.slide(
-                      AddLogScreen(tankId: tankId, initialType: LogType.feeding),
-                    ));
-                  }
-                },
-                icon: const Icon(Icons.restaurant, size: 18),
-                label: const Text('Log Feeding'),
-              ),
-            ),
-            const SizedBox(height: AppSpacing.sm),
-          ],
+        ItemDetailRow(
+          label: 'Tip',
+          value: 'Little and often beats one big meal!',
         ),
-      ),
+      ],
     );
   }
 
   void _showPlantInfo(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: Colors.transparent,
-      isScrollControlled: true,
-      builder: (ctx) => Container(
-        margin: EdgeInsets.all(AppSpacing.md),
-        padding: EdgeInsets.all(AppSpacing.lg2),
-        decoration: BoxDecoration(
-          color: Theme.of(context).scaffoldBackgroundColor,
-          borderRadius: AppRadius.largeRadius,
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Center(
-              child: Column(
-                children: [
-                  const Text('\u{1FAB4}', style: TextStyle(fontSize: 40)),
-                  const SizedBox(height: AppSpacing.sm),
-                  Text('Tank Plants', style: AppTypography.headlineSmall),
-                ],
-              ),
-            ),
-            const SizedBox(height: AppSpacing.md),
-            Container(
-              width: double.infinity,
-              padding: EdgeInsets.all(AppSpacing.sm2),
-              decoration: BoxDecoration(
-                color: DanioColors.emeraldGreen.withAlpha(20),
-                borderRadius: AppRadius.mediumRadius,
-                border: Border.all(color: DanioColors.emeraldGreen.withAlpha(60)),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('\u{2728} Plant Care Tips',
-                    style: AppTypography.labelMedium.copyWith(
-                      color: DanioColors.emeraldGreen,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  const SizedBox(height: AppSpacing.xs),
-                  Text(
-                    '8-10 hrs light daily  |  Trim dead leaves  |  Root tabs for heavy feeders',
-                    style: AppTypography.bodySmall.copyWith(color: AppColors.textSecondary),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: AppSpacing.md),
-            Text('\u{1F41F} What this means for your fish',
-              style: AppTypography.labelMedium.copyWith(fontWeight: FontWeight.w600),
-            ),
-            const SizedBox(height: AppSpacing.xs),
-            Text(
-              'Live plants absorb nitrates, produce oxygen, and provide shelter for fish. They are one of the best things you can add to any tank.',
-              style: AppTypography.bodySmall.copyWith(color: AppColors.textSecondary),
-            ),
-            const SizedBox(height: AppSpacing.md),
-            Text(
-              '\u{1F4A1} Pro tip: Use old tank water to water your houseplants -- it is packed with nutrients!',
-              style: AppTypography.bodySmall.copyWith(
-                color: AppColors.textSecondary,
-                fontStyle: FontStyle.italic,
-              ),
-            ),
-            const SizedBox(height: AppSpacing.sm),
-          ],
-        ),
-      ),
+    _showItemSheet(
+      context,
+      title: 'Houseplants',
+      icon: Icons.eco,
+      color: DanioColors.emeraldGreen,
+      rows: [
+        const ItemDetailRow(label: 'Monstera', value: 'Happy 🌿'),
+        const ItemDetailRow(label: 'Pothos', value: 'Thriving'),
+        const ItemDetailRow(label: 'Tip', value: 'Use old tank water!'),
+      ],
     );
   }
 

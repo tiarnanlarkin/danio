@@ -69,7 +69,7 @@ class FriendActivityWidget extends ConsumerWidget {
                       Icon(
                         Icons.arrow_forward_ios,
                         size: AppIconSizes.xs,
-                        color: Theme.of(context).colorScheme.onSurface.withOpacity(0.4),
+                        color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
                       ),
                     ],
                   ),

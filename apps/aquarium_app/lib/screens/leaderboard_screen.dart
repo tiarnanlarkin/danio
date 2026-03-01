@@ -64,12 +64,12 @@ class LeaderboardScreen extends ConsumerWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.construction, size: 16, color: Theme.of(context).colorScheme.onSurface.withOpacity(0.4)),
+                  Icon(Icons.construction, size: 16, color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6)),
                   const SizedBox(width: AppSpacing.sm),
                   Text(
                     'We\'re building this for you!',
                     style: theme.textTheme.bodySmall?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurface.withOpacity(0.4),
+                      color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
                       fontStyle: FontStyle.italic,
                     ),
                   ),

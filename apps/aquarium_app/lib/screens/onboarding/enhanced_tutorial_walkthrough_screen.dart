@@ -891,7 +891,7 @@ class _WaterTypeCard extends StatelessWidget {
             if (isSelected)
               const Icon(Icons.check_circle, color: AppColors.accent)
             else
-              Icon(Icons.circle_outlined, color: Theme.of(context).colorScheme.onSurface.withOpacity(0.4)),
+              Icon(Icons.circle_outlined, color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6)),
           ],
         ),
       ),
