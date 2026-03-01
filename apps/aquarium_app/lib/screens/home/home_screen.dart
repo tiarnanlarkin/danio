@@ -111,6 +111,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   Widget _buildSkeletonRoom() {
     return Skeletonizer(
       child: Stack(
+        fit: StackFit.expand,
         children: [
           // Skeleton room background — must be Positioned.fill to actually render
           Positioned.fill(
