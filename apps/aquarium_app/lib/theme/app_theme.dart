@@ -1546,3 +1546,24 @@ class StatCard extends StatelessWidget {
     );
   }
 }
+
+/// Custom scroll behavior that removes the glow effect and uses
+/// clamping physics for a cleaner, iOS-inspired feel across platforms.
+class DanioScrollBehavior extends ScrollBehavior {
+  const DanioScrollBehavior();
+
+  @override
+  ScrollPhysics getScrollPhysics(BuildContext context) {
+    return const ClampingScrollPhysics();
+  }
+
+  @override
+  Widget buildOverscrollIndicator(
+    BuildContext context,
+    Widget child,
+    ScrollableDetails details,
+  ) {
+    // No glow/stretch overscroll indicator
+    return child;
+  }
+}

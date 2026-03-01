@@ -103,6 +103,7 @@ class AquariumApp extends ConsumerWidget {
     final settings = ref.watch(settingsProvider);
 
     return MaterialApp(
+      scrollBehavior: const DanioScrollBehavior(),
       navigatorKey: navigatorKey,
       title: 'Danio',
       debugShowCheckedModeBanner: false,
