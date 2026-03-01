@@ -262,7 +262,7 @@ class _CreateTankScreenState extends ConsumerState<CreateTankScreen> {
         AppFeedback.showSuccess(context, '${_name.trim()} created! +${XpRewards.createTank} XP');
 
         // Celebrate first tank creation!
-        final tanks = ref.read(tankListProvider).value ?? [];
+        final tanks = ref.read(tanksProvider).value ?? [];
         if (tanks.length <= 1) {
           ref.read(celebrationProvider.notifier).milestone(
             'Your First Tank! 🎉',
