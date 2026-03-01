@@ -5,6 +5,7 @@ import 'package:skeletonizer/skeletonizer.dart';
 import '../../models/models.dart';
 import '../analytics_screen.dart';
 import '../../providers/tank_provider.dart';
+import '../../providers/hearts_provider.dart';
 import '../../providers/storage_provider.dart';
 import '../../providers/room_theme_provider.dart';
 import '../../providers/user_profile_provider.dart';
@@ -317,6 +318,65 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   );
                 },
               ),
+
+            // Streak & hearts warning
+            Builder(
+              builder: (context) {
+                final profile = ref.watch(userProfileProvider).value;
+                final hearts = ref.watch(heartsStateProvider);
+                if (profile == null) return const SizedBox.shrink();
+                final streak = profile.currentStreak;
+                final lowHearts = hearts.currentHearts <= 1;
+                if (streak == 0 && !lowHearts) return const SizedBox.shrink();
+                return Positioned(
+                  bottom: 100 + MediaQuery.of(context).padding.bottom,
+                  left: 16,
+                  right: 80,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      if (streak > 0)
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                          decoration: BoxDecoration(
+                            color: DanioColors.amberGold.withAlpha(230),
+                            borderRadius: AppRadius.mediumRadius,
+                          ),
+                          child: Text(
+                            '\u{1F525} $streak day streak!',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 14,
+                            ),
+                          ),
+                        ),
+                      if (lowHearts && hearts.currentHearts >= 0) ...[
+                        const SizedBox(height: 4),
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                          decoration: BoxDecoration(
+                            color: AppColors.warning.withAlpha(210),
+                            borderRadius: AppRadius.mediumRadius,
+                          ),
+                          child: Text(
+                            hearts.currentHearts == 0
+                                ? '\u{1F494} No hearts left - wait for refill!'
+                                : '\u{26A0}\u{FE0F} You\'re on your last heart - be careful!',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w500,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ],
+                  ),
+                );
+              },
+            ),
 
             // Gamification Dashboard - shows all stats at a glance
             // Right margin avoids overlap with FAB
