@@ -101,7 +101,7 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
               icon: Icons.set_meal,
               title: 'Your tank awaits its first residents! 🐠',
               message:
-                  'Add your fish, shrimp, or snails — we'll help you keep them happy and healthy',
+                  "Add your fish, shrimp, or snails -- we'll help you keep them happy and healthy",
               mascotContext: MascotContext.noLivestock,
               actionLabel: 'Add Livestock',
               onAction: () => _showAddDialog(context, ref),
@@ -140,27 +140,46 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
                         sliver: SliverToBoxAdapter(
                           child: AppCard(
                             padding: AppCardPadding.standard,
-                            child: Row(
+                            child: Column(
                               children: [
-                                Icon(
-                                  Icons.set_meal,
-                                  color: AppColors.primary,
-                                  size: 32,
-                                ),
-                                const SizedBox(width: AppSpacing.md),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                Row(
                                   children: [
-                                    Text(
-                                      '$totalCount total',
-                                      style: AppTypography.headlineMedium,
+                                    Icon(
+                                      Icons.set_meal,
+                                      color: AppColors.primary,
+                                      size: 32,
                                     ),
-                                    Text(
-                                      '${livestock.length} species',
-                                      style: AppTypography.bodyMedium,
+                                    const SizedBox(width: AppSpacing.md),
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          '$totalCount total',
+                                          style: AppTypography.headlineMedium,
+                                        ),
+                                        Text(
+                                          '${livestock.length} species',
+                                          style: AppTypography.bodyMedium,
+                                        ),
+                                      ],
+                                    ),
+                                    const Spacer(),
+                                    FilledButton.icon(
+                                      onPressed: () => _quickFeed(context, ref),
+                                      icon: const Icon(Icons.restaurant, size: 18),
+                                      label: const Text('Feed'),
+                                      style: FilledButton.styleFrom(
+                                        backgroundColor: AppColors.primary,
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: AppSpacing.md,
+                                          vertical: AppSpacing.sm,
+                                        ),
+                                      ),
                                     ),
                                   ],
                                 ),
+                                // Last fed info
+                                _LastFedInfo(tankId: widget.tankId),
                               ],
                             ),
                           ),
@@ -473,6 +492,29 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
           'Failed to remove livestock. Please try again.',
         );
       }
+    }
+  }
+
+  Future<void> _quickFeed(BuildContext context, WidgetRef ref) async {
+    const uuid = Uuid();
+    final storage = ref.read(storageServiceProvider);
+    final now = DateTime.now();
+
+    await storage.saveLog(
+      LogEntry(
+        id: uuid.v4(),
+        tankId: widget.tankId,
+        type: LogType.feeding,
+        timestamp: now,
+        title: 'Fed fish',
+        createdAt: now,
+      ),
+    );
+
+    ref.invalidate(logsProvider(widget.tankId));
+
+    if (context.mounted) {
+      AppFeedback.showSuccess(context, 'Feeding logged! \u{1F41F}');
     }
   }
 
@@ -945,7 +987,7 @@ class _AddLivestockSheetState extends State<_AddLivestockSheet> {
                     ),
                     if (_selectedSpecies!.minSchoolSize > 1)
                       Text(
-                        'Schooling fish — keep ${_selectedSpecies!.minSchoolSize}+ together',
+                        'Schooling fish -- keep ${_selectedSpecies!.minSchoolSize}+ together',
                         style: AppTypography.bodySmall.copyWith(
                           color: AppColors.textSecondary,
                         ),
@@ -1141,7 +1183,7 @@ class _BulkAddLivestockSheetState extends State<_BulkAddLivestockSheet> {
             Text('Bulk add livestock', style: AppTypography.headlineMedium),
             const SizedBox(height: AppSpacing.sm),
             Text(
-              'One per line. Formats supported: “Neon Tetra, 10”, “10 Neon Tetra”, “Neon Tetra x10”.',
+              'One per line. Formats supported: \"Neon Tetra, 10\", \"10 Neon Tetra\", \"Neon Tetra x10\".',
               style: AppTypography.bodySmall.copyWith(
                 color: AppColors.textSecondary,
               ),
@@ -1286,7 +1328,7 @@ class _BulkAddLivestockSheetState extends State<_BulkAddLivestockSheet> {
     for (final line in lines) {
       final item = _parseLine(line);
       if (item == null) {
-        return _ParseResult(items: items, error: 'Could not parse: “$line”');
+        return _ParseResult(items: items, error: 'Could not parse: \"$line\"');
       }
       items.add(item);
     }
@@ -1350,4 +1392,61 @@ class _ParseResult {
   final String? error;
 
   const _ParseResult({required this.items, this.error});
+}
+
+
+/// Shows "Last fed: X hours ago" based on most recent feeding log
+class _LastFedInfo extends ConsumerWidget {
+  final String tankId;
+  const _LastFedInfo({required this.tankId});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final logsAsync = ref.watch(logsProvider(tankId));
+    return logsAsync.when(
+      loading: () => const SizedBox.shrink(),
+      error: (_, __) => const SizedBox.shrink(),
+      data: (logs) {
+        final lastFeeding = logs
+            .where((l) => l.type == LogType.feeding)
+            .toList();
+        if (lastFeeding.isEmpty) {
+          return Padding(
+            padding: const EdgeInsets.only(top: AppSpacing.sm),
+            child: Text(
+              'No feedings logged yet',
+              style: AppTypography.bodySmall.copyWith(
+                color: Colors.grey.shade500,
+              ),
+            ),
+          );
+        }
+        final last = lastFeeding.first; // logs are sorted newest first
+        final diff = DateTime.now().difference(last.timestamp);
+        String timeAgo;
+        if (diff.inMinutes < 60) {
+          timeAgo = '${diff.inMinutes}m ago';
+        } else if (diff.inHours < 24) {
+          timeAgo = '${diff.inHours}h ago';
+        } else {
+          timeAgo = '${diff.inDays}d ago';
+        }
+        return Padding(
+          padding: const EdgeInsets.only(top: AppSpacing.sm),
+          child: Row(
+            children: [
+              Icon(Icons.restaurant, size: 14, color: Colors.grey.shade500),
+              const SizedBox(width: 4),
+              Text(
+                'Last fed: $timeAgo',
+                style: AppTypography.bodySmall.copyWith(
+                  color: Colors.grey.shade600,
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
 }
