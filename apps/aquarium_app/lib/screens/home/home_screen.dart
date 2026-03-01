@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import '../../models/models.dart';
@@ -58,11 +59,25 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   bool _dailyNudgeDismissed = false;
   bool _isSelectMode = false;
   bool _firstTankPromptShown = false;
+  bool _showWelcomeBanner = false;
   final Set<String> _selectedTankIds = {};
 
   @override
   void initState() {
     super.initState();
+    _checkWelcomeBanner();
+  }
+
+  Future<void> _checkWelcomeBanner() async {
+    final prefs = await SharedPreferences.getInstance();
+    final hasSeen = prefs.getBool('has_seen_welcome_banner') ?? false;
+    if (!hasSeen && mounted) {
+      setState(() => _showWelcomeBanner = true);
+      await prefs.setBool('has_seen_welcome_banner', true);
+      Future.delayed(const Duration(seconds: 4), () {
+        if (mounted) setState(() => _showWelcomeBanner = false);
+      });
+    }
   }
 
   void _toggleSelectMode() {
@@ -552,7 +567,56 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     // by TabNavigator's tab system, not a BottomNavigationBar here.
     // Note: FAB is handled inside _buildLivingRoomScreen() Stack, not here
     return Scaffold(
-      body: _buildLivingRoomScreen(),
+      body: Stack(
+        children: [
+          _buildLivingRoomScreen(),
+          if (_showWelcomeBanner)
+            Positioned(
+              top: MediaQuery.of(context).padding.top + AppSpacing.md,
+              left: AppSpacing.md,
+              right: AppSpacing.md,
+              child: AnimatedOpacity(
+                opacity: _showWelcomeBanner ? 1.0 : 0.0,
+                duration: const Duration(milliseconds: 500),
+                child: Material(
+                  color: Colors.transparent,
+                  child: Container(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: AppSpacing.lg,
+                      vertical: AppSpacing.md,
+                    ),
+                    decoration: BoxDecoration(
+                      color: AppColors.primary,
+                      borderRadius: AppRadius.mediumRadius,
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppColors.primary.withAlpha(60),
+                          blurRadius: 12,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    child: Row(
+                      children: [
+                        const Text('\u{1F420}', style: TextStyle(fontSize: 28)),
+                        const SizedBox(width: AppSpacing.sm2),
+                        Expanded(
+                          child: Text(
+                            'Welcome! Your aquarium journey starts now',
+                            style: AppTypography.labelLarge.copyWith(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+        ],
+      ),
     );
   }
 
@@ -923,36 +987,131 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final latestTest = waterTests.isNotEmpty ? waterTests.first : null;
     final wt = latestTest?.waterTest;
 
-    if (wt == null || !wt.hasValues) {
-      _showItemSheet(
-        context,
-        title: 'Water Tests',
-        icon: Icons.science,
-        color: AppColors.primary,
-        rows: [
-          const ItemDetailRow(label: 'No data yet', value: 'Log your first water test!'),
-        ],
-      );
-      return;
-    }
-
-    _showItemSheet(
-      context,
-      title: 'Water Tests',
-      icon: Icons.science,
-      color: AppColors.primary,
-      rows: [
-        ItemDetailRow(label: 'pH', value: wt.ph != null ? wt.ph!.toStringAsFixed(1) : '--'),
-        ItemDetailRow(label: 'Ammonia', value: wt.ammonia != null ? '${wt.ammonia!.toStringAsFixed(2)} ppm' : '--'),
-        ItemDetailRow(label: 'Nitrite', value: wt.nitrite != null ? '${wt.nitrite!.toStringAsFixed(2)} ppm' : '--'),
-        ItemDetailRow(label: 'Nitrate', value: wt.nitrate != null ? '${wt.nitrate!.toStringAsFixed(1)} ppm' : '--'),
-        ItemDetailRow(
-          label: 'Last tested',
-          value: _timeAgo(latestTest!.timestamp),
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (ctx) => Container(
+        margin: EdgeInsets.all(AppSpacing.md),
+        padding: EdgeInsets.all(AppSpacing.lg2),
+        decoration: BoxDecoration(
+          color: Theme.of(context).scaffoldBackgroundColor,
+          borderRadius: AppRadius.largeRadius,
         ),
-      ],
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Center(
+              child: Column(
+                children: [
+                  const Text('\u{1F9EA}', style: TextStyle(fontSize: 40)),
+                  const SizedBox(height: AppSpacing.sm),
+                  Text('Water Parameters', style: AppTypography.headlineSmall),
+                ],
+              ),
+            ),
+            const SizedBox(height: AppSpacing.md),
+            Container(
+              width: double.infinity,
+              padding: EdgeInsets.all(AppSpacing.sm2),
+              decoration: BoxDecoration(
+                color: AppColors.accent.withAlpha(20),
+                borderRadius: AppRadius.mediumRadius,
+                border: Border.all(color: AppColors.accent.withAlpha(60)),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('\u{2705} Ideal Ranges (Freshwater)',
+                    style: AppTypography.labelMedium.copyWith(
+                      color: AppColors.accent,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(height: AppSpacing.xs),
+                  Text(
+                    'pH 6.5-7.5  |  Ammonia 0 ppm  |  Nitrite 0 ppm  |  Nitrate <40 ppm',
+                    style: AppTypography.bodySmall.copyWith(color: AppColors.textSecondary),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: AppSpacing.md),
+            if (wt == null || !wt.hasValues) ...[
+              Center(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(vertical: AppSpacing.lg),
+                  child: Column(
+                    children: [
+                      Text('No test results yet', style: AppTypography.bodyMedium),
+                      const SizedBox(height: AppSpacing.xs),
+                      Text('Log your first water test to see results here!',
+                        style: AppTypography.bodySmall.copyWith(color: AppColors.textSecondary),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ] else ...[
+              _buildParamRow('pH', wt.ph?.toStringAsFixed(1) ?? '--', '6.5 - 7.5'),
+              _buildParamRow('Ammonia', wt.ammonia != null ? '${wt.ammonia!.toStringAsFixed(2)} ppm' : '--', '0 ppm'),
+              _buildParamRow('Nitrite', wt.nitrite != null ? '${wt.nitrite!.toStringAsFixed(2)} ppm' : '--', '0 ppm'),
+              _buildParamRow('Nitrate', wt.nitrate != null ? '${wt.nitrate!.toStringAsFixed(1)} ppm' : '--', '<40 ppm'),
+              const Divider(height: 24),
+              Text('Last tested: ${_timeAgo(latestTest!.timestamp)}',
+                style: AppTypography.bodySmall.copyWith(color: AppColors.textSecondary),
+              ),
+            ],
+            const SizedBox(height: AppSpacing.md),
+            Text('\u{1F41F} What this means for your fish',
+              style: AppTypography.labelMedium.copyWith(fontWeight: FontWeight.w600),
+            ),
+            const SizedBox(height: AppSpacing.xs),
+            Text(
+              'Stable water parameters are the single most important factor in fish health. Test weekly and after any changes to your tank.',
+              style: AppTypography.bodySmall.copyWith(color: AppColors.textSecondary),
+            ),
+            const SizedBox(height: AppSpacing.md),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton.icon(
+                onPressed: () {
+                  Navigator.pop(ctx);
+                  Navigator.push(context, RoomSlideRoute(
+                    page: AddLogScreen(tankId: tankId, initialType: LogType.waterTest),
+                  ));
+                },
+                icon: const Icon(Icons.science, size: 18),
+                label: const Text('Log Water Test'),
+              ),
+            ),
+            const SizedBox(height: AppSpacing.sm),
+          ],
+        ),
+      ),
     );
   }
+
+  Widget _buildParamRow(String label, String value, String ideal) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Row(
+        children: [
+          Expanded(child: Text(label, style: AppTypography.bodyMedium)),
+          Text(value, style: AppTypography.labelLarge),
+          if (ideal.isNotEmpty) ...[
+            const SizedBox(width: AppSpacing.sm),
+            Text('(ideal: $ideal)',
+              style: AppTypography.bodySmall.copyWith(color: AppColors.textHint),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
 
   void _showFeedingInfo(BuildContext context) {
     final tankId = _getCurrentTankId();
@@ -970,38 +1129,169 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         l.timestamp.month == today.month &&
         l.timestamp.day == today.day).length;
 
-    _showItemSheet(
-      context,
-      title: 'Fish Food',
-      icon: Icons.restaurant,
-      color: AppColors.secondary,
-      rows: [
-        ItemDetailRow(label: 'Fed today', value: '$feedingsToday time${feedingsToday == 1 ? "" : "s"}'),
-        ItemDetailRow(
-          label: 'Last fed',
-          value: latestFeeding != null ? _timeAgo(latestFeeding.timestamp) : 'Not yet -- time to feed!',
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (ctx) => Container(
+        margin: EdgeInsets.all(AppSpacing.md),
+        padding: EdgeInsets.all(AppSpacing.lg2),
+        decoration: BoxDecoration(
+          color: Theme.of(context).scaffoldBackgroundColor,
+          borderRadius: AppRadius.largeRadius,
         ),
-        ItemDetailRow(
-          label: 'Tip',
-          value: 'Little and often beats one big meal!',
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Center(
+              child: Column(
+                children: [
+                  const Text('\u{1F3A3}', style: TextStyle(fontSize: 40)),
+                  const SizedBox(height: AppSpacing.sm),
+                  Text('Feeding', style: AppTypography.headlineSmall),
+                ],
+              ),
+            ),
+            const SizedBox(height: AppSpacing.md),
+            Container(
+              width: double.infinity,
+              padding: EdgeInsets.all(AppSpacing.sm2),
+              decoration: BoxDecoration(
+                color: AppColors.secondary.withAlpha(20),
+                borderRadius: AppRadius.mediumRadius,
+                border: Border.all(color: AppColors.secondary.withAlpha(60)),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('\u{1F4CB} Feeding Guidelines',
+                    style: AppTypography.labelMedium.copyWith(
+                      color: AppColors.secondary,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(height: AppSpacing.xs),
+                  Text(
+                    'Feed 2-3 times daily  |  Only what they eat in 2 min  |  Variety is key',
+                    style: AppTypography.bodySmall.copyWith(color: AppColors.textSecondary),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: AppSpacing.md),
+            _buildParamRow('Fed today', '$feedingsToday time${feedingsToday == 1 ? '' : 's'}', '2-3x'),
+            _buildParamRow(
+              'Last fed',
+              latestFeeding != null ? _timeAgo(latestFeeding.timestamp) : 'Not yet',
+              '',
+            ),
+            const SizedBox(height: AppSpacing.md),
+            Text('\u{1F41F} What this means for your fish',
+              style: AppTypography.labelMedium.copyWith(fontWeight: FontWeight.w600),
+            ),
+            const SizedBox(height: AppSpacing.xs),
+            Text(
+              'Overfeeding is the #1 cause of water quality issues. Feed small amounts your fish can finish in 2 minutes.',
+              style: AppTypography.bodySmall.copyWith(color: AppColors.textSecondary),
+            ),
+            const SizedBox(height: AppSpacing.md),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton.icon(
+                onPressed: () {
+                  Navigator.pop(ctx);
+                  Navigator.push(context, RoomSlideRoute(
+                    page: AddLogScreen(tankId: tankId, initialType: LogType.feeding),
+                  ));
+                },
+                icon: const Icon(Icons.restaurant, size: 18),
+                label: const Text('Log Feeding'),
+              ),
+            ),
+            const SizedBox(height: AppSpacing.sm),
+          ],
         ),
-      ],
+      ),
     );
   }
 
+
   void _showPlantInfo(BuildContext context) {
-    _showItemSheet(
-      context,
-      title: 'Houseplants',
-      icon: Icons.eco,
-      color: DanioColors.emeraldGreen,
-      rows: [
-        const ItemDetailRow(label: 'Monstera', value: 'Happy 🌿'),
-        const ItemDetailRow(label: 'Pothos', value: 'Thriving'),
-        const ItemDetailRow(label: 'Tip', value: 'Use old tank water!'),
-      ],
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (ctx) => Container(
+        margin: EdgeInsets.all(AppSpacing.md),
+        padding: EdgeInsets.all(AppSpacing.lg2),
+        decoration: BoxDecoration(
+          color: Theme.of(context).scaffoldBackgroundColor,
+          borderRadius: AppRadius.largeRadius,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Center(
+              child: Column(
+                children: [
+                  const Text('\u{1FAB4}', style: TextStyle(fontSize: 40)),
+                  const SizedBox(height: AppSpacing.sm),
+                  Text('Tank Plants', style: AppTypography.headlineSmall),
+                ],
+              ),
+            ),
+            const SizedBox(height: AppSpacing.md),
+            Container(
+              width: double.infinity,
+              padding: EdgeInsets.all(AppSpacing.sm2),
+              decoration: BoxDecoration(
+                color: DanioColors.emeraldGreen.withAlpha(20),
+                borderRadius: AppRadius.mediumRadius,
+                border: Border.all(color: DanioColors.emeraldGreen.withAlpha(60)),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('\u{2728} Plant Care Tips',
+                    style: AppTypography.labelMedium.copyWith(
+                      color: DanioColors.emeraldGreen,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(height: AppSpacing.xs),
+                  Text(
+                    '8-10 hrs light daily  |  Trim dead leaves  |  Root tabs for heavy feeders',
+                    style: AppTypography.bodySmall.copyWith(color: AppColors.textSecondary),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: AppSpacing.md),
+            Text('\u{1F41F} What this means for your fish',
+              style: AppTypography.labelMedium.copyWith(fontWeight: FontWeight.w600),
+            ),
+            const SizedBox(height: AppSpacing.xs),
+            Text(
+              'Live plants absorb nitrates, produce oxygen, and provide shelter. They are one of the best things you can add to any tank.',
+              style: AppTypography.bodySmall.copyWith(color: AppColors.textSecondary),
+            ),
+            const SizedBox(height: AppSpacing.md),
+            Text(
+              '\u{1F4A1} Pro tip: Use old tank water to water your houseplants -- packed with nutrients!',
+              style: AppTypography.bodySmall.copyWith(
+                color: AppColors.textSecondary,
+                fontStyle: FontStyle.italic,
+              ),
+            ),
+            const SizedBox(height: AppSpacing.sm),
+          ],
+        ),
+      ),
     );
   }
+
 
   void _showThemePicker(BuildContext context, WidgetRef ref) {
     showModalBottomSheet(
