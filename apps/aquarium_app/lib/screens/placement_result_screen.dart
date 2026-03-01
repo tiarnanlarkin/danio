@@ -11,6 +11,7 @@ import '../data/lesson_content.dart';
 import '../providers/user_profile_provider.dart';
 import '../theme/app_theme.dart';
 import 'onboarding/enhanced_tutorial_walkthrough_screen.dart';
+import 'onboarding/learning_style_screen.dart';
 
 class PlacementResultScreen extends ConsumerWidget {
   final PlacementResult result;
@@ -88,7 +89,7 @@ class PlacementResultScreen extends ConsumerWidget {
                       Navigator.of(context).pushReplacement(
                         MaterialPageRoute(
                           builder: (_) =>
-                              const EnhancedTutorialWalkthroughScreen(),
+                              const LearningStyleScreen(),
                         ),
                       );
                     },

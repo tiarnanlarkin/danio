@@ -77,6 +77,9 @@ class UserProfile {
   final String? eveningReminderTime; // "19:00" format
   final String? nightReminderTime; // "23:00" format
 
+  // Learning style preference: "quick", "deep", or "adaptive"
+  final String? learningStylePreference;
+
   final DateTime createdAt;
   final DateTime updatedAt;
 
@@ -115,6 +118,7 @@ class UserProfile {
     this.morningReminderTime = '09:00',
     this.eveningReminderTime = '19:00',
     this.nightReminderTime = '23:00',
+    this.learningStylePreference,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -267,6 +271,7 @@ class UserProfile {
     String? morningReminderTime,
     String? eveningReminderTime,
     String? nightReminderTime,
+    String? learningStylePreference,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) {
@@ -308,6 +313,7 @@ class UserProfile {
       morningReminderTime: morningReminderTime ?? this.morningReminderTime,
       eveningReminderTime: eveningReminderTime ?? this.eveningReminderTime,
       nightReminderTime: nightReminderTime ?? this.nightReminderTime,
+      learningStylePreference: learningStylePreference ?? this.learningStylePreference,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );
@@ -350,6 +356,7 @@ class UserProfile {
     'morningReminderTime': morningReminderTime,
     'eveningReminderTime': eveningReminderTime,
     'nightReminderTime': nightReminderTime,
+    'learningStylePreference': learningStylePreference,
     'createdAt': createdAt.toIso8601String(),
     'updatedAt': updatedAt.toIso8601String(),
   };
@@ -447,6 +454,7 @@ class UserProfile {
       morningReminderTime: json['morningReminderTime'] as String? ?? '09:00',
       eveningReminderTime: json['eveningReminderTime'] as String? ?? '19:00',
       nightReminderTime: json['nightReminderTime'] as String? ?? '23:00',
+      learningStylePreference: json['learningStylePreference'] as String?,
       createdAt: DateTime.parse(json['createdAt'] as String),
       updatedAt: DateTime.parse(json['updatedAt'] as String),
     );

@@ -96,6 +96,7 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
     String? morningReminderTime,
     String? eveningReminderTime,
     String? nightReminderTime,
+    String? learningStylePreference,
   }) async {
     final current = state.value;
     if (current == null) return;
@@ -114,6 +115,7 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
       morningReminderTime: morningReminderTime ?? current.morningReminderTime,
       eveningReminderTime: eveningReminderTime ?? current.eveningReminderTime,
       nightReminderTime: nightReminderTime ?? current.nightReminderTime,
+      learningStylePreference: learningStylePreference ?? current.learningStylePreference,
       updatedAt: DateTime.now(),
     );
 
