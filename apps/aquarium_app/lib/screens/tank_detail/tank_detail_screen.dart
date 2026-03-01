@@ -28,6 +28,7 @@ import '../maintenance_checklist_screen.dart';
 import '../photo_gallery_screen.dart';
 import '../livestock_value_screen.dart';
 import '../../widgets/cycling_status_card.dart';
+import '../cycling_assistant_screen.dart';
 import '../../utils/app_feedback.dart';
 import '../../utils/haptic_feedback.dart';
 
@@ -42,6 +43,7 @@ import 'widgets/dashboard_loading_card.dart';
 import 'widgets/snapshot_card.dart';
 import 'widgets/trends_section.dart';
 import 'widgets/alerts_card.dart';
+import 'widgets/tank_health_card.dart';
 import '../../widgets/water_trend_arrows.dart';
 import 'widgets/quick_add_fab.dart';
 import 'widgets/stocking_indicator.dart';
@@ -524,6 +526,18 @@ class TankDetailScreen extends ConsumerWidget {
                 ).animate().fadeIn(duration: 300.ms).slideY(begin: 0.1, end: 0, duration: 300.ms),
               ),
 
+              // Tank Health Score
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+                  child: logsAllAsync.when(
+                    loading: () => const SizedBox.shrink(),
+                    error: (_, __) => const SizedBox.shrink(),
+                    data: (logs) => TankHealthCard(tank: tank, logs: logs),
+                  ),
+                ),
+              ),
+              const SliverToBoxAdapter(child: SizedBox(height: AppSpacing.sm)),
               // Action buttons
               SliverToBoxAdapter(
                 child: Padding(
@@ -667,7 +681,15 @@ class TankDetailScreen extends ConsumerWidget {
                   ),
                   data: (logs) => Padding(
                     padding: const EdgeInsets.fromLTRB(AppSpacing.md, 0, AppSpacing.md, AppSpacing.md),
-                    child: CyclingStatusCard(tank: tank, logs: logs),
+                    child: GestureDetector(
+                      onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => CyclingAssistantScreen(tankId: tank.id),
+                        ),
+                      ),
+                      child: CyclingStatusCard(tank: tank, logs: logs),
+                    ),
                   ),
                 ),
               ),
