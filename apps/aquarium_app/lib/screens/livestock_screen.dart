@@ -252,8 +252,10 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
                         itemBuilder: (context, index) {
                           final l = livestock[index];
                           final reduceMotion = MediaQuery.of(context).disableAnimations;
+
                           
                           return _LivestockCard(
+                            key: ValueKey(l.id),
                             livestock: l,
                             tank: tank,
                             allLivestock: livestock,
@@ -679,6 +681,7 @@ class _LivestockCard extends StatelessWidget {
   final VoidCallback onDelete;
 
   const _LivestockCard({
+    super.key,
     required this.livestock,
     this.tank,
     required this.allLivestock,
@@ -1441,7 +1444,7 @@ class _HealthChip extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(emoji, style: const TextStyle(fontSize: 10)),
+          Text(emoji, style: Theme.of(context).textTheme.labelSmall!),
           const SizedBox(width: 4),
           Text(
             label,
