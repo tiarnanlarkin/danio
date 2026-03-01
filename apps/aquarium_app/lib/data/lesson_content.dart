@@ -192,7 +192,7 @@ class LessonContent {
           const LessonSection(
             type: LessonSectionType.text,
             content:
-                'A second type of bacteria (Nitrobacter) converts nitrite into nitrate. Nitrate is much less toxic - fish can tolerate levels up to 20-40 ppm.',
+                'A second type of bacteria (Nitrospira) converts nitrite into nitrate. Nitrate is much less toxic - fish can tolerate levels up to 20-40 ppm.',
           ),
           const LessonSection(
             type: LessonSectionType.tip,
