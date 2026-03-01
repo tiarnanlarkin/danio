@@ -10,9 +10,9 @@ Danio: Fish Tank & Aquarium Tracker
 
 ---
 
-## Short Description (79/80 chars)
+## Short Description (80/80 chars)
 ```
-Learn fishkeeping, track your tanks & earn XP. The fun aquarium app for beginners!
+Learn fishkeeping, track your tanks & earn XP. The fun aquarium app for everyone!
 ```
 
 ---
@@ -45,11 +45,21 @@ Whether you've just set up your first fish tank or you're managing multiple aqua
 • Tank journal — record observations, spot trends, catch problems early
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🔄 NITROGEN CYCLE ASSISTANT
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+• Track your tank cycling progress from day one
+• Automatic phase detection: ammonia spike → nitrite spike → cycled!
+• Know exactly when it's safe to add fish — no more guessing
+• Educational guides at every stage of the nitrogen cycle
+• Visual progress bar and parameter trend charts
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 🤖 AI-POWERED FISH CARE
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 • Fish ID — point your camera at any fish and identify the species instantly
 • Symptom Triage — describe what's wrong, get an expert diagnosis and treatment plan
 • Ask Danio — your personal fishkeeping assistant, always on hand
+• AI Stocking Suggestions — "What fish would work in my tank?" Get smart recommendations
 • Tank Compatibility Checker — find out if a new fish will get along with your existing ones
 • AI Weekly Care Plan — personalised to your specific tanks and fish
 
@@ -60,6 +70,7 @@ Whether you've just set up your first fish tank or you're managing multiple aqua
 • XP for learning AND tank management — every action counts
 • Daily goals keep you engaged without the pressure
 • Streak tracking — build a fishkeeping habit in 21 days
+• Danio Daily — fresh fish facts, seasonal tips & motivation every day
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 🔍 SPECIES BROWSER
@@ -150,6 +161,10 @@ https://gist.github.com/tiarnanlarkin/36afa94b6fd4845761c1af28121c11e4
 ### Secondary Keywords (description body)
 | Keyword | Notes |
 |---------|-------|
+| nitrogen cycle | Massive beginner search term — Danio is only app with cycle tracker |
+| tank cycling | High intent, beginners searching for help |
+| AI fish suggestions | Unique to Danio — emerging search category |
+| stocking calculator | High intent, Danio has AI-enhanced version |
 | water parameters | Aquarists search this constantly |
 | water change reminder | High intent, low competition |
 | fish disease | Huge search volume — worried fish keepers |
@@ -171,10 +186,10 @@ https://gist.github.com/tiarnanlarkin/36afa94b6fd4845761c1af28121c11e4
 | # | Screen | Headline | Subtext |
 |---|--------|----------|---------|
 | 1 | Home dashboard | "Your aquarium, levelled up" | "Track tanks, earn XP, and never lose a fish again" |
-| 2 | Learn tab | "Learn fishkeeping the fun way" | "9 lessons paths. Quizzes. Streaks. Just like Duolingo — but for fish" |
-| 3 | AI Smart tab | "AI that actually knows fish" | "Identify species, triage symptoms, ask anything" |
-| 4 | Tank detail | "Every tank, perfectly tracked" | "Water params, livestock, feeding, equipment — all in one place" |
-| 5 | Achievements | "55+ achievements to unlock" | "From First Fish to Master Aquarist — your progress, gamified" |
+| 2 | Cycling Assistant | "Is my tank cycled yet?" | "Track the nitrogen cycle in real-time. Know exactly when it's safe for fish" |
+| 3 | Learn tab | "Learn fishkeeping the fun way" | "9 lesson paths. Quizzes. Streaks. Just like Duolingo — but for fish" |
+| 4 | AI Smart tab | "AI that actually knows fish" | "Identify species, triage symptoms, get stocking suggestions" |
+| 5 | Tank detail | "Every tank, perfectly tracked" | "Water params, daily briefing, livestock, equipment — all in one place" |
 
 ---
 
