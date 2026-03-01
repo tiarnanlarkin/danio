@@ -86,7 +86,10 @@ class _BubbleLoaderState extends State<BubbleLoader> {
     final isDark = theme.brightness == Brightness.dark;
     final bubbleColor = widget.color ?? AppColors.accent;
     
-    return Column(
+    return Semantics(
+      liveRegion: true,
+      label: widget.message ?? 'Loading',
+      child: Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         SizedBox(
@@ -121,6 +124,7 @@ class _BubbleLoaderState extends State<BubbleLoader> {
           ),
         ],
       ],
+    ),
     );
   }
 }

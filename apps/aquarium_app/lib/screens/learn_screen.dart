@@ -26,7 +26,10 @@ class LearnScreen extends ConsumerWidget {
   const LearnScreen({super.key});
 
   static Widget _buildSkeletonScreen(BuildContext context) {
-    return Skeletonizer(
+    return Semantics(
+      liveRegion: true,
+      label: 'Loading learning content',
+      child: Skeletonizer(
       child: CustomScrollView(
         slivers: [
           // Skeleton header
@@ -90,6 +93,7 @@ class LearnScreen extends ConsumerWidget {
           ),
         ],
       ),
+    ),
     );
   }
 
