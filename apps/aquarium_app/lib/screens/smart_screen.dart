@@ -11,11 +11,66 @@ import '../services/openai_service.dart';
 import '../theme/app_theme.dart';
 
 /// Smart Hub — central screen for all AI-powered features.
-class SmartScreen extends ConsumerWidget {
+class SmartScreen extends ConsumerStatefulWidget {
   const SmartScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<SmartScreen> createState() => _SmartScreenState();
+}
+
+class _SmartScreenState extends ConsumerState<SmartScreen> {
+  final _askController = TextEditingController();
+  String? _askResponse;
+  bool _askLoading = false;
+
+  @override
+  void dispose() {
+    _askController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _askDanio() async {
+    final question = _askController.text.trim();
+    if (question.isEmpty) return;
+
+    final openai = ref.read(openAIServiceProvider);
+    if (!openai.isConfigured) return;
+
+    setState(() {
+      _askLoading = true;
+      _askResponse = null;
+    });
+
+    try {
+      final result = await openai.chatCompletion(
+        messages: [
+          const ChatMessage(
+            role: 'system',
+            content: 'You are Danio AI, a friendly and knowledgeable aquarium '
+                'expert. Answer questions about fishkeeping, water chemistry, '
+                'fish compatibility, diseases, plants, equipment, and tank '
+                'maintenance. Be concise (2-4 sentences) and practical. '
+                'If the question is not about aquariums, politely redirect.',
+          ),
+          ChatMessage(role: 'user', content: question),
+        ],
+        maxTokens: 300,
+      );
+      ref.read(aiHistoryProvider.notifier).add(
+        type: 'ask_danio',
+        summary: 'Asked: ${question.length > 40 ? '${question.substring(0, 40)}...' : question}',
+      );
+      setState(() => _askResponse = result.text);
+    } catch (e) {
+      setState(() => _askResponse = 'Sorry, I couldn\'t answer that right now. Try again later.');
+    } finally {
+      setState(() => _askLoading = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final ref = this.ref;
     final theme = Theme.of(context);
     final openai = ref.watch(openAIServiceProvider);
     final history = ref.watch(aiHistoryProvider);
@@ -68,6 +123,81 @@ class SmartScreen extends ConsumerWidget {
               MaterialPageRoute(builder: (_) => const WeeklyPlanScreen()),
             ),
           ).animate(delay: 100.ms).fadeIn().slideX(begin: 0.05),
+
+          // Ask Danio — quick question
+          if (openai.isConfigured) ...[
+            const SizedBox(height: AppSpacing.md),
+            Card(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12.0),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(AppSpacing.md),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Icon(Icons.chat_bubble_outline,
+                            color: AppColors.primary, size: 20),
+                        const SizedBox(width: AppSpacing.sm),
+                        Text(
+                          'Ask Danio',
+                          style: theme.textTheme.titleSmall?.copyWith(
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: AppSpacing.sm),
+                    TextField(
+                      controller: _askController,
+                      decoration: InputDecoration(
+                        hintText: 'e.g. "Can neon tetras live with bettas?"',
+                        border: const OutlineInputBorder(),
+                        isDense: true,
+                        suffixIcon: _askLoading
+                            ? const Padding(
+                                padding: EdgeInsets.all(12),
+                                child: SizedBox(
+                                  width: 16, height: 16,
+                                  child: CircularProgressIndicator(strokeWidth: 2),
+                                ),
+                              )
+                            : IconButton(
+                                icon: const Icon(Icons.send),
+                                onPressed: _askDanio,
+                              ),
+                      ),
+                      textInputAction: TextInputAction.send,
+                      onSubmitted: (_) => _askDanio(),
+                      maxLines: 2,
+                      minLines: 1,
+                    ),
+                    if (_askResponse != null) ...[
+                      const SizedBox(height: AppSpacing.sm),
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(AppSpacing.sm),
+                        decoration: BoxDecoration(
+                          color: AppColors.primary.withValues(alpha: 0.05),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: SelectableText(
+                          _askResponse!,
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            height: 1.4,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+            ).animate(delay: 200.ms).fadeIn().slideX(begin: 0.05),
+          ],
+
+          const SizedBox(height: AppSpacing.sm),
 
           _FeatureCard(
             icon: Icons.warning_amber,
@@ -233,7 +363,7 @@ class _OfflineBanner extends StatelessWidget {
           Icon(Icons.auto_awesome, color: AppColors.primary, size: AppIconSizes.lg),
           const SizedBox(height: AppSpacing.sm),
           Text(
-            'AI Features — Coming Soon! 🧠',
+            'AI Features Need Setup 🔑',
             style: AppTypography.titleSmall.copyWith(
               color: AppColors.primary,
               fontWeight: FontWeight.bold,
@@ -241,9 +371,37 @@ class _OfflineBanner extends StatelessWidget {
           ),
           const SizedBox(height: AppSpacing.xs),
           Text(
-            'Smart fish identification, health diagnostics, and personalised care plans are on the way.',
+            'Smart features like fish identification, health triage, and '
+            'personalised care plans require an OpenAI API key.',
             style: AppTypography.bodySmall.copyWith(
               color: AppColors.textSecondary,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: AppSpacing.md),
+          Container(
+            padding: const EdgeInsets.all(AppSpacing.sm),
+            decoration: BoxDecoration(
+              color: AppColors.surfaceVariant.withValues(alpha: 0.5),
+              borderRadius: BorderRadius.circular(8.0),
+            ),
+            child: Text(
+              'Build with:\nflutter run --dart-define=OPENAI_API_KEY=sk-...',
+              style: AppTypography.bodySmall.copyWith(
+                fontFamily: 'monospace',
+                fontSize: 11,
+                color: AppColors.textSecondary,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ),
+          const SizedBox(height: AppSpacing.sm),
+          Text(
+            'Features still work without AI — you can browse the fish '
+            'database, log water parameters, and manage your tanks.',
+            style: AppTypography.bodySmall.copyWith(
+              color: AppColors.textHint,
+              fontSize: 11,
             ),
             textAlign: TextAlign.center,
           ),
@@ -359,7 +517,7 @@ class _InteractionTile extends StatelessWidget {
       leading: Icon(icon, size: AppIconSizes.sm, color: AppColors.textSecondary),
       title: Text(interaction.summary, style: theme.textTheme.bodySmall),
       trailing: Text(
-        SmartScreen._formatTime(interaction.timestamp),
+        _SmartScreenState._formatTime(interaction.timestamp),
         style: theme.textTheme.labelSmall?.copyWith(
           color: AppColors.textSecondary,
         ),
