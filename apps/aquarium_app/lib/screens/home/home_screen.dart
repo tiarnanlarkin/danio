@@ -131,7 +131,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 borderRadius: AppRadius.mediumRadius,
               ),
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 14),
+                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
                 child: Row(
                   children: [
                     Container(
@@ -247,7 +247,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     const Spacer(),
                     // Hearts indicator
                     const Padding(
-                      padding: EdgeInsets.only(right: 8),
+                      padding: EdgeInsets.only(right: AppSpacing.sm),
                       child: HeartIndicator(compact: true),
                     ),
 
@@ -322,10 +322,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             // Streak & hearts warning
             Builder(
               builder: (context) {
-                final profile = ref.watch(userProfileProvider).value;
+                final streak = ref.watch(userProfileProvider.select((p) => p.value?.currentStreak ?? 0));
                 final hearts = ref.watch(heartsStateProvider);
-                if (profile == null) return const SizedBox.shrink();
-                final streak = profile.currentStreak;
                 final lowHearts = hearts.currentHearts <= 1;
                 if (streak == 0 && !lowHearts) return const SizedBox.shrink();
                 return Positioned(
@@ -338,7 +336,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     children: [
                       if (streak > 0)
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm2, vertical: 6),
                           decoration: BoxDecoration(
                             color: DanioColors.amberGold.withAlpha(230),
                             borderRadius: AppRadius.mediumRadius,
@@ -365,9 +363,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                               final wcStreak = TankHealthService.calculateWaterChangeStreak(logs);
                               if (wcStreak == 0) return const SizedBox.shrink();
                               return Padding(
-                                padding: const EdgeInsets.only(top: 4),
+                                padding: const EdgeInsets.only(top: AppSpacing.xs),
                                 child: Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm2, vertical: 6),
                                   decoration: BoxDecoration(
                                     color: DanioColors.tealWater.withAlpha(230),
                                     borderRadius: AppRadius.mediumRadius,
@@ -389,7 +387,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       if (lowHearts && hearts.currentHearts >= 0) ...[
                         const SizedBox(height: 4),
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm2, vertical: 6),
                           decoration: BoxDecoration(
                             color: AppColors.warning.withAlpha(210),
                             borderRadius: AppRadius.mediumRadius,
@@ -475,10 +473,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             if (!_dailyNudgeDismissed)
               Builder(
                 builder: (context) {
-                  final profile = ref.watch(userProfileProvider).value;
-                  if (profile == null) return const SizedBox.shrink();
                   final todayKey = DateTime.now().toIso8601String().split('T')[0];
-                  final todayXp = profile.dailyXpHistory[todayKey] ?? 0;
+                  final todayXp = ref.watch(userProfileProvider.select(
+                    (p) => p.value?.dailyXpHistory[todayKey] ?? 0,
+                  ));
                   if (todayXp > 0) return const SizedBox.shrink();
                   return Positioned(
                     top: MediaQuery.of(context).padding.top + 60,
@@ -769,10 +767,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   /// Check if user is new to show more prominent animations
   bool _isNewUser(WidgetRef ref) {
-    final profile = ref.watch(userProfileProvider).value;
-    if (profile == null) return true;
-    // Consider user "new" if they haven't completed the tutorial yet
-    return !profile.hasSeenTutorial;
+    final hasSeenTutorial = ref.watch(userProfileProvider.select(
+      (p) => p.value?.hasSeenTutorial ?? false,
+    ));
+    return !hasSeenTutorial;
   }
 
 
