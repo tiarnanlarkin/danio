@@ -59,15 +59,28 @@ class _WeeklyPlanScreenState extends ConsumerState<WeeklyPlanScreen> {
         return;
       }
 
-      final tankSummaries = tanks.map((t) {
-        return '${t.name} (${t.volumeLitres}L, ${t.type.name}, '
-            'created ${t.createdAt.toIso8601String().substring(0, 10)})';
-      }).join('; ');
+      // Gather livestock for each tank for context-aware planning.
+      final tankDetails = <String>[];
+      for (final t in tanks) {
+        final livestock = await ref.read(livestockProvider(t.id).future);
+        final fishList = livestock.isNotEmpty
+            ? livestock.map((l) => '${l.commonName} x${l.count}').join(', ')
+            : 'no livestock added yet';
+        tankDetails.add(
+          '${t.name} (${t.volumeLitres}L, ${t.type.name}, '
+          'created ${t.createdAt.toIso8601String().substring(0, 10)}, '
+          'fish: $fishList)',
+        );
+      }
+      final tankSummaries = tankDetails.join('; ');
 
       final prompt =
           'Based on these aquariums: $tankSummaries. '
-          'Generate a practical 7-day maintenance plan. Include daily checks, '
-          'water changes, feeding adjustments, and any concerns. '
+          'Generate a practical 7-day maintenance plan tailored to these '
+          'specific tanks and their inhabitants. Consider: water change '
+          'frequency for the tank size and bioload, species-specific feeding '
+          'schedules, filter maintenance, plant care if applicable, and water '
+          'testing schedule. '
           'Return ONLY valid JSON: '
           '{"days": [{"day": "Mon", "tasks": [{"task": "description", '
           '"duration_mins": 5, "priority": "normal"}]}]}. '
@@ -77,8 +90,13 @@ class _WeeklyPlanScreenState extends ConsumerState<WeeklyPlanScreen> {
         messages: [
           const ChatMessage(
             role: 'system',
-            content: 'You are a practical aquarium maintenance planner. '
-                'Always return valid JSON only, no markdown.',
+            content: 'You are Danio AI, an expert aquarium maintenance planner '
+                'with deep knowledge of freshwater and marine fishkeeping. '
+                'Create practical, tailored maintenance schedules based on the '
+                'specific tanks, species, and bioload provided. Consider tank '
+                'maturity, stocking density, and species-specific needs. '
+                'Prioritise water quality — ammonia/nitrite should always be 0. '
+                'Always return valid JSON only, no markdown or explanation.',
           ),
           ChatMessage(role: 'user', content: prompt),
         ],
