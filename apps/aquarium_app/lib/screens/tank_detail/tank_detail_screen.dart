@@ -39,6 +39,7 @@ import 'widgets/dashboard_loading_card.dart';
 import 'widgets/snapshot_card.dart';
 import 'widgets/trends_section.dart';
 import 'widgets/alerts_card.dart';
+import '../../widgets/water_trend_arrows.dart';
 import 'widgets/quick_add_fab.dart';
 import 'widgets/stocking_indicator.dart';
 
