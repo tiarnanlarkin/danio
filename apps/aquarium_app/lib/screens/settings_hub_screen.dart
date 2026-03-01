@@ -309,7 +309,7 @@ class SettingsHubScreen extends ConsumerWidget {
       child: Text(
         title,
         style: AppTypography.titleMedium.copyWith(
-          color: AppColors.textSecondary,
+          color: AppColors.primary, // BUG-09: all section headers now use consistent warm amber
           fontWeight: FontWeight.w600,
         ),
       ),
