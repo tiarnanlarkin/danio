@@ -378,20 +378,19 @@ class _ShopHeader extends StatelessWidget {
           const SizedBox(width: AppSpacing.md),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: const [
-              Text(
+            children: [
+              Builder(builder: (context) => Text(
                 '🏪 Shop Street',
-                style: TextStyle(
+                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                   color: ShopColors.textPrimary,
-                  fontSize: 24,
                   fontWeight: FontWeight.bold,
                 ),
-              ),
-              SizedBox(height: AppSpacing.xs),
-              Text(
+              )),
+              const SizedBox(height: AppSpacing.xs),
+              Builder(builder: (context) => Text(
                 'Wishlists & shopping',
-                style: TextStyle(color: ShopColors.textSecondary, fontSize: 14),
-              ),
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: ShopColors.textSecondary),
+              )),
             ],
           ),
         ],
@@ -449,18 +448,16 @@ class _ShopSection extends StatelessWidget {
                     children: [
                       Text(
                         title,
-                        style: const TextStyle(
+                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
                           color: ShopColors.textPrimary,
-                          fontSize: 16,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
                       const SizedBox(height: AppSpacing.xs),
                       Text(
                         subtitle,
-                        style: const TextStyle(
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
                           color: ShopColors.textSecondary,
-                          fontSize: 13,
                         ),
                       ),
                     ],
@@ -532,14 +529,13 @@ class _BudgetCard extends StatelessWidget {
                       color: ShopColors.accent,
                     ),
                     const SizedBox(width: 12),
-                    const Text(
+                    Builder(builder: (context) => Text(
                       'Monthly Budget',
-                      style: TextStyle(
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
                         color: ShopColors.textPrimary,
-                        fontSize: 16,
                         fontWeight: FontWeight.w600,
                       ),
-                    ),
+                    )),
                     const Spacer(),
                     Icon(
                       Icons.edit,
@@ -557,19 +553,17 @@ class _BudgetCard extends StatelessWidget {
                       children: [
                         Text(
                           '£${budget.spentThisMonth.toStringAsFixed(2)}',
-                          style: const TextStyle(
+                          style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                             color: ShopColors.accent,
-                            fontSize: 32,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        const Text(
+                        Builder(builder: (context) => Text(
                           'spent this month',
-                          style: TextStyle(
+                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
                             color: ShopColors.textSecondary,
-                            fontSize: 13,
                           ),
-                        ),
+                        )),
                       ],
                     ),
                     Column(
@@ -577,19 +571,17 @@ class _BudgetCard extends StatelessWidget {
                       children: [
                         Text(
                           '£${budget.remaining.toStringAsFixed(2)}',
-                          style: const TextStyle(
+                          style: Theme.of(context).textTheme.titleLarge?.copyWith(
                             color: ShopColors.textPrimary,
-                            fontSize: 20,
                             fontWeight: FontWeight.w500,
                           ),
                         ),
-                        const Text(
+                        Builder(builder: (context) => Text(
                           'remaining',
-                          style: TextStyle(
+                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
                             color: ShopColors.textSecondary,
-                            fontSize: 13,
                           ),
-                        ),
+                        )),
                       ],
                     ),
                   ],
@@ -645,17 +637,16 @@ class _LocalShopsCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
-                children: const [
-                  Icon(Icons.location_on, color: ShopColors.awning),
-                  SizedBox(width: 12),
-                  Text(
+                children: [
+                  const Icon(Icons.location_on, color: ShopColors.awning),
+                  const SizedBox(width: 12),
+                  Builder(builder: (context) => Text(
                     'Local Fish Shops',
-                    style: TextStyle(
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
                       color: ShopColors.textPrimary,
-                      fontSize: 16,
                       fontWeight: FontWeight.w600,
                     ),
-                  ),
+                  )),
                 ],
               ),
               const SizedBox(height: AppSpacing.md),
@@ -746,9 +737,8 @@ class _ShopTile extends StatelessWidget {
                   if (shop.distanceMiles != null)
                     Text(
                       '${shop.distanceMiles!.toStringAsFixed(1)} miles',
-                      style: const TextStyle(
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
                         color: ShopColors.textSecondary,
-                        fontSize: 12,
                       ),
                     ),
                 ],
@@ -757,9 +747,8 @@ class _ShopTile extends StatelessWidget {
             if (shop.rating != null)
               Text(
                 '⭐ ${shop.rating!.toStringAsFixed(1)}',
-                style: const TextStyle(
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
                   color: ShopColors.accentLight,
-                  fontSize: 13,
                 ),
               ),
             IconButton(

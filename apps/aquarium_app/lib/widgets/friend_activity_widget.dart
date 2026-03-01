@@ -59,10 +59,9 @@ class FriendActivityWidget extends ConsumerWidget {
                         size: AppIconSizes.sm,
                       ),
                       const SizedBox(width: AppSpacing.sm),
-                      const Text(
+                      Text(
                         'Friend Activity',
-                        style: TextStyle(
-                          fontSize: 16,
+                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -103,10 +102,9 @@ class FriendActivityWidget extends ConsumerWidget {
                   child: Center(
                     child: Text(
                       'View All Activities',
-                      style: TextStyle(
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         color: AppColors.primary,
                         fontWeight: FontWeight.w600,
-                        fontSize: 14,
                       ),
                     ),
                   ),
@@ -169,7 +167,6 @@ class _CompactActivityTile extends ConsumerWidget {
                   RichText(
                     text: TextSpan(
                       style: TextStyle(
-                        fontSize: 13,
                         color: Theme.of(context).textTheme.bodyMedium?.color,
                       ),
                       children: [
@@ -197,8 +194,7 @@ class _CompactActivityTile extends ConsumerWidget {
                       Expanded(
                         child: Text(
                           activity.description,
-                          style: const TextStyle(
-                            fontSize: 12,
+                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
                             fontWeight: FontWeight.w500,
                           ),
                           maxLines: 1,
@@ -209,8 +205,7 @@ class _CompactActivityTile extends ConsumerWidget {
                         const SizedBox(width: AppSpacing.sm),
                         Text(
                           '+${activity.xpEarned}',
-                          style: TextStyle(
-                            fontSize: 11,
+                          style: Theme.of(context).textTheme.labelSmall?.copyWith(
                             color: Colors.amber.shade700,
                             fontWeight: FontWeight.bold,
                           ),
@@ -225,7 +220,7 @@ class _CompactActivityTile extends ConsumerWidget {
             // Time
             Text(
               activity.timeAgo,
-              style: TextStyle(fontSize: 11, color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5)),
+              style: Theme.of(context).textTheme.labelSmall?.copyWith(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5)),
             ),
           ],
         ),
@@ -311,8 +306,7 @@ class _BannerActivityCard extends ConsumerWidget {
                     Expanded(
                       child: Text(
                         activity.friendDisplayName,
-                        style: const TextStyle(
-                          fontSize: 13,
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
                           fontWeight: FontWeight.bold,
                         ),
                         maxLines: 1,
@@ -345,7 +339,7 @@ class _BannerActivityCard extends ConsumerWidget {
                 const SizedBox(height: AppSpacing.xs),
                 Text(
                   activity.timeAgo,
-                  style: TextStyle(fontSize: 10, color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5)),
+                  style: Theme.of(context).textTheme.labelSmall?.copyWith(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5)),
                 ),
               ],
             ),

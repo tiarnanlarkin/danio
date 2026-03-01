@@ -1604,6 +1604,64 @@ class LessonContent {
                 'Research BEFORE you buy. Know the adult size, tank requirements, and compatibility of any fish you\'re considering.',
           ),
         ],
+        quiz: Quiz(
+          id: 'ff_choosing_quiz',
+          lessonId: 'ff_choosing',
+          questions: [
+            const QuizQuestion(
+              id: 'ff_choose_q1',
+              question: 'Which of these fish is a great choice for beginners?',
+              options: [
+                'Discus',
+                'Zebra danios',
+                'Oscars',
+                'Common plecos',
+              ],
+              correctIndex: 1,
+              explanation:
+                  'Zebra danios are extremely hardy, active schoolers that tolerate a wide range of water conditions - perfect for beginners learning the ropes.',
+            ),
+            const QuizQuestion(
+              id: 'ff_choose_q2',
+              question: 'Why should beginners avoid discus?',
+              options: [
+                'They are too small',
+                'They require pristine water quality',
+                'They are aggressive',
+                'They only eat live food',
+              ],
+              correctIndex: 1,
+              explanation:
+                  'Discus are beautiful but demand near-perfect water quality. Small fluctuations that hardy fish shrug off can make discus seriously ill.',
+            ),
+            const QuizQuestion(
+              id: 'ff_choose_q3',
+              question: 'What does "hardy" mean when describing a fish species?',
+              options: [
+                'The fish is large and strong',
+                'The fish can tolerate beginner mistakes and water quality fluctuations',
+                'The fish is aggressive',
+                'The fish does not need a filter',
+              ],
+              correctIndex: 1,
+              explanation:
+                  'Hardy fish can handle the water parameter swings and small mistakes that are inevitable when you are learning.',
+            ),
+            const QuizQuestion(
+              id: 'ff_choose_q4',
+              question: 'What should you always do before buying a new fish?',
+              options: [
+                'Ask the pet store employee',
+                'Buy it if it looks healthy',
+                'Research its adult size, tank needs, and compatibility',
+                'Check if it matches your decor',
+              ],
+              correctIndex: 2,
+              explanation:
+                  'Research before you buy! Know how big it gets, what water it needs, and whether it gets along with your existing fish.',
+            ),
+          ],
+        ),
       ),
       // Lesson 2: Acclimation
       Lesson(

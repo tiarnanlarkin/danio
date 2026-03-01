@@ -87,12 +87,11 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen>
         appBar: AppBar(
           backgroundColor: Colors.transparent,
           elevation: AppElevation.level0,
-          title: const Text(
+          title: Text(
             '🎒 My Items',
-            style: TextStyle(
+            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
               color: InventoryColors.textPrimary,
               fontWeight: FontWeight.bold,
-              fontSize: 24,
             ),
           ),
           actions: [
@@ -265,9 +264,8 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen>
                   Expanded(
                     child: Text(
                       'Use ${shopItem.name}?',
-                      style: const TextStyle(
+                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
                         color: InventoryColors.textPrimary,
-                        fontSize: 18,
                       ),
                     ),
                   ),
@@ -279,9 +277,8 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen>
                 children: [
                   Text(
                     shopItem.description,
-                    style: const TextStyle(
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                       color: InventoryColors.textSecondary,
-                      fontSize: 14,
                     ),
                   ),
                   const SizedBox(height: AppSpacing.md),
@@ -302,10 +299,9 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen>
                         ),
                         Text(
                           'x${item.quantity}',
-                          style: const TextStyle(
+                          style: Theme.of(context).textTheme.titleLarge?.copyWith(
                             color: InventoryColors.goldAccent,
                             fontWeight: FontWeight.bold,
-                            fontSize: 18,
                           ),
                         ),
                       ],
@@ -464,9 +460,8 @@ class _InventoryItemCard extends StatelessWidget {
                         ),
                         child: Text(
                           'x${item.quantity}',
-                          style: const TextStyle(
+                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
                             color: AppColors.onPrimary,
-                            fontSize: 12,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -477,9 +472,8 @@ class _InventoryItemCard extends StatelessWidget {
                 // Name
                 Text(
                   shopItem.name,
-                  style: const TextStyle(
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     color: InventoryColors.textPrimary,
-                    fontSize: 14,
                     fontWeight: FontWeight.bold,
                   ),
                   maxLines: 1,
@@ -492,9 +486,8 @@ class _InventoryItemCard extends StatelessWidget {
                       ? _ExpiryTimer(expiresAt: item.expiresAt!)
                       : Text(
                           shopItem.description,
-                          style: const TextStyle(
+                          style: Theme.of(context).textTheme.labelSmall?.copyWith(
                             color: InventoryColors.textSecondary,
-                            fontSize: 11,
                           ),
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
@@ -513,12 +506,11 @@ class _InventoryItemCard extends StatelessWidget {
                           borderRadius: AppRadius.smallRadius,
                         ),
                       ),
-                      child: const Text(
+                      child: Text(
                         'USE',
-                        style: TextStyle(
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
                           color: AppColors.onPrimary,
                           fontWeight: FontWeight.bold,
-                          fontSize: 12,
                         ),
                       ),
                     ),
@@ -570,9 +562,8 @@ class _ExpiryTimer extends StatelessWidget {
           const SizedBox(width: AppSpacing.xs),
           Text(
             timeText,
-            style: const TextStyle(
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
               color: InventoryColors.activeColor,
-              fontSize: 12,
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -611,10 +602,9 @@ class _HeartsChip extends StatelessWidget {
           const SizedBox(width: 6),
           Text(
             '$currentHearts/$maxHearts',
-            style: const TextStyle(
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
               color: InventoryColors.textPrimary,
               fontWeight: FontWeight.bold,
-              fontSize: 14,
             ),
           ),
         ],

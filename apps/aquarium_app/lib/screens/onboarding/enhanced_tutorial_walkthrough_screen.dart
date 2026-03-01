@@ -288,14 +288,13 @@ class _EnhancedTutorialWalkthroughScreenState
               children: [
                 Text(
                   'Step ${_currentStep + 1} of ${_steps.length + 1}',
-                  style: const TextStyle(
-                    fontSize: 12,
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
                     fontWeight: FontWeight.w500,
                   ),
                 ),
                 Text(
                   '${((value) * 100).round()}%',
-                  style: const TextStyle(fontSize: 12, color: Colors.grey),
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.grey),
                 ),
               ],
             ),
@@ -544,7 +543,7 @@ class _EnhancedTutorialWalkthroughScreenState
                           _useDemoData
                               ? 'Start with Demo Tank!'
                               : 'Create Tank & Start Journey!',
-                          style: const TextStyle(fontSize: 16),
+                          style: Theme.of(context).textTheme.titleMedium,
                         ),
                         style: FilledButton.styleFrom(
                           padding: const EdgeInsets.symmetric(vertical: 16),
@@ -599,8 +598,7 @@ class _EnhancedTutorialWalkthroughScreenState
                   children: [
                     Text(
                       'Try with a Demo Tank?',
-                      style: TextStyle(
-                        fontSize: 16,
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
                         fontWeight: FontWeight.bold,
                         color: _useDemoData ? AppColors.accent : null,
                       ),
@@ -608,7 +606,7 @@ class _EnhancedTutorialWalkthroughScreenState
                     const SizedBox(height: AppSpacing.xs),
                     Text(
                       'Start with a pre-configured 60L community tank to explore features',
-                      style: TextStyle(fontSize: 13, color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6)),
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6)),
                     ),
                   ],
                 ),
@@ -677,7 +675,7 @@ class _EnhancedTutorialWalkthroughScreenState
                 Expanded(
                   child: Text(
                     'Perfect for exploring features before setting up your real tank!',
-                    style: TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7)),
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7)),
                   ),
                 ),
               ],
@@ -693,7 +691,7 @@ class _EnhancedTutorialWalkthroughScreenState
       children: [
         Icon(icon, size: 18, color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6)),
         const SizedBox(width: AppSpacing.sm),
-        Text(text, style: TextStyle(fontSize: 14, color: Theme.of(context).colorScheme.onSurface.withOpacity(0.8))),
+        Text(text, style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.8))),
       ],
     );
   }
@@ -815,17 +813,16 @@ class _TankTypeCard extends StatelessWidget {
               const SizedBox(height: AppSpacing.sm),
               Text(
                 label,
-                style: TextStyle(
-                  fontSize: 14,
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   fontWeight: FontWeight.w600,
                   color: isSelected ? AppColors.primary : Theme.of(context).colorScheme.onSurface.withOpacity(0.8),
                 ),
               ),
               if (isDisabled) ...[
                 const SizedBox(height: AppSpacing.xs),
-                const Text(
+                Text(
                   'Coming soon',
-                  style: TextStyle(fontSize: 11, color: Colors.grey),
+                  style: Theme.of(context).textTheme.labelSmall?.copyWith(color: Colors.grey),
                 ),
               ],
             ],
@@ -879,15 +876,14 @@ class _WaterTypeCard extends StatelessWidget {
                 children: [
                   Text(
                     label,
-                    style: TextStyle(
-                      fontSize: 16,
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.w600,
                       color: isSelected ? AppColors.accent : Theme.of(context).colorScheme.onSurface.withOpacity(0.8),
                     ),
                   ),
                   Text(
                     subtitle,
-                    style: TextStyle(fontSize: 13, color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6)),
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6)),
                   ),
                 ],
               ),
@@ -967,21 +963,21 @@ class _SuccessDialogState extends State<_SuccessDialog>
                   color: AppColors.accent,
                 ),
                 const SizedBox(height: AppSpacing.md),
-                const Text(
+                Text(
                   'Tank Created!',
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: AppSpacing.sm),
                 Text(
                   '${widget.tankName} is ready!',
-                  style: const TextStyle(fontSize: 16),
+                  style: Theme.of(context).textTheme.titleMedium,
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: AppSpacing.md),
-                const Text(
+                Text(
                   'Let\'s start your aquarium journey! 🐠',
-                  style: TextStyle(fontSize: 14, color: Colors.grey),
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.grey),
                   textAlign: TextAlign.center,
                 ),
               ],

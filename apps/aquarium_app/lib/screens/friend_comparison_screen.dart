@@ -235,10 +235,10 @@ class _HeaderSection extends StatelessWidget {
             ),
           ),
           const SizedBox(width: AppSpacing.md),
-          const Text(
+          Builder(builder: (context) => Text(
             'VS',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-          ),
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+          )),
           const SizedBox(width: AppSpacing.md),
           Expanded(
             child: _UserCard(
@@ -287,7 +287,7 @@ class _UserCard extends StatelessWidget {
             const SizedBox(height: AppSpacing.sm),
             Text(
               name,
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: AppSpacing.xs),
@@ -299,8 +299,7 @@ class _UserCard extends StatelessWidget {
               ),
               child: Text(
                 level,
-                style: const TextStyle(
-                  fontSize: 11,
+                style: Theme.of(context).textTheme.labelSmall?.copyWith(
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -313,8 +312,7 @@ class _UserCard extends StatelessWidget {
                 const SizedBox(width: AppSpacing.xs),
                 Text(
                   '$xp XP',
-                  style: const TextStyle(
-                    fontSize: 14,
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -373,12 +371,12 @@ class _StatsComparisonSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Padding(
-          padding: EdgeInsets.symmetric(horizontal: AppSpacing.md),
-          child: Text(
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+          child: Builder(builder: (context) => Text(
             'Stats Comparison',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+          )),
         ),
         const SizedBox(height: 12),
         ...stats.map((stat) {
@@ -432,8 +430,7 @@ class _StatComparisonRow extends StatelessWidget {
               const SizedBox(width: AppSpacing.sm),
               Text(
                 label,
-                style: const TextStyle(
-                  fontSize: 15,
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -446,8 +443,7 @@ class _StatComparisonRow extends StatelessWidget {
                 child: Text(
                   userValue.toString(),
                   textAlign: TextAlign.left,
-                  style: TextStyle(
-                    fontSize: 16,
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.bold,
                     color: winner == 'user' ? Colors.green : Theme.of(context).colorScheme.onSurface.withOpacity(0.4),
                   ),
@@ -481,8 +477,7 @@ class _StatComparisonRow extends StatelessWidget {
                 child: Text(
                   friendValue.toString(),
                   textAlign: TextAlign.right,
-                  style: TextStyle(
-                    fontSize: 16,
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.bold,
                     color: winner == 'friend' ? Colors.green : Theme.of(context).colorScheme.onSurface.withOpacity(0.4),
                   ),
@@ -511,12 +506,12 @@ class _ProgressChartSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Padding(
-          padding: EdgeInsets.symmetric(horizontal: AppSpacing.md),
-          child: Text(
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+          child: Builder(builder: (context) => Text(
             'Weekly Progress',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+          )),
         ),
         const SizedBox(height: 12),
         Container(
@@ -657,12 +652,12 @@ class _AchievementsSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Padding(
-          padding: EdgeInsets.symmetric(horizontal: AppSpacing.md),
-          child: Text(
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+          child: Builder(builder: (context) => Text(
             'Achievements',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+          )),
         ),
         const SizedBox(height: 12),
         Padding(
@@ -714,8 +709,7 @@ class _AchievementCard extends StatelessWidget {
             const SizedBox(height: AppSpacing.sm),
             Text(
               count.toString(),
-              style: TextStyle(
-                fontSize: 28,
+              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                 fontWeight: FontWeight.bold,
                 color: color,
               ),
@@ -723,7 +717,7 @@ class _AchievementCard extends StatelessWidget {
             const SizedBox(height: AppSpacing.xs),
             Text(
               title,
-              style: const TextStyle(fontSize: 12, color: Colors.grey),
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.grey),
               textAlign: TextAlign.center,
             ),
           ],
