@@ -155,6 +155,95 @@ class DailyTips {
       content:
           'Fishkeeping has a learning curve, but that\'s part of the fun. Every mistake teaches you something.',
     ),
+
+    // Advanced tips
+    DailyTip(
+      id: 'tip_hospital_tank',
+      title: 'Hospital Tank Ready',
+      content:
+          'Keep a spare sponge filter running in your main tank. If a fish gets sick, you can set up a hospital tank in minutes with an already-cycled filter.',
+      targetExperience: [ExperienceLevel.intermediate],
+    ),
+    DailyTip(
+      id: 'tip_drip_acclimate',
+      title: 'Drip Acclimation',
+      content:
+          'For sensitive fish, drip acclimation is better than float-and-dump. Use airline tubing with a loose knot to slowly mix tank water into the bag over an hour.',
+      targetExperience: [ExperienceLevel.beginner, ExperienceLevel.intermediate],
+    ),
+    DailyTip(
+      id: 'tip_sand_substrate',
+      title: 'Sand vs Gravel',
+      content:
+          'Keeping corydoras or loaches? Sand substrate is a must. Gravel can injure their delicate barbels and bellies. Play sand works great and is cheap!',
+      targetExperience: [ExperienceLevel.beginner],
+    ),
+    DailyTip(
+      id: 'tip_lid_jumpers',
+      title: 'Lid Your Tank',
+      content:
+          'Many fish are jumpers -- hatchetfish, danios, and even bettas can leap out. A tight-fitting lid saves lives. Check for gaps around filter intakes!',
+      targetExperience: [ExperienceLevel.beginner],
+    ),
+    DailyTip(
+      id: 'tip_live_plants_help',
+      title: 'Plants Are Your Friends',
+      content:
+          'Live plants absorb nitrate, provide hiding spots, and oxygenate water. Even easy plants like java fern and anubias make a huge difference.',
+      targetExperience: [ExperienceLevel.beginner],
+      relatedLessonId: 'planted_intro',
+    ),
+    DailyTip(
+      id: 'tip_avoid_direct_sun',
+      title: 'Sunlight = Algae',
+      content:
+          'Direct sunlight on your tank is an algae factory. Keep tanks away from windows, or use blackout curtains during peak sun hours.',
+      targetExperience: [ExperienceLevel.beginner],
+    ),
+    DailyTip(
+      id: 'tip_count_fish',
+      title: 'Count Your Fish Daily',
+      content:
+          'A quick headcount during feeding catches problems early. A missing fish could be hiding sick, or worse -- decomposing and spiking ammonia.',
+      targetExperience: [ExperienceLevel.beginner, ExperienceLevel.intermediate],
+    ),
+    DailyTip(
+      id: 'tip_api_shake',
+      title: 'Shake That Bottle!',
+      content:
+          'API Nitrate Test Bottle #2 needs 30 seconds of vigorous shaking. Seriously -- bang it on a table. Skipping this gives false low readings.',
+      targetExperience: [ExperienceLevel.beginner, ExperienceLevel.intermediate],
+      relatedLessonId: 'nc_testing',
+    ),
+    DailyTip(
+      id: 'tip_cycle_patience',
+      title: 'The Hardest Part',
+      content:
+          'The hardest part of fishkeeping is waiting for your tank to cycle. But those 4-6 weeks of patience mean years of healthy, happy fish.',
+      targetExperience: [ExperienceLevel.beginner],
+      relatedLessonId: 'nc_how_to',
+    ),
+    DailyTip(
+      id: 'tip_snail_hitchhikers',
+      title: 'Check New Plants',
+      content:
+          'New plants can carry snail eggs, algae, and even parasites. Rinse them well or do a quick bleach dip (1:20 ratio, 90 seconds) before adding.',
+      targetExperience: [ExperienceLevel.intermediate],
+    ),
+    DailyTip(
+      id: 'tip_indian_almond',
+      title: 'Tannin Power',
+      content:
+          'Indian almond leaves release tannins that lower pH, have mild antibacterial properties, and make bettas and tetras feel right at home.',
+      targetExperience: [ExperienceLevel.intermediate],
+    ),
+    DailyTip(
+      id: 'tip_overstock_warning',
+      title: 'Less is More (Fish)',
+      content:
+          'An understocked tank is easier to maintain, healthier for fish, and honestly looks better. Resist the urge to add "just one more" fish!',
+      targetExperience: [ExperienceLevel.beginner, ExperienceLevel.intermediate],
+    ),
   ];
 
   /// Get a random tip relevant to the user's profile
