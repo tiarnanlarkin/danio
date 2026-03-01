@@ -152,12 +152,16 @@ class LivingRoomScene extends ConsumerWidget {
               Positioned(
                 top: h * 0.18,
                 left: w * 0.05,
-                child: GestureDetector(
-                  onTap: onStatsTap,
-                  child: _CircularTempGauge(
-                    size: w * 0.26,
-                    temperature: temperature ?? 25,
-                    theme: theme,
+                child: Semantics(
+                  label: 'Temperature: \${(temperature ?? 25).toStringAsFixed(0)} degrees. Tap for tank stats',
+                  button: true,
+                  child: GestureDetector(
+                    onTap: onStatsTap,
+                    child: _CircularTempGauge(
+                      size: w * 0.26,
+                      temperature: temperature ?? 25,
+                      theme: theme,
+                    ),
                   ),
                 ),
               ),
@@ -168,14 +172,18 @@ class LivingRoomScene extends ConsumerWidget {
                 right: w * 0.05,
                 child: ConstrainedBox(
                   constraints: const BoxConstraints(maxWidth: 185),
-                  child: GestureDetector(
-                    onTap: onTestKitTap,
-                    child: _WaterQualityCard(
+                  child: Semantics(
+                    label: 'Water quality. Tap to log test results',
+                    button: true,
+                    child: GestureDetector(
+                      onTap: onTestKitTap,
+                      child: _WaterQualityCard(
                       width: w * 0.34,
                     ph: ph,
                     ammonia: ammonia,
                     nitrate: nitrate,
                     theme: theme,
+                    ),
                   ),
                   ),
                 ),
@@ -236,9 +244,12 @@ class LivingRoomScene extends ConsumerWidget {
                 left: 0,
                 right: 0,
                 child: Center(
-                  child: GestureDetector(
-                    onTap: onThemeTap,
-                    child: Container(
+                  child: Semantics(
+                    label: 'Change room theme',
+                    button: true,
+                    child: GestureDetector(
+                      onTap: onThemeTap,
+                      child: Container(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 12,
                         vertical: 4,
@@ -1265,7 +1276,7 @@ class _WaterQualityCard extends StatelessWidget {
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
         child: Container(
-          padding: const EdgeInsets.all(14),
+          padding: const EdgeInsets.all(AppSpacing.sm4),
           decoration: BoxDecoration(
             color: theme.glassCard,
             borderRadius: AppRadius.largeRadius,
@@ -2136,7 +2147,7 @@ class _WaveGraphCard extends StatelessWidget {
         child: Container(
           width: width,
           height: height,
-          padding: const EdgeInsets.all(14),
+          padding: const EdgeInsets.all(AppSpacing.sm4),
           decoration: BoxDecoration(
             color: theme.glassCard,
             borderRadius: AppRadius.largeRadius,

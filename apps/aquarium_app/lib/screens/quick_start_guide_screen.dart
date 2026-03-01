@@ -394,7 +394,7 @@ class _NumberedStep extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 6),
+      padding: const EdgeInsets.only(bottom: AppSpacing.xs2),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -430,7 +430,7 @@ class _TipBox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(10),
+      padding: const EdgeInsets.all(AppSpacing.sm3),
       decoration: BoxDecoration(
         color: AppOverlays.info10,
         borderRadius: AppRadius.smallRadius,
@@ -454,7 +454,7 @@ class _WarningBox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(10),
+      padding: const EdgeInsets.all(AppSpacing.sm3),
       decoration: BoxDecoration(
         color: AppOverlays.error10,
         borderRadius: AppRadius.smallRadius,

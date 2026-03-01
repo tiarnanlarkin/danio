@@ -42,7 +42,7 @@ class GamificationDashboard extends ConsumerWidget {
         final progress = goalXp > 0 ? (todayXp / goalXp).clamp(0.0, 1.0) : 0.0;
 
         final content = Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: AppSpacing.sm4),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -341,7 +341,7 @@ class _DailyGoalProgress extends StatelessWidget {
             const Spacer(),
             if (isComplete)
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: AppSpacing.xxs),
                 decoration: BoxDecoration(
                   color: AppOverlays.success20,
                   borderRadius: AppRadius.smallRadius,

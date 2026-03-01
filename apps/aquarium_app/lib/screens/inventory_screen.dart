@@ -586,7 +586,7 @@ class _HeartsChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: AppSpacing.xs2),
       decoration: BoxDecoration(
         color: AppOverlays.red20,
         borderRadius: AppRadius.mediumRadius,

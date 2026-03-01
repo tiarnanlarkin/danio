@@ -342,7 +342,7 @@ class _AquariumSupplyScreenState extends ConsumerState<AquariumSupplyScreen>
         final item = allItems[index];
         if (item.isHeader) {
           return Padding(
-            padding: const EdgeInsets.only(top: 8, bottom: 6),
+            padding: const EdgeInsets.only(top: 8, bottom: AppSpacing.xs2),
             child: Row(
               children: [
                 Container(

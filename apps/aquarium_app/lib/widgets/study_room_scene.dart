@@ -496,7 +496,7 @@ class _GlassBadge extends StatelessWidget {
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: AppSpacing.sm3),
           decoration: BoxDecoration(
             color: StudyColors.glassCard,
             borderRadius: AppRadius.largeRadius,
@@ -547,7 +547,7 @@ class _StreakBadge extends StatelessWidget {
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm3, vertical: AppSpacing.xs2),
           decoration: BoxDecoration(
             color: const Color(0x33000000),
             borderRadius: AppRadius.mediumRadius,

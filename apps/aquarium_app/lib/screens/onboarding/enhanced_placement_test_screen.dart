@@ -627,7 +627,7 @@ class _EnhancedPlacementTestScreenState
                 icon: const Icon(Icons.check),
                 label: const Text('Check Answer'),
                 style: FilledButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm4),
                 ),
               ),
             )
@@ -641,7 +641,7 @@ class _EnhancedPlacementTestScreenState
                 ),
                 label: Text(_isLastQuestion ? 'See Results!' : 'Next'),
                 style: FilledButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm4),
                 ),
               ),
             ),

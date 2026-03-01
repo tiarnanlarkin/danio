@@ -52,7 +52,7 @@ class TankSwitcher extends StatelessWidget {
           onLongPress: onLongPress,
           borderRadius: AppRadius.mediumRadius,
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 14),
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm4),
             child: Row(
               children: [
                 // Fish icon

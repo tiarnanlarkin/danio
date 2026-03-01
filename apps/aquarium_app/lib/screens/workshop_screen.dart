@@ -353,7 +353,7 @@ class _ToolCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Container(
-                  padding: const EdgeInsets.all(10),
+                  padding: const EdgeInsets.all(AppSpacing.sm3),
                   decoration: BoxDecoration(
                     color: color.withAlpha(51),
                     borderRadius: AppRadius.mediumRadius,
@@ -433,7 +433,7 @@ class _ConversionRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 6),
+      padding: const EdgeInsets.symmetric(vertical: AppSpacing.xs2),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [

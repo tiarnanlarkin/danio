@@ -203,7 +203,7 @@ class _TaskRow extends StatelessWidget {
           Container(
             width: 6,
             height: 6,
-            margin: const EdgeInsets.only(right: 6),
+            margin: const EdgeInsets.only(right: AppSpacing.xs2),
             decoration: BoxDecoration(
               color: isOverdue
                   ? AppColors.error

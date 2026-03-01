@@ -247,7 +247,7 @@ class _FrequencyCard extends StatelessWidget {
         title: Text(fishType, style: AppTypography.labelLarge),
         subtitle: Text(notes, style: AppTypography.bodySmall),
         trailing: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: AppSpacing.xs2),
           decoration: BoxDecoration(
             color: AppOverlays.primary10,
             borderRadius: AppRadius.mediumRadius,

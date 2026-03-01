@@ -321,7 +321,7 @@ class _ProblemCard extends StatelessWidget {
                 const SizedBox(height: AppSpacing.xs),
                 ...causes.map(
                   (c) => Padding(
-                    padding: const EdgeInsets.only(bottom: 2),
+                    padding: const EdgeInsets.only(bottom: AppSpacing.xxs),
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -343,7 +343,7 @@ class _ProblemCard extends StatelessWidget {
                 const SizedBox(height: AppSpacing.xs),
                 ...solutions.map(
                   (s) => Padding(
-                    padding: const EdgeInsets.only(bottom: 2),
+                    padding: const EdgeInsets.only(bottom: AppSpacing.xxs),
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [

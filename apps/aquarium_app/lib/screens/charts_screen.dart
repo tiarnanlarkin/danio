@@ -873,7 +873,7 @@ class _ChartControlChip extends StatelessWidget {
       onTap: onTap,
       borderRadius: AppRadius.largeRadius,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: AppSpacing.xs2),
         decoration: BoxDecoration(
           color: isActive
               ? AppOverlays.primary10

@@ -1254,7 +1254,7 @@ class _CompactParamField extends StatelessWidget {
         ),
         if (idealRange != null)
           Padding(
-            padding: const EdgeInsets.only(top: 2),
+            padding: const EdgeInsets.only(top: AppSpacing.xxs),
             child: Text(
               idealRange!,
               style: AppTypography.bodySmall.copyWith(

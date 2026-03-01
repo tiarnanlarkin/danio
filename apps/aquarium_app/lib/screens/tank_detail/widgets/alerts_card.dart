@@ -290,7 +290,7 @@ class AlertRow extends StatelessWidget {
     final c = _color();
 
     return Padding(
-      padding: const EdgeInsets.only(bottom: 10),
+      padding: const EdgeInsets.only(bottom: AppSpacing.sm3),
       child: Container(
         padding: EdgeInsets.all(AppSpacing.sm2),
         decoration: BoxDecoration(

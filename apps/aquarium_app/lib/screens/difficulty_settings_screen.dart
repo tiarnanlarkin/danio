@@ -404,7 +404,7 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
             ),
           ),
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: AppSpacing.xs2),
             decoration: BoxDecoration(
               color: _getScoreColor(scorePercent).withAlpha(51),
               borderRadius: AppRadius.mediumRadius,

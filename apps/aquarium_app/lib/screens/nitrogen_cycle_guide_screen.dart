@@ -310,7 +310,7 @@ class _MethodCard extends StatelessWidget {
             const SizedBox(height: AppSpacing.md),
             ...steps.asMap().entries.map(
               (e) => Padding(
-                padding: const EdgeInsets.only(bottom: 6),
+                padding: const EdgeInsets.only(bottom: AppSpacing.xs2),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [

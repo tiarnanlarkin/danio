@@ -360,7 +360,7 @@ class _SpacedRepetitionPracticeScreenState
               ),
             ),
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: AppSpacing.xs2),
               decoration: BoxDecoration(
                 color: enabled && count > 0
                     ? color.withAlpha(51)

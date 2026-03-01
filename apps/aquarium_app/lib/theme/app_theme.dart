@@ -461,12 +461,17 @@ class AppTypography {
 }
 
 class AppSpacing {
+  static const double hairline = 1;
+  static const double xxs = 2;
   static const double xs = 4;
+  static const double xs2 = 6;
   static const double sm = 8;
+  static const double sm3 = 10;
   static const double sm2 = 12;
+  static const double sm4 = 14;
   static const double md = 16;
-  static const double lg = 24;
   static const double lg2 = 20;
+  static const double lg = 24;
   static const double xl = 32;
   static const double xl2 = 40;
   static const double xxl = 48;
@@ -522,7 +527,7 @@ class AppTouchTargets {
 class AppTouchPadding {
   // Padding to achieve 48dp minimum from smaller elements
   static const EdgeInsets for24Icon = EdgeInsets.all(12.0);
-  static const EdgeInsets for20Icon = EdgeInsets.all(14.0);
+  static const EdgeInsets for20Icon = EdgeInsets.all(AppSpacing.sm4);
   static const EdgeInsets for16Icon = EdgeInsets.all(16.0);
   
   // Horizontal padding for buttons
@@ -1086,7 +1091,7 @@ class AppTheme {
           backgroundColor: AppColors.primary,
           foregroundColor: Colors.white,
           elevation: 0,
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: AppSpacing.sm4),
           shape: RoundedRectangleBorder(borderRadius: AppRadius.pillRadius),
           textStyle: AppTypography.labelLarge,
         ),
@@ -1096,7 +1101,7 @@ class AppTheme {
         style: FilledButton.styleFrom(
           backgroundColor: AppColors.primary,
           foregroundColor: Colors.white,
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: AppSpacing.sm4),
           shape: RoundedRectangleBorder(borderRadius: AppRadius.pillRadius),
           textStyle: AppTypography.labelLarge,
         ),
@@ -1105,7 +1110,7 @@ class AppTheme {
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
           foregroundColor: AppColors.primary,
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: AppSpacing.sm4),
           shape: RoundedRectangleBorder(borderRadius: AppRadius.pillRadius),
           side: const BorderSide(color: AppColors.primary, width: 1.5),
           textStyle: AppTypography.labelLarge,
@@ -1115,7 +1120,7 @@ class AppTheme {
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
           foregroundColor: AppColors.primary,
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: AppSpacing.sm3),
           shape: RoundedRectangleBorder(borderRadius: AppRadius.pillRadius),
           textStyle: AppTypography.labelLarge,
         ),
@@ -1302,7 +1307,7 @@ class AppTheme {
           backgroundColor: AppColors.primaryLight,
           foregroundColor: AppColors.backgroundDark,
           elevation: 0,
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: AppSpacing.sm4),
           shape: RoundedRectangleBorder(borderRadius: AppRadius.pillRadius),
           textStyle: AppTypography.labelLarge,
         ),
@@ -1312,7 +1317,7 @@ class AppTheme {
         style: FilledButton.styleFrom(
           backgroundColor: AppColors.primaryLight,
           foregroundColor: AppColors.backgroundDark,
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: AppSpacing.sm4),
           shape: RoundedRectangleBorder(borderRadius: AppRadius.pillRadius),
           textStyle: AppTypography.labelLarge,
         ),
@@ -1468,7 +1473,7 @@ class PillButton extends StatelessWidget {
         onTap: onPressed,
         borderRadius: AppRadius.pillRadius,
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: AppSpacing.sm3),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [

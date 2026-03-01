@@ -237,7 +237,7 @@ class TabletCard extends StatelessWidget {
           ),
         ],
       ),
-      padding: const EdgeInsets.all(6),
+      padding: const EdgeInsets.all(AppSpacing.xs2),
       child: Container(
         decoration: BoxDecoration(
           color:

@@ -457,7 +457,7 @@ class _AlgaeCard extends StatelessWidget {
                 const SizedBox(height: 12),
 
                 Container(
-                  padding: const EdgeInsets.all(10),
+                  padding: const EdgeInsets.all(AppSpacing.sm3),
                   decoration: BoxDecoration(
                     color: AppOverlays.info10,
                     borderRadius: AppRadius.smallRadius,

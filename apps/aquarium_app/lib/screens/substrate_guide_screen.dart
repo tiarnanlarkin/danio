@@ -399,7 +399,7 @@ class _SubstrateCard extends StatelessWidget {
                 const SizedBox(height: 12),
                 Container(
                   width: double.infinity,
-                  padding: const EdgeInsets.all(10),
+                  padding: const EdgeInsets.all(AppSpacing.sm3),
                   decoration: BoxDecoration(
                     color: AppColors.surfaceVariant,
                     borderRadius: AppRadius.smallRadius,
@@ -489,7 +489,7 @@ class _LayerRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 2),
+      padding: const EdgeInsets.symmetric(vertical: AppSpacing.xxs),
       child: Row(
         children: [
           Container(
@@ -517,7 +517,7 @@ class _TipItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 6),
+      padding: const EdgeInsets.only(bottom: AppSpacing.xs2),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

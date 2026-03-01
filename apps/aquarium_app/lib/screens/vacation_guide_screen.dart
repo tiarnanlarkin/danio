@@ -338,7 +338,7 @@ class _ChecklistSection extends StatelessWidget {
             const SizedBox(height: 12),
             ...items.map(
               (item) => Padding(
-                padding: const EdgeInsets.only(bottom: 6),
+                padding: const EdgeInsets.only(bottom: AppSpacing.xs2),
                 child: Row(
                   children: [
                     Icon(
@@ -493,7 +493,7 @@ class _NumberedStep extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 6),
+      padding: const EdgeInsets.only(bottom: AppSpacing.xs2),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

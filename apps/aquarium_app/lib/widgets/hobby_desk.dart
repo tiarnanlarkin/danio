@@ -447,7 +447,7 @@ class MiniTankScene extends StatelessWidget {
             // Shelf
             Container(
               height: 8,
-              margin: const EdgeInsets.only(top: 2),
+              margin: const EdgeInsets.only(top: AppSpacing.xxs),
               decoration: BoxDecoration(
                 gradient: const LinearGradient(
                   begin: Alignment.topCenter,

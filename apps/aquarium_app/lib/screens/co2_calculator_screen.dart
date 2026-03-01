@@ -319,7 +319,7 @@ class _Co2CalculatorScreenState extends State<Co2CalculatorScreen> {
         ...values.map(
           (v) => DataCell(
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+              padding: const EdgeInsets.symmetric(horizontal: 4, vertical: AppSpacing.xxs),
               decoration: BoxDecoration(
                 color: v >= 20 && v <= 30
                     ? AppColors.successAlpha20
@@ -351,7 +351,7 @@ class _RefRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 6),
+      padding: const EdgeInsets.symmetric(vertical: AppSpacing.xs2),
       child: Row(
         children: [
           SizedBox(
@@ -386,7 +386,7 @@ class _DropCheckerRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 6),
+      padding: const EdgeInsets.symmetric(vertical: AppSpacing.xs2),
       child: Row(
         children: [
           Container(
@@ -418,7 +418,7 @@ class _TipRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 6),
+      padding: const EdgeInsets.only(bottom: AppSpacing.xs2),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

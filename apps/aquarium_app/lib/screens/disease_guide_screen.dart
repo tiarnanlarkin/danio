@@ -172,7 +172,7 @@ class _DiseaseCard extends StatelessWidget {
                 const SizedBox(height: AppSpacing.sm),
                 ...disease.treatments.map(
                   (t) => Padding(
-                    padding: const EdgeInsets.only(bottom: 6),
+                    padding: const EdgeInsets.only(bottom: AppSpacing.xs2),
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [

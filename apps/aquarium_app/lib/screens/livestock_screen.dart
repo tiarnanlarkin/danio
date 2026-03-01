@@ -1233,7 +1233,7 @@ class _BulkAddLivestockSheetState extends State<_BulkAddLivestockSheet> {
               const SizedBox(height: AppSpacing.sm),
               ..._items.map(
                 (i) => Padding(
-                  padding: const EdgeInsets.only(bottom: 6),
+                  padding: const EdgeInsets.only(bottom: AppSpacing.xs2),
                   child: Row(
                     children: [
                       Expanded(
@@ -1435,7 +1435,7 @@ class _HealthChip extends StatelessWidget {
     };
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: AppSpacing.xxs),
       decoration: BoxDecoration(
         color: color.withAlpha(30),
         borderRadius: AppRadius.md2Radius,

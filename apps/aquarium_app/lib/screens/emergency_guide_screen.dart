@@ -322,7 +322,7 @@ class _EmergencyCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 12),
                 Container(
-                  padding: const EdgeInsets.all(10),
+                  padding: const EdgeInsets.all(AppSpacing.sm3),
                   decoration: BoxDecoration(
                     color: AppOverlays.info10,
                     borderRadius: AppRadius.smallRadius,
@@ -358,7 +358,7 @@ class _CheckItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 6),
+      padding: const EdgeInsets.only(bottom: AppSpacing.xs2),
       child: Row(
         children: [
           Icon(

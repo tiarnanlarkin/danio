@@ -253,7 +253,7 @@ class _InfoChip extends StatelessWidget {
   Widget build(BuildContext context) {
     final c = color ?? AppColors.textSecondary;
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm3, vertical: AppSpacing.xs2),
       decoration: BoxDecoration(
         color: Color((c.value & 0x00FFFFFF) | 0x19000000), // 10% opacity
         borderRadius: AppRadius.mediumRadius,
@@ -538,7 +538,7 @@ class _ParamPill extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm4, vertical: AppSpacing.sm3),
       decoration: BoxDecoration(
         color: AppColors.surfaceVariant,
         borderRadius: AppRadius.mediumRadius,
@@ -660,7 +660,7 @@ class _CompanionChip extends StatelessWidget {
   Widget build(BuildContext context) {
     final color = isGood ? AppColors.success : AppColors.error;
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm3, vertical: 4),
       decoration: BoxDecoration(
         color: Color((color.value & 0x00FFFFFF) | 0x19000000), // 10% opacity
         borderRadius: AppRadius.mediumRadius,

@@ -852,7 +852,7 @@ class _ColorDot extends StatelessWidget {
     return Container(
       width: 10,
       height: 10,
-      margin: const EdgeInsets.all(1),
+      margin: const EdgeInsets.all(AppSpacing.hairline),
       decoration: BoxDecoration(
         color: color,
         shape: BoxShape.circle,

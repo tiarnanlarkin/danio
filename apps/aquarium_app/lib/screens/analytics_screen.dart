@@ -709,7 +709,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
 
   Widget _buildLegendBox(Color color) {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 2),
+      margin: const EdgeInsets.symmetric(horizontal: AppSpacing.xxs),
       width: 12,
       height: 12,
       decoration: BoxDecoration(
