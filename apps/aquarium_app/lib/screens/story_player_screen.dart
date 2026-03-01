@@ -56,7 +56,7 @@ class _StoryPlayerScreenState extends ConsumerState<StoryPlayerScreen>
 
     // Choice slide-up animation
     _choiceAnimationController = AnimationController(
-      duration: const Duration(milliseconds: 800),
+      duration: AppDurations.long3,
       vsync: this,
     );
     _choiceSlideAnimation =

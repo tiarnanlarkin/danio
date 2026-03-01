@@ -73,7 +73,7 @@ class _EnhancedTutorialWalkthroughScreenState
     );
     _animationController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 800),
+      duration: AppDurations.long3,
     );
 
     _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(

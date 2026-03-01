@@ -1,3 +1,4 @@
+import '../theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
@@ -58,7 +59,7 @@ extension AppAnimations on Widget {
       .scale(
         begin: const Offset(1.0, 1.0),
         end: const Offset(1.05, 1.05),
-        duration: const Duration(milliseconds: 800),
+        duration: AppDurations.long3,
         curve: Curves.easeInOut,
       );
 
@@ -105,23 +106,4 @@ extension AppAnimations on Widget {
         hz: 4,
         duration: const Duration(milliseconds: 400),
       );
-}
-
-/// Preset durations for consistent timing across the app.
-class AppDurations {
-  AppDurations._();
-
-  static const Duration fast = Duration(milliseconds: 150);
-  static const Duration normal = Duration(milliseconds: 300);
-  static const Duration slow = Duration(milliseconds: 500);
-  static const Duration celebration = Duration(milliseconds: 600);
-}
-
-/// Preset curves for consistent feel across the app.
-class AppCurves {
-  AppCurves._();
-
-  static const Curve standard = Curves.easeOutCubic;
-  static const Curve bounce = Curves.elasticOut;
-  static const Curve smooth = Curves.easeInOut;
 }

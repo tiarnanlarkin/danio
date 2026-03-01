@@ -551,6 +551,7 @@ class AppDurations {
   static const Duration long1 = Duration(milliseconds: 400);
   static const Duration long2 = Duration(milliseconds: 500);
   static const Duration extraLong = Duration(milliseconds: 700);
+  static const Duration long3 = Duration(milliseconds: 800);
   static const Duration celebration = Duration(milliseconds: 1500);
 }
 

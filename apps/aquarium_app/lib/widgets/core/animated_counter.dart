@@ -45,7 +45,7 @@ class AnimatedCounter extends StatefulWidget {
     this.style,
     this.prefix,
     this.suffix,
-    this.duration = const Duration(milliseconds: 800),
+    this.duration = AppDurations.long3,
     this.curve = AppCurves.emphasized,
     this.formatNumber = true,
     this.color,

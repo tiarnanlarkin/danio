@@ -53,7 +53,7 @@ class _AnimatedFlameState extends State<AnimatedFlame>
   void _initAnimations() {
     // Main flame flicker controller - continuous
     _flameController = AnimationController(
-      duration: const Duration(milliseconds: 800),
+      duration: AppDurations.long3,
       vsync: this,
     )..repeat();
 

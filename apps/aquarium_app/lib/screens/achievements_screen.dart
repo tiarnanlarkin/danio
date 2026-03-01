@@ -126,7 +126,7 @@ class _AchievementsScreenState extends ConsumerState<AchievementsScreen> {
                   borderRadius: AppRadius.smallRadius,
                   child: TweenAnimationBuilder<double>(
                     tween: Tween(begin: 0, end: completionPercent),
-                    duration: const Duration(milliseconds: 800),
+                    duration: AppDurations.long3,
                     curve: Curves.easeOutCubic,
                     builder: (context, value, _) => LinearProgressIndicator(
                     value: value,

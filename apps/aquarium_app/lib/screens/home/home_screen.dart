@@ -577,7 +577,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               right: AppSpacing.md,
               child: AnimatedOpacity(
                 opacity: _showWelcomeBanner ? 1.0 : 0.0,
-                duration: const Duration(milliseconds: 500),
+                duration: AppDurations.long2,
                 child: Material(
                   color: Colors.transparent,
                   child: Container(

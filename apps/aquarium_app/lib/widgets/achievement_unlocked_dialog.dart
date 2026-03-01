@@ -64,7 +64,7 @@ class _AchievementUnlockedDialogState extends State<AchievementUnlockedDialog>
     // Animation controller for entrance
     _animationController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 800),
+      duration: AppDurations.long3,
     );
 
     _scaleAnimation = CurvedAnimation(

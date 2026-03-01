@@ -62,7 +62,7 @@ class _EnhancedQuizScreenState extends ConsumerState<EnhancedQuizScreen>
     );
 
     _feedbackController = AnimationController(
-      duration: const Duration(milliseconds: 400),
+      duration: AppDurations.long1,
       vsync: this,
     );
 
@@ -625,7 +625,7 @@ class _EnhancedQuizScreenState extends ConsumerState<EnhancedQuizScreen>
                 // Result emoji with animation
                 TweenAnimationBuilder<double>(
                   tween: Tween(begin: 0.0, end: 1.0),
-                  duration: const Duration(milliseconds: 800),
+                  duration: AppDurations.long3,
                   curve: Curves.elasticOut,
                   builder: (context, value, child) {
                     return Transform.scale(
@@ -698,7 +698,7 @@ class _EnhancedQuizScreenState extends ConsumerState<EnhancedQuizScreen>
                         children: [
                           TweenAnimationBuilder<double>(
                             tween: Tween(begin: 0.0, end: percentage / 100),
-                            duration: const Duration(milliseconds: 1500),
+                            duration: AppDurations.celebration,
                             curve: Curves.easeInOut,
                             builder: (context, value, child) {
                               return CircularProgressIndicator(

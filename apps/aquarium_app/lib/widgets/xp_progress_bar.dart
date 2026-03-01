@@ -38,7 +38,7 @@ class _XpProgressBarState extends ConsumerState<XpProgressBar>
   void initState() {
     super.initState();
     _controller = AnimationController(
-      duration: const Duration(milliseconds: 800),
+      duration: AppDurations.long3,
       vsync: this,
     );
 

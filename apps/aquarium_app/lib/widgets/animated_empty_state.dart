@@ -52,7 +52,7 @@ class _AnimatedEmptyStateState extends State<AnimatedEmptyState>
 
     // Fade-in for title + subtitle
     _fadeController = AnimationController(
-      duration: const Duration(milliseconds: 800),
+      duration: AppDurations.long3,
       vsync: this,
     );
     _fadeAnimation = CurvedAnimation(

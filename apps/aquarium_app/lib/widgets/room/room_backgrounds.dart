@@ -931,7 +931,7 @@ class _AnimatedSpark extends StatelessWidget {
                 duration: AppDurations.medium2,
               )
               .then()
-              .fadeOut(duration: const Duration(milliseconds: 800))
+              .fadeOut(duration: AppDurations.long3)
               .then(delay: Duration(seconds: 3 + (particle.speed * 2).toInt())),
         );
       },

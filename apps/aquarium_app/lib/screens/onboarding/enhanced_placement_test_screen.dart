@@ -47,7 +47,7 @@ class _EnhancedPlacementTestScreenState
   void initState() {
     super.initState();
     _confettiController = ConfettiController(
-      duration: const Duration(milliseconds: 800),
+      duration: AppDurations.long3,
     );
     _celebrationController = AnimationController(
       vsync: this,
