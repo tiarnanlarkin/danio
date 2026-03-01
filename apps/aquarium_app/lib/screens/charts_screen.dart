@@ -11,6 +11,7 @@ import 'package:share_plus/share_plus.dart';
 import '../models/models.dart';
 import '../providers/tank_provider.dart';
 import '../theme/app_theme.dart';
+import '../widgets/core/app_states.dart';
 import '../utils/app_feedback.dart';
 
 class ChartsScreen extends ConsumerStatefulWidget {
@@ -60,7 +61,11 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
       ),
       body: logsAsync.when(
         loading: () => const Center(child: BubbleLoader()),
-        error: (err, _) => Center(child: Text('Error: $err')),
+        error: (err, _) => AppErrorState(
+          title: 'Could not load charts',
+          message: 'There was a problem loading your tank data. Try again.',
+          onRetry: () => ref.invalidate(allLogsProvider(widget.tankId)),
+        ),
         data: (logs) {
           final waterTests =
               logs
