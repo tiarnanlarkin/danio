@@ -26,7 +26,7 @@ class SettingsHubScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('⚙️ Settings & More'),
+        title: const Text('🧰 Toolbox'),
       ),
       body: ListView.builder(
         padding: const EdgeInsets.all(AppSpacing.md),

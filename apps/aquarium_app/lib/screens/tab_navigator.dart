@@ -208,11 +208,11 @@ class _TabNavigatorState extends ConsumerState<TabNavigator> {
                 selectedIcon: Icon(Icons.psychology),
                 label: 'Smart',
               ),
-              // Settings tab
+              // Toolbox tab
               const NavigationDestination(
-                icon: Icon(Icons.settings_outlined),
-                selectedIcon: Icon(Icons.settings),
-                label: 'Settings',
+                icon: Icon(Icons.construction_outlined),
+                selectedIcon: Icon(Icons.construction),
+                label: 'Toolbox',
               ),
             ],
           ),
