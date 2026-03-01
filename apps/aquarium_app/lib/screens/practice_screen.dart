@@ -5,6 +5,7 @@ import '../models/lesson_progress.dart';
 import '../providers/lesson_provider.dart';
 import '../providers/user_profile_provider.dart';
 import '../services/xp_animation_service.dart';
+import '../utils/haptic_feedback.dart';
 import '../theme/app_theme.dart';
 import '../utils/app_feedback.dart';
 import 'lesson_screen.dart';
@@ -823,6 +824,7 @@ class _PracticeLessonScreenState extends ConsumerState<PracticeLessonScreen> {
 
       if (mounted) {
         // Show XP animation
+        AppHaptics.success();
         ref.showXpAnimation(xpReward);
         
         // Show success message

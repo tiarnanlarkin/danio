@@ -13,6 +13,7 @@ import '../providers/user_profile_provider.dart';
 import '../providers/inventory_provider.dart';
 import '../services/storage_service.dart';
 import '../services/xp_animation_service.dart';
+import '../utils/haptic_feedback.dart';
 import '../theme/app_theme.dart';
 import '../utils/app_feedback.dart';
 import '../utils/skeleton_placeholders.dart';
@@ -747,6 +748,7 @@ class _AddEquipmentSheetState extends State<_AddEquipmentSheet> {
         
         // Show XP animation
         if (mounted) {
+          AppHaptics.success();
           widget.ref.showXpAnimation(effectiveXp);
         }
       }
