@@ -14,6 +14,7 @@ import '../providers/user_profile_provider.dart';
 import '../providers/inventory_provider.dart';
 import '../providers/achievement_provider.dart';
 import '../services/achievement_service.dart';
+import '../services/notification_service.dart';
 import '../services/xp_animation_service.dart';
 import '../theme/app_theme.dart';
 import '../utils/app_feedback.dart';
@@ -861,6 +862,20 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
       );
 
       await storage.saveLog(log);
+
+      // Schedule water change reminder if this was a water change log
+      if (log.type == LogType.waterChange) {
+        try {
+          final tank = await ref.read(tankProvider(widget.tankId).future);
+          final notificationService = NotificationService();
+          await notificationService.scheduleWaterChangeReminder(
+            tankName: tank?.name ?? 'Your tank',
+            daysSinceLastChange: 0, // Just did a water change
+          );
+        } catch (e) {
+          debugPrint('Failed to schedule water change reminder: $e');
+        }
+      }
 
       // Invalidate logs providers
       ref.invalidate(logsProvider(widget.tankId));
