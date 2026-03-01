@@ -69,9 +69,16 @@ class _EnhancedOnboardingScreenState
 
       if (mounted) {
         // 🎉 Celebrate onboarding completion!
+        // Award XP for completing onboarding
+        try {
+          await ref.read(userProfileProvider.notifier).addXp(25);
+        } catch (_) {
+          // Non-critical -- don't block onboarding for XP
+        }
+
         ref.read(celebrationProvider.notifier).milestone(
           'Welcome Aboard! 🐠',
-          subtitle: 'Your aquarium journey begins now!',
+          subtitle: '+25 XP -- Your aquarium journey begins now!',
         );
         
         // Navigate after a brief moment for the celebration to show

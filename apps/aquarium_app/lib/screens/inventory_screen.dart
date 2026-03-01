@@ -201,7 +201,7 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen>
         SnackBar(
           content: Row(
             children: [
-              Text(shopItem.emoji, style: const TextStyle(fontSize: 24)),
+              Text(shopItem.emoji, style: Theme.of(context).textTheme.headlineSmall!),
               const SizedBox(width: 12),
               Expanded(
                 child: Text(
@@ -259,7 +259,7 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen>
               ),
               title: Row(
                 children: [
-                  Text(shopItem.emoji, style: const TextStyle(fontSize: 32)),
+                  Text(shopItem.emoji, style: Theme.of(context).textTheme.headlineMedium!),
                   const SizedBox(width: 12),
                   Expanded(
                     child: Text(

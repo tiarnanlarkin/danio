@@ -301,7 +301,7 @@ class _AquariumSupplyScreenState extends ConsumerState<AquariumSupplyScreen>
             Icon(Icons.inventory_2_outlined,
                 size: 64, color: AppColors.textHint),
             const SizedBox(height: AppSpacing.md),
-            Text('No supplies tracked yet',
+            Text('Your supply shelf is empty!',
                 style: AppTypography.headlineSmall),
             const SizedBox(height: AppSpacing.sm),
             Text(

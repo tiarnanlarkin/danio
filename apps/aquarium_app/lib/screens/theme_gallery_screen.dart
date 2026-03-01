@@ -478,9 +478,8 @@ class _CurrentThemePreview extends StatelessWidget {
                   const SizedBox(width: 6),
                   Text(
                     'Current: ${theme.name}',
-                    style: const TextStyle(
+                    style: Theme.of(context).textTheme.bodySmall!.copyWith(
                       color: Colors.white,
-                      fontSize: 12,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -636,17 +635,15 @@ class _ThemeCard extends StatelessWidget {
                     children: [
                       Text(
                         theme.name,
-                        style: const TextStyle(
+                        style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
-                          fontSize: 14,
                         ),
                       ),
                       Text(
                         theme.description,
-                        style: TextStyle(
+                        style: Theme.of(context).textTheme.bodySmall!.copyWith(
                           color: AppOverlays.white80,
-                          fontSize: 11,
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,

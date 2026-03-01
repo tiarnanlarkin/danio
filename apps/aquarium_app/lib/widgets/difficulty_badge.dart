@@ -146,10 +146,9 @@ class PerformanceTrendWidget extends StatelessWidget {
             SizedBox(width: AppSpacing.sm - 2),
             Text(
               trend.displayName,
-              style: TextStyle(
+              style: Theme.of(context).textTheme.bodySmall!.copyWith(
                 color: color,
                 fontWeight: FontWeight.w600,
-                fontSize: 12,
               ),
             ),
           ],
@@ -259,10 +258,9 @@ class _SkillLevelUpAnimationState extends State<SkillLevelUpAnimation>
                 children: [
                   Text('🎉', style: Theme.of(context).textTheme.headlineMedium!.copyWith(fontSize: 48)),
                   SizedBox(height: AppSpacing.md),
-                  const Text(
+                  Text(
                     'LEVEL UP!',
-                    style: TextStyle(
-                      fontSize: 24,
+                    style: Theme.of(context).textTheme.headlineSmall!.copyWith(
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
                     ),
@@ -271,7 +269,7 @@ class _SkillLevelUpAnimationState extends State<SkillLevelUpAnimation>
                   Text(
                     widget.message,
                     textAlign: TextAlign.center,
-                    style: const TextStyle(fontSize: 16, color: Colors.white),
+                    style: Theme.of(context).textTheme.titleMedium!.copyWith(color: Colors.white),
                   ),
                 ],
               ),
@@ -319,11 +317,11 @@ class DifficultyChangeNotification extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    Text(oldLevel.emoji, style: TextStyle(fontSize: 16)),
+                    Text(oldLevel.emoji, style: Theme.of(context).textTheme.titleMedium!),
                     const SizedBox(width: AppSpacing.xs),
                     Icon(Icons.arrow_forward, size: AppIconSizes.xs, color: color),
                     const SizedBox(width: AppSpacing.xs),
-                    Text(newLevel.emoji, style: TextStyle(fontSize: 16)),
+                    Text(newLevel.emoji, style: Theme.of(context).textTheme.titleMedium!),
                     const SizedBox(width: AppSpacing.sm),
                     Text(
                       newLevel.displayName,

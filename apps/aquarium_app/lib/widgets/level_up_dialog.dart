@@ -186,8 +186,7 @@ class _LevelUpDialogState extends State<LevelUpDialog>
                     // Total XP
                     Text(
                       '${widget.totalXp} Total XP',
-                      style: TextStyle(
-                        fontSize: 16,
+                      style: Theme.of(context).textTheme.titleMedium!.copyWith(
                         color: AppOverlays.white90,
                         fontWeight: FontWeight.w500,
                       ),
@@ -213,8 +212,7 @@ class _LevelUpDialogState extends State<LevelUpDialog>
                             Expanded(
                               child: Text(
                                 widget.unlockMessage!,
-                                style: const TextStyle(
-                                  fontSize: 14,
+                                style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                                   color: Colors.white,
                                 ),
                               ),
@@ -240,10 +238,9 @@ class _LevelUpDialogState extends State<LevelUpDialog>
                           ),
                           elevation: AppElevation.level0,
                         ),
-                        child: const Text(
+                        child: Text(
                           'Continue',
-                          style: TextStyle(
-                            fontSize: 18,
+                          style: Theme.of(context).textTheme.titleLarge!.copyWith(
                             fontWeight: FontWeight.bold,
                           ),
                         ),

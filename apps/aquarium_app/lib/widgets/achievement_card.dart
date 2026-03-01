@@ -132,9 +132,8 @@ class AchievementCard extends StatelessWidget {
                       ),
                       child: Text(
                         achievement.rarity.displayName.toUpperCase(),
-                        style: const TextStyle(
+                        style: Theme.of(context).textTheme.labelSmall!.copyWith(
                           color: Colors.white,
-                          fontSize: 10,
                           fontWeight: FontWeight.bold,
                         ),
                       ),

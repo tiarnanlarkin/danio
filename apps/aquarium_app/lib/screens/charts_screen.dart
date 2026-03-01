@@ -83,12 +83,12 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
                   Icon(Icons.show_chart, size: AppIconSizes.xxl, color: AppColors.textHint),
                   const SizedBox(height: AppSpacing.md),
                   Text(
-                    'No water tests yet',
+                    'Charts unlock with your first test!',
                     style: AppTypography.headlineSmall,
                   ),
                   const SizedBox(height: AppSpacing.sm),
                   Text(
-                    'Log some water tests to see trends',
+                    'Log a water test and watch your trends come alive',
                     style: AppTypography.bodyMedium,
                   ),
                 ],

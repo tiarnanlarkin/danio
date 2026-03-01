@@ -419,9 +419,8 @@ class _RoomIndicatorBar extends ConsumerWidget {
                         child: Center(
                           child: Text(
                             dueCardsCount > 99 ? '99+' : '$dueCardsCount',
-                            style: const TextStyle(
+                            style: Theme.of(context).textTheme.labelSmall!.copyWith(
                               color: Colors.white,
-                              fontSize: 10,
                               fontWeight: FontWeight.bold,
                             ),
                           ),

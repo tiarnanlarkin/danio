@@ -37,6 +37,8 @@ import 'widgets/xp_source_row.dart';
 import 'widgets/selection_mode_panel.dart';
 import 'widgets/empty_room_scene.dart';
 import '../backup_restore_screen.dart';
+import '../../widgets/seasonal_tip_card.dart';
+import '../../widgets/fun_loading_messages.dart';
 import '../house_navigator.dart';
 import '../tank_settings_screen.dart';
 import '../../utils/app_page_routes.dart';
@@ -114,7 +116,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 children: [
                   const Icon(Icons.water, size: AppIconSizes.xl, color: AppColors.primary),
                   const SizedBox(height: AppSpacing.sm),
-                  Text('Loading tanks...', style: AppTypography.bodyMedium),
+                  const FunLoadingMessage(),
                 ],
               ),
             ),
@@ -469,6 +471,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               ),
             ),
 
+            // Seasonal fishkeeping tip
+            _buildSeasonalTipOverlay(),
+
             // Daily goal nudge - shows if user has 0 XP today
             if (!_dailyNudgeDismissed)
               Builder(
@@ -531,6 +536,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           ],
         );
       },
+    );
+  }
+
+  Widget _buildSeasonalTipOverlay() {
+    return Positioned(
+      top: MediaQuery.of(context).padding.top + 110,
+      left: 0,
+      right: 0,
+      child: const SeasonalTipCard(),
     );
   }
 

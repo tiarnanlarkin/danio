@@ -258,9 +258,8 @@ class LivingRoomScene extends ConsumerWidget {
                           const SizedBox(width: AppSpacing.xs),
                           Text(
                             theme.name,
-                            style: TextStyle(
+                            style: Theme.of(context).textTheme.bodySmall!.copyWith(
                               color: theme.textSecondary,
-                              fontSize: 11,
                             ),
                           ),
                         ],

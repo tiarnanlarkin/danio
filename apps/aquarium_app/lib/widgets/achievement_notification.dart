@@ -227,7 +227,7 @@ class _AchievementNotificationWidgetState
                                 child: Center(
                                   child: Text(
                                     widget.achievement.icon,
-                                    style: const TextStyle(fontSize: 60),
+                                    style: Theme.of(context).textTheme.headlineMedium!.copyWith(fontSize: 60),
                                   ),
                                 ),
                               ),
@@ -253,9 +253,8 @@ class _AchievementNotificationWidgetState
                                 child: Text(
                                   widget.achievement.rarity.displayName
                                       .toUpperCase(),
-                                  style: const TextStyle(
+                                  style: Theme.of(context).textTheme.bodySmall!.copyWith(
                                     color: Colors.white,
-                                    fontSize: 12,
                                     fontWeight: FontWeight.bold,
                                     letterSpacing: 1.2,
                                   ),
@@ -267,8 +266,7 @@ class _AchievementNotificationWidgetState
                               // Achievement name
                               Text(
                                 widget.achievement.name,
-                                style: const TextStyle(
-                                  fontSize: 24,
+                                style: Theme.of(context).textTheme.headlineSmall!.copyWith(
                                   fontWeight: FontWeight.bold,
                                 ),
                                 textAlign: TextAlign.center,
@@ -279,8 +277,7 @@ class _AchievementNotificationWidgetState
                               // Description
                               Text(
                                 widget.achievement.description,
-                                style: TextStyle(
-                                  fontSize: 16,
+                                style: Theme.of(context).textTheme.titleMedium!.copyWith(
                                   color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
                                 ),
                                 textAlign: TextAlign.center,
@@ -309,8 +306,7 @@ class _AchievementNotificationWidgetState
                                     const SizedBox(width: 12),
                                     Text(
                                       '+${widget.xpAwarded} XP',
-                                      style: const TextStyle(
-                                        fontSize: 24,
+                                      style: Theme.of(context).textTheme.headlineSmall!.copyWith(
                                         fontWeight: FontWeight.bold,
                                         color: Colors.amber,
                                       ),

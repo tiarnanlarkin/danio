@@ -18,6 +18,7 @@ import 'parameter_guide_screen.dart';
 import 'practice_screen.dart';
 import 'spaced_repetition_practice_screen.dart';
 import 'onboarding/profile_creation_screen.dart';
+import '../widgets/learning_streak_badge.dart';
 
 /// The main learning hub - shows learning paths and progress
 /// Features a cozy illustrated "Study Room" header
@@ -185,6 +186,15 @@ class LearnScreen extends ConsumerWidget {
                   ),
                 )
               else ...[
+                // Learning streak badge
+                if (profile.lessonProgress.isNotEmpty)
+                  SliverToBoxAdapter(
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(AppSpacing.md, AppSpacing.sm, AppSpacing.md, 0),
+                      child: LearningStreakBadge(lessonProgress: profile.lessonProgress),
+                    ),
+                  ),
+
                 // Spaced repetition review banner (due cards)
                 SliverToBoxAdapter(child: _ReviewCardsBanner()),
 

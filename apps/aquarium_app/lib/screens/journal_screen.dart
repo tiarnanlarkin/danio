@@ -126,10 +126,10 @@ class _EmptyJournal extends StatelessWidget {
           children: [
             Icon(Icons.book_outlined, size: AppIconSizes.xxl, color: AppColors.textHint),
             const SizedBox(height: AppSpacing.md),
-            Text('No journal entries yet', style: AppTypography.headlineSmall),
+            Text('Your story starts here!', style: AppTypography.headlineSmall),
             const SizedBox(height: AppSpacing.sm),
             Text(
-              'Keep a diary of your tank\'s journey - observations, milestones, changes, and memories.',
+              'Every great tank has a story. Start writing yours -- observations, milestones, and little victories.',
               style: AppTypography.bodyMedium,
               textAlign: TextAlign.center,
             ),

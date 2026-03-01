@@ -189,9 +189,8 @@ class _AchievementUnlockedDialogState extends State<AchievementUnlockedDialog>
                           ),
                           child: Text(
                             widget.achievement.rarity.displayName.toUpperCase(),
-                            style: const TextStyle(
+                            style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                               color: Colors.white,
-                              fontSize: 14,
                               fontWeight: FontWeight.bold,
                               letterSpacing: 1.5,
                             ),
@@ -205,9 +204,8 @@ class _AchievementUnlockedDialogState extends State<AchievementUnlockedDialog>
                           padding: const EdgeInsets.symmetric(horizontal: 24),
                           child: Text(
                             widget.achievement.name,
-                            style: const TextStyle(
+                            style: Theme.of(context).textTheme.headlineMedium!.copyWith(
                               color: Colors.white,
-                              fontSize: 28,
                               fontWeight: FontWeight.bold,
                               height: 1.2,
                             ),
@@ -222,9 +220,8 @@ class _AchievementUnlockedDialogState extends State<AchievementUnlockedDialog>
                           padding: const EdgeInsets.symmetric(horizontal: 32),
                           child: Text(
                             widget.achievement.description,
-                            style: TextStyle(
+                            style: Theme.of(context).textTheme.titleMedium!.copyWith(
                               color: AppOverlays.white90,
-                              fontSize: 16,
                               height: 1.4,
                             ),
                             textAlign: TextAlign.center,
@@ -247,11 +244,10 @@ class _AchievementUnlockedDialogState extends State<AchievementUnlockedDialog>
                           ),
                           child: Column(
                             children: [
-                              const Text(
+                              Text(
                                 'REWARDS',
-                                style: TextStyle(
+                                style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                                   color: Colors.white,
-                                  fontSize: 14,
                                   fontWeight: FontWeight.bold,
                                   letterSpacing: 1.5,
                                 ),
@@ -299,10 +295,9 @@ class _AchievementUnlockedDialogState extends State<AchievementUnlockedDialog>
                                 ),
                                 elevation: AppElevation.level3,
                               ),
-                              child: const Text(
+                              child: Text(
                                 'Awesome!',
-                                style: TextStyle(
-                                  fontSize: 20,
+                                style: Theme.of(context).textTheme.titleLarge!.copyWith(
                                   fontWeight: FontWeight.bold,
                                   letterSpacing: 1,
                                 ),

@@ -168,12 +168,12 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
                 Icon(Icons.school_outlined, size: AppIconSizes.xl, color: Theme.of(context).colorScheme.onSurface.withOpacity(0.4)),
                 const SizedBox(height: AppSpacing.sm),
                 Text(
-                  'No lesson data yet',
+                  'No lessons completed yet',
                   style: TextStyle(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5)),
                 ),
                 const SizedBox(height: AppSpacing.xs),
                 Text(
-                  'Complete lessons to see your skill progress',
+                  'Complete a few lessons and your progress will appear here!',
                   style: Theme.of(context).textTheme.bodySmall!.copyWith(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5)),
                   textAlign: TextAlign.center,
                 ),

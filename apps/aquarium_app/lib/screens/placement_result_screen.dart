@@ -373,7 +373,7 @@ class PlacementResultScreen extends ConsumerWidget {
                       child: ListTile(
                         leading: Text(
                           path.emoji,
-                          style: TextStyle(fontSize: 32),
+                          style: Theme.of(context).textTheme.headlineMedium!,
                         ),
                         title: Text(path.title),
                         subtitle: LinearProgressIndicator(
@@ -397,7 +397,7 @@ class PlacementResultScreen extends ConsumerWidget {
                             if (recommendation != null)
                               Text(
                                 recommendation.emoji,
-                                style: TextStyle(fontSize: 16),
+                                style: Theme.of(context).textTheme.titleMedium!,
                               ),
                           ],
                         ),

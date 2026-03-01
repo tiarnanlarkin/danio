@@ -401,10 +401,9 @@ class StoryCard extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         if (hasProgress && !isCompleted)
-                          const Text(
+                          Text(
                             'Continue • ',
-                            style: TextStyle(
-                              fontSize: 14,
+                            style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                               fontWeight: FontWeight.w500,
                               color: AppColors.primary,
                             ),
@@ -415,8 +414,7 @@ class StoryCard extends StatelessWidget {
                               : hasProgress
                               ? 'Resume'
                               : 'Start',
-                          style: const TextStyle(
-                            fontSize: 14,
+                          style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                             fontWeight: FontWeight.bold,
                             color: AppColors.primary,
                           ),
@@ -443,8 +441,7 @@ class StoryCard extends StatelessWidget {
                         const SizedBox(width: AppSpacing.xs),
                         Text(
                           _getLockReason(story),
-                          style: TextStyle(
-                            fontSize: 12,
+                          style: Theme.of(context).textTheme.bodySmall!.copyWith(
                             color: Colors.grey.shade600,
                             fontStyle: FontStyle.italic,
                           ),

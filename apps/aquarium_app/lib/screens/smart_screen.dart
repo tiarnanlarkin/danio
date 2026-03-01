@@ -402,7 +402,8 @@ class _OfflineBanner extends StatelessWidget {
           const SizedBox(height: AppSpacing.sm),
           Text(
             'Features still work without AI - you can browse the fish '
-            'database, log water parameters, and manage your tanks.',
+            'database, log water parameters, and manage your tanks.\n\n'
+            '\u{1F680} Danio Pro will include built-in AI -- stay tuned!',
             style: AppTypography.bodySmall.copyWith(
               color: AppColors.textHint,
             ),

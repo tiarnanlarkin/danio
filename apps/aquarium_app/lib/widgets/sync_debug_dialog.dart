@@ -136,9 +136,8 @@ class SyncDebugDialog extends ConsumerWidget {
                     Expanded(
                       child: Text(
                         syncState.lastError!,
-                        style: TextStyle(
+                        style: Theme.of(context).textTheme.bodySmall!.copyWith(
                           color: Colors.red.shade900,
-                          fontSize: 12,
                         ),
                       ),
                     ),

@@ -271,7 +271,13 @@ class _CreateTankScreenState extends ConsumerState<CreateTankScreen> {
             'Your First Tank! 🎉',
             subtitle: 'Welcome to the hobby - your aquarium adventure has officially begun!',
           );
-        }
+        } else if (tanks.length == 2) {
+          // Plant Danio Pro seed for multi-tank users
+          ref.read(celebrationProvider.notifier).achievement(
+            'Multi-Tank Aquarist! \u{1F30A}',
+            subtitle: 'Danio Pro will unlock advanced multi-tank features -- stay tuned!',
+          );
+        
       }
     } catch (e) {
       if (mounted) {

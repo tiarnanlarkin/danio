@@ -352,10 +352,9 @@ class _LevelUpOverlayState extends State<LevelUpOverlay>
                         backgroundColor: const Color(0xFF8B6BAE),
                         foregroundColor: Colors.white,
                       ),
-                      child: const Text(
+                      child: Text(
                         'Continue',
-                        style: TextStyle(
-                          fontSize: 18,
+                        style: Theme.of(context).textTheme.titleLarge!.copyWith(
                           fontWeight: FontWeight.bold,
                         ),
                       ),

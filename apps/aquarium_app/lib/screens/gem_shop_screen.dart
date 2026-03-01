@@ -211,7 +211,7 @@ class _GemShopScreenState extends ConsumerState<GemShopScreen>
           SnackBar(
             content: Row(
               children: [
-                Text(item.emoji, style: const TextStyle(fontSize: 24)),
+                Text(item.emoji, style: Theme.of(context).textTheme.headlineSmall!),
                 const SizedBox(width: 12),
                 Expanded(
                   child: Text(
@@ -273,7 +273,7 @@ class _GemShopScreenState extends ConsumerState<GemShopScreen>
               ),
               title: Row(
                 children: [
-                  Text(item.emoji, style: const TextStyle(fontSize: 32)),
+                  Text(item.emoji, style: Theme.of(context).textTheme.headlineMedium!),
                   const SizedBox(width: 12),
                   Expanded(
                     child: Text(
@@ -324,7 +324,7 @@ class _GemShopScreenState extends ConsumerState<GemShopScreen>
                               ),
                             ),
                             const SizedBox(width: AppSpacing.xs),
-                            const Text('💎', style: TextStyle(fontSize: 20)),
+                            Text('💎', style: Theme.of(context).textTheme.titleLarge!),
                           ],
                         ),
                       ],

@@ -120,9 +120,8 @@ class StoriesCard extends ConsumerWidget {
                       ),
                       Text(
                         '$progressPercent%',
-                        style: TextStyle(
+                        style: Theme.of(context).textTheme.bodySmall!.copyWith(
                           color: AppOverlays.white90,
-                          fontSize: 12,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -157,7 +156,7 @@ class StoriesCard extends ConsumerWidget {
                     children: [
                       Text(
                         suggestedStory.thumbnailImage ?? '📖',
-                        style: const TextStyle(fontSize: 24),
+                        style: Theme.of(context).textTheme.headlineSmall!,
                       ),
                       const SizedBox(width: 12),
                       Expanded(
@@ -166,17 +165,15 @@ class StoriesCard extends ConsumerWidget {
                           children: [
                             Text(
                               'Try this:',
-                              style: TextStyle(
+                              style: Theme.of(context).textTheme.labelSmall!.copyWith(
                                 color: AppOverlays.white70,
-                                fontSize: 10,
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
                             Text(
                               suggestedStory.title,
-                              style: const TextStyle(
+                              style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                                 color: Colors.white,
-                                fontSize: 14,
                                 fontWeight: FontWeight.bold,
                               ),
                               maxLines: 1,
@@ -205,9 +202,8 @@ class StoriesCard extends ConsumerWidget {
                             const SizedBox(width: AppSpacing.xs),
                             Text(
                               '+${suggestedStory.xpReward}',
-                              style: const TextStyle(
+                              style: Theme.of(context).textTheme.bodySmall!.copyWith(
                                 color: Colors.white,
-                                fontSize: 11,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
