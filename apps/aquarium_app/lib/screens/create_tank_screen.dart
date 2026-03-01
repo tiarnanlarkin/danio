@@ -490,7 +490,7 @@ class _TypeCard extends StatelessWidget {
 }
 
 // --- Page 2: Size ---
-class _SizePage extends StatelessWidget {
+class _SizePage extends StatefulWidget {
   final double volumeLitres;
   final double? lengthCm;
   final double? widthCm;
@@ -510,6 +510,38 @@ class _SizePage extends StatelessWidget {
     required this.onWidthChanged,
     required this.onHeightChanged,
   });
+
+  @override
+  State<_SizePage> createState() => _SizePageState();
+}
+
+class _SizePageState extends State<_SizePage> {
+  late TextEditingController _volumeController;
+
+  @override
+  void initState() {
+    super.initState();
+    _volumeController = TextEditingController(
+      text: widget.volumeLitres > 0 ? widget.volumeLitres.toString() : '',
+    );
+  }
+
+  @override
+  void didUpdateWidget(_SizePage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // Update text field when volume changes externally (e.g., from presets)
+    final currentText = _volumeController.text;
+    final newText = widget.volumeLitres > 0 ? widget.volumeLitres.toString() : '';
+    if (currentText != newText && double.tryParse(currentText) != widget.volumeLitres) {
+      _volumeController.text = newText;
+    }
+  }
+
+  @override
+  void dispose() {
+    _volumeController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -536,7 +568,7 @@ class _SizePage extends StatelessWidget {
               label: A11yLabels.textField('Volume in litres', required: true),
               textField: true,
               child: TextFormField(
-                initialValue: volumeLitres > 0 ? volumeLitres.toString() : '',
+                controller: _volumeController,
                 decoration: const InputDecoration(
                   labelText: 'Volume (litres)',
                   hintText: 'e.g., 120',
@@ -550,7 +582,7 @@ class _SizePage extends StatelessWidget {
                 ],
                 onChanged: (v) {
                   final value = double.tryParse(v);
-                  if (value != null) onVolumeChanged(value);
+                  if (value != null) widget.onVolumeChanged(value);
                 },
               ),
             ),
@@ -581,7 +613,7 @@ class _SizePage extends StatelessWidget {
                     label: A11yLabels.textField('Length in centimeters'),
                     textField: true,
                     child: TextFormField(
-                      initialValue: lengthCm?.toString() ?? '',
+                      initialValue: widget.lengthCm?.toString() ?? '',
                       decoration: const InputDecoration(
                         labelText: 'Length',
                         suffixText: 'cm',
@@ -592,7 +624,7 @@ class _SizePage extends StatelessWidget {
                       inputFormatters: [
                         FilteringTextInputFormatter.allow(RegExp(r'[\d.]')),
                       ],
-                      onChanged: (v) => onLengthChanged(double.tryParse(v)),
+                      onChanged: (v) => widget.onLengthChanged(double.tryParse(v)),
                     ),
                   ),
                 ),
@@ -605,7 +637,7 @@ class _SizePage extends StatelessWidget {
                     label: A11yLabels.textField('Width in centimeters'),
                     textField: true,
                     child: TextFormField(
-                      initialValue: widthCm?.toString() ?? '',
+                      initialValue: widget.widthCm?.toString() ?? '',
                       decoration: const InputDecoration(
                         labelText: 'Width',
                         suffixText: 'cm',
@@ -616,7 +648,7 @@ class _SizePage extends StatelessWidget {
                       inputFormatters: [
                         FilteringTextInputFormatter.allow(RegExp(r'[\d.]')),
                       ],
-                      onChanged: (v) => onWidthChanged(double.tryParse(v)),
+                      onChanged: (v) => widget.onWidthChanged(double.tryParse(v)),
                     ),
                   ),
                 ),
@@ -629,7 +661,7 @@ class _SizePage extends StatelessWidget {
                     label: A11yLabels.textField('Height in centimeters'),
                     textField: true,
                     child: TextFormField(
-                      initialValue: heightCm?.toString() ?? '',
+                      initialValue: widget.heightCm?.toString() ?? '',
                       decoration: const InputDecoration(
                         labelText: 'Height',
                         suffixText: 'cm',
@@ -640,7 +672,7 @@ class _SizePage extends StatelessWidget {
                       inputFormatters: [
                         FilteringTextInputFormatter.allow(RegExp(r'[\d.]')),
                       ],
-                      onChanged: (v) => onHeightChanged(double.tryParse(v)),
+                      onChanged: (v) => widget.onHeightChanged(double.tryParse(v)),
                     ),
                   ),
                 ),
@@ -656,11 +688,11 @@ class _SizePage extends StatelessWidget {
             spacing: 8,
             runSpacing: 8,
             children: [
-              _SizePreset(label: '20L', onTap: () => onVolumeChanged(20)),
-              _SizePreset(label: '60L', onTap: () => onVolumeChanged(60)),
-              _SizePreset(label: '120L', onTap: () => onVolumeChanged(120)),
-              _SizePreset(label: '200L', onTap: () => onVolumeChanged(200)),
-              _SizePreset(label: '300L', onTap: () => onVolumeChanged(300)),
+              _SizePreset(label: '20L', onTap: () => widget.onVolumeChanged(20)),
+              _SizePreset(label: '60L', onTap: () => widget.onVolumeChanged(60)),
+              _SizePreset(label: '120L', onTap: () => widget.onVolumeChanged(120)),
+              _SizePreset(label: '200L', onTap: () => widget.onVolumeChanged(200)),
+              _SizePreset(label: '300L', onTap: () => widget.onVolumeChanged(300)),
             ],
           ),
         ],
