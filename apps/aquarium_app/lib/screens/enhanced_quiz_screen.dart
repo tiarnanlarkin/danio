@@ -454,7 +454,7 @@ class _EnhancedQuizScreenState extends ConsumerState<EnhancedQuizScreen>
       case ExerciseType.multipleChoice:
         label = 'Multiple Choice';
         icon = Icons.radio_button_checked;
-        color = Colors.blue;
+        color = AppColors.primary;
         break;
       case ExerciseType.fillBlank:
         label = 'Fill in the Blank';
@@ -515,7 +515,7 @@ class _EnhancedQuizScreenState extends ConsumerState<EnhancedQuizScreen>
           border: Border.all(
             color: isCorrect
                 ? AppOverlays.success30
-                : AppOverlays.info30,
+                : AppOverlays.accent20,
           ),
         ),
         child: Row(
@@ -523,7 +523,7 @@ class _EnhancedQuizScreenState extends ConsumerState<EnhancedQuizScreen>
           children: [
             Icon(
               isCorrect ? Icons.celebration : Icons.lightbulb_outline,
-              color: isCorrect ? AppColors.success : AppColors.info,
+              color: isCorrect ? AppColors.success : AppColors.textSecondary,
               size: 24,
             ),
             const SizedBox(width: 12),
@@ -534,7 +534,7 @@ class _EnhancedQuizScreenState extends ConsumerState<EnhancedQuizScreen>
                   Text(
                     isCorrect ? 'Correct!' : 'Learn from this',
                     style: AppTypography.labelLarge.copyWith(
-                      color: isCorrect ? AppColors.success : AppColors.info,
+                      color: isCorrect ? AppColors.success : AppColors.textSecondary,
                       fontWeight: FontWeight.bold,
                     ),
                   ),

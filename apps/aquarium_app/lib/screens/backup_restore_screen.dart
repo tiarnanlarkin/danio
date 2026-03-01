@@ -60,7 +60,7 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
             padding: AppCardPadding.standard,
             child: Row(
               children: [
-                Icon(Icons.backup, size: AppIconSizes.lg, color: AppColors.info),
+                Icon(Icons.backup, size: AppIconSizes.lg, color: AppColors.textSecondary),
                 const SizedBox(width: 12),
                 Expanded(
                   child: Text(

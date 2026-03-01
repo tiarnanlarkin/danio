@@ -18,7 +18,7 @@ class ParameterGuideScreen extends StatelessWidget {
             padding: AppCardPadding.standard,
             child: Row(
               children: [
-                Icon(Icons.info_outline, color: AppColors.info),
+                Icon(Icons.info_outline, color: AppColors.textSecondary),
                 const SizedBox(width: 12),
                 Expanded(
                   child: Text(
@@ -122,7 +122,7 @@ class ParameterGuideScreen extends StatelessWidget {
           _ParameterSection(
             title: 'KH (Carbonate Hardness)',
             icon: Icons.shield,
-            color: AppColors.info,
+            color: AppColors.textSecondary,
             ideal: '4-8 dKH',
             danger: '<2 dKH',
             description:

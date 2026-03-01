@@ -170,12 +170,12 @@ class _PracticeScreenState extends ConsumerState<PracticeScreen> {
           decoration: BoxDecoration(
             color: AppOverlays.info10,
             borderRadius: AppRadius.mediumRadius,
-            border: Border.all(color: AppOverlays.info30),
+            border: Border.all(color: AppOverlays.accent20),
           ),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Icon(Icons.lightbulb_outline, color: AppColors.info),
+              Icon(Icons.lightbulb_outline, color: AppColors.textSecondary),
               const SizedBox(width: 12),
               Expanded(
                 child: Column(
@@ -184,7 +184,7 @@ class _PracticeScreenState extends ConsumerState<PracticeScreen> {
                     Text(
                       'How it works',
                       style: AppTypography.labelLarge.copyWith(
-                        color: AppColors.info,
+                        color: AppColors.textSecondary,
                       ),
                     ),
                     const SizedBox(height: AppSpacing.xs),
@@ -515,12 +515,12 @@ class _PracticeLessonScreenState extends ConsumerState<PracticeLessonScreen> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(Icons.refresh, size: AppIconSizes.xs, color: AppColors.info),
+                Icon(Icons.refresh, size: AppIconSizes.xs, color: AppColors.textSecondary),
                 const SizedBox(width: AppSpacing.sm),
                 Text(
                   'Review Mode - Half XP',
                   style: AppTypography.labelMedium.copyWith(
-                    color: AppColors.info,
+                    color: AppColors.textSecondary,
                   ),
                 ),
               ],

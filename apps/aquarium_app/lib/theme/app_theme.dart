@@ -687,7 +687,7 @@ class AppOverlays {
   static const Color orange20 = Color(0x33FF9800);  // 20%
   static const Color orange30 = Color(0x4DFF9800);  // 30%
   
-  // Blue overlays (Colors.blue = 0xFF2196F3)
+  // Blue overlays (AppColors.primary = 0xFF2196F3)
   static const Color blue10 = Color(0x1A2196F3);  // 10%
   static const Color blue20 = Color(0x332196F3);  // 20%
   

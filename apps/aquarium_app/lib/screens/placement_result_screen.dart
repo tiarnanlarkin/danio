@@ -133,7 +133,7 @@ class PlacementResultScreen extends ConsumerWidget {
       icon = Icons.emoji_events;
     } else if (percentage >= 60) {
       message = 'Great job! You know your stuff!';
-      color = Colors.blue;
+      color = AppColors.primary;
       icon = Icons.thumb_up;
     } else if (percentage >= 40) {
       message = 'Good start! You have some knowledge.';
@@ -438,7 +438,7 @@ class PlacementResultScreen extends ConsumerWidget {
   Color _getSkipLevelColor(SkipLevel level) {
     switch (level) {
       case SkipLevel.none:
-        return Colors.blue;
+        return AppColors.primary;
       case SkipLevel.beginner:
         return Colors.green;
       case SkipLevel.advanced:
@@ -450,7 +450,7 @@ class PlacementResultScreen extends ConsumerWidget {
 
   Color _getScoreColor(double score) {
     if (score >= 80) return Colors.green;
-    if (score >= 60) return Colors.blue;
+    if (score >= 60) return AppColors.primary;
     if (score >= 40) return Colors.orange;
     return Colors.grey;
   }

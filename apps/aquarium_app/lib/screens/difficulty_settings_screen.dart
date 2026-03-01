@@ -263,7 +263,7 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
         _buildStatChip(
           '${summary['attempts']} attempts',
           Icons.history,
-          Colors.blue,
+          AppColors.primary,
         ),
         _buildStatChip(
           '${(summary['averageScore'] * 100).toInt()}% avg',
@@ -309,7 +309,7 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
       case PerformanceTrend.improving:
         return Colors.green;
       case PerformanceTrend.stable:
-        return Colors.blue;
+        return AppColors.primary;
       case PerformanceTrend.declining:
         return Colors.orange;
     }
@@ -427,7 +427,7 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
 
   Color _getScoreColor(int scorePercent) {
     if (scorePercent >= 90) return Colors.green;
-    if (scorePercent >= 70) return Colors.blue;
+    if (scorePercent >= 70) return AppColors.primary;
     if (scorePercent >= 50) return Colors.orange;
     return Colors.red;
   }
@@ -615,7 +615,7 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
           padding: AppCardPadding.standard,
           child: Row(
             children: [
-              const Icon(Icons.check_circle, color: Colors.green, size: AppIconSizes.lg),
+              const Icon(Icons.check_circle, color: AppColors.primary, size: AppIconSizes.lg),
               const SizedBox(width: 12),
               Expanded(
                 child: Text(
@@ -650,7 +650,7 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
   Color _getSkillLevelColor(double skillLevel) {
     if (skillLevel < 0.3) return Colors.red;
     if (skillLevel < 0.6) return Colors.orange;
-    if (skillLevel < 0.8) return Colors.blue;
+    if (skillLevel < 0.8) return AppColors.primary;
     return Colors.green;
   }
 }

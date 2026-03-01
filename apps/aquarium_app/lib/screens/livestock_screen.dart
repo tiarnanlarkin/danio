@@ -947,7 +947,7 @@ class _AddLivestockSheetState extends State<_AddLivestockSheet> {
                       Text(
                         'Schooling fish — keep ${_selectedSpecies!.minSchoolSize}+ together',
                         style: AppTypography.bodySmall.copyWith(
-                          color: AppColors.info,
+                          color: AppColors.textSecondary,
                         ),
                       ),
                   ],

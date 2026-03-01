@@ -815,7 +815,7 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
                 child: Text(
                   'Maximum 4 parameters',
                   style: AppTypography.bodySmall.copyWith(
-                    color: AppColors.info,
+                    color: AppColors.textSecondary,
                   ),
                 ),
               ),

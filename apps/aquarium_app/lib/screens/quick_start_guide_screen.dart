@@ -438,7 +438,7 @@ class _TipBox extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Icon(Icons.lightbulb, size: AppIconSizes.xs, color: AppColors.info),
+          Icon(Icons.lightbulb, size: AppIconSizes.xs, color: AppColors.textSecondary),
           const SizedBox(width: AppSpacing.sm),
           Expanded(child: Text(text, style: AppTypography.bodySmall)),
         ],

@@ -135,17 +135,17 @@ class _FriendsScreenState extends ConsumerState<FriendsScreen>
             Container(
               padding: const EdgeInsets.all(AppSpacing.sm2),
               decoration: BoxDecoration(
-                color: Colors.blue.shade50,
+                color: AppColors.primary.shade50,
                 borderRadius: AppRadius.smallRadius,
               ),
               child: const Row(
                 children: [
-                  Icon(Icons.info_outline, size: AppIconSizes.sm, color: Colors.blue),
+                  Icon(Icons.info_outline, size: AppIconSizes.sm, color: AppColors.primary),
                   SizedBox(width: AppSpacing.sm),
                   Expanded(
                     child: Text(
                       'This is a demo - try adding any username!',
-                      style: TextStyle(fontSize: 12, color: Colors.blue),
+                      style: TextStyle(fontSize: 12, color: AppColors.primary),
                     ),
                   ),
                 ],
@@ -341,7 +341,7 @@ class _FriendListTile extends ConsumerWidget {
                         width: 16,
                         height: 16,
                         decoration: BoxDecoration(
-                          color: Colors.green,
+                          color: AppColors.primary,
                           shape: BoxShape.circle,
                           border: Border.all(color: Colors.white, width: 2),
                         ),
@@ -451,7 +451,7 @@ class _FriendListTile extends ConsumerWidget {
   Color _getLevelColor(int level) {
     if (level >= 7) return Colors.purple;
     if (level >= 5) return Colors.orange;
-    if (level >= 3) return Colors.blue;
+    if (level >= 3) return AppColors.primary;
     return Colors.green;
   }
 }

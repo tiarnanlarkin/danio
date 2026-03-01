@@ -42,7 +42,7 @@ class GamificationDashboard extends ConsumerWidget {
         final progress = goalXp > 0 ? (todayXp / goalXp).clamp(0.0, 1.0) : 0.0;
 
         final content = Padding(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -67,27 +67,27 @@ class GamificationDashboard extends ConsumerWidget {
               ),
               const SizedBox(height: 12),
 
-              // Row 2: Gems, Gems, and Hearts
+              // Row 2: Gems, Today XP, and Hearts
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  _StatItem(
+                  Expanded(child: _StatItem(
                     icon: '💎',
                     value: _formatNumber(gems),
                     label: 'gems',
                     color: DanioColors.tealWater,
-                  ),
-                  _StatItem(
+                  )),
+                  Expanded(child: _StatItem(
                     icon: '⚡',
                     value: _formatNumber(todayXp),
                     label: 'today',
-                    color: const Color(0xFF4A90D9),
-                  ),
-                  _HeartsDisplay(
+                    color: DanioColors.emeraldGreen,
+                  )),
+                  Expanded(child: _HeartsDisplay(
                     current: heartsState.currentHearts,
                     max: heartsState.maxHearts,
                     timeUntilRefill: heartsState.timeUntilNextRefill,
-                  ),
+                  )),
                 ],
               ),
               const SizedBox(height: AppSpacing.md),
@@ -201,20 +201,27 @@ class _StatItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final rowChildren = [
-      Text(icon, style: const TextStyle(fontSize: 20)),
-      const SizedBox(width: 6),
-      Text(
-        value,
-        style: AppTypography.titleMedium.copyWith(
-          fontWeight: FontWeight.w800,
-          color: const Color(0xFF3D2B1F),
+      Text(icon, style: const TextStyle(fontSize: 18)),
+      const SizedBox(width: 4),
+      Flexible(
+        child: Text(
+          value,
+          style: AppTypography.titleMedium.copyWith(
+            fontWeight: FontWeight.w800,
+            color: const Color(0xFF3D2B1F),
+            fontSize: 14,
+          ),
+          overflow: TextOverflow.ellipsis,
         ),
       ),
-      const SizedBox(width: 4),
-      Text(
-        label,
-        style: AppTypography.labelSmall.copyWith(
-          color: AppColors.textSecondary,
+      const SizedBox(width: 2),
+      Flexible(
+        child: Text(
+          label,
+          style: AppTypography.labelSmall.copyWith(
+            color: AppColors.textSecondary,
+          ),
+          overflow: TextOverflow.ellipsis,
         ),
       ),
     ];
@@ -241,9 +248,9 @@ class _HeartsDisplay extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        const Text('❤️', style: TextStyle(fontSize: 20)),
-        const SizedBox(width: 6),
-        Column(
+        const Text('❤️', style: TextStyle(fontSize: 18)),
+        const SizedBox(width: 4),
+        Flexible(child: Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             Row(
@@ -279,7 +286,7 @@ class _HeartsDisplay extends StatelessWidget {
                 ),
               ),
           ],
-        ),
+        )),
       ],
     );
   }

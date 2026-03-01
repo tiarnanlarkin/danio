@@ -276,7 +276,7 @@ class _UserCard extends StatelessWidget {
           children: [
             CircleAvatar(
               radius: 30,
-              backgroundColor: (isUser ? Colors.blue : AppColors.primary)
+              backgroundColor: (isUser ? AppColors.primary : AppColors.primary)
                   .withAlpha(51),
               child: Text(emoji, style: const TextStyle(fontSize: 32)),
             ),
@@ -362,7 +362,7 @@ class _StatsComparisonSection extends StatelessWidget {
         userProfile.currentLevel,
         friend.currentLevel,
         Icons.trending_up,
-        Colors.blue,
+        AppColors.primary,
       ),
     ];
 
@@ -465,7 +465,7 @@ class _StatComparisonRow extends StatelessWidget {
                       child: Container(
                         height: 8,
                         decoration: BoxDecoration(
-                          color: Colors.blue,
+                          color: AppColors.primary,
                           borderRadius: AppRadius.xsRadius,
                         ),
                       ),
@@ -613,7 +613,7 @@ class _ProgressChartSection extends StatelessWidget {
           LineChartBarData(
             spots: userSpots,
             isCurved: true,
-            color: Colors.blue,
+            color: AppColors.primary,
             barWidth: 3,
             isStrokeCapRound: true,
             dotData: const FlDotData(show: true),
@@ -669,7 +669,7 @@ class _AchievementsSection extends StatelessWidget {
                 child: _AchievementCard(
                   title: 'Your Achievements',
                   count: userProfile.achievements.length,
-                  color: Colors.blue,
+                  color: AppColors.primary,
                 ),
               ),
               const SizedBox(width: AppSpacing.md),

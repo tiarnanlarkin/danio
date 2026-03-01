@@ -147,7 +147,7 @@ class _AchievementNotificationWidgetState
               shouldLoop: false,
               colors: const [
                 Colors.red,
-                Colors.blue,
+                AppColors.primary,
                 Colors.green,
                 Colors.yellow,
                 Colors.purple,

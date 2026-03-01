@@ -50,7 +50,7 @@ class _StoriesScreenState extends ConsumerState<StoriesScreen> {
                     end: Alignment.bottomRight,
                     colors: [
                       Colors.purple.shade700,
-                      Colors.blue.shade600,
+                      AppColors.primary.shade600,
                       Colors.cyan.shade500,
                     ],
                   ),
@@ -346,7 +346,7 @@ class StoryCard extends StatelessWidget {
                               if (isCompleted)
                                 const Icon(
                                   Icons.check_circle,
-                                  color: Colors.green,
+                                  color: AppColors.primary,
                                   size: AppIconSizes.md,
                                 )
                               else if (!isUnlocked)
@@ -386,7 +386,7 @@ class StoryCard extends StatelessWidget {
                     _buildInfoChip(
                       icon: Icons.access_time,
                       label: '${story.estimatedMinutes} min',
-                      color: Colors.blue,
+                      color: AppColors.primary,
                     ),
                     _buildInfoChip(
                       icon: Icons.star,
@@ -408,7 +408,7 @@ class StoryCard extends StatelessWidget {
                             style: TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.w500,
-                              color: Colors.blue,
+                              color: AppColors.primary,
                             ),
                           ),
                         Text(
@@ -420,13 +420,13 @@ class StoryCard extends StatelessWidget {
                           style: const TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.bold,
-                            color: Colors.blue,
+                            color: AppColors.primary,
                           ),
                         ),
                         const Icon(
                           Icons.arrow_forward,
                           size: AppIconSizes.xs,
-                          color: Colors.blue,
+                          color: AppColors.primary,
                         ),
                       ],
                     ),

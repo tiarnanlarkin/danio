@@ -193,7 +193,7 @@ class _EmptyStateState extends State<EmptyState>
                       color: AppOverlays.info5,
                       borderRadius: AppRadius.mediumRadius,
                       border: Border.all(
-                        color: AppOverlays.info20,
+                        color: AppOverlays.accent20,
                         width: 1,
                       ),
                     ),
@@ -205,13 +205,13 @@ class _EmptyStateState extends State<EmptyState>
                             Icon(
                               Icons.lightbulb_outline,
                               size: AppIconSizes.xs,
-                              color: AppColors.info,
+                              color: AppColors.textSecondary,
                             ),
                             const SizedBox(width: AppSpacing.sm),
                             Text(
                               'Quick Tips',
                               style: AppTypography.labelMedium.copyWith(
-                                color: AppColors.info,
+                                color: AppColors.textSecondary,
                               ),
                             ),
                           ],

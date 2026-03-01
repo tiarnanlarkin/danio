@@ -176,7 +176,7 @@ class _GemShopScreenState extends ConsumerState<GemShopScreen>
                   GemShopColors.goldAccent,
                   GemShopColors.powerUpColor,
                   Colors.green,
-                  Colors.blue,
+                  AppColors.primary,
                   Colors.pink,
                 ],
               ),

@@ -995,13 +995,13 @@ class _OrderingWidgetState extends State<OrderingWidget> {
           ),
           child: Row(
             children: [
-              Icon(Icons.touch_app, color: AppColors.info),
+              Icon(Icons.touch_app, color: AppColors.textSecondary),
               const SizedBox(width: 12),
               Expanded(
                 child: Text(
                   'Drag items to reorder them',
                   style: AppTypography.bodyMedium.copyWith(
-                    color: AppColors.info,
+                    color: AppColors.textSecondary,
                   ),
                 ),
               ),
@@ -1116,14 +1116,14 @@ class ExplanationCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppOverlays.info10,
         borderRadius: AppRadius.mediumRadius,
-        border: Border.all(color: AppOverlays.info30),
+        border: Border.all(color: AppOverlays.accent20),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Icon(
             isCorrect ? Icons.lightbulb_outline : Icons.info_outline,
-            color: AppColors.info,
+            color: AppColors.textSecondary,
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -1133,7 +1133,7 @@ class ExplanationCard extends StatelessWidget {
                 Text(
                   isCorrect ? 'Great job!' : 'Learn from this',
                   style: AppTypography.labelLarge.copyWith(
-                    color: AppColors.info,
+                    color: AppColors.textSecondary,
                   ),
                 ),
                 const SizedBox(height: AppSpacing.xs),

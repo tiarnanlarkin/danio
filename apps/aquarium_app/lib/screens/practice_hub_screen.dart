@@ -6,6 +6,7 @@ import '../theme/app_theme.dart';
 import '../widgets/hearts_widgets.dart';
 import 'spaced_repetition_practice_screen.dart';
 import 'practice_screen.dart';
+import 'achievements_screen.dart';
 
 /// Practice Hub - Central location for all quiz and practice activities
 /// This is Tab 1 in the new navigation structure
@@ -122,7 +123,7 @@ class PracticeHubScreen extends ConsumerWidget {
             _StatItem(
               label: 'Total Cards',
               value: '${srState.stats.totalCards}',
-              color: AppColors.info,
+              color: AppColors.textSecondary,
             ),
           ],
         );
@@ -179,7 +180,7 @@ class PracticeHubScreen extends ConsumerWidget {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => const PracticeScreen(),
+                builder: (context) => const AchievementsScreen(),
               ),
             );
           },
@@ -216,7 +217,7 @@ class PracticeHubScreen extends ConsumerWidget {
           title: 'Practice Accuracy',
           value: '${_calculateAccuracy(srState)}%',
           icon: Icons.track_changes,
-          color: AppColors.info,
+          color: AppColors.textSecondary,
         );
       default:
         return const SizedBox.shrink();

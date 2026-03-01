@@ -210,7 +210,7 @@ Identify this fish or aquatic plant. Return ONLY valid JSON with these fields:
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.pets, size: 48, color: AppColors.textSecondary),
+          Icon(Icons.camera_alt_outlined, size: 48, color: AppColors.primary),
           const SizedBox(height: AppSpacing.sm),
           Text(
             'Take a photo or pick from gallery\nto identify a fish or plant',
@@ -279,7 +279,7 @@ Identify this fish or aquatic plant. Return ONLY valid JSON with these fields:
             Row(
               children: [
                 Icon(
-                  r.isPlant ? Icons.eco : Icons.pets,
+                  r.isPlant ? Icons.eco : Icons.set_meal,
                   color: AppColors.primary,
                   size: 28,
                 ),

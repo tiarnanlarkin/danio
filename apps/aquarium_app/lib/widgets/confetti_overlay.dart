@@ -89,7 +89,7 @@ class _ConfettiOverlayState extends State<ConfettiOverlay>
   Color _getRandomColor(math.Random random) {
     final colors = [
       Colors.red,
-      Colors.blue,
+      AppColors.primary,
       Colors.green,
       Colors.yellow,
       Colors.purple,

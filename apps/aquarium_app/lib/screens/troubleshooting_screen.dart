@@ -254,7 +254,7 @@ class TroubleshootingScreen extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    Icon(Icons.lightbulb, color: AppColors.info),
+                    Icon(Icons.lightbulb, color: AppColors.textSecondary),
                     const SizedBox(width: AppSpacing.sm),
                     Text('General Tips', style: AppTypography.headlineSmall),
                   ],

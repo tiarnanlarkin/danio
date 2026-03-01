@@ -192,7 +192,7 @@ class FeedingGuideScreen extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    Icon(Icons.no_food, color: AppColors.info),
+                    Icon(Icons.no_food, color: AppColors.textSecondary),
                     const SizedBox(width: AppSpacing.sm),
                     Text('Fasting Days', style: AppTypography.headlineSmall),
                   ],

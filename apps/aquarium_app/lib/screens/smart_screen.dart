@@ -63,7 +63,7 @@ class SmartScreen extends ConsumerWidget {
             icon: Icons.calendar_month,
             title: 'Weekly Plan',
             subtitle: 'AI-generated maintenance schedule',
-            color: AppColors.info,
+            color: AppColors.textSecondary,
             onTap: () => Navigator.of(context).push(
               MaterialPageRoute(builder: (_) => const WeeklyPlanScreen()),
             ),
@@ -109,19 +109,59 @@ class SmartScreen extends ConsumerWidget {
         expand: false,
         builder: (ctx, scrollController) {
           if (anomalies.isEmpty) {
-            return const Center(
-              child: Padding(
-                padding: EdgeInsets.all(AppSpacing.lg),
-                child: Text('No anomalies detected yet.'),
-              ),
+            return Column(
+              children: [
+                // Drag handle
+                Container(
+                  width: 40, height: 4,
+                  margin: const EdgeInsets.symmetric(vertical: AppSpacing.md),
+                  decoration: BoxDecoration(
+                    color: AppColors.border,
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.sm),
+                Text('Anomaly History',
+                  style: AppTypography.titleLarge.copyWith(fontWeight: FontWeight.bold)),
+                const Spacer(),
+                Icon(Icons.monitor_heart_outlined, size: 56, color: AppColors.textHint),
+                const SizedBox(height: AppSpacing.md),
+                Text('No anomalies detected yet.',
+                  style: AppTypography.bodyLarge.copyWith(color: AppColors.textSecondary),
+                  textAlign: TextAlign.center),
+                const SizedBox(height: AppSpacing.sm),
+                Text('Anomaly detection runs automatically\nwhen you log water parameters.',
+                  style: AppTypography.bodySmall.copyWith(color: AppColors.textHint),
+                  textAlign: TextAlign.center),
+                const SizedBox(height: AppSpacing.lg),
+                ElevatedButton.icon(
+                  onPressed: () {
+                    Navigator.pop(ctx);
+                    // Navigate to symptom triage
+                  },
+                  icon: const Icon(Icons.medical_services_outlined, size: 18),
+                  label: const Text('Run Symptom Triage'),
+                ),
+                const Spacer(),
+              ],
             );
           }
           return ListView.builder(
             controller: scrollController,
-            padding: const EdgeInsets.all(AppSpacing.md),
-            itemCount: anomalies.length + 1,
+            padding: const EdgeInsets.only(
+              left: AppSpacing.md, right: AppSpacing.md,
+              bottom: AppSpacing.md, top: 0),
+            itemCount: anomalies.length + 2,
             itemBuilder: (ctx, i) {
               if (i == 0) {
+                return Column(children: [
+                  Container(width: 40, height: 4,
+                    margin: const EdgeInsets.symmetric(vertical: AppSpacing.md),
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(color: AppColors.border, borderRadius: BorderRadius.circular(2))),
+                ]);
+              }
+              if (i == 1) {
                 return Padding(
                   padding: const EdgeInsets.only(bottom: AppSpacing.md),
                   child: Text(
@@ -132,7 +172,7 @@ class SmartScreen extends ConsumerWidget {
                   ),
                 );
               }
-              final a = anomalies[i - 1];
+              final a = anomalies[i - 2];
               return ListTile(
                 leading: _severityIcon(a.severity),
                 title: Text(a.description),
@@ -153,7 +193,7 @@ class SmartScreen extends ConsumerWidget {
     final (icon, color) = switch (severity) {
       AnomalySeverity.critical => (Icons.error, AppColors.error),
       AnomalySeverity.alert => (Icons.warning, AppColors.warning),
-      AnomalySeverity.warning => (Icons.info, AppColors.info),
+      AnomalySeverity.warning => (Icons.info, AppColors.textSecondary),
     };
     return Icon(icon, color: color, size: AppIconSizes.sm);
   }

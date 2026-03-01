@@ -107,7 +107,7 @@ class _WaterChangeCalculatorScreenState
             padding: AppCardPadding.standard,
             child: Row(
               children: [
-                Icon(Icons.calculate, size: AppIconSizes.lg, color: AppColors.info),
+                Icon(Icons.calculate, size: AppIconSizes.lg, color: AppColors.textSecondary),
                 const SizedBox(width: 12),
                 Expanded(
                   child: Text(

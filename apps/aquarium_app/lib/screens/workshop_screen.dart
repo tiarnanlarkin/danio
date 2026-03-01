@@ -85,7 +85,7 @@ class WorkshopScreen extends ConsumerWidget {
                     icon: Icons.water_drop,
                     title: 'Water Change',
                     subtitle: 'Calculate changes',
-                    color: Colors.blue.shade400,
+                    color: AppColors.primary.shade400,
                     onTap: () => Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -109,7 +109,7 @@ class WorkshopScreen extends ConsumerWidget {
                     icon: Icons.science,
                     title: 'CO₂ Calculator',
                     subtitle: 'From pH & KH',
-                    color: Colors.green.shade400,
+                    color: AppColors.primary.shade400,
                     onTap: () => Navigator.push(
                       context,
                       MaterialPageRoute(

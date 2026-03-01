@@ -84,7 +84,7 @@ class _Co2CalculatorScreenState extends State<Co2CalculatorScreen> {
             padding: AppCardPadding.standard,
             child: Row(
               children: [
-                Icon(Icons.bubble_chart, size: AppIconSizes.lg, color: AppColors.info),
+                Icon(Icons.bubble_chart, size: AppIconSizes.lg, color: AppColors.textSecondary),
                 const SizedBox(width: 12),
                 Expanded(
                   child: Text(
@@ -218,12 +218,12 @@ class _Co2CalculatorScreenState extends State<Co2CalculatorScreen> {
             child: Column(
               children: [
                 _DropCheckerRow(
-                  color: Colors.blue,
+                  color: AppColors.primary,
                   label: 'Blue',
                   meaning: 'CO2 too low (<20 ppm)',
                 ),
                 _DropCheckerRow(
-                  color: Colors.green,
+                  color: AppColors.primary,
                   label: 'Green',
                   meaning: 'CO2 optimal (20-30 ppm)',
                 ),

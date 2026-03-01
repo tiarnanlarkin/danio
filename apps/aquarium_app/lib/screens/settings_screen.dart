@@ -417,7 +417,7 @@ class SettingsScreen extends ConsumerWidget {
 
           // Water & Parameters
           ExpansionTile(
-            leading: const Icon(Icons.water_drop, color: AppColors.info),
+            leading: const Icon(Icons.water_drop, color: AppColors.textSecondary),
             title: const Text('Water & Parameters'),
             subtitle: const Text('Water quality and chemistry'),
             children: [

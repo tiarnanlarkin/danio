@@ -73,13 +73,13 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
-                  color: AppOverlays.info20,
+                  color: AppOverlays.accent20,
                   borderRadius: AppRadius.smallRadius,
                 ),
                 child: Text(
                   'PRACTICE',
                   style: AppTypography.labelSmall.copyWith(
-                    color: AppColors.info,
+                    color: AppColors.textSecondary,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -150,7 +150,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
       children: [
         Expanded(
           child: ListView.builder(
-            padding: const EdgeInsets.all(AppSpacing.lg2),
+            padding: EdgeInsets.fromLTRB(AppSpacing.lg2, AppSpacing.lg2, AppSpacing.lg2, 100),
             itemCount: totalItems,
             itemBuilder: (context, index) {
               // Lesson title with Hero animation
@@ -610,7 +610,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Icon(Icons.info_outline, color: AppColors.info),
+                        Icon(Icons.info_outline, color: AppColors.textSecondary),
                         const SizedBox(width: 12),
                         Expanded(
                           child: Text(

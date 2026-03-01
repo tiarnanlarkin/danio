@@ -28,7 +28,7 @@ class HardscapeGuideScreen extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    Icon(Icons.landscape, color: AppColors.info),
+                    Icon(Icons.landscape, color: AppColors.textSecondary),
                     const SizedBox(width: AppSpacing.sm),
                     Text(
                       'What is Hardscape?',

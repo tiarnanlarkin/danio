@@ -28,7 +28,7 @@ class AcclimationGuideScreen extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    Icon(Icons.info_outline, color: AppColors.info),
+                    Icon(Icons.info_outline, color: AppColors.textSecondary),
                     const SizedBox(width: AppSpacing.sm),
                     Text(
                       'Why Acclimate?',

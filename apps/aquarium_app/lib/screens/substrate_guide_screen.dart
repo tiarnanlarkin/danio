@@ -21,7 +21,7 @@ class SubstrateGuideScreen extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    Icon(Icons.layers, color: AppColors.info),
+                    Icon(Icons.layers, color: AppColors.textSecondary),
                     const SizedBox(width: AppSpacing.sm),
                     Text(
                       'Why Substrate Matters',

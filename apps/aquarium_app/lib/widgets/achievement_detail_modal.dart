@@ -255,7 +255,7 @@ class AchievementDetailModal extends StatelessWidget {
                       children: [
                         const Icon(
                           Icons.calendar_today,
-                          color: Colors.blue,
+                          color: AppColors.primary,
                           size: 32,
                         ),
                         const SizedBox(height: AppSpacing.xs),
@@ -308,19 +308,19 @@ class AchievementDetailModal extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(AppSpacing.sm2),
                 decoration: BoxDecoration(
-                  color: Colors.green.shade50,
+                  color: AppColors.primary.shade50,
                   borderRadius: AppRadius.smallRadius,
-                  border: Border.all(color: Colors.green.shade200),
+                  border: Border.all(color: AppColors.primary.shade200),
                 ),
                 child: Row(
                   children: [
-                    Icon(Icons.check_circle, color: Colors.green.shade700),
+                    Icon(Icons.check_circle, color: AppColors.primary.shade700),
                     const SizedBox(width: 12),
                     Expanded(
                       child: Text(
                         'Achievement Unlocked!',
                         style: TextStyle(
-                          color: Colors.green.shade700,
+                          color: AppColors.primary.shade700,
                           fontWeight: FontWeight.bold,
                         ),
                       ),

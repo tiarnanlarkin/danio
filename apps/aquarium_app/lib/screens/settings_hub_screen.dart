@@ -50,7 +50,7 @@ class SettingsHubScreen extends ConsumerWidget {
       PrimaryActionTile(
         icon: Icons.people,
         title: 'Friends',
-        subtitle: 'Connect with other aquarium enthusiasts',
+        subtitle: 'Find friends & share your tanks',
         iconColor: AppColors.primary,
         trailing: const Icon(Icons.chevron_right),
         onTap: () {
@@ -68,7 +68,7 @@ class SettingsHubScreen extends ConsumerWidget {
       PrimaryActionTile(
         icon: Icons.leaderboard,
         title: 'Leaderboard',
-        subtitle: 'See how you rank among others',
+        subtitle: 'Compare your progress globally',
         iconColor: AppColors.warning,
         trailing: const Icon(Icons.chevron_right),
         onTap: () {
@@ -90,7 +90,7 @@ class SettingsHubScreen extends ConsumerWidget {
       PrimaryActionTile(
         icon: Icons.storefront,
         title: 'Shop Street',
-        subtitle: 'Browse local aquarium shops and deals',
+        subtitle: 'Discover local aquarium shops',
         iconColor: AppColors.success,
         trailing: const Icon(Icons.chevron_right),
         onTap: () {
@@ -108,7 +108,7 @@ class SettingsHubScreen extends ConsumerWidget {
       PrimaryActionTile(
         icon: Icons.emoji_events,
         title: 'Achievements',
-        subtitle: 'View your badges and milestones',
+        subtitle: 'Badges & achievements',
         iconColor: AppColors.warning,
         trailing: const Icon(Icons.chevron_right),
         onTap: () {
@@ -130,8 +130,8 @@ class SettingsHubScreen extends ConsumerWidget {
       PrimaryActionTile(
         icon: Icons.build,
         title: 'Workshop',
-        subtitle: 'Calculators, guides, and planning tools',
-        iconColor: AppColors.info,
+        subtitle: 'Calculators, guides & planners',
+        iconColor: AppColors.textSecondary,
         trailing: const Icon(Icons.chevron_right),
         onTap: () {
           Navigator.push(
@@ -148,7 +148,7 @@ class SettingsHubScreen extends ConsumerWidget {
       PrimaryActionTile(
         icon: Icons.analytics,
         title: 'Analytics',
-        subtitle: 'View your learning and tank statistics',
+        subtitle: 'Progress charts & statistics',
         iconColor: AppColors.primary,
         trailing: const Icon(Icons.chevron_right),
         onTap: () {
@@ -170,7 +170,7 @@ class SettingsHubScreen extends ConsumerWidget {
       PrimaryActionTile(
         icon: Icons.tune,
         title: 'Preferences',
-        subtitle: 'Theme, notifications, and more',
+        subtitle: 'Theme, sounds & notifications',
         iconColor: AppColors.textSecondary,
         trailing: const Icon(Icons.chevron_right),
         onTap: () {
@@ -188,8 +188,8 @@ class SettingsHubScreen extends ConsumerWidget {
       PrimaryActionTile(
         icon: Icons.backup,
         title: 'Backup & Restore',
-        subtitle: 'Save and restore your data',
-        iconColor: AppColors.info,
+        subtitle: 'Back up & restore your data',
+        iconColor: AppColors.textSecondary,
         trailing: const Icon(Icons.chevron_right),
         onTap: () {
           Navigator.push(
@@ -206,7 +206,7 @@ class SettingsHubScreen extends ConsumerWidget {
       PrimaryActionTile(
         icon: Icons.info,
         title: 'About',
-        subtitle: 'App version, privacy, and support',
+        subtitle: 'Version, privacy & support',
         iconColor: AppColors.textSecondary,
         trailing: const Icon(Icons.chevron_right),
         onTap: () {

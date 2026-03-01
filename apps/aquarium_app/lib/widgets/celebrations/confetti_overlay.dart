@@ -55,7 +55,7 @@ class ConfettiColors {
     Colors.orange,
     Colors.yellow,
     Colors.green,
-    Colors.blue,
+    AppColors.primary,
     Colors.purple,
     Colors.pink,
   ];

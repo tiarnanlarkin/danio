@@ -174,13 +174,13 @@ class _TankPickerSheetState extends ConsumerState<TankPickerSheet> {
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
               child: Row(
                 children: [
-                  Icon(Icons.info_outline, size: AppIconSizes.xs, color: AppColors.info),
+                  Icon(Icons.info_outline, size: AppIconSizes.xs, color: AppColors.textSecondary),
                   const SizedBox(width: AppSpacing.sm),
                   Expanded(
                     child: Text(
                       'Tap "Save" to keep this order',
                       style: AppTypography.bodySmall.copyWith(
-                        color: AppColors.info,
+                        color: AppColors.textSecondary,
                       ),
                     ),
                   ),

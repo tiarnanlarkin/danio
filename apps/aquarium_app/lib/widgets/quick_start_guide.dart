@@ -366,13 +366,13 @@ class QuickStartTipsCard extends StatelessWidget {
               _buildTipItem(
                 icon: Icons.water_drop,
                 text: 'Log your first water test to track trends',
-                color: Colors.blue,
+                color: AppColors.primary,
               ),
               const SizedBox(height: 12),
               _buildTipItem(
                 icon: Icons.task_alt,
                 text: 'Complete daily tasks to earn XP',
-                color: Colors.green,
+                color: AppColors.primary,
               ),
               const SizedBox(height: 12),
               _buildTipItem(

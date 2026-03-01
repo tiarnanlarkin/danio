@@ -338,7 +338,7 @@ class _AchievementUnlockedDialogState extends State<AchievementUnlockedDialog>
         shouldLoop: false,
         colors: const [
           Colors.red,
-          Colors.blue,
+          AppColors.primary,
           Colors.green,
           Colors.yellow,
           Colors.purple,

@@ -869,7 +869,7 @@ class _LazyLearningPathCardState extends ConsumerState<_LazyLearningPathCard> {
               ? Text(
                   '+${lesson.xpReward} XP',
                   style: AppTypography.bodySmall.copyWith(
-                    color: AppColors.success,
+                    color: AppColors.primary,
                   ),
                 )
               : null,

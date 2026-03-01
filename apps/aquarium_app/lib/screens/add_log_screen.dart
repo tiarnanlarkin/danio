@@ -380,17 +380,17 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
             decoration: BoxDecoration(
               color: AppOverlays.info10,
               borderRadius: AppRadius.smallRadius,
-              border: Border.all(color: AppOverlays.info30),
+              border: Border.all(color: AppOverlays.accent20),
             ),
             child: Row(
               children: [
-                Icon(Icons.history, size: AppIconSizes.xs, color: AppColors.info),
+                Icon(Icons.history, size: AppIconSizes.xs, color: AppColors.textSecondary),
                 const SizedBox(width: AppSpacing.sm),
                 Expanded(
                   child: Text(
                     'Pre-filled with last test values',
                     style: AppTypography.bodySmall.copyWith(
-                      color: AppColors.info,
+                      color: AppColors.textSecondary,
                     ),
                   ),
                 ),
@@ -408,7 +408,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
                     });
                   },
                   style: TextButton.styleFrom(
-                    foregroundColor: AppColors.info,
+                    foregroundColor: AppColors.textSecondary,
                     padding: const EdgeInsets.symmetric(horizontal: 8),
                   ),
                   child: const Text('Clear'),

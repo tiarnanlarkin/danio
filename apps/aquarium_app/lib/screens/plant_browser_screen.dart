@@ -245,7 +245,7 @@ class _PlantCard extends StatelessWidget {
                   color: AppColors.paramWarning,
                 ),
                 if (plant.needsCO2)
-                  _MiniChip(label: 'CO₂', color: AppColors.info),
+                  _MiniChip(label: 'CO₂', color: AppColors.textSecondary),
               ],
             ),
           ],

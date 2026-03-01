@@ -279,7 +279,7 @@ class LeaderboardScreen extends ConsumerWidget {
                 ),
               ),
               if (isPromotionZone && league != League.diamond)
-                const Icon(Icons.arrow_upward, color: Colors.green, size: AppIconSizes.xs)
+                const Icon(Icons.arrow_upward, color: AppColors.primary, size: AppIconSizes.xs)
               else if (isDemotionZone && league != League.bronze)
                 const Icon(Icons.arrow_downward, color: Colors.red, size: AppIconSizes.xs),
             ],

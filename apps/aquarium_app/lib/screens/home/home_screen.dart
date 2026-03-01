@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import '../../models/models.dart';
+import '../analytics_screen.dart';
 import '../../providers/tank_provider.dart';
 import '../../providers/room_theme_provider.dart';
 import '../../providers/user_profile_provider.dart';
@@ -355,7 +356,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   SpeedDialAction(
                     icon: Icons.science_rounded,
                     label: 'Quick Test',
-                    backgroundColor: const Color(0xFF4CAF50),
+                    backgroundColor: AppColors.primary,
                     foregroundColor: Colors.white,
                     onPressed: () => _navigateToQuickTest(context, currentTank),
                   ),
@@ -482,7 +483,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             ListTile(
               leading: const Icon(Icons.analytics_outlined),
               title: const Text('Analytics'),
-              onTap: () { Navigator.pop(ctx); },
+              onTap: () {
+                Navigator.pop(ctx);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const AnalyticsScreen()),
+                );
+              },
             ),
             ListTile(
               leading: const Icon(Icons.search),

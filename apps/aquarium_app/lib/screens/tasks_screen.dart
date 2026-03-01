@@ -73,7 +73,7 @@ class TasksScreen extends ConsumerWidget {
           if (dueToday.isNotEmpty) {
             items.add(_TaskListItem.header(
               title: 'Due Today',
-              color: AppColors.info,
+              color: AppColors.textSecondary,
               count: dueToday.length,
             ));
             items.addAll(dueToday.map((t) => _TaskListItem.task(t)));

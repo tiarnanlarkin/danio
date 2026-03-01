@@ -107,7 +107,7 @@ class StorageErrorHandler {
               icon: const Icon(Icons.refresh),
               label: const Text('Start Fresh'),
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blue,
+                backgroundColor: AppColors.primary,
                 foregroundColor: Colors.white,
               ),
               onPressed: () async {

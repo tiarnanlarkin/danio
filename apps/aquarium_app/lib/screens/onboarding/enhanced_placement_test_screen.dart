@@ -278,7 +278,7 @@ class _EnhancedPlacementTestScreenState
               shouldLoop: false,
               colors: const [
                 Colors.green,
-                Colors.blue,
+                AppColors.primary,
                 Colors.orange,
                 AppColors.accent,
                 AppColors.primary,
@@ -549,11 +549,11 @@ class _EnhancedPlacementTestScreenState
       ),
       child: Card(
         elevation: AppElevation.level2,
-        color: isCorrect ? Colors.green[50] : Colors.blue[50],
+        color: isCorrect ? Colors.green[50] : AppColors.primary //[50],
         shape: RoundedRectangleBorder(
           borderRadius: AppRadius.mediumRadius,
           side: BorderSide(
-            color: isCorrect ? Colors.green : Colors.blue,
+            color: isCorrect ? Colors.green : AppColors.primary,
             width: 2,
           ),
         ),
@@ -566,7 +566,7 @@ class _EnhancedPlacementTestScreenState
                 children: [
                   Icon(
                     isCorrect ? Icons.celebration : Icons.school,
-                    color: isCorrect ? Colors.green : Colors.blue,
+                    color: isCorrect ? Colors.green : AppColors.primary,
                     size: AppIconSizes.md,
                   ),
                   const SizedBox(width: AppSpacing.sm),
@@ -575,7 +575,7 @@ class _EnhancedPlacementTestScreenState
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
-                      color: isCorrect ? Colors.green : Colors.blue,
+                      color: isCorrect ? Colors.green : AppColors.primary,
                     ),
                   ),
                 ],

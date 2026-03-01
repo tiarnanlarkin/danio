@@ -132,7 +132,7 @@ class _AnomalyRow extends ConsumerWidget {
     final color = switch (severity) {
       AnomalySeverity.critical => AppColors.error,
       AnomalySeverity.alert => AppColors.warning,
-      AnomalySeverity.warning => AppColors.info,
+      AnomalySeverity.warning => AppColors.textSecondary,
     };
     return Container(
       width: 8,

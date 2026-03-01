@@ -335,7 +335,7 @@ class _PlacementTestScreenState extends ConsumerState<PlacementTestScreen> {
     final isCorrect = _selectedAnswer == _currentQuestion.correctIndex;
 
     return Card(
-      color: isCorrect ? Colors.green[50] : Colors.blue[50],
+      color: isCorrect ? Colors.green[50] : AppColors.primary //[50],
       child: Padding(
         padding: const EdgeInsets.all(AppSpacing.md),
         child: Column(
@@ -345,7 +345,7 @@ class _PlacementTestScreenState extends ConsumerState<PlacementTestScreen> {
               children: [
                 Icon(
                   isCorrect ? Icons.check_circle : Icons.info,
-                  color: isCorrect ? Colors.green : Colors.blue,
+                  color: isCorrect ? Colors.green : AppColors.primary,
                 ),
                 const SizedBox(width: AppSpacing.sm),
                 Text(
@@ -353,7 +353,7 @@ class _PlacementTestScreenState extends ConsumerState<PlacementTestScreen> {
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
-                    color: isCorrect ? Colors.green : Colors.blue,
+                    color: isCorrect ? Colors.green : AppColors.primary,
                   ),
                 ),
               ],

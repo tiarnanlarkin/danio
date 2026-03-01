@@ -73,7 +73,7 @@ class StudyScreen extends ConsumerWidget {
             child: _SectionCard(
               title: '📖 Essential Guides',
               subtitle: 'Must-know information for fishkeepers',
-              color: Colors.blue,
+              color: AppColors.primary,
               child: Column(
                 children: [
                   _StudyTile(
@@ -92,7 +92,7 @@ class StudyScreen extends ConsumerWidget {
                     icon: Icons.science,
                     title: 'Water Parameters',
                     subtitle: 'pH, temperature, hardness & more',
-                    color: Colors.blue,
+                    color: AppColors.primary,
                     onTap: () => Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -190,7 +190,7 @@ class StudyScreen extends ConsumerWidget {
                     icon: Icons.grass,
                     title: 'Algae Control',
                     subtitle: 'Identify and eliminate algae',
-                    color: Colors.green,
+                    color: AppColors.primary,
                     onTap: () => Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -212,7 +212,7 @@ class StudyScreen extends ConsumerWidget {
               child: Column(
                 children: [
                   _StudyTile(
-                    icon: Icons.pets,
+                    icon: Icons.set_meal,
                     title: 'Species Browser',
                     subtitle: 'Explore fish species',
                     color: Colors.cyan,
@@ -227,7 +227,7 @@ class StudyScreen extends ConsumerWidget {
                     icon: Icons.eco,
                     title: 'Plant Browser',
                     subtitle: 'Explore aquatic plants',
-                    color: Colors.green,
+                    color: AppColors.primary,
                     onTap: () => Navigator.push(
                       context,
                       MaterialPageRoute(

@@ -178,7 +178,7 @@ class TestTubeRack extends StatelessWidget {
     if (val == null) return Colors.grey.shade300;
     if (val < 6.5) return Colors.orange;
     if (val < 7.5) return Colors.green;
-    return Colors.blue;
+    return AppColors.primary;
   }
 
   Color _ammoniaColor(double? val) {

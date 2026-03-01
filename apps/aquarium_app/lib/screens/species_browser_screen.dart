@@ -238,7 +238,7 @@ class _SpeciesCard extends StatelessWidget {
                 ),
                 _MiniChip(
                   label: '${species.adultSizeCm.toStringAsFixed(0)}cm',
-                  color: AppColors.info,
+                  color: AppColors.textSecondary,
                 ),
               ],
             ),

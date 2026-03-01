@@ -32,7 +32,7 @@ class SyncStatusWidget extends ConsumerWidget {
         ),
       CloudSyncStatus.syncing => (
           Icons.sync,
-          Colors.blue,
+          AppColors.primary,
           'Syncing…',
         ),
       CloudSyncStatus.offline => (

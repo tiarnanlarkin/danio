@@ -115,7 +115,7 @@ class AppFeedback {
             ),
           ],
         ),
-        backgroundColor: AppColors.info,
+        backgroundColor: AppColors.textSecondary,
         behavior: SnackBarBehavior.floating,
         duration: const Duration(seconds: 2),
         shape: RoundedRectangleBorder(borderRadius: AppRadius.mediumRadius),
