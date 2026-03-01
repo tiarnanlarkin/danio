@@ -341,6 +341,17 @@ class AppColors {
 }
 
 /// Danio brand colours - use these for new UI following the brand guide
+/// Material constants for the stage system textures and surfaces
+class DanioMaterials {
+  // Leather grain
+  static const Color cognacBase = Color(0xFFC68B3E);
+  static const Color espressoBase = Color(0xFF3D2416);
+
+  // Lighting pulse colours
+  static const Color warmAmberPulse = Color(0x14FFB74D); // 8% warm amber
+  static const Color coolBluePulse = Color(0x0F64B5F6); // 6% cool blue
+}
+
 class DanioColors {
   static const Color amberGold     = Color(0xFFC8884A);  // Decorative amber
   static const Color amberText     = Color(0xFFB45309);  // Text on light (WCAG AA)
