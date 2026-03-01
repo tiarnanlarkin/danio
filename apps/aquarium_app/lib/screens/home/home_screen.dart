@@ -35,6 +35,7 @@ import 'widgets/selection_mode_panel.dart';
 import 'widgets/empty_room_scene.dart';
 import '../backup_restore_screen.dart';
 import '../house_navigator.dart';
+import '../tank_settings_screen.dart';
 import '../../utils/app_page_routes.dart';
 
 /// HomeScreen - The Living Room in the House Navigator
@@ -249,11 +250,19 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       button: true,
                       child: IconButton(
                         icon: Icon(
-                          Icons.handyman_outlined,
+                          Icons.build_outlined,
                           color: AppOverlays.white90,
                         ),
                         tooltip: 'Tank Toolbox',
                         onPressed: () => _showTankToolbox(context),
+                      ),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.settings_outlined, color: Colors.white),
+                      tooltip: 'Tank Settings',
+                      onPressed: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => TankSettingsScreen(tankId: currentTank.id)),
                       ),
                     ),
                   ],
@@ -321,44 +330,41 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               bottom: 170 + MediaQuery.of(context).padding.bottom,
               right: 16,
               child: SpeedDialFAB(
-                closedIcon: Icons.water_drop_rounded,
-                openIcon: Icons.close_rounded,
                 actions: [
                   SpeedDialAction(
-                    icon: Icons.add_rounded,
-                    label: 'Add Tank',
-                    backgroundColor: AppColors.primary,
-                    foregroundColor: AppColors.onPrimary,
-                    onPressed: () => _navigateToCreateTank(context),
+                    icon: Icons.calendar_view_month_rounded,
+                    label: 'Stats',
+                    backgroundColor: Colors.white,
+                    foregroundColor: const Color(0xFF7B68EE),
+                    onPressed: () => _showStatsInfo(context),
+                  ),
+                  SpeedDialAction(
+                    icon: Icons.water_drop_rounded,
+                    label: 'Water Change',
+                    backgroundColor: const Color(0xFF3A9BD5),
+                    foregroundColor: Colors.white,
+                    onPressed: () => _navigateToWaterChange(context, currentTank),
                   ),
                   SpeedDialAction(
                     icon: Icons.restaurant_rounded,
                     label: 'Feed',
-                    backgroundColor: DanioColors.creamWarm,
-                    foregroundColor: AppColors.primary,
+                    backgroundColor: Colors.white,
+                    foregroundColor: const Color(0xFFE8724A),
                     onPressed: () => _showFeedingInfo(context),
                   ),
                   SpeedDialAction(
                     icon: Icons.science_rounded,
                     label: 'Quick Test',
-                    backgroundColor: DanioColors.seafoamLight,
-                    foregroundColor: DanioColors.emeraldGreen,
+                    backgroundColor: const Color(0xFF4CAF50),
+                    foregroundColor: Colors.white,
                     onPressed: () => _navigateToQuickTest(context, currentTank),
                   ),
                   SpeedDialAction(
-                    icon: Icons.water_drop_rounded,
-                    label: 'Water Change',
-                    backgroundColor: const Color(0xFFE8F5FA),
-                    foregroundColor: DanioColors.tealWater,
-                    onPressed: () =>
-                        _navigateToWaterChange(context, currentTank),
-                  ),
-                  SpeedDialAction(
-                    icon: Icons.insights_rounded,
-                    label: 'Stats',
-                    backgroundColor: const Color(0xFFF0E8F5),
-                    foregroundColor: DanioColors.amethyst,
-                    onPressed: () => _showStatsInfo(context),
+                    icon: Icons.water_rounded,
+                    label: 'Add Tank',
+                    backgroundColor: Colors.white,
+                    foregroundColor: const Color(0xFF555555),
+                    onPressed: () => _navigateToCreateTank(context),
                   ),
                 ],
               ),

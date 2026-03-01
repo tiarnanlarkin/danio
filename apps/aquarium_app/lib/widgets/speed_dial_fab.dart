@@ -1,24 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'dart:math' as math;
+import 'dart:ui';
 import '../theme/app_theme.dart';
 
-/// A beautiful radial speed dial FAB that expands to reveal action buttons
+/// Speed dial FAB matching design reference:
+/// - Pill-shaped action buttons with icon+label in one pill
+/// - Diagonal staggered layout fanning up-left from bottom-right
+/// - BackdropFilter blur scrim with warm orange vignette
+/// - Two side-by-side FABs: orange + and orange ×
 class SpeedDialFAB extends StatefulWidget {
   final List<SpeedDialAction> actions;
-  final Color? backgroundColor;
-  final Color? foregroundColor;
-  final IconData closedIcon;
-  final IconData openIcon;
 
-  const SpeedDialFAB({
-    super.key,
-    required this.actions,
-    this.backgroundColor,
-    this.foregroundColor,
-    this.closedIcon = Icons.apps_rounded,
-    this.openIcon = Icons.close_rounded,
-  });
+  const SpeedDialFAB({super.key, required this.actions});
 
   @override
   State<SpeedDialFAB> createState() => _SpeedDialFABState();
@@ -27,20 +20,14 @@ class SpeedDialFAB extends StatefulWidget {
 class _SpeedDialFABState extends State<SpeedDialFAB>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
-  late Animation<double> _expandAnimation;
   bool _isOpen = false;
 
   @override
   void initState() {
     super.initState();
     _controller = AnimationController(
-      duration: AppDurations.medium3,
+      duration: const Duration(milliseconds: 300),
       vsync: this,
-    );
-    _expandAnimation = CurvedAnimation(
-      parent: _controller,
-      curve: AppCurves.standardDecelerate,
-      reverseCurve: Curves.easeInBack,
     );
   }
 
@@ -51,6 +38,7 @@ class _SpeedDialFABState extends State<SpeedDialFAB>
   }
 
   void _toggle() {
+    HapticFeedback.mediumImpact();
     setState(() {
       _isOpen = !_isOpen;
       if (_isOpen) {
@@ -70,290 +58,193 @@ class _SpeedDialFABState extends State<SpeedDialFAB>
 
   @override
   Widget build(BuildContext context) {
-    final bgColor = widget.backgroundColor ?? AppColors.primary;
-    final fgColor = widget.foregroundColor ?? Colors.white;
+    return AnimatedBuilder(
+      animation: _controller,
+      builder: (context, child) {
+        final t = _controller.value;
+        return Stack(
+          children: [
+            // ── Blur scrim ──────────────────────────────────────────
+            if (t > 0)
+              Positioned.fill(
+                child: GestureDetector(
+                  onTap: _close,
+                  child: BackdropFilter(
+                    filter: ImageFilter.blur(
+                      sigmaX: 8 * t,
+                      sigmaY: 8 * t,
+                    ),
+                    child: Container(
+                      color: Color.fromARGB(
+                        (80 * t).round(), 20, 30, 50,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
 
-    return SizedBox(
-      width: 320,
-      height: 360,
-      child: Stack(
-        clipBehavior: Clip.none,
-        alignment: Alignment.bottomRight,
-        children: [
-          // Scrim/backdrop when open - covers full screen via overlay
-          if (_isOpen)
+            // ── Warm orange vignette from bottom-right ───────────────
+            if (t > 0)
+              Positioned(
+                bottom: 0,
+                right: 0,
+                child: IgnorePointer(
+                  child: Container(
+                    width: 350,
+                    height: 350,
+                    decoration: BoxDecoration(
+                      gradient: RadialGradient(
+                        colors: [
+                          Color.fromARGB((100 * t).round(), 240, 120, 32),
+                          Colors.transparent,
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+
+            // ── Action pills ─────────────────────────────────────────
+            ..._buildActionPills(t),
+
+            // ── FAB pair ─────────────────────────────────────────────
             Positioned(
-              bottom: 0,
-              right: 0,
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height,
-              child: GestureDetector(
-                onTap: _close,
-                child: Container(color: Colors.black54),
+              bottom: 16,
+              right: 16,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // + FAB (primary)
+                  _OrangeFAB(
+                    icon: Icons.add,
+                    size: 64,
+                    color: const Color(0xFFF07820),
+                    onPressed: _toggle,
+                    isOpen: _isOpen,
+                    animation: _controller,
+                  ),
+                  if (t > 0) ...[
+                    const SizedBox(width: 8),
+                    // × FAB (close)
+                    Transform.scale(
+                      scale: t,
+                      child: Opacity(
+                        opacity: t,
+                        child: _OrangeFAB(
+                          icon: Icons.close,
+                          size: 56,
+                          color: const Color(0xFFE8631A),
+                          onPressed: _close,
+                          isOpen: true,
+                          animation: _controller,
+                        ),
+                      ),
+                    ),
+                  ],
+                ],
               ),
             ),
-
-          // Action buttons in radial pattern
-          ..._buildActionButtons(bgColor),
-
-          // Main FAB
-          Positioned(
-            bottom: 0,
-            right: 0,
-            child: _MainFAB(
-              isOpen: _isOpen,
-              animation: _expandAnimation,
-              backgroundColor: bgColor,
-              foregroundColor: fgColor,
-              closedIcon: widget.closedIcon,
-              openIcon: widget.openIcon,
-              onPressed: _toggle,
-            ),
-          ),
-        ],
-      ),
+          ],
+        );
+      },
     );
   }
 
-  List<Widget> _buildActionButtons(Color primaryColor) {
+  /// Diagonal staggered positions for 5 buttons.
+  static const List<Offset> _positions = [
+    Offset(100, 96),   // Stats
+    Offset(16,  168),  // Water Change
+    Offset(190, 240),  // Feed
+    Offset(16,  312),  // Quick Test
+    Offset(100, 384),  // Add Tank
+  ];
+
+  List<Widget> _buildActionPills(double t) {
+    final pills = <Widget>[];
     final count = widget.actions.length;
-    final buttons = <Widget>[];
 
-    // Fan angle: spread actions in an arc from bottom-right
-    // Start at 180° (left), end at 90° (up)
-    const startAngle = 180.0;
-    const endAngle = 90.0;
-    final angleStep = (startAngle - endAngle) / (count - 1).clamp(1, 10);
-
-    for (var i = 0; i < count; i++) {
+    for (var i = 0; i < count && i < _positions.length; i++) {
       final action = widget.actions[i];
-      final angle = startAngle - (i * angleStep);
-      final radians = angle * (math.pi / 180);
+      final pos = _positions[i];
 
-      // Distance from center
-      const radius = 140.0;
-      final x = radius * math.cos(radians);
-      final y = radius * math.sin(radians);
+      final staggerStart = i / count * 0.5;
+      final staggerEnd = staggerStart + 0.5;
+      final staggerT = ((t - staggerStart) / (staggerEnd - staggerStart))
+          .clamp(0.0, 1.0);
+      final curve = Curves.easeOutBack.transform(staggerT);
 
-      buttons.add(
-        AnimatedBuilder(
-          animation: _expandAnimation,
-          builder: (context, child) {
-            final progress = _expandAnimation.value;
-            // Stagger the animation slightly for each button
-            final staggeredProgress = AppCurves.standardDecelerate.transform(
-              ((progress * count) - i).clamp(0.0, 1.0),
-            );
-
-            return Positioned(
-              bottom: 8 + (-y * progress),
-              right: 8 + (-x * progress),
-              child: Transform.scale(
-                scale: staggeredProgress,
-                child: Opacity(opacity: staggeredProgress, child: child),
+      pills.add(
+        Positioned(
+          bottom: pos.dy,
+          right: pos.dx,
+          child: Transform.scale(
+            scale: curve,
+            alignment: Alignment.bottomRight,
+            child: Opacity(
+              opacity: staggerT.clamp(0.0, 1.0),
+              child: _PillButton(
+                action: action,
+                onPressed: () {
+                  _close();
+                  action.onPressed?.call();
+                },
               ),
-            );
-          },
-          child: _ActionButton(
-            action: action,
-            onPressed: () {
-              _close();
-              action.onPressed?.call();
-            },
+            ),
           ),
         ),
       );
     }
-
-    return buttons;
+    return pills;
   }
 }
 
-class _MainFAB extends StatelessWidget {
-  final bool isOpen;
-  final Animation<double> animation;
-  final Color backgroundColor;
-  final Color foregroundColor;
-  final IconData closedIcon;
-  final IconData openIcon;
-  final VoidCallback onPressed;
-
-  const _MainFAB({
-    required this.isOpen,
-    required this.animation,
-    required this.backgroundColor,
-    required this.foregroundColor,
-    required this.closedIcon,
-    required this.openIcon,
-    required this.onPressed,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Semantics(
-      button: true,
-      label: isOpen ? 'Close quick actions menu' : 'Open quick actions menu',
-      child: GestureDetector(
-        onTap: () {
-          HapticFeedback.mediumImpact();
-          onPressed();
-        },
-        child: AnimatedBuilder(
-          animation: animation,
-          builder: (context, child) {
-            return Container(
-              width: 56,
-              height: 56,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [backgroundColor, backgroundColor.withAlpha(204)],
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: backgroundColor.withAlpha(102),
-                    blurRadius: 12 + (animation.value * 8),
-                    spreadRadius: animation.value * 2,
-                    offset: const Offset(0, 4),
-                  ),
-                ],
-              ),
-              child: AnimatedSwitcher(
-                duration: AppDurations.medium2,
-                child: Icon(
-                  isOpen ? openIcon : closedIcon,
-                  key: ValueKey(isOpen),
-                  color: foregroundColor,
-                  size: 26,
-                ),
-              ),
-            );
-          },
-        ),
-      ),
-    );
-  }
-}
-
-class _ActionButton extends StatefulWidget {
+/// Full pill button: icon + label in one stadium-shaped container
+class _PillButton extends StatelessWidget {
   final SpeedDialAction action;
   final VoidCallback onPressed;
 
-  const _ActionButton({required this.action, required this.onPressed});
-
-  @override
-  State<_ActionButton> createState() => _ActionButtonState();
-}
-
-class _ActionButtonState extends State<_ActionButton>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _scaleController;
-  late Animation<double> _scaleAnimation;
-
-  @override
-  void initState() {
-    super.initState();
-    _scaleController = AnimationController(
-      duration: AppDurations.medium1,
-      vsync: this,
-    );
-    _scaleAnimation = Tween<double>(begin: 1.0, end: 0.95).animate(
-      CurvedAnimation(parent: _scaleController, curve: AppCurves.emphasized),
-    );
-  }
-
-  @override
-  void dispose() {
-    _scaleController.dispose();
-    super.dispose();
-  }
-
-  void _handleTapDown(TapDownDetails details) {
-    _scaleController.forward();
-  }
-
-  void _handleTapUp(TapUpDetails details) {
-    _scaleController.reverse();
-  }
-
-  void _handleTapCancel() {
-    _scaleController.reverse();
-  }
-
-  void _handleTap() {
-    HapticFeedback.lightImpact();
-    widget.onPressed();
-  }
+  const _PillButton({required this.action, required this.onPressed});
 
   @override
   Widget build(BuildContext context) {
+    final bg = action.backgroundColor ?? Colors.white;
+    final fg = action.foregroundColor ?? AppColors.textPrimary;
+    final isColored = action.backgroundColor != null &&
+        action.backgroundColor != Colors.white;
+
     return Semantics(
       button: true,
-      label: widget.action.label,
+      label: action.label,
       child: GestureDetector(
-        onTapDown: _handleTapDown,
-        onTapUp: _handleTapUp,
-        onTapCancel: _handleTapCancel,
-        onTap: _handleTap,
-        child: AnimatedBuilder(
-          animation: _scaleAnimation,
-          builder: (context, child) {
-            return Transform.scale(
-              scale: _scaleAnimation.value,
-              child: child,
-            );
-          },
+        onTap: () {
+          HapticFeedback.lightImpact();
+          onPressed();
+        },
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          decoration: BoxDecoration(
+            color: bg,
+            borderRadius: BorderRadius.circular(26),
+            boxShadow: [
+              BoxShadow(
+                color: (isColored ? bg : Colors.black)
+                    .withAlpha(isColored ? 80 : 40),
+                blurRadius: 8,
+                offset: const Offset(0, 3),
+              ),
+            ],
+          ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              // Label
-              ExcludeSemantics(
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: AppRadius.mediumRadius,
-                    boxShadow: [
-                      BoxShadow(
-                        color: AppOverlays.black15,
-                        blurRadius: 8,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
-                  ),
-                  child: Text(
-                    widget.action.label,
-                    style: const TextStyle(
-                      color: AppColors.textPrimary,
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(width: AppSpacing.sm),
-              // Icon button - 48x48 for accessibility
-              Container(
-                width: 56,
-                height: 56,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: widget.action.backgroundColor ?? Colors.white,
-                  boxShadow: [
-                    BoxShadow(
-                      color: (widget.action.backgroundColor ?? AppColors.primary)
-                          .withAlpha(76),
-                      blurRadius: 8,
-                      offset: const Offset(0, 2),
-                    ),
-                  ],
-                ),
-                child: Icon(
-                  widget.action.icon,
-                  color: widget.action.foregroundColor ?? AppColors.primary,
-                  size: AppIconSizes.md,
+              Icon(action.icon, color: fg, size: 22),
+              const SizedBox(width: 10),
+              Text(
+                action.label,
+                style: TextStyle(
+                  color: fg,
+                  fontSize: 15,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
             ],
@@ -364,7 +255,53 @@ class _ActionButtonState extends State<_ActionButton>
   }
 }
 
-/// Represents an action in the speed dial menu
+/// Orange circular FAB (for + and × buttons)
+class _OrangeFAB extends StatelessWidget {
+  final IconData icon;
+  final double size;
+  final Color color;
+  final VoidCallback onPressed;
+  final bool isOpen;
+  final Animation<double> animation;
+
+  const _OrangeFAB({
+    required this.icon,
+    required this.size,
+    required this.color,
+    required this.onPressed,
+    required this.isOpen,
+    required this.animation,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onPressed,
+      child: AnimatedBuilder(
+        animation: animation,
+        builder: (_, __) => Container(
+          width: size,
+          height: size,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: color,
+            boxShadow: [
+              BoxShadow(
+                color: color.withAlpha(100),
+                blurRadius: 12 + (animation.value * 6),
+                spreadRadius: animation.value * 2,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+          child: Icon(icon, color: Colors.white, size: size * 0.44),
+        ),
+      ),
+    );
+  }
+}
+
+/// Represents one action in the speed dial
 class SpeedDialAction {
   final IconData icon;
   final String label;

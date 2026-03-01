@@ -67,8 +67,9 @@ class GamificationDashboard extends ConsumerWidget {
               ),
               const SizedBox(height: 12),
 
-              // Row 2: Gems and Hearts
+              // Row 2: Gems, Gems, and Hearts
               Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   _StatItem(
                     icon: '💎',
@@ -76,7 +77,12 @@ class GamificationDashboard extends ConsumerWidget {
                     label: 'gems',
                     color: DanioColors.tealWater,
                   ),
-                  const Spacer(),
+                  _StatItem(
+                    icon: '💎',
+                    value: _formatNumber(gems),
+                    label: 'gems',
+                    color: const Color(0xFF4A90D9),
+                  ),
                   _HeartsDisplay(
                     current: heartsState.currentHearts,
                     max: heartsState.maxHearts,
