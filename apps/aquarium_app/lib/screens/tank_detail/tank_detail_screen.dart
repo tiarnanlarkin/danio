@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:skeletonizer/skeletonizer.dart';
@@ -498,7 +499,7 @@ class TankDetailScreen extends ConsumerWidget {
                 child: Padding(
                   padding: const EdgeInsets.all(AppSpacing.md),
                   child: QuickStats(tank: tank, logsAsync: logsAllAsync, livestockAsync: livestockAsync, equipmentAsync: equipmentAsync),
-                ),
+                ).animate().fadeIn(duration: 300.ms).slideY(begin: 0.1, end: 0, duration: 300.ms),
               ),
 
               // Action buttons
@@ -537,7 +538,7 @@ class TankDetailScreen extends ConsumerWidget {
                         ),
                       ),
                     ],
-                  ),
+                  ).animate().fadeIn(duration: 300.ms, delay: 100.ms).slideY(begin: 0.15, end: 0, duration: 300.ms, delay: 100.ms),
                 ),
               ),
 
