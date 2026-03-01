@@ -8,6 +8,7 @@ import '../providers/inventory_provider.dart';
 import '../providers/achievement_provider.dart';
 import '../services/achievement_service.dart';
 import '../services/xp_animation_service.dart';
+import '../services/celebration_service.dart';
 import '../theme/app_theme.dart';
 import '../utils/app_feedback.dart';
 import '../utils/haptic_feedback.dart';
@@ -259,6 +260,15 @@ class _CreateTankScreenState extends ConsumerState<CreateTankScreen> {
         AppHaptics.success();
         Navigator.of(context).pop();
         AppFeedback.showSuccess(context, '${_name.trim()} created! +${XpRewards.createTank} XP');
+
+        // Celebrate first tank creation!
+        final tanks = ref.read(tankListProvider).value ?? [];
+        if (tanks.length <= 1) {
+          ref.read(celebrationProvider.notifier).milestone(
+            'Your First Tank! 🎉',
+            subtitle: 'Welcome to the hobby — your aquarium adventure has officially begun!',
+          );
+        }
       }
     } catch (e) {
       if (mounted) {
