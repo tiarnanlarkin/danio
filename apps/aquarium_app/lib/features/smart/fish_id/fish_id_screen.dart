@@ -436,7 +436,7 @@ Return ONLY valid JSON with these fields (no markdown, no explanation):
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text('• ', style: TextStyle(fontSize: 16)),
+                    Text('• ', style: Theme.of(context).textTheme.titleMedium!),
                     Expanded(
                       child: Text(tip, style: theme.textTheme.bodyMedium),
                     ),

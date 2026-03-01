@@ -380,7 +380,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text('🤓', style: TextStyle(fontSize: 24)),
+              Text('🤓', style: Theme.of(context).textTheme.headlineSmall!),
               const SizedBox(width: 12),
               Expanded(
                 child: Column(
@@ -753,7 +753,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
                     child: Center(
                       child: Text(
                         passed ? '🎉' : '📚',
-                        style: const TextStyle(fontSize: 56),
+                        style: Theme.of(context).textTheme.headlineMedium!.copyWith(fontSize: 56),
                       ),
                     ),
                   ),
@@ -970,7 +970,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
                 ),
               ),
               const SizedBox(height: AppSpacing.lg),
-              const Text('🎉', style: TextStyle(fontSize: 40)),
+              Text('🎉', style: Theme.of(context).textTheme.headlineMedium!.copyWith(fontSize: 40)),
               const SizedBox(height: AppSpacing.sm),
               Text(
                 'Lesson Complete!',

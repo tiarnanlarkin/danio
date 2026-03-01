@@ -384,16 +384,15 @@ class _StoryPlayerScreenState extends ConsumerState<StoryPlayerScreen>
                 Center(
                   child: Text(
                     _currentScene!.imageUrl!,
-                    style: const TextStyle(fontSize: 48),
+                    style: Theme.of(context).textTheme.headlineMedium!.copyWith(fontSize: 48),
                   ),
                 ),
-              if (_currentScene!.imageUrl != null) const SizedBox(height: AppSpacing.md),
+              if (_currentScene!.imageUrl != null) SizedBox(height: AppSpacing.md),
 
               // Scene text
               Text(
                 _currentScene!.text,
-                style: const TextStyle(
-                  fontSize: 18,
+                style: Theme.of(context).textTheme.titleLarge!.copyWith(
                   height: 1.6,
                   color: Colors.black87,
                 ),
@@ -411,13 +410,12 @@ class _StoryPlayerScreenState extends ConsumerState<StoryPlayerScreen>
         child: ElevatedButton.icon(
           onPressed: () => Navigator.of(context).pop(),
           icon: const Icon(Icons.check_circle),
-          label: const Text('Complete Story'),
+          label: Text('Complete Story'),
           style: ElevatedButton.styleFrom(
             backgroundColor: Colors.green,
             foregroundColor: Colors.white,
             padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-            textStyle: const TextStyle(
-              fontSize: 18,
+            textStyle: Theme.of(context).textTheme.titleLarge!.copyWith(
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -466,11 +464,10 @@ class _StoryPlayerScreenState extends ConsumerState<StoryPlayerScreen>
                   size: 80,
                   color: Colors.white,
                 ),
-                const SizedBox(height: AppSpacing.lg),
+                SizedBox(height: AppSpacing.lg),
                 Text(
                   _feedbackMessage ?? '',
-                  style: const TextStyle(
-                    fontSize: 24,
+                  style: Theme.of(context).textTheme.headlineSmall!.copyWith(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
                   ),

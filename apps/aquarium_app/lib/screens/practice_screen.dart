@@ -727,7 +727,7 @@ class _PracticeLessonScreenState extends ConsumerState<PracticeLessonScreen> {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text('🤓', style: TextStyle(fontSize: 24)),
+              Text('🤓', style: Theme.of(context).textTheme.headlineSmall!),
               const SizedBox(width: 12),
               Expanded(
                 child: Column(

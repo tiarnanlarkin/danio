@@ -395,7 +395,6 @@ class _LevelUpOverlayState extends State<LevelUpOverlay>
       child: Text(
         'LEVEL UP!',
         style: AppTypography.headlineLarge.copyWith(
-          fontSize: 48,
           fontWeight: FontWeight.w900,
           color: Colors.white,
           letterSpacing: 4,
@@ -456,7 +455,6 @@ class _LevelUpOverlayState extends State<LevelUpOverlay>
                 Text(
                   '${widget.newLevel}',
                   style: AppTypography.headlineLarge.copyWith(
-                    fontSize: 56,
                     fontWeight: FontWeight.w900,
                     color: Colors.white,
                     height: 1,
@@ -487,7 +485,7 @@ class _LevelUpOverlayState extends State<LevelUpOverlay>
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Text('🏆', style: TextStyle(fontSize: 20)),
+          Text('🏆', style: Theme.of(context).textTheme.titleLarge!),
           const SizedBox(width: AppSpacing.sm),
           Text(
             widget.levelTitle!,

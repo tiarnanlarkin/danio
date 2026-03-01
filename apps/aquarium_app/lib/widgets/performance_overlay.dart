@@ -318,7 +318,7 @@ class _PerformanceDebugScreenState extends State<PerformanceDebugScreen> {
           Expanded(
             child: Text(
               'Target: $target',
-              style: const TextStyle(color: Colors.grey, fontSize: 12),
+              style: Theme.of(context).textTheme.bodySmall!.copyWith(color: Colors.grey),
             ),
           ),
         ],
@@ -345,14 +345,14 @@ class _PerformanceDebugScreenState extends State<PerformanceDebugScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
+            Text(
               'Widget Rebuilds (Top 10)',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              style: Theme.of(context).textTheme.titleLarge!.copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: AppSpacing.sm),
-            const Text(
+            Text(
               'Widgets with excessive rebuilds may need optimization',
-              style: TextStyle(fontSize: 12, color: Colors.grey),
+              style: Theme.of(context).textTheme.bodySmall!.copyWith(color: Colors.grey),
             ),
             const SizedBox(height: AppSpacing.md),
             ...rebuilds.take(10).map((entry) {

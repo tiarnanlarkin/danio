@@ -311,11 +311,11 @@ class _PlacementTestScreenState extends ConsumerState<PlacementTestScreen> {
                     ),
                   ),
                 ),
-                const SizedBox(width: AppSpacing.md),
+                SizedBox(width: AppSpacing.md),
                 Expanded(
                   child: Text(
                     _currentQuestion.options[index],
-                    style: const TextStyle(fontSize: 16),
+                    style: Theme.of(context).textTheme.titleMedium!,
                   ),
                 ),
                 if (icon != null) ...[
@@ -346,21 +346,20 @@ class _PlacementTestScreenState extends ConsumerState<PlacementTestScreen> {
                   isCorrect ? Icons.check_circle : Icons.info,
                   color: isCorrect ? Colors.green : AppColors.primary,
                 ),
-                const SizedBox(width: AppSpacing.sm),
+                SizedBox(width: AppSpacing.sm),
                 Text(
                   isCorrect ? 'Correct!' : 'Not quite...',
-                  style: TextStyle(
-                    fontSize: 16,
+                  style: Theme.of(context).textTheme.titleMedium!.copyWith(
                     fontWeight: FontWeight.bold,
                     color: isCorrect ? Colors.green : AppColors.primary,
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: AppSpacing.sm),
+            SizedBox(height: AppSpacing.sm),
             Text(
               _currentQuestion.explanation!,
-              style: const TextStyle(fontSize: 14),
+              style: Theme.of(context).textTheme.bodyLarge!,
             ),
           ],
         ),

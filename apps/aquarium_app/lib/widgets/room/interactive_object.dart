@@ -277,9 +277,8 @@ class _InteractiveObjectState extends State<InteractiveObject>
             child: Text(
               widget.label,
               textAlign: TextAlign.center,
-              style: const TextStyle(
+              style: Theme.of(context).textTheme.bodySmall!.copyWith(
                 color: Colors.white,
-                fontSize: 11,
                 fontWeight: FontWeight.w500,
               ),
             ),

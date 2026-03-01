@@ -323,7 +323,7 @@ class _EnhancedTutorialWalkthroughScreenState
                   scale: value,
                   child: Text(
                     step.emoji,
-                    style: const TextStyle(fontSize: 100),
+                    style: Theme.of(context).textTheme.headlineMedium!.copyWith(fontSize: 100),
                   ),
                 ),
               ),

@@ -407,7 +407,7 @@ class _SpacedRepetitionPracticeScreenState
             padding: const EdgeInsets.only(bottom: 12),
             child: Row(
               children: [
-                Text(level.emoji, style: const TextStyle(fontSize: 20)),
+                Text(level.emoji, style: Theme.of(context).textTheme.titleLarge!),
                 const SizedBox(width: AppSpacing.sm),
                 Expanded(
                   child: Column(
@@ -732,7 +732,7 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
             children: [
               Text(
                 _currentCard.masteryLevel.emoji,
-                style: const TextStyle(fontSize: 24),
+                style: Theme.of(context).textTheme.headlineSmall!,
               ),
               const SizedBox(width: AppSpacing.sm),
               Text(
@@ -1084,7 +1084,6 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
                           ? AppColors.warning
                           : AppColors.error,
                       fontWeight: FontWeight.bold,
-                      fontSize: 48,
                     ),
                   ),
                   const SizedBox(height: AppSpacing.xs),

@@ -194,18 +194,17 @@ class _EnhancedCelebrationOverlayWrapperState
                     },
                     child: Text(
                       emoji,
-                      style: const TextStyle(fontSize: 72),
+                      style: Theme.of(context).textTheme.headlineMedium!.copyWith(fontSize: 72),
                     ),
                   ),
                   
-                  const SizedBox(height: AppSpacing.lg),
+                  SizedBox(height: AppSpacing.lg),
                   
                   // Title
                   Text(
                     celebration.title!,
-                    style: const TextStyle(
+                    style: Theme.of(context).textTheme.headlineMedium!.copyWith(
                       color: Colors.white,
-                      fontSize: 32,
                       fontWeight: FontWeight.bold,
                       height: 1.2,
                     ),
@@ -214,12 +213,11 @@ class _EnhancedCelebrationOverlayWrapperState
                   
                   // Subtitle
                   if (celebration.subtitle != null) ...[
-                    const SizedBox(height: AppSpacing.md),
+                    SizedBox(height: AppSpacing.md),
                     Text(
                       celebration.subtitle!,
-                      style: TextStyle(
+                      style: Theme.of(context).textTheme.titleLarge!.copyWith(
                         color: AppColors.whiteAlpha05,
-                        fontSize: 18,
                         height: 1.4,
                       ),
                       textAlign: TextAlign.center,
@@ -253,12 +251,11 @@ class _EnhancedCelebrationOverlayWrapperState
                     color: AppColors.whiteAlpha05,
                     size: AppIconSizes.xs,
                   ),
-                  const SizedBox(width: 8),
+                  SizedBox(width: 8),
                   Text(
                     'Tap anywhere to dismiss',
-                    style: TextStyle(
+                    style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                       color: AppColors.whiteAlpha05,
-                      fontSize: 14,
                     ),
                   ),
                 ],

@@ -247,7 +247,6 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen>
                   color: Colors.white,
                   fontWeight: FontWeight.w700,
                   letterSpacing: -0.5,
-                  fontSize: 32,
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -357,10 +356,9 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen>
                         },
                   child: Text(
                     _currentPage == _pages.length - 1 ? 'Get Started' : 'Continue',
-                    style: const TextStyle(
+                    style: Theme.of(context).textTheme.titleMedium!.copyWith(
                       color: Colors.white,
                       fontWeight: FontWeight.w700,
-                      fontSize: 16,
                     ),
                   ),
                 ),

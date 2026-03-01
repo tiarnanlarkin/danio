@@ -398,9 +398,9 @@ class _TutorialWalkthroughScreenState
                     style: FilledButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 16),
                     ),
-                    child: const Text(
+                    child: Text(
                       'Create Tank & Start Journey!',
-                      style: TextStyle(fontSize: 16),
+                      style: Theme.of(context).textTheme.titleMedium!,
                     ),
                   ),
                   const SizedBox(height: 12),

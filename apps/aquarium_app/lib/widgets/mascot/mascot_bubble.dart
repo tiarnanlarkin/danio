@@ -294,7 +294,7 @@ class _MascotBubbleState extends State<MascotBubble>
               ),
               child: Text(
                 widget.mood.emoji,
-                style: const TextStyle(fontSize: 12),
+                style: Theme.of(context).textTheme.bodySmall!,
               ),
             ),
           ),

@@ -227,7 +227,7 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          const Text('🏆', style: TextStyle(fontSize: 12)),
+                          Text('🏆', style: Theme.of(context).textTheme.bodySmall!),
                           const SizedBox(width: AppSpacing.xs),
                           Text(
                             'Mastered',
@@ -383,7 +383,7 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
             child: Center(
               child: Text(
                 record.difficulty.emoji,
-                style: const TextStyle(fontSize: 20),
+                style: Theme.of(context).textTheme.titleLarge!,
               ),
             ),
           ),

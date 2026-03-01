@@ -378,35 +378,32 @@ class _CelebrationOverlayWrapperState extends ConsumerState<CelebrationOverlayWr
           children: [
             Text(
               emoji,
-              style: const TextStyle(fontSize: 64),
+              style: Theme.of(context).textTheme.headlineMedium!.copyWith(fontSize: 64),
             ),
-            const SizedBox(height: AppSpacing.md),
+            SizedBox(height: AppSpacing.md),
             Text(
               celebration.title!,
-              style: const TextStyle(
+              style: Theme.of(context).textTheme.headlineMedium!.copyWith(
                 color: Colors.white,
-                fontSize: 28,
                 fontWeight: FontWeight.bold,
               ),
               textAlign: TextAlign.center,
             ),
             if (celebration.subtitle != null) ...[
-              const SizedBox(height: AppSpacing.sm),
+              SizedBox(height: AppSpacing.sm),
               Text(
                 celebration.subtitle!,
-                style: TextStyle(
+                style: Theme.of(context).textTheme.titleMedium!.copyWith(
                   color: AppColors.whiteAlpha90,
-                  fontSize: 16,
                 ),
                 textAlign: TextAlign.center,
               ),
             ],
-            const SizedBox(height: AppSpacing.lg),
+            SizedBox(height: AppSpacing.lg),
             Text(
               'Tap to dismiss',
-              style: TextStyle(
+              style: Theme.of(context).textTheme.bodySmall!.copyWith(
                 color: AppColors.whiteAlpha70,
-                fontSize: 12,
               ),
             ),
           ],

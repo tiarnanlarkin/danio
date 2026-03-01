@@ -336,11 +336,10 @@ class _EnhancedPlacementTestScreenState
                 Row(
                   children: [
                     const Icon(Icons.quiz, size: AppIconSizes.xs, color: AppColors.accent),
-                    const SizedBox(width: AppSpacing.xs),
+                    SizedBox(width: AppSpacing.xs),
                     Text(
                       '${(_progress * 100).round()}% Complete',
-                      style: const TextStyle(
-                        fontSize: 12,
+                      style: Theme.of(context).textTheme.bodySmall!.copyWith(
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -357,8 +356,7 @@ class _EnhancedPlacementTestScreenState
                   ),
                   child: Text(
                     '${_userAnswers.length}/${_test.questions.length}',
-                    style: const TextStyle(
-                      fontSize: 12,
+                    style: Theme.of(context).textTheme.bodySmall!.copyWith(
                       fontWeight: FontWeight.bold,
                       color: AppColors.accent,
                     ),
@@ -397,7 +395,7 @@ class _EnhancedPlacementTestScreenState
           avatar: const Icon(Icons.category, size: 18),
           label: Text(
             _getPathName(_currentQuestion.pathId),
-            style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+            style: Theme.of(context).textTheme.bodySmall!.copyWith(fontWeight: FontWeight.w600),
           ),
           backgroundColor: _getPathColor(
             _currentQuestion.pathId,
@@ -499,22 +497,20 @@ class _EnhancedPlacementTestScreenState
                   child: Center(
                     child: Text(
                       String.fromCharCode(65 + index), // A, B, C, D
-                      style: TextStyle(
+                      style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                         color: isSelected || (showResult && isCorrect)
                             ? AppColors.onPrimary
                             : Colors.black87,
                         fontWeight: FontWeight.bold,
-                        fontSize: 14,
                       ),
                     ),
                   ),
                 ),
-                const SizedBox(width: AppSpacing.md),
+                SizedBox(width: AppSpacing.md),
                 Expanded(
                   child: Text(
                     _currentQuestion.options[index],
-                    style: TextStyle(
-                      fontSize: 15,
+                    style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                       fontWeight: isSelected
                           ? FontWeight.w600
                           : FontWeight.normal,
@@ -569,18 +565,17 @@ class _EnhancedPlacementTestScreenState
                     color: isCorrect ? Colors.green : AppColors.primary,
                     size: AppIconSizes.md,
                   ),
-                  const SizedBox(width: AppSpacing.sm),
+                  SizedBox(width: AppSpacing.sm),
                   Text(
                     isCorrect ? 'Excellent! 🎉' : 'Good to know! 💡',
-                    style: TextStyle(
-                      fontSize: 16,
+                    style: Theme.of(context).textTheme.titleMedium!.copyWith(
                       fontWeight: FontWeight.bold,
                       color: isCorrect ? Colors.green : AppColors.primary,
                     ),
                   ),
                 ],
               ),
-              const SizedBox(height: 12),
+              SizedBox(height: 12),
               Container(
                 padding: EdgeInsets.all(AppSpacing.sm2),
                 decoration: BoxDecoration(
@@ -589,7 +584,7 @@ class _EnhancedPlacementTestScreenState
                 ),
                 child: Text(
                   _currentQuestion.explanation!,
-                  style: const TextStyle(fontSize: 14, height: 1.5),
+                  style: Theme.of(context).textTheme.bodyLarge!.copyWith(height: 1.5),
                 ),
               ),
             ],

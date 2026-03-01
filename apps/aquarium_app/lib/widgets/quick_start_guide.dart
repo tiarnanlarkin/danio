@@ -174,29 +174,27 @@ class _QuickStartGuideState extends State<QuickStartGuide> {
                     ),
                   ),
                 ),
-                const SizedBox(height: AppSpacing.md),
+                SizedBox(height: AppSpacing.md),
 
                 // Title
                 Text(
                   step.title,
-                  style: const TextStyle(
-                    fontSize: 20,
+                  style: Theme.of(context).textTheme.titleLarge!.copyWith(
                     fontWeight: FontWeight.bold,
                     color: AppColors.accent,
                   ),
                 ),
-                const SizedBox(height: AppSpacing.sm),
+                SizedBox(height: AppSpacing.sm),
 
                 // Description
                 Text(
                   step.description,
-                  style: const TextStyle(
-                    fontSize: 15,
+                  style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                     height: 1.5,
                     color: Colors.black87,
                   ),
                 ),
-                const SizedBox(height: 20),
+                SizedBox(height: 20),
 
                 // Navigation
                 Row(
@@ -204,8 +202,7 @@ class _QuickStartGuideState extends State<QuickStartGuide> {
                   children: [
                     Text(
                       'Step ${_currentStep + 1} of ${_steps.length}',
-                      style: TextStyle(
-                        fontSize: 13,
+                      style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                         color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
                         fontWeight: FontWeight.w500,
                       ),
@@ -417,7 +414,7 @@ class QuickStartTipsCard extends StatelessWidget {
     return Row(
       children: [
         Icon(icon, size: AppIconSizes.sm, color: color),
-        const SizedBox(width: 12),
+        SizedBox(width: 12),
         Expanded(child: Text(text, style: const TextStyle(fontSize: 14))),
       ],
     );

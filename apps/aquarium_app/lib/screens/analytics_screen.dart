@@ -574,15 +574,14 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
             'Topic Mastery',
             style: Theme.of(context).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.bold),
           ),
-          const SizedBox(height: AppSpacing.lg),
+          SizedBox(height: AppSpacing.lg),
           SizedBox(
             height: 300,
             child: RadarChart(
               RadarChartData(
                 radarShape: RadarShape.polygon,
                 tickCount: 5,
-                ticksTextStyle: const TextStyle(
-                  fontSize: 10,
+                ticksTextStyle: Theme.of(context).textTheme.labelSmall!.copyWith(
                   color: Colors.transparent,
                 ),
                 radarBorderData: BorderSide(color: AppColors.textSecondary.withOpacity(0.3), width: 1),
@@ -770,7 +769,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
           children: [
             Row(
               children: [
-                Text(insight.type.emoji, style: const TextStyle(fontSize: 24)),
+                Text(insight.type.emoji, style: Theme.of(context).textTheme.headlineSmall!),
                 const SizedBox(width: 12),
                 Expanded(
                   child: Text(
@@ -859,7 +858,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                     ),
                   ),
                 ),
-                Text(topic.trend.emoji, style: const TextStyle(fontSize: 20)),
+                Text(topic.trend.emoji, style: Theme.of(context).textTheme.titleLarge!),
               ],
             ),
             const SizedBox(height: 12),

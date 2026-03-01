@@ -345,10 +345,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                           ),
                           child: Text(
                             '\u{1F525} $streak day streak!',
-                            style: const TextStyle(
+                            style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
-                              fontSize: 14,
                             ),
                           ),
                         ),
@@ -374,10 +373,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                   ),
                                   child: Text(
                                     '\u{1F4A7} Water change streak: $wcStreak week${wcStreak == 1 ? "" : "s"}',
-                                    style: const TextStyle(
+                                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                                       color: Colors.white,
                                       fontWeight: FontWeight.bold,
-                                      fontSize: 13,
                                     ),
                                   ),
                                 ),
@@ -398,10 +396,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                             hearts.currentHearts == 0
                                 ? '\u{1F494} No hearts left - wait for refill!'
                                 : '\u{26A0}\u{FE0F} You\'re on your last heart - be careful!',
-                            style: const TextStyle(
+                            style: Theme.of(context).textTheme.bodySmall!.copyWith(
                               color: Colors.white,
                               fontWeight: FontWeight.w500,
-                              fontSize: 12,
                             ),
                           ),
                         ),
@@ -507,9 +504,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         ),
                         child: Row(
                           children: [
-                            const Text(
+                            Text(
                               '\u{1F3AF}',
-                              style: TextStyle(fontSize: 20),
+                              style: Theme.of(context).textTheme.titleLarge!,
                             ),
                             const SizedBox(width: AppSpacing.sm),
                             Expanded(

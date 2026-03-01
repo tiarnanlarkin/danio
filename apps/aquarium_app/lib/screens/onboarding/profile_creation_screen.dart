@@ -281,9 +281,9 @@ class _ProfileCreationScreenState extends ConsumerState<ProfileCreationScreen> {
                   ),
                 ),
                 const SizedBox(width: AppSpacing.xs),
-                const Text(
+                Text(
                   '*',
-                  style: TextStyle(color: Colors.red, fontSize: 16),
+                  style: Theme.of(context).textTheme.titleMedium!.copyWith(color: Colors.red),
                 ),
               ],
             ),
@@ -324,10 +324,10 @@ class _ProfileCreationScreenState extends ConsumerState<ProfileCreationScreen> {
                 ExcludeSemantics(
                   child: Text(
                     level.emoji,
-                    style: const TextStyle(fontSize: 32),
+                    style: Theme.of(context).textTheme.headlineMedium!,
                   ),
                 ),
-                const SizedBox(width: AppSpacing.md),
+                SizedBox(width: AppSpacing.md),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -335,18 +335,16 @@ class _ProfileCreationScreenState extends ConsumerState<ProfileCreationScreen> {
                       ExcludeSemantics(
                         child: Text(
                           level.displayName,
-                          style: const TextStyle(
-                            fontSize: 16,
+                          style: Theme.of(context).textTheme.titleMedium!.copyWith(
                             fontWeight: FontWeight.w600,
                           ),
                         ),
                       ),
-                      const SizedBox(height: AppSpacing.xs),
+                      SizedBox(height: AppSpacing.xs),
                       ExcludeSemantics(
                         child: Text(
                           level.description,
-                          style: TextStyle(
-                            fontSize: 13,
+                          style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                             color: AppColors.textSecondary,
                           ),
                         ),
@@ -383,9 +381,9 @@ class _ProfileCreationScreenState extends ConsumerState<ProfileCreationScreen> {
                   ),
                 ),
                 const SizedBox(width: AppSpacing.xs),
-                const Text(
+                Text(
                   '*',
-                  style: TextStyle(color: Colors.red, fontSize: 16),
+                  style: Theme.of(context).textTheme.titleMedium!.copyWith(color: Colors.red),
                 ),
               ],
             ),
@@ -433,14 +431,13 @@ class _ProfileCreationScreenState extends ConsumerState<ProfileCreationScreen> {
             mainAxisSize: MainAxisSize.min,
             children: [
               ExcludeSemantics(
-                child: Text(type.emoji, style: const TextStyle(fontSize: 40)),
+                child: Text(type.emoji, style: Theme.of(context).textTheme.headlineMedium!.copyWith(fontSize: 40)),
               ),
-              const SizedBox(height: 6),
+              SizedBox(height: 6),
               ExcludeSemantics(
                 child: Text(
                   type.displayName,
-                  style: const TextStyle(
-                    fontSize: 15,
+                  style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                     fontWeight: FontWeight.w600,
                   ),
                   textAlign: TextAlign.center,
@@ -448,13 +445,12 @@ class _ProfileCreationScreenState extends ConsumerState<ProfileCreationScreen> {
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
-              const SizedBox(height: 3),
+              SizedBox(height: 3),
               Flexible(
                 child: ExcludeSemantics(
                   child: Text(
                     type.description,
-                    style: TextStyle(
-                      fontSize: 11,
+                    style: Theme.of(context).textTheme.bodySmall!.copyWith(
                       color: AppColors.textSecondary,
                     ),
                     textAlign: TextAlign.center,
@@ -497,9 +493,9 @@ class _ProfileCreationScreenState extends ConsumerState<ProfileCreationScreen> {
                   ),
                 ),
                 const SizedBox(width: AppSpacing.xs),
-                const Text(
+                Text(
                   '*',
-                  style: TextStyle(color: Colors.red, fontSize: 16),
+                  style: Theme.of(context).textTheme.titleMedium!.copyWith(color: Colors.red),
                 ),
               ],
             ),

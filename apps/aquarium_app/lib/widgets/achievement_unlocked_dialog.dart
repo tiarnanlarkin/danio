@@ -388,24 +388,22 @@ class _AchievementUnlockedDialogState extends State<AchievementUnlockedDialog>
         Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(icon, style: const TextStyle(fontSize: 32)),
-            const SizedBox(width: AppSpacing.sm),
+            Text(icon, style: Theme.of(context).textTheme.headlineMedium!),
+            SizedBox(width: AppSpacing.sm),
             Text(
               amount,
-              style: const TextStyle(
+              style: Theme.of(context).textTheme.headlineMedium!.copyWith(
                 color: Colors.white,
-                fontSize: 28,
                 fontWeight: FontWeight.bold,
               ),
             ),
           ],
         ),
-        const SizedBox(height: AppSpacing.xs),
+        SizedBox(height: AppSpacing.xs),
         Text(
           label,
-          style: TextStyle(
+          style: Theme.of(context).textTheme.bodyLarge!.copyWith(
             color: AppOverlays.white80,
-            fontSize: 14,
             fontWeight: FontWeight.w600,
           ),
         ),

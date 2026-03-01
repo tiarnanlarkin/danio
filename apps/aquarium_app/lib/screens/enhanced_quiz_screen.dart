@@ -656,7 +656,7 @@ class _EnhancedQuizScreenState extends ConsumerState<EnhancedQuizScreen>
                         child: Center(
                           child: Text(
                             passed ? '🎉' : '📚',
-                            style: const TextStyle(fontSize: 52),
+                            style: Theme.of(context).textTheme.headlineMedium!.copyWith(fontSize: 52),
                           ),
                         ),
                       ),
