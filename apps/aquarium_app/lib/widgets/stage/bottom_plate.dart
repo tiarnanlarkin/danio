@@ -13,6 +13,7 @@ class BottomPlate extends StatefulWidget {
   final Widget child;
   final Widget? backgroundPainter; // CustomPaint or similar for texture
   final Color backgroundColor;
+  final double bottomOffset;
 
   const BottomPlate({
     super.key,
@@ -23,6 +24,7 @@ class BottomPlate extends StatefulWidget {
     required this.child,
     this.backgroundPainter,
     this.backgroundColor = Colors.white,
+    this.bottomOffset = 0,
   });
 
   @override
@@ -105,7 +107,7 @@ class BottomPlateState extends State<BottomPlate>
         widget.peekHeight + maxDragDistance * _dragExtent;
 
     return Positioned(
-      bottom: 0,
+      bottom: widget.bottomOffset,
       left: 0,
       right: 0,
       height: currentHeight + bottomPad,

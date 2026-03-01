@@ -245,53 +245,41 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             ),
 
             // === STAGE SYSTEM ===
-            // Scrim (above scene, below panels) — IgnorePointer when no panels open
-            Consumer(
-              builder: (context, ref, _) {
-                final hasOpen = ref.watch(stageProvider.select((s) => s.openPanels.isNotEmpty));
-                return IgnorePointer(
-                  ignoring: !hasOpen,
-                  child: const Positioned.fill(child: StageScrim()),
-                );
-              },
-            ),
+            // Scrim (above scene, below panels)
+            const Positioned.fill(child: StageScrim()),
 
-            // Swiss Army panels — IgnorePointer when closed to prevent touch-eating
-            Consumer(
-              builder: (context, ref, _) {
-                final hasOpen = ref.watch(stageProvider.select((s) => s.openPanels.isNotEmpty));
+            // Swiss Army panels — wired to live water test data
+            Builder(
+              builder: (context) {
                 final latestTest = ref.watch(latestWaterTestProvider(currentTank.id));
                 final roomTheme = ref.watch(currentRoomThemeProvider);
-                return IgnorePointer(
-                  ignoring: !hasOpen,
-                  child: Stack(
-                    children: [
-                      SwissArmyPanel.left(
+                return Stack(
+                  children: [
+                    SwissArmyPanel.left(
+                      theme: roomTheme,
+                      child: TempPanelContent(
+                        temperature: latestTest.value?.temperature,
                         theme: roomTheme,
-                        child: TempPanelContent(
-                          temperature: latestTest.value?.temperature,
-                          theme: roomTheme,
-                          onStatsTap: () => _showStatsInfo(context),
-                        ),
+                        onStatsTap: () => _showStatsInfo(context),
                       ),
-                      SwissArmyPanel.right(
+                    ),
+                    SwissArmyPanel.right(
+                      theme: roomTheme,
+                      child: WaterPanelContent(
+                        ph: latestTest.value?.ph,
+                        ammonia: latestTest.value?.ammonia,
+                        nitrate: latestTest.value?.nitrate,
+                        nitrite: latestTest.value?.nitrite,
                         theme: roomTheme,
-                        child: WaterPanelContent(
-                          ph: latestTest.value?.ph,
-                          ammonia: latestTest.value?.ammonia,
-                          nitrate: latestTest.value?.nitrate,
-                          nitrite: latestTest.value?.nitrite,
-                          theme: roomTheme,
-                          onTestKitTap: () => _showWaterParams(context),
-                        ),
+                        onTestKitTap: () => _showWaterParams(context),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 );
               },
             ),
 
-            // Ambient tip overlay — uses Align internally (not Positioned) to avoid eating touches
+            // Ambient tip overlay
             AmbientTipOverlay(theme: ref.watch(currentRoomThemeProvider)),
 
             // Top bar overlay

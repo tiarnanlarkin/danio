@@ -8,6 +8,8 @@ import '../../theme/room_themes.dart';
 import 'stage_provider.dart';
 
 /// Floating ambient tip that appears occasionally on the home screen.
+/// Uses Align+Padding instead of Positioned so it works correctly as a
+/// non-positioned child of the parent Stack (avoids eating full-screen touches).
 class AmbientTipOverlay extends ConsumerStatefulWidget {
   final RoomTheme theme;
 
@@ -28,18 +30,18 @@ class _AmbientTipOverlayState extends ConsumerState<AmbientTipOverlay>
   final _rng = math.Random();
 
   static const _tips = [
-    '💧 Weekly water changes keep your fish happy',
-    '🌡️ Stable temperature matters more than exact numbers',
-    '🧪 Test your water weekly, especially during cycling',
-    '🐟 Never add more than 3 fish at a time',
-    '🪴 Live plants absorb nitrates naturally',
-    '🧂 A pinch of aquarium salt helps stressed fish',
-    '🔬 Ammonia at 0 ppm is always the goal',
-    '📅 Log your water changes to spot patterns',
-    '🐠 Most tropical fish prefer 24-26°C',
-    '💡 8-10 hours of light daily prevents algae',
-    '🧽 Clean your filter in old tank water, never tap',
-    '🌊 Good flow prevents dead spots and algae',
+    '\u{1F4A7} Weekly water changes keep your fish happy',
+    '\u{1F321}\u{FE0F} Stable temperature matters more than exact numbers',
+    '\u{1F9EA} Test your water weekly, especially during cycling',
+    '\u{1F41F} Never add more than 3 fish at a time',
+    '\u{1FAB4} Live plants absorb nitrates naturally',
+    '\u{1F9C2} A pinch of aquarium salt helps stressed fish',
+    '\u{1F52C} Ammonia at 0 ppm is always the goal',
+    '\u{1F4C5} Log your water changes to spot patterns',
+    '\u{1F420} Most tropical fish prefer 24-26\u{00B0}C',
+    '\u{1F4A1} 8-10 hours of light daily prevents algae',
+    '\u{1F9FD} Clean your filter in old tank water, never tap',
+    '\u{1F30A} Good flow prevents dead spots and algae',
   ];
 
   @override
@@ -65,7 +67,7 @@ class _AmbientTipOverlayState extends ConsumerState<AmbientTipOverlay>
   }
 
   void _scheduleNext() {
-    final delay = Duration(seconds: 45 + _rng.nextInt(46)); // 45–90s
+    final delay = Duration(seconds: 45 + _rng.nextInt(46));
     _timer = Timer(delay, _showTip);
   }
 
@@ -77,7 +79,6 @@ class _AmbientTipOverlayState extends ConsumerState<AmbientTipOverlay>
       return;
     }
 
-    // Pick unseen tip
     final available = List.generate(_tips.length, (i) => i)
         .where((i) => !_shownTips.contains(i))
         .toList();
@@ -94,7 +95,6 @@ class _AmbientTipOverlayState extends ConsumerState<AmbientTipOverlay>
     _animController.forward(from: 0);
     HapticFeedback.lightImpact();
 
-    // Auto-dismiss after 6 seconds
     Future.delayed(const Duration(seconds: 6), _dismiss);
   }
 
@@ -119,54 +119,56 @@ class _AmbientTipOverlayState extends ConsumerState<AmbientTipOverlay>
   Widget build(BuildContext context) {
     if (_currentTip == null) return const SizedBox.shrink();
 
-    return Positioned(
-      bottom: 80,
-      right: 16,
-      child: SlideTransition(
-        position: _slideAnim,
-        child: FadeTransition(
-          opacity: _fadeAnim,
-          child: GestureDetector(
-            onPanEnd: (_) => _dismiss(),
-            onTap: _dismiss,
-            child: Container(
-              width: 220,
-              padding: const EdgeInsets.symmetric(
-                horizontal: AppSpacing.sm2,
-                vertical: AppSpacing.sm,
-              ),
-              decoration: BoxDecoration(
-                color: widget.theme.glassCard,
-                borderRadius: AppRadius.mediumRadius,
-                border: Border.all(color: widget.theme.glassBorder, width: 0.5),
-                image: const DecorationImage(
-                  image: AssetImage('assets/textures/felt-teal.png'),
-                  fit: BoxFit.cover,
-                  opacity: 0.15,
+    return Align(
+      alignment: Alignment.bottomRight,
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 80, right: 16),
+        child: SlideTransition(
+          position: _slideAnim,
+          child: FadeTransition(
+            opacity: _fadeAnim,
+            child: GestureDetector(
+              onPanEnd: (_) => _dismiss(),
+              onTap: _dismiss,
+              child: Container(
+                width: 220,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.sm2,
+                  vertical: AppSpacing.sm,
                 ),
-              ),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      _currentTip!,
-                      style: AppTypography.bodySmall.copyWith(
-                        color: widget.theme.textPrimary,
+                decoration: BoxDecoration(
+                  color: widget.theme.glassCard,
+                  borderRadius: AppRadius.mediumRadius,
+                  border: Border.all(color: widget.theme.glassBorder, width: 0.5),
+                  image: const DecorationImage(
+                    image: AssetImage('assets/textures/felt-teal.png'),
+                    fit: BoxFit.cover,
+                    opacity: 0.15,
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        _currentTip!,
+                        style: AppTypography.bodySmall.copyWith(
+                          color: widget.theme.textPrimary,
+                        ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
                       ),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
                     ),
-                  ),
-                  const SizedBox(width: AppSpacing.xs),
-                  GestureDetector(
-                    onTap: _dismiss,
-                    child: Icon(
-                      Icons.close,
-                      size: 14,
-                      color: widget.theme.textSecondary,
+                    const SizedBox(width: AppSpacing.xs),
+                    GestureDetector(
+                      onTap: _dismiss,
+                      child: Icon(
+                        Icons.close,
+                        size: 14,
+                        color: widget.theme.textSecondary,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
