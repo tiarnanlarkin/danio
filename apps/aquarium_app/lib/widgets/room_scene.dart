@@ -360,14 +360,20 @@ class _CozyRoomBackground extends StatelessWidget {
           painter: _CozyRoomPainter(theme: theme),
           size: Size.infinite,
         ),
-        // Linen texture overlay for material depth
+        // Linen texture overlay for material depth — warm amber tint at 20% opacity
         Positioned.fill(
-          child: Opacity(
-            opacity: 0.10,
-            child: Image.asset(
-              'assets/textures/linen-wall.png',
-              repeat: ImageRepeat.repeat,
-              fit: BoxFit.none,
+          child: ColorFiltered(
+            colorFilter: ColorFilter.mode(
+              const Color(0xFFC68B3E).withAlpha(20), // subtle warm amber wash
+              BlendMode.srcATop,
+            ),
+            child: Opacity(
+              opacity: 0.20,
+              child: Image.asset(
+                'assets/textures/linen-wall.png',
+                repeat: ImageRepeat.repeat,
+                fit: BoxFit.none,
+              ),
             ),
           ),
         ),
@@ -389,19 +395,19 @@ class _CozyRoomPainter extends CustomPainter {
 
   // Cozy room uses warm base colors regardless of theme
   Color get _wallColor => _isDarkTheme 
-      ? const Color(0xFF3D4A5C) // Cozy dark blue-gray
+      ? const Color(0xFF4A5668) // Cozy dark blue-gray (slightly brighter for texture visibility)
       : const Color(0xFFF5EDE5); // Warm cream
 
   Color get _wallAccent => _isDarkTheme
-      ? const Color(0xFF4A5568) // Lighter accent
+      ? const Color(0xFF576070) // Lighter accent (brighter for texture visibility)
       : const Color(0xFFEDE5D8); // Soft beige
 
   Color get _floorColor => _isDarkTheme
-      ? const Color(0xFF5C4A3D) // Dark wood
+      ? const Color(0xFF685448) // Dark wood (slightly brighter)
       : const Color(0xFFD4B896); // Warm wood
 
   Color get _trimColor => _isDarkTheme
-      ? const Color(0xFF6B5B4F) // Dark trim
+      ? const Color(0xFF776860) // Dark trim (slightly brighter)
       : const Color(0xFF8B7355); // Wood trim
 
   @override
@@ -1666,16 +1672,21 @@ class _AnimatedSwimmingFishState extends State<_AnimatedSwimmingFish>
         final bobY = _bobAnimation.value * widget.verticalBob;
         final rawBaseY = widget.baseTop * widget.tankHeight;
 
-        // BUG-08: clamp fish Y position to stay within tank glass bounds
-        const glassBorderTop = 4.0;
-        final sandBoundary = widget.tankHeight * 0.78; // above 18% sand layer
+        // BUG-08: clamp fish position to stay within tank glass bounds
+        const glassBorder = 4.0;
+        final sandBoundary = widget.tankHeight * 0.78;
         final clampedTop = (rawBaseY + bobY).clamp(
-          glassBorderTop,
+          glassBorder,
           sandBoundary - widget.size,
+        );
+        // Clamp X to keep fish within tank walls
+        final clampedLeft = (swimX - widget.size / 2).clamp(
+          glassBorder,
+          widget.tankWidth - widget.size - glassBorder,
         );
 
         return Positioned(
-          left: swimX - widget.size,
+          left: clampedLeft,
           top: clampedTop,
           child: Transform.scale(
             scaleX: _facingRight ? 1 : -1,
