@@ -277,7 +277,7 @@ class _CreateTankScreenState extends ConsumerState<CreateTankScreen> {
             'Multi-Tank Aquarist! \u{1F30A}',
             subtitle: 'Danio Pro will unlock advanced multi-tank features -- stay tuned!',
           );
-        
+        }
       }
     } catch (e) {
       if (mounted) {
