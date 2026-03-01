@@ -85,6 +85,7 @@ class JournalScreen extends ConsumerWidget {
   void _addJournalEntry(BuildContext context, WidgetRef ref) {
     showModalBottomSheet(
       context: context,
+      showDragHandle: true,
       isScrollControlled: true,
       builder: (ctx) => _NewJournalEntrySheet(
         tankId: tankId,

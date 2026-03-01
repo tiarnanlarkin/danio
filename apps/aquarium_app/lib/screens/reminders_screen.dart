@@ -53,6 +53,7 @@ class _RemindersScreenState extends ConsumerState<RemindersScreen> {
   void _addReminder() {
     showModalBottomSheet(
       context: context,
+      showDragHandle: true,
       isScrollControlled: true,
       builder: (ctx) => _AddReminderSheet(
         onSave: (reminder) {

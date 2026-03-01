@@ -177,6 +177,7 @@ class _PlantBrowserScreenState extends ConsumerState<PlantBrowserScreen> {
 
     showModalBottomSheet(
       context: context,
+      showDragHandle: true,
       isScrollControlled: true,
       builder: (ctx) => DraggableScrollableSheet(
         initialChildSize: 0.85,

@@ -577,6 +577,7 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
   void _showAddDialog(BuildContext context, WidgetRef ref) {
     showModalBottomSheet(
       context: context,
+      showDragHandle: true,
       isScrollControlled: true,
       builder: (_) => _AddLivestockSheet(tankId: widget.tankId, ref: ref),
     );
@@ -585,6 +586,7 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
   void _showBulkAddDialog(BuildContext context, WidgetRef ref) {
     showModalBottomSheet(
       context: context,
+      showDragHandle: true,
       isScrollControlled: true,
       builder: (_) => _BulkAddLivestockSheet(tankId: widget.tankId, ref: ref),
     );
@@ -597,6 +599,7 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
   ) {
     showModalBottomSheet(
       context: context,
+      showDragHandle: true,
       isScrollControlled: true,
       builder: (_) => _AddLivestockSheet(
         tankId: widget.tankId,

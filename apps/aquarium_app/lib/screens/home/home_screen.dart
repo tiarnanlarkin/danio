@@ -564,6 +564,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
     showModalBottomSheet(
       context: context,
+      showDragHandle: true,
       isScrollControlled: true,
       isDismissible: true,
       shape: const RoundedRectangleBorder(
@@ -668,6 +669,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
     showModalBottomSheet(
       context: context,
+      showDragHandle: true,
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(16)),

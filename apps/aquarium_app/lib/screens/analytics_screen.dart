@@ -1012,6 +1012,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
 
     await showModalBottomSheet(
       context: context,
+      showDragHandle: true,
       builder: (context) => SafeArea(
         child: Column(
           mainAxisSize: MainAxisSize.min,

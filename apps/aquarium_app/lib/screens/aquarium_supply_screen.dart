@@ -179,6 +179,7 @@ class _AquariumSupplyScreenState extends ConsumerState<AquariumSupplyScreen>
   void _openAddEdit([AquariumSupplyItem? existing]) {
     showModalBottomSheet(
       context: context,
+      showDragHandle: true,
       isScrollControlled: true,
       builder: (_) => _SupplyItemSheet(
         currency: _currency,

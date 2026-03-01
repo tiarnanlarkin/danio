@@ -249,6 +249,7 @@ class _LogsScreenState extends ConsumerState<LogsScreen> {
 
     await showModalBottomSheet<void>(
       context: context,
+      showDragHandle: true,
       isScrollControlled: true,
       builder: (ctx) {
         return StatefulBuilder(
@@ -359,6 +360,7 @@ class _LogsScreenState extends ConsumerState<LogsScreen> {
   void _showAddLogSheet(BuildContext context) {
     showModalBottomSheet(
       context: context,
+      showDragHandle: true,
       builder: (ctx) => SafeArea(
         child: Wrap(
           children: [

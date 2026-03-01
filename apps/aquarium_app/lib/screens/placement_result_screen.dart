@@ -342,6 +342,7 @@ class PlacementResultScreen extends ConsumerWidget {
   void _showDetailedBreakdown(BuildContext context, ThemeData theme) {
     showModalBottomSheet(
       context: context,
+      showDragHandle: true,
       isScrollControlled: true,
       builder: (context) => DraggableScrollableSheet(
         initialChildSize: 0.9,

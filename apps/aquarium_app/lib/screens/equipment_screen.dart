@@ -222,6 +222,7 @@ class EquipmentScreen extends ConsumerWidget {
   void _showAddDialog(BuildContext context, WidgetRef ref) {
     showModalBottomSheet(
       context: context,
+      showDragHandle: true,
       isScrollControlled: true,
       builder: (_) => _AddEquipmentSheet(tankId: tankId, ref: ref),
     );
@@ -234,6 +235,7 @@ class EquipmentScreen extends ConsumerWidget {
   ) {
     showModalBottomSheet(
       context: context,
+      showDragHandle: true,
       isScrollControlled: true,
       builder: (_) =>
           _AddEquipmentSheet(tankId: tankId, ref: ref, existing: equipment),

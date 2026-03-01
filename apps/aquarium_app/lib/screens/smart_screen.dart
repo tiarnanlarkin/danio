@@ -235,6 +235,7 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
     final anomalies = ref.read(anomalyHistoryProvider);
     showModalBottomSheet(
       context: context,
+      showDragHandle: true,
       isScrollControlled: true,
       builder: (ctx) => DraggableScrollableSheet(
         initialChildSize: 0.6,

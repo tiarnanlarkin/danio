@@ -767,6 +767,7 @@ class SettingsScreen extends ConsumerWidget {
   ) {
     showModalBottomSheet(
       context: context,
+      showDragHandle: true,
       builder: (ctx) => SafeArea(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -834,6 +835,7 @@ class SettingsScreen extends ConsumerWidget {
 
     showModalBottomSheet(
       context: context,
+      showDragHandle: true,
       builder: (ctx) => SafeArea(
         child: Column(
           mainAxisSize: MainAxisSize.min,

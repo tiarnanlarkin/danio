@@ -48,6 +48,7 @@ class _CostTrackerScreenState extends ConsumerState<CostTrackerScreen> {
   void _addExpense() {
     showModalBottomSheet(
       context: context,
+      showDragHandle: true,
       isScrollControlled: true,
       builder: (ctx) => _AddExpenseSheet(
         currency: _currency,

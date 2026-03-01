@@ -949,6 +949,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
     // Show next lesson bottom sheet
     showModalBottomSheet<bool>(
       context: context,
+      showDragHandle: true,
       isDismissible: true,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),

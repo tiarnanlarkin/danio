@@ -245,6 +245,7 @@ class TasksScreen extends ConsumerWidget {
   void _showAddDialog(BuildContext context, WidgetRef ref) {
     showModalBottomSheet(
       context: context,
+      showDragHandle: true,
       isScrollControlled: true,
       builder: (_) => _AddTaskSheet(tankId: tankId, ref: ref),
     );
@@ -253,6 +254,7 @@ class TasksScreen extends ConsumerWidget {
   void _showEditDialog(BuildContext context, WidgetRef ref, Task task) {
     showModalBottomSheet(
       context: context,
+      showDragHandle: true,
       isScrollControlled: true,
       builder: (_) => _AddTaskSheet(tankId: tankId, ref: ref, existing: task),
     );
