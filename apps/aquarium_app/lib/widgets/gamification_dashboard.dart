@@ -123,17 +123,25 @@ class GamificationDashboard extends ConsumerWidget {
     return Card(
       margin: EdgeInsets.zero,
       elevation: AppElevation.level1,
-      shape: RoundedRectangleBorder(
-        borderRadius: AppRadius.mediumRadius,
-      ),
-      child: const Padding(
-        padding: EdgeInsets.all(24),
-        child: Center(
-          child: SizedBox(
-            width: 24,
-            height: 24,
-            child: CircularProgressIndicator(strokeWidth: 2),
-          ),
+      shape: RoundedRectangleBorder(borderRadius: AppRadius.mediumRadius),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: List.generate(4, (i) => Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(width: 32, height: 16, decoration: BoxDecoration(
+                color: Colors.grey.shade200,
+                borderRadius: BorderRadius.circular(4),
+              )),
+              const SizedBox(height: 6),
+              Container(width: 48, height: 10, decoration: BoxDecoration(
+                color: Colors.grey.shade100,
+                borderRadius: BorderRadius.circular(4),
+              )),
+            ],
+          )),
         ),
       ),
     );
@@ -186,31 +194,27 @@ class _StatItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final rowChildren = [
+      Text(icon, style: const TextStyle(fontSize: 20)),
+      const SizedBox(width: 6),
+      Text(
+        value,
+        style: AppTypography.titleMedium.copyWith(
+          fontWeight: FontWeight.w800,
+          color: const Color(0xFF3D2B1F),
+        ),
+      ),
+      const SizedBox(width: 4),
+      Text(
+        label,
+        style: AppTypography.labelSmall.copyWith(
+          color: AppColors.textSecondary,
+        ),
+      ),
+    ];
     return Row(
       mainAxisSize: MainAxisSize.min,
-      children: [
-        Text(icon, style: const TextStyle(fontSize: 20)),
-        const SizedBox(width: 6),
-        Column(
-          crossAxisAlignment:
-              alignRight ? CrossAxisAlignment.end : CrossAxisAlignment.start,
-          children: [
-            Text(
-              value,
-              style: AppTypography.titleMedium.copyWith(
-                fontWeight: FontWeight.bold,
-                color: color,
-              ),
-            ),
-            Text(
-              label,
-              style: AppTypography.labelSmall.copyWith(
-                color: AppColors.textSecondary,
-              ),
-            ),
-          ],
-        ),
-      ],
+      children: alignRight ? rowChildren.reversed.toList() : rowChildren,
     );
   }
 }

@@ -1,4 +1,4 @@
-import 'package:aquarium_app/theme/app_theme.dart';
+import 'package:danio/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'dart:math' as math;
@@ -150,7 +150,7 @@ class LivingRoomScene extends ConsumerWidget {
 
               // Temperature gauge (top left)
               Positioned(
-                top: h * 0.06,
+                top: h * 0.18,
                 left: w * 0.05,
                 child: GestureDetector(
                   onTap: onStatsTap,
@@ -164,16 +164,19 @@ class LivingRoomScene extends ConsumerWidget {
 
               // Water quality card (top right)
               Positioned(
-                top: h * 0.06,
+                top: h * 0.18,
                 right: w * 0.05,
-                child: GestureDetector(
-                  onTap: onTestKitTap,
-                  child: _WaterQualityCard(
-                    width: w * 0.36,
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 185),
+                  child: GestureDetector(
+                    onTap: onTestKitTap,
+                    child: _WaterQualityCard(
+                      width: w * 0.34,
                     ph: ph,
                     ammonia: ammonia,
                     nitrate: nitrate,
                     theme: theme,
+                  ),
                   ),
                 ),
               ),
@@ -1287,48 +1290,42 @@ class _WaterQualityCard extends StatelessWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: 8),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  Flexible(
-                    child: _MiniPieChart(
-                      value: ph ?? 7.0,
-                      maxValue: 14,
-                      label: 'pH',
-                      color: _getPhColor(ph),
-                      theme: theme,
-                      size: 38,
-                    ),
-                  ),
-                  const SizedBox(width: 6),
-                  Flexible(
-                    child: _MiniPieChart(
-                      value: ammonia ?? 0,
-                      maxValue: 4,
-                      label: 'NH₃',
-                      color: _getAmmoniaColor(ammonia),
-                      theme: theme,
-                      size: 38,
-                    ),
-                  ),
-                  const SizedBox(width: 6),
-                  Flexible(
-                    child: _MiniPieChart(
-                      value: nitrate ?? 10,
-                      maxValue: 80,
-                      label: 'NO₃',
-                      color: _getNitrateColor(nitrate),
-                      theme: theme,
-                      size: 38,
-                    ),
-                  ),
+                  _WaterStat(label: 'pH', value: ph?.toStringAsFixed(1) ?? '--', color: _getPhColor(ph)),
+                  Container(width: 1, height: 28, color: theme.glassBorder),
+                  _WaterStat(label: 'NH₃', value: ammonia?.toStringAsFixed(2) ?? '--', color: _getAmmoniaColor(ammonia)),
+                  Container(width: 1, height: 28, color: theme.glassBorder),
+                  _WaterStat(label: 'NO₃', value: nitrate?.toStringAsFixed(0) ?? '--', color: _getNitrateColor(nitrate)),
                 ],
               ),
             ],
           ),
         ),
       ),
+    );
+  }
+}
+
+
+class _WaterStat extends StatelessWidget {
+  final String label;
+  final String value;
+  final Color color;
+
+  const _WaterStat({required this.label, required this.value, required this.color});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(value, style: TextStyle(color: color, fontSize: 13, fontWeight: FontWeight.bold)),
+        const SizedBox(height: 2),
+        Text(label, style: const TextStyle(color: Color(0xFFB0B8C8), fontSize: 9)),
+      ],
     );
   }
 }

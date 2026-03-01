@@ -1,7 +1,7 @@
 /// Achievement Notification Widget - Popup with confetti when unlocking
 /// Shows achievement details with celebration animation
 library;
-import 'package:aquarium_app/theme/app_theme.dart';
+import 'package:danio/theme/app_theme.dart';
 
 import 'package:flutter/material.dart';
 import 'package:confetti/confetti.dart';

@@ -213,7 +213,7 @@ class _ExperienceAssessmentScreenState
                     Expanded(
                       child: Builder(
                         builder: (context) {
-                          final optionsList = question.options.entries.toList();
+                          final optionsList = question.options.entries.toList()..shuffle();
                           return ListView.builder(
                             itemCount: optionsList.length,
                             itemBuilder: (context, index) {

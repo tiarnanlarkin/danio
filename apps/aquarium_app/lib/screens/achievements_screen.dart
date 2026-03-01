@@ -1,7 +1,7 @@
 /// Achievements Screen - Trophy Case Gallery
 /// Displays all achievements with filtering, sorting, and progress tracking
 library;
-import 'package:aquarium_app/theme/app_theme.dart';
+import 'package:danio/theme/app_theme.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

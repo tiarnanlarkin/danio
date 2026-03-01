@@ -1,0 +1,194 @@
+{
+  "A_logo": {
+    "nano_banana_pro": {
+      "path": "/mnt/c/Users/larki/Documents/Aquarium App Dev/repo/apps/aquarium_app/brand/benchmarks/nano_banana_pro/A_logo/A_logo.jpg",
+      "time_s": 15.2,
+      "ok": true
+    },
+    "nano_banana_2": {
+      "path": "/mnt/c/Users/larki/Documents/Aquarium App Dev/repo/apps/aquarium_app/brand/benchmarks/nano_banana_2/A_logo/A_logo.png",
+      "time_s": 11.1,
+      "ok": true
+    },
+    "imagen_ultra": {
+      "path": "/mnt/c/Users/larki/Documents/Aquarium App Dev/repo/apps/aquarium_app/brand/benchmarks/imagen_ultra/A_logo/A_logo.png",
+      "time_s": 9.3,
+      "ok": true
+    },
+    "recraft_v4_svg": {
+      "path": null,
+      "time_s": 0.4,
+      "ok": false
+    },
+    "recraft_v4_raster": {
+      "path": null,
+      "time_s": 0.4,
+      "ok": false
+    },
+    "flux2_pro": {
+      "path": null,
+      "time_s": 0.4,
+      "ok": false
+    }
+  },
+  "B_icon": {
+    "nano_banana_pro": {
+      "path": "/mnt/c/Users/larki/Documents/Aquarium App Dev/repo/apps/aquarium_app/brand/benchmarks/nano_banana_pro/B_icon/B_icon.jpg",
+      "time_s": 16.9,
+      "ok": true
+    },
+    "nano_banana_2": {
+      "path": "/mnt/c/Users/larki/Documents/Aquarium App Dev/repo/apps/aquarium_app/brand/benchmarks/nano_banana_2/B_icon/B_icon.png",
+      "time_s": 22.4,
+      "ok": true
+    },
+    "imagen_ultra": {
+      "path": "/mnt/c/Users/larki/Documents/Aquarium App Dev/repo/apps/aquarium_app/brand/benchmarks/imagen_ultra/B_icon/B_icon.png",
+      "time_s": 11.6,
+      "ok": true
+    },
+    "recraft_v4_svg": {
+      "path": null,
+      "time_s": 0.4,
+      "ok": false
+    },
+    "recraft_v4_raster": {
+      "path": null,
+      "time_s": 0.4,
+      "ok": false
+    },
+    "flux2_pro": {
+      "path": null,
+      "time_s": 0.4,
+      "ok": false
+    }
+  },
+  "C_mascot": {
+    "nano_banana_pro": {
+      "path": "/mnt/c/Users/larki/Documents/Aquarium App Dev/repo/apps/aquarium_app/brand/benchmarks/nano_banana_pro/C_mascot/C_mascot.jpg",
+      "time_s": 20.8,
+      "ok": true
+    },
+    "nano_banana_2": {
+      "path": "/mnt/c/Users/larki/Documents/Aquarium App Dev/repo/apps/aquarium_app/brand/benchmarks/nano_banana_2/C_mascot/C_mascot.png",
+      "time_s": 10.9,
+      "ok": true
+    },
+    "imagen_ultra": {
+      "path": "/mnt/c/Users/larki/Documents/Aquarium App Dev/repo/apps/aquarium_app/brand/benchmarks/imagen_ultra/C_mascot/C_mascot.png",
+      "time_s": 14.4,
+      "ok": true
+    },
+    "recraft_v4_svg": {
+      "path": null,
+      "time_s": 0.4,
+      "ok": false
+    },
+    "recraft_v4_raster": {
+      "path": null,
+      "time_s": 0.4,
+      "ok": false
+    },
+    "flux2_pro": {
+      "path": null,
+      "time_s": 0.4,
+      "ok": false
+    }
+  },
+  "D_illustration": {
+    "nano_banana_pro": {
+      "path": "/mnt/c/Users/larki/Documents/Aquarium App Dev/repo/apps/aquarium_app/brand/benchmarks/nano_banana_pro/D_illustration/D_illustration.jpg",
+      "time_s": 16.8,
+      "ok": true
+    },
+    "nano_banana_2": {
+      "path": "/mnt/c/Users/larki/Documents/Aquarium App Dev/repo/apps/aquarium_app/brand/benchmarks/nano_banana_2/D_illustration/D_illustration.png",
+      "time_s": 11.7,
+      "ok": true
+    },
+    "imagen_ultra": {
+      "path": "/mnt/c/Users/larki/Documents/Aquarium App Dev/repo/apps/aquarium_app/brand/benchmarks/imagen_ultra/D_illustration/D_illustration.png",
+      "time_s": 10.6,
+      "ok": true
+    },
+    "recraft_v4_svg": {
+      "path": null,
+      "time_s": 0.4,
+      "ok": false
+    },
+    "recraft_v4_raster": {
+      "path": null,
+      "time_s": 0.4,
+      "ok": false
+    },
+    "flux2_pro": {
+      "path": null,
+      "time_s": 0.4,
+      "ok": false
+    }
+  },
+  "E_feature_graphic": {
+    "nano_banana_pro": {
+      "path": "/mnt/c/Users/larki/Documents/Aquarium App Dev/repo/apps/aquarium_app/brand/benchmarks/nano_banana_pro/E_feature_graphic/E_feature_graphic.jpg",
+      "time_s": 18.4,
+      "ok": true
+    },
+    "nano_banana_2": {
+      "path": "/mnt/c/Users/larki/Documents/Aquarium App Dev/repo/apps/aquarium_app/brand/benchmarks/nano_banana_2/E_feature_graphic/E_feature_graphic.png",
+      "time_s": 17.8,
+      "ok": true
+    },
+    "imagen_ultra": {
+      "path": "/mnt/c/Users/larki/Documents/Aquarium App Dev/repo/apps/aquarium_app/brand/benchmarks/imagen_ultra/E_feature_graphic/E_feature_graphic.png",
+      "time_s": 11.0,
+      "ok": true
+    },
+    "recraft_v4_svg": {
+      "path": null,
+      "time_s": 0.4,
+      "ok": false
+    },
+    "recraft_v4_raster": {
+      "path": null,
+      "time_s": 0.4,
+      "ok": false
+    },
+    "flux2_pro": {
+      "path": null,
+      "time_s": 0.4,
+      "ok": false
+    }
+  },
+  "F_pattern": {
+    "nano_banana_pro": {
+      "path": "/mnt/c/Users/larki/Documents/Aquarium App Dev/repo/apps/aquarium_app/brand/benchmarks/nano_banana_pro/F_pattern/F_pattern.jpg",
+      "time_s": 15.4,
+      "ok": true
+    },
+    "nano_banana_2": {
+      "path": null,
+      "time_s": 10.6,
+      "ok": false
+    },
+    "imagen_ultra": {
+      "path": "/mnt/c/Users/larki/Documents/Aquarium App Dev/repo/apps/aquarium_app/brand/benchmarks/imagen_ultra/F_pattern/F_pattern.png",
+      "time_s": 9.6,
+      "ok": true
+    },
+    "recraft_v4_svg": {
+      "path": null,
+      "time_s": 0.4,
+      "ok": false
+    },
+    "recraft_v4_raster": {
+      "path": null,
+      "time_s": 0.4,
+      "ok": false
+    },
+    "flux2_pro": {
+      "path": null,
+      "time_s": 0.4,
+      "ok": false
+    }
+  }
+}

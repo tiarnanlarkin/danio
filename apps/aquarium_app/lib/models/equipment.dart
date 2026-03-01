@@ -150,6 +150,55 @@ class Equipment {
     }
   }
 
+
+  factory Equipment.fromJson(Map<String, dynamic> json) {
+    return Equipment(
+      id: json['id'] as String,
+      tankId: json['tankId'] as String,
+      type: EquipmentType.values.firstWhere((e) => e.name == json['type']),
+      name: json['name'] as String,
+      brand: json['brand'] as String?,
+      model: json['model'] as String?,
+      settings: json['settings'] != null
+          ? Map<String, dynamic>.from(json['settings'] as Map)
+          : null,
+      maintenanceIntervalDays: json['maintenanceIntervalDays'] as int?,
+      lastServiced: json['lastServiced'] != null
+          ? DateTime.parse(json['lastServiced'] as String)
+          : null,
+      installedDate: json['installedDate'] != null
+          ? DateTime.parse(json['installedDate'] as String)
+          : null,
+      purchaseDate: json['purchaseDate'] != null
+          ? DateTime.parse(json['purchaseDate'] as String)
+          : null,
+      expectedLifespanMonths: json['expectedLifespanMonths'] as int?,
+      notes: json['notes'] as String?,
+      createdAt: DateTime.parse(json['createdAt'] as String),
+      updatedAt: DateTime.parse(json['updatedAt'] as String),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'tankId': tankId,
+      'type': type.name,
+      'name': name,
+      'brand': brand,
+      'model': model,
+      'settings': settings,
+      'maintenanceIntervalDays': maintenanceIntervalDays,
+      'lastServiced': lastServiced?.toIso8601String(),
+      'installedDate': installedDate?.toIso8601String(),
+      'purchaseDate': purchaseDate?.toIso8601String(),
+      'expectedLifespanMonths': expectedLifespanMonths,
+      'notes': notes,
+      'createdAt': createdAt.toIso8601String(),
+      'updatedAt': updatedAt.toIso8601String(),
+    };
+  }
+
   Equipment copyWith({
     String? id,
     String? tankId,

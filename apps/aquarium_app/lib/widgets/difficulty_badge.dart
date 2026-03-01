@@ -1,7 +1,7 @@
 /// Reusable difficulty badge widget
 /// Shows difficulty level with color-coded styling
 library;
-import 'package:aquarium_app/theme/app_theme.dart';
+import 'package:danio/theme/app_theme.dart';
 
 import 'package:flutter/material.dart';
 import '../models/adaptive_difficulty.dart';

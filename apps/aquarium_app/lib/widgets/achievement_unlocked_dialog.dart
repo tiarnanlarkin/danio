@@ -1,7 +1,7 @@
 /// Full-screen celebratory dialog for achievement unlocks
 /// Shows confetti, achievement details, and rewards (XP + Gems)
 library;
-import 'package:aquarium_app/theme/app_theme.dart';
+import 'package:danio/theme/app_theme.dart';
 
 import 'package:flutter/material.dart';
 import 'package:confetti/confetti.dart';

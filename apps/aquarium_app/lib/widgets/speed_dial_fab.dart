@@ -74,18 +74,22 @@ class _SpeedDialFABState extends State<SpeedDialFAB>
     final fgColor = widget.foregroundColor ?? Colors.white;
 
     return SizedBox(
-      width: 280,
-      height: 320,
+      width: 320,
+      height: 360,
       child: Stack(
         clipBehavior: Clip.none,
         alignment: Alignment.bottomRight,
         children: [
-          // Scrim/backdrop when open
+          // Scrim/backdrop when open - covers full screen via overlay
           if (_isOpen)
-            Positioned.fill(
+            Positioned(
+              bottom: 0,
+              right: 0,
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height,
               child: GestureDetector(
                 onTap: _close,
-                child: Container(color: Colors.transparent),
+                child: Container(color: Colors.black54),
               ),
             ),
 
@@ -127,7 +131,7 @@ class _SpeedDialFABState extends State<SpeedDialFAB>
       final radians = angle * (math.pi / 180);
 
       // Distance from center
-      const radius = 110.0;
+      const radius = 140.0;
       final x = radius * math.cos(radians);
       final y = radius * math.sin(radians);
 
@@ -332,8 +336,8 @@ class _ActionButtonState extends State<_ActionButton>
               const SizedBox(width: AppSpacing.sm),
               // Icon button - 48x48 for accessibility
               Container(
-                width: 48,
-                height: 48,
+                width: 56,
+                height: 56,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   color: widget.action.backgroundColor ?? Colors.white,

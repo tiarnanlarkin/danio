@@ -23,21 +23,30 @@ class HeartIndicator extends ConsumerWidget {
     final hearts = profile.hearts;
     final maxHearts = HeartsConfig.maxHearts;
 
+    // Compact mode: dark overlay style for use on scene backgrounds
+    // Full mode: standard error-tinted style
+    final bgColor = compact
+        ? const Color(0x55000000)
+        : (hearts == 0 ? AppOverlays.error10 : AppOverlays.error15);
+    final borderColor = compact
+        ? const Color(0x40FFFFFF)
+        : (hearts == 0 ? AppColors.error : AppOverlays.error30);
+    final iconColor = compact
+        ? Colors.white
+        : (hearts > 0 ? AppColors.error : AppOverlays.error50);
+    final textColor = compact
+        ? Colors.white
+        : AppColors.error;
+
     return Container(
       padding: EdgeInsets.symmetric(
         horizontal: compact ? 8 : 12,
         vertical: compact ? 4 : 6,
       ),
       decoration: BoxDecoration(
-        color: hearts == 0
-            ? AppOverlays.error10
-            : AppOverlays.error15,
+        color: bgColor,
         borderRadius: BorderRadius.circular(compact ? 12 : 16),
-        border: Border.all(
-          color: hearts == 0
-              ? AppColors.error
-              : AppOverlays.error30,
-        ),
+        border: Border.all(color: borderColor),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -45,9 +54,7 @@ class HeartIndicator extends ConsumerWidget {
           Icon(
             hearts > 0 ? Icons.favorite : Icons.favorite_border,
             size: compact ? 14 : 16,
-            color: hearts > 0
-                ? AppColors.error
-                : AppOverlays.error50,
+            color: iconColor,
           ),
           SizedBox(width: compact ? 4 : 6),
           Text(
@@ -55,7 +62,7 @@ class HeartIndicator extends ConsumerWidget {
             style:
                 (compact ? AppTypography.labelSmall : AppTypography.labelMedium)
                     .copyWith(
-                      color: hearts == 0 ? AppColors.error : AppColors.error,
+                      color: textColor,
                       fontWeight: FontWeight.bold,
                     ),
           ),

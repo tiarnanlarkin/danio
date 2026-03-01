@@ -1,4 +1,4 @@
-import 'package:aquarium_app/theme/app_theme.dart';
+import 'package:danio/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
 import 'dart:ui';
@@ -7,7 +7,7 @@ import 'room/interactive_object.dart';
 /// Study room colors - cozy knowledge theme
 class StudyColors {
   // Background gradient - warm study atmosphere
-  static const Color background1 = Color(0xFF2A3548); // Deep blue-gray
+  static const Color background1 = Color(0xFF2D3A5C); // Warmer blue-slate
   static const background2 = Color(0xFF1F2937); // Darker blue
   static const background2Alpha30 = Color(0x4D1F2937); // 30%
   static const background3 = Color(0xFF1A202C); // Deep navy
@@ -145,7 +145,7 @@ class StudyRoomScene extends StatelessWidget {
 
               // === XP Badge (top center) ===
               Positioned(
-                top: h * 0.05,
+                top: h * 0.12,
                 left: 0,
                 right: 0,
                 child: Center(
@@ -160,7 +160,7 @@ class StudyRoomScene extends StatelessWidget {
               // === Streak indicator (if active) ===
               if (currentStreak > 0)
                 Positioned(
-                  top: h * 0.05,
+                  top: h * 0.12,
                   right: w * 0.05,
                   child: _StreakBadge(streak: currentStreak),
                 ),
@@ -178,7 +178,7 @@ class StudyRoomScene extends StatelessWidget {
 
               // === Interactive Objects ===
               // Microscope - Water Chemistry Guide
-              if (onMicroscopeTap != null)
+              if (onMicroscopeTap != null && isNewUser)
                 Positioned(
                   top: h * 0.62,
                   right: w * 0.12,
@@ -189,7 +189,7 @@ class StudyRoomScene extends StatelessWidget {
                 ),
 
               // Globe - Random Fish Facts
-              if (onGlobeTap != null)
+              if (onGlobeTap != null && isNewUser)
                 Positioned(
                   top: h * 0.5,
                   left: w * 0.48,
@@ -216,8 +216,8 @@ class _StudyBackgroundPainter extends CustomPainter {
         center: const Alignment(0.5, 0.2),
         radius: 0.8,
         colors: [
+          StudyColors.goldAlpha40,
           StudyColors.goldAlpha15,
-          StudyColors.goldAlpha05,
           Colors.transparent,
         ],
       ).createShader(Rect.fromLTWH(0, 0, size.width, size.height));
@@ -543,27 +543,33 @@ class _StreakBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-      decoration: BoxDecoration(
-        color: AppOverlays.orange20,
-        borderRadius: AppRadius.mediumRadius,
-        border: Border.all(color: AppOverlays.orange40),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const Text('🔥', style: TextStyle(fontSize: 14)),
-          const SizedBox(width: AppSpacing.xs),
-          Text(
-            '$streak',
-            style: const TextStyle(
-              color: Colors.orange,
-              fontWeight: FontWeight.bold,
-              fontSize: 14,
-            ),
+    return ClipRRect(
+      borderRadius: AppRadius.mediumRadius,
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+          decoration: BoxDecoration(
+            color: const Color(0x33000000),
+            borderRadius: AppRadius.mediumRadius,
+            border: Border.all(color: const Color(0x40FFFFFF), width: 1),
           ),
-        ],
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text('🔥', style: TextStyle(fontSize: 14)),
+              const SizedBox(width: 4),
+              Text(
+                '$streak',
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 14,
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -583,11 +589,11 @@ class _ProgressCard extends StatelessWidget {
     return ClipRRect(
       borderRadius: AppRadius.mediumRadius,
       child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
+        filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
         child: Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: StudyColors.glassCard,
+            color: const Color(0x28FFFFFF),
             borderRadius: AppRadius.mediumRadius,
             border: Border.all(color: StudyColors.glassBorder, width: 1.5),
           ),

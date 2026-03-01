@@ -1,7 +1,7 @@
 /// Performance Overlay Widget
 /// Shows real-time FPS, frame time, and memory metrics during development
 library;
-import 'package:aquarium_app/theme/app_theme.dart';
+import 'package:danio/theme/app_theme.dart';
 
 import 'dart:async';
 import 'package:flutter/material.dart';

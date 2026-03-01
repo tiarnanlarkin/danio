@@ -43,7 +43,7 @@ class HiveStorageService {
   late Box<Map> _settings;
   late Box<Map> _learningProgress;
   late Box<Map> _economy;
-  late Box<Map> _metadata;
+  late Box<dynamic> _metadata;
   
   HiveStorageService._();
   
@@ -61,8 +61,8 @@ class HiveStorageService {
       debugPrint('[HiveStorage] Initializing...');
       
       // Check schema version and run migrations if needed
-      final metadataBox = await Hive.openBox<Map>(_metadataBox);
-      final storedVersion = metadataBox.get('schema_version', defaultValue: 0) as int;
+      final metadataBox = await Hive.openBox<dynamic>(_metadataBox);
+      final storedVersion = (metadataBox.get('schema_version') ?? 0) as int;
       
       if (storedVersion < kStorageSchemaVersion) {
         debugPrint('[HiveStorage] Migration needed: v$storedVersion → v$kStorageSchemaVersion');
@@ -151,7 +151,7 @@ class HiveStorageService {
         .map((json) => Livestock.fromJson(Map<String, dynamic>.from(json)))
         .where((fish) => fish.tankId == tankId)
         .toList()
-      ..sort((a, b) => b.addedAt.compareTo(a.addedAt));
+      ..sort((a, b) => b.dateAdded.compareTo(a.dateAdded));
   }
   
   Future<void> saveLivestock(Livestock livestock) async {
@@ -220,7 +220,11 @@ class HiveStorageService {
       tasks = tasks.where((task) => task.tankId == tankId).toList();
     }
     
-    return tasks..sort((a, b) => a.dueDate.compareTo(b.dueDate));
+    return tasks..sort((a, b) {
+      final aDate = a.dueDate ?? DateTime(9999);
+      final bDate = b.dueDate ?? DateTime(9999);
+      return aDate.compareTo(bDate);
+    });
   }
   
   Future<void> saveTask(Task task) async {

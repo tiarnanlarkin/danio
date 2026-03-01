@@ -35,6 +35,47 @@ class Livestock {
     required this.updatedAt,
   });
 
+
+  factory Livestock.fromJson(Map<String, dynamic> json) {
+    return Livestock(
+      id: json['id'] as String,
+      tankId: json['tankId'] as String,
+      commonName: json['commonName'] as String,
+      scientificName: json['scientificName'] as String?,
+      count: json['count'] as int,
+      sizeCm: (json['sizeCm'] as num?)?.toDouble(),
+      maxSizeCm: (json['maxSizeCm'] as num?)?.toDouble(),
+      dateAdded: DateTime.parse(json['dateAdded'] as String),
+      source: json['source'] as String?,
+      temperament: json['temperament'] != null
+          ? Temperament.values.firstWhere((e) => e.name == json['temperament'])
+          : null,
+      notes: json['notes'] as String?,
+      imageUrl: json['imageUrl'] as String?,
+      createdAt: DateTime.parse(json['createdAt'] as String),
+      updatedAt: DateTime.parse(json['updatedAt'] as String),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'tankId': tankId,
+      'commonName': commonName,
+      'scientificName': scientificName,
+      'count': count,
+      'sizeCm': sizeCm,
+      'maxSizeCm': maxSizeCm,
+      'dateAdded': dateAdded.toIso8601String(),
+      'source': source,
+      'temperament': temperament?.name,
+      'notes': notes,
+      'imageUrl': imageUrl,
+      'createdAt': createdAt.toIso8601String(),
+      'updatedAt': updatedAt.toIso8601String(),
+    };
+  }
+
   Livestock copyWith({
     String? id,
     String? tankId,

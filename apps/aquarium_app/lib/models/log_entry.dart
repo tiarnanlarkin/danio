@@ -48,6 +48,35 @@ class WaterTestResults {
       phosphate != null ||
       co2 != null;
 
+
+  factory WaterTestResults.fromJson(Map<String, dynamic> json) {
+    return WaterTestResults(
+      temperature: (json['temperature'] as num?)?.toDouble(),
+      ph: (json['ph'] as num?)?.toDouble(),
+      ammonia: (json['ammonia'] as num?)?.toDouble(),
+      nitrite: (json['nitrite'] as num?)?.toDouble(),
+      nitrate: (json['nitrate'] as num?)?.toDouble(),
+      gh: (json['gh'] as num?)?.toDouble(),
+      kh: (json['kh'] as num?)?.toDouble(),
+      phosphate: (json['phosphate'] as num?)?.toDouble(),
+      co2: (json['co2'] as num?)?.toDouble(),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'temperature': temperature,
+      'ph': ph,
+      'ammonia': ammonia,
+      'nitrite': nitrite,
+      'nitrate': nitrate,
+      'gh': gh,
+      'kh': kh,
+      'phosphate': phosphate,
+      'co2': co2,
+    };
+  }
+
   WaterTestResults copyWith({
     double? temperature,
     double? ph,
@@ -129,6 +158,47 @@ class LogEntry {
       case LogType.other:
         return 'Other';
     }
+  }
+
+
+  factory LogEntry.fromJson(Map<String, dynamic> json) {
+    return LogEntry(
+      id: json['id'] as String,
+      tankId: json['tankId'] as String,
+      type: LogType.values.firstWhere((e) => e.name == json['type']),
+      timestamp: DateTime.parse(json['timestamp'] as String),
+      waterTest: json['waterTest'] != null
+          ? WaterTestResults.fromJson(Map<String, dynamic>.from(json['waterTest'] as Map))
+          : null,
+      waterChangePercent: json['waterChangePercent'] as int?,
+      title: json['title'] as String?,
+      notes: json['notes'] as String?,
+      photoUrls: json['photoUrls'] != null
+          ? List<String>.from(json['photoUrls'] as List)
+          : null,
+      relatedEquipmentId: json['relatedEquipmentId'] as String?,
+      relatedLivestockId: json['relatedLivestockId'] as String?,
+      relatedTaskId: json['relatedTaskId'] as String?,
+      createdAt: DateTime.parse(json['createdAt'] as String),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'tankId': tankId,
+      'type': type.name,
+      'timestamp': timestamp.toIso8601String(),
+      'waterTest': waterTest?.toJson(),
+      'waterChangePercent': waterChangePercent,
+      'title': title,
+      'notes': notes,
+      'photoUrls': photoUrls,
+      'relatedEquipmentId': relatedEquipmentId,
+      'relatedLivestockId': relatedLivestockId,
+      'relatedTaskId': relatedTaskId,
+      'createdAt': createdAt.toIso8601String(),
+    };
   }
 
   LogEntry copyWith({

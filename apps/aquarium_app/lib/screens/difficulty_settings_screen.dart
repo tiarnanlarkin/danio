@@ -1,8 +1,8 @@
 /// Difficulty settings screen - View skill levels and manage difficulty preferences
 /// Shows performance charts, skill levels by topic, and manual overrides
 library;
-import 'package:aquarium_app/theme/app_theme.dart';
-import 'package:aquarium_app/widgets/core/app_card.dart';
+import 'package:danio/theme/app_theme.dart';
+import 'package:danio/widgets/core/app_card.dart';
 
 import 'package:flutter/material.dart';
 import '../models/adaptive_difficulty.dart';

@@ -368,18 +368,18 @@ class SocialService {
           .toList();
     }
     try {
-      var query = _client.from('activity_feed').select('''
+      var filterQuery = _client.from('activity_feed').select('''
         id, user_id, activity_type, description, xp_earned, details, created_at,
         user:profiles!activity_feed_user_id_fkey(
           id, username, display_name, avatar_emoji
         )
-      ''').order('created_at', ascending: false).limit(limit);
+      ''');
 
       if (before != null) {
-        query = query.lt('created_at', before.toUtc().toIso8601String());
+        filterQuery = filterQuery.lt('created_at', before.toUtc().toIso8601String());
       }
 
-      final res = await query;
+      final res = await filterQuery.order('created_at', ascending: false).limit(limit);
 
       return List<Map<String, dynamic>>.from(res).map((row) {
         final user = row['user'] as Map<String, dynamic>;

@@ -12,7 +12,6 @@ import '../providers/spaced_repetition_provider.dart';
 import '../theme/app_theme.dart';
 import '../widgets/core/fish_loader.dart';
 import '../widgets/study_room_scene.dart';
-import '../widgets/hearts_widgets.dart';
 import 'lesson_screen.dart';
 import 'parameter_guide_screen.dart';
 import 'practice_screen.dart';
@@ -129,33 +128,8 @@ class LearnScreen extends ConsumerWidget {
                         onMicroscopeTap: () => _navigateToWaterChemistry(context),
                         onGlobeTap: () => _showRandomFishFact(context),
                       ),
-                      // No back button - LearnScreen is the primary tab
-                      // Navigation between rooms is via swipe or room indicator bar
-                      // Title overlay
-                      Positioned(
-                        top: MediaQuery.of(context).padding.top + 16,
-                        left: 0,
-                        right: 0,
-                        child: const Center(
-                          child: Text(
-                            '📚 Study',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                              shadows: [
-                                Shadow(color: Colors.black45, blurRadius: 8),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                      // Hearts indicator
-                      Positioned(
-                        top: MediaQuery.of(context).padding.top + 12,
-                        right: 16,
-                        child: const HeartIndicator(compact: true),
-                      ),
+                      // Title is shown inside StudyRoomScene XP badge
+
                     ],
                   ),
                 ),
@@ -599,7 +573,7 @@ class _StreakCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 2),
                 Text(
-                  'Keep learning (or logging) to maintain your streak',
+                  'Keep learning to maintain your streak',
                   style: AppTypography.bodySmall.copyWith(
                     color: AppColors.primaryLight,
                   ),

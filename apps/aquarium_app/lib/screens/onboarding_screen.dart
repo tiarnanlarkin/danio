@@ -27,7 +27,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen>
   late Animation<double> _contentFade;
   late Animation<Offset> _contentSlide;
 
-  final List<_OnboardingPage> _pages = const [
+  final List<_OnboardingPage> _pages = [
     _OnboardingPage(
       icon: Icons.water_drop_rounded,
       title: 'Track Your Aquariums',

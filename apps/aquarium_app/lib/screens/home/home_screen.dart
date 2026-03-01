@@ -34,6 +34,7 @@ import 'widgets/xp_source_row.dart';
 import 'widgets/selection_mode_panel.dart';
 import 'widgets/empty_room_scene.dart';
 import '../backup_restore_screen.dart';
+import '../house_navigator.dart';
 import '../../utils/app_page_routes.dart';
 
 /// HomeScreen - The Living Room in the House Navigator
@@ -226,34 +227,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 ),
                 child: Row(
                   children: [
-                    Semantics(
-                      label: 'Living Room, switch room',
-                      button: true,
-                      child: GestureDetector(
-                        onTap: () => _showRoomSwitcher(context),
-                        child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            'Living Room',
-                            style: AppTypography.headlineSmall.copyWith(
-                              color: Colors.white,
-                              shadows: [
-                                Shadow(
-                                  color: AppOverlays.black50,
-                                  blurRadius: 4,
-                                ),
-                              ],
-                            ),
-                          ),
-                          const SizedBox(width: 4),
-                          Icon(
-                            Icons.keyboard_arrow_down,
-                            color: AppOverlays.white70,
-                            size: AppIconSizes.sm,
-                          ),
-                        ],
-                      ),
+                    Flexible(
+                      child: Text(
+                        currentTank.name,
+                        style: AppTypography.headlineSmall.copyWith(
+                          color: Colors.white,
+                          shadows: [Shadow(color: AppOverlays.black50, blurRadius: 4)],
+                        ),
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
                     const Spacer(),
@@ -262,34 +243,17 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       padding: EdgeInsets.only(right: 8),
                       child: HeartIndicator(compact: true),
                     ),
+
                     Semantics(
-                      label: 'Search',
+                      label: 'Tank Toolbox',
                       button: true,
                       child: IconButton(
                         icon: Icon(
-                          Icons.search,
+                          Icons.handyman_outlined,
                           color: AppOverlays.white90,
                         ),
-                        tooltip: 'Search',
-                        onPressed: () => Navigator.push(
-                          context,
-                          RoomSlideRoute(page: const SearchScreen()),
-                        ),
-                      ),
-                    ),
-                    Semantics(
-                      label: 'Settings',
-                      button: true,
-                      child: IconButton(
-                        icon: Icon(
-                          Icons.settings_outlined,
-                          color: AppOverlays.white90,
-                        ),
-                        tooltip: 'Settings',
-                        onPressed: () => Navigator.push(
-                          context,
-                          RoomSlideRoute(page: const SettingsScreen()),
-                        ),
+                        tooltip: 'Tank Toolbox',
+                        onPressed: () => _showTankToolbox(context),
                       ),
                     ),
                   ],
@@ -462,6 +426,71 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     if (profile == null) return true;
     // Consider user "new" if they haven't completed the tutorial yet
     return !profile.hasSeenTutorial;
+  }
+
+
+  void _showTankToolbox(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) => Container(
+        decoration: BoxDecoration(
+          color: Theme.of(context).scaffoldBackgroundColor,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(AppRadius.lg)),
+        ),
+        padding: const EdgeInsets.all(AppSpacing.md),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Center(
+              child: Container(
+                width: 40, height: 4,
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade300,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+            Text('Tank Toolbox 🔧', style: AppTypography.headlineSmall),
+            const SizedBox(height: 12),
+            ListTile(
+              leading: const Icon(Icons.notifications_outlined),
+              title: const Text('Reminders'),
+              onTap: () { Navigator.pop(ctx); Navigator.push(context, RoomSlideRoute(page: const RemindersScreen())); },
+            ),
+            ListTile(
+              leading: const Icon(Icons.book_outlined),
+              title: const Text('Tank Journal'),
+              onTap: () {
+                final tanksAsync = ref.read(tanksProvider);
+                tanksAsync.whenData((tanks) {
+                  if (tanks.isNotEmpty) {
+                    Navigator.pop(ctx);
+                    _navigateToJournal(context, tanks[_currentTankIndex % tanks.length].id);
+                  }
+                });
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.analytics_outlined),
+              title: const Text('Analytics'),
+              onTap: () { Navigator.pop(ctx); },
+            ),
+            ListTile(
+              leading: const Icon(Icons.search),
+              title: const Text('Species Search'),
+              onTap: () {
+                Navigator.pop(ctx);
+                Navigator.push(context, RoomSlideRoute(page: const SearchScreen()));
+              },
+            ),
+            SizedBox(height: MediaQuery.of(context).padding.bottom + 8),
+          ],
+        ),
+      ),
+    );
   }
 
   void _showRoomSwitcher(BuildContext context) {

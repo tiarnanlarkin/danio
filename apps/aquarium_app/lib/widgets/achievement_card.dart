@@ -1,7 +1,7 @@
 /// Achievement Card Widget - Displays achievement in grid
 /// Shows locked/unlocked state with progress bar
 library;
-import 'package:aquarium_app/theme/app_theme.dart';
+import 'package:danio/theme/app_theme.dart';
 
 import 'package:flutter/material.dart';
 import '../models/achievements.dart';
