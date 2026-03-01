@@ -75,7 +75,7 @@ class _EnhancedOnboardingScreenState
         );
         
         // Navigate after a brief moment for the celebration to show
-        Future.delayed(const Duration(milliseconds: 500), () {
+        Future.delayed(const Duration(seconds: 2), () {
           if (mounted) {
             Navigator.of(context).pushReplacement(
               MaterialPageRoute(builder: (_) => const HomeScreen()),
