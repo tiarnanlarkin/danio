@@ -9,4 +9,5 @@
     <color name="aquarium_blue">#2980B9</color>
     <color name="aquarium_light_blue">#3498DB</color>
     <color name="aquarium_dark_blue">#1F618D</color>
+	<color name="ic_launcher_background">#FFFFFF</color>
 </resources>
