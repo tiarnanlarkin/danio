@@ -1246,6 +1246,13 @@ class AppTheme {
         ),
       ),
 
+      // Text selection
+      textSelectionTheme: const TextSelectionThemeData(
+        cursorColor: AppColors.primary,
+        selectionColor: AppColors.primaryAlpha30,
+        selectionHandleColor: AppColors.primary,
+      ),
+
       // Text theme
       textTheme: GoogleFonts.nunitoTextTheme(),
     );
@@ -1391,6 +1398,13 @@ class AppTheme {
       ),
 
       // Text theme
+      // Text selection
+      textSelectionTheme: const TextSelectionThemeData(
+        cursorColor: AppColors.primaryLight,
+        selectionColor: AppColors.primaryLightAlpha30,
+        selectionHandleColor: AppColors.primaryLight,
+      ),
+
       textTheme: GoogleFonts.nunitoTextTheme(),
     );
   }
