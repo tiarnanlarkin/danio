@@ -247,7 +247,7 @@ class _StoryPlayerScreenState extends ConsumerState<StoryPlayerScreen>
     }
 
     return Scaffold(
-      backgroundColor: AppColors.primary.shade900,
+      backgroundColor: const Color(0xFFFF6F00),
       body: SafeArea(
         child: Stack(
           children: [
@@ -258,8 +258,8 @@ class _StoryPlayerScreenState extends ConsumerState<StoryPlayerScreen>
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                   colors: [
-                    AppColors.primary.shade900,
-                    AppColors.primary.shade700,
+                    const Color(0xFFFF6F00),
+                    const Color(0xFFFFA000),
                     Colors.cyan.shade600,
                   ],
                 ),
@@ -527,7 +527,7 @@ class _ChoiceButton extends StatelessWidget {
           padding: const EdgeInsets.all(AppSpacing.lg2),
           decoration: BoxDecoration(
             borderRadius: AppRadius.mediumRadius,
-            border: Border.all(color: AppColors.primary.shade200, width: 2),
+            border: Border.all(color: const Color(0xFFFFE082), width: 2),
           ),
           child: Row(
             children: [
@@ -544,7 +544,7 @@ class _ChoiceButton extends StatelessWidget {
               const SizedBox(width: 12),
               Icon(
                 Icons.arrow_forward_ios,
-                color: AppColors.primary.shade700,
+                color: const Color(0xFFFFA000),
                 size: AppIconSizes.sm,
               ),
             ],

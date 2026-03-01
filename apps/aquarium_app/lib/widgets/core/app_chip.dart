@@ -455,7 +455,7 @@ class _PulsingDotState extends State<_PulsingDot> with SingleTickerProviderState
               height: widget.size + (8 * _controller.value),
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: widget.color.withAlpha((0.3 * (1 - _controller.value * 255).round())),
+                color: widget.color.withAlpha((0.3 * (1 - _controller.value) * 255).round()),
               ),
             ),
             // Core dot

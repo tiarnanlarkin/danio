@@ -549,7 +549,7 @@ class _EnhancedPlacementTestScreenState
       ),
       child: Card(
         elevation: AppElevation.level2,
-        color: isCorrect ? Colors.green[50] : AppColors.primary //[50],
+        color: isCorrect ? Colors.green[50] : const Color(0xFFFFF8E1),
         shape: RoundedRectangleBorder(
           borderRadius: AppRadius.mediumRadius,
           side: BorderSide(

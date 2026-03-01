@@ -41,7 +41,7 @@ class SyncIndicator extends ConsumerWidget {
               : hasConflicts
               ? Colors.orange.shade100
               : isSyncing
-              ? AppColors.primary.shade100
+              ? const Color(0xFFFFECB3)
               : Colors.grey.shade100,
           border: Border(
             bottom: BorderSide(
@@ -50,7 +50,7 @@ class SyncIndicator extends ConsumerWidget {
                   : hasConflicts
                   ? Colors.orange.shade300
                   : isSyncing
-                  ? AppColors.primary.shade300
+                  ? const Color(0xFFFFD54F)
                   : Colors.grey.shade300,
               width: 1,
             ),
@@ -65,7 +65,7 @@ class SyncIndicator extends ConsumerWidget {
                 child: CircularProgressIndicator(
                   strokeWidth: 2,
                   valueColor: AlwaysStoppedAnimation<Color>(
-                    AppColors.primary.shade900,
+                    const Color(0xFFFF6F00),
                   ),
                 ),
               )
@@ -81,7 +81,7 @@ class SyncIndicator extends ConsumerWidget {
                     : hasConflicts
                     ? Colors.orange.shade900
                     : isSyncing
-                    ? AppColors.primary.shade900
+                    ? const Color(0xFFFF6F00)
                     : Colors.grey.shade700,
                 size: AppIconSizes.sm,
               ),
@@ -95,7 +95,7 @@ class SyncIndicator extends ConsumerWidget {
                       : hasConflicts
                       ? Colors.orange.shade900
                       : isSyncing
-                      ? AppColors.primary.shade900
+                      ? const Color(0xFFFF6F00)
                       : Colors.grey.shade700,
                   fontSize: 14,
                   fontWeight: FontWeight.w500,
@@ -134,7 +134,7 @@ class SyncIndicatorCompact extends ConsumerWidget {
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
         color: syncState.isSyncing
-            ? AppColors.primary.shade100
+            ? const Color(0xFFFFECB3)
             : Colors.grey.shade200,
         borderRadius: AppRadius.mediumRadius,
       ),
@@ -147,7 +147,7 @@ class SyncIndicatorCompact extends ConsumerWidget {
               height: 12,
               child: CircularProgressIndicator(
                 strokeWidth: 2,
-                valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary.shade900),
+                valueColor: AlwaysStoppedAnimation<Color>(const Color(0xFFFF6F00)),
               ),
             )
           else
@@ -157,7 +157,7 @@ class SyncIndicatorCompact extends ConsumerWidget {
             syncState.isSyncing ? 'Syncing' : '${syncState.queuedCount}',
             style: TextStyle(
               color: syncState.isSyncing
-                  ? AppColors.primary.shade900
+                  ? const Color(0xFFFF6F00)
                   : Colors.grey.shade700,
               fontSize: 12,
               fontWeight: FontWeight.w500,

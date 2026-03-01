@@ -3,6 +3,7 @@
 library;
 
 import 'package:flutter/material.dart';
+import 'package:danio/theme/app_theme.dart';
 import 'dart:math' as math;
 
 /// Wrapper widget that displays celebratory confetti animation over its child.

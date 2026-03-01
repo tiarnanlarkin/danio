@@ -467,7 +467,7 @@ class _ParticlesPainter extends CustomPainter {
       final y = size.height * ((p.y + progress * p.speed * 50) % 1.0);
       
       final paint = Paint()
-        ..color = color.withAlpha((p.opacity * (0.5 + 0.5 * math.sin(progress * math.pi * 2 + p.x * 10 * 255).round())));
+        ..color = color.withAlpha((p.opacity * (0.5 + 0.5 * math.sin(progress * math.pi * 2 + p.x * 10)) * 255).round());
       
       canvas.drawCircle(Offset(x, y), p.size, paint);
     }

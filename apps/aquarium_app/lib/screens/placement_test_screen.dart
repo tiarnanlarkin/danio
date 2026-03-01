@@ -335,7 +335,7 @@ class _PlacementTestScreenState extends ConsumerState<PlacementTestScreen> {
     final isCorrect = _selectedAnswer == _currentQuestion.correctIndex;
 
     return Card(
-      color: isCorrect ? Colors.green[50] : AppColors.primary //[50],
+      color: isCorrect ? Colors.green[50] : const Color(0xFFFFF8E1),
       child: Padding(
         padding: const EdgeInsets.all(AppSpacing.md),
         child: Column(

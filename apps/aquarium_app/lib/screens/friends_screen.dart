@@ -135,7 +135,7 @@ class _FriendsScreenState extends ConsumerState<FriendsScreen>
             Container(
               padding: const EdgeInsets.all(AppSpacing.sm2),
               decoration: BoxDecoration(
-                color: AppColors.primary.shade50,
+                color: const Color(0xFFFFF8E1),
                 borderRadius: AppRadius.smallRadius,
               ),
               child: const Row(
