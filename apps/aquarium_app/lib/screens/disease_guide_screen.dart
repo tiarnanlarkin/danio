@@ -103,7 +103,7 @@ class _DiseaseCard extends StatelessWidget {
             color: disease.severityColor.withAlpha(26),
             borderRadius: AppRadius.smallRadius,
           ),
-          child: Icon(disease.icon, color: disease.severityColor, size: 22),
+          child: Icon(disease.icon, color: disease.severityColor, size: 24),
         ),
         title: Text(disease.name, style: AppTypography.labelLarge),
         subtitle: Text(disease.cause, style: AppTypography.bodySmall),

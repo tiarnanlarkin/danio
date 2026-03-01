@@ -179,7 +179,7 @@ class _EmptyStateState extends State<EmptyState>
                     ),
                     child: Icon(
                       widget.icon,
-                      size: 60,
+                      size: 64,
                       color: AppColors.primary,
                     ),
                   ),

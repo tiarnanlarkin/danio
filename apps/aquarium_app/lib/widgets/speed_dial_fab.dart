@@ -237,7 +237,7 @@ class _PillButton extends StatelessWidget {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(action.icon, color: fg, size: 26),
+              Icon(action.icon, color: fg, size: 24),
               const SizedBox(width: 10),
               Text(
                 action.label,

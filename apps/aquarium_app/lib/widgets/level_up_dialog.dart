@@ -134,7 +134,7 @@ class _LevelUpDialogState extends State<LevelUpDialog>
                       ),
                       child: const Icon(
                         Icons.workspace_premium,
-                        size: 60,
+                        size: 64,
                         color: Colors.white,
                       ),
                     ),
