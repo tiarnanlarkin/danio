@@ -350,9 +350,9 @@ class StoryCard extends StatelessWidget {
                                   size: AppIconSizes.md,
                                 )
                               else if (!isUnlocked)
-                                const Icon(
+                                Icon(
                                   Icons.lock,
-                                  color: Colors.grey,
+                                  color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
                                   size: AppIconSizes.md,
                                 ),
                             ],
@@ -437,10 +437,10 @@ class StoryCard extends StatelessWidget {
                     padding: const EdgeInsets.only(top: 12),
                     child: Row(
                       children: [
-                        const Icon(
+                        Icon(
                           Icons.lock_outline,
                           size: AppIconSizes.xs,
-                          color: Colors.grey,
+                          color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
                         ),
                         const SizedBox(width: AppSpacing.xs),
                         Text(

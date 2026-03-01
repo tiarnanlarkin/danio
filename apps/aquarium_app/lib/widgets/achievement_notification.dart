@@ -282,7 +282,7 @@ class _AchievementNotificationWidgetState
                                 widget.achievement.description,
                                 style: TextStyle(
                                   fontSize: 16,
-                                  color: Colors.grey.shade700,
+                                  color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
                                 ),
                                 textAlign: TextAlign.center,
                               ),
@@ -327,7 +327,7 @@ class _AchievementNotificationWidgetState
                                 onPressed: widget.onDismiss,
                                 child: Text(
                                   'Tap anywhere to continue',
-                                  style: TextStyle(color: Colors.grey.shade600),
+                                  style: TextStyle(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6)),
                                 ),
                               ),
                             ],

@@ -1475,7 +1475,7 @@ class _LastFedInfo extends ConsumerWidget {
             child: Text(
               'No feedings logged yet',
               style: AppTypography.bodySmall.copyWith(
-                color: Colors.grey.shade500,
+                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
               ),
             ),
           );
@@ -1494,12 +1494,12 @@ class _LastFedInfo extends ConsumerWidget {
           padding: const EdgeInsets.only(top: AppSpacing.sm),
           child: Row(
             children: [
-              Icon(Icons.restaurant, size: 14, color: Colors.grey.shade500),
+              Icon(Icons.restaurant, size: 14, color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5)),
               const SizedBox(width: 4),
               Text(
                 'Last fed: $timeAgo',
                 style: AppTypography.bodySmall.copyWith(
-                  color: Colors.grey.shade600,
+                  color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
                 ),
               ),
             ],

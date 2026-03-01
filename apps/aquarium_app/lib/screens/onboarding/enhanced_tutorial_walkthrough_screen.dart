@@ -589,7 +589,7 @@ class _EnhancedTutorialWalkthroughScreenState
             children: [
               Icon(
                 _useDemoData ? Icons.check_circle : Icons.science_outlined,
-                color: _useDemoData ? AppColors.accent : Colors.grey,
+                color: _useDemoData ? AppColors.accent : Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
                 size: 32,
               ),
               const SizedBox(width: AppSpacing.md),

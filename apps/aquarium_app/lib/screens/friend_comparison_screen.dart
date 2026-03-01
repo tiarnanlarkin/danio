@@ -445,7 +445,7 @@ class _StatComparisonRow extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
-                    color: winner == 'user' ? Colors.green : Colors.grey,
+                    color: winner == 'user' ? Colors.green : Theme.of(context).colorScheme.onSurface.withOpacity(0.4),
                   ),
                 ),
               ),
@@ -480,7 +480,7 @@ class _StatComparisonRow extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
-                    color: winner == 'friend' ? Colors.green : Colors.grey,
+                    color: winner == 'friend' ? Colors.green : Theme.of(context).colorScheme.onSurface.withOpacity(0.4),
                   ),
                 ),
               ),

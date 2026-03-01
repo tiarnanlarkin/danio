@@ -160,7 +160,7 @@ class _FriendFilterBar extends StatelessWidget {
       decoration: BoxDecoration(
         color: Theme.of(context).scaffoldBackgroundColor,
         border: Border(
-          bottom: BorderSide(color: Colors.grey.shade300, width: 1),
+          bottom: BorderSide(color: Theme.of(context).dividerColor, width: 1),
         ),
       ),
       child: ListView.builder(
@@ -354,7 +354,7 @@ class _ActivityTile extends ConsumerWidget {
                           ),
                           TextSpan(
                             text: ' ${activity.type.displayName}',
-                            style: TextStyle(color: Colors.grey.shade600),
+                            style: TextStyle(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6)),
                           ),
                         ],
                       ),
@@ -407,14 +407,14 @@ class _ActivityTile extends ConsumerWidget {
                         Icon(
                           Icons.access_time,
                           size: 12,
-                          color: Colors.grey.shade500,
+                          color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
                         ),
                         const SizedBox(width: AppSpacing.xs),
                         Text(
                           activity.timeAgo,
                           style: TextStyle(
                             fontSize: 12,
-                            color: Colors.grey.shade500,
+                            color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
                           ),
                         ),
                       ],
@@ -424,7 +424,7 @@ class _ActivityTile extends ConsumerWidget {
               ),
 
               // Chevron
-              Icon(Icons.chevron_right, color: Colors.grey.shade400),
+              Icon(Icons.chevron_right, color: Theme.of(context).colorScheme.onSurface.withOpacity(0.4)),
             ],
           ),
         ),
@@ -486,7 +486,7 @@ class _DateDivider extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: Row(
         children: [
-          Expanded(child: Divider(color: Colors.grey.shade300)),
+          Expanded(child: Divider(color: Theme.of(context).dividerColor)),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12),
             child: Text(
@@ -494,11 +494,11 @@ class _DateDivider extends StatelessWidget {
               style: TextStyle(
                 fontSize: 12,
                 fontWeight: FontWeight.bold,
-                color: Colors.grey.shade600,
+                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
               ),
             ),
           ),
-          Expanded(child: Divider(color: Colors.grey.shade300)),
+          Expanded(child: Divider(color: Theme.of(context).dividerColor)),
         ],
       ),
     );

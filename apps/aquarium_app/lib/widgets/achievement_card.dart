@@ -48,10 +48,10 @@ class AchievementCard extends StatelessWidget {
         decoration: BoxDecoration(
           borderRadius: AppRadius.mediumRadius,
           border: Border.all(
-            color: isLocked ? Colors.grey.shade300 : rarityColor,
+            color: isLocked ? Theme.of(context).colorScheme.outlineVariant : rarityColor,
             width: isLocked ? 1 : 3,
           ),
-          color: isLocked ? Colors.grey.shade100 : rarityColor.withAlpha(26),
+          color: isLocked ? Theme.of(context).colorScheme.surfaceContainerHighest : rarityColor.withAlpha(26),
           boxShadow: isLocked
               ? []
               : [
@@ -180,7 +180,7 @@ class AchievementCard extends StatelessWidget {
                       child: LinearProgressIndicator(
                         value: progressPercent,
                         minHeight: 6,
-                        backgroundColor: Colors.grey.shade300,
+                        backgroundColor: Theme.of(context).colorScheme.outlineVariant,
                         valueColor: AlwaysStoppedAnimation<Color>(rarityColor),
                       ),
                     ),

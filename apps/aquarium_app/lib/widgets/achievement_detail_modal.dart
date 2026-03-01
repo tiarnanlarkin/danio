@@ -43,7 +43,7 @@ class AchievementDetailModal extends StatelessWidget {
               height: 4,
               margin: EdgeInsets.only(bottom: AppSpacing.md),
               decoration: BoxDecoration(
-                color: Colors.grey.shade300,
+                color: Theme.of(context).colorScheme.outlineVariant,
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
@@ -55,7 +55,7 @@ class AchievementDetailModal extends StatelessWidget {
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color: isLocked
-                    ? Colors.grey.shade200
+                    ? Theme.of(context).colorScheme.surfaceContainerHigh
                     : rarityColor.withAlpha(51),
                 boxShadow: isLocked
                     ? []
@@ -136,7 +136,7 @@ class AchievementDetailModal extends StatelessWidget {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
               decoration: BoxDecoration(
-                color: Colors.grey.shade200,
+                color: Theme.of(context).colorScheme.surfaceContainerHigh,
                 borderRadius: AppRadius.mediumRadius,
               ),
               child: Text(
@@ -165,7 +165,7 @@ class AchievementDetailModal extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: Colors.grey.shade100,
+                  color: Theme.of(context).colorScheme.surfaceContainerHighest,
                   borderRadius: AppRadius.mediumRadius,
                 ),
                 child: Column(
@@ -249,7 +249,7 @@ class AchievementDetailModal extends StatelessWidget {
                     Container(
                       width: 1,
                       height: 60,
-                      color: Colors.grey.shade300,
+                      color: Theme.of(context).colorScheme.outlineVariant,
                     ),
                     Column(
                       children: [
