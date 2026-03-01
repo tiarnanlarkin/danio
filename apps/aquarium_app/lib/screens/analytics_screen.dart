@@ -543,7 +543,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                     barRods: [
                       BarChartRodData(
                         toY: entry.value.xp.toDouble(),
-                        color: isToday ? Colors.amber : Colors.blue,
+                        color: isToday ? DanioColors.amberGold : AppColors.primaryLight,
                         width: 20,
                         borderRadius: const BorderRadius.vertical(
                           top: Radius.circular(4),
