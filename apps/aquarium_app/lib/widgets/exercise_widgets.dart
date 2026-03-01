@@ -106,6 +106,7 @@ class MultipleChoiceWidget extends StatefulWidget {
 class _MultipleChoiceWidgetState extends State<MultipleChoiceWidget>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
+  late List<int> _shuffledIndices;
 
   @override
   void initState() {
@@ -114,6 +115,20 @@ class _MultipleChoiceWidgetState extends State<MultipleChoiceWidget>
       duration: AppDurations.medium2,
       vsync: this,
     );
+    _shuffleOptions();
+  }
+
+  void _shuffleOptions() {
+    _shuffledIndices = List<int>.generate(widget.exercise.options.length, (i) => i);
+    _shuffledIndices.shuffle(math.Random());
+  }
+
+  @override
+  void didUpdateWidget(MultipleChoiceWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.exercise.id != widget.exercise.id) {
+      _shuffleOptions();
+    }
   }
 
   @override
@@ -126,13 +141,12 @@ class _MultipleChoiceWidgetState extends State<MultipleChoiceWidget>
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: widget.exercise.options.asMap().entries.map((entry) {
-        final index = entry.key;
-        final option = entry.value;
-        final isSelected = widget.selectedAnswer == index;
-        final isCorrect = index == widget.exercise.correctIndex;
+      children: _shuffledIndices.map((originalIndex) {
+        final option = widget.exercise.options[originalIndex];
+        final isSelected = widget.selectedAnswer == originalIndex;
+        final isCorrect = originalIndex == widget.exercise.correctIndex;
 
-        return _buildOption(context, index, option, isSelected, isCorrect);
+        return _buildOption(context, originalIndex, option, isSelected, isCorrect);
       }).toList(),
     );
   }
