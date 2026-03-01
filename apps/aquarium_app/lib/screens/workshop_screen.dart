@@ -257,21 +257,19 @@ class _WorkshopHeader extends ConsumerWidget {
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: const [
+                  children: [
                     Text(
                       '🔧 Workshop',
-                      style: TextStyle(
+                      style: Theme.of(context).textTheme.headlineSmall!.copyWith(
                         color: WorkshopColors.textPrimary,
-                        fontSize: 24,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                     SizedBox(height: AppSpacing.xs),
                     Text(
                       'Tools & calculators',
-                      style: TextStyle(
+                      style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                         color: WorkshopColors.textSecondary,
-                        fontSize: 14,
                       ),
                     ),
                   ],
@@ -365,18 +363,16 @@ class _ToolCard extends StatelessWidget {
                 const Spacer(),
                 Text(
                   title,
-                  style: const TextStyle(
+                  style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                     color: WorkshopColors.textPrimary,
-                    fontSize: 15,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
                 const SizedBox(height: 2),
                 Text(
                   subtitle,
-                  style: const TextStyle(
+                  style: Theme.of(context).textTheme.bodySmall!.copyWith(
                     color: WorkshopColors.textSecondary,
-                    fontSize: 12,
                   ),
                 ),
               ],
@@ -407,11 +403,10 @@ class _QuickConversions extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
+                Text(
                   'Quick Reference',
-                  style: TextStyle(
+                  style: Theme.of(context).textTheme.titleMedium!.copyWith(
                     color: WorkshopColors.textPrimary,
-                    fontSize: 16,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -444,16 +439,14 @@ class _ConversionRow extends StatelessWidget {
         children: [
           Text(
             left,
-            style: const TextStyle(
+            style: Theme.of(context).textTheme.bodyLarge!.copyWith(
               color: WorkshopColors.textSecondary,
-              fontSize: 14,
             ),
           ),
           Text(
             right,
-            style: const TextStyle(
+            style: Theme.of(context).textTheme.bodyLarge!.copyWith(
               color: WorkshopColors.accentWarm,
-              fontSize: 14,
               fontWeight: FontWeight.w500,
             ),
           ),

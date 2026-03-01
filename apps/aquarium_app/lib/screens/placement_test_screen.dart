@@ -233,14 +233,13 @@ class _PlacementTestScreenState extends ConsumerState<PlacementTestScreen> {
             children: [
               Text(
                 '${(_progress * 100).round()}% Complete',
-                style: const TextStyle(
-                  fontSize: 12,
+                style: Theme.of(context).textTheme.bodySmall!.copyWith(
                   fontWeight: FontWeight.w500,
                 ),
               ),
               Text(
                 '${_userAnswers.length}/${_test.questions.length} Answered',
-                style: const TextStyle(fontSize: 12, color: Colors.grey),
+                style: Theme.of(context).textTheme.bodySmall!.copyWith( color: Colors.grey),
               ),
             ],
           ),

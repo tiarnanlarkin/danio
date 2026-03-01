@@ -1325,7 +1325,7 @@ class _BulkAddLivestockSheetState extends State<_BulkAddLivestockSheet> {
         Navigator.pop(context);
         AppFeedback.showSuccess(
           context,
-          'Added ${_items.length} livestock entries',
+          'Welcome aboard, new friends! \u{1F420} ${_items.length} added',
         );
       }
     } catch (e) {
@@ -1448,8 +1448,7 @@ class _HealthChip extends StatelessWidget {
           const SizedBox(width: 4),
           Text(
             label,
-            style: TextStyle(
-              fontSize: 11,
+            style: Theme.of(context).textTheme.bodySmall!.copyWith(
               fontWeight: FontWeight.w600,
               color: color.shade700,
             ),

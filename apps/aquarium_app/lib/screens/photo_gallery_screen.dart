@@ -241,7 +241,6 @@ class _PhotoThumbnail extends StatelessWidget {
                     DateFormat('d').format(photo.date),
                     style: AppTypography.bodySmall.copyWith(
                       color: Colors.white,
-                      fontSize: 10,
                     ),
                   ),
                 ),

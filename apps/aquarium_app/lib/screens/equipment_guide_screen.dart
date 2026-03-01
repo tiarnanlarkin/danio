@@ -380,7 +380,6 @@ class _EquipmentCard extends StatelessWidget {
                             '✓ Pros',
                             style: AppTypography.labelLarge.copyWith(
                               color: AppColors.success,
-                              fontSize: 13,
                             ),
                           ),
                           ...item.pros.map(
@@ -398,7 +397,6 @@ class _EquipmentCard extends StatelessWidget {
                             '✗ Cons',
                             style: AppTypography.labelLarge.copyWith(
                               color: AppColors.error,
-                              fontSize: 13,
                             ),
                           ),
                           ...item.cons.map(

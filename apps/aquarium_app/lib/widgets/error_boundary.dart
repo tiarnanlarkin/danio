@@ -149,10 +149,9 @@ class _DefaultErrorScreen extends StatelessWidget {
                         borderRadius: BorderRadius.circular(AppRadius.md2),
                       ),
                     ),
-                    child: const Text(
+                    child: Text(
                       'Try Again',
-                      style: TextStyle(
-                        fontSize: 16,
+                      style: Theme.of(context).textTheme.titleMedium!.copyWith(
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -173,9 +172,8 @@ class _DefaultErrorScreen extends StatelessWidget {
                           content: SingleChildScrollView(
                             child: Text(
                               error.toString(),
-                              style: const TextStyle(
+                              style: Theme.of(context).textTheme.bodySmall!.copyWith(
                                 fontFamily: 'monospace',
-                                fontSize: 12,
                               ),
                             ),
                           ),

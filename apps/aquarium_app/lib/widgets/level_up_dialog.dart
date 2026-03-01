@@ -141,10 +141,9 @@ class _LevelUpDialogState extends State<LevelUpDialog>
                     const SizedBox(height: AppSpacing.lg),
 
                     // "Level Up!" text
-                    const Text(
+                    Text(
                       'Level Up!',
-                      style: TextStyle(
-                        fontSize: 36,
+                      style: Theme.of(context).textTheme.headlineMedium!.copyWith(
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
                         letterSpacing: 1,
@@ -166,8 +165,7 @@ class _LevelUpDialogState extends State<LevelUpDialog>
                         children: [
                           Text(
                             'Level ${widget.newLevel}',
-                            style: const TextStyle(
-                              fontSize: 28,
+                            style: Theme.of(context).textTheme.headlineMedium!.copyWith(
                               fontWeight: FontWeight.bold,
                               color: Colors.white,
                             ),
@@ -175,8 +173,7 @@ class _LevelUpDialogState extends State<LevelUpDialog>
                           const SizedBox(height: AppSpacing.xs),
                           Text(
                             widget.levelTitle,
-                            style: const TextStyle(
-                              fontSize: 18,
+                            style: Theme.of(context).textTheme.titleLarge!.copyWith(
                               color: Colors.white,
                               fontWeight: FontWeight.w500,
                             ),

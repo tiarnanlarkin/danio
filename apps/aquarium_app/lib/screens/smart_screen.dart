@@ -394,7 +394,6 @@ class _OfflineBanner extends StatelessWidget {
               'Build with:\nflutter run --dart-define=OPENAI_API_KEY=sk-...',
               style: AppTypography.bodySmall.copyWith(
                 fontFamily: 'monospace',
-                fontSize: 11,
                 color: AppColors.textSecondary,
               ),
               textAlign: TextAlign.center,
@@ -406,7 +405,6 @@ class _OfflineBanner extends StatelessWidget {
             'database, log water parameters, and manage your tanks.',
             style: AppTypography.bodySmall.copyWith(
               color: AppColors.textHint,
-              fontSize: 11,
             ),
             textAlign: TextAlign.center,
           ),

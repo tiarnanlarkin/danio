@@ -49,9 +49,9 @@ class SyncDebugDialog extends ConsumerWidget {
             if (syncState.hasConflicts) ...[
               const Divider(),
               const SizedBox(height: AppSpacing.sm),
-              const Text(
+              Text(
                 'Recent Conflicts:',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                style: Theme.of(context).textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: AppSpacing.sm),
               ...syncState.recentConflicts.map(
@@ -69,7 +69,7 @@ class SyncDebugDialog extends ConsumerWidget {
                       Expanded(
                         child: Text(
                           conflict,
-                          style: TextStyle(fontSize: 12),
+                          style: Theme.of(context).textTheme.bodySmall!.copyWith(),
                         ),
                       ),
                     ],
@@ -83,9 +83,9 @@ class SyncDebugDialog extends ConsumerWidget {
             if (syncState.hasQueuedActions) ...[
               const Divider(),
               const SizedBox(height: AppSpacing.sm),
-              const Text(
+              Text(
                 'Queued Actions:',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                style: Theme.of(context).textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: AppSpacing.sm),
               ...syncState.queuedActions.map(
@@ -101,12 +101,11 @@ class SyncDebugDialog extends ConsumerWidget {
                           children: [
                             Text(
                               SyncService.getActionDescription(action),
-                              style: TextStyle(fontSize: 12),
+                              style: Theme.of(context).textTheme.bodySmall!.copyWith(),
                             ),
                             Text(
                               _formatDateTime(action.timestamp),
-                              style: TextStyle(
-                                fontSize: 10,
+                              style: Theme.of(context).textTheme.labelSmall!.copyWith(
                                 color: Colors.grey[600],
                               ),
                             ),
@@ -232,13 +231,12 @@ class _InfoRow extends StatelessWidget {
         Expanded(
           child: Text(
             label,
-            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+            style: Theme.of(context).textTheme.bodyLarge!.copyWith( fontWeight: FontWeight.w500),
           ),
         ),
         Text(
           value,
-          style: TextStyle(
-            fontSize: 14,
+          style: Theme.of(context).textTheme.bodyLarge!.copyWith(
             fontWeight: FontWeight.bold,
             color: color ?? Colors.black87,
           ),

@@ -226,9 +226,8 @@ class AmbientTimeIndicator extends ConsumerWidget {
           const SizedBox(width: 4),
           Text(
             config.name,
-            style: const TextStyle(
+            style: Theme.of(context).textTheme.bodySmall!.copyWith(
               color: Colors.white70,
-              fontSize: 11,
             ),
           ),
         ],

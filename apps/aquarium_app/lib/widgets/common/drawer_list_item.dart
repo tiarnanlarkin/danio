@@ -75,7 +75,6 @@ class DrawerListItem extends StatelessWidget {
           badgeCount! > 99 ? '99+' : '$badgeCount',
           style: AppTypography.labelSmall.copyWith(
             color: AppColors.onError,
-            fontSize: 10,
           ),
         ),
       );

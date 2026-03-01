@@ -513,17 +513,15 @@ class _GlassBadge extends StatelessWidget {
                 children: [
                   Text(
                     text,
-                    style: const TextStyle(
+                    style: Theme.of(context).textTheme.titleMedium!.copyWith(
                       color: StudyColors.textPrimary,
-                      fontSize: 16,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   Text(
                     subtext,
-                    style: const TextStyle(
+                    style: Theme.of(context).textTheme.bodySmall!.copyWith(
                       color: StudyColors.textSecondary,
-                      fontSize: 11,
                     ),
                   ),
                 ],
@@ -562,10 +560,9 @@ class _StreakBadge extends StatelessWidget {
               const SizedBox(width: 4),
               Text(
                 '$streak',
-                style: const TextStyle(
+                style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
-                  fontSize: 14,
                 ),
               ),
             ],
@@ -604,19 +601,17 @@ class _ProgressCard extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text(
+                  Text(
                     'Learning Progress',
-                    style: TextStyle(
+                    style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                       color: StudyColors.textPrimary,
-                      fontSize: 14,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
                   Text(
                     '$completed / $total lessons',
-                    style: const TextStyle(
+                    style: Theme.of(context).textTheme.bodySmall!.copyWith(
                       color: StudyColors.textSecondary,
-                      fontSize: 12,
                     ),
                   ),
                 ],

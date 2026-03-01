@@ -868,7 +868,7 @@ class _WaterTypeCard extends StatelessWidget {
         ),
         child: Row(
           children: [
-            Text(icon, style: TextStyle(fontSize: 32)),
+            Text(icon, style: Theme.of(context).textTheme.headlineMedium!.copyWith()),
             const SizedBox(width: AppSpacing.md),
             Expanded(
               child: Column(

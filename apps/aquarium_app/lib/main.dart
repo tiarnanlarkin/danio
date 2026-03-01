@@ -246,8 +246,7 @@ class _AppRouterState extends ConsumerState<_AppRouter>
                 const SizedBox(height: AppSpacing.md),
                 Text(
                   'Danio',
-                  style: TextStyle(
-                    fontSize: 32,
+                  style: Theme.of(context).textTheme.headlineMedium!.copyWith(
                     fontWeight: FontWeight.bold,
                     color: isDark ? Colors.black : Colors.white,
                   ),

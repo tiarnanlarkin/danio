@@ -78,20 +78,18 @@ class StoriesCard extends ConsumerWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
+                        Text(
                           'Interactive Stories',
-                          style: TextStyle(
+                          style: Theme.of(context).textTheme.titleLarge!.copyWith(
                             color: Colors.white,
-                            fontSize: 20,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
                         const SizedBox(height: AppSpacing.xs),
                         Text(
                           'Learn through scenarios',
-                          style: TextStyle(
+                          style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                             color: AppOverlays.white90,
-                            fontSize: 14,
                           ),
                         ),
                       ],
@@ -115,9 +113,8 @@ class StoriesCard extends ConsumerWidget {
                     children: [
                       Text(
                         '$completedStories/$totalStories completed',
-                        style: TextStyle(
+                        style: Theme.of(context).textTheme.bodySmall!.copyWith(
                           color: AppOverlays.white90,
-                          fontSize: 12,
                           fontWeight: FontWeight.w500,
                         ),
                       ),

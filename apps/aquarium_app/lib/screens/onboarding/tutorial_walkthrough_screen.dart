@@ -187,7 +187,7 @@ class _TutorialWalkthroughScreenState
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           // Large emoji
-          Text(step.emoji, style: TextStyle(fontSize: 80)),
+          Text(step.emoji, style: Theme.of(context).textTheme.headlineMedium!.copyWith()),
           const SizedBox(height: AppSpacing.xl),
 
           // Icon
@@ -508,17 +508,16 @@ class _TankTypeCard extends StatelessWidget {
               const SizedBox(height: AppSpacing.sm),
               Text(
                 label,
-                style: TextStyle(
-                  fontSize: 14,
+                style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                   fontWeight: FontWeight.w600,
                   color: isSelected ? AppColors.primary : Colors.grey[800],
                 ),
               ),
               if (isDisabled) ...[
                 const SizedBox(height: AppSpacing.xs),
-                const Text(
+                Text(
                   'Coming soon',
-                  style: TextStyle(fontSize: 11, color: Colors.grey),
+                  style: Theme.of(context).textTheme.bodySmall!.copyWith( color: Colors.grey),
                 ),
               ],
             ],
@@ -563,7 +562,7 @@ class _WaterTypeCard extends StatelessWidget {
         ),
         child: Row(
           children: [
-            Text(icon, style: TextStyle(fontSize: 32)),
+            Text(icon, style: Theme.of(context).textTheme.headlineMedium!.copyWith()),
             const SizedBox(width: AppSpacing.md),
             Expanded(
               child: Column(
@@ -571,15 +570,14 @@ class _WaterTypeCard extends StatelessWidget {
                 children: [
                   Text(
                     label,
-                    style: TextStyle(
-                      fontSize: 16,
+                    style: Theme.of(context).textTheme.titleMedium!.copyWith(
                       fontWeight: FontWeight.w600,
                       color: isSelected ? AppColors.accent : Colors.grey[800],
                     ),
                   ),
                   Text(
                     subtitle,
-                    style: TextStyle(fontSize: 13, color: Colors.grey[600]),
+                    style: Theme.of(context).textTheme.bodyMedium!.copyWith( color: Colors.grey[600]),
                   ),
                 ],
               ),

@@ -396,7 +396,6 @@ class AppBadge extends StatelessWidget {
       case AppChipSize.small:
         return AppTypography.labelSmall.copyWith(
           color: Colors.white,
-          fontSize: 10,
           fontWeight: FontWeight.bold,
         );
       case AppChipSize.medium:

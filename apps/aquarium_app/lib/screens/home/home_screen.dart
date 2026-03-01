@@ -583,8 +583,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 ),
               ),
               const SizedBox(height: 12),
-              const Text('Let\'s set up your first tank! \u{1F420}',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+              Text('Let\'s set up your first tank! \u{1F420}',
+                style: Theme.of(context).textTheme.titleLarge!.copyWith( fontWeight: FontWeight.bold)),
               const SizedBox(height: 16),
               TextField(
                 controller: nameC,
@@ -1071,17 +1071,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                           const SizedBox(height: AppSpacing.sm),
                           Text(
                             theme.name,
-                            style: TextStyle(
+                            style: Theme.of(context).textTheme.bodySmall!.copyWith(
                               color: theme.textPrimary,
                               fontWeight: FontWeight.w600,
-                              fontSize: 12,
                             ),
                           ),
                           Text(
                             theme.description,
-                            style: TextStyle(
+                            style: Theme.of(context).textTheme.labelSmall!.copyWith(
                               color: theme.textSecondary,
-                              fontSize: 9,
                             ),
                             textAlign: TextAlign.center,
                             maxLines: 2,

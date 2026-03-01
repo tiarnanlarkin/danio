@@ -73,8 +73,7 @@ class AchievementCard extends StatelessWidget {
                   Center(
                     child: Text(
                       achievement.icon,
-                      style: TextStyle(
-                        fontSize: 64,
+                      style: Theme.of(context).textTheme.headlineMedium!.copyWith(
                         color: isLocked ? Colors.black26 : null,
                       ),
                     ),

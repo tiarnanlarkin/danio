@@ -304,7 +304,6 @@ class _FoodTypeCard extends StatelessWidget {
                             '✓ Pros',
                             style: AppTypography.labelLarge.copyWith(
                               color: AppColors.success,
-                              fontSize: 13,
                             ),
                           ),
                           ...pros.map(
@@ -322,7 +321,6 @@ class _FoodTypeCard extends StatelessWidget {
                             '✗ Cons',
                             style: AppTypography.labelLarge.copyWith(
                               color: AppColors.error,
-                              fontSize: 13,
                             ),
                           ),
                           ...cons.map(

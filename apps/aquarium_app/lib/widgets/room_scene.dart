@@ -1281,9 +1281,8 @@ class _WaterQualityCard extends StatelessWidget {
                   const SizedBox(width: 5),
                   Text(
                     'Water Quality',
-                    style: TextStyle(
+                    style: Theme.of(context).textTheme.bodySmall!.copyWith(
                       color: theme.textPrimary,
-                      fontSize: 12,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -1321,9 +1320,9 @@ class _WaterStat extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Text(value, style: TextStyle(color: color, fontSize: 13, fontWeight: FontWeight.bold)),
+        Text(value, style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: color, fontWeight: FontWeight.bold)),
         const SizedBox(height: 2),
-        Text(label, style: const TextStyle(color: Color(0xFFB0B8C8), fontSize: 9)),
+        Text(label, style: Theme.of(context).textTheme.labelSmall!.copyWith(color: Color(0xFFB0B8C8))),
       ],
     );
   }
@@ -1373,7 +1372,7 @@ class _MiniPieChart extends StatelessWidget {
           ),
         ),
         const SizedBox(height: AppSpacing.xs),
-        Text(label, style: TextStyle(color: theme.textSecondary, fontSize: 9)),
+        Text(label, style: Theme.of(context).textTheme.labelSmall!.copyWith(color: theme.textSecondary)),
       ],
     );
   }
@@ -1454,9 +1453,8 @@ class _GlassBadge extends StatelessWidget {
             children: [
               Text(
                 text,
-                style: TextStyle(
+                style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                   color: theme.textPrimary,
-                  fontSize: 15,
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -1472,9 +1470,8 @@ class _GlassBadge extends StatelessWidget {
                 ),
                 child: Text(
                   subtext,
-                  style: TextStyle(
+                  style: Theme.of(context).textTheme.bodySmall!.copyWith(
                     color: theme.textPrimary,
-                    fontSize: 11,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -2151,9 +2148,8 @@ class _WaveGraphCard extends StatelessWidget {
             children: [
               Text(
                 'Weekly Trends',
-                style: TextStyle(
+                style: Theme.of(context).textTheme.bodySmall!.copyWith(
                   color: theme.textSecondary,
-                  fontSize: 11,
                   fontWeight: FontWeight.w500,
                 ),
               ),

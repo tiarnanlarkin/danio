@@ -894,10 +894,9 @@ class _ChartControlChip extends StatelessWidget {
             const SizedBox(width: 6),
             Text(
               label,
-              style: TextStyle(
+              style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                 color: isActive ? AppColors.primary : AppColors.textSecondary,
                 fontWeight: isActive ? FontWeight.w600 : FontWeight.normal,
-                fontSize: 13,
               ),
             ),
           ],

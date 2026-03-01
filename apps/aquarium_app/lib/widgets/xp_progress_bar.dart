@@ -122,7 +122,6 @@ class _XpProgressBarState extends ConsumerState<XpProgressBar>
                         : 'Max Level!',
                     style: AppTypography.bodySmall.copyWith(
                       color: AppColors.textSecondary,
-                      fontSize: 12,
                     ),
                   ),
                 ],

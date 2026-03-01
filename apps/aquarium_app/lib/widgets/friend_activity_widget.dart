@@ -153,7 +153,7 @@ class _CompactActivityTile extends ConsumerWidget {
               backgroundColor: AppOverlays.primary20,
               child: Text(
                 activity.friendAvatarEmoji ?? '🐠',
-                style: TextStyle(fontSize: 16),
+                style: Theme.of(context).textTheme.titleMedium!.copyWith(),
               ),
             ),
 
@@ -188,7 +188,7 @@ class _CompactActivityTile extends ConsumerWidget {
                     children: [
                       Text(
                         activity.type.emoji,
-                        style: TextStyle(fontSize: 12),
+                        style: Theme.of(context).textTheme.bodySmall!.copyWith(),
                       ),
                       const SizedBox(width: AppSpacing.xs),
                       Expanded(
@@ -300,7 +300,7 @@ class _BannerActivityCard extends ConsumerWidget {
                   children: [
                     Text(
                       activity.friendAvatarEmoji ?? '🐠',
-                      style: TextStyle(fontSize: 20),
+                      style: Theme.of(context).textTheme.titleLarge!.copyWith(),
                     ),
                     const SizedBox(width: AppSpacing.sm),
                     Expanded(
@@ -320,14 +320,13 @@ class _BannerActivityCard extends ConsumerWidget {
                   children: [
                     Text(
                       activity.type.emoji,
-                      style: TextStyle(fontSize: 14),
+                      style: Theme.of(context).textTheme.bodyLarge!.copyWith(),
                     ),
                     const SizedBox(width: 6),
                     Expanded(
                       child: Text(
                         activity.description,
-                        style: const TextStyle(
-                          fontSize: 12,
+                        style: Theme.of(context).textTheme.bodySmall!.copyWith(
                           fontWeight: FontWeight.w500,
                         ),
                         maxLines: 1,

@@ -72,8 +72,7 @@ class AchievementDetailModal extends StatelessWidget {
                   children: [
                     Text(
                       achievement.icon,
-                      style: TextStyle(
-                        fontSize: 72,
+                      style: Theme.of(context).textTheme.headlineMedium!.copyWith(
                         color: isLocked ? Colors.black26 : null,
                       ),
                     ),
@@ -109,9 +108,8 @@ class AchievementDetailModal extends StatelessWidget {
               ),
               child: Text(
                 achievement.rarity.displayName.toUpperCase(),
-                style: const TextStyle(
+                style: Theme.of(context).textTheme.bodySmall!.copyWith(
                   color: Colors.white,
-                  fontSize: 12,
                   fontWeight: FontWeight.bold,
                   letterSpacing: 1.2,
                 ),

@@ -150,8 +150,7 @@ class _HeartsChangeOverlayState extends State<HeartsChangeOverlay>
                           const SizedBox(height: AppSpacing.md),
                           Text(
                             widget.gained ? '+1 Heart' : '-1 Heart',
-                            style: const TextStyle(
-                              fontSize: 32,
+                            style: Theme.of(context).textTheme.headlineMedium!.copyWith(
                               fontWeight: FontWeight.bold,
                               color: Colors.white,
                             ),
@@ -159,8 +158,7 @@ class _HeartsChangeOverlayState extends State<HeartsChangeOverlay>
                           const SizedBox(height: AppSpacing.sm),
                           Text(
                             widget.gained ? 'Great job! 🎉' : 'Keep trying! 💪',
-                            style: const TextStyle(
-                              fontSize: 16,
+                            style: Theme.of(context).textTheme.titleMedium!.copyWith(
                               color: Colors.white70,
                             ),
                           ),
@@ -247,9 +245,8 @@ class _HeartsStatusBannerState extends ConsumerState<HeartsStatusBanner> {
                     const SizedBox(width: AppSpacing.sm),
                     Text(
                       'Next heart in ${heartsService.formatTimeRemaining(timeUntilRefill)}',
-                      style: const TextStyle(
+                      style: Theme.of(context).textTheme.bodySmall!.copyWith(
                         color: Colors.white,
-                        fontSize: 12,
                         fontWeight: FontWeight.w600,
                       ),
                     ),

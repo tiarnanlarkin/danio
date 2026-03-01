@@ -191,7 +191,6 @@ class _ItemWithTooltip extends StatelessWidget {
           label,
           style: AppTypography.labelSmall.copyWith(
             color: AppColors.textSecondary,
-            fontSize: 9,
           ),
         ),
       ],

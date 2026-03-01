@@ -136,11 +136,10 @@ class _AchievementUnlockedDialogState extends State<AchievementUnlockedDialog>
                         const SizedBox(height: 40),
 
                         // "Achievement Unlocked" header
-                        const Text(
+                        Text(
                           '🎉 ACHIEVEMENT UNLOCKED! 🎉',
-                          style: TextStyle(
+                          style: Theme.of(context).textTheme.titleLarge!.copyWith(
                             color: Colors.white,
-                            fontSize: 20,
                             fontWeight: FontWeight.bold,
                             letterSpacing: 2,
                           ),
@@ -167,7 +166,7 @@ class _AchievementUnlockedDialogState extends State<AchievementUnlockedDialog>
                           child: Center(
                             child: Text(
                               widget.achievement.icon,
-                              style: TextStyle(fontSize: 80),
+                              style: Theme.of(context).textTheme.headlineMedium!.copyWith(),
                             ),
                           ),
                         ),

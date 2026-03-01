@@ -31,8 +31,7 @@ class StorageErrorHandler {
               children: [
                 Text(
                   error.message,
-                  style: const TextStyle(
-                    fontSize: 16,
+                  style: Theme.of(context).textTheme.titleMedium!.copyWith(
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -47,7 +46,7 @@ class StorageErrorHandler {
                   '• App crash during save\n'
                   '• File system errors\n'
                   '• Incomplete write operation',
-                  style: TextStyle(fontSize: 14, color: Colors.grey[700]),
+                  style: Theme.of(context).textTheme.bodyLarge!.copyWith( color: Colors.grey[700]),
                 ),
                 if (error.corruptedFilePath != null) ...[
                   const SizedBox(height: AppSpacing.md),
@@ -78,7 +77,7 @@ class StorageErrorHandler {
                         const SizedBox(height: AppSpacing.xs),
                         Text(
                           'Your corrupted data has been backed up to:\n${error.corruptedFilePath}',
-                          style: TextStyle(fontSize: 12),
+                          style: Theme.of(context).textTheme.bodySmall!.copyWith(),
                         ),
                       ],
                     ),
@@ -160,9 +159,9 @@ class StorageErrorHandler {
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: AppSpacing.sm),
-                const Text(
+                Text(
                   'We\'ll help you recover your data from the backup file.',
-                  style: TextStyle(fontSize: 12, fontStyle: FontStyle.italic),
+                  style: Theme.of(context).textTheme.bodySmall!.copyWith( fontStyle: FontStyle.italic),
                 ),
               ],
             ),
@@ -327,7 +326,7 @@ class _InfoItem extends StatelessWidget {
         children: [
           Icon(icon, size: 18, color: Colors.grey[600]),
           const SizedBox(width: AppSpacing.sm),
-          Expanded(child: Text(text, style: TextStyle(fontSize: 13))),
+          Expanded(child: Text(text, style: Theme.of(context).textTheme.bodyMedium!.copyWith())),
         ],
       ),
     );

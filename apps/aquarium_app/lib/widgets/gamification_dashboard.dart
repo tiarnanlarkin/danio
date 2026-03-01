@@ -201,7 +201,7 @@ class _StatItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final rowChildren = [
-      Text(icon, style: TextStyle(fontSize: 18)),
+      Text(icon, style: Theme.of(context).textTheme.titleLarge!.copyWith()),
       const SizedBox(width: 4),
       Flexible(
         child: Text(
@@ -211,7 +211,6 @@ class _StatItem extends StatelessWidget {
             color: Theme.of(context).brightness == Brightness.dark
                 ? AppColors.textPrimaryDark
                 : const Color(0xFF3D2B1F),
-            fontSize: 14,
           ),
           overflow: TextOverflow.ellipsis,
         ),
@@ -327,8 +326,7 @@ class _DailyGoalProgress extends StatelessWidget {
           children: [
             Text(
               '📊',
-              style: TextStyle(
-                fontSize: 16,
+              style: Theme.of(context).textTheme.titleMedium!.copyWith(
                 color: isComplete ? DanioColors.emeraldGreen : null,
               ),
             ),
@@ -450,7 +448,7 @@ class _MiniStat extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(emoji, style: TextStyle(fontSize: 14)),
+          Text(emoji, style: Theme.of(context).textTheme.bodyLarge!.copyWith()),
           const SizedBox(width: AppSpacing.xs),
           Text(
             value.toString(),

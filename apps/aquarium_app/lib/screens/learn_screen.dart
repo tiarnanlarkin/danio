@@ -753,7 +753,7 @@ class _LazyLearningPathCardState extends ConsumerState<_LazyLearningPathCard> {
               ),
             ),
             child: Center(
-              child: Text(meta.emoji, style: TextStyle(fontSize: 26)),
+              child: Text(meta.emoji, style: Theme.of(context).textTheme.headlineSmall!.copyWith()),
             ),
           ),
           title: Text(

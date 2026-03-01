@@ -388,9 +388,8 @@ class _RoomIndicatorBar extends ConsumerWidget {
                           const SizedBox(width: 6),
                           Text(
                             room.name,
-                            style: const TextStyle(
+                            style: Theme.of(context).textTheme.bodySmall!.copyWith(
                               color: Colors.white,
-                              fontSize: 12,
                               fontWeight: FontWeight.w600,
                             ),
                           ),

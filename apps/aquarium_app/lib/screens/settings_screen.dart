@@ -1380,7 +1380,7 @@ class _GoalOptionState extends State<_GoalOption> {
               height: 32,
               child: CircularProgressIndicator(strokeWidth: 2),
             )
-          : Text(widget.icon, style: TextStyle(fontSize: 32)),
+          : Text(widget.icon, style: Theme.of(context).textTheme.headlineMedium!.copyWith()),
       title: Text('${widget.goal} XP/day'),
       subtitle: Text('${widget.label} • ${widget.description}'),
       trailing: isSelected

@@ -950,7 +950,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
 
       if (mounted) {
         Navigator.pop(context);
-        AppFeedback.showSuccess(context, '${log.typeName} logged!');
+        AppFeedback.showSuccess(context, '${log.typeName} logged! +$effectiveXp XP');
       }
     } catch (e) {
       if (mounted) {
@@ -1118,7 +1118,6 @@ class _ParameterField extends StatelessWidget {
               idealRange!,
               style: AppTypography.bodySmall.copyWith(
                 color: AppColors.textHint,
-                fontSize: 11,
               ),
             ),
           ),
@@ -1227,7 +1226,6 @@ class _CompactParamField extends StatelessWidget {
                 label,
                 style: AppTypography.bodySmall.copyWith(
                   fontWeight: FontWeight.w600,
-                  fontSize: 11,
                 ),
               ),
             ),
@@ -1247,7 +1245,7 @@ class _CompactParamField extends StatelessWidget {
             ),
             border: OutlineInputBorder(borderRadius: AppRadius.smallRadius),
           ),
-          style: AppTypography.bodySmall.copyWith(fontSize: 13),
+          style: AppTypography.bodySmall.copyWith(),
           keyboardType: TextInputType.numberWithOptions(decimal: decimal),
           inputFormatters: [
             FilteringTextInputFormatter.allow(RegExp(r'[\d.]')),
@@ -1261,7 +1259,6 @@ class _CompactParamField extends StatelessWidget {
               idealRange!,
               style: AppTypography.bodySmall.copyWith(
                 color: AppColors.textHint,
-                fontSize: 10,
               ),
             ),
           ),

@@ -89,7 +89,7 @@ class SyncIndicator extends ConsumerWidget {
             Expanded(
               child: Text(
                 statusMessage,
-                style: TextStyle(
+                style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                   color: isError
                       ? Colors.red.shade900
                       : hasConflicts
@@ -97,7 +97,6 @@ class SyncIndicator extends ConsumerWidget {
                       : isSyncing
                       ? const Color(0xFFFF6F00)
                       : Colors.grey.shade700,
-                  fontSize: 14,
                   fontWeight: FontWeight.w500,
                 ),
               ),
@@ -155,11 +154,10 @@ class SyncIndicatorCompact extends ConsumerWidget {
           const SizedBox(width: AppSpacing.xs),
           Text(
             syncState.isSyncing ? 'Syncing' : '${syncState.queuedCount}',
-            style: TextStyle(
+            style: Theme.of(context).textTheme.bodySmall!.copyWith(
               color: syncState.isSyncing
                   ? const Color(0xFFFF6F00)
                   : Colors.grey.shade700,
-              fontSize: 12,
               fontWeight: FontWeight.w500,
             ),
           ),

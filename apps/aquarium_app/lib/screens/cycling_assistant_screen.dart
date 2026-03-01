@@ -193,7 +193,7 @@ class _PhaseHeader extends StatelessWidget {
       backgroundColor: color.withAlpha(20),
       child: Row(
         children: [
-          Text(emoji, style: TextStyle(fontSize: 36)),
+          Text(emoji, style: Theme.of(context).textTheme.headlineMedium!.copyWith()),
           const SizedBox(width: AppSpacing.md),
           Expanded(
             child: Column(
@@ -308,7 +308,6 @@ class _CycleDiagram extends StatelessWidget {
                     phases[i],
                     style: AppTypography.bodySmall.copyWith(
                       fontWeight: isCurrent ? FontWeight.bold : FontWeight.normal,
-                      fontSize: 10,
                     ),
                     textAlign: TextAlign.center,
                   ),
@@ -386,7 +385,6 @@ class _ParamChip extends StatelessWidget {
               label,
               style: AppTypography.bodySmall.copyWith(
                 fontWeight: FontWeight.bold,
-                fontSize: 10,
               ),
             ),
             Text(
@@ -473,7 +471,7 @@ class _LegendItem extends StatelessWidget {
           ),
         ),
         const SizedBox(width: 4),
-        Text(label, style: AppTypography.bodySmall.copyWith(fontSize: 10)),
+        Text(label, style: AppTypography.bodySmall.copyWith()),
       ],
     );
   }

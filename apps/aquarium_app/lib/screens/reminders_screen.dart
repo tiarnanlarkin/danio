@@ -805,10 +805,9 @@ class _PresetChip extends StatelessWidget {
             const SizedBox(width: 6),
             Text(
               label,
-              style: TextStyle(
+              style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                 color: AppColors.primary,
                 fontWeight: FontWeight.w500,
-                fontSize: 13,
               ),
             ),
           ],

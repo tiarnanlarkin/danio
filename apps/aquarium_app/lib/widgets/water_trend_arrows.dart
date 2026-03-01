@@ -119,7 +119,6 @@ class _TrendChip extends StatelessWidget {
             Text(
               arrow,
               style: TextStyle(
-                fontSize: 16,
                 fontWeight: FontWeight.bold,
                 color: color,
               ),

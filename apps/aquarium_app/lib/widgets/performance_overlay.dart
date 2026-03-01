@@ -132,17 +132,15 @@ class _AppPerformanceOverlayState extends State<AppPerformanceOverlay> {
       children: [
         Text(
           '$label: ',
-          style: const TextStyle(
+          style: Theme.of(context).textTheme.bodySmall!.copyWith(
             color: Colors.white70,
-            fontSize: 11,
             fontFamily: 'monospace',
           ),
         ),
         Text(
           value,
-          style: TextStyle(
+          style: Theme.of(context).textTheme.bodySmall!.copyWith(
             color: color,
-            fontSize: 11,
             fontWeight: FontWeight.bold,
             fontFamily: 'monospace',
           ),
@@ -233,8 +231,7 @@ class _PerformanceDebugScreenState extends State<PerformanceDebugScreen> {
             const SizedBox(height: AppSpacing.sm),
             Text(
               report.meetsTarget ? 'Performance OK' : 'Needs Optimization',
-              style: TextStyle(
-                fontSize: 20,
+              style: Theme.of(context).textTheme.titleLarge!.copyWith(
                 fontWeight: FontWeight.bold,
                 color: report.meetsTarget
                     ? Colors.green.shade900
@@ -254,9 +251,9 @@ class _PerformanceDebugScreenState extends State<PerformanceDebugScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
+            Text(
               'Frame Metrics',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              style: Theme.of(context).textTheme.titleLarge!.copyWith( fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: AppSpacing.md),
             _buildMetricRow(

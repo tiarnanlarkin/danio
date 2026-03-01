@@ -245,8 +245,7 @@ class SettingsHubScreen extends ConsumerWidget {
             child: profile?.name != null && profile!.name.isNotEmpty
                 ? Text(
                     profile.name[0].toUpperCase(),
-                    style: const TextStyle(
-                      fontSize: 32,
+                    style: Theme.of(context).textTheme.headlineMedium!.copyWith(
                       fontWeight: FontWeight.bold,
                       color: AppColors.primary,
                     ),

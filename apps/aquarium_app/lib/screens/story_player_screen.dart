@@ -313,9 +313,8 @@ class _StoryPlayerScreenState extends ConsumerState<StoryPlayerScreen>
                   children: [
                     Text(
                       _story!.title,
-                      style: const TextStyle(
+                      style: Theme.of(context).textTheme.titleLarge!.copyWith(
                         color: Colors.white,
-                        fontSize: 18,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -535,8 +534,7 @@ class _ChoiceButton extends StatelessWidget {
               Expanded(
                 child: Text(
                   choice.text,
-                  style: const TextStyle(
-                    fontSize: 16,
+                  style: Theme.of(context).textTheme.titleMedium!.copyWith(
                     fontWeight: FontWeight.w500,
                     color: Colors.black87,
                   ),

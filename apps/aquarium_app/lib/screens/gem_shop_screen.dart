@@ -507,7 +507,7 @@ class _ShopItemCard extends ConsumerWidget {
                         Center(
                           child: Text(
                             item.emoji,
-                            style: TextStyle(fontSize: 48),
+                            style: Theme.of(context).textTheme.headlineMedium!.copyWith(),
                           ),
                         ),
                         const SizedBox(height: 12),

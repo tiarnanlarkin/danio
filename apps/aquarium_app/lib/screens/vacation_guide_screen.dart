@@ -415,7 +415,6 @@ class _OptionCard extends StatelessWidget {
                         '✓ Pros',
                         style: AppTypography.labelLarge.copyWith(
                           color: AppColors.success,
-                          fontSize: 13,
                         ),
                       ),
                       ...pros.map(
@@ -433,7 +432,6 @@ class _OptionCard extends StatelessWidget {
                         '✗ Cons',
                         style: AppTypography.labelLarge.copyWith(
                           color: AppColors.error,
-                          fontSize: 13,
                         ),
                       ),
                       ...cons.map(
@@ -511,7 +509,6 @@ class _NumberedStep extends StatelessWidget {
                 '$num',
                 style: AppTypography.bodySmall.copyWith(
                   color: AppColors.primary,
-                  fontSize: 11,
                 ),
               ),
             ),

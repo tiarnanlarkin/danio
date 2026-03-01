@@ -49,9 +49,8 @@ class OfflineIndicator extends ConsumerWidget {
           Expanded(
             child: Text(
               "You're offline - some features may not work",
-              style: TextStyle(
+              style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                 color: Colors.orange.shade900,
-                fontSize: 14,
                 fontWeight: FontWeight.w500,
               ),
             ),
@@ -87,9 +86,8 @@ class OfflineIndicatorCompact extends ConsumerWidget {
           const SizedBox(width: AppSpacing.xs),
           Text(
             'Offline',
-            style: TextStyle(
+            style: Theme.of(context).textTheme.bodySmall!.copyWith(
               color: Colors.orange.shade900,
-              fontSize: 12,
               fontWeight: FontWeight.w500,
             ),
           ),

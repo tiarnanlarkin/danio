@@ -234,7 +234,6 @@ class _TaskRow extends StatelessWidget {
               dueLabel,
               style: AppTypography.labelSmall.copyWith(
                 color: rowColor,
-                fontSize: 10,
               ),
             ),
         ],

@@ -273,7 +273,7 @@ class _MiniChip extends StatelessWidget {
       ),
       child: Text(
         label,
-        style: AppTypography.bodySmall.copyWith(color: color, fontSize: 11),
+        style: AppTypography.bodySmall.copyWith(color: color),
       ),
     );
   }

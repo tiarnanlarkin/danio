@@ -446,7 +446,7 @@ class _InventoryItemCard extends StatelessWidget {
                   children: [
                     Text(
                       shopItem.emoji,
-                      style: TextStyle(fontSize: 40),
+                      style: Theme.of(context).textTheme.headlineMedium!.copyWith(),
                     ),
                     if (item.quantity > 1 || shopItem.isConsumable)
                       Container(

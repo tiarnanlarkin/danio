@@ -264,7 +264,6 @@ class _EmergencyCard extends StatelessWidget {
             urgency,
             style: AppTypography.bodySmall.copyWith(
               color: Colors.white,
-              fontSize: 10,
             ),
           ),
         ),
@@ -309,7 +308,6 @@ class _EmergencyCard extends StatelessWidget {
                               '${e.key + 1}',
                               style: AppTypography.bodySmall.copyWith(
                                 color: AppColors.error,
-                                fontSize: 10,
                               ),
                             ),
                           ),

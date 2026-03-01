@@ -63,10 +63,9 @@ class _LearningStyleScreenState extends ConsumerState<LearningStyleScreen> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               const Spacer(flex: 1),
-              const Text(
+              Text(
                 'How do you prefer to learn? 🐟',
-                style: TextStyle(
-                  fontSize: 24,
+                style: Theme.of(context).textTheme.headlineSmall!.copyWith(
                   fontWeight: FontWeight.bold,
                 ),
                 textAlign: TextAlign.center,
@@ -168,7 +167,7 @@ class _OptionCard extends StatelessWidget {
           padding: EdgeInsets.all(AppSpacing.md),
           child: Row(
             children: [
-              Text(option.emoji, style: TextStyle(fontSize: 28)),
+              Text(option.emoji, style: Theme.of(context).textTheme.headlineMedium!.copyWith()),
               const SizedBox(width: AppSpacing.md),
               Expanded(
                 child: Column(

@@ -89,7 +89,6 @@ class TankSwitcher extends StatelessWidget {
                         style: AppTypography.labelLarge.copyWith(
                           color: AppColors.textPrimary,
                           fontWeight: FontWeight.w600,
-                          fontSize: 14,
                         ),
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -97,7 +96,6 @@ class TankSwitcher extends StatelessWidget {
                         '${tanks[currentIndex].volumeLitres.toStringAsFixed(0)}L${hasMultipleTanks ? ' • ${currentIndex + 1}/${tanks.length}' : ''}',
                         style: AppTypography.bodySmall.copyWith(
                           color: AppColors.textSecondary,
-                          fontSize: 11,
                         ),
                       ),
                     ],

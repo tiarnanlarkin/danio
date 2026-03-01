@@ -200,11 +200,10 @@ class _AchievementNotificationWidgetState
                           ),
                           child: Column(
                             children: [
-                              const Text(
+                              Text(
                                 '🎉 ACHIEVEMENT UNLOCKED! 🎉',
-                                style: TextStyle(
+                                style: Theme.of(context).textTheme.titleMedium!.copyWith(
                                   color: Colors.white,
-                                  fontSize: 16,
                                   fontWeight: FontWeight.bold,
                                   letterSpacing: 1.2,
                                 ),

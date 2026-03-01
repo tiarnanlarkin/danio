@@ -358,7 +358,6 @@ class _StepRow extends StatelessWidget {
                 '$num',
                 style: AppTypography.bodySmall.copyWith(
                   color: AppColors.primary,
-                  fontSize: 11,
                 ),
               ),
             ),

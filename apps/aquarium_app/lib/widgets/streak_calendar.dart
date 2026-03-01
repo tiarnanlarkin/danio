@@ -128,7 +128,7 @@ class _CalendarGrid extends StatelessWidget {
                 width: cellSize,
                 child: Text(
                   'M',
-                  style: TextStyle(fontSize: 10, color: AppColors.textHint),
+                  style: Theme.of(context).textTheme.labelSmall!.copyWith( color: AppColors.textHint),
                   textAlign: TextAlign.center,
                 ),
               ),
@@ -138,7 +138,7 @@ class _CalendarGrid extends StatelessWidget {
                 width: cellSize,
                 child: Text(
                   'W',
-                  style: TextStyle(fontSize: 10, color: AppColors.textHint),
+                  style: Theme.of(context).textTheme.labelSmall!.copyWith( color: AppColors.textHint),
                   textAlign: TextAlign.center,
                 ),
               ),
@@ -148,7 +148,7 @@ class _CalendarGrid extends StatelessWidget {
                 width: cellSize,
                 child: Text(
                   'F',
-                  style: TextStyle(fontSize: 10, color: AppColors.textHint),
+                  style: Theme.of(context).textTheme.labelSmall!.copyWith( color: AppColors.textHint),
                   textAlign: TextAlign.center,
                 ),
               ),
@@ -319,7 +319,7 @@ class _Legend extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Text('Less', style: TextStyle(fontSize: 10, color: AppColors.textHint)),
+        Text('Less', style: Theme.of(context).textTheme.labelSmall!.copyWith( color: AppColors.textHint)),
         const SizedBox(width: AppSpacing.xs),
         _LegendCell(color: AppColors.surfaceVariant, size: cellSize),
         const SizedBox(width: 2),
@@ -331,7 +331,7 @@ class _Legend extends StatelessWidget {
         const SizedBox(width: 2),
         _LegendCell(color: const Color(0xFFD97706), size: cellSize),
         const SizedBox(width: AppSpacing.xs),
-        Text('More', style: TextStyle(fontSize: 10, color: AppColors.textHint)),
+        Text('More', style: Theme.of(context).textTheme.labelSmall!.copyWith( color: AppColors.textHint)),
       ],
     );
   }

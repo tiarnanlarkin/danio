@@ -45,7 +45,7 @@ class RoomHeader extends StatelessWidget {
         children: [
           Text(
             emoji,
-            style: TextStyle(fontSize: 28),
+            style: Theme.of(context).textTheme.headlineMedium!.copyWith(),
           ),
           const SizedBox(width: AppSpacing.sm2),
           Expanded(

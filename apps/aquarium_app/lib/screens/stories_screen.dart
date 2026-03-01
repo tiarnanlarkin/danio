@@ -65,13 +65,13 @@ class _StoriesScreenState extends ConsumerState<StoriesScreen> {
                       ),
                     ),
                     // Subtitle
-                    const Positioned(
+                    Positioned(
                       bottom: 60,
                       left: 16,
                       right: 16,
                       child: Text(
                         'Learn through interactive scenarios',
-                        style: TextStyle(color: Colors.white70, fontSize: 14),
+                        style: Theme.of(context).textTheme.bodyLarge!.copyWith(color: Colors.white70),
                       ),
                     ),
                   ],
@@ -322,7 +322,7 @@ class StoryCard extends StatelessWidget {
                       child: Center(
                         child: Text(
                           story.thumbnailImage ?? '📖',
-                          style: TextStyle(fontSize: 40),
+                          style: Theme.of(context).textTheme.headlineMedium!.copyWith(),
                         ),
                       ),
                     ),
@@ -337,8 +337,7 @@ class StoryCard extends StatelessWidget {
                               Expanded(
                                 child: Text(
                                   story.title,
-                                  style: const TextStyle(
-                                    fontSize: 18,
+                                  style: Theme.of(context).textTheme.titleLarge!.copyWith(
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
@@ -360,8 +359,7 @@ class StoryCard extends StatelessWidget {
                           const SizedBox(height: AppSpacing.xs),
                           Text(
                             story.description,
-                            style: TextStyle(
-                              fontSize: 14,
+                            style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                               color: Colors.grey.shade700,
                             ),
                             maxLines: 2,
