@@ -424,6 +424,19 @@ final allLogsProvider = FutureProvider.family<List<LogEntry>, String>((
   return storage.getLogsForTank(tankId);
 });
 
+/// Latest water test results for a tank (most recent waterTest log entry)
+final latestWaterTestProvider = FutureProvider.family<WaterTestResults?, String>((
+  ref,
+  tankId,
+) async {
+  final logs = await ref.watch(logsProvider(tankId).future);
+  final waterLogs = logs
+      .where((l) => l.type == LogType.waterTest && l.waterTest != null)
+      .toList()
+    ..sort((a, b) => b.timestamp.compareTo(a.timestamp));
+  return waterLogs.isEmpty ? null : waterLogs.first.waterTest;
+});
+
 /// Tasks for a tank (null = all tasks)
 final tasksProvider = FutureProvider.family<List<Task>, String?>((
   ref,
