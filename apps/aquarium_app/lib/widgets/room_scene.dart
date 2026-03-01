@@ -11,6 +11,9 @@ import 'effects/ripple_container.dart';
 import 'room/interactive_object.dart';
 import 'rive/rive_fish.dart';
 import 'rive/rive_water_effect.dart';
+import 'stage/stage_provider.dart';
+import 'stage/tank_glass_badge.dart';
+import 'stage/swiss_army_panel.dart';
 
 /// Themeable room scene - supports multiple visual styles
 /// Includes day/night ambient lighting overlay based on real time.
@@ -146,60 +149,38 @@ class LivingRoomScene extends ConsumerWidget {
                 ),
               ),
 
-              // === LAYER 5: Glassmorphic UI cards ===
+              // === LAYER 5: Stage handle strips + tank badge ===
 
-              // Temperature gauge (top left)
+              // Left handle strip (temperature panel)
               Positioned(
-                top: h * 0.18,
-                left: w * 0.05,
-                child: Semantics(
-                  label: 'Temperature: \${(temperature ?? 25).toStringAsFixed(0)} degrees. Tap for tank stats',
-                  button: true,
-                  child: GestureDetector(
-                    onTap: onStatsTap,
-                    child: _CircularTempGauge(
-                      size: w * 0.26,
-                      temperature: temperature ?? 25,
-                      theme: theme,
-                    ),
-                  ),
-                ),
-              ),
-
-              // Water quality card (top right)
-              Positioned(
-                top: h * 0.18,
-                right: w * 0.05,
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 185),
-                  child: Semantics(
-                    label: 'Water quality. Tap to log test results',
-                    button: true,
-                    child: GestureDetector(
-                      onTap: onTestKitTap,
-                      child: _WaterQualityCard(
-                      width: w * 0.34,
-                    ph: ph,
-                    ammonia: ammonia,
-                    nitrate: nitrate,
-                    theme: theme,
-                    ),
-                  ),
-                  ),
-                ),
-              ),
-
-              // Tank name badge
-              Positioned(
-                top: h * 0.20,
                 left: 0,
+                top: h * 0.4,
+                child: StageHandleStrip(
+                  panel: StagePanel.temp,
+                  isLeft: true,
+                  icon: Icons.thermostat,
+                ),
+              ),
+
+              // Right handle strip (water quality panel)
+              Positioned(
                 right: 0,
-                child: Center(
-                  child: _GlassBadge(
-                    text: tankName,
-                    subtext: '${tankVolume.toStringAsFixed(0)}L',
-                    theme: theme,
-                  ),
+                top: h * 0.4,
+                child: StageHandleStrip(
+                  panel: StagePanel.waterQuality,
+                  isLeft: false,
+                  icon: Icons.water_drop,
+                ),
+              ),
+
+              // Tank glass badge (bottom-right of tank)
+              Positioned(
+                bottom: h * 0.27,
+                right: w * 0.12,
+                child: TankGlassBadge(
+                  tankName: tankName,
+                  tankVolume: tankVolume,
+                  theme: theme,
                 ),
               ),
 
@@ -371,9 +352,24 @@ class _CozyRoomBackground extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CustomPaint(
-      painter: _CozyRoomPainter(theme: theme),
-      size: Size.infinite,
+    return Stack(
+      children: [
+        CustomPaint(
+          painter: _CozyRoomPainter(theme: theme),
+          size: Size.infinite,
+        ),
+        // Linen texture overlay for material depth
+        Positioned.fill(
+          child: Opacity(
+            opacity: 0.10,
+            child: Image.asset(
+              'assets/textures/linen-wall.png',
+              repeat: ImageRepeat.repeat,
+              fit: BoxFit.none,
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
@@ -1095,310 +1091,6 @@ class _StandPainter extends CustomPainter {
   bool shouldRepaint(covariant _StandPainter old) => old.theme != theme;
 }
 
-// === CIRCULAR TEMPERATURE GAUGE ===
-
-class _CircularTempGauge extends StatelessWidget {
-  final double size;
-  final double temperature;
-  final RoomTheme theme;
-
-  const _CircularTempGauge({
-    required this.size,
-    required this.temperature,
-    required this.theme,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(size / 2),
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
-        child: Container(
-          width: size,
-          height: size,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: theme.glassCard,
-            border: Border.all(color: theme.glassBorder, width: 2),
-            boxShadow: [
-              BoxShadow(
-                color: AppOverlays.black10,
-                blurRadius: 20,
-                offset: const Offset(0, 8),
-              ),
-            ],
-          ),
-          child: CustomPaint(
-            painter: _TempGaugePainter(temperature: temperature, theme: theme),
-            child: Center(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(
-                    Icons.thermostat,
-                    color: _getTempColor(temperature),
-                    size: size * 0.22,
-                  ),
-                  Text(
-                    '${temperature.toStringAsFixed(1)}°',
-                    style: TextStyle(
-                      color: theme.textPrimary,
-                      fontSize: size * 0.22,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  Text(
-                    '°C',
-                    style: TextStyle(
-                      color: theme.textSecondary,
-                      fontSize: size * 0.14,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Color _getTempColor(double temp) {
-    if (temp < 22) return theme.gaugeColor1;
-    if (temp < 26) return theme.gaugeColor2;
-    if (temp < 28) return theme.gaugeColor3;
-    return theme.buttonFeed;
-  }
-}
-
-class _TempGaugePainter extends CustomPainter {
-  final double temperature;
-  final RoomTheme theme;
-
-  _TempGaugePainter({required this.temperature, required this.theme});
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final center = Offset(size.width / 2, size.height / 2);
-    final radius = size.width / 2 - 8;
-
-    // Background arc
-    canvas.drawArc(
-      Rect.fromCircle(center: center, radius: radius),
-      math.pi * 0.75,
-      math.pi * 1.5,
-      false,
-      Paint()
-        ..color = theme.textSecondary.withAlpha(38)
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 8
-        ..strokeCap = StrokeCap.round,
-    );
-
-    // Progress arc
-    final progress = ((temperature - 15) / 20).clamp(0.0, 1.0);
-    canvas.drawArc(
-      Rect.fromCircle(center: center, radius: radius),
-      math.pi * 0.75,
-      math.pi * 1.5 * progress,
-      false,
-      Paint()
-        ..shader = SweepGradient(
-          startAngle: math.pi * 0.75,
-          endAngle: math.pi * 2.25,
-          colors: [
-            theme.gaugeColor1,
-            theme.gaugeColor2,
-            theme.gaugeColor3,
-            theme.buttonFeed,
-          ],
-        ).createShader(Rect.fromCircle(center: center, radius: radius))
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 8
-        ..strokeCap = StrokeCap.round,
-    );
-  }
-
-  @override
-  bool shouldRepaint(covariant _TempGaugePainter old) =>
-      old.temperature != temperature || old.theme != theme;
-}
-
-// === WATER QUALITY CARD ===
-
-class _WaterQualityCard extends StatelessWidget {
-  final double width;
-  final double? ph;
-  final double? ammonia;
-  final double? nitrate;
-  final RoomTheme theme;
-
-  const _WaterQualityCard({
-    required this.width,
-    required this.theme,
-    this.ph,
-    this.ammonia,
-    this.nitrate,
-  });
-
-  // Status colors for water parameters
-  static const Color _safe = Color(0xFF4CAF50);    // Green
-  static const Color _warning = Color(0xFFFFA726); // Orange
-  static const Color _danger = Color(0xFFEF5350);  // Red
-  static const Color _unknown = Color(0xFF9E9E9E); // Gray
-
-  Color _getPhColor(double? value) {
-    if (value == null) return _unknown;
-    if (value >= 6.5 && value <= 7.8) return _safe;
-    if (value >= 6.0 && value <= 8.2) return _warning;
-    return _danger;
-  }
-
-  Color _getAmmoniaColor(double? value) {
-    if (value == null) return _unknown;
-    if (value <= 0.25) return _safe;
-    if (value <= 0.5) return _warning;
-    return _danger;
-  }
-
-  Color _getNitrateColor(double? value) {
-    if (value == null) return _unknown;
-    if (value <= 20) return _safe;
-    if (value <= 40) return _warning;
-    return _danger;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return ClipRRect(
-      borderRadius: AppRadius.largeRadius,
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
-        child: Container(
-          padding: const EdgeInsets.all(AppSpacing.sm4),
-          decoration: BoxDecoration(
-            color: theme.glassCard,
-            borderRadius: AppRadius.largeRadius,
-            border: Border.all(color: theme.glassBorder, width: 1.5),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Icon(Icons.water_drop, color: theme.textSecondary, size: 14),
-                  const SizedBox(width: 5),
-                  Text(
-                    'Water Quality',
-                    style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                      color: theme.textPrimary,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: AppSpacing.sm),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  _WaterStat(label: 'pH', value: ph?.toStringAsFixed(1) ?? '--', color: _getPhColor(ph)),
-                  Container(width: 1, height: 28, color: theme.glassBorder),
-                  _WaterStat(label: 'NH₃', value: ammonia?.toStringAsFixed(2) ?? '--', color: _getAmmoniaColor(ammonia)),
-                  Container(width: 1, height: 28, color: theme.glassBorder),
-                  _WaterStat(label: 'NO₃', value: nitrate?.toStringAsFixed(0) ?? '--', color: _getNitrateColor(nitrate)),
-                ],
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-
-class _WaterStat extends StatelessWidget {
-  final String label;
-  final String value;
-  final Color color;
-
-  const _WaterStat({required this.label, required this.value, required this.color});
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Text(value, style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: color, fontWeight: FontWeight.bold)),
-        const SizedBox(height: AppSpacing.xxs),
-        Text(label, style: Theme.of(context).textTheme.labelSmall!.copyWith(color: Color(0xFFB0B8C8))),
-      ],
-    );
-  }
-}
-// === GLASS BADGE ===
-
-class _GlassBadge extends StatelessWidget {
-  final String text;
-  final String subtext;
-  final RoomTheme theme;
-
-  const _GlassBadge({
-    required this.text,
-    required this.subtext,
-    required this.theme,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return ClipRRect(
-      borderRadius: AppRadius.largeRadius,
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
-          decoration: BoxDecoration(
-            color: AppOverlays.black15,
-            borderRadius: AppRadius.largeRadius,
-            border: Border.all(color: theme.glassBorder, width: 1),
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                text,
-                style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                  color: theme.textPrimary,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              const SizedBox(width: AppSpacing.sm),
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 8,
-                  vertical: 3,
-                ),
-                decoration: BoxDecoration(
-                  color: theme.accentBlob.withAlpha(102),
-                  borderRadius: AppRadius.mediumRadius,
-                ),
-                child: Text(
-                  subtext,
-                  style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                    color: theme.textPrimary,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
 
 // === THEMED AQUARIUM ===
 

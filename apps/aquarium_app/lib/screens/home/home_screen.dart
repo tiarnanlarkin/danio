@@ -38,7 +38,15 @@ import 'widgets/xp_source_row.dart';
 import 'widgets/selection_mode_panel.dart';
 import 'widgets/empty_room_scene.dart';
 import '../backup_restore_screen.dart';
-import '../../widgets/seasonal_tip_card.dart';
+import '../../widgets/stage/stage_provider.dart';
+import '../../widgets/stage/stage_scrim.dart';
+import '../../widgets/stage/swiss_army_panel.dart';
+import '../../widgets/stage/bottom_plate.dart';
+import '../../widgets/stage/temp_panel_content.dart';
+import '../../widgets/stage/water_panel_content.dart';
+import '../../widgets/stage/ambient_tip_overlay.dart';
+import '../../painters/leather_grain_painter.dart';
+import '../../painters/saffiano_painter.dart';
 import '../../widgets/fun_loading_messages.dart';
 import '../house_navigator.dart';
 import '../tank_settings_screen.dart';
@@ -230,6 +238,31 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               ),
             ),
 
+            // === STAGE SYSTEM ===
+            // Scrim (above scene, below panels)
+            const Positioned.fill(child: StageScrim()),
+
+            // Swiss Army panels
+            SwissArmyPanel.left(
+              theme: ref.watch(currentRoomThemeProvider),
+              child: TempPanelContent(
+                // temperature data comes from logs — null shows 'no data' state
+                theme: ref.watch(currentRoomThemeProvider),
+                onStatsTap: () => _showStatsInfo(context),
+              ),
+            ),
+            SwissArmyPanel.right(
+              theme: ref.watch(currentRoomThemeProvider),
+              child: WaterPanelContent(
+                // Water params from logs — null shows 'no data' state
+                theme: ref.watch(currentRoomThemeProvider),
+                onTestKitTap: () => _showWaterParams(context),
+              ),
+            ),
+
+            // Ambient tip overlay
+            AmbientTipOverlay(theme: ref.watch(currentRoomThemeProvider)),
+
             // Top bar overlay
             Positioned(
               top: 0,
@@ -299,7 +332,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 builder: (context) {
                   final bottomPadding = MediaQuery.of(context).padding.bottom;
                   return Positioned(
-                    bottom: 180 + bottomPadding, // Above gamification dashboard with FAB clearance
+                    bottom: 130 + bottomPadding, // Above bottom plates
                     left: 16,
                     right: 88, // Leave room for speed dial FAB
                     child: TankSwitcher(
@@ -321,7 +354,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 builder: (context) {
                   final bottomPadding = MediaQuery.of(context).padding.bottom;
                   return Positioned(
-                    bottom: 180 + bottomPadding, // Above gamification dashboard
+                    bottom: 130 + bottomPadding, // Above bottom plates
                     left: 16,
                     right: 16,
                     child: SelectionModePanel(
@@ -424,14 +457,22 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               },
             ),
 
-            // Gamification Dashboard - shows all stats at a glance
-            // Right margin avoids overlap with FAB
-            Positioned(
-              bottom: 16 + MediaQuery.of(context).padding.bottom,
-              left: 16,
-              right: 80, // Leave space for FAB
-              child: GamificationDashboard(
-                onTap: () => _showStatsDetails(context),
+            // Bottom Plates — Progress (front) and Tanks (behind)
+            BottomPlate(
+              peekHeight: 60,
+              maxHeightFraction: 0.65,
+              label: 'Your Progress',
+              emoji: '🔥',
+              backgroundColor: Colors.white,
+              backgroundPainter: CustomPaint(
+                painter: LeatherGrainPainter(),
+                size: Size.infinite,
+              ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: GamificationDashboard(
+                  onTap: () => _showStatsDetails(context),
+                ),
               ),
             ),
 
@@ -440,7 +481,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             // for even faster water param entry without navigating to full log screen
             // Positioned above the dashboard with safe area padding
             Positioned(
-              bottom: 170 + MediaQuery.of(context).padding.bottom,
+              bottom: 70 + MediaQuery.of(context).padding.bottom,
               right: 16,
               child: SpeedDialFAB(
                 actions: [
@@ -483,8 +524,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               ),
             ),
 
-            // Seasonal fishkeeping tip
-            _buildSeasonalTipOverlay(),
+            // Seasonal tip replaced by AmbientTipOverlay in stage system
 
             // Daily goal nudge - shows if user has 0 XP today
             if (!_dailyNudgeDismissed)
@@ -551,14 +591,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 
-  Widget _buildSeasonalTipOverlay() {
-    return Positioned(
-      top: MediaQuery.of(context).padding.top + 110,
-      left: 0,
-      right: 0,
-      child: const SeasonalTipCard(),
-    );
-  }
+
 
   @override
   Widget build(BuildContext context) {
