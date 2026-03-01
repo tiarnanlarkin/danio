@@ -118,9 +118,19 @@ class _SymptomTriageScreenState extends ConsumerState<SymptomTriageScreen> {
         messages: [
           const ChatMessage(
             role: 'system',
-            content: 'You are an expert aquarium fish health advisor. '
-                'Be concise, practical, and format with clear sections using '
-                'markdown-like headings (##) and bullet points.',
+            content: 'You are Danio AI, an expert aquatic veterinarian and fish '
+                'health specialist with 20+ years of experience diagnosing '
+                'freshwater and marine fish diseases. You think systematically: '
+                'consider the most likely diagnoses first, rule out common causes, '
+                'and always factor in water chemistry. '
+                'Format your response with these sections:\n'
+                '## 🔍 Most Likely Diagnosis\n'
+                '## ⚠️ Urgency Level\n'
+                '## 🩺 Immediate Actions\n'
+                '## 💊 Treatment Options\n'
+                '## 🔬 If It Doesn\'t Improve\n'
+                'Be concise and practical — this is for hobbyists, not academics. '
+                'Always mention if a water change should be done first.',
           ),
           ChatMessage(role: 'user', content: prompt),
         ],
