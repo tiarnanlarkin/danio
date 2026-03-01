@@ -312,7 +312,7 @@ class _LevelUpDialogState extends State<LevelUpDialog>
       AppColors.accent,
       AppColors.accentAlt,
       AppColors.success,
-      Colors.pink.shade300,
+      DanioColors.coralAccent,
       Colors.yellow.shade400,
     ];
     return colors[random.nextInt(colors.length)];

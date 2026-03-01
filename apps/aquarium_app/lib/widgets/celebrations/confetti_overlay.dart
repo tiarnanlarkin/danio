@@ -56,8 +56,8 @@ class ConfettiColors {
     Colors.yellow,
     Colors.green,
     AppColors.primary,
-    Colors.purple,
-    Colors.pink,
+    DanioColors.amethyst,
+    DanioColors.coralAccent,
   ];
   
   /// Gold/achievement colors

@@ -109,7 +109,7 @@ class _AchievementUnlockedDialogState extends State<AchievementUnlockedDialog>
               child: ScaleTransition(
                 scale: _scaleAnimation,
                 child: SingleChildScrollView(
-                  padding: const EdgeInsets.all(24),
+                  padding: EdgeInsets.all(AppSpacing.lg),
                   child: Container(
                     constraints: const BoxConstraints(maxWidth: 500),
                     decoration: BoxDecoration(
@@ -237,7 +237,7 @@ class _AchievementUnlockedDialogState extends State<AchievementUnlockedDialog>
                         // Rewards section
                         Container(
                           margin: const EdgeInsets.symmetric(horizontal: 24),
-                          padding: const EdgeInsets.all(AppSpacing.lg2),
+                          padding: EdgeInsets.all(AppSpacing.lg2),
                           decoration: BoxDecoration(
                             color: AppOverlays.white20,
                             borderRadius: AppRadius.largeRadius,
@@ -341,9 +341,9 @@ class _AchievementUnlockedDialogState extends State<AchievementUnlockedDialog>
           AppColors.primary,
           Colors.green,
           Colors.yellow,
-          Colors.purple,
+          DanioColors.amethyst,
           DanioColors.amberGold,
-          Colors.pink,
+          DanioColors.coralAccent,
           DanioColors.tealWater,
           Colors.amber,
         ],

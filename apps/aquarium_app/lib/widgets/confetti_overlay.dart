@@ -93,9 +93,9 @@ class _ConfettiOverlayState extends State<ConfettiOverlay>
       AppColors.primary,
       Colors.green,
       Colors.yellow,
-      Colors.purple,
+      DanioColors.amethyst,
       DanioColors.amberGold,
-      Colors.pink,
+      DanioColors.coralAccent,
       DanioColors.tealWater,
     ];
     return colors[random.nextInt(colors.length)];

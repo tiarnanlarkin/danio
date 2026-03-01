@@ -190,9 +190,9 @@ class TestTubeRack extends StatelessWidget {
 
   Color _nitriteColor(double? val) {
     if (val == null) return Colors.grey.shade300;
-    if (val < 0.25) return Colors.purple.shade100;
-    if (val < 1.0) return Colors.purple.shade300;
-    return Colors.purple.shade600;
+    if (val < 0.25) return Colors.purple.shade100; // semantic color — nitrite level indicator
+    if (val < 1.0) return Colors.purple.shade300; // semantic color — nitrite level indicator
+    return Colors.purple.shade600; // semantic color — nitrite level indicator
   }
 
   Color _nitrateColor(double? val) {
