@@ -48,7 +48,7 @@ class _SpeciesBrowserScreenState extends ConsumerState<SpeciesBrowserScreen> {
       body: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.all(AppSpacing.md),
+            padding: EdgeInsets.all(AppSpacing.md),
             child: TextField(
               decoration: InputDecoration(
                 hintText: 'Search fish by name...',
@@ -109,7 +109,7 @@ class _SpeciesBrowserScreenState extends ConsumerState<SpeciesBrowserScreen> {
 
           Expanded(
             child: ListView.builder(
-              padding: const EdgeInsets.all(AppSpacing.md),
+              padding: EdgeInsets.all(AppSpacing.md),
               itemCount: species.length,
               itemBuilder: (ctx, i) => _SpeciesCard(
                 species: species[i],
@@ -305,7 +305,7 @@ class _SpeciesDetailSheet extends StatelessWidget {
       ),
       child: SingleChildScrollView(
         controller: scrollController,
-        padding: const EdgeInsets.all(AppSpacing.lg2),
+        padding: EdgeInsets.all(AppSpacing.lg2),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

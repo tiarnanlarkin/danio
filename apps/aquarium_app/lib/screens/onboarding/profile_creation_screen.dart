@@ -148,7 +148,7 @@ class _ProfileCreationScreenState extends ConsumerState<ProfileCreationScreen> {
         ],
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(AppSpacing.lg),
+        padding: EdgeInsets.all(AppSpacing.lg),
         child: FocusTraversalGroup(
           policy: OrderedTraversalPolicy(),
           child: Form(
@@ -310,7 +310,7 @@ class _ProfileCreationScreenState extends ConsumerState<ProfileCreationScreen> {
           onTap: () => setState(() => _selectedExperience = level),
           borderRadius: AppRadius.mediumRadius,
           child: Container(
-            padding: const EdgeInsets.all(AppSpacing.md),
+            padding: EdgeInsets.all(AppSpacing.md),
             decoration: BoxDecoration(
               color: isSelected ? AppOverlays.accent10 : null,
               borderRadius: AppRadius.mediumRadius,
@@ -419,7 +419,7 @@ class _ProfileCreationScreenState extends ConsumerState<ProfileCreationScreen> {
         onTap: () => setState(() => _selectedTankType = type),
         borderRadius: AppRadius.mediumRadius,
         child: Container(
-          padding: const EdgeInsets.all(AppSpacing.sm2),
+          padding: EdgeInsets.all(AppSpacing.sm2),
           decoration: BoxDecoration(
             color: isSelected ? AppOverlays.primary10 : null,
             borderRadius: AppRadius.mediumRadius,

@@ -57,7 +57,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
   Widget _buildOfflineOnlyMessage(ThemeData theme) {
     return Center(
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.xl),
+        padding: EdgeInsets.all(AppSpacing.xl),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -93,7 +93,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
     ThemeData theme,
   ) {
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(AppSpacing.lg),
+      padding: EdgeInsets.all(AppSpacing.lg),
       child: Form(
         key: _formKey,
         child: Column(
@@ -245,12 +245,12 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
     ThemeData theme,
   ) {
     return ListView(
-      padding: const EdgeInsets.all(AppSpacing.lg),
+      padding: EdgeInsets.all(AppSpacing.lg),
       children: [
         // Profile card
         Card(
           child: Padding(
-            padding: const EdgeInsets.all(AppSpacing.lg),
+            padding: EdgeInsets.all(AppSpacing.lg),
             child: Column(
               children: [
                 CircleAvatar(

@@ -10,7 +10,7 @@ class TroubleshootingScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: const Text('Troubleshooting')),
       body: ListView(
-        padding: const EdgeInsets.all(AppSpacing.md),
+        padding: EdgeInsets.all(AppSpacing.md),
         children: [
           Text(
             'Common Problems & Solutions',

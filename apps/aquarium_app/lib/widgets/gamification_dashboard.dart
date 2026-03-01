@@ -131,7 +131,7 @@ class GamificationDashboard extends ConsumerWidget {
       elevation: AppElevation.level1,
       shape: RoundedRectangleBorder(borderRadius: AppRadius.mediumRadius),
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.all(AppSpacing.md),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: List.generate(4, (i) => Column(
@@ -161,7 +161,7 @@ class GamificationDashboard extends ConsumerWidget {
         borderRadius: AppRadius.mediumRadius,
       ),
       child: const Padding(
-        padding: EdgeInsets.all(16),
+        padding: EdgeInsets.all(AppSpacing.md),
         child: Row(
           children: [
             Icon(Icons.error_outline, color: AppColors.error),
@@ -405,7 +405,7 @@ class MiniGamificationDisplay extends ConsumerWidget {
     return profileAsync.when(
       loading: () => const SizedBox.shrink(),
       error: (_, __) => Padding(
-                    padding: const EdgeInsets.all(AppSpacing.sm),
+                    padding: EdgeInsets.all(AppSpacing.sm),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [

@@ -195,7 +195,7 @@ class _StoryPlayerScreenState extends ConsumerState<StoryPlayerScreen>
             ),
             const SizedBox(height: AppSpacing.lg),
             Container(
-              padding: const EdgeInsets.all(AppSpacing.md),
+              padding: EdgeInsets.all(AppSpacing.md),
               decoration: BoxDecoration(
                 color: AppOverlays.amber20,
                 borderRadius: AppRadius.mediumRadius,
@@ -297,7 +297,7 @@ class _StoryPlayerScreenState extends ConsumerState<StoryPlayerScreen>
     final progressValue = visitedScenes / totalScenes;
 
     return Container(
-      padding: const EdgeInsets.all(AppSpacing.md),
+      padding: EdgeInsets.all(AppSpacing.md),
       child: Column(
         children: [
           Row(
@@ -363,8 +363,8 @@ class _StoryPlayerScreenState extends ConsumerState<StoryPlayerScreen>
     return FadeTransition(
       opacity: _textOpacity,
       child: Container(
-        margin: const EdgeInsets.all(AppSpacing.lg),
-        padding: const EdgeInsets.all(AppSpacing.lg),
+        margin: EdgeInsets.all(AppSpacing.lg),
+        padding: EdgeInsets.all(AppSpacing.lg),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: AppRadius.largeRadius,
@@ -431,7 +431,7 @@ class _StoryPlayerScreenState extends ConsumerState<StoryPlayerScreen>
       child: FadeTransition(
         opacity: _textOpacity,
         child: ListView.builder(
-          padding: const EdgeInsets.all(AppSpacing.lg),
+          padding: EdgeInsets.all(AppSpacing.lg),
           itemCount: _currentScene!.choices.length,
           itemBuilder: (context, index) {
             final choice = _currentScene!.choices[index];
@@ -456,7 +456,7 @@ class _StoryPlayerScreenState extends ConsumerState<StoryPlayerScreen>
             : AppOverlays.orange90,
         child: Center(
           child: Padding(
-            padding: const EdgeInsets.all(AppSpacing.xl),
+            padding: EdgeInsets.all(AppSpacing.xl),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -525,7 +525,7 @@ class _ChoiceButton extends StatelessWidget {
         onTap: onPressed,
         borderRadius: AppRadius.mediumRadius,
         child: Container(
-          padding: const EdgeInsets.all(AppSpacing.lg2),
+          padding: EdgeInsets.all(AppSpacing.lg2),
           decoration: BoxDecoration(
             borderRadius: AppRadius.mediumRadius,
             border: Border.all(color: const Color(0xFFFFE082), width: 2),

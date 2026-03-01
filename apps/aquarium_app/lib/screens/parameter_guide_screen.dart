@@ -10,7 +10,7 @@ class ParameterGuideScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: const Text('Water Parameters Guide')),
       body: ListView(
-        padding: const EdgeInsets.all(AppSpacing.md),
+        padding: EdgeInsets.all(AppSpacing.md),
         children: [
           // Intro
           AppCard(

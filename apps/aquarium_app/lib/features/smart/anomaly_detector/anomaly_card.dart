@@ -30,7 +30,7 @@ class AnomalyCard extends ConsumerWidget {
         borderRadius: AppRadius.md2Radius,
       ),
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.md),
+        padding: EdgeInsets.all(AppSpacing.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

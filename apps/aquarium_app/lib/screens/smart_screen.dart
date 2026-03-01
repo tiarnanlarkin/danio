@@ -84,7 +84,7 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
         centerTitle: true,
       ),
       body: ListView(
-        padding: const EdgeInsets.all(AppSpacing.md),
+        padding: EdgeInsets.all(AppSpacing.md),
         children: [
           // API status
           if (!openai.isConfigured)
@@ -135,7 +135,7 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
                 borderRadius: AppRadius.md2Radius,
               ),
               child: Padding(
-                padding: const EdgeInsets.all(AppSpacing.md),
+                padding: EdgeInsets.all(AppSpacing.md),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -161,7 +161,7 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
                         isDense: true,
                         suffixIcon: _askLoading
                             ? const Padding(
-                                padding: EdgeInsets.all(12),
+                                padding: EdgeInsets.all(AppSpacing.sm2),
                                 child: SizedBox(
                                   width: 16, height: 16,
                                   child: CircularProgressIndicator(strokeWidth: 2),
@@ -182,7 +182,7 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
                       const SizedBox(height: AppSpacing.sm),
                       Container(
                         width: double.infinity,
-                        padding: const EdgeInsets.all(AppSpacing.sm),
+                        padding: EdgeInsets.all(AppSpacing.sm),
                         decoration: BoxDecoration(
                           color: AppColors.primary.withValues(alpha: 0.05),
                           borderRadius: AppRadius.smallRadius,
@@ -348,7 +348,7 @@ class _OfflineBanner extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(AppSpacing.lg),
+      padding: EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topLeft,
@@ -385,7 +385,7 @@ class _OfflineBanner extends StatelessWidget {
           ),
           const SizedBox(height: AppSpacing.md),
           Container(
-            padding: const EdgeInsets.all(AppSpacing.sm),
+            padding: EdgeInsets.all(AppSpacing.sm),
             decoration: BoxDecoration(
               color: AppColors.surfaceVariant.withValues(alpha: 0.5),
               borderRadius: AppRadius.smallRadius,
@@ -466,7 +466,7 @@ class _FeatureCard extends StatelessWidget {
         onTap: onTap,
         borderRadius: AppRadius.md2Radius,
         child: Padding(
-          padding: const EdgeInsets.all(AppSpacing.md),
+          padding: EdgeInsets.all(AppSpacing.md),
           child: Row(
             children: [
               CircleAvatar(

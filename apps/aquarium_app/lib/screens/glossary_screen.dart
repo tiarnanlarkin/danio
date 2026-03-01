@@ -43,7 +43,7 @@ class _GlossaryScreenState extends State<GlossaryScreen> {
       body: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.all(AppSpacing.md),
+            padding: EdgeInsets.all(AppSpacing.md),
             child: TextField(
               decoration: InputDecoration(
                 hintText: 'Search terms...',
@@ -98,7 +98,7 @@ class _GlossaryScreenState extends State<GlossaryScreen> {
 
           Expanded(
             child: ListView.builder(
-              padding: const EdgeInsets.all(AppSpacing.md),
+              padding: EdgeInsets.all(AppSpacing.md),
               itemCount: terms.length,
               itemBuilder: (ctx, i) => _TermCard(term: terms[i]),
             ),
@@ -119,7 +119,7 @@ class _TermCard extends StatelessWidget {
     return Card(
       margin: const EdgeInsets.only(bottom: 8),
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.sm2),
+        padding: EdgeInsets.all(AppSpacing.sm2),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

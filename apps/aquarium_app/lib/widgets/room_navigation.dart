@@ -14,7 +14,7 @@ class RoomNavigation extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(AppSpacing.md),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -95,7 +95,7 @@ class _RoomCard extends StatelessWidget {
       onTap: onTap,
       borderRadius: AppRadius.mediumRadius,
       child: Container(
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.all(AppSpacing.md),
         decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topLeft,

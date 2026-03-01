@@ -251,7 +251,7 @@ class _SearchResults extends StatelessWidget {
     }
 
     return ListView.builder(
-      padding: const EdgeInsets.all(AppSpacing.md),
+      padding: EdgeInsets.all(AppSpacing.md),
       itemCount: items.length,
       itemBuilder: (context, index) {
         final item = items[index];
@@ -279,7 +279,7 @@ class _SearchResults extends StatelessWidget {
         expand: false,
         builder: (_, scrollController) => SingleChildScrollView(
           controller: scrollController,
-          padding: const EdgeInsets.all(AppSpacing.lg2),
+          padding: EdgeInsets.all(AppSpacing.lg2),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

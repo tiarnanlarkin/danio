@@ -10,7 +10,7 @@ class HardscapeGuideScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: const Text('Hardscape Guide')),
       body: ListView.builder(
-        padding: const EdgeInsets.all(AppSpacing.md),
+        padding: EdgeInsets.all(AppSpacing.md),
         itemCount: _buildItems().length,
         itemBuilder: (context, index) => _buildItems()[index],
       ),
@@ -529,7 +529,7 @@ class _TipCard extends StatelessWidget {
     return Card(
       margin: const EdgeInsets.only(bottom: AppSpacing.sm),
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.sm2),
+        padding: EdgeInsets.all(AppSpacing.sm2),
         child: Row(
           children: [
             Icon(icon, color: AppColors.primary),

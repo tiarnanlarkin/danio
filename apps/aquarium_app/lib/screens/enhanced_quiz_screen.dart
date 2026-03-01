@@ -298,7 +298,7 @@ class _EnhancedQuizScreenState extends ConsumerState<EnhancedQuizScreen>
             // Quiz content
             Flexible(
               child: SingleChildScrollView(
-                padding: const EdgeInsets.all(20),
+                padding: EdgeInsets.all(AppSpacing.lg2),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -359,7 +359,7 @@ class _EnhancedQuizScreenState extends ConsumerState<EnhancedQuizScreen>
     final progress = (_currentExerciseIndex + 1) / widget.quiz.exercises.length;
 
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: EdgeInsets.all(AppSpacing.lg2),
       decoration: BoxDecoration(
         color: Theme.of(context).scaffoldBackgroundColor,
         boxShadow: [
@@ -506,7 +506,7 @@ class _EnhancedQuizScreenState extends ConsumerState<EnhancedQuizScreen>
     return ScaleTransition(
       scale: _feedbackScale,
       child: Container(
-        padding: const EdgeInsets.all(AppSpacing.md),
+        padding: EdgeInsets.all(AppSpacing.md),
         decoration: BoxDecoration(
           color: isCorrect
               ? AppOverlays.success10
@@ -551,7 +551,7 @@ class _EnhancedQuizScreenState extends ConsumerState<EnhancedQuizScreen>
 
   Widget _buildBottomButton(bool hasAnswer) {
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: EdgeInsets.all(AppSpacing.lg2),
       decoration: BoxDecoration(
         color: Theme.of(context).scaffoldBackgroundColor,
         boxShadow: [
@@ -734,7 +734,7 @@ class _EnhancedQuizScreenState extends ConsumerState<EnhancedQuizScreen>
 
                 // XP earned card
                 Container(
-                  padding: const EdgeInsets.all(AppSpacing.md),
+                  padding: EdgeInsets.all(AppSpacing.md),
                   decoration: BoxDecoration(
                     gradient: AppColors.primaryGradient,
                     borderRadius: AppRadius.largeRadius,
@@ -799,7 +799,7 @@ class _EnhancedQuizScreenState extends ConsumerState<EnhancedQuizScreen>
 
         // Bottom action
         Container(
-          padding: const EdgeInsets.all(20),
+          padding: EdgeInsets.all(AppSpacing.lg2),
           child: SafeArea(
             child: ElevatedButton(
               onPressed: _isSubmitting ? null : widget.onComplete,

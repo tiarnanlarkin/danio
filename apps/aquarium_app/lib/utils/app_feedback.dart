@@ -31,7 +31,7 @@ class AppFeedback {
         behavior: SnackBarBehavior.floating,
         duration: const Duration(seconds: 2),
         shape: RoundedRectangleBorder(borderRadius: AppRadius.mediumRadius),
-        margin: const EdgeInsets.all(AppSpacing.md),
+        margin: EdgeInsets.all(AppSpacing.md),
       ),
     );
   }
@@ -61,7 +61,7 @@ class AppFeedback {
         behavior: SnackBarBehavior.floating,
         duration: const Duration(seconds: 4),
         shape: RoundedRectangleBorder(borderRadius: AppRadius.mediumRadius),
-        margin: const EdgeInsets.all(AppSpacing.md),
+        margin: EdgeInsets.all(AppSpacing.md),
         action: onRetry != null
             ? SnackBarAction(
                 label: 'Retry',
@@ -94,7 +94,7 @@ class AppFeedback {
         behavior: SnackBarBehavior.floating,
         duration: const Duration(seconds: 3),
         shape: RoundedRectangleBorder(borderRadius: AppRadius.mediumRadius),
-        margin: const EdgeInsets.all(AppSpacing.md),
+        margin: EdgeInsets.all(AppSpacing.md),
       ),
     );
   }
@@ -119,7 +119,7 @@ class AppFeedback {
         behavior: SnackBarBehavior.floating,
         duration: const Duration(seconds: 2),
         shape: RoundedRectangleBorder(borderRadius: AppRadius.mediumRadius),
-        margin: const EdgeInsets.all(AppSpacing.md),
+        margin: EdgeInsets.all(AppSpacing.md),
       ),
     );
   }
@@ -132,7 +132,7 @@ class AppFeedback {
         behavior: SnackBarBehavior.floating,
         duration: const Duration(seconds: 2),
         shape: RoundedRectangleBorder(borderRadius: AppRadius.mediumRadius),
-        margin: const EdgeInsets.all(AppSpacing.md),
+        margin: EdgeInsets.all(AppSpacing.md),
       ),
     );
   }
@@ -166,7 +166,7 @@ class AppFeedback {
           days: 365,
         ), // "Forever" - must be dismissed manually
         shape: RoundedRectangleBorder(borderRadius: AppRadius.mediumRadius),
-        margin: const EdgeInsets.all(AppSpacing.md),
+        margin: EdgeInsets.all(AppSpacing.md),
       ),
     );
   }

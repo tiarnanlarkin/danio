@@ -166,7 +166,7 @@ class _PlacementTestScreenState extends ConsumerState<PlacementTestScreen> {
           // Question content
           Expanded(
             child: SingleChildScrollView(
-              padding: const EdgeInsets.all(AppSpacing.md),
+              padding: EdgeInsets.all(AppSpacing.md),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
@@ -280,7 +280,7 @@ class _PlacementTestScreenState extends ConsumerState<PlacementTestScreen> {
           onTap: showResult ? null : () => _selectAnswer(index),
           borderRadius: AppRadius.mediumRadius,
           child: Container(
-            padding: const EdgeInsets.all(AppSpacing.md),
+            padding: EdgeInsets.all(AppSpacing.md),
             decoration: BoxDecoration(
               color: backgroundColor,
               borderRadius: AppRadius.mediumRadius,
@@ -337,7 +337,7 @@ class _PlacementTestScreenState extends ConsumerState<PlacementTestScreen> {
     return Card(
       color: isCorrect ? Colors.green[50] : const Color(0xFFFFF8E1),
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.md),
+        padding: EdgeInsets.all(AppSpacing.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -371,7 +371,7 @@ class _PlacementTestScreenState extends ConsumerState<PlacementTestScreen> {
 
   Widget _buildNavigationButtons(bool isAnswered) {
     return Container(
-      padding: const EdgeInsets.all(AppSpacing.md),
+      padding: EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
         color: Colors.white,
         boxShadow: [

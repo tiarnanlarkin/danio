@@ -183,7 +183,7 @@ class NotebookCard extends StatelessWidget {
                 child: CustomPaint(painter: _NotebookLinesPainter()),
               ),
             // Content
-            Padding(padding: padding ?? const EdgeInsets.all(16), child: child),
+            Padding(padding: padding ?? EdgeInsets.all(AppSpacing.md), child: child),
           ],
         ),
       ),
@@ -432,7 +432,7 @@ class WindowDecoration extends StatelessWidget {
           // Top pane
           Expanded(
             child: Container(
-              margin: const EdgeInsets.all(4),
+              margin: EdgeInsets.all(AppSpacing.xs),
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.topCenter,
@@ -455,7 +455,7 @@ class WindowDecoration extends StatelessWidget {
           // Bottom pane
           Expanded(
             child: Container(
-              margin: const EdgeInsets.all(4),
+              margin: EdgeInsets.all(AppSpacing.xs),
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.topCenter,

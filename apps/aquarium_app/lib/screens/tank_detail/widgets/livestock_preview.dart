@@ -40,7 +40,7 @@ class LivestockPreview extends StatelessWidget {
             child: Card(
               margin: EdgeInsets.zero,
               child: Padding(
-                padding: const EdgeInsets.all(AppSpacing.sm2),
+                padding: EdgeInsets.all(AppSpacing.sm2),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [

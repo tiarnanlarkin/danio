@@ -81,7 +81,7 @@ class WishlistScreen extends ConsumerWidget {
               onAction: () => _showAddDialog(context, ref),
             )
           : ListView.builder(
-              padding: const EdgeInsets.all(AppSpacing.md),
+              padding: EdgeInsets.all(AppSpacing.md),
               itemCount: items.length,
               itemBuilder: (context, index) {
                 final item = items[index];
@@ -182,7 +182,7 @@ class WishlistScreen extends ConsumerWidget {
       context: context,
       backgroundColor: Colors.transparent,
       builder: (ctx) => Container(
-        margin: const EdgeInsets.all(AppSpacing.md),
+        margin: EdgeInsets.all(AppSpacing.md),
         decoration: BoxDecoration(
           color: Theme.of(context).scaffoldBackgroundColor,
           borderRadius: AppRadius.largeRadius,
@@ -191,7 +191,7 @@ class WishlistScreen extends ConsumerWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Padding(
-              padding: const EdgeInsets.all(AppSpacing.lg2),
+              padding: EdgeInsets.all(AppSpacing.lg2),
               child: Row(
                 children: [
                   const Icon(Icons.check_circle, color: AppColors.success),
@@ -254,7 +254,7 @@ class _WishlistItemCard extends StatelessWidget{
         onTap: onTap,
         borderRadius: AppRadius.mediumRadius,
         child: Padding(
-          padding: const EdgeInsets.all(AppSpacing.md),
+          padding: EdgeInsets.all(AppSpacing.md),
           child: Row(
             children: [
               Container(
@@ -385,7 +385,7 @@ class _AddEditItemSheetState extends State<_AddEditItemSheet> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.all(AppSpacing.md),
+      margin: EdgeInsets.all(AppSpacing.md),
       padding: EdgeInsets.only(
         bottom: MediaQuery.of(context).viewInsets.bottom,
       ),
@@ -394,7 +394,7 @@ class _AddEditItemSheetState extends State<_AddEditItemSheet> {
         borderRadius: AppRadius.largeRadius,
       ),
       child: SingleChildScrollView(
-        padding: const EdgeInsets.all(AppSpacing.lg),
+        padding: EdgeInsets.all(AppSpacing.lg),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,

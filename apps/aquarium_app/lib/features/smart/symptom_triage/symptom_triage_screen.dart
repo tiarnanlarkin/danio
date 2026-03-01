@@ -334,7 +334,7 @@ class _SymptomTriageScreenState extends ConsumerState<SymptomTriageScreen> {
       return Card(
         color: AppColors.error.withValues(alpha: 0.1),
         child: Padding(
-          padding: const EdgeInsets.all(AppSpacing.md),
+          padding: EdgeInsets.all(AppSpacing.md),
           child: Column(
             children: [
               Row(

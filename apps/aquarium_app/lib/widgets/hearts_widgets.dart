@@ -109,7 +109,7 @@ class _DetailedHeartsDisplayState extends ConsumerState<DetailedHeartsDisplay> {
     final timeUntilRefill = heartsService.getTimeUntilNextRefill(profile);
 
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
@@ -314,7 +314,7 @@ class _OutOfHeartsModalState extends ConsumerState<OutOfHeartsModal> {
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: AppRadius.largeRadius),
       child: Padding(
-        padding: const EdgeInsets.all(24),
+        padding: EdgeInsets.all(AppSpacing.lg),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -353,7 +353,7 @@ class _OutOfHeartsModalState extends ConsumerState<OutOfHeartsModal> {
             // Countdown timer
             if (timeUntilRefill != null)
               Container(
-                padding: const EdgeInsets.all(16),
+                padding: EdgeInsets.all(AppSpacing.md),
                 decoration: BoxDecoration(
                   color: AppColors.surfaceVariant,
                   borderRadius: AppRadius.mediumRadius,

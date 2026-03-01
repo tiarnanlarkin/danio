@@ -182,7 +182,7 @@ class _TutorialWalkthroughScreenState
 
   Widget _buildTutorialPage(_TutorialStep step) {
     return Padding(
-      padding: const EdgeInsets.all(AppSpacing.xl),
+      padding: EdgeInsets.all(AppSpacing.xl),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -192,7 +192,7 @@ class _TutorialWalkthroughScreenState
 
           // Icon
           Container(
-            padding: const EdgeInsets.all(AppSpacing.lg2),
+            padding: EdgeInsets.all(AppSpacing.lg2),
             decoration: BoxDecoration(
               color: AppOverlays.accent10,
               shape: BoxShape.circle,
@@ -236,7 +236,7 @@ class _TutorialWalkthroughScreenState
 
         Expanded(
           child: SingleChildScrollView(
-            padding: const EdgeInsets.all(AppSpacing.lg),
+            padding: EdgeInsets.all(AppSpacing.lg),
             child: Form(
               key: _formKey,
               child: Column(
@@ -422,7 +422,7 @@ class _TutorialWalkthroughScreenState
 
   Widget _buildNavigation() {
     return Container(
-      padding: const EdgeInsets.all(AppSpacing.md),
+      padding: EdgeInsets.all(AppSpacing.md),
       child: Row(
         children: [
           if (_currentStep > 0)
@@ -487,7 +487,7 @@ class _TankTypeCard extends StatelessWidget {
       child: Opacity(
         opacity: isDisabled ? 0.5 : 1.0,
         child: Container(
-          padding: const EdgeInsets.all(AppSpacing.md),
+          padding: EdgeInsets.all(AppSpacing.md),
           decoration: BoxDecoration(
             color: isSelected
                 ? AppOverlays.primary10
@@ -550,7 +550,7 @@ class _WaterTypeCard extends StatelessWidget {
       onTap: onTap,
       borderRadius: AppRadius.mediumRadius,
       child: Container(
-        padding: const EdgeInsets.all(AppSpacing.md),
+        padding: EdgeInsets.all(AppSpacing.md),
         decoration: BoxDecoration(
           color: isSelected
               ? AppOverlays.accent10

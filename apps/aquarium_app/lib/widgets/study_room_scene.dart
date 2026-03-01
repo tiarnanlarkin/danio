@@ -592,7 +592,7 @@ class _ProgressCard extends StatelessWidget {
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
         child: Container(
-          padding: const EdgeInsets.all(16),
+          padding: EdgeInsets.all(AppSpacing.md),
           decoration: BoxDecoration(
             color: const Color(0x28FFFFFF),
             borderRadius: AppRadius.mediumRadius,

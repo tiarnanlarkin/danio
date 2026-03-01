@@ -152,7 +152,7 @@ class _EnhancedCelebrationOverlayWrapperState
     return GestureDetector(
       onTap: () => ref.read(enhancedCelebrationProvider.notifier).dismiss(),
       child: Container(
-        margin: const EdgeInsets.all(32),
+        margin: EdgeInsets.all(AppSpacing.xl),
         constraints: const BoxConstraints(maxWidth: 400),
         decoration: BoxDecoration(
           gradient: LinearGradient(
@@ -174,7 +174,7 @@ class _EnhancedCelebrationOverlayWrapperState
           children: [
             // Main content
             Padding(
-              padding: const EdgeInsets.all(32),
+              padding: EdgeInsets.all(AppSpacing.xl),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -237,7 +237,7 @@ class _EnhancedCelebrationOverlayWrapperState
             
             // Tap to dismiss hint
             Container(
-              padding: const EdgeInsets.all(16),
+              padding: EdgeInsets.all(AppSpacing.md),
               decoration: BoxDecoration(
                 color: AppColors.blackAlpha05,
                 borderRadius: const BorderRadius.only(

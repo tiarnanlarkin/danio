@@ -191,7 +191,7 @@ class _MaintenanceChecklistScreenState
           items.add(_ChecklistItem.spacer(AppSpacing.xxl));
 
           return ListView.builder(
-            padding: const EdgeInsets.all(AppSpacing.md),
+            padding: EdgeInsets.all(AppSpacing.md),
             itemCount: items.length,
             itemBuilder: (context, index) {
               final item = items[index];

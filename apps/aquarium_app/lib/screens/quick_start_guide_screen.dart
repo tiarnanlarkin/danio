@@ -10,7 +10,7 @@ class QuickStartGuideScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: const Text('Quick Start Guide')),
       body: ListView(
-        padding: const EdgeInsets.all(AppSpacing.md),
+        padding: EdgeInsets.all(AppSpacing.md),
         children: [
           AppCard(
             backgroundColor: AppOverlays.primary10,
@@ -317,7 +317,7 @@ class _StepCard extends StatelessWidget {
     return Card(
       margin: const EdgeInsets.only(bottom: 16),
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.md),
+        padding: EdgeInsets.all(AppSpacing.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

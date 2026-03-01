@@ -178,7 +178,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
   /// Time range selector widget
   Widget _buildTimeRangeSelector() {
     return Container(
-      padding: const EdgeInsets.all(AppSpacing.md),
+      padding: EdgeInsets.all(AppSpacing.md),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -218,7 +218,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
   /// Overview section with key metrics
   Widget _buildOverviewSection(AnalyticsSummary summary) {
     return Container(
-      padding: const EdgeInsets.all(AppSpacing.md),
+      padding: EdgeInsets.all(AppSpacing.md),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -305,7 +305,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
     ProgressTrend? trend,
   }) {
     return Container(
-      padding: const EdgeInsets.all(AppSpacing.md),
+      padding: EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
         color: color.withAlpha(26),
         borderRadius: AppRadius.mediumRadius,
@@ -362,7 +362,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
     final maxXP = data.map((d) => d.xp).reduce((a, b) => a > b ? a : b);
 
     return Container(
-      padding: const EdgeInsets.all(AppSpacing.md),
+      padding: EdgeInsets.all(AppSpacing.md),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -464,7 +464,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
     final maxXP = last7Days.map((d) => d.xp).reduce((a, b) => a > b ? a : b);
 
     return Container(
-      padding: const EdgeInsets.all(AppSpacing.md),
+      padding: EdgeInsets.all(AppSpacing.md),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -566,7 +566,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
     final topics = summary.topicPerformance.take(6).toList();
 
     return Container(
-      padding: const EdgeInsets.all(AppSpacing.md),
+      padding: EdgeInsets.all(AppSpacing.md),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -628,7 +628,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
     final startDate = today.subtract(Duration(days: daysToShow));
 
     return Container(
-      padding: const EdgeInsets.all(AppSpacing.md),
+      padding: EdgeInsets.all(AppSpacing.md),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -725,7 +725,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
     if (summary.insights.isEmpty) return const SizedBox.shrink();
 
     return Container(
-      padding: const EdgeInsets.all(AppSpacing.md),
+      padding: EdgeInsets.all(AppSpacing.md),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -794,7 +794,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
             if (insight.recommendation != null) ...[
               const SizedBox(height: AppSpacing.sm),
               Container(
-                padding: const EdgeInsets.all(AppSpacing.sm2),
+                padding: EdgeInsets.all(AppSpacing.sm2),
                 decoration: BoxDecoration(
                   color: color.withAlpha(26),
                   borderRadius: AppRadius.smallRadius,
@@ -825,7 +825,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
     if (summary.topicPerformance.isEmpty) return const SizedBox.shrink();
 
     return Container(
-      padding: const EdgeInsets.all(AppSpacing.md),
+      padding: EdgeInsets.all(AppSpacing.md),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -925,7 +925,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
     if (summary.predictions.isEmpty) return const SizedBox.shrink();
 
     return Container(
-      padding: const EdgeInsets.all(AppSpacing.md),
+      padding: EdgeInsets.all(AppSpacing.md),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

@@ -71,7 +71,7 @@ class _XpProgressBarState extends ConsumerState<XpProgressBar>
     return profileAsync.when(
       loading: () => const SizedBox.shrink(),
       error: (_, __) => Padding(
-                    padding: const EdgeInsets.all(AppSpacing.sm),
+                    padding: EdgeInsets.all(AppSpacing.sm),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -276,7 +276,7 @@ class XpProgressCard extends ConsumerWidget {
     return profileAsync.when(
       loading: () => const SizedBox.shrink(),
       error: (_, __) => Padding(
-                    padding: const EdgeInsets.all(AppSpacing.sm),
+                    padding: EdgeInsets.all(AppSpacing.sm),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -311,7 +311,7 @@ class XpProgressCard extends ConsumerWidget {
               onTap: onTap,
               borderRadius: AppRadius.mediumRadius,
               child: Padding(
-                padding: const EdgeInsets.all(16),
+                padding: EdgeInsets.all(AppSpacing.md),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -321,7 +321,7 @@ class XpProgressCard extends ConsumerWidget {
                         Row(
                           children: [
                             Container(
-                              padding: const EdgeInsets.all(8),
+                              padding: EdgeInsets.all(AppSpacing.sm),
                               decoration: BoxDecoration(
                                 color: AppColors.warning,
                                 borderRadius: AppRadius.smallRadius,

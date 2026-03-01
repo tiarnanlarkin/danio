@@ -32,7 +32,7 @@ class LivestockDetailScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(title: Text(livestock.commonName)),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(AppSpacing.md),
+        padding: EdgeInsets.all(AppSpacing.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -45,7 +45,7 @@ class LivestockDetailScreen extends ConsumerWidget {
             tankAsync.when(
               loading: () => const SizedBox.shrink(),
               error: (_, __) => Padding(
-                    padding: const EdgeInsets.all(AppSpacing.sm),
+                    padding: EdgeInsets.all(AppSpacing.sm),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -61,7 +61,7 @@ class LivestockDetailScreen extends ConsumerWidget {
                 return allLivestockAsync.when(
                   loading: () => const SizedBox.shrink(),
                   error: (_, __) => Padding(
-                    padding: const EdgeInsets.all(AppSpacing.sm),
+                    padding: EdgeInsets.all(AppSpacing.sm),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [

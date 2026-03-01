@@ -300,7 +300,7 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
               // Bulk action buttons
               if (_isSelectMode && _selectedLivestockIds.isNotEmpty)
                 Container(
-                  padding: const EdgeInsets.all(AppSpacing.md),
+                  padding: EdgeInsets.all(AppSpacing.md),
                   decoration: BoxDecoration(
                     color: Theme.of(context).colorScheme.surface,
                     boxShadow: [
@@ -534,7 +534,7 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
     final placeholders = SkeletonPlaceholders.livestockList;
     return Skeletonizer(
       child: ListView.builder(
-        padding: const EdgeInsets.all(AppSpacing.md),
+        padding: EdgeInsets.all(AppSpacing.md),
         itemCount: placeholders.length + 2, // +2 for summary card and spacing
         itemBuilder: (context, index) {
           if (index == 0) {
@@ -981,7 +981,7 @@ class _AddLivestockSheetState extends State<_AddLivestockSheet> {
             if (_selectedSpecies != null) ...[
               const SizedBox(height: AppSpacing.sm),
               Container(
-                padding: const EdgeInsets.all(AppSpacing.sm2),
+                padding: EdgeInsets.all(AppSpacing.sm2),
                 decoration: BoxDecoration(
                   color: AppColors.primaryAlpha05,
                   borderRadius: AppRadius.smallRadius,
@@ -1468,7 +1468,7 @@ class _LastFedInfo extends ConsumerWidget {
     return logsAsync.when(
       loading: () => const SizedBox.shrink(),
       error: (_, __) => Padding(
-                    padding: const EdgeInsets.all(AppSpacing.sm),
+                    padding: EdgeInsets.all(AppSpacing.sm),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [

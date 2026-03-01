@@ -17,7 +17,7 @@ class LoadingState extends StatelessWidget {
   Widget build(BuildContext context) {
     if (compact) {
       return Padding(
-        padding: const EdgeInsets.all(AppSpacing.lg),
+        padding: EdgeInsets.all(AppSpacing.lg),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -148,7 +148,7 @@ class LoadingOverlay extends StatelessWidget {
             color: AppOverlays.black30,
             child: Center(
               child: Container(
-                padding: const EdgeInsets.all(AppSpacing.lg),
+                padding: EdgeInsets.all(AppSpacing.lg),
                 decoration: BoxDecoration(
                   color: AppColors.surface,
                   borderRadius: AppRadius.largeRadius,

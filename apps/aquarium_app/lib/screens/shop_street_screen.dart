@@ -239,14 +239,14 @@ class ShopStreetScreen extends ConsumerWidget {
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (ctx) => Container(
-        margin: const EdgeInsets.all(AppSpacing.md),
+        margin: EdgeInsets.all(AppSpacing.md),
         padding: EdgeInsets.only(bottom: MediaQuery.of(ctx).viewInsets.bottom),
         decoration: BoxDecoration(
           color: Theme.of(context).scaffoldBackgroundColor,
           borderRadius: AppRadius.largeRadius,
         ),
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(AppSpacing.lg),
+          padding: EdgeInsets.all(AppSpacing.lg),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -359,11 +359,11 @@ class _ShopHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(AppSpacing.lg2),
+      padding: EdgeInsets.all(AppSpacing.lg2),
       child: Row(
         children: [
           Container(
-            padding: const EdgeInsets.all(AppSpacing.sm2),
+            padding: EdgeInsets.all(AppSpacing.sm2),
             decoration: BoxDecoration(
               color: ShopColors.glassCard,
               borderRadius: AppRadius.mediumRadius,
@@ -425,7 +425,7 @@ class _ShopSection extends StatelessWidget {
         child: BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
           child: Container(
-            padding: const EdgeInsets.all(AppSpacing.lg2),
+            padding: EdgeInsets.all(AppSpacing.lg2),
             decoration: BoxDecoration(
               color: ShopColors.glassCard,
               borderRadius: AppRadius.largeRadius,
@@ -434,7 +434,7 @@ class _ShopSection extends StatelessWidget {
             child: Row(
               children: [
                 Container(
-                  padding: const EdgeInsets.all(AppSpacing.sm2),
+                  padding: EdgeInsets.all(AppSpacing.sm2),
                   decoration: BoxDecoration(
                     color: Color((color.value & 0x00FFFFFF) | 0x33000000), // 20% opacity
                     borderRadius: AppRadius.mediumRadius,
@@ -513,7 +513,7 @@ class _BudgetCard extends StatelessWidget {
         child: BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
           child: Container(
-            padding: const EdgeInsets.all(AppSpacing.lg2),
+            padding: EdgeInsets.all(AppSpacing.lg2),
             decoration: BoxDecoration(
               color: ShopColors.glassCard,
               borderRadius: AppRadius.largeRadius,
@@ -627,7 +627,7 @@ class _LocalShopsCard extends StatelessWidget {
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
         child: Container(
-          padding: const EdgeInsets.all(AppSpacing.lg2),
+          padding: EdgeInsets.all(AppSpacing.lg2),
           decoration: BoxDecoration(
             color: ShopColors.glassCard,
             borderRadius: AppRadius.largeRadius,

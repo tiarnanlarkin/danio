@@ -239,7 +239,7 @@ class _ActivityFeedView extends StatelessWidget {
       },
       child: ListView.builder(
         controller: scrollController,
-        padding: const EdgeInsets.all(AppSpacing.md),
+        padding: EdgeInsets.all(AppSpacing.md),
         itemCount: activities.length + (hasMore ? 1 : 0),
         itemBuilder: (context, index) {
           if (index >= activities.length) {
@@ -320,7 +320,7 @@ class _ActivityTile extends ConsumerWidget {
         },
         borderRadius: AppRadius.mediumRadius,
         child: Padding(
-          padding: const EdgeInsets.all(AppSpacing.sm2),
+          padding: EdgeInsets.all(AppSpacing.sm2),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

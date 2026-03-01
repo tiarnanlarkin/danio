@@ -214,7 +214,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
 
         // Bottom action
         Container(
-          padding: const EdgeInsets.all(AppSpacing.lg2),
+          padding: EdgeInsets.all(AppSpacing.lg2),
           decoration: BoxDecoration(
             color: Theme.of(context).scaffoldBackgroundColor,
             boxShadow: [
@@ -282,7 +282,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
 
       case LessonSectionType.keyPoint:
         return Container(
-          padding: const EdgeInsets.all(AppSpacing.md),
+          padding: EdgeInsets.all(AppSpacing.md),
           decoration: BoxDecoration(
             color: AppOverlays.primary10,
             borderRadius: AppRadius.mediumRadius,
@@ -307,7 +307,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
 
       case LessonSectionType.tip:
         return Container(
-          padding: const EdgeInsets.all(AppSpacing.md),
+          padding: EdgeInsets.all(AppSpacing.md),
           decoration: BoxDecoration(
             color: AppOverlays.success10,
             borderRadius: AppRadius.mediumRadius,
@@ -339,7 +339,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
 
       case LessonSectionType.warning:
         return Container(
-          padding: const EdgeInsets.all(AppSpacing.md),
+          padding: EdgeInsets.all(AppSpacing.md),
           decoration: BoxDecoration(
             color: AppOverlays.warning10,
             borderRadius: AppRadius.mediumRadius,
@@ -371,7 +371,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
 
       case LessonSectionType.funFact:
         return Container(
-          padding: const EdgeInsets.all(AppSpacing.md),
+          padding: EdgeInsets.all(AppSpacing.md),
           decoration: BoxDecoration(
             color: AppOverlays.purple10,
             borderRadius: AppRadius.mediumRadius,
@@ -458,7 +458,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
       children: [
         // Progress
         Padding(
-          padding: const EdgeInsets.all(AppSpacing.lg2),
+          padding: EdgeInsets.all(AppSpacing.lg2),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -545,7 +545,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
                       : () => setState(() => _selectedAnswer = optionIndex),
                     borderRadius: AppRadius.mediumRadius,
                   child: Container(
-                    padding: const EdgeInsets.all(AppSpacing.md),
+                    padding: EdgeInsets.all(AppSpacing.md),
                     decoration: BoxDecoration(
                       color: bgColor ?? AppColors.surface,
                       borderRadius: AppRadius.mediumRadius,
@@ -605,7 +605,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
                 // Explanation content
                 if (index == 4 + question.options.length) {
                   return Container(
-                    padding: const EdgeInsets.all(AppSpacing.md),
+                    padding: EdgeInsets.all(AppSpacing.md),
                     decoration: BoxDecoration(
                       color: AppOverlays.info10,
                       borderRadius: AppRadius.mediumRadius,
@@ -634,7 +634,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
 
         // Bottom action
         Container(
-          padding: const EdgeInsets.all(AppSpacing.lg2),
+          padding: EdgeInsets.all(AppSpacing.lg2),
           decoration: BoxDecoration(
             color: Theme.of(context).scaffoldBackgroundColor,
             boxShadow: [
@@ -737,7 +737,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
         Expanded(
           child: Center(
             child: Padding(
-              padding: const EdgeInsets.all(AppSpacing.xl),
+              padding: EdgeInsets.all(AppSpacing.xl),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -774,7 +774,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
 
                   // XP earned
                   Container(
-                    padding: const EdgeInsets.all(AppSpacing.lg2),
+                    padding: EdgeInsets.all(AppSpacing.lg2),
                     decoration: BoxDecoration(
                       gradient: AppColors.primaryGradient,
                       borderRadius: AppRadius.mediumRadius,
@@ -809,7 +809,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
 
         // Bottom action
         Container(
-          padding: const EdgeInsets.all(AppSpacing.lg2),
+          padding: EdgeInsets.all(AppSpacing.lg2),
           child: SafeArea(
             child: ElevatedButton(
               onPressed: _isCompletingLesson
@@ -957,7 +957,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
       builder: (ctx) {
         final theme = Theme.of(ctx);
         return Padding(
-          padding: const EdgeInsets.all(AppSpacing.lg),
+          padding: EdgeInsets.all(AppSpacing.lg),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -981,7 +981,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
               const SizedBox(height: AppSpacing.lg),
               Container(
                 width: double.infinity,
-                padding: const EdgeInsets.all(AppSpacing.md),
+                padding: EdgeInsets.all(AppSpacing.md),
                 decoration: BoxDecoration(
                   color: AppOverlays.primary20,
                   borderRadius: AppRadius.mediumRadius,

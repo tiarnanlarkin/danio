@@ -48,7 +48,7 @@ class SelectionModePanel extends StatelessWidget {
             children: [
               // Header
               Container(
-                padding: const EdgeInsets.all(AppSpacing.md),
+                padding: EdgeInsets.all(AppSpacing.md),
                 decoration: BoxDecoration(
                   color: AppOverlays.primary10,
                   borderRadius: const BorderRadius.only(

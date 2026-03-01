@@ -60,7 +60,7 @@ class _PlantBrowserScreenState extends ConsumerState<PlantBrowserScreen> {
         children: [
           // Search
           Padding(
-            padding: const EdgeInsets.all(AppSpacing.md),
+            padding: EdgeInsets.all(AppSpacing.md),
             child: TextField(
               decoration: InputDecoration(
                 hintText: 'Search plants...',
@@ -128,7 +128,7 @@ class _PlantBrowserScreenState extends ConsumerState<PlantBrowserScreen> {
           // List
           Expanded(
             child: ListView.builder(
-              padding: const EdgeInsets.all(AppSpacing.md),
+              padding: EdgeInsets.all(AppSpacing.md),
               itemCount: plants.length,
               itemBuilder: (ctx, i) => _PlantCard(
                 plant: plants[i],
@@ -297,7 +297,7 @@ class _PlantDetailSheet extends StatelessWidget {
       ),
       child: SingleChildScrollView(
         controller: scrollController,
-        padding: const EdgeInsets.all(AppSpacing.lg2),
+        padding: EdgeInsets.all(AppSpacing.lg2),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

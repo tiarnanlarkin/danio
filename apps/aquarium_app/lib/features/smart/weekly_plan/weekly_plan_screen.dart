@@ -172,7 +172,7 @@ class _WeeklyPlanScreenState extends ConsumerState<WeeklyPlanScreen> {
   Widget _buildError(ThemeData theme) {
     return Center(
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.lg),
+        padding: EdgeInsets.all(AppSpacing.lg),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -221,7 +221,7 @@ class _WeeklyPlanScreenState extends ConsumerState<WeeklyPlanScreen> {
       });
 
     return ListView.builder(
-      padding: const EdgeInsets.all(AppSpacing.md),
+      padding: EdgeInsets.all(AppSpacing.md),
       itemCount: sortedDays.length + 1, // +1 for footer
       itemBuilder: (context, index) {
         if (index == sortedDays.length) {

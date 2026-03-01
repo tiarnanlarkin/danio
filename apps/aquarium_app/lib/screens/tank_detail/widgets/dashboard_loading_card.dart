@@ -12,7 +12,7 @@ class DashboardLoadingCard extends StatelessWidget {
     return Card(
       margin: EdgeInsets.zero,
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.md),
+        padding: EdgeInsets.all(AppSpacing.md),
         child: Row(
           children: [
             Text(title, style: AppTypography.headlineSmall),

@@ -75,7 +75,7 @@ class QuickStats extends StatelessWidget {
               logsAsync.when(
                 loading: () => const _WaterChangeIndicator(label: '...', isOverdue: false),
                 error: (_, __) => Padding(
-                    padding: const EdgeInsets.all(AppSpacing.sm),
+                    padding: EdgeInsets.all(AppSpacing.sm),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [

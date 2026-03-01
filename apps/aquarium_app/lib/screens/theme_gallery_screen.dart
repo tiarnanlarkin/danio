@@ -325,7 +325,7 @@ class ThemeGalleryScreen extends ConsumerWidget {
         title: Row(
           children: [
             Container(
-              padding: const EdgeInsets.all(AppSpacing.sm),
+              padding: EdgeInsets.all(AppSpacing.sm),
               decoration: BoxDecoration(
                 gradient: const LinearGradient(
                   colors: [Color(0xFFFFD700), Color(0xFFFFA500)],
@@ -552,7 +552,7 @@ class _ThemeCard extends StatelessWidget {
                     color: AppOverlays.black40,
                     child: Center(
                       child: Container(
-                        padding: const EdgeInsets.all(AppSpacing.sm2),
+                        padding: EdgeInsets.all(AppSpacing.sm2),
                         decoration: BoxDecoration(
                           color: AppOverlays.black50,
                           shape: BoxShape.circle,
@@ -597,7 +597,7 @@ class _ThemeCard extends StatelessWidget {
                   top: 8,
                   right: 8,
                   child: Container(
-                    padding: const EdgeInsets.all(AppSpacing.xs),
+                    padding: EdgeInsets.all(AppSpacing.xs),
                     decoration: BoxDecoration(
                       color: theme.accentBlob,
                       shape: BoxShape.circle,

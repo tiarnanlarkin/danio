@@ -80,7 +80,7 @@ class PlacementResultScreen extends ConsumerWidget {
 
             // Action buttons
             Padding(
-              padding: const EdgeInsets.all(AppSpacing.md),
+              padding: EdgeInsets.all(AppSpacing.md),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
@@ -147,8 +147,8 @@ class PlacementResultScreen extends ConsumerWidget {
     }
 
     return Container(
-      margin: const EdgeInsets.all(AppSpacing.md),
-      padding: const EdgeInsets.all(AppSpacing.lg),
+      margin: EdgeInsets.all(AppSpacing.md),
+      padding: EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [color.withAlpha(26), color.withAlpha(13)],
@@ -196,7 +196,7 @@ class PlacementResultScreen extends ConsumerWidget {
     return Card(
       margin: const EdgeInsets.only(bottom: 16),
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.md),
+        padding: EdgeInsets.all(AppSpacing.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -258,7 +258,7 @@ class PlacementResultScreen extends ConsumerWidget {
             ),
             const SizedBox(height: 12),
             Container(
-              padding: const EdgeInsets.all(AppSpacing.sm2),
+              padding: EdgeInsets.all(AppSpacing.sm2),
               decoration: BoxDecoration(
                 color: Colors.grey[100],
                 borderRadius: AppRadius.smallRadius,
@@ -293,7 +293,7 @@ class PlacementResultScreen extends ConsumerWidget {
 
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
-      padding: const EdgeInsets.all(AppSpacing.lg2),
+      padding: EdgeInsets.all(AppSpacing.lg2),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
           colors: [
@@ -307,7 +307,7 @@ class PlacementResultScreen extends ConsumerWidget {
       child: Row(
         children: [
           Container(
-            padding: const EdgeInsets.all(AppSpacing.sm2),
+            padding: EdgeInsets.all(AppSpacing.sm2),
             decoration: const BoxDecoration(
               color: AppOverlays.accent20,
               shape: BoxShape.circle,
@@ -348,7 +348,7 @@ class PlacementResultScreen extends ConsumerWidget {
         initialChildSize: 0.9,
         expand: false,
         builder: (context, scrollController) => Container(
-          padding: const EdgeInsets.all(AppSpacing.md),
+          padding: EdgeInsets.all(AppSpacing.md),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

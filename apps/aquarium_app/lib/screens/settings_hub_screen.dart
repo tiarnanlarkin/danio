@@ -29,7 +29,7 @@ class SettingsHubScreen extends ConsumerWidget {
         title: const Text('🧰 Toolbox'),
       ),
       body: ListView.builder(
-        padding: const EdgeInsets.all(AppSpacing.md),
+        padding: EdgeInsets.all(AppSpacing.md),
         itemCount: items.length,
         itemBuilder: (context, index) => items[index],
       ),

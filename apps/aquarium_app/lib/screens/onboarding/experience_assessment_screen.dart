@@ -186,7 +186,7 @@ class _ExperienceAssessmentScreenState
 
             Expanded(
               child: Padding(
-                padding: const EdgeInsets.all(AppSpacing.lg),
+                padding: EdgeInsets.all(AppSpacing.lg),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
@@ -229,7 +229,7 @@ class _ExperienceAssessmentScreenState
                                     borderRadius: AppRadius.mediumRadius,
                                     child: AnimatedContainer(
                                       duration: AppDurations.medium2,
-                                      padding: const EdgeInsets.all(AppSpacing.lg2),
+                                      padding: EdgeInsets.all(AppSpacing.lg2),
                                       decoration: BoxDecoration(
                                         border: Border.all(
                                           color: isSelected
@@ -299,7 +299,7 @@ class _ExperienceAssessmentScreenState
     return Scaffold(
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(AppSpacing.lg),
+          padding: EdgeInsets.all(AppSpacing.lg),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [

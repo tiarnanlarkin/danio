@@ -106,7 +106,7 @@ class _TankVolumeCalculatorScreenState
     return Scaffold(
       appBar: AppBar(title: const Text('Tank Volume Calculator')),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(AppSpacing.md),
+        padding: EdgeInsets.all(AppSpacing.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

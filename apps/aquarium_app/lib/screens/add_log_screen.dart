@@ -178,7 +178,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
       body: FocusTraversalGroup(
         policy: OrderedTraversalPolicy(),
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(AppSpacing.md),
+          padding: EdgeInsets.all(AppSpacing.md),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -244,7 +244,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
               onTap: _pickDateTime,
               borderRadius: AppRadius.mediumRadius,
               child: Container(
-                padding: const EdgeInsets.all(AppSpacing.md),
+                padding: EdgeInsets.all(AppSpacing.md),
                 decoration: BoxDecoration(
                   color: AppColors.surfaceVariant,
                   borderRadius: AppRadius.mediumRadius,
@@ -381,7 +381,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
         if (hasPrefilledValues && widget.existingLog == null) ...[
           const SizedBox(height: 12),
           Container(
-            padding: const EdgeInsets.all(AppSpacing.sm2),
+            padding: EdgeInsets.all(AppSpacing.sm2),
             decoration: BoxDecoration(
               color: AppOverlays.info10,
               borderRadius: AppRadius.smallRadius,
@@ -427,7 +427,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
         // Bulk entry mode - compact grid
         if (_bulkEntryMode) ...[
           Container(
-            padding: const EdgeInsets.all(AppSpacing.md),
+            padding: EdgeInsets.all(AppSpacing.md),
             decoration: BoxDecoration(
               color: AppColors.surfaceVariant,
               borderRadius: AppRadius.mediumRadius,
@@ -1166,7 +1166,7 @@ class _PhotoGrid extends StatelessWidget {
               child: InkWell(
                 onTap: () => onRemove(path),
                 child: Container(
-                  padding: const EdgeInsets.all(AppSpacing.xs),
+                  padding: EdgeInsets.all(AppSpacing.xs),
                   decoration: BoxDecoration(
                     color: AppOverlays.black60,
                     borderRadius: AppRadius.pillRadius,

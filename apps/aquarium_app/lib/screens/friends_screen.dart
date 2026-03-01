@@ -16,12 +16,12 @@ class FriendsScreen extends ConsumerWidget {
       ),
       body: Center(
         child: Padding(
-          padding: const EdgeInsets.all(AppSpacing.xl),
+          padding: EdgeInsets.all(AppSpacing.xl),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               Container(
-                padding: const EdgeInsets.all(AppSpacing.lg),
+                padding: EdgeInsets.all(AppSpacing.lg),
                 decoration: BoxDecoration(
                   color: AppOverlays.primary20,
                   shape: BoxShape.circle,

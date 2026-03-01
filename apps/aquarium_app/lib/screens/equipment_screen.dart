@@ -100,7 +100,7 @@ class EquipmentScreen extends ConsumerWidget {
     final placeholders = SkeletonPlaceholders.equipmentList;
     return Skeletonizer(
       child: ListView.builder(
-        padding: const EdgeInsets.all(AppSpacing.md),
+        padding: EdgeInsets.all(AppSpacing.md),
         itemCount: placeholders.length,
         itemBuilder: (context, index) {
           final equipment = placeholders[index];
@@ -155,7 +155,7 @@ class EquipmentScreen extends ConsumerWidget {
               await Future.delayed(AppDurations.long2);
             },
             child: ListView.builder(
-              padding: const EdgeInsets.all(AppSpacing.md),
+              padding: EdgeInsets.all(AppSpacing.md),
               itemCount: equipment.length + (overdue > 0 ? 2 : 0), // +2 for warning card and spacing if overdue
               itemBuilder: (context, index) {
                 // Summary card

@@ -145,7 +145,7 @@ class LearnScreen extends ConsumerWidget {
                 SliverFillRemaining(
                   child: Center(
                     child: Padding(
-                      padding: const EdgeInsets.all(AppSpacing.xl),
+                      padding: EdgeInsets.all(AppSpacing.xl),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -378,7 +378,7 @@ class _ReviewCardsBanner extends ConsumerWidget {
         },
         borderRadius: AppRadius.mediumRadius,
         child: Container(
-          padding: const EdgeInsets.all(AppSpacing.md),
+          padding: EdgeInsets.all(AppSpacing.md),
           decoration: BoxDecoration(
             gradient: LinearGradient(
               colors: [AppColors.accent, AppOverlays.accent80],
@@ -479,7 +479,7 @@ class _PracticeCard extends ConsumerWidget {
         },
         borderRadius: AppRadius.mediumRadius,
         child: Container(
-          padding: const EdgeInsets.all(AppSpacing.md),
+          padding: EdgeInsets.all(AppSpacing.md),
           decoration: BoxDecoration(
             gradient: LinearGradient(
               colors: [AppColors.primary, AppOverlays.primary80],
@@ -585,7 +585,7 @@ class _StreakCard extends StatelessWidget {
 
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
-      padding: const EdgeInsets.all(AppSpacing.md),
+      padding: EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
         color: AppOverlays.orange10,
         borderRadius: AppRadius.mediumRadius,

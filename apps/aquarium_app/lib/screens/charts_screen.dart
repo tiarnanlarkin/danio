@@ -97,7 +97,7 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
           }
 
           return SingleChildScrollView(
-            padding: const EdgeInsets.all(AppSpacing.md),
+            padding: EdgeInsets.all(AppSpacing.md),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -714,7 +714,7 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
 
     if (issues.isEmpty) {
       return Container(
-        padding: const EdgeInsets.all(AppSpacing.sm2),
+        padding: EdgeInsets.all(AppSpacing.sm2),
         decoration: BoxDecoration(
           color: AppOverlays.success10,
           borderRadius: AppRadius.mediumRadius,
@@ -742,7 +742,7 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
     }
 
     return Container(
-      padding: const EdgeInsets.all(AppSpacing.sm2),
+      padding: EdgeInsets.all(AppSpacing.sm2),
       decoration: BoxDecoration(
         color: AppOverlays.warning10,
         borderRadius: AppRadius.mediumRadius,
@@ -967,7 +967,7 @@ class _SummaryCard extends StatelessWidget {
     if (values.isEmpty) {
       return Card(
         child: Padding(
-          padding: const EdgeInsets.all(AppSpacing.md),
+          padding: EdgeInsets.all(AppSpacing.md),
           child: Text(
             'No data for this parameter',
             style: AppTypography.bodyMedium,
@@ -990,7 +990,7 @@ class _SummaryCard extends StatelessWidget {
 
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.md),
+        padding: EdgeInsets.all(AppSpacing.md),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [

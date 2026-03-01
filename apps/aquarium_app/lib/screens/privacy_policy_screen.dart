@@ -19,13 +19,13 @@ class PrivacyPolicyScreen extends StatelessWidget {
         ],
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(AppSpacing.lg),
+        padding: EdgeInsets.all(AppSpacing.lg),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Header
             Container(
-              padding: const EdgeInsets.all(AppSpacing.lg2),
+              padding: EdgeInsets.all(AppSpacing.lg2),
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.topLeft,
@@ -40,7 +40,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
               child: Row(
                 children: [
                   Container(
-                    padding: const EdgeInsets.all(AppSpacing.sm2),
+                    padding: EdgeInsets.all(AppSpacing.sm2),
                     decoration: BoxDecoration(
                       color: AppOverlays.primary20,
                       borderRadius: AppRadius.mediumRadius,
@@ -258,7 +258,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
 
   Widget _buildSummaryCard() {
     return Container(
-      padding: const EdgeInsets.all(AppSpacing.lg2),
+      padding: EdgeInsets.all(AppSpacing.lg2),
       decoration: BoxDecoration(
         color: AppOverlays.success10,
         borderRadius: AppRadius.mediumRadius,
@@ -356,7 +356,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
   Widget _buildHighlight(String title, String content, IconData icon) {
     return Container(
       margin: const EdgeInsets.only(bottom: 24),
-      padding: const EdgeInsets.all(AppSpacing.md),
+      padding: EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
         color: AppOverlays.primary5,
         borderRadius: AppRadius.mediumRadius,
@@ -388,7 +388,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
   Widget _buildPermissionCard(String title, String description, IconData icon) {
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(AppSpacing.md),
+      padding: EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: AppRadius.mediumRadius,
@@ -398,7 +398,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            padding: const EdgeInsets.all(AppSpacing.sm),
+            padding: EdgeInsets.all(AppSpacing.sm),
             decoration: BoxDecoration(
               color: AppOverlays.primary10,
               borderRadius: AppRadius.smallRadius,
@@ -430,7 +430,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
   Widget _buildRightCard(String title, String description, IconData icon) {
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(AppSpacing.md),
+      padding: EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
         color: AppOverlays.success5,
         borderRadius: AppRadius.mediumRadius,
@@ -463,7 +463,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
   Widget _buildContactCard() {
     return Container(
       margin: const EdgeInsets.only(bottom: 24),
-      padding: const EdgeInsets.all(AppSpacing.md),
+      padding: EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: AppRadius.mediumRadius,

@@ -286,7 +286,7 @@ class _MascotBubbleState extends State<MascotBubble>
             top: -8,
             right: 12,
             child: Container(
-              padding: const EdgeInsets.all(4),
+              padding: EdgeInsets.all(AppSpacing.xs),
               decoration: BoxDecoration(
                 color: AppColors.surface,
                 shape: BoxShape.circle,
@@ -523,8 +523,8 @@ class MascotBanner extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.all(AppSpacing.md),
-      padding: const EdgeInsets.all(AppSpacing.md),
+      margin: EdgeInsets.all(AppSpacing.md),
+      padding: EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topLeft,

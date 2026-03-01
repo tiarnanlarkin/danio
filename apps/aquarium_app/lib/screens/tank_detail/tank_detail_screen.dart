@@ -140,7 +140,7 @@ class TankDetailScreen extends ConsumerWidget {
               child: Card(
                 margin: EdgeInsets.zero,
                 child: Padding(
-                  padding: const EdgeInsets.all(AppSpacing.sm2),
+                  padding: EdgeInsets.all(AppSpacing.sm2),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -174,7 +174,7 @@ class TankDetailScreen extends ConsumerWidget {
               child: Card(
                 margin: EdgeInsets.zero,
                 child: Padding(
-                  padding: const EdgeInsets.all(AppSpacing.sm2),
+                  padding: EdgeInsets.all(AppSpacing.sm2),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -522,7 +522,7 @@ class TankDetailScreen extends ConsumerWidget {
               // Quick stats
               SliverToBoxAdapter(
                 child: Padding(
-                  padding: const EdgeInsets.all(AppSpacing.md),
+                  padding: EdgeInsets.all(AppSpacing.md),
                   child: QuickStats(tank: tank, logsAsync: logsAllAsync, livestockAsync: livestockAsync, equipmentAsync: equipmentAsync),
                 ).animate().fadeIn(duration: 300.ms).slideY(begin: 0.1, end: 0, duration: 300.ms),
               ),
@@ -590,7 +590,7 @@ class TankDetailScreen extends ConsumerWidget {
                       title: 'Latest Water Snapshot',
                     ),
                     error: (_, __) => Padding(
-                    padding: const EdgeInsets.all(AppSpacing.sm),
+                    padding: EdgeInsets.all(AppSpacing.sm),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -614,7 +614,7 @@ class TankDetailScreen extends ConsumerWidget {
                   child: logsAllAsync.when(
                     loading: () => const DashboardLoadingCard(title: 'Trends'),
                     error: (_, __) => Padding(
-                    padding: const EdgeInsets.all(AppSpacing.sm),
+                    padding: EdgeInsets.all(AppSpacing.sm),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -648,7 +648,7 @@ class TankDetailScreen extends ConsumerWidget {
                   child: logsAllAsync.when(
                     loading: () => const DashboardLoadingCard(title: 'Alerts'),
                     error: (_, __) => Padding(
-                    padding: const EdgeInsets.all(AppSpacing.sm),
+                    padding: EdgeInsets.all(AppSpacing.sm),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -670,7 +670,7 @@ class TankDetailScreen extends ConsumerWidget {
                 child: logsAllAsync.when(
                   loading: () => const SizedBox.shrink(),
                   error: (_, __) => Padding(
-                    padding: const EdgeInsets.all(AppSpacing.sm),
+                    padding: EdgeInsets.all(AppSpacing.sm),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -748,7 +748,7 @@ class TankDetailScreen extends ConsumerWidget {
                 child: tasksAsync.when(
                   loading: () => _buildTaskSkeletonPreview(),
                   error: (_, __) => Padding(
-                    padding: const EdgeInsets.all(AppSpacing.sm),
+                    padding: EdgeInsets.all(AppSpacing.sm),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -784,7 +784,7 @@ class TankDetailScreen extends ConsumerWidget {
                 child: logsRecentAsync.when(
                   loading: () => _buildLogsSkeletonList(),
                   error: (_, __) => Padding(
-                    padding: const EdgeInsets.all(AppSpacing.sm),
+                    padding: EdgeInsets.all(AppSpacing.sm),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -834,7 +834,7 @@ class TankDetailScreen extends ConsumerWidget {
                 child: livestockAsync.when(
                   loading: () => _buildLivestockSkeletonPreview(),
                   error: (_, __) => Padding(
-                    padding: const EdgeInsets.all(AppSpacing.sm),
+                    padding: EdgeInsets.all(AppSpacing.sm),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -853,7 +853,7 @@ class TankDetailScreen extends ConsumerWidget {
                 child: livestockAsync.when(
                   loading: () => const SizedBox.shrink(),
                   error: (_, __) => Padding(
-                    padding: const EdgeInsets.all(AppSpacing.sm),
+                    padding: EdgeInsets.all(AppSpacing.sm),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -893,7 +893,7 @@ class TankDetailScreen extends ConsumerWidget {
                 child: equipmentAsync.when(
                   loading: () => _buildEquipmentSkeletonPreview(),
                   error: (_, __) => Padding(
-                    padding: const EdgeInsets.all(AppSpacing.sm),
+                    padding: EdgeInsets.all(AppSpacing.sm),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [

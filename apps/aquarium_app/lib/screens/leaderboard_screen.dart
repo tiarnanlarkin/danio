@@ -13,12 +13,12 @@ class LeaderboardScreen extends ConsumerWidget {
       appBar: AppBar(title: const Text('Leaderboard'), centerTitle: true),
       body: Center(
         child: Padding(
-          padding: const EdgeInsets.all(AppSpacing.xl),
+          padding: EdgeInsets.all(AppSpacing.xl),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               Container(
-                padding: const EdgeInsets.all(AppSpacing.lg),
+                padding: EdgeInsets.all(AppSpacing.lg),
                 decoration: BoxDecoration(
                   color: Colors.amber.withAlpha(40),
                   shape: BoxShape.circle,

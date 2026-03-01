@@ -163,7 +163,7 @@ class AchievementDetailModal extends StatelessWidget {
             // Progress section
             if (achievement.targetCount != null) ...[
               Container(
-                padding: const EdgeInsets.all(16),
+                padding: EdgeInsets.all(AppSpacing.md),
                 decoration: BoxDecoration(
                   color: Theme.of(context).colorScheme.surfaceContainerHighest,
                   borderRadius: AppRadius.mediumRadius,
@@ -213,7 +213,7 @@ class AchievementDetailModal extends StatelessWidget {
 
             // Reward info
             Container(
-              padding: const EdgeInsets.all(16),
+              padding: EdgeInsets.all(AppSpacing.md),
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.topLeft,
@@ -282,7 +282,7 @@ class AchievementDetailModal extends StatelessWidget {
             // Status
             if (isLocked)
               Container(
-                padding: const EdgeInsets.all(AppSpacing.sm2),
+                padding: EdgeInsets.all(AppSpacing.sm2),
                 decoration: BoxDecoration(
                   color: DanioColors.creamWarm,
                   borderRadius: AppRadius.smallRadius,
@@ -306,7 +306,7 @@ class AchievementDetailModal extends StatelessWidget {
               )
             else
               Container(
-                padding: const EdgeInsets.all(AppSpacing.sm2),
+                padding: EdgeInsets.all(AppSpacing.sm2),
                 decoration: BoxDecoration(
                   color: const Color(0xFFFFF8E1),
                   borderRadius: AppRadius.smallRadius,

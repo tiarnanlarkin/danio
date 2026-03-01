@@ -383,16 +383,16 @@ class _AquariumSupplyScreenState extends ConsumerState<AquariumSupplyScreen>
     }
 
     return ListView(
-      padding: const EdgeInsets.all(AppSpacing.md),
+      padding: EdgeInsets.all(AppSpacing.md),
       children: [
         // Monthly estimate card
         Card(
           child: Padding(
-            padding: const EdgeInsets.all(AppSpacing.md),
+            padding: EdgeInsets.all(AppSpacing.md),
             child: Row(
               children: [
                 Container(
-                  padding: const EdgeInsets.all(12),
+                  padding: EdgeInsets.all(AppSpacing.sm2),
                   decoration: BoxDecoration(
                     color: AppOverlays.primary10,
                     borderRadius: AppRadius.mediumRadius,
@@ -426,7 +426,7 @@ class _AquariumSupplyScreenState extends ConsumerState<AquariumSupplyScreen>
           Text('Low Stock Alert', style: AppTypography.headlineSmall),
           const SizedBox(height: AppSpacing.sm),
           Container(
-            padding: const EdgeInsets.all(AppSpacing.md),
+            padding: EdgeInsets.all(AppSpacing.md),
             decoration: BoxDecoration(
               color: AppColors.warningAlpha10,
               borderRadius: AppRadius.mediumRadius,
@@ -782,7 +782,7 @@ class _SupplyItemSheetState extends State<_SupplyItemSheet> {
               },
               borderRadius: AppRadius.mediumRadius,
               child: Container(
-                padding: const EdgeInsets.all(AppSpacing.md),
+                padding: EdgeInsets.all(AppSpacing.md),
                 decoration: BoxDecoration(
                   color: AppColors.surfaceVariant,
                   borderRadius: AppRadius.mediumRadius,

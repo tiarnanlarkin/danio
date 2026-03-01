@@ -62,7 +62,7 @@ class _CyclingAssistantBody extends StatelessWidget {
     final tankAgeDays = DateTime.now().difference(tank.startDate).inDays;
 
     return ListView(
-      padding: const EdgeInsets.all(AppSpacing.md),
+      padding: EdgeInsets.all(AppSpacing.md),
       children: [
         // Phase indicator
         _PhaseHeader(phase: phase, tankAgeDays: tankAgeDays)
@@ -324,7 +324,7 @@ class _CycleDiagram extends StatelessWidget {
   Widget _buildLatestReadings(LogEntry latest) {
     final wt = latest.waterTest!;
     return Container(
-      padding: const EdgeInsets.all(AppSpacing.sm2),
+      padding: EdgeInsets.all(AppSpacing.sm2),
       decoration: BoxDecoration(
         color: AppOverlays.surfaceVariant50,
         borderRadius: AppRadius.smallRadius,
@@ -756,7 +756,7 @@ class _CycledCelebration extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(AppSpacing.lg),
+      padding: EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [

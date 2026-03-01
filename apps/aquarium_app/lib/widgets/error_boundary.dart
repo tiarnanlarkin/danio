@@ -92,7 +92,7 @@ class _DefaultErrorScreen extends StatelessWidget {
         backgroundColor: isDark ? const Color(0xFF1A2634) : const Color(0xFFF5F1EB),
         body: SafeArea(
           child: Padding(
-            padding: const EdgeInsets.all(32),
+            padding: EdgeInsets.all(AppSpacing.xl),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -282,7 +282,7 @@ mixin ErrorHandlerMixin<T extends StatefulWidget> on State<T> {
     if (_errorMessage == null) return const SizedBox.shrink();
     
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(AppSpacing.md),
       color: AppColors.error,
       child: Row(
         children: [

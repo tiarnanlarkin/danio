@@ -297,7 +297,7 @@ class _GemShopScreenState extends ConsumerState<GemShopScreen>
                   ),
                   const SizedBox(height: 20),
                   Container(
-                    padding: const EdgeInsets.all(AppSpacing.md),
+                    padding: EdgeInsets.all(AppSpacing.md),
                     decoration: BoxDecoration(
                       color: GemShopColors.glassCard,
                       borderRadius: AppRadius.mediumRadius,
@@ -430,7 +430,7 @@ class _ShopItemGrid extends ConsumerWidget {
     }
 
     return GridView.builder(
-      padding: const EdgeInsets.all(AppSpacing.md),
+      padding: EdgeInsets.all(AppSpacing.md),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
         childAspectRatio: 0.75,
@@ -499,7 +499,7 @@ class _ShopItemCard extends ConsumerWidget {
                 children: [
                   // Content
                   Padding(
-                    padding: const EdgeInsets.all(AppSpacing.md),
+                    padding: EdgeInsets.all(AppSpacing.md),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [

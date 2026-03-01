@@ -206,7 +206,7 @@ class _TutorialOverlayState extends ConsumerState<TutorialOverlay>
             borderRadius: AppRadius.mediumRadius,
           ),
           child: Padding(
-            padding: const EdgeInsets.all(AppSpacing.lg2),
+            padding: EdgeInsets.all(AppSpacing.lg2),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,

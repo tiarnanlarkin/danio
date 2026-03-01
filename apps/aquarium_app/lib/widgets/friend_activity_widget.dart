@@ -28,7 +28,7 @@ class FriendActivityWidget extends ConsumerWidget {
         final recentActivities = activities.take(3).toList();
 
         return Card(
-          margin: const EdgeInsets.all(16),
+          margin: EdgeInsets.all(AppSpacing.md),
           elevation: AppElevation.level1,
           shape: RoundedRectangleBorder(
             borderRadius: AppRadius.mediumRadius,
@@ -50,7 +50,7 @@ class FriendActivityWidget extends ConsumerWidget {
                   top: Radius.circular(16),
                 ),
                 child: Padding(
-                  padding: const EdgeInsets.all(16),
+                  padding: EdgeInsets.all(AppSpacing.md),
                   child: Row(
                     children: [
                       const Icon(
@@ -291,7 +291,7 @@ class _BannerActivityCard extends ConsumerWidget {
           },
           borderRadius: AppRadius.mediumRadius,
           child: Padding(
-            padding: const EdgeInsets.all(AppSpacing.sm2),
+            padding: EdgeInsets.all(AppSpacing.sm2),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,

@@ -310,7 +310,7 @@ class _EnhancedTutorialWalkthroughScreenState
       child: SlideTransition(
         position: _slideAnimation,
         child: Padding(
-          padding: const EdgeInsets.all(AppSpacing.xl),
+          padding: EdgeInsets.all(AppSpacing.xl),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -331,7 +331,7 @@ class _EnhancedTutorialWalkthroughScreenState
 
               // Icon with color
               Container(
-                padding: const EdgeInsets.all(AppSpacing.lg),
+                padding: EdgeInsets.all(AppSpacing.lg),
                 decoration: BoxDecoration(
                   color: step.color.withAlpha(26),
                   shape: BoxShape.circle,
@@ -377,7 +377,7 @@ class _EnhancedTutorialWalkthroughScreenState
 
           Expanded(
             child: SingleChildScrollView(
-              padding: const EdgeInsets.all(AppSpacing.lg),
+              padding: EdgeInsets.all(AppSpacing.lg),
               child: Form(
                 key: _formKey,
                 child: Column(
@@ -583,7 +583,7 @@ class _EnhancedTutorialWalkthroughScreenState
         onTap: () => setState(() => _useDemoData = !_useDemoData),
         borderRadius: AppRadius.mediumRadius,
         child: Padding(
-          padding: const EdgeInsets.all(AppSpacing.md),
+          padding: EdgeInsets.all(AppSpacing.md),
           child: Row(
             children: [
               Icon(
@@ -625,7 +625,7 @@ class _EnhancedTutorialWalkthroughScreenState
 
   Widget _buildDemoTankPreview() {
     return Container(
-      padding: const EdgeInsets.all(AppSpacing.lg2),
+      padding: EdgeInsets.all(AppSpacing.lg2),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
@@ -659,7 +659,7 @@ class _EnhancedTutorialWalkthroughScreenState
           _buildPreviewRow(Icons.water_drop, 'Freshwater Community'),
           const SizedBox(height: AppSpacing.md),
           Container(
-            padding: const EdgeInsets.all(AppSpacing.sm2),
+            padding: EdgeInsets.all(AppSpacing.sm2),
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: AppRadius.smallRadius,
@@ -707,7 +707,7 @@ class _EnhancedTutorialWalkthroughScreenState
 
   Widget _buildNavigation() {
     return Container(
-      padding: const EdgeInsets.all(AppSpacing.md),
+      padding: EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
         color: Colors.white,
         boxShadow: [
@@ -792,7 +792,7 @@ class _TankTypeCard extends StatelessWidget {
         opacity: isDisabled ? 0.5 : 1.0,
         child: AnimatedContainer(
           duration: AppDurations.medium2,
-          padding: const EdgeInsets.all(AppSpacing.md),
+          padding: EdgeInsets.all(AppSpacing.md),
           decoration: BoxDecoration(
             color: isSelected
                 ? AppOverlays.primary10
@@ -855,7 +855,7 @@ class _WaterTypeCard extends StatelessWidget {
       borderRadius: AppRadius.mediumRadius,
       child: AnimatedContainer(
         duration: AppDurations.medium2,
-        padding: const EdgeInsets.all(AppSpacing.md),
+        padding: EdgeInsets.all(AppSpacing.md),
         decoration: BoxDecoration(
           color: isSelected
               ? AppOverlays.accent10

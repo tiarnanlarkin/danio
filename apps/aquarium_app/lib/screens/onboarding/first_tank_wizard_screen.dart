@@ -130,7 +130,7 @@ class _FirstTankWizardScreenState extends ConsumerState<FirstTankWizardScreen> {
 
             // Navigation buttons
             Padding(
-              padding: const EdgeInsets.all(AppSpacing.lg),
+              padding: EdgeInsets.all(AppSpacing.lg),
               child: Row(
                 children: [
                   if (_currentStep > 0)
@@ -161,7 +161,7 @@ class _FirstTankWizardScreenState extends ConsumerState<FirstTankWizardScreen> {
 
   Widget _buildNameStep() {
     return Padding(
-      padding: const EdgeInsets.all(AppSpacing.lg),
+      padding: EdgeInsets.all(AppSpacing.lg),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -209,7 +209,7 @@ class _FirstTankWizardScreenState extends ConsumerState<FirstTankWizardScreen> {
 
   Widget _buildSizeStep() {
     return Padding(
-      padding: const EdgeInsets.all(AppSpacing.lg),
+      padding: EdgeInsets.all(AppSpacing.lg),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -261,7 +261,7 @@ class _FirstTankWizardScreenState extends ConsumerState<FirstTankWizardScreen> {
 
   Widget _buildTypeStep() {
     return Padding(
-      padding: const EdgeInsets.all(AppSpacing.lg),
+      padding: EdgeInsets.all(AppSpacing.lg),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -293,7 +293,7 @@ class _FirstTankWizardScreenState extends ConsumerState<FirstTankWizardScreen> {
                   borderRadius: AppRadius.mediumRadius,
                   child: AnimatedContainer(
                     duration: AppDurations.medium2,
-                    padding: const EdgeInsets.all(AppSpacing.lg2),
+                    padding: EdgeInsets.all(AppSpacing.lg2),
                     decoration: BoxDecoration(
                       border: Border.all(
                         color: isSelected
@@ -352,7 +352,7 @@ class _FirstTankWizardScreenState extends ConsumerState<FirstTankWizardScreen> {
 
   Widget _buildSampleDataStep() {
     return Padding(
-      padding: const EdgeInsets.all(AppSpacing.lg),
+      padding: EdgeInsets.all(AppSpacing.lg),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -378,7 +378,7 @@ class _FirstTankWizardScreenState extends ConsumerState<FirstTankWizardScreen> {
           ),
           const SizedBox(height: 40),
           Container(
-            padding: const EdgeInsets.all(AppSpacing.lg2),
+            padding: EdgeInsets.all(AppSpacing.lg2),
             decoration: BoxDecoration(
               color: AppOverlays.primary10,
               borderRadius: AppRadius.mediumRadius,
@@ -400,7 +400,7 @@ class _FirstTankWizardScreenState extends ConsumerState<FirstTankWizardScreen> {
           ),
           const SizedBox(height: AppSpacing.lg),
           Container(
-            padding: const EdgeInsets.all(AppSpacing.md),
+            padding: EdgeInsets.all(AppSpacing.md),
             decoration: BoxDecoration(
               color: AppOverlays.accent10,
               borderRadius: AppRadius.mediumRadius,

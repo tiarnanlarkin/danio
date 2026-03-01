@@ -209,7 +209,7 @@ class _EnhancedPlacementTestScreenState
               // Question content
               Expanded(
                 child: SingleChildScrollView(
-                  padding: const EdgeInsets.all(AppSpacing.md),
+                  padding: EdgeInsets.all(AppSpacing.md),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
@@ -234,7 +234,7 @@ class _EnhancedPlacementTestScreenState
                             borderRadius: AppRadius.mediumRadius,
                           ),
                           child: Padding(
-                            padding: const EdgeInsets.all(AppSpacing.lg2),
+                            padding: EdgeInsets.all(AppSpacing.lg2),
                             child: Text(
                               _currentQuestion.question,
                               style: theme.textTheme.titleLarge?.copyWith(
@@ -465,7 +465,7 @@ class _EnhancedPlacementTestScreenState
           borderRadius: AppRadius.mediumRadius,
           child: AnimatedContainer(
             duration: AppDurations.medium2,
-            padding: const EdgeInsets.all(AppSpacing.md),
+            padding: EdgeInsets.all(AppSpacing.md),
             decoration: BoxDecoration(
               color: backgroundColor,
               borderRadius: AppRadius.mediumRadius,
@@ -558,7 +558,7 @@ class _EnhancedPlacementTestScreenState
           ),
         ),
         child: Padding(
-          padding: const EdgeInsets.all(AppSpacing.md),
+          padding: EdgeInsets.all(AppSpacing.md),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -582,7 +582,7 @@ class _EnhancedPlacementTestScreenState
               ),
               const SizedBox(height: 12),
               Container(
-                padding: const EdgeInsets.all(AppSpacing.sm2),
+                padding: EdgeInsets.all(AppSpacing.sm2),
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: AppRadius.smallRadius,
@@ -601,7 +601,7 @@ class _EnhancedPlacementTestScreenState
 
   Widget _buildNavigationButtons(bool isAnswered) {
     return Container(
-      padding: const EdgeInsets.all(AppSpacing.md),
+      padding: EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
         color: Colors.white,
         boxShadow: [

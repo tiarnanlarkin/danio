@@ -102,7 +102,7 @@ class _LevelUpDialogState extends State<LevelUpDialog>
                 borderRadius: AppRadius.xlRadius,
               ),
               child: Container(
-                padding: const EdgeInsets.all(32),
+                padding: EdgeInsets.all(AppSpacing.xl),
                 decoration: BoxDecoration(
                   gradient: AppColors.primaryGradient,
                   borderRadius: AppRadius.xlRadius,
@@ -200,7 +200,7 @@ class _LevelUpDialogState extends State<LevelUpDialog>
                     if (widget.unlockMessage != null) ...[
                       const SizedBox(height: 20),
                       Container(
-                        padding: const EdgeInsets.all(16),
+                        padding: EdgeInsets.all(AppSpacing.md),
                         decoration: BoxDecoration(
                           color: AppOverlays.white15,
                           borderRadius: AppRadius.mediumRadius,

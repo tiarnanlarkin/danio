@@ -222,7 +222,7 @@ class _HeaderSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(AppSpacing.md),
+      padding: EdgeInsets.all(AppSpacing.md),
       child: Row(
         children: [
           Expanded(
@@ -275,7 +275,7 @@ class _UserCard extends StatelessWidget {
     return Card(
       elevation: AppElevation.level1,
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.sm2),
+        padding: EdgeInsets.all(AppSpacing.sm2),
         child: Column(
           children: [
             CircleAvatar(
@@ -517,7 +517,7 @@ class _ProgressChartSection extends StatelessWidget {
         Container(
           height: 200,
           margin: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
-          padding: const EdgeInsets.all(AppSpacing.md),
+          padding: EdgeInsets.all(AppSpacing.md),
           decoration: BoxDecoration(
             color: Theme.of(context).colorScheme.surfaceContainerLowest,
             borderRadius: AppRadius.mediumRadius,
@@ -702,7 +702,7 @@ class _AchievementCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.md),
+        padding: EdgeInsets.all(AppSpacing.md),
         child: Column(
           children: [
             Icon(Icons.emoji_events, size: 40, color: color),

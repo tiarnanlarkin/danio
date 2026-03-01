@@ -130,7 +130,7 @@ class _AiStockingSuggestionSheetState
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(AppSpacing.lg2),
+      padding: EdgeInsets.all(AppSpacing.lg2),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

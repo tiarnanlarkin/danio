@@ -102,7 +102,7 @@ class _CompatibilityCheckerWidgetState
         borderRadius: AppRadius.md2Radius,
       ),
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.md),
+        padding: EdgeInsets.all(AppSpacing.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -170,7 +170,7 @@ class _CompatibilityCheckerWidgetState
                 isDense: true,
                 suffixIcon: _loading
                     ? const Padding(
-                        padding: EdgeInsets.all(12),
+                        padding: EdgeInsets.all(AppSpacing.sm2),
                         child: SizedBox(
                           width: 16,
                           height: 16,
@@ -190,7 +190,7 @@ class _CompatibilityCheckerWidgetState
               const SizedBox(height: AppSpacing.sm),
               Container(
                 width: double.infinity,
-                padding: const EdgeInsets.all(AppSpacing.sm),
+                padding: EdgeInsets.all(AppSpacing.sm),
                 decoration: BoxDecoration(
                   color: _resultColor.withValues(alpha: 0.08),
                   borderRadius: AppRadius.smallRadius,

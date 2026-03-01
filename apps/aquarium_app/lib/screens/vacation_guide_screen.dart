@@ -10,7 +10,7 @@ class VacationGuideScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: const Text('Vacation Planning')),
       body: ListView(
-        padding: const EdgeInsets.all(AppSpacing.md),
+        padding: EdgeInsets.all(AppSpacing.md),
         children: [
           AppCard(
             backgroundColor: AppOverlays.info10,
@@ -330,7 +330,7 @@ class _ChecklistSection extends StatelessWidget {
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.md),
+        padding: EdgeInsets.all(AppSpacing.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -381,7 +381,7 @@ class _OptionCard extends StatelessWidget {
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.md),
+        padding: EdgeInsets.all(AppSpacing.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -446,7 +446,7 @@ class _OptionCard extends StatelessWidget {
             ),
             const SizedBox(height: AppSpacing.sm),
             Container(
-              padding: const EdgeInsets.all(AppSpacing.sm),
+              padding: EdgeInsets.all(AppSpacing.sm),
               decoration: BoxDecoration(
                 color: AppOverlays.info10,
                 borderRadius: AppRadius.smallRadius,

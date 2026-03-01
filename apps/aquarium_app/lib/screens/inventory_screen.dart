@@ -283,7 +283,7 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen>
                   ),
                   const SizedBox(height: AppSpacing.md),
                   Container(
-                    padding: const EdgeInsets.all(AppSpacing.sm2),
+                    padding: EdgeInsets.all(AppSpacing.sm2),
                     decoration: BoxDecoration(
                       color: InventoryColors.glassCard,
                       borderRadius: AppRadius.mediumRadius,
@@ -371,7 +371,7 @@ class _InventoryGrid extends StatelessWidget {
     }
 
     return GridView.builder(
-      padding: const EdgeInsets.all(AppSpacing.md),
+      padding: EdgeInsets.all(AppSpacing.md),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
         childAspectRatio: 0.85,
@@ -436,7 +436,7 @@ class _InventoryItemCard extends StatelessWidget {
             ),
           ),
           child: Padding(
-            padding: const EdgeInsets.all(AppSpacing.sm2),
+            padding: EdgeInsets.all(AppSpacing.sm2),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [

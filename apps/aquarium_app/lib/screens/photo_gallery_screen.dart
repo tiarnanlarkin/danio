@@ -158,7 +158,7 @@ class _EmptyGallery extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.xl),
+        padding: EdgeInsets.all(AppSpacing.xl),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -311,7 +311,7 @@ class _PhotoViewerScreenState extends State<_PhotoViewerScreen> {
                     minScale: 0.5,
                     maxScale: 4.0,
                     child: Container(
-                      margin: const EdgeInsets.all(AppSpacing.md),
+                      margin: EdgeInsets.all(AppSpacing.md),
                       decoration: BoxDecoration(
                         color: Colors.black,
                         borderRadius: AppRadius.mediumRadius,
@@ -332,7 +332,7 @@ class _PhotoViewerScreenState extends State<_PhotoViewerScreen> {
           if (photo.notes != null && photo.notes!.isNotEmpty)
             Container(
               width: double.infinity,
-              padding: const EdgeInsets.all(AppSpacing.md),
+              padding: EdgeInsets.all(AppSpacing.md),
               color: Colors.black87,
               child: Text(
                 photo.notes!,

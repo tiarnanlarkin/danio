@@ -124,7 +124,7 @@ class SyncDebugDialog extends ConsumerWidget {
               const Divider(),
               const SizedBox(height: AppSpacing.sm),
               Container(
-                padding: const EdgeInsets.all(AppSpacing.sm2),
+                padding: EdgeInsets.all(AppSpacing.sm2),
                 decoration: BoxDecoration(
                   color: Colors.red.shade50,
                   borderRadius: AppRadius.smallRadius,

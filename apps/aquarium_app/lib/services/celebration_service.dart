@@ -356,7 +356,7 @@ class _CelebrationOverlayWrapperState extends ConsumerState<CelebrationOverlayWr
     return GestureDetector(
       onTap: () => ref.read(celebrationProvider.notifier).dismiss(),
       child: Container(
-        margin: const EdgeInsets.all(32),
+        margin: EdgeInsets.all(AppSpacing.xl),
         padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 32),
         decoration: BoxDecoration(
           gradient: LinearGradient(

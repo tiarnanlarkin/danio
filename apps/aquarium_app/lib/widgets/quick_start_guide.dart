@@ -151,7 +151,7 @@ class _QuickStartGuideState extends State<QuickStartGuide> {
             borderRadius: AppRadius.mediumRadius,
           ),
           child: Padding(
-            padding: const EdgeInsets.all(AppSpacing.lg2),
+            padding: EdgeInsets.all(AppSpacing.lg2),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -317,7 +317,7 @@ class QuickStartTipsCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       elevation: AppElevation.level1,
-      margin: const EdgeInsets.all(16),
+      margin: EdgeInsets.all(AppSpacing.md),
       shape: RoundedRectangleBorder(borderRadius: AppRadius.mediumRadius),
       child: Container(
         decoration: BoxDecoration(
@@ -332,14 +332,14 @@ class QuickStartTipsCard extends StatelessWidget {
           borderRadius: AppRadius.mediumRadius,
         ),
         child: Padding(
-          padding: const EdgeInsets.all(16),
+          padding: EdgeInsets.all(AppSpacing.md),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
                 children: [
                   Container(
-                    padding: const EdgeInsets.all(8),
+                    padding: EdgeInsets.all(AppSpacing.sm),
                     decoration: BoxDecoration(
                       color: AppColors.accentAlpha20,
                       borderRadius: AppRadius.smallRadius,

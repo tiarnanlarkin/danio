@@ -67,7 +67,7 @@ class _PracticeScreenState extends ConsumerState<PracticeScreen> {
   Widget _buildEmptyState(BuildContext context) {
     return Center(
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.xl),
+        padding: EdgeInsets.all(AppSpacing.xl),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -115,13 +115,13 @@ class _PracticeScreenState extends ConsumerState<PracticeScreen> {
     final totalItems = 5 + weakLessons.length;
 
     return ListView.builder(
-      padding: const EdgeInsets.all(AppSpacing.lg2),
+      padding: EdgeInsets.all(AppSpacing.lg2),
       itemCount: totalItems,
       itemBuilder: (context, index) {
         // Header
         if (index == 0) {
           return Container(
-          padding: const EdgeInsets.all(AppSpacing.md),
+          padding: EdgeInsets.all(AppSpacing.md),
           decoration: BoxDecoration(
             gradient: AppColors.primaryGradient,
             borderRadius: AppRadius.mediumRadius,
@@ -167,7 +167,7 @@ class _PracticeScreenState extends ConsumerState<PracticeScreen> {
         // Info card
         if (index == 1) {
           return Container(
-          padding: const EdgeInsets.all(AppSpacing.md),
+          padding: EdgeInsets.all(AppSpacing.md),
           decoration: BoxDecoration(
             color: AppOverlays.info10,
             borderRadius: AppRadius.mediumRadius,
@@ -275,7 +275,7 @@ class _PracticeScreenState extends ConsumerState<PracticeScreen> {
       },
       borderRadius: AppRadius.mediumRadius,
       child: Container(
-        padding: const EdgeInsets.all(AppSpacing.md),
+        padding: EdgeInsets.all(AppSpacing.md),
         decoration: BoxDecoration(
           color: AppColors.surface,
           borderRadius: AppRadius.mediumRadius,
@@ -511,7 +511,7 @@ class _PracticeLessonScreenState extends ConsumerState<PracticeLessonScreen> {
         if (widget.isReview)
           Container(
             width: double.infinity,
-            padding: const EdgeInsets.all(AppSpacing.sm2),
+            padding: EdgeInsets.all(AppSpacing.sm2),
             color: AppOverlays.info10,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -545,7 +545,7 @@ class _PracticeLessonScreenState extends ConsumerState<PracticeLessonScreen> {
               items.add(_LessonViewItem.spacer(40));
 
               return ListView.builder(
-                padding: const EdgeInsets.all(AppSpacing.lg2),
+                padding: EdgeInsets.all(AppSpacing.lg2),
                 itemCount: items.length,
                 itemBuilder: (context, index) {
                   final item = items[index];
@@ -581,7 +581,7 @@ class _PracticeLessonScreenState extends ConsumerState<PracticeLessonScreen> {
 
         // Bottom action
         Container(
-          padding: const EdgeInsets.all(AppSpacing.lg2),
+          padding: EdgeInsets.all(AppSpacing.lg2),
           decoration: BoxDecoration(
             color: Theme.of(context).scaffoldBackgroundColor,
             boxShadow: [
@@ -632,7 +632,7 @@ class _PracticeLessonScreenState extends ConsumerState<PracticeLessonScreen> {
         );
       case LessonSectionType.keyPoint:
         return Container(
-          padding: const EdgeInsets.all(AppSpacing.md),
+          padding: EdgeInsets.all(AppSpacing.md),
           decoration: BoxDecoration(
             color: AppOverlays.primary10,
             borderRadius: AppRadius.mediumRadius,
@@ -656,7 +656,7 @@ class _PracticeLessonScreenState extends ConsumerState<PracticeLessonScreen> {
         );
       case LessonSectionType.tip:
         return Container(
-          padding: const EdgeInsets.all(AppSpacing.md),
+          padding: EdgeInsets.all(AppSpacing.md),
           decoration: BoxDecoration(
             color: AppOverlays.success10,
             borderRadius: AppRadius.mediumRadius,
@@ -687,7 +687,7 @@ class _PracticeLessonScreenState extends ConsumerState<PracticeLessonScreen> {
         );
       case LessonSectionType.warning:
         return Container(
-          padding: const EdgeInsets.all(AppSpacing.md),
+          padding: EdgeInsets.all(AppSpacing.md),
           decoration: BoxDecoration(
             color: AppOverlays.warning10,
             borderRadius: AppRadius.mediumRadius,
@@ -718,7 +718,7 @@ class _PracticeLessonScreenState extends ConsumerState<PracticeLessonScreen> {
         );
       case LessonSectionType.funFact:
         return Container(
-          padding: const EdgeInsets.all(AppSpacing.md),
+          padding: EdgeInsets.all(AppSpacing.md),
           decoration: BoxDecoration(
             color: AppOverlays.purple10,
             borderRadius: AppRadius.mediumRadius,

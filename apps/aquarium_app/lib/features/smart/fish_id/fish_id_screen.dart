@@ -162,7 +162,7 @@ Return ONLY valid JSON with these fields (no markdown, no explanation):
         centerTitle: true,
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(AppSpacing.md),
+        padding: EdgeInsets.all(AppSpacing.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -256,7 +256,7 @@ Return ONLY valid JSON with these fields (no markdown, no explanation):
   Widget _buildLoading() {
     return Center(
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.xl),
+        padding: EdgeInsets.all(AppSpacing.xl),
         child: Column(
           children: [
             const CircularProgressIndicator(color: AppColors.primary),
@@ -275,7 +275,7 @@ Return ONLY valid JSON with these fields (no markdown, no explanation):
     return Card(
       color: AppColors.error.withValues(alpha: 0.1),
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.md),
+        padding: EdgeInsets.all(AppSpacing.md),
         child: Row(
           children: [
             const Icon(Icons.error_outline, color: AppColors.error),
@@ -300,7 +300,7 @@ Return ONLY valid JSON with these fields (no markdown, no explanation):
         borderRadius: AppRadius.md2Radius,
       ),
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.md),
+        padding: EdgeInsets.all(AppSpacing.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

@@ -100,7 +100,7 @@ class TasksScreen extends ConsumerWidget {
           }
 
           return ListView.builder(
-            padding: const EdgeInsets.all(AppSpacing.md),
+            padding: EdgeInsets.all(AppSpacing.md),
             itemCount: items.length,
             itemBuilder: (context, index) {
               final item = items[index];
@@ -685,7 +685,7 @@ class _AddTaskSheetState extends State<_AddTaskSheet> {
               },
               borderRadius: AppRadius.mediumRadius,
               child: Container(
-                padding: const EdgeInsets.all(AppSpacing.md),
+                padding: EdgeInsets.all(AppSpacing.md),
                 decoration: BoxDecoration(
                   color: AppColors.surfaceVariant,
                   borderRadius: AppRadius.mediumRadius,

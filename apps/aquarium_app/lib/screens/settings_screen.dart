@@ -773,7 +773,7 @@ class SettingsScreen extends ConsumerWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Padding(
-              padding: const EdgeInsets.all(AppSpacing.md),
+              padding: EdgeInsets.all(AppSpacing.md),
               child: Text(
                 'Choose Theme',
                 style: Theme.of(context).textTheme.titleLarge,
@@ -841,7 +841,7 @@ class SettingsScreen extends ConsumerWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Padding(
-              padding: const EdgeInsets.all(AppSpacing.md),
+              padding: EdgeInsets.all(AppSpacing.md),
               child: Column(
                 children: [
                   Text(
@@ -1248,7 +1248,7 @@ class _LearnCard extends StatelessWidget {
           ),
           borderRadius: BorderRadius.circular(AppRadius.lg),
           child: Container(
-            padding: const EdgeInsets.all(AppSpacing.lg2),
+            padding: EdgeInsets.all(AppSpacing.lg2),
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topLeft,
