@@ -232,6 +232,7 @@ class _ActivityFeedView extends StatelessWidget {
     }
 
     return RefreshIndicator(
+      color: AppColors.primary,
       onRefresh: () async {
         // Trigger reload via provider
         // Provider already handles the refresh

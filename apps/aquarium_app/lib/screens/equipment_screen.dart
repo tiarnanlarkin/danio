@@ -149,6 +149,7 @@ class EquipmentScreen extends ConsumerWidget {
           final overdue = equipment.where((e) => e.isMaintenanceOverdue).length;
 
           return RefreshIndicator(
+            color: AppColors.primary,
             onRefresh: () async {
               ref.invalidate(equipmentProvider(tankId));
               await Future.delayed(AppDurations.long2);

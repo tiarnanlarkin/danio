@@ -85,6 +85,7 @@ class _LogsScreenState extends ConsumerState<LogsScreen> {
           }
 
           return RefreshIndicator(
+            color: AppColors.primary,
             onRefresh: () async {
               ref.invalidate(allLogsProvider(widget.tankId));
               // Wait for new data to load

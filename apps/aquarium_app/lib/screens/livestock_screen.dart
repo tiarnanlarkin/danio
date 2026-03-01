@@ -120,6 +120,7 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
           final tank = tankAsync.asData?.value;
 
           return RefreshIndicator(
+            color: AppColors.primary,
             onRefresh: () async {
               ref.invalidate(livestockProvider(widget.tankId));
               await Future.delayed(AppDurations.long2);
