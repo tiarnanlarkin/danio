@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/achievements.dart';
 import '../data/achievements.dart';
+import '../widgets/effects/shimmer_glow.dart';
 import '../providers/achievement_provider.dart';
 import '../widgets/achievement_card.dart';
 import '../widgets/achievement_detail_modal.dart';
@@ -334,32 +335,35 @@ class _AchievementsScreenState extends ConsumerState<AchievementsScreen> {
                     margin: EdgeInsets.only(
                       right: index < recentlyUnlocked.length - 1 ? 12 : 0,
                     ),
-                    child: Card(
-                      color: AppColors.primary.withValues(alpha: 0.08),
-                      child: InkWell(
-                        borderRadius: AppRadius.mediumRadius,
-                        onTap: () => _showAchievementDetail(
-                          context, achievement, progress),
-                        child: Padding(
-                          padding: EdgeInsets.all(AppSpacing.sm2),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                achievement.icon,
-                                style: Theme.of(context).textTheme.headlineMedium!.copyWith(),
-                              ),
-                              const SizedBox(height: 8),
-                              Text(
-                                achievement.name,
-                                style: AppTypography.labelSmall.copyWith(
-                                  fontWeight: FontWeight.w600,
+                    child: ShimmerGlow(
+                      glowColor: AppColors.primary,
+                      child: Card(
+                        color: AppColors.primary.withValues(alpha: 0.08),
+                        child: InkWell(
+                          borderRadius: AppRadius.mediumRadius,
+                          onTap: () => _showAchievementDetail(
+                            context, achievement, progress),
+                          child: Padding(
+                            padding: EdgeInsets.all(AppSpacing.sm2),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  achievement.icon,
+                                  style: Theme.of(context).textTheme.headlineMedium!.copyWith(),
                                 ),
-                                textAlign: TextAlign.center,
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ],
+                                const SizedBox(height: 8),
+                                Text(
+                                  achievement.name,
+                                  style: AppTypography.labelSmall.copyWith(
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ),

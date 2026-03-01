@@ -341,6 +341,7 @@ class _BasicInfoPage extends StatelessWidget {
                 ),
                 textCapitalization: TextCapitalization.words,
                 onChanged: onNameChanged,
+                validator: (v) => (v == null || v.trim().isEmpty) ? 'Required' : null,
               ),
             ),
           ),
@@ -602,6 +603,13 @@ class _SizePageState extends State<_SizePage> {
                 onChanged: (v) {
                   final value = double.tryParse(v);
                   if (value != null) widget.onVolumeChanged(value);
+                },
+                validator: (v) {
+                  if (v == null || v.isEmpty) return 'Required';
+                  final n = double.tryParse(v);
+                  if (n == null || n <= 0) return 'Enter a valid volume';
+                  if (n > 10000) return 'Maximum 10,000 litres';
+                  return null;
                 },
               ),
             ),

@@ -484,46 +484,50 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     top: MediaQuery.of(context).padding.top + 60,
                     left: 16,
                     right: 16,
-                    child: GestureDetector(
-                      onTap: () => setState(() => _dailyNudgeDismissed = true),
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: AppSpacing.md,
-                          vertical: AppSpacing.sm2,
-                        ),
-                        decoration: BoxDecoration(
-                          color: AppColors.primary.withAlpha(230),
-                          borderRadius: AppRadius.mediumRadius,
-                          boxShadow: [
-                            BoxShadow(
-                              color: AppOverlays.black20,
-                              blurRadius: 8,
-                              offset: const Offset(0, 2),
-                            ),
-                          ],
-                        ),
-                        child: Row(
-                          children: [
-                            Text(
-                              '\u{1F3AF}',
-                              style: Theme.of(context).textTheme.titleLarge!,
-                            ),
-                            const SizedBox(width: AppSpacing.sm),
-                            Expanded(
-                              child: Text(
-                                "Start a quick lesson to earn XP today!",
-                                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                  color: AppColors.onPrimary,
-                                  fontWeight: FontWeight.w500,
+                    child: Semantics(
+                      label: 'Daily lesson reminder. Tap to dismiss',
+                      button: true,
+                      child: GestureDetector(
+                        onTap: () => setState(() => _dailyNudgeDismissed = true),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: AppSpacing.md,
+                            vertical: AppSpacing.sm2,
+                          ),
+                          decoration: BoxDecoration(
+                            color: AppColors.primary.withAlpha(230),
+                            borderRadius: AppRadius.mediumRadius,
+                            boxShadow: [
+                              BoxShadow(
+                                color: AppOverlays.black20,
+                                blurRadius: 8,
+                                offset: const Offset(0, 2),
+                              ),
+                            ],
+                          ),
+                          child: Row(
+                            children: [
+                              Text(
+                                '\u{1F3AF}',
+                                style: Theme.of(context).textTheme.titleLarge!,
+                              ),
+                              const SizedBox(width: AppSpacing.sm),
+                              Expanded(
+                                child: Text(
+                                  "Start a quick lesson to earn XP today!",
+                                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                    color: AppColors.onPrimary,
+                                    fontWeight: FontWeight.w500,
+                                  ),
                                 ),
                               ),
-                            ),
-                            Icon(
-                              Icons.close,
-                              size: 18,
-                              color: AppColors.onPrimary.withAlpha(180),
-                            ),
-                          ],
+                              Icon(
+                                Icons.close,
+                                size: 18,
+                                color: AppColors.onPrimary.withAlpha(180),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),

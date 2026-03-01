@@ -228,16 +228,18 @@ class _HouseNavigatorState extends ConsumerState<HouseNavigator> {
             top: 120,
             bottom: 200,
             width: 60,
-            child: GestureDetector(
-              behavior: HitTestBehavior.translucent,
-              onHorizontalDragEnd: (details) {
-                if (details.primaryVelocity != null && details.primaryVelocity! > 400) {
-                  // Swipe right - go to previous room
-                  if (currentRoom > 0) {
-                    _goToRoom(currentRoom - 1);
+            child: ExcludeSemantics(
+              child: GestureDetector(
+                behavior: HitTestBehavior.translucent,
+                onHorizontalDragEnd: (details) {
+                  if (details.primaryVelocity != null && details.primaryVelocity! > 400) {
+                    // Swipe right - go to previous room
+                    if (currentRoom > 0) {
+                      _goToRoom(currentRoom - 1);
+                    }
                   }
-                }
-              },
+                },
+              ),
             ),
           ),
           // Right side - swipe left to go to next room
@@ -246,16 +248,18 @@ class _HouseNavigatorState extends ConsumerState<HouseNavigator> {
             top: 120,
             bottom: 200,
             width: 60,
-            child: GestureDetector(
-              behavior: HitTestBehavior.translucent,
-              onHorizontalDragEnd: (details) {
-                if (details.primaryVelocity != null && details.primaryVelocity! < -400) {
-                  // Swipe left - go to next room
-                  if (currentRoom < _rooms.length - 1) {
-                    _goToRoom(currentRoom + 1);
+            child: ExcludeSemantics(
+              child: GestureDetector(
+                behavior: HitTestBehavior.translucent,
+                onHorizontalDragEnd: (details) {
+                  if (details.primaryVelocity != null && details.primaryVelocity! < -400) {
+                    // Swipe left - go to next room
+                    if (currentRoom < _rooms.length - 1) {
+                      _goToRoom(currentRoom + 1);
+                    }
                   }
-                }
-              },
+                },
+              ),
             ),
           ),
 

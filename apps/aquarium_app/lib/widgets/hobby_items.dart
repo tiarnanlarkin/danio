@@ -21,7 +21,10 @@ class ThermometerItem extends StatelessWidget {
         ? ((temperature! - 15) / 20).clamp(0.0, 1.0)
         : 0.3;
 
-    return GestureDetector(
+    return Semantics(
+      label: 'Thermometer. Tap to view tank stats',
+      button: true,
+      child: GestureDetector(
       onTap: onTap,
       child: SizedBox(
         width: height * 0.3,
@@ -33,7 +36,7 @@ class ThermometerItem extends StatelessWidget {
           ),
         ),
       ),
-    );
+    ),);
   }
 
   Color _tempColor(double? temp) {
@@ -155,7 +158,10 @@ class TestTubeRack extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return Semantics(
+      label: 'Test tubes. Tap to log water parameters',
+      button: true,
+      child: GestureDetector(
       onTap: onTap,
       child: SizedBox(
         width: width,
@@ -171,7 +177,7 @@ class TestTubeRack extends StatelessWidget {
           ),
         ),
       ),
-    );
+    ),);
   }
 
   Color _phColor(double? val) {
@@ -302,7 +308,10 @@ class FilterItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return Semantics(
+      label: 'Filter. Tap to view equipment',
+      button: true,
+      child: GestureDetector(
       onTap: onTap,
       child: SizedBox(
         width: height * 0.6,
@@ -314,7 +323,7 @@ class FilterItem extends StatelessWidget {
           ),
         ),
       ),
-    );
+    ),);
   }
 }
 
@@ -476,7 +485,10 @@ class FoodJarItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return Semantics(
+      label: 'Fish food. Tap to log feeding',
+      button: true,
+      child: GestureDetector(
       onTap: onTap,
       child: SizedBox(
         width: height * 0.6,
@@ -488,7 +500,7 @@ class FoodJarItem extends StatelessWidget {
           ),
         ),
       ),
-    );
+    ),);
   }
 }
 
@@ -607,7 +619,10 @@ class HeaterItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return Semantics(
+      label: 'Heater. Tap to view equipment',
+      button: true,
+      child: GestureDetector(
       onTap: onTap,
       child: SizedBox(
         width: height * 0.25,
@@ -616,7 +631,7 @@ class HeaterItem extends StatelessWidget {
           painter: _HeaterPainter(setTemp: setTemp, isOn: isOn),
         ),
       ),
-    );
+    ),);
   }
 }
 
@@ -711,7 +726,10 @@ class LightItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return Semantics(
+      label: 'Aquarium light. Tap to view lighting',
+      button: true,
+      child: GestureDetector(
       onTap: onTap,
       child: SizedBox(
         width: width,
@@ -720,7 +738,7 @@ class LightItem extends StatelessWidget {
           painter: _LightPainter(isOn: isOn, brightness: brightness),
         ),
       ),
-    );
+    ),);
   }
 }
 
@@ -806,14 +824,17 @@ class NetItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return Semantics(
+      label: 'Fish net. Tap to manage livestock',
+      button: true,
+      child: GestureDetector(
       onTap: onTap,
       child: SizedBox(
         width: size,
         height: size * 1.5,
         child: CustomPaint(painter: _NetPainter()),
       ),
-    );
+    ),);
   }
 }
 
@@ -903,14 +924,17 @@ class BucketItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return Semantics(
+      label: 'Water bucket. Tap to log water change',
+      button: true,
+      child: GestureDetector(
       onTap: onTap,
       child: SizedBox(
         width: height * 0.9,
         height: height,
         child: CustomPaint(painter: _BucketPainter(fillLevel: fillLevel)),
       ),
-    );
+    ),);
   }
 }
 

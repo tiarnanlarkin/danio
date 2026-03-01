@@ -18,6 +18,7 @@ import '../services/notification_service.dart';
 import '../services/xp_animation_service.dart';
 import '../utils/haptic_feedback.dart';
 import '../theme/app_theme.dart';
+import '../widgets/celebrations/water_change_celebration.dart';
 import '../utils/app_feedback.dart';
 import '../widgets/core/app_button.dart';
 
@@ -949,6 +950,17 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
       }
 
       if (mounted) {
+        // Show water change celebration on root overlay (survives nav pop)
+        if (log.type == LogType.waterChange) {
+          final rootOverlay = Overlay.of(context, rootOverlay: true);
+          late OverlayEntry celebrationEntry;
+          celebrationEntry = OverlayEntry(
+            builder: (ctx) => WaterChangeCelebration(
+              onComplete: () => celebrationEntry.remove(),
+            ),
+          );
+          rootOverlay.insert(celebrationEntry);
+        }
         Navigator.pop(context);
         AppFeedback.showSuccess(context, '${log.typeName} logged! +$effectiveXp XP');
       }
@@ -1110,6 +1122,14 @@ class _ParameterField extends StatelessWidget {
           keyboardType: TextInputType.numberWithOptions(decimal: decimal),
           inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[\d.]'))],
           onChanged: (v) => onChanged(double.tryParse(v)),
+          validator: (v) {
+            if (v != null && v.isNotEmpty) {
+              final n = double.tryParse(v);
+              if (n == null) return 'Enter a valid number';
+              if (n < 0) return 'Must be positive';
+            }
+            return null;
+          },
         ),
         if (idealRange != null)
           Padding(
@@ -1251,6 +1271,14 @@ class _CompactParamField extends StatelessWidget {
             FilteringTextInputFormatter.allow(RegExp(r'[\d.]')),
           ],
           onChanged: (v) => onChanged(double.tryParse(v)),
+          validator: (v) {
+            if (v != null && v.isNotEmpty) {
+              final n = double.tryParse(v);
+              if (n == null) return 'Enter a valid number';
+              if (n < 0) return 'Must be positive';
+            }
+            return null;
+          },
         ),
         if (idealRange != null)
           Padding(
