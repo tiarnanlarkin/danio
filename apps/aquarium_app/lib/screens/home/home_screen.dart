@@ -336,13 +336,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     icon: Icons.calendar_view_month_rounded,
                     label: 'Stats',
                     backgroundColor: Colors.white,
-                    foregroundColor: const Color(0xFF7B68EE),
+                    foregroundColor: AppColors.primary,  // Brand amber
                     onPressed: () => _showStatsInfo(context),
                   ),
                   SpeedDialAction(
                     icon: Icons.water_drop_rounded,
                     label: 'Water Change',
-                    backgroundColor: const Color(0xFF3A9BD5),
+                    backgroundColor: AppColors.accent,  // Teal - brand water color
                     foregroundColor: Colors.white,
                     onPressed: () => _navigateToWaterChange(context, currentTank),
                   ),
