@@ -170,10 +170,9 @@ class DailyGoalCard extends ConsumerWidget {
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [
-            AppOverlays.white95,
-            AppOverlays.white88,
-          ],
+          colors: Theme.of(context).brightness == Brightness.dark
+              ? [AppColors.cardDark, AppColors.surfaceVariantDark]
+              : [AppOverlays.white95, AppOverlays.white88],
         ),
         borderRadius: AppRadius.mediumRadius,
         boxShadow: [
@@ -183,7 +182,12 @@ class DailyGoalCard extends ConsumerWidget {
             offset: const Offset(0, 4),
           ),
         ],
-        border: Border.all(color: AppOverlays.white60, width: 1.5),
+        border: Border.all(
+          color: Theme.of(context).brightness == Brightness.dark
+              ? AppColors.borderDark
+              : AppOverlays.white60,
+          width: 1.5,
+        ),
       ),
       child: Material(
         color: Colors.transparent,
