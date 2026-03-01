@@ -178,7 +178,7 @@ class _MultipleChoiceWidgetState extends State<MultipleChoiceWidget>
     }
 
     return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.only(bottom: AppSpacing.sm2),
       child: AnimatedScale(
         scale: isSelected && !widget.isAnswered ? 0.98 : 1.0,
         duration: AppDurations.short,
@@ -198,7 +198,7 @@ class _MultipleChoiceWidgetState extends State<MultipleChoiceWidget>
             child: AnimatedContainer(
             duration: AppDurations.medium4,
             curve: AppCurves.standard,
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(AppSpacing.md),
             decoration: BoxDecoration(
               color: bgColor ?? AppColors.surface,
               borderRadius: AppRadius.mediumRadius,
@@ -395,7 +395,7 @@ class _FillBlankWidgetState extends State<FillBlankWidget> {
 
     return Container(
       constraints: const BoxConstraints(minWidth: 80, maxWidth: 200),
-      margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+      margin: const EdgeInsets.symmetric(horizontal: AppSpacing.xs, vertical: AppSpacing.xs),
       child: TextField(
         controller: _controllers[index],
         enabled: !widget.isAnswered,
@@ -434,8 +434,8 @@ class _FillBlankWidgetState extends State<FillBlankWidget> {
             borderSide: const BorderSide(color: AppColors.primary, width: 2),
           ),
           contentPadding: const EdgeInsets.symmetric(
-            horizontal: 12,
-            vertical: 8,
+            horizontal: AppSpacing.sm2,
+            vertical: AppSpacing.sm,
           ),
         ),
       ),
@@ -498,8 +498,8 @@ class _FillBlankWidgetState extends State<FillBlankWidget> {
 
     return Container(
       constraints: const BoxConstraints(minWidth: 80),
-      margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      margin: const EdgeInsets.symmetric(horizontal: AppSpacing.xs, vertical: AppSpacing.xs),
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.sm),
       decoration: BoxDecoration(
         color: selectedWord != null
             ? (widget.isAnswered
@@ -638,7 +638,7 @@ class TrueFalseWidget extends StatelessWidget {
           borderRadius: AppRadius.mediumRadius,
           child: AnimatedContainer(
           duration: AppDurations.medium4,
-          padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 20),
+          padding: const EdgeInsets.symmetric(vertical: AppSpacing.lg, horizontal: AppSpacing.lg2),
           decoration: BoxDecoration(
             color: bgColor ?? AppColors.surface,
             borderRadius: AppRadius.mediumRadius,
@@ -819,7 +819,7 @@ class _MatchingWidgetState extends State<MatchingWidget> {
     }
 
     return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.only(bottom: AppSpacing.sm2),
       child: Semantics(
         label: 'Match item: $text${isSelected ? ', selected' : ''}${isPaired ? ', paired' : ''}${widget.isAnswered && isPaired ? (isCorrect ? ', correct' : ', incorrect') : ''}',
         button: true,
@@ -830,7 +830,7 @@ class _MatchingWidgetState extends State<MatchingWidget> {
           borderRadius: AppRadius.mediumRadius,
           child: AnimatedContainer(
           duration: AppDurations.medium2,
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(AppSpacing.md),
           decoration: BoxDecoration(
             color: bgColor ?? AppColors.surface,
             borderRadius: AppRadius.mediumRadius,
@@ -896,7 +896,7 @@ class _MatchingWidgetState extends State<MatchingWidget> {
     }
 
     return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.only(bottom: AppSpacing.sm2),
       child: Semantics(
         label: 'Match target: $text${isPaired ? ', paired' : ''}${widget.isAnswered && isPaired ? (isCorrect ? ', correct' : ', incorrect') : ''}',
         button: true,
@@ -907,7 +907,7 @@ class _MatchingWidgetState extends State<MatchingWidget> {
           borderRadius: AppRadius.mediumRadius,
           child: AnimatedContainer(
           duration: AppDurations.medium2,
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(AppSpacing.md),
           decoration: BoxDecoration(
             color: bgColor ?? AppColors.surface,
             borderRadius: AppRadius.mediumRadius,
@@ -1002,7 +1002,7 @@ class _OrderingWidgetState extends State<OrderingWidget> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Container(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(AppSpacing.md),
           decoration: BoxDecoration(
             color: AppOverlays.info10,
             borderRadius: AppRadius.mediumRadius,
@@ -1059,10 +1059,10 @@ class _OrderingWidgetState extends State<OrderingWidget> {
 
     return Padding(
       key: ValueKey(itemIndex),
-      padding: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.only(bottom: AppSpacing.sm2),
       child: AnimatedContainer(
         duration: AppDurations.medium4,
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(AppSpacing.md),
         decoration: BoxDecoration(
           color: bgColor ?? AppColors.surface,
           borderRadius: AppRadius.mediumRadius,
@@ -1126,7 +1126,7 @@ class ExplanationCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return AnimatedContainer(
       duration: AppDurations.medium4,
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
         color: AppOverlays.info10,
         borderRadius: AppRadius.mediumRadius,

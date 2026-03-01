@@ -220,10 +220,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               right: 0,
               child: Container(
                 padding: EdgeInsets.only(
-                  top: MediaQuery.of(context).padding.top + 8,
-                  left: 16,
-                  right: 8,
-                  bottom: 8,
+                  top: MediaQuery.of(context).padding.top + AppSpacing.sm,
+                  left: AppSpacing.md,
+                  right: AppSpacing.sm,
+                  bottom: AppSpacing.sm,
                 ),
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
@@ -570,8 +570,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       builder: (ctx) => StatefulBuilder(
         builder: (ctx, setSheetState) => Padding(
           padding: EdgeInsets.only(
-            left: 20, right: 20, top: 16,
-            bottom: MediaQuery.of(ctx).viewInsets.bottom + 16,
+            left: AppSpacing.lg2, right: AppSpacing.lg2, top: AppSpacing.md,
+            bottom: MediaQuery.of(ctx).viewInsets.bottom + AppSpacing.md,
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,

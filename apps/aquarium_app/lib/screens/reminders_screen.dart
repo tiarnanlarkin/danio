@@ -368,7 +368,7 @@ class _SectionHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
+      padding: const EdgeInsets.only(bottom: AppSpacing.sm),
       child: Row(
         children: [
           Text(
@@ -377,7 +377,7 @@ class _SectionHeader extends StatelessWidget {
           ),
           const SizedBox(width: AppSpacing.sm),
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: 2),
             decoration: BoxDecoration(
               color: (color ?? AppColors.primary).withAlpha(26),
               borderRadius: AppRadius.mediumRadius,
@@ -456,12 +456,12 @@ class _ReminderTile extends StatelessWidget {
       onDismissed: (_) => onDelete(),
       background: Container(
         alignment: Alignment.centerRight,
-        padding: const EdgeInsets.only(right: 16),
+        padding: const EdgeInsets.only(right: AppSpacing.md),
         color: AppColors.error,
         child: const Icon(Icons.delete, color: Colors.white),
       ),
       child: Card(
-        margin: const EdgeInsets.only(bottom: 8),
+        margin: const EdgeInsets.only(bottom: AppSpacing.sm),
         color: isOverdue ? AppColors.errorAlpha05 : null,
         child: ListTile(
           leading: Container(
@@ -596,10 +596,10 @@ class _AddReminderSheetState extends State<_AddReminderSheet> {
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.fromLTRB(
-        16,
-        16,
-        16,
-        16 + MediaQuery.of(context).viewInsets.bottom,
+        AppSpacing.md,
+        AppSpacing.md,
+        AppSpacing.md,
+        AppSpacing.md + MediaQuery.of(context).viewInsets.bottom,
       ),
       child: SingleChildScrollView(
         child: Column(
@@ -792,7 +792,7 @@ class _PresetChip extends StatelessWidget {
       onTap: onTap,
       borderRadius: AppRadius.largeRadius,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm2, vertical: AppSpacing.sm),
         decoration: BoxDecoration(
           color: AppOverlays.primary10,
           borderRadius: AppRadius.largeRadius,
