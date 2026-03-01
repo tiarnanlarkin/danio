@@ -544,7 +544,7 @@ class TankDetailScreen extends ConsumerWidget {
                         child: ActionButton(
                           icon: Icons.water_drop_outlined,
                           label: 'Water Change',
-                          color: const Color(0xFF1E88E5), // Water blue
+                          color: AppColors.accent, // Teal water
                           onTap: () =>
                               _navigateToAddLog(context, LogType.waterChange),
                         ),
