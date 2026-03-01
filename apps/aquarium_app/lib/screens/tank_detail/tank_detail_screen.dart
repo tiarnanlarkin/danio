@@ -497,7 +497,7 @@ class TankDetailScreen extends ConsumerWidget {
               SliverToBoxAdapter(
                 child: Padding(
                   padding: const EdgeInsets.all(AppSpacing.md),
-                  child: QuickStats(tank: tank, logsAsync: logsAllAsync),
+                  child: QuickStats(tank: tank, logsAsync: logsAllAsync, livestockAsync: livestockAsync, equipmentAsync: equipmentAsync),
                 ),
               ),
 
