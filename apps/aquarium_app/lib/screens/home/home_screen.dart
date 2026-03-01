@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import '../../models/models.dart';
+import '../../services/tank_health_service.dart';
 import '../analytics_screen.dart';
 import '../../providers/tank_provider.dart';
 import '../../providers/hearts_provider.dart';
@@ -352,6 +353,40 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                             ),
                           ),
                         ),
+                      // Water change streak
+                      Builder(
+                        builder: (context) {
+                          final tanks = ref.watch(tanksProvider).value ?? [];
+                          if (tanks.isEmpty) return const SizedBox.shrink();
+                          final logsAsync = ref.watch(allLogsProvider(tanks.first.id));
+                          return logsAsync.when(
+                            loading: () => const SizedBox.shrink(),
+                            error: (_, __) => const SizedBox.shrink(),
+                            data: (logs) {
+                              final wcStreak = TankHealthService.calculateWaterChangeStreak(logs);
+                              if (wcStreak == 0) return const SizedBox.shrink();
+                              return Padding(
+                                padding: const EdgeInsets.only(top: 4),
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                                  decoration: BoxDecoration(
+                                    color: DanioColors.tealWater.withAlpha(230),
+                                    borderRadius: AppRadius.mediumRadius,
+                                  ),
+                                  child: Text(
+                                    '\u{1F4A7} Water change streak: $wcStreak week${wcStreak == 1 ? "" : "s"}',
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 13,
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
+                          );
+                        },
+                      ),
                       if (lowHearts && hearts.currentHearts >= 0) ...[
                         const SizedBox(height: 4),
                         Container(
