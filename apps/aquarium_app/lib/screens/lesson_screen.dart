@@ -1,3 +1,4 @@
+import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/learning.dart';
@@ -386,7 +387,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
                     Text(
                       'Fun Fact',
                       style: AppTypography.labelLarge.copyWith(
-                        color: Colors.purple,
+                        color: AppColors.accentAlt,
                       ),
                     ),
                     const SizedBox(height: AppSpacing.xs),
@@ -756,7 +757,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
                   ),
                   const SizedBox(height: AppSpacing.lg),
                   Text(
-                    passed ? 'Great job!' : 'Keep learning!',
+                    passed ? _passedMessage(percentage) : _tryAgainMessage(),
                     style: AppTypography.headlineLarge,
                   ),
                   const SizedBox(height: AppSpacing.sm),

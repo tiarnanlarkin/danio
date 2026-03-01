@@ -298,7 +298,7 @@ class LeaderboardScreen extends ConsumerWidget {
       case League.gold:
         return [Colors.amber.shade300, Colors.amber.shade600];
       case League.diamond:
-        return [Colors.cyan.shade300, Colors.cyan.shade600];
+        return [AppColors.accent, AppColors.accent];
     }
   }
 

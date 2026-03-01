@@ -260,7 +260,7 @@ class _StoryPlayerScreenState extends ConsumerState<StoryPlayerScreen>
                   colors: [
                     const Color(0xFFFF6F00),
                     const Color(0xFFFFA000),
-                    Colors.cyan.shade600,
+                    AppColors.accent,
                   ],
                 ),
               ),

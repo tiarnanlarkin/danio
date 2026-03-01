@@ -231,7 +231,7 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
                   included: true,
                 ),
                 _ExportItem(
-                  icon: Icons.pets,
+                  icon: Icons.set_meal,
                   text: 'Livestock inventories',
                   included: true,
                 ),

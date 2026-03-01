@@ -49,9 +49,9 @@ class _StoriesScreenState extends ConsumerState<StoriesScreen> {
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                     colors: [
-                      Colors.purple.shade700,
+                      AppColors.accentAlt,
                       const Color(0xFFFFB300),
-                      Colors.cyan.shade500,
+                      AppColors.accent,
                     ],
                   ),
                 ),

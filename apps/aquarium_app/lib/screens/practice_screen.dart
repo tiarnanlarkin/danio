@@ -735,7 +735,7 @@ class _PracticeLessonScreenState extends ConsumerState<PracticeLessonScreen> {
                     Text(
                       'Fun Fact',
                       style: AppTypography.labelLarge.copyWith(
-                        color: Colors.purple,
+                        color: AppColors.accentAlt,
                       ),
                     ),
                     const SizedBox(height: AppSpacing.xs),

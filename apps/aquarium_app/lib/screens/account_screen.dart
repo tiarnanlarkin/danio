@@ -461,7 +461,7 @@ class _SyncStatusCard extends ConsumerWidget {
       case CloudSyncStatus.syncing:
         icon = Icons.sync;
         label = 'Syncing…';
-        color = Colors.blue;
+        color = AppColors.info;
       case CloudSyncStatus.offline:
         icon = Icons.cloud_off;
         label = 'Offline — changes queued';

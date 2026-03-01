@@ -36,7 +36,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen>
       gradientColors: [AppColors.primaryDark, AppColors.primary],
     ),
     _OnboardingPage(
-      icon: Icons.pets_rounded,
+      icon: Icons.set_meal_rounded,
       title: 'Manage Your Collection',
       description:
           'Add fish, plants, and equipment. Set maintenance schedules and get reminders when things need attention.',

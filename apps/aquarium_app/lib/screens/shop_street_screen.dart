@@ -80,7 +80,7 @@ class ShopStreetScreen extends ConsumerWidget {
                     title: '🐟 Fish Wishlist',
                     subtitle: 'Species you want to keep',
                     icon: Icons.favorite,
-                    color: Colors.pink.shade300,
+                    color: DanioColors.coralAccent,
                     itemCount: fishCount,
                     onTap: () => Navigator.push(
                       context,
@@ -128,7 +128,7 @@ class ShopStreetScreen extends ConsumerWidget {
                     title: '💎 Gem Shop',
                     subtitle: 'Spend gems on rewards & cosmetics',
                     icon: Icons.diamond,
-                    color: Colors.purple.shade300,
+                    color: AppColors.accentAlt,
                     itemCount: 0,
                     onTap: () => Navigator.push(
                       context,

@@ -141,7 +141,7 @@ class StudyScreen extends ConsumerWidget {
                     icon: Icons.shield,
                     title: 'Quarantine',
                     subtitle: 'Protect your tank from disease',
-                    color: Colors.purple,
+                    color: AppColors.accentAlt,
                     onTap: () => Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -165,7 +165,7 @@ class StudyScreen extends ConsumerWidget {
                     icon: Icons.favorite,
                     title: 'Breeding',
                     subtitle: 'Raise the next generation',
-                    color: Colors.pink,
+                    color: DanioColors.coralAccent,
                     onTap: () => Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -208,14 +208,14 @@ class StudyScreen extends ConsumerWidget {
             child: _SectionCard(
               title: '📚 Reference',
               subtitle: 'Browse species and terminology',
-              color: Colors.indigo,
+              color: AppColors.secondaryDark,
               child: Column(
                 children: [
                   _StudyTile(
                     icon: Icons.set_meal,
                     title: 'Species Browser',
                     subtitle: 'Explore fish species',
-                    color: Colors.cyan,
+                    color: AppColors.accent,
                     onTap: () => Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -239,7 +239,7 @@ class StudyScreen extends ConsumerWidget {
                     icon: Icons.menu_book,
                     title: 'Glossary',
                     subtitle: 'Fishkeeping terminology',
-                    color: Colors.blueGrey,
+                    color: AppColors.secondary,
                     onTap: () => Navigator.push(
                       context,
                       MaterialPageRoute(builder: (_) => const GlossaryScreen()),
@@ -249,7 +249,7 @@ class StudyScreen extends ConsumerWidget {
                     icon: Icons.help_outline,
                     title: 'FAQ',
                     subtitle: 'Common questions answered',
-                    color: Colors.indigo,
+                    color: AppColors.secondaryDark,
                     onTap: () => Navigator.push(
                       context,
                       MaterialPageRoute(builder: (_) => const FaqScreen()),

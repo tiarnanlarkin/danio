@@ -244,7 +244,7 @@ class _CompatibilityCheckerScreenState
                     padding: AppCardPadding.spacious,
                     child: Column(
                       children: [
-                        Icon(Icons.pets, size: AppIconSizes.xl, color: AppColors.textHint),
+                        Icon(Icons.set_meal, size: AppIconSizes.xl, color: AppColors.textHint),
                         const SizedBox(height: 12),
                         Text(
                           'Add Fish to Check',

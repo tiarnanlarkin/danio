@@ -300,7 +300,7 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
       case 'nitrite':
         return Colors.red;
       case 'ammonia':
-        return Colors.purple;
+        return AppColors.accentAlt;
       case 'ph':
         return AppColors.primary;
       case 'temp':
@@ -308,7 +308,7 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
       case 'gh':
         return Colors.brown;
       case 'kh':
-        return Colors.indigo;
+        return AppColors.secondaryDark;
       case 'phosphate':
         return Colors.green;
       default:

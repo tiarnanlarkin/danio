@@ -107,7 +107,7 @@ class LogTile extends StatelessWidget {
       case LogType.medication:
         return Colors.red;
       case LogType.observation:
-        return Colors.purple;
+        return AppColors.accentAlt;
       case LogType.livestockAdded:
         return AppColors.success;
       case LogType.livestockRemoved:

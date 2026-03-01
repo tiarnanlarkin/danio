@@ -24,7 +24,7 @@ class AnomalyCard extends ConsumerWidget {
     final theme = Theme.of(context);
 
     return Card(
-      elevation: 2,
+      elevation: AppElevation.level1,
       color: _cardColor(anomalies),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12.0),

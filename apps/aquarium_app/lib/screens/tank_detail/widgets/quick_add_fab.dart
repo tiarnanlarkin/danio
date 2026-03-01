@@ -100,7 +100,7 @@ class _QuickAddFabState extends State<QuickAddFab>
               MiniFabOption(
                 icon: Icons.edit_note,
                 label: 'Observation',
-                color: Colors.purple,
+                color: AppColors.accentAlt,
                 onTap: () => _handleAction(widget.onObservation),
               ),
               const SizedBox(height: 12),

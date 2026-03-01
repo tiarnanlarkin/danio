@@ -251,7 +251,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                   icon: Icons.local_fire_department,
                   label: 'Current Streak',
                   value: '${summary.currentStreak} days',
-                  color: Colors.deepOrange,
+                  color: AppColors.primary,
                 ),
               ),
             ],
@@ -264,7 +264,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                   icon: Icons.book,
                   label: 'Lessons',
                   value: '${summary.lessonsCompleted}/${summary.totalLessons}',
-                  color: Colors.blue,
+                  color: AppColors.info,
                   subtitle:
                       '${(summary.completionPercentage * 100).toStringAsFixed(0)}% complete',
                 ),
@@ -286,7 +286,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
               icon: Icons.emoji_events,
               label: 'Longest Streak',
               value: '${summary.longestStreak} days',
-              color: Colors.purple,
+              color: AppColors.accentAlt,
               subtitle: 'Your personal best!',
             ),
           ],
@@ -434,7 +434,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                         )
                         .toList(),
                     isCurved: true,
-                    color: Colors.blue,
+                    color: AppColors.info,
                     barWidth: 3,
                     dotData: const FlDotData(show: false),
                     belowBarData: BarAreaData(
@@ -605,7 +605,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                 dataSets: [
                   RadarDataSet(
                     fillColor: AppOverlays.blue20,
-                    borderColor: Colors.blue,
+                    borderColor: AppColors.info,
                     dataEntries: topics
                         .map(
                           (t) => RadarEntry(value: t.masteryPercentage * 100),
@@ -756,10 +756,10 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
         color = Colors.orange;
         break;
       case InsightType.recommendation:
-        color = Colors.blue;
+        color = AppColors.info;
         break;
       case InsightType.pattern:
-        color = Colors.purple;
+        color = AppColors.accentAlt;
         break;
     }
 
@@ -952,13 +952,13 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
       padding: const EdgeInsets.only(bottom: 12),
       child: AppCard(
         padding: AppCardPadding.standard,
-        backgroundColor: Colors.blue[50],
+        backgroundColor: AppColors.infoAlpha10,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
               children: [
-                const Icon(Icons.auto_graph, color: Colors.blue, size: AppIconSizes.md),
+                const Icon(Icons.auto_graph, color: AppColors.info, size: AppIconSizes.md),
                 const SizedBox(width: 12),
                 Expanded(
                   child: Text(
@@ -980,7 +980,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                     vertical: 4,
                   ),
                   decoration: BoxDecoration(
-                    color: Colors.blue,
+                    color: AppColors.info,
                     borderRadius: AppRadius.mediumRadius,
                   ),
                   child: Text(

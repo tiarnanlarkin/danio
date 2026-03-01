@@ -187,7 +187,7 @@ class _SearchResults extends StatelessWidget {
           type: _ResultType.species,
           title: species.commonName,
           subtitle: '${species.scientificName} • ${species.careLevel}',
-          icon: Icons.pets,
+          icon: Icons.set_meal,
           onTap: () => _showSpeciesInfo(context, species),
         ),
       );

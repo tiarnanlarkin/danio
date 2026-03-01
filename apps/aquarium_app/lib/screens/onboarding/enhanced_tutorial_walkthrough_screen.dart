@@ -1004,7 +1004,7 @@ class _SuccessDialogState extends State<_SuccessDialog>
               AppColors.accent,
               Colors.green,
               Colors.orange,
-              Colors.purple,
+              AppColors.accentAlt,
             ],
           ),
         ),

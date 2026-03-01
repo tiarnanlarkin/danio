@@ -444,7 +444,7 @@ class PlacementResultScreen extends ConsumerWidget {
       case SkipLevel.advanced:
         return Colors.orange;
       case SkipLevel.complete:
-        return Colors.purple;
+        return AppColors.accentAlt;
     }
   }
 

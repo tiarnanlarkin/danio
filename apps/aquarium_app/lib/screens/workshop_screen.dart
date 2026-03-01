@@ -157,7 +157,7 @@ class WorkshopScreen extends ConsumerWidget {
                     icon: Icons.lightbulb,
                     title: 'Lighting',
                     subtitle: 'Schedule lights',
-                    color: Colors.yellow.shade600,
+                    color: AppColors.warning,
                     onTap: () => Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -169,14 +169,14 @@ class WorkshopScreen extends ConsumerWidget {
                     icon: Icons.bar_chart,
                     title: 'Charts',
                     subtitle: 'Analytics & trends',
-                    color: Colors.indigo.shade400,
+                    color: AppColors.secondaryDark,
                     onTap: () => _showChartsInfo(context),
                   ),
                   _ToolCard(
-                    icon: Icons.pets,
+                    icon: Icons.set_meal,
                     title: 'Compatibility',
                     subtitle: 'Check fish matches',
-                    color: Colors.orange.shade400,
+                    color: AppColors.primaryLight,
                     onTap: () => Navigator.push(
                       context,
                       MaterialPageRoute(

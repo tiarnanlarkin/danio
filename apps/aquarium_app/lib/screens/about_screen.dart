@@ -79,7 +79,7 @@ class AboutScreen extends StatelessWidget {
               description: 'Never miss a water change or filter maintenance',
             ),
             const _FeatureItem(
-              icon: Icons.pets,
+              icon: Icons.set_meal,
               title: 'Species Database',
               description: '45+ freshwater species with care requirements',
             ),

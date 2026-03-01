@@ -228,7 +228,7 @@ class _Co2CalculatorScreenState extends State<Co2CalculatorScreen> {
                   meaning: 'CO2 optimal (20-30 ppm)',
                 ),
                 _DropCheckerRow(
-                  color: Colors.yellow,
+                  color: AppColors.warning,
                   label: 'Yellow',
                   meaning: 'CO2 too high (>30 ppm)',
                 ),
