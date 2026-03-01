@@ -6,6 +6,7 @@ import '../providers/spaced_repetition_provider.dart';
 import '../widgets/offline_indicator.dart';
 import '../widgets/sync_indicator.dart';
 import '../widgets/celebrations/level_up_listener.dart';
+import '../widgets/celebrations/streak_milestone_listener.dart';
 import 'home/home_screen.dart';
 import 'learn_screen.dart';
 import 'practice_hub_screen.dart';
@@ -75,7 +76,8 @@ class _TabNavigatorState extends ConsumerState<TabNavigator>
     final srState = ref.watch(spacedRepetitionProvider);
     final dueCardsCount = srState.stats.dueCards;
 
-    return LevelUpListener(
+    return StreakMilestoneListener(
+      child: LevelUpListener(
       child: PopScope(
         canPop: false,
         onPopInvoked: (bool didPop) async {
@@ -257,6 +259,7 @@ class _TabNavigatorState extends ConsumerState<TabNavigator>
           ),
         ),
       ),
+    ),
     );
   }
 }
