@@ -51,6 +51,7 @@ class HomeScreen extends ConsumerStatefulWidget {
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
   int _currentTankIndex = 0;
+  bool _dailyNudgeDismissed = false;
   bool _isSelectMode = false;
   final Set<String> _selectedTankIds = {};
 
@@ -370,6 +371,66 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 ],
               ),
             ),
+
+            // Daily goal nudge - shows if user has 0 XP today
+            if (!_dailyNudgeDismissed)
+              Builder(
+                builder: (context) {
+                  final profile = ref.watch(userProfileProvider).value;
+                  if (profile == null) return const SizedBox.shrink();
+                  final todayKey = DateTime.now().toIso8601String().split('T')[0];
+                  final todayXp = profile.dailyXpHistory[todayKey] ?? 0;
+                  if (todayXp > 0) return const SizedBox.shrink();
+                  return Positioned(
+                    top: MediaQuery.of(context).padding.top + 60,
+                    left: 16,
+                    right: 16,
+                    child: GestureDetector(
+                      onTap: () => setState(() => _dailyNudgeDismissed = true),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: AppSpacing.md,
+                          vertical: AppSpacing.sm2,
+                        ),
+                        decoration: BoxDecoration(
+                          color: AppColors.primary.withAlpha(230),
+                          borderRadius: AppRadius.mediumRadius,
+                          boxShadow: [
+                            BoxShadow(
+                              color: AppOverlays.black20,
+                              blurRadius: 8,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        child: Row(
+                          children: [
+                            const Text(
+                              '\u{1F3AF}',
+                              style: TextStyle(fontSize: 20),
+                            ),
+                            const SizedBox(width: AppSpacing.sm),
+                            Expanded(
+                              child: Text(
+                                "You haven't earned XP today -- start a lesson!",
+                                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                  color: AppColors.onPrimary,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                            Icon(
+                              Icons.close,
+                              size: 18,
+                              color: AppColors.onPrimary.withAlpha(180),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
           ],
         );
       },
