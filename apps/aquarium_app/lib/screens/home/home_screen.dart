@@ -477,7 +477,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                             const SizedBox(width: AppSpacing.sm),
                             Expanded(
                               child: Text(
-                                "You haven't earned XP today -- start a lesson!",
+                                "Start a quick lesson to earn XP today!",
                                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                                   color: AppColors.onPrimary,
                                   fontWeight: FontWeight.w500,
