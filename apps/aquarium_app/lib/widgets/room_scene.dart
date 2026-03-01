@@ -1,4 +1,6 @@
-import 'package:aquarium_app/theme/app_theme.dart';
+import 'stage/tank_glass_badge.dart';
+import 'stage/stage_provider.dart';
+import '../theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'dart:math' as math;
@@ -148,50 +150,16 @@ class LivingRoomScene extends ConsumerWidget {
 
               // === LAYER 5: Glassmorphic UI cards ===
 
-              // Temperature gauge (top left) — compact size
+              // Tank name badge — bottom right of tank glass
               Positioned(
-                top: h * 0.06,
-                left: w * 0.05,
-                child: GestureDetector(
-                  onTap: onStatsTap,
-                  child: _CircularTempGauge(
-                    size: w * 0.18,
-                    temperature: temperature ?? 25,
-                    theme: theme,
-                  ),
+                bottom: h * 0.28,
+                right: w * 0.12,
+                child: TankGlassBadge(
+                  tankName: tankName,
+                  tankVolume: tankVolume,
+                  theme: theme,
                 ),
               ),
-
-              // Water quality card (top right) — positioned to avoid overlap with top bar
-              Positioned(
-                top: h * 0.02,
-                right: w * 0.02,
-                child: GestureDetector(
-                  onTap: onTestKitTap,
-                  child: _WaterQualityCard(
-                    width: w * 0.44,
-                    ph: ph,
-                    ammonia: ammonia,
-                    nitrate: nitrate,
-                    theme: theme,
-                  ),
-                ),
-              ),
-
-              // Tank name badge
-              Positioned(
-                top: h * 0.20,
-                left: 0,
-                right: 0,
-                child: Center(
-                  child: _GlassBadge(
-                    text: tankName,
-                    subtext: '${tankVolume.toStringAsFixed(0)}L',
-                    theme: theme,
-                  ),
-                ),
-              ),
-
               // Wave graph card (bottom center) - moved up since actions are in speed dial
               Positioned(
                 bottom: h * 0.04,
@@ -227,6 +195,66 @@ class LivingRoomScene extends ConsumerWidget {
                   ),
                 ),
 
+
+              // Left handle — Temperature panel
+              Positioned(
+                left: 0,
+                top: h * 0.35,
+                child: GestureDetector(
+                  onTap: () => ref.read(stageProvider.notifier).toggle(StagePanel.temp),
+                  child: Container(
+                    width: 14,
+                    height: 80,
+                    decoration: BoxDecoration(
+                      color: DanioMaterials.espressoBase,
+                      borderRadius: const BorderRadius.horizontal(
+                        right: Radius.circular(8),
+                      ),
+                      image: const DecorationImage(
+                        image: AssetImage('assets/textures/slate-dark.png'),
+                        fit: BoxFit.cover,
+                        opacity: 0.6,
+                      ),
+                    ),
+                    child: const Center(
+                      child: RotatedBox(
+                        quarterTurns: 1,
+                        child: Icon(Icons.thermostat, color: Colors.white70, size: 12),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+
+              // Right handle — Water Quality panel
+              Positioned(
+                right: 0,
+                top: h * 0.35,
+                child: GestureDetector(
+                  onTap: () => ref.read(stageProvider.notifier).toggle(StagePanel.waterQuality),
+                  child: Container(
+                    width: 14,
+                    height: 80,
+                    decoration: BoxDecoration(
+                      color: DanioMaterials.espressoBase,
+                      borderRadius: const BorderRadius.horizontal(
+                        left: Radius.circular(8),
+                      ),
+                      image: const DecorationImage(
+                        image: AssetImage('assets/textures/slate-dark.png'),
+                        fit: BoxFit.cover,
+                        opacity: 0.6,
+                      ),
+                    ),
+                    child: const Center(
+                      child: RotatedBox(
+                        quarterTurns: 1,
+                        child: Icon(Icons.water_drop, color: Colors.white70, size: 12),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
               // Theme switcher hint (top center)
               Positioned(
                 top: 8,
@@ -357,9 +385,26 @@ class _CozyRoomBackground extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CustomPaint(
-      painter: _CozyRoomPainter(theme: theme),
-      size: Size.infinite,
+    return Stack(
+      children: [
+        Positioned.fill(
+          child: CustomPaint(
+            painter: _CozyRoomPainter(theme: theme),
+            size: Size.infinite,
+          ),
+        ),
+        // Linen texture overlay — subtle wall texture
+        Positioned.fill(
+          child: Opacity(
+            opacity: 0.10,
+            child: Image.asset(
+              'assets/textures/linen-wall.png',
+              repeat: ImageRepeat.repeat,
+              fit: BoxFit.none,
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

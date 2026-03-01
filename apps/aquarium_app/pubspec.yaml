@@ -89,3 +89,6 @@ flutter:
   assets:
     - assets/rive/
     - assets/audio/celebrations/
+    - assets/textures/felt-teal.png
+    - assets/textures/linen-wall.png
+    - assets/textures/slate-dark.png

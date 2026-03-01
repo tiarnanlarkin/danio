@@ -1,3 +1,13 @@
+import '../../widgets/stage/stage_provider.dart';
+import '../../widgets/stage/stage_scrim.dart';
+import '../../widgets/stage/swiss_army_panel.dart';
+import '../../widgets/stage/bottom_plate.dart';
+import '../../widgets/stage/ambient_tip_overlay.dart';
+import '../../widgets/stage/lighting_pulse.dart';
+import '../../widgets/stage/temp_panel_content.dart';
+import '../../widgets/stage/water_panel_content.dart';
+import '../../painters/leather_grain_painter.dart';
+import '../../painters/saffiano_painter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -295,7 +305,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
             // === 3. Room scene — fills available space ===
             Expanded(
-              child: Stack(
+              child: LightingPulseWrapper(
+                child: Stack(
                 children: [
                   Positioned.fill(
                     child: LivingRoomScene(
@@ -315,118 +326,95 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       onCalendarTap: () => _navigateToSchedule(context),
                     ),
                   ),
-                ],
-              ),
-            ),
+                  // Stage scrim
+                  const StageScrim(),
 
-            // === 4. Daily goal progress below scene ===
-            profileAsync.when(
-              loading: () => const SizedBox.shrink(),
-              error: (_, __) => const SizedBox.shrink(),
-              data: (profile) {
-                if (profile == null) return const SizedBox.shrink();
-                final todayXp = dailyGoal?.earnedXp ?? 0;
-                final goalXp = profile.dailyXpGoal;
-                final progress = goalXp > 0 ? (todayXp / goalXp).clamp(0.0, 1.0) : 0.0;
-                final percentage = (progress * 100).round();
-                final isComplete = progress >= 1.0;
-                return Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
-                  child: Card(
-                    margin: EdgeInsets.zero,
-                    elevation: 0,
-                    shape: RoundedRectangleBorder(borderRadius: AppRadius.mediumRadius),
+                  // Swiss Army panels
+                  Builder(builder: (context) {
+                    final theme = ref.watch(currentRoomThemeProvider);
+                    final latestTest = ref.watch(latestWaterTestProvider(currentTank.id));
+                    return Stack(children: [
+                      SwissArmyPanel.left(
+                        theme: theme,
+                        child: TempPanelContent(
+                          temperature: latestTest.value?.temperature,
+                          theme: theme,
+                        ),
+                      ),
+                      SwissArmyPanel.right(
+                        theme: theme,
+                        child: WaterPanelContent(
+                          ph: latestTest.value?.ph,
+                          ammonia: latestTest.value?.ammonia,
+                          nitrate: latestTest.value?.nitrate,
+                          nitrite: latestTest.value?.nitrite,
+                          theme: theme,
+                        ),
+                      ),
+                    ]);
+                  }),
+
+                  // Tanks plate (behind — lower peek)
+                  BottomPlate(
+                    peekHeight: 32,
+                    maxHeightFraction: 0.75,
+                    label: 'Your Tanks',
+                    emoji: '🐠',
+                    backgroundColor: DanioMaterials.espressoBase,
+                    backgroundPainter: CustomPaint(
+                      painter: SaffianoPainter(),
+                      size: Size.infinite,
+                    ),
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
                       child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                          Row(
-                            children: [
-                              Text('📈', style: const TextStyle(fontSize: 16)),
-                              const SizedBox(width: 6),
-                              Text(
-                                'Daily Goal: $todayXp/$goalXp XP',
-                                style: AppTypography.labelMedium.copyWith(
-                                  color: isComplete ? AppColors.success : AppColors.textPrimary,
-                                  fontWeight: isComplete ? FontWeight.bold : FontWeight.w500,
-                                ),
-                              ),
-                              const Spacer(),
-                              if (isComplete)
-                                Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                                  decoration: BoxDecoration(
-                                    color: AppOverlays.success20,
-                                    borderRadius: AppRadius.smallRadius,
-                                  ),
-                                  child: Text('✓ Done!', style: AppTypography.labelSmall.copyWith(color: AppColors.success, fontWeight: FontWeight.bold)),
-                                )
-                              else
-                                Text('$percentage%', style: AppTypography.labelSmall.copyWith(color: AppColors.textSecondary)),
-                            ],
-                          ),
-                          const SizedBox(height: 6),
-                          ClipRRect(
-                            borderRadius: AppRadius.xsRadius,
-                            child: LinearProgressIndicator(
-                              value: progress,
-                              minHeight: 6,
-                              backgroundColor: AppColors.surfaceVariant,
-                              valueColor: AlwaysStoppedAnimation<Color>(
-                                isComplete ? AppColors.success : AppColors.primary,
-                              ),
+                          const SizedBox(height: 8),
+                          if (!_isSelectMode)
+                            TankSwitcher(
+                              tanks: tanks,
+                              currentIndex: _currentTankIndex,
+                              onChanged: (index) => setState(() => _currentTankIndex = index),
+                              onAddTank: () => _navigateToCreateTank(context),
+                              onLongPress: tanks.length > 1 ? _toggleSelectMode : null,
+                            )
+                          else
+                            SelectionModePanel(
+                              tanks: tanks,
+                              selectedIds: _selectedTankIds,
+                              onToggleSelection: _toggleTankSelection,
+                              onCancel: _toggleSelectMode,
+                              onDeleteSelected: () => _bulkDelete(context, tanks),
+                              onExportSelected: () => _bulkExport(context, tanks),
                             ),
-                          ),
                         ],
                       ),
                     ),
                   ),
-                );
-              },
-            ),
 
-            // === 5. Tank switcher + content below ===
-            SizedBox(
-              height: 72,
-              child: Stack(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 4, 16, 0),
-                    child: Column(
-                      children: [
-                        // Tank switcher
-                        if (!_isSelectMode)
-                          Padding(
-                            padding: const EdgeInsets.only(right: 72), // Room for FAB
-                            child: TankSwitcher(
-                              tanks: tanks,
-                              currentIndex: _currentTankIndex,
-                              onChanged: (index) {
-                                setState(() => _currentTankIndex = index);
-                              },
-                              onAddTank: () => _navigateToCreateTank(context),
-                              onLongPress: tanks.length > 1 ? _toggleSelectMode : null,
-                            ),
-                          ),
-
-                        // Selection mode UI
-                        if (_isSelectMode)
-                          SelectionModePanel(
-                            tanks: tanks,
-                            selectedIds: _selectedTankIds,
-                            onToggleSelection: _toggleTankSelection,
-                            onCancel: _toggleSelectMode,
-                            onDeleteSelected: () => _bulkDelete(context, tanks),
-                            onExportSelected: () => _bulkExport(context, tanks),
-                          ),
-                      ],
+                  // Progress plate (front — higher peek)
+                  BottomPlate(
+                    peekHeight: 60,
+                    maxHeightFraction: 0.65,
+                    label: 'Your Progress',
+                    emoji: '🔥',
+                    backgroundColor: Colors.white,
+                    backgroundPainter: CustomPaint(
+                      painter: LeatherGrainPainter(),
+                      size: Size.infinite,
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: GamificationDashboard(
+                        onTap: () => _showStatsDetails(context),
+                      ),
                     ),
                   ),
 
                   // Speed Dial FAB
                   Positioned(
-                    top: 0,
+                    bottom: 70 + MediaQuery.of(context).padding.bottom,
                     right: 16,
                     child: SpeedDialFAB(
                       closedIcon: Icons.water_drop_rounded,
@@ -471,7 +459,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       ],
                     ),
                   ),
+
+                  // Ambient tip overlay
+                  AmbientTipOverlay(theme: ref.watch(currentRoomThemeProvider)),
                 ],
+              ),
               ),
             ),
           ],

@@ -796,6 +796,25 @@ class AppElevation {
   static const double level5 = 24;
 }
 
+/// Material colours for Stage System textures and panels
+class DanioMaterials {
+  // Progress plate — cognac leather
+  static const Color cognacBase = Color(0xFFC68B3E);
+  static const Color cognacBorder = Color(0xFFB07830);
+
+  // Tanks plate — dark espresso saffiano
+  static const Color espressoBase = Color(0xFF3D2416);
+  static const Color espressoBorder = Color(0xFF2A1A0F);
+
+  // Scrim
+  static const Color scrimColor = Colors.black;
+  static const double scrimMaxOpacity = 0.25;
+  static const double scrimMaxBlur = 6.0;
+
+  // Lighting pulse colours
+  static const Color warmAmberPulse = Color(0xFFFFB74D);
+  static const Color coolBluePulse = Color(0xFF64B5F6);
+}
 class AppShadows {
   // Soft, subtle shadows for depth
   static const List<BoxShadow> soft = [
