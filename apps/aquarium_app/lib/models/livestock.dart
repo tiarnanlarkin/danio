@@ -1,6 +1,9 @@
 /// Temperament flags for compatibility checking
 enum Temperament { peaceful, semiAggressive, aggressive }
 
+/// Health status for livestock tracking
+enum HealthStatus { healthy, sick, quarantine }
+
 /// Livestock entry — fish, snails, shrimp, etc.
 class Livestock {
   final String id;
@@ -16,6 +19,7 @@ class Livestock {
   final String? notes;
   final String? imageUrl;
   final DateTime createdAt;
+  final HealthStatus healthStatus;
   final DateTime updatedAt;
 
   Livestock({
@@ -31,6 +35,7 @@ class Livestock {
     this.temperament,
     this.notes,
     this.imageUrl,
+    this.healthStatus = HealthStatus.healthy,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -52,6 +57,10 @@ class Livestock {
           : null,
       notes: json['notes'] as String?,
       imageUrl: json['imageUrl'] as String?,
+      healthStatus: json['healthStatus'] != null
+          ? HealthStatus.values.firstWhere((e) => e.name == json['healthStatus'],
+              orElse: () => HealthStatus.healthy)
+          : HealthStatus.healthy,
       createdAt: DateTime.parse(json['createdAt'] as String),
       updatedAt: DateTime.parse(json['updatedAt'] as String),
     );
@@ -71,6 +80,7 @@ class Livestock {
       'temperament': temperament?.name,
       'notes': notes,
       'imageUrl': imageUrl,
+      'healthStatus': healthStatus.name,
       'createdAt': createdAt.toIso8601String(),
       'updatedAt': updatedAt.toIso8601String(),
     };
@@ -89,6 +99,7 @@ class Livestock {
     Temperament? temperament,
     String? notes,
     String? imageUrl,
+    HealthStatus? healthStatus,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) {
@@ -105,6 +116,7 @@ class Livestock {
       temperament: temperament ?? this.temperament,
       notes: notes ?? this.notes,
       imageUrl: imageUrl ?? this.imageUrl,
+      healthStatus: healthStatus ?? this.healthStatus,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );

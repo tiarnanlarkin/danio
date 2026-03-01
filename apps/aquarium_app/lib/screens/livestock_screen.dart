@@ -767,6 +767,12 @@ class _LivestockCard extends StatelessWidget {
                 ],
               ],
             ),
+            // Health status chip
+            if (livestock.healthStatus != HealthStatus.healthy)
+              Padding(
+                padding: const EdgeInsets.only(top: 4),
+                child: _HealthChip(status: livestock.healthStatus),
+              ),
             if (hasIssues && !isSelectMode)
               Padding(
                 padding: const EdgeInsets.only(top: 4),
@@ -1394,6 +1400,46 @@ class _ParseResult {
   const _ParseResult({required this.items, this.error});
 }
 
+
+
+/// Health status chip widget
+class _HealthChip extends StatelessWidget {
+  final HealthStatus status;
+  const _HealthChip({required this.status});
+
+  @override
+  Widget build(BuildContext context) {
+    final (label, color, emoji) = switch (status) {
+      HealthStatus.healthy => ('Healthy', Colors.green, '\u{1F7E2}'),
+      HealthStatus.sick => ('Sick', Colors.orange, '\u{1F7E1}'),
+      HealthStatus.quarantine => ('Quarantine', Colors.red, '\u{1F534}'),
+    };
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+      decoration: BoxDecoration(
+        color: color.withAlpha(30),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: color.withAlpha(100)),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(emoji, style: const TextStyle(fontSize: 10)),
+          const SizedBox(width: 4),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 11,
+              fontWeight: FontWeight.w600,
+              color: color.shade700,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
 
 /// Shows "Last fed: X hours ago" based on most recent feeding log
 class _LastFedInfo extends ConsumerWidget {
