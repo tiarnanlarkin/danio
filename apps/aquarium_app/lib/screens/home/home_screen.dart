@@ -54,6 +54,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   int _currentTankIndex = 0;
   bool _dailyNudgeDismissed = false;
   bool _isSelectMode = false;
+  bool _firstTankPromptShown = false;
   final Set<String> _selectedTankIds = {};
 
   @override
@@ -173,6 +174,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         onRetry: () => ref.invalidate(tanksProvider),
       ),
       data: (tanks) {
+        _maybeShowFirstTankPrompt(context, tanks);
         if (tanks.isEmpty) {
           return EmptyRoomScene(
             onCreateTank: () => _navigateToCreateTank(context),
@@ -448,6 +450,103 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     // Note: FAB is handled inside _buildLivingRoomScreen() Stack, not here
     return Scaffold(
       body: _buildLivingRoomScreen(),
+    );
+  }
+
+  void _maybeShowFirstTankPrompt(BuildContext context, List<Tank> tanks) {
+    if (_firstTankPromptShown || tanks.isNotEmpty) return;
+    _firstTankPromptShown = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      _showFirstTankSheet(context);
+    });
+  }
+
+  void _showFirstTankSheet(BuildContext context) {
+    final nameC = TextEditingController(text: 'My First Tank');
+    final sizeC = TextEditingController(text: '60');
+    var tankType = TankType.freshwater;
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      isDismissible: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (ctx) => StatefulBuilder(
+        builder: (ctx, setSheetState) => Padding(
+          padding: EdgeInsets.only(
+            left: 20, right: 20, top: 16,
+            bottom: MediaQuery.of(ctx).viewInsets.bottom + 16,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(width: 40, height: 4,
+                decoration: BoxDecoration(
+                  color: AppColors.border,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+              const SizedBox(height: 12),
+              const Text('Let\'s set up your first tank! \u{1F420}',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+              const SizedBox(height: 16),
+              TextField(
+                controller: nameC,
+                decoration: const InputDecoration(
+                  labelText: 'Tank name',
+                  border: OutlineInputBorder(),
+                  isDense: true,
+                ),
+              ),
+              const SizedBox(height: 12),
+              TextField(
+                controller: sizeC,
+                keyboardType: TextInputType.number,
+                decoration: const InputDecoration(
+                  labelText: 'Size (litres)',
+                  border: OutlineInputBorder(),
+                  isDense: true,
+                ),
+              ),
+              const SizedBox(height: 12),
+              SegmentedButton<TankType>(
+                segments: const [
+                  ButtonSegment(value: TankType.freshwater, label: Text('Freshwater')),
+                  ButtonSegment(value: TankType.marine, label: Text('Saltwater')),
+                ],
+                selected: {tankType},
+                onSelectionChanged: (v) => setSheetState(() => tankType = v.first),
+              ),
+              const SizedBox(height: 16),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton.icon(
+                  icon: const Icon(Icons.add),
+                  label: const Text('Create Tank'),
+                  onPressed: () async {
+                    final name = nameC.text.trim();
+                    final litres = double.tryParse(sizeC.text) ?? 60;
+                    if (name.isEmpty) return;
+                    final actions = ref.read(tankActionsProvider);
+                    final tank = await actions.createTank(
+                      name: name,
+                      type: tankType,
+                      volumeLitres: litres,
+                    );
+                    if (ctx.mounted) {
+                      Navigator.pop(ctx);
+                      _navigateToTankDetail(context, tank);
+                    }
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 
