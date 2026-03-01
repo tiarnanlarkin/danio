@@ -112,16 +112,18 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     return Skeletonizer(
       child: Stack(
         children: [
-          // Skeleton room background
-          Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  AppOverlays.surfaceVariant50,
-                  AppColors.surfaceVariant,
-                ],
+          // Skeleton room background — must be Positioned.fill to actually render
+          Positioned.fill(
+            child: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    AppOverlays.surfaceVariant50,
+                    AppColors.surfaceVariant,
+                  ],
+                ),
               ),
             ),
           ),
@@ -218,6 +220,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         final currentTank = tanks[_currentTankIndex % tanks.length];
 
         return Stack(
+          fit: StackFit.expand,
           children: [
             // The room scene
             Positioned.fill(
@@ -642,6 +645,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     // Note: FAB is handled inside _buildLivingRoomScreen() Stack, not here
     return Scaffold(
       body: Stack(
+        fit: StackFit.expand,
         children: [
           _buildLivingRoomScreen(),
           if (_showWelcomeBanner)
