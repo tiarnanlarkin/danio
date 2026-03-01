@@ -250,30 +250,31 @@ class LivingRoomScene extends ConsumerWidget {
                     child: GestureDetector(
                       onTap: onThemeTap,
                       child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 4,
-                      ),
-                      decoration: BoxDecoration(
-                        color: theme.glassCard,
-                        borderRadius: AppRadius.mediumRadius,
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(
-                            Icons.palette,
-                            size: 14,
-                            color: theme.textSecondary,
-                          ),
-                          const SizedBox(width: AppSpacing.xs),
-                          Text(
-                            theme.name,
-                            style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 4,
+                        ),
+                        decoration: BoxDecoration(
+                          color: theme.glassCard,
+                          borderRadius: AppRadius.mediumRadius,
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              Icons.palette,
+                              size: 14,
                               color: theme.textSecondary,
                             ),
-                          ),
-                        ],
+                            const SizedBox(width: AppSpacing.xs),
+                            Text(
+                              theme.name,
+                              style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                                color: theme.textSecondary,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -1337,101 +1338,6 @@ class _WaterStat extends StatelessWidget {
     );
   }
 }
-
-class _MiniPieChart extends StatelessWidget {
-  final double value;
-  final double maxValue;
-  final String label;
-  final Color color;
-  final RoomTheme theme;
-  final double size;
-
-  const _MiniPieChart({
-    required this.value,
-    required this.maxValue,
-    required this.label,
-    required this.color,
-    required this.theme,
-    required this.size,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        SizedBox(
-          width: size,
-          height: size,
-          child: CustomPaint(
-            painter: _PieChartPainter(
-              value: value,
-              maxValue: maxValue,
-              color: color,
-              theme: theme,
-            ),
-            child: Center(
-              child: Text(
-                value.toStringAsFixed(1),
-                style: TextStyle(
-                  color: theme.textPrimary,
-                  fontSize: size * 0.28,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-          ),
-        ),
-        const SizedBox(height: AppSpacing.xs),
-        Text(label, style: Theme.of(context).textTheme.labelSmall!.copyWith(color: theme.textSecondary)),
-      ],
-    );
-  }
-}
-
-class _PieChartPainter extends CustomPainter {
-  final double value;
-  final double maxValue;
-  final Color color;
-  final RoomTheme theme;
-
-  _PieChartPainter({
-    required this.value,
-    required this.maxValue,
-    required this.color,
-    required this.theme,
-  });
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final center = Offset(size.width / 2, size.height / 2);
-    final radius = size.width / 2 - 3;
-
-    // Background
-    canvas.drawCircle(
-      center,
-      radius,
-      Paint()..color = theme.textSecondary.withAlpha(26),
-    );
-
-    // Progress
-    final progress = (value / maxValue).clamp(0.0, 1.0);
-    canvas.drawArc(
-      Rect.fromCircle(center: center, radius: radius),
-      -math.pi / 2,
-      math.pi * 2 * progress,
-      true,
-      Paint()..color = color.withAlpha(153),
-    );
-
-    // Inner circle (donut effect)
-    canvas.drawCircle(center, radius * 0.6, Paint()..color = theme.background2);
-  }
-
-  @override
-  bool shouldRepaint(covariant _PieChartPainter old) =>
-      old.value != value || old.color != color;
-}
-
 // === GLASS BADGE ===
 
 class _GlassBadge extends StatelessWidget {

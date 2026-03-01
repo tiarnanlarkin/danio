@@ -66,24 +66,6 @@ FriendActivityType _parseActivityType(String type) {
   }
 }
 
-String _activityTypeToString(FriendActivityType type) {
-  switch (type) {
-    case FriendActivityType.levelUp:
-      return 'level_up';
-    case FriendActivityType.achievementUnlocked:
-      return 'achievement_unlocked';
-    case FriendActivityType.streakMilestone:
-      return 'streak_milestone';
-    case FriendActivityType.lessonCompleted:
-      return 'lesson_completed';
-    case FriendActivityType.tankCreated:
-      return 'tank_created';
-    case FriendActivityType.badgeEarned:
-      return 'badge_earned';
-  }
-}
-
-// ---------------------------------------------------------------------------
 // Helper: current Monday as ISO date string (for weekly leagues)
 // ---------------------------------------------------------------------------
 
