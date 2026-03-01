@@ -14,6 +14,7 @@ import '../providers/tank_provider.dart';
 import '../providers/user_profile_provider.dart';
 import '../services/compatibility_service.dart';
 import '../services/xp_animation_service.dart';
+import '../utils/haptic_feedback.dart';
 import '../theme/app_theme.dart';
 import '../utils/app_feedback.dart';
 import '../utils/skeleton_placeholders.dart';
@@ -69,9 +70,9 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
           if (_isSelectMode)
             TextButton(
               onPressed: _toggleSelectMode,
-              child: const Text(
+              child: Text(
                 'Cancel',
-                style: TextStyle(color: Colors.white),
+                style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
               ),
             )
           else
@@ -301,7 +302,7 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
                 Container(
                   padding: const EdgeInsets.all(AppSpacing.md),
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: Theme.of(context).colorScheme.surface,
                     boxShadow: [
                       BoxShadow(
                         color: AppOverlays.black10,
@@ -523,6 +524,7 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
     );
     final effectiveXp = isBoostActive ? XpRewards.journalEntry * 2 : XpRewards.journalEntry;
     if (context.mounted) {
+      AppHaptics.success();
       ref.showXpAnimation(effectiveXp);
       AppFeedback.showSuccess(context, 'Feeding logged! \u{1F41F}');
     }
@@ -1121,8 +1123,9 @@ class _AddLivestockSheetState extends State<_AddLivestockSheet> {
             .read(userProfileProvider.notifier)
             .recordActivity(xp: XpRewards.addLivestock);
         
-        // Show XP animation
+        // Show XP animation + haptic feedback
         if (mounted) {
+          AppHaptics.success();
           widget.ref.showXpAnimation(XpRewards.addLivestock);
         }
       }

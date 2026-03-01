@@ -302,7 +302,7 @@ class _EnhancedPlacementTestScreenState
               LinearProgressIndicator(
                 value: value,
                 minHeight: 8,
-                backgroundColor: Colors.grey[200],
+                backgroundColor: Theme.of(context).brightness == Brightness.dark ? AppColors.surfaceVariantDark : Colors.grey[200],
                 valueColor: const AlwaysStoppedAnimation<Color>(
                   AppColors.accent,
                 ),
@@ -388,7 +388,7 @@ class _EnhancedPlacementTestScreenState
             Text(
               'of ${_test.questions.length}',
               style: theme.textTheme.bodySmall?.copyWith(
-                color: Colors.grey[600],
+                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
               ),
             ),
           ],
@@ -470,7 +470,7 @@ class _EnhancedPlacementTestScreenState
               color: backgroundColor,
               borderRadius: AppRadius.mediumRadius,
               border: Border.all(
-                color: borderColor ?? Colors.grey[300]!,
+                color: borderColor ?? (Theme.of(context).brightness == Brightness.dark ? AppColors.borderDark : Colors.grey[300]!),
                 width: isSelected || showResult ? 2 : 1,
               ),
               boxShadow: isSelected && !showResult
@@ -494,7 +494,7 @@ class _EnhancedPlacementTestScreenState
                     shape: BoxShape.circle,
                     color: showResult && isCorrect
                         ? Colors.green
-                        : (isSelected ? AppColors.accent : Colors.grey[200]),
+                        : (isSelected ? AppColors.accent : Theme.of(context).brightness == Brightness.dark ? AppColors.surfaceVariantDark : Colors.grey[200]!),
                   ),
                   child: Center(
                     child: Text(

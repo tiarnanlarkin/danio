@@ -155,7 +155,7 @@ class _TutorialWalkthroughScreenState
                 // Progress indicator
                 LinearProgressIndicator(
                   value: (_currentStep + 1) / (_steps.length + 1),
-                  backgroundColor: Colors.grey[200],
+                  backgroundColor: Theme.of(context).brightness == Brightness.dark ? AppColors.surfaceVariantDark : Colors.grey[200],
                   valueColor: const AlwaysStoppedAnimation(AppColors.accent),
                 ),
 
@@ -230,7 +230,7 @@ class _TutorialWalkthroughScreenState
         // Progress indicator
         LinearProgressIndicator(
           value: 1.0,
-          backgroundColor: Colors.grey[200],
+          backgroundColor: Theme.of(context).brightness == Brightness.dark ? AppColors.surfaceVariantDark : Colors.grey[200],
           valueColor: const AlwaysStoppedAnimation(AppColors.accent),
         ),
 
@@ -491,10 +491,10 @@ class _TankTypeCard extends StatelessWidget {
           decoration: BoxDecoration(
             color: isSelected
                 ? AppOverlays.primary10
-                : Colors.grey[100],
+                : Theme.of(context).brightness == Brightness.dark ? AppColors.surfaceDark : Colors.grey[100],
             borderRadius: AppRadius.mediumRadius,
             border: Border.all(
-              color: isSelected ? AppColors.primary : Colors.grey[300]!,
+              color: isSelected ? AppColors.primary : Theme.of(context).brightness == Brightness.dark ? AppColors.borderDark : Colors.grey[300]!,
               width: 2,
             ),
           ),
@@ -554,10 +554,10 @@ class _WaterTypeCard extends StatelessWidget {
         decoration: BoxDecoration(
           color: isSelected
               ? AppOverlays.accent10
-              : Colors.grey[100],
+              : Theme.of(context).brightness == Brightness.dark ? AppColors.surfaceDark : Colors.grey[100],
           borderRadius: AppRadius.mediumRadius,
           border: Border.all(
-            color: isSelected ? AppColors.accent : Colors.grey[300]!,
+            color: isSelected ? AppColors.accent : Theme.of(context).brightness == Brightness.dark ? AppColors.borderDark : Colors.grey[300]!,
             width: 2,
           ),
         ),

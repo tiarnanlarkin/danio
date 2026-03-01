@@ -14,6 +14,7 @@ import '../widgets/xp_award_animation.dart';
 import '../widgets/level_up_dialog.dart';
 import '../theme/app_theme.dart';
 import '../utils/app_feedback.dart';
+import '../utils/haptic_feedback.dart';
 
 /// Screen for viewing a single lesson and taking quizzes
 class LessonScreen extends ConsumerStatefulWidget {
@@ -1215,6 +1216,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
       if (mounted) {
         // Show XP animation and check for level-up
         // Navigation happens in onComplete callback after all animations
+        AppHaptics.success();
         _showXpAnimation(totalXp);
       }
     } catch (e, st) {

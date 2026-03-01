@@ -16,6 +16,7 @@ import '../providers/achievement_provider.dart';
 import '../services/achievement_service.dart';
 import '../services/notification_service.dart';
 import '../services/xp_animation_service.dart';
+import '../utils/haptic_feedback.dart';
 import '../theme/app_theme.dart';
 import '../utils/app_feedback.dart';
 import '../widgets/core/app_button.dart';

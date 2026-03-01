@@ -401,7 +401,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   SpeedDialAction(
                     icon: Icons.calendar_view_month_rounded,
                     label: 'Stats',
-                    backgroundColor: Colors.white,
+                    backgroundColor: Theme.of(context).colorScheme.surface,
                     foregroundColor: AppColors.primary,  // Brand amber
                     onPressed: () => _showStatsInfo(context),
                   ),
@@ -415,7 +415,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   SpeedDialAction(
                     icon: Icons.restaurant_rounded,
                     label: 'Feed',
-                    backgroundColor: Colors.white,
+                    backgroundColor: Theme.of(context).colorScheme.surface,
                     foregroundColor: const Color(0xFFE8724A),
                     onPressed: () => _showFeedingInfo(context),
                   ),
@@ -429,8 +429,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   SpeedDialAction(
                     icon: Icons.water_rounded,
                     label: 'Add Tank',
-                    backgroundColor: Colors.white,
-                    foregroundColor: const Color(0xFF555555),
+                    backgroundColor: Theme.of(context).colorScheme.surface,
+                    foregroundColor: Theme.of(context).colorScheme.onSurface,
                     onPressed: () => _navigateToCreateTank(context),
                   ),
                 ],

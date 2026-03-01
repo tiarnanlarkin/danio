@@ -274,7 +274,7 @@ class _EnhancedTutorialWalkthroughScreenState
           LinearProgressIndicator(
             value: value,
             minHeight: 6,
-            backgroundColor: Colors.grey[200],
+            backgroundColor: Theme.of(context).brightness == Brightness.dark ? AppColors.surfaceVariantDark : Colors.grey[200],
             valueColor: AlwaysStoppedAnimation(
               _currentStep < _steps.length
                   ? _steps[_currentStep].color
@@ -608,7 +608,7 @@ class _EnhancedTutorialWalkthroughScreenState
                     const SizedBox(height: AppSpacing.xs),
                     Text(
                       'Start with a pre-configured 60L community tank to explore features',
-                      style: TextStyle(fontSize: 13, color: Colors.grey[600]),
+                      style: TextStyle(fontSize: 13, color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6)),
                     ),
                   ],
                 ),
@@ -677,7 +677,7 @@ class _EnhancedTutorialWalkthroughScreenState
                 Expanded(
                   child: Text(
                     'Perfect for exploring features before setting up your real tank!',
-                    style: TextStyle(fontSize: 12, color: Colors.grey[700]),
+                    style: TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7)),
                   ),
                 ),
               ],
@@ -691,9 +691,9 @@ class _EnhancedTutorialWalkthroughScreenState
   Widget _buildPreviewRow(IconData icon, String text) {
     return Row(
       children: [
-        Icon(icon, size: 18, color: Colors.grey[600]),
+        Icon(icon, size: 18, color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6)),
         const SizedBox(width: AppSpacing.sm),
-        Text(text, style: TextStyle(fontSize: 14, color: Colors.grey[800])),
+        Text(text, style: TextStyle(fontSize: 14, color: Theme.of(context).colorScheme.onSurface.withOpacity(0.8))),
       ],
     );
   }
@@ -798,10 +798,10 @@ class _TankTypeCard extends StatelessWidget {
           decoration: BoxDecoration(
             color: isSelected
                 ? AppOverlays.primary10
-                : Colors.grey[100],
+                : Theme.of(context).brightness == Brightness.dark ? AppColors.surfaceDark : Colors.grey[100],
             borderRadius: AppRadius.mediumRadius,
             border: Border.all(
-              color: isSelected ? AppColors.primary : Colors.grey[300]!,
+              color: isSelected ? AppColors.primary : Theme.of(context).brightness == Brightness.dark ? AppColors.borderDark : Colors.grey[300]!,
               width: isSelected ? 2 : 1,
             ),
           ),
@@ -810,7 +810,7 @@ class _TankTypeCard extends StatelessWidget {
               Icon(
                 icon,
                 size: 32,
-                color: isSelected ? AppColors.primary : Colors.grey[600],
+                color: isSelected ? AppColors.primary : Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
               ),
               const SizedBox(height: AppSpacing.sm),
               Text(
@@ -818,7 +818,7 @@ class _TankTypeCard extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
-                  color: isSelected ? AppColors.primary : Colors.grey[800],
+                  color: isSelected ? AppColors.primary : Theme.of(context).colorScheme.onSurface.withOpacity(0.8),
                 ),
               ),
               if (isDisabled) ...[
@@ -862,10 +862,10 @@ class _WaterTypeCard extends StatelessWidget {
         decoration: BoxDecoration(
           color: isSelected
               ? AppOverlays.accent10
-              : Colors.grey[100],
+              : Theme.of(context).brightness == Brightness.dark ? AppColors.surfaceDark : Colors.grey[100],
           borderRadius: AppRadius.mediumRadius,
           border: Border.all(
-            color: isSelected ? AppColors.accent : Colors.grey[300]!,
+            color: isSelected ? AppColors.accent : Theme.of(context).brightness == Brightness.dark ? AppColors.borderDark : Colors.grey[300]!,
             width: isSelected ? 2 : 1,
           ),
         ),
@@ -882,12 +882,12 @@ class _WaterTypeCard extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
-                      color: isSelected ? AppColors.accent : Colors.grey[800],
+                      color: isSelected ? AppColors.accent : Theme.of(context).colorScheme.onSurface.withOpacity(0.8),
                     ),
                   ),
                   Text(
                     subtitle,
-                    style: TextStyle(fontSize: 13, color: Colors.grey[600]),
+                    style: TextStyle(fontSize: 13, color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6)),
                   ),
                 ],
               ),
@@ -895,7 +895,7 @@ class _WaterTypeCard extends StatelessWidget {
             if (isSelected)
               const Icon(Icons.check_circle, color: AppColors.accent)
             else
-              Icon(Icons.circle_outlined, color: Colors.grey[400]),
+              Icon(Icons.circle_outlined, color: Theme.of(context).colorScheme.onSurface.withOpacity(0.4)),
           ],
         ),
       ),
