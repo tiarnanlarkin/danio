@@ -209,9 +209,12 @@ class NotificationService {
   Future<void> scheduleAllTaskReminders(List<Task> tasks) async {
     if (!_initialized) await initialize();
 
-    // Cancel existing and reschedule
-    await cancelAll();
+    // Cancel only existing task notifications (not streak/review/water reminders)
+    for (final task in tasks) {
+      await _plugin.cancel(task.id.hashCode);
+    }
 
+    // Reschedule enabled tasks
     for (final task in tasks) {
       if (task.isEnabled && task.dueDate != null) {
         await scheduleTaskReminder(task);

@@ -57,6 +57,7 @@ class OpenAIService {
   static const _baseUrl = 'https://api.openai.com/v1';
   static const _maxRetries = 3;
   static const _rateLimitDelay = Duration(milliseconds: 500);
+  static const _requestTimeout = Duration(seconds: 30);
 
   final http.Client _client;
   DateTime _lastCallTime = DateTime.fromMillisecondsSinceEpoch(0);
@@ -235,7 +236,7 @@ class OpenAIService {
           Uri.parse(url),
           headers: _headers,
           body: jsonEncode(body),
-        );
+        ).timeout(_requestTimeout);
 
         if (response.statusCode == 200) return response;
 
