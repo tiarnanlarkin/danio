@@ -132,8 +132,8 @@ class EquipmentScreen extends ConsumerWidget {
           if (equipment.isEmpty) {
             return EmptyState.withMascot(
               icon: Icons.settings,
-              title: 'No equipment yet',
-              message: 'Add your filters, heaters, lights, and other gear to track maintenance schedules',
+              title: 'Time to gear up! ⚙️',
+              message: 'Track your filters, heaters, and lights — we'll remind you when they need attention',
               mascotContext: MascotContext.noEquipment,
               actionLabel: 'Add Equipment',
               onAction: () => _showAddDialog(context, ref),

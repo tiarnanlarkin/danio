@@ -176,9 +176,9 @@ class _RemindersScreenState extends ConsumerState<RemindersScreen> {
           : _reminders.isEmpty
           ? EmptyState.withMascot(
               icon: Icons.notifications_none,
-              title: 'No reminders set',
+              title: 'Never miss a thing! 🔔',
               message:
-                  'Set up reminders for feeding, water changes, and maintenance tasks',
+                  'We'll nudge you for feeding, water changes, and maintenance — so you can relax',
               mascotContext: MascotContext.encouragement,
               actionLabel: 'Add Reminder',
               onAction: _addReminder,

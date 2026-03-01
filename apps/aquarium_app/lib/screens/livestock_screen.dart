@@ -99,9 +99,9 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
           if (livestock.isEmpty) {
             return EmptyState.withMascot(
               icon: Icons.set_meal,
-              title: 'No livestock yet',
+              title: 'Your tank awaits its first residents! 🐠',
               message:
-                  'Add fish, shrimp, or snails to track your aquatic friends',
+                  'Add your fish, shrimp, or snails — we'll help you keep them happy and healthy',
               mascotContext: MascotContext.noLivestock,
               actionLabel: 'Add Livestock',
               onAction: () => _showAddDialog(context, ref),
@@ -143,7 +143,7 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
                             child: Row(
                               children: [
                                 Icon(
-                                  Icons.pets,
+                                  Icons.set_meal,
                                   color: AppColors.primary,
                                   size: 32,
                                 ),
@@ -489,7 +489,7 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
               padding: AppCardPadding.standard,
               child: Row(
                 children: [
-                  Icon(Icons.pets, color: AppColors.primary, size: AppIconSizes.lg),
+                  Icon(Icons.set_meal, color: AppColors.primary, size: AppIconSizes.lg),
                   const SizedBox(width: AppSpacing.md),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,

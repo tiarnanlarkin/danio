@@ -203,9 +203,9 @@ class _FriendsListView extends ConsumerWidget {
     if (friends.isEmpty) {
       return EmptyState.withMascot(
         icon: Icons.people_outline,
-        title: 'No friends yet',
+        title: 'Learning is better together! 👋',
         message:
-            'Add friends to compare progress and share your aquarium journey!',
+            'Invite friends to compare progress, cheer each other on, and share your aquarium journey!',
         mascotContext: MascotContext.encouragement,
         actionLabel: 'Tap + above to add friends',
         onAction: () {
@@ -449,7 +449,7 @@ class _FriendListTile extends ConsumerWidget {
   }
 
   Color _getLevelColor(int level) {
-    if (level >= 7) return Colors.purple;
+    if (level >= 7) return AppColors.accentAlt;
     if (level >= 5) return Colors.orange;
     if (level >= 3) return AppColors.primary;
     return Colors.green;

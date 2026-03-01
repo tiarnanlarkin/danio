@@ -60,7 +60,7 @@ class _LogsScreenState extends ConsumerState<LogsScreen> {
             if (logs.isEmpty) {
               return EmptyState.withMascot(
                 icon: Icons.list_alt,
-                title: 'No logs yet',
+                title: 'Start your tank's story! 📖',
                 message:
                     'Start logging water tests, maintenance, and events to track your tank\'s history',
                 mascotContext: MascotContext.noLogs,
@@ -469,7 +469,7 @@ class _LogsScreenState extends ConsumerState<LogsScreen> {
       case LogType.medication:
         return Colors.red;
       case LogType.observation:
-        return Colors.purple;
+        return AppColors.accentAlt;
       case LogType.livestockAdded:
         return AppColors.success;
       case LogType.livestockRemoved:

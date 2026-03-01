@@ -37,9 +37,9 @@ class TasksScreen extends ConsumerWidget {
           if (tasks.isEmpty) {
             return EmptyState.withMascot(
               icon: Icons.task_alt,
-              title: 'No tasks yet',
+              title: 'Set yourself up for success! ✅',
               message:
-                  'Set up reminders for water changes, testing, and maintenance to keep your tank healthy',
+                  'Add water changes, testing, and maintenance tasks — your fish will thank you',
               mascotContext: MascotContext.encouragement,
               actionLabel: 'Add Task',
               onAction: () => _showAddDialog(context, ref),
