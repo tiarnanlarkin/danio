@@ -229,24 +229,24 @@ class _AchievementsScreenState extends ConsumerState<AchievementsScreen> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Icon(
+                        Icon(
                           Icons.search_off,
                           size: AppIconSizes.xxl,
-                          color: Colors.grey,
+                          color: Theme.of(context).colorScheme.onSurface.withOpacity(0.4),
                         ),
                         const SizedBox(height: AppSpacing.md),
                         Text(
                           'No achievements found',
                           style: Theme.of(
                             context,
-                          ).textTheme.titleMedium?.copyWith(color: Colors.grey),
+                          ).textTheme.titleMedium?.copyWith(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5)),
                         ),
                         const SizedBox(height: AppSpacing.sm),
                         Text(
                           'Try adjusting your filters',
                           style: Theme.of(
                             context,
-                          ).textTheme.bodyMedium?.copyWith(color: Colors.grey),
+                          ).textTheme.bodyMedium?.copyWith(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5)),
                         ),
                       ],
                     ),

@@ -83,7 +83,7 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text(
+                Text(
                   'Overall Skill Level',
                   style: Theme.of(context).textTheme.titleLarge!.copyWith(fontWeight: FontWeight.bold),
                 ),
@@ -143,7 +143,7 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
+        Text(
           'Skills by Topic',
           style: Theme.of(context).textTheme.titleLarge!.copyWith(fontWeight: FontWeight.bold),
         ),
@@ -164,14 +164,14 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
           padding: AppCardPadding.standard,
           child: Center(
             child: Column(
-              children: const [
-                Icon(Icons.school_outlined, size: AppIconSizes.xl, color: Colors.grey),
-                SizedBox(height: AppSpacing.sm),
-                Text(
+              children: [
+                const Icon(Icons.school_outlined, size: AppIconSizes.xl, color: Colors.grey),
+                const SizedBox(height: AppSpacing.sm),
+                const Text(
                   'No lesson data yet',
                   style: TextStyle(color: Colors.grey),
                 ),
-                SizedBox(height: AppSpacing.xs),
+                const SizedBox(height: AppSpacing.xs),
                 Text(
                   'Complete lessons to see your skill progress',
                   style: Theme.of(context).textTheme.bodySmall!.copyWith(color: Colors.grey),
@@ -317,7 +317,7 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
+        Text(
           'Performance History',
           style: Theme.of(context).textTheme.titleLarge!.copyWith(fontWeight: FontWeight.bold),
         ),
@@ -352,7 +352,7 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
       padding: AppCardPadding.standard,
       child: Column(
         children: [
-          const Text(
+          Text(
             'Recent Activity',
             style: Theme.of(context).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.bold),
           ),
@@ -449,7 +449,7 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
+        Text(
           'Manual Difficulty Override',
           style: Theme.of(context).textTheme.titleLarge!.copyWith(fontWeight: FontWeight.bold),
         ),
@@ -538,7 +538,7 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
+        Text(
           'AI Recommendations',
           style: Theme.of(context).textTheme.titleLarge!.copyWith(fontWeight: FontWeight.bold),
         ),

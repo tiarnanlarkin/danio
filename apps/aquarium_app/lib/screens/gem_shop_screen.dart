@@ -95,7 +95,7 @@ class _GemShopScreenState extends ConsumerState<GemShopScreen>
         appBar: AppBar(
           backgroundColor: Colors.transparent,
           elevation: AppElevation.level0,
-          title: const Text(
+          title: Text(
             '💎 Gem Shop',
             style: Theme.of(context).textTheme.headlineSmall!.copyWith(
               color: GemShopColors.textPrimary,
