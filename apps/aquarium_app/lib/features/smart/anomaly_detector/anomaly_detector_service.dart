@@ -134,16 +134,22 @@ class AnomalyDetectorService {
             const ChatMessage(
               role: 'system',
               content:
-                  'You are a concise aquarium water chemistry expert. '
-                  'Explain the probable cause and recommend 1–2 actions. '
-                  'Keep each explanation under 2 sentences.',
+                  'You are Danio AI, an expert in aquarium water chemistry and '
+                  'the nitrogen cycle. You understand how pH, ammonia, nitrite, '
+                  'nitrate, temperature, and hardness interact. When explaining '
+                  'anomalies, consider: tank cycling status, bioload, overfeeding, '
+                  'filter issues, and substrate disturbance. Be concise — '
+                  'hobbyists need clear, actionable advice, not lectures.',
             ),
             ChatMessage(
               role: 'user',
               content:
                   'These anomalies were detected in a freshwater aquarium: '
                   '$descriptions. '
-                  'For each, give probable cause and recommended action.',
+                  'For each anomaly, provide:\n'
+                  '1. Most likely cause (one sentence)\n'
+                  '2. Immediate action to take\n'
+                  '3. How to prevent recurrence',
             ),
           ],
           maxTokens: 300,
