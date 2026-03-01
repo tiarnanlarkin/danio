@@ -730,7 +730,7 @@ class _MiniRoomPreview extends StatelessWidget {
                   end: Alignment.bottomCenter,
                   colors: [theme.waterTop, theme.waterMid, theme.waterBottom],
                 ),
-                borderRadius: BorderRadius.circular(3),
+                borderRadius: AppRadius.xsRadius,
                 border: Border.all(color: theme.glassBorder, width: 1.5),
               ),
               child: Stack(
@@ -774,7 +774,7 @@ class _MiniRoomPreview extends StatelessWidget {
                       height: 6,
                       decoration: BoxDecoration(
                         color: theme.fish1,
-                        borderRadius: BorderRadius.circular(3),
+                        borderRadius: AppRadius.xsRadius,
                       ),
                     ),
                   ),

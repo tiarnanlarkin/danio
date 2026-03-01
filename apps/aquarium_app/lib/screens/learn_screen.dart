@@ -842,7 +842,7 @@ class _LazyLearningPathCardState extends ConsumerState<_LazyLearningPathCard> {
                       color: isDark
                           ? AppColors.whiteAlpha10
                           : AppColors.surfaceVariant,
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: AppRadius.md2Radius,
                     ),
                     child: Text(
                       '${widget.completedLessons}/${widget.totalLessons}',

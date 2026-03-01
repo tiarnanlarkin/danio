@@ -296,7 +296,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen>
                     color: _currentPage == index
                         ? Colors.white
                         : AppColors.whiteAlpha40,
-                    borderRadius: BorderRadius.circular(5),
+                    borderRadius: AppRadius.xsRadius,
                     boxShadow: _currentPage == index
                         ? [
                             BoxShadow(

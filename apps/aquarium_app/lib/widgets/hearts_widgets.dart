@@ -45,7 +45,7 @@ class HeartIndicator extends ConsumerWidget {
       ),
       decoration: BoxDecoration(
         color: bgColor,
-        borderRadius: BorderRadius.circular(compact ? 12 : 16),
+        borderRadius: compact ? AppRadius.md2Radius : AppRadius.mediumRadius,
         border: Border.all(color: borderColor),
       ),
       child: Row(

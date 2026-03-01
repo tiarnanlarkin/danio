@@ -139,12 +139,12 @@ class GamificationDashboard extends ConsumerWidget {
             children: [
               Container(width: 32, height: 16, decoration: BoxDecoration(
                 color: Theme.of(context).colorScheme.surfaceContainerHigh,
-                borderRadius: BorderRadius.circular(4),
+                borderRadius: AppRadius.xsRadius,
               )),
               const SizedBox(height: 6),
               Container(width: 48, height: 10, decoration: BoxDecoration(
                 color: Theme.of(context).colorScheme.surfaceContainerHighest,
-                borderRadius: BorderRadius.circular(4),
+                borderRadius: AppRadius.xsRadius,
               )),
             ],
           )),

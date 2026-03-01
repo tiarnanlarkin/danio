@@ -224,7 +224,7 @@ class _PillButton extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
           decoration: BoxDecoration(
             color: bg,
-            borderRadius: BorderRadius.circular(26),
+            borderRadius: AppRadius.largeRadius,
             boxShadow: [
               BoxShadow(
                 color: (isColored ? bg : Colors.black)
