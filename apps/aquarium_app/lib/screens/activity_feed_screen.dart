@@ -483,7 +483,7 @@ class _DateDivider extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: Row(
         children: [
-          Expanded(child: Divider(color: Theme.of(context).dividerColor)),
+          Expanded(child: const Divider()),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12),
             child: Text(
@@ -494,7 +494,7 @@ class _DateDivider extends StatelessWidget {
               ),
             ),
           ),
-          Expanded(child: Divider(color: Theme.of(context).dividerColor)),
+          Expanded(child: const Divider()),
         ],
       ),
     );

@@ -1059,7 +1059,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               _buildParamRow('Ammonia', wt.ammonia != null ? '${wt.ammonia!.toStringAsFixed(2)} ppm' : '--', '0 ppm'),
               _buildParamRow('Nitrite', wt.nitrite != null ? '${wt.nitrite!.toStringAsFixed(2)} ppm' : '--', '0 ppm'),
               _buildParamRow('Nitrate', wt.nitrate != null ? '${wt.nitrate!.toStringAsFixed(1)} ppm' : '--', '<40 ppm'),
-              const Divider(height: 24),
+              const Divider(height: AppSpacing.lg),
               Text('Last tested: ${_timeAgo(latestTest!.timestamp)}',
                 style: AppTypography.bodySmall.copyWith(color: AppColors.textSecondary),
               ),

@@ -268,7 +268,7 @@ class _WaterChangeCalculatorScreenState
                 _RefRow(label: 'Acceptable', value: '20-40 ppm'),
                 _RefRow(label: 'High (act soon)', value: '40-80 ppm'),
                 _RefRow(label: 'Dangerous', value: '> 80 ppm'),
-                const Divider(height: 24),
+                const Divider(height: AppSpacing.lg),
                 Text(
                   'Tip: Regular 20-25% weekly water changes usually keep nitrates in check without needing to calculate.',
                   style: AppTypography.bodySmall,
