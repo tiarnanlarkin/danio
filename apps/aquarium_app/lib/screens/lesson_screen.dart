@@ -898,6 +898,23 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
     );
   }
 
+
+  /// Varied quiz passed messages based on score
+  static String _passedMessage(int percentage) {
+    final messages = percentage == 100
+        ? const ['Perfect score! You're a natural! 🌟', 'Flawless! Your fish would be proud! 💯', '100%! Aquarium genius! 🧠']
+        : percentage >= 80
+            ? const ['Brilliant work! 🎉', 'Nailed it! 🐠', 'You're swimming through these! 🌊']
+            : const ['Nice job — you passed! 👏', 'Well done, keep building! 💪', 'Solid effort! 🐟'];
+    return messages[math.Random().nextInt(messages.length)];
+  }
+
+  /// Encouraging try-again messages
+  static String _tryAgainMessage() {
+    const messages = ['Almost there — give it another go! 💪', 'Every expert was once a beginner! 📚', 'Review and try again — you've got this! 🐠'];
+    return messages[math.Random().nextInt(messages.length)];
+  }
+
   /// Get unlock message for level milestone
   String? _getUnlockMessage(int level) {
     switch (level) {
