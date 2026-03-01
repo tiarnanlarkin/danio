@@ -153,17 +153,13 @@ class LearnScreen extends ConsumerWidget {
 
               // === Content below the scene ===
               if (profile == null)
-                // BUG-07: replaced SliverFillRemaining to remove ~300dp dead space
-                SliverToBoxAdapter(
+                SliverFillRemaining(
+                  hasScrollBody: false,
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: AppSpacing.xl,
-                      vertical: AppSpacing.lg,
-                    ),
+                    padding: EdgeInsets.all(AppSpacing.xl),
                     child: Column(
-                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const SizedBox(height: AppSpacing.lg),
                         const Icon(
                           Icons.person_add,
                           size: AppIconSizes.xxl,
@@ -195,6 +191,25 @@ class LearnScreen extends ConsumerWidget {
                           ),
                         ),
                         const SizedBox(height: AppSpacing.xl),
+                        // Getting started hints to fill empty space
+                        Text(
+                          '\u2728 What you\'ll unlock',
+                          style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                            color: AppColors.textSecondary,
+                          ),
+                        ),
+                        const SizedBox(height: AppSpacing.sm),
+                        Text(
+                          '\ud83c\udf93 44 bite-sized lessons\n'
+                          '\ud83e\udde0 Spaced repetition flashcards\n'
+                          '\ud83c\udfc6 55+ achievements to earn\n'
+                          '\ud83e\udd16 AI fish identification',
+                          textAlign: TextAlign.center,
+                          style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                            color: AppColors.textSecondary,
+                            height: 1.8,
+                          ),
+                        ),
                       ],
                     ),
                   ),
