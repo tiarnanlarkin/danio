@@ -67,9 +67,11 @@ class _SpeciesBrowserScreenState extends ConsumerState<SpeciesBrowserScreen> {
             padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
             child: Row(
               children: [
-                _buildCareLevelChip('Easy'),
+                _buildAllChip(),
                 const SizedBox(width: AppSpacing.sm),
-                _buildCareLevelChip('Moderate'),
+                _buildCareLevelChip('Beginner'),
+                const SizedBox(width: AppSpacing.sm),
+                _buildCareLevelChip('Intermediate'),
                 const SizedBox(width: AppSpacing.sm),
                 _buildCareLevelChip('Advanced'),
                 const SizedBox(width: AppSpacing.md),
@@ -117,6 +119,18 @@ class _SpeciesBrowserScreenState extends ConsumerState<SpeciesBrowserScreen> {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildAllChip() {
+    final isActive = _careLevelFilter == null && _temperamentFilter == null;
+    return FilterChip(
+      label: const Text('All'),
+      selected: isActive,
+      onSelected: (_) => setState(() {
+        _careLevelFilter = null;
+        _temperamentFilter = null;
+      }),
     );
   }
 
