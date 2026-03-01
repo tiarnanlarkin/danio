@@ -30,9 +30,9 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen>
   final List<_OnboardingPage> _pages = [
     _OnboardingPage(
       icon: Icons.water_drop_rounded,
-      title: 'Track Your Aquariums',
+      title: 'Why Danio?',
       description:
-          'Keep all your tanks in one place. Log water parameters, track trends, and never miss a water change.',
+          'The smartest way to keep fish happy and healthy.\n\n\u{1F393} Learn fishkeeping the fun way \u2014 lessons, quizzes, streaks\n\u{1F916} AI that identifies fish and diagnoses problems\n\u{1F3C6} 55+ achievements \u2014 from First Fish to Master Aquarist',
       gradientColors: [AppColors.primaryDark, AppColors.primary],
     ),
     _OnboardingPage(
