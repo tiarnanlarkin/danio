@@ -286,6 +286,7 @@ class _CostTrackerScreenState extends ConsumerState<CostTrackerScreen> {
             ListTile(
               title: const Text('Clear All Data'),
               trailing: IconButton(
+                tooltip: 'Delete expense',
                 icon: Icon(Icons.delete, color: AppColors.error),
                 onPressed: () {
                   Navigator.pop(ctx);

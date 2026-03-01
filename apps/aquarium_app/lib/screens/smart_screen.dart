@@ -168,6 +168,7 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
                                 ),
                               )
                             : IconButton(
+                              tooltip: 'Refresh',
                                 icon: const Icon(Icons.send),
                                 onPressed: _askDanio,
                               ),

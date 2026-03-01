@@ -7,7 +7,6 @@ library;
 import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import '../models/friend.dart';
 import '../models/social.dart';
 import '../models/leaderboard.dart';
 import '../data/mock_friends.dart';

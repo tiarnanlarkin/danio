@@ -147,6 +147,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                 prefixIcon: const Icon(Icons.lock_outline),
                 border: const OutlineInputBorder(),
                 suffixIcon: IconButton(
+                  tooltip: 'Toggle password visibility',
                   icon: Icon(
                     _obscurePassword
                         ? Icons.visibility_off
@@ -483,6 +484,7 @@ class _SyncStatusCard extends ConsumerWidget {
         subtitle: const Text('Multi-device sync'),
         trailing: syncStatus == CloudSyncStatus.error
             ? IconButton(
+              tooltip: 'Edit profile',
                 icon: const Icon(Icons.refresh),
                 onPressed: () =>
                     ref.read(cloudSyncServiceProvider).syncNow(),

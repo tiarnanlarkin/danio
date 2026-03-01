@@ -11,6 +11,7 @@ import '../providers/user_profile_provider.dart';
 import '../providers/spaced_repetition_provider.dart';
 import '../theme/app_theme.dart';
 import '../widgets/core/fish_loader.dart';
+import '../widgets/core/app_states.dart';
 import '../widgets/study_room_scene.dart';
 import 'lesson_screen.dart';
 import 'parameter_guide_screen.dart';
@@ -100,7 +101,11 @@ class LearnScreen extends ConsumerWidget {
     return Scaffold(
       body: profileAsync.when(
         loading: () => _buildSkeletonScreen(context),
-        error: (e, _) => Center(child: Text('Error: $e')),
+        error: (e, _) => AppErrorState(
+          title: 'Oops! Something went wrong',
+          message: 'We could not load your learning paths. Check your connection and try again.',
+          onRetry: () => ref.invalidate(userProfileProvider),
+        ),
         data: (profile) {
           // Calculate total lessons across all paths using lightweight metadata
           final totalLessons = metadata.fold<int>(

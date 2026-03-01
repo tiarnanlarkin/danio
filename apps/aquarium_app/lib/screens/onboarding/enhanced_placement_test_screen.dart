@@ -670,7 +670,7 @@ class _EnhancedPlacementTestScreenState
       AppColors.secondary,
       AppColors.accent,
       Colors.orange,
-      Colors.purple,
+      DanioColors.amethyst,
     ];
     return colors[index % colors.length];
   }

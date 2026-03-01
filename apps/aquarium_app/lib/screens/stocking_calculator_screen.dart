@@ -310,6 +310,7 @@ class _StockingCalculatorScreenState extends State<StockingCalculatorScreen> {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               IconButton(
+                                tooltip: 'Remove fish',
                                 icon: const Icon(Icons.remove_circle_outline),
                                 onPressed: () => _updateCount(entry, -1),
                               ),
@@ -318,6 +319,7 @@ class _StockingCalculatorScreenState extends State<StockingCalculatorScreen> {
                                 style: AppTypography.labelLarge,
                               ),
                               IconButton(
+                                tooltip: 'Add fish',
                                 icon: const Icon(Icons.add_circle_outline),
                                 onPressed: () => _updateCount(entry, 1),
                               ),

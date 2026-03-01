@@ -486,6 +486,7 @@ class _TaskCard extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 8),
       child: ListTile(
         leading: IconButton(
+          tooltip: 'Toggle task',
           icon: Icon(
             Icons.check_circle_outline,
             color: task.isEnabled ? AppColors.success : AppColors.textHint,

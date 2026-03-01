@@ -7,6 +7,7 @@ import 'package:uuid/uuid.dart';
 import '../../models/models.dart';
 import '../../widgets/core/app_card.dart';
 import '../../widgets/core/bubble_loader.dart';
+import '../../widgets/core/app_states.dart';
 import '../../providers/storage_provider.dart';
 import '../../providers/tank_provider.dart';
 import '../../services/stocking_calculator.dart';
@@ -254,7 +255,7 @@ class TankDetailScreen extends ConsumerWidget {
     // Show success feedback
     if (context.mounted) {
       AppHaptics.success();
-      AppFeedback.showSuccess(context, '\${task.title} completed!');
+      AppFeedback.showSuccess(context, '${task.title} completed!');
     }
   }
 
@@ -311,8 +312,27 @@ class TankDetailScreen extends ConsumerWidget {
       data: (tank) {
         if (tank == null) {
           return Scaffold(
-            appBar: AppBar(title: const Text('Not Found')),
-            body: const Center(child: Text('Tank not found')),
+            appBar: AppBar(title: const Text('Tank')),
+            body: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(Icons.water_drop_outlined, size: 64, color: AppColors.textHint),
+                  const SizedBox(height: AppSpacing.md),
+                  Text('Tank not found', style: AppTypography.headlineSmall),
+                  const SizedBox(height: AppSpacing.sm),
+                  Text(
+                    'This tank may have been deleted.',
+                    style: AppTypography.bodyMedium.copyWith(color: AppColors.textSecondary),
+                  ),
+                  const SizedBox(height: AppSpacing.lg),
+                  ElevatedButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    child: const Text('Go Back'),
+                  ),
+                ],
+              ),
+            ),
           );
         }
 

@@ -178,6 +178,7 @@ class _CompatibilityCheckerWidgetState
                         ),
                       )
                     : IconButton(
+                      tooltip: 'Remove species',
                         icon: const Icon(Icons.search),
                         onPressed: _checkCompatibility,
                       ),

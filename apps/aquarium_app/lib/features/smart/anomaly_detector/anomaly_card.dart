@@ -5,7 +5,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../theme/app_theme.dart';
 import '../models/smart_models.dart';
 import '../smart_providers.dart';
-import '../../../theme/app_theme.dart';
 
 /// Card widget that displays active anomalies for a tank on its dashboard.
 class AnomalyCard extends ConsumerWidget {

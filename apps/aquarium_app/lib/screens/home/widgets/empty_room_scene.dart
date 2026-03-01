@@ -35,7 +35,7 @@ class EmptyRoomScene extends StatelessWidget {
               gradient: const LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
-                colors: [const Color(0xFFE8D8C8), const Color(0xFFF0E4D4)],
+                colors: [Color(0xFFE8D8C8), Color(0xFFF0E4D4)],
               ),
               border: Border.all(color: AppColors.woodBrown, width: 6),
               borderRadius: AppRadius.xsRadius,

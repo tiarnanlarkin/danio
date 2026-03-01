@@ -287,6 +287,7 @@ class SettingsHubScreen extends ConsumerWidget {
           ),
           // Edit button
           IconButton(
+            tooltip: 'Settings',
             icon: const Icon(Icons.edit),
             onPressed: () {
               Navigator.push(

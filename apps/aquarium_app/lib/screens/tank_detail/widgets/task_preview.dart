@@ -80,6 +80,7 @@ class TaskTile extends StatelessWidget {
         ),
       ),
       trailing: IconButton(
+        tooltip: 'Delete task',
         icon: const Icon(Icons.check_circle_outline),
         color: task.isEnabled ? AppColors.success : AppColors.textHint,
         onPressed: task.isEnabled ? onComplete : null,

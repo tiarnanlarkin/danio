@@ -763,6 +763,7 @@ class _ShopTile extends StatelessWidget {
                 ),
               ),
             IconButton(
+              tooltip: 'Close',
               icon: const Icon(Icons.close, size: 18),
               color: ShopColors.textSecondaryAlpha50,
               onPressed: onDelete,

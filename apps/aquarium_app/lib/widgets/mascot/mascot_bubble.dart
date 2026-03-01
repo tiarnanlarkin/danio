@@ -314,7 +314,7 @@ class _MascotBubbleState extends State<MascotBubble>
         return const LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [DanioColors.tealWater, const Color(0xFF4A8A92)],
+          colors: [DanioColors.tealWater, Color(0xFF4A8A92)],
         );
       case MascotMood.celebrating:
         return const LinearGradient(
@@ -485,7 +485,7 @@ class _MascotAvatarState extends State<MascotAvatar>
         );
       case MascotMood.thinking:
         return const LinearGradient(
-          colors: [DanioColors.tealWater, const Color(0xFF4A8A92)],
+          colors: [DanioColors.tealWater, Color(0xFF4A8A92)],
         );
       case MascotMood.celebrating:
         return const LinearGradient(
@@ -567,6 +567,7 @@ class MascotBanner extends StatelessWidget {
           ),
           if (onDismiss != null)
             IconButton(
+              tooltip: 'Close',
               icon: const Icon(Icons.close, size: 18),
               onPressed: onDismiss,
               visualDensity: VisualDensity.compact,

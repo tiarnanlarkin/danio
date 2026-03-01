@@ -10,7 +10,6 @@ import '../../../services/openai_service.dart';
 import '../../../theme/app_theme.dart';
 import '../models/smart_models.dart';
 import '../smart_providers.dart';
-import '../../../theme/app_theme.dart';
 
 /// Screen for identifying fish or aquatic plants via camera/gallery.
 class FishIdScreen extends ConsumerStatefulWidget {

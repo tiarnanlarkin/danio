@@ -507,6 +507,7 @@ class _ReminderTile extends StatelessWidget {
             ],
           ),
           trailing: IconButton(
+            tooltip: 'Delete reminder',
             icon: Icon(
               Icons.check_circle_outline,
               color: isOverdue ? AppColors.error : AppColors.success,

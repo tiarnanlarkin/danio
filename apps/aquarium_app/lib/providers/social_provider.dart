@@ -7,7 +7,6 @@ library;
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../models/friend.dart';
 import '../models/social.dart';
 import '../models/leaderboard.dart';
 import '../services/social_service.dart';

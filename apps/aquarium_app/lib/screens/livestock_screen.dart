@@ -7,7 +7,6 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:uuid/uuid.dart';
 import '../data/species_database.dart';
 import '../models/models.dart';
-import '../models/learning.dart';
 import '../providers/inventory_provider.dart';
 import '../providers/storage_provider.dart';
 import '../providers/tank_provider.dart';
@@ -1202,7 +1201,7 @@ class _BulkAddLivestockSheetState extends State<_BulkAddLivestockSheet> {
             Text('Bulk add livestock', style: AppTypography.headlineMedium),
             const SizedBox(height: AppSpacing.sm),
             Text(
-              'One per line. Formats supported: \"Neon Tetra, 10\", \"10 Neon Tetra\", \"Neon Tetra x10\".',
+              'One per line. Formats supported: "Neon Tetra, 10", "10 Neon Tetra", "Neon Tetra x10".',
               style: AppTypography.bodySmall.copyWith(
                 color: AppColors.textSecondary,
               ),
@@ -1347,7 +1346,7 @@ class _BulkAddLivestockSheetState extends State<_BulkAddLivestockSheet> {
     for (final line in lines) {
       final item = _parseLine(line);
       if (item == null) {
-        return _ParseResult(items: items, error: 'Could not parse: \"$line\"');
+        return _ParseResult(items: items, error: 'Could not parse: "$line"');
       }
       items.add(item);
     }

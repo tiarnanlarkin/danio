@@ -163,6 +163,7 @@ class AppBackButton extends StatelessWidget {
       label: semanticsLabel ?? 'Go back',
       button: true,
       child: IconButton(
+        tooltip: semanticsLabel ?? 'Go back',
         icon: Icon(Icons.arrow_back_ios_new, size: AppIconSizes.sm),
         onPressed: onPressed ?? () => Navigator.of(context).maybePop(),
         color: color ?? (isDark ? AppColors.textPrimaryDark : AppColors.textPrimary),
@@ -194,6 +195,7 @@ class AppCloseButton extends StatelessWidget {
       label: semanticsLabel ?? 'Close',
       button: true,
       child: IconButton(
+        tooltip: semanticsLabel ?? 'Close',
         icon: Icon(Icons.close, size: AppIconSizes.md),
         onPressed: onPressed ?? () => Navigator.of(context).maybePop(),
         color: color ?? (isDark ? AppColors.textPrimaryDark : AppColors.textPrimary),
