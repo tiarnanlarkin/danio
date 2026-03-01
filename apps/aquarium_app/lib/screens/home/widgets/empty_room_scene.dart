@@ -109,7 +109,7 @@ class EmptyRoomScene extends StatelessWidget {
                 ),
                 const SizedBox(height: AppSpacing.sm),
                 Text(
-                  'Your tank here',
+                  'Your aquarium adventure starts here',
                   style: AppTypography.bodySmall.copyWith(
                     color: AppColors.textHint,
                   ),
@@ -167,7 +167,7 @@ class EmptyRoomScene extends StatelessWidget {
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  'This room is waiting for\nyour first aquarium.',
+                  'Every great fishkeeper starts right here.\nLet's set up your first tank! 🐠',
                   style: AppTypography.bodyMedium.copyWith(
                     color: AppColors.textSecondary,
                   ),
@@ -182,7 +182,7 @@ class EmptyRoomScene extends StatelessWidget {
                 const SizedBox(height: AppSpacing.sm),
                 TextButton(
                   onPressed: onLoadDemo,
-                  child: const Text('Try a sample tank'),
+                  child: const Text('Explore a demo tank first'),
                 ),
               ],
             ),
