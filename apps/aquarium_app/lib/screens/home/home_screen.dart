@@ -170,8 +170,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     return tanksAsync.when(
       loading: () => _buildSkeletonRoom(),
       error: (err, stack) => AppErrorState(
-        title: 'Failed to load tanks',
-        message: 'Please check your connection and try again',
+        title: 'Couldn\'t load your tanks',
+        message: 'Check your connection and give it another go',
         onRetry: () => ref.invalidate(tanksProvider),
       ),
       data: (tanks) {
@@ -810,111 +810,136 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 
-  void _showRoomSwitcher(BuildContext context) {
-    final rooms = [
-      ('Study', Icons.auto_stories, '📚', 0),
-      ('Living Room', Icons.weekend, '🛋️', 1),
-      ('Friends', Icons.people, '👥', 2),
-      ('Leaderboard', Icons.leaderboard, '🏆', 3),
-      ('Workshop', Icons.build, '🔧', 4),
-      ('Shop Street', Icons.storefront, '🏪', 5),
-    ];
+  /// Helper to format a DateTime as a friendly relative string
+  String _timeAgo(DateTime dt) {
+    final diff = DateTime.now().difference(dt);
+    if (diff.inMinutes < 1) return 'Just now';
+    if (diff.inMinutes < 60) return '${diff.inMinutes}m ago';
+    if (diff.inHours < 24) return '${diff.inHours}h ago';
+    if (diff.inDays < 7) return '${diff.inDays}d ago';
+    return '${dt.day}/${dt.month}/${dt.year}';
+  }
 
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: Colors.transparent,
-      builder: (ctx) => Container(
-        decoration: BoxDecoration(
-          color: Theme.of(context).scaffoldBackgroundColor,
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(AppRadius.lg)),
-        ),
-        padding: const EdgeInsets.all(AppSpacing.md),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Center(
-              child: Container(
-                width: 40,
-                height: 4,
-                decoration: BoxDecoration(
-                  color: Colors.grey.shade300,
-                  borderRadius: BorderRadius.circular(2),
-                ),
-              ),
-            ),
-            const SizedBox(height: 16),
-            Text('Switch Room', style: AppTypography.headlineSmall),
-            const SizedBox(height: 12),
-            ...rooms.map((room) {
-              final currentRoom = ref.watch(currentRoomProvider);
-              final isSelected = room.$4 == currentRoom;
-              return ListTile(
-                leading: Text(room.$3, style: const TextStyle(fontSize: 24)),
-                title: Text(room.$1),
-                trailing: isSelected
-                    ? const Icon(Icons.check, color: AppColors.primary)
-                    : null,
-                onTap: () {
-                  Navigator.pop(ctx);
-                  if (!isSelected) {
-                    // Navigate to selected room
-                    ref.read(currentRoomProvider.notifier).state = room.$4;
-                    HapticFeedback.selectionClick();
-                  }
-                },
-              );
-            }),
-            SizedBox(height: MediaQuery.of(context).padding.bottom + 8),
-          ],
-        ),
-      ),
-    );
+  /// Get the current tank ID based on tank index
+  String? _getCurrentTankId() {
+    final tanksAsync = ref.read(tanksProvider);
+    return tanksAsync.valueOrNull?.isNotEmpty == true
+        ? tanksAsync.valueOrNull![_currentTankIndex % tanksAsync.valueOrNull!.length].id
+        : null;
   }
 
   void _showStatsInfo(BuildContext context) {
+    final tankId = _getCurrentTankId();
+    if (tankId == null) return;
+
+    final logsAsync = ref.read(logsProvider(tankId));
+    final logs = logsAsync.valueOrNull ?? [];
+
+    final waterTests = logs.where((l) => l.type == LogType.waterTest && l.waterTest != null).toList();
+    final latestTest = waterTests.isNotEmpty ? waterTests.first : null;
+    final temp = latestTest?.waterTest?.temperature;
+
+    final feedings = logs.where((l) => l.type == LogType.feeding).toList();
+    final latestFeeding = feedings.isNotEmpty ? feedings.first : null;
+
+    final waterChanges = logs.where((l) => l.type == LogType.waterChange).toList();
+    final latestChange = waterChanges.isNotEmpty ? waterChanges.first : null;
+
     _showItemSheet(
       context,
       title: 'Tank Stats',
       icon: Icons.auto_graph,
       color: DanioColors.amethyst,
       rows: [
-        const ItemDetailRow(label: 'Temperature', value: '-- °C'),
-        const ItemDetailRow(label: 'Last fed', value: '--'),
-        const ItemDetailRow(label: 'Water change', value: 'Due soon'),
+        ItemDetailRow(
+          label: 'Temperature',
+          value: temp != null ? '${temp.toStringAsFixed(1)} C' : 'No data yet',
+        ),
+        ItemDetailRow(
+          label: 'Last fed',
+          value: latestFeeding != null ? _timeAgo(latestFeeding.timestamp) : 'Not logged yet',
+        ),
+        ItemDetailRow(
+          label: 'Water change',
+          value: latestChange != null ? _timeAgo(latestChange.timestamp) : 'Log your first change!',
+        ),
       ],
     );
   }
 
   void _showWaterParams(BuildContext context) {
+    final tankId = _getCurrentTankId();
+    if (tankId == null) return;
+
+    final logsAsync = ref.read(logsProvider(tankId));
+    final logs = logsAsync.valueOrNull ?? [];
+
+    final waterTests = logs.where((l) => l.type == LogType.waterTest && l.waterTest != null).toList();
+    final latestTest = waterTests.isNotEmpty ? waterTests.first : null;
+    final wt = latestTest?.waterTest;
+
+    if (wt == null || !wt.hasValues) {
+      _showItemSheet(
+        context,
+        title: 'Water Tests',
+        icon: Icons.science,
+        color: AppColors.primary,
+        rows: [
+          const ItemDetailRow(label: 'No data yet', value: 'Log your first water test!'),
+        ],
+      );
+      return;
+    }
+
     _showItemSheet(
       context,
       title: 'Water Tests',
       icon: Icons.science,
       color: AppColors.primary,
       rows: [
-        const ItemDetailRow(label: 'pH', value: '--'),
-        const ItemDetailRow(label: 'Ammonia', value: '-- ppm'),
-        const ItemDetailRow(label: 'Nitrite', value: '-- ppm'),
-        const ItemDetailRow(label: 'Nitrate', value: '-- ppm'),
-        const ItemDetailRow(
+        ItemDetailRow(label: 'pH', value: wt.ph != null ? wt.ph!.toStringAsFixed(1) : '--'),
+        ItemDetailRow(label: 'Ammonia', value: wt.ammonia != null ? '${wt.ammonia!.toStringAsFixed(2)} ppm' : '--'),
+        ItemDetailRow(label: 'Nitrite', value: wt.nitrite != null ? '${wt.nitrite!.toStringAsFixed(2)} ppm' : '--'),
+        ItemDetailRow(label: 'Nitrate', value: wt.nitrate != null ? '${wt.nitrate!.toStringAsFixed(1)} ppm' : '--'),
+        ItemDetailRow(
           label: 'Last tested',
-          value: 'Tap tank for details',
+          value: _timeAgo(latestTest!.timestamp),
         ),
       ],
     );
   }
 
   void _showFeedingInfo(BuildContext context) {
+    final tankId = _getCurrentTankId();
+    if (tankId == null) return;
+
+    final logsAsync = ref.read(logsProvider(tankId));
+    final logs = logsAsync.valueOrNull ?? [];
+
+    final feedings = logs.where((l) => l.type == LogType.feeding).toList();
+    final latestFeeding = feedings.isNotEmpty ? feedings.first : null;
+
+    final today = DateTime.now();
+    final feedingsToday = feedings.where((l) =>
+        l.timestamp.year == today.year &&
+        l.timestamp.month == today.month &&
+        l.timestamp.day == today.day).length;
+
     _showItemSheet(
       context,
       title: 'Fish Food',
       icon: Icons.restaurant,
       color: AppColors.secondary,
       rows: [
-        const ItemDetailRow(label: 'Type', value: 'Tropical Flakes'),
-        const ItemDetailRow(label: 'Last fed', value: '--'),
-        const ItemDetailRow(label: 'Schedule', value: '2x daily'),
+        ItemDetailRow(label: 'Fed today', value: '$feedingsToday time${feedingsToday == 1 ? "" : "s"}'),
+        ItemDetailRow(
+          label: 'Last fed',
+          value: latestFeeding != null ? _timeAgo(latestFeeding.timestamp) : 'Not yet -- time to feed!',
+        ),
+        ItemDetailRow(
+          label: 'Tip',
+          value: 'Little and often beats one big meal!',
+        ),
       ],
     );
   }
@@ -1254,7 +1279,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       if (mounted) {
         messenger.showSnackBar(
           const SnackBar(
-            content: Text('Failed to delete tanks. Please try again.'),
+            content: Text('Couldn\'t delete those tanks. Try again in a moment.'),
           ),
         );
       }

@@ -58,7 +58,7 @@ class _LivestockValueScreenState extends ConsumerState<LivestockValueScreen> {
       ),
       body: livestockAsync.when(
         loading: () => const Center(child: BubbleLoader()),
-        error: (e, _) => Center(child: Text('Error: $e')),
+        error: (e, _) => const Center(child: Text('Couldn\'t load values right now')),
         data: (livestock) {
           if (livestock.isEmpty) {
             return Center(

@@ -234,7 +234,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                   icon: Icons.star,
                   label: 'Total XP',
                   value: summary.totalXP.toString(),
-                  color: Colors.amber,
+                  color: DanioColors.amberGold,
                   trend:
                       summary.recentWeeklyStats.isNotEmpty &&
                           summary.recentWeeklyStats.length >= 2
@@ -275,7 +275,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                   icon: Icons.schedule,
                   label: 'Time Spent',
                   value: summary.timeSpentFormatted,
-                  color: Colors.green,
+                  color: DanioColors.emeraldGreen,
                 ),
               ),
             ],
@@ -585,9 +585,9 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                   fontSize: 10,
                   color: Colors.transparent,
                 ),
-                radarBorderData: const BorderSide(color: Colors.grey, width: 1),
-                gridBorderData: const BorderSide(
-                  color: Colors.grey,
+                radarBorderData: BorderSide(color: AppColors.textSecondary.withOpacity(0.3), width: 1),
+                gridBorderData: BorderSide(
+                  color: AppColors.textSecondary.withOpacity(0.3),
                   width: 0.5,
                 ),
                 tickBorderData: const BorderSide(color: Colors.transparent),
@@ -664,15 +664,15 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
 
                 Color color;
                 if (dayData.xp == 0) {
-                  color = Theme.of(context).brightness == Brightness.dark ? AppColors.surfaceVariantDark : Colors.grey[200]!;
+                  color = Theme.of(context).brightness == Brightness.dark ? AppColors.surfaceVariantDark : AppColors.border;
                 } else if (dayData.xp < 25) {
-                  color = Colors.green[200]!;
+                  color = const Color(0xFFA5D6A7);
                 } else if (dayData.xp < 50) {
-                  color = Colors.green[400]!;
+                  color = const Color(0xFF66BB6A);
                 } else if (dayData.xp < 100) {
-                  color = Colors.green[600]!;
+                  color = DanioColors.emeraldGreen;
                 } else {
-                  color = Colors.green[800]!;
+                  color = const Color(0xFF2E7D32);
                 }
 
                 return Tooltip(
@@ -694,11 +694,11 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
             children: [
               Text('Less', style: Theme.of(context).textTheme.labelSmall),
               const SizedBox(width: AppSpacing.xs),
-              _buildLegendBox(Theme.of(context).brightness == Brightness.dark ? AppColors.surfaceVariantDark : Colors.grey[200]!),
-              _buildLegendBox(Colors.green[200]!),
-              _buildLegendBox(Colors.green[400]!),
-              _buildLegendBox(Colors.green[600]!),
-              _buildLegendBox(Colors.green[800]!),
+              _buildLegendBox(Theme.of(context).brightness == Brightness.dark ? AppColors.surfaceVariantDark : AppColors.border),
+              _buildLegendBox(const Color(0xFFA5D6A7)),
+              _buildLegendBox(const Color(0xFF66BB6A)),
+              _buildLegendBox(DanioColors.emeraldGreen),
+              _buildLegendBox(const Color(0xFF2E7D32)),
               const SizedBox(width: AppSpacing.xs),
               Text('More', style: Theme.of(context).textTheme.labelSmall),
             ],
@@ -745,13 +745,13 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
     switch (insight.type) {
       case InsightType.achievement:
       case InsightType.milestone:
-        color = Colors.amber;
+        color = DanioColors.amberGold;
         break;
       case InsightType.improvement:
-        color = Colors.green;
+        color = DanioColors.emeraldGreen;
         break;
       case InsightType.warning:
-        color = Colors.orange;
+        color = DanioColors.coralAccent;
         break;
       case InsightType.recommendation:
         color = AppColors.info;
@@ -876,11 +876,11 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                       const SizedBox(height: AppSpacing.xs),
                       LinearProgressIndicator(
                         value: topic.masteryPercentage,
-                        backgroundColor: Theme.of(context).brightness == Brightness.dark ? AppColors.surfaceVariantDark : Colors.grey[200],
+                        backgroundColor: Theme.of(context).brightness == Brightness.dark ? AppColors.surfaceVariantDark : AppColors.border,
                         color: topic.isStrong
-                            ? Colors.green
+                            ? DanioColors.emeraldGreen
                             : topic.needsWork
-                            ? Colors.orange
+                            ? DanioColors.coralAccent
                             : AppColors.info,
                       ),
                       const SizedBox(height: AppSpacing.xs),
@@ -900,7 +900,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                         '${topic.totalXP} XP',
                         style: Theme.of(context).textTheme.titleMedium!.copyWith(
                           fontWeight: FontWeight.bold,
-                          color: Colors.amber,
+                          color: DanioColors.amberGold,
                         ),
                         overflow: TextOverflow.ellipsis,
                       ),

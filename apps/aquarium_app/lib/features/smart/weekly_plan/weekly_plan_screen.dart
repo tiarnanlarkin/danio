@@ -123,7 +123,7 @@ class _WeeklyPlanScreenState extends ConsumerState<WeeklyPlanScreen> {
     } on OpenAIException catch (e) {
       setState(() => _error = 'AI error: ${e.message}');
     } catch (e) {
-      setState(() => _error = 'Failed to generate plan: $e');
+      setState(() => _error = 'Couldn\'t generate your plan. Try again in a moment.');
     } finally {
       if (mounted) setState(() => _loading = false);
     }
@@ -161,7 +161,7 @@ class _WeeklyPlanScreenState extends ConsumerState<WeeklyPlanScreen> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          CircularProgressIndicator(),
+          CircularProgressIndicator(color: AppColors.primary),
           SizedBox(height: AppSpacing.md),
           Text('Generating your weekly plan...'),
         ],
@@ -198,7 +198,7 @@ class _WeeklyPlanScreenState extends ConsumerState<WeeklyPlanScreen> {
           const Icon(Icons.calendar_today, size: 48, color: AppColors.primary),
           const SizedBox(height: AppSpacing.md),
           Text(
-            'No plan generated yet',
+            'No plan yet -- tap generate to get started!',
             style: theme.textTheme.titleMedium,
           ),
           const SizedBox(height: AppSpacing.sm),

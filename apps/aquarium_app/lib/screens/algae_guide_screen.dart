@@ -10,7 +10,7 @@ class AlgaeGuideScreen extends StatelessWidget {
     _AlgaeData(
       name: 'Green Spot Algae (GSA)',
       appearance: 'Hard green spots on glass, slow-growing plants, and hardscape',
-      color: Colors.green,
+      color: DanioColors.emeraldGreen,
       causes: [
         'Low phosphate',
         'High light',
@@ -27,7 +27,7 @@ class AlgaeGuideScreen extends StatelessWidget {
     _AlgaeData(
       name: 'Green Dust Algae (GDA)',
       appearance: 'Soft green film on glass that wipes off easily, returns quickly',
-      color: Colors.lightGreen,
+      color: DanioColors.emeraldGreen,
       causes: ['New tank syndrome', 'Unstable CO2', 'Nutrient imbalance'],
       solutions: [
         'Wait 3-4 weeks without wiping (let it complete lifecycle)',
@@ -39,7 +39,7 @@ class AlgaeGuideScreen extends StatelessWidget {
     _AlgaeData(
       name: 'Green Water',
       appearance: 'Cloudy green water, can\'t see through tank',
-      color: Colors.green.shade300,
+      color: const Color(0xFF81C784),
       causes: [
         'Excess light (especially direct sunlight)',
         'High ammonia/nutrients',
@@ -57,7 +57,7 @@ class AlgaeGuideScreen extends StatelessWidget {
     _AlgaeData(
       name: 'Hair/Thread Algae',
       appearance: 'Long green filaments, looks like hair or threads',
-      color: Colors.green.shade600,
+      color: const Color(0xFF43A047),
       causes: [
         'Excess light',
         'Low CO2',
@@ -76,7 +76,7 @@ class AlgaeGuideScreen extends StatelessWidget {
     _AlgaeData(
       name: 'Black Beard Algae (BBA)',
       appearance: 'Dark fuzzy tufts on edges of plants, equipment, hardscape',
-      color: Colors.grey.shade800,
+      color: const Color(0xFF424242),
       causes: ['Fluctuating CO2', 'Low/unstable CO2', 'Poor flow'],
       solutions: [
         'Stabilize CO2 levels (consistency is key)',
@@ -90,7 +90,7 @@ class AlgaeGuideScreen extends StatelessWidget {
     _AlgaeData(
       name: 'Staghorn Algae',
       appearance: 'Grey/green branching strands, looks like deer antlers',
-      color: Colors.grey,
+      color: const Color(0xFF9E9E9E),
       causes: ['Low CO2', 'Poor circulation', 'Organic waste buildup'],
       solutions: [
         'Increase CO2',
@@ -104,7 +104,7 @@ class AlgaeGuideScreen extends StatelessWidget {
     _AlgaeData(
       name: 'Blue-Green Algae (Cyanobacteria)',
       appearance: 'Slimy blue-green sheets, strong musty smell, peels off in sheets',
-      color: Colors.teal,
+      color: DanioColors.tealWater,
       causes: [
         'Low nitrate',
         'Poor circulation',
@@ -123,7 +123,7 @@ class AlgaeGuideScreen extends StatelessWidget {
     _AlgaeData(
       name: 'Brown Diatoms',
       appearance: 'Brown dusty coating on everything, common in new tanks',
-      color: Colors.brown,
+      color: DanioColors.coralAccent,
       causes: [
         'New tank (silicates in water)',
         'Low light',
@@ -140,7 +140,7 @@ class AlgaeGuideScreen extends StatelessWidget {
     _AlgaeData(
       name: 'Green Fuzz Algae',
       appearance: 'Short fuzzy green carpet on plants and surfaces',
-      color: Colors.lightGreen.shade400,
+      color: DanioColors.emeraldGreen,
       causes: [
         'Imbalanced nutrients',
         'Inconsistent CO2',
@@ -157,7 +157,7 @@ class AlgaeGuideScreen extends StatelessWidget {
     _AlgaeData(
       name: 'Rhizoclonium',
       appearance: 'Fine cottony threads, often confused with hair algae',
-      color: Colors.green.shade200,
+      color: const Color(0xFFA5D6A7),
       causes: ['Very low CO2', 'New setup', 'Ammonia from soil'],
       solutions: [
         'Increase CO2 significantly',

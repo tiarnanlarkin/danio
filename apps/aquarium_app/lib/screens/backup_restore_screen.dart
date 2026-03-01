@@ -1,3 +1,4 @@
+import '../widgets/core/app_states.dart';
 import 'dart:io';
 import '../widgets/core/bubble_loader.dart';
 
@@ -79,7 +80,10 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
 
           tanksAsync.when(
             loading: () => const Center(child: BubbleLoader()),
-            error: (e, _) => Text('Error: $e'),
+            error: (e, _) => AppErrorState(
+              message: "Couldn't load your tanks. Tap to try again.",
+              onRetry: () => ref.invalidate(tanksProvider),
+            ),
             data: (tanks) => Card(
               child: Padding(
                 padding: const EdgeInsets.all(AppSpacing.md),

@@ -953,7 +953,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
       if (mounted) {
         AppFeedback.showError(
           context,
-          'Failed to save log. Please try again.',
+          'Hmm, couldn\'t save that. Check your connection and try again.',
           onRetry: _save,
         );
       }

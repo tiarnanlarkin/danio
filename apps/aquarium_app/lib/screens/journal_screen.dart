@@ -31,7 +31,7 @@ class JournalScreen extends ConsumerWidget {
       body: logsAsync.when(
         loading: () => const Center(child: BubbleLoader()),
         error: (e, _) => AppErrorState(
-          title: 'Failed to load journal',
+          title: 'Couldn\'t load your journal',
           message: 'Please check your connection and try again.',
           onRetry: () => ref.invalidate(allLogsProvider(tankId)),
         ),

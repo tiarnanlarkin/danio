@@ -87,7 +87,7 @@ class _EnhancedOnboardingScreenState
       if (mounted) {
         AppFeedback.showError(
           context,
-          'Failed to create profile. Please try again.',
+          'Oops! Couldn\'t set up your profile. Let\'s try that again.',
           onRetry: _complete,
         );
       }
@@ -129,7 +129,7 @@ class _EnhancedOnboardingScreenState
       if (mounted) {
         AppFeedback.showError(
           context,
-          'Failed to skip onboarding. Please try again.',
+          'Something went sideways. Tap to try again!',
           onRetry: _skipOnboarding,
         );
       }
@@ -356,7 +356,7 @@ class _ExperiencePage extends StatelessWidget {
           ),
           const SizedBox(height: AppSpacing.sm),
           Text(
-            "This helps us customize your learning path",
+            "No wrong answers here -- this helps us tailor your journey!",
             style: AppTypography.bodyMedium.copyWith(
               color: AppColors.textSecondary,
             ),
@@ -456,7 +456,7 @@ class _GoalsPage extends StatelessWidget {
           Text('What are your goals?', style: AppTypography.headlineMedium),
           const SizedBox(height: AppSpacing.sm),
           Text(
-            "Select all that apply",
+            "Pick as many as you like!",
             style: AppTypography.bodyMedium.copyWith(
               color: AppColors.textSecondary,
             ),

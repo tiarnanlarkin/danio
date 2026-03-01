@@ -1,3 +1,4 @@
+import '../widgets/core/app_states.dart';
 import 'package:flutter/material.dart';
 import '../widgets/core/bubble_loader.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -62,7 +63,10 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
           ? _EmptySearchState()
           : tanksAsync.when(
               loading: () => const Center(child: BubbleLoader()),
-              error: (e, _) => Center(child: Text('Error: $e')),
+              error: (e, _) => AppErrorState(
+                message: "Couldn't search right now. Tap to try again.",
+                onRetry: () => ref.invalidate(tanksProvider),
+              ),
               data: (tanks) =>
                   _SearchResults(query: _query, tanks: tanks, ref: ref),
             ),

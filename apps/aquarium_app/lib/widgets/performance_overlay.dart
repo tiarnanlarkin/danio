@@ -204,7 +204,7 @@ class _PerformanceDebugScreenState extends State<PerformanceDebugScreen> {
         ],
       ),
       body: report == null
-          ? const Center(child: CircularProgressIndicator())
+          ? const Center(child: CircularProgressIndicator(color: AppColors.primary))
           : ListView(
               padding: const EdgeInsets.all(16),
               children: [

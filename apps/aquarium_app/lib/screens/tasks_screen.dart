@@ -347,7 +347,7 @@ class _TaskHistoryDialog extends ConsumerWidget {
         child: logsAsync.when(
           loading: () => const Padding(
             padding: EdgeInsets.all(AppSpacing.sm2),
-            child: Center(child: CircularProgressIndicator()),
+            child: Center(child: CircularProgressIndicator(color: AppColors.primary)),
           ),
           error: (err, _) => Text('Error loading history: $err'),
           data: (logs) {
@@ -768,7 +768,7 @@ class _AddTaskSheetState extends State<_AddTaskSheet> {
       if (mounted) Navigator.pop(context);
     } catch (e) {
       if (mounted) {
-        AppFeedback.showError(context, 'Error: $e');
+        AppFeedback.showError(context, 'Oops, something went wrong!');
       }
     } finally {
       if (mounted) setState(() => _isSaving = false);

@@ -8,6 +8,7 @@ import '../providers/user_profile_provider.dart';
 import '../providers/friends_provider.dart';
 import '../theme/app_theme.dart';
 import '../utils/app_feedback.dart';
+import '../widgets/core/app_states.dart';
 import 'dart:math';
 
 /// Friend comparison screen - side-by-side stats and encouragement
@@ -59,10 +60,13 @@ class _FriendComparisonScreenState
       ),
       body: userProfileAsync.when(
         loading: () => const Center(child: BubbleLoader()),
-        error: (e, _) => Center(child: Text('Error: $e')),
+        error: (e, _) => AppErrorState(
+          message: "Oops, couldn't load your profile. Tap to try again.",
+          onRetry: () => ref.invalidate(userProfileProvider),
+        ),
         data: (userProfile) {
           if (userProfile == null) {
-            return const Center(child: Text('No user profile found'));
+            return const Center(child: Text('Looks like your profile isn\'t set up yet'));
           }
 
           return SingleChildScrollView(

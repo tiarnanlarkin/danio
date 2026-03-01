@@ -39,10 +39,10 @@ class _TankSettingsScreenState extends ConsumerState<TankSettingsScreen> {
 
     return tankAsync.when(
       loading: () =>
-          const Scaffold(body: Center(child: CircularProgressIndicator())),
+          const Scaffold(body: Center(child: CircularProgressIndicator(color: AppColors.primary))),
       error: (err, _) => Scaffold(
         appBar: AppBar(title: const Text('Tank Settings')),
-        body: Center(child: Text('Error: $err')),
+        body: const Center(child: Text('Couldn\'t load tank settings')),
       ),
       data: (tank) {
         if (tank == null) {
@@ -389,7 +389,7 @@ class _TankSettingsScreenState extends ConsumerState<TankSettingsScreen> {
       if (mounted) {
         AppFeedback.showError(
           context,
-          'Failed to update tank. Please try again.',
+          'Couldn\'t update your tank. Give it another go!',
           onRetry: () => _save(original),
         );
       }

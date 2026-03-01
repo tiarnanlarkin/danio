@@ -75,7 +75,7 @@ Return ONLY valid JSON with these fields (no markdown, no explanation):
 
       await _identify();
     } catch (e) {
-      setState(() => _error = 'Failed to pick image: $e');
+      setState(() => _error = 'Couldn\'t grab that image. Try again?');
     }
   }
 
@@ -145,7 +145,7 @@ Return ONLY valid JSON with these fields (no markdown, no explanation):
       });
     } catch (e) {
       setState(() {
-        _error = 'Failed to identify: $e';
+        _error = 'Couldn\'t identify that fish. Try a clearer photo!';
         _loading = false;
       });
     }
@@ -259,7 +259,7 @@ Return ONLY valid JSON with these fields (no markdown, no explanation):
         padding: const EdgeInsets.all(AppSpacing.xl),
         child: Column(
           children: [
-            const CircularProgressIndicator(),
+            const CircularProgressIndicator(color: AppColors.primary),
             const SizedBox(height: AppSpacing.md),
             Text(
               'Analysing image with AI...',

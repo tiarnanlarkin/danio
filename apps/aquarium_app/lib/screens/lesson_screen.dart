@@ -1225,7 +1225,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
       if (mounted) {
         AppFeedback.showError(
           context,
-          'Failed to save lesson progress. Please try again.',
+          'Couldn\'t save your progress. Try again in a moment.',
           onRetry: () => _completeLesson(bonusXp: bonusXp),
         );
       }

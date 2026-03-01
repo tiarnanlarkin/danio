@@ -59,7 +59,7 @@ class _PracticeScreenState extends ConsumerState<PracticeScreen> {
       body: weakLessons.isEmpty
           ? _buildEmptyState(context)
           : !_pathsLoaded
-              ? const Center(child: CircularProgressIndicator())
+              ? const Center(child: CircularProgressIndicator(color: AppColors.primary))
               : _buildPracticeList(context, ref, weakLessons),
     );
   }
@@ -838,7 +838,7 @@ class _PracticeLessonScreenState extends ConsumerState<PracticeLessonScreen> {
       if (mounted) {
         AppFeedback.showError(
           context,
-          'Failed to save progress. Please try again.',
+          'Couldn\'t save your progress. Try again in a moment.',
           onRetry: () => _completeLesson(bonusXp: bonusXp),
         );
       }

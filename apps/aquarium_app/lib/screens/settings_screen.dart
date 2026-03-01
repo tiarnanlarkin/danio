@@ -1173,7 +1173,7 @@ class SettingsScreen extends ConsumerWidget {
       }
     } catch (e) {
       if (context.mounted) {
-        AppFeedback.showError(context, 'Failed to clear data: $e');
+        AppFeedback.showError(context, 'Couldn\'t clear data. Try again!');
       }
     }
   }

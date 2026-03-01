@@ -26,7 +26,7 @@ class LogDetailScreen extends ConsumerWidget {
           const Scaffold(body: Center(child: BubbleLoader())),
       error: (err, _) => Scaffold(
         appBar: AppBar(title: const Text('Log')),
-        body: Center(child: Text('Error: $err')),
+        body: const Center(child: Text('Couldn\'t load this log entry')),
       ),
       data: (logs) {
         final log = logs

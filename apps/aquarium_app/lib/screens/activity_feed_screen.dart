@@ -194,7 +194,7 @@ class _FriendFilterBar extends StatelessWidget {
                     onFriendSelected(isSelected ? null : friend.id),
                 avatar: Text(
                   friend.avatarEmoji ?? '🐠',
-                  style: const TextStyle(fontSize: 16),
+                  style: Theme.of(context).textTheme.bodyLarge,
                 ),
               ),
             );
@@ -245,7 +245,7 @@ class _ActivityFeedView extends StatelessWidget {
             // Loading indicator for "load more"
             return const Padding(
               padding: EdgeInsets.all(AppSpacing.md),
-              child: Center(child: CircularProgressIndicator()),
+              child: Center(child: CircularProgressIndicator(color: AppColors.primary)),
             );
           }
 
@@ -329,7 +329,7 @@ class _ActivityTile extends ConsumerWidget {
                 backgroundColor: AppOverlays.primary20,
                 child: Text(
                   activity.friendAvatarEmoji ?? '🐠',
-                  style: const TextStyle(fontSize: 24),
+                  style: Theme.of(context).textTheme.headlineMedium,
                 ),
               ),
 
@@ -343,8 +343,7 @@ class _ActivityTile extends ConsumerWidget {
                     // Friend name and action
                     RichText(
                       text: TextSpan(
-                        style: TextStyle(
-                          fontSize: 14,
+                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                           color: Theme.of(context).textTheme.bodyLarge?.color,
                         ),
                         children: [
@@ -367,14 +366,13 @@ class _ActivityTile extends ConsumerWidget {
                       children: [
                         Text(
                           activity.type.emoji,
-                          style: const TextStyle(fontSize: 18),
+                          style: Theme.of(context).textTheme.titleSmall,
                         ),
                         const SizedBox(width: AppSpacing.sm),
                         Expanded(
                           child: Text(
                             activity.description,
-                            style: const TextStyle(
-                              fontSize: 15,
+                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                               fontWeight: FontWeight.w600,
                             ),
                           ),
@@ -391,14 +389,13 @@ class _ActivityTile extends ConsumerWidget {
                           Icon(
                             Icons.star,
                             size: 14,
-                            color: Colors.amber.shade700,
+                            color: AppColors.primary,
                           ),
                           const SizedBox(width: AppSpacing.xs),
                           Text(
                             '+${activity.xpEarned} XP',
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: Colors.amber.shade900,
+                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                              color: AppColors.primary,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
@@ -412,8 +409,7 @@ class _ActivityTile extends ConsumerWidget {
                         const SizedBox(width: AppSpacing.xs),
                         Text(
                           activity.timeAgo,
-                          style: TextStyle(
-                            fontSize: 12,
+                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
                             color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
                           ),
                         ),
@@ -491,8 +487,7 @@ class _DateDivider extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 12),
             child: Text(
               label,
-              style: TextStyle(
-                fontSize: 12,
+              style: Theme.of(context).textTheme.labelSmall?.copyWith(
                 fontWeight: FontWeight.bold,
                 color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
               ),

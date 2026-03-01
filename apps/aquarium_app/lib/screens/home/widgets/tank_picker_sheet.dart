@@ -207,7 +207,7 @@ class _TankPickerSheetState extends ConsumerState<TankPickerSheet> {
       if (mounted) {
         AppFeedback.showError(
           context,
-          'Failed to save order. Please try again.',
+          'Couldn\'t save the order. Give it another go!',
         );
       }
     }

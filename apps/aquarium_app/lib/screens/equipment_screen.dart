@@ -125,7 +125,7 @@ class EquipmentScreen extends ConsumerWidget {
       body: equipmentAsync.when(
         loading: () => _buildSkeletonList(),
         error: (err, _) => AppErrorState(
-          title: 'Failed to load equipment',
+          title: 'Couldn\'t load your equipment',
           message: 'Please check your connection and try again.',
           onRetry: () => ref.invalidate(equipmentProvider(tankId)),
         ),
@@ -369,7 +369,7 @@ class _EquipmentHistoryDialog extends ConsumerWidget {
         child: logsAsync.when(
           loading: () => const Padding(
             padding: EdgeInsets.all(AppSpacing.sm2),
-            child: Center(child: CircularProgressIndicator()),
+            child: Center(child: CircularProgressIndicator(color: AppColors.primary)),
           ),
           error: (err, _) => Text('Error loading history: $err'),
           data: (logs) {
@@ -759,7 +759,7 @@ class _AddEquipmentSheetState extends State<_AddEquipmentSheet> {
       if (mounted) Navigator.pop(context);
     } catch (e) {
       if (mounted) {
-        AppFeedback.showError(context, 'Error: $e');
+        AppFeedback.showError(context, 'Oops, something went wrong. Try again!');
       }
     } finally {
       if (mounted) setState(() => _isSaving = false);

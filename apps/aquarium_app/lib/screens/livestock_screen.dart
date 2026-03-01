@@ -93,8 +93,8 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
       body: livestockAsync.when(
         loading: () => _buildSkeletonList(),
         error: (err, _) => AppErrorState(
-          title: 'Failed to load livestock',
-          message: 'Please check your connection and try again',
+          title: 'Couldn\'t load your livestock',
+          message: 'Check your connection and give it another go',
           onRetry: () => ref.invalidate(livestockProvider(widget.tankId)),
         ),
         data: (livestock) {
@@ -418,7 +418,7 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
       if (context.mounted) {
         AppFeedback.showError(
           context,
-          'Failed to move livestock. Please try again.',
+          'Couldn\'t move that right now. Try again!',
         );
       }
     }
@@ -491,7 +491,7 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
       if (mounted) {
         AppFeedback.showError(
           context,
-          'Failed to remove livestock. Please try again.',
+          'Couldn\'t remove that. Give it another go.',
         );
       }
     }
@@ -1136,7 +1136,7 @@ class _AddLivestockSheetState extends State<_AddLivestockSheet> {
       if (mounted) {
         AppFeedback.showError(
           context,
-          'Failed to save livestock. Please try again.',
+          'Couldn\'t save that. Check your connection and try again.',
           onRetry: _save,
         );
       }
@@ -1325,7 +1325,7 @@ class _BulkAddLivestockSheetState extends State<_BulkAddLivestockSheet> {
       if (mounted) {
         AppFeedback.showError(
           context,
-          'Failed to add livestock. Please try again.',
+          'Couldn\'t add that right now. Try again!',
           onRetry: _save,
         );
       }
@@ -1463,7 +1463,17 @@ class _LastFedInfo extends ConsumerWidget {
     final logsAsync = ref.watch(logsProvider(tankId));
     return logsAsync.when(
       loading: () => const SizedBox.shrink(),
-      error: (_, __) => const SizedBox.shrink(),
+      error: (_, __) => Padding(
+                    padding: const EdgeInsets.all(AppSpacing.sm),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.info_outline, size: 14, color: AppColors.warning),
+                        SizedBox(width: AppSpacing.xs),
+                        Text('Unable to load', style: Theme.of(context).textTheme.bodySmall?.copyWith(color: AppColors.warning)),
+                      ],
+                    ),
+                  ),
       data: (logs) {
         final lastFeeding = logs
             .where((l) => l.type == LogType.feeding)

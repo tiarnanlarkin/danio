@@ -275,7 +275,7 @@ class _CreateTankScreenState extends ConsumerState<CreateTankScreen> {
         AppHaptics.error();
         AppFeedback.showError(
           context,
-          'Failed to create tank. Please try again.',
+          'Couldn\'t create your tank right now. Give it another go!',
           onRetry: _createTank,
         );
       }

@@ -338,7 +338,7 @@ class _RockCard extends StatelessWidget {
             color: AppOverlays.grey20,
             borderRadius: AppRadius.smallRadius,
           ),
-          child: const Icon(Icons.terrain, color: Colors.grey),
+          child: const Icon(Icons.terrain, color: AppColors.textSecondary),
         ),
         title: Text(name, style: AppTypography.labelLarge),
         subtitle: Text(
@@ -406,7 +406,7 @@ class _WoodCard extends StatelessWidget {
             color: AppOverlays.brown20,
             borderRadius: AppRadius.smallRadius,
           ),
-          child: const Icon(Icons.park, color: Colors.brown),
+          child: const Icon(Icons.park, color: DanioColors.coralAccent),
         ),
         title: Text(name, style: AppTypography.labelLarge),
         subtitle: Text(

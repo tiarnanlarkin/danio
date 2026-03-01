@@ -251,8 +251,14 @@ class _AchievementsScreenState extends ConsumerState<AchievementsScreen> {
                       ],
                     ),
                   )
-                : _buildAchievementsList(
-                    context, filteredAchievements, progressMap),
+                : RefreshIndicator(
+                    onRefresh: () async {
+                      ref.invalidate(achievementProgressProvider);
+                    },
+                    color: AppColors.primary,
+                    child: _buildAchievementsList(
+                      context, filteredAchievements, progressMap),
+                  ),
           ),
         ],
       ),

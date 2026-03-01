@@ -21,7 +21,7 @@ class LoadingState extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const CircularProgressIndicator(),
+            const CircularProgressIndicator(color: AppColors.primary),
             if (message != null) ...[
               const SizedBox(height: AppSpacing.md),
               Text(
@@ -41,7 +41,7 @@ class LoadingState extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const CircularProgressIndicator(),
+          const CircularProgressIndicator(color: AppColors.primary),
           if (message != null) ...[
             const SizedBox(height: AppSpacing.lg),
             Text(
@@ -157,7 +157,7 @@ class LoadingOverlay extends StatelessWidget {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const CircularProgressIndicator(),
+                    const CircularProgressIndicator(color: AppColors.primary),
                     if (message != null) ...[
                       const SizedBox(height: AppSpacing.md),
                       Text(message!, style: AppTypography.bodyMedium),

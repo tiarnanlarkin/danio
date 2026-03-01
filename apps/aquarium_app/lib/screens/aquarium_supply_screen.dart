@@ -272,7 +272,7 @@ class _AquariumSupplyScreenState extends ConsumerState<AquariumSupplyScreen>
         ),
       ),
       body: _loading
-          ? const Center(child: CircularProgressIndicator())
+          ? const Center(child: CircularProgressIndicator(color: AppColors.primary))
           : TabBarView(
               controller: _tabController,
               children: [

@@ -44,13 +44,33 @@ class LivestockDetailScreen extends ConsumerWidget {
             // Compatibility check (if we have tank data)
             tankAsync.when(
               loading: () => const SizedBox.shrink(),
-              error: (_, __) => const SizedBox.shrink(),
+              error: (_, __) => Padding(
+                    padding: const EdgeInsets.all(AppSpacing.sm),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.info_outline, size: 14, color: AppColors.warning),
+                        SizedBox(width: AppSpacing.xs),
+                        Text('Unable to load', style: Theme.of(context).textTheme.bodySmall?.copyWith(color: AppColors.warning)),
+                      ],
+                    ),
+                  ),
               data: (tank) {
                 if (tank == null) return const SizedBox.shrink();
 
                 return allLivestockAsync.when(
                   loading: () => const SizedBox.shrink(),
-                  error: (_, __) => const SizedBox.shrink(),
+                  error: (_, __) => Padding(
+                    padding: const EdgeInsets.all(AppSpacing.sm),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.info_outline, size: 14, color: AppColors.warning),
+                        SizedBox(width: AppSpacing.xs),
+                        Text('Unable to load', style: Theme.of(context).textTheme.bodySmall?.copyWith(color: AppColors.warning)),
+                      ],
+                    ),
+                  ),
                   data: (allLivestock) {
                     final issues =
                         CompatibilityService.checkLivestockCompatibility(

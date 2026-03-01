@@ -129,7 +129,7 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen>
             child: CircularProgressIndicator(color: InventoryColors.goldAccent),
           ),
           error: (e, _) => AppErrorState(
-            title: 'Failed to load inventory',
+            title: 'Couldn\'t load your inventory',
             message: 'Please check your connection and try again.',
             onRetry: () => ref.invalidate(inventoryProvider),
           ),
@@ -219,7 +219,7 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen>
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Failed to use item'),
+          content: Text('Couldn\'t use that item. Try again!'),
           backgroundColor: Colors.red,
         ),
       );
