@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/friend.dart';
@@ -80,13 +81,18 @@ class FriendsNotifier extends StateNotifier<AsyncValue<List<Friend>>> {
   }
 
   Future<List<Friend>?> _loadFromCache() async {
-    final prefs = await SharedPreferences.getInstance();
-    final json = prefs.getString(_key);
-    if (json == null) return null;
-    final List<dynamic> decoded = jsonDecode(json);
-    return decoded
-        .map((e) => Friend.fromJson(e as Map<String, dynamic>))
-        .toList();
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final json = prefs.getString(_key);
+      if (json == null) return null;
+      final List<dynamic> decoded = jsonDecode(json);
+      return decoded
+          .map((e) => Friend.fromJson(e as Map<String, dynamic>))
+          .toList();
+    } catch (e) {
+      debugPrint('Failed to load friends cache: $e');
+      return null;
+    }
   }
 
   /// Add a new friend by username.
@@ -197,13 +203,18 @@ class FriendActivitiesNotifier
   }
 
   Future<List<FriendActivity>?> _loadFromCache() async {
-    final prefs = await SharedPreferences.getInstance();
-    final json = prefs.getString(_key);
-    if (json == null) return null;
-    final List<dynamic> decoded = jsonDecode(json);
-    return decoded
-        .map((e) => FriendActivity.fromJson(e as Map<String, dynamic>))
-        .toList();
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final json = prefs.getString(_key);
+      if (json == null) return null;
+      final List<dynamic> decoded = jsonDecode(json);
+      return decoded
+          .map((e) => FriendActivity.fromJson(e as Map<String, dynamic>))
+          .toList();
+    } catch (e) {
+      debugPrint('Failed to load activity feed cache: $e');
+      return null;
+    }
   }
 
   /// Regenerate activities from friends list.
@@ -273,13 +284,18 @@ class EncouragementsNotifier
   }
 
   Future<List<FriendEncouragement>?> _loadFromCache() async {
-    final prefs = await SharedPreferences.getInstance();
-    final json = prefs.getString(_key);
-    if (json == null) return null;
-    final List<dynamic> decoded = jsonDecode(json);
-    return decoded
-        .map((e) => FriendEncouragement.fromJson(e as Map<String, dynamic>))
-        .toList();
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final json = prefs.getString(_key);
+      if (json == null) return null;
+      final List<dynamic> decoded = jsonDecode(json);
+      return decoded
+          .map((e) => FriendEncouragement.fromJson(e as Map<String, dynamic>))
+          .toList();
+    } catch (e) {
+      debugPrint('Failed to load encouragement cache: $e');
+      return null;
+    }
   }
 
   /// Send encouragement to a friend.

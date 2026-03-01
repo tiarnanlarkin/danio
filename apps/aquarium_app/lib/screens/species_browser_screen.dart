@@ -365,7 +365,7 @@ class _SpeciesDetailSheet extends StatelessWidget {
               runSpacing: 8,
               children: [
                 _StatChip(label: species.careLevel, icon: Icons.speed),
-                _StatChip(label: species.temperament, icon: Icons.pets),
+                _StatChip(label: species.temperament, icon: Icons.set_meal),
                 _StatChip(
                   label: '${species.adultSizeCm.toStringAsFixed(0)} cm adult',
                   icon: Icons.straighten,
