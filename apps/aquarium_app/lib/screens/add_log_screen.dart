@@ -920,6 +920,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
 
       // Show XP animation if XP was awarded
       if (effectiveXp > 0 && mounted) {
+        AppHaptics.success();
         ref.showXpAnimation(effectiveXp);
       }
 
