@@ -327,6 +327,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             ),
 
             // Speed Dial FAB - radial menu for quick actions
+            // TODO(P3): Add inline 'Quick Log' bottom sheet with pH/temp/ammonia fields
+            // for even faster water param entry without navigating to full log screen
             // Positioned above the dashboard with safe area padding
             Positioned(
               bottom: 170 + MediaQuery.of(context).padding.bottom,
