@@ -245,36 +245,48 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             ),
 
             // === STAGE SYSTEM ===
-            // Scrim (above scene, below panels)
-            const Positioned.fill(child: StageScrim()),
+            // Scrim (above scene, below panels) — IgnorePointer when no panels open
+            Consumer(
+              builder: (context, ref, _) {
+                final hasOpen = ref.watch(stageProvider.select((s) => s.openPanels.isNotEmpty));
+                return IgnorePointer(
+                  ignoring: !hasOpen,
+                  child: const Positioned.fill(child: StageScrim()),
+                );
+              },
+            ),
 
-            // Swiss Army panels — wired to live water test data
-            Builder(
-              builder: (context) {
+            // Swiss Army panels — IgnorePointer when closed to prevent touch-eating
+            Consumer(
+              builder: (context, ref, _) {
+                final hasOpen = ref.watch(stageProvider.select((s) => s.openPanels.isNotEmpty));
                 final latestTest = ref.watch(latestWaterTestProvider(currentTank.id));
                 final roomTheme = ref.watch(currentRoomThemeProvider);
-                return Stack(
-                  children: [
-                    SwissArmyPanel.left(
-                      theme: roomTheme,
-                      child: TempPanelContent(
-                        temperature: latestTest.value?.temperature,
+                return IgnorePointer(
+                  ignoring: !hasOpen,
+                  child: Stack(
+                    children: [
+                      SwissArmyPanel.left(
                         theme: roomTheme,
-                        onStatsTap: () => _showStatsInfo(context),
+                        child: TempPanelContent(
+                          temperature: latestTest.value?.temperature,
+                          theme: roomTheme,
+                          onStatsTap: () => _showStatsInfo(context),
+                        ),
                       ),
-                    ),
-                    SwissArmyPanel.right(
-                      theme: roomTheme,
-                      child: WaterPanelContent(
-                        ph: latestTest.value?.ph,
-                        ammonia: latestTest.value?.ammonia,
-                        nitrate: latestTest.value?.nitrate,
-                        nitrite: latestTest.value?.nitrite,
+                      SwissArmyPanel.right(
                         theme: roomTheme,
-                        onTestKitTap: () => _showWaterParams(context),
+                        child: WaterPanelContent(
+                          ph: latestTest.value?.ph,
+                          ammonia: latestTest.value?.ammonia,
+                          nitrate: latestTest.value?.nitrate,
+                          nitrite: latestTest.value?.nitrite,
+                          theme: roomTheme,
+                          onTestKitTap: () => _showWaterParams(context),
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 );
               },
             ),
@@ -438,6 +450,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             // Bottom Plates — Tanks (behind) then Progress (front, renders on top)
             BottomPlate(
               peekHeight: 32,
+              bottomOffset: kBottomNavigationBarHeight,
               maxHeightFraction: 0.75,
               label: 'Your Tanks',
               emoji: '🐠',
@@ -478,6 +491,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
             BottomPlate(
               peekHeight: 32,  // BUG-02: was 60, reduced to match peek-only collapsed state
+              bottomOffset: kBottomNavigationBarHeight,
               maxHeightFraction: 0.65,
               label: 'Your Progress',
               emoji: '🔥',
