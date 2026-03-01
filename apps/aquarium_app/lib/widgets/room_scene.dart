@@ -1266,7 +1266,6 @@ class _WaterQualityCard extends StatelessWidget {
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
         child: Container(
-          width: width,
           padding: const EdgeInsets.all(14),
           decoration: BoxDecoration(
             color: theme.glassCard,

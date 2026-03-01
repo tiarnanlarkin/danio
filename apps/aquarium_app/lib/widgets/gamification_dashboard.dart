@@ -78,9 +78,9 @@ class GamificationDashboard extends ConsumerWidget {
                     color: DanioColors.tealWater,
                   ),
                   _StatItem(
-                    icon: '💎',
-                    value: _formatNumber(gems),
-                    label: 'gems',
+                    icon: '⚡',
+                    value: _formatNumber(todayXp),
+                    label: 'today',
                     color: const Color(0xFF4A90D9),
                   ),
                   _HeartsDisplay(

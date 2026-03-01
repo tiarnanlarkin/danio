@@ -178,7 +178,7 @@ class StudyRoomScene extends StatelessWidget {
 
               // === Interactive Objects ===
               // Microscope - Water Chemistry Guide
-              if (onMicroscopeTap != null && isNewUser)
+              if (onMicroscopeTap != null && isNewUser && completedLessons == 0)
                 Positioned(
                   top: h * 0.62,
                   right: w * 0.12,
@@ -189,7 +189,7 @@ class StudyRoomScene extends StatelessWidget {
                 ),
 
               // Globe - Random Fish Facts
-              if (onGlobeTap != null && isNewUser)
+              if (onGlobeTap != null && isNewUser && completedLessons == 0)
                 Positioned(
                   top: h * 0.5,
                   left: w * 0.48,
