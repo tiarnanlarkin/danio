@@ -294,9 +294,9 @@ class _WorkshopHeader extends ConsumerWidget {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Row(
+        title: Row(
           children: [
-            Text('🔨 ', style: TextStyle(fontSize: 24)),
+            Text('🔨 ', style: Theme.of(context).textTheme.headlineSmall!),
             Expanded(child: Text('DIY Projects')),
           ],
         ),

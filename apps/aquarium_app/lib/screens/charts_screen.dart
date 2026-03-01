@@ -493,7 +493,7 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
   ) async {
     final logs = logsAsync.value;
     if (logs == null || logs.isEmpty) {
-      AppFeedback.showInfo(context, 'No data to export');
+      AppFeedback.showInfo(context, 'Nothing to export yet -- log some water tests first!');
       return;
     }
 
@@ -604,7 +604,7 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
     }
 
     if (bars.isEmpty) {
-      return const Center(child: Text('No data available'));
+      return const Center(child: Text('No data to show yet'));
     }
 
     return LineChart(
@@ -969,7 +969,7 @@ class _SummaryCard extends StatelessWidget {
         child: Padding(
           padding: EdgeInsets.all(AppSpacing.md),
           child: Text(
-            'No data for this parameter',
+            'No readings for this parameter yet',
             style: AppTypography.bodyMedium,
           ),
         ),

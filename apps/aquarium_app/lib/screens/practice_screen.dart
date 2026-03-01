@@ -78,8 +78,8 @@ class _PracticeScreenState extends ConsumerState<PracticeScreen> {
                 color: AppOverlays.success10,
                 shape: BoxShape.circle,
               ),
-              child: const Center(
-                child: Text('🎯', style: TextStyle(fontSize: 56)),
+              child: Center(
+                child: Text('🎯', style: Theme.of(context).textTheme.headlineMedium!.copyWith(fontSize: 56)),
               ),
             ),
             const SizedBox(height: AppSpacing.lg),
@@ -234,7 +234,7 @@ class _PracticeScreenState extends ConsumerState<PracticeScreen> {
             context,
             ref,
             lesson,
-            path?.title ?? 'Unknown Path',
+            path?.title ?? 'Learning Path',
             strength,
             progress,
           ),
@@ -703,7 +703,7 @@ class _PracticeLessonScreenState extends ConsumerState<PracticeLessonScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Warning',
+                      'Heads up',
                       style: AppTypography.labelLarge.copyWith(
                         color: AppColors.warning,
                       ),

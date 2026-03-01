@@ -204,7 +204,7 @@ class _SearchResults extends StatelessWidget {
           children: [
             Icon(Icons.search_off, size: AppIconSizes.xxl, color: AppColors.textHint),
             const SizedBox(height: AppSpacing.md),
-            Text('No results for "$query"', style: AppTypography.bodyMedium),
+            Text('Hmm, nothing found for "$query" \u{1F50D}', style: AppTypography.bodyMedium),
           ],
         ),
       );

@@ -177,7 +177,7 @@ class _StockingCalculatorScreenState extends State<StockingCalculatorScreen> {
                 const SizedBox(width: 12),
                 Column(
                   children: [
-                    const Text('Plants', style: TextStyle(fontSize: 12)),
+                    Text('Plants', style: Theme.of(context).textTheme.bodySmall!),
                     Switch(
                       value: _hasLivePlants,
                       onChanged: (v) => setState(() => _hasLivePlants = v),

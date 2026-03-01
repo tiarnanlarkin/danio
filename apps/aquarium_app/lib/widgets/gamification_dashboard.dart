@@ -201,7 +201,7 @@ class _StatItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final rowChildren = [
-      Text(icon, style: const TextStyle(fontSize: 18)),
+      Text(icon, style: TextStyle(fontSize: 18)),
       const SizedBox(width: 4),
       Flexible(
         child: Text(
@@ -250,7 +250,7 @@ class _HeartsDisplay extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        const Text('❤️', style: TextStyle(fontSize: 18)),
+        Text('❤️', style: Theme.of(context).textTheme.titleLarge!),
         const SizedBox(width: 4),
         Flexible(child: Column(
           crossAxisAlignment: CrossAxisAlignment.end,
@@ -450,7 +450,7 @@ class _MiniStat extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(emoji, style: const TextStyle(fontSize: 14)),
+          Text(emoji, style: TextStyle(fontSize: 14)),
           const SizedBox(width: AppSpacing.xs),
           Text(
             value.toString(),

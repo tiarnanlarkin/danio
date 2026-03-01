@@ -69,7 +69,7 @@ class WishlistScreen extends ConsumerWidget {
                   : category == WishlistCategory.plant
                   ? Icons.grass
                   : Icons.shopping_cart,
-              title: 'No items in wishlist',
+              title: 'Your wishlist is empty',
               message:
                   'Add ${category == WishlistCategory.fish
                       ? 'fish'

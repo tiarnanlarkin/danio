@@ -355,7 +355,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Warning',
+                      'Heads up',
                       style: AppTypography.labelLarge.copyWith(
                         color: AppColors.warning,
                       ),

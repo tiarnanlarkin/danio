@@ -94,9 +94,9 @@ class _LearningStyleScreenState extends ConsumerState<LearningStyleScreen> {
                 style: FilledButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 16),
                 ),
-                child: const Text(
+                child: Text(
                   'Continue',
-                  style: TextStyle(fontSize: 16),
+                  style: Theme.of(context).textTheme.titleMedium!,
                 ),
               ),
               const SizedBox(height: AppSpacing.sm),
@@ -168,7 +168,7 @@ class _OptionCard extends StatelessWidget {
           padding: EdgeInsets.all(AppSpacing.md),
           child: Row(
             children: [
-              Text(option.emoji, style: const TextStyle(fontSize: 28)),
+              Text(option.emoji, style: TextStyle(fontSize: 28)),
               const SizedBox(width: AppSpacing.md),
               Expanded(
                 child: Column(

@@ -18,7 +18,7 @@ class EquipmentPreview extends StatelessWidget {
           padding: AppCardPadding.spacious,
           child: CompactEmptyState(
             icon: Icons.settings,
-            message: 'No equipment tracked yet',
+            message: 'Add your first piece of equipment',
           ),
         ),
       );

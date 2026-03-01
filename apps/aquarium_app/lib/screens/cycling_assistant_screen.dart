@@ -193,7 +193,7 @@ class _PhaseHeader extends StatelessWidget {
       backgroundColor: color.withAlpha(20),
       child: Row(
         children: [
-          Text(emoji, style: const TextStyle(fontSize: 36)),
+          Text(emoji, style: TextStyle(fontSize: 36)),
           const SizedBox(width: AppSpacing.md),
           Expanded(
             child: Column(
@@ -769,9 +769,9 @@ class _CycledCelebration extends StatelessWidget {
       ),
       child: Column(
         children: [
-          const Text(
+          Text(
             '\u{1F389}\u{1F420}\u{1F389}',
-            style: TextStyle(fontSize: 48),
+            style: Theme.of(context).textTheme.headlineMedium!.copyWith(fontSize: 48),
           ),
           const SizedBox(height: AppSpacing.md),
           Text(

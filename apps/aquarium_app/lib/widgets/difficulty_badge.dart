@@ -141,7 +141,7 @@ class PerformanceTrendWidget extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(trend.emoji, style: TextStyle(fontSize: 14)),
+          Text(trend.emoji, style: Theme.of(context).textTheme.bodyLarge!),
           if (showLabel) ...[
             SizedBox(width: AppSpacing.sm - 2),
             Text(
@@ -257,7 +257,7 @@ class _SkillLevelUpAnimationState extends State<SkillLevelUpAnimation>
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Text('🎉', style: TextStyle(fontSize: 48)),
+                  Text('🎉', style: Theme.of(context).textTheme.headlineMedium!.copyWith(fontSize: 48)),
                   SizedBox(height: AppSpacing.md),
                   const Text(
                     'LEVEL UP!',
@@ -319,11 +319,11 @@ class DifficultyChangeNotification extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    Text(oldLevel.emoji, style: const TextStyle(fontSize: 16)),
+                    Text(oldLevel.emoji, style: TextStyle(fontSize: 16)),
                     const SizedBox(width: AppSpacing.xs),
                     Icon(Icons.arrow_forward, size: AppIconSizes.xs, color: color),
                     const SizedBox(width: AppSpacing.xs),
-                    Text(newLevel.emoji, style: const TextStyle(fontSize: 16)),
+                    Text(newLevel.emoji, style: TextStyle(fontSize: 16)),
                     const SizedBox(width: AppSpacing.sm),
                     Text(
                       newLevel.displayName,

@@ -71,7 +71,7 @@ class StoriesCard extends ConsumerWidget {
                       color: AppOverlays.white20,
                       borderRadius: AppRadius.mediumRadius,
                     ),
-                    child: const Text('📖', style: TextStyle(fontSize: 32)),
+                    child: Text('📖', style: Theme.of(context).textTheme.headlineMedium!),
                   ),
                   const SizedBox(width: AppSpacing.md),
                   Expanded(

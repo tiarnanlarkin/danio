@@ -57,8 +57,8 @@ class LearnScreen extends ConsumerWidget {
                         color: AppOverlays.primary10,
                         borderRadius: AppRadius.mediumRadius,
                       ),
-                      child: const Center(
-                        child: Text('🐟', style: TextStyle(fontSize: 24)),
+                      child: Center(
+                        child: Text('🐟', style: Theme.of(context).textTheme.headlineSmall!),
                       ),
                     ),
                     title: const Text('Loading learning path'),
@@ -155,10 +155,10 @@ class LearnScreen extends ConsumerWidget {
                             color: AppColors.textSecondary,
                           ),
                           const SizedBox(height: AppSpacing.md),
-                          const Text(
+                          Text(
                             'Complete your profile setup to start learning!',
                             textAlign: TextAlign.center,
-                            style: TextStyle(fontSize: 18),
+                            style: Theme.of(context).textTheme.titleLarge!,
                           ),
                           const SizedBox(height: AppSpacing.lg),
                           ElevatedButton.icon(
@@ -328,7 +328,7 @@ class LearnScreen extends ConsumerWidget {
       builder: (ctx) => AlertDialog(
         title: Row(
           children: [
-            const Text('🐠 ', style: TextStyle(fontSize: 24)),
+            Text('🐠 ', style: Theme.of(context).textTheme.headlineSmall!),
             const Expanded(child: Text('Fish Fact!')),
           ],
         ),
@@ -414,7 +414,7 @@ class _ReviewCardsBanner extends ConsumerWidget {
                   children: [
                     Row(
                       children: [
-                        const Text('🔔 ', style: TextStyle(fontSize: 18)),
+                        Text('🔔 ', style: Theme.of(context).textTheme.titleLarge!),
                         Text(
                           'Time to Review!',
                           style: AppTypography.headlineSmall.copyWith(
@@ -753,7 +753,7 @@ class _LazyLearningPathCardState extends ConsumerState<_LazyLearningPathCard> {
               ),
             ),
             child: Center(
-              child: Text(meta.emoji, style: const TextStyle(fontSize: 26)),
+              child: Text(meta.emoji, style: TextStyle(fontSize: 26)),
             ),
           ),
           title: Text(

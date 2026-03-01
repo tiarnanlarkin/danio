@@ -322,7 +322,7 @@ class StoryCard extends StatelessWidget {
                       child: Center(
                         child: Text(
                           story.thumbnailImage ?? '📖',
-                          style: const TextStyle(fontSize: 40),
+                          style: TextStyle(fontSize: 40),
                         ),
                       ),
                     ),

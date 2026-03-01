@@ -446,7 +446,7 @@ class _InventoryItemCard extends StatelessWidget {
                   children: [
                     Text(
                       shopItem.emoji,
-                      style: const TextStyle(fontSize: 40),
+                      style: TextStyle(fontSize: 40),
                     ),
                     if (item.quantity > 1 || shopItem.isConsumable)
                       Container(
@@ -598,7 +598,7 @@ class _HeartsChip extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Text('❤️', style: TextStyle(fontSize: 16)),
+          Text('❤️', style: Theme.of(context).textTheme.titleMedium!),
           const SizedBox(width: 6),
           Text(
             '$currentHearts/$maxHearts',

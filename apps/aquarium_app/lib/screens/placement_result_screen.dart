@@ -96,9 +96,9 @@ class PlacementResultScreen extends ConsumerWidget {
                     style: FilledButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 16),
                     ),
-                    child: const Text(
+                    child: Text(
                       'Continue to Setup Tutorial',
-                      style: TextStyle(fontSize: 16),
+                      style: Theme.of(context).textTheme.titleMedium!,
                     ),
                   ),
                   const SizedBox(height: 12),
@@ -373,7 +373,7 @@ class PlacementResultScreen extends ConsumerWidget {
                       child: ListTile(
                         leading: Text(
                           path.emoji,
-                          style: const TextStyle(fontSize: 32),
+                          style: TextStyle(fontSize: 32),
                         ),
                         title: Text(path.title),
                         subtitle: LinearProgressIndicator(
@@ -397,7 +397,7 @@ class PlacementResultScreen extends ConsumerWidget {
                             if (recommendation != null)
                               Text(
                                 recommendation.emoji,
-                                style: const TextStyle(fontSize: 16),
+                                style: TextStyle(fontSize: 16),
                               ),
                           ],
                         ),

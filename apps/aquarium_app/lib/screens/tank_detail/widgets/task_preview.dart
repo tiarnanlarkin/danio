@@ -20,7 +20,7 @@ class TaskPreview extends StatelessWidget {
           padding: AppCardPadding.spacious,
           child: Center(
             child: Text(
-              'No tasks scheduled',
+              'All clear -- no tasks scheduled',
               style: AppTypography.bodyMedium,
             ),
           ),

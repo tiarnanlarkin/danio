@@ -1253,7 +1253,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       if (mounted) {
         ScaffoldMessenger.of(
           context,
-        ).showSnackBar(const SnackBar(content: Text('No tanks selected')));
+        ).showSnackBar(const SnackBar(content: Text('Pick some tanks first!')));
       }
       return;
     }
@@ -1325,7 +1325,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       if (mounted) {
         ScaffoldMessenger.of(
           context,
-        ).showSnackBar(const SnackBar(content: Text('No tanks selected')));
+        ).showSnackBar(const SnackBar(content: Text('Pick some tanks first!')));
       }
       return;
     }

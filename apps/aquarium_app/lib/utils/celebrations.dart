@@ -356,7 +356,7 @@ class _EpicCelebrationDialogState extends State<_EpicCelebrationDialog>
                   SizedBox(height: AppSpacing.sm),
                   Text(
                     '🎉',
-                    style: TextStyle(fontSize: 48),
+                    style: Theme.of(context).textTheme.headlineMedium!.copyWith(fontSize: 48),
                   ),
                 ],
               ),

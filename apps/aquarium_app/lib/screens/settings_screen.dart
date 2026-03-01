@@ -939,7 +939,7 @@ class SettingsScreen extends ConsumerWidget {
         if (context.mounted) {
           AppFeedback.dismiss(context);
           dismissLoadingInFinally = false;
-          AppFeedback.showInfo(context, 'No data to export');
+          AppFeedback.showInfo(context, 'Nothing to export yet -- start logging to build your data!');
         }
         return;
       }
@@ -1380,7 +1380,7 @@ class _GoalOptionState extends State<_GoalOption> {
               height: 32,
               child: CircularProgressIndicator(strokeWidth: 2),
             )
-          : Text(widget.icon, style: const TextStyle(fontSize: 32)),
+          : Text(widget.icon, style: TextStyle(fontSize: 32)),
       title: Text('${widget.goal} XP/day'),
       subtitle: Text('${widget.label} • ${widget.description}'),
       trailing: isSelected

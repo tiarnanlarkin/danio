@@ -114,7 +114,7 @@ class _RoomCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(emoji, style: const TextStyle(fontSize: 32)),
+            Text(emoji, style: TextStyle(fontSize: 32)),
             const SizedBox(height: AppSpacing.sm),
             Text(
               name,

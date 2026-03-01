@@ -342,9 +342,9 @@ class ThemeGalleryScreen extends ConsumerWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
+            Text(
               'Premium themes are coming soon!',
-              style: TextStyle(fontSize: 16),
+              style: Theme.of(context).textTheme.titleMedium!,
             ),
             const SizedBox(height: 12),
             Text(

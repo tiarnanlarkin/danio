@@ -347,7 +347,7 @@ class _AchievementsScreenState extends ConsumerState<AchievementsScreen> {
                             children: [
                               Text(
                                 achievement.icon,
-                                style: const TextStyle(fontSize: 32),
+                                style: TextStyle(fontSize: 32),
                               ),
                               const SizedBox(height: 8),
                               Text(

@@ -240,7 +240,7 @@ class _DailySection extends StatelessWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(emoji, style: const TextStyle(fontSize: 18)),
+        Text(emoji, style: TextStyle(fontSize: 18)),
         const SizedBox(width: AppSpacing.sm),
         Expanded(
           child: Column(

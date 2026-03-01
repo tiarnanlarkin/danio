@@ -127,7 +127,7 @@ class AppBarAction extends StatelessWidget {
         isLabelVisible: badgeCount != null && badgeCount! > 0,
         label: badgeCount != null ? Text(
           badgeCount! > 99 ? '99+' : badgeCount.toString(),
-          style: TextStyle(fontSize: 10),
+          style: Theme.of(context).textTheme.labelSmall!,
         ) : null,
         child: button,
       );
@@ -352,7 +352,7 @@ class _NavBarItem extends StatelessWidget {
                 child: Badge(
                   isLabelVisible: item.badgeCount != null && item.badgeCount! > 0,
                   label: item.badgeCount != null 
-                      ? Text(item.badgeCount.toString(), style: TextStyle(fontSize: 10))
+                      ? Text(item.badgeCount.toString(), style: Theme.of(context).textTheme.labelSmall!)
                       : null,
                   child: Icon(
                     isSelected ? item.activeIcon ?? item.icon : item.icon,

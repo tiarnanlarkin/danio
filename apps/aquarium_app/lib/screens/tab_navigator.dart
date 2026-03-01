@@ -98,7 +98,7 @@ class _TabNavigatorState extends ConsumerState<TabNavigator>
             if (context.mounted) {
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
-                  content: Text('Press back again to exit'),
+                  content: Text('Tap back once more to leave'),
                   duration: Duration(seconds: 2),
                   behavior: SnackBarBehavior.floating,
                 ),

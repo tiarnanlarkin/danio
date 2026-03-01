@@ -167,7 +167,7 @@ class _AchievementUnlockedDialogState extends State<AchievementUnlockedDialog>
                           child: Center(
                             child: Text(
                               widget.achievement.icon,
-                              style: const TextStyle(fontSize: 80),
+                              style: TextStyle(fontSize: 80),
                             ),
                           ),
                         ),

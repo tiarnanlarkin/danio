@@ -69,7 +69,7 @@ class SyncDebugDialog extends ConsumerWidget {
                       Expanded(
                         child: Text(
                           conflict,
-                          style: const TextStyle(fontSize: 12),
+                          style: TextStyle(fontSize: 12),
                         ),
                       ),
                     ],
@@ -101,7 +101,7 @@ class SyncDebugDialog extends ConsumerWidget {
                           children: [
                             Text(
                               SyncService.getActionDescription(action),
-                              style: const TextStyle(fontSize: 12),
+                              style: TextStyle(fontSize: 12),
                             ),
                             Text(
                               _formatDateTime(action.timestamp),

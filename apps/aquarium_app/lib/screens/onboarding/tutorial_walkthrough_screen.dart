@@ -187,7 +187,7 @@ class _TutorialWalkthroughScreenState
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           // Large emoji
-          Text(step.emoji, style: const TextStyle(fontSize: 80)),
+          Text(step.emoji, style: TextStyle(fontSize: 80)),
           const SizedBox(height: AppSpacing.xl),
 
           // Icon
@@ -563,7 +563,7 @@ class _WaterTypeCard extends StatelessWidget {
         ),
         child: Row(
           children: [
-            Text(icon, style: const TextStyle(fontSize: 32)),
+            Text(icon, style: TextStyle(fontSize: 32)),
             const SizedBox(width: AppSpacing.md),
             Expanded(
               child: Column(

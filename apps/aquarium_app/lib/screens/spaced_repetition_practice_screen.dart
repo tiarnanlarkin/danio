@@ -76,8 +76,8 @@ class _SpacedRepetitionPracticeScreenState
                 color: AppOverlays.success10,
                 shape: BoxShape.circle,
               ),
-              child: const Center(
-                child: Text('🎯', style: TextStyle(fontSize: 56)),
+              child: Center(
+                child: Text('🎯', style: Theme.of(context).textTheme.headlineMedium!.copyWith(fontSize: 56)),
               ),
             ),
             const SizedBox(height: AppSpacing.lg),

@@ -18,7 +18,7 @@ class LivestockPreview extends StatelessWidget {
           padding: AppCardPadding.spacious,
           child: CompactEmptyState(
             icon: Icons.set_meal,
-            message: 'No fish or invertebrates added yet',
+            message: 'Your tank is waiting for its first residents!',
           ),
         ),
       );

@@ -423,7 +423,7 @@ class _ShopItemGrid extends ConsumerWidget {
     if (items.isEmpty) {
       return EmptyState.withMascot(
         icon: Icons.shopping_bag_outlined,
-        title: 'No items available',
+        title: 'Nothing in stock right now',
         message: 'Check back later for new items in this category!',
         mascotContext: MascotContext.encouragement,
       );
@@ -507,7 +507,7 @@ class _ShopItemCard extends ConsumerWidget {
                         Center(
                           child: Text(
                             item.emoji,
-                            style: const TextStyle(fontSize: 48),
+                            style: TextStyle(fontSize: 48),
                           ),
                         ),
                         const SizedBox(height: 12),
@@ -555,7 +555,7 @@ class _ShopItemCard extends ConsumerWidget {
                                 ),
                               ),
                               const SizedBox(width: AppSpacing.xs),
-                              const Text('💎', style: TextStyle(fontSize: 14)),
+                              Text('💎', style: Theme.of(context).textTheme.bodyLarge!),
                             ],
                           ),
                         ),
@@ -644,7 +644,7 @@ class _GemBalanceChip extends StatelessWidget {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Text('💎', style: TextStyle(fontSize: 20)),
+            Text('💎', style: Theme.of(context).textTheme.titleLarge!),
             const SizedBox(width: AppSpacing.sm),
             Text(
               '$balance',

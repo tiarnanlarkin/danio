@@ -936,7 +936,7 @@ class _WaterTypeOption extends StatelessWidget {
           child: Row(
             children: [
               ExcludeSemantics(
-                child: Text(icon, style: const TextStyle(fontSize: 28)),
+                child: Text(icon, style: TextStyle(fontSize: 28)),
               ),
               const SizedBox(width: AppSpacing.md),
               Expanded(

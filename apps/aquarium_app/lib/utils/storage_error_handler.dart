@@ -78,7 +78,7 @@ class StorageErrorHandler {
                         const SizedBox(height: AppSpacing.xs),
                         Text(
                           'Your corrupted data has been backed up to:\n${error.corruptedFilePath}',
-                          style: const TextStyle(fontSize: 12),
+                          style: TextStyle(fontSize: 12),
                         ),
                       ],
                     ),
@@ -327,7 +327,7 @@ class _InfoItem extends StatelessWidget {
         children: [
           Icon(icon, size: 18, color: Colors.grey[600]),
           const SizedBox(width: AppSpacing.sm),
-          Expanded(child: Text(text, style: const TextStyle(fontSize: 13))),
+          Expanded(child: Text(text, style: TextStyle(fontSize: 13))),
         ],
       ),
     );
