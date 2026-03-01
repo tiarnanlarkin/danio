@@ -3,6 +3,7 @@
 library;
 import 'package:danio/theme/app_theme.dart';
 
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/achievements.dart';
@@ -122,14 +123,19 @@ class _AchievementsScreenState extends ConsumerState<AchievementsScreen> {
                 const SizedBox(height: AppSpacing.sm),
                 ClipRRect(
                   borderRadius: AppRadius.smallRadius,
-                  child: LinearProgressIndicator(
-                    value: completionPercent,
+                  child: TweenAnimationBuilder<double>(
+                    tween: Tween(begin: 0, end: completionPercent),
+                    duration: const Duration(milliseconds: 800),
+                    curve: Curves.easeOutCubic,
+                    builder: (context, value, _) => LinearProgressIndicator(
+                    value: value,
                     minHeight: 12,
                     backgroundColor: AppOverlays.white30,
                     valueColor: AlwaysStoppedAnimation<Color>(
                       Theme.of(context).colorScheme.primary,
                     ),
                   ),
+                    ),
                 ),
               ],
             ),
@@ -316,6 +322,7 @@ class _AchievementsScreenState extends ConsumerState<AchievementsScreen> {
                   final entry = recentlyUnlocked[index];
                   final achievement = entry.key;
                   final progress = entry.value;
+                  final reduceMotion = MediaQuery.of(context).disableAnimations;
                   return Container(
                     width: 160,
                     margin: EdgeInsets.only(
@@ -351,7 +358,18 @@ class _AchievementsScreenState extends ConsumerState<AchievementsScreen> {
                         ),
                       ),
                     ),
-                  );
+                  )
+                      .animate(autoPlay: !reduceMotion)
+                      .fadeIn(
+                        duration: reduceMotion ? 0.ms : 300.ms,
+                        delay: reduceMotion ? 0.ms : (index * 80).ms,
+                      )
+                      .scale(
+                        begin: reduceMotion ? const Offset(1, 1) : const Offset(0.9, 0.9),
+                        end: const Offset(1, 1),
+                        duration: reduceMotion ? 0.ms : 300.ms,
+                        delay: reduceMotion ? 0.ms : (index * 80).ms,
+                      );
                 },
               ),
             ),
@@ -375,6 +393,7 @@ class _AchievementsScreenState extends ConsumerState<AchievementsScreen> {
                 final progress = progressMap[achievement.id] ??
                     AchievementProgress(achievementId: achievement.id);
 
+                final reduceMotion = MediaQuery.of(context).disableAnimations;
                 return RepaintBoundary(
                   child: AchievementCard(
                     achievement: achievement,
@@ -382,7 +401,18 @@ class _AchievementsScreenState extends ConsumerState<AchievementsScreen> {
                     onTap: () => _showAchievementDetail(
                       context, achievement, progress),
                   ),
-                );
+                )
+                    .animate(autoPlay: !reduceMotion)
+                    .fadeIn(
+                      duration: reduceMotion ? 0.ms : 250.ms,
+                      delay: reduceMotion ? 0.ms : (index * 40).ms,
+                    )
+                    .scale(
+                      begin: reduceMotion ? const Offset(1, 1) : const Offset(0.95, 0.95),
+                      end: const Offset(1, 1),
+                      duration: reduceMotion ? 0.ms : 250.ms,
+                      delay: reduceMotion ? 0.ms : (index * 40).ms,
+                    );
               },
               childCount: sortedAchievements.length,
             ),
