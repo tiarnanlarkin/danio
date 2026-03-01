@@ -106,19 +106,19 @@ class PracticeHubScreen extends ConsumerWidget {
         }
       case 1:
         return const SizedBox(height: AppSpacing.lg);
-      case 2: // Practice Stats
+      case 2: // Practice Stats — BUG-05: gray for zero values, semantic color only when >0
         return _buildStatsRow(
           context,
           stats: [
             _StatItem(
               label: 'Due Today',
               value: '$dueCards',
-              color: AppColors.error,
+              color: dueCards > 0 ? AppColors.error : AppColors.textSecondary,
             ),
             _StatItem(
               label: 'Mastered',
               value: '${srState.stats.masteredCards}',
-              color: AppColors.success,
+              color: srState.stats.masteredCards > 0 ? AppColors.success : AppColors.textSecondary,
             ),
             _StatItem(
               label: 'Total Cards',
@@ -191,14 +191,17 @@ class PracticeHubScreen extends ConsumerWidget {
         return Text('Your Progress', style: AppTypography.headlineSmall);
       case 13:
         return const SizedBox(height: AppSpacing.sm2);
-      case 14: // Study Streak card
-        return _buildProgressCard(
-          context,
-          title: 'Study Streak',
-          value: '${profile?.currentStreak ?? 0} days',
-          icon: Icons.local_fire_department,
-          color: AppColors.warning,
-        );
+      case 14: // Study Streak card — BUG-06: neutral look when streak=0
+        {
+          final streak = profile?.currentStreak ?? 0;
+          return _buildProgressCard(
+            context,
+            title: 'Study Streak',
+            value: streak > 0 ? '$streak days 🔥' : '$streak days',
+            icon: streak > 0 ? Icons.local_fire_department : Icons.local_fire_department_outlined,
+            color: streak > 0 ? AppColors.warning : AppColors.textSecondary,
+          );
+        }
       case 15:
         return const SizedBox(height: AppSpacing.sm2);
       case 16: // Cards Mastered card

@@ -1664,11 +1664,19 @@ class _AnimatedSwimmingFishState extends State<_AnimatedSwimmingFish>
       builder: (context, child) {
         final swimX = _swimAnimation.value * widget.tankWidth;
         final bobY = _bobAnimation.value * widget.verticalBob;
-        final baseY = widget.baseTop * widget.tankHeight;
+        final rawBaseY = widget.baseTop * widget.tankHeight;
+
+        // BUG-08: clamp fish Y position to stay within tank glass bounds
+        const glassBorderTop = 4.0;
+        final sandBoundary = widget.tankHeight * 0.78; // above 18% sand layer
+        final clampedTop = (rawBaseY + bobY).clamp(
+          glassBorderTop,
+          sandBoundary - widget.size,
+        );
 
         return Positioned(
           left: swimX - widget.size,
-          top: baseY + bobY,
+          top: clampedTop,
           child: Transform.scale(
             scaleX: _facingRight ? 1 : -1,
             child: _SoftFish(

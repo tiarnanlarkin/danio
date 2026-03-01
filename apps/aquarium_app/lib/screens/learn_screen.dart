@@ -153,45 +153,49 @@ class LearnScreen extends ConsumerWidget {
 
               // === Content below the scene ===
               if (profile == null)
-                SliverFillRemaining(
-                  child: Center(
-                    child: Padding(
-                      padding: EdgeInsets.all(AppSpacing.xl),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Icon(
-                            Icons.person_add,
-                            size: AppIconSizes.xxl,
-                            color: AppColors.textSecondary,
-                          ),
-                          const SizedBox(height: AppSpacing.md),
-                          Text(
-                            'Complete your profile setup to start learning!',
-                            textAlign: TextAlign.center,
-                            style: Theme.of(context).textTheme.titleLarge!,
-                          ),
-                          const SizedBox(height: AppSpacing.lg),
-                          ElevatedButton.icon(
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (_) => const ProfileCreationScreen(),
-                                ),
-                              );
-                            },
-                            icon: const Icon(Icons.arrow_forward),
-                            label: const Text('Create Profile'),
-                            style: ElevatedButton.styleFrom(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 32,
-                                vertical: 16,
+                // BUG-07: replaced SliverFillRemaining to remove ~300dp dead space
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.xl,
+                      vertical: AppSpacing.lg,
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const SizedBox(height: AppSpacing.lg),
+                        const Icon(
+                          Icons.person_add,
+                          size: AppIconSizes.xxl,
+                          color: AppColors.textSecondary,
+                        ),
+                        const SizedBox(height: AppSpacing.md),
+                        Text(
+                          'Complete your profile setup to start learning!',
+                          textAlign: TextAlign.center,
+                          style: Theme.of(context).textTheme.titleLarge!,
+                        ),
+                        const SizedBox(height: AppSpacing.lg),
+                        ElevatedButton.icon(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => const ProfileCreationScreen(),
                               ),
+                            );
+                          },
+                          icon: const Icon(Icons.arrow_forward),
+                          label: const Text('Create Profile'),
+                          style: ElevatedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 32,
+                              vertical: 16,
                             ),
                           ),
-                        ],
-                      ),
+                        ),
+                        const SizedBox(height: AppSpacing.xl),
+                      ],
                     ),
                   ),
                 )

@@ -131,7 +131,7 @@ class SettingsHubScreen extends ConsumerWidget {
         icon: Icons.build,
         title: 'Workshop',
         subtitle: 'Calculators, guides & planners',
-        iconColor: AppColors.textSecondary,
+        iconColor: AppColors.primary, // BUG-10: was textSecondary (gray), now warm amber
         trailing: const Icon(Icons.chevron_right),
         onTap: () {
           Navigator.push(
@@ -275,9 +275,10 @@ class SettingsHubScreen extends ConsumerWidget {
                 ),
                 const SizedBox(height: AppSpacing.xs),
                 Text(
-                  '${profile?.currentStreak ?? 0} day streak 🔥',
+                  // BUG-06: hide fire emoji when streak is 0
+                  '${profile?.currentStreak ?? 0} day streak${(profile?.currentStreak ?? 0) > 0 ? " 🔥" : ""}',
                   style: AppTypography.bodySmall.copyWith(
-                    color: AppColors.warning,
+                    color: (profile?.currentStreak ?? 0) > 0 ? AppColors.warning : AppColors.textSecondary,
                     fontWeight: FontWeight.w600,
                   ),
                 ),

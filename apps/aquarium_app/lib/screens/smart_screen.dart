@@ -125,7 +125,7 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
             icon: Icons.calendar_month,
             title: 'Weekly Plan',
             subtitle: 'AI-generated maintenance schedule',
-            color: AppColors.textSecondary,
+            color: AppColors.primary, // BUG-11: was textSecondary (gray), now warm amber to match siblings
             onTap: () => Navigator.of(context).push(
               MaterialPageRoute(builder: (_) => const WeeklyPlanScreen()),
             ),
