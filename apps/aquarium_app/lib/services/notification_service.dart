@@ -495,4 +495,82 @@ class NotificationService {
     if (!_initialized) await initialize();
     await _plugin.cancel(_reviewReminderNotificationId);
   }
+
+  // ==================== WATER CHANGE REMINDERS ====================
+
+  /// Notification ID for water change reminders
+  static const int _waterChangeNotificationId = 3000;
+
+  /// Schedule a water change reminder based on days since last water change.
+  ///
+  /// If [daysSinceLastChange] >= [reminderThresholdDays], schedules an
+  /// immediate-ish notification. Otherwise, schedules for when the threshold
+  /// will be reached.
+  Future<void> scheduleWaterChangeReminder({
+    required String tankName,
+    required int daysSinceLastChange,
+    int reminderThresholdDays = 7,
+    int tankIndex = 0,
+  }) async {
+    if (!_initialized) await initialize();
+
+    final notificationId = _waterChangeNotificationId + tankIndex;
+    await _plugin.cancel(notificationId);
+
+    final daysUntilReminder = reminderThresholdDays - daysSinceLastChange;
+
+    // If overdue or due today, show within the hour
+    final now = DateTime.now();
+    DateTime scheduledDate;
+    if (daysUntilReminder <= 0) {
+      scheduledDate = now.add(const Duration(hours: 1));
+    } else {
+      // Schedule for 10 AM on the day the water change is due
+      scheduledDate = DateTime(
+        now.year, now.month, now.day + daysUntilReminder, 10, 0,
+      );
+    }
+
+    final tzScheduledDate = tz.TZDateTime.from(scheduledDate, tz.local);
+
+    final isOverdue = daysSinceLastChange >= reminderThresholdDays;
+    final title = isOverdue
+        ? '💧 Water change overdue!'
+        : '💧 Water change coming up';
+    final body = isOverdue
+        ? '$tankName hasn\'t had a water change in $daysSinceLastChange days.'
+        : '$tankName is due for a water change soon.';
+
+    await _plugin.zonedSchedule(
+      notificationId,
+      title,
+      body,
+      tzScheduledDate,
+      const NotificationDetails(
+        android: AndroidNotificationDetails(
+          'water_change_reminders',
+          'Water Change Reminders',
+          channelDescription: 'Reminders for aquarium water changes',
+          importance: Importance.high,
+          priority: Priority.high,
+          icon: '@mipmap/ic_launcher',
+        ),
+        iOS: DarwinNotificationDetails(
+          presentAlert: true,
+          presentBadge: true,
+          presentSound: true,
+        ),
+      ),
+      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+      uiLocalNotificationDateInterpretation:
+          UILocalNotificationDateInterpretation.absoluteTime,
+      payload: 'water_change',
+    );
+  }
+
+  /// Cancel water change reminder for a specific tank.
+  Future<void> cancelWaterChangeReminder({int tankIndex = 0}) async {
+    if (!_initialized) await initialize();
+    await _plugin.cancel(_waterChangeNotificationId + tankIndex);
+  }
 }
