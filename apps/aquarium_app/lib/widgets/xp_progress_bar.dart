@@ -190,7 +190,6 @@ class _XpProgressBarState extends ConsumerState<XpProgressBar>
                 '${profile.totalXp} Total XP',
                 style: AppTypography.bodySmall.copyWith(
                   color: AppColors.textHint,
-                  fontSize: 11,
                 ),
               ),
             ],
@@ -373,7 +372,6 @@ class XpProgressCard extends ConsumerWidget {
                           : 'Maximum level reached!',
                       style: AppTypography.bodySmall.copyWith(
                         color: AppColors.textSecondary,
-                        fontSize: 11,
                       ),
                     ),
                   ],

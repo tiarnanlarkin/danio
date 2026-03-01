@@ -187,7 +187,6 @@ class AchievementCard extends StatelessWidget {
                       '${progress.currentCount} / ${achievement.targetCount}',
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
                         color: Colors.grey,
-                        fontSize: 10,
                       ),
                     ),
                   ],
