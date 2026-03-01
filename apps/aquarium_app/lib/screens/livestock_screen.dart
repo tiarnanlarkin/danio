@@ -7,6 +7,8 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:uuid/uuid.dart';
 import '../data/species_database.dart';
 import '../models/models.dart';
+import '../models/learning.dart';
+import '../providers/inventory_provider.dart';
 import '../providers/storage_provider.dart';
 import '../providers/tank_provider.dart';
 import '../providers/user_profile_provider.dart';
@@ -513,7 +515,15 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
 
     ref.invalidate(logsProvider(widget.tankId));
 
+    // Award XP for feeding
+    final isBoostActive = ref.read(xpBoostActiveProvider);
+    await ref.read(userProfileProvider.notifier).recordActivity(
+      xp: XpRewards.journalEntry,
+      xpBoostActive: isBoostActive,
+    );
+    final effectiveXp = isBoostActive ? XpRewards.journalEntry * 2 : XpRewards.journalEntry;
     if (context.mounted) {
+      ref.showXpAnimation(effectiveXp);
       AppFeedback.showSuccess(context, 'Feeding logged! \u{1F41F}');
     }
   }
