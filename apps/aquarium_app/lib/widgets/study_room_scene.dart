@@ -143,27 +143,28 @@ class StudyRoomScene extends StatelessWidget {
                 ),
               ),
 
-              // === XP Badge (top center) ===
+              // === XP Badge + Streak row (top, no overlap) ===
               Positioned(
-                top: h * 0.12,
-                left: 0,
-                right: 0,
-                child: Center(
-                  child: _GlassBadge(
-                    icon: Icons.star,
-                    text: '$totalXp XP',
-                    subtext: levelTitle,
-                  ),
+                top: h * 0.05,
+                left: w * 0.05,
+                right: w * 0.05,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    if (currentStreak > 0)
+                      const SizedBox(width: 56), // balance streak badge width
+                    _GlassBadge(
+                      icon: Icons.star,
+                      text: '$totalXp XP',
+                      subtext: levelTitle,
+                    ),
+                    if (currentStreak > 0) ...[
+                      const SizedBox(width: 8),
+                      _StreakBadge(streak: currentStreak),
+                    ],
+                  ],
                 ),
               ),
-
-              // === Streak indicator (if active) ===
-              if (currentStreak > 0)
-                Positioned(
-                  top: h * 0.12,
-                  right: w * 0.05,
-                  child: _StreakBadge(streak: currentStreak),
-                ),
 
               // === Progress card (bottom) ===
               Positioned(
