@@ -438,6 +438,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
                         unit: '°C',
                         value: _temperature,
                         onChanged: (v) => setState(() => _temperature = v),
+                        idealRange: '24–27°C',
                       ),
                     ),
                     const SizedBox(width: AppSpacing.sm),
@@ -447,6 +448,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
                         value: _ph,
                         onChanged: (v) => setState(() => _ph = v),
                         decimal: true,
+                        idealRange: '6.5–7.5',
                       ),
                     ),
                     const SizedBox(width: AppSpacing.sm),
@@ -459,6 +461,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
                         decimal: true,
                         warningThreshold: 0.25,
                         dangerThreshold: 0.5,
+                        idealRange: '0 ppm',
                       ),
                     ),
                   ],
@@ -475,6 +478,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
                         decimal: true,
                         warningThreshold: 0.25,
                         dangerThreshold: 0.5,
+                        idealRange: '0 ppm',
                       ),
                     ),
                     const SizedBox(width: AppSpacing.sm),
@@ -486,6 +490,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
                         onChanged: (v) => setState(() => _nitrate = v),
                         warningThreshold: 20,
                         dangerThreshold: 40,
+                        idealRange: '<20 ppm',
                       ),
                     ),
                     const SizedBox(width: AppSpacing.sm),
@@ -495,6 +500,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
                         unit: 'dGH',
                         value: _gh,
                         onChanged: (v) => setState(() => _gh = v),
+                        idealRange: '4–8 dGH',
                       ),
                     ),
                   ],
@@ -508,6 +514,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
                         unit: 'dKH',
                         value: _kh,
                         onChanged: (v) => setState(() => _kh = v),
+                        idealRange: '3–8 dKH',
                       ),
                     ),
                     const SizedBox(width: AppSpacing.sm),
@@ -538,6 +545,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
                   unit: '°C',
                   value: _temperature,
                   onChanged: (v) => setState(() => _temperature = v),
+                  idealRange: 'Ideal: 24–27°C',
                 ),
               ),
               const SizedBox(width: 12),
@@ -547,6 +555,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
                   value: _ph,
                   onChanged: (v) => setState(() => _ph = v),
                   decimal: true,
+                  idealRange: 'Ideal: 6.5–7.5',
                 ),
               ),
             ],
@@ -569,6 +578,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
                   onChanged: (v) => setState(() => _ammonia = v),
                   warningThreshold: 0.25,
                   dangerThreshold: 0.5,
+                  idealRange: 'Ideal: 0 ppm',
                 ),
               ),
               const SizedBox(width: 12),
@@ -580,6 +590,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
                   onChanged: (v) => setState(() => _nitrite = v),
                   warningThreshold: 0.25,
                   dangerThreshold: 0.5,
+                  idealRange: 'Ideal: 0 ppm',
                 ),
               ),
             ],
@@ -595,6 +606,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
                   onChanged: (v) => setState(() => _nitrate = v),
                   warningThreshold: 20,
                   dangerThreshold: 40,
+                  idealRange: 'Ideal: <20 ppm',
                 ),
               ),
               const Expanded(child: SizedBox()), // Placeholder for alignment
@@ -616,6 +628,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
                   unit: 'dGH',
                   value: _gh,
                   onChanged: (v) => setState(() => _gh = v),
+                  idealRange: 'Ideal: 4–8 dGH',
                 ),
               ),
               const SizedBox(width: 12),
@@ -625,6 +638,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
                   unit: 'dKH',
                   value: _kh,
                   onChanged: (v) => setState(() => _kh = v),
+                  idealRange: 'Ideal: 3–8 dKH',
                 ),
               ),
             ],
@@ -646,6 +660,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
                   value: _phosphate,
                   onChanged: (v) => setState(() => _phosphate = v),
                   decimal: true,
+                  idealRange: 'Ideal: 0–1 ppm',
                 ),
               ),
               const Expanded(child: SizedBox()),
@@ -1048,6 +1063,7 @@ class _ParameterField extends StatelessWidget {
   final bool decimal;
   final double? warningThreshold;
   final double? dangerThreshold;
+  final String? idealRange;
 
   const _ParameterField({
     required this.label,
@@ -1057,6 +1073,7 @@ class _ParameterField extends StatelessWidget {
     this.decimal = false,
     this.warningThreshold,
     this.dangerThreshold,
+    this.idealRange,
   });
 
   @override
@@ -1072,18 +1089,35 @@ class _ParameterField extends StatelessWidget {
       }
     }
 
-    return TextFormField(
-      initialValue: value?.toString() ?? '',
-      decoration: InputDecoration(
-        labelText: label,
-        suffixText: unit,
-        suffixIcon: statusColor != null
-            ? Icon(Icons.circle, color: statusColor, size: 12)
-            : null,
-      ),
-      keyboardType: TextInputType.numberWithOptions(decimal: decimal),
-      inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[\d.]'))],
-      onChanged: (v) => onChanged(double.tryParse(v)),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        TextFormField(
+          initialValue: value?.toString() ?? '',
+          decoration: InputDecoration(
+            labelText: label,
+            suffixText: unit,
+            suffixIcon: statusColor != null
+                ? Icon(Icons.circle, color: statusColor, size: 12)
+                : null,
+          ),
+          keyboardType: TextInputType.numberWithOptions(decimal: decimal),
+          inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[\d.]'))],
+          onChanged: (v) => onChanged(double.tryParse(v)),
+        ),
+        if (idealRange != null)
+          Padding(
+            padding: const EdgeInsets.only(top: 4, left: 12),
+            child: Text(
+              idealRange!,
+              style: AppTypography.bodySmall.copyWith(
+                color: AppColors.textHint,
+                fontSize: 11,
+              ),
+            ),
+          ),
+      ],
     );
   }
 }
@@ -1151,6 +1185,7 @@ class _CompactParamField extends StatelessWidget {
   final bool decimal;
   final double? warningThreshold;
   final double? dangerThreshold;
+  final String? idealRange;
 
   const _CompactParamField({
     required this.label,
@@ -1160,6 +1195,7 @@ class _CompactParamField extends StatelessWidget {
     this.decimal = false,
     this.warningThreshold,
     this.dangerThreshold,
+    this.idealRange,
   });
 
   @override
@@ -1213,6 +1249,17 @@ class _CompactParamField extends StatelessWidget {
           ],
           onChanged: (v) => onChanged(double.tryParse(v)),
         ),
+        if (idealRange != null)
+          Padding(
+            padding: const EdgeInsets.only(top: 2),
+            child: Text(
+              idealRange!,
+              style: AppTypography.bodySmall.copyWith(
+                color: AppColors.textHint,
+                fontSize: 10,
+              ),
+            ),
+          ),
       ],
     );
   }
