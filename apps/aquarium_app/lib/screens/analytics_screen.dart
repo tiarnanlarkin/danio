@@ -182,9 +182,9 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             'Time Range',
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            style: Theme.of(context).textTheme.titleSmall!.copyWith(fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 12),
           Wrap(
@@ -222,9 +222,9 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             'Overview',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            style: Theme.of(context).textTheme.titleLarge!.copyWith(fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: AppSpacing.md),
           Row(
@@ -346,7 +346,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
             const SizedBox(height: AppSpacing.xs),
             Text(
               subtitle,
-              style: TextStyle(fontSize: 11, color: Colors.grey[600]),
+              style: Theme.of(context).textTheme.labelSmall!.copyWith(color: Colors.grey[600]),
             ),
           ],
         ],
@@ -368,9 +368,9 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             'XP Over Time',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            style: Theme.of(context).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: AppSpacing.lg),
           SizedBox(
@@ -470,9 +470,9 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             'Last 7 Days',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            style: Theme.of(context).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: AppSpacing.lg),
           SizedBox(
@@ -572,9 +572,9 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             'Topic Mastery',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            style: Theme.of(context).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: AppSpacing.lg),
           SizedBox(
@@ -634,9 +634,9 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             'Activity Calendar',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            style: Theme.of(context).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: AppSpacing.md),
           SizedBox(
@@ -731,9 +731,9 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             'Insights & Recommendations',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            style: Theme.of(context).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: AppSpacing.md),
           ...summary.insights.map((insight) => _buildInsightCard(insight)),
@@ -791,7 +791,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
               const SizedBox(height: AppSpacing.sm),
               Text(
                 insight.detailedMessage!,
-                style: TextStyle(fontSize: 14, color: Colors.grey[700]),
+                style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Colors.grey[700]),
               ),
             ],
             if (insight.recommendation != null) ...[
@@ -832,9 +832,9 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             'Topic Breakdown',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            style: Theme.of(context).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: AppSpacing.md),
           ...summary.topicPerformance.map((topic) => _buildTopicCard(topic)),
@@ -875,7 +875,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                     children: [
                       Text(
                         'Progress',
-                        style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+                        style: Theme.of(context).textTheme.bodySmall!.copyWith(color: Colors.grey[600]),
                       ),
                       const SizedBox(height: AppSpacing.xs),
                       LinearProgressIndicator(
@@ -911,7 +911,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                       ),
                       Text(
                         '${topic.timeSpentMinutes} min',
-                        style: TextStyle(fontSize: 11, color: Colors.grey[600]),
+                        style: Theme.of(context).textTheme.labelSmall!.copyWith(color: Colors.grey[600]),
                         overflow: TextOverflow.ellipsis,
                       ),
                     ],
@@ -934,9 +934,9 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             'Predictions & Goals',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            style: Theme.of(context).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: AppSpacing.md),
           ...summary.predictions.map(
@@ -1001,7 +1001,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
               const SizedBox(height: 12),
               Text(
                 prediction.recommendation!,
-                style: TextStyle(fontSize: 13, color: Colors.grey[700]),
+                style: Theme.of(context).textTheme.bodySmall!.copyWith(color: Colors.grey[700]),
               ),
             ],
           ],
