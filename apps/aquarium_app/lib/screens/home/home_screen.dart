@@ -245,22 +245,35 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             // Scrim (above scene, below panels)
             const Positioned.fill(child: StageScrim()),
 
-            // Swiss Army panels
-            SwissArmyPanel.left(
-              theme: ref.watch(currentRoomThemeProvider),
-              child: TempPanelContent(
-                // temperature data comes from logs — null shows 'no data' state
-                theme: ref.watch(currentRoomThemeProvider),
-                onStatsTap: () => _showStatsInfo(context),
-              ),
-            ),
-            SwissArmyPanel.right(
-              theme: ref.watch(currentRoomThemeProvider),
-              child: WaterPanelContent(
-                // Water params from logs — null shows 'no data' state
-                theme: ref.watch(currentRoomThemeProvider),
-                onTestKitTap: () => _showWaterParams(context),
-              ),
+            // Swiss Army panels — wired to live water test data
+            Builder(
+              builder: (context) {
+                final latestTest = ref.watch(latestWaterTestProvider(currentTank.id));
+                final roomTheme = ref.watch(currentRoomThemeProvider);
+                return Stack(
+                  children: [
+                    SwissArmyPanel.left(
+                      theme: roomTheme,
+                      child: TempPanelContent(
+                        temperature: latestTest.value?.temperature,
+                        theme: roomTheme,
+                        onStatsTap: () => _showStatsInfo(context),
+                      ),
+                    ),
+                    SwissArmyPanel.right(
+                      theme: roomTheme,
+                      child: WaterPanelContent(
+                        ph: latestTest.value?.ph,
+                        ammonia: latestTest.value?.ammonia,
+                        nitrate: latestTest.value?.nitrate,
+                        nitrite: latestTest.value?.nitrite,
+                        theme: roomTheme,
+                        onTestKitTap: () => _showWaterParams(context),
+                      ),
+                    ),
+                  ],
+                );
+              },
             ),
 
             // Ambient tip overlay
@@ -329,48 +342,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               ),
             ),
 
-            // Tank switcher - clean card between tank and graph
-            if (!_isSelectMode)
-              Builder(
-                builder: (context) {
-                  final bottomPadding = MediaQuery.of(context).padding.bottom;
-                  return Positioned(
-                    bottom: 130 + bottomPadding, // Above bottom plates
-                    left: 16,
-                    right: 88, // Leave room for speed dial FAB
-                    child: TankSwitcher(
-                      tanks: tanks,
-                      currentIndex: _currentTankIndex,
-                      onChanged: (index) {
-                        setState(() => _currentTankIndex = index);
-                      },
-                      onAddTank: () => _navigateToCreateTank(context),
-                      onLongPress: tanks.length > 1 ? _toggleSelectMode : null,
-                    ),
-                  );
-                },
-              ),
 
-            // Selection mode UI
-            if (_isSelectMode)
-              Builder(
-                builder: (context) {
-                  final bottomPadding = MediaQuery.of(context).padding.bottom;
-                  return Positioned(
-                    bottom: 130 + bottomPadding, // Above bottom plates
-                    left: 16,
-                    right: 16,
-                    child: SelectionModePanel(
-                      tanks: tanks,
-                      selectedIds: _selectedTankIds,
-                      onToggleSelection: _toggleTankSelection,
-                      onCancel: _toggleSelectMode,
-                      onDeleteSelected: () => _bulkDelete(context, tanks),
-                      onExportSelected: () => _bulkExport(context, tanks),
-                    ),
-                  );
-                },
-              ),
 
             // Streak & hearts warning
             Builder(
@@ -460,7 +432,47 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               },
             ),
 
-            // Bottom Plates — Progress (front) and Tanks (behind)
+            // Bottom Plates — Tanks (behind) then Progress (front, renders on top)
+            BottomPlate(
+              peekHeight: 32,
+              maxHeightFraction: 0.75,
+              label: 'Your Tanks',
+              emoji: '🐠',
+              backgroundColor: const Color(0xFF3D2416),
+              backgroundPainter: CustomPaint(
+                painter: SaffianoPainter(),
+                size: Size.infinite,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  const SizedBox(height: 8),
+                  if (!_isSelectMode)
+                    TankSwitcher(
+                      tanks: tanks,
+                      currentIndex: _currentTankIndex,
+                      onChanged: (index) => setState(() => _currentTankIndex = index),
+                      onAddTank: () => _navigateToCreateTank(context),
+                      onLongPress: tanks.length > 1 ? _toggleSelectMode : null,
+                    )
+                  else
+                    SelectionModePanel(
+                      tanks: tanks,
+                      selectedIds: _selectedTankIds,
+                      onToggleSelection: _toggleTankSelection,
+                      onCancel: _toggleSelectMode,
+                      onDeleteSelected: () => _bulkDelete(context, tanks),
+                      onExportSelected: () => _bulkExport(context, tanks),
+                    ),
+                  const SizedBox(height: 8),
+                  // Tanks list tiles (scrollable)
+                  ...tanks.asMap().entries.map(
+                    (e) => _buildTankTile(context, e.key, e.value, tanks),
+                  ),
+                ],
+              ),
+            ),
+
             BottomPlate(
               peekHeight: 60,
               maxHeightFraction: 0.65,
@@ -595,6 +607,32 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
 
+
+  Widget _buildTankTile(BuildContext context, int index, Tank tank, List<Tank> tanks) {
+    final isSelected = index == _currentTankIndex;
+    return ListTile(
+      dense: true,
+      selected: isSelected,
+      selectedTileColor: Colors.white.withAlpha(25),
+      leading: Icon(
+        Icons.set_meal_rounded,
+        color: isSelected ? Colors.white : Colors.white70,
+        size: 20,
+      ),
+      title: Text(
+        tank.name,
+        style: TextStyle(
+          color: isSelected ? Colors.white : Colors.white70,
+          fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+        ),
+      ),
+      subtitle: Text(
+        '${tank.volumeLitres.toStringAsFixed(0)}L',
+        style: TextStyle(color: Colors.white54, fontSize: 12),
+      ),
+      onTap: () => setState(() => _currentTankIndex = index),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
