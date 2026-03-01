@@ -416,7 +416,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     icon: Icons.restaurant_rounded,
                     label: 'Feed',
                     backgroundColor: Theme.of(context).colorScheme.surface,
-                    foregroundColor: const Color(0xFFE8724A),
+                    foregroundColor: DanioColors.coralAccent,
                     onPressed: () => _showFeedingInfo(context),
                   ),
                   SpeedDialAction(
