@@ -76,7 +76,7 @@ class _SpeedDialFABState extends State<SpeedDialFAB>
                     ),
                     child: Container(
                       color: Color.fromARGB(
-                        (80 * t).round(), 20, 30, 50,
+                        (140 * t).round(), 20, 20, 30,
                       ),
                     ),
                   ),
@@ -152,11 +152,11 @@ class _SpeedDialFABState extends State<SpeedDialFAB>
 
   /// Diagonal staggered positions for 5 buttons.
   static const List<Offset> _positions = [
-    Offset(100, 96),   // Stats
-    Offset(16,  168),  // Water Change
-    Offset(190, 240),  // Feed
-    Offset(16,  312),  // Quick Test
-    Offset(100, 384),  // Add Tank
+    Offset(110, 110),  // Stats
+    Offset(16,  200),  // Water Change
+    Offset(200, 280),  // Feed
+    Offset(16,  360),  // Quick Test
+    Offset(110, 440),  // Add Tank
   ];
 
   List<Widget> _buildActionPills(double t) {
@@ -221,7 +221,7 @@ class _PillButton extends StatelessWidget {
           onPressed();
         },
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
           decoration: BoxDecoration(
             color: bg,
             borderRadius: BorderRadius.circular(26),
@@ -237,13 +237,13 @@ class _PillButton extends StatelessWidget {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(action.icon, color: fg, size: 22),
+              Icon(action.icon, color: fg, size: 26),
               const SizedBox(width: 10),
               Text(
                 action.label,
                 style: TextStyle(
                   color: fg,
-                  fontSize: 15,
+                  fontSize: 16,
                   fontWeight: FontWeight.w600,
                 ),
               ),
