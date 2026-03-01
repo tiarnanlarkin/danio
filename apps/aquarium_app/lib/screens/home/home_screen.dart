@@ -5,6 +5,7 @@ import 'package:skeletonizer/skeletonizer.dart';
 import '../../models/models.dart';
 import '../analytics_screen.dart';
 import '../../providers/tank_provider.dart';
+import '../../providers/storage_provider.dart';
 import '../../providers/room_theme_provider.dart';
 import '../../providers/user_profile_provider.dart';
 import '../../theme/app_theme.dart';
@@ -463,9 +464,90 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   void _navigateToQuickTest(BuildContext context, Tank tank) {
-    Navigator.of(context).push(
-      ModalScaleRoute(
-        page: AddLogScreen(tankId: tank.id, initialType: LogType.waterTest),
+    _showQuickLogSheet(context, tank);
+  }
+
+  void _showQuickLogSheet(BuildContext context, Tank tank) {
+    final phC = TextEditingController();
+    final tempC = TextEditingController();
+    final ammoniaC = TextEditingController();
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (ctx) => Padding(
+        padding: EdgeInsets.only(
+          left: 20, right: 20, top: 16,
+          bottom: MediaQuery.of(ctx).viewInsets.bottom + 16,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(width: 40, height: 4,
+              decoration: BoxDecoration(
+                color: AppColors.border,
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+            const SizedBox(height: 12),
+            Text('Quick Water Test', style: AppTypography.headlineSmall),
+            const SizedBox(height: 16),
+            Row(
+              children: [
+                Expanded(child: TextField(
+                  controller: phC,
+                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                  decoration: const InputDecoration(labelText: 'pH', border: OutlineInputBorder(), isDense: true),
+                )),
+                const SizedBox(width: 8),
+                Expanded(child: TextField(
+                  controller: tempC,
+                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                  decoration: const InputDecoration(labelText: 'Temp (C)', border: OutlineInputBorder(), isDense: true),
+                )),
+                const SizedBox(width: 8),
+                Expanded(child: TextField(
+                  controller: ammoniaC,
+                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                  decoration: const InputDecoration(labelText: 'NH3', border: OutlineInputBorder(), isDense: true),
+                )),
+              ],
+            ),
+            const SizedBox(height: 16),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton.icon(
+                icon: const Icon(Icons.save),
+                label: const Text('Save & Earn 10 XP'),
+                onPressed: () async {
+                  final ph = double.tryParse(phC.text);
+                  final temp = double.tryParse(tempC.text);
+                  final ammonia = double.tryParse(ammoniaC.text);
+                  if (ph == null && temp == null && ammonia == null) return;
+                  final now = DateTime.now();
+                  final log = LogEntry(
+                    id: now.microsecondsSinceEpoch.toString(),
+                    tankId: tank.id,
+                    type: LogType.waterTest,
+                    timestamp: now,
+                    createdAt: now,
+                    title: 'Quick test',
+                    waterTest: WaterTestResults(ph: ph, temperature: temp, ammonia: ammonia),
+                  );
+                  final storage = ref.read(storageServiceProvider);
+                  await storage.saveLog(log);
+                  ref.invalidate(logsProvider(tank.id));
+                  ref.invalidate(allLogsProvider(tank.id));
+                  await ref.read(userProfileProvider.notifier).addXp(10);
+                  if (ctx.mounted) Navigator.pop(ctx);
+                },
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
