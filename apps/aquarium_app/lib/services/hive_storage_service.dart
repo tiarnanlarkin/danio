@@ -43,6 +43,7 @@ class HiveStorageService {
   late Box<Map> _settings;
   late Box<Map> _learningProgress;
   late Box<Map> _economy;
+  // ignore: unused_field
   late Box<dynamic> _metadata;
   
   HiveStorageService._();
