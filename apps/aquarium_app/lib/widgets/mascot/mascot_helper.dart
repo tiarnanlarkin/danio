@@ -150,10 +150,12 @@ class MascotHelper {
       "Your underwater world awaits!",
     ],
     MascotContext.noLivestock: [
-      "Your tank looks a bit lonely...",
-      "Time to add some finned friends!",
+      "Your tank looks a bit lonely... let's fix that!",
+      "Time to add some finned friends! 🐟",
       "Let's find some compatible fish!",
       "An empty tank is full of possibilities!",
+      "I can't wait to meet your fish!",
+      "The best part is picking your first residents!",
     ],
     MascotContext.noLogs: [
       "Time to log your first observation!",
@@ -228,6 +230,9 @@ class MascotHelper {
       "Every expert was once a beginner!",
       "Your fish are lucky to have you!",
       "Small steps lead to big results!",
+      "You're building something amazing here!",
+      "One lesson at a time — that's how champions learn! 🏆",
+      "I believe in you! 💪",
     ],
     MascotContext.tip: [
       "Pro tip: Test your water weekly!",
