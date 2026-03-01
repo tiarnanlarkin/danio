@@ -216,7 +216,7 @@ class _AchievementsScreenState extends ConsumerState<AchievementsScreen> {
             ),
           ),
 
-          // Achievement grid
+          // Achievement list with Recently Unlocked section
           Expanded(
             child: filteredAchievements.isEmpty
                 ? Center(
@@ -245,38 +245,150 @@ class _AchievementsScreenState extends ConsumerState<AchievementsScreen> {
                       ],
                     ),
                   )
-                : GridView.builder(
-                    padding: const EdgeInsets.all(AppSpacing.md),
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          childAspectRatio: 0.85,
-                          crossAxisSpacing: 12,
-                          mainAxisSpacing: 12,
-                        ),
-                    itemCount: filteredAchievements.length,
-                    itemBuilder: (context, index) {
-                      final achievement = filteredAchievements[index];
-                      final progress =
-                          progressMap[achievement.id] ??
-                          AchievementProgress(achievementId: achievement.id);
-
-                      return RepaintBoundary(
-                        child: AchievementCard(
-                          achievement: achievement,
-                          progress: progress,
-                          onTap: () => _showAchievementDetail(
-                            context,
-                            achievement,
-                            progress,
-                          ),
-                        ),
-                      );
-                    },
-                  ),
+                : _buildAchievementsList(
+                    context, filteredAchievements, progressMap),
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildAchievementsList(
+    BuildContext context,
+    List<Achievement> achievements,
+    Map<String, AchievementProgress> progressMap,
+  ) {
+    // Separate recently unlocked (last 3, sorted by date)
+    final unlocked = <MapEntry<Achievement, AchievementProgress>>[];
+    final inProgress = <Achievement>[];
+    final locked = <Achievement>[];
+
+    for (final a in achievements) {
+      final p = progressMap[a.id] ?? AchievementProgress(achievementId: a.id);
+      if (p.isUnlocked) {
+        unlocked.add(MapEntry(a, p));
+      } else if (p.currentCount > 0) {
+        inProgress.add(a);
+      } else {
+        locked.add(a);
+      }
+    }
+
+    // Sort unlocked by date (most recent first)
+    unlocked.sort((a, b) {
+      final aDate = a.value.unlockedAt ?? DateTime(2000);
+      final bDate = b.value.unlockedAt ?? DateTime(2000);
+      return bDate.compareTo(aDate);
+    });
+
+    final recentlyUnlocked = unlocked.take(3).toList();
+
+    // Build sorted list: recently unlocked → in progress → locked
+    final sortedAchievements = <Achievement>[
+      ...unlocked.map((e) => e.key),
+      ...inProgress,
+      ...locked,
+    ];
+
+    return CustomScrollView(
+      slivers: [
+        // Recently unlocked section
+        if (recentlyUnlocked.isNotEmpty) ...[
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+              child: Text(
+                '🎉 Recently Unlocked',
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: SizedBox(
+              height: 120,
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                itemCount: recentlyUnlocked.length,
+                itemBuilder: (context, index) {
+                  final entry = recentlyUnlocked[index];
+                  final achievement = entry.key;
+                  final progress = entry.value;
+                  return Container(
+                    width: 160,
+                    margin: EdgeInsets.only(
+                      right: index < recentlyUnlocked.length - 1 ? 12 : 0,
+                    ),
+                    child: Card(
+                      color: AppColors.primary.withValues(alpha: 0.08),
+                      child: InkWell(
+                        borderRadius: AppRadius.mediumRadius,
+                        onTap: () => _showAchievementDetail(
+                          context, achievement, progress),
+                        child: Padding(
+                          padding: const EdgeInsets.all(12),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                achievement.icon,
+                                style: const TextStyle(fontSize: 32),
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                achievement.name,
+                                style: AppTypography.labelSmall.copyWith(
+                                  fontWeight: FontWeight.w600,
+                                ),
+                                textAlign: TextAlign.center,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ),
+          const SliverToBoxAdapter(child: SizedBox(height: 8)),
+        ],
+
+        // Main grid (sorted: unlocked → in progress → locked)
+        SliverPadding(
+          padding: const EdgeInsets.all(AppSpacing.md),
+          sliver: SliverGrid(
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              childAspectRatio: 0.85,
+              crossAxisSpacing: 12,
+              mainAxisSpacing: 12,
+            ),
+            delegate: SliverChildBuilderDelegate(
+              (context, index) {
+                final achievement = sortedAchievements[index];
+                final progress = progressMap[achievement.id] ??
+                    AchievementProgress(achievementId: achievement.id);
+
+                return RepaintBoundary(
+                  child: AchievementCard(
+                    achievement: achievement,
+                    progress: progress,
+                    onTap: () => _showAchievementDetail(
+                      context, achievement, progress),
+                  ),
+                );
+              },
+              childCount: sortedAchievements.length,
+            ),
+          ),
+        ),
+      ],
     );
   }
 
