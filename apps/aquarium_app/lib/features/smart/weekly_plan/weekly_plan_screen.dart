@@ -10,6 +10,7 @@ import '../../../services/openai_service.dart';
 import '../../../theme/app_theme.dart';
 import '../models/smart_models.dart';
 import '../smart_providers.dart';
+import '../../../theme/app_theme.dart';
 
 /// Screen that generates and displays a personalised weekly maintenance plan.
 class WeeklyPlanScreen extends ConsumerStatefulWidget {
@@ -280,7 +281,7 @@ class _DayCard extends StatelessWidget {
     return Card(
       margin: const EdgeInsets.only(bottom: AppSpacing.sm),
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12.0),
+        borderRadius: AppRadius.md2Radius,
       ),
       child: ExpansionTile(
         leading: CircleAvatar(

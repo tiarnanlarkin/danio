@@ -115,7 +115,7 @@ class _GlassCardState extends State<GlassCard> with SingleTickerProviderStateMix
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final radius = widget.borderRadius ?? BorderRadius.circular(24);
+    final radius = widget.borderRadius ?? AppRadius.largeRadius;
     
     Widget card = AnimatedBuilder(
       animation: _scaleAnimation,
@@ -356,7 +356,7 @@ class SoftCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final radius = borderRadius ?? BorderRadius.circular(24);
+    final radius = borderRadius ?? AppRadius.largeRadius;
 
     Widget card = Container(
       width: width,

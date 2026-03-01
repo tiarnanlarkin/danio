@@ -10,6 +10,7 @@ import '../../../services/openai_service.dart';
 import '../../../theme/app_theme.dart';
 import '../models/smart_models.dart';
 import '../smart_providers.dart';
+import '../../../theme/app_theme.dart';
 
 /// Screen for identifying fish or aquatic plants via camera/gallery.
 class FishIdScreen extends ConsumerStatefulWidget {
@@ -215,7 +216,7 @@ Return ONLY valid JSON with these fields (no markdown, no explanation):
   Widget _buildImageArea(ThemeData theme, bool isDark) {
     if (_selectedImage != null) {
       return ClipRRect(
-        borderRadius: BorderRadius.circular(12.0),
+        borderRadius: AppRadius.md2Radius,
         child: Image.file(
           _selectedImage!,
           height: 250,
@@ -229,7 +230,7 @@ Return ONLY valid JSON with these fields (no markdown, no explanation):
       height: 200,
       decoration: BoxDecoration(
         color: isDark ? AppColors.surfaceDark : AppColors.surfaceVariant,
-        borderRadius: BorderRadius.circular(12.0),
+        borderRadius: AppRadius.md2Radius,
         border: Border.all(
           color: isDark ? AppColors.borderDark : AppColors.border,
           width: 2,
@@ -297,7 +298,7 @@ Return ONLY valid JSON with these fields (no markdown, no explanation):
     return Card(
       elevation: AppElevation.level1,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12.0),
+        borderRadius: AppRadius.md2Radius,
       ),
       child: Padding(
         padding: const EdgeInsets.all(AppSpacing.md),

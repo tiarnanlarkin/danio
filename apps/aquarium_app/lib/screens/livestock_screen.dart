@@ -1432,7 +1432,7 @@ class _HealthChip extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
       decoration: BoxDecoration(
         color: color.withAlpha(30),
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: AppRadius.md2Radius,
         border: Border.all(color: color.withAlpha(100)),
       ),
       child: Row(

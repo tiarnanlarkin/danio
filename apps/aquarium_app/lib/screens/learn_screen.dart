@@ -739,7 +739,7 @@ class _LazyLearningPathCardState extends ConsumerState<_LazyLearningPathCard> {
                         AppColors.primaryAlpha10,
                       ],
                     ),
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: AppRadius.mediumRadius,
               border: Border.all(
                 color: isComplete
                     ? AppColors.successAlpha30
@@ -779,7 +779,7 @@ class _LazyLearningPathCardState extends ConsumerState<_LazyLearningPathCard> {
                         color: isDark
                             ? AppColors.whiteAlpha10
                             : AppColors.surfaceVariant,
-                        borderRadius: BorderRadius.circular(4),
+                        borderRadius: AppRadius.xsRadius,
                       ),
                       child: FractionallySizedBox(
                         alignment: Alignment.centerLeft,
@@ -791,7 +791,7 @@ class _LazyLearningPathCardState extends ConsumerState<_LazyLearningPathCard> {
                                   ? [AppColors.success, AppColors.successAlpha80]
                                   : [AppColors.primary, AppColors.secondary],
                             ),
-                            borderRadius: BorderRadius.circular(4),
+                            borderRadius: AppRadius.xsRadius,
                             boxShadow: progress > 0
                                 ? [
                                     BoxShadow(

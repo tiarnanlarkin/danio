@@ -99,7 +99,7 @@ class _CompatibilityCheckerWidgetState
 
     return Card(
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12.0),
+        borderRadius: AppRadius.md2Radius,
       ),
       child: Padding(
         padding: const EdgeInsets.all(AppSpacing.md),
@@ -192,7 +192,7 @@ class _CompatibilityCheckerWidgetState
                 padding: const EdgeInsets.all(AppSpacing.sm),
                 decoration: BoxDecoration(
                   color: _resultColor.withValues(alpha: 0.08),
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: AppRadius.smallRadius,
                   border: Border.all(
                     color: _resultColor.withValues(alpha: 0.2),
                   ),

@@ -132,7 +132,7 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
             const SizedBox(height: AppSpacing.md),
             Card(
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12.0),
+                borderRadius: AppRadius.md2Radius,
               ),
               child: Padding(
                 padding: const EdgeInsets.all(AppSpacing.md),
@@ -184,7 +184,7 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
                         padding: const EdgeInsets.all(AppSpacing.sm),
                         decoration: BoxDecoration(
                           color: AppColors.primary.withValues(alpha: 0.05),
-                          borderRadius: BorderRadius.circular(8),
+                          borderRadius: AppRadius.smallRadius,
                         ),
                         child: SelectableText(
                           _askResponse!,
@@ -356,7 +356,7 @@ class _OfflineBanner extends StatelessWidget {
             DanioColors.topaz.withValues(alpha: 0.08),
           ],
         ),
-        borderRadius: BorderRadius.circular(16.0),
+        borderRadius: AppRadius.mediumRadius,
         border: Border.all(
           color: AppColors.primary.withValues(alpha: 0.15),
         ),
@@ -386,7 +386,7 @@ class _OfflineBanner extends StatelessWidget {
             padding: const EdgeInsets.all(AppSpacing.sm),
             decoration: BoxDecoration(
               color: AppColors.surfaceVariant.withValues(alpha: 0.5),
-              borderRadius: BorderRadius.circular(8.0),
+              borderRadius: AppRadius.smallRadius,
             ),
             child: Text(
               'Build with:\nflutter run --dart-define=OPENAI_API_KEY=sk-...',
@@ -458,11 +458,11 @@ class _FeatureCard extends StatelessWidget {
     return Card(
       margin: const EdgeInsets.only(bottom: AppSpacing.sm),
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12.0),
+        borderRadius: AppRadius.md2Radius,
       ),
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(12.0),
+        borderRadius: AppRadius.md2Radius,
         child: Padding(
           padding: const EdgeInsets.all(AppSpacing.md),
           child: Row(

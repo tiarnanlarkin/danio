@@ -33,7 +33,7 @@ class LeaderboardScreen extends ConsumerWidget {
                 ),
                 decoration: BoxDecoration(
                   color: AppColors.primary,
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: AppRadius.md2Radius,
                 ),
                 child: Text(
                   'Coming Soon',
