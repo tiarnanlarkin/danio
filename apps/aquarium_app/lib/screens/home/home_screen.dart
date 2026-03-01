@@ -422,7 +422,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             ),
 
             // Speed Dial FAB - radial menu for quick actions
-            // TODO(P3): Add inline 'Quick Log' bottom sheet with pH/temp/ammonia fields
+            // ROADMAP: P3 — Add inline 'Quick Log' bottom sheet with pH/temp/ammonia fields for one-tap logging from home screen
             // for even faster water param entry without navigating to full log screen
             // Positioned above the dashboard with safe area padding
             Positioned(
@@ -783,7 +783,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           color: Theme.of(context).scaffoldBackgroundColor,
           borderRadius: const BorderRadius.vertical(top: Radius.circular(AppRadius.lg)),
         ),
-        padding: const EdgeInsets.all(AppSpacing.md),
+        padding: EdgeInsets.all(AppSpacing.md),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -997,8 +997,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       context: context,
       backgroundColor: Colors.transparent,
       builder: (ctx) => Container(
-        margin: const EdgeInsets.all(AppSpacing.md),
-        padding: const EdgeInsets.all(AppSpacing.lg2),
+        margin: EdgeInsets.all(AppSpacing.md),
+        padding: EdgeInsets.all(AppSpacing.lg2),
         decoration: BoxDecoration(
           color: Theme.of(context).scaffoldBackgroundColor,
           borderRadius: AppRadius.largeRadius,
@@ -1032,7 +1032,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     },
                     child: Container(
                       width: 100,
-                      padding: const EdgeInsets.all(AppSpacing.sm2),
+                      padding: EdgeInsets.all(AppSpacing.sm2),
                       decoration: BoxDecoration(
                         borderRadius: AppRadius.mediumRadius,
                         border: Border.all(
@@ -1111,7 +1111,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       context: context,
       backgroundColor: Colors.transparent,
       builder: (ctx) => Container(
-        margin: const EdgeInsets.all(AppSpacing.md),
+        margin: EdgeInsets.all(AppSpacing.md),
         child: ItemDetailPopup(
           title: title,
           icon: icon,
@@ -1129,8 +1129,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
       builder: (ctx) => Container(
-        margin: const EdgeInsets.all(AppSpacing.md),
-        padding: const EdgeInsets.all(AppSpacing.lg2),
+        margin: EdgeInsets.all(AppSpacing.md),
+        padding: EdgeInsets.all(AppSpacing.lg2),
         decoration: BoxDecoration(
           color: Theme.of(context).scaffoldBackgroundColor,
           borderRadius: AppRadius.largeRadius,
@@ -1198,8 +1198,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
       builder: (ctx) => Container(
-        margin: const EdgeInsets.all(AppSpacing.md),
-        padding: const EdgeInsets.all(AppSpacing.lg2),
+        margin: EdgeInsets.all(AppSpacing.md),
+        padding: EdgeInsets.all(AppSpacing.lg2),
         decoration: BoxDecoration(
           color: Theme.of(context).scaffoldBackgroundColor,
           borderRadius: AppRadius.largeRadius,

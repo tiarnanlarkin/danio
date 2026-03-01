@@ -23,7 +23,7 @@ class SupabaseService {
   }
 
   // ---------------------------------------------------------------------------
-  // TODO: Replace with your dedicated aquarium-app Supabase project credentials.
+  // ROADMAP: Replace with dedicated aquarium-app Supabase project credentials when migrating from shared instance
   //       1. Create a project at https://supabase.com/dashboard
   //       2. Copy the URL and anon key from Project Settings → API
   //       3. Run the migration SQL from lib/supabase/migrations/001_initial.sql

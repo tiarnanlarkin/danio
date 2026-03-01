@@ -33,7 +33,7 @@ const bool _showPerformanceOverlay = false; // Set to true to show FPS overlay
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // TODO: Configure Firebase - see docs/FIREBASE_SETUP_GUIDE.md
+  // ROADMAP: Configure Firebase for push notifications and analytics — see docs/FIREBASE_SETUP_GUIDE.md
 
   // Initialize global error handler
   GlobalErrorHandler.initialize(
