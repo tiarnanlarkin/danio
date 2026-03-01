@@ -131,7 +131,7 @@ class _FriendComparisonScreenState
                       decoration: BoxDecoration(
                         color: isSelected
                             ? AppOverlays.primary20
-                            : Colors.grey.shade100,
+                            : Theme.of(context).colorScheme.surfaceContainerHighest,
                         shape: BoxShape.circle,
                         border: isSelected
                             ? Border.all(color: AppColors.primary, width: 2)
@@ -290,7 +290,7 @@ class _UserCard extends StatelessWidget {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
               decoration: BoxDecoration(
-                color: Colors.grey.shade200,
+                color: Theme.of(context).colorScheme.surfaceContainerHigh,
                 borderRadius: AppRadius.mediumRadius,
               ),
               child: Text(
@@ -456,7 +456,7 @@ class _StatComparisonRow extends StatelessWidget {
                     Container(
                       height: 8,
                       decoration: BoxDecoration(
-                        color: Colors.grey.shade300,
+                        color: Theme.of(context).colorScheme.outlineVariant,
                         borderRadius: AppRadius.xsRadius,
                       ),
                     ),
@@ -520,9 +520,9 @@ class _ProgressChartSection extends StatelessWidget {
           margin: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
           padding: const EdgeInsets.all(AppSpacing.md),
           decoration: BoxDecoration(
-            color: Colors.grey.shade50,
+            color: Theme.of(context).colorScheme.surfaceContainerLowest,
             borderRadius: AppRadius.mediumRadius,
-            border: Border.all(color: Colors.grey.shade300),
+            border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
           ),
           child: _buildChart(context),
         ),
@@ -557,7 +557,7 @@ class _ProgressChartSection extends StatelessWidget {
           drawVerticalLine: false,
           horizontalInterval: 50,
           getDrawingHorizontalLine: (value) {
-            return FlLine(color: Colors.grey.shade300, strokeWidth: 1);
+            return FlLine(color: Theme.of(context).colorScheme.outlineVariant, strokeWidth: 1);
           },
         ),
         titlesData: FlTitlesData(

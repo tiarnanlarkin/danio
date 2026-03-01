@@ -60,7 +60,7 @@ class FriendsScreen extends ConsumerWidget {
                 'share your tanks, and cheer each other on.',
                 textAlign: TextAlign.center,
                 style: theme.textTheme.bodyMedium?.copyWith(
-                  color: Colors.grey.shade600,
+                  color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
                   height: 1.5,
                 ),
               ),
@@ -68,12 +68,12 @@ class FriendsScreen extends ConsumerWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.construction, size: 16, color: Colors.grey.shade400),
+                  Icon(Icons.construction, size: 16, color: Theme.of(context).colorScheme.onSurface.withOpacity(0.4)),
                   const SizedBox(width: AppSpacing.sm),
                   Text(
                     'We\'re building this for you!',
                     style: theme.textTheme.bodySmall?.copyWith(
-                      color: Colors.grey.shade400,
+                      color: Theme.of(context).colorScheme.onSurface.withOpacity(0.4),
                       fontStyle: FontStyle.italic,
                     ),
                   ),

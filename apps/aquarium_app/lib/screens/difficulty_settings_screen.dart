@@ -131,7 +131,7 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
             const SizedBox(height: AppSpacing.sm),
             Text(
               '${(overallSkill * 100).toInt()}% Mastery',
-              style: Theme.of(context).textTheme.titleMedium!.copyWith(color: Colors.grey),
+              style: Theme.of(context).textTheme.titleMedium!.copyWith(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5)),
             ),
           ],
         ),
@@ -165,16 +165,16 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
           child: Center(
             child: Column(
               children: [
-                const Icon(Icons.school_outlined, size: AppIconSizes.xl, color: Colors.grey),
+                Icon(Icons.school_outlined, size: AppIconSizes.xl, color: Theme.of(context).colorScheme.onSurface.withOpacity(0.4)),
                 const SizedBox(height: AppSpacing.sm),
-                const Text(
+                Text(
                   'No lesson data yet',
-                  style: TextStyle(color: Colors.grey),
+                  style: TextStyle(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5)),
                 ),
                 const SizedBox(height: AppSpacing.xs),
                 Text(
                   'Complete lessons to see your skill progress',
-                  style: Theme.of(context).textTheme.bodySmall!.copyWith(color: Colors.grey),
+                  style: Theme.of(context).textTheme.bodySmall!.copyWith(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5)),
                   textAlign: TextAlign.center,
                 ),
               ],
