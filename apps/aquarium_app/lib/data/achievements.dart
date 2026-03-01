@@ -13,7 +13,7 @@ class AchievementDefinitions {
   static const firstLesson = Achievement(
     id: 'first_lesson',
     name: 'First Steps',
-    description: 'Complete your first lesson',
+    description: 'You completed your very first lesson! Every expert started right here.',
     icon: '🐣',
     rarity: AchievementRarity.bronze,
     category: AchievementCategory.learningProgress,
@@ -23,7 +23,7 @@ class AchievementDefinitions {
   static const lessons10 = Achievement(
     id: 'lessons_10',
     name: 'Getting Started',
-    description: 'Complete 10 lessons',
+    description: 'Ten lessons down! You are building a real foundation of fish knowledge.',
     icon: '🐠',
     rarity: AchievementRarity.bronze,
     category: AchievementCategory.learningProgress,
@@ -33,7 +33,7 @@ class AchievementDefinitions {
   static const lessons50 = Achievement(
     id: 'lessons_50',
     name: 'Dedicated Learner',
-    description: 'Complete 50 lessons',
+    description: 'Fifty lessons conquered! Your fish are lucky to have such a dedicated keeper.',
     icon: '🐟',
     rarity: AchievementRarity.silver,
     category: AchievementCategory.learningProgress,
@@ -43,7 +43,7 @@ class AchievementDefinitions {
   static const lessons100 = Achievement(
     id: 'lessons_100',
     name: 'Century Club',
-    description: 'Complete 100 lessons',
+    description: 'One hundred lessons! You know more about fishkeeping than most people ever will.',
     icon: '🦈',
     rarity: AchievementRarity.gold,
     category: AchievementCategory.learningProgress,
@@ -53,7 +53,7 @@ class AchievementDefinitions {
   static const beginnerMaster = Achievement(
     id: 'beginner_master',
     name: 'Beginner Graduate',
-    description: 'Complete all beginner lessons',
+    description: 'You have mastered every beginner lesson. Time to level up!',
     icon: '🎓',
     rarity: AchievementRarity.silver,
     category: AchievementCategory.learningProgress,
@@ -62,7 +62,7 @@ class AchievementDefinitions {
   static const intermediateMaster = Achievement(
     id: 'intermediate_master',
     name: 'Intermediate Expert',
-    description: 'Complete all intermediate lessons',
+    description: 'All intermediate lessons complete! You are becoming a serious aquarist.',
     icon: '🏅',
     rarity: AchievementRarity.gold,
     category: AchievementCategory.learningProgress,
@@ -71,7 +71,7 @@ class AchievementDefinitions {
   static const advancedMaster = Achievement(
     id: 'advanced_master',
     name: 'Advanced Scholar',
-    description: 'Complete all advanced lessons',
+    description: 'You have conquered every advanced topic. You are truly a scholar of the aquatic world.',
     icon: '🏆',
     rarity: AchievementRarity.platinum,
     category: AchievementCategory.learningProgress,
@@ -80,7 +80,7 @@ class AchievementDefinitions {
   static const waterChemistryMaster = Achievement(
     id: 'water_chemistry_master',
     name: 'Chemistry Whiz',
-    description: 'Master all water chemistry topics',
+    description: 'Every water chemistry topic mastered! pH, GH, KH -- you speak fluent water.',
     icon: '⚗️',
     rarity: AchievementRarity.gold,
     category: AchievementCategory.learningProgress,
@@ -89,7 +89,7 @@ class AchievementDefinitions {
   static const plantsMaster = Achievement(
     id: 'plants_master',
     name: 'Green Thumb',
-    description: 'Master all plant care topics',
+    description: 'All plant topics complete! Your underwater garden skills are blooming.',
     icon: '🌿',
     rarity: AchievementRarity.gold,
     category: AchievementCategory.learningProgress,
@@ -98,7 +98,7 @@ class AchievementDefinitions {
   static const livestockMaster = Achievement(
     id: 'livestock_master',
     name: 'Fish Whisperer',
-    description: 'Master all livestock care topics',
+    description: 'Every fish care topic conquered! Your aquatic residents are in expert hands.',
     icon: '🐡',
     rarity: AchievementRarity.gold,
     category: AchievementCategory.learningProgress,
@@ -111,7 +111,7 @@ class AchievementDefinitions {
   static const streak3 = Achievement(
     id: 'streak_3',
     name: 'Getting Consistent',
-    description: 'Maintain a 3-day streak',
+    description: 'Three days running! You are building a great habit.',
     icon: '🔥',
     rarity: AchievementRarity.bronze,
     category: AchievementCategory.streaks,
@@ -121,7 +121,7 @@ class AchievementDefinitions {
   static const streak7 = Achievement(
     id: 'streak_7',
     name: 'Week Warrior',
-    description: 'Maintain a 7-day streak',
+    description: 'A full week of learning! Consistency is the secret to fishkeeping mastery.',
     icon: '📅',
     rarity: AchievementRarity.bronze,
     category: AchievementCategory.streaks,
@@ -131,7 +131,7 @@ class AchievementDefinitions {
   static const streak14 = Achievement(
     id: 'streak_14',
     name: 'Two Week Wonder',
-    description: 'Maintain a 14-day streak',
+    description: 'Two solid weeks! They say it takes 14 days to form a habit. You are hooked!',
     icon: '🌟',
     rarity: AchievementRarity.silver,
     category: AchievementCategory.streaks,
@@ -141,7 +141,7 @@ class AchievementDefinitions {
   static const streak30 = Achievement(
     id: 'streak_30',
     name: 'Monthly Marathon',
-    description: 'Maintain a 30-day streak',
+    description: 'Thirty days straight! Your dedication is truly impressive. Keep that flame alive!',
     icon: '💪',
     rarity: AchievementRarity.silver,
     category: AchievementCategory.streaks,
@@ -151,7 +151,7 @@ class AchievementDefinitions {
   static const streak60 = Achievement(
     id: 'streak_60',
     name: 'Unstoppable',
-    description: 'Maintain a 60-day streak',
+    description: 'Sixty days and counting! Nothing can stop you now.',
     icon: '⚡',
     rarity: AchievementRarity.gold,
     category: AchievementCategory.streaks,
@@ -161,7 +161,7 @@ class AchievementDefinitions {
   static const streak100 = Achievement(
     id: 'streak_100',
     name: 'Centurion',
-    description: 'Maintain a 100-day streak',
+    description: 'One hundred days of dedication! You are an inspiration to fishkeepers everywhere.',
     icon: '🏛️',
     rarity: AchievementRarity.gold,
     category: AchievementCategory.streaks,
@@ -171,7 +171,7 @@ class AchievementDefinitions {
   static const streak365 = Achievement(
     id: 'streak_365',
     name: 'Year of Learning',
-    description: 'Maintain a 365-day streak',
+    description: 'An entire year of daily learning. You are a living legend of the fishkeeping world!',
     icon: '👑',
     rarity: AchievementRarity.platinum,
     category: AchievementCategory.streaks,
@@ -181,7 +181,7 @@ class AchievementDefinitions {
   static const weekendWarrior = Achievement(
     id: 'weekend_warrior',
     name: 'Weekend Warrior',
-    description: 'Complete lessons on 10 consecutive weekends',
+    description: 'Ten weekends in a row! Who needs a lie-in when there are fish facts to learn?',
     icon: '🏖️',
     rarity: AchievementRarity.silver,
     category: AchievementCategory.streaks,
@@ -195,7 +195,7 @@ class AchievementDefinitions {
   static const xp100 = Achievement(
     id: 'xp_100',
     name: 'First Century',
-    description: 'Earn 100 XP',
+    description: 'Your first century of XP! The journey of a thousand points begins with one lesson.',
     icon: '⭐',
     rarity: AchievementRarity.bronze,
     category: AchievementCategory.xpMilestones,
@@ -205,7 +205,7 @@ class AchievementDefinitions {
   static const xp500 = Achievement(
     id: 'xp_500',
     name: 'Rising Star',
-    description: 'Earn 500 XP',
+    description: 'Five hundred XP! You are rising through the ranks fast.',
     icon: '🌠',
     rarity: AchievementRarity.bronze,
     category: AchievementCategory.xpMilestones,
@@ -215,7 +215,7 @@ class AchievementDefinitions {
   static const xp1000 = Achievement(
     id: 'xp_1000',
     name: 'Thousand Club',
-    description: 'Earn 1,000 XP',
+    description: 'A thousand XP earned! You are officially in the big leagues now.',
     icon: '💫',
     rarity: AchievementRarity.silver,
     category: AchievementCategory.xpMilestones,
@@ -225,7 +225,7 @@ class AchievementDefinitions {
   static const xp2500 = Achievement(
     id: 'xp_2500',
     name: 'Power Learner',
-    description: 'Earn 2,500 XP',
+    description: 'Two and a half thousand XP! Your knowledge grows deeper with every lesson.',
     icon: '🌟',
     rarity: AchievementRarity.silver,
     category: AchievementCategory.xpMilestones,
@@ -235,7 +235,7 @@ class AchievementDefinitions {
   static const xp5000 = Achievement(
     id: 'xp_5000',
     name: 'Elite Scholar',
-    description: 'Earn 5,000 XP',
+    description: 'Five thousand XP! You have earned your place among the elite.',
     icon: '✨',
     rarity: AchievementRarity.gold,
     category: AchievementCategory.xpMilestones,
@@ -245,7 +245,7 @@ class AchievementDefinitions {
   static const xp10000 = Achievement(
     id: 'xp_10000',
     name: 'Master of Knowledge',
-    description: 'Earn 10,000 XP',
+    description: 'Ten thousand XP! Your mastery of aquarium knowledge is truly remarkable.',
     icon: '🎖️',
     rarity: AchievementRarity.gold,
     category: AchievementCategory.xpMilestones,
@@ -255,7 +255,7 @@ class AchievementDefinitions {
   static const xp25000 = Achievement(
     id: 'xp_25000',
     name: 'Legendary Learner',
-    description: 'Earn 25,000 XP',
+    description: 'Twenty-five thousand XP! Legends are written about dedication like yours.',
     icon: '🏅',
     rarity: AchievementRarity.platinum,
     category: AchievementCategory.xpMilestones,
@@ -265,7 +265,7 @@ class AchievementDefinitions {
   static const xp50000 = Achievement(
     id: 'xp_50000',
     name: 'Apex Aquarist',
-    description: 'Earn 50,000 XP',
+    description: 'Fifty thousand XP! You have reached the absolute pinnacle. Take a bow!',
     icon: '👑',
     rarity: AchievementRarity.platinum,
     category: AchievementCategory.xpMilestones,
@@ -279,7 +279,7 @@ class AchievementDefinitions {
   static const earlyBird = Achievement(
     id: 'early_bird',
     name: 'Early Bird',
-    description: 'Complete a lesson before 8:00 AM',
+    description: 'Up with the sunrise! You completed a lesson before 8 AM. Early fish gets the worm.',
     icon: '🌅',
     rarity: AchievementRarity.bronze,
     category: AchievementCategory.special,
@@ -288,7 +288,7 @@ class AchievementDefinitions {
   static const nightOwl = Achievement(
     id: 'night_owl',
     name: 'Night Owl',
-    description: 'Complete a lesson after 10:00 PM',
+    description: 'Burning the midnight oil! Late-night learning hits different.',
     icon: '🦉',
     rarity: AchievementRarity.bronze,
     category: AchievementCategory.special,
@@ -297,7 +297,7 @@ class AchievementDefinitions {
   static const perfectionist = Achievement(
     id: 'perfectionist',
     name: 'Perfectionist',
-    description: 'Earn 10 perfect scores (100%)',
+    description: 'Ten perfect quizzes! Your attention to detail would make any fish proud.',
     icon: '💯',
     rarity: AchievementRarity.gold,
     category: AchievementCategory.special,
@@ -307,7 +307,7 @@ class AchievementDefinitions {
   static const speedDemon = Achievement(
     id: 'speed_demon',
     name: 'Speed Demon',
-    description: 'Complete a lesson in under 2 minutes',
+    description: 'Lightning fast! You blazed through a lesson in under 2 minutes.',
     icon: '⚡',
     rarity: AchievementRarity.silver,
     category: AchievementCategory.special,
@@ -316,7 +316,7 @@ class AchievementDefinitions {
   static const marathonLearner = Achievement(
     id: 'marathon_learner',
     name: 'Marathon Learner',
-    description: 'Complete 5 lessons in one day',
+    description: 'Five lessons in a single day! Your thirst for knowledge is unquenchable.',
     icon: '🏃',
     rarity: AchievementRarity.gold,
     category: AchievementCategory.special,
@@ -325,7 +325,7 @@ class AchievementDefinitions {
   static const comeback = Achievement(
     id: 'comeback',
     name: 'The Comeback',
-    description: 'Return after a 30-day break',
+    description: 'Welcome back! Your fish missed you. What matters is you came back.',
     icon: '🎯',
     rarity: AchievementRarity.silver,
     category: AchievementCategory.special,
@@ -334,7 +334,7 @@ class AchievementDefinitions {
   static const socialButterfly = Achievement(
     id: 'social_butterfly',
     name: 'Social Butterfly',
-    description: 'Add 10 friends',
+    description: 'Ten friends and counting! Fishkeeping is better together.',
     icon: '🦋',
     rarity: AchievementRarity.silver,
     category: AchievementCategory.special,
@@ -344,7 +344,7 @@ class AchievementDefinitions {
   static const teachersPet = Achievement(
     id: 'teachers_pet',
     name: "Teacher's Pet",
-    description: 'Complete all available lessons',
+    description: 'Every lesson in the app, completed! You have truly earned this one.',
     icon: '🍎',
     rarity: AchievementRarity.platinum,
     category: AchievementCategory.special,
@@ -353,7 +353,7 @@ class AchievementDefinitions {
   static const completionist = Achievement(
     id: 'completionist',
     name: 'Completionist',
-    description: 'Unlock all other achievements',
+    description: 'Every single achievement unlocked. You are the ultimate Danio champion!',
     icon: '🎊',
     rarity: AchievementRarity.platinum,
     category: AchievementCategory.special,
@@ -363,7 +363,7 @@ class AchievementDefinitions {
   static const midnightScholar = Achievement(
     id: 'midnight_scholar',
     name: 'Midnight Scholar',
-    description: 'Complete a lesson at exactly midnight',
+    description: 'A lesson at the stroke of midnight! True dedication knows no bedtime.',
     icon: '🌙',
     rarity: AchievementRarity.silver,
     category: AchievementCategory.special,
@@ -376,7 +376,7 @@ class AchievementDefinitions {
   static const dailyTips10 = Achievement(
     id: 'daily_tips_10',
     name: 'Tip Explorer',
-    description: 'Read 10 daily tips',
+    description: 'Ten tips absorbed! Each one makes you a slightly better fishkeeper.',
     icon: '💡',
     rarity: AchievementRarity.bronze,
     category: AchievementCategory.engagement,
@@ -386,7 +386,7 @@ class AchievementDefinitions {
   static const dailyTips50 = Achievement(
     id: 'daily_tips_50',
     name: 'Tip Enthusiast',
-    description: 'Read 50 daily tips',
+    description: 'Fifty tips! You are a sponge for knowledge (pun intended).',
     icon: '📖',
     rarity: AchievementRarity.silver,
     category: AchievementCategory.engagement,
@@ -396,7 +396,7 @@ class AchievementDefinitions {
   static const dailyTips100 = Achievement(
     id: 'daily_tips_100',
     name: 'Wisdom Seeker',
-    description: 'Read 100 daily tips',
+    description: 'One hundred tips read! You are now the person your friends ask for fish advice.',
     icon: '📚',
     rarity: AchievementRarity.gold,
     category: AchievementCategory.engagement,
@@ -406,7 +406,7 @@ class AchievementDefinitions {
   static const practice10 = Achievement(
     id: 'practice_10',
     name: 'Practice Makes Progress',
-    description: 'Complete 10 practice sessions',
+    description: 'Ten practice sessions done! Repetition is how knowledge sticks.',
     icon: '🎯',
     rarity: AchievementRarity.bronze,
     category: AchievementCategory.engagement,
@@ -416,7 +416,7 @@ class AchievementDefinitions {
   static const practice50 = Achievement(
     id: 'practice_50',
     name: 'Practice Champion',
-    description: 'Complete 50 practice sessions',
+    description: 'Fifty practice rounds! Your knowledge retention must be incredible.',
     icon: '🎪',
     rarity: AchievementRarity.silver,
     category: AchievementCategory.engagement,
@@ -426,7 +426,7 @@ class AchievementDefinitions {
   static const practice100 = Achievement(
     id: 'practice_100',
     name: 'Practice Master',
-    description: 'Complete 100 practice sessions',
+    description: 'One hundred practice sessions! You have truly mastered the art of review.',
     icon: '🏆',
     rarity: AchievementRarity.gold,
     category: AchievementCategory.engagement,
@@ -440,7 +440,7 @@ class AchievementDefinitions {
   static const placement = Achievement(
     id: 'placement_complete',
     name: 'Assessed & Ready',
-    description: 'Complete the placement test',
+    description: 'Placement test done! Now we know exactly where to start your journey.',
     icon: '📝',
     rarity: AchievementRarity.bronze,
     category: AchievementCategory.learningProgress,
@@ -449,7 +449,7 @@ class AchievementDefinitions {
   static const shopVisitor = Achievement(
     id: 'shop_visitor',
     name: 'Window Shopper',
-    description: 'Visit the shop 5 times',
+    description: 'Five visits to the shop! Just browsing, or planning something special?',
     icon: '🛍️',
     rarity: AchievementRarity.bronze,
     category: AchievementCategory.engagement,
@@ -459,7 +459,7 @@ class AchievementDefinitions {
   static const heartCollector = Achievement(
     id: 'heart_collector',
     name: 'Full Hearts',
-    description: 'Maintain 5/5 hearts for 7 days',
+    description: 'A full week with all hearts intact! Flawless performance.',
     icon: '❤️',
     rarity: AchievementRarity.silver,
     category: AchievementCategory.special,
@@ -468,7 +468,7 @@ class AchievementDefinitions {
   static const leagueClimber = Achievement(
     id: 'league_climber',
     name: 'League Climber',
-    description: 'Reach Gold league or higher',
+    description: 'You climbed to Gold league! Your competitive spirit shines bright.',
     icon: '🥇',
     rarity: AchievementRarity.gold,
     category: AchievementCategory.special,
@@ -477,7 +477,7 @@ class AchievementDefinitions {
   static const dailyGoalStreak = Achievement(
     id: 'daily_goal_streak',
     name: 'Goal Getter',
-    description: 'Meet your daily XP goal for 7 days straight',
+    description: 'Seven days of hitting your goal! That is what commitment looks like.',
     icon: '🎯',
     rarity: AchievementRarity.silver,
     category: AchievementCategory.streaks,
@@ -491,7 +491,7 @@ class AchievementDefinitions {
   static const firstReview = Achievement(
     id: 'first_review',
     name: 'First Review',
-    description: 'Complete your first review session',
+    description: 'Your first review! Spaced repetition is the secret weapon of great learners.',
     icon: '📝',
     rarity: AchievementRarity.bronze,
     category: AchievementCategory.engagement,
@@ -500,7 +500,7 @@ class AchievementDefinitions {
   static const reviews10 = Achievement(
     id: 'reviews_10',
     name: 'Reviewer',
-    description: 'Complete 10 review sessions',
+    description: 'Ten reviews completed! Your long-term memory is getting a serious workout.',
     icon: '📚',
     rarity: AchievementRarity.bronze,
     category: AchievementCategory.engagement,
@@ -510,7 +510,7 @@ class AchievementDefinitions {
   static const reviews50 = Achievement(
     id: 'reviews_50',
     name: 'Dedicated Reviewer',
-    description: 'Complete 50 review sessions',
+    description: 'Fifty reviews! The knowledge you have built is rock-solid by now.',
     icon: '📖',
     rarity: AchievementRarity.silver,
     category: AchievementCategory.engagement,
@@ -520,7 +520,7 @@ class AchievementDefinitions {
   static const reviews100 = Achievement(
     id: 'reviews_100',
     name: 'Review Master',
-    description: 'Complete 100 review sessions',
+    description: 'One hundred reviews! Your recall is sharper than a swordtail fin.',
     icon: '🎓',
     rarity: AchievementRarity.gold,
     category: AchievementCategory.engagement,
@@ -530,7 +530,7 @@ class AchievementDefinitions {
   static const reviewStreak3 = Achievement(
     id: 'review_streak_3',
     name: 'Consistent Reviewer',
-    description: 'Review for 3 days in a row',
+    description: 'Three days of reviews! Building the habit one day at a time.',
     icon: '🔥',
     rarity: AchievementRarity.bronze,
     category: AchievementCategory.streaks,
@@ -540,7 +540,7 @@ class AchievementDefinitions {
   static const reviewStreak7 = Achievement(
     id: 'review_streak_7',
     name: 'Weekly Reviewer',
-    description: 'Review for 7 days in a row',
+    description: 'A full week of daily reviews! Your memory muscles are getting strong.',
     icon: '📅',
     rarity: AchievementRarity.silver,
     category: AchievementCategory.streaks,
@@ -550,7 +550,7 @@ class AchievementDefinitions {
   static const reviewStreak14 = Achievement(
     id: 'review_streak_14',
     name: 'Review Devotee',
-    description: 'Review for 14 days in a row',
+    description: 'Two weeks of daily reviews! Your dedication to retention is admirable.',
     icon: '💪',
     rarity: AchievementRarity.gold,
     category: AchievementCategory.streaks,
@@ -560,7 +560,7 @@ class AchievementDefinitions {
   static const reviewStreak30 = Achievement(
     id: 'review_streak_30',
     name: 'Memory Champion',
-    description: 'Review for 30 days in a row',
+    description: 'Thirty days of reviews! You have the memory of a elephant... fish.',
     icon: '🏆',
     rarity: AchievementRarity.platinum,
     category: AchievementCategory.streaks,
