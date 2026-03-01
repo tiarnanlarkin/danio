@@ -168,7 +168,7 @@ class _EmptyStateState extends State<EmptyState>
                 Text(
                   widget.title,
                   style: AppTypography.headlineMedium.copyWith(
-                    color: AppColors.textPrimary,
+                    color: Theme.of(context).colorScheme.onSurface,
                   ),
                   textAlign: TextAlign.center,
                 ),

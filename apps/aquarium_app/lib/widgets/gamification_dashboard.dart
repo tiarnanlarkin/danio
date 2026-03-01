@@ -208,7 +208,9 @@ class _StatItem extends StatelessWidget {
           value,
           style: AppTypography.titleMedium.copyWith(
             fontWeight: FontWeight.w800,
-            color: const Color(0xFF3D2B1F),
+            color: Theme.of(context).brightness == Brightness.dark
+                ? AppColors.textPrimaryDark
+                : const Color(0xFF3D2B1F),
             fontSize: 14,
           ),
           overflow: TextOverflow.ellipsis,
@@ -334,7 +336,7 @@ class _DailyGoalProgress extends StatelessWidget {
             Text(
               'Daily Goal: $current/$goal XP',
               style: AppTypography.labelMedium.copyWith(
-                color: isComplete ? AppColors.success : AppColors.textPrimary,
+                color: isComplete ? AppColors.success : Theme.of(context).colorScheme.onSurface,
                 fontWeight: isComplete ? FontWeight.bold : FontWeight.normal,
               ),
             ),
