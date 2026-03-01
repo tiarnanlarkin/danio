@@ -85,7 +85,7 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
               children: [
                 const Text(
                   'Overall Skill Level',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  style: Theme.of(context).textTheme.titleLarge!.copyWith(fontWeight: FontWeight.bold),
                 ),
                 Container(
                   padding: const EdgeInsets.symmetric(
@@ -109,7 +109,7 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
                     children: [
                       Text(
                         difficulty.emoji,
-                        style: const TextStyle(fontSize: 16),
+                        style: Theme.of(context).textTheme.titleMedium,
                       ),
                       const SizedBox(width: AppSpacing.xs),
                       Text(
@@ -131,7 +131,7 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
             const SizedBox(height: AppSpacing.sm),
             Text(
               '${(overallSkill * 100).toInt()}% Mastery',
-              style: const TextStyle(fontSize: 16, color: Colors.grey),
+              style: Theme.of(context).textTheme.titleMedium!.copyWith(color: Colors.grey),
             ),
           ],
         ),
@@ -145,7 +145,7 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
       children: [
         const Text(
           'Skills by Topic',
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          style: Theme.of(context).textTheme.titleLarge!.copyWith(fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 12),
         ..._buildTopicSkillCards(),
@@ -174,7 +174,7 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
                 SizedBox(height: AppSpacing.xs),
                 Text(
                   'Complete lessons to see your skill progress',
-                  style: TextStyle(color: Colors.grey, fontSize: 12),
+                  style: Theme.of(context).textTheme.bodySmall!.copyWith(color: Colors.grey),
                   textAlign: TextAlign.center,
                 ),
               ],
@@ -209,8 +209,7 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
                   Expanded(
                     child: Text(
                       topicName,
-                      style: const TextStyle(
-                        fontSize: 16,
+                      style: Theme.of(context).textTheme.titleMedium!.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -227,13 +226,12 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
                       ),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
-                        children: const [
-                          Text('🏆', style: TextStyle(fontSize: 12)),
-                          SizedBox(width: AppSpacing.xs),
+                        children: [
+                          const Text('🏆', style: TextStyle(fontSize: 12)),
+                          const SizedBox(width: AppSpacing.xs),
                           Text(
                             'Mastered',
-                            style: TextStyle(
-                              fontSize: 12,
+                            style: Theme.of(context).textTheme.bodySmall!.copyWith(
                               fontWeight: FontWeight.bold,
                               color: Colors.amber,
                             ),
@@ -293,8 +291,7 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
           const SizedBox(width: AppSpacing.xs),
           Text(
             label,
-            style: TextStyle(
-              fontSize: 12,
+            style: Theme.of(context).textTheme.bodySmall!.copyWith(
               color: color,
               fontWeight: FontWeight.w500,
             ),
@@ -322,7 +319,7 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
       children: [
         const Text(
           'Performance History',
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          style: Theme.of(context).textTheme.titleLarge!.copyWith(fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 12),
         _buildPerformanceHistoryCard(),
@@ -342,7 +339,7 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
         child: Center(
           child: Text(
             'Complete lessons to see your performance history',
-            style: TextStyle(color: Colors.grey[600]),
+            style: TextStyle(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6)),
           ),
         ),
       );
@@ -357,7 +354,7 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
         children: [
           const Text(
             'Recent Activity',
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            style: Theme.of(context).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 12),
           ...recentFive.map((record) => _buildHistoryItem(record)),
@@ -401,7 +398,7 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
                 ),
                 Text(
                   _formatRelativeTime(record.timestamp),
-                  style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+                  style: Theme.of(context).textTheme.bodySmall!.copyWith(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6)),
                 ),
               ],
             ),
@@ -454,12 +451,12 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
       children: [
         const Text(
           'Manual Difficulty Override',
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          style: Theme.of(context).textTheme.titleLarge!.copyWith(fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: AppSpacing.sm),
         Text(
           'Override automatic difficulty for specific topics',
-          style: TextStyle(color: Colors.grey[600], fontSize: 14),
+          style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6)),
         ),
         const SizedBox(height: 12),
         AppCard(
@@ -497,7 +494,7 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
                 if (currentOverride == null)
                   Text(
                     '${recommendation.suggestedLevel.emoji} ${recommendation.suggestedLevel.displayName} (Auto)',
-                    style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+                    style: Theme.of(context).textTheme.bodySmall!.copyWith(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6)),
                   ),
               ],
             ),
@@ -543,7 +540,7 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
       children: [
         const Text(
           'AI Recommendations',
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          style: Theme.of(context).textTheme.titleLarge!.copyWith(fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 12),
         ..._buildRecommendationCards(),
@@ -594,9 +591,8 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
                         const SizedBox(height: AppSpacing.xs),
                         Text(
                           'Suggested: ${recommendation.suggestedLevel.emoji} ${recommendation.suggestedLevel.displayName}',
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: Colors.grey[700],
+                          style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                            color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
                           ),
                         ),
                       ],
@@ -620,7 +616,7 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
               Expanded(
                 child: Text(
                   'No changes recommended. Keep up the great work!',
-                  style: TextStyle(color: Colors.grey[700]),
+                  style: TextStyle(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7)),
                 ),
               ),
             ],
@@ -639,7 +635,7 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
       child: LinearProgressIndicator(
         value: skillLevel,
         minHeight: 12,
-        backgroundColor: Colors.grey[300],
+        backgroundColor: Theme.of(context).brightness == Brightness.dark ? AppColors.surfaceVariantDark : Colors.grey[300],
         valueColor: AlwaysStoppedAnimation<Color>(
           _getSkillLevelColor(skillLevel),
         ),

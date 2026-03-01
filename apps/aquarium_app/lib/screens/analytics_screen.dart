@@ -321,9 +321,8 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
               Expanded(
                 child: Text(
                   label,
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.grey[600],
+                  style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                    color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -334,8 +333,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
           const SizedBox(height: AppSpacing.sm),
           Text(
             value,
-            style: TextStyle(
-              fontSize: 20,
+            style: Theme.of(context).textTheme.titleLarge!.copyWith(
               fontWeight: FontWeight.bold,
               color: color,
             ),
@@ -346,7 +344,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
             const SizedBox(height: AppSpacing.xs),
             Text(
               subtitle,
-              style: Theme.of(context).textTheme.labelSmall!.copyWith(color: Colors.grey[600]),
+              style: Theme.of(context).textTheme.labelSmall!.copyWith(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6)),
             ),
           ],
         ],
@@ -666,7 +664,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
 
                 Color color;
                 if (dayData.xp == 0) {
-                  color = Colors.grey[200]!;
+                  color = Theme.of(context).brightness == Brightness.dark ? AppColors.surfaceVariantDark : Colors.grey[200]!;
                 } else if (dayData.xp < 25) {
                   color = Colors.green[200]!;
                 } else if (dayData.xp < 50) {
@@ -694,15 +692,15 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Text('Less', style: TextStyle(fontSize: 11)),
+              Text('Less', style: Theme.of(context).textTheme.labelSmall),
               const SizedBox(width: AppSpacing.xs),
-              _buildLegendBox(Colors.grey[200]!),
+              _buildLegendBox(Theme.of(context).brightness == Brightness.dark ? AppColors.surfaceVariantDark : Colors.grey[200]!),
               _buildLegendBox(Colors.green[200]!),
               _buildLegendBox(Colors.green[400]!),
               _buildLegendBox(Colors.green[600]!),
               _buildLegendBox(Colors.green[800]!),
               const SizedBox(width: AppSpacing.xs),
-              const Text('More', style: TextStyle(fontSize: 11)),
+              Text('More', style: Theme.of(context).textTheme.labelSmall),
             ],
           ),
         ],
@@ -777,8 +775,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                 Expanded(
                   child: Text(
                     insight.message,
-                    style: TextStyle(
-                      fontSize: 16,
+                    style: Theme.of(context).textTheme.titleMedium!.copyWith(
                       fontWeight: FontWeight.bold,
                       color: color,
                     ),
@@ -791,7 +788,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
               const SizedBox(height: AppSpacing.sm),
               Text(
                 insight.detailedMessage!,
-                style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Colors.grey[700]),
+                style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7)),
               ),
             ],
             if (insight.recommendation != null) ...[
@@ -810,7 +807,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                     Expanded(
                       child: Text(
                         insight.recommendation!,
-                        style: TextStyle(fontSize: 13, color: color),
+                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: color),
                       ),
                     ),
                   ],
@@ -857,8 +854,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                 Expanded(
                   child: Text(
                     topic.topicName,
-                    style: const TextStyle(
-                      fontSize: 16,
+                    style: Theme.of(context).textTheme.titleMedium!.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -875,12 +871,12 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                     children: [
                       Text(
                         'Progress',
-                        style: Theme.of(context).textTheme.bodySmall!.copyWith(color: Colors.grey[600]),
+                        style: Theme.of(context).textTheme.bodySmall!.copyWith(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6)),
                       ),
                       const SizedBox(height: AppSpacing.xs),
                       LinearProgressIndicator(
                         value: topic.masteryPercentage,
-                        backgroundColor: Colors.grey[200],
+                        backgroundColor: Theme.of(context).brightness == Brightness.dark ? AppColors.surfaceVariantDark : Colors.grey[200],
                         color: topic.isStrong
                             ? Colors.green
                             : topic.needsWork
@@ -890,7 +886,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                       const SizedBox(height: AppSpacing.xs),
                       Text(
                         '${topic.lessonsCompleted}/${topic.totalLessons} lessons (${(topic.masteryPercentage * 100).toInt()}%)',
-                        style: const TextStyle(fontSize: 11),
+                        style: Theme.of(context).textTheme.labelSmall,
                       ),
                     ],
                   ),
@@ -902,8 +898,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                     children: [
                       Text(
                         '${topic.totalXP} XP',
-                        style: const TextStyle(
-                          fontSize: 16,
+                        style: Theme.of(context).textTheme.titleMedium!.copyWith(
                           fontWeight: FontWeight.bold,
                           color: Colors.amber,
                         ),
@@ -911,7 +906,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                       ),
                       Text(
                         '${topic.timeSpentMinutes} min',
-                        style: Theme.of(context).textTheme.labelSmall!.copyWith(color: Colors.grey[600]),
+                        style: Theme.of(context).textTheme.labelSmall!.copyWith(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6)),
                         overflow: TextOverflow.ellipsis,
                       ),
                     ],
@@ -963,8 +958,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                 Expanded(
                   child: Text(
                     prediction.message,
-                    style: const TextStyle(
-                      fontSize: 15,
+                    style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -985,14 +979,14 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                   ),
                   child: Text(
                     prediction.confidenceLabel,
-                    style: const TextStyle(fontSize: 11, color: Colors.white),
+                    style: Theme.of(context).textTheme.labelSmall!.copyWith(color: Colors.white),
                   ),
                 ),
                 if (prediction.estimatedDate != null) ...[
                   const SizedBox(width: AppSpacing.sm),
                   Text(
                     'ETA: ${DateFormat('MMM d').format(prediction.estimatedDate!)}',
-                    style: TextStyle(fontSize: 12, color: Colors.grey[700]),
+                    style: Theme.of(context).textTheme.bodySmall!.copyWith(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7)),
                   ),
                 ],
               ],
@@ -1001,7 +995,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
               const SizedBox(height: 12),
               Text(
                 prediction.recommendation!,
-                style: Theme.of(context).textTheme.bodySmall!.copyWith(color: Colors.grey[700]),
+                style: Theme.of(context).textTheme.bodySmall!.copyWith(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7)),
               ),
             ],
           ],

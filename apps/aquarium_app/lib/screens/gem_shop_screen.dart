@@ -97,10 +97,9 @@ class _GemShopScreenState extends ConsumerState<GemShopScreen>
           elevation: AppElevation.level0,
           title: const Text(
             '💎 Gem Shop',
-            style: TextStyle(
+            style: Theme.of(context).textTheme.headlineSmall!.copyWith(
               color: GemShopColors.textPrimary,
               fontWeight: FontWeight.bold,
-              fontSize: 24,
             ),
           ),
           actions: [
@@ -279,9 +278,8 @@ class _GemShopScreenState extends ConsumerState<GemShopScreen>
                   Expanded(
                     child: Text(
                       item.name,
-                      style: const TextStyle(
+                      style: Theme.of(context).textTheme.titleLarge!.copyWith(
                         color: GemShopColors.textPrimary,
-                        fontSize: 20,
                       ),
                     ),
                   ),
@@ -293,9 +291,8 @@ class _GemShopScreenState extends ConsumerState<GemShopScreen>
                 children: [
                   Text(
                     item.description,
-                    style: const TextStyle(
+                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                       color: GemShopColors.textSecondary,
-                      fontSize: 14,
                     ),
                   ),
                   const SizedBox(height: 20),
@@ -309,22 +306,20 @@ class _GemShopScreenState extends ConsumerState<GemShopScreen>
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text(
+                        Text(
                           'Cost:',
-                          style: TextStyle(
+                          style: Theme.of(context).textTheme.titleMedium!.copyWith(
                             color: GemShopColors.textSecondary,
-                            fontSize: 16,
                           ),
                         ),
                         Row(
                           children: [
                             Text(
                               '${item.gemCost}',
-                              style: TextStyle(
+                              style: Theme.of(context).textTheme.titleLarge!.copyWith(
                                 color: canAfford
                                     ? GemShopColors.gemPrimary
                                     : GemShopColors.powerUpColor,
-                                fontSize: 20,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -339,18 +334,16 @@ class _GemShopScreenState extends ConsumerState<GemShopScreen>
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text(
+                      Text(
                         'Your balance:',
-                        style: TextStyle(
+                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                           color: GemShopColors.textSecondary,
-                          fontSize: 14,
                         ),
                       ),
                       Text(
                         '$gemBalance 💎',
-                        style: const TextStyle(
+                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                           color: GemShopColors.textPrimary,
-                          fontSize: 14,
                         ),
                       ),
                     ],
@@ -362,7 +355,6 @@ class _GemShopScreenState extends ConsumerState<GemShopScreen>
                         'Not enough gems! Complete lessons to earn more.',
                         style: TextStyle(
                           color: GemShopColors.powerUpColor80,
-                          fontSize: 12,
                           fontStyle: FontStyle.italic,
                         ),
                       ),
@@ -522,9 +514,8 @@ class _ShopItemCard extends ConsumerWidget {
                         // Name
                         Text(
                           item.name,
-                          style: const TextStyle(
+                          style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                             color: GemShopColors.textPrimary,
-                            fontSize: 14,
                             fontWeight: FontWeight.bold,
                           ),
                           maxLines: 2,
@@ -535,9 +526,8 @@ class _ShopItemCard extends ConsumerWidget {
                         Expanded(
                           child: Text(
                             item.description,
-                            style: const TextStyle(
+                            style: Theme.of(context).textTheme.labelSmall!.copyWith(
                               color: GemShopColors.textSecondary,
-                              fontSize: 11,
                             ),
                             maxLines: 3,
                             overflow: TextOverflow.ellipsis,
@@ -559,10 +549,9 @@ class _ShopItemCard extends ConsumerWidget {
                             children: [
                               Text(
                                 '${item.gemCost}',
-                                style: TextStyle(
+                                style: Theme.of(context).textTheme.titleMedium!.copyWith(
                                   color: categoryColor,
                                   fontWeight: FontWeight.bold,
-                                  fontSize: 16,
                                 ),
                               ),
                               const SizedBox(width: AppSpacing.xs),
@@ -599,9 +588,8 @@ class _ShopItemCard extends ConsumerWidget {
                               const SizedBox(width: AppSpacing.xs),
                               Text(
                                 'x$quantity',
-                                style: const TextStyle(
+                                style: Theme.of(context).textTheme.bodySmall!.copyWith(
                                   color: Colors.white,
-                                  fontSize: 12,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
@@ -660,10 +648,9 @@ class _GemBalanceChip extends StatelessWidget {
             const SizedBox(width: AppSpacing.sm),
             Text(
               '$balance',
-              style: const TextStyle(
+              style: Theme.of(context).textTheme.titleMedium!.copyWith(
                 color: GemShopColors.textPrimary,
                 fontWeight: FontWeight.bold,
-                fontSize: 18,
               ),
             ),
           ],
