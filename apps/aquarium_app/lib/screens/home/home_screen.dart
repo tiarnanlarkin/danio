@@ -244,7 +244,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               ),
             ),
 
-            // === STAGE SYSTEM ===
+            // === STAGE SYSTEM === (DEBUG: all wrapped in IgnorePointer)
+            IgnorePointer(
+              ignoring: true,
+              child: Stack(
+                children: [
             // Scrim (above scene, below panels) — IgnorePointer when no panels open
             Consumer(
               builder: (context, ref, _) {
@@ -555,6 +559,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 ],
               ),
             ),
+
+            ], // end IgnorePointer Stack children
+              ), // end IgnorePointer Stack
+            ), // end IgnorePointer
 
             // Seasonal tip replaced by AmbientTipOverlay in stage system
 

@@ -67,22 +67,27 @@ class SettingsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final settings = ref.watch(settingsProvider);
-    final items = _buildItems(context, ref, settings);
+    // No provider watch here — each settings-dependent item is its own
+    // ConsumerWidget using .select(), so only that widget rebuilds on change.
+    final sections = _buildSections(context, ref);
 
     return Scaffold(
       appBar: AppBar(title: const Text('Preferences')),
-      body: ListView(
-        children: items,
+      // ListView.builder: only visible items are instantiated per frame.
+      // This fixes the ANR caused by building all 60+ widgets synchronously.
+      body: ListView.builder(
+        itemCount: sections.length,
+        itemBuilder: (ctx, i) => sections[i](ctx),
       ),
     );
   }
 
-  List<Widget> _buildItems(BuildContext context, WidgetRef ref, AppSettings settings) {
+  /// Returns lazy widget builders — each item only instantiated when visible.
+  List<WidgetBuilder> _buildSections(BuildContext context, WidgetRef ref) {
     return [
           // Account & Cloud Sync
-          _SectionHeader(title: 'Account'),
-          NavListTile(
+          (_) => const _SectionHeader(title: 'Account'),
+          (_) => NavListTile(
             icon: Icons.account_circle,
             title: 'Account & Sync',
             subtitle: 'Sign in, backup, multi-device sync',
@@ -93,11 +98,13 @@ class SettingsScreen extends ConsumerWidget {
           ),
 
           // Learning System (Duolingo-style)
-          _SectionHeader(title: 'Learn'),
-          _LearnCard(ref: ref),
+          (_) => const _SectionHeader(title: 'Learn'),
+          // _LearnCard is a ConsumerWidget — watches its own providers,
+          // so learningStatsProvider/userProfileProvider changes only rebuild the card.
+          (_) => const _LearnCard(),
 
           // Daily Goal Settings
-          NavListTile(
+          (_) => NavListTile(
             icon: Icons.flag,
             title: 'Daily Goal',
             subtitle: 'Set your daily XP target',
@@ -105,18 +112,13 @@ class SettingsScreen extends ConsumerWidget {
           ),
 
           // House Navigation (Rooms)
-          _SectionHeader(title: 'Explore'),
-          const RoomNavigation(),
+          (_) => const _SectionHeader(title: 'Explore'),
+          (_) => const RoomNavigation(),
 
           // Appearance
-          _SectionHeader(title: 'Appearance'),
-          NavListTile(
-            icon: Icons.palette_outlined,
-            title: 'Light/Dark Mode',
-            subtitle: _themeModeLabel(settings.themeMode),
-            onTap: () => _showThemePicker(context, ref, settings.themeMode),
-          ),
-          NavListTile(
+          (_) => const _SectionHeader(title: 'Appearance'),
+          (_) => const _ThemeModeTile(),
+          (_) => NavListTile(
             icon: Icons.color_lens_outlined,
             title: 'Room Themes',
             subtitle: 'Customize your living room style',
@@ -125,7 +127,7 @@ class SettingsScreen extends ConsumerWidget {
               MaterialPageRoute(builder: (_) => const ThemeGalleryScreen()),
             ),
           ),
-          NavListTile(
+          (_) => NavListTile(
             icon: Icons.tune,
             title: 'Difficulty Settings',
             subtitle: 'Adjust app complexity level',
@@ -136,36 +138,20 @@ class SettingsScreen extends ConsumerWidget {
               ),
             ),
           ),
-          SwitchListTile(
-            secondary: const Icon(Icons.wb_twilight),
-            title: const Text('Day/Night Ambiance'),
-            subtitle: const Text('Subtle lighting based on time of day'),
-            value: settings.ambientLightingEnabled,
-            onChanged: (value) => ref
-                .read(settingsProvider.notifier)
-                .setAmbientLightingEnabled(value),
-          ),
+          (_) => const _AmbientLightingToggle(),
 
-          const Divider(),
+          (_) => const Divider(),
 
           // Accessibility
-          _SectionHeader(title: 'Accessibility'),
-          _ReducedMotionToggle(ref: ref),
-          SwitchListTile(
-            secondary: const Icon(Icons.vibration),
-            title: const Text('Haptic Feedback'),
-            subtitle: const Text('Vibration for important interactions'),
-            value: settings.hapticFeedbackEnabled,
-            onChanged: (value) => ref
-                .read(settingsProvider.notifier)
-                .setHapticFeedbackEnabled(value),
-          ),
+          (_) => const _SectionHeader(title: 'Accessibility'),
+          (_) => const _ReducedMotionToggle(),
+          (_) => const _HapticFeedbackToggle(),
 
-          const Divider(),
+          (_) => const Divider(),
 
           // Notifications
-          _SectionHeader(title: 'Notifications'),
-          NavListTile(
+          (_) => const _SectionHeader(title: 'Notifications'),
+          (_) => NavListTile(
             icon: Icons.notifications_active,
             title: 'Streak Reminders',
             subtitle: 'Daily notifications to maintain your streak',
@@ -176,26 +162,13 @@ class SettingsScreen extends ConsumerWidget {
               ),
             ),
           ),
-          SwitchListTile(
-            secondary: const Icon(Icons.notifications_outlined),
-            title: const Text('Task Reminders'),
-            subtitle: const Text('Get notified when tasks are due'),
-            value: settings.notificationsEnabled,
-            onChanged: (value) => _toggleNotifications(context, ref, value),
-          ),
-          if (settings.notificationsEnabled)
-            AppListTile(
-              leading: SizedBox(width: AppSpacing.lg),
-              title: 'Test Notification',
-              subtitle: 'Send a test notification',
-              onTap: () => _testNotification(context),
-            ),
+          (_) => const _NotificationsToggle(),
 
-          const Divider(),
+          (_) => const Divider(),
 
           // Tools
-          _SectionHeader(title: 'Tools'),
-          NavListTile(
+          (_) => const _SectionHeader(title: 'Tools'),
+          (_) => NavListTile(
             icon: Icons.notifications_active,
             title: 'Reminders',
             subtitle: 'Schedule maintenance tasks',
@@ -204,7 +177,7 @@ class SettingsScreen extends ConsumerWidget {
               MaterialPageRoute(builder: (_) => const RemindersScreen()),
             ),
           ),
-          NavListTile(
+          (_) => NavListTile(
             icon: Icons.favorite,
             title: 'Fish Wishlist',
             subtitle: 'Track fish you want to keep',
@@ -216,7 +189,7 @@ class SettingsScreen extends ConsumerWidget {
               ),
             ),
           ),
-          NavListTile(
+          (_) => NavListTile(
             icon: Icons.compare,
             title: 'Compare Tanks',
             subtitle: 'Side-by-side tank comparison',
@@ -225,7 +198,7 @@ class SettingsScreen extends ConsumerWidget {
               MaterialPageRoute(builder: (_) => const TankComparisonScreen()),
             ),
           ),
-          NavListTile(
+          (_) => NavListTile(
             icon: Icons.calculate_outlined,
             title: 'Water Change Calculator',
             subtitle: 'Calculate how much water to change',
@@ -236,7 +209,7 @@ class SettingsScreen extends ConsumerWidget {
               ),
             ),
           ),
-          NavListTile(
+          (_) => NavListTile(
             icon: Icons.bubble_chart,
             title: 'CO2 Calculator',
             subtitle: 'Calculate CO2 from pH and KH',
@@ -245,7 +218,7 @@ class SettingsScreen extends ConsumerWidget {
               MaterialPageRoute(builder: (_) => const Co2CalculatorScreen()),
             ),
           ),
-          NavListTile(
+          (_) => NavListTile(
             icon: Icons.science_outlined,
             title: 'Dosing Calculator',
             subtitle: 'Calculate fertilizer & medication doses',
@@ -254,7 +227,7 @@ class SettingsScreen extends ConsumerWidget {
               MaterialPageRoute(builder: (_) => const DosingCalculatorScreen()),
             ),
           ),
-          NavListTile(
+          (_) => NavListTile(
             icon: Icons.straighten,
             title: 'Unit Converter',
             subtitle: 'Volume, temperature, length, hardness',
@@ -263,7 +236,7 @@ class SettingsScreen extends ConsumerWidget {
               MaterialPageRoute(builder: (_) => const UnitConverterScreen()),
             ),
           ),
-          NavListTile(
+          (_) => NavListTile(
             icon: Icons.view_in_ar,
             title: 'Tank Volume Calculator',
             subtitle: 'Calculate volume for any tank shape',
@@ -274,7 +247,7 @@ class SettingsScreen extends ConsumerWidget {
               ),
             ),
           ),
-          NavListTile(
+          (_) => NavListTile(
             icon: Icons.account_balance_wallet,
             title: 'Cost Tracker',
             subtitle: 'Track aquarium expenses',
@@ -283,7 +256,7 @@ class SettingsScreen extends ConsumerWidget {
               MaterialPageRoute(builder: (_) => const CostTrackerScreen()),
             ),
           ),
-          NavListTile(
+          (_) => NavListTile(
             icon: Icons.compare_arrows,
             title: 'Compatibility Checker',
             subtitle: 'Check if fish work together',
@@ -294,7 +267,7 @@ class SettingsScreen extends ConsumerWidget {
               ),
             ),
           ),
-          NavListTile(
+          (_) => NavListTile(
             icon: Icons.lightbulb,
             title: 'Lighting Schedule',
             subtitle: 'Optimize light duration for your setup',
@@ -303,7 +276,7 @@ class SettingsScreen extends ConsumerWidget {
               MaterialPageRoute(builder: (_) => const LightingScheduleScreen()),
             ),
           ),
-          NavListTile(
+          (_) => NavListTile(
             icon: Icons.bar_chart,
             title: 'Stocking Calculator',
             subtitle: 'Check if your tank is overstocked',
@@ -315,11 +288,11 @@ class SettingsScreen extends ConsumerWidget {
             ),
           ),
 
-          const Divider(),
+          (_) => const Divider(),
 
           // Shop Street
-          _SectionHeader(title: 'Shop'),
-          NavListTile(
+          (_) => const _SectionHeader(title: 'Shop'),
+          (_) => NavListTile(
             icon: Icons.storefront,
             title: 'Shop Street',
             subtitle: 'Find aquarium supplies online',
@@ -329,51 +302,51 @@ class SettingsScreen extends ConsumerWidget {
             ),
           ),
 
-          const Divider(),
+          (_) => const Divider(),
 
           // About section
-          _SectionHeader(title: 'About'),
-          AppListTile(
+          (_) => const _SectionHeader(title: 'About'),
+          (_) => AppListTile(
             leading: const Icon(Icons.water_drop),
             title: 'Danio',
             subtitle: 'Version 0.1.0',
           ),
-          AppListTile(
+          (_) => AppListTile(
             leading: const Icon(Icons.info_outline),
             title: 'About',
             onTap: () => _showAboutDialog(context),
           ),
 
-          const Divider(),
+          (_) => const Divider(),
 
           // Data section
-          _SectionHeader(title: 'Data'),
-          AppListTile(
+          (_) => const _SectionHeader(title: 'Data'),
+          (_) => AppListTile(
             leading: const Icon(Icons.upload_outlined),
             title: 'Export All Data',
             subtitle: 'Share your aquarium data as JSON',
             onTap: () => _exportData(context),
           ),
-          AppListTile(
+          (_) => AppListTile(
             leading: const Icon(Icons.download_outlined),
             title: 'Import Data',
             subtitle: 'Restore from a backup file',
             onTap: () => _importData(context),
           ),
-          AppListTile(
+          (_) => AppListTile(
             leading: const Icon(Icons.photo_library_outlined),
             title: 'Photo Storage',
             subtitle: 'View where photos are stored',
             onTap: () => _showPhotoStorageInfo(context),
           ),
 
-          const Divider(),
+          (_) => const Divider(),
 
           // Guides & Education section (expandable)
-          _SectionHeader(title: 'Guides & Education'),
+          (_) => const _SectionHeader(title: 'Guides & Education'),
 
           // Essential - Quick start and emergency
-          ExpansionTile(
+          (_) => ExpansionTile(
             leading: const Icon(Icons.star, color: AppColors.primary),
             title: const Text('Essential Guides'),
             subtitle: const Text('Start here - critical knowledge'),
@@ -416,7 +389,7 @@ class SettingsScreen extends ConsumerWidget {
           ),
 
           // Water & Parameters
-          ExpansionTile(
+          (_) => ExpansionTile(
             leading: const Icon(Icons.water_drop, color: AppColors.textSecondary),
             title: const Text('Water & Parameters'),
             subtitle: const Text('Water quality and chemistry'),
@@ -445,7 +418,7 @@ class SettingsScreen extends ConsumerWidget {
           ),
 
           // Fish Care
-          ExpansionTile(
+          (_) => ExpansionTile(
             leading: const Icon(Icons.set_meal, color: AppColors.success),
             title: const Text('Fish Care'),
             subtitle: const Text('Feeding, health, and wellbeing'),
@@ -505,7 +478,7 @@ class SettingsScreen extends ConsumerWidget {
           ),
 
           // Tank Setup & Design
-          ExpansionTile(
+          (_) => ExpansionTile(
             leading: const Icon(Icons.landscape, color: AppColors.warning),
             title: const Text('Tank Setup & Design'),
             subtitle: const Text('Equipment, substrate, hardscape'),
@@ -547,7 +520,7 @@ class SettingsScreen extends ConsumerWidget {
           ),
 
           // Planning & Travel
-          ExpansionTile(
+          (_) => ExpansionTile(
             leading: const Icon(Icons.flight_takeoff),
             title: const Text('Planning & Travel'),
             subtitle: const Text('Vacation prep and maintenance'),
@@ -567,7 +540,7 @@ class SettingsScreen extends ConsumerWidget {
           ),
 
           // Reference Materials
-          ExpansionTile(
+          (_) => ExpansionTile(
             leading: const Icon(Icons.library_books),
             title: const Text('Reference'),
             subtitle: const Text('Databases, glossary, FAQ'),
@@ -624,17 +597,17 @@ class SettingsScreen extends ConsumerWidget {
             ],
           ),
 
-          const Divider(),
+          (_) => const Divider(),
 
           // Help & Support section (app-related)
-          _SectionHeader(title: 'Help & Support'),
-          AppListTile(
+          (_) => const _SectionHeader(title: 'Help & Support'),
+          (_) => AppListTile(
             leading: const Icon(Icons.replay_outlined),
             title: 'Replay Onboarding',
             subtitle: 'See the intro screens again',
             onTap: () => _replayOnboarding(context),
           ),
-          AppListTile(
+          (_) => AppListTile(
             leading: const Icon(Icons.auto_awesome),
             title: 'Add Sample Tank',
             subtitle: 'Explore the app with demo data',
@@ -652,7 +625,7 @@ class SettingsScreen extends ConsumerWidget {
               }
             },
           ),
-          NavListTile(
+          (_) => NavListTile(
             icon: Icons.backup,
             title: 'Backup & Restore',
             subtitle: 'Export or import your tank data',
@@ -661,7 +634,7 @@ class SettingsScreen extends ConsumerWidget {
               MaterialPageRoute(builder: (_) => const BackupRestoreScreen()),
             ),
           ),
-          NavListTile(
+          (_) => NavListTile(
             icon: Icons.info_outline,
             title: 'About',
             subtitle: 'Version info and features',
@@ -671,11 +644,11 @@ class SettingsScreen extends ConsumerWidget {
             ),
           ),
 
-          const Divider(),
+          (_) => const Divider(),
 
           // Danger zone
-          _SectionHeader(title: 'Danger Zone', color: AppColors.error),
-          AppListTile(
+          (_) => const _SectionHeader(title: 'Danger Zone', color: AppColors.error),
+          (_) => AppListTile(
             leading: const Icon(
               Icons.delete_forever_outlined,
               color: AppColors.error,
@@ -687,7 +660,7 @@ class SettingsScreen extends ConsumerWidget {
           ),
           // Debug crash button (only in debug mode)
           if (kDebugMode)
-            AppListTile(
+            (_) => AppListTile(
               leading: const Icon(
                 Icons.bug_report_outlined,
                 color: Colors.orange,
@@ -702,131 +675,6 @@ class SettingsScreen extends ConsumerWidget {
   void _triggerTestCrash() {
     // Intentionally throw an error to test the error boundary
     throw Exception('Test crash triggered from settings screen');
-  }
-
-  Future<void> _toggleNotifications(
-    BuildContext context,
-    WidgetRef ref,
-    bool enable,
-  ) async {
-    if (enable) {
-      final service = NotificationService();
-      await service.initialize();
-      final granted = await service.requestPermissions();
-
-      if (!granted) {
-        if (context.mounted) {
-          AppFeedback.showWarning(context, 'Notification permission denied');
-        }
-        return;
-      }
-    }
-
-    await ref.read(settingsProvider.notifier).setNotificationsEnabled(enable);
-
-    if (context.mounted) {
-      if (enable) {
-        AppFeedback.showSuccess(context, 'Notifications enabled!');
-      } else {
-        AppFeedback.showInfo(context, 'Notifications disabled');
-      }
-    }
-  }
-
-  Future<void> _testNotification(BuildContext context) async {
-    try {
-      final service = NotificationService();
-      await service.initialize();
-      await service.showTestNotification();
-
-      if (context.mounted) {
-        AppFeedback.showSuccess(context, 'Test notification sent!');
-      }
-    } catch (e) {
-      if (context.mounted) {
-        AppFeedback.showError(context, 'Failed: $e');
-      }
-    }
-  }
-
-  String _themeModeLabel(AppThemeMode mode) {
-    switch (mode) {
-      case AppThemeMode.system:
-        return 'System default';
-      case AppThemeMode.light:
-        return 'Light';
-      case AppThemeMode.dark:
-        return 'Dark';
-    }
-  }
-
-  void _showThemePicker(
-    BuildContext context,
-    WidgetRef ref,
-    AppThemeMode current,
-  ) {
-    showModalBottomSheet(
-      context: context,
-      showDragHandle: true,
-      builder: (ctx) => SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Padding(
-              padding: EdgeInsets.all(AppSpacing.md),
-              child: Text(
-                'Choose Theme',
-                style: Theme.of(context).textTheme.titleLarge,
-              ),
-            ),
-            AppListTile(
-              leading: const Icon(Icons.brightness_auto),
-              title: 'System default',
-              subtitle: 'Follow device settings',
-              isSelected: current == AppThemeMode.system,
-              trailing: current == AppThemeMode.system
-                  ? const Icon(Icons.check, color: AppColors.primary)
-                  : null,
-              onTap: () {
-                ref
-                    .read(settingsProvider.notifier)
-                    .setThemeMode(AppThemeMode.system);
-                Navigator.pop(ctx);
-              },
-            ),
-            AppListTile(
-              leading: const Icon(Icons.light_mode),
-              title: 'Light',
-              isSelected: current == AppThemeMode.light,
-              trailing: current == AppThemeMode.light
-                  ? const Icon(Icons.check, color: AppColors.primary)
-                  : null,
-              onTap: () {
-                ref
-                    .read(settingsProvider.notifier)
-                    .setThemeMode(AppThemeMode.light);
-                Navigator.pop(ctx);
-              },
-            ),
-            AppListTile(
-              leading: const Icon(Icons.dark_mode),
-              title: 'Dark',
-              isSelected: current == AppThemeMode.dark,
-              trailing: current == AppThemeMode.dark
-                  ? const Icon(Icons.check, color: AppColors.primary)
-                  : null,
-              onTap: () {
-                ref
-                    .read(settingsProvider.notifier)
-                    .setThemeMode(AppThemeMode.dark);
-                Navigator.pop(ctx);
-              },
-            ),
-            const SizedBox(height: AppSpacing.md),
-          ],
-        ),
-      ),
-    );
   }
 
   void _showDailyGoalPicker(BuildContext context, WidgetRef ref) {
@@ -1181,6 +1029,230 @@ class SettingsScreen extends ConsumerWidget {
   }
 }
 
+// ---------------------------------------------------------------------------
+// Top-level helper functions (file-private) — callable from any widget below
+// ---------------------------------------------------------------------------
+
+String _themeModeLabel(AppThemeMode mode) {
+  switch (mode) {
+    case AppThemeMode.system:
+      return 'System default';
+    case AppThemeMode.light:
+      return 'Light';
+    case AppThemeMode.dark:
+      return 'Dark';
+  }
+}
+
+void _showThemePicker(
+  BuildContext context,
+  WidgetRef ref,
+  AppThemeMode current,
+) {
+  showModalBottomSheet(
+    context: context,
+    showDragHandle: true,
+    builder: (ctx) => SafeArea(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Padding(
+            padding: EdgeInsets.all(AppSpacing.md),
+            child: Text(
+              'Choose Theme',
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
+          ),
+          AppListTile(
+            leading: const Icon(Icons.brightness_auto),
+            title: 'System default',
+            subtitle: 'Follow device settings',
+            isSelected: current == AppThemeMode.system,
+            trailing: current == AppThemeMode.system
+                ? const Icon(Icons.check, color: AppColors.primary)
+                : null,
+            onTap: () {
+              ref
+                  .read(settingsProvider.notifier)
+                  .setThemeMode(AppThemeMode.system);
+              Navigator.pop(ctx);
+            },
+          ),
+          AppListTile(
+            leading: const Icon(Icons.light_mode),
+            title: 'Light',
+            isSelected: current == AppThemeMode.light,
+            trailing: current == AppThemeMode.light
+                ? const Icon(Icons.check, color: AppColors.primary)
+                : null,
+            onTap: () {
+              ref
+                  .read(settingsProvider.notifier)
+                  .setThemeMode(AppThemeMode.light);
+              Navigator.pop(ctx);
+            },
+          ),
+          AppListTile(
+            leading: const Icon(Icons.dark_mode),
+            title: 'Dark',
+            isSelected: current == AppThemeMode.dark,
+            trailing: current == AppThemeMode.dark
+                ? const Icon(Icons.check, color: AppColors.primary)
+                : null,
+            onTap: () {
+              ref
+                  .read(settingsProvider.notifier)
+                  .setThemeMode(AppThemeMode.dark);
+              Navigator.pop(ctx);
+            },
+          ),
+          const SizedBox(height: AppSpacing.md),
+        ],
+      ),
+    ),
+  );
+}
+
+Future<void> _toggleNotifications(
+  BuildContext context,
+  WidgetRef ref,
+  bool enable,
+) async {
+  if (enable) {
+    final service = NotificationService();
+    await service.initialize();
+    final granted = await service.requestPermissions();
+
+    if (!granted) {
+      if (context.mounted) {
+        AppFeedback.showWarning(context, 'Notification permission denied');
+      }
+      return;
+    }
+  }
+
+  await ref.read(settingsProvider.notifier).setNotificationsEnabled(enable);
+
+  if (context.mounted) {
+    if (enable) {
+      AppFeedback.showSuccess(context, 'Notifications enabled!');
+    } else {
+      AppFeedback.showInfo(context, 'Notifications disabled');
+    }
+  }
+}
+
+Future<void> _testNotification(BuildContext context) async {
+  try {
+    final service = NotificationService();
+    await service.initialize();
+    await service.showTestNotification();
+
+    if (context.mounted) {
+      AppFeedback.showSuccess(context, 'Test notification sent!');
+    }
+  } catch (e) {
+    if (context.mounted) {
+      AppFeedback.showError(context, 'Failed: $e');
+    }
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Granular ConsumerWidget sub-widgets for settings toggles
+// Each watches ONLY its specific field via .select() — zero cross-rebuilds.
+// ---------------------------------------------------------------------------
+
+/// Theme mode tile — only rebuilds when themeMode changes.
+class _ThemeModeTile extends ConsumerWidget {
+  const _ThemeModeTile();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final themeMode = ref.watch(settingsProvider.select((s) => s.themeMode));
+    return NavListTile(
+      icon: Icons.palette_outlined,
+      title: 'Light/Dark Mode',
+      subtitle: _themeModeLabel(themeMode),
+      onTap: () => _showThemePicker(context, ref, themeMode),
+    );
+  }
+}
+
+/// Ambient lighting toggle — only rebuilds when ambientLightingEnabled changes.
+class _AmbientLightingToggle extends ConsumerWidget {
+  const _AmbientLightingToggle();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final enabled = ref.watch(
+      settingsProvider.select((s) => s.ambientLightingEnabled),
+    );
+    return SwitchListTile(
+      secondary: const Icon(Icons.wb_twilight),
+      title: const Text('Day/Night Ambiance'),
+      subtitle: const Text('Subtle lighting based on time of day'),
+      value: enabled,
+      onChanged: (value) =>
+          ref.read(settingsProvider.notifier).setAmbientLightingEnabled(value),
+    );
+  }
+}
+
+/// Haptic feedback toggle — only rebuilds when hapticFeedbackEnabled changes.
+class _HapticFeedbackToggle extends ConsumerWidget {
+  const _HapticFeedbackToggle();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final enabled = ref.watch(
+      settingsProvider.select((s) => s.hapticFeedbackEnabled),
+    );
+    return SwitchListTile(
+      secondary: const Icon(Icons.vibration),
+      title: const Text('Haptic Feedback'),
+      subtitle: const Text('Vibration for important interactions'),
+      value: enabled,
+      onChanged: (value) =>
+          ref.read(settingsProvider.notifier).setHapticFeedbackEnabled(value),
+    );
+  }
+}
+
+/// Notifications toggle + optional test button.
+/// Collapses two formerly-separate list items into one widget so that
+/// the list length never changes (eliminates itemCount flicker) and
+/// only this widget rebuilds when notificationsEnabled changes.
+class _NotificationsToggle extends ConsumerWidget {
+  const _NotificationsToggle();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final notificationsEnabled = ref.watch(
+      settingsProvider.select((s) => s.notificationsEnabled),
+    );
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        SwitchListTile(
+          secondary: const Icon(Icons.notifications_outlined),
+          title: const Text('Task Reminders'),
+          subtitle: const Text('Get notified when tasks are due'),
+          value: notificationsEnabled,
+          onChanged: (value) => _toggleNotifications(context, ref, value),
+        ),
+        if (notificationsEnabled)
+          AppListTile(
+            leading: SizedBox(width: AppSpacing.lg),
+            title: 'Test Notification',
+            subtitle: 'Send a test notification',
+            onTap: () => _testNotification(context),
+          ),
+      ],
+    );
+  }
+}
+
 class _SectionHeader extends StatelessWidget {
   final String title;
   final Color? color;
@@ -1225,13 +1297,11 @@ class _SectionHeader extends StatelessWidget {
 }
 
 /// Learning system card - shows XP progress and links to Learn screen
-class _LearnCard extends StatelessWidget {
-  final WidgetRef ref;
-
-  const _LearnCard({required this.ref});
+class _LearnCard extends ConsumerWidget {
+  const _LearnCard();
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final stats = ref.watch(learningStatsProvider);
     final profile = ref.watch(userProfileProvider).asData?.value;
     final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -1452,9 +1522,7 @@ class _DifficultySettingsWrapperState
 
 /// Reduced motion toggle with system setting detection
 class _ReducedMotionToggle extends ConsumerWidget {
-  final WidgetRef ref;
-  
-  const _ReducedMotionToggle({required this.ref});
+  const _ReducedMotionToggle();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
