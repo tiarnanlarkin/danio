@@ -100,7 +100,17 @@ class LearnScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final profileAsync = ref.watch(userProfileProvider);
-    final stats = ref.watch(learningStatsProvider);
+    // Select only the two fields used by StudyRoomScene so that other stat
+    // changes (e.g. weeklyXp updates) don't rebuild this 980-line screen.
+    final statsXp = ref.watch(
+      learningStatsProvider.select((s) => s?.totalXp ?? 0),
+    );
+    final statsLevel = ref.watch(
+      learningStatsProvider.select((s) => s?.levelTitle ?? 'Beginner'),
+    );
+    // pathMetadataProvider: full list needed for path cards — cannot narrow
+    // further without extracting each _LazyLearningPathCard into its own
+    // ConsumerWidget (tracked: future refactor).
     final metadata = ref.watch(pathMetadataProvider);
 
     return Scaffold(
@@ -135,8 +145,8 @@ class LearnScreen extends ConsumerWidget {
                     children: [
                       // Study room illustration
                       StudyRoomScene(
-                        totalXp: stats?.totalXp ?? 0,
-                        levelTitle: stats?.levelTitle ?? 'Beginner',
+                        totalXp: statsXp,
+                        levelTitle: statsLevel,
                         currentStreak: profile?.currentStreak ?? 0,
                         completedLessons: completedLessons,
                         totalLessons: totalLessons,

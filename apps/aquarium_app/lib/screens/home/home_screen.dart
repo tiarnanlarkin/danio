@@ -194,6 +194,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   Widget _buildLivingRoomScreen() {
+    // Extract once — prevents 3 separate ref.watch calls (lines ~232, ~268, ~299)
+    // rebuilding _HomeScreenState when the room theme changes.
+    final theme = ref.watch(currentRoomThemeProvider);
     final tanksAsync = ref.watch(tanksProvider);
 
     return tanksAsync.when(
@@ -229,7 +232,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 tankId: currentTank.id,
                 tankName: currentTank.name,
                 tankVolume: currentTank.volumeLitres,
-                theme: ref.watch(currentRoomThemeProvider),
+                theme: theme,
                 isNewUser: _isNewUser(ref),
                 useRiveFish: false, // Disable broken Rive fish, use static drawn fish
                 onTankTap: () => _navigateToTankDetail(context, currentTank),
@@ -296,7 +299,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             ),
 
             // Ambient tip overlay — uses Align internally (not Positioned) to avoid eating touches
-            AmbientTipOverlay(theme: ref.watch(currentRoomThemeProvider)),
+            AmbientTipOverlay(theme: theme),
 
             // Top bar overlay
             Positioned(
@@ -363,93 +366,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
 
 
-            // Streak & hearts warning
-            Builder(
-              builder: (context) {
-                final streak = ref.watch(userProfileProvider.select((p) => p.value?.currentStreak ?? 0));
-                final hearts = ref.watch(heartsStateProvider);
-                final lowHearts = hearts.currentHearts <= 1;
-                if (streak == 0 && !lowHearts) return const SizedBox.shrink();
-                return Positioned(
-                  bottom: 100 + MediaQuery.of(context).padding.bottom,
-                  left: 16,
-                  right: 80,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      if (streak > 0)
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm2, vertical: 6),
-                          decoration: BoxDecoration(
-                            color: DanioColors.amberGold.withAlpha(230),
-                            borderRadius: AppRadius.mediumRadius,
-                          ),
-                          child: Text(
-                            '\u{1F525} $streak day streak!',
-                            style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                      // Water change streak
-                      Builder(
-                        builder: (context) {
-                          final tanks = ref.watch(tanksProvider).value ?? [];
-                          if (tanks.isEmpty) return const SizedBox.shrink();
-                          final logsAsync = ref.watch(allLogsProvider(tanks.first.id));
-                          return logsAsync.when(
-                            loading: () => const SizedBox.shrink(),
-                            error: (_, __) => const SizedBox.shrink(),
-                            data: (logs) {
-                              final wcStreak = TankHealthService.calculateWaterChangeStreak(logs);
-                              if (wcStreak == 0) return const SizedBox.shrink();
-                              return Padding(
-                                padding: const EdgeInsets.only(top: AppSpacing.xs),
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm2, vertical: 6),
-                                  decoration: BoxDecoration(
-                                    color: DanioColors.tealWater.withAlpha(230),
-                                    borderRadius: AppRadius.mediumRadius,
-                                  ),
-                                  child: Text(
-                                    '\u{1F4A7} Water change streak: $wcStreak week${wcStreak == 1 ? "" : "s"}',
-                                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ),
-                              );
-                            },
-                          );
-                        },
-                      ),
-                      if (lowHearts && hearts.currentHearts >= 0) ...[
-                        const SizedBox(height: AppSpacing.xs),
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm2, vertical: 6),
-                          decoration: BoxDecoration(
-                            color: AppColors.warning.withAlpha(210),
-                            borderRadius: AppRadius.mediumRadius,
-                          ),
-                          child: Text(
-                            hearts.currentHearts == 0
-                                ? '\u{1F494} No hearts left - wait for refill!'
-                                : '\u{26A0}\u{FE0F} You\'re on your last heart - be careful!',
-                            style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ],
-                  ),
-                );
-              },
-            ),
+            // Streak & hearts warning — standalone ConsumerWidget with its own
+            // rebuild scope; only heartsStateProvider + streak selector fire here.
+            const _StreakHeartsOverlay(),
 
             // Bottom Plates — Tanks (behind) then Progress (front, renders on top)
             BottomPlate(
@@ -1743,4 +1662,104 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     }
   }
 
+}
+
+/// Standalone ConsumerWidget for the streak / hearts overlay.
+///
+/// Extracted from the inline [Builder] in [_HomeScreenState._buildLivingRoomScreen]
+/// so that hearts or streak changes only rebuild this small widget rather than
+/// the entire HomeScreen widget tree.
+class _StreakHeartsOverlay extends ConsumerWidget {
+  const _StreakHeartsOverlay();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final streak = ref.watch(
+      userProfileProvider.select((p) => p.value?.currentStreak ?? 0),
+    );
+    final hearts = ref.watch(heartsStateProvider);
+    final lowHearts = hearts.currentHearts <= 1;
+
+    if (streak == 0 && !lowHearts) return const SizedBox.shrink();
+
+    return Positioned(
+      bottom: 100 + MediaQuery.of(context).padding.bottom,
+      left: 16,
+      right: 80,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (streak > 0)
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm2, vertical: 6),
+              decoration: BoxDecoration(
+                color: DanioColors.amberGold.withAlpha(230),
+                borderRadius: AppRadius.mediumRadius,
+              ),
+              child: Text(
+                '\u{1F525} $streak day streak!',
+                style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          // Water change streak — isolated in its own Consumer to avoid
+          // pulling tanksProvider / allLogsProvider into this widget's scope.
+          Consumer(
+            builder: (context, ref, _) {
+              final tanks = ref.watch(tanksProvider).value ?? [];
+              if (tanks.isEmpty) return const SizedBox.shrink();
+              final logsAsync = ref.watch(allLogsProvider(tanks.first.id));
+              return logsAsync.when(
+                loading: () => const SizedBox.shrink(),
+                error: (_, __) => const SizedBox.shrink(),
+                data: (logs) {
+                  final wcStreak = TankHealthService.calculateWaterChangeStreak(logs);
+                  if (wcStreak == 0) return const SizedBox.shrink();
+                  return Padding(
+                    padding: const EdgeInsets.only(top: AppSpacing.xs),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm2, vertical: 6),
+                      decoration: BoxDecoration(
+                        color: DanioColors.tealWater.withAlpha(230),
+                        borderRadius: AppRadius.mediumRadius,
+                      ),
+                      child: Text(
+                        '\u{1F4A7} Water change streak: $wcStreak week${wcStreak == 1 ? "" : "s"}',
+                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              );
+            },
+          ),
+          if (lowHearts && hearts.currentHearts >= 0) ...[
+            const SizedBox(height: AppSpacing.xs),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm2, vertical: 6),
+              decoration: BoxDecoration(
+                color: AppColors.warning.withAlpha(210),
+                borderRadius: AppRadius.mediumRadius,
+              ),
+              child: Text(
+                hearts.currentHearts == 0
+                    ? '\u{1F494} No hearts left - wait for refill!'
+                    : '\u{26A0}\u{FE0F} You\'re on your last heart - be careful!',
+                style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
 }
