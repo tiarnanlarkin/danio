@@ -86,8 +86,13 @@ class _TabNavigatorState extends ConsumerState<TabNavigator>
           // Check if current tab has screens in its stack
           final currentNavigator = _navigatorKeys[currentTab].currentState;
           if (currentNavigator != null && currentNavigator.canPop()) {
-            // Pop within the current tab's navigation stack
-            currentNavigator.pop();
+            // Defer pop to next frame to avoid accessing a deactivating element's
+            // ancestor during NavigatorState._cancelActivePointers (lifecycle assertion)
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              if (currentNavigator.canPop()) {
+                currentNavigator.pop();
+              }
+            });
             return;
           }
 
