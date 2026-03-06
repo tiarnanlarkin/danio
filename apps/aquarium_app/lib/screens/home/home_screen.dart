@@ -669,13 +669,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Container(width: 40, height: 4,
-                decoration: BoxDecoration(
-                  color: AppColors.border,
-                  borderRadius: BorderRadius.circular(2),
-                ),
-              ),
-              const SizedBox(height: AppSpacing.sm2),
+              // Note: showDragHandle: true above already renders the handle.
+              // The manual Container handle was removed to fix duplicate-handle bug.
               Text('Let\'s set up your first tank! \u{1F420}',
                 style: Theme.of(context).textTheme.titleLarge!.copyWith( fontWeight: FontWeight.bold)),
               const SizedBox(height: AppSpacing.md),
@@ -723,13 +718,17 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       volumeLitres: litres,
                     );
                     if (ctx.mounted) {
+                      // Capture the NavigatorState BEFORE popping, because after
+                      // the bottom sheet dismiss the HomeScreen's context becomes
+                      // deactivated (element lifecycle moves to inactive).
+                      // Navigator.of(context) would then fail the ancestor lookup.
+                      final navigator = Navigator.of(context);
                       Navigator.pop(ctx);
-                      // Defer push until after the bottom sheet pop animation
-                      // completes — pushing synchronously here triggers
-                      // _cancelActivePointers on a deactivating element.
-                      WidgetsBinding.instance.addPostFrameCallback((_) {
+                      Future.delayed(const Duration(milliseconds: 350), () {
                         if (context.mounted) {
-                          _navigateToTankDetail(context, tank);
+                          navigator.push(
+                            TankDetailRoute(page: TankDetailScreen(tankId: tank.id)),
+                          );
                         }
                       });
                     }
