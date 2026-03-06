@@ -15,7 +15,7 @@ if (keystorePropertiesFile.exists()) {
 }
 
 android {
-    namespace = "com.tiarnanlarkin.aquarium.aquarium_app"
+    namespace = "com.tiarnanlarkin.danio"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = "28.2.13676358" // Override to use available NDK
 
@@ -30,7 +30,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.tiarnanlarkin.aquarium.aquarium_app"
+        applicationId = "com.tiarnanlarkin.danio"
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode

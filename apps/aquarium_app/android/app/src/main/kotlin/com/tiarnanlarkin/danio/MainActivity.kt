@@ -1,4 +1,4 @@
-package com.tiarnanlarkin.aquarium.aquarium_app
+package com.tiarnanlarkin.danio
 
 import android.provider.Settings
 import io.flutter.embedding.android.FlutterActivity
