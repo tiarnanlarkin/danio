@@ -90,13 +90,13 @@ void main() async {
 
   runApp(
     ErrorBoundary(
-      child: const ProviderScope(child: AquariumApp()),
+      child: const ProviderScope(child: DanioApp()),
     ),
   );
 }
 
-class AquariumApp extends ConsumerWidget {
-  const AquariumApp({super.key});
+class DanioApp extends ConsumerWidget {
+  const DanioApp({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
