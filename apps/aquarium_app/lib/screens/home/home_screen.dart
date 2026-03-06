@@ -724,7 +724,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     );
                     if (ctx.mounted) {
                       Navigator.pop(ctx);
-                      _navigateToTankDetail(context, tank);
+                      // Defer push until after the bottom sheet pop animation
+                      // completes — pushing synchronously here triggers
+                      // _cancelActivePointers on a deactivating element.
+                      WidgetsBinding.instance.addPostFrameCallback((_) {
+                        if (context.mounted) {
+                          _navigateToTankDetail(context, tank);
+                        }
+                      });
                     }
                   },
                 ),
