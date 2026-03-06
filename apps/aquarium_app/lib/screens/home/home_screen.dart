@@ -647,12 +647,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     });
   }
 
-  void _showFirstTankSheet(BuildContext context) {
+  Future<void> _showFirstTankSheet(BuildContext context) async {
     final nameC = TextEditingController(text: 'My First Tank');
     final sizeC = TextEditingController(text: '60');
     var tankType = TankType.freshwater;
 
-    showModalBottomSheet(
+    // showModalBottomSheet returns a Future<Tank?> that resolves AFTER the
+    // sheet's exit animation fully completes — safe to navigate from here.
+    // The button calls Navigator.pop(ctx, tank) to pass the result back.
+    final tank = await showModalBottomSheet<Tank>(
       context: context,
       showDragHandle: true,
       isScrollControlled: true,
@@ -672,7 +675,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               // Note: showDragHandle: true above already renders the handle.
               // The manual Container handle was removed to fix duplicate-handle bug.
               Text('Let\'s set up your first tank! \u{1F420}',
-                style: Theme.of(context).textTheme.titleLarge!.copyWith( fontWeight: FontWeight.bold)),
+                style: Theme.of(context).textTheme.titleLarge!.copyWith(fontWeight: FontWeight.bold)),
               const SizedBox(height: AppSpacing.md),
               TextField(
                 controller: nameC,
@@ -718,19 +721,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       volumeLitres: litres,
                     );
                     if (ctx.mounted) {
-                      // Capture the NavigatorState BEFORE popping, because after
-                      // the bottom sheet dismiss the HomeScreen's context becomes
-                      // deactivated (element lifecycle moves to inactive).
-                      // Navigator.of(context) would then fail the ancestor lookup.
-                      final navigator = Navigator.of(context);
-                      Navigator.pop(ctx);
-                      Future.delayed(const Duration(milliseconds: 350), () {
-                        if (context.mounted) {
-                          navigator.push(
-                            TankDetailRoute(page: TankDetailScreen(tankId: tank.id)),
-                          );
-                        }
-                      });
+                      // Return the created tank to the caller via pop result.
+                      // Navigation happens AFTER sheet fully dismisses (see below).
+                      Navigator.pop(ctx, tank);
                     }
                   },
                 ),
@@ -740,6 +733,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         ),
       ),
     );
+
+    // Sheet is now fully dismissed — safe to push without lifecycle issues.
+    if (tank != null && context.mounted) {
+      Navigator.of(context).push(
+        TankDetailRoute(page: TankDetailScreen(tankId: tank.id)),
+      );
+    }
   }
 
   void _navigateToCreateTank(BuildContext context) {
