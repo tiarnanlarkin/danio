@@ -206,6 +206,7 @@ class _AppRouterState extends ConsumerState<_AppRouter>
       profileExists = profile != null;
     }
 
+    if (!mounted) return;
     setState(() {
       _showOnboarding = !onboardingCompleted;
       _needsProfile = onboardingCompleted && !profileExists;

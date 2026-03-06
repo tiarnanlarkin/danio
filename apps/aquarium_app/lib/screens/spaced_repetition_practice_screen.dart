@@ -618,8 +618,9 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
               tooltip: 'Exit Session',
               onPressed: () async {
                 final shouldExit = await _showExitDialog();
+                if (!context.mounted) return;
                 if (shouldExit == true && mounted) {
-                  Navigator.of(this.context).pop();
+                  Navigator.of(context).pop();
                 }
               },
             ),
