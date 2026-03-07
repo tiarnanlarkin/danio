@@ -221,17 +221,17 @@ class _Co2CalculatorScreenState extends State<Co2CalculatorScreen> {
             child: Column(
               children: [
                 _DropCheckerRow(
-                  color: AppColors.primary,
+                  color: Colors.blue,
                   label: 'Blue',
                   meaning: 'CO2 too low (<20 ppm)',
                 ),
                 _DropCheckerRow(
-                  color: AppColors.primary,
+                  color: AppColors.success,
                   label: 'Green',
                   meaning: 'CO2 optimal (20-30 ppm)',
                 ),
                 _DropCheckerRow(
-                  color: AppColors.warning,
+                  color: Colors.amber,
                   label: 'Yellow',
                   meaning: 'CO2 too high (>30 ppm)',
                 ),
@@ -359,7 +359,7 @@ class _RefRow extends StatelessWidget {
             child: Text(range, style: AppTypography.bodySmall),
           ),
           SizedBox(
-            width: 70,
+            width: 85,
             child: Text(
               status,
               style: AppTypography.labelLarge.copyWith(color: color),

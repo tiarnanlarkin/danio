@@ -119,7 +119,25 @@ class _DosingCalculatorScreenState extends State<DosingCalculatorScreen> {
             const SizedBox(height: AppSpacing.xl),
 
             // Result
-            if (_tankVolume != null && _totalDose != null) ...[
+            if (_tankVolume == null || _totalDose == null) ...[
+              AppCard(
+                backgroundColor: AppOverlays.info10,
+                padding: AppCardPadding.spacious,
+                child: Column(
+                  children: [
+                    Icon(Icons.science_outlined,
+                        color: AppColors.textHint, size: AppIconSizes.lg),
+                    const SizedBox(height: AppSpacing.sm),
+                    Text(
+                      'Enter your tank volume above to calculate dose',
+                      style: AppTypography.bodyMedium
+                          .copyWith(color: AppColors.textHint),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                ),
+              ),
+            ] else ...[
               AppCard(
                 padding: AppCardPadding.spacious,
                 child: Column(
@@ -211,26 +229,6 @@ class _DosingCalculatorScreenState extends State<DosingCalculatorScreen> {
                   _dosePerController.text = '1';
                   _dosePerLitres = 10;
                 }),
-              ),
-            ] else ...[
-              AppCard(
-                padding: AppCardPadding.spacious,
-                child: Center(
-                  child: Column(
-                    children: [
-                      Icon(
-                        Icons.science_outlined,
-                        size: AppIconSizes.xl,
-                        color: AppColors.textHint,
-                      ),
-                      const SizedBox(height: AppSpacing.md),
-                      Text(
-                        'Enter values to calculate dose',
-                        style: AppTypography.bodyMedium,
-                      ),
-                    ],
-                  ),
-                ),
               ),
             ],
           ],

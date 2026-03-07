@@ -23,6 +23,12 @@ class _WaterChangeCalculatorScreenState
   String? _recommendation;
 
   @override
+  void initState() {
+    super.initState();
+    _calculate();
+  }
+
+  @override
   void dispose() {
     _tankVolumeController.dispose();
     _currentNitrateController.dispose();

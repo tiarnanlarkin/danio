@@ -158,7 +158,25 @@ class _TankVolumeCalculatorScreenState
             const SizedBox(height: AppSpacing.xl),
 
             // Result
-            if (_volume != null) ...[
+            if (_volume == null) ...[
+              AppCard(
+                backgroundColor: AppOverlays.info10,
+                padding: AppCardPadding.spacious,
+                child: Column(
+                  children: [
+                    Icon(Icons.calculate_outlined,
+                        color: AppColors.textHint, size: AppIconSizes.lg),
+                    const SizedBox(height: AppSpacing.sm),
+                    Text(
+                      'Enter dimensions above to calculate',
+                      style: AppTypography.bodyMedium
+                          .copyWith(color: AppColors.textHint),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                ),
+              ),
+            ] else ...[
               AppCard(
                 backgroundColor: AppOverlays.primary10,
                 padding: AppCardPadding.spacious,
