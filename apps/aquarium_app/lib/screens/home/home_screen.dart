@@ -655,9 +655,16 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final currentTab = ref.read(currentTabProvider);
     if (currentTab != 2) return; // 2 = Tank tab index
     _firstTankPromptShown = true;
+    // Double-deferred: schedule for AFTER this build frame completes and then
+    // again after a second frame, giving the widget tree time to settle fully
+    // after cold-restart provider initialization.  Prevents the
+    // _ElementLifecycle.active assertion when navigating during provider init.
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
-      _navigateToCreateFirstTank(context);
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        _navigateToCreateFirstTank(context);
+      });
     });
   }
 

@@ -39,7 +39,14 @@ class _StreakMilestoneListenerState
           newStreak > prevStreak &&
           _milestones.contains(newStreak) &&
           !_isShowing) {
-        _showCelebration(newStreak);
+        // Defer to post-frame callback to avoid accessing Overlay.of(context)
+        // during element lifecycle transitions (e.g. provider init on cold
+        // restart racing with tab navigation → _ElementLifecycle.active assert).
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted && !_isShowing) {
+            _showCelebration(newStreak);
+          }
+        });
       }
     });
 
@@ -51,7 +58,7 @@ class _StreakMilestoneListenerState
     _isShowing = true;
     HapticFeedback.heavyImpact();
 
-    final overlay = Overlay.of(context);
+    final overlay = Overlay.of(context, rootOverlay: true);
     late OverlayEntry entry;
     entry = OverlayEntry(
       builder: (ctx) => _StreakCelebrationOverlay(

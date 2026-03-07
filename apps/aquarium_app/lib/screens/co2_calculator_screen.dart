@@ -30,18 +30,43 @@ class _Co2CalculatorScreenState extends State<Co2CalculatorScreen> {
     super.dispose();
   }
 
+  // Validation error message (shown below the inputs)
+  String? _validationError;
+
   void _calculate() {
     final ph = double.tryParse(_phController.text);
     final kh = double.tryParse(_khController.text);
 
-    if (ph == null || kh == null || kh <= 0) {
-      setState(() => _co2Level = null);
+    if (ph == null || kh == null) {
+      setState(() {
+        _co2Level = null;
+        _validationError = null;
+      });
+      return;
+    }
+
+    // Bounds check: pH must be 0.1–14, KH must be 0.1–50
+    if (ph < 0.1 || ph > 14.0) {
+      setState(() {
+        _co2Level = null;
+        _validationError = 'pH must be between 0.1 and 14.0';
+      });
+      return;
+    }
+    if (kh <= 0 || kh > 50) {
+      setState(() {
+        _co2Level = null;
+        _validationError = 'KH must be between 0.1 and 50 dKH';
+      });
       return;
     }
 
     // CO2 (ppm) = 3 × KH × 10^(7-pH)
     final co2 = 3 * kh * _pow10(7 - ph);
-    setState(() => _co2Level = co2);
+    setState(() {
+      _co2Level = co2;
+      _validationError = null;
+    });
   }
 
   double _pow10(double exp) {
@@ -112,7 +137,7 @@ class _Co2CalculatorScreenState extends State<Co2CalculatorScreen> {
                   decoration: const InputDecoration(
                     labelText: 'pH',
                     border: OutlineInputBorder(),
-                    helperText: 'Usually 6.0-8.0',
+                    helperText: '0.1 – 14.0',
                   ),
                   keyboardType: const TextInputType.numberWithOptions(
                     decimal: true,
@@ -130,15 +155,36 @@ class _Co2CalculatorScreenState extends State<Co2CalculatorScreen> {
                   decoration: const InputDecoration(
                     labelText: 'KH (dKH)',
                     border: OutlineInputBorder(),
-                    helperText: 'Carbonate hardness',
+                    helperText: '0.1 – 50 dKH',
                   ),
-                  keyboardType: TextInputType.number,
-                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                  keyboardType: const TextInputType.numberWithOptions(
+                    decimal: true,
+                  ),
+                  inputFormatters: [
+                    FilteringTextInputFormatter.allow(RegExp(r'[\d.]')),
+                  ],
                   onChanged: (_) => _calculate(),
                 ),
               ),
             ],
           ),
+
+          // Validation error
+          if (_validationError != null) ...[
+            const SizedBox(height: AppSpacing.sm),
+            Row(
+              children: [
+                Icon(Icons.error_outline, size: 16, color: AppColors.error),
+                const SizedBox(width: AppSpacing.xs),
+                Expanded(
+                  child: Text(
+                    _validationError!,
+                    style: AppTypography.bodySmall.copyWith(color: AppColors.error),
+                  ),
+                ),
+              ],
+            ),
+          ],
 
           const SizedBox(height: AppSpacing.lg),
 

@@ -41,7 +41,14 @@ class _LevelUpListenerState extends ConsumerState<LevelUpListener> {
     // Listen to level up events
     ref.listen<LevelUpEvent?>(levelUpEventProvider, (previous, next) {
       if (next != null && widget.enabled && !_isShowingCelebration) {
-        _showLevelUpCelebration(next);
+        // Defer to post-frame callback to avoid accessing context during
+        // element lifecycle transitions (e.g. provider init on cold restart
+        // racing with tab navigation → _ElementLifecycle.active assertion).
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted && !_isShowingCelebration) {
+            _showLevelUpCelebration(next);
+          }
+        });
       }
     });
 

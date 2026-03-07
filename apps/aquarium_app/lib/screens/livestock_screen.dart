@@ -465,7 +465,9 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
 
     try {
       final actions = ref.read(tankActionsProvider);
-      for (final id in _selectedLivestockIds) {
+      // Capture IDs before clearing selection — SnackBar undo needs them.
+      final deletedIds = List<String>.from(_selectedLivestockIds);
+      for (final id in deletedIds) {
         actions.softDeleteLivestock(id, widget.tankId);
       }
 
@@ -481,7 +483,7 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
             action: SnackBarAction(
               label: 'Undo All',
               onPressed: () {
-                for (final id in _selectedLivestockIds) {
+                for (final id in deletedIds) {
                   actions.undoDeleteLivestock(id, widget.tankId);
                 }
                 AppFeedback.showSuccess(context, 'Livestock restored');
@@ -505,30 +507,36 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
     final storage = ref.read(storageServiceProvider);
     final now = DateTime.now();
 
-    await storage.saveLog(
-      LogEntry(
-        id: uuid.v4(),
-        tankId: widget.tankId,
-        type: LogType.feeding,
-        timestamp: now,
-        title: 'Fed fish',
-        createdAt: now,
-      ),
-    );
+    try {
+      await storage.saveLog(
+        LogEntry(
+          id: uuid.v4(),
+          tankId: widget.tankId,
+          type: LogType.feeding,
+          timestamp: now,
+          title: 'Fed fish',
+          createdAt: now,
+        ),
+      );
 
-    ref.invalidate(logsProvider(widget.tankId));
+      ref.invalidate(logsProvider(widget.tankId));
 
-    // Award XP for feeding
-    final isBoostActive = ref.read(xpBoostActiveProvider);
-    await ref.read(userProfileProvider.notifier).recordActivity(
-      xp: XpRewards.journalEntry,
-      xpBoostActive: isBoostActive,
-    );
-    final effectiveXp = isBoostActive ? XpRewards.journalEntry * 2 : XpRewards.journalEntry;
-    if (context.mounted) {
-      AppHaptics.success();
-      ref.showXpAnimation(effectiveXp);
-      AppFeedback.showSuccess(context, 'Feeding logged! \u{1F41F}');
+      // Award XP for feeding
+      final isBoostActive = ref.read(xpBoostActiveProvider);
+      await ref.read(userProfileProvider.notifier).recordActivity(
+        xp: XpRewards.journalEntry,
+        xpBoostActive: isBoostActive,
+      );
+      final effectiveXp = isBoostActive ? XpRewards.journalEntry * 2 : XpRewards.journalEntry;
+      if (context.mounted) {
+        AppHaptics.success();
+        ref.showXpAnimation(effectiveXp);
+        AppFeedback.showSuccess(context, 'Feeding logged! \u{1F41F}');
+      }
+    } catch (e) {
+      if (context.mounted) {
+        AppFeedback.showError(context, 'Couldn\'t log feeding. Please try again.');
+      }
     }
   }
 
@@ -1091,6 +1099,10 @@ class _AddLivestockSheetState extends ConsumerState<_AddLivestockSheet> {
     }
     if (count <= 0) {
       AppFeedback.showWarning(context, 'Count must be at least 1');
+      return;
+    }
+    if (count > 9999) {
+      AppFeedback.showWarning(context, 'Count can\'t exceed 9,999');
       return;
     }
 

@@ -52,6 +52,15 @@ class _WaterChangeCalculatorScreenState
       return;
     }
 
+    if (tankVolume <= 0) {
+      setState(() {
+        _changePercent = null;
+        _changeVolume = null;
+        _recommendation = 'Tank volume must be greater than 0';
+      });
+      return;
+    }
+
     if (currentNitrate <= targetNitrate) {
       setState(() {
         _changePercent = 0;
@@ -73,14 +82,29 @@ class _WaterChangeCalculatorScreenState
       return;
     }
 
+    // Guard against division by zero.
+    final denominator = currentNitrate - tapNitrate;
+    if (denominator <= 0) {
+      setState(() {
+        _changePercent = null;
+        _changeVolume = null;
+        _recommendation = 'Unable to calculate — tap water nitrate is too close to current nitrate.';
+      });
+      return;
+    }
+
     // Formula: changePercent = (current - target) / (current - tap)
-    final changePercent =
-        ((currentNitrate - targetNitrate) / (currentNitrate - tapNitrate)) *
-        100;
+    // Cap at 100% — you can't change more than the full tank.
+    final rawPercent = ((currentNitrate - targetNitrate) / denominator) * 100;
+    final changePercent = rawPercent.clamp(0.0, 100.0);
     final changeVolume = tankVolume * (changePercent / 100);
 
     String recommendation;
-    if (changePercent > 50) {
+    if (rawPercent > 100) {
+      recommendation =
+          'Even a 100% water change won\'t reach target with your tap water nitrate. '
+          'Consider RO or distilled water to dilute further.';
+    } else if (changePercent > 50) {
       recommendation =
           'This requires a large water change (${changePercent.toStringAsFixed(0)}%). '
           'Consider splitting into 2-3 smaller changes over a few days to reduce stress.';
