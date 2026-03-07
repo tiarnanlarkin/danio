@@ -277,9 +277,9 @@ class _EnhancedPlacementTestScreenState
               gravity: 0.15,
               shouldLoop: false,
               colors: const [
-                Colors.green,
+                AppColors.success,
                 AppColors.primary,
-                Colors.orange,
+                AppColors.warning,
                 AppColors.accent,
                 AppColors.primary,
               ],
@@ -664,7 +664,7 @@ class _EnhancedPlacementTestScreenState
       AppColors.primary,
       AppColors.secondary,
       AppColors.accent,
-      Colors.orange,
+      AppColors.warning,
       DanioColors.amethyst,
     ];
     return colors[index % colors.length];
