@@ -414,7 +414,7 @@ class _TankTypePage extends StatelessWidget {
           ),
           const SizedBox(height: AppSpacing.sm),
           Text(
-            "We'll show relevant guides and tips",
+            "We'll tailor your tips and guides to match — don't worry, you can always explore both!",
             style: AppTypography.bodyMedium.copyWith(
               color: AppColors.textSecondary,
             ),

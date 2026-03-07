@@ -197,7 +197,7 @@ class _FirstTankWizardScreenState extends ConsumerState<FirstTankWizardScreen> {
           ),
           const SizedBox(height: AppSpacing.sm2),
           Text(
-            'Give it a memorable name',
+            'Every great tank has a name. What\'s yours? 🐟',
             style: AppTypography.bodyLarge.copyWith(
               color: AppColors.textSecondary,
             ),
@@ -248,7 +248,7 @@ class _FirstTankWizardScreenState extends ConsumerState<FirstTankWizardScreen> {
           ),
           const SizedBox(height: AppSpacing.sm2),
           Text(
-            'How many liters is your tank?',
+            'How big is your tank? (A rough estimate is fine!)',
             style: AppTypography.bodyLarge.copyWith(
               color: AppColors.textSecondary,
             ),
@@ -302,7 +302,7 @@ class _FirstTankWizardScreenState extends ConsumerState<FirstTankWizardScreen> {
           ),
           const SizedBox(height: AppSpacing.sm2),
           Text(
-            'What type of tank is this?',
+            'Not sure yet? Freshwater is the perfect place to start.',
             style: AppTypography.bodyLarge.copyWith(
               color: AppColors.textSecondary,
             ),
@@ -391,13 +391,13 @@ class _FirstTankWizardScreenState extends ConsumerState<FirstTankWizardScreen> {
           ),
           const SizedBox(height: AppSpacing.lg),
           Text(
-            'Ready to Create!',
+            'Looking good! 🎉',
             style: AppTypography.headlineLarge,
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: AppSpacing.sm2),
           Text(
-            'Your tank is ready to be created',
+            'Here\'s what we\'re setting up for you:',
             style: AppTypography.bodyLarge.copyWith(
               color: AppColors.textSecondary,
             ),
@@ -438,7 +438,7 @@ class _FirstTankWizardScreenState extends ConsumerState<FirstTankWizardScreen> {
                 const SizedBox(width: AppSpacing.sm2),
                 Expanded(
                   child: Text(
-                    'After creating, you can add fish, equipment, and log water parameters!',
+                    'Once it\'s set up, you can add fish, track water readings, and get care reminders — all in one place! 🐠',
                     style: AppTypography.bodySmall.copyWith(
                       color: AppColors.textSecondary,
                     ),

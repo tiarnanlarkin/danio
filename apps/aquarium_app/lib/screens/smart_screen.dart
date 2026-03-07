@@ -111,7 +111,7 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
             title: 'Fish & Plant ID',
             subtitle: openai.isConfigured
                 ? 'Snap a photo to identify species'
-                : 'Requires API key setup',
+                : 'Enable AI in Settings to use this',
             color: AppColors.primary,
             onTap: openai.isConfigured
                 ? () => Navigator.of(context).push(
@@ -122,10 +122,10 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
 
           _FeatureCard(
             icon: Icons.healing,
-            title: 'Symptom Triage',
+            title: 'Symptom Checker',
             subtitle: openai.isConfigured
-                ? 'Diagnose fish health issues'
-                : 'Requires API key setup',
+                ? 'Describe symptoms, get instant advice'
+                : 'Enable AI in Settings to use this',
             color: AppColors.error,
             onTap: openai.isConfigured
                 ? () => Navigator.of(context).push(
@@ -136,10 +136,10 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
 
           _FeatureCard(
             icon: Icons.calendar_month,
-            title: 'Weekly Plan',
+            title: 'Weekly Care Plan',
             subtitle: openai.isConfigured
-                ? 'AI-generated maintenance schedule'
-                : 'Requires API key setup',
+                ? 'Your personalised maintenance schedule'
+                : 'Enable AI in Settings to use this',
             color: AppColors.primary, // BUG-11: was textSecondary (gray), now warm amber to match siblings
             onTap: openai.isConfigured
                 ? () => Navigator.of(context).push(
@@ -391,7 +391,7 @@ class _OfflineBanner extends StatelessWidget {
           Icon(Icons.auto_awesome, color: AppColors.primary, size: AppIconSizes.lg),
           const SizedBox(height: AppSpacing.sm),
           Text(
-            'AI Features Need Setup 🔑',
+            'Supercharge Danio with AI 🧠',
             style: AppTypography.titleSmall.copyWith(
               color: AppColors.primary,
               fontWeight: FontWeight.bold,
@@ -399,8 +399,8 @@ class _OfflineBanner extends StatelessWidget {
           ),
           const SizedBox(height: AppSpacing.xs),
           Text(
-            'Smart features like fish identification, health triage, and '
-            'personalised care plans require an OpenAI API key.',
+            'Snap a photo to ID any fish, get instant health diagnoses, '
+            'and receive a personalised weekly care plan — all powered by AI.',
             style: AppTypography.bodySmall.copyWith(
               color: AppColors.textSecondary,
             ),
@@ -408,8 +408,9 @@ class _OfflineBanner extends StatelessWidget {
           ),
           const SizedBox(height: AppSpacing.md),
           Text(
-            'Features still work without AI — you can browse the fish '
-            'database, log water parameters, and manage your tanks.\n\n'
+            'To enable, add your OpenAI API key in Settings → Smart Features.\n\n'
+            'Everything else in Danio still works great without it — track water, '
+            'manage tanks, log feedings, and learn at your own pace.\n\n'
             '🚀 Danio Pro will include built-in AI — stay tuned!',
             style: AppTypography.bodySmall.copyWith(
               color: AppColors.textHint,

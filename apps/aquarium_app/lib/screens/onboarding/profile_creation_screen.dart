@@ -82,7 +82,7 @@ class _ProfileCreationScreenState extends ConsumerState<ProfileCreationScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text(
-            'Please select your experience level, tank type, and at least one goal',
+            'Almost there! Just pick your experience level, tank type, and at least one goal to continue.',
           ),
           backgroundColor: AppColors.error,
         ),
@@ -193,7 +193,7 @@ class _ProfileCreationScreenState extends ConsumerState<ProfileCreationScreen> {
                   order: const NumericFocusOrder(5.0),
                   child: Semantics(
                     label: A11yLabels.button(
-                      'Continue to knowledge assessment',
+                      'Continue to next step',
                     ),
                     button: true,
                     enabled: !_isSubmitting && _canSubmit,
@@ -208,13 +208,13 @@ class _ProfileCreationScreenState extends ConsumerState<ProfileCreationScreen> {
                               width: 20,
                               child: CircularProgressIndicator(strokeWidth: 2),
                             )
-                          : const Text('Continue to Assessment'),
+                          : const Text('Continue'),
                     ),
                   ),
                 ),
                 const SizedBox(height: AppSpacing.md),
                 Text(
-                  'Next: Quick knowledge check (2-3 minutes)',
+                  'Next: A quick quiz to personalise your learning path (2–3 min)',
                   style: Theme.of(
                     context,
                   ).textTheme.bodySmall?.copyWith(color: AppColors.textHint),

@@ -440,7 +440,7 @@ class AchievementDefinitions {
   static const placement = Achievement(
     id: 'placement_complete',
     name: 'Assessed & Ready',
-    description: 'Placement test done! Now we know exactly where to start your journey.',
+    description: 'You completed your knowledge quiz! Now we know exactly where your journey should begin.',
     icon: '📝',
     rarity: AchievementRarity.bronze,
     category: AchievementCategory.learningProgress,
@@ -491,7 +491,7 @@ class AchievementDefinitions {
   static const firstReview = Achievement(
     id: 'first_review',
     name: 'First Review',
-    description: 'Your first review! Spaced repetition is the secret weapon of great learners.',
+    description: 'Your first review session complete! The secret to remembering things? Coming back to them. You\'re already doing it! 🧠',
     icon: '📝',
     rarity: AchievementRarity.bronze,
     category: AchievementCategory.engagement,
@@ -560,7 +560,7 @@ class AchievementDefinitions {
   static const reviewStreak30 = Achievement(
     id: 'review_streak_30',
     name: 'Memory Champion',
-    description: 'Thirty days of reviews! You have the memory of a elephant... fish.',
+    description: 'Thirty days of reviews! You have the memory of an elephant — just, you know, a fishy one.',
     icon: '🏆',
     rarity: AchievementRarity.platinum,
     category: AchievementCategory.streaks,
