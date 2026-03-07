@@ -2,6 +2,7 @@
 /// Integrates with user profile to track and unlock achievements
 library;
 
+import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -128,6 +129,17 @@ class AchievementChecker {
 
   final Ref ref;
 
+  /// Returns a Future that completes after the current build/layout/paint
+  /// frame finishes.  Used to safely defer dialog presentation until all
+  /// provider-triggered widget rebuilds have settled.
+  static Future<void> _waitForNextFrame() {
+    final completer = Completer<void>();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      completer.complete();
+    });
+    return completer.future;
+  }
+
   /// Check achievements and return newly unlocked ones
   /// Will throw exception on failure - does not fail silently
   Future<List<AchievementUnlockResult>> checkAchievements(
@@ -206,12 +218,17 @@ class AchievementChecker {
             }
 
             // Show celebration dialog.
-            // P0-002 FIX: Wait one frame before showing the dialog so that
-            // any provider-triggered rebuilds from updateAchievements() above
-            // complete first.  Without this, the showDialog push can race with
-            // InheritedWidget dependency tear-down causing the
-            // _dependents.isEmpty assertion (framework.dart:6271).
-            await Future.delayed(Duration.zero); // yield to microtask queue
+            // P0-002 FIX: Wait for the current frame to fully complete before
+            // showing the dialog.  The updateAchievements() call above mutates
+            // userProfileProvider which schedules widget rebuilds.  If we push
+            // a dialog route (showDialog) before those rebuilds settle, the
+            // InheritedWidget dependency tear-down races with the new route's
+            // build, triggering _dependents.isEmpty (framework.dart:6271).
+            //
+            // addPostFrameCallback genuinely waits for the build/layout/paint
+            // pipeline to finish — unlike Future.delayed(Duration.zero) which
+            // only yields to the microtask queue.
+            await _waitForNextFrame();
             final context = navigatorKey.currentContext;
             if (context != null && context.mounted) {
               await showAchievementUnlockedDialog(
