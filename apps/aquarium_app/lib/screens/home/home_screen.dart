@@ -68,6 +68,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   bool _dailyNudgeDismissed = false;
   bool _isSelectMode = false;
   bool _firstTankPromptShown = false;
+  String? _pendingTankNavigation; // set after first tank created — triggers nav in build
   bool _showWelcomeBanner = false;
   final Set<String> _selectedTankIds = {};
 
@@ -580,6 +581,21 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // Pending tank navigation — set by _showFirstTankSheet after first tank created.
+    // We navigate here (in build → postFrameCallback) rather than from an async
+    // callback to ensure the element tree is stable before pushing.
+    if (_pendingTankNavigation != null) {
+      final tankId = _pendingTankNavigation!;
+      _pendingTankNavigation = null;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          Navigator.of(context).push(
+            TankDetailRoute(page: TankDetailScreen(tankId: tankId)),
+          );
+        }
+      });
+    }
+
     // HomeScreen is the Living Room - it shows tank management only.
     // Navigation to other rooms (Learn, Workshop, Shop, etc.) is handled
     // by TabNavigator's tab system, not a BottomNavigationBar here.
@@ -734,17 +750,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       ),
     );
 
-    // NOTE: showModalBottomSheet future resolves when Navigator.pop() is called,
-    // NOT when the exit animation finishes. The sheet's exit animation takes ~300ms.
-    // We must wait for it to complete before pushing, otherwise _cancelActivePointers
-    // or markNeedsBuild fires on the still-animating sheet's elements.
-    if (tank != null && context.mounted) {
-      await Future.delayed(const Duration(milliseconds: 400));
-      if (context.mounted) {
-        Navigator.of(context).push(
-          TankDetailRoute(page: TankDetailScreen(tankId: tank.id)),
-        );
-      }
+    // Signal the HomeScreen to navigate via setState → build → addPostFrameCallback.
+    // This avoids pushing from inside an async callback while the overlay's element
+    // tree is still stabilising after the sheet dismissal + Riverpod rebuild.
+    if (tank != null && mounted) {
+      setState(() => _pendingTankNavigation = tank.id);
     }
   }
 
