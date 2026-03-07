@@ -1431,9 +1431,9 @@ class _HealthChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final (label, color, emoji) = switch (status) {
-      HealthStatus.healthy => ('Healthy', Colors.green, '\u{1F7E2}'),
-      HealthStatus.sick => ('Sick', Colors.orange, '\u{1F7E1}'),
-      HealthStatus.quarantine => ('Quarantine', Colors.red, '\u{1F534}'),
+      HealthStatus.healthy => ('Healthy', AppColors.success, '\u{1F7E2}'),
+      HealthStatus.sick => ('Sick', AppColors.warning, '\u{1F7E1}'),
+      HealthStatus.quarantine => ('Quarantine', AppColors.error, '\u{1F534}'),
     };
 
     return Container(
@@ -1452,7 +1452,7 @@ class _HealthChip extends StatelessWidget {
             label,
             style: Theme.of(context).textTheme.bodySmall!.copyWith(
               fontWeight: FontWeight.w600,
-              color: color.shade700,
+              color: color,
             ),
           ),
         ],
