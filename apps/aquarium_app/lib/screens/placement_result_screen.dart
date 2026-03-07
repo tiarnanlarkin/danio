@@ -99,7 +99,7 @@ class PlacementResultScreen extends ConsumerWidget {
                       padding: const EdgeInsets.symmetric(vertical: 16),
                     ),
                     child: Text(
-                      'Continue to Setup Tutorial',
+                      'Start My Journey! 🚀',
                       style: Theme.of(context).textTheme.titleMedium!,
                     ),
                   ),

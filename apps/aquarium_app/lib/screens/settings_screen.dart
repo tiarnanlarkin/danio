@@ -926,7 +926,7 @@ class SettingsScreen extends ConsumerWidget {
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(ctx),
-              child: const Text('OK'),
+              child: const Text('Got It'),
             ),
           ],
         ),

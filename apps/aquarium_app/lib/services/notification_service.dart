@@ -110,8 +110,8 @@ class NotificationService {
 
     await _plugin.zonedSchedule(
       task.id.hashCode,
-      '🐟 Task Due: ${task.title}',
-      task.description ?? 'Time to complete this task!',
+      '✅ ${task.title} is due today',
+      task.description ?? 'Tap to mark it done — your tank will thank you!',
       tzScheduledDate,
       const NotificationDetails(
         android: AndroidNotificationDetails(
@@ -249,8 +249,8 @@ class NotificationService {
 
     await _plugin.zonedSchedule(
       _morningNotificationId,
-      '🎓 5 minutes to level up your fishkeeping today?',
-      'Your 🔥 $currentStreak-day streak is waiting. Let\'s go!',
+      '🐠 5 minutes to level up your fishkeeping today?',
+      'Your 🔥 $currentStreak-day streak is waiting — let\'s keep it going!',
       tzScheduledDate,
       const NotificationDetails(
         android: AndroidNotificationDetails(
@@ -354,8 +354,8 @@ class NotificationService {
 
     await _plugin.zonedSchedule(
       _nightNotificationId,
-      '🚨 Last chance today!',
-      '🔥 Your $currentStreak-day streak ends at midnight! A 5-minute lesson is all it takes',
+      '⏰ Last call before midnight!',
+      '🔥 Your $currentStreak-day streak ends at midnight. A 5-minute lesson is all it takes — you\'ve got this!',
       tzScheduledDate,
       const NotificationDetails(
         android: AndroidNotificationDetails(
@@ -466,8 +466,8 @@ class NotificationService {
 
     await _plugin.zonedSchedule(
       _reviewReminderNotificationId,
-      '🔔 Time to review!',
-      'You have $dueCardsCount card${dueCardsCount == 1 ? '' : 's'} ready to review!',
+      '📚 Review time — keep that knowledge sharp!',
+      'You have $dueCardsCount card${dueCardsCount == 1 ? '' : 's'} ready to review. Takes just a few minutes!',
       tzScheduledDate,
       const NotificationDetails(
         android: AndroidNotificationDetails(
@@ -538,11 +538,11 @@ class NotificationService {
 
     final isOverdue = daysSinceLastChange >= reminderThresholdDays;
     final title = isOverdue
-        ? '💧 Time for a water change! Your tank will thank you 🐠'
-        : '💧 Water change reminder';
+        ? '💧 Your fish want fresh water!'
+        : '💧 Water change coming up for $tankName';
     final body = isOverdue
-        ? '💧 $tankName hasn\'t had fresh water in $daysSinceLastChange days. Your fish will love you for it!'
-        : '💧 $tankName is nearly due for a water change. Stay ahead of the game!';
+        ? '$tankName is $daysSinceLastChange days overdue for a water change. A quick refresh makes a big difference!'
+        : 'Staying on top of water changes keeps your fish happy and your tank balanced.';
 
     await _plugin.zonedSchedule(
       notificationId,
