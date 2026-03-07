@@ -102,14 +102,15 @@ class DanioApp extends ConsumerWidget {
       themeMode: settings.flutterThemeMode,
       // navigatorObservers: [
       // ],
-      home: XpAnimationListener(
+      builder: (context, child) => XpAnimationListener(
         child: CelebrationOverlayWrapper(
           child: AppPerformanceOverlay(
             showOverlay: _showPerformanceOverlay,
-            child: const _AppRouter(),
+            child: child ?? const SizedBox.shrink(),
           ),
         ),
       ),
+      home: const _AppRouter(),
     );
   }
 }

@@ -4,8 +4,8 @@ import '../providers/user_profile_provider.dart';
 import '../theme/app_theme.dart';
 import '../widgets/common/common_widgets.dart';
 import 'settings_screen.dart';
-import 'friends_screen.dart';
-import 'leaderboard_screen.dart';
+// friends_screen.dart — hidden until feature ships (CA-002)
+// leaderboard_screen.dart — hidden until feature ships (CA-003)
 import 'shop_street_screen.dart';
 import 'workshop_screen.dart';
 import 'achievements_screen.dart';
@@ -41,45 +41,6 @@ class SettingsHubScreen extends ConsumerWidget {
       // === Profile Card ===
       _buildProfileCard(context, profile),
 
-      const SizedBox(height: AppSpacing.lg),
-
-      // === Section: Community ===
-      _buildSectionHeader('Community'),
-      const SizedBox(height: AppSpacing.sm),
-
-      PrimaryActionTile(
-        icon: Icons.people,
-        title: 'Friends',
-        subtitle: 'Find friends & share your tanks',
-        iconColor: AppColors.primary,
-        trailing: const Icon(Icons.chevron_right),
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const FriendsScreen(),
-            ),
-          );
-        },
-      ),
-
-      const SizedBox(height: AppSpacing.sm),
-
-      PrimaryActionTile(
-        icon: Icons.leaderboard,
-        title: 'Leaderboard',
-        subtitle: 'Compare your progress globally',
-        iconColor: AppColors.warning,
-        trailing: const Icon(Icons.chevron_right),
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const LeaderboardScreen(),
-            ),
-          );
-        },
-      ),
 
       const SizedBox(height: AppSpacing.lg),
 

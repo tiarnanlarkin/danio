@@ -255,13 +255,25 @@ class _CelebrationOverlayWrapperState extends ConsumerState<CelebrationOverlayWr
   }
   
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Use ref.listen to react to celebration state changes outside of build.
+    // This avoids the anti-pattern of calling AnimationController.forward()
+    // inside build(), which causes "setState during build" assertion errors.
+    ref.listenManual(celebrationProvider, (previous, next) {
+      if (next.isActive && !(previous?.isActive ?? false)) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) _animationController.forward(from: 0);
+        });
+      } else if (!next.isActive) {
+        _animationController.reverse();
+      }
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     final celebration = ref.watch(celebrationProvider);
-    
-    // Trigger animation when celebration becomes active
-    if (celebration.isActive && !_animationController.isAnimating) {
-      _animationController.forward(from: 0);
-    }
     
     return Stack(
       children: [

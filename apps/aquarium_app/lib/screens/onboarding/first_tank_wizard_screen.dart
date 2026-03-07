@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../models/models.dart';
 import '../../providers/tank_provider.dart';
 import '../../services/celebration_service.dart';
+import '../../services/onboarding_service.dart';
 import '../../theme/app_theme.dart';
 import '../tab_navigator.dart';
 
@@ -82,22 +83,23 @@ class _FirstTankWizardScreenState extends ConsumerState<FirstTankWizardScreen> {
           volumeLitres: _volumeLitres,
         );
 
+    // Mark onboarding complete before navigating
+    final onboardingService = await OnboardingService.getInstance();
+    await onboardingService.completeOnboarding();
+
     if (mounted) {
       // 🎉 Celebrate first tank creation!
+      // Celebration overlay lives in MaterialApp.builder — survives navigation.
       ref.read(celebrationProvider.notifier).milestone(
         'Tank Created! 🐠',
         subtitle: 'Welcome to your aquarium journey!',
       );
       
-      // Navigate after celebration starts
-      Future.delayed(AppDurations.long2, () {
-        if (mounted) {
-          Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute(builder: (_) => const TabNavigator()),
-            (route) => false,
-          );
-        }
-      });
+      // Navigate immediately — celebration overlay is above the nav stack
+      Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(builder: (_) => const TabNavigator()),
+        (route) => false,
+      );
     }
   }
 
