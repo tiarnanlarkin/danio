@@ -52,7 +52,7 @@ class PlacementResultScreen extends ConsumerWidget {
                   Text(
                     'Based on your score, here\'s what we recommend:',
                     style: theme.textTheme.bodyMedium?.copyWith(
-                      color: Colors.grey[600],
+                      color: AppColors.textSecondary,
                     ),
                   ),
                   const SizedBox(height: AppSpacing.md),
@@ -80,8 +80,10 @@ class PlacementResultScreen extends ConsumerWidget {
 
             // Action buttons
             Padding(
-              padding: EdgeInsets.all(AppSpacing.md),
-              child: Column(
+              padding: const EdgeInsets.fromLTRB(AppSpacing.md, AppSpacing.md, AppSpacing.md, 0),
+              child: SafeArea(
+                top: false,
+                child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   FilledButton(
@@ -113,6 +115,7 @@ class PlacementResultScreen extends ConsumerWidget {
                   ),
                 ],
               ),
+              ),
             ),
           ],
         ),
@@ -130,7 +133,7 @@ class PlacementResultScreen extends ConsumerWidget {
 
     if (percentage >= 80) {
       message = 'Excellent! You\'re clearly experienced!';
-      color = Colors.green;
+      color = AppColors.success;
       icon = Icons.emoji_events;
     } else if (percentage >= 60) {
       message = 'Great job! You know your stuff!';
@@ -138,7 +141,7 @@ class PlacementResultScreen extends ConsumerWidget {
       icon = Icons.thumb_up;
     } else if (percentage >= 40) {
       message = 'Good start! You have some knowledge.';
-      color = Colors.orange;
+      color = AppColors.warning;
       icon = Icons.school;
     } else {
       message = 'No worries! We\'ll teach you everything.';
@@ -218,7 +221,7 @@ class PlacementResultScreen extends ConsumerWidget {
                       Text(
                         '${recommendation.score.round()}% correct',
                         style: theme.textTheme.bodySmall?.copyWith(
-                          color: Colors.grey[600],
+                          color: AppColors.textSecondary,
                         ),
                       ),
                     ],
@@ -260,7 +263,7 @@ class PlacementResultScreen extends ConsumerWidget {
             Container(
               padding: EdgeInsets.all(AppSpacing.sm2),
               decoration: BoxDecoration(
-                color: Colors.grey[100],
+                color: AppColors.surfaceVariant,
                 borderRadius: AppRadius.smallRadius,
               ),
               child: Text(
@@ -273,7 +276,7 @@ class PlacementResultScreen extends ConsumerWidget {
               Text(
                 'Skipping ${recommendation.lessonsToSkip.length} of ${path.lessons.length} lessons',
                 style: theme.textTheme.bodySmall?.copyWith(
-                  color: Colors.grey[600],
+                  color: AppColors.textSecondary,
                 ),
               ),
             ],
@@ -378,7 +381,7 @@ class PlacementResultScreen extends ConsumerWidget {
                         title: Text(path.title),
                         subtitle: LinearProgressIndicator(
                           value: score / 100,
-                          backgroundColor: Colors.grey[200],
+                          backgroundColor: AppColors.surfaceVariant,
                           valueColor: AlwaysStoppedAnimation(
                             _getScoreColor(score),
                           ),
@@ -442,18 +445,18 @@ class PlacementResultScreen extends ConsumerWidget {
       case SkipLevel.none:
         return AppColors.primary;
       case SkipLevel.beginner:
-        return Colors.green;
+        return AppColors.success;
       case SkipLevel.advanced:
-        return Colors.orange;
+        return AppColors.warning;
       case SkipLevel.complete:
         return AppColors.accentAlt;
     }
   }
 
   Color _getScoreColor(double score) {
-    if (score >= 80) return Colors.green;
+    if (score >= 80) return AppColors.success;
     if (score >= 60) return AppColors.primary;
-    if (score >= 40) return Colors.orange;
-    return Colors.grey;
+    if (score >= 40) return AppColors.warning;
+    return AppColors.textSecondary;
   }
 }

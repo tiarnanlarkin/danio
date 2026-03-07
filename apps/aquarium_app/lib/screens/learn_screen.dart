@@ -634,8 +634,8 @@ class _StreakCard extends StatelessWidget {
     final usedFreezeThisWeek = profile.streakFreezeUsedThisWeek;
 
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
-      padding: EdgeInsets.all(AppSpacing.md),
+      margin: const EdgeInsets.fromLTRB(AppSpacing.md, AppSpacing.sm, AppSpacing.md, 0),
+      padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
         color: AppOverlays.orange10,
         borderRadius: AppRadius.mediumRadius,
@@ -746,7 +746,7 @@ class _LazyLearningPathCardState extends ConsumerState<_LazyLearningPathCard> {
 
     return Container(
       decoration: BoxDecoration(
-        color: isDark ? AppColors.surfaceDark : Colors.white,
+        color: isDark ? AppColors.surfaceDark : AppColors.card,
         borderRadius: BorderRadius.circular(AppRadius.lg),
         boxShadow: [
           BoxShadow(

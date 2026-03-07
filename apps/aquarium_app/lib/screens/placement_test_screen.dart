@@ -223,7 +223,7 @@ class _PlacementTestScreenState extends ConsumerState<PlacementTestScreen> {
         LinearProgressIndicator(
           value: _progress,
           minHeight: 8,
-          backgroundColor: Colors.grey[200],
+          backgroundColor: AppColors.surfaceVariant,
           valueColor: const AlwaysStoppedAnimation<Color>(AppColors.accent),
         ),
         Padding(
@@ -239,7 +239,7 @@ class _PlacementTestScreenState extends ConsumerState<PlacementTestScreen> {
               ),
               Text(
                 '${_userAnswers.length}/${_test.questions.length} Answered',
-                style: Theme.of(context).textTheme.bodySmall!.copyWith( color: Colors.grey),
+                style: Theme.of(context).textTheme.bodySmall!.copyWith(color: AppColors.textSecondary),
               ),
             ],
           ),
@@ -260,12 +260,12 @@ class _PlacementTestScreenState extends ConsumerState<PlacementTestScreen> {
 
       if (showResult) {
         if (isCorrect) {
-          backgroundColor = Colors.green[50];
-          borderColor = Colors.green;
+          backgroundColor = AppOverlays.success10;
+          borderColor = AppColors.success;
           icon = Icons.check_circle;
         } else if (isSelected && !isCorrect) {
-          backgroundColor = Colors.red[50];
-          borderColor = Colors.red;
+          backgroundColor = AppOverlays.error10;
+          borderColor = AppColors.error;
           icon = Icons.cancel;
         }
       } else if (isSelected) {
@@ -284,7 +284,7 @@ class _PlacementTestScreenState extends ConsumerState<PlacementTestScreen> {
               color: backgroundColor,
               borderRadius: AppRadius.mediumRadius,
               border: Border.all(
-                color: borderColor ?? Colors.grey[300]!,
+                color: borderColor ?? AppColors.border,
                 width: 2,
               ),
             ),
@@ -297,15 +297,15 @@ class _PlacementTestScreenState extends ConsumerState<PlacementTestScreen> {
                     shape: BoxShape.circle,
                     color: isSelected
                         ? (showResult && isCorrect
-                              ? Colors.green
+                              ? AppColors.success
                               : AppColors.accent)
-                        : Colors.grey[200],
+                        : AppColors.surfaceVariant,
                   ),
                   child: Center(
                     child: Text(
                       String.fromCharCode(65 + index), // A, B, C, D
                       style: TextStyle(
-                        color: isSelected ? Colors.white : Colors.black87,
+                        color: isSelected ? AppColors.onPrimary : AppColors.textSecondary,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -334,7 +334,7 @@ class _PlacementTestScreenState extends ConsumerState<PlacementTestScreen> {
     final isCorrect = _selectedAnswer == _currentQuestion.correctIndex;
 
     return Card(
-      color: isCorrect ? Colors.green[50] : const Color(0xFFFFF8E1),
+      color: isCorrect ? AppOverlays.success10 : AppColors.surfaceVariant,
       child: Padding(
         padding: EdgeInsets.all(AppSpacing.md),
         child: Column(
@@ -344,14 +344,14 @@ class _PlacementTestScreenState extends ConsumerState<PlacementTestScreen> {
               children: [
                 Icon(
                   isCorrect ? Icons.check_circle : Icons.info,
-                  color: isCorrect ? Colors.green : AppColors.primary,
+                  color: isCorrect ? AppColors.success : AppColors.primary,
                 ),
                 SizedBox(width: AppSpacing.sm),
                 Text(
                   isCorrect ? 'Correct!' : 'Not quite...',
                   style: Theme.of(context).textTheme.titleMedium!.copyWith(
                     fontWeight: FontWeight.bold,
-                    color: isCorrect ? Colors.green : AppColors.primary,
+                    color: isCorrect ? AppColors.success : AppColors.primary,
                   ),
                 ),
               ],
@@ -369,9 +369,9 @@ class _PlacementTestScreenState extends ConsumerState<PlacementTestScreen> {
 
   Widget _buildNavigationButtons(bool isAnswered) {
     return Container(
-      padding: EdgeInsets.all(AppSpacing.md),
+      padding: EdgeInsets.fromLTRB(AppSpacing.md, AppSpacing.md, AppSpacing.md, AppSpacing.md),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).scaffoldBackgroundColor,
         boxShadow: [
           BoxShadow(
             color: AppOverlays.black10,
@@ -380,7 +380,9 @@ class _PlacementTestScreenState extends ConsumerState<PlacementTestScreen> {
           ),
         ],
       ),
-      child: Row(
+      child: SafeArea(
+        top: false,
+        child: Row(
         children: [
           // Previous button
           if (_currentQuestionIndex > 0)
@@ -402,6 +404,7 @@ class _PlacementTestScreenState extends ConsumerState<PlacementTestScreen> {
               child: Text(_isLastQuestion ? 'See Results' : 'Next Question'),
             ),
         ],
+      ),
       ),
     );
   }

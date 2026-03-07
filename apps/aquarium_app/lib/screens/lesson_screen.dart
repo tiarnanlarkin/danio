@@ -447,7 +447,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
                 const SizedBox(height: 8),
                 Text(
                   'Illustration coming soon',
-                  style: TextStyle(color: AppColors.textHint, fontSize: 13),
+                  style: AppTypography.bodySmall.copyWith(color: AppColors.textHint),
                 ),
               ],
             ),
@@ -804,7 +804,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
                           Text(
                             'includes +$bonusXp quiz bonus!',
                             style: AppTypography.bodySmall.copyWith(
-                              color: Colors.white70,
+                              color: AppOverlays.white70,
                             ),
                           ),
                         ],

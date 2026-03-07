@@ -313,7 +313,7 @@ class _EnhancedQuizScreenState extends ConsumerState<EnhancedQuizScreen>
                     ),
                     const SizedBox(height: AppSpacing.lg),
                     DefaultTextStyle.merge(
-                      style: const TextStyle(color: Colors.black87),
+                      style: TextStyle(color: AppColors.textPrimary),
                       child: ExerciseWidget(
                         exercise: exercise,
                         onAnswer: _onAnswer,
@@ -464,17 +464,17 @@ class _EnhancedQuizScreenState extends ConsumerState<EnhancedQuizScreen>
       case ExerciseType.trueFalse:
         label = 'True or False';
         icon = Icons.check_circle_outline;
-        color = Colors.green;
+        color = AppColors.success;
         break;
       case ExerciseType.matching:
         label = 'Matching';
         icon = Icons.compare_arrows;
-        color = Colors.orange;
+        color = AppColors.warning;
         break;
       case ExerciseType.ordering:
         label = 'Put in Order';
         icon = Icons.reorder;
-        color = Colors.red;
+        color = AppColors.error;
         break;
     }
 
@@ -750,12 +750,12 @@ class _EnhancedQuizScreenState extends ConsumerState<EnhancedQuizScreen>
                     mainAxisAlignment: MainAxisAlignment.center,
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Icon(Icons.star, color: Colors.white, size: 32),
+                      const Icon(Icons.star, color: AppColors.onPrimary, size: 32),
                       const SizedBox(width: AppSpacing.sm),
                       Text(
                         '+${widget.quiz.bonusXp + (passed ? bonusXp : 0)} XP',
                         style: AppTypography.headlineMedium.copyWith(
-                          color: Colors.white,
+                          color: AppColors.onPrimary,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -773,7 +773,7 @@ class _EnhancedQuizScreenState extends ConsumerState<EnhancedQuizScreen>
                           child: Text(
                             '+$bonusXp bonus!',
                             style: AppTypography.bodySmall.copyWith(
-                              color: Colors.white,
+                              color: AppColors.onPrimary,
                             ),
                           ),
                         ),
