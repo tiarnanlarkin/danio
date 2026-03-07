@@ -201,7 +201,7 @@ class ShopStreetScreen extends ConsumerWidget {
           ),
         ],
       ),
-    );
+    ).whenComplete(() => controller.dispose());
   }
 
   void _showAddShopDialog(BuildContext context, WidgetRef ref) {
@@ -234,7 +234,7 @@ class ShopStreetScreen extends ConsumerWidget {
       text: existingShop?.notes ?? '',
     );
 
-    showModalBottomSheet(
+    showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
@@ -327,7 +327,12 @@ class ShopStreetScreen extends ConsumerWidget {
           ),
         ),
       ),
-    );
+    ).whenComplete(() {
+      nameController.dispose();
+      addressController.dispose();
+      distanceController.dispose();
+      notesController.dispose();
+    });
   }
 
   void _deleteShop(BuildContext context, WidgetRef ref, LocalShop shop) {
