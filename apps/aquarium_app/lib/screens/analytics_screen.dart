@@ -4,29 +4,30 @@ import 'package:flutter/material.dart';
 /// Analytics Dashboard Screen - Comprehensive progress visualization
 /// Features: charts, insights, trends, predictions, and export options
 import 'package:fl_chart/fl_chart.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'dart:convert';
 import 'package:share_plus/share_plus.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 import '../models/analytics.dart';
-import '../models/user_profile.dart';
 import '../models/learning.dart';
 import '../services/analytics_service.dart';
 import '../providers/lesson_provider.dart';
+import '../providers/user_profile_provider.dart';
 import '../data/lesson_content_lazy.dart';
 import '../widgets/skeleton_loader.dart';
 import '../widgets/core/app_states.dart';
 import '../widgets/core/app_card.dart';
 
-class AnalyticsScreen extends StatefulWidget {
+class AnalyticsScreen extends ConsumerStatefulWidget {
   const AnalyticsScreen({super.key});
 
   @override
-  State<AnalyticsScreen> createState() => _AnalyticsScreenState();
+  ConsumerState<AnalyticsScreen> createState() => _AnalyticsScreenState();
 }
 
-class _AnalyticsScreenState extends State<AnalyticsScreen> {
+class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
   AnalyticsTimeRange _selectedRange = AnalyticsTimeRange.last30Days;
   DateTime? _customStart;
   DateTime? _customEnd;
@@ -109,11 +110,26 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
     );
   }
 
-  /// Load analytics data
+  /// Load analytics data using real user profile
   Future<AnalyticsSummary> _loadAnalytics() async {
-    // In a real app, you'd fetch the UserProfile from storage/state management
-    // For now, create a sample profile
-    final profile = _getSampleProfile();
+    final profile = ref.read(userProfileProvider).valueOrNull;
+    if (profile == null) {
+      // Return empty analytics when no profile is loaded yet
+      return AnalyticsSummary(
+        totalXP: 0,
+        currentStreak: 0,
+        longestStreak: 0,
+        lessonsCompleted: 0,
+        totalLessons: 0,
+        timeSpentMinutes: 0,
+        recentDailyStats: const [],
+        recentWeeklyStats: const [],
+        insights: const [],
+        topicPerformance: const [],
+        predictions: const [],
+        generatedAt: DateTime.now(),
+      );
+    }
     // Lazy-load all paths for analytics (user explicitly navigated here)
     final allPaths = await lessonContentLazy.getAllPaths();
 
@@ -1141,31 +1157,4 @@ Generated: ${DateFormat('MMM d, yyyy').format(DateTime.now())}
     await Share.share(report, subject: 'My Danio Learning Progress');
   }
 
-  /// Sample profile for testing (replace with real data from state management)
-  UserProfile _getSampleProfile() {
-    final now = DateTime.now();
-    final dailyXpHistory = <String, int>{};
-
-    // Generate sample data for the last 90 days
-    for (int i = 0; i < 90; i++) {
-      final date = now.subtract(Duration(days: i));
-      final dateKey =
-          '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
-      // Random XP between 0 and 150
-      final xp = (i % 3 == 0) ? 0 : 30 + (i * 7) % 100;
-      dailyXpHistory[dateKey] = xp;
-    }
-
-    return UserProfile(
-      id: 'sample',
-      name: 'Sample User',
-      totalXp: 2450,
-      currentStreak: 12,
-      longestStreak: 28,
-      completedLessons: ['lesson1', 'lesson2', 'lesson3', 'lesson4', 'lesson5'],
-      dailyXpHistory: dailyXpHistory,
-      createdAt: now.subtract(const Duration(days: 90)),
-      updatedAt: now,
-    );
-  }
 }
