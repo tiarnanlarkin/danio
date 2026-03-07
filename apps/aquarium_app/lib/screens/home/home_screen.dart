@@ -280,12 +280,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               ),
             ),
 
-            // === STAGE SYSTEM === (DEBUG: all wrapped in IgnorePointer)
-            IgnorePointer(
-              ignoring: true,
+            // === STAGE SYSTEM === (disabled — panels not ready yet)
+            // Offstage hides rendering entirely; IgnorePointer only blocked
+            // touch but still painted BackdropFilter/scrim which caused the
+            // faded/blurred home screen bug on physical devices.
+            Offstage(
+              offstage: true,
               child: Stack(
                 children: [
-            // Scrim (above scene, below panels) — IgnorePointer when no panels open
             Consumer(
               builder: (context, ref, _) {
                 final hasOpen = ref.watch(stageProvider.select((s) => s.openPanels.isNotEmpty));
@@ -295,8 +297,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 );
               },
             ),
-
-            // Swiss Army panels — IgnorePointer when closed to prevent touch-eating
             Consumer(
               builder: (context, ref, _) {
                 final hasOpen = ref.watch(stageProvider.select((s) => s.openPanels.isNotEmpty));
@@ -330,9 +330,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 );
               },
             ),
-
-            // Ambient tip overlay — uses Align internally (not Positioned) to avoid eating touches
             AmbientTipOverlay(theme: theme),
+                ],
+              ),
+            ),
 
             // Top bar overlay
             Positioned(
@@ -521,9 +522,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               ), // end IgnorePointer
             ),
 
-            ], // end IgnorePointer Stack children
-              ), // end IgnorePointer Stack
-            ), // end IgnorePointer
+            // (stage system Offstage block closed above)
 
             // Seasonal tip replaced by AmbientTipOverlay in stage system
 
