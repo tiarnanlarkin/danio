@@ -275,7 +275,7 @@ class _WorkshopHeader extends ConsumerWidget {
                 ),
               ),
               WorkshopObjects.workbench(
-                onTap: () => _showDiyProjectsInfo(context),
+                onTap: null, // DIY Projects not yet implemented
                 isNewUser: isNewUser,
               ),
             ],
