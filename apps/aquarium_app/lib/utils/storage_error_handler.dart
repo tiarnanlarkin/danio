@@ -19,7 +19,7 @@ class StorageErrorHandler {
         return AlertDialog(
           title: const Row(
             children: [
-              Icon(Icons.error_outline, color: Colors.red, size: 28),
+              Icon(Icons.error_outline, color: AppColors.error, size: 28),
               SizedBox(width: AppSpacing.sm2),
               Text('Data Corrupted'),
             ],
@@ -46,16 +46,16 @@ class StorageErrorHandler {
                   '• App crash during save\n'
                   '• File system errors\n'
                   '• Incomplete write operation',
-                  style: Theme.of(context).textTheme.bodyLarge!.copyWith( color: Colors.grey[700]),
+                  style: Theme.of(context).textTheme.bodyLarge!.copyWith( color: AppColors.textSecondary),
                 ),
                 if (error.corruptedFilePath != null) ...[
                   const SizedBox(height: AppSpacing.md),
                   Container(
                     padding: EdgeInsets.all(AppSpacing.sm2),
                     decoration: BoxDecoration(
-                      color: Colors.orange[50],
+                      color: AppColors.warning.withValues(alpha: 0.08),
                       borderRadius: AppRadius.smallRadius,
-                      border: Border.all(color: Colors.orange[300]!),
+                      border: Border.all(color: AppColors.warning.withValues(alpha: 0.4)),
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -65,7 +65,7 @@ class StorageErrorHandler {
                             Icon(
                               Icons.info_outline,
                               size: 18,
-                              color: Colors.orange,
+                              color: AppColors.warning,
                             ),
                             SizedBox(width: AppSpacing.sm),
                             Text(
@@ -107,7 +107,7 @@ class StorageErrorHandler {
               label: const Text('Start Fresh'),
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.primary,
-                foregroundColor: Colors.white,
+                foregroundColor: AppColors.onPrimary,
               ),
               onPressed: () async {
                 Navigator.of(context).pop();
@@ -155,7 +155,7 @@ class StorageErrorHandler {
                 ),
                 const SizedBox(height: AppSpacing.md),
                 const Text(
-                  'Email this information to:\nsupport@danioapp.com',
+                  'Email this information to:\nsupport@aquariumhobbyist.app',
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: AppSpacing.sm),
@@ -221,7 +221,7 @@ class StorageErrorHandler {
               child: const Text('Cancel'),
             ),
             ElevatedButton(
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+              style: ElevatedButton.styleFrom(backgroundColor: AppColors.error),
               onPressed: () => Navigator.of(context).pop(true),
               child: const Text('Start Fresh'),
             ),
@@ -260,7 +260,7 @@ class StorageErrorHandler {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('✅ Storage cleared. You can start fresh!'),
-            backgroundColor: Colors.green,
+            backgroundColor: AppColors.success,
             duration: Duration(seconds: 3),
           ),
         );
@@ -279,7 +279,7 @@ class StorageErrorHandler {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('❌ Failed to clear storage: $e'),
-            backgroundColor: Colors.red,
+            backgroundColor: AppColors.error,
           ),
         );
       }
@@ -324,7 +324,7 @@ class _InfoItem extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, size: 18, color: Colors.grey[600]),
+          Icon(icon, size: 18, color: AppColors.textSecondary),
           const SizedBox(width: AppSpacing.sm),
           Expanded(child: Text(text, style: Theme.of(context).textTheme.bodyMedium!.copyWith())),
         ],

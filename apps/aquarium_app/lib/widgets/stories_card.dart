@@ -201,7 +201,7 @@ class StoriesCard extends ConsumerWidget {
                             ),
                             const SizedBox(width: AppSpacing.xs),
                             Text(
-                              '+${suggestedStory.xpReward}',
+                              '+${suggestedStory.xpReward} XP',
                               style: Theme.of(context).textTheme.bodySmall!.copyWith(
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold,
