@@ -543,7 +543,7 @@ class _ProgressChartSection extends StatelessWidget {
 
       // Use real user data if available, otherwise mock
       final userXp = userProfile.dailyXpHistory[dateKey] ?? random.nextInt(100);
-      final friendXp = 20 + random.nextInt(80); // Mock friend data
+      final friendXp = 20 + Random(friend.id.hashCode + i).nextInt(80); // Deterministic mock
 
       userSpots.add(FlSpot((6 - i).toDouble(), userXp.toDouble()));
       friendSpots.add(FlSpot((6 - i).toDouble(), friendXp.toDouble()));

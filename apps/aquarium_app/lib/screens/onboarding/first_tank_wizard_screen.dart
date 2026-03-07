@@ -186,6 +186,7 @@ class _FirstTankWizardScreenState extends ConsumerState<FirstTankWizardScreen> {
           const SizedBox(height: AppSpacing.xl2),
           TextField(
             controller: _nameController,
+            autofocus: true,
             decoration: InputDecoration(
               labelText: 'Tank Name',
               hintText: 'e.g., Living Room Tank, Main Display',
@@ -234,6 +235,7 @@ class _FirstTankWizardScreenState extends ConsumerState<FirstTankWizardScreen> {
           const SizedBox(height: AppSpacing.xl2),
           TextField(
             controller: _volumeLitresController,
+            autofocus: true,
             decoration: InputDecoration(
               labelText: 'Volume (gallons or liters)',
               hintText: 'e.g., 20',
