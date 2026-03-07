@@ -734,11 +734,17 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       ),
     );
 
-    // Sheet is now fully dismissed — safe to push without lifecycle issues.
+    // NOTE: showModalBottomSheet future resolves when Navigator.pop() is called,
+    // NOT when the exit animation finishes. The sheet's exit animation takes ~300ms.
+    // We must wait for it to complete before pushing, otherwise _cancelActivePointers
+    // or markNeedsBuild fires on the still-animating sheet's elements.
     if (tank != null && context.mounted) {
-      Navigator.of(context).push(
-        TankDetailRoute(page: TankDetailScreen(tankId: tank.id)),
-      );
+      await Future.delayed(const Duration(milliseconds: 400));
+      if (context.mounted) {
+        Navigator.of(context).push(
+          TankDetailRoute(page: TankDetailScreen(tankId: tank.id)),
+        );
+      }
     }
   }
 
