@@ -130,8 +130,10 @@ class _FirstTankWizardScreenState extends ConsumerState<FirstTankWizardScreen> {
               ),
             ),
 
-            // Navigation buttons
-            Padding(
+            // Navigation buttons — SafeArea keeps them above gesture nav zone.
+            SafeArea(
+              top: false,
+              child: Padding(
               padding: EdgeInsets.all(AppSpacing.lg),
               child: Row(
                 children: [
@@ -153,6 +155,7 @@ class _FirstTankWizardScreenState extends ConsumerState<FirstTankWizardScreen> {
                     ),
                   ),
                 ],
+              ),
               ),
             ),
           ],

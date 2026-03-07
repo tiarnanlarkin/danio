@@ -202,7 +202,7 @@ class OpenAIService {
     if (!isConfigured) {
       throw const OpenAIException(
         'OpenAI API key not configured. '
-        'Pass it via: flutter run --dart-define=OPENAI_API_KEY=sk-...',
+        'Please set up your API key in Smart Settings.',
       );
     }
   }

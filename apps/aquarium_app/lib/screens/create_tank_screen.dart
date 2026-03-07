@@ -128,8 +128,10 @@ class _CreateTankScreenState extends ConsumerState<CreateTankScreen> {
                 ),
               ),
 
-              // Navigation buttons
-              Padding(
+              // Navigation buttons — SafeArea ensures buttons stay above gesture nav zone.
+              SafeArea(
+                top: false,
+                child: Padding(
                 padding: EdgeInsets.all(AppSpacing.md),
                 child: Row(
                   children: [
@@ -166,6 +168,7 @@ class _CreateTankScreenState extends ConsumerState<CreateTankScreen> {
                   ],
                 ),
               ),
+              ), // SafeArea
             ],
           ),
         ),
