@@ -218,7 +218,9 @@ class PracticeHubScreen extends ConsumerWidget {
         return _buildProgressCard(
           context,
           title: 'Practice Accuracy',
-          value: '${_calculateAccuracy(srState)}%',
+          value: srState.stats.reviewsToday == 0
+              ? '—'
+              : '${_calculateAccuracy(srState)}%',
           icon: Icons.track_changes,
           color: AppColors.textSecondary,
         );
@@ -361,9 +363,10 @@ class PracticeHubScreen extends ConsumerWidget {
   int _calculateAccuracy(SpacedRepetitionState state) {
     final total = state.stats.reviewsToday;
     if (total == 0) return 0;
-    // This is a placeholder - actual accuracy calculation would need
-    // to track correct/incorrect answers in the state
-    return 85; // Placeholder value
+    // TODO(CA-005): Track correct/incorrect answers in SpacedRepetitionState
+    // and compute real accuracy here. Returning 0 as a safe placeholder until
+    // that data is available.
+    return 0;
   }
 }
 
