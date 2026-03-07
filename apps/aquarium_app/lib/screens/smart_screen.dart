@@ -402,21 +402,6 @@ class _OfflineBanner extends StatelessWidget {
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: AppSpacing.md),
-          Container(
-            padding: EdgeInsets.all(AppSpacing.sm),
-            decoration: BoxDecoration(
-              color: AppColors.surfaceVariant.withValues(alpha: 0.5),
-              borderRadius: AppRadius.smallRadius,
-            ),
-            child: Text(
-              'Build with:\nflutter run --dart-define=OPENAI_API_KEY=sk-...',
-              style: AppTypography.bodySmall.copyWith(
-                fontFamily: 'monospace',
-                color: AppColors.textSecondary,
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ),
           const SizedBox(height: AppSpacing.sm),
           Text(
             'Features still work without AI - you can browse the fish '
