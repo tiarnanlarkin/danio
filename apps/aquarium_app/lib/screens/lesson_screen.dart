@@ -115,7 +115,11 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
                     const Icon(Icons.star, size: AppIconSizes.xs, color: AppColors.accent),
                     const SizedBox(width: AppSpacing.xs),
                     Text(
-                      '${widget.lesson.xpReward} XP',
+                      // Practice mode awards half XP — keep consistent with
+                      // the PracticeScreen card label.
+                      widget.isPracticeMode
+                          ? '+\${widget.lesson.xpReward ~/ 2} XP'
+                          : '\${widget.lesson.xpReward} XP',
                       style: AppTypography.labelMedium.copyWith(
                         color: AppColors.accent,
                       ),
@@ -694,10 +698,20 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
                                   context,
                                 );
                                 if (result == 'practice' && mounted) {
-                                  // Navigate to practice mode - pop and push again with practice flag
-                                  Navigator.of(context).pop();
+                                  // Replace current lesson with the same lesson
+                                  // in practice mode (no hearts consumed, gains
+                                  // a heart on completion).
+                                  Navigator.of(context).pushReplacement(
+                                    MaterialPageRoute(
+                                      builder: (_) => LessonScreen(
+                                        lesson: widget.lesson,
+                                        pathTitle: widget.pathTitle,
+                                        isPracticeMode: true,
+                                      ),
+                                    ),
+                                  );
                                 } else if (mounted) {
-                                  // Wait or go back
+                                  // "Wait" or close — go back to the learn hub
                                   Navigator.of(context).pop();
                                 }
                               }
@@ -1102,6 +1116,21 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
 
       // Handle practice mode rewards
       if (widget.isPracticeMode) {
+        // Award half XP and update lesson review progress so strength decays
+        // correctly. This matches the XP shown on the PracticeScreen card.
+        final practiceXp = totalXp ~/ 2;
+        try {
+          await ref
+              .read(userProfileProvider.notifier)
+              .reviewLesson(widget.lesson.id, practiceXp);
+        } catch (e) {
+          // reviewLesson silently no-ops if the lesson was never completed;
+          // fall back to plain XP award so the user still gets credit.
+          try {
+            await ref.read(userProfileProvider.notifier).addXp(practiceXp);
+          } catch (_) {}
+        }
+
         final heartsService = ref.read(heartsServiceProvider);
         final gainedHeart = await heartsService.gainHeart();
 
@@ -1115,15 +1144,16 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
         }
 
         if (mounted) {
+          final xpMsg = practiceXp > 0 ? ' +$practiceXp XP' : '';
           AppFeedback.showSuccess(
             context,
             gainedHeart
-                ? 'Practice complete! +1 heart ❤️'
-                : 'Practice complete! (hearts full)',
+                ? 'Practice complete!$xpMsg +1 heart ❤️'
+                : 'Practice complete!$xpMsg (hearts full)',
           );
           Navigator.of(context).pop();
         }
-        return; // Don't record progress for practice mode
+        return;
       }
 
       // Calculate gem rewards (non-practice mode only)
