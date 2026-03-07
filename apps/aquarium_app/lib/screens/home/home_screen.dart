@@ -68,7 +68,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   bool _dailyNudgeDismissed = false;
   bool _isSelectMode = false;
   bool _firstTankPromptShown = false;
-  String? _pendingTankNavigation; // set after first tank created — triggers nav in build
   bool _showWelcomeBanner = false;
   final Set<String> _selectedTankIds = {};
 
@@ -581,25 +580,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // Pending tank navigation — set by _showFirstTankSheet after first tank created.
-    // We navigate here (in build → postFrameCallback) rather than from an async
-    // callback to ensure the element tree is stable before pushing.
-    if (_pendingTankNavigation != null) {
-      final tankId = _pendingTankNavigation!;
-      _pendingTankNavigation = null;
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted) {
-          // Use rootNavigator: true to push on the ROOT navigator, not the
-          // tab navigator. The tab navigator's overlay still contains the
-          // dismissing bottom sheet entry, which causes _cancelActivePointers
-          // to find deactivated elements. The root navigator's overlay is clean.
-          Navigator.of(context, rootNavigator: true).push(
-            TankDetailRoute(page: TankDetailScreen(tankId: tankId)),
-          );
-        }
-      });
-    }
-
     // HomeScreen is the Living Room - it shows tank management only.
     // Navigation to other rooms (Learn, Workshop, Shop, etc.) is handled
     // by TabNavigator's tab system, not a BottomNavigationBar here.
@@ -663,102 +643,40 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     _firstTankPromptShown = true;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
-      _showFirstTankSheet(context);
+      _navigateToCreateFirstTank(context);
     });
   }
 
-  Future<void> _showFirstTankSheet(BuildContext context) async {
-    final nameC = TextEditingController(text: 'My First Tank');
-    final sizeC = TextEditingController(text: '60');
-    var tankType = TankType.freshwater;
+  /// Replaces the old bottom-sheet first-tank flow.
+  ///
+  /// A full-screen push avoids the navigator overlay race condition that caused
+  /// the lifecycle assertion crash when pushing TankDetailScreen while the
+  /// bottom sheet exit animation was still running. With a full-screen route
+  /// there is no overlay element in a transient state — navigation is clean.
+  Future<void> _navigateToCreateFirstTank(BuildContext context) async {
+    // Snapshot tank count BEFORE pushing so we can detect the new tank after pop.
+    final tanksBefore = ref.read(tanksProvider).valueOrNull ?? [];
 
-    // showModalBottomSheet returns a Future<Tank?> that resolves AFTER the
-    // sheet's exit animation fully completes — safe to navigate from here.
-    // The button calls Navigator.pop(ctx, tank) to pass the result back.
-    final tank = await showModalBottomSheet<Tank>(
-      context: context,
-      showDragHandle: true,
-      isScrollControlled: true,
-      isDismissible: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-      ),
-      builder: (ctx) => StatefulBuilder(
-        builder: (ctx, setSheetState) => Padding(
-          padding: EdgeInsets.only(
-            left: AppSpacing.lg2, right: AppSpacing.lg2, top: AppSpacing.md,
-            bottom: MediaQuery.of(ctx).viewInsets.bottom + AppSpacing.md,
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // Note: showDragHandle: true above already renders the handle.
-              // The manual Container handle was removed to fix duplicate-handle bug.
-              Text('Let\'s set up your first tank! \u{1F420}',
-                style: Theme.of(context).textTheme.titleLarge!.copyWith(fontWeight: FontWeight.bold)),
-              const SizedBox(height: AppSpacing.md),
-              TextField(
-                controller: nameC,
-                decoration: const InputDecoration(
-                  labelText: 'Tank name',
-                  border: OutlineInputBorder(),
-                  isDense: true,
-                ),
-              ),
-              const SizedBox(height: AppSpacing.sm2),
-              TextField(
-                controller: sizeC,
-                keyboardType: TextInputType.number,
-                decoration: const InputDecoration(
-                  labelText: 'Size (litres)',
-                  border: OutlineInputBorder(),
-                  isDense: true,
-                ),
-              ),
-              const SizedBox(height: AppSpacing.sm2),
-              SegmentedButton<TankType>(
-                segments: const [
-                  ButtonSegment(value: TankType.freshwater, label: Text('Freshwater')),
-                  ButtonSegment(value: TankType.marine, label: Text('Saltwater')),
-                ],
-                selected: {tankType},
-                onSelectionChanged: (v) => setSheetState(() => tankType = v.first),
-              ),
-              const SizedBox(height: AppSpacing.md),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton.icon(
-                  icon: const Icon(Icons.add),
-                  label: const Text('Create Tank'),
-                  onPressed: () async {
-                    final name = nameC.text.trim();
-                    final litres = double.tryParse(sizeC.text) ?? 60;
-                    if (name.isEmpty) return;
-                    final actions = ref.read(tankActionsProvider);
-                    final tank = await actions.createTank(
-                      name: name,
-                      type: tankType,
-                      volumeLitres: litres,
-                    );
-                    if (ctx.mounted) {
-                      // Return the created tank to the caller via pop result.
-                      // Navigation happens AFTER sheet fully dismisses (see below).
-                      Navigator.pop(ctx, tank);
-                    }
-                  },
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
+    await Navigator.of(context, rootNavigator: true).push(
+      MaterialPageRoute(builder: (_) => const CreateTankScreen()),
     );
 
-    // Signal the HomeScreen to navigate via setState → build → addPostFrameCallback.
-    // This avoids pushing from inside an async callback while the overlay's element
-    // tree is still stabilising after the sheet dismissal + Riverpod rebuild.
-    if (tank != null && mounted) {
-      setState(() => _pendingTankNavigation = tank.id);
+    // CreateTankScreen calls Navigator.pop() (no result value) after creation.
+    // Read the provider now — it will have refreshed with the new tank.
+    if (!mounted) return;
+    final tanksAfter = ref.read(tanksProvider).valueOrNull ?? [];
+    if (tanksAfter.length > tanksBefore.length) {
+      // Find the newly created tank (the one not in the before-list).
+      final beforeIds = tanksBefore.map((t) => t.id).toSet();
+      final newTank = tanksAfter.firstWhere(
+        (t) => !beforeIds.contains(t.id),
+        orElse: () => tanksAfter.first,
+      );
+      if (mounted) {
+        Navigator.of(context, rootNavigator: true).push(
+          TankDetailRoute(page: TankDetailScreen(tankId: newTank.id)),
+        );
+      }
     }
   }
 
