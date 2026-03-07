@@ -192,7 +192,11 @@ class _CreateTankScreenState extends ConsumerState<CreateTankScreen> {
 
   void _nextPage() {
     if (_currentPage < 2) {
-      FocusManager.instance.primaryFocus?.unfocus();
+      try {
+        FocusManager.instance.primaryFocus?.unfocus();
+      } catch (e) {
+        debugPrint('P1-001 DEBUG: unfocus error: $e');
+      }
       AppHaptics.light();
       _pageController.nextPage(
         duration: AppDurations.medium4,
@@ -561,6 +565,7 @@ class _SizePage extends StatefulWidget {
 
 class _SizePageState extends State<_SizePage> {
   late TextEditingController _volumeController;
+  bool _disposed = false;
 
   @override
   void initState() {
@@ -573,16 +578,22 @@ class _SizePageState extends State<_SizePage> {
   @override
   void didUpdateWidget(_SizePage oldWidget) {
     super.didUpdateWidget(oldWidget);
+    if (_disposed) return;
     // Update text field when volume changes externally (e.g., from presets)
-    final currentText = _volumeController.text;
-    final newText = widget.volumeLitres > 0 ? widget.volumeLitres.toString() : '';
-    if (currentText != newText && double.tryParse(currentText) != widget.volumeLitres) {
-      _volumeController.text = newText;
+    try {
+      final currentText = _volumeController.text;
+      final newText = widget.volumeLitres > 0 ? widget.volumeLitres.toString() : '';
+      if (currentText != newText && double.tryParse(currentText) != widget.volumeLitres) {
+        _volumeController.text = newText;
+      }
+    } catch (e) {
+      debugPrint('P1-001 DEBUG: didUpdateWidget error: $e');
     }
   }
 
   @override
   void dispose() {
+    _disposed = true;
     _volumeController.dispose();
     super.dispose();
   }
