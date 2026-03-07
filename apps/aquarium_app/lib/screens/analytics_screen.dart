@@ -61,49 +61,54 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
       body: FutureBuilder<AnalyticsSummary>(
         future: _analyticsFuture,
         builder: (context, snapshot) {
+          Widget body;
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return _buildSkeletonLoader();
-          }
-
-          if (snapshot.hasError) {
-            return AppErrorState(
+            body = _buildSkeletonLoader();
+          } else if (snapshot.hasError) {
+            body = AppErrorState(
               title: 'Unable to load analytics data',
               message: 'Please check your connection and try again.',
               onRetry: _refreshAnalytics,
             );
+          } else {
+            final summary = snapshot.data;
+            if (summary == null) {
+              body = const AppErrorState(
+                title: 'No analytics data available',
+                message: 'Complete some lessons to see your progress analytics.',
+              );
+            } else {
+              body = SingleChildScrollView(
+                key: const ValueKey('analytics-content'),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildTimeRangeSelector(),
+                    _buildOverviewSection(summary),
+                    const Divider(height: AppSpacing.xl),
+                    _buildXPChart(summary),
+                    const Divider(height: AppSpacing.xl),
+                    _buildWeeklyXPBarChart(summary),
+                    const Divider(height: AppSpacing.xl),
+                    _buildTopicMasteryRadar(summary),
+                    const Divider(height: AppSpacing.xl),
+                    _buildStreakCalendar(summary),
+                    const Divider(height: AppSpacing.xl),
+                    _buildInsightsSection(summary),
+                    const Divider(height: AppSpacing.xl),
+                    _buildTopicBreakdown(summary),
+                    const Divider(height: AppSpacing.xl),
+                    _buildPredictionsSection(summary),
+                    const SizedBox(height: AppSpacing.xl),
+                  ],
+                ),
+              );
+            }
           }
-
-          final summary = snapshot.data;
-          if (summary == null) {
-            return const AppErrorState(
-              title: 'No analytics data available',
-              message: 'Complete some lessons to see your progress analytics.',
-            );
-          }
-
-          return SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _buildTimeRangeSelector(),
-                _buildOverviewSection(summary),
-                const Divider(height: AppSpacing.xl),
-                _buildXPChart(summary),
-                const Divider(height: AppSpacing.xl),
-                _buildWeeklyXPBarChart(summary),
-                const Divider(height: AppSpacing.xl),
-                _buildTopicMasteryRadar(summary),
-                const Divider(height: AppSpacing.xl),
-                _buildStreakCalendar(summary),
-                const Divider(height: AppSpacing.xl),
-                _buildInsightsSection(summary),
-                const Divider(height: AppSpacing.xl),
-                _buildTopicBreakdown(summary),
-                const Divider(height: AppSpacing.xl),
-                _buildPredictionsSection(summary),
-                const SizedBox(height: AppSpacing.xl),
-              ],
-            ),
+          return AnimatedSwitcher(
+            duration: const Duration(milliseconds: 300),
+            switchInCurve: Curves.easeOutCubic,
+            child: body,
           );
         },
       ),
