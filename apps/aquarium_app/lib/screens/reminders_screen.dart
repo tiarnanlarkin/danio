@@ -31,7 +31,7 @@ class _RemindersScreenState extends ConsumerState<RemindersScreen> {
     try {
       final prefs = await SharedPreferences.getInstance();
       final json = prefs.getString('aquarium_reminders');
-      if (json != null) {
+      if (json != null && mounted) {
         final list = jsonDecode(json) as List;
         setState(() {
           _reminders = list.map((e) => _Reminder.fromJson(e)).toList();
@@ -678,7 +678,7 @@ class _AddReminderSheetState extends State<_AddReminderSheet> {
                         firstDate: DateTime.now(),
                         lastDate: DateTime.now().add(const Duration(days: 365)),
                       );
-                      if (picked != null) setState(() => _dueDate = picked);
+                      if (picked != null && mounted) setState(() => _dueDate = picked);
                     },
                   ),
                 ),
@@ -692,7 +692,7 @@ class _AddReminderSheetState extends State<_AddReminderSheet> {
                         context: context,
                         initialTime: _dueTime,
                       );
-                      if (picked != null) setState(() => _dueTime = picked);
+                      if (picked != null && mounted) setState(() => _dueTime = picked);
                     },
                   ),
                 ),

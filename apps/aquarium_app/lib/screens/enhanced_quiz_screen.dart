@@ -79,6 +79,7 @@ class _EnhancedQuizScreenState extends ConsumerState<EnhancedQuizScreen>
 
     // Store current level for level-up detection
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
       final profile = ref.read(userProfileProvider).value;
       if (profile != null) {
         setState(() {
@@ -123,7 +124,7 @@ class _EnhancedQuizScreenState extends ConsumerState<EnhancedQuizScreen>
       final heartsService = ref.read(heartsServiceProvider);
       final heartLost = await heartsService.loseHeart();
 
-      if (heartLost) {
+      if (heartLost && mounted) {
         setState(() {
           _showHeartAnimation = true;
         });
@@ -169,6 +170,8 @@ class _EnhancedQuizScreenState extends ConsumerState<EnhancedQuizScreen>
         return;
       }
     }
+
+    if (!mounted) return;
 
     if (_currentExerciseIndex < widget.quiz.exercises.length - 1) {
       setState(() {

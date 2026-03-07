@@ -30,6 +30,7 @@ class _WeeklyPlanScreenState extends ConsumerState<WeeklyPlanScreen> {
     super.initState();
     // Generate if no cached plan.
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
       final plan = ref.read(weeklyPlanProvider);
       if (plan == null) _generate();
     });

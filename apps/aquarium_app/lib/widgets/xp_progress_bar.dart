@@ -86,7 +86,7 @@ class _XpProgressBarState extends ConsumerState<XpProgressBar>
 
         // Update animation target when profile changes
         WidgetsBinding.instance.addPostFrameCallback((_) {
-          _updateProgress(profile.levelProgress);
+          if (mounted) _updateProgress(profile.levelProgress);
         });
 
         return Column(

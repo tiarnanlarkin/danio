@@ -50,6 +50,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
     super.initState();
     // Capture current level for level-up detection
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
       final profile = ref.read(userProfileProvider).value;
       if (profile != null) {
         setState(() {
@@ -721,7 +722,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
                           final heartsService = ref.read(heartsServiceProvider);
                           final lostHeart = await heartsService.loseHeart();
 
-                          if (lostHeart) {
+                          if (lostHeart && mounted) {
                             // Show heart loss animation
                             setState(() {
                               _showHeartAnimation = true;

@@ -135,6 +135,7 @@ class _AquariumSupplyScreenState extends ConsumerState<AquariumSupplyScreen>
     final prefs = await SharedPreferences.getInstance();
     final raw = prefs.getString(_kPrefsKey);
     final currency = prefs.getString(_kCurrencyKey) ?? '£';
+    if (!mounted) return;
     if (raw != null) {
       final list = jsonDecode(raw) as List;
       setState(() {
@@ -778,7 +779,7 @@ class _SupplyItemSheetState extends State<_SupplyItemSheet> {
                   firstDate: DateTime(2000),
                   lastDate: DateTime.now(),
                 );
-                if (date != null) setState(() => _lastPurchased = date);
+                if (date != null && mounted) setState(() => _lastPurchased = date);
               },
               borderRadius: AppRadius.mediumRadius,
               child: Container(

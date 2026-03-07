@@ -83,12 +83,14 @@ class _CompatibilityCheckerWidgetState
             summary: 'Checked: $species in ${tank.name}',
           );
 
+      if (!mounted) return;
       setState(() => _result = result.text);
     } catch (e) {
+      if (!mounted) return;
       setState(() =>
           _result = 'Could not check compatibility right now. Try again later.');
     } finally {
-      setState(() => _loading = false);
+      if (mounted) setState(() => _loading = false);
     }
   }
 

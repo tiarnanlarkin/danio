@@ -274,7 +274,7 @@ class _TankSettingsScreenState extends ConsumerState<TankSettingsScreen> {
                       firstDate: DateTime(2020),
                       lastDate: DateTime.now(),
                     );
-                    if (picked != null) setState(() => _startDate = picked);
+                    if (picked != null && mounted) setState(() => _startDate = picked);
                   },
                   borderRadius: AppRadius.mediumRadius,
                   child: Container(

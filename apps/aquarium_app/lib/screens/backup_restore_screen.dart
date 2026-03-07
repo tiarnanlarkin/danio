@@ -424,7 +424,7 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
       );
 
       if (result == null || result.files.isEmpty) {
-        setState(() => _isImporting = false);
+        if (mounted) setState(() => _isImporting = false);
         return;
       }
 
@@ -473,7 +473,7 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
       );
 
       if (confirmed != true) {
-        setState(() => _isImporting = false);
+        if (mounted) setState(() => _isImporting = false);
         return;
       }
 

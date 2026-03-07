@@ -191,7 +191,7 @@ class _GemShopScreenState extends ConsumerState<GemShopScreen>
 
     // Show confirmation dialog
     final confirmed = await _showPurchaseDialog(item);
-    if (!confirmed) return;
+    if (!confirmed || !mounted) return;
 
     setState(() => _isPurchasing = true);
 

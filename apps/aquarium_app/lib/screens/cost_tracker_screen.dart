@@ -672,7 +672,7 @@ class _AddExpenseSheetState extends State<_AddExpenseSheet> {
                 firstDate: DateTime(2020),
                 lastDate: DateTime.now(),
               );
-              if (picked != null) {
+              if (picked != null && mounted) {
                 setState(() => _date = picked);
               }
             },

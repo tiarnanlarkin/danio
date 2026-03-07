@@ -67,6 +67,7 @@ Return ONLY valid JSON with these fields (no markdown, no explanation):
       );
       if (picked == null) return;
 
+      if (!mounted) return;
       setState(() {
         _selectedImage = File(picked.path);
         _result = null;
@@ -75,6 +76,7 @@ Return ONLY valid JSON with these fields (no markdown, no explanation):
 
       await _identify();
     } catch (e) {
+      if (!mounted) return;
       setState(() => _error = 'Couldn\'t grab that image. Try again?');
     }
   }
