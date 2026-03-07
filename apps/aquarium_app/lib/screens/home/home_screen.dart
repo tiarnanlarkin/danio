@@ -589,7 +589,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       _pendingTankNavigation = null;
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted) {
-          Navigator.of(context).push(
+          // Use rootNavigator: true to push on the ROOT navigator, not the
+          // tab navigator. The tab navigator's overlay still contains the
+          // dismissing bottom sheet entry, which causes _cancelActivePointers
+          // to find deactivated elements. The root navigator's overlay is clean.
+          Navigator.of(context, rootNavigator: true).push(
             TankDetailRoute(page: TankDetailScreen(tankId: tankId)),
           );
         }
