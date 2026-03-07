@@ -221,7 +221,7 @@ class _Co2CalculatorScreenState extends State<Co2CalculatorScreen> {
             child: Column(
               children: [
                 _DropCheckerRow(
-                  color: Colors.blue,
+                  color: AppColors.info,
                   label: 'Blue',
                   meaning: 'CO2 too low (<20 ppm)',
                 ),
@@ -231,7 +231,7 @@ class _Co2CalculatorScreenState extends State<Co2CalculatorScreen> {
                   meaning: 'CO2 optimal (20-30 ppm)',
                 ),
                 _DropCheckerRow(
-                  color: Colors.amber,
+                  color: AppColors.warning,
                   label: 'Yellow',
                   meaning: 'CO2 too high (>30 ppm)',
                 ),

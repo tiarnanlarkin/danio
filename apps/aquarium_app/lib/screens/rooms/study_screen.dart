@@ -80,7 +80,7 @@ class StudyScreen extends ConsumerWidget {
                     icon: Icons.loop,
                     title: 'Nitrogen Cycle',
                     subtitle: 'The most important concept',
-                    color: Colors.teal,
+                    color: AppColors.accent,
                     onTap: () => Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -104,7 +104,7 @@ class StudyScreen extends ConsumerWidget {
                     icon: Icons.local_hospital,
                     title: 'Fish Diseases',
                     subtitle: 'Identify and treat common illnesses',
-                    color: Colors.red,
+                    color: AppColors.error,
                     onTap: () => Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -122,14 +122,14 @@ class StudyScreen extends ConsumerWidget {
             child: _SectionCard(
               title: '🐟 Care Guides',
               subtitle: 'How to care for your aquatic friends',
-              color: Colors.orange,
+              color: AppColors.warning,
               child: Column(
                 children: [
                   _StudyTile(
                     icon: Icons.transfer_within_a_station,
                     title: 'Acclimation',
                     subtitle: 'Safely introduce new fish',
-                    color: Colors.orange,
+                    color: AppColors.warning,
                     onTap: () => Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -153,7 +153,7 @@ class StudyScreen extends ConsumerWidget {
                     icon: Icons.restaurant,
                     title: 'Feeding',
                     subtitle: 'Nutrition and feeding schedules',
-                    color: Colors.amber,
+                    color: AppColors.xp,
                     onTap: () => Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -183,7 +183,7 @@ class StudyScreen extends ConsumerWidget {
             child: _SectionCard(
               title: '🔧 Problem Solving',
               subtitle: 'Troubleshoot common issues',
-              color: Colors.brown,
+              color: AppColors.woodBrown,
               child: Column(
                 children: [
                   _StudyTile(
