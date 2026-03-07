@@ -16,7 +16,6 @@ import 'services/hearts_service.dart';
 import 'services/celebration_service.dart';
 import 'services/xp_animation_service.dart';
 import 'services/supabase_service.dart';
-import 'services/hive_storage_service.dart';
 import 'theme/app_theme.dart';
 import 'utils/performance_monitor.dart';
 import 'widgets/performance_overlay.dart';
@@ -44,15 +43,6 @@ void main() async {
       }
     },
   );
-
-  // Initialize persistent storage (Hive)
-  // CRITICAL: All user data (tanks, fish, logs, progress) is stored here.
-  // App will NOT work properly if this fails.
-  final storageInitialized = await HiveStorageService.initialize();
-  if (!storageInitialized) {
-    debugPrint('[CRITICAL] Storage initialization failed - app may lose data!');
-    // Continue anyway to allow debugging, but warn user
-  }
 
   // Initialize Supabase (safe to call - returns false if credentials are
   // placeholders, and the app continues in offline-only mode).

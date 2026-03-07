@@ -10,7 +10,6 @@ import '../../providers/user_profile_provider.dart';
 import '../../theme/app_theme.dart';
 import 'enhanced_placement_test_screen.dart';
 import '../../utils/accessibility_utils.dart';
-import '../tab_navigator.dart';
 
 class ProfileCreationScreen extends ConsumerStatefulWidget {
   const ProfileCreationScreen({super.key});
@@ -60,11 +59,10 @@ class _ProfileCreationScreenState extends ConsumerState<ProfileCreationScreen> {
 
       if (!mounted) return;
 
-      // Skip to TabNavigator (main app shell with navigation)
-      Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (context) => const TabNavigator()),
-        (route) => false,
-      );
+      // Pop back to LearnScreen — it watches userProfileProvider and rebuilds.
+      // (pushAndRemoveUntil was pushing a nested TabNavigator inside the Learn
+      // tab's local navigator, causing a blank screen.)
+      Navigator.of(context).pop();
     } catch (e) {
       if (!mounted) return;
 

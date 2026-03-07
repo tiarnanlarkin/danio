@@ -38,6 +38,7 @@ import 'widgets/xp_source_row.dart';
 import 'widgets/selection_mode_panel.dart';
 import 'widgets/empty_room_scene.dart';
 import '../backup_restore_screen.dart';
+import '../tab_navigator.dart';
 import '../../widgets/stage/stage_provider.dart';
 import '../../widgets/stage/stage_scrim.dart';
 import '../../widgets/stage/swiss_army_panel.dart';
@@ -640,6 +641,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   void _maybeShowFirstTankPrompt(BuildContext context, List<Tank> tanks) {
     if (_firstTankPromptShown || tanks.isNotEmpty) return;
+    // Only auto-launch create flow when Tank tab is actually visible
+    final currentTab = ref.read(currentTabProvider);
+    if (currentTab != 2) return; // 2 = Tank tab index
     _firstTankPromptShown = true;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
@@ -662,9 +666,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
 
     // CreateTankScreen calls Navigator.pop() (no result value) after creation.
-    // Read the provider now — it will have refreshed with the new tank.
+    // Await the provider future so we get the freshest tank list.
     if (!mounted) return;
-    final tanksAfter = ref.read(tanksProvider).valueOrNull ?? [];
+    final tanksAfter = await ref.read(tanksProvider.future).timeout(
+      const Duration(seconds: 3),
+      onTimeout: () => [],
+    );
     if (tanksAfter.length > tanksBefore.length) {
       // Find the newly created tank (the one not in the before-list).
       final beforeIds = tanksBefore.map((t) => t.id).toSet();
@@ -673,6 +680,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         orElse: () => tanksAfter.first,
       );
       if (mounted) {
+        ref.read(currentTabProvider.notifier).state = 2; // Switch to Tank tab
         Navigator.of(context, rootNavigator: true).push(
           TankDetailRoute(page: TankDetailScreen(tankId: newTank.id)),
         );

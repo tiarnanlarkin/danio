@@ -189,6 +189,7 @@ class _CreateTankScreenState extends ConsumerState<CreateTankScreen> {
 
   void _nextPage() {
     if (_currentPage < 2) {
+      FocusManager.instance.primaryFocus?.unfocus();
       AppHaptics.light();
       _pageController.nextPage(
         duration: AppDurations.medium4,
@@ -199,6 +200,7 @@ class _CreateTankScreenState extends ConsumerState<CreateTankScreen> {
 
   void _previousPage() {
     if (_currentPage > 0) {
+      FocusManager.instance.primaryFocus?.unfocus();
       AppHaptics.light();
       _pageController.previousPage(
         duration: AppDurations.medium4,
