@@ -301,9 +301,9 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
   Color _getParamColor(String param) {
     switch (param) {
       case 'nitrate':
-        return Colors.orange;
+        return AppColors.warning;
       case 'nitrite':
-        return Colors.red;
+        return AppColors.error;
       case 'ammonia':
         return AppColors.accentAlt;
       case 'ph':
@@ -311,11 +311,11 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
       case 'temp':
         return AppColors.secondary;
       case 'gh':
-        return Colors.brown;
+        return AppColors.woodBrown;
       case 'kh':
         return AppColors.secondaryDark;
       case 'phosphate':
-        return Colors.green;
+        return AppColors.success;
       default:
         return AppColors.primary;
     }

@@ -103,9 +103,9 @@ class LogTile extends StatelessWidget {
       case LogType.waterChange:
         return AppColors.secondary;
       case LogType.feeding:
-        return Colors.orange;
+        return AppColors.warning;
       case LogType.medication:
-        return Colors.red;
+        return AppColors.error;
       case LogType.observation:
         return AppColors.accentAlt;
       case LogType.livestockAdded:
@@ -113,7 +113,7 @@ class LogTile extends StatelessWidget {
       case LogType.livestockRemoved:
         return AppColors.error;
       case LogType.equipmentMaintenance:
-        return Colors.brown;
+        return AppColors.woodBrown;
       case LogType.taskCompleted:
         return AppColors.success;
       case LogType.other:

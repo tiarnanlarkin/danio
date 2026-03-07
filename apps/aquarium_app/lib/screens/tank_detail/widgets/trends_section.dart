@@ -133,9 +133,9 @@ class SparklineCard extends StatelessWidget {
   Color _color() {
     switch (param) {
       case 'nitrate':
-        return Colors.orange;
+        return AppColors.warning;
       case 'nitrite':
-        return Colors.red;
+        return AppColors.error;
       case 'ammonia':
         return AppColors.accentAlt;
       case 'ph':
@@ -143,11 +143,11 @@ class SparklineCard extends StatelessWidget {
       case 'temp':
         return AppColors.secondary;
       case 'gh':
-        return Colors.brown;
+        return AppColors.woodBrown;
       case 'kh':
         return AppColors.secondaryDark;
       case 'phosphate':
-        return Colors.green;
+        return AppColors.success;
       default:
         return AppColors.primary;
     }
