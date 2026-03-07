@@ -249,12 +249,19 @@ class _ProfileCreationScreenState extends ConsumerState<ProfileCreationScreen> {
             textField: true,
             child: TextFormField(
               controller: _nameController,
+              maxLength: 50,
               decoration: const InputDecoration(
                 hintText: 'e.g., Alex',
                 prefixIcon: Icon(Icons.person_outline),
                 border: OutlineInputBorder(),
               ),
               textCapitalization: TextCapitalization.words,
+              validator: (v) {
+                if (v != null && v.trim().length > 50) {
+                  return 'Name must be 50 characters or fewer';
+                }
+                return null;
+              },
             ),
           ),
         ],

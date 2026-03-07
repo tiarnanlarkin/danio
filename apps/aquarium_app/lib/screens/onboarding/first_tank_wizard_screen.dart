@@ -53,9 +53,10 @@ class _FirstTankWizardScreenState extends ConsumerState<FirstTankWizardScreen> {
   bool _canProceed() {
     switch (_currentStep) {
       case 0:
-        return _tankName.isNotEmpty;
+        final trimmed = _tankName.trim();
+        return trimmed.isNotEmpty && trimmed.length <= 50;
       case 1:
-        return _volumeLitres > 0;
+        return _volumeLitres > 0 && _volumeLitres <= 5000;
       case 2:
         return true; // Tank type always has a value
       case 3:
@@ -63,6 +64,20 @@ class _FirstTankWizardScreenState extends ConsumerState<FirstTankWizardScreen> {
       default:
         return false;
     }
+  }
+
+  String? _nameError() {
+    final trimmed = _tankName.trim();
+    if (trimmed.isEmpty) return null; // don't nag before they type
+    if (trimmed.length > 50) return 'Name must be 50 characters or fewer';
+    return null;
+  }
+
+  String? _volumeError() {
+    if (_volumeLitresController.text.isEmpty) return null;
+    if (_volumeLitres <= 0) return 'Volume must be greater than 0';
+    if (_volumeLitres > 5000) return "That's a very large tank! Max 5,000 L";
+    return null;
   }
 
   Future<void> _createTank() async {
@@ -192,10 +207,12 @@ class _FirstTankWizardScreenState extends ConsumerState<FirstTankWizardScreen> {
           TextField(
             controller: _nameController,
             autofocus: true,
+            maxLength: 50,
             decoration: InputDecoration(
               labelText: 'Tank Name',
               hintText: 'e.g., Living Room Tank, Main Display',
               prefixIcon: const Icon(Icons.water_drop_outlined),
+              errorText: _nameError(),
               border: OutlineInputBorder(
                 borderRadius: AppRadius.mediumRadius,
               ),
@@ -245,6 +262,7 @@ class _FirstTankWizardScreenState extends ConsumerState<FirstTankWizardScreen> {
               labelText: 'Volume (liters)',
               hintText: 'e.g., 20',
               prefixIcon: const Icon(Icons.water_outlined),
+              errorText: _volumeError(),
               border: OutlineInputBorder(
                 borderRadius: AppRadius.mediumRadius,
               ),
