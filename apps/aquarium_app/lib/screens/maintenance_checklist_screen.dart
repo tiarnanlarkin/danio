@@ -70,6 +70,7 @@ class _MaintenanceChecklistScreenState
     final savedWeek = prefs.getString('${prefix}_week');
     final savedMonth = prefs.getString('${prefix}_month');
 
+    if (!mounted) return;
     setState(() {
       // Reset weekly if new week
       if (savedWeek != _currentWeek) {

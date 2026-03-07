@@ -29,6 +29,7 @@ class _CostTrackerScreenState extends ConsumerState<CostTrackerScreen> {
     final json = prefs.getString('cost_tracker_expenses');
     final currency = prefs.getString('cost_tracker_currency') ?? '£';
 
+    if (!mounted) return;
     if (json != null) {
       final list = jsonDecode(json) as List;
       setState(() {

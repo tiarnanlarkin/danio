@@ -61,11 +61,13 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
         type: 'ask_danio',
         summary: 'Asked: ${question.length > 40 ? '${question.substring(0, 40)}...' : question}',
       );
+      if (!mounted) return;
       setState(() => _askResponse = result.text);
     } catch (e) {
+      if (!mounted) return;
       setState(() => _askResponse = 'Sorry, I couldn\'t answer that right now. Try again later.');
     } finally {
-      setState(() => _askLoading = false);
+      if (mounted) setState(() => _askLoading = false);
     }
   }
 

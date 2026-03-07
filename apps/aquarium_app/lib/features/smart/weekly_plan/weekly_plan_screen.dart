@@ -51,6 +51,7 @@ class _WeeklyPlanScreenState extends ConsumerState<WeeklyPlanScreen> {
     try {
       // Gather tank data.
       final tanks = await ref.read(tanksProvider.future);
+      if (!mounted) return;
       if (tanks.isEmpty) {
         setState(() {
           _error = 'Add a tank first to generate a weekly plan.';
@@ -121,8 +122,10 @@ class _WeeklyPlanScreenState extends ConsumerState<WeeklyPlanScreen> {
         summary: 'Generated weekly maintenance plan',
       );
     } on OpenAIException catch (e) {
+      if (!mounted) return;
       setState(() => _error = 'AI error: ${e.message}');
     } catch (e) {
+      if (!mounted) return;
       setState(() => _error = 'Couldn\'t generate your plan. Try again in a moment.');
     } finally {
       if (mounted) setState(() => _loading = false);

@@ -19,7 +19,6 @@ class FirstTankWizardScreen extends ConsumerStatefulWidget {
 }
 
 class _FirstTankWizardScreenState extends ConsumerState<FirstTankWizardScreen> {
-  final PageController _pageController = PageController();
   int _currentStep = 0;
 
   // Tank data
@@ -32,7 +31,6 @@ class _FirstTankWizardScreenState extends ConsumerState<FirstTankWizardScreen> {
 
   @override
   void dispose() {
-    _pageController.dispose();
     _nameController.dispose();
     _volumeLitresController.dispose();
     super.dispose();
@@ -40,10 +38,7 @@ class _FirstTankWizardScreenState extends ConsumerState<FirstTankWizardScreen> {
 
   void _nextStep() {
     if (_currentStep < 3) {
-      _pageController.nextPage(
-        duration: AppDurations.medium4,
-        curve: AppCurves.standard,
-      );
+      setState(() => _currentStep++);
     } else {
       _createTank();
     }
@@ -51,10 +46,7 @@ class _FirstTankWizardScreenState extends ConsumerState<FirstTankWizardScreen> {
 
   void _previousStep() {
     if (_currentStep > 0) {
-      _pageController.previousPage(
-        duration: AppDurations.medium4,
-        curve: AppCurves.standard,
-      );
+      setState(() => _currentStep--);
     }
   }
 
@@ -88,18 +80,26 @@ class _FirstTankWizardScreenState extends ConsumerState<FirstTankWizardScreen> {
     await onboardingService.completeOnboarding();
 
     if (mounted) {
-      // 🎉 Celebrate first tank creation!
-      // Celebration overlay lives in MaterialApp.builder — survives navigation.
-      ref.read(celebrationProvider.notifier).milestone(
-        'Tank Created! 🐠',
-        subtitle: 'Welcome to your aquarium journey!',
-      );
-      
-      // Navigate immediately — celebration overlay is above the nav stack
-      Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (_) => const TabNavigator()),
-        (route) => false,
-      );
+      // Navigate to main app. Use addPostFrameCallback to ensure all pending
+      // provider rebuilds complete before deactivating the wizard's elements.
+      // We trigger the celebration from TabNavigator after it's fully built,
+      // using a short delay to avoid the _deactivateRecursively lifecycle
+      // assertion that fires when changing provider state during navigation.
+      final ctx = context; // capture before async gap
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        debugPrint('🎯 WIZARD: Starting navigation via pushReplacement');
+        try {
+          Navigator.of(ctx).pushReplacement(
+            MaterialPageRoute(
+              builder: (_) => const _PostCreationNavigator(),
+            ),
+          );
+          debugPrint('🎯 WIZARD: pushReplacement completed without exception');
+        } catch (e, s) {
+          debugPrint('🚨 WIZARD: pushReplacement threw: $e\n$s');
+        }
+      });
     }
   }
 
@@ -117,10 +117,12 @@ class _FirstTankWizardScreenState extends ConsumerState<FirstTankWizardScreen> {
             ),
 
             Expanded(
-              child: PageView(
-                controller: _pageController,
-                physics: const NeverScrollableScrollPhysics(),
-                onPageChanged: (index) => setState(() => _currentStep = index),
+              // Use IndexedStack (not PageView) so all step widgets stay
+              // mounted and active. PageView deactivates off-screen pages
+              // which causes an '_ElementLifecycle.active' assertion when
+              // pushAndRemoveUntil later tries to deactivate the whole route.
+              child: IndexedStack(
+                index: _currentStep,
                 children: [
                   _buildNameStep(),
                   _buildSizeStep(),
@@ -482,5 +484,45 @@ class _FirstTankWizardScreenState extends ConsumerState<FirstTankWizardScreen> {
       case TankType.marine:
         return 'Marine fish and corals';
     }
+  }
+}
+
+/// Thin wrapper widget that builds [TabNavigator] then fires the first-tank
+/// celebration in a post-frame callback, safely after the previous route's
+/// elements have been fully deactivated.
+class _PostCreationNavigator extends ConsumerStatefulWidget {
+  const _PostCreationNavigator();
+
+  @override
+  ConsumerState<_PostCreationNavigator> createState() =>
+      _PostCreationNavigatorState();
+}
+
+class _PostCreationNavigatorState
+    extends ConsumerState<_PostCreationNavigator> {
+  @override
+  void initState() {
+    super.initState();
+    debugPrint('🎯 POST_NAV: initState called');
+    // Fire celebration after the widget tree is fully settled.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      debugPrint('🎯 POST_NAV: addPostFrameCallback fired, mounted=$mounted');
+      if (!mounted) return;
+      try {
+        ref.read(celebrationProvider.notifier).milestone(
+          'Tank Created! 🐠',
+          subtitle: 'Welcome to your aquarium journey!',
+        );
+        debugPrint('🎯 POST_NAV: milestone() completed without exception');
+      } catch (e, s) {
+        debugPrint('🚨 POST_NAV: milestone() threw: $e\n$s');
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    debugPrint('🎯 POST_NAV: build() called');
+    return const TabNavigator();
   }
 }

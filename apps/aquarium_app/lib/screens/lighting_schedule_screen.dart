@@ -328,6 +328,7 @@ class _LightingScheduleScreenState extends State<LightingScheduleScreen> {
       initialTime: isOn ? _lightsOn : _lightsOff,
     );
     if (picked != null) {
+      if (!mounted) return;
       setState(() {
         if (isOn) {
           _lightsOn = picked;
@@ -344,6 +345,7 @@ class _LightingScheduleScreenState extends State<LightingScheduleScreen> {
       initialTime: isStart ? _siestaStart : _siestaEnd,
     );
     if (picked != null) {
+      if (!mounted) return;
       setState(() {
         if (isStart) {
           _siestaStart = picked;

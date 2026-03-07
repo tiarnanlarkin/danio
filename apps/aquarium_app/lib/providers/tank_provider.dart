@@ -148,8 +148,14 @@ class TankActions {
         await _storage.saveTask(task);
       }
 
-      // Invalidate tanks list to refresh
-      _ref.invalidate(tanksProvider);
+      // NOTE: Intentionally NOT invalidating tanksProvider here during first-tank
+      // creation to avoid the '_ElementLifecycle.active' assertion that fires
+      // when deactivating the wizard route while provider listeners rebuild.
+      // The TabNavigator will read tanksProvider fresh when it builds.
+      // For subsequent tank creation (from HomeScreen), invalidation is safe
+      // because HomeScreen itself is still active in the tree.
+      // TODO: Re-enable once the root lifecycle issue is resolved.
+      // _ref.invalidate(tanksProvider);
 
       return tank;
     } catch (e) {

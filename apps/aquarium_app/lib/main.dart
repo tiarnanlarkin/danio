@@ -34,6 +34,19 @@ void main() async {
 
   // ROADMAP: Configure Firebase for push notifications and analytics — see docs/FIREBASE_SETUP_GUIDE.md
 
+  // Capture full Flutter framework errors to logcat for QA debugging.
+  // Remove before release or restrict to kDebugMode.
+  if (kDebugMode) {
+    final originalOnError = FlutterError.onError;
+    FlutterError.onError = (FlutterErrorDetails details) {
+      debugPrint('========== FLUTTER ERROR ==========');
+      debugPrint('${details.exception}');
+      debugPrint('${details.stack}');
+      debugPrint('===================================');
+      originalOnError?.call(details);
+    };
+  }
+
   // Initialize global error handler
   GlobalErrorHandler.initialize(
     onError: (error, stack) {

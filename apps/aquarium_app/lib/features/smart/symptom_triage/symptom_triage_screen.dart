@@ -147,8 +147,10 @@ class _SymptomTriageScreenState extends ConsumerState<SymptomTriageScreen> {
         summary: 'Triage: $symptoms',
       );
     } on OpenAIException catch (e) {
+      if (!mounted) return;
       setState(() => _error = 'AI error: ${e.message}');
     } catch (e) {
+      if (!mounted) return;
       setState(() => _error = 'Something went wrong. Give it another go!');
     } finally {
       if (mounted) setState(() => _streaming = false);

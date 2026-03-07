@@ -134,16 +134,19 @@ Return ONLY valid JSON with these fields (no markdown, no explanation):
         summary: 'Identified: ${identification.commonName}',
       );
 
+      if (!mounted) return;
       setState(() {
         _result = identification;
         _loading = false;
       });
     } on OpenAIException catch (e) {
+      if (!mounted) return;
       setState(() {
         _error = 'AI error: ${e.message}';
         _loading = false;
       });
     } catch (e) {
+      if (!mounted) return;
       setState(() {
         _error = 'Couldn\'t identify that fish. Try a clearer photo!';
         _loading = false;

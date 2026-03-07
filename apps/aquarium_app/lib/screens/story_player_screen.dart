@@ -126,6 +126,7 @@ class _StoryPlayerScreenState extends ConsumerState<StoryPlayerScreen>
 
     // Wait for user to read feedback
     await Future.delayed(const Duration(seconds: 2));
+    if (!mounted) return;
 
     // Check if story ends
     if (choice.endsStory || _currentScene?.isFinalScene == true) {
