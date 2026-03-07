@@ -75,6 +75,9 @@ class _XpAnimationListenerState extends ConsumerState<XpAnimationListener> {
   }
 
   void _showAnimation(XpAnimationEvent event) {
+    // Guard: widget may have been deactivated before the stream event fired
+    if (!mounted) return;
+
     // Remove any existing overlay
     _currentOverlay?.remove();
     _currentOverlay = null;
