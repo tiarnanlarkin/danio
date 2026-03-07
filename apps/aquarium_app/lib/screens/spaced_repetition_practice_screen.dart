@@ -450,7 +450,7 @@ class _SpacedRepetitionPracticeScreenState
   Color _getMasteryColor(MasteryLevel level) {
     switch (level) {
       case MasteryLevel.new_:
-        return Colors.grey;
+        return AppColors.textHint;
       case MasteryLevel.learning:
         return AppColors.warning;
       case MasteryLevel.familiar:
@@ -488,7 +488,7 @@ class _SpacedRepetitionPracticeScreenState
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: const Text('Couldn\'t start the session, try again'),
-          backgroundColor: Colors.red,
+          backgroundColor: AppColors.error,
           duration: const Duration(seconds: 4),
           action: SnackBarAction(
             label: 'Retry',
@@ -1000,7 +1000,7 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: const Text('Couldn\'t record that answer, try again'),
-            backgroundColor: Colors.orange,
+            backgroundColor: AppColors.warning,
             duration: const Duration(seconds: 4),
             action: SnackBarAction(
               label: 'Retry',

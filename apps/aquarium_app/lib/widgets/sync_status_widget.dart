@@ -27,7 +27,7 @@ class SyncStatusWidget extends ConsumerWidget {
     final (IconData icon, Color color, String tooltip) = switch (status) {
       CloudSyncStatus.synced => (
           Icons.cloud_done_outlined,
-          Colors.green,
+          AppColors.success,
           'Synced',
         ),
       CloudSyncStatus.syncing => (
@@ -37,17 +37,17 @@ class SyncStatusWidget extends ConsumerWidget {
         ),
       CloudSyncStatus.offline => (
           Icons.cloud_off_outlined,
-          Colors.orange,
+          AppColors.warning,
           'Offline - changes queued',
         ),
       CloudSyncStatus.error => (
           Icons.error_outline,
-          Colors.red,
+          AppColors.error,
           'Sync error',
         ),
       CloudSyncStatus.disabled => (
           Icons.cloud_off,
-          Colors.grey,
+          AppColors.textHint,
           'Cloud disabled',
         ),
     };

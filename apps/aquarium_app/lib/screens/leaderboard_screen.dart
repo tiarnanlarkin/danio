@@ -20,7 +20,7 @@ class LeaderboardScreen extends ConsumerWidget {
               Container(
                 padding: EdgeInsets.all(AppSpacing.lg),
                 decoration: BoxDecoration(
-                  color: Colors.amber.withAlpha(40),
+                  color: AppColors.xpAlpha20,
                   shape: BoxShape.circle,
                 ),
                 child: const Icon(Icons.emoji_events_outlined, size: 56, color: AppColors.primary),

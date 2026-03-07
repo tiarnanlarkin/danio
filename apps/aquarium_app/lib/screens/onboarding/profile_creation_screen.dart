@@ -69,7 +69,7 @@ class _ProfileCreationScreenState extends ConsumerState<ProfileCreationScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: const Text('Something went wrong. Please try again.'),
-          backgroundColor: Colors.red,
+          backgroundColor: AppColors.error,
         ),
       );
 
@@ -84,7 +84,7 @@ class _ProfileCreationScreenState extends ConsumerState<ProfileCreationScreen> {
           content: Text(
             'Please select your experience level, tank type, and at least one goal',
           ),
-          backgroundColor: Colors.red,
+          backgroundColor: AppColors.error,
         ),
       );
       return;
@@ -118,7 +118,7 @@ class _ProfileCreationScreenState extends ConsumerState<ProfileCreationScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: const Text('Couldn\'t set up your profile. Please try again.'),
-          backgroundColor: Colors.red,
+          backgroundColor: AppColors.error,
         ),
       );
 
@@ -139,7 +139,7 @@ class _ProfileCreationScreenState extends ConsumerState<ProfileCreationScreen> {
             child: Text(
               'Skip',
               style: TextStyle(
-                color: _isSubmitting ? Colors.grey : AppColors.textSecondary,
+                color: _isSubmitting ? AppColors.textHint : AppColors.textSecondary,
               ),
             ),
           ),
@@ -281,7 +281,7 @@ class _ProfileCreationScreenState extends ConsumerState<ProfileCreationScreen> {
                 const SizedBox(width: AppSpacing.xs),
                 Text(
                   '*',
-                  style: Theme.of(context).textTheme.titleMedium!.copyWith(color: Colors.red),
+                  style: Theme.of(context).textTheme.titleMedium!.copyWith(color: AppColors.error),
                 ),
               ],
             ),
@@ -313,7 +313,7 @@ class _ProfileCreationScreenState extends ConsumerState<ProfileCreationScreen> {
               color: isSelected ? AppOverlays.accent10 : null,
               borderRadius: AppRadius.mediumRadius,
               border: Border.all(
-                color: isSelected ? AppColors.accent : Theme.of(context).brightness == Brightness.dark ? AppColors.borderDark : Colors.grey[300]!,
+                color: isSelected ? AppColors.accent : Theme.of(context).brightness == Brightness.dark ? AppColors.borderDark : AppColors.border,
                 width: 2,
               ),
             ),
@@ -381,7 +381,7 @@ class _ProfileCreationScreenState extends ConsumerState<ProfileCreationScreen> {
                 const SizedBox(width: AppSpacing.xs),
                 Text(
                   '*',
-                  style: Theme.of(context).textTheme.titleMedium!.copyWith(color: Colors.red),
+                  style: Theme.of(context).textTheme.titleMedium!.copyWith(color: AppColors.error),
                 ),
               ],
             ),
@@ -420,7 +420,7 @@ class _ProfileCreationScreenState extends ConsumerState<ProfileCreationScreen> {
             color: isSelected ? AppOverlays.primary10 : null,
             borderRadius: AppRadius.mediumRadius,
             border: Border.all(
-              color: isSelected ? AppColors.primary : Theme.of(context).brightness == Brightness.dark ? AppColors.borderDark : Colors.grey[300]!,
+              color: isSelected ? AppColors.primary : Theme.of(context).brightness == Brightness.dark ? AppColors.borderDark : AppColors.border,
               width: 2,
             ),
           ),
@@ -493,7 +493,7 @@ class _ProfileCreationScreenState extends ConsumerState<ProfileCreationScreen> {
                 const SizedBox(width: AppSpacing.xs),
                 Text(
                   '*',
-                  style: Theme.of(context).textTheme.titleMedium!.copyWith(color: Colors.red),
+                  style: Theme.of(context).textTheme.titleMedium!.copyWith(color: AppColors.error),
                 ),
               ],
             ),
@@ -540,7 +540,7 @@ class _ProfileCreationScreenState extends ConsumerState<ProfileCreationScreen> {
         selectedColor: AppColors.accentAlpha20,
         checkmarkColor: AppColors.accent,
         side: BorderSide(
-          color: isSelected ? AppColors.accent : Theme.of(context).brightness == Brightness.dark ? AppColors.borderDark : Colors.grey[300]!,
+          color: isSelected ? AppColors.accent : Theme.of(context).brightness == Brightness.dark ? AppColors.borderDark : AppColors.border,
         ),
       ),
     );

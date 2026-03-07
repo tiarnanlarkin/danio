@@ -390,9 +390,9 @@ class PrivacyPolicyScreen extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 12),
       padding: EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.card,
         borderRadius: AppRadius.mediumRadius,
-        border: Border.all(color: Colors.grey.shade200),
+        border: Border.all(color: AppColors.border),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -465,9 +465,9 @@ class PrivacyPolicyScreen extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 24),
       padding: EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.card,
         borderRadius: AppRadius.mediumRadius,
-        border: Border.all(color: Colors.grey.shade200),
+        border: Border.all(color: AppColors.border),
       ),
       child: Column(
         children: [

@@ -663,7 +663,7 @@ class SettingsScreen extends ConsumerWidget {
             (_) => AppListTile(
               leading: const Icon(
                 Icons.bug_report_outlined,
-                color: Colors.orange,
+                color: AppColors.warning,
               ),
               title: 'Test Error Boundary',
               subtitle: 'Trigger a crash to test error handling',

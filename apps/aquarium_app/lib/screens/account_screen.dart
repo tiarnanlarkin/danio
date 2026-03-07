@@ -461,7 +461,7 @@ class _SyncStatusCard extends ConsumerWidget {
       case CloudSyncStatus.synced:
         icon = Icons.cloud_done;
         label = 'All data synced';
-        color = Colors.green;
+        color = AppColors.success;
       case CloudSyncStatus.syncing:
         icon = Icons.sync;
         label = 'Syncing...';
@@ -469,11 +469,11 @@ class _SyncStatusCard extends ConsumerWidget {
       case CloudSyncStatus.offline:
         icon = Icons.cloud_off;
         label = 'Offline - changes queued';
-        color = Colors.orange;
+        color = AppColors.warning;
       case CloudSyncStatus.error:
         icon = Icons.error_outline;
         label = 'Sync error - tap to retry';
-        color = Colors.red;
+        color = AppColors.error;
       case CloudSyncStatus.disabled:
         icon = Icons.cloud_off;
         label = 'Cloud sync not active';

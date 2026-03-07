@@ -30,7 +30,7 @@ class WishlistScreen extends ConsumerWidget {
       case WishlistCategory.fish:
         return DanioColors.coralAccent;
       case WishlistCategory.plant:
-        return Colors.green.shade500;
+        return AppColors.success;
       case WishlistCategory.equipment:
         return const Color(0xFFFFB300);
     }

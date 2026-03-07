@@ -221,7 +221,7 @@ class _GemShopScreenState extends ConsumerState<GemShopScreen>
                 ),
               ],
             ),
-            backgroundColor: Colors.green,
+            backgroundColor: AppColors.success,
             duration: const Duration(seconds: 2),
           ),
         );
@@ -230,7 +230,7 @@ class _GemShopScreenState extends ConsumerState<GemShopScreen>
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(result.errorMessage ?? 'Purchase failed'),
-            backgroundColor: Colors.red,
+            backgroundColor: AppColors.error,
           ),
         );
       }
@@ -241,7 +241,7 @@ class _GemShopScreenState extends ConsumerState<GemShopScreen>
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: const Text('Something went wrong, please try again'),
-          backgroundColor: Colors.red,
+          backgroundColor: AppColors.error,
           duration: const Duration(seconds: 4),
           action: SnackBarAction(
             label: 'Retry',
@@ -469,6 +469,8 @@ class _ShopItemCard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final owned = ref.watch(ownsItemProvider(item.id));
     final quantity = ref.watch(itemQuantityProvider(item.id));
+    final gemBalance = ref.watch(gemBalanceProvider);
+    final canAfford = gemBalance >= item.gemCost;
     final categoryColor = _getCategoryColor();
 
     final semanticLabel =
@@ -563,6 +565,23 @@ class _ShopItemCard extends ConsumerWidget {
                       ],
                     ),
                   ),
+                  // Dim overlay for items the user cannot afford
+                  if (!owned && !canAfford)
+                    Positioned.fill(
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.black.withAlpha(100),
+                          borderRadius: AppRadius.largeRadius,
+                        ),
+                        child: const Center(
+                          child: Icon(
+                            Icons.lock_outline,
+                            color: Colors.white54,
+                            size: 28,
+                          ),
+                        ),
+                      ),
+                    ),
                   // Owned indicator
                   if (owned)
                     Positioned(

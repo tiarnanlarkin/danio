@@ -35,22 +35,22 @@ class OfflineIndicator extends ConsumerWidget {
 
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.sm2),
       decoration: BoxDecoration(
-        color: Colors.orange.shade100,
+        color: AppColors.warningAlpha10,
         border: Border(
-          bottom: BorderSide(color: Colors.orange.shade300, width: 1),
+          bottom: BorderSide(color: AppColors.warningAlpha30, width: 1),
         ),
       ),
       child: Row(
         children: [
-          Icon(Icons.wifi_off, color: Colors.orange.shade900, size: AppIconSizes.sm),
+          Icon(Icons.wifi_off, color: AppColors.warning, size: AppIconSizes.sm),
           const SizedBox(width: AppSpacing.sm2),
           Expanded(
             child: Text(
               "You're offline - some features may not work",
               style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                color: Colors.orange.shade900,
+                color: AppColors.warning,
                 fontWeight: FontWeight.w500,
               ),
             ),
@@ -76,18 +76,18 @@ class OfflineIndicatorCompact extends ConsumerWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
-        color: Colors.orange.shade100,
+        color: AppColors.warningAlpha10,
         borderRadius: AppRadius.mediumRadius,
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(Icons.wifi_off, color: Colors.orange.shade900, size: 14),
+          Icon(Icons.wifi_off, color: AppColors.warning, size: 14),
           const SizedBox(width: AppSpacing.xs),
           Text(
             'Offline',
             style: Theme.of(context).textTheme.bodySmall!.copyWith(
-              color: Colors.orange.shade900,
+              color: AppColors.warning,
               fontWeight: FontWeight.w500,
             ),
           ),

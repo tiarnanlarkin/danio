@@ -211,7 +211,7 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen>
               ),
             ],
           ),
-          backgroundColor: Colors.green,
+          backgroundColor: AppColors.success,
           duration: const Duration(seconds: 2),
         ),
       );
@@ -219,7 +219,7 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen>
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Couldn\'t use that item, try again'),
-          backgroundColor: Colors.red,
+          backgroundColor: AppColors.error,
         ),
       );
     }

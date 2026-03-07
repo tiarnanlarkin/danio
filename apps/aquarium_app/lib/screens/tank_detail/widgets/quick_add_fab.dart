@@ -93,7 +93,7 @@ class _QuickAddFabState extends State<QuickAddFab>
               MiniFabOption(
                 icon: Icons.restaurant,
                 label: 'Log Feeding',
-                color: Colors.orange,
+                color: AppColors.warning,
                 onTap: () => _handleAction(widget.onFeeding),
               ),
               const SizedBox(height: AppSpacing.sm),

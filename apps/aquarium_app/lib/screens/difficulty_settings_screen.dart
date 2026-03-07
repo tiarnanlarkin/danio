@@ -233,7 +233,7 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
                             'Mastered',
                             style: Theme.of(context).textTheme.bodySmall!.copyWith(
                               fontWeight: FontWeight.bold,
-                              color: Colors.amber,
+                              color: AppColors.xp,
                             ),
                           ),
                         ],
@@ -266,7 +266,7 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
         _buildStatChip(
           '${(summary['averageScore'] * 100).toInt()}% avg',
           Icons.score,
-          Colors.green,
+          AppColors.success,
         ),
         _buildStatChip(
           '${summary['trend'].emoji} ${summary['trend'].displayName}',
@@ -304,11 +304,11 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
   Color _getTrendColor(PerformanceTrend trend) {
     switch (trend) {
       case PerformanceTrend.improving:
-        return Colors.green;
+        return AppColors.success;
       case PerformanceTrend.stable:
         return AppColors.primary;
       case PerformanceTrend.declining:
-        return Colors.orange;
+        return AppColors.warning;
     }
   }
 
@@ -423,10 +423,10 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
   }
 
   Color _getScoreColor(int scorePercent) {
-    if (scorePercent >= 90) return Colors.green;
+    if (scorePercent >= 90) return AppColors.success;
     if (scorePercent >= 70) return AppColors.primary;
-    if (scorePercent >= 50) return Colors.orange;
-    return Colors.red;
+    if (scorePercent >= 50) return AppColors.warning;
+    return AppColors.error;
   }
 
   String _formatRelativeTime(DateTime timestamp) {
@@ -563,8 +563,8 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
         recommendations.add(
           AppCard(
             backgroundColor: recommendation.shouldIncrease
-                ? Colors.green.shade50
-                : Colors.orange.shade50,
+                ? AppColors.successAlpha10
+                : AppColors.warningAlpha10,
             padding: AppCardPadding.standard,
             child: Row(
                 children: [
@@ -573,8 +573,8 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
                         ? Icons.arrow_upward
                         : Icons.arrow_downward,
                     color: recommendation.shouldIncrease
-                        ? Colors.green
-                        : Colors.orange,
+                        ? AppColors.success
+                        : AppColors.warning,
                     size: 32,
                   ),
                   const SizedBox(width: AppSpacing.sm2),
@@ -635,7 +635,7 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
       child: LinearProgressIndicator(
         value: skillLevel,
         minHeight: 12,
-        backgroundColor: Theme.of(context).brightness == Brightness.dark ? AppColors.surfaceVariantDark : Colors.grey[300],
+        backgroundColor: Theme.of(context).brightness == Brightness.dark ? AppColors.surfaceVariantDark : AppColors.border,
         valueColor: AlwaysStoppedAnimation<Color>(
           _getSkillLevelColor(skillLevel),
         ),
@@ -644,9 +644,9 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
   }
 
   Color _getSkillLevelColor(double skillLevel) {
-    if (skillLevel < 0.3) return Colors.red;
-    if (skillLevel < 0.6) return Colors.orange;
+    if (skillLevel < 0.3) return AppColors.error;
+    if (skillLevel < 0.6) return AppColors.warning;
     if (skillLevel < 0.8) return AppColors.primary;
-    return Colors.green;
+    return AppColors.success;
   }
 }

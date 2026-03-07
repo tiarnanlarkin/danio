@@ -114,7 +114,7 @@ class _TutorialWalkthroughScreenState
           content: Text(
             '🎉 ${_tankName.trim()} created! Let\'s start your aquarium journey!',
           ),
-          backgroundColor: Colors.green,
+          backgroundColor: AppColors.success,
           duration: const Duration(seconds: 2),
         ),
       );
@@ -133,7 +133,7 @@ class _TutorialWalkthroughScreenState
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: const Text('Couldn\'t create your tank. Please try again.'),
-          backgroundColor: Colors.red,
+          backgroundColor: AppColors.error,
         ),
       );
     }
@@ -155,7 +155,7 @@ class _TutorialWalkthroughScreenState
                 // Progress indicator
                 LinearProgressIndicator(
                   value: (_currentStep + 1) / (_steps.length + 1),
-                  backgroundColor: Theme.of(context).brightness == Brightness.dark ? AppColors.surfaceVariantDark : Colors.grey[200],
+                  backgroundColor: Theme.of(context).brightness == Brightness.dark ? AppColors.surfaceVariantDark : AppColors.surfaceVariant,
                   valueColor: const AlwaysStoppedAnimation(AppColors.accent),
                 ),
 
@@ -230,7 +230,7 @@ class _TutorialWalkthroughScreenState
         // Progress indicator
         LinearProgressIndicator(
           value: 1.0,
-          backgroundColor: Theme.of(context).brightness == Brightness.dark ? AppColors.surfaceVariantDark : Colors.grey[200],
+          backgroundColor: Theme.of(context).brightness == Brightness.dark ? AppColors.surfaceVariantDark : AppColors.surfaceVariant,
           valueColor: const AlwaysStoppedAnimation(AppColors.accent),
         ),
 
@@ -491,10 +491,10 @@ class _TankTypeCard extends StatelessWidget {
           decoration: BoxDecoration(
             color: isSelected
                 ? AppOverlays.primary10
-                : Theme.of(context).brightness == Brightness.dark ? AppColors.surfaceDark : Colors.grey[100],
+                : Theme.of(context).brightness == Brightness.dark ? AppColors.surfaceDark : AppColors.surfaceVariant,
             borderRadius: AppRadius.mediumRadius,
             border: Border.all(
-              color: isSelected ? AppColors.primary : Theme.of(context).brightness == Brightness.dark ? AppColors.borderDark : Colors.grey[300]!,
+              color: isSelected ? AppColors.primary : Theme.of(context).brightness == Brightness.dark ? AppColors.borderDark : AppColors.border,
               width: 2,
             ),
           ),
@@ -517,7 +517,7 @@ class _TankTypeCard extends StatelessWidget {
                 const SizedBox(height: AppSpacing.xs),
                 Text(
                   'Coming soon',
-                  style: Theme.of(context).textTheme.bodySmall!.copyWith( color: Colors.grey),
+                  style: Theme.of(context).textTheme.bodySmall!.copyWith( color: AppColors.textHint),
                 ),
               ],
             ],
@@ -553,10 +553,10 @@ class _WaterTypeCard extends StatelessWidget {
         decoration: BoxDecoration(
           color: isSelected
               ? AppOverlays.accent10
-              : Theme.of(context).brightness == Brightness.dark ? AppColors.surfaceDark : Colors.grey[100],
+              : Theme.of(context).brightness == Brightness.dark ? AppColors.surfaceDark : AppColors.surfaceVariant,
           borderRadius: AppRadius.mediumRadius,
           border: Border.all(
-            color: isSelected ? AppColors.accent : Theme.of(context).brightness == Brightness.dark ? AppColors.borderDark : Colors.grey[300]!,
+            color: isSelected ? AppColors.accent : Theme.of(context).brightness == Brightness.dark ? AppColors.borderDark : AppColors.border,
             width: 2,
           ),
         ),
@@ -577,7 +577,7 @@ class _WaterTypeCard extends StatelessWidget {
                   ),
                   Text(
                     subtitle,
-                    style: Theme.of(context).textTheme.bodyMedium!.copyWith( color: Colors.grey[600]),
+                    style: Theme.of(context).textTheme.bodyMedium!.copyWith( color: AppColors.textSecondary),
                   ),
                 ],
               ),

@@ -298,8 +298,8 @@ class StoryCard extends StatelessWidget {
               borderRadius: AppRadius.mediumRadius,
               border: Border.all(
                 color: isCompleted
-                    ? Colors.green.shade300
-                    : Colors.grey.shade200,
+                    ? AppColors.successAlpha40
+                    : AppColors.border,
                 width: isCompleted ? 2 : 1,
               ),
             ),
@@ -360,7 +360,7 @@ class StoryCard extends StatelessWidget {
                           Text(
                             story.description,
                             style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                              color: Colors.grey.shade700,
+                              color: AppColors.textSecondary,
                             ),
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
@@ -389,7 +389,7 @@ class StoryCard extends StatelessWidget {
                     _buildInfoChip(
                       icon: Icons.star,
                       label: '+${story.xpReward} XP',
-                      color: Colors.amber,
+                      color: AppColors.xp,
                     ),
                   ],
                 ),
@@ -442,7 +442,7 @@ class StoryCard extends StatelessWidget {
                         Text(
                           _getLockReason(story),
                           style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                            color: Colors.grey.shade600,
+                            color: AppColors.textSecondary,
                             fontStyle: FontStyle.italic,
                           ),
                         ),
@@ -490,11 +490,11 @@ class StoryCard extends StatelessWidget {
   Color _getDifficultyColor(StoryDifficulty difficulty) {
     switch (difficulty) {
       case StoryDifficulty.beginner:
-        return Colors.green;
+        return AppColors.success;
       case StoryDifficulty.intermediate:
-        return Colors.orange;
+        return AppColors.warning;
       case StoryDifficulty.advanced:
-        return Colors.red;
+        return AppColors.error;
     }
   }
 

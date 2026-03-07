@@ -48,9 +48,9 @@ class _FriendComparisonScreenState
                 value: 'remove',
                 child: Row(
                   children: [
-                    Icon(Icons.person_remove, color: Colors.red),
+                    Icon(Icons.person_remove, color: AppColors.error),
                     SizedBox(width: AppSpacing.sm),
-                    Text('Remove Friend', style: TextStyle(color: Colors.red)),
+                    Text('Remove Friend', style: TextStyle(color: AppColors.error)),
                   ],
                 ),
               ),
@@ -194,7 +194,7 @@ class _FriendComparisonScreenState
             child: const Text('Cancel'),
           ),
           FilledButton(
-            style: FilledButton.styleFrom(backgroundColor: Colors.red),
+            style: FilledButton.styleFrom(backgroundColor: AppColors.error),
             onPressed: () {
               ref.read(friendsProvider.notifier).removeFriend(widget.friend.id);
               Navigator.pop(context); // Close dialog
@@ -308,7 +308,7 @@ class _UserCard extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(Icons.star, size: AppIconSizes.xs, color: Colors.amber.shade700),
+                Icon(Icons.star, size: AppIconSizes.xs, color: AppColors.xp),
                 const SizedBox(width: AppSpacing.xs),
                 Text(
                   '$xp XP',
@@ -343,21 +343,21 @@ class _StatsComparisonSection extends StatelessWidget {
         userProfile.totalXp,
         friend.totalXp,
         Icons.star,
-        Colors.amber,
+        AppColors.xp,
       ),
       (
         'Current Streak',
         userProfile.currentStreak,
         friend.currentStreak,
         Icons.local_fire_department,
-        Colors.orange,
+        AppColors.warning,
       ),
       (
         'Longest Streak',
         userProfile.longestStreak,
         friend.longestStreak,
         Icons.whatshot,
-        Colors.red,
+        AppColors.error,
       ),
       (
         'Level',
@@ -445,7 +445,7 @@ class _StatComparisonRow extends StatelessWidget {
                   textAlign: TextAlign.left,
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.bold,
-                    color: winner == 'user' ? Colors.green : Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+                    color: winner == 'user' ? AppColors.success : Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
                   ),
                 ),
               ),
@@ -479,7 +479,7 @@ class _StatComparisonRow extends StatelessWidget {
                   textAlign: TextAlign.right,
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.bold,
-                    color: winner == 'friend' ? Colors.green : Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+                    color: winner == 'friend' ? AppColors.success : Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
                   ),
                 ),
               ),
@@ -580,7 +580,7 @@ class _ProgressChartSection extends StatelessWidget {
                     padding: const EdgeInsets.only(top: 8),
                     child: Text(
                       days[index],
-                      style: const TextStyle(fontSize: 10, color: Colors.grey),
+                      style: TextStyle(fontSize: 10, color: AppColors.textHint),
                     ),
                   );
                 }
@@ -596,7 +596,7 @@ class _ProgressChartSection extends StatelessWidget {
               getTitlesWidget: (value, meta) {
                 return Text(
                   value.toInt().toString(),
-                  style: const TextStyle(fontSize: 10, color: Colors.grey),
+                  style: TextStyle(fontSize: 10, color: AppColors.textHint),
                 );
               },
             ),
@@ -625,7 +625,7 @@ class _ProgressChartSection extends StatelessWidget {
           LineChartBarData(
             spots: friendSpots,
             isCurved: true,
-            color: Colors.orange,
+            color: AppColors.warning,
             barWidth: 3,
             isStrokeCapRound: true,
             dotData: const FlDotData(show: true),
@@ -676,7 +676,7 @@ class _AchievementsSection extends StatelessWidget {
                 child: _AchievementCard(
                   title: '${friend.displayName}\'s',
                   count: friend.totalAchievements,
-                  color: Colors.orange,
+                  color: AppColors.secondary,
                 ),
               ),
             ],
@@ -717,7 +717,7 @@ class _AchievementCard extends StatelessWidget {
             const SizedBox(height: AppSpacing.xs),
             Text(
               title,
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.grey),
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(color: AppColors.textHint),
               textAlign: TextAlign.center,
             ),
           ],

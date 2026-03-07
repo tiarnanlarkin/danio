@@ -90,7 +90,7 @@ class TermsOfServiceScreen extends StatelessWidget {
               child: Text(
                 'Last Updated: February 7, 2025',
                 style: AppTypography.bodySmall.copyWith(
-                  color: Colors.grey[600],
+                  color: AppColors.textSecondary,
                 ),
               ),
             ),
@@ -163,10 +163,10 @@ class TermsOfServiceScreen extends StatelessWidget {
     return Container(
       padding: EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
-        color: highlighted ? Colors.orange[50] : Colors.grey[50],
+        color: highlighted ? AppColors.warningAlpha05 : AppColors.surface,
         borderRadius: AppRadius.mediumRadius,
         border: Border.all(
-          color: highlighted ? Colors.orange[200]! : Colors.grey[200]!,
+          color: highlighted ? AppColors.warningAlpha20 : AppColors.border,
         ),
       ),
       child: Row(
@@ -177,13 +177,13 @@ class TermsOfServiceScreen extends StatelessWidget {
             height: 40,
             decoration: BoxDecoration(
               color: highlighted
-                  ? Colors.orange[100]
+                  ? AppColors.warningAlpha10
                   : AppOverlays.primary10,
               borderRadius: AppRadius.smallRadius,
             ),
             child: Icon(
               icon,
-              color: highlighted ? Colors.orange[700] : AppColors.primary,
+              color: highlighted ? AppColors.warning : AppColors.primary,
               size: AppIconSizes.sm,
             ),
           ),
@@ -195,14 +195,14 @@ class TermsOfServiceScreen extends StatelessWidget {
                 Text(
                   title,
                   style: AppTypography.labelLarge.copyWith(
-                    color: highlighted ? Colors.orange[900] : null,
+                    color: highlighted ? AppColors.warning : null,
                   ),
                 ),
                 const SizedBox(height: AppSpacing.xs),
                 Text(
                   content,
                   style: AppTypography.bodySmall.copyWith(
-                    color: highlighted ? Colors.orange[800] : Colors.grey[700],
+                    color: highlighted ? AppColors.warning : AppColors.textSecondary,
                   ),
                 ),
               ],
@@ -261,10 +261,10 @@ class TermsOfServiceScreen extends StatelessWidget {
   Widget _buildContactRow(IconData icon, String text) {
     return Row(
       children: [
-        Icon(icon, size: AppIconSizes.xs, color: Colors.grey[600]),
+        Icon(icon, size: AppIconSizes.xs, color: AppColors.textSecondary),
         const SizedBox(width: AppSpacing.sm),
         Expanded(
-          child: Text(text, style: TextStyle(color: Colors.grey[800])),
+          child: Text(text, style: TextStyle(color: AppColors.textSecondary)),
         ),
       ],
     );

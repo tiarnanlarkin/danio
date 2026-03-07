@@ -190,7 +190,7 @@ class _EnhancedTutorialWalkthroughScreenState
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: const Text('Couldn\'t create your tank. Please try again.'),
-          backgroundColor: Colors.red,
+          backgroundColor: AppColors.error,
         ),
       );
     }
@@ -274,7 +274,7 @@ class _EnhancedTutorialWalkthroughScreenState
           LinearProgressIndicator(
             value: value,
             minHeight: 6,
-            backgroundColor: Theme.of(context).brightness == Brightness.dark ? AppColors.surfaceVariantDark : Colors.grey[200],
+            backgroundColor: Theme.of(context).brightness == Brightness.dark ? AppColors.surfaceVariantDark : AppColors.surfaceVariant,
             valueColor: AlwaysStoppedAnimation(
               _currentStep < _steps.length
                   ? _steps[_currentStep].color
@@ -294,7 +294,7 @@ class _EnhancedTutorialWalkthroughScreenState
                 ),
                 Text(
                   '${((value) * 100).round()}%',
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.grey),
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(color: AppColors.textHint),
                 ),
               ],
             ),
@@ -575,7 +575,7 @@ class _EnhancedTutorialWalkthroughScreenState
       shape: RoundedRectangleBorder(
         borderRadius: AppRadius.mediumRadius,
         side: BorderSide(
-          color: _useDemoData ? AppColors.accent : Colors.grey.shade300,
+          color: _useDemoData ? AppColors.accent : AppColors.border,
           width: _useDemoData ? 2 : 1,
         ),
       ),
@@ -668,7 +668,7 @@ class _EnhancedTutorialWalkthroughScreenState
               children: [
                 const Icon(
                   Icons.lightbulb_outline,
-                  color: Colors.orange,
+                  color: AppColors.warning,
                   size: AppIconSizes.sm,
                 ),
                 const SizedBox(width: AppSpacing.sm),
@@ -796,10 +796,10 @@ class _TankTypeCard extends StatelessWidget {
           decoration: BoxDecoration(
             color: isSelected
                 ? AppOverlays.primary10
-                : Theme.of(context).brightness == Brightness.dark ? AppColors.surfaceDark : Colors.grey[100],
+                : Theme.of(context).brightness == Brightness.dark ? AppColors.surfaceDark : AppColors.surfaceVariant,
             borderRadius: AppRadius.mediumRadius,
             border: Border.all(
-              color: isSelected ? AppColors.primary : Theme.of(context).brightness == Brightness.dark ? AppColors.borderDark : Colors.grey[300]!,
+              color: isSelected ? AppColors.primary : Theme.of(context).brightness == Brightness.dark ? AppColors.borderDark : AppColors.border,
               width: isSelected ? 2 : 1,
             ),
           ),
@@ -822,7 +822,7 @@ class _TankTypeCard extends StatelessWidget {
                 const SizedBox(height: AppSpacing.xs),
                 Text(
                   'Coming soon',
-                  style: Theme.of(context).textTheme.labelSmall?.copyWith(color: Colors.grey),
+                  style: Theme.of(context).textTheme.labelSmall?.copyWith(color: AppColors.textHint),
                 ),
               ],
             ],
@@ -859,10 +859,10 @@ class _WaterTypeCard extends StatelessWidget {
         decoration: BoxDecoration(
           color: isSelected
               ? AppOverlays.accent10
-              : Theme.of(context).brightness == Brightness.dark ? AppColors.surfaceDark : Colors.grey[100],
+              : Theme.of(context).brightness == Brightness.dark ? AppColors.surfaceDark : AppColors.surfaceVariant,
           borderRadius: AppRadius.mediumRadius,
           border: Border.all(
-            color: isSelected ? AppColors.accent : Theme.of(context).brightness == Brightness.dark ? AppColors.borderDark : Colors.grey[300]!,
+            color: isSelected ? AppColors.accent : Theme.of(context).brightness == Brightness.dark ? AppColors.borderDark : AppColors.border,
             width: isSelected ? 2 : 1,
           ),
         ),
@@ -977,7 +977,7 @@ class _SuccessDialogState extends State<_SuccessDialog>
                 const SizedBox(height: AppSpacing.md),
                 Text(
                   'Let\'s start your aquarium journey! 🐠',
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.grey),
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.textHint),
                   textAlign: TextAlign.center,
                 ),
               ],
