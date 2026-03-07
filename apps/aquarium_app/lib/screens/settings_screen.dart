@@ -799,7 +799,7 @@ class SettingsScreen extends ConsumerWidget {
       if (context.mounted) {
         AppFeedback.dismiss(context);
         dismissLoadingInFinally = false;
-        AppFeedback.showError(context, 'Export failed: $e');
+        AppFeedback.showError(context, 'Export failed. Please try again.');
       }
     } finally {
       if (context.mounted && dismissLoadingInFinally) {
@@ -885,7 +885,7 @@ class SettingsScreen extends ConsumerWidget {
       if (context.mounted) {
         AppFeedback.dismiss(context);
         dismissLoadingInFinally = false;
-        AppFeedback.showError(context, 'Import failed: $e');
+        AppFeedback.showError(context, 'Import failed. The file may be invalid or corrupted.');
       }
     } finally {
       if (context.mounted && dismissLoadingInFinally) {
@@ -1153,7 +1153,7 @@ Future<void> _testNotification(BuildContext context) async {
     }
   } catch (e) {
     if (context.mounted) {
-      AppFeedback.showError(context, 'Failed: $e');
+      AppFeedback.showError(context, 'Couldn\'t send test notification. Please try again.');
     }
   }
 }

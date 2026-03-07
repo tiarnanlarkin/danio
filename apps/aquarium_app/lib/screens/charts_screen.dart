@@ -550,7 +550,7 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
       if (context.mounted) {
         AppFeedback.dismiss(context);
         dismissLoadingInFinally = false;
-        AppFeedback.showError(context, 'Export failed: $e');
+        AppFeedback.showError(context, 'Export failed. Please try again.');
       }
     } finally {
       if (context.mounted && dismissLoadingInFinally) {

@@ -189,7 +189,7 @@ class _EnhancedTutorialWalkthroughScreenState
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Error creating tank: $e'),
+          content: const Text('Couldn\'t create your tank. Please try again.'),
           backgroundColor: Colors.red,
         ),
       );

@@ -374,7 +374,7 @@ class _EquipmentHistoryDialog extends ConsumerWidget {
             padding: EdgeInsets.all(AppSpacing.sm2),
             child: Center(child: CircularProgressIndicator(color: AppColors.primary)),
           ),
-          error: (err, _) => Text('Error loading history: $err'),
+          error: (err, _) => const Text('Couldn\'t load history. Please try again.'),
           data: (logs) {
             final maintenance =
                 logs

@@ -29,14 +29,14 @@ class CyclingAssistantScreen extends ConsumerWidget {
       ),
       body: tankAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (e, _) => Center(child: Text('Error: $e')),
+        error: (e, _) => const Center(child: Text('Something went wrong. Please try again.')),
         data: (tank) {
           if (tank == null) {
             return const Center(child: Text('Tank not found'));
           }
           return logsAsync.when(
             loading: () => const Center(child: CircularProgressIndicator()),
-            error: (e, _) => Center(child: Text('Error: $e')),
+            error: (e, _) => const Center(child: Text('Something went wrong. Please try again.')),
             data: (logs) => _CyclingAssistantBody(tank: tank, logs: logs),
           );
         },

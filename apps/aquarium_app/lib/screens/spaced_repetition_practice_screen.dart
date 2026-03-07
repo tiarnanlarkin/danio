@@ -992,7 +992,7 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
     } catch (e) {
       if (mounted) {
         setState(() {
-          _errorMessage = 'Error recording answer: $e';
+          _errorMessage = 'Couldn\'t save your answer. Your progress is still tracked.';
         });
 
         // Show SnackBar with retry option

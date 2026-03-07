@@ -583,7 +583,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       ),
       subtitle: Text(
         '${tank.volumeLitres.toStringAsFixed(0)}L',
-        style: TextStyle(color: Colors.white54, fontSize: 12),
+        style: TextStyle(color: AppColors.whiteAlpha50, fontSize: 12),
       ),
       onTap: () => setState(() => _currentTankIndex = index),
     );
@@ -765,7 +765,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 Expanded(child: TextField(
                   controller: tempC,
                   keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                  decoration: const InputDecoration(labelText: 'Temp (C)', border: OutlineInputBorder(), isDense: true),
+                  decoration: const InputDecoration(labelText: 'Temp (°C)', border: OutlineInputBorder(), isDense: true),
                 )),
                 const SizedBox(width: AppSpacing.sm),
                 Expanded(child: TextField(
@@ -862,7 +862,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               child: Container(
                 width: 40, height: 4,
                 decoration: BoxDecoration(
-                  color: Colors.grey.shade300,
+                  color: AppColors.border,
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
@@ -957,7 +957,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       rows: [
         ItemDetailRow(
           label: 'Temperature',
-          value: temp != null ? '${temp.toStringAsFixed(1)} C' : 'No data yet',
+          value: temp != null ? '${temp.toStringAsFixed(1)} °C' : 'No data yet',
         ),
         ItemDetailRow(
           label: 'Last fed',
@@ -1334,7 +1334,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         border: Border.all(
                           color: isSelected
                               ? theme.accentBlob
-                              : Colors.grey.shade300,
+                              : AppColors.border,
                           width: isSelected ? 3 : 1,
                         ),
                         gradient: LinearGradient(

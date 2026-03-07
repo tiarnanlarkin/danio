@@ -823,7 +823,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
       }
     } catch (e) {
       if (mounted) {
-        AppFeedback.showError(context, 'Could not add photos: $e');
+        AppFeedback.showError(context, 'Couldn\'t add photos. Please try again.');
       }
     } finally {
       if (mounted) setState(() => _isPickingImages = false);

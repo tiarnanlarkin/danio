@@ -409,7 +409,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen>
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Quick start failed: $e')),
+          const SnackBar(content: Text('Couldn\'t get started. Please try again.')),
         );
       }
     }

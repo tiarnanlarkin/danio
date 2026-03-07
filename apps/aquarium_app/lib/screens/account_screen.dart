@@ -369,7 +369,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
     } catch (e) {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Backup failed: $e')),
+          const SnackBar(content: Text('Backup failed. Check your connection and try again.')),
         );
       }
     }
@@ -411,7 +411,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
     } catch (e) {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Restore failed: $e')),
+          const SnackBar(content: Text('Restore failed. Check your connection and try again.')),
         );
       }
     }

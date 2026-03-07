@@ -68,7 +68,7 @@ class _ProfileCreationScreenState extends ConsumerState<ProfileCreationScreen> {
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Error skipping: $e'),
+          content: const Text('Something went wrong. Please try again.'),
           backgroundColor: Colors.red,
         ),
       );
@@ -117,7 +117,7 @@ class _ProfileCreationScreenState extends ConsumerState<ProfileCreationScreen> {
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Error creating profile: $e'),
+          content: const Text('Couldn\'t set up your profile. Please try again.'),
           backgroundColor: Colors.red,
         ),
       );

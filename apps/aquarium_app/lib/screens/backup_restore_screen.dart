@@ -392,7 +392,7 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
       }
     } catch (e) {
       if (mounted) {
-        AppFeedback.showError(context, 'Export failed: $e');
+        AppFeedback.showError(context, 'Export failed. Please try again.');
       }
     } finally {
       if (mounted) {
@@ -496,7 +496,7 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
       }
     } catch (e) {
       if (mounted) {
-        AppFeedback.showError(context, 'Import failed: $e');
+        AppFeedback.showError(context, 'Import failed. The file may be invalid or corrupted.');
       }
     } finally {
       if (mounted) {
