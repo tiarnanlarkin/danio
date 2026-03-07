@@ -41,7 +41,7 @@ class SyncDebugDialog extends ConsumerWidget {
               label: 'Conflicts Resolved',
               value: '${syncState.conflictsResolved}',
               icon: Icons.merge,
-              color: syncState.conflictsResolved > 0 ? Colors.orange : null,
+              color: syncState.conflictsResolved > 0 ? AppColors.warning : null,
             ),
             const SizedBox(height: AppSpacing.sm2),
 
@@ -63,7 +63,7 @@ class SyncDebugDialog extends ConsumerWidget {
                       const Icon(
                         Icons.warning_amber,
                         size: AppIconSizes.xs,
-                        color: Colors.orange,
+                        color: AppColors.warning,
                       ),
                       const SizedBox(width: AppSpacing.sm),
                       Expanded(
@@ -106,7 +106,7 @@ class SyncDebugDialog extends ConsumerWidget {
                             Text(
                               _formatDateTime(action.timestamp),
                               style: Theme.of(context).textTheme.labelSmall!.copyWith(
-                                color: Colors.grey[600],
+                                color: AppColors.textSecondary,
                               ),
                             ),
                           ],
@@ -125,19 +125,19 @@ class SyncDebugDialog extends ConsumerWidget {
               Container(
                 padding: EdgeInsets.all(AppSpacing.sm2),
                 decoration: BoxDecoration(
-                  color: Colors.red.shade50,
+                  color: AppColors.errorAlpha10,
                   borderRadius: AppRadius.smallRadius,
-                  border: Border.all(color: Colors.red.shade200),
+                  border: Border.all(color: AppColors.errorAlpha30),
                 ),
                 child: Row(
                   children: [
-                    Icon(Icons.error_outline, color: Colors.red.shade900),
+                    const Icon(Icons.error_outline, color: AppColors.error),
                     const SizedBox(width: AppSpacing.sm),
                     Expanded(
                       child: Text(
                         syncState.lastError!,
                         style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                          color: Colors.red.shade900,
+                          color: AppColors.error,
                         ),
                       ),
                     ),

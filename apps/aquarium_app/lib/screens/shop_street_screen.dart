@@ -598,7 +598,7 @@ class _BudgetCard extends StatelessWidget {
                     value: budget.percentUsed,
                     backgroundColor: ShopColors.background3,
                     valueColor: AlwaysStoppedAnimation<Color>(
-                      budget.percentUsed > 0.9 ? Colors.red : ShopColors.accent,
+                      budget.percentUsed > 0.9 ? AppColors.error : ShopColors.accent,
                     ),
                     minHeight: 8,
                   ),
