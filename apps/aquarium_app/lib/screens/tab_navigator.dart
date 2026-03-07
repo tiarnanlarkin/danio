@@ -53,12 +53,12 @@ class _TabNavigatorState extends ConsumerState<TabNavigator>
     super.initState();
     _fadeController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 200),
+      duration: AppDurations.medium2, // 200ms – crisp tab cross-fade
       value: 1.0, // Start fully visible
     );
     _fadeAnimation = CurvedAnimation(
       parent: _fadeController,
-      curve: Curves.easeOut,
+      curve: AppCurves.standardDecelerate, // easeOut
     );
   }
 

@@ -61,7 +61,7 @@ class _SwissArmyPanelState extends ConsumerState<SwissArmyPanel>
     super.initState();
     _anim = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 350),
+      duration: AppDurations.medium4, // 300ms – snappy blade-open
     );
   }
 

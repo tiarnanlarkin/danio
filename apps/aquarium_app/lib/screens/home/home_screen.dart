@@ -420,7 +420,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               maxHeightFraction: 0.65,
               label: 'Your Progress',
               emoji: '🔥',
-              backgroundColor: Colors.white,
+              backgroundColor: Theme.of(context).colorScheme.surface,
               backgroundPainter: CustomPaint(
                 painter: LeatherGrainPainter(),
                 size: Size.infinite,

@@ -26,11 +26,12 @@ class AchievementDetailModal extends StatelessWidget {
     final isLocked = !progress.isUnlocked;
     final progressPercent = progress.getProgress(achievement.targetCount);
     final rarityColor = _getRarityColor(achievement.rarity);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Container(
-      decoration: const BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.lg)),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surface,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(AppRadius.lg)),
       ),
       padding: EdgeInsets.all(AppSpacing.lg),
       child: SingleChildScrollView(
@@ -282,9 +283,12 @@ class AchievementDetailModal extends StatelessWidget {
               Container(
                 padding: EdgeInsets.all(AppSpacing.sm2),
                 decoration: BoxDecoration(
-                  color: DanioColors.creamWarm,
+                  // Warm tint adapts to dark mode
+                  color: isDark ? AppColors.primaryAlpha10 : AppColors.primaryAlpha08,
                   borderRadius: AppRadius.smallRadius,
-                  border: Border.all(color: Color(0xFFE8C07A)),
+                  border: Border.all(
+                    color: isDark ? AppColors.primaryAlpha30 : AppColors.primaryAlpha25,
+                  ),
                 ),
                 child: Row(
                   children: [
@@ -294,7 +298,7 @@ class AchievementDetailModal extends StatelessWidget {
                       child: Text(
                         'Keep learning to unlock this achievement!',
                         style: TextStyle(
-                          color: AppColors.primary,
+                          color: isDark ? AppColors.primaryLight : AppColors.primary,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
@@ -306,19 +310,22 @@ class AchievementDetailModal extends StatelessWidget {
               Container(
                 padding: EdgeInsets.all(AppSpacing.sm2),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFFFF8E1),
+                  // Warm amber tint — works in both light and dark
+                  color: isDark ? AppColors.warningAlpha12 : AppColors.warningAlpha10,
                   borderRadius: AppRadius.smallRadius,
-                  border: Border.all(color: const Color(0xFFFFE082)),
+                  border: Border.all(
+                    color: isDark ? AppColors.warningAlpha40 : AppColors.warningAlpha30,
+                  ),
                 ),
                 child: Row(
                   children: [
-                    Icon(Icons.check_circle, color: const Color(0xFFFFA000)),
+                    const Icon(Icons.check_circle, color: AppColors.warning),
                     const SizedBox(width: AppSpacing.sm2),
                     Expanded(
                       child: Text(
                         'Achievement Unlocked!',
-                        style: TextStyle(
-                          color: const Color(0xFFFFA000),
+                        style: const TextStyle(
+                          color: AppColors.warning,
                           fontWeight: FontWeight.bold,
                         ),
                       ),

@@ -23,7 +23,9 @@ class BottomPlate extends StatefulWidget {
     required this.emoji,
     required this.child,
     this.backgroundPainter,
-    this.backgroundColor = Colors.white,
+    // Callers should pass Theme.of(context).colorScheme.surface for dark-mode support.
+    // Fallback to AppColors.surface (light) to avoid blinding white on dark backgrounds.
+    this.backgroundColor = AppColors.surface,
     this.bottomOffset = 0,
   });
 
