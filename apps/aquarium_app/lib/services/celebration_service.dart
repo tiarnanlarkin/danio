@@ -253,27 +253,29 @@ class _CelebrationOverlayWrapperState extends ConsumerState<CelebrationOverlayWr
     _animationController.dispose();
     super.dispose();
   }
-  
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    // Use ref.listen to react to celebration state changes outside of build.
-    // This avoids the anti-pattern of calling AnimationController.forward()
-    // inside build(), which causes "setState during build" assertion errors.
-    ref.listenManual(celebrationProvider, (previous, next) {
-      if (next.isActive && !(previous?.isActive ?? false)) {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          if (mounted) _animationController.forward(from: 0);
-        });
-      } else if (!next.isActive) {
-        _animationController.reverse();
-      }
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
     final celebration = ref.watch(celebrationProvider);
+
+    // Riverpod-idiomatic side-effect: use ref.listen inside build().
+    // Riverpod guarantees this listener is registered once per watch cycle
+    // and is safe for side effects (does NOT call setState directly).
+    // We defer animation controller calls to addPostFrameCallback to avoid
+    // "setState called during build" assertion errors.
+    ref.listen<CelebrationState>(celebrationProvider, (previous, next) {
+      if (next.isActive && !(previous?.isActive ?? false)) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted && !_animationController.isAnimating) {
+            _animationController.forward(from: 0);
+          }
+        });
+      } else if (!next.isActive && (previous?.isActive ?? false)) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) _animationController.reverse();
+        });
+      }
+    });
     
     return Stack(
       children: [

@@ -69,6 +69,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   bool _dailyNudgeDismissed = false;
   bool _isSelectMode = false;
   bool _firstTankPromptShown = false;
+  bool _isNavigatingToCreate = false;
   bool _showWelcomeBanner = false;
   final Set<String> _selectedTankIds = {};
 
@@ -658,12 +659,18 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   /// bottom sheet exit animation was still running. With a full-screen route
   /// there is no overlay element in a transient state — navigation is clean.
   Future<void> _navigateToCreateFirstTank(BuildContext context) async {
+    // Guard against double navigation (e.g. auto-prompt + button tap racing).
+    if (_isNavigatingToCreate) return;
+    _isNavigatingToCreate = true;
+
     // Snapshot tank count BEFORE pushing so we can detect the new tank after pop.
     final tanksBefore = ref.read(tanksProvider).valueOrNull ?? [];
 
     await Navigator.of(context, rootNavigator: true).push(
       MaterialPageRoute(builder: (_) => const CreateTankScreen()),
     );
+
+    _isNavigatingToCreate = false;
 
     // CreateTankScreen calls Navigator.pop() (no result value) after creation.
     // Await the provider future so we get the freshest tank list.
@@ -689,9 +696,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   void _navigateToCreateTank(BuildContext context) {
+    // Guard against double navigation racing with the auto-prompt.
+    if (_isNavigatingToCreate) return;
+    _isNavigatingToCreate = true;
     Navigator.of(context).push(
       ModalScaleRoute(page: const CreateTankScreen()),
-    );
+    ).whenComplete(() => _isNavigatingToCreate = false);
   }
 
   void _navigateToTankDetail(BuildContext context, Tank tank) {
