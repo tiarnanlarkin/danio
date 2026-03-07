@@ -20,7 +20,7 @@ class WaterChangeCelebration extends StatefulWidget {
 
   /// Show the celebration as a full-screen overlay
   static void show(BuildContext context) {
-    final overlay = Overlay.of(context);
+    final overlay = Overlay.of(context, rootOverlay: true);
     late OverlayEntry entry;
     entry = OverlayEntry(
       builder: (ctx) => WaterChangeCelebration(

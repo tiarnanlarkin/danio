@@ -59,7 +59,7 @@ class CelebrationService {
     double intensity = 1.0,
     Offset? origin,
   }) {
-    final overlay = Overlay.of(context);
+    final overlay = Overlay.of(context, rootOverlay: true);
     late OverlayEntry entry;
     
     entry = OverlayEntry(
@@ -486,7 +486,7 @@ class _XpGainAnimationState extends State<XpGainAnimation>
 
 /// Helper to show XP gain in overlay
 void showXpGain(BuildContext context, int amount, {Offset? position}) {
-  final overlay = Overlay.of(context);
+  final overlay = Overlay.of(context, rootOverlay: true);
   late OverlayEntry entry;
   
   final effectivePosition = position ?? Offset(

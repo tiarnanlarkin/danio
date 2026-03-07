@@ -18,7 +18,7 @@ Future<void> showHeartsChangeOverlay(
   required bool gained,
   Duration duration = AppDurations.celebration,
 }) async {
-  final overlay = Overlay.of(context);
+  final overlay = Overlay.of(context, rootOverlay: true);
 
   final overlayEntry = OverlayEntry(
     builder: (context) =>

@@ -24,7 +24,7 @@ class StreakMilestoneCelebration extends StatefulWidget {
 
     HapticFeedback.heavyImpact();
 
-    final overlay = Overlay.of(context);
+    final overlay = Overlay.of(context, rootOverlay: true);
     late OverlayEntry entry;
     entry = OverlayEntry(
       builder: (ctx) => StreakMilestoneCelebration(

@@ -83,7 +83,7 @@ class _QuickStartGuideState extends State<QuickStartGuide> {
   void _showOverlay() {
     _overlayEntry?.remove();
     _overlayEntry = _createOverlayEntry();
-    Overlay.of(context).insert(_overlayEntry!);
+    Overlay.of(context, rootOverlay: true).insert(_overlayEntry!);
   }
 
   OverlayEntry _createOverlayEntry() {
