@@ -440,7 +440,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             Positioned(
               bottom: 70 + MediaQuery.of(context).padding.bottom,
               right: 16,
-              child: SpeedDialFAB(
+              child: IgnorePointer(
+                // Hide the FAB from touch events while the tank creation wizard
+                // is open — the FAB occupies the same screen position as the
+                // wizard's Next/Create buttons, causing mis-taps.
+                ignoring: _isNavigatingToCreate,
+                child: Opacity(
+                  opacity: _isNavigatingToCreate ? 0.0 : 1.0,
+                  child: SpeedDialFAB(
                 actions: [
                   SpeedDialAction(
                     icon: Icons.calendar_view_month_rounded,
@@ -479,6 +486,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   ),
                 ],
               ),
+                ), // end Opacity
+              ), // end IgnorePointer
             ),
 
             ], // end IgnorePointer Stack children
@@ -698,10 +707,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   void _navigateToCreateTank(BuildContext context) {
     // Guard against double navigation racing with the auto-prompt.
     if (_isNavigatingToCreate) return;
-    _isNavigatingToCreate = true;
+    setState(() => _isNavigatingToCreate = true);
     Navigator.of(context).push(
       ModalScaleRoute(page: const CreateTankScreen()),
-    ).whenComplete(() => _isNavigatingToCreate = false);
+    ).whenComplete(() {
+      if (mounted) setState(() => _isNavigatingToCreate = false);
+    });
   }
 
   void _navigateToTankDetail(BuildContext context, Tank tank) {
