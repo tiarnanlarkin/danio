@@ -153,7 +153,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
       children: [
         Expanded(
           child: ListView.builder(
-            padding: EdgeInsets.fromLTRB(AppSpacing.lg2, AppSpacing.lg2, AppSpacing.lg2, 100),
+            padding: EdgeInsets.fromLTRB(AppSpacing.lg2, AppSpacing.lg2, AppSpacing.lg2, 160),
             itemCount: totalItems,
             itemBuilder: (context, index) {
               // Lesson title with Hero animation

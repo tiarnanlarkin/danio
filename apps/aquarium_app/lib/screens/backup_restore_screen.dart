@@ -137,7 +137,7 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
                     SizedBox(
                       width: double.infinity,
                       child: FilledButton.icon(
-                        onPressed: _isExporting
+                        onPressed: (_isExporting || tanks.isEmpty)
                             ? null
                             : () => _exportData(tanks),
                         icon: _isExporting

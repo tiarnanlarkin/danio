@@ -404,7 +404,6 @@ class _OfflineBanner extends StatelessWidget {
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: AppSpacing.md),
-          const SizedBox(height: AppSpacing.sm),
           Text(
             'Features still work without AI — you can browse the fish '
             'database, log water parameters, and manage your tanks.\n\n'

@@ -821,7 +821,7 @@ class _LazyLearningPathCardState extends ConsumerState<_LazyLearningPathCard> {
                 style: AppTypography.bodySmall.copyWith(
                   color: AppColors.textSecondary,
                 ),
-                maxLines: 2,
+                maxLines: 3,
                 overflow: TextOverflow.ellipsis,
               ),
               const SizedBox(height: AppSpacing.sm),
@@ -833,7 +833,7 @@ class _LazyLearningPathCardState extends ConsumerState<_LazyLearningPathCard> {
                       decoration: BoxDecoration(
                         color: isDark
                             ? AppColors.whiteAlpha10
-                            : AppColors.surfaceVariant,
+                            : AppColors.primaryAlpha15,
                         borderRadius: AppRadius.xsRadius,
                       ),
                       child: FractionallySizedBox(

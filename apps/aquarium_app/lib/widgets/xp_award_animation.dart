@@ -149,7 +149,9 @@ class XpAwardOverlay extends StatelessWidget {
     required int xpAmount,
     VoidCallback? onComplete,
   }) {
-    final overlay = Overlay.of(context);
+    // Use rootOverlay: true to avoid _dependents.isEmpty assertion when the
+    // lesson screen's own overlay scope is being deactivated during navigation.
+    final overlay = Overlay.of(context, rootOverlay: true);
     late OverlayEntry entry;
 
     entry = OverlayEntry(
