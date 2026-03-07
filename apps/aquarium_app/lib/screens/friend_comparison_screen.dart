@@ -621,7 +621,7 @@ class _ProgressChartSection extends StatelessWidget {
               color: AppOverlays.blue10,
             ),
           ),
-          // Friend line (orange)
+          // Friend line (secondary color)
           LineChartBarData(
             spots: friendSpots,
             isCurved: true,

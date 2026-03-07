@@ -503,14 +503,14 @@ class _TankTypeCard extends StatelessWidget {
               Icon(
                 icon,
                 size: 32,
-                color: isSelected ? AppColors.primary : Colors.grey[600],
+                color: isSelected ? AppColors.primary : AppColors.textSecondary,
               ),
               const SizedBox(height: AppSpacing.sm),
               Text(
                 label,
                 style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                   fontWeight: FontWeight.w600,
-                  color: isSelected ? AppColors.primary : Colors.grey[800],
+                  color: isSelected ? AppColors.primary : AppColors.textSecondary,
                 ),
               ),
               if (isDisabled) ...[
@@ -572,7 +572,7 @@ class _WaterTypeCard extends StatelessWidget {
                     label,
                     style: Theme.of(context).textTheme.titleMedium!.copyWith(
                       fontWeight: FontWeight.w600,
-                      color: isSelected ? AppColors.accent : Colors.grey[800],
+                      color: isSelected ? AppColors.accent : AppColors.textSecondary,
                     ),
                   ),
                   Text(

@@ -1,4 +1,5 @@
 import 'package:collection/collection.dart';
+import 'package:flutter/foundation.dart';
 
 /// Analytics service for aggregating stats, calculating trends, and generating insights
 /// Provides comprehensive progress analysis with AI-like recommendations
@@ -6,6 +7,36 @@ import '../models/analytics.dart';
 import '../models/user_profile.dart';
 import '../models/learning.dart';
 import '../models/leaderboard.dart';
+
+/// Parameter bundle for [AnalyticsService.generateSummary] — must be a plain
+/// Dart class (no closures/native handles) so it can cross isolate boundaries.
+class _AnalyticsSummaryParams {
+  final UserProfile profile;
+  final List<LearningPath> allPaths;
+  final AnalyticsTimeRange timeRange;
+  final DateTime? customStart;
+  final DateTime? customEnd;
+
+  const _AnalyticsSummaryParams({
+    required this.profile,
+    required this.allPaths,
+    required this.timeRange,
+    this.customStart,
+    this.customEnd,
+  });
+}
+
+/// Top-level entry point required by [compute] — isolate callbacks must not be
+/// closures or instance methods.
+AnalyticsSummary _generateSummaryIsolate(_AnalyticsSummaryParams p) {
+  return AnalyticsService.generateSummary(
+    profile: p.profile,
+    allPaths: p.allPaths,
+    timeRange: p.timeRange,
+    customStart: p.customStart,
+    customEnd: p.customEnd,
+  );
+}
 
 /// Service for aggregating user analytics and generating AI-like insights.
 ///
@@ -81,6 +112,27 @@ class AnalyticsService {
       timePattern: timePattern,
       predictions: predictions,
       generatedAt: DateTime.now(),
+    );
+  }
+
+  /// Async variant of [generateSummary] that runs the computation in a
+  /// background isolate via [compute], keeping the main thread free.
+  static Future<AnalyticsSummary> generateSummaryAsync({
+    required UserProfile profile,
+    required List<LearningPath> allPaths,
+    AnalyticsTimeRange timeRange = AnalyticsTimeRange.allTime,
+    DateTime? customStart,
+    DateTime? customEnd,
+  }) {
+    return compute(
+      _generateSummaryIsolate,
+      _AnalyticsSummaryParams(
+        profile: profile,
+        allPaths: allPaths,
+        timeRange: timeRange,
+        customStart: customStart,
+        customEnd: customEnd,
+      ),
     );
   }
 

@@ -133,7 +133,7 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
     // Lazy-load all paths for analytics (user explicitly navigated here)
     final allPaths = await lessonContentLazy.getAllPaths();
 
-    return AnalyticsService.generateSummary(
+    return AnalyticsService.generateSummaryAsync(
       profile: profile,
       allPaths: allPaths,
       timeRange: _selectedRange,

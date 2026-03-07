@@ -41,7 +41,7 @@ class SyncIndicator extends ConsumerWidget {
               : hasConflicts
               ? AppColors.warningAlpha10
               : isSyncing
-              ? const Color(0xFFFFECB3)
+              ? AppColors.warningAlpha10
               : Theme.of(context).colorScheme.surfaceContainerHighest,
           border: Border(
             bottom: BorderSide(
@@ -50,7 +50,7 @@ class SyncIndicator extends ConsumerWidget {
                   : hasConflicts
                   ? AppColors.warningAlpha30
                   : isSyncing
-                  ? const Color(0xFFFFD54F)
+                  ? AppColors.warningAlpha40
                   : Theme.of(context).colorScheme.outlineVariant,
               width: 1,
             ),
@@ -81,7 +81,7 @@ class SyncIndicator extends ConsumerWidget {
                     : hasConflicts
                     ? AppColors.warning
                     : isSyncing
-                    ? const Color(0xFFFF6F00)
+                    ? AppColors.warning
                     : AppColors.textSecondary,
                 size: AppIconSizes.sm,
               ),
@@ -95,7 +95,7 @@ class SyncIndicator extends ConsumerWidget {
                       : hasConflicts
                       ? AppColors.warning
                       : isSyncing
-                      ? const Color(0xFFFF6F00)
+                      ? AppColors.warning
                       : AppColors.textSecondary,
                   fontWeight: FontWeight.w500,
                 ),
@@ -156,7 +156,7 @@ class SyncIndicatorCompact extends ConsumerWidget {
             syncState.isSyncing ? 'Syncing' : '${syncState.queuedCount}',
             style: Theme.of(context).textTheme.bodySmall!.copyWith(
               color: syncState.isSyncing
-                  ? const Color(0xFFFF6F00)
+                  ? AppColors.warning
                   : AppColors.textSecondary,
               fontWeight: FontWeight.w500,
             ),

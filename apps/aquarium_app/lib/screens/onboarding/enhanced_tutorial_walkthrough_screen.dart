@@ -661,7 +661,7 @@ class _EnhancedTutorialWalkthroughScreenState
           Container(
             padding: EdgeInsets.all(AppSpacing.sm2),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: AppColors.card,
               borderRadius: AppRadius.smallRadius,
             ),
             child: Row(

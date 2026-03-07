@@ -274,9 +274,8 @@ class _WorkshopHeader extends ConsumerWidget {
                   ],
                 ),
               ),
-              // Workbench — DIY Projects not yet implemented; non-interactive
               WorkshopObjects.workbench(
-                onTap: null,
+                onTap: () => _showDiyProjectsInfo(context),
                 isNewUser: isNewUser,
               ),
             ],

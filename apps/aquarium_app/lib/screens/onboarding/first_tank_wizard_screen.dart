@@ -231,7 +231,7 @@ class _FirstTankWizardScreenState extends ConsumerState<FirstTankWizardScreen> {
           ),
           const SizedBox(height: AppSpacing.sm2),
           Text(
-            'How many gallons/liters is your tank?',
+            'How many liters is your tank?',
             style: AppTypography.bodyLarge.copyWith(
               color: AppColors.textSecondary,
             ),
@@ -242,7 +242,7 @@ class _FirstTankWizardScreenState extends ConsumerState<FirstTankWizardScreen> {
             controller: _volumeLitresController,
             autofocus: true,
             decoration: InputDecoration(
-              labelText: 'Volume (gallons or liters)',
+              labelText: 'Volume (liters)',
               hintText: 'e.g., 20',
               prefixIcon: const Icon(Icons.water_outlined),
               border: OutlineInputBorder(
@@ -258,7 +258,7 @@ class _FirstTankWizardScreenState extends ConsumerState<FirstTankWizardScreen> {
           ),
           const SizedBox(height: AppSpacing.md),
           Text(
-            'Common sizes: 10, 20, 29, 40, 55, 75 gallons',
+            'Common sizes: 38 L (10 gal), 76 L (20 gal), 114 L (30 gal), 208 L (55 gal)',
             style: AppTypography.labelSmall.copyWith(
               color: AppColors.textSecondary,
             ),
