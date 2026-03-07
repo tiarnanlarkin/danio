@@ -609,7 +609,10 @@ class _BudgetCard extends StatelessWidget {
                   borderRadius: AppRadius.xsRadius,
                   child: LinearProgressIndicator(
                     value: budget.percentUsed,
-                    backgroundColor: ShopColors.background3,
+                    // P2-005: background3 is opaque deep-green which made the
+                    // empty track look "nearly full". Use a transparent white
+                    // track so only the accent fill is visible.
+                    backgroundColor: ShopColors.glassBorder,
                     valueColor: AlwaysStoppedAnimation<Color>(
                       budget.percentUsed > 0.9 ? AppColors.error : ShopColors.accent,
                     ),

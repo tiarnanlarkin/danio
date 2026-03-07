@@ -19,6 +19,8 @@ class NotificationService {
   final FlutterLocalNotificationsPlugin _plugin =
       FlutterLocalNotificationsPlugin();
   bool _initialized = false;
+  // Cached schedule mode — resolved once on first scheduling call (P2-007).
+  AndroidScheduleMode? _cachedScheduleMode;
 
   // Callback for handling notification taps
   Function(String?)? onNotificationTap;
@@ -58,6 +60,33 @@ class NotificationService {
       },
     );
     _initialized = true;
+  }
+
+  /// Returns the best available AndroidScheduleMode (cached after first call).
+  ///
+  /// On Android 12+ (API 31+) SCHEDULE_EXACT_ALARM requires an explicit user
+  /// grant via Settings → Alarms & Reminders.  If it has not been granted,
+  /// zonedSchedule throws PlatformException("exact_alarms_not_permitted").
+  /// We check at runtime and fall back to inexact alarms (P2-007).
+  Future<AndroidScheduleMode> _resolveScheduleMode() async {
+    if (_cachedScheduleMode != null) return _cachedScheduleMode!;
+    final android = _plugin
+        .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin
+        >();
+    if (android == null) {
+      _cachedScheduleMode = AndroidScheduleMode.exactAllowWhileIdle;
+      return _cachedScheduleMode!;
+    }
+    try {
+      final canExact = await android.canScheduleExactNotifications() ?? false;
+      _cachedScheduleMode = canExact
+          ? AndroidScheduleMode.exactAllowWhileIdle
+          : AndroidScheduleMode.inexactAllowWhileIdle;
+    } catch (_) {
+      _cachedScheduleMode = AndroidScheduleMode.inexactAllowWhileIdle;
+    }
+    return _cachedScheduleMode!;
   }
 
   /// Request notification permissions (iOS mainly).
@@ -128,7 +157,7 @@ class NotificationService {
           presentSound: true,
         ),
       ),
-      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+      androidScheduleMode: await _resolveScheduleMode(),
       uiLocalNotificationDateInterpretation:
           UILocalNotificationDateInterpretation.absoluteTime,
     );
@@ -268,7 +297,7 @@ class NotificationService {
           presentSound: true,
         ),
       ),
-      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+      androidScheduleMode: await _resolveScheduleMode(),
       uiLocalNotificationDateInterpretation:
           UILocalNotificationDateInterpretation.absoluteTime,
       matchDateTimeComponents: DateTimeComponents.time, // Repeat daily
@@ -321,7 +350,7 @@ class NotificationService {
           presentSound: true,
         ),
       ),
-      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+      androidScheduleMode: await _resolveScheduleMode(),
       uiLocalNotificationDateInterpretation:
           UILocalNotificationDateInterpretation.absoluteTime,
       matchDateTimeComponents: DateTimeComponents.time, // Repeat daily
@@ -374,7 +403,7 @@ class NotificationService {
           presentSound: true,
         ),
       ),
-      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+      androidScheduleMode: await _resolveScheduleMode(),
       uiLocalNotificationDateInterpretation:
           UILocalNotificationDateInterpretation.absoluteTime,
       matchDateTimeComponents: DateTimeComponents.time, // Repeat daily
@@ -485,7 +514,7 @@ class NotificationService {
           presentSound: true,
         ),
       ),
-      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+      androidScheduleMode: await _resolveScheduleMode(),
       uiLocalNotificationDateInterpretation:
           UILocalNotificationDateInterpretation.absoluteTime,
       matchDateTimeComponents: DateTimeComponents.time, // Repeat daily
@@ -564,7 +593,7 @@ class NotificationService {
           presentSound: true,
         ),
       ),
-      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+      androidScheduleMode: await _resolveScheduleMode(),
       uiLocalNotificationDateInterpretation:
           UILocalNotificationDateInterpretation.absoluteTime,
       payload: 'water_change',

@@ -71,7 +71,7 @@ class _ErrorBoundaryState extends State<ErrorBoundary> {
 }
 
 /// Default friendly error screen
-class _DefaultErrorScreen extends StatelessWidget {
+class _DefaultErrorScreen extends StatefulWidget {
   final FlutterErrorDetails error;
   final VoidCallback onRetry;
 
@@ -81,7 +81,14 @@ class _DefaultErrorScreen extends StatelessWidget {
   });
 
   @override
+  State<_DefaultErrorScreen> createState() => _DefaultErrorScreenState();
+}
+
+class _DefaultErrorScreenState extends State<_DefaultErrorScreen> {
+  @override
   Widget build(BuildContext context) {
+    final error = widget.error;
+    final onRetry = widget.onRetry;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     
     return MaterialApp(

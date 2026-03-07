@@ -205,7 +205,13 @@ class AchievementChecker {
               // Continue even if gem award fails
             }
 
-            // Show celebration dialog
+            // Show celebration dialog.
+            // P0-002 FIX: Wait one frame before showing the dialog so that
+            // any provider-triggered rebuilds from updateAchievements() above
+            // complete first.  Without this, the showDialog push can race with
+            // InheritedWidget dependency tear-down causing the
+            // _dependents.isEmpty assertion (framework.dart:6271).
+            await Future.delayed(Duration.zero); // yield to microtask queue
             final context = navigatorKey.currentContext;
             if (context != null && context.mounted) {
               await showAchievementUnlockedDialog(

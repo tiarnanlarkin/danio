@@ -154,9 +154,12 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
                     Text(
                       // Practice mode awards half XP — keep consistent with
                       // the PracticeScreen card label.
+                      // Show full potential XP (base + quiz bonus) so it matches results screen.
                       widget.isPracticeMode
                           ? '+\${widget.lesson.xpReward ~/ 2} XP'
-                          : '\${widget.lesson.xpReward} XP',
+                          : (widget.lesson.quiz != null
+                              ? 'up to +\${widget.lesson.xpReward + widget.lesson.quiz!.bonusXp} XP'
+                              : '+\${widget.lesson.xpReward} XP'),
                       style: AppTypography.labelMedium.copyWith(
                         color: AppColors.accent,
                       ),
@@ -1227,13 +1230,8 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
         debugPrint('Spaced repetition seeding failed: $e');
       }
 
-      // Record activity for streak (non-critical)
-      try {
-        await ref.read(userProfileProvider.notifier).recordActivity();
-      } catch (e) {
-        // Don't fail lesson completion if activity recording fails
-        debugPrint('Activity recording failed: $e');
-      }
+      // Note: recordActivity() is already called internally by completeLesson().
+      // Calling it again here would double-count the streak bonus XP — removed.
 
       // Schedule review notifications for newly created cards (non-critical)
       try {
@@ -1251,45 +1249,67 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
         debugPrint('Notification scheduling failed: $e');
       }
 
-      // Check for achievements using the full achievement checker
+      // Check for achievements using the full achievement checker.
+      // P0-002 FIX: Fire-and-forget — do NOT await the achievement check.
+      // Awaiting it caused the _dependents.isEmpty assertion (framework.dart:6271)
+      // because checkAchievements() shows a dialog via showDialog() and also
+      // updates userProfileProvider.  The provider update triggers rebuilds of
+      // widgets in the LessonScreen's tree (e.g. HeartIndicator) while the
+      // dialog route is being pushed on the root navigator, creating a conflict
+      // where InheritedWidget dependents are torn down out-of-order.
+      // By not awaiting, the lesson completion flow continues to _showXpAnimation
+      // immediately, and the achievement dialog shows asynchronously once the
+      // current frame settles.
       final profile = ref.read(userProfileProvider).value;
       if (profile != null) {
-        try {
-          final achievementChecker = ref.read(achievementCheckerProvider);
-          final isPerfect = widget.lesson.quiz != null &&
-              _correctAnswers == widget.lesson.quiz!.questions.length;
+        final achievementChecker = ref.read(achievementCheckerProvider);
+        final isPerfect = widget.lesson.quiz != null &&
+            _correctAnswers == widget.lesson.quiz!.questions.length;
 
-          // Calculate today's lessons completed
-          final todayKey = DateTime.now().toIso8601String().split('T')[0];
-          final todayLessons = profile.completedLessons
-              .where((id) {
-                final progress = profile.lessonProgress[id];
-                return progress != null &&
-                    progress.completedDate.toIso8601String().split('T')[0] ==
-                        todayKey;
-              })
-              .length +
-              1; // +1 for this lesson
+        // Calculate today's lessons completed
+        final todayKey = DateTime.now().toIso8601String().split('T')[0];
+        final todayLessons = profile.completedLessons
+            .where((id) {
+              final progress = profile.lessonProgress[id];
+              return progress != null &&
+                  progress.completedDate.toIso8601String().split('T')[0] ==
+                      todayKey;
+            })
+            .length +
+            1; // +1 for this lesson
 
-          await achievementChecker.checkAfterLesson(
-            lessonsCompleted: profile.completedLessons.length + 1,
-            currentStreak: profile.currentStreak,
-            totalXp: profile.totalXp + totalXp,
-            perfectScores: isPerfect
-                ? (profile.achievements.where((a) => a == 'perfectionist').length + 1)
-                : profile.achievements.where((a) => a == 'perfectionist').length,
-            lessonCompletedAt: DateTime.now(),
-            lessonDuration: widget.lesson.estimatedMinutes * 60,
-            lessonScore: widget.lesson.quiz != null
-                ? (_correctAnswers * 100 ~/ widget.lesson.quiz!.questions.length)
-                : 100,
-            todayLessonsCompleted: todayLessons,
-            completedLessonIds: [...profile.completedLessons, widget.lesson.id],
-          );
-        } catch (e) {
-          // Don't fail the lesson completion if achievement check fails
-          debugPrint('Achievement check failed: $e');
-        }
+        // Fire-and-forget: don't block the XP animation on achievement checks.
+        // ignore: unawaited_futures
+        () async {
+          try {
+            await achievementChecker.checkAfterLesson(
+              lessonsCompleted: profile.completedLessons.length + 1,
+              currentStreak: profile.currentStreak,
+              totalXp: profile.totalXp, // profile already has lesson XP applied
+              perfectScores: isPerfect
+                  ? (profile.achievements
+                          .where((a) => a == 'perfectionist')
+                          .length +
+                      1)
+                  : profile.achievements
+                      .where((a) => a == 'perfectionist')
+                      .length,
+              lessonCompletedAt: DateTime.now(),
+              lessonDuration: widget.lesson.estimatedMinutes * 60,
+              lessonScore: widget.lesson.quiz != null
+                  ? (_correctAnswers * 100 ~/
+                      widget.lesson.quiz!.questions.length)
+                  : 100,
+              todayLessonsCompleted: todayLessons,
+              completedLessonIds: [
+                ...profile.completedLessons,
+                widget.lesson.id,
+              ],
+            );
+          } catch (e) {
+            debugPrint('Achievement check failed: $e');
+          }
+        }();
       }
 
       if (mounted) {

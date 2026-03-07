@@ -54,29 +54,36 @@ class _ShimmerGlowState extends State<ShimmerGlow>
     return AnimatedBuilder(
       animation: _controller,
       builder: (context, child) {
+        // Shimmer sweep: a semi-transparent gradient stripe that sweeps across.
+        // Uses a transparent gradient Container directly (NOT ShaderMask with
+        // blendMode:srcATop + white child, which was causing full-card white
+        // overlay and making card content invisible — P2-004 fix).
         return Stack(
           children: [
             child!,
             Positioned.fill(
               child: ClipRRect(
                 borderRadius: AppRadius.mediumRadius,
-                child: ShaderMask(
-                  shaderCallback: (bounds) {
-                    return LinearGradient(
-                      begin: Alignment(-1.0 + 3.0 * _controller.value, -0.3),
-                      end: Alignment(
-                          -1.0 + 3.0 * _controller.value + 0.6, 0.3),
-                      colors: [
-                        Colors.transparent,
-                        color.withAlpha(40),
-                        Colors.transparent,
-                      ],
-                      stops: const [0.0, 0.5, 1.0],
-                    ).createShader(bounds);
-                  },
-                  blendMode: BlendMode.srcATop,
+                child: IgnorePointer(
                   child: Container(
-                    color: Colors.white,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment(
+                          -1.0 + 3.0 * _controller.value,
+                          -0.3,
+                        ),
+                        end: Alignment(
+                          -1.0 + 3.0 * _controller.value + 0.6,
+                          0.3,
+                        ),
+                        colors: [
+                          Colors.transparent,
+                          color.withAlpha(40),
+                          Colors.transparent,
+                        ],
+                        stops: const [0.0, 0.5, 1.0],
+                      ),
+                    ),
                   ),
                 ),
               ),

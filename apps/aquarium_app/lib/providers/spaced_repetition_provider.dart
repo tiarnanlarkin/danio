@@ -215,6 +215,9 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
 
           // Check if card already exists
           if (!state.cards.any((c) => c.conceptId == conceptId)) {
+            // Populate questionText from section content so the practice
+            // screen can display real content without re-loading lesson data.
+            final String? questionText = _safeStringField(section, 'content');
             final card = ReviewCard(
               id: '${conceptId}_${now.millisecondsSinceEpoch}_$sectionIndex',
               conceptId: conceptId,
@@ -227,6 +230,7 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
               incorrectCount: 0,
               currentInterval: ReviewInterval.day1,
               history: [],
+              questionText: questionText,
             );
             cardsToCreate.add(card);
           }
@@ -237,11 +241,13 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
       // Extract quiz questions as review cards (limit to 5 to avoid overwhelming)
       if (quizQuestions != null && quizQuestions.isNotEmpty) {
         int questionIndex = 0;
-        for (final _ in quizQuestions.take(5)) {
+        for (final q in quizQuestions.take(5)) {
           final conceptId = '${lessonId}_quiz_q$questionIndex';
 
           // Check if card already exists
           if (!state.cards.any((c) => c.conceptId == conceptId)) {
+            // Populate questionText from quiz question text.
+            final String? questionText = _safeStringField(q, 'question');
             final card = ReviewCard(
               id: '${conceptId}_${now.millisecondsSinceEpoch}_$questionIndex',
               conceptId: conceptId,
@@ -254,6 +260,7 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
               incorrectCount: 0,
               currentInterval: ReviewInterval.day1,
               history: [],
+              questionText: questionText,
             );
             cardsToCreate.add(card);
           }
@@ -290,6 +297,23 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
         errorMessage: 'Failed to auto-seed review cards: ${e.toString()}',
       );
       // Don't rethrow - lesson completion should still succeed
+    }
+  }
+
+  /// Safely read a named String field from a dynamic object (LessonSection /
+  /// QuizQuestion) without introducing a circular import.
+  /// Uses dynamic dispatch — returns null if the access throws or is non-String.
+  String? _safeStringField(dynamic obj, String fieldName) {
+    try {
+      // ignore: avoid_dynamic_calls
+      final dynamic value = fieldName == 'content'
+          // ignore: avoid_dynamic_calls
+          ? (obj as dynamic).content
+          // ignore: avoid_dynamic_calls
+          : (obj as dynamic).question;
+      return value is String ? value : null;
+    } catch (_) {
+      return null;
     }
   }
 

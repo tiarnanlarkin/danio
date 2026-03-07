@@ -572,22 +572,36 @@ class _ShopItemCard extends ConsumerWidget {
                     ),
                   ),
                   // Dim overlay for items the user cannot afford
-                  if (!owned && !canAfford)
+                  // P2-008: previously used Positioned.fill with a centered
+                  // lock icon which covered the description text. Now we
+                  // use a light dim + a small corner badge so text stays
+                  // readable.
+                  if (!owned && !canAfford) ...[
                     Positioned.fill(
                       child: Container(
                         decoration: BoxDecoration(
-                          color: Colors.black.withAlpha(100),
+                          color: Colors.black.withAlpha(60),
                           borderRadius: AppRadius.largeRadius,
-                        ),
-                        child: const Center(
-                          child: Icon(
-                            Icons.lock_outline,
-                            color: Colors.white54,
-                            size: 28,
-                          ),
                         ),
                       ),
                     ),
+                    Positioned(
+                      top: 8,
+                      right: 8,
+                      child: Container(
+                        padding: const EdgeInsets.all(6),
+                        decoration: BoxDecoration(
+                          color: Colors.black.withAlpha(160),
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Icon(
+                          Icons.lock_outline,
+                          color: Colors.white70,
+                          size: 16,
+                        ),
+                      ),
+                    ),
+                  ],
                   // Owned indicator
                   if (owned)
                     Positioned(

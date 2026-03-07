@@ -25,6 +25,11 @@ class ReviewCard {
   final ReviewInterval currentInterval; // Current review interval
   final List<ReviewAttempt> history; // Review history
 
+  /// The actual content text shown on the flashcard front (e.g. key-point body,
+  /// quiz question text). Populated at card-creation time so the practice
+  /// screen doesn't need to reload lesson data on every render.
+  final String? questionText;
+
   const ReviewCard({
     required this.id,
     required this.conceptId,
@@ -37,6 +42,7 @@ class ReviewCard {
     this.incorrectCount = 0,
     this.currentInterval = ReviewInterval.day1,
     this.history = const [],
+    this.questionText,
   });
 
   /// Check if card is due for review
@@ -102,6 +108,7 @@ class ReviewCard {
       incorrectCount: incorrectCount + (correct ? 0 : 1),
       currentInterval: newInterval,
       history: [...history, attempt],
+      questionText: questionText,
     );
   }
 
@@ -149,6 +156,7 @@ class ReviewCard {
     'incorrectCount': incorrectCount,
     'currentInterval': currentInterval.toString().split('.').last,
     'history': history.map((h) => h.toJson()).toList(),
+    if (questionText != null) 'questionText': questionText,
   };
 
   factory ReviewCard.fromJson(Map<String, dynamic> json) {
@@ -173,6 +181,7 @@ class ReviewCard {
               ?.map((h) => ReviewAttempt.fromJson(h))
               .toList() ??
           [],
+      questionText: json['questionText'] as String?,
     );
   }
 

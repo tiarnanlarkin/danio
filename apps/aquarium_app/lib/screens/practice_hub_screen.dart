@@ -197,7 +197,9 @@ class PracticeHubScreen extends ConsumerWidget {
           return _buildProgressCard(
             context,
             title: 'Study Streak',
-            value: streak > 0 ? '$streak days 🔥' : '$streak days',
+            value: streak > 0
+                ? '${streak == 1 ? '1 day' : '$streak days'} 🔥'
+                : '0 days',
             icon: streak > 0 ? Icons.local_fire_department : Icons.local_fire_department_outlined,
             color: streak > 0 ? AppColors.warning : AppColors.textSecondary,
           );

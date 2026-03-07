@@ -146,20 +146,24 @@ class SettingsHubScreen extends ConsumerWidget {
 
       const SizedBox(height: AppSpacing.sm),
 
-      PrimaryActionTile(
-        icon: Icons.backup,
-        title: 'Backup & Restore',
-        subtitle: 'Back up & restore your data',
-        iconColor: AppColors.textSecondary,
-        trailing: const Icon(Icons.chevron_right),
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const BackupRestoreScreen(),
-            ),
-          );
-        },
+      // P3-003: wrap with ConstrainedBox so the card is never less than 80 px tall
+      ConstrainedBox(
+        constraints: const BoxConstraints(minHeight: 80),
+        child: PrimaryActionTile(
+          icon: Icons.backup,
+          title: 'Backup & Restore',
+          subtitle: 'Back up & restore your data',
+          iconColor: AppColors.textSecondary,
+          trailing: const Icon(Icons.chevron_right),
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const BackupRestoreScreen(),
+              ),
+            );
+          },
+        ),
       ),
 
       const SizedBox(height: AppSpacing.sm),

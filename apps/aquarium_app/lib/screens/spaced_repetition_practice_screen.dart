@@ -780,6 +780,30 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
                 ),
                 const SizedBox(height: AppSpacing.sm2),
                 Text(_getQuestionText(), style: AppTypography.headlineMedium),
+                // Show actual card content (key-point body or quiz question)
+                // if it was stored when the card was seeded from lesson data.
+                if (_currentCard.questionText != null &&
+                    _currentCard.questionText!.isNotEmpty) ...[
+                  const SizedBox(height: AppSpacing.md),
+                  Container(
+                    width: double.infinity,
+                    padding: EdgeInsets.all(AppSpacing.md),
+                    decoration: BoxDecoration(
+                      color: AppColors.primaryAlpha10,
+                      borderRadius: AppRadius.smallRadius,
+                      border: Border.all(
+                        color: AppColors.primaryAlpha15,
+                      ),
+                    ),
+                    child: Text(
+                      _currentCard.questionText!,
+                      style: AppTypography.bodyMedium.copyWith(
+                        color: AppColors.textPrimary,
+                        height: 1.5,
+                      ),
+                    ),
+                  ),
+                ],
               ],
             ),
           ),
