@@ -45,7 +45,10 @@ class _LogsScreenState extends ConsumerState<LogsScreen> {
           ),
         ],
       ),
-      body: logsAsync.when(
+      body: AnimatedSwitcher(
+        duration: const Duration(milliseconds: 300),
+        switchInCurve: Curves.easeOutCubic,
+        child: logsAsync.when(
         loading: () => _buildSkeletonList(),
         error: (err, _) => AppErrorState(
           title: 'Failed to load logs',
@@ -147,6 +150,7 @@ class _LogsScreenState extends ConsumerState<LogsScreen> {
             ),
           );
         },
+      ),
       ),
       floatingActionButton: FloatingActionButton(
         tooltip: 'Add Log',

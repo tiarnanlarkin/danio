@@ -59,9 +59,46 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
     });
   }
 
+  /// Shows a confirmation dialog before discarding mid-quiz progress.
+  Future<bool> _confirmExitQuiz() async {
+    if (!_showQuiz || _quizComplete) return true;
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Leave quiz?'),
+        content: const Text(
+          'Your quiz progress will be lost. You can retake it anytime.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(false),
+            child: const Text('Keep going'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(true),
+            child: const Text('Leave'),
+          ),
+        ],
+      ),
+    );
+    return confirmed ?? false;
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, _) async {
+        if (didPop) return;
+        // Capture navigator before the async gap to avoid
+        // use_build_context_synchronously lint.
+        final nav = Navigator.of(context);
+        final canExit = await _confirmExitQuiz();
+        if (canExit && mounted) {
+          nav.pop();
+        }
+      },
+      child: Scaffold(
       appBar: AppBar(
         title: Row(
           children: [
@@ -145,8 +182,9 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
               ),
             ),
         ],
-      ),
-    );
+      ),     // closes Stack (body of Scaffold)
+      ),     // closes Scaffold (child of PopScope)
+    );       // closes PopScope
   }
 
   Widget _buildLesson() {

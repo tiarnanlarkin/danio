@@ -672,10 +672,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     if (_isNavigatingToCreate) return;
     _isNavigatingToCreate = true;
 
+    // Capture navigator before any async gap so it remains valid after awaits.
+    final navigator = Navigator.of(context, rootNavigator: true);
+
     // Snapshot tank count BEFORE pushing so we can detect the new tank after pop.
     final tanksBefore = ref.read(tanksProvider).valueOrNull ?? [];
 
-    await Navigator.of(context, rootNavigator: true).push(
+    await navigator.push(
       MaterialPageRoute(builder: (_) => const CreateTankScreen()),
     );
 
@@ -697,7 +700,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       );
       if (mounted) {
         ref.read(currentTabProvider.notifier).state = 2; // Switch to Tank tab
-        Navigator.of(context, rootNavigator: true).push(
+        navigator.push(
           TankDetailRoute(page: TankDetailScreen(tankId: newTank.id)),
         );
       }

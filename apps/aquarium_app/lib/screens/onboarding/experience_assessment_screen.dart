@@ -18,6 +18,12 @@ class _ExperienceAssessmentScreenState
   final Map<int, String> _answers = {};
   ExperienceLevel? _determinedLevel;
 
+  /// Pre-computed shuffled option order per question.
+  /// Shuffled once in [initState] so the order never changes on rebuild,
+  /// which would let a user accidentally tap a different option after
+  /// the auto-advance setState fires the animation timer.
+  late final List<List<MapEntry<String, String>>> _shuffledOptions;
+
   final List<_AssessmentQuestion> _questions = const [
     _AssessmentQuestion(
       question: 'Have you kept fish before?',
@@ -56,6 +62,18 @@ class _ExperienceAssessmentScreenState
       },
     ),
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    // Shuffle each question's options once — never again during this session.
+    // Without this, options reshuffle on every setState (e.g. auto-advance
+    // timer) which lets the user accidentally tap the wrong answer.
+    _shuffledOptions = _questions.map((q) {
+      final entries = q.options.entries.toList()..shuffle();
+      return entries;
+    }).toList();
+  }
 
   ExperienceLevel _calculateLevel() {
     if (_answers.isEmpty) return ExperienceLevel.beginner;
@@ -213,7 +231,8 @@ class _ExperienceAssessmentScreenState
                     Expanded(
                       child: Builder(
                         builder: (context) {
-                          final optionsList = question.options.entries.toList()..shuffle();
+                          // Use pre-shuffled order (computed once in initState).
+                          final optionsList = _shuffledOptions[_currentQuestion];
                           return ListView.builder(
                             itemCount: optionsList.length,
                             itemBuilder: (context, index) {

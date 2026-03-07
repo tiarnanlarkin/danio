@@ -28,7 +28,10 @@ class JournalScreen extends ConsumerWidget {
           ),
         ],
       ),
-      body: logsAsync.when(
+      body: AnimatedSwitcher(
+        duration: const Duration(milliseconds: 300),
+        switchInCurve: Curves.easeOutCubic,
+        child: logsAsync.when(
         loading: () => const Center(child: BubbleLoader()),
         error: (e, _) => AppErrorState(
           title: 'Couldn\'t load your journal',
@@ -73,6 +76,7 @@ class JournalScreen extends ConsumerWidget {
             },
           );
         },
+      ),
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => _addJournalEntry(context, ref),

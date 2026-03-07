@@ -481,24 +481,30 @@ class _ShopItemCard extends ConsumerWidget {
       button: true,
       label: semanticLabel,
       enabled: true,
-      child: GestureDetector(
-        onTap: onTap,
-        child: ClipRRect(
+      child: Material(
+        color: Colors.transparent,
+        borderRadius: AppRadius.largeRadius,
+        child: InkWell(
+          onTap: onTap,
           borderRadius: AppRadius.largeRadius,
-          child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-            child: Container(
-              decoration: BoxDecoration(
-                color: GemShopColors.glassCard,
-                borderRadius: AppRadius.largeRadius,
-                border: Border.all(
-                  color: owned
-                      ? categoryColor.withAlpha(128)
-                      : GemShopColors.glassBorder,
-                  width: owned ? 2 : 1,
+          splashColor: categoryColor.withAlpha(30),
+          highlightColor: categoryColor.withAlpha(15),
+          child: ClipRRect(
+            borderRadius: AppRadius.largeRadius,
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: GemShopColors.glassCard,
+                  borderRadius: AppRadius.largeRadius,
+                  border: Border.all(
+                    color: owned
+                        ? categoryColor.withAlpha(128)
+                        : GemShopColors.glassBorder,
+                    width: owned ? 2 : 1,
+                  ),
                 ),
-              ),
-              child: Stack(
+                child: Stack(
                 children: [
                   // Content
                   Padding(
@@ -624,6 +630,7 @@ class _ShopItemCard extends ConsumerWidget {
           ),
         ),
       ),
+    ),
     );
   }
 }

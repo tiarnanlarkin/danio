@@ -423,20 +423,26 @@ class _ShopSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: ClipRRect(
+    return Material(
+      color: Colors.transparent,
+      borderRadius: AppRadius.largeRadius,
+      child: InkWell(
+        onTap: onTap,
         borderRadius: AppRadius.largeRadius,
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-          child: Container(
-            padding: EdgeInsets.all(AppSpacing.lg2),
-            decoration: BoxDecoration(
-              color: ShopColors.glassCard,
-              borderRadius: AppRadius.largeRadius,
-              border: Border.all(color: ShopColors.glassBorder),
-            ),
-            child: Row(
+        splashColor: color.withAlpha(30),
+        highlightColor: color.withAlpha(15),
+        child: ClipRRect(
+          borderRadius: AppRadius.largeRadius,
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+            child: Container(
+              padding: EdgeInsets.all(AppSpacing.lg2),
+              decoration: BoxDecoration(
+                color: ShopColors.glassCard,
+                borderRadius: AppRadius.largeRadius,
+                border: Border.all(color: ShopColors.glassBorder),
+              ),
+              child: Row(
               children: [
                 Container(
                   padding: EdgeInsets.all(AppSpacing.sm2),
@@ -499,6 +505,7 @@ class _ShopSection extends StatelessWidget {
           ),
         ),
       ),
+    ),
     );
   }
 }
@@ -511,15 +518,21 @@ class _BudgetCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onEdit,
-      child: ClipRRect(
+    return Material(
+      color: Colors.transparent,
+      borderRadius: AppRadius.largeRadius,
+      child: InkWell(
+        onTap: onEdit,
         borderRadius: AppRadius.largeRadius,
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-          child: Container(
-            padding: EdgeInsets.all(AppSpacing.lg2),
-            decoration: BoxDecoration(
+        splashColor: ShopColors.accent.withAlpha(30),
+        highlightColor: ShopColors.accent.withAlpha(15),
+        child: ClipRRect(
+          borderRadius: AppRadius.largeRadius,
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+            child: Container(
+              padding: EdgeInsets.all(AppSpacing.lg2),
+              decoration: BoxDecoration(
               color: ShopColors.glassCard,
               borderRadius: AppRadius.largeRadius,
               border: Border.all(color: ShopColors.glassBorder),
@@ -608,6 +621,7 @@ class _BudgetCard extends StatelessWidget {
           ),
         ),
       ),
+    ),
     );
   }
 }

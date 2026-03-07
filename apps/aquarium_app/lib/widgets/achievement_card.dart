@@ -7,6 +7,41 @@ import 'package:flutter/material.dart';
 import '../models/achievements.dart';
 import 'effects/sparkle_effect.dart';
 
+/// Animated progress bar that tweens from 0 → [value] on first build.
+/// Used in achievement cards so progress fills in smoothly on screen entry.
+class _AnimatedProgressBar extends StatelessWidget {
+  final double value;
+  final Color color;
+  final Color backgroundColor;
+
+  const _AnimatedProgressBar({
+    required this.value,
+    required this.color,
+    required this.backgroundColor,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return TweenAnimationBuilder<double>(
+      tween: Tween<double>(begin: 0.0, end: value),
+      duration: const Duration(milliseconds: 800),
+      curve: Curves.easeOutCubic,
+      builder: (context, animatedValue, _) {
+        return ClipRRect(
+          borderRadius: AppRadius.xsRadius,
+          child: LinearProgressIndicator(
+            value: animatedValue,
+            minHeight: 6,
+            backgroundColor: backgroundColor,
+            valueColor: AlwaysStoppedAnimation<Color>(color),
+          ),
+        );
+      },
+    );
+  }
+}
+
+
 /// Displays an achievement card in grid layout showing locked/unlocked state.
 ///
 /// Shows achievement icon, title, description, and progress bar. Locked
@@ -42,26 +77,33 @@ class AchievementCard extends StatelessWidget {
           : '${achievement.name}, ${isLocked ? 'locked' : 'unlocked'}, ${achievement.description}',
       button: true,
       enabled: true,
-      child: GestureDetector(
-        onTap: onTap,
-        child: Container(
-        decoration: BoxDecoration(
+      child: Material(
+        color: isLocked
+            ? Theme.of(context).colorScheme.surfaceContainerHighest
+            : rarityColor.withAlpha(26),
+        borderRadius: AppRadius.mediumRadius,
+        child: InkWell(
+          onTap: onTap,
           borderRadius: AppRadius.mediumRadius,
-          border: Border.all(
-            color: isLocked ? Theme.of(context).colorScheme.outlineVariant : rarityColor,
-            width: isLocked ? 1 : 3,
+          splashColor: rarityColor.withAlpha(40),
+          highlightColor: rarityColor.withAlpha(20),
+          child: Container(
+          decoration: BoxDecoration(
+            borderRadius: AppRadius.mediumRadius,
+            border: Border.all(
+              color: isLocked ? Theme.of(context).colorScheme.outlineVariant : rarityColor,
+              width: isLocked ? 1 : 3,
+            ),
+            boxShadow: isLocked
+                ? []
+                : [
+                    BoxShadow(
+                      color: rarityColor.withAlpha(76),
+                      blurRadius: 8,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
           ),
-          color: isLocked ? Theme.of(context).colorScheme.surfaceContainerHighest : rarityColor.withAlpha(26),
-          boxShadow: isLocked
-              ? []
-              : [
-                  BoxShadow(
-                    color: rarityColor.withAlpha(76),
-                    blurRadius: 8,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
-        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -173,14 +215,10 @@ class AchievementCard extends StatelessWidget {
                   // Progress bar for in-progress achievements
                   if (hasProgress) ...[
                     const SizedBox(height: AppSpacing.sm),
-                    ClipRRect(
-                      borderRadius: AppRadius.xsRadius,
-                      child: LinearProgressIndicator(
-                        value: progressPercent,
-                        minHeight: 6,
-                        backgroundColor: Theme.of(context).colorScheme.outlineVariant,
-                        valueColor: AlwaysStoppedAnimation<Color>(rarityColor),
-                      ),
+                    _AnimatedProgressBar(
+                      value: progressPercent,
+                      color: rarityColor,
+                      backgroundColor: Theme.of(context).colorScheme.outlineVariant,
                     ),
                     const SizedBox(height: AppSpacing.xs),
                     Text(
@@ -196,7 +234,8 @@ class AchievementCard extends StatelessWidget {
           ],
         ),
       ),
-    ),
+        ),
+      ),
     );
 
     // Return card with optional sparkle effect

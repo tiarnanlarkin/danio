@@ -140,7 +140,8 @@ class _EnhancedTutorialWalkthroughScreenState
   }
 
   Future<void> _createFirstTank() async {
-    if (!_formKey.currentState!.validate() && !_useDemoData) return;
+    // Check demo mode FIRST so we never trigger form validation UI for demo.
+    if (!_useDemoData && !_formKey.currentState!.validate()) return;
 
     // Trigger confetti celebration
     _confettiController.play();
