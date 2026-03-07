@@ -275,6 +275,12 @@ class _PhotoViewerScreenState extends State<_PhotoViewerScreen> {
   }
 
   @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final photo = widget.photos[_currentIndex];
 
