@@ -181,9 +181,9 @@ class TestTubeRack extends StatelessWidget {
   }
 
   Color _phColor(double? val) {
-    if (val == null) return Colors.grey.shade300;
-    if (val < 6.5) return Colors.orange;
-    if (val < 7.5) return Colors.green;
+    if (val == null) return AppColors.border;
+    if (val < 6.5) return AppColors.warning;
+    if (val < 7.5) return AppColors.success;
     return AppColors.primary;
   }
 
