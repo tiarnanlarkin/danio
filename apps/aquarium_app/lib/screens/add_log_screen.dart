@@ -42,6 +42,7 @@ class AddLogScreen extends ConsumerStatefulWidget {
 
 class _AddLogScreenState extends ConsumerState<AddLogScreen> {
   final _picker = ImagePicker();
+  final _formKey = GlobalKey<FormState>();
 
   late LogType _type;
   bool _isSaving = false;
@@ -178,7 +179,9 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
       ),
       body: FocusTraversalGroup(
         policy: OrderedTraversalPolicy(),
-        child: SingleChildScrollView(
+        child: Form(
+          key: _formKey,
+          child: SingleChildScrollView(
           padding: EdgeInsets.all(AppSpacing.md),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -289,6 +292,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
         ),
         ),
       ),
+          ),
     ),
     );
   }
@@ -444,6 +448,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
                         value: _temperature,
                         onChanged: (v) => setState(() => _temperature = v),
                         idealRange: '24–27°C',
+                        maxValue: 40,
                       ),
                     ),
                     const SizedBox(width: AppSpacing.sm),
@@ -454,6 +459,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
                         onChanged: (v) => setState(() => _ph = v),
                         decimal: true,
                         idealRange: '6.5–7.5',
+                        maxValue: 14,
                       ),
                     ),
                     const SizedBox(width: AppSpacing.sm),
@@ -467,6 +473,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
                         warningThreshold: 0.25,
                         dangerThreshold: 0.5,
                         idealRange: '0 ppm',
+                        maxValue: 10,
                       ),
                     ),
                   ],
@@ -484,6 +491,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
                         warningThreshold: 0.25,
                         dangerThreshold: 0.5,
                         idealRange: '0 ppm',
+                        maxValue: 10,
                       ),
                     ),
                     const SizedBox(width: AppSpacing.sm),
@@ -496,6 +504,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
                         warningThreshold: 20,
                         dangerThreshold: 40,
                         idealRange: '<20 ppm',
+                        maxValue: 200,
                       ),
                     ),
                     const SizedBox(width: AppSpacing.sm),
@@ -551,6 +560,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
                   value: _temperature,
                   onChanged: (v) => setState(() => _temperature = v),
                   idealRange: 'Ideal: 24–27°C',
+                  maxValue: 40,
                 ),
               ),
               const SizedBox(width: AppSpacing.sm2),
@@ -561,6 +571,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
                   onChanged: (v) => setState(() => _ph = v),
                   decimal: true,
                   idealRange: 'Ideal: 6.5–7.5',
+                  maxValue: 14,
                 ),
               ),
             ],
@@ -584,6 +595,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
                   warningThreshold: 0.25,
                   dangerThreshold: 0.5,
                   idealRange: 'Ideal: 0 ppm',
+                  maxValue: 10,
                 ),
               ),
               const SizedBox(width: AppSpacing.sm2),
@@ -596,6 +608,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
                   warningThreshold: 0.25,
                   dangerThreshold: 0.5,
                   idealRange: 'Ideal: 0 ppm',
+                  maxValue: 10,
                 ),
               ),
             ],
@@ -612,6 +625,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
                   warningThreshold: 20,
                   dangerThreshold: 40,
                   idealRange: 'Ideal: <20 ppm',
+                  maxValue: 200,
                 ),
               ),
               const Expanded(child: SizedBox()), // Placeholder for alignment
@@ -848,6 +862,9 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
   }
 
   Future<void> _save() async {
+    // Validate all form fields (range checks on water params)
+    if (!(_formKey.currentState?.validate() ?? true)) return;
+
     // Validate based on type
     if (_type == LogType.waterChange && _waterChangePercent == null) {
       AppFeedback.showWarning(context, 'Please enter water change percentage');
@@ -1088,6 +1105,7 @@ class _ParameterField extends StatelessWidget {
   final double? warningThreshold;
   final double? dangerThreshold;
   final String? idealRange;
+  final double? maxValue;
 
   const _ParameterField({
     required this.label,
@@ -1098,6 +1116,7 @@ class _ParameterField extends StatelessWidget {
     this.warningThreshold,
     this.dangerThreshold,
     this.idealRange,
+    this.maxValue,
   });
 
   @override
@@ -1133,7 +1152,8 @@ class _ParameterField extends StatelessWidget {
             if (v != null && v.isNotEmpty) {
               final n = double.tryParse(v);
               if (n == null) return 'Enter a valid number';
-              if (n < 0) return 'Must be positive';
+              if (n < 0) return 'Must be ≥ 0';
+              if (maxValue != null && n > maxValue!) return 'Max: $maxValue ${unit ?? ''}';
             }
             return null;
           },
@@ -1217,6 +1237,7 @@ class _CompactParamField extends StatelessWidget {
   final double? warningThreshold;
   final double? dangerThreshold;
   final String? idealRange;
+  final double? maxValue;
 
   const _CompactParamField({
     required this.label,
@@ -1227,6 +1248,7 @@ class _CompactParamField extends StatelessWidget {
     this.warningThreshold,
     this.dangerThreshold,
     this.idealRange,
+    this.maxValue,
   });
 
   @override
@@ -1281,8 +1303,9 @@ class _CompactParamField extends StatelessWidget {
           validator: (v) {
             if (v != null && v.isNotEmpty) {
               final n = double.tryParse(v);
-              if (n == null) return 'Enter a valid number';
-              if (n < 0) return 'Must be positive';
+              if (n == null) return 'Invalid';
+              if (n < 0) return '≥ 0';
+              if (maxValue != null && n > maxValue!) return '≤ $maxValue';
             }
             return null;
           },

@@ -1054,6 +1054,51 @@ class GlassStyles {
   }
 }
 
+
+/// Custom page transition that slides+fades from right.
+/// Applied globally via [pageTransitionsTheme] so all [MaterialPageRoute]
+/// calls automatically get a consistent, polished transition.
+class _DanioPageTransitionsBuilder extends PageTransitionsBuilder {
+  const _DanioPageTransitionsBuilder();
+
+  @override
+  Widget buildTransitions<T>(
+    PageRoute<T> route,
+    BuildContext context,
+    Animation<double> animation,
+    Animation<double> secondaryAnimation,
+    Widget child,
+  ) {
+    final curvedAnimation = CurvedAnimation(
+      parent: animation,
+      curve: Curves.easeOutCubic,
+      reverseCurve: Curves.easeInCubic,
+    );
+    return FadeTransition(
+      opacity: curvedAnimation,
+      child: SlideTransition(
+        position: Tween<Offset>(
+          begin: const Offset(0.04, 0),
+          end: Offset.zero,
+        ).animate(curvedAnimation),
+        child: child,
+      ),
+    );
+  }
+}
+
+/// Shared [PageTransitionsTheme] used by both light and dark themes.
+const _kDanioPageTransitionsTheme = PageTransitionsTheme(
+  builders: {
+    TargetPlatform.android: _DanioPageTransitionsBuilder(),
+    TargetPlatform.iOS: _DanioPageTransitionsBuilder(),
+    TargetPlatform.fuchsia: _DanioPageTransitionsBuilder(),
+    TargetPlatform.linux: _DanioPageTransitionsBuilder(),
+    TargetPlatform.macOS: _DanioPageTransitionsBuilder(),
+    TargetPlatform.windows: _DanioPageTransitionsBuilder(),
+  },
+);
+
 class AppTheme {
   static ThemeData get light {
     return ThemeData(
@@ -1270,6 +1315,9 @@ class AppTheme {
         selectionHandleColor: AppColors.primary,
       ),
 
+      // Page transitions (consistent slide+fade for all routes)
+      pageTransitionsTheme: _kDanioPageTransitionsTheme,
+
       // Text theme
       textTheme: GoogleFonts.nunitoTextTheme(),
     );
@@ -1413,6 +1461,9 @@ class AppTheme {
         shape: RoundedRectangleBorder(borderRadius: AppRadius.mediumRadius),
         behavior: SnackBarBehavior.floating,
       ),
+
+      // Page transitions (consistent slide+fade for all routes)
+      pageTransitionsTheme: _kDanioPageTransitionsTheme,
 
       // Text theme
       // Text selection
