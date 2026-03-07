@@ -40,8 +40,8 @@ class AchievementNotification {
       ),
     );
 
-    // Show overlay
-    Overlay.of(context).insert(_currentOverlay!);
+    // Show overlay — use rootOverlay so this works during navigation transitions
+    Overlay.of(context, rootOverlay: true).insert(_currentOverlay!);
 
     // Start confetti
     _confettiController!.play();

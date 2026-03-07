@@ -82,26 +82,35 @@ class _XpAnimationListenerState extends ConsumerState<XpAnimationListener> {
     _currentOverlay?.remove();
     _currentOverlay = null;
 
-    final overlay = Overlay.of(context, rootOverlay: true);
-    
-    _currentOverlay = OverlayEntry(
-      builder: (context) => Positioned(
-        top: MediaQuery.of(context).size.height * 0.35,
-        left: 0,
-        right: 0,
-        child: Center(
-          child: XpAwardAnimation(
-            xpAmount: event.amount,
-            onComplete: () {
-              _currentOverlay?.remove();
-              _currentOverlay = null;
-            },
+    // Defer to post-frame so the Overlay is guaranteed to exist.
+    // XpAnimationListener lives in MaterialApp's builder (above Navigator),
+    // so Overlay.of(context) may fail during navigation transitions if called
+    // synchronously. Post-frame ensures the frame has settled.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+
+      final overlayState = Overlay.maybeOf(context, rootOverlay: true);
+      if (overlayState == null) return; // Overlay not yet available — skip silently
+
+      _currentOverlay = OverlayEntry(
+        builder: (context) => Positioned(
+          top: MediaQuery.of(context).size.height * 0.35,
+          left: 0,
+          right: 0,
+          child: Center(
+            child: XpAwardAnimation(
+              xpAmount: event.amount,
+              onComplete: () {
+                _currentOverlay?.remove();
+                _currentOverlay = null;
+              },
+            ),
           ),
         ),
-      ),
-    );
+      );
 
-    overlay.insert(_currentOverlay!);
+      overlayState.insert(_currentOverlay!);
+    });
   }
 
   @override

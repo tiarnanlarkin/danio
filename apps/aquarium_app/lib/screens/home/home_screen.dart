@@ -224,6 +224,29 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             onLoadDemo: () async {
               final actions = ref.read(tankActionsProvider);
               final demoTank = await actions.seedDemoTankIfEmpty();
+              if (!mounted) return;
+
+              // P1-002 FIX: After seeding the demo tank, explicitly wait for
+              // tanksProvider to resolve with the new data before navigating.
+              // Without this, the navigation can race with the provider reload,
+              // leaving the HomeScreen stuck in loading/empty state when the
+              // user returns from TankDetailScreen.
+              //
+              // Also re-invalidate tanksProvider here to handle edge cases
+              // where the provider's cached value is stale (e.g. the provider
+              // resolved with empty data before seedDemoTankIfEmpty completed).
+              ref.invalidate(tanksProvider);
+
+              // Wait for the provider to resolve with data
+              try {
+                await ref.read(tanksProvider.future).timeout(
+                  const Duration(seconds: 3),
+                  onTimeout: () => [demoTank], // fallback
+                );
+              } catch (_) {
+                // Don't block navigation on provider errors
+              }
+
               if (mounted) {
                 _navigateToTankDetail(context, demoTank);
               }

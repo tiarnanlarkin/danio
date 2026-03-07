@@ -148,14 +148,10 @@ class TankActions {
         await _storage.saveTask(task);
       }
 
-      // NOTE: Intentionally NOT invalidating tanksProvider here during first-tank
-      // creation to avoid the '_ElementLifecycle.active' assertion that fires
-      // when deactivating the wizard route while provider listeners rebuild.
-      // The TabNavigator will read tanksProvider fresh when it builds.
-      // For subsequent tank creation (from HomeScreen), invalidation is safe
-      // because HomeScreen itself is still active in the tree.
-      // TODO: Re-enable once the root lifecycle issue is resolved.
-      // _ref.invalidate(tanksProvider);
+      // Re-enabled after the P0-001 mounted-guard fix in HomeScreen's
+      // _buildLivingRoomScreen.  Previously disabled to avoid the
+      // _ElementLifecycle.active assertion, which is now guarded against.
+      _ref.invalidate(tanksProvider);
 
       return tank;
     } catch (e) {
