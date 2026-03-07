@@ -354,7 +354,8 @@ class _GemShopScreenState extends ConsumerState<GemShopScreen>
                       child: Text(
                         'Not enough gems! Complete lessons to earn more.',
                         style: TextStyle(
-                          color: GemShopColors.powerUpColor80,
+                          // Use fully opaque powerUpColor for WCAG AA contrast on dark background
+                          color: GemShopColors.powerUpColor,
                           fontStyle: FontStyle.italic,
                         ),
                       ),

@@ -374,7 +374,7 @@ class QuickStartTipsCard extends StatelessWidget {
               _buildTipItem(
                 icon: Icons.school,
                 text: 'Start a learning path to unlock features',
-                color: Colors.orange,
+                color: AppColors.warning,
               ),
               const SizedBox(height: AppSpacing.md),
               Row(

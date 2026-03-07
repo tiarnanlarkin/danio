@@ -206,7 +206,7 @@ class _CompactActivityTile extends ConsumerWidget {
                         Text(
                           '+${activity.xpEarned}',
                           style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                            color: Colors.amber.shade700,
+                            color: AppColors.xp,
                             fontWeight: FontWeight.bold,
                           ),
                         ),

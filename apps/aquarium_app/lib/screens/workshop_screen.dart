@@ -287,36 +287,6 @@ class _WorkshopHeader extends ConsumerWidget {
     );
   }
 
-  void _showDiyProjectsInfo(BuildContext context) {
-    HapticFeedback.lightImpact();
-    showDialog(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: Row(
-          children: [
-            Text('🔨 ', style: Theme.of(context).textTheme.headlineSmall!),
-            Expanded(child: Text('DIY Projects')),
-          ],
-        ),
-        content: const Text(
-          'DIY Projects section coming soon!\n\n'
-          'Build your own:\n'
-          '• Sump filtration systems\n'
-          '• DIY CO₂ reactors\n'
-          '• Custom light stands\n'
-          '• Aquarium stands\n'
-          '• Auto top-off systems\n\n'
-          'Stay tuned for step-by-step guides!',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(),
-            child: const Text('Got it!'),
-          ),
-        ],
-      ),
-    );
-  }
 }
 
 class _ToolCard extends StatelessWidget {

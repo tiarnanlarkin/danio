@@ -302,7 +302,7 @@ class _EnhancedPlacementTestScreenState
               LinearProgressIndicator(
                 value: value,
                 minHeight: 8,
-                backgroundColor: Theme.of(context).brightness == Brightness.dark ? AppColors.surfaceVariantDark : Colors.grey[200],
+                backgroundColor: Theme.of(context).brightness == Brightness.dark ? AppColors.surfaceVariantDark : AppColors.surfaceVariant,
                 valueColor: const AlwaysStoppedAnimation<Color>(
                   AppColors.accent,
                 ),
@@ -439,15 +439,15 @@ class _EnhancedPlacementTestScreenState
 
     if (showResult) {
       if (isCorrect) {
-        backgroundColor = Colors.green[50];
-        borderColor = Colors.green;
+        backgroundColor = AppColors.successAlpha10;
+        borderColor = AppColors.success;
         icon = Icons.check_circle;
-        iconColor = Colors.green;
+        iconColor = AppColors.success;
       } else if (isSelected && !isCorrect) {
-        backgroundColor = Colors.red[50];
-        borderColor = Colors.red;
+        backgroundColor = AppColors.errorAlpha05;
+        borderColor = AppColors.error;
         icon = Icons.cancel;
-        iconColor = Colors.red;
+        iconColor = AppColors.error;
       }
     } else if (isSelected) {
       backgroundColor = AppOverlays.accent10;
@@ -468,7 +468,7 @@ class _EnhancedPlacementTestScreenState
               color: backgroundColor,
               borderRadius: AppRadius.mediumRadius,
               border: Border.all(
-                color: borderColor ?? (Theme.of(context).brightness == Brightness.dark ? AppColors.borderDark : Colors.grey[300]!),
+                color: borderColor ?? (Theme.of(context).brightness == Brightness.dark ? AppColors.borderDark : AppColors.border),
                 width: isSelected || showResult ? 2 : 1,
               ),
               boxShadow: isSelected && !showResult
@@ -491,8 +491,8 @@ class _EnhancedPlacementTestScreenState
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     color: showResult && isCorrect
-                        ? Colors.green
-                        : (isSelected ? AppColors.accent : Theme.of(context).brightness == Brightness.dark ? AppColors.surfaceVariantDark : Colors.grey[200]!),
+                        ? AppColors.success
+                        : (isSelected ? AppColors.accent : Theme.of(context).brightness == Brightness.dark ? AppColors.surfaceVariantDark : AppColors.surfaceVariant),
                   ),
                   child: Center(
                     child: Text(
@@ -545,11 +545,11 @@ class _EnhancedPlacementTestScreenState
       ),
       child: Card(
         elevation: AppElevation.level2,
-        color: isCorrect ? Colors.green[50] : const Color(0xFFFFF8E1),
+        color: isCorrect ? AppColors.successAlpha10 : AppColors.warningAlpha05,
         shape: RoundedRectangleBorder(
           borderRadius: AppRadius.mediumRadius,
           side: BorderSide(
-            color: isCorrect ? Colors.green : AppColors.primary,
+            color: isCorrect ? AppColors.success : AppColors.primary,
             width: 2,
           ),
         ),
@@ -562,7 +562,7 @@ class _EnhancedPlacementTestScreenState
                 children: [
                   Icon(
                     isCorrect ? Icons.celebration : Icons.school,
-                    color: isCorrect ? Colors.green : AppColors.primary,
+                    color: isCorrect ? AppColors.success : AppColors.primary,
                     size: AppIconSizes.md,
                   ),
                   SizedBox(width: AppSpacing.sm),
@@ -570,7 +570,7 @@ class _EnhancedPlacementTestScreenState
                     isCorrect ? 'Excellent! 🎉' : 'Good to know! 💡',
                     style: Theme.of(context).textTheme.titleMedium!.copyWith(
                       fontWeight: FontWeight.bold,
-                      color: isCorrect ? Colors.green : AppColors.primary,
+                      color: isCorrect ? AppColors.success : AppColors.primary,
                     ),
                   ),
                 ],
@@ -579,7 +579,7 @@ class _EnhancedPlacementTestScreenState
               Container(
                 padding: EdgeInsets.all(AppSpacing.sm2),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: AppColors.card,
                   borderRadius: AppRadius.smallRadius,
                 ),
                 child: Text(
@@ -598,7 +598,7 @@ class _EnhancedPlacementTestScreenState
     return Container(
       padding: EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.surface,
         boxShadow: [
           BoxShadow(
             color: AppOverlays.black10,

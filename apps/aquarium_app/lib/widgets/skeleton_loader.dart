@@ -53,7 +53,7 @@ class _ShimmerLoadingState extends State<ShimmerLoading>
             return LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
-              colors: const [Colors.grey, Colors.white, Colors.grey],
+              colors: const [AppColors.border, AppColors.surface, AppColors.border],
               stops: [
                 _animation.value - 0.3,
                 _animation.value,
@@ -85,8 +85,8 @@ class SkeletonBox extends StatelessWidget {
       height: height,
       decoration: BoxDecoration(
         color: Theme.of(context).brightness == Brightness.dark
-            ? Colors.grey[800]
-            : Colors.grey[300],
+            ? AppColors.surfaceVariantDark
+            : AppColors.border,
         borderRadius: borderRadius ?? AppRadius.smallRadius,
       ),
     );
@@ -110,8 +110,8 @@ class SkeletonCard extends StatelessWidget {
         padding: EdgeInsets.all(AppSpacing.md),
         decoration: BoxDecoration(
           color: Theme.of(context).brightness == Brightness.dark
-              ? Colors.grey[800]
-              : Colors.grey[100],
+              ? AppColors.surfaceVariantDark
+              : AppColors.surface,
           borderRadius: AppRadius.mediumRadius,
         ),
         child: Column(
@@ -217,8 +217,8 @@ class SkeletonChart extends StatelessWidget {
         padding: EdgeInsets.all(AppSpacing.md),
         decoration: BoxDecoration(
           color: Theme.of(context).brightness == Brightness.dark
-              ? Colors.grey[800]
-              : Colors.grey[100],
+              ? AppColors.surfaceVariantDark
+              : AppColors.surface,
           borderRadius: AppRadius.mediumRadius,
         ),
         child: Column(
@@ -267,8 +267,8 @@ class SkeletonStoryCard extends StatelessWidget {
         height: 120,
         decoration: BoxDecoration(
           color: Theme.of(context).brightness == Brightness.dark
-              ? Colors.grey[800]
-              : Colors.grey[100],
+              ? AppColors.surfaceVariantDark
+              : AppColors.surface,
           borderRadius: AppRadius.mediumRadius,
         ),
         child: Row(
@@ -328,8 +328,8 @@ class SkeletonAchievementCard extends StatelessWidget {
         padding: EdgeInsets.all(AppSpacing.md),
         decoration: BoxDecoration(
           color: Theme.of(context).brightness == Brightness.dark
-              ? Colors.grey[800]
-              : Colors.grey[100],
+              ? AppColors.surfaceVariantDark
+              : AppColors.surface,
           borderRadius: AppRadius.largeRadius,
         ),
         child: Column(

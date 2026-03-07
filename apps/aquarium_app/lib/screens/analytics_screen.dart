@@ -338,7 +338,7 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
                 child: Text(
                   label,
                   style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                    color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+                    color: Theme.of(context).colorScheme.onSurface.withAlpha(153),
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -360,7 +360,7 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
             const SizedBox(height: AppSpacing.xs),
             Text(
               subtitle,
-              style: Theme.of(context).textTheme.labelSmall!.copyWith(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6)),
+              style: Theme.of(context).textTheme.labelSmall!.copyWith(color: Theme.of(context).colorScheme.onSurface.withAlpha(153)),
             ),
           ],
         ],
@@ -387,7 +387,10 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
             style: Theme.of(context).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: AppSpacing.lg),
-          SizedBox(
+          Semantics(
+            label: 'Line chart: XP earned over time. ${data.length} data points.',
+            excludeSemantics: true,
+            child: SizedBox(
             height: 200,
             child: LineChart(
               LineChartData(
@@ -462,6 +465,7 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
               ),
             ),
           ),
+          ), // Semantics
         ],
       ),
     );
@@ -489,7 +493,10 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
             style: Theme.of(context).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: AppSpacing.lg),
-          SizedBox(
+          Semantics(
+            label: 'Bar chart: XP earned over last 7 days.',
+            excludeSemantics: true,
+            child: SizedBox(
             height: 200,
             child: BarChart(
               BarChartData(
@@ -569,6 +576,7 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
               ),
             ),
           ),
+          ), // Semantics
         ],
       ),
     );
@@ -591,7 +599,10 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
             style: Theme.of(context).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.bold),
           ),
           SizedBox(height: AppSpacing.lg),
-          SizedBox(
+          Semantics(
+            label: 'Radar chart: topic mastery across ${topics.length} subjects.',
+            excludeSemantics: true,
+            child: SizedBox(
             height: 300,
             child: RadarChart(
               RadarChartData(
@@ -600,9 +611,9 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
                 ticksTextStyle: Theme.of(context).textTheme.labelSmall!.copyWith(
                   color: Colors.transparent,
                 ),
-                radarBorderData: BorderSide(color: AppColors.textSecondary.withOpacity(0.3), width: 1),
+                radarBorderData: BorderSide(color: AppColors.textSecondary.withAlpha(76), width: 1),
                 gridBorderData: BorderSide(
-                  color: AppColors.textSecondary.withOpacity(0.3),
+                  color: AppColors.textSecondary.withAlpha(76),
                   width: 0.5,
                 ),
                 tickBorderData: const BorderSide(color: Colors.transparent),
@@ -629,6 +640,7 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
               ),
             ),
           ),
+          ), // Semantics
         ],
       ),
     );
@@ -803,7 +815,7 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
               const SizedBox(height: AppSpacing.sm),
               Text(
                 insight.detailedMessage!,
-                style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7)),
+                style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Theme.of(context).colorScheme.onSurface.withAlpha(178)),
               ),
             ],
             if (insight.recommendation != null) ...[
@@ -886,7 +898,7 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
                     children: [
                       Text(
                         'Progress',
-                        style: Theme.of(context).textTheme.bodySmall!.copyWith(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6)),
+                        style: Theme.of(context).textTheme.bodySmall!.copyWith(color: Theme.of(context).colorScheme.onSurface.withAlpha(153)),
                       ),
                       const SizedBox(height: AppSpacing.xs),
                       LinearProgressIndicator(
@@ -921,7 +933,7 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
                       ),
                       Text(
                         '${topic.timeSpentMinutes} min',
-                        style: Theme.of(context).textTheme.labelSmall!.copyWith(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6)),
+                        style: Theme.of(context).textTheme.labelSmall!.copyWith(color: Theme.of(context).colorScheme.onSurface.withAlpha(153)),
                         overflow: TextOverflow.ellipsis,
                       ),
                     ],
@@ -1001,7 +1013,7 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
                   const SizedBox(width: AppSpacing.sm),
                   Text(
                     'ETA: ${DateFormat('MMM d').format(prediction.estimatedDate!)}',
-                    style: Theme.of(context).textTheme.bodySmall!.copyWith(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7)),
+                    style: Theme.of(context).textTheme.bodySmall!.copyWith(color: Theme.of(context).colorScheme.onSurface.withAlpha(178)),
                   ),
                 ],
               ],
@@ -1010,7 +1022,7 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
               const SizedBox(height: AppSpacing.sm2),
               Text(
                 prediction.recommendation!,
-                style: Theme.of(context).textTheme.bodySmall!.copyWith(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7)),
+                style: Theme.of(context).textTheme.bodySmall!.copyWith(color: Theme.of(context).colorScheme.onSurface.withAlpha(178)),
               ),
             ],
           ],

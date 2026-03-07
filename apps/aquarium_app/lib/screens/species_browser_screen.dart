@@ -49,16 +49,20 @@ class _SpeciesBrowserScreenState extends ConsumerState<SpeciesBrowserScreen> {
         children: [
           Padding(
             padding: EdgeInsets.all(AppSpacing.md),
-            child: TextField(
-              decoration: InputDecoration(
-                hintText: 'Search fish by name...',
-                prefixIcon: const Icon(Icons.search),
-                border: OutlineInputBorder(
-                  borderRadius: AppRadius.mediumRadius,
+            child: Semantics(
+              label: 'Search fish database',
+              child: TextField(
+                decoration: InputDecoration(
+                  labelText: 'Search fish',
+                  hintText: 'Search fish by name...',
+                  prefixIcon: const Icon(Icons.search, semanticLabel: ''),
+                  border: OutlineInputBorder(
+                    borderRadius: AppRadius.mediumRadius,
+                  ),
+                  filled: true,
                 ),
-                filled: true,
+                onChanged: (v) => setState(() => _searchQuery = v),
               ),
-              onChanged: (v) => setState(() => _searchQuery = v),
             ),
           ),
 

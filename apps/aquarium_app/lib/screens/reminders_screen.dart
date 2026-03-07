@@ -458,7 +458,7 @@ class _ReminderTile extends StatelessWidget {
         alignment: Alignment.centerRight,
         padding: const EdgeInsets.only(right: AppSpacing.md),
         color: AppColors.error,
-        child: const Icon(Icons.delete, color: Colors.white),
+        child: const Icon(Icons.delete, color: AppColors.onPrimary),
       ),
       child: Card(
         margin: const EdgeInsets.only(bottom: AppSpacing.sm),
@@ -508,7 +508,7 @@ class _ReminderTile extends StatelessWidget {
             ],
           ),
           trailing: IconButton(
-            tooltip: 'Delete reminder',
+            tooltip: isOverdue ? 'Mark overdue reminder as done' : 'Mark reminder as done',
             icon: Icon(
               Icons.check_circle_outline,
               color: isOverdue ? AppColors.error : AppColors.success,

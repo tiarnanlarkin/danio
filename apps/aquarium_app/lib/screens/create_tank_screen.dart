@@ -280,11 +280,11 @@ class _CreateTankScreenState extends ConsumerState<CreateTankScreen> {
                 Expanded(child: Text('$tankName created! +${XpRewards.createTank} XP')),
               ],
             ),
-            backgroundColor: const Color(0xFF4CAF50),
+            backgroundColor: AppColors.success,
             behavior: SnackBarBehavior.floating,
             duration: const Duration(seconds: 2),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-            margin: const EdgeInsets.all(16),
+            shape: RoundedRectangleBorder(borderRadius: AppRadius.md2Radius),
+            margin: const EdgeInsets.all(AppSpacing.md),
           ),
         );
 

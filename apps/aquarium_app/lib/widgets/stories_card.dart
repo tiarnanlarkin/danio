@@ -134,7 +134,7 @@ class StoriesCard extends ConsumerWidget {
                       value: completedStories / totalStories,
                       backgroundColor: AppOverlays.white30,
                       valueColor: const AlwaysStoppedAnimation<Color>(
-                        Colors.amber,
+                        AppColors.xp,
                       ),
                       minHeight: 6,
                     ),
@@ -197,7 +197,7 @@ class StoriesCard extends ConsumerWidget {
                             const Icon(
                               Icons.star,
                               size: 12,
-                              color: Colors.amber,
+                              color: AppColors.xp,
                             ),
                             const SizedBox(width: AppSpacing.xs),
                             Text(

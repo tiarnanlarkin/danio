@@ -200,14 +200,14 @@ class _StoryPlayerScreenState extends ConsumerState<StoryPlayerScreen>
               decoration: BoxDecoration(
                 color: AppOverlays.amber20,
                 borderRadius: AppRadius.mediumRadius,
-                border: Border.all(color: Colors.amber, width: 2),
+                border: Border.all(color: AppColors.xp, width: 2),
               ),
               child: Column(
                 children: [
                   Text(
                     '+$xpEarned XP',
                     style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                      color: Colors.amber.shade700,
+                      color: AppColors.xp,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -326,7 +326,7 @@ class _StoryPlayerScreenState extends ConsumerState<StoryPlayerScreen>
                         value: progressValue,
                         backgroundColor: AppOverlays.white30,
                         valueColor: const AlwaysStoppedAnimation<Color>(
-                          Colors.amber,
+                          AppColors.xp,
                         ),
                         minHeight: 6,
                       ),
@@ -413,8 +413,8 @@ class _StoryPlayerScreenState extends ConsumerState<StoryPlayerScreen>
           icon: const Icon(Icons.check_circle),
           label: Text('Complete Story'),
           style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.green,
-            foregroundColor: Colors.white,
+            backgroundColor: AppColors.success,
+            foregroundColor: AppColors.onPrimary,
             padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
             textStyle: Theme.of(context).textTheme.titleLarge!.copyWith(
               fontWeight: FontWeight.bold,

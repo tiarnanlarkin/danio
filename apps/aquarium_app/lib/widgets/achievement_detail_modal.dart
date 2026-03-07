@@ -29,8 +29,8 @@ class AchievementDetailModal extends StatelessWidget {
 
     return Container(
       decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+        color: AppColors.surface,
+        borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.lg)),
       ),
       padding: EdgeInsets.all(AppSpacing.lg),
       child: SingleChildScrollView(
@@ -73,7 +73,7 @@ class AchievementDetailModal extends StatelessWidget {
                     Text(
                       achievement.icon,
                       style: Theme.of(context).textTheme.headlineMedium!.copyWith(
-                        color: isLocked ? Colors.black26 : null,
+                        color: isLocked ? AppColors.blackAlpha25 : null,
                       ),
                     ),
                     if (isLocked && achievement.isHidden)
@@ -81,7 +81,7 @@ class AchievementDetailModal extends StatelessWidget {
                         child: Container(
                           decoration: const BoxDecoration(
                             shape: BoxShape.circle,
-                            color: Colors.black54,
+                            color: AppColors.textSecondary,
                           ),
                           child: const Center(
                             child: Icon(
@@ -109,7 +109,7 @@ class AchievementDetailModal extends StatelessWidget {
               child: Text(
                 achievement.rarity.displayName.toUpperCase(),
                 style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                  color: Colors.white,
+                  color: AppColors.onPrimary,
                   fontWeight: FontWeight.bold,
                   letterSpacing: 1.2,
                 ),
@@ -123,7 +123,7 @@ class AchievementDetailModal extends StatelessWidget {
               achievement.isHidden && isLocked ? '???' : achievement.name,
               style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                 fontWeight: FontWeight.bold,
-                color: isLocked ? Colors.grey : null,
+                color: isLocked ? AppColors.textHint : null,
               ),
               textAlign: TextAlign.center,
             ),
@@ -151,7 +151,7 @@ class AchievementDetailModal extends StatelessWidget {
                   ? 'This is a hidden achievement. Complete specific actions to reveal and unlock it!'
                   : achievement.description,
               style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                color: isLocked ? Colors.grey : Colors.black87,
+                color: isLocked ? AppColors.textHint : AppColors.textPrimary,
               ),
               textAlign: TextAlign.center,
             ),
@@ -192,7 +192,7 @@ class AchievementDetailModal extends StatelessWidget {
                       child: LinearProgressIndicator(
                         value: progressPercent,
                         minHeight: 12,
-                        backgroundColor: Colors.white,
+                        backgroundColor: AppColors.card,
                         valueColor: AlwaysStoppedAnimation<Color>(rarityColor),
                       ),
                     ),
@@ -201,7 +201,7 @@ class AchievementDetailModal extends StatelessWidget {
                       '${(progressPercent * 100).toStringAsFixed(1)}% Complete',
                       style: Theme.of(
                         context,
-                      ).textTheme.bodySmall?.copyWith(color: Colors.grey),
+                      ).textTheme.bodySmall?.copyWith(color: AppColors.textHint),
                     ),
                   ],
                 ),
@@ -228,7 +228,7 @@ class AchievementDetailModal extends StatelessWidget {
                 children: [
                   Column(
                     children: [
-                      const Icon(Icons.star, color: Colors.amber, size: AppIconSizes.lg),
+                      const Icon(Icons.star, color: AppColors.xp, size: AppIconSizes.lg),
                       const SizedBox(height: AppSpacing.xs),
                       Text(
                         '${achievement.rarity.xpReward} XP',
@@ -239,7 +239,7 @@ class AchievementDetailModal extends StatelessWidget {
                         'Reward',
                         style: Theme.of(
                           context,
-                        ).textTheme.bodySmall?.copyWith(color: Colors.grey),
+                        ).textTheme.bodySmall?.copyWith(color: AppColors.textHint),
                       ),
                     ],
                   ),
@@ -266,7 +266,7 @@ class AchievementDetailModal extends StatelessWidget {
                           'Unlocked',
                           style: Theme.of(
                             context,
-                          ).textTheme.bodySmall?.copyWith(color: Colors.grey),
+                          ).textTheme.bodySmall?.copyWith(color: AppColors.textHint),
                         ),
                       ],
                     ),
