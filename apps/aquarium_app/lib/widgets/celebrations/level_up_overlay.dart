@@ -88,6 +88,9 @@ class _LevelUpOverlayState extends State<LevelUpOverlay>
   late Animation<double> _levelFade;
   late Animation<double> _glowPulse;
   
+  // Prevent double-dismiss (auto-dismiss + button tap race condition)
+  bool _isDismissing = false;
+  
   // Sparkle particles
   final List<_SparkleParticle> _sparkles = [];
   final _random = math.Random();
@@ -219,14 +222,17 @@ class _LevelUpOverlayState extends State<LevelUpOverlay>
     
     // Step 5: Auto-dismiss after duration
     await Future.delayed(widget.autoDismissDuration);
-    if (mounted) {
+    if (mounted && !_isDismissing) {
       _dismiss();
     }
   }
 
   void _dismiss() async {
+    // Guard against double-dismiss (race between button tap and auto-dismiss)
+    if (_isDismissing) return;
+    _isDismissing = true;
     // Reverse animations
-    await _overlayController.reverse();
+    if (mounted) await _overlayController.reverse();
     widget.onDismiss?.call();
   }
 
