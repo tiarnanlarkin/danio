@@ -440,7 +440,17 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
             borderRadius: AppRadius.mediumRadius,
           ),
           child: Center(
-            child: Icon(Icons.image, size: AppIconSizes.xl, color: AppColors.textHint),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.image_outlined, size: AppIconSizes.xl, color: AppColors.textHint),
+                const SizedBox(height: 8),
+                Text(
+                  'Illustration coming soon',
+                  style: TextStyle(color: AppColors.textHint, fontSize: 13),
+                ),
+              ],
+            ),
           ),
         );
     }

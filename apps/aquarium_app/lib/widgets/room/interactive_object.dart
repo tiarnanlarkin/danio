@@ -461,7 +461,7 @@ class WorkshopObjects {
   }
 
   static InteractiveObject workbench({
-    required VoidCallback onTap,
+    VoidCallback? onTap,
     bool isNewUser = false,
   }) {
     return InteractiveObject(

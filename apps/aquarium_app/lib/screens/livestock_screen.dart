@@ -534,7 +534,8 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
 
   Widget _buildSkeletonList() {
     final placeholders = SkeletonPlaceholders.livestockList;
-    return Skeletonizer(
+    return IgnorePointer(
+      child: Skeletonizer(
       child: ListView.builder(
         padding: EdgeInsets.all(AppSpacing.md),
         itemCount: placeholders.length + 2, // +2 for summary card and spacing
@@ -573,7 +574,8 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
           }
         },
       ),
-    );
+    ), // end Skeletonizer
+    ); // end IgnorePointer
   }
 
   void _showAddDialog(BuildContext context, WidgetRef ref) {

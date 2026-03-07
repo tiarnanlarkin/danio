@@ -787,7 +787,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           ],
         ),
       ),
-    );
+    ).whenComplete(() {
+      phC.dispose();
+      tempC.dispose();
+      ammoniaC.dispose();
+    });
   }
 
   void _navigateToWaterChange(BuildContext context, Tank tank) {
