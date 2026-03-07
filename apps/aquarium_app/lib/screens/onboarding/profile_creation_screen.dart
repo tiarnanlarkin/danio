@@ -59,10 +59,17 @@ class _ProfileCreationScreenState extends ConsumerState<ProfileCreationScreen> {
 
       if (!mounted) return;
 
-      // Pop back to LearnScreen — it watches userProfileProvider and rebuilds.
-      // (pushAndRemoveUntil was pushing a nested TabNavigator inside the Learn
-      // tab's local navigator, causing a blank screen.)
-      Navigator.of(context).pop();
+      // Pop back to the caller. Two cases:
+      // (a) Pushed from LearnScreen via Navigator.push → pop() returns to
+      //     LearnScreen which rebuilds via userProfileProvider.
+      // (b) Shown as root widget by _AppRouterState (_needsProfile=true) →
+      //     _AppRouterState now listens to userProfileProvider and will
+      //     auto-transition to TabNavigator; pop() would be a no-op here but
+      //     we check canPop() to avoid any "cannot pop only route" assertion.
+      if (Navigator.of(context).canPop()) {
+        Navigator.of(context).pop();
+      }
+      // else: _AppRouterState listener handles the transition automatically.
     } catch (e) {
       if (!mounted) return;
 

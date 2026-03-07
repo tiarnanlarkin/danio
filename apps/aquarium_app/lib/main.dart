@@ -263,6 +263,15 @@ class _AppRouterState extends ConsumerState<_AppRouter>
       );
     }
 
+    // Auto-transition when a profile is created while ProfileCreationScreen
+    // is shown as the root widget (not pushed via Navigator.push).  Without
+    // this listener, Navigator.pop() from the skip button would be a no-op.
+    ref.listen(userProfileProvider, (_, next) {
+      if (next.value != null && _needsProfile) {
+        setState(() => _needsProfile = false);
+      }
+    });
+
     // Route to appropriate screen based on state
     if (_showOnboarding) {
       return const OnboardingScreen();
