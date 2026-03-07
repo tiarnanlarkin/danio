@@ -227,29 +227,40 @@ class _AchievementsScreenState extends ConsumerState<AchievementsScreen> {
           Expanded(
             child: filteredAchievements.isEmpty
                 ? Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.search_off,
-                          size: AppIconSizes.xxl,
-                          color: Theme.of(context).colorScheme.onSurface.withOpacity(0.4),
-                        ),
-                        const SizedBox(height: AppSpacing.md),
-                        Text(
-                          'No achievements unlocked yet -- keep learning!',
-                          style: Theme.of(
-                            context,
-                          ).textTheme.titleMedium?.copyWith(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5)),
-                        ),
-                        const SizedBox(height: AppSpacing.sm),
-                        Text(
-                          'Try adjusting your filters',
-                          style: Theme.of(
-                            context,
-                          ).textTheme.bodyMedium?.copyWith(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5)),
-                        ),
-                      ],
+                    child: Padding(
+                      padding: const EdgeInsets.all(AppSpacing.xl),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.emoji_events_outlined,
+                            size: AppIconSizes.xxl,
+                            color: Theme.of(context).colorScheme.onSurface.withOpacity(0.4),
+                          ),
+                          const SizedBox(height: AppSpacing.md),
+                          Text(
+                            'No achievements unlocked yet!',
+                            style: Theme.of(
+                              context,
+                            ).textTheme.titleMedium?.copyWith(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6)),
+                            textAlign: TextAlign.center,
+                          ),
+                          const SizedBox(height: AppSpacing.sm),
+                          Text(
+                            'Complete lessons, log water tests, and care for your tank to earn your first badge.',
+                            style: Theme.of(
+                              context,
+                            ).textTheme.bodyMedium?.copyWith(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.45)),
+                            textAlign: TextAlign.center,
+                          ),
+                          const SizedBox(height: AppSpacing.lg),
+                          FilledButton.icon(
+                            onPressed: () => Navigator.of(context).pop(),
+                            icon: const Icon(Icons.school_outlined),
+                            label: const Text('Start Learning'),
+                          ),
+                        ],
+                      ),
                     ),
                   )
                 : RefreshIndicator(

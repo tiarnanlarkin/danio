@@ -982,7 +982,14 @@ class _LazyLearningPathCardState extends ConsumerState<_LazyLearningPathCard> {
                     ),
                   );
                 }
-              : null,
+              : () {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Complete the previous lesson to unlock this one 🔒'),
+                      duration: Duration(seconds: 2),
+                    ),
+                  );
+                },
         );
       }),
     ];

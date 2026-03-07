@@ -737,8 +737,13 @@ class _AddReminderSheetState extends State<_AddReminderSheet> {
               width: double.infinity,
               child: FilledButton(
                 onPressed: () {
-                  if (_titleController.text.isEmpty) {
-                    AppFeedback.showWarning(context, 'Please enter a title');
+                  final title = _titleController.text.trim();
+                  if (title.isEmpty) {
+                    AppFeedback.showWarning(context, 'Please enter a reminder title');
+                    return;
+                  }
+                  if (title.length > 100) {
+                    AppFeedback.showWarning(context, 'Title must be 100 characters or fewer');
                     return;
                   }
 
@@ -749,6 +754,14 @@ class _AddReminderSheetState extends State<_AddReminderSheet> {
                     _dueTime.hour,
                     _dueTime.minute,
                   );
+
+                  if (nextDue.isBefore(DateTime.now()) && !_isRecurring) {
+                    AppFeedback.showWarning(
+                      context,
+                      "This reminder is set in the past — it won't trigger. Please pick a future time.",
+                    );
+                    return;
+                  }
 
                   widget.onSave(
                     _Reminder(

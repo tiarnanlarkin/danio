@@ -385,6 +385,8 @@ class TankDetailScreen extends ConsumerWidget {
                   title: Text(
                     tank.name,
                     style: const TextStyle(color: Colors.white),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
                   background: Hero(
                     tag: 'tank-card-${tank.id}',

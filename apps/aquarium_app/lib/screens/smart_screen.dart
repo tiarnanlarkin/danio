@@ -65,7 +65,10 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
       setState(() => _askResponse = result.text);
     } catch (e) {
       if (!mounted) return;
-      setState(() => _askResponse = 'Sorry, I couldn\'t answer that right now. Try again later.');
+      final isAuthError = e is OpenAIException && (e.statusCode == 401 || e.statusCode == 403);
+      setState(() => _askResponse = isAuthError
+          ? 'Your API key appears to be invalid or expired. Please check your key in Smart Settings.'
+          : "Sorry, I couldn't answer that right now. Please check your connection and try again.");
     } finally {
       if (mounted) setState(() => _askLoading = false);
     }

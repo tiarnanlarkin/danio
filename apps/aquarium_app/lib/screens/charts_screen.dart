@@ -13,6 +13,7 @@ import '../providers/tank_provider.dart';
 import '../theme/app_theme.dart';
 import '../widgets/core/app_states.dart';
 import '../utils/app_feedback.dart';
+import 'add_log_screen.dart';
 
 class ChartsScreen extends ConsumerStatefulWidget {
   final String tankId;
@@ -77,21 +78,36 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
 
           if (waterTests.isEmpty) {
             return Center(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(Icons.show_chart, size: AppIconSizes.xxl, color: AppColors.textHint),
-                  const SizedBox(height: AppSpacing.md),
-                  Text(
-                    'Charts unlock with your first test!',
-                    style: AppTypography.headlineSmall,
-                  ),
-                  const SizedBox(height: AppSpacing.sm),
-                  Text(
-                    'Log a water test and watch your trends come alive',
-                    style: AppTypography.bodyMedium,
-                  ),
-                ],
+              child: Padding(
+                padding: const EdgeInsets.all(AppSpacing.xl),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.show_chart, size: AppIconSizes.xxl, color: AppColors.textHint),
+                    const SizedBox(height: AppSpacing.md),
+                    Text(
+                      'Charts unlock with your first test!',
+                      style: AppTypography.headlineSmall,
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: AppSpacing.sm),
+                    Text(
+                      'Log a water test and watch your trends come alive',
+                      style: AppTypography.bodyMedium.copyWith(color: AppColors.textSecondary),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: AppSpacing.lg),
+                    FilledButton.icon(
+                      onPressed: () => Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => AddLogScreen(tankId: widget.tankId, initialType: LogType.waterTest),
+                        ),
+                      ),
+                      icon: const Icon(Icons.add),
+                      label: const Text('Log Your First Water Test'),
+                    ),
+                  ],
+                ),
               ),
             );
           }
@@ -604,7 +620,7 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
     }
 
     if (bars.isEmpty) {
-      return const Center(child: Text('No data to show yet'));
+      return const Center(child: Text('Log your first water test to see data here 💧'));
     }
 
     return LineChart(
