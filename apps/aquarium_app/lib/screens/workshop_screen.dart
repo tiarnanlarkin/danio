@@ -132,7 +132,7 @@ class WorkshopScreen extends ConsumerWidget {
                     icon: Icons.swap_horiz,
                     title: 'Unit Converter',
                     subtitle: 'Convert units',
-                    color: Colors.amber.shade400,
+                    color: AppColors.xp,
                     onTap: () => Navigator.push(
                       context,
                       MaterialPageRoute(
