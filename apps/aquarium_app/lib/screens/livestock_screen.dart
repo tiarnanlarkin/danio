@@ -583,7 +583,7 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
       context: context,
       showDragHandle: true,
       isScrollControlled: true,
-      builder: (_) => _AddLivestockSheet(tankId: widget.tankId, ref: ref),
+      builder: (_) => _AddLivestockSheet(tankId: widget.tankId),
     );
   }
 
@@ -592,7 +592,7 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
       context: context,
       showDragHandle: true,
       isScrollControlled: true,
-      builder: (_) => _BulkAddLivestockSheet(tankId: widget.tankId, ref: ref),
+      builder: (_) => _BulkAddLivestockSheet(tankId: widget.tankId),
     );
   }
 
@@ -607,7 +607,6 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
       isScrollControlled: true,
       builder: (_) => _AddLivestockSheet(
         tankId: widget.tankId,
-        ref: ref,
         existing: livestock,
       ),
     );
@@ -735,7 +734,15 @@ class _LivestockCard extends StatelessWidget {
                       type: MaterialType.transparency,
                       child: CircleAvatar(
                         backgroundColor: AppOverlays.primary10,
-                        child: const Icon(Icons.set_meal, color: AppColors.primary),
+                        backgroundImage: livestock.imageUrl != null
+                            ? NetworkImage(livestock.imageUrl!)
+                            : null,
+                        onBackgroundImageError: livestock.imageUrl != null
+                            ? (_, __) {}
+                            : null,
+                        child: livestock.imageUrl == null
+                            ? const Icon(Icons.set_meal, color: AppColors.primary)
+                            : null,
                       ),
                     ),
                   ),
@@ -830,22 +837,20 @@ class _LivestockCard extends StatelessWidget {
   }
 }
 
-class _AddLivestockSheet extends StatefulWidget {
+class _AddLivestockSheet extends ConsumerStatefulWidget {
   final String tankId;
-  final WidgetRef ref;
   final Livestock? existing;
 
   const _AddLivestockSheet({
     required this.tankId,
-    required this.ref,
     this.existing,
   });
 
   @override
-  State<_AddLivestockSheet> createState() => _AddLivestockSheetState();
+  ConsumerState<_AddLivestockSheet> createState() => _AddLivestockSheetState();
 }
 
-class _AddLivestockSheetState extends State<_AddLivestockSheet> {
+class _AddLivestockSheetState extends ConsumerState<_AddLivestockSheet> {
   late TextEditingController _nameController;
   late TextEditingController _scientificController;
   late TextEditingController _countController;
@@ -1092,7 +1097,7 @@ class _AddLivestockSheetState extends State<_AddLivestockSheet> {
     setState(() => _isSaving = true);
 
     try {
-      final storage = widget.ref.read(storageServiceProvider);
+      final storage = ref.read(storageServiceProvider);
       final now = DateTime.now();
 
       final livestock = Livestock(
@@ -1124,21 +1129,21 @@ class _AddLivestockSheetState extends State<_AddLivestockSheet> {
           ),
         );
 
-        widget.ref.invalidate(logsProvider(widget.tankId));
-        widget.ref.invalidate(allLogsProvider(widget.tankId));
+        ref.invalidate(logsProvider(widget.tankId));
+        ref.invalidate(allLogsProvider(widget.tankId));
 
-        await widget.ref
+        await ref
             .read(userProfileProvider.notifier)
             .recordActivity(xp: XpRewards.addLivestock);
         
         // Show XP animation + haptic feedback
         if (mounted) {
           AppHaptics.success();
-          widget.ref.showXpAnimation(XpRewards.addLivestock);
+          ref.showXpAnimation(XpRewards.addLivestock);
         }
       }
 
-      widget.ref.invalidate(livestockProvider(widget.tankId));
+      ref.invalidate(livestockProvider(widget.tankId));
 
       if (mounted) Navigator.pop(context);
     } catch (e) {
@@ -1155,17 +1160,16 @@ class _AddLivestockSheetState extends State<_AddLivestockSheet> {
   }
 }
 
-class _BulkAddLivestockSheet extends StatefulWidget {
+class _BulkAddLivestockSheet extends ConsumerStatefulWidget {
   final String tankId;
-  final WidgetRef ref;
 
-  const _BulkAddLivestockSheet({required this.tankId, required this.ref});
+  const _BulkAddLivestockSheet({required this.tankId});
 
   @override
-  State<_BulkAddLivestockSheet> createState() => _BulkAddLivestockSheetState();
+  ConsumerState<_BulkAddLivestockSheet> createState() => _BulkAddLivestockSheetState();
 }
 
-class _BulkAddLivestockSheetState extends State<_BulkAddLivestockSheet> {
+class _BulkAddLivestockSheetState extends ConsumerState<_BulkAddLivestockSheet> {
   final _controller = TextEditingController();
   bool _isSaving = false;
   List<_BulkLivestockItem> _items = const [];
@@ -1280,7 +1284,7 @@ class _BulkAddLivestockSheetState extends State<_BulkAddLivestockSheet> {
     setState(() => _isSaving = true);
 
     try {
-      final storage = widget.ref.read(storageServiceProvider);
+      final storage = ref.read(storageServiceProvider);
       final now = DateTime.now();
 
       for (final item in _items) {
@@ -1309,18 +1313,18 @@ class _BulkAddLivestockSheetState extends State<_BulkAddLivestockSheet> {
         );
       }
 
-      widget.ref.invalidate(livestockProvider(widget.tankId));
-      widget.ref.invalidate(logsProvider(widget.tankId));
-      widget.ref.invalidate(allLogsProvider(widget.tankId));
+      ref.invalidate(livestockProvider(widget.tankId));
+      ref.invalidate(logsProvider(widget.tankId));
+      ref.invalidate(allLogsProvider(widget.tankId));
 
       final totalXp = _items.length * XpRewards.addLivestock;
-      await widget.ref
+      await ref
           .read(userProfileProvider.notifier)
           .recordActivity(xp: totalXp);
 
       // Show XP animation
       if (mounted && totalXp > 0) {
-        widget.ref.showXpAnimation(totalXp);
+        ref.showXpAnimation(totalXp);
       }
 
       if (mounted) {
