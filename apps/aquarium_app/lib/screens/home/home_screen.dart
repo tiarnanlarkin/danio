@@ -201,6 +201,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final theme = ref.watch(currentRoomThemeProvider);
     final tanksAsync = ref.watch(tanksProvider);
 
+    // P0-001 FIX: Guard against the _ElementLifecycle.active assertion.
+    // If the widget has been deactivated mid-frame (e.g. by a cascading
+    // provider rebuild during cold restart or tab switch), bail out early
+    // and return a safe loading widget.  This prevents downstream Consumer
+    // widgets from being built on an already-deactivated element tree.
+    if (!mounted) return _buildSkeletonRoom();
+
     return tanksAsync.when(
       loading: () => _buildSkeletonRoom(),
       error: (err, stack) => AppErrorState(
@@ -209,6 +216,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         onRetry: () => ref.invalidate(tanksProvider),
       ),
       data: (tanks) {
+        if (!mounted) return _buildSkeletonRoom();
         _maybeShowFirstTankPrompt(context, tanks);
         if (tanks.isEmpty) {
           return EmptyRoomScene(
