@@ -68,10 +68,12 @@ class _TankVolumeCalculatorScreenState
             h *= 2.54;
             d *= 2.54;
           }
-          // Approximate: rectangular base + half cylinder for bow
+          // Approximate: rectangular base + half-cylinder for the bow.
+          // Bow protrudes `d` cm from the front panel; model as a
+          // half-cylinder: V = (π × r²) / 2 × length, where r = d.
           final rectVolume = l * w * h;
-          final bowVolume = (pi * pow(d, 2) * l) / 4; // Approximate
-          return (rectVolume + bowVolume / 2) / 1000;
+          final bowVolume = (pi * pow(d, 2) / 2) * l;
+          return (rectVolume + bowVolume) / 1000;
         }
         break;
       case _TankShape.hexagonal:

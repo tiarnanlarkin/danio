@@ -44,12 +44,15 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
   Widget build(BuildContext context) {
     final tanksAsync = ref.watch(tanksProvider);
 
+    // Build item list once — ListView.builder calls itemCount and itemBuilder
+    // separately, so evaluating inside each callback would double the work.
+    final items = _buildItems(tanksAsync);
     return Scaffold(
       appBar: AppBar(title: const Text('Backup & Restore')),
       body: ListView.builder(
         padding: EdgeInsets.all(AppSpacing.md),
-        itemCount: _buildItems(tanksAsync).length,
-        itemBuilder: (context, index) => _buildItems(tanksAsync)[index],
+        itemCount: items.length,
+        itemBuilder: (context, index) => items[index],
       ),
     );
   }

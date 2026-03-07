@@ -279,7 +279,11 @@ class TankDetailScreen extends ConsumerWidget {
     // Pop back to home screen immediately
     navigator.pop();
 
-    // Show SnackBar with undo action (5 seconds)
+    // Show SnackBar with undo action (5 seconds).
+    // Use the pre-captured `messenger` — `context` belongs to the
+    // TankDetailScreen route that has already been popped and is deactivated.
+    // Calling AppFeedback.showSuccess(context, ...) after pop() would throw
+    // "Looking up a deactivated widget's ancestor is unsafe".
     messenger.showSnackBar(
       SnackBar(
         content: Text('${tank.name} deleted'),
@@ -289,7 +293,29 @@ class TankDetailScreen extends ConsumerWidget {
           onPressed: () {
             // Restore the tank
             actions.undoDeleteTank(tankId);
-            AppFeedback.showSuccess(context, '${tank.name} restored');
+            // Use the ancestor messenger directly — the detail route is gone.
+            AppHaptics.success();
+            messenger.showSnackBar(
+              SnackBar(
+                content: Row(
+                  children: [
+                    const Icon(Icons.check_circle, color: Colors.white, size: 20),
+                    const SizedBox(width: AppSpacing.sm2),
+                    Expanded(
+                      child: Text(
+                        '${tank.name} restored',
+                        style: AppTypography.bodyMedium.copyWith(color: Colors.white),
+                      ),
+                    ),
+                  ],
+                ),
+                backgroundColor: AppColors.success,
+                behavior: SnackBarBehavior.floating,
+                duration: const Duration(seconds: 2),
+                shape: RoundedRectangleBorder(borderRadius: AppRadius.mediumRadius),
+                margin: EdgeInsets.all(AppSpacing.md),
+              ),
+            );
           },
         ),
       ),
