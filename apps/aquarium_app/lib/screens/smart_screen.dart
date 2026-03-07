@@ -100,35 +100,47 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
 
           const SizedBox(height: AppSpacing.md),
 
-          // Feature cards
+          // Feature cards — gated behind API key (CA-004)
           _FeatureCard(
             icon: Icons.camera_alt,
             title: 'Fish & Plant ID',
-            subtitle: 'Snap a photo to identify species',
+            subtitle: openai.isConfigured
+                ? 'Snap a photo to identify species'
+                : 'Requires API key setup',
             color: AppColors.primary,
-            onTap: () => Navigator.of(context).push(
-              MaterialPageRoute(builder: (_) => const FishIdScreen()),
-            ),
+            onTap: openai.isConfigured
+                ? () => Navigator.of(context).push(
+                    MaterialPageRoute(builder: (_) => const FishIdScreen()),
+                  )
+                : null,
           ).animate(delay: 0.ms).fadeIn().slideX(begin: 0.05),
 
           _FeatureCard(
             icon: Icons.healing,
             title: 'Symptom Triage',
-            subtitle: 'Diagnose fish health issues',
+            subtitle: openai.isConfigured
+                ? 'Diagnose fish health issues'
+                : 'Requires API key setup',
             color: AppColors.error,
-            onTap: () => Navigator.of(context).push(
-              MaterialPageRoute(builder: (_) => const SymptomTriageScreen()),
-            ),
+            onTap: openai.isConfigured
+                ? () => Navigator.of(context).push(
+                    MaterialPageRoute(builder: (_) => const SymptomTriageScreen()),
+                  )
+                : null,
           ).animate(delay: 50.ms).fadeIn().slideX(begin: 0.05),
 
           _FeatureCard(
             icon: Icons.calendar_month,
             title: 'Weekly Plan',
-            subtitle: 'AI-generated maintenance schedule',
+            subtitle: openai.isConfigured
+                ? 'AI-generated maintenance schedule'
+                : 'Requires API key setup',
             color: AppColors.primary, // BUG-11: was textSecondary (gray), now warm amber to match siblings
-            onTap: () => Navigator.of(context).push(
-              MaterialPageRoute(builder: (_) => const WeeklyPlanScreen()),
-            ),
+            onTap: openai.isConfigured
+                ? () => Navigator.of(context).push(
+                    MaterialPageRoute(builder: (_) => const WeeklyPlanScreen()),
+                  )
+                : null,
           ).animate(delay: 100.ms).fadeIn().slideX(begin: 0.05),
           // Compatibility Checker
           if (openai.isConfigured) ...[const SizedBox(height: AppSpacing.sm), const CompatibilityCheckerWidget()],
@@ -174,7 +186,7 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
                                 ),
                               )
                             : IconButton(
-                              tooltip: 'Refresh',
+                                tooltip: 'Send question',
                                 icon: const Icon(Icons.send),
                                 onPressed: _askDanio,
                               ),
@@ -448,7 +460,7 @@ class _FeatureCard extends StatelessWidget {
   final String title;
   final String subtitle;
   final Color color;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
 
   const _FeatureCard({
     required this.icon,
