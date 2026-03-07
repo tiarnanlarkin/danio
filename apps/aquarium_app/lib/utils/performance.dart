@@ -1,54 +1,11 @@
-import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/scheduler.dart';
 
-/// Debounce utility for search/input
-class Debouncer {
-  final Duration delay;
-  Timer? _timer;
-
-  Debouncer({this.delay = const Duration(milliseconds: 300)});
-
-  void run(VoidCallback action) {
-    _timer?.cancel();
-    _timer = Timer(delay, action);
-  }
-
-  void cancel() {
-    _timer?.cancel();
-  }
-
-  void dispose() {
-    _timer?.cancel();
-    _timer = null;
-  }
-}
-
-/// Throttle utility for scroll/resize events
-class Throttler {
-  final Duration delay;
-  Timer? _timer;
-  bool _isThrottled = false;
-
-  Throttler({this.delay = const Duration(milliseconds: 100)});
-
-  void run(VoidCallback action) {
-    if (_isThrottled) return;
-    
-    action();
-    _isThrottled = true;
-    _timer = Timer(delay, () {
-      _isThrottled = false;
-    });
-  }
-
-  void dispose() {
-    _timer?.cancel();
-    _timer = null;
-  }
-}
+// Debouncer and Throttler are defined in debouncer.dart.
+// Import from there directly:
+//   import '../utils/debouncer.dart';
 
 /// Simple memoization cache
 class MemoCache<K, V> {

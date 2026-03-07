@@ -187,13 +187,13 @@ class AppColors {
   static const Color secondaryAlpha50 = Color(0x804A5A6B);
   static const Color secondaryAlpha90 = Color(0xE64A5A6B);
 
-  // Accent color with alpha
-  static const Color accentAlpha10 = Color(0x1A85C7DE);
-  static const Color accentAlpha20 = Color(0x3385C7DE);
-  static const Color accentAlpha30 = Color(0x4D85C7DE);
-  static const Color accentAlpha40 = Color(0x6685C7DE);
-  static const Color accentAlpha50 = Color(0x8085C7DE);
-  static const Color accentAlpha60 = Color(0x9985C7DE);
+  // Accent color with alpha (base: AppColors.accent = 0xFF5B9EA6 — Teal Water)
+  static const Color accentAlpha10 = Color(0x1A5B9EA6);
+  static const Color accentAlpha20 = Color(0x335B9EA6);
+  static const Color accentAlpha30 = Color(0x4D5B9EA6);
+  static const Color accentAlpha40 = Color(0x665B9EA6);
+  static const Color accentAlpha50 = Color(0x805B9EA6);
+  static const Color accentAlpha60 = Color(0x995B9EA6);
 
   // Success color with alpha
   static const Color successAlpha10 = Color(0x1A5AAF7A);
@@ -300,13 +300,13 @@ class AppColors {
   static const Color cozyBlue15 = Color(0x2687CEEB);  // 15%
   static const Color cozyBlue20 = Color(0x3387CEEB);  // 20%
 
-  // Dark mode background with alpha
-  static const Color backgroundDarkAlpha10 = Color(0x1A1A2634);
-  static const Color backgroundDarkAlpha20 = Color(0x331A2634);
-  static const Color backgroundDarkAlpha30 = Color(0x4D1A2634);
-  static const Color backgroundDarkAlpha50 = Color(0x801A2634);
-  static const Color backgroundDarkAlpha70 = Color(0xB31A2634);
-  static const Color backgroundDarkAlpha90 = Color(0xE61A2634);
+  // Dark mode background with alpha (base: AppColors.backgroundDark = 0xFF1C1917 — Warm Charcoal)
+  static const Color backgroundDarkAlpha10 = Color(0x1A1C1917);
+  static const Color backgroundDarkAlpha20 = Color(0x331C1917);
+  static const Color backgroundDarkAlpha30 = Color(0x4D1C1917);
+  static const Color backgroundDarkAlpha50 = Color(0x801C1917);
+  static const Color backgroundDarkAlpha70 = Color(0xB31C1917);
+  static const Color backgroundDarkAlpha90 = Color(0xE61C1917);
 
   // Gradients
   static const LinearGradient primaryGradient = LinearGradient(

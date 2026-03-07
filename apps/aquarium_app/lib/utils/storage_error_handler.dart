@@ -155,7 +155,7 @@ class StorageErrorHandler {
                 ),
                 const SizedBox(height: AppSpacing.md),
                 const Text(
-                  'Email this information to:\nsupport@aquariumapp.com',
+                  'Email this information to:\nsupport@danioapp.com',
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: AppSpacing.sm),
