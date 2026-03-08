@@ -205,7 +205,7 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
         children: [
           Text(
             'Time Range',
-            style: Theme.of(context).textTheme.titleSmall!.copyWith(fontWeight: FontWeight.bold),
+            style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: AppSpacing.sm2),
           Wrap(
@@ -245,7 +245,7 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
         children: [
           Text(
             'Overview',
-            style: Theme.of(context).textTheme.titleLarge!.copyWith(fontWeight: FontWeight.bold),
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: AppSpacing.md),
           Row(
@@ -342,7 +342,7 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
               Expanded(
                 child: Text(
                   label,
-                  style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
                     color: Theme.of(context).colorScheme.onSurface.withAlpha(153),
                     fontWeight: FontWeight.w500,
                   ),
@@ -354,7 +354,7 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
           const SizedBox(height: AppSpacing.sm),
           Text(
             value,
-            style: Theme.of(context).textTheme.titleLarge!.copyWith(
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(
               fontWeight: FontWeight.bold,
               color: color,
             ),
@@ -365,7 +365,7 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
             const SizedBox(height: AppSpacing.xs),
             Text(
               subtitle,
-              style: Theme.of(context).textTheme.labelSmall!.copyWith(color: Theme.of(context).colorScheme.onSurface.withAlpha(153)),
+              style: Theme.of(context).textTheme.labelSmall?.copyWith(color: Theme.of(context).colorScheme.onSurface.withAlpha(153)),
             ),
           ],
         ],
@@ -389,7 +389,7 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
         children: [
           Text(
             'XP Over Time',
-            style: Theme.of(context).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.bold),
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: AppSpacing.lg),
           Semantics(
@@ -495,7 +495,7 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
         children: [
           Text(
             'Last 7 Days',
-            style: Theme.of(context).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.bold),
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: AppSpacing.lg),
           Semantics(
@@ -601,7 +601,7 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
         children: [
           Text(
             'Topic Mastery',
-            style: Theme.of(context).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.bold),
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
           ),
           SizedBox(height: AppSpacing.lg),
           Semantics(
@@ -613,7 +613,7 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
               RadarChartData(
                 radarShape: RadarShape.polygon,
                 tickCount: 5,
-                ticksTextStyle: Theme.of(context).textTheme.labelSmall!.copyWith(
+                ticksTextStyle: Theme.of(context).textTheme.labelSmall?.copyWith(
                   color: Colors.transparent,
                 ),
                 radarBorderData: BorderSide(color: AppColors.textSecondaryAlpha30, width: 1),
@@ -666,7 +666,7 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
         children: [
           Text(
             'Activity Calendar',
-            style: Theme.of(context).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.bold),
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: AppSpacing.md),
           SizedBox(
@@ -763,7 +763,7 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
         children: [
           Text(
             'Insights & Recommendations',
-            style: Theme.of(context).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.bold),
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: AppSpacing.md),
           ...summary.insights.map((insight) => _buildInsightCard(insight)),
@@ -802,12 +802,12 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
           children: [
             Row(
               children: [
-                Text(insight.type.emoji, style: Theme.of(context).textTheme.headlineSmall!),
+                Text(insight.type.emoji, style: Theme.of(context).textTheme.headlineSmall),
                 const SizedBox(width: AppSpacing.sm2),
                 Expanded(
                   child: Text(
                     insight.message,
-                    style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.bold,
                       color: color,
                     ),
@@ -820,7 +820,7 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
               const SizedBox(height: AppSpacing.sm),
               Text(
                 insight.detailedMessage!,
-                style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Theme.of(context).colorScheme.onSurface.withAlpha(178)),
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Theme.of(context).colorScheme.onSurface.withAlpha(178)),
               ),
             ],
             if (insight.recommendation != null) ...[
@@ -839,7 +839,7 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
                     Expanded(
                       child: Text(
                         insight.recommendation!,
-                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: color),
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: color),
                       ),
                     ),
                   ],
@@ -863,7 +863,7 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
         children: [
           Text(
             'Topic Breakdown',
-            style: Theme.of(context).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.bold),
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: AppSpacing.md),
           ...summary.topicPerformance.map((topic) => _buildTopicCard(topic)),
@@ -886,12 +886,12 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
                 Expanded(
                   child: Text(
                     topic.topicName,
-                    style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
-                Text(topic.trend.emoji, style: Theme.of(context).textTheme.titleLarge!),
+                Text(topic.trend.emoji, style: Theme.of(context).textTheme.titleLarge),
               ],
             ),
             const SizedBox(height: AppSpacing.sm2),
@@ -903,7 +903,7 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
                     children: [
                       Text(
                         'Progress',
-                        style: Theme.of(context).textTheme.bodySmall!.copyWith(color: Theme.of(context).colorScheme.onSurface.withAlpha(153)),
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Theme.of(context).colorScheme.onSurface.withAlpha(153)),
                       ),
                       const SizedBox(height: AppSpacing.xs),
                       LinearProgressIndicator(
@@ -930,7 +930,7 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
                     children: [
                       Text(
                         '${topic.totalXP} XP',
-                        style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
                           fontWeight: FontWeight.bold,
                           color: DanioColors.amberGold,
                         ),
@@ -938,7 +938,7 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
                       ),
                       Text(
                         '${topic.timeSpentMinutes} min',
-                        style: Theme.of(context).textTheme.labelSmall!.copyWith(color: Theme.of(context).colorScheme.onSurface.withAlpha(153)),
+                        style: Theme.of(context).textTheme.labelSmall?.copyWith(color: Theme.of(context).colorScheme.onSurface.withAlpha(153)),
                         overflow: TextOverflow.ellipsis,
                       ),
                     ],
@@ -963,7 +963,7 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
         children: [
           Text(
             'Predictions & Goals',
-            style: Theme.of(context).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.bold),
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: AppSpacing.md),
           ...summary.predictions.map(
@@ -990,7 +990,7 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
                 Expanded(
                   child: Text(
                     prediction.message,
-                    style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -1011,14 +1011,14 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
                   ),
                   child: Text(
                     prediction.confidenceLabel,
-                    style: Theme.of(context).textTheme.labelSmall!.copyWith(color: Colors.white),
+                    style: Theme.of(context).textTheme.labelSmall?.copyWith(color: Colors.white),
                   ),
                 ),
                 if (prediction.estimatedDate != null) ...[
                   const SizedBox(width: AppSpacing.sm),
                   Text(
                     'ETA: ${DateFormat('MMM d').format(prediction.estimatedDate!)}',
-                    style: Theme.of(context).textTheme.bodySmall!.copyWith(color: Theme.of(context).colorScheme.onSurface.withAlpha(178)),
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Theme.of(context).colorScheme.onSurface.withAlpha(178)),
                   ),
                 ],
               ],
@@ -1027,7 +1027,7 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
               const SizedBox(height: AppSpacing.sm2),
               Text(
                 prediction.recommendation!,
-                style: Theme.of(context).textTheme.bodySmall!.copyWith(color: Theme.of(context).colorScheme.onSurface.withAlpha(178)),
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Theme.of(context).colorScheme.onSurface.withAlpha(178)),
               ),
             ],
           ],

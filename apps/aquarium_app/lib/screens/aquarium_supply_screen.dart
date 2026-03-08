@@ -169,8 +169,8 @@ class _AquariumSupplyScreenState extends ConsumerState<AquariumSupplyScreen>
     return _items
         .where((i) =>
             i.lastPurchased != null &&
-            i.lastPurchased!.month == now.month &&
-            i.lastPurchased!.year == now.year &&
+            i.lastPurchased?.month == now.month &&
+            i.lastPurchased?.year == now.year &&
             i.unitCost != null)
         .fold(0, (sum, i) => sum + (i.unitCost ?? 0));
   }
@@ -592,12 +592,12 @@ class _SupplyCard extends StatelessWidget {
             ),
             if (item.lastPurchased != null)
               Text(
-                'Last purchased: ${DateFormat('MMM d, yyyy').format(item.lastPurchased!)}',
+                'Last purchased: ${DateFormat('MMM d, yyyy').format(item.lastPurchased!)}', // guarded by if (item.lastPurchased != null)
                 style: AppTypography.bodySmall,
               ),
             if (item.unitCost != null)
               Text(
-                'Cost: $currency${item.unitCost!.toStringAsFixed(2)}',
+                'Cost: $currency${item.unitCost!.toStringAsFixed(2)}', // guarded by if (item.unitCost != null)
                 style: AppTypography.bodySmall,
               ),
           ],

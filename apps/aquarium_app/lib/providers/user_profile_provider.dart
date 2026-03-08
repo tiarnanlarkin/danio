@@ -195,37 +195,43 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
       await offlineService.awardXp(
         amount: effectiveXp,
         localUpdate: () async {
+          // Shadow current into c so Dart flow analysis can track non-nullability
+          // across this async closure boundary.
+          var c = current;
+          if (c == null) return;
+
           // Reset streak freeze weekly if needed
-          if (current!.shouldResetStreakFreeze) {
-            current = current!.copyWith(
+          if (c.shouldResetStreakFreeze) {
+            c = c.copyWith(
               hasStreakFreeze: true,
               streakFreezeGrantedDate: DateTime.now(),
               updatedAt: DateTime.now(),
             );
+            current = c;
           }
 
           final now = DateTime.now();
           final today = _normalizeDate(now);
 
-          int newStreak = current!.currentStreak;
-          int longestStreak = current!.longestStreak;
+          int newStreak = c.currentStreak;
+          int longestStreak = c.longestStreak;
           bool usedFreeze = false;
 
-          if (current!.lastActivityDate != null) {
-            final lastDate = _normalizeDate(current!.lastActivityDate!);
+          if (c.lastActivityDate != null) {
+            final lastDate = _normalizeDate(c.lastActivityDate!);
             final dayDifference = today.difference(lastDate).inDays;
 
             if (dayDifference == 0) {
               // Same day - keep current streak, no increment
-              newStreak = current!.currentStreak;
+              newStreak = c.currentStreak;
             } else if (dayDifference == 1) {
               // Consecutive day - increment streak
-              newStreak = current!.currentStreak + 1;
+              newStreak = c.currentStreak + 1;
             } else if (dayDifference == 2 &&
-                current!.hasStreakFreeze &&
-                !current!.streakFreezeUsedThisWeek) {
+                c.hasStreakFreeze &&
+                !c.streakFreezeUsedThisWeek) {
               // 1 day gap + freeze available = use freeze to save streak
-              newStreak = current!.currentStreak + 1; // Continue streak
+              newStreak = c.currentStreak + 1; // Continue streak
               usedFreeze = true;
             } else {
               // Gap in activity - reset streak
@@ -242,29 +248,29 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
 
           // Bonus XP for streak milestones (only when streak increases)
           int bonusXp = 0;
-          if (newStreak > current!.currentStreak) {
+          if (newStreak > c.currentStreak) {
             bonusXp = XpRewards.dailyStreak;
           }
 
           // Update daily XP history
           final todayKey = _formatDate(today);
-          final previousTodayXp = current!.dailyXpHistory[todayKey] ?? 0;
+          final previousTodayXp = c.dailyXpHistory[todayKey] ?? 0;
           final todayXp = previousTodayXp + effectiveXp + bonusXp;
           final updatedHistory = {
-            ...current!.dailyXpHistory,
+            ...c.dailyXpHistory,
             todayKey: todayXp,
           };
 
-          final updated = current!.copyWith(
-            totalXp: current!.totalXp + effectiveXp + bonusXp,
+          final updated = c.copyWith(
+            totalXp: c.totalXp + effectiveXp + bonusXp,
             currentStreak: newStreak,
             longestStreak: longestStreak,
             lastActivityDate: now,
             dailyXpHistory: updatedHistory,
-            hasStreakFreeze: usedFreeze ? false : current!.hasStreakFreeze,
+            hasStreakFreeze: usedFreeze ? false : c.hasStreakFreeze,
             streakFreezeUsedDate: usedFreeze
                 ? now
-                : current!.streakFreezeUsedDate,
+                : c.streakFreezeUsedDate,
             updatedAt: now,
           );
 
@@ -275,7 +281,7 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
           final gemsNotifier = ref.read(gemsProvider.notifier);
 
           // Streak milestone gems (7, 14, 30, 50, 100 days)
-          if (newStreak > current!.currentStreak) {
+          if (newStreak > c.currentStreak) {
             final streakGems = GemRewards.getStreakMilestoneReward(newStreak);
             if (streakGems > 0) {
               await gemsNotifier.addGems(
@@ -287,8 +293,8 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
           }
 
           // Daily goal completion gems (first time reaching goal today)
-          if (previousTodayXp < current!.dailyXpGoal &&
-              todayXp >= current!.dailyXpGoal) {
+          if (previousTodayXp < c.dailyXpGoal &&
+              todayXp >= c.dailyXpGoal) {
             await gemsNotifier.addGems(
               amount: GemRewards.dailyGoalMet,
               reason: GemEarnReason.dailyGoalMet,

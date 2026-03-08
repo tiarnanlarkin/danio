@@ -507,7 +507,8 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
       return _buildQuizResults();
     }
 
-    final quiz = widget.lesson.quiz!;
+    final quiz = widget.lesson.quiz;
+    if (quiz == null) return const SizedBox.shrink();
     final question = quiz.questions[_currentQuizQuestion];
 
     return Column(
@@ -784,7 +785,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
                 !_answered
                     ? 'Check Answer'
                     : _currentQuizQuestion <
-                          widget.lesson.quiz!.questions.length - 1
+                          quiz.questions.length - 1
                     ? 'Next Question'
                     : 'See Results',
               ),
@@ -796,7 +797,8 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
   }
 
   Widget _buildQuizResults() {
-    final quiz = widget.lesson.quiz!;
+    final quiz = widget.lesson.quiz;
+    if (quiz == null) return const SizedBox.shrink();
     final percentage = (_correctAnswers / quiz.questions.length * 100).round();
     final passed = percentage >= quiz.passingScore;
     final bonusXp = passed ? quiz.bonusXp : 0;
