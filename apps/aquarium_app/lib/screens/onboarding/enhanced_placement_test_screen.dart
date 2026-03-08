@@ -149,7 +149,7 @@ class _EnhancedPlacementTestScreenState
 
     if (!mounted) return;
 
-    Navigator.of(context).pushReplacement(
+    Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => PlacementResultScreen(result: result),
       ),

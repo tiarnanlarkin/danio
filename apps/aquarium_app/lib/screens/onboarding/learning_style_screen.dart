@@ -46,7 +46,7 @@ class _LearningStyleScreenState extends ConsumerState<LearningStyleScreen> {
 
     if (!mounted) return;
 
-    Navigator.of(context).pushReplacement(
+    Navigator.of(context).push(
       MaterialPageRoute(
         builder: (_) => const EnhancedTutorialWalkthroughScreen(),
       ),
@@ -101,7 +101,7 @@ class _LearningStyleScreenState extends ConsumerState<LearningStyleScreen> {
               const SizedBox(height: AppSpacing.sm),
               TextButton(
                 onPressed: () {
-                  Navigator.of(context).pushReplacement(
+                  Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (_) =>
                           const EnhancedTutorialWalkthroughScreen(),

@@ -6,10 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:confetti/confetti.dart';
 import '../../models/models.dart';
+import '../../providers/onboarding_provider.dart';
 import '../../providers/tank_provider.dart';
 import '../../theme/app_theme.dart';
 import '../../services/onboarding_service.dart';
-import '../tab_navigator.dart';
 
 class EnhancedTutorialWalkthroughScreen extends ConsumerStatefulWidget {
   const EnhancedTutorialWalkthroughScreen({super.key});
@@ -133,10 +133,9 @@ class _EnhancedTutorialWalkthroughScreenState
     
     if (!mounted) return;
     
-    Navigator.of(context).pushAndRemoveUntil(
-      MaterialPageRoute(builder: (_) => const TabNavigator()),
-      (route) => false,
-    );
+    // Let _AppRouter handle the transition to TabNavigator naturally.
+    ref.invalidate(onboardingCompletedProvider);
+    Navigator.of(context).popUntil((route) => route.isFirst);
   }
 
   Future<void> _createFirstTank() async {
@@ -181,10 +180,9 @@ class _EnhancedTutorialWalkthroughScreenState
 
       if (!mounted) return;
 
-      Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (_) => const TabNavigator()),
-        (route) => false,
-      );
+      // Let _AppRouter handle the transition to TabNavigator naturally.
+      ref.invalidate(onboardingCompletedProvider);
+      Navigator.of(context).popUntil((route) => route.isFirst);
     } catch (e) {
       if (!mounted) return;
 

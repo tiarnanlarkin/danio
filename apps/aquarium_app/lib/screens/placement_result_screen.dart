@@ -88,7 +88,7 @@ class PlacementResultScreen extends ConsumerWidget {
                 children: [
                   FilledButton(
                     onPressed: () {
-                      Navigator.of(context).pushReplacement(
+                      Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (_) =>
                               const LearningStyleScreen(),

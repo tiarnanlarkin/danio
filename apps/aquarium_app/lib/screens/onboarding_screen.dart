@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../providers/onboarding_provider.dart';
 import '../services/onboarding_service.dart';
 import '../theme/app_theme.dart';
 import '../models/user_profile.dart';
@@ -9,7 +10,6 @@ import '../models/tank.dart';
 import '../providers/user_profile_provider.dart';
 import 'onboarding/profile_creation_screen.dart';
 import 'onboarding/experience_assessment_screen.dart';
-import 'tab_navigator.dart';
 
 class OnboardingScreen extends ConsumerStatefulWidget {
   const OnboardingScreen({super.key});
@@ -376,7 +376,11 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen>
     await service.completeOnboarding();
 
     if (mounted) {
-      Navigator.of(context).pushReplacement(
+      // Use push (not pushReplacement) so _AppRouter stays as the base route.
+      // When the onboarding flow finishes, popUntil(route.isFirst) returns
+      // to _AppRouter, which re-evaluates its providers and transitions to
+      // TabNavigator naturally — preventing the duplicate nav bar bug.
+      Navigator.of(context).push(
         MaterialPageRoute(builder: (_) => const ExperienceAssessmentScreen()),
       );
     }
@@ -395,16 +399,16 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen>
         goals: [UserGoal.keepFishAlive, UserGoal.beautifulDisplay],
       );
 
-      // Mark onboarding as complete
+      // Mark onboarding as complete and let _AppRouter rebuild naturally.
+      // Do NOT push TabNavigator directly — that causes duplicate nav bars.
       final service = await OnboardingService.getInstance();
       await service.completeOnboarding();
 
       if (mounted) {
-        // Go straight to main app
-        Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (_) => const TabNavigator()),
-          (route) => false,
-        );
+        // Invalidate the provider so _AppRouter re-evaluates and transitions
+        // to TabNavigator itself. Pop all pushed routes back to _AppRouter.
+        ref.invalidate(onboardingCompletedProvider);
+        Navigator.of(context).popUntil((route) => route.isFirst);
       }
     } catch (e) {
       if (mounted) {

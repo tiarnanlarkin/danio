@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../models/models.dart';
+import '../../providers/onboarding_provider.dart';
 import '../../providers/tank_provider.dart';
 import '../../services/celebration_service.dart';
 import '../../services/onboarding_service.dart';
 import '../../theme/app_theme.dart';
-import '../tab_navigator.dart';
 
 /// Step-by-step wizard for creating first tank
 class FirstTankWizardScreen extends ConsumerStatefulWidget {
@@ -95,25 +95,23 @@ class _FirstTankWizardScreenState extends ConsumerState<FirstTankWizardScreen> {
     await onboardingService.completeOnboarding();
 
     if (mounted) {
-      // Navigate to main app. Use addPostFrameCallback to ensure all pending
-      // provider rebuilds complete before deactivating the wizard's elements.
-      // We trigger the celebration from TabNavigator after it's fully built,
-      // using a short delay to avoid the _deactivateRecursively lifecycle
-      // assertion that fires when changing provider state during navigation.
-      final ctx = context; // capture before async gap
+      // Fire celebration, then let _AppRouter transition to TabNavigator.
+      // The CelebrationOverlayWrapper is above the Navigator in the widget
+      // tree (installed by MaterialApp.builder), so the overlay persists
+      // across route changes — the celebration will display over TabNavigator.
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (!mounted) return;
-        debugPrint('🎯 WIZARD: Starting navigation via pushReplacement');
         try {
-          Navigator.of(ctx).pushReplacement(
-            MaterialPageRoute(
-              builder: (_) => const _PostCreationNavigator(),
-            ),
+          ref.read(celebrationProvider.notifier).milestone(
+            'Tank Created! 🐠',
+            subtitle: 'Welcome to your aquarium journey!',
           );
-          debugPrint('🎯 WIZARD: pushReplacement completed without exception');
         } catch (e, s) {
-          debugPrint('🚨 WIZARD: pushReplacement threw: $e\n$s');
+          debugPrint('🚨 WIZARD: milestone() threw: $e\n$s');
         }
+        // Let _AppRouter handle the transition to TabNavigator naturally.
+        ref.invalidate(onboardingCompletedProvider);
+        Navigator.of(context).popUntil((route) => route.isFirst);
       });
     }
   }
@@ -505,42 +503,6 @@ class _FirstTankWizardScreenState extends ConsumerState<FirstTankWizardScreen> {
   }
 }
 
-/// Thin wrapper widget that builds [TabNavigator] then fires the first-tank
-/// celebration in a post-frame callback, safely after the previous route's
-/// elements have been fully deactivated.
-class _PostCreationNavigator extends ConsumerStatefulWidget {
-  const _PostCreationNavigator();
-
-  @override
-  ConsumerState<_PostCreationNavigator> createState() =>
-      _PostCreationNavigatorState();
-}
-
-class _PostCreationNavigatorState
-    extends ConsumerState<_PostCreationNavigator> {
-  @override
-  void initState() {
-    super.initState();
-    debugPrint('🎯 POST_NAV: initState called');
-    // Fire celebration after the widget tree is fully settled.
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      debugPrint('🎯 POST_NAV: addPostFrameCallback fired, mounted=$mounted');
-      if (!mounted) return;
-      try {
-        ref.read(celebrationProvider.notifier).milestone(
-          'Tank Created! 🐠',
-          subtitle: 'Welcome to your aquarium journey!',
-        );
-        debugPrint('🎯 POST_NAV: milestone() completed without exception');
-      } catch (e, s) {
-        debugPrint('🚨 POST_NAV: milestone() threw: $e\n$s');
-      }
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    debugPrint('🎯 POST_NAV: build() called');
-    return const TabNavigator();
-  }
-}
+// _PostCreationNavigator removed — celebration is now fired before
+// _AppRouter transitions to TabNavigator, preventing the duplicate
+// nav bar bug.

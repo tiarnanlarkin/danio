@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart' hide PerformanceOverlay;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'providers/onboarding_provider.dart';
 import 'providers/settings_provider.dart';
 import 'providers/user_profile_provider.dart';
 import 'providers/spaced_repetition_provider.dart';
@@ -128,7 +129,11 @@ class DanioApp extends ConsumerWidget {
   }
 }
 
-/// Checks onboarding state, profile existence, and routes to the appropriate screen.
+/// Checks onboarding state, profile existence, and routes to the appropriate
+/// screen.  All routing decisions are driven by Riverpod providers so that
+/// mid-session state changes (e.g. onboarding completing) cause a single,
+/// clean rebuild — preventing the duplicate-TabNavigator bug that occurred
+/// when onboarding screens pushed their own TabNavigator instance.
 class _AppRouter extends ConsumerStatefulWidget {
   const _AppRouter();
 
@@ -138,15 +143,10 @@ class _AppRouter extends ConsumerStatefulWidget {
 
 class _AppRouterState extends ConsumerState<_AppRouter>
     with WidgetsBindingObserver {
-  bool _isLoading = true;
-  bool _showOnboarding = false;
-  bool _needsProfile = false;
-
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    _checkOnboardingAndProfile();
   }
 
   @override
@@ -185,100 +185,79 @@ class _AppRouterState extends ConsumerState<_AppRouter>
     }
   }
 
-  Future<void> _checkOnboardingAndProfile() async {
-    // Check onboarding status
-    final onboardingService = await OnboardingService.getInstance();
-    final onboardingCompleted = onboardingService.isOnboardingCompleted;
-
-    // Check profile status
-    bool profileExists = false;
-    if (onboardingCompleted) {
-      // Wait for profile provider to actually finish loading (not just a timeout!)
-      final profileAsync = ref.read(userProfileProvider);
-      
-      // If still loading, wait for it to complete
-      if (profileAsync is AsyncLoading) {
-        // Wait up to 2 seconds for profile to load
-        for (int i = 0; i < 20; i++) {
-          await Future.delayed(const Duration(milliseconds: 100));
-          final current = ref.read(userProfileProvider);
-          if (current is! AsyncLoading) break;
-        }
-      }
-      
-      final profile = ref.read(userProfileProvider).value;
-      profileExists = profile != null;
-    }
-
-    if (!mounted) return;
-    setState(() {
-      _showOnboarding = !onboardingCompleted;
-      _needsProfile = onboardingCompleted && !profileExists;
-      _isLoading = false;
-    });
-
-    // Schedule review notifications after initialization
-    if (onboardingCompleted && profileExists) {
-      _scheduleReviewNotifications();
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    if (_isLoading) {
-      // Splash screen while checking onboarding state and profile
-      final isDark = Theme.of(context).brightness == Brightness.dark;
-      return Scaffold(
-        body: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: isDark
-                  ? [AppColors.primaryDark, AppColors.backgroundDark]
-                  : [AppColors.primary, AppColors.secondary],
-            ),
-          ),
-          child: Center(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(
-                  Icons.water_drop,
-                  size: 80,
-                  color: isDark ? Colors.black : Colors.white,
-                ),
-                const SizedBox(height: AppSpacing.md),
-                Text(
-                  'Danio',
-                  style: Theme.of(context).textTheme.headlineMedium!.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: isDark ? Colors.black : Colors.white,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      );
+    // ── 1. Onboarding state (reactive via provider) ──────────────────────
+    final onboardingAsync = ref.watch(onboardingCompletedProvider);
+
+    // While the provider is loading, show splash screen
+    if (onboardingAsync is AsyncLoading || !onboardingAsync.hasValue) {
+      return _buildSplash(context);
     }
 
-    // Auto-transition when a profile is created while ProfileCreationScreen
-    // is shown as the root widget (not pushed via Navigator.push).  Without
-    // this listener, Navigator.pop() from the skip button would be a no-op.
-    ref.listen(userProfileProvider, (_, next) {
-      if (next.value != null && _needsProfile) {
-        setState(() => _needsProfile = false);
-      }
+    final onboardingCompleted = onboardingAsync.value ?? false;
+
+    if (!onboardingCompleted) {
+      return const OnboardingScreen();
+    }
+
+    // ── 2. Profile state (reactive via provider) ─────────────────────────
+    final profileAsync = ref.watch(userProfileProvider);
+
+    // Still loading profile — show splash to avoid flash
+    if (profileAsync is AsyncLoading) {
+      return _buildSplash(context);
+    }
+
+    final profileExists = profileAsync.value != null;
+
+    if (!profileExists) {
+      return const ProfileCreationScreen();
+    }
+
+    // ── 3. Everything ready — show main app ──────────────────────────────
+    // Schedule review notifications (idempotent, cheap to call)
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) _scheduleReviewNotifications();
     });
 
-    // Route to appropriate screen based on state
-    if (_showOnboarding) {
-      return const OnboardingScreen();
-    } else if (_needsProfile) {
-      return const ProfileCreationScreen();
-    } else {
-      return const TabNavigator();
-    }
+    return const TabNavigator();
+  }
+
+  Widget _buildSplash(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return Scaffold(
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: isDark
+                ? [AppColors.primaryDark, AppColors.backgroundDark]
+                : [AppColors.primary, AppColors.secondary],
+          ),
+        ),
+        child: Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                Icons.water_drop,
+                size: 80,
+                color: isDark ? Colors.black : Colors.white,
+              ),
+              const SizedBox(height: AppSpacing.md),
+              Text(
+                'Danio',
+                style: Theme.of(context).textTheme.headlineMedium!.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: isDark ? Colors.black : Colors.white,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }

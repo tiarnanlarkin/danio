@@ -174,7 +174,7 @@ class _ExperienceAssessmentScreenState
   }
 
   void _startJourney() {
-    Navigator.of(context).pushReplacement(
+    Navigator.of(context).push(
       MaterialPageRoute(
         builder: (_) =>
             FirstTankWizardScreen(experienceLevel: _determinedLevel!),

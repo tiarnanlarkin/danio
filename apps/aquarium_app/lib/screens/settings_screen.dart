@@ -36,10 +36,10 @@ import 'species_browser_screen.dart';
 import 'feeding_guide_screen.dart';
 import 'parameter_guide_screen.dart';
 import '../services/notification_service.dart';
+import '../providers/onboarding_provider.dart';
 import '../services/onboarding_service.dart';
 import '../theme/app_theme.dart';
 import '../utils/app_feedback.dart';
-import 'onboarding_screen.dart';
 import 'shop_street_screen.dart';
 import 'theme_gallery_screen.dart';
 import 'difficulty_settings_screen.dart';
@@ -605,7 +605,7 @@ class SettingsScreen extends ConsumerWidget {
             leading: const Icon(Icons.replay_outlined),
             title: 'Replay Onboarding',
             subtitle: 'See the intro screens again',
-            onTap: () => _replayOnboarding(context),
+            onTap: () => _replayOnboarding(context, ref),
           ),
           (_) => AppListTile(
             leading: const Icon(Icons.auto_awesome),
@@ -656,7 +656,7 @@ class SettingsScreen extends ConsumerWidget {
             title: 'Clear All Data',
             subtitle: 'Delete all tanks, logs, and settings',
             isDestructive: true,
-            onTap: () => _confirmClearData(context),
+            onTap: () => _confirmClearData(context, ref),
           ),
           // Debug crash button (only in debug mode)
           if (kDebugMode)
@@ -934,19 +934,20 @@ class SettingsScreen extends ConsumerWidget {
     }
   }
 
-  Future<void> _replayOnboarding(BuildContext context) async {
+  Future<void> _replayOnboarding(BuildContext context, WidgetRef ref) async {
     final service = await OnboardingService.getInstance();
     await service.resetOnboarding();
 
     if (context.mounted) {
-      Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (_) => const OnboardingScreen()),
-        (route) => false,
-      );
+      // Invalidate provider so _AppRouter re-evaluates and shows onboarding.
+      // Use rootNavigator to escape the tab's inner Navigator.
+      ref.invalidate(onboardingCompletedProvider);
+      Navigator.of(context, rootNavigator: true)
+          .popUntil((route) => route.isFirst);
     }
   }
 
-  Future<void> _confirmClearData(BuildContext context) async {
+  Future<void> _confirmClearData(BuildContext context, WidgetRef ref) async {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
@@ -1016,10 +1017,11 @@ class SettingsScreen extends ConsumerWidget {
       await service.resetOnboarding();
 
       if (context.mounted) {
-        Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (_) => const OnboardingScreen()),
-          (route) => false,
-        );
+        // Invalidate provider so _AppRouter re-evaluates and shows onboarding.
+        // Use rootNavigator to escape the tab's inner Navigator.
+        ref.invalidate(onboardingCompletedProvider);
+        Navigator.of(context, rootNavigator: true)
+            .popUntil((route) => route.isFirst);
       }
     } catch (e) {
       if (context.mounted) {
