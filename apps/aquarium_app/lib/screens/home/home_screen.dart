@@ -256,15 +256,29 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     // widgets from being built on an already-deactivated element tree.
     if (!mounted) return _buildSkeletonRoom();
 
-    return tanksAsync.when(
-      loading: () => _buildSkeletonRoom(),
-      error: (err, stack) => AppErrorState(
+    // P0-002 FIX: When tanksProvider is refreshing (e.g. after createTank
+    // invalidates it), tanksAsync enters AsyncLoading WITH previous data.
+    // Using .when() alone shows the skeleton during that brief reload window,
+    // which is pitch-black in dark mode — looks like a blank screen.
+    // Instead: only show the skeleton on the very first load (no previous
+    // value). If we already have data, use it while the refresh is in flight.
+    if (tanksAsync.isLoading && !tanksAsync.hasValue) {
+      return _buildSkeletonRoom();
+    }
+    if (tanksAsync.hasError && !tanksAsync.hasValue) {
+      return AppErrorState(
         title: 'Couldn\'t load your tanks',
         message: 'Check your connection and give it another go',
         onRetry: () => ref.invalidate(tanksProvider),
-      ),
-      data: (tanks) {
-        if (!mounted) return _buildSkeletonRoom();
+      );
+    }
+
+    final tanksData = tanksAsync.valueOrNull ?? [];
+
+    // Wrap in a closure so the existing data-branch code is unchanged below.
+    return Builder(builder: (context) {
+      final tanks = tanksData;
+      if (!mounted) return _buildSkeletonRoom();
         _maybeShowFirstTankPrompt(context, tanks);
         if (tanks.isEmpty) {
           return EmptyRoomScene(
@@ -295,7 +309,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 // Don't block navigation on provider errors
               }
 
-              if (mounted) {
+              if (context.mounted) {
                 _navigateToTankDetail(context, demoTank);
               }
             },
@@ -861,8 +875,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     _isNavigatingToCreate = false;
 
     // CreateTankScreen calls Navigator.pop() (no result value) after creation.
-    // Await the provider future so we get the freshest tank list.
+    // Invalidate first to guarantee a fresh fetch now that the animation is done.
     if (!mounted) return;
+    ref.invalidate(tanksProvider);
     final tanksAfter = await ref.read(tanksProvider.future).timeout(
       const Duration(seconds: 3),
       onTimeout: () => [],
@@ -899,7 +914,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     Navigator.of(context).push(
       MaterialPageRoute(builder: (_) => const CreateTankScreen()),
     ).whenComplete(() {
-      if (mounted) setState(() => _isNavigatingToCreate = false);
+      if (mounted) {
+        setState(() => _isNavigatingToCreate = false);
+        ref.invalidate(tanksProvider); // Re-fetch after pop animation completes
+      }
     });
   }
 
