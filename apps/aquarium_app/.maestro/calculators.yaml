@@ -1,0 +1,188 @@
+appId: com.tiarnanlarkin.danio
+---
+# Flow: Calculators — open the Toolbox tab → Workshop → test each calculator
+# with sample values and verify results are shown.
+
+- launchApp
+
+- waitForAnimationToEnd
+
+# Navigate to Toolbox tab
+- tapOn: "Toolbox"
+- waitForAnimationToEnd
+
+- assertVisible: "🧰 Toolbox"
+
+# Open Workshop (contains all calculators)
+- tapOn: "Workshop"
+- waitForAnimationToEnd
+
+- takeScreenshot: workshop_home
+
+# ── Water Change Calculator ───────────────────────────────────────────────────
+- tapOn: "Water Change"
+- waitForAnimationToEnd
+
+- takeScreenshot: water_change_calc
+
+# Enter tank volume
+- runFlow:
+    when:
+      visible: "Tank volume"
+    commands:
+      - tapOn: "Tank volume"
+      - inputText: "200"
+
+# Enter percentage
+- runFlow:
+    when:
+      visible: "percentage"
+    commands:
+      - tapOn: "percentage"
+      - inputText: "25"
+
+- runFlow:
+    when:
+      visible: "Calculate"
+    commands:
+      - tapOn: "Calculate"
+      - waitForAnimationToEnd
+
+- takeScreenshot: water_change_result
+- back
+- waitForAnimationToEnd
+
+# ── Stocking Calculator ───────────────────────────────────────────────────────
+- tapOn: "Stocking"
+- waitForAnimationToEnd
+
+- takeScreenshot: stocking_calc
+
+- runFlow:
+    when:
+      visible: "Tank size"
+    commands:
+      - tapOn: "Tank size"
+      - inputText: "200"
+
+- runFlow:
+    when:
+      visible: "Calculate"
+    commands:
+      - tapOn: "Calculate"
+      - waitForAnimationToEnd
+
+- takeScreenshot: stocking_result
+- back
+- waitForAnimationToEnd
+
+# ── CO₂ Calculator ────────────────────────────────────────────────────────────
+- tapOn: "CO₂"
+- waitForAnimationToEnd
+
+- takeScreenshot: co2_calc
+
+# Enter pH
+- runFlow:
+    when:
+      visible: "pH"
+    commands:
+      - tapOn: "pH"
+      - inputText: "7.0"
+
+# Enter KH
+- runFlow:
+    when:
+      visible: "KH"
+    commands:
+      - tapOn: "KH"
+      - inputText: "4"
+
+- runFlow:
+    when:
+      visible: "Calculate"
+    commands:
+      - tapOn: "Calculate"
+      - waitForAnimationToEnd
+
+- takeScreenshot: co2_result
+- back
+- waitForAnimationToEnd
+
+# ── Dosing Calculator ─────────────────────────────────────────────────────────
+- tapOn: "Dosing"
+- waitForAnimationToEnd
+
+- takeScreenshot: dosing_calc
+- back
+- waitForAnimationToEnd
+
+# ── Unit Converter ────────────────────────────────────────────────────────────
+- tapOn: "Unit Converter"
+- waitForAnimationToEnd
+
+- takeScreenshot: unit_converter
+
+- runFlow:
+    when:
+      visible: "Enter value"
+    commands:
+      - tapOn: "Enter value"
+      - inputText: "100"
+
+- waitForAnimationToEnd
+- takeScreenshot: unit_converter_result
+- back
+- waitForAnimationToEnd
+
+# ── Tank Volume Calculator ────────────────────────────────────────────────────
+- tapOn: "Tank Volume"
+- waitForAnimationToEnd
+
+- takeScreenshot: tank_volume_calc
+
+- runFlow:
+    when:
+      visible: "Length"
+    commands:
+      - tapOn: "Length"
+      - inputText: "80"
+
+- runFlow:
+    when:
+      visible: "Width"
+    commands:
+      - tapOn: "Width"
+      - inputText: "40"
+
+- runFlow:
+    when:
+      visible: "Height"
+    commands:
+      - tapOn: "Height"
+      - inputText: "50"
+
+- runFlow:
+    when:
+      visible: "Calculate"
+    commands:
+      - tapOn: "Calculate"
+      - waitForAnimationToEnd
+
+- takeScreenshot: tank_volume_result
+- back
+- waitForAnimationToEnd
+
+# ── Compatibility Checker ─────────────────────────────────────────────────────
+- tapOn: "Compatibility"
+- waitForAnimationToEnd
+
+- takeScreenshot: compatibility_checker
+- back
+- waitForAnimationToEnd
+
+# Back to Toolbox
+- back
+- waitForAnimationToEnd
+- assertVisible: "🧰 Toolbox"
+- takeScreenshot: workshop_done

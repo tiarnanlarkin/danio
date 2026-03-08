@@ -1,0 +1,140 @@
+# ============================================================
+# calculator-flow.ad
+# Test every calculator tool in the Workshop screen.
+#
+# Tools covered:
+#   1. Water Change Calculator
+#   2. Stocking Calculator
+#   3. CO₂ Calculator
+#   4. Dosing Calculator
+#   5. Unit Converter
+#   6. Tank Volume Calculator
+#   7. Lighting Schedule
+#   8. Compatibility Checker
+#   9. Cost Tracker
+#
+# Pre-condition: user is onboarded; Toolbox tab visible.
+# ============================================================
+
+open com.tiarnanlarkin.danio --platform android
+
+wait 2000
+
+# Navigate to Toolbox → Workshop
+find "Toolbox" click
+wait 800
+find "Workshop" click
+wait 1000
+snapshot
+screenshot /tmp/danio-calc-01-workshop.png
+
+assert_text "Workshop"
+
+# ── 1. Water Change Calculator ───────────────────────────────
+find "Water Change" click
+wait 800
+snapshot
+screenshot /tmp/danio-calc-02-water-change.png
+
+assert_text "Water Change Calculator"
+
+# Fields pre-populated with defaults; change one value
+clear "Tank Volume"
+fill "Tank Volume" "200"
+wait 300
+clear "Current Nitrate"
+fill "Current Nitrate" "50"
+wait 300
+clear "Target Nitrate"
+fill "Target Nitrate" "20"
+wait 300
+clear "Tap Water Nitrate"
+fill "Tap Water Nitrate" "5"
+wait 500
+
+snapshot
+screenshot /tmp/danio-calc-03-water-change-result.png
+
+# Result card should show percentage
+assert_text "Water Change Needed"
+
+press back
+wait 500
+
+# ── 2. Stocking Calculator ───────────────────────────────────
+find "Stocking" click
+wait 800
+snapshot
+screenshot /tmp/danio-calc-04-stocking.png
+
+assert_text "Stocking"
+press back
+wait 500
+
+# ── 3. CO₂ Calculator ────────────────────────────────────────
+find "CO₂ Calculator" click
+wait 800
+snapshot
+screenshot /tmp/danio-calc-05-co2.png
+
+assert_text "CO"
+press back
+wait 500
+
+# ── 4. Dosing Calculator ─────────────────────────────────────
+find "Dosing" click
+wait 800
+snapshot
+screenshot /tmp/danio-calc-06-dosing.png
+press back
+wait 500
+
+# ── 5. Unit Converter ────────────────────────────────────────
+find "Unit Converter" click
+wait 800
+snapshot
+screenshot /tmp/danio-calc-07-unit-converter.png
+
+assert_text "Unit Converter"
+press back
+wait 500
+
+# ── 6. Tank Volume Calculator ────────────────────────────────
+find "Tank Volume" click
+wait 800
+snapshot
+screenshot /tmp/danio-calc-08-tank-volume.png
+press back
+wait 500
+
+# ── 7. Lighting Schedule ─────────────────────────────────────
+find "Lighting" click
+wait 800
+snapshot
+screenshot /tmp/danio-calc-09-lighting.png
+press back
+wait 500
+
+# ── 8. Compatibility Checker ─────────────────────────────────
+find "Compatibility" click
+wait 800
+snapshot
+screenshot /tmp/danio-calc-10-compatibility.png
+
+assert_text "Compatibility"
+press back
+wait 500
+
+# ── 9. Cost Tracker ──────────────────────────────────────────
+find "Cost Tracker" click
+wait 800
+snapshot
+screenshot /tmp/danio-calc-11-cost-tracker.png
+press back
+wait 500
+
+# Back at Workshop
+snapshot
+screenshot /tmp/danio-calc-12-workshop-done.png
+
+close

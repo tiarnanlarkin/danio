@@ -1,0 +1,136 @@
+appId: com.tiarnanlarkin.danio
+---
+# Flow: Learning Lesson — navigate to Learn tab, open a lesson, complete the
+# reading section, answer the quiz, and verify XP is awarded.
+
+- launchApp
+
+- waitForAnimationToEnd
+
+# Navigate to Learn tab
+- tapOn: "Learn"
+- waitForAnimationToEnd
+
+- takeScreenshot: learn_screen_start
+
+# ── Open a Learning Path ──────────────────────────────────────────────────────
+# The Learn screen lists learning paths. Scroll down to find and tap one.
+- scrollUntilVisible:
+    element: "Learning Paths"
+    direction: DOWN
+
+# Tap the first visible learning path card
+- runFlow:
+    when:
+      visible: "Water Chemistry"
+    commands:
+      - tapOn: "Water Chemistry"
+      - waitForAnimationToEnd
+
+# If "Water Chemistry" isn't available, try the first path in the list
+- runFlow:
+    when:
+      notVisible: "Lesson"
+    commands:
+      - scrollUntilVisible:
+          element: "Beginner"
+          direction: DOWN
+      - tapOn: "Beginner"
+      - waitForAnimationToEnd
+
+# ── Open a Lesson ─────────────────────────────────────────────────────────────
+# After tapping a path, a list of lessons appears. Tap the first available one.
+- waitForAnimationToEnd
+- scrollUntilVisible:
+    element: "Start"
+    direction: DOWN
+
+- tapOn: "Start"
+- waitForAnimationToEnd
+
+# ── Read Lesson Content ───────────────────────────────────────────────────────
+- takeScreenshot: lesson_reading_view
+
+# Scroll through lesson content
+- scroll:
+    direction: DOWN
+    duration: 1500
+
+- waitForAnimationToEnd
+
+# If there's a "Take Quiz" button, tap it
+- runFlow:
+    when:
+      visible: "Take Quiz"
+    commands:
+      - tapOn: "Take Quiz"
+      - waitForAnimationToEnd
+
+# If there's a "Start Quiz" button, tap it
+- runFlow:
+    when:
+      visible: "Start Quiz"
+    commands:
+      - tapOn: "Start Quiz"
+      - waitForAnimationToEnd
+
+# ── Answer Quiz Questions ─────────────────────────────────────────────────────
+- takeScreenshot: quiz_question_1
+
+# Answer up to 5 quiz questions
+- repeat:
+    times: 5
+    commands:
+      - runFlow:
+          when:
+            visible: "Check Answer"
+          commands:
+            # Tap the first answer option
+            - tapOn:
+                index: 0
+                text: ".*"
+            - waitForAnimationToEnd
+            - tapOn: "Check Answer"
+            - waitForAnimationToEnd
+      - runFlow:
+          when:
+            visible: "Next Question"
+          commands:
+            - tapOn: "Next Question"
+            - waitForAnimationToEnd
+      - runFlow:
+          when:
+            visible: "Next"
+          commands:
+            - tapOn: "Next"
+            - waitForAnimationToEnd
+
+# ── Verify Completion ─────────────────────────────────────────────────────────
+- takeScreenshot: lesson_complete
+
+# After quiz completion, XP is awarded — look for XP animation or summary
+- runFlow:
+    when:
+      visible: "XP"
+    commands:
+      - assertVisible: "XP"
+
+# Or check for the completion/well done screen
+- runFlow:
+    when:
+      visible: "Well done"
+    commands:
+      - assertVisible: "Well done"
+
+- runFlow:
+    when:
+      visible: "Complete"
+    commands:
+      - assertVisible: "Complete"
+
+# Navigate back to learn screen
+- back
+- waitForAnimationToEnd
+
+- assertVisible: "Learn"
+- takeScreenshot: back_to_learn

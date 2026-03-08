@@ -1,0 +1,158 @@
+appId: com.tiarnanlarkin.danio
+---
+# Flow: Tank Management — open a tank, edit details, add livestock,
+# verify changes are saved.
+# NOTE: Assumes at least one tank already exists. If not, run tank-creation.yaml first.
+
+- launchApp
+
+- waitForAnimationToEnd
+
+# Navigate to Tank tab
+- tapOn: "Tank"
+- waitForAnimationToEnd
+
+- takeScreenshot: tank_home
+
+# ── Open First Tank ───────────────────────────────────────────────────────────
+# Tap the first tank card visible on the home screen.
+# The tank switcher or room scene is tappable.
+- runFlow:
+    when:
+      visible: "My Test Tank"
+    commands:
+      - tapOn: "My Test Tank"
+      - waitForAnimationToEnd
+
+# Fallback: tap the first tank card visible
+- runFlow:
+    when:
+      notVisible: "Tank Health"
+    commands:
+      - tapOn:
+          index: 0
+          text: ".*"
+      - waitForAnimationToEnd
+
+- takeScreenshot: tank_detail_screen
+
+# ── View Tank Details ─────────────────────────────────────────────────────────
+# Tank detail screen shows quick stats, livestock preview, equipment, tasks
+- assertVisible: "Tank"
+
+# Scroll down to see all sections
+- scroll:
+    direction: DOWN
+    duration: 1000
+
+- takeScreenshot: tank_detail_scrolled
+
+# ── Add a Log Entry ───────────────────────────────────────────────────────────
+# Quick action FAB or "Add Log" button
+- runFlow:
+    when:
+      visible: "Add Log"
+    commands:
+      - tapOn: "Add Log"
+      - waitForAnimationToEnd
+      - takeScreenshot: add_log_screen
+      - runFlow:
+          when:
+            visible: "Temperature"
+          commands:
+            - tapOn: "Temperature"
+            - inputText: "25"
+      - runFlow:
+          when:
+            visible: "pH"
+          commands:
+            - tapOn: "pH"
+            - inputText: "7.2"
+      - runFlow:
+          when:
+            visible: "Save"
+          commands:
+            - tapOn: "Save"
+            - waitForAnimationToEnd
+      - runFlow:
+          when:
+            visible: "Log"
+          commands:
+            - tapOn: "Log"
+            - waitForAnimationToEnd
+      - takeScreenshot: log_saved
+
+# ── Navigate to Livestock ─────────────────────────────────────────────────────
+- scrollUntilVisible:
+    element: "Livestock"
+    direction: DOWN
+
+- tapOn: "Livestock"
+- waitForAnimationToEnd
+
+- takeScreenshot: livestock_screen
+
+# Add livestock
+- runFlow:
+    when:
+      visible: "Add"
+    commands:
+      - tapOn: "Add"
+      - waitForAnimationToEnd
+      - takeScreenshot: add_livestock_screen
+      # Fill in species search
+      - runFlow:
+          when:
+            visible: "Search species"
+          commands:
+            - tapOn: "Search species"
+            - inputText: "Neon Tetra"
+            - waitForAnimationToEnd
+      # Select first result
+      - runFlow:
+          when:
+            visible: "Neon Tetra"
+          commands:
+            - tapOn: "Neon Tetra"
+            - waitForAnimationToEnd
+      # Enter count
+      - runFlow:
+          when:
+            visible: "Count"
+          commands:
+            - tapOn: "Count"
+            - inputText: "6"
+      # Save
+      - runFlow:
+          when:
+            visible: "Save"
+          commands:
+            - tapOn: "Save"
+            - waitForAnimationToEnd
+      - runFlow:
+          when:
+            visible: "Add"
+          commands:
+            - tapOn: "Add"
+            - waitForAnimationToEnd
+      - takeScreenshot: livestock_added
+
+- back
+- waitForAnimationToEnd
+
+# ── Open Tank Settings / Edit ─────────────────────────────────────────────────
+- scrollUntilVisible:
+    element: "Settings"
+    direction: DOWN
+
+- runFlow:
+    when:
+      visible: "Tank Settings"
+    commands:
+      - tapOn: "Tank Settings"
+      - waitForAnimationToEnd
+      - takeScreenshot: tank_settings
+      - back
+      - waitForAnimationToEnd
+
+- takeScreenshot: tank_management_complete

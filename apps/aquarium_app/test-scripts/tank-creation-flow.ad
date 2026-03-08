@@ -1,0 +1,97 @@
+# ============================================================
+# tank-creation-flow.ad
+# Create a new freshwater tank end-to-end through the
+# 3-page CreateTankScreen wizard.
+#
+# Pre-condition: user is onboarded and on the main TabNavigator.
+#
+# Coverage:
+#   Page 1 – Name + type
+#   Page 2 – Volume + optional dimensions
+#   Page 3 – Water type + start date
+#   Success snackbar + celebration overlay
+# ============================================================
+
+open com.tiarnanlarkin.danio --platform android
+
+wait 2000
+snapshot
+
+# Navigate to Tank tab (index 2)
+find "Tank" click
+wait 500
+snapshot
+screenshot /tmp/danio-tank-01-home.png
+
+# Open "Add tank" – HomeScreen shows FAB or empty-state CTA
+# Try the FAB first; fall back to the empty-state button text
+find "Add tank" click
+wait 800
+
+# ── Page 1: Basic Info ──────────────────────────────────────
+snapshot
+screenshot /tmp/danio-tank-02-name.png
+
+assert_text "Name your tank"
+
+# Fill tank name
+fill "Tank name" "Living Room Tank"
+wait 300
+
+# Select Freshwater (default, but tap to confirm selection)
+find "Freshwater" click
+wait 200
+
+snapshot
+
+find "Next" click
+wait 500
+
+# ── Page 2: Size ────────────────────────────────────────────
+snapshot
+screenshot /tmp/danio-tank-03-size.png
+
+assert_text "Tank size"
+
+# Use the 120L quick preset
+find "120L" click
+wait 300
+snapshot
+
+# Optionally add dimensions
+fill "Length" "100"
+fill "Width" "40"
+fill "Height" "40"
+wait 200
+
+find "Next" click
+wait 500
+
+# ── Page 3: Water Type + Date ────────────────────────────────
+snapshot
+screenshot /tmp/danio-tank-04-watertype.png
+
+assert_text "Water type"
+
+# Select Tropical
+find "Tropical" click
+wait 200
+
+# Set start date to today
+find "Set to today" click
+wait 200
+
+snapshot
+
+# Create the tank!
+find "Create Tank" click
+wait 2000
+
+# ── Result ──────────────────────────────────────────────────
+snapshot
+screenshot /tmp/danio-tank-05-success.png
+
+# Snackbar should appear confirming creation
+assert_text "Living Room Tank"
+
+close

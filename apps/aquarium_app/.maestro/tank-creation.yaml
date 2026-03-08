@@ -1,0 +1,124 @@
+appId: com.tiarnanlarkin.danio
+---
+# Flow: Tank Creation — navigate to Tank tab, create a new tank via the wizard,
+# and verify the tank appears in the home screen.
+
+- launchApp
+
+- waitForAnimationToEnd
+
+# Navigate to Tank tab
+- tapOn: "Tank"
+- waitForAnimationToEnd
+
+- takeScreenshot: tank_tab_before_creation
+
+# ── Open New Tank wizard ──────────────────────────────────────────────────────
+# The HomeScreen has a SpeedDialFAB or an empty state "Add your first tank" button.
+# Try the FAB route first, then fall back to the empty state button.
+- runFlow:
+    when:
+      visible: "Add your first tank"
+    commands:
+      - tapOn: "Add your first tank"
+      - waitForAnimationToEnd
+
+- runFlow:
+    when:
+      visible: "Add Tank"
+    commands:
+      - tapOn: "Add Tank"
+      - waitForAnimationToEnd
+
+# If neither is visible, try the speed-dial FAB (floating action button)
+- runFlow:
+    when:
+      notVisible: "New Tank"
+    commands:
+      - tapOn:
+          id: "speed_dial_fab"
+      - waitForAnimationToEnd
+      - runFlow:
+          when:
+            visible: "New Tank"
+          commands:
+            - tapOn: "New Tank"
+            - waitForAnimationToEnd
+
+# ── Page 1: Basic Info ────────────────────────────────────────────────────────
+- assertVisible: "New Tank"
+
+# Enter tank name
+- tapOn:
+    text: "Tank name"
+- inputText: "My Test Tank"
+
+# Select tank type (Freshwater is default, but tap to confirm)
+- runFlow:
+    when:
+      visible: "Freshwater"
+    commands:
+      - tapOn: "Freshwater"
+
+- waitForAnimationToEnd
+
+# Proceed to next page
+- tapOn: "Next"
+- waitForAnimationToEnd
+
+# ── Page 2: Size ─────────────────────────────────────────────────────────────
+# Enter volume — find the volume input field
+- tapOn:
+    text: "Volume"
+- inputText: "200"
+
+# Optionally fill dimensions
+- runFlow:
+    when:
+      visible: "Length"
+    commands:
+      - tapOn:
+          text: "Length"
+      - inputText: "80"
+
+- runFlow:
+    when:
+      visible: "Width"
+    commands:
+      - tapOn:
+          text: "Width"
+      - inputText: "40"
+
+- runFlow:
+    when:
+      visible: "Height"
+    commands:
+      - tapOn:
+          text: "Height"
+      - inputText: "50"
+
+- waitForAnimationToEnd
+- tapOn: "Next"
+- waitForAnimationToEnd
+
+# ── Page 3: Water Type ───────────────────────────────────────────────────────
+# Water type page — choose Tropical
+- runFlow:
+    when:
+      visible: "Tropical"
+    commands:
+      - tapOn: "Tropical"
+      - waitForAnimationToEnd
+
+- takeScreenshot: tank_creation_water_page
+
+# Create the tank
+- tapOn: "Create Tank"
+- waitForAnimationToEnd
+
+# ── Verify Tank Appears ───────────────────────────────────────────────────────
+# After creation, the user should be back on the Tank tab or tank detail screen
+# and should see the new tank name
+- assertVisible: "My Test Tank"
+
+- takeScreenshot: tank_created_success

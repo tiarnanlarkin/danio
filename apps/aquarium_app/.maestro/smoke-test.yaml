@@ -1,0 +1,55 @@
+appId: com.tiarnanlarkin.danio
+---
+# === FULL SMOKE TEST ===
+
+# 1. FRESH LAUNCH + QUICK START
+- launchApp:
+    clearState: true
+- waitForAnimationToEnd
+- assertVisible: "Quick Start"
+- tapOn: "Quick Start"
+- waitForAnimationToEnd
+
+# We should now be on Learn tab
+- assertVisible: "Nitrogen Cycle"
+- assertVisible: "Learning Paths"
+
+# 2. TAB NAVIGATION — tap each tab by its label
+- tapOn:
+    text: "Practice"
+    index: 0
+- waitForAnimationToEnd
+
+- tapOn:
+    text: "Tank"
+    index: 0
+- waitForAnimationToEnd
+
+- tapOn:
+    text: "Smart"
+    index: 0
+- waitForAnimationToEnd
+
+- tapOn:
+    text: "Toolbox"
+    index: 0
+- waitForAnimationToEnd
+
+- tapOn:
+    text: "Learn"
+    index: 0
+- waitForAnimationToEnd
+
+# 3. OPEN A LESSON
+- tapOn: "Nitrogen Cycle"
+- waitForAnimationToEnd
+
+# 4. GO BACK
+- back
+- waitForAnimationToEnd
+
+# 5. GO TO TANK TAB
+- tapOn:
+    text: "Tank"
+    index: 0
+- waitForAnimationToEnd

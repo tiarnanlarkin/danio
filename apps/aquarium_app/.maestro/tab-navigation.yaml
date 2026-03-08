@@ -1,0 +1,43 @@
+appId: com.tiarnanlarkin.danio
+---
+# Flow: Tab Navigation — verify all 5 tabs load correctly
+# Tabs: Learn (0), Practice (1), Tank (2), Smart (3), Toolbox (4)
+# NOTE: App starts on Learn tab (index 0) by default.
+
+- launchApp
+
+- waitForAnimationToEnd
+
+# ── Tab 0: Learn ─────────────────────────────────────────────────────────────
+- tapOn: "Learn"
+- waitForAnimationToEnd
+# Learn screen shows either the study room scene or profile setup prompt
+- assertTrue:
+    visible: "Learn"
+- takeScreenshot: tab_learn
+
+# ── Tab 1: Practice ──────────────────────────────────────────────────────────
+- tapOn: "Practice"
+- waitForAnimationToEnd
+- takeScreenshot: tab_practice
+
+# ── Tab 2: Tank ───────────────────────────────────────────────────────────────
+- tapOn: "Tank"
+- waitForAnimationToEnd
+- takeScreenshot: tab_tank
+
+# ── Tab 3: Smart ─────────────────────────────────────────────────────────────
+- tapOn: "Smart"
+- waitForAnimationToEnd
+- takeScreenshot: tab_smart
+
+# ── Tab 4: Toolbox ───────────────────────────────────────────────────────────
+- tapOn: "Toolbox"
+- waitForAnimationToEnd
+- assertVisible: "🧰 Toolbox"
+- takeScreenshot: tab_toolbox
+
+# Return to Learn tab
+- tapOn: "Learn"
+- waitForAnimationToEnd
+- assertVisible: "Learn"

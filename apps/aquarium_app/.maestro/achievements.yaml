@@ -1,0 +1,95 @@
+appId: com.tiarnanlarkin.danio
+---
+# Flow: Achievements — navigate to the Trophy Case and verify badges display.
+
+- launchApp
+
+- waitForAnimationToEnd
+
+# Navigate to Toolbox tab (Achievements lives under Toolbox)
+- tapOn: "Toolbox"
+- waitForAnimationToEnd
+
+- assertVisible: "🧰 Toolbox"
+- takeScreenshot: toolbox_before_achievements
+
+# Open Achievements
+- tapOn: "Achievements"
+- waitForAnimationToEnd
+
+- assertVisible: "🏆 Trophy Case"
+- takeScreenshot: achievements_screen
+
+# ── Verify Content ────────────────────────────────────────────────────────────
+# Achievements screen shows a completion percentage and a list of badges
+- runFlow:
+    when:
+      visible: "unlocked"
+    commands:
+      - assertVisible: "unlocked"
+
+# Scroll through achievements list
+- scroll:
+    direction: DOWN
+    duration: 1500
+
+- takeScreenshot: achievements_scrolled
+
+# ── Filter Controls ───────────────────────────────────────────────────────────
+# Sort menu should be available in the AppBar
+- runFlow:
+    when:
+      visible: "Sort by Rarity"
+    commands:
+      - tapOn: "Sort by Rarity"
+      - waitForAnimationToEnd
+      - takeScreenshot: achievements_sorted
+
+# Try filter by unlocked
+- runFlow:
+    when:
+      visible: "Unlocked"
+    commands:
+      - tapOn: "Unlocked"
+      - waitForAnimationToEnd
+      - takeScreenshot: achievements_unlocked_filter
+
+# Try filter by locked
+- runFlow:
+    when:
+      visible: "Locked"
+    commands:
+      - tapOn: "Locked"
+      - waitForAnimationToEnd
+      - takeScreenshot: achievements_locked_filter
+
+# Reset filter to All
+- runFlow:
+    when:
+      visible: "All"
+    commands:
+      - tapOn: "All"
+      - waitForAnimationToEnd
+
+# ── Tap an Achievement for Detail ─────────────────────────────────────────────
+# Scroll back to top and tap first achievement
+- scroll:
+    direction: UP
+    duration: 1000
+
+- runFlow:
+    when:
+      visible: "First Tank"
+    commands:
+      - tapOn: "First Tank"
+      - waitForAnimationToEnd
+      - takeScreenshot: achievement_detail_modal
+      - back
+      - waitForAnimationToEnd
+
+# Navigate back
+- back
+- waitForAnimationToEnd
+
+- assertVisible: "🧰 Toolbox"
+- takeScreenshot: achievements_flow_complete

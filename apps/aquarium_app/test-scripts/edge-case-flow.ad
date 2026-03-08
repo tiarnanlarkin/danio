@@ -1,0 +1,184 @@
+# ============================================================
+# edge-case-flow.ad
+# Exercises boundary conditions, error states, and defensive
+# UI behaviours across the app.
+#
+# Scenarios:
+#   1. Tank creation – submit with empty name (validation)
+#   2. Tank creation – volume = 0 (validation)
+#   3. Water Change Calc – tap water nitrate ≥ target (error msg)
+#   4. Back navigation mid-wizard (discard)
+#   5. Double back-press exit from tab root
+#   6. Lesson quiz exit mid-way (confirm dialog)
+#   7. Onboarding skip button
+#
+# Pre-condition: user is onboarded for scenarios 1–6;
+#   fresh install (clear data) for scenario 7.
+# ============================================================
+
+open com.tiarnanlarkin.danio --platform android
+wait 2000
+
+# ════════════════════════════════════════════════════════════
+# Scenario 1: Tank creation – empty name blocked
+# ════════════════════════════════════════════════════════════
+find "Tank" click
+wait 600
+find "Add tank" click
+wait 800
+snapshot
+screenshot /tmp/danio-edge-01-empty-name.png
+
+# "Next" should be disabled when name is empty – attempt tap
+find "Next" click
+wait 400
+snapshot
+screenshot /tmp/danio-edge-02-next-disabled.png
+
+# Confirm we are still on page 1 (no navigation happened)
+assert_text "Name your tank"
+
+# ════════════════════════════════════════════════════════════
+# Scenario 2: Tank creation – volume = 0 blocked
+# ════════════════════════════════════════════════════════════
+# Now fill a name to get past page 1
+fill "Tank name" "Test Edge Tank"
+wait 200
+find "Next" click
+wait 600
+snapshot
+screenshot /tmp/danio-edge-03-size-page.png
+
+# Attempt to proceed with no volume entered
+clear "Volume (litres)"
+find "Next" click
+wait 400
+snapshot
+screenshot /tmp/danio-edge-04-volume-zero.png
+
+assert_text "Tank size"
+
+# ════════════════════════════════════════════════════════════
+# Scenario 3: Back navigation discards wizard
+# ════════════════════════════════════════════════════════════
+# Fill volume so we can test Back from page 2 → page 1
+fill "Volume (litres)" "80"
+wait 200
+find "Next" click
+wait 600
+# Page 3: water type
+snapshot
+screenshot /tmp/danio-edge-05-page3.png
+find "Back" click
+wait 400
+# Should be back on page 2
+assert_text "Tank size"
+find "Back" click
+wait 400
+# Should be back on page 1
+assert_text "Name your tank"
+# Close the wizard with the X button
+find "Close and discard new tank" click
+wait 400
+snapshot
+screenshot /tmp/danio-edge-06-wizard-discarded.png
+
+# ════════════════════════════════════════════════════════════
+# Scenario 4: Water Change Calculator – invalid inputs
+# ════════════════════════════════════════════════════════════
+find "Toolbox" click
+wait 600
+find "Workshop" click
+wait 800
+find "Water Change" click
+wait 800
+snapshot
+screenshot /tmp/danio-edge-07-calc-open.png
+
+# Set tap nitrate HIGHER than target nitrate → should show warning
+clear "Tap Water Nitrate"
+fill "Tap Water Nitrate" "30"
+clear "Target Nitrate"
+fill "Target Nitrate" "20"
+wait 600
+snapshot
+screenshot /tmp/danio-edge-08-calc-invalid.png
+
+# Should show RO water recommendation, not a percentage result
+assert_text "RO"
+
+# Now set current nitrate lower than target → "no change needed"
+clear "Current Nitrate"
+fill "Current Nitrate" "10"
+clear "Target Nitrate"
+fill "Target Nitrate" "20"
+clear "Tap Water Nitrate"
+fill "Tap Water Nitrate" "5"
+wait 600
+snapshot
+screenshot /tmp/danio-edge-09-calc-no-change.png
+
+assert_text "already at or below"
+
+press back
+wait 500
+press back
+wait 500
+
+# ════════════════════════════════════════════════════════════
+# Scenario 5: Double back-press to exit
+# ════════════════════════════════════════════════════════════
+find "Learn" click
+wait 600
+# First back press – expect "Tap back once more to leave" snackbar
+press back
+wait 400
+snapshot
+screenshot /tmp/danio-edge-10-back-snackbar.png
+assert_text "Tap back once more"
+
+# Do NOT send second back (would exit the app during test)
+
+# ════════════════════════════════════════════════════════════
+# Scenario 6: Lesson quiz – mid-quiz exit shows confirm dialog
+# ════════════════════════════════════════════════════════════
+find "Learn" click
+wait 600
+# Navigate into first available lesson
+find "Learning Paths" scroll_down
+wait 300
+# Try to open any learning path expansion
+find_any_of ["Beginner's Start", "Your First Fish", "The Basics", "Nitrogen"] click
+wait 800
+find_any_of ["What is the Nitrogen Cycle?", "Introduction", "Water Chemistry"] click
+wait 800
+
+# Get to quiz
+find "Take the Quiz" click
+wait 800
+snapshot
+screenshot /tmp/danio-edge-11-quiz-start.png
+
+# Press back in the middle of quiz
+press back
+wait 600
+snapshot
+screenshot /tmp/danio-edge-12-quiz-exit-dialog.png
+
+# Confirm dialog: "Leave quiz?" with "Keep going" / "Leave" options
+assert_text "Leave quiz?"
+
+find "Keep going" click
+wait 400
+snapshot
+screenshot /tmp/danio-edge-13-quiz-resumed.png
+
+# Now actually leave
+press back
+wait 600
+find "Leave" click
+wait 600
+snapshot
+screenshot /tmp/danio-edge-14-quiz-left.png
+
+close

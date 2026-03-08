@@ -1,0 +1,85 @@
+# ============================================================
+# onboarding-flow.ad
+# Full onboarding from cold launch to main Home screen
+#
+# Coverage:
+#   Page 0: Welcome ("Let's Go!")
+#   Page 1: Experience level selection
+#   Page 2: Tank type selection
+#   Page 3: Goals (multi-select)
+#   Celebration overlay → Home screen
+# ============================================================
+
+open com.tiarnanlarkin.danio --platform android
+
+# ── Page 0: Welcome ─────────────────────────────────────────
+# App should show EnhancedOnboardingScreen on first launch.
+# If a profile already exists the TabNavigator loads instead –
+# clear app data before running this script to guarantee a
+# fresh onboarding state.
+
+wait 2000
+snapshot
+screenshot /tmp/danio-onboarding-01-welcome.png
+
+# Confirm welcome copy is visible
+assert_text "Welcome to Danio"
+
+find "Let's Go!" click
+wait 500
+
+# ── Page 1: Experience Level ─────────────────────────────────
+snapshot
+screenshot /tmp/danio-onboarding-02-experience.png
+
+assert_text "How experienced are you with fishkeeping?"
+
+# Select "New to fishkeeping" (ExperienceLevel.beginner)
+find "New to fishkeeping" click
+wait 300
+snapshot
+
+# "Continue" button should now be enabled
+find "Continue" click
+wait 500
+
+# ── Page 2: Tank Type ────────────────────────────────────────
+snapshot
+screenshot /tmp/danio-onboarding-03-tank-type.png
+
+assert_text "What type of tank do you have"
+
+# Select Freshwater
+find "Freshwater" click
+wait 300
+
+find "Continue" click
+wait 500
+
+# ── Page 3: Goals (multi-select) ─────────────────────────────
+snapshot
+screenshot /tmp/danio-onboarding-04-goals.png
+
+assert_text "What are your goals?"
+
+# Toggle two goals (checkboxes)
+find "Happy, healthy fish" click
+wait 200
+find "Relaxation & zen" click
+wait 200
+
+snapshot
+
+# Complete onboarding
+find "Start Learning" click
+wait 3000
+
+# ── Celebrate & land on Home / TabNavigator ──────────────────
+# Celebration overlay fires (+25 XP); wait for it to dismiss
+snapshot
+screenshot /tmp/danio-onboarding-05-complete.png
+
+# Verify we reached the main app
+assert_text "Learn"
+
+close

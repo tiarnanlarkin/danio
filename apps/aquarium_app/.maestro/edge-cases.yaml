@@ -1,0 +1,171 @@
+appId: com.tiarnanlarkin.danio
+---
+# Flow: Edge Cases — empty states, rapid back navigation, form validation
+# with empty/invalid inputs.
+
+- launchApp
+
+- waitForAnimationToEnd
+
+# ══════════════════════════════════════════════════════════════════════════════
+# SECTION 1: Form Validation — Tank Creation with invalid/empty inputs
+# ══════════════════════════════════════════════════════════════════════════════
+
+- tapOn: "Tank"
+- waitForAnimationToEnd
+
+# Open new tank wizard (FAB or empty state button)
+- runFlow:
+    when:
+      visible: "Add your first tank"
+    commands:
+      - tapOn: "Add your first tank"
+      - waitForAnimationToEnd
+
+- runFlow:
+    when:
+      visible: "Add Tank"
+    commands:
+      - tapOn: "Add Tank"
+      - waitForAnimationToEnd
+
+# Attempt to proceed without entering a tank name
+- runFlow:
+    when:
+      visible: "Next"
+    commands:
+      - tapOn: "Next"
+      - waitForAnimationToEnd
+      # Should still be on the same page (validation blocks progression)
+      - takeScreenshot: edge_tank_name_empty_validation
+
+# Enter a valid name and proceed
+- runFlow:
+    when:
+      visible: "Tank name"
+    commands:
+      - tapOn: "Tank name"
+      - inputText: "Edge Test Tank"
+
+- tapOn: "Next"
+- waitForAnimationToEnd
+
+# Size page — attempt to proceed without entering volume
+- runFlow:
+    when:
+      visible: "Next"
+    commands:
+      - tapOn: "Next"
+      - waitForAnimationToEnd
+      - takeScreenshot: edge_tank_volume_empty_validation
+
+# Enter invalid volume (0)
+- runFlow:
+    when:
+      visible: "Volume"
+    commands:
+      - tapOn: "Volume"
+      - inputText: "0"
+      - tapOn: "Next"
+      - waitForAnimationToEnd
+      - takeScreenshot: edge_tank_volume_zero_validation
+
+# Enter valid volume
+- runFlow:
+    when:
+      visible: "Volume"
+    commands:
+      - tapOn: "Volume"
+      - clearText
+      - inputText: "100"
+
+- tapOn: "Next"
+- waitForAnimationToEnd
+
+# Dismiss wizard without completing
+- back
+- waitForAnimationToEnd
+- takeScreenshot: edge_dismissed_mid_wizard
+
+# ══════════════════════════════════════════════════════════════════════════════
+# SECTION 2: Rapid Tab Switching
+# ══════════════════════════════════════════════════════════════════════════════
+- tapOn: "Learn"
+- tapOn: "Practice"
+- tapOn: "Tank"
+- tapOn: "Smart"
+- tapOn: "Toolbox"
+- tapOn: "Learn"
+- waitForAnimationToEnd
+
+- takeScreenshot: edge_rapid_tab_switch
+
+# ══════════════════════════════════════════════════════════════════════════════
+# SECTION 3: Rapid Back Navigation
+# ══════════════════════════════════════════════════════════════════════════════
+- tapOn: "Toolbox"
+- waitForAnimationToEnd
+
+- tapOn: "Workshop"
+- waitForAnimationToEnd
+
+- tapOn: "Water Change"
+- waitForAnimationToEnd
+
+# Rapid back
+- back
+- back
+- waitForAnimationToEnd
+
+- takeScreenshot: edge_rapid_back_navigation
+
+# ══════════════════════════════════════════════════════════════════════════════
+# SECTION 4: Double-Tap Back on Root Tab (should show "Tap back once more")
+# ══════════════════════════════════════════════════════════════════════════════
+- tapOn: "Learn"
+- waitForAnimationToEnd
+
+- back
+- waitForAnimationToEnd
+- takeScreenshot: edge_first_back_snackbar
+# Should see "Tap back once more to leave" snackbar
+
+# Wait for snackbar to expire (2 seconds) without pressing back again
+- wait: 3000
+
+# ══════════════════════════════════════════════════════════════════════════════
+# SECTION 5: Empty State — Profile Setup Prompt
+# ══════════════════════════════════════════════════════════════════════════════
+# NOTE: This section only runs if the app is freshly installed without a profile.
+# After clearState onboarding, the Learn screen shows an "empty" state prompt.
+- tapOn: "Learn"
+- waitForAnimationToEnd
+
+- runFlow:
+    when:
+      visible: "Complete your profile setup to start learning!"
+    commands:
+      - assertVisible: "Create Profile"
+      - takeScreenshot: edge_learn_empty_state
+
+# ══════════════════════════════════════════════════════════════════════════════
+# SECTION 6: Search — empty query
+# ══════════════════════════════════════════════════════════════════════════════
+- tapOn: "Tank"
+- waitForAnimationToEnd
+
+- runFlow:
+    when:
+      visible: "Search"
+    commands:
+      - tapOn: "Search"
+      - waitForAnimationToEnd
+      - takeScreenshot: edge_search_empty_state
+      # Submit empty search
+      - tapOn: "Search"
+      - waitForAnimationToEnd
+      - takeScreenshot: edge_search_empty_result
+      - back
+      - waitForAnimationToEnd
+
+- takeScreenshot: edge_cases_complete

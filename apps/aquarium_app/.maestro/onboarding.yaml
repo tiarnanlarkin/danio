@@ -1,0 +1,109 @@
+appId: com.tiarnanlarkin.danio
+---
+# Flow: Onboarding — new user creates a profile and reaches the main screen
+# Covers: launch → profile creation → placement test → tab navigator
+
+- launchApp:
+    clearState: true
+
+- waitForAnimationToEnd
+
+# ── Profile Creation Screen ──────────────────────────────────────────────────
+# The app shows ProfileCreationScreen when no profile exists.
+- assertVisible: "Welcome to Danio! 🐠"
+- assertVisible: "Create Your Profile"
+
+# Optional name field
+- tapOn: "e.g., Alex"
+- inputText: "Test User"
+
+# Select experience level — "New to fishkeeping" (beginner)
+- tapOn: "New to fishkeeping"
+- waitForAnimationToEnd
+
+# Select tank type — "Freshwater"
+- tapOn: "Freshwater"
+- waitForAnimationToEnd
+
+# Select at least one goal — "Happy, healthy fish"
+- tapOn: "Happy, healthy fish"
+- waitForAnimationToEnd
+
+# Continue to placement test
+- tapOn: "Continue"
+- waitForAnimationToEnd
+
+# ── Placement Test Screen ─────────────────────────────────────────────────────
+# The placement test has multiple questions; answer each one
+- assertVisible: "Question"
+
+# Answer question 1 — tap the first option available and submit
+- tapOn:
+    index: 0
+    text: ".*"
+- waitForAnimationToEnd
+
+# If there is a "Check Answer" or "Next" button, tap it
+- runFlow:
+    when:
+      visible: "Check Answer"
+    commands:
+      - tapOn: "Check Answer"
+      - waitForAnimationToEnd
+
+- runFlow:
+    when:
+      visible: "Next"
+    commands:
+      - tapOn: "Next"
+      - waitForAnimationToEnd
+
+# Repeat for remaining questions (placement test has ~10 questions)
+- repeat:
+    times: 10
+    commands:
+      - runFlow:
+          when:
+            visible: "Check Answer"
+          commands:
+            - tapOn:
+                index: 0
+                text: ".*"
+            - waitForAnimationToEnd
+            - tapOn: "Check Answer"
+            - waitForAnimationToEnd
+      - runFlow:
+          when:
+            visible: "Next"
+          commands:
+            - tapOn: "Next"
+            - waitForAnimationToEnd
+      - runFlow:
+          when:
+            visible: "See Results"
+          commands:
+            - tapOn: "See Results"
+            - waitForAnimationToEnd
+
+# ── Placement Result / Home ───────────────────────────────────────────────────
+# After placement test the user lands on results or directly on the tab navigator
+- runFlow:
+    when:
+      visible: "Start Learning"
+    commands:
+      - tapOn: "Start Learning"
+      - waitForAnimationToEnd
+
+- runFlow:
+    when:
+      visible: "Continue"
+    commands:
+      - tapOn: "Continue"
+      - waitForAnimationToEnd
+
+# Verify the main tab navigator is visible
+- assertVisible: "Learn"
+- assertVisible: "Practice"
+- assertVisible: "Tank"
+
+- takeScreenshot: onboarding_complete

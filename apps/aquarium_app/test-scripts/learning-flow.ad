@@ -1,0 +1,112 @@
+# ============================================================
+# learning-flow.ad
+# Open a lesson, read the content, complete the quiz,
+# and verify XP is awarded.
+#
+# Pre-condition: user is onboarded; at least one lesson
+# is unlocked in the first learning path.
+#
+# Coverage:
+#   LearnScreen → expand first learning path
+#   Tap first lesson
+#   Read lesson content → "Take the Quiz"
+#   Answer all quiz questions
+#   Check XP awarded
+# ============================================================
+
+open com.tiarnanlarkin.danio --platform android
+
+wait 2000
+
+# ── Navigate to Learn tab (index 0) ─────────────────────────
+find "Learn" click
+wait 800
+snapshot
+screenshot /tmp/danio-learn-01-hub.png
+
+assert_text "Learning Paths"
+
+# Expand the first learning path card (ExpansionTile)
+# The first path is "The Nitrogen Cycle" or similar – tap its heading.
+# Use the emoji that appears in the leading container to be resilient.
+# Fall back to the first visible card text.
+find "Learning Paths" scroll_down
+wait 300
+
+# Tap the first expansion tile – it lazy-loads lessons on expand
+find "Beginner's Start" click
+wait 1000
+snapshot
+screenshot /tmp/danio-learn-02-path-expanded.png
+
+# If the path title differs, also try:
+# find "Your First Fish" click
+# find "The Basics" click
+
+# Tap the first lesson in the expanded list (should have play icon)
+find "What is the Nitrogen Cycle?" click
+wait 1000
+snapshot
+screenshot /tmp/danio-learn-03-lesson-open.png
+
+assert_text "min •"
+
+# ── Read lesson content ──────────────────────────────────────
+# Scroll through lesson body
+scroll_down
+wait 400
+scroll_down
+wait 400
+scroll_down
+wait 400
+snapshot
+screenshot /tmp/danio-learn-04-lesson-content.png
+
+# Tap the CTA to start the quiz
+find "Take the Quiz" click
+wait 800
+snapshot
+screenshot /tmp/danio-learn-05-quiz-start.png
+
+# ── Answer quiz questions ────────────────────────────────────
+# The quiz uses multiple-choice. Tap the first answer option
+# for each question and continue. Real answers vary by lesson;
+# this exercises the tap-and-continue mechanic.
+
+# Question 1
+snapshot
+screenshot /tmp/danio-learn-06-quiz-q1.png
+find_any_of ["A", "Ammonia", "Nitrate", "Bacteria", "Fish waste"] click
+wait 500
+find "Continue" click
+wait 500
+
+# Question 2
+snapshot
+screenshot /tmp/danio-learn-07-quiz-q2.png
+find_any_of ["A", "Ammonia", "Nitrate", "Bacteria", "Yes", "No"] click
+wait 500
+find "Continue" click
+wait 500
+
+# Question 3 (if present)
+snapshot
+find_any_of ["A", "Ammonia", "Nitrate", "Bacteria", "Yes", "No"] click
+wait 500
+find "Continue" click
+wait 800
+
+# ── Quiz complete ────────────────────────────────────────────
+snapshot
+screenshot /tmp/danio-learn-08-quiz-complete.png
+
+# XP awarded dialog / animation should appear
+assert_text "XP"
+
+# Dismiss or continue
+find_any_of ["Continue", "Done", "Great!", "Back to Lesson"] click
+wait 1000
+snapshot
+screenshot /tmp/danio-learn-09-after-quiz.png
+
+close

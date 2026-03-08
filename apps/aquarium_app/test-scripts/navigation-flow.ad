@@ -1,0 +1,78 @@
+# ============================================================
+# navigation-flow.ad
+# Visit every tab in the bottom navigation bar and verify
+# each root screen renders without crashing.
+#
+# Tabs (TabNavigator):
+#   0 – Learn     (LearnScreen)
+#   1 – Practice  (PracticeHubScreen)
+#   2 – Tank      (HomeScreen)
+#   3 – Smart     (SmartScreen)
+#   4 – Toolbox   (SettingsHubScreen)
+#
+# Pre-condition: user is onboarded.
+# ============================================================
+
+open com.tiarnanlarkin.danio --platform android
+
+wait 2000
+snapshot
+
+# ── Tab 0: Learn ─────────────────────────────────────────────
+find "Learn" click
+wait 800
+snapshot
+screenshot /tmp/danio-nav-01-learn.png
+assert_text "Learning Paths"
+
+# ── Tab 1: Practice ─────────────────────────────────────────
+find "Practice" click
+wait 800
+snapshot
+screenshot /tmp/danio-nav-02-practice.png
+assert_text "Practice"
+
+# ── Tab 2: Tank ─────────────────────────────────────────────
+find "Tank" click
+wait 800
+snapshot
+screenshot /tmp/danio-nav-03-tank.png
+
+# HomeScreen shows either a room scene or empty state
+# Both are acceptable – just check the tab rendered
+assert_no_crash
+
+# ── Tab 3: Smart ─────────────────────────────────────────────
+find "Smart" click
+wait 800
+snapshot
+screenshot /tmp/danio-nav-04-smart.png
+assert_text "Smart"
+
+# ── Tab 4: Toolbox ───────────────────────────────────────────
+find "Toolbox" click
+wait 800
+snapshot
+screenshot /tmp/danio-nav-05-toolbox.png
+assert_text "Toolbox"
+
+# ── Double-tap current tab to scroll to top ──────────────────
+find "Toolbox" click
+wait 300
+snapshot
+
+# ── Back-button double-tap exit flow ─────────────────────────
+# Navigate into a sub-screen then press back
+find "Workshop" click
+wait 800
+snapshot
+screenshot /tmp/danio-nav-06-workshop.png
+press back
+wait 500
+snapshot
+screenshot /tmp/danio-nav-07-back-to-toolbox.png
+
+# Back at Toolbox root
+assert_text "Toolbox"
+
+close

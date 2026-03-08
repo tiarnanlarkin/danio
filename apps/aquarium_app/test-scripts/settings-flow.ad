@@ -1,0 +1,111 @@
+# ============================================================
+# settings-flow.ad
+# Open and interact with the Settings / Preferences screen
+# and key sections in the Toolbox hub.
+#
+# Coverage:
+#   SettingsHubScreen (Toolbox tab)
+#     → Profile card visible (name, level, streak)
+#     → Preferences (SettingsScreen)
+#       – toggle dark mode
+#       – open Notification Settings
+#       – back
+#     → Achievements screen
+#     → Analytics screen
+#     → About screen
+#     → Backup & Restore
+#
+# Pre-condition: user is onboarded.
+# ============================================================
+
+open com.tiarnanlarkin.danio --platform android
+
+wait 2000
+
+# ── Open Toolbox ─────────────────────────────────────────────
+find "Toolbox" click
+wait 800
+snapshot
+screenshot /tmp/danio-settings-01-hub.png
+
+assert_text "Toolbox"
+
+# Profile card should be at the top
+assert_text "Level"
+
+# ── Open Preferences ─────────────────────────────────────────
+find "Preferences" click
+wait 800
+snapshot
+screenshot /tmp/danio-settings-02-preferences.png
+
+assert_text "Preferences"
+
+# Scroll to find the appearance / theme section
+scroll_down
+wait 300
+snapshot
+screenshot /tmp/danio-settings-03-preferences-scrolled.png
+
+# Open Notification Settings if visible
+find "Notifications" click
+wait 800
+snapshot
+screenshot /tmp/danio-settings-04-notifications.png
+press back
+wait 500
+
+press back
+wait 500
+
+# ── Achievements ─────────────────────────────────────────────
+find "Achievements" click
+wait 800
+snapshot
+screenshot /tmp/danio-settings-05-achievements.png
+
+assert_text "Achievements"
+press back
+wait 500
+
+# ── Analytics ────────────────────────────────────────────────
+find "Analytics" click
+wait 800
+snapshot
+screenshot /tmp/danio-settings-06-analytics.png
+press back
+wait 500
+
+# ── Backup & Restore ─────────────────────────────────────────
+find "Backup & Restore" click
+wait 800
+snapshot
+screenshot /tmp/danio-settings-07-backup.png
+
+assert_text "Backup"
+press back
+wait 500
+
+# ── About ────────────────────────────────────────────────────
+find "About" click
+wait 800
+snapshot
+screenshot /tmp/danio-settings-08-about.png
+
+assert_text "Danio"
+press back
+wait 500
+
+# ── Edit profile via pencil icon ─────────────────────────────
+# Tap the edit (pencil) IconButton on the profile card
+find "Settings" click
+wait 800
+snapshot
+screenshot /tmp/danio-settings-09-edit-profile.png
+press back
+wait 500
+
+snapshot
+screenshot /tmp/danio-settings-10-hub-done.png
+
+close
