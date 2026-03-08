@@ -442,8 +442,16 @@ class EnhancedCelebrationNotifier extends StateNotifier<EnhancedCelebrationState
   
   /// Dismiss active celebration
   void dismiss() {
-    _disposeController();
+    // Capture old controller before clearing state.
+    // We defer disposal until AFTER the next frame so the ConfettiWidget
+    // has a chance to unmount cleanly first — otherwise its dispose()
+    // calls controller.stop() on an already-disposed controller → crash.
+    final oldController = _controller;
+    _controller = null;
     state = const EnhancedCelebrationState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      oldController?.dispose();
+    });
   }
   
   void _disposeController() {

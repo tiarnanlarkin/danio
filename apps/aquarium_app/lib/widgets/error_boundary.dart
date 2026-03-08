@@ -37,16 +37,21 @@ class _ErrorBoundaryState extends State<ErrorBoundary> {
     // Capture errors in this widget's subtree
     FlutterError.onError = (details) {
       widget.onError?.call(details);
-      
-      // Log to console in debug mode
-      if (kDebugMode) {
-        FlutterError.presentError(details);
-      }
-      
-      // Show error UI
+
+      // Always log — critical for diagnosing production errors
+      FlutterError.presentError(details);
+      debugPrint('🚨 ErrorBoundary caught: ${details.exception}\n${details.stack}');
+
+      // Defer setState to avoid calling it during a build phase
+      // (FlutterError.onError can fire mid-build, and setState during
+      // build triggers its own framework assertion)
       if (mounted) {
-        setState(() {
-          _error = details;
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) {
+            setState(() {
+              _error = details;
+            });
+          }
         });
       }
     };
