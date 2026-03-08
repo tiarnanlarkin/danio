@@ -288,31 +288,31 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               ),
             ),
 
-            // === STAGE SYSTEM === (disabled — panels not ready yet)
-            // Offstage hides rendering entirely; IgnorePointer only blocked
-            // touch but still painted BackdropFilter/scrim which caused the
-            // faded/blurred home screen bug on physical devices.
-            Offstage(
-              offstage: true,
-              child: Stack(
-                children: [
-            Consumer(
-              builder: (context, ref, _) {
-                final hasOpen = ref.watch(stageProvider.select((s) => s.openPanels.isNotEmpty));
-                return IgnorePointer(
-                  ignoring: !hasOpen,
-                  child: const Positioned.fill(child: StageScrim()),
-                );
-              },
+            // === STAGE SYSTEM ===
+            // Scrim: fills the Stack, only interactive when a panel is open.
+            Positioned.fill(
+              child: Consumer(
+                builder: (context, ref, _) {
+                  final hasOpen = ref.watch(stageProvider.select((s) => s.openPanels.isNotEmpty));
+                  return IgnorePointer(
+                    ignoring: !hasOpen,
+                    child: const StageScrim(),
+                  );
+                },
+              ),
             ),
-            Consumer(
-              builder: (context, ref, _) {
-                final hasOpen = ref.watch(stageProvider.select((s) => s.openPanels.isNotEmpty));
-                final latestTest = ref.watch(latestWaterTestProvider(currentTank.id));
-                final roomTheme = ref.watch(currentRoomThemeProvider);
-                return IgnorePointer(
-                  ignoring: !hasOpen,
-                  child: Stack(
+            // Side panels — SwissArmyPanel self-hides (SizedBox.shrink) when
+            // the animation value is effectively zero, so no Offstage needed.
+            // Positioned.fill is required so the inner Stack fills the outer
+            // Stack; without it the inner Stack is 0×0 and the SwissArmyPanel's
+            // own Positioned children use wrong coordinates, making panels
+            // invisible or incorrectly sized.
+            Positioned.fill(
+              child: Consumer(
+                builder: (context, ref, _) {
+                  final latestTest = ref.watch(latestWaterTestProvider(currentTank.id));
+                  final roomTheme = ref.watch(currentRoomThemeProvider);
+                  return Stack(
                     children: [
                       SwissArmyPanel.left(
                         theme: roomTheme,
@@ -334,12 +334,40 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         ),
                       ),
                     ],
-                  ),
-                );
-              },
+                  );
+                },
+              ),
             ),
             AmbientTipOverlay(theme: theme),
-                ],
+            // Panel handle strips — always hittable, pinned to screen edges.
+            // bottom: 0 is correct because the Scaffold body (extendBody:false)
+            // already ends at the NavigationBar top; no extra offset needed.
+            // Alignment.centerLeft/centerRight pins the 48dp hit-target to the
+            // screen edge rather than centering it in the middle of the screen.
+            Positioned(
+              left: 0,
+              top: 0,
+              bottom: 0,
+              child: const Align(
+                alignment: Alignment.centerLeft,
+                child: StageHandleStrip(
+                  panel: StagePanel.temp,
+                  isLeft: true,
+                  icon: Icons.thermostat_rounded,
+                ),
+              ),
+            ),
+            Positioned(
+              right: 0,
+              top: 0,
+              bottom: 0,
+              child: const Align(
+                alignment: Alignment.centerRight,
+                child: StageHandleStrip(
+                  panel: StagePanel.waterQuality,
+                  isLeft: false,
+                  icon: Icons.science_rounded,
+                ),
               ),
             ),
 
@@ -415,7 +443,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             // Bottom Plates — Tanks (behind) then Progress (front, renders on top)
             BottomPlate(
               peekHeight: 32,
-              bottomOffset: kBottomNavigationBarHeight,
+              // bottomOffset: 0 is correct because TabNavigator uses
+              // extendBody: false — the Scaffold body already ends at the
+              // NavigationBar top. Setting 80 here caused the plate to float
+              // 80dp above the nav bar (a visible gap + content blockage).
+              bottomOffset: 0,
               maxHeightFraction: 0.75,
               label: 'Your Tanks',
               emoji: '🐠',
@@ -455,8 +487,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             ),
 
             BottomPlate(
-              peekHeight: 32,  // BUG-02: was 60, reduced to match peek-only collapsed state
-              bottomOffset: kBottomNavigationBarHeight,
+              peekHeight: 32,
+              bottomOffset: 0, // Scaffold body ends at nav bar top; no extra offset needed
               maxHeightFraction: 0.65,
               label: 'Your Progress',
               emoji: '🔥',

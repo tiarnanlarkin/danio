@@ -170,23 +170,32 @@ class StageHandleStrip extends ConsumerWidget {
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: () => ref.read(stageProvider.notifier).toggle(panel),
-      child: Container(
-        width: 14,
+      // SizedBox ensures a ≥48dp touch target (Material a11y minimum) while
+      // the inner Container stays visually narrow at 14dp.
+      child: SizedBox(
+        width: 48,
         height: 80,
-        decoration: BoxDecoration(
-          color: AppOverlays.black40,
-          borderRadius: BorderRadius.horizontal(
-            left: isLeft ? Radius.zero : const Radius.circular(8),
-            right: isLeft ? const Radius.circular(8) : Radius.zero,
+        child: Align(
+          alignment: isLeft ? Alignment.centerLeft : Alignment.centerRight,
+          child: Container(
+            width: 14,
+            height: 80,
+            decoration: BoxDecoration(
+              color: AppOverlays.black40,
+              borderRadius: BorderRadius.horizontal(
+                left: isLeft ? Radius.zero : const Radius.circular(8),
+                right: isLeft ? const Radius.circular(8) : Radius.zero,
+              ),
+              image: const DecorationImage(
+                image: AssetImage('assets/textures/slate-dark.png'),
+                fit: BoxFit.cover,
+                opacity: 0.6,
+              ),
+            ),
+            child: Center(
+              child: Icon(icon, color: Colors.white, size: 16),
+            ),
           ),
-          image: const DecorationImage(
-            image: AssetImage('assets/textures/slate-dark.png'),
-            fit: BoxFit.cover,
-            opacity: 0.6,
-          ),
-        ),
-        child: Center(
-          child: Icon(icon, color: Colors.white, size: 16),
         ),
       ),
     );
