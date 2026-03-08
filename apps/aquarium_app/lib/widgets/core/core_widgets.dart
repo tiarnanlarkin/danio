@@ -9,7 +9,6 @@ library;
 export 'app_button.dart';
 export 'app_card.dart';
 export 'app_chip.dart';
-export 'app_feedback.dart';
 export 'app_list_tile.dart';
 export 'app_navigation.dart';
 export 'app_states.dart';

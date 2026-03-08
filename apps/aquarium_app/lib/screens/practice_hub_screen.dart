@@ -365,9 +365,10 @@ class PracticeHubScreen extends ConsumerWidget {
   int _calculateAccuracy(SpacedRepetitionState state) {
     final total = state.stats.reviewsToday;
     if (total == 0) return 0;
-    // TODO(CA-005): Track correct/incorrect answers in SpacedRepetitionState
-    // and compute real accuracy here. Returning 0 as a safe placeholder until
-    // that data is available.
+    // DEFERRED: Tracking per-answer correctness requires SpacedRepetitionState refactor.
+    // SpacedRepetitionStats currently only tracks total reviews, not correct/incorrect counts.
+    // Once correctCount is added to SpacedRepetitionStats, compute: (correctCount / total * 100).
+    // See DANIO_FIX_PLAN.md Phase 5.
     return 0;
   }
 }
