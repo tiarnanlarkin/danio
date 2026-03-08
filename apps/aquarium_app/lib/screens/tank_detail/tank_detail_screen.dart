@@ -336,7 +336,13 @@ class TankDetailScreen extends ConsumerWidget {
           const Scaffold(body: Center(child: BubbleLoader.large(message: 'Loading tank...'))),
       error: (err, stack) => Scaffold(
         appBar: AppBar(title: const Text('Tank')),
-        body: const Center(child: Text('Couldn\'t load this tank right now. Please try again.')),
+        body: Center(
+          child: AppErrorState(
+            title: 'Couldn\'t load this tank',
+            message: 'Please try again.',
+            onRetry: () => ref.invalidate(tankProvider(tankId)),
+          ),
+        ),
       ),
       data: (tank) {
         if (tank == null) {
@@ -569,7 +575,7 @@ class TankDetailScreen extends ConsumerWidget {
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
                   child: logsAllAsync.when(
-                    loading: () => const SizedBox.shrink(),
+                    loading: () => const DashboardLoadingCard(title: 'Health'),
                     error: (_, __) => const SizedBox.shrink(),
                     data: (logs) => TankHealthCard(tank: tank, logs: logs),
                   ),

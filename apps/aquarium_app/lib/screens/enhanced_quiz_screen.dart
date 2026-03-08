@@ -440,6 +440,8 @@ class _EnhancedQuizScreenState extends ConsumerState<EnhancedQuizScreen>
                       AppColors.primary,
                     ),
                     minHeight: 8,
+                    semanticsLabel: 'Quiz progress',
+                    semanticsValue: '${(progress * 100).round()}%',
                   ),
                 );
               },

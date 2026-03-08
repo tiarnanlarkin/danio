@@ -616,9 +616,9 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
                 ticksTextStyle: Theme.of(context).textTheme.labelSmall!.copyWith(
                   color: Colors.transparent,
                 ),
-                radarBorderData: BorderSide(color: AppColors.textSecondary.withAlpha(76), width: 1),
+                radarBorderData: BorderSide(color: AppColors.textSecondaryAlpha30, width: 1),
                 gridBorderData: BorderSide(
-                  color: AppColors.textSecondary.withAlpha(76),
+                  color: AppColors.textSecondaryAlpha30,
                   width: 0.5,
                 ),
                 tickBorderData: const BorderSide(color: Colors.transparent),

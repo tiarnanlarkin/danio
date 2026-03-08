@@ -207,7 +207,7 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
                         width: double.infinity,
                         padding: EdgeInsets.all(AppSpacing.sm),
                         decoration: BoxDecoration(
-                          color: AppColors.primary.withValues(alpha: 0.05),
+                          color: AppColors.primaryAlpha05,
                           borderRadius: AppRadius.smallRadius,
                         ),
                         child: SelectableText(
@@ -377,13 +377,13 @@ class _OfflineBanner extends StatelessWidget {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            AppColors.primary.withValues(alpha: 0.08),
+            AppColors.primaryAlpha08,
             DanioColors.topaz.withValues(alpha: 0.08),
           ],
         ),
         borderRadius: AppRadius.mediumRadius,
         border: Border.all(
-          color: AppColors.primary.withValues(alpha: 0.15),
+          color: AppColors.primaryAlpha15,
         ),
       ),
       child: Column(

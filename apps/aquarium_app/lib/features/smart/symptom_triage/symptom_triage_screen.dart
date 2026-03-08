@@ -334,7 +334,7 @@ class _SymptomTriageScreenState extends ConsumerState<SymptomTriageScreen> {
   Widget _buildDiagnosisStep(ThemeData theme) {
     if (_error != null) {
       return Card(
-        color: AppColors.error.withValues(alpha: 0.1),
+        color: AppColors.errorAlpha10,
         child: Padding(
           padding: EdgeInsets.all(AppSpacing.md),
           child: Column(

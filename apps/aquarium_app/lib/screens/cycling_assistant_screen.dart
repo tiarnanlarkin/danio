@@ -373,10 +373,10 @@ class _ParamChip extends StatelessWidget {
           vertical: AppSpacing.xs,
         ),
         decoration: BoxDecoration(
-          color: isGood ? AppColors.success.withAlpha(26) : AppColors.warning.withAlpha(26),
+          color: isGood ? AppColors.successAlpha10 : AppColors.warningAlpha10,
           borderRadius: AppRadius.xsRadius,
           border: Border.all(
-            color: isGood ? AppColors.success.withAlpha(51) : AppColors.warning.withAlpha(51),
+            color: isGood ? AppColors.successAlpha20 : AppColors.warningAlpha20,
           ),
         ),
         child: Column(

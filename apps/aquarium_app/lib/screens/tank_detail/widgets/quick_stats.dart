@@ -177,8 +177,8 @@ class _WaterChangeIndicator extends StatelessWidget {
       ),
       decoration: BoxDecoration(
         color: isOverdue
-            ? AppColors.warning.withValues(alpha: 0.12)
-            : AppColors.success.withValues(alpha: 0.12),
+            ? AppColors.warningAlpha12
+            : AppColors.successAlpha12,
         borderRadius: AppRadius.mediumRadius,
       ),
       child: Row(
@@ -214,7 +214,7 @@ class _CountChip extends StatelessWidget {
     return Chip(
       avatar: Icon(icon, size: 16, color: AppColors.primary),
       label: Text(label, style: AppTypography.bodySmall),
-      backgroundColor: AppColors.primary.withValues(alpha: 0.08),
+      backgroundColor: AppColors.primaryAlpha08,
       side: BorderSide.none,
       padding: const EdgeInsets.symmetric(horizontal: 4),
       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,

@@ -278,7 +278,7 @@ Return ONLY valid JSON with these fields (no markdown, no explanation):
 
   Widget _buildError() {
     return Card(
-      color: AppColors.error.withValues(alpha: 0.1),
+      color: AppColors.errorAlpha10,
       child: Padding(
         padding: EdgeInsets.all(AppSpacing.md),
         child: Row(

@@ -581,7 +581,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                           vertical: AppSpacing.sm2,
                         ),
                         decoration: BoxDecoration(
-                          color: AppColors.primary.withAlpha(230),
+                          color: AppColors.primaryAlpha90,
                           borderRadius: AppRadius.mediumRadius,
                           boxShadow: [
                             BoxShadow(
@@ -607,10 +607,16 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                 ),
                               ),
                             ),
-                            Icon(
-                              Icons.close,
-                              size: 18,
-                              color: AppColors.onPrimary.withAlpha(180),
+                            SizedBox(
+                              width: 44,
+                              height: 44,
+                              child: Center(
+                                child: Icon(
+                                  Icons.close,
+                                  size: 18,
+                                  color: AppColors.onPrimary.withAlpha(180),
+                                ),
+                              ),
                             ),
                           ],
                         ),
@@ -844,19 +850,19 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 Expanded(child: TextField(
                   controller: phC,
                   keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                  decoration: const InputDecoration(labelText: 'pH', border: OutlineInputBorder(), isDense: true),
+                  decoration: const InputDecoration(labelText: 'pH'),
                 )),
                 const SizedBox(width: AppSpacing.sm),
                 Expanded(child: TextField(
                   controller: tempC,
                   keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                  decoration: const InputDecoration(labelText: 'Temp (°C)', border: OutlineInputBorder(), isDense: true),
+                  decoration: const InputDecoration(labelText: 'Temp (°C)'),
                 )),
                 const SizedBox(width: AppSpacing.sm),
                 Expanded(child: TextField(
                   controller: ammoniaC,
                   keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                  decoration: const InputDecoration(labelText: 'NH3', border: OutlineInputBorder(), isDense: true),
+                  decoration: const InputDecoration(labelText: 'NH3'),
                 )),
               ],
             ),
@@ -1865,9 +1871,12 @@ class _DismissibleBanner extends StatelessWidget {
           ),
           GestureDetector(
             onTap: onDismiss,
-            child: const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-              child: Icon(Icons.close, size: 14, color: Colors.white70),
+            child: const SizedBox(
+              width: 44,
+              height: 44,
+              child: Center(
+                child: Icon(Icons.close, size: 14, color: Colors.white70),
+              ),
             ),
           ),
         ],

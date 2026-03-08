@@ -349,7 +349,7 @@ class _AchievementsScreenState extends ConsumerState<AchievementsScreen> {
                     child: ShimmerGlow(
                       glowColor: AppColors.primary,
                       child: Card(
-                        color: AppColors.primary.withValues(alpha: 0.08),
+                        color: AppColors.primaryAlpha08,
                         child: InkWell(
                           borderRadius: AppRadius.mediumRadius,
                           onTap: () => _showAchievementDetail(

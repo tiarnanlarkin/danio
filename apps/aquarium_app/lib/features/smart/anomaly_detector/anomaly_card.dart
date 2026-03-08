@@ -73,10 +73,10 @@ class AnomalyCard extends ConsumerWidget {
 
   Color _cardColor(List<Anomaly> anomalies) {
     if (anomalies.any((a) => a.severity == AnomalySeverity.critical)) {
-      return AppColors.error.withValues(alpha: 0.08);
+      return AppColors.errorAlpha08;
     }
     if (anomalies.any((a) => a.severity == AnomalySeverity.alert)) {
-      return AppColors.warning.withValues(alpha: 0.08);
+      return AppColors.warningAlpha08;
     }
     return AppColors.info.withValues(alpha: 0.08);
   }

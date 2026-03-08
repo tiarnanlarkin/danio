@@ -125,7 +125,7 @@ class _StreakMilestoneCelebrationState extends State<StreakMilestoneCelebration>
                     borderRadius: AppRadius.largeRadius,
                     boxShadow: [
                       BoxShadow(
-                        color: AppColors.primary.withAlpha(50),
+                        color: AppColors.primaryAlpha20,
                         blurRadius: 30,
                         spreadRadius: 5,
                       ),

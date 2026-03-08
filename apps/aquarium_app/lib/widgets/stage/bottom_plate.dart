@@ -113,11 +113,13 @@ class BottomPlateState extends State<BottomPlate>
       left: 0,
       right: 0,
       height: currentHeight + bottomPad,
-      child: GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onVerticalDragUpdate: (d) => _onDragUpdate(d, maxDragDistance),
-        onVerticalDragEnd: _onDragEnd,
-        child: Container(
+      child: Semantics(
+        label: 'Drag to expand tanks panel',
+        child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onVerticalDragUpdate: (d) => _onDragUpdate(d, maxDragDistance),
+          onVerticalDragEnd: _onDragEnd,
+          child: Container(
           decoration: BoxDecoration(
             color: widget.backgroundColor,
             borderRadius: const BorderRadius.vertical(
@@ -188,6 +190,7 @@ class BottomPlateState extends State<BottomPlate>
               ),
             ],
           ),
+        ),
         ),
       ),
     );

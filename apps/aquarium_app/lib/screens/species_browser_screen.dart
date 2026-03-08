@@ -141,14 +141,33 @@ class _SpeciesBrowserScreenState extends ConsumerState<SpeciesBrowserScreen> {
           ),
 
           Expanded(
-            child: ListView.builder(
-              padding: EdgeInsets.all(AppSpacing.md),
-              itemCount: species.length,
-              itemBuilder: (ctx, i) => _SpeciesCard(
-                species: species[i],
-                onTap: () => _showSpeciesDetail(context, species[i]),
-              ),
-            ),
+            child: species.isEmpty && _searchQuery.isNotEmpty
+                ? Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text('🔍', style: TextStyle(fontSize: 48)),
+                        const SizedBox(height: 12),
+                        Text('No matches', style: AppTypography.titleMedium),
+                        const SizedBox(height: 8),
+                        Text(
+                          'Try a different name or clear filters',
+                          style: AppTypography.bodyMedium.copyWith(
+                            color: AppColors.textHint,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                    ),
+                  )
+                : ListView.builder(
+                    padding: EdgeInsets.all(AppSpacing.md),
+                    itemCount: species.length,
+                    itemBuilder: (ctx, i) => _SpeciesCard(
+                      species: species[i],
+                      onTap: () => _showSpeciesDetail(context, species[i]),
+                    ),
+                  ),
           ),
         ],
       ),

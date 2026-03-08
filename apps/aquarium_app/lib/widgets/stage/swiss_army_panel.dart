@@ -140,7 +140,22 @@ class _SwissArmyPanelState extends ConsumerState<SwissArmyPanel>
                   child: SafeArea(
                     left: false,
                     right: false,
-                    child: widget.child,
+                    child: Column(
+                      children: [
+                        Center(
+                          child: Container(
+                            width: 40,
+                            height: 4,
+                            margin: const EdgeInsets.only(top: 8, bottom: 8),
+                            decoration: BoxDecoration(
+                              color: AppColors.textHint,
+                              borderRadius: BorderRadius.circular(2),
+                            ),
+                          ),
+                        ),
+                        Expanded(child: widget.child),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -167,7 +182,10 @@ class StageHandleStrip extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return GestureDetector(
+    return Semantics(
+      label: 'Open stage panel',
+      button: true,
+      child: GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: () => ref.read(stageProvider.notifier).toggle(panel),
       // Horizontal drag: swipe toward centre to open, swipe to edge to close.
@@ -213,6 +231,7 @@ class StageHandleStrip extends ConsumerWidget {
           ),
         ),
       ),
+    ),
     );
   }
 }

@@ -24,7 +24,7 @@ class ActionButton extends StatelessWidget {
         onTap: onTap,
         borderRadius: AppRadius.mediumRadius,
         child: Container(
-          constraints: const BoxConstraints(minHeight: 44),
+          constraints: const BoxConstraints(minHeight: 48),
           padding: const EdgeInsets.symmetric(vertical: 16),
           decoration: BoxDecoration(
             color: color.withAlpha(26),

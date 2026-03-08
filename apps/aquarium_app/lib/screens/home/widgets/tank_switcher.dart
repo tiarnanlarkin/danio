@@ -45,71 +45,75 @@ class TankSwitcher extends StatelessWidget {
         ],
         border: Border.all(color: AppOverlays.white60, width: 1.5),
       ),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: hasMultipleTanks ? () => _showTankPicker(context) : null,
-          onLongPress: onLongPress,
-          borderRadius: AppRadius.mediumRadius,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm4),
-            child: Row(
-              children: [
-                // Fish icon
-                Container(
-                  width: 36,
-                  height: 36,
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [
-                        AppOverlays.primary15,
-                        AppOverlays.primary8,
+      child: Semantics(
+        label: 'Switch tank',
+        button: hasMultipleTanks,
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: hasMultipleTanks ? () => _showTankPicker(context) : null,
+            onLongPress: onLongPress,
+            borderRadius: AppRadius.mediumRadius,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm4),
+              child: Row(
+                children: [
+                  // Fish icon
+                  Container(
+                    width: 36,
+                    height: 36,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [
+                          AppOverlays.primary15,
+                          AppOverlays.primary8,
+                        ],
+                      ),
+                      borderRadius: AppRadius.smallRadius,
+                    ),
+                    child: const Icon(
+                      Icons.set_meal_rounded, // Fish icon
+                      color: AppColors.primary,
+                      size: AppIconSizes.sm,
+                    ),
+                  ),
+                  const SizedBox(width: AppSpacing.sm2),
+
+                  // Tank info
+                  Expanded(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          tanks[currentIndex].name,
+                          style: AppTypography.labelLarge.copyWith(
+                            color: AppColors.textPrimary,
+                            fontWeight: FontWeight.w600,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        Text(
+                          '${tanks[currentIndex].volumeLitres.toStringAsFixed(0)}L${hasMultipleTanks ? ' • ${currentIndex + 1}/${tanks.length}' : ''}',
+                          style: AppTypography.bodySmall.copyWith(
+                            color: AppColors.textSecondary,
+                          ),
+                        ),
                       ],
                     ),
-                    borderRadius: AppRadius.smallRadius,
                   ),
-                  child: const Icon(
-                    Icons.set_meal_rounded, // Fish icon
-                    color: AppColors.primary,
-                    size: AppIconSizes.sm,
-                  ),
-                ),
-                const SizedBox(width: AppSpacing.sm2),
 
-                // Tank info
-                Expanded(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        tanks[currentIndex].name,
-                        style: AppTypography.labelLarge.copyWith(
-                          color: AppColors.textPrimary,
-                          fontWeight: FontWeight.w600,
-                        ),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      Text(
-                        '${tanks[currentIndex].volumeLitres.toStringAsFixed(0)}L${hasMultipleTanks ? ' • ${currentIndex + 1}/${tanks.length}' : ''}',
-                        style: AppTypography.bodySmall.copyWith(
-                          color: AppColors.textSecondary,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-
-                // Picker indicator (only if multiple tanks)
-                if (hasMultipleTanks)
-                  Icon(
-                    Icons.unfold_more_rounded,
-                    color: AppColors.textHint,
-                    size: 18,
-                  ),
-              ],
+                  // Picker indicator (only if multiple tanks)
+                  if (hasMultipleTanks)
+                    Icon(
+                      Icons.unfold_more_rounded,
+                      color: AppColors.textHint,
+                      size: 18,
+                    ),
+                ],
+              ),
             ),
           ),
         ),

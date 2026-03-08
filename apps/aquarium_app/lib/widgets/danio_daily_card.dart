@@ -38,7 +38,7 @@ class DanioDailyCard extends StatelessWidget {
               Container(
                 padding: EdgeInsets.all(AppSpacing.sm),
                 decoration: BoxDecoration(
-                  color: AppColors.primary.withAlpha(26),
+                  color: AppColors.primaryAlpha10,
                   borderRadius: AppRadius.smallRadius,
                 ),
                 child: const Icon(

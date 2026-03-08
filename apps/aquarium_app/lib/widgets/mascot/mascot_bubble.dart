@@ -204,7 +204,7 @@ class _MascotBubbleState extends State<MascotBubble>
               shape: BoxShape.circle,
               boxShadow: [
                 BoxShadow(
-                  color: AppColors.primary.withValues(alpha: 0.3),
+                  color: AppColors.primaryAlpha30,
                   blurRadius: 12,
                   offset: const Offset(0, 4),
                 ),
@@ -251,7 +251,7 @@ class _MascotBubbleState extends State<MascotBubble>
               ),
             ],
             border: Border.all(
-              color: AppColors.primary.withValues(alpha: 0.2),
+              color: AppColors.primaryAlpha20,
               width: 1,
             ),
           ),
@@ -450,7 +450,7 @@ class _MascotAvatarState extends State<MascotAvatar>
               shape: BoxShape.circle,
               boxShadow: [
                 BoxShadow(
-                  color: AppColors.primary.withValues(alpha: 0.3),
+                  color: AppColors.primaryAlpha30,
                   blurRadius: 12,
                   offset: const Offset(0, 4),
                 ),
@@ -530,13 +530,13 @@ class MascotBanner extends StatelessWidget {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            AppColors.primary.withValues(alpha: 0.1),
+            AppColors.primaryAlpha10,
             AppColors.primaryLight.withValues(alpha: 0.05),
           ],
         ),
         borderRadius: AppRadius.largeRadius,
         border: Border.all(
-          color: AppColors.primary.withValues(alpha: 0.2),
+          color: AppColors.primaryAlpha20,
           width: 1,
         ),
       ),

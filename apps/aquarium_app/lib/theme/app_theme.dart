@@ -61,6 +61,7 @@ class AppColors {
   static const Color textPrimary = Color(0xFF2D3436); // Near black
   static const Color textSecondary = Color(0xFF636E72); // Medium gray
   static const Color textSecondaryAlpha10 = Color(0x1A636E72); // 10%
+  static const Color textSecondaryAlpha30 = Color(0x4C636E72); // 30%
   static const Color textHint = Color(
     0xFF5D6F76,
   ); // Medium-dark gray (WCAG AA: 4.67:1 on background, 5.25:1 on white)
@@ -197,6 +198,7 @@ class AppColors {
 
   // Success color with alpha
   static const Color successAlpha10 = Color(0x1A5AAF7A);
+  static const Color successAlpha12 = Color(0x1F5AAF7A); // 12%
   static const Color successAlpha15 = Color(0x265AAF7A);
   static const Color successAlpha20 = Color(0x335AAF7A);
   static const Color successAlpha30 = Color(0x4D5AAF7A);
@@ -208,6 +210,7 @@ class AppColors {
 
   // Warning color with alpha
   static const Color warningAlpha05 = Color(0x0DC99524); // 3%
+  static const Color warningAlpha08 = Color(0x14C99524); // ~8%
   static const Color warningAlpha10 = Color(0x1AC99524);
   static const Color warningAlpha12 = Color(0x1FC99524); // 7%
   static const Color warningAlpha15 = Color(0x26C99524);
@@ -221,6 +224,7 @@ class AppColors {
 
   // Error color with alpha
   static const Color errorAlpha05 = Color(0x0DD96A6A);
+  static const Color errorAlpha08 = Color(0x14D96A6A); // ~8%
   static const Color errorAlpha10 = Color(0x1AD96A6A);
   static const Color errorAlpha15 = Color(0x26D96A6A);
   static const Color errorAlpha20 = Color(0x33D96A6A);

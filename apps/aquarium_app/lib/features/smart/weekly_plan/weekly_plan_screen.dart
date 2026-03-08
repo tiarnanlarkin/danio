@@ -288,7 +288,7 @@ class _DayCard extends StatelessWidget {
       ),
       child: ExpansionTile(
         leading: CircleAvatar(
-          backgroundColor: AppColors.primary.withValues(alpha: 0.1),
+          backgroundColor: AppColors.primaryAlpha10,
           child: Text(
             day.day,
             style: theme.textTheme.labelMedium?.copyWith(

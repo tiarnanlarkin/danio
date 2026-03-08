@@ -152,7 +152,7 @@ class _OptionCard extends StatelessWidget {
       duration: const Duration(milliseconds: 200),
       decoration: BoxDecoration(
         color: isSelected
-            ? AppColors.primary.withValues(alpha: 0.08)
+            ? AppColors.primaryAlpha08
             : Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(AppRadius.lg),
         border: Border.all(
