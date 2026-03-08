@@ -111,22 +111,30 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   Widget _buildSkeletonRoom() {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Skeletonizer(
       child: Stack(
         fit: StackFit.expand,
         children: [
-          // Skeleton room background — must be Positioned.fill to actually render
+          // Skeleton room background — must be Positioned.fill to actually render.
+          // Use theme-aware colors so dark-mode users don't see a white flash
+          // on the loading/post-crash recovery screen.
           Positioned.fill(
             child: Container(
               decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    AppOverlays.surfaceVariant50,
-                    AppColors.surfaceVariant,
-                  ],
-                ),
+                // Use theme-aware colors so dark-mode users don't see a white
+                // flash on the loading/post-crash recovery screen.
+                color: isDark ? AppColors.backgroundDark : null,
+                gradient: isDark
+                    ? null
+                    : const LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          AppOverlays.surfaceVariant50,
+                          AppColors.surfaceVariant,
+                        ],
+                      ),
               ),
             ),
           ),
@@ -679,7 +687,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 
-  void _maybeShowFirstTankPrompt(BuildContext context, List<Tank> tanks) {
+  void _maybeShowFirstTankPrompt(BuildContext _, List<Tank> tanks) {
+    // Guard: widget may be deactivated by the time this runs during a build
+    // callback (e.g. provider rebuild during navigation transition).
+    if (!mounted) return;
+    // DISABLED: auto-launch was causing lifecycle crashes on first load.
+    // Users can still tap "+ Add Your Tank" button manually.
+    return;
+    // ignore: dead_code
     if (_firstTankPromptShown || tanks.isNotEmpty) return;
     // Only auto-launch create flow when Tank tab is actually visible
     final currentTab = ref.read(currentTabProvider);
@@ -693,6 +708,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       if (!mounted) return;
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (!mounted) return;
+        // Use this.context (State's own context) — the build-method context
+        // passed as parameter is stale by the time this deferred callback fires.
         _navigateToCreateFirstTank(context);
       });
     });
@@ -745,6 +762,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   void _navigateToCreateTank(BuildContext context) {
+    // Guard: widget may have been deactivated between the button build and tap.
+    if (!mounted) return;
     // Guard against double navigation racing with the auto-prompt.
     if (_isNavigatingToCreate) return;
     setState(() => _isNavigatingToCreate = true);
