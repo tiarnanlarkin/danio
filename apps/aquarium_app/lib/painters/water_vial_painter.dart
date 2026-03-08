@@ -2,12 +2,16 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
 /// Lab vial display for water quality parameters.
+///
+/// Set [bubbleAnim] to a looping 0.0→1.0 value to animate bubbles rising
+/// through the liquid fill in each tube.
 class WaterVialPainter extends CustomPainter {
   final double? phValue;
   final double? ammoniaValue;
   final double? nitrateValue;
   final double? nitriteValue;
-  final double animationValue; // 0.0–1.0
+  final double animationValue; // 0.0–1.0 (fill-in animation)
+  final double bubbleAnim;    // 0.0–1.0 (looping, drives bubble rise)
 
   WaterVialPainter({
     this.phValue,
@@ -15,30 +19,36 @@ class WaterVialPainter extends CustomPainter {
     this.nitrateValue,
     this.nitriteValue,
     required this.animationValue,
+    this.bubbleAnim = 0.0,
   });
 
   @override
   void paint(Canvas canvas, Size size) {
-    final vialCount = 4;
+    const vialCount = 4;
     final spacing = size.width / (vialCount + 1);
     final vialWidth = spacing * 0.5;
-    final vialHeight = size.height * 0.6;
-    final vialTop = size.height * 0.1;
+    // Taller tubes: ~82% of container height ≈ 180 px for a 220 px container
+    final vialHeight = size.height * 0.82;
+    final vialTop = size.height * 0.04;
 
     final params = [
       _VialData('pH', phValue, _phColor(phValue), _phLevel(phValue)),
-      _VialData('NH₃', ammoniaValue, _ammoniaColor(ammoniaValue), _ammoniaLevel(ammoniaValue)),
-      _VialData('NO₃', nitrateValue, _nitrateColor(nitrateValue), _nitrateLevel(nitrateValue)),
-      _VialData('NO₂', nitriteValue, _nitriteColor(nitriteValue), _nitriteLevel(nitriteValue)),
+      _VialData('NH₃', ammoniaValue, _ammoniaColor(ammoniaValue),
+          _ammoniaLevel(ammoniaValue)),
+      _VialData('NO₃', nitrateValue, _nitrateColor(nitrateValue),
+          _nitrateLevel(nitrateValue)),
+      _VialData('NO₂', nitriteValue, _nitriteColor(nitriteValue),
+          _nitriteLevel(nitriteValue)),
     ];
 
     for (var i = 0; i < params.length; i++) {
       final cx = spacing * (i + 1);
       final param = params[i];
-      // Stagger animation: 0ms, 100ms, 200ms, 300ms → offset in 0.0–1.0 range
+      // Stagger fill animation per tube
       final staggerOffset = i * 0.15;
-      final localAnim = ((animationValue - staggerOffset) / (1.0 - staggerOffset))
-          .clamp(0.0, 1.0);
+      final localAnim =
+          ((animationValue - staggerOffset) / (1.0 - staggerOffset))
+              .clamp(0.0, 1.0);
 
       _drawVial(
         canvas,
@@ -79,6 +89,17 @@ class WaterVialPainter extends CustomPainter {
         ..strokeWidth = 1.5,
     );
 
+    // Glass highlight (thin stripe on left edge)
+    final highlightRect = RRect.fromRectAndCorners(
+      Rect.fromLTWH(cx - width / 2 + 2, top + height * 0.1, 3, height * 0.5),
+      topLeft: const Radius.circular(2),
+      bottomLeft: const Radius.circular(2),
+    );
+    canvas.drawRRect(
+      highlightRect,
+      Paint()..color = const Color(0x20FFFFFF),
+    );
+
     // Liquid fill
     if (param.level > 0) {
       final fillHeight = height * param.level * anim;
@@ -102,22 +123,36 @@ class WaterVialPainter extends CustomPainter {
         Paint()..color = param.color.withAlpha(200),
       );
 
-      // Bubbles near top of liquid
+      // Animated rising bubbles (2–3 per tube, staggered offsets)
       final rng = math.Random(param.label.hashCode);
-      for (var b = 0; b < 3; b++) {
-        final bx = cx + (rng.nextDouble() - 0.5) * width * 0.6;
-        final by = fillTop + rng.nextDouble() * 12 + 4;
-        canvas.drawCircle(
-          Offset(bx, by),
-          rng.nextDouble() * 2 + 1,
-          Paint()..color = const Color(0x40FFFFFF),
-        );
+      const bubbleCount = 3;
+      for (var b = 0; b < bubbleCount; b++) {
+        // Each bubble has its own horizontal position (deterministic)
+        final bx = cx + (rng.nextDouble() - 0.5) * width * 0.55;
+        final bubbleRadius = rng.nextDouble() * 2.0 + 1.5;
+
+        // Stagger: bubble 0 leads, 1 is 1/3 behind, 2 is 2/3 behind
+        final stagger = b / bubbleCount;
+        final t = (bubbleAnim + stagger) % 1.0;
+        final tubeBottom = top + height;
+        final bubbleY = tubeBottom - t * fillHeight;
+
+        // Only draw bubbles within the liquid fill region
+        if (fillHeight > 4 && bubbleY >= fillTop && bubbleY <= tubeBottom) {
+          canvas.drawCircle(
+            Offset(bx, bubbleY),
+            bubbleRadius,
+            Paint()..color = const Color(0x50FFFFFF),
+          );
+        }
       }
+
       canvas.restore();
     }
   }
 
-  // --- Color scales ---
+  // ── Color scales ──────────────────────────────────────────────────────────
+
   Color _phColor(double? v) {
     if (v == null) return const Color(0xFF9E9E9E);
     if (v < 6.0) return const Color(0xFF42A5F5); // acidic blue
@@ -147,16 +182,23 @@ class WaterVialPainter extends CustomPainter {
     return const Color(0xFFEF5350);
   }
 
-  double _phLevel(double? v) => v != null ? ((v - 5) / 4).clamp(0.15, 1.0) : 0.15;
-  double _ammoniaLevel(double? v) => v != null ? (v / 2).clamp(0.15, 1.0) : 0.15;
-  double _nitrateLevel(double? v) => v != null ? (v / 80).clamp(0.15, 1.0) : 0.15;
-  double _nitriteLevel(double? v) => v != null ? (v / 1).clamp(0.15, 1.0) : 0.15;
+  double _phLevel(double? v) =>
+      v != null ? ((v - 5) / 4).clamp(0.15, 1.0) : 0.15;
+  double _ammoniaLevel(double? v) =>
+      v != null ? (v / 2).clamp(0.15, 1.0) : 0.15;
+  double _nitrateLevel(double? v) =>
+      v != null ? (v / 80).clamp(0.15, 1.0) : 0.15;
+  double _nitriteLevel(double? v) =>
+      v != null ? (v / 1).clamp(0.15, 1.0) : 0.15;
 
   @override
   bool shouldRepaint(covariant WaterVialPainter old) =>
       old.animationValue != animationValue ||
+      old.bubbleAnim != bubbleAnim ||
       old.phValue != phValue ||
-      old.ammoniaValue != ammoniaValue;
+      old.ammoniaValue != ammoniaValue ||
+      old.nitrateValue != nitrateValue ||
+      old.nitriteValue != nitriteValue;
 }
 
 class _VialData {
