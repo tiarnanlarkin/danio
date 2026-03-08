@@ -144,7 +144,7 @@ class _FriendComparisonScreenState
                       child: Center(
                         child: Text(
                           emoji,
-                          style: Theme.of(context).textTheme.headlineMedium!.copyWith(),
+                          style: Theme.of(context).textTheme.headlineMedium?.copyWith(),
                         ),
                       ),
                     ),
@@ -282,7 +282,7 @@ class _UserCard extends StatelessWidget {
               radius: 30,
               backgroundColor: (isUser ? AppColors.primary : AppColors.primary)
                   .withAlpha(51),
-              child: Text(emoji, style: Theme.of(context).textTheme.headlineMedium!.copyWith()),
+              child: Text(emoji, style: Theme.of(context).textTheme.headlineMedium?.copyWith()),
             ),
             const SizedBox(height: AppSpacing.sm),
             Text(

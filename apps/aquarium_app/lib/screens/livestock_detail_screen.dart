@@ -5,6 +5,7 @@ import '../models/models.dart';
 import '../providers/tank_provider.dart';
 import '../services/compatibility_service.dart';
 import '../theme/app_theme.dart';
+import '../utils/app_constants.dart';
 import '../widgets/core/app_card.dart';
 
 class LivestockDetailScreen extends ConsumerWidget {
@@ -140,7 +141,7 @@ class _HeaderCard extends StatelessWidget {
                 child: Material(
                   type: MaterialType.transparency,
                   child: CircleAvatar(
-                    radius: 32,
+                    radius: kAvatarSizeMd,
                     backgroundColor: AppOverlays.primary10,
                     child: const Icon(
                       Icons.set_meal,

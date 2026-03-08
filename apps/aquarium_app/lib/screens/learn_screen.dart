@@ -18,6 +18,7 @@ import 'parameter_guide_screen.dart';
 import 'practice_screen.dart';
 import 'spaced_repetition_practice_screen.dart';
 import 'onboarding/profile_creation_screen.dart';
+import '../utils/app_constants.dart';
 import '../widgets/learning_streak_badge.dart';
 
 /// The main learning hub - shows learning paths and progress
@@ -331,7 +332,7 @@ class LearnScreen extends ConsumerWidget {
                   }, childCount: metadata.length),
                 ),
 
-                const SliverToBoxAdapter(child: SizedBox(height: 100)),
+                const SliverToBoxAdapter(child: SizedBox(height: kScrollEndPadding)),
               ],
               ],
             ),

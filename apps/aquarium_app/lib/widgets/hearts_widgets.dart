@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../services/hearts_service.dart';
 import '../providers/user_profile_provider.dart';
 import '../theme/app_theme.dart';
+import '../utils/app_constants.dart';
 import 'dart:async';
 
 /// Heart indicator widget for app bar (shows current/max hearts)
@@ -190,7 +191,7 @@ class _HeartAnimationState extends State<HeartAnimation>
   void initState() {
     super.initState();
     _controller = AnimationController(
-      duration: const Duration(milliseconds: 1200),
+      duration: kQuizRevealDelay,
       vsync: this,
     );
 

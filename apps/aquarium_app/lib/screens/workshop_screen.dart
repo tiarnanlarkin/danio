@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'dart:ui';
 import '../theme/app_theme.dart';
+import '../utils/app_constants.dart';
 import '../utils/app_feedback.dart';
 import '../providers/user_profile_provider.dart';
 import '../widgets/room/interactive_object.dart';
@@ -209,7 +210,7 @@ class WorkshopScreen extends ConsumerWidget {
             SliverToBoxAdapter(child: _QuickConversions()),
 
             // Bottom padding for navigation bar
-            const SliverToBoxAdapter(child: SizedBox(height: 100)),
+            const SliverToBoxAdapter(child: SizedBox(height: kScrollEndPadding)),
           ],
         ),
       ),

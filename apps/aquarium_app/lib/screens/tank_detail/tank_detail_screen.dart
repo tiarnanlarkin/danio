@@ -12,6 +12,7 @@ import '../../providers/storage_provider.dart';
 import '../../providers/tank_provider.dart';
 import '../../services/stocking_calculator.dart';
 import '../../theme/app_theme.dart';
+import '../../utils/app_constants.dart';
 import '../../utils/skeleton_placeholders.dart';
 import '../add_log_screen.dart';
 import '../livestock_screen.dart';
@@ -287,7 +288,7 @@ class TankDetailScreen extends ConsumerWidget {
     messenger.showSnackBar(
       SnackBar(
         content: Text('${tank.name} deleted'),
-        duration: const Duration(seconds: 5),
+        duration: kSnackbarDuration,
         action: SnackBarAction(
           label: 'Undo',
           onPressed: () {
@@ -955,7 +956,7 @@ class TankDetailScreen extends ConsumerWidget {
                 ),
               ),
 
-              const SliverToBoxAdapter(child: SizedBox(height: 100)),
+              const SliverToBoxAdapter(child: SizedBox(height: kScrollEndPadding)),
               ],
             ),
           ),

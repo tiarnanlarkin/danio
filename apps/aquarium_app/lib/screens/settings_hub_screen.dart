@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/user_profile_provider.dart';
 import '../theme/app_theme.dart';
+import '../utils/app_constants.dart';
 import '../widgets/common/common_widgets.dart';
 import 'settings_screen.dart';
 // friends_screen.dart — hidden until feature ships (CA-002)
@@ -205,7 +206,7 @@ class SettingsHubScreen extends ConsumerWidget {
         children: [
           // Avatar
           CircleAvatar(
-            radius: 32,
+            radius: kAvatarSizeMd,
             backgroundColor: AppColors.primaryAlpha05,
             child: profile?.name != null && profile!.name.isNotEmpty
                 ? Text(

@@ -13,6 +13,7 @@ import '../providers/tank_provider.dart';
 import '../providers/user_profile_provider.dart';
 import '../services/compatibility_service.dart';
 import '../services/xp_animation_service.dart';
+import '../utils/app_constants.dart';
 import '../utils/haptic_feedback.dart';
 import '../theme/app_theme.dart';
 import '../utils/app_feedback.dart';
@@ -479,7 +480,7 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('${selectedLivestock.length} livestock removed'),
-            duration: const Duration(seconds: 5),
+            duration: kSnackbarDuration,
             action: SnackBarAction(
               label: 'Undo All',
               onPressed: () {
@@ -660,7 +661,7 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
     messenger.showSnackBar(
       SnackBar(
         content: Text('${livestock.count}× ${livestock.commonName} removed'),
-        duration: const Duration(seconds: 5),
+        duration: kSnackbarDuration,
         action: SnackBarAction(
           label: 'Undo',
           onPressed: () {

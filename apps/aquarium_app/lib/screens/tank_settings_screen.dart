@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import '../models/models.dart';
 import '../providers/tank_provider.dart';
 import '../theme/app_theme.dart';
+import '../utils/app_constants.dart';
 import '../utils/app_feedback.dart';
 
 class TankSettingsScreen extends ConsumerStatefulWidget {
@@ -439,7 +440,7 @@ class _TankSettingsScreenState extends ConsumerState<TankSettingsScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: const Text('Tank deleted'),
-          duration: const Duration(seconds: 5),
+          duration: kSnackbarDuration,
           action: SnackBarAction(
             label: 'UNDO',
             onPressed: () {

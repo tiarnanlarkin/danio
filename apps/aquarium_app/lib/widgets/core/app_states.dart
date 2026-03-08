@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../theme/app_theme.dart';
+import '../../utils/app_constants.dart';
 import 'bubble_loader.dart';
 
 /// Empty state variants for different contexts
@@ -391,7 +392,7 @@ class _LoadingDotsState extends State<_LoadingDots>
   void initState() {
     super.initState();
     _controller = AnimationController(
-      duration: const Duration(milliseconds: 1200),
+      duration: kQuizRevealDelay,
       vsync: this,
     )..repeat();
   }

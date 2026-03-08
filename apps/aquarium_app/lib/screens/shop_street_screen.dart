@@ -5,6 +5,7 @@ import 'dart:ui';
 import '../models/wishlist.dart';
 import '../providers/wishlist_provider.dart';
 import '../theme/app_theme.dart';
+import '../utils/app_constants.dart';
 import 'gem_shop_screen.dart';
 import 'wishlist_screen.dart';
 
@@ -155,7 +156,7 @@ class ShopStreetScreen extends ConsumerWidget {
             ),
 
             // Bottom padding
-            const SliverToBoxAdapter(child: SizedBox(height: 100)),
+            const SliverToBoxAdapter(child: SizedBox(height: kScrollEndPadding)),
           ],
         ),
       ),

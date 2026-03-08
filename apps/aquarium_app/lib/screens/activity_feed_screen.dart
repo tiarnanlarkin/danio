@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/friend.dart';
 import '../providers/friends_provider.dart';
 import '../theme/app_theme.dart';
+import '../utils/app_constants.dart';
 import '../widgets/core/bubble_loader.dart';
 import '../widgets/empty_state.dart';
 import '../widgets/core/app_states.dart';
@@ -331,7 +332,7 @@ class _ActivityTile extends ConsumerWidget {
             children: [
               // Avatar
               CircleAvatar(
-                radius: 24,
+                radius: kAvatarSizeSm,
                 backgroundColor: AppOverlays.primary20,
                 child: Text(
                   activity.friendAvatarEmoji ?? '🐠',

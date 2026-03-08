@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/learning.dart';
 import '../providers/lesson_provider.dart';
@@ -13,6 +14,7 @@ import '../widgets/hearts_widgets.dart';
 import '../widgets/xp_award_animation.dart';
 import '../widgets/level_up_dialog.dart';
 import '../theme/app_theme.dart';
+import '../utils/app_constants.dart';
 import '../utils/app_feedback.dart';
 import '../utils/haptic_feedback.dart';
 
@@ -158,9 +160,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
                       // Show full potential XP (base + quiz bonus) so it matches results screen.
                       widget.isPracticeMode
                           ? '+${widget.lesson.xpReward ~/ 2} XP'
-                          : (widget.lesson.quiz != null
-                              ? 'up to +${widget.lesson.xpReward + widget.lesson.quiz!.bonusXp} XP'
-                              : '+${widget.lesson.xpReward} XP'),
+                          : 'up to +${widget.lesson.xpReward + (widget.lesson.quiz?.bonusXp ?? 0)} XP',
                       style: AppTypography.labelMedium.copyWith(
                         color: AppColors.accent,
                       ),
@@ -738,7 +738,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
                             if (!heartsService.hasHeartsAvailable) {
                               // Wait for animation to finish
                               await Future.delayed(
-                                const Duration(milliseconds: 1200),
+                                kQuizRevealDelay,
                               );
                               if (mounted) {
                                 final result = await showOutOfHeartsModal(
@@ -1188,7 +1188,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
             _showHeartAnimation = true;
             _heartGained = true;
           });
-          await Future.delayed(const Duration(milliseconds: 1200));
+          await Future.delayed(kQuizRevealDelay);
         }
 
         if (mounted) {
@@ -1207,8 +1207,8 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
       // Calculate gem rewards (non-practice mode only)
       // Note: Gems are awarded by completeLesson() and awardQuizGems() automatically
       // int totalGems = 5; // Base lesson gems
-      if (widget.lesson.quiz != null) {
-        final quiz = widget.lesson.quiz!;
+      final quiz = widget.lesson.quiz;
+      if (quiz != null) {
         final isPerfect = _correctAnswers == quiz.questions.length;
         // totalGems += isPerfect ? 5 : 3; // Quiz gems
 
@@ -1270,8 +1270,9 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
       final profile = ref.read(userProfileProvider).value;
       if (profile != null) {
         final achievementChecker = ref.read(achievementCheckerProvider);
-        final isPerfect = widget.lesson.quiz != null &&
-            _correctAnswers == widget.lesson.quiz!.questions.length;
+        final lessonQuiz = widget.lesson.quiz;
+        final quizLen = lessonQuiz?.questions.length;
+        final isPerfect = quizLen != null && _correctAnswers == quizLen;
 
         // Calculate today's lessons completed
         final todayKey = DateTime.now().toIso8601String().split('T')[0];
@@ -1303,9 +1304,8 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
                       .length,
               lessonCompletedAt: DateTime.now(),
               lessonDuration: widget.lesson.estimatedMinutes * 60,
-              lessonScore: widget.lesson.quiz != null
-                  ? (_correctAnswers * 100 ~/
-                      widget.lesson.quiz!.questions.length)
+              lessonScore: quizLen != null
+                  ? (_correctAnswers * 100 ~/ quizLen)
                   : 100,
               todayLessonsCompleted: todayLessons,
               completedLessonIds: [

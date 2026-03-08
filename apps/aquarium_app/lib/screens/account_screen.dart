@@ -6,6 +6,7 @@ import '../services/supabase_service.dart';
 import '../services/cloud_backup_service.dart';
 import '../services/cloud_sync_service.dart';
 import '../theme/app_theme.dart';
+import '../utils/app_constants.dart';
 
 /// Account screen - sign-in / profile / sync management.
 ///
@@ -254,7 +255,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
             child: Column(
               children: [
                 CircleAvatar(
-                  radius: 40,
+                  radius: kAvatarSizeLg,
                   backgroundColor: theme.colorScheme.primaryContainer,
                   child: Text(
                     (auth.displayName.isNotEmpty

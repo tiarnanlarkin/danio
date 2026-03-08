@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../theme/app_theme.dart';
+import '../../utils/app_constants.dart';
 import '../../widgets/core/app_card.dart';
 import '../learn_screen.dart';
 import '../nitrogen_cycle_guide_screen.dart';
@@ -260,7 +261,7 @@ class StudyScreen extends ConsumerWidget {
             ),
           ),
 
-          const SliverToBoxAdapter(child: SizedBox(height: 100)),
+          const SliverToBoxAdapter(child: SizedBox(height: kScrollEndPadding)),
         ],
       ),
     );
