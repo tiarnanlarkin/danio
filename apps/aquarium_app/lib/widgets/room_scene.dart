@@ -272,13 +272,14 @@ class _Sparkle extends StatelessWidget {
 
 class _SparklePainter extends CustomPainter {
   final Color color;
+  late final Color _colorAlpha178 = color.withAlpha(178);
 
   _SparklePainter({required this.color});
 
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = color.withAlpha(178)
+      ..color = _colorAlpha178
       ..style = PaintingStyle.fill;
 
     final center = Offset(size.width / 2, size.height / 2);
@@ -368,6 +369,23 @@ class _CozyRoomPainter extends CustomPainter {
 
   _CozyRoomPainter({required this.theme});
 
+  // Pre-computed withAlpha colors to avoid per-frame allocations in paint()
+  late final Color _trimAlpha102 = _trimColor.withAlpha(102);
+  late final Color _accentBlobAlpha64 = theme.accentBlob.withAlpha(64);
+  late final Color _accentBlobAlpha89 = theme.accentBlob.withAlpha(89);
+  late final Color _accentBlob2Alpha76 = theme.accentBlob2.withAlpha(76);
+  late final Color _accentBlobAlpha128 = theme.accentBlob.withAlpha(128);
+  late final Color _waterMidAlpha128 = theme.waterMid.withAlpha(128);
+  late final Color _textSecAlpha76 = theme.textSecondary.withAlpha(76);
+  late final Color _textSecAlpha64 = theme.textSecondary.withAlpha(64);
+  late final Color _accentBlobAlpha102 = theme.accentBlob.withAlpha(102);
+  late final Color _accentBlobAlpha153 = theme.accentBlob.withAlpha(153);
+  late final Color _textSecAlpha51 = theme.textSecondary.withAlpha(51);
+  late final Color _waterMidAlpha64 = theme.waterMid.withAlpha(64);
+  late final Color _waterMidAlpha38 = theme.waterMid.withAlpha(38);
+  late final Color _waterMidAlpha31 = theme.waterMid.withAlpha(31);
+  late final Color _waterMidAlpha13 = theme.waterMid.withAlpha(13);
+
   // Determine if this is a dark/night theme
   bool get _isDarkTheme {
     final luminance = theme.background1.computeLuminance();
@@ -436,7 +454,7 @@ class _CozyRoomPainter extends CustomPainter {
       Offset(0, panelTop),
       Offset(w, panelTop),
       Paint()
-        ..color = _trimColor.withAlpha(102)
+        ..color = _trimAlpha102
         ..strokeWidth = 3,
     );
 
@@ -512,12 +530,12 @@ class _CozyRoomPainter extends CustomPainter {
     // Rug base
     canvas.drawRRect(
       rugRect,
-      Paint()..color = theme.accentBlob.withAlpha(_isDarkTheme ? 64 : 89),
+      Paint()..color = _isDarkTheme ? _accentBlobAlpha64 : _accentBlobAlpha89,
     );
     
     // Rug pattern (simple stripes)
     final patternPaint = Paint()
-      ..color = theme.accentBlob2.withAlpha(76)
+      ..color = _accentBlob2Alpha76
       ..strokeWidth = 3;
     for (var x = w * 0.1; x < w * 0.9; x += 20) {
       canvas.drawLine(
@@ -531,7 +549,7 @@ class _CozyRoomPainter extends CustomPainter {
     canvas.drawRRect(
       rugRect,
       Paint()
-        ..color = theme.accentBlob.withAlpha(128)
+        ..color = _accentBlobAlpha128
         ..style = PaintingStyle.stroke
         ..strokeWidth = 2,
     );
@@ -560,7 +578,7 @@ class _CozyRoomPainter extends CustomPainter {
         Rect.fromLTWH(frameLeft + 3, frameTop + 3, frameWidth - 6, frameHeight - 6),
         const Radius.circular(1),
       ),
-      Paint()..color = theme.waterMid.withAlpha(128),
+      Paint()..color = _waterMidAlpha128,
     );
   }
 
@@ -633,7 +651,7 @@ class _CozyRoomPainter extends CustomPainter {
       windowRect,
       Paint()
         ..color = _isDarkTheme
-            ? theme.textSecondary.withAlpha(76)
+            ? _textSecAlpha76
             : AppColors.whiteAlpha50
         ..style = PaintingStyle.stroke
         ..strokeWidth = 3,
@@ -642,7 +660,7 @@ class _CozyRoomPainter extends CustomPainter {
     // Window cross bars
     final crossPaint = Paint()
       ..color = _isDarkTheme
-          ? theme.textSecondary.withAlpha(64)
+          ? _textSecAlpha64
           : AppColors.whiteAlpha40
       ..strokeWidth = 2;
     
@@ -661,8 +679,8 @@ class _CozyRoomPainter extends CustomPainter {
 
     // === CURTAINS ===
     final curtainColor = _isDarkTheme
-        ? theme.accentBlob.withAlpha(102)
-        : theme.accentBlob.withAlpha(153);
+        ? _accentBlobAlpha102
+        : _accentBlobAlpha153;
     final curtainPaint = Paint()..color = curtainColor;
 
     // Left curtain
@@ -709,7 +727,7 @@ class _CozyRoomPainter extends CustomPainter {
       Offset(windowLeft + windowWidth + 20, windowTop - 8),
       Paint()
         ..color = _isDarkTheme
-            ? theme.textSecondary.withAlpha(76)
+            ? _textSecAlpha76
             : AppColors.whiteAlpha60
         ..strokeWidth = 3
         ..strokeCap = StrokeCap.round,
@@ -779,8 +797,8 @@ class _CozyRoomPainter extends CustomPainter {
         center: Alignment.center,
         radius: 0.5,
         colors: [
-          theme.waterMid.withAlpha(_isDarkTheme ? 64 : 38),
-          theme.waterMid.withAlpha(_isDarkTheme ? 31 : 13),
+          _isDarkTheme ? _waterMidAlpha64 : _waterMidAlpha38,
+          _isDarkTheme ? _waterMidAlpha31 : _waterMidAlpha13,
           Colors.transparent,
         ],
       ).createShader(Rect.fromLTWH(w * 0.15, h * 0.25, w * 0.7, h * 0.4));
@@ -800,7 +818,7 @@ class _CozyRoomPainter extends CustomPainter {
     final shelfY = h * 0.10;
     final shelfPaint = Paint()
       ..color = _isDarkTheme
-          ? theme.textSecondary.withAlpha(51)
+          ? _textSecAlpha51
           : AppOverlays.darkWood30;
     
     // Shelf surface
@@ -851,6 +869,7 @@ class _RoomPlant extends StatelessWidget {
 
 class _RoomPlantPainter extends CustomPainter {
   final RoomTheme theme;
+  late final Color _leafColor = theme.plantPrimary.withAlpha(204);
 
   _RoomPlantPainter({required this.theme});
 
@@ -879,7 +898,7 @@ class _RoomPlantPainter extends CustomPainter {
     );
 
     // Plant leaves
-    final leafPaint = Paint()..color = theme.plantPrimary.withAlpha(204);
+    final leafPaint = Paint()..color = _leafColor;
     
     // Multiple leaves going up
     for (var i = 0; i < 5; i++) {
@@ -932,6 +951,7 @@ class _ShelfPlant extends StatelessWidget {
 
 class _ShelfPlantPainter extends CustomPainter {
   final RoomTheme theme;
+  late final Color _leafColor = theme.plantSecondary.withAlpha(230);
 
   _ShelfPlantPainter({required this.theme});
 
@@ -950,7 +970,7 @@ class _ShelfPlantPainter extends CustomPainter {
     );
 
     // Small succulent/plant
-    final leafPaint = Paint()..color = theme.plantSecondary.withAlpha(230);
+    final leafPaint = Paint()..color = _leafColor;
     for (var i = 0; i < 3; i++) {
       final angle = -0.3 + i * 0.3;
       canvas.drawOval(
@@ -1371,8 +1391,8 @@ class _ThemedAquarium extends StatelessWidget {
               child: _SoftBubbles(height: height * 0.5),
             ),
 
-            // Animated floating bubbles
-            const AmbientBubblesSubtle(bubbleCount: 12),
+            // Animated floating bubbles — isolated repaint boundary
+            const RepaintBoundary(child: AmbientBubblesSubtle(bubbleCount: 12)),
 
             // Water surface effect (Rive animated)
             if (useRiveFish)
@@ -1506,6 +1526,7 @@ class _SoftFish extends StatelessWidget {
 
 class _FishPainter extends CustomPainter {
   final Color color;
+  late final Color _finColor = color.withAlpha(204);
 
   _FishPainter({required this.color});
 
@@ -1548,7 +1569,7 @@ class _FishPainter extends CustomPainter {
         size.height * 0.15,
       )
       ..close();
-    canvas.drawPath(finPath, paint..color = color.withAlpha(204));
+    canvas.drawPath(finPath, paint..color = _finColor);
 
     // Eye
     canvas.drawCircle(

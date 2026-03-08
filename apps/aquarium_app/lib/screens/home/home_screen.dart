@@ -268,23 +268,25 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           children: [
             // The room scene
             Positioned.fill(
-              child: LightingPulseWrapper(
-                child: LivingRoomScene(
-                tankId: currentTank.id,
-                tankName: currentTank.name,
-                tankVolume: currentTank.volumeLitres,
-                theme: theme,
-                isNewUser: _isNewUser(ref),
-                useRiveFish: false, // Disable broken Rive fish, use static drawn fish
-                onTankTap: () => _navigateToTankDetail(context, currentTank),
-                onTestKitTap: () => _showWaterParams(context),
-                onFoodTap: () => _showFeedingInfo(context),
-                onPlantTap: () => _showPlantInfo(context),
-                onStatsTap: () => _showStatsInfo(context),
-                onThemeTap: () => _showThemePicker(context, ref),
-                onJournalTap: () => _navigateToJournal(context, currentTank.id),
-                onCalendarTap: () => _navigateToSchedule(context),
-              ),
+              child: RepaintBoundary(
+                child: LightingPulseWrapper(
+                  child: LivingRoomScene(
+                    tankId: currentTank.id,
+                    tankName: currentTank.name,
+                    tankVolume: currentTank.volumeLitres,
+                    theme: theme,
+                    isNewUser: _isNewUser(ref),
+                    useRiveFish: false, // Disable broken Rive fish, use static drawn fish
+                    onTankTap: () => _navigateToTankDetail(context, currentTank),
+                    onTestKitTap: () => _showWaterParams(context),
+                    onFoodTap: () => _showFeedingInfo(context),
+                    onPlantTap: () => _showPlantInfo(context),
+                    onStatsTap: () => _showStatsInfo(context),
+                    onThemeTap: () => _showThemePicker(context, ref),
+                    onJournalTap: () => _navigateToJournal(context, currentTank.id),
+                    onCalendarTap: () => _navigateToSchedule(context),
+                  ),
+                ),
               ),
             ),
 

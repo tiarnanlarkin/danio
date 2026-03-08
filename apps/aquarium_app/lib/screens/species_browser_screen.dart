@@ -4,6 +4,7 @@ import '../data/species_database.dart';
 import '../models/learning.dart';
 import '../providers/user_profile_provider.dart';
 import '../theme/app_theme.dart';
+import '../utils/debouncer.dart';
 import '../widgets/core/app_card.dart';
 
 class SpeciesBrowserScreen extends ConsumerStatefulWidget {
@@ -19,7 +20,24 @@ class _SpeciesBrowserScreenState extends ConsumerState<SpeciesBrowserScreen> {
   String? _temperamentFilter;
   final Set<String> _researchedSpecies = {}; // Track researched species this session
 
+  /// Debounce search input to avoid filtering on every keystroke
+  final _searchDebouncer = Debouncer(delay: const Duration(milliseconds: 250));
+
+  /// Cached filtered results — invalidated when filters change
+  List<SpeciesInfo>? _cachedFilteredSpecies;
+
+  @override
+  void dispose() {
+    _searchDebouncer.dispose();
+    super.dispose();
+  }
+
+  void _invalidateCache() {
+    _cachedFilteredSpecies = null;
+  }
+
   List<SpeciesInfo> get _filteredSpecies {
+    if (_cachedFilteredSpecies != null) return _cachedFilteredSpecies!;
     var results = SpeciesDatabase.species;
 
     if (_searchQuery.isNotEmpty) {
@@ -36,6 +54,7 @@ class _SpeciesBrowserScreenState extends ConsumerState<SpeciesBrowserScreen> {
           .toList();
     }
 
+    _cachedFilteredSpecies = results;
     return results;
   }
 
@@ -61,7 +80,16 @@ class _SpeciesBrowserScreenState extends ConsumerState<SpeciesBrowserScreen> {
                   ),
                   filled: true,
                 ),
-                onChanged: (v) => setState(() => _searchQuery = v),
+                onChanged: (v) {
+                  _searchDebouncer.run(() {
+                    if (mounted) {
+                      setState(() {
+                        _searchQuery = v;
+                        _invalidateCache();
+                      });
+                    }
+                  });
+                },
               ),
             ),
           ),
@@ -104,6 +132,7 @@ class _SpeciesBrowserScreenState extends ConsumerState<SpeciesBrowserScreen> {
                     onPressed: () => setState(() {
                       _careLevelFilter = null;
                       _temperamentFilter = null;
+                      _invalidateCache();
                     }),
                     child: const Text('Clear filters'),
                   ),
@@ -134,6 +163,7 @@ class _SpeciesBrowserScreenState extends ConsumerState<SpeciesBrowserScreen> {
       onSelected: (_) => setState(() {
         _careLevelFilter = null;
         _temperamentFilter = null;
+        _invalidateCache();
       }),
     );
   }
@@ -142,9 +172,10 @@ class _SpeciesBrowserScreenState extends ConsumerState<SpeciesBrowserScreen> {
     return FilterChip(
       label: Text(level),
       selected: _careLevelFilter == level,
-      onSelected: (_) => setState(
-        () => _careLevelFilter = _careLevelFilter == level ? null : level,
-      ),
+      onSelected: (_) => setState(() {
+        _careLevelFilter = _careLevelFilter == level ? null : level;
+        _invalidateCache();
+      }),
     );
   }
 
@@ -152,11 +183,12 @@ class _SpeciesBrowserScreenState extends ConsumerState<SpeciesBrowserScreen> {
     return FilterChip(
       label: Text(temperament),
       selected: _temperamentFilter == temperament,
-      onSelected: (_) => setState(
-        () => _temperamentFilter = _temperamentFilter == temperament
+      onSelected: (_) => setState(() {
+        _temperamentFilter = _temperamentFilter == temperament
             ? null
-            : temperament,
-      ),
+            : temperament;
+        _invalidateCache();
+      }),
     );
   }
 

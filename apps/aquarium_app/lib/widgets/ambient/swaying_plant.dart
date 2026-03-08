@@ -48,27 +48,31 @@ class SwayingPlant extends StatelessWidget {
     // Vary the rotation slightly per plant
     final rotation = maxRotation * (0.8 + (index % 3) * 0.15);
     
-    return Animate(
-      onPlay: (controller) => controller.repeat(reverse: true),
-      effects: [
-        // Initial delay for staggering
-        CustomEffect(
-          begin: 0,
-          end: 0,
-          duration: delay,
-          builder: (context, value, child) => child,
-        ),
-        // The main swaying rotation
-        // Anchor at bottom center so plant sways from its base
-        RotateEffect(
-          begin: -rotation,
-          end: rotation,
-          duration: duration,
-          curve: AppCurves.standard,
-          alignment: Alignment.bottomCenter,
-        ),
-      ],
-      child: child,
+    // RepaintBoundary isolates this animated plant from repainting
+    // the rest of the scene on every animation frame.
+    return RepaintBoundary(
+      child: Animate(
+        onPlay: (controller) => controller.repeat(reverse: true),
+        effects: [
+          // Initial delay for staggering
+          CustomEffect(
+            begin: 0,
+            end: 0,
+            duration: delay,
+            builder: (context, value, child) => child,
+          ),
+          // The main swaying rotation
+          // Anchor at bottom center so plant sways from its base
+          RotateEffect(
+            begin: -rotation,
+            end: rotation,
+            duration: duration,
+            curve: AppCurves.standard,
+            alignment: Alignment.bottomCenter,
+          ),
+        ],
+        child: child,
+      ),
     );
   }
 }

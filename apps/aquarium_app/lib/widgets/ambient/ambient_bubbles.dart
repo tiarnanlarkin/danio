@@ -1,16 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:floating_bubbles/floating_bubbles.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../providers/reduced_motion_provider.dart';
 import '../../theme/app_theme.dart';
 
 /// Animated floating bubbles overlay for tank scenes.
 /// Uses the floating_bubbles package for smooth, repeating bubble animations.
-class AmbientBubbles extends StatelessWidget {
+/// Respects reduced motion preferences — returns SizedBox.shrink() when
+/// system or user prefers reduced motion.
+class AmbientBubbles extends ConsumerWidget {
   final int bubbleCount;
   
   const AmbientBubbles({super.key, this.bubbleCount = 20});
   
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final reducedMotion = ref.watch(reducedMotionProvider);
+    if (reducedMotion.disableDecorativeAnimations ||
+        MediaQuery.of(context).disableAnimations) {
+      return const SizedBox.shrink();
+    }
+
     return Positioned.fill(
       child: IgnorePointer(
         child: FloatingBubbles.alwaysRepeating(
@@ -30,13 +40,20 @@ class AmbientBubbles extends StatelessWidget {
 }
 
 /// Smaller bubble overlay for confined areas or subtle effects.
-class AmbientBubblesSubtle extends StatelessWidget {
+/// Respects reduced motion preferences.
+class AmbientBubblesSubtle extends ConsumerWidget {
   final int bubbleCount;
   
   const AmbientBubblesSubtle({super.key, this.bubbleCount = 10});
   
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final reducedMotion = ref.watch(reducedMotionProvider);
+    if (reducedMotion.disableDecorativeAnimations ||
+        MediaQuery.of(context).disableAnimations) {
+      return const SizedBox.shrink();
+    }
+
     return Positioned.fill(
       child: IgnorePointer(
         child: FloatingBubbles.alwaysRepeating(

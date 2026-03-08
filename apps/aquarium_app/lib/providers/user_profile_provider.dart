@@ -17,6 +17,7 @@ import 'lesson_provider.dart';
 import 'gems_provider.dart';
 import 'spaced_repetition_provider.dart'; // For creating review cards
 import '../services/offline_aware_service.dart';
+import '../utils/debouncer.dart';
 
 const _uuid = Uuid();
 
@@ -33,6 +34,13 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
 
   final Ref ref;
   static const _key = 'user_profile';
+
+  /// Debouncer collapses rapid successive saves (e.g. lesson complete → XP → gems)
+  /// into a single disk write after 200ms of inactivity.
+  final _saveDebouncer = Debouncer(delay: const Duration(milliseconds: 200));
+
+  /// The latest profile pending a debounced write.
+  UserProfile? _pendingSave;
 
   Future<void> _load() async {
     try {
@@ -51,8 +59,21 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
   }
 
   Future<void> _save(UserProfile profile) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(_key, jsonEncode(profile.toJson()));
+    _pendingSave = profile;
+    _saveDebouncer.run(() async {
+      final toSave = _pendingSave;
+      if (toSave == null) return;
+      _pendingSave = null;
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString(_key, jsonEncode(toSave.toJson()));
+    });
+  }
+
+  @override
+  void dispose() {
+    // Flush any pending save before disposal
+    _saveDebouncer.dispose();
+    super.dispose();
   }
 
   /// Create initial profile during onboarding
@@ -829,15 +850,22 @@ final todaysDailyGoalProvider = Provider<DailyGoal?>((ref) {
   );
 });
 
-/// Provider for recent daily goals (for streak calendar)
+/// Provider for recent daily goals (for streak calendar).
+/// Uses select() to only recompute when dailyXpHistory or dailyXpGoal
+/// actually change, not on every profile update.
 final recentDailyGoalsProvider = Provider<List<DailyGoal>>((ref) {
-  final profile = ref.watch(userProfileProvider).value;
-  if (profile == null) return [];
+  final dailyXpHistory = ref.watch(
+    userProfileProvider.select((p) => p.value?.dailyXpHistory),
+  );
+  final dailyXpGoal = ref.watch(
+    userProfileProvider.select((p) => p.value?.dailyXpGoal),
+  );
+  if (dailyXpHistory == null || dailyXpGoal == null) return [];
 
   return DailyGoal.getRecentDays(
     days: 90, // Last 3 months
-    dailyXpGoal: profile.dailyXpGoal,
-    dailyXpHistory: profile.dailyXpHistory,
+    dailyXpGoal: dailyXpGoal,
+    dailyXpHistory: dailyXpHistory,
   );
 });
 

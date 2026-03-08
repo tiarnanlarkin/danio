@@ -40,18 +40,29 @@ class SoftDeleteState {
   }
 }
 
-/// Global soft delete state for tanks (survives provider refreshes during the 5s window)
-final _softDeleteState = SoftDeleteState();
+/// Soft delete state for tanks — kept alive via Riverpod so timers
+/// survive provider refreshes during the 5-second undo window, but can
+/// be properly disposed when the ProviderScope is torn down.
+final _softDeleteStateProvider = Provider<SoftDeleteState>((ref) {
+  final state = SoftDeleteState();
+  ref.onDispose(state.dispose);
+  return state;
+});
 
-/// Global soft delete state for livestock (survives provider refreshes during the 5s window)
-final _softDeleteLivestockState = SoftDeleteState();
+/// Soft delete state for livestock — kept alive via Riverpod.
+final _softDeleteLivestockStateProvider = Provider<SoftDeleteState>((ref) {
+  final state = SoftDeleteState();
+  ref.onDispose(state.dispose);
+  return state;
+});
 
 /// All tanks list (excludes soft-deleted tanks, sorted by sortOrder)
 final tanksProvider = FutureProvider<List<Tank>>((ref) async {
   final storage = ref.watch(storageServiceProvider);
+  final softDelete = ref.watch(_softDeleteStateProvider);
   final allTanks = await storage.getAllTanks();
   final visibleTanks = allTanks
-      .where((tank) => !_softDeleteState.isDeleted(tank.id))
+      .where((tank) => !softDelete.isDeleted(tank.id))
       .toList();
   // Sort by sortOrder, then by createdAt as fallback
   visibleTanks.sort((a, b) {
@@ -187,7 +198,7 @@ class TankActions {
   /// Soft delete a tank (marks for deletion, can be undone within 5 seconds)
   /// Returns a callback to undo the deletion
   void softDeleteTank(String id, {void Function()? onUndoExpired}) {
-    _softDeleteState.markDeleted(id, () {
+    _ref.read(_softDeleteStateProvider).markDeleted(id, () {
       permanentlyDeleteTank(id);
       onUndoExpired?.call();
     });
@@ -196,7 +207,7 @@ class TankActions {
 
   /// Undo a soft delete (restores the tank)
   void undoDeleteTank(String id) {
-    _softDeleteState.restore(id);
+    _ref.read(_softDeleteStateProvider).restore(id);
     _ref.invalidate(tanksProvider);
   }
 
@@ -284,7 +295,7 @@ class TankActions {
     String tankId, {
     void Function()? onUndoExpired,
   }) {
-    _softDeleteLivestockState.markDeleted(id, () {
+    _ref.read(_softDeleteLivestockStateProvider).markDeleted(id, () {
       permanentlyDeleteLivestock(id, tankId);
       onUndoExpired?.call();
     });
@@ -293,7 +304,7 @@ class TankActions {
 
   /// Undo a livestock soft delete (restores the livestock)
   void undoDeleteLivestock(String id, String tankId) {
-    _softDeleteLivestockState.restore(id);
+    _ref.read(_softDeleteLivestockStateProvider).restore(id);
     _ref.invalidate(livestockProvider(tankId));
   }
 
@@ -394,8 +405,9 @@ final livestockProvider = FutureProvider.family<List<Livestock>, String>((
 ) async {
   final storage = ref.watch(storageServiceProvider);
   final allLivestock = await storage.getLivestockForTank(tankId);
+  final softDeleteLivestock = ref.watch(_softDeleteLivestockStateProvider);
   return allLivestock
-      .where((livestock) => !_softDeleteLivestockState.isDeleted(livestock.id))
+      .where((livestock) => !softDeleteLivestock.isDeleted(livestock.id))
       .toList();
 });
 
