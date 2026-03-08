@@ -20,7 +20,12 @@ class FriendActivityWidget extends ConsumerWidget {
 
     return activitiesAsync.when(
       loading: () => const SizedBox.shrink(),
-      error: (_, __) => const SizedBox.shrink(),
+      error: (e, _) => Center(
+        child: Text(
+          'Something went wrong',
+          style: AppTypography.bodyMedium.copyWith(color: AppColors.textHint),
+        ),
+      ),
       data: (activities) {
         if (activities.isEmpty) return const SizedBox.shrink();
 
@@ -240,7 +245,12 @@ class FriendActivityBanner extends ConsumerWidget {
 
     return activitiesAsync.when(
       loading: () => const SizedBox.shrink(),
-      error: (_, __) => const SizedBox.shrink(),
+      error: (e, _) => Center(
+        child: Text(
+          'Something went wrong',
+          style: AppTypography.bodyMedium.copyWith(color: AppColors.textHint),
+        ),
+      ),
       data: (activities) {
         if (activities.isEmpty) return const SizedBox.shrink();
 

@@ -1793,7 +1793,12 @@ class _StreakHeartsOverlayState extends ConsumerState<_StreakHeartsOverlay> {
               final logsAsync = ref.watch(allLogsProvider(tanks.first.id));
               return logsAsync.when(
                 loading: () => const SizedBox.shrink(),
-                error: (_, __) => const SizedBox.shrink(),
+                error: (e, _) => Center(
+                  child: Text(
+                    'Something went wrong',
+                    style: AppTypography.bodyMedium.copyWith(color: AppColors.textHint),
+                  ),
+                ),
                 data: (logs) {
                   final wcStreak = TankHealthService.calculateWaterChangeStreak(logs);
                   if (wcStreak != _lastWcStreak) {

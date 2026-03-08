@@ -82,7 +82,12 @@ class _ActivityFeedScreenState extends ConsumerState<ActivityFeedScreen> {
           // Friend Filter Chips
           friendsAsync.when(
             loading: () => const SizedBox.shrink(),
-            error: (_, __) => const SizedBox.shrink(),
+            error: (e, _) => Center(
+              child: Text(
+                'Something went wrong',
+                style: AppTypography.bodyMedium.copyWith(color: AppColors.textHint),
+              ),
+            ),
             data: (friends) => _FriendFilterBar(
               friends: friends,
               selectedFriendId: _selectedFriendId,

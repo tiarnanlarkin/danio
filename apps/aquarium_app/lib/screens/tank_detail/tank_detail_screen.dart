@@ -576,7 +576,12 @@ class TankDetailScreen extends ConsumerWidget {
                   padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
                   child: logsAllAsync.when(
                     loading: () => const DashboardLoadingCard(title: 'Health'),
-                    error: (_, __) => const SizedBox.shrink(),
+                    error: (e, _) => Center(
+                      child: Text(
+                        'Something went wrong',
+                        style: AppTypography.bodyMedium.copyWith(color: AppColors.textHint),
+                      ),
+                    ),
                     data: (logs) => TankHealthCard(tank: tank, logs: logs),
                   ),
                 ),
