@@ -889,8 +889,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     // Guard against double navigation racing with the auto-prompt.
     if (_isNavigatingToCreate) return;
     setState(() => _isNavigatingToCreate = true);
+    // Use MaterialPageRoute (not ModalScaleRoute) to avoid the navigator
+    // overlay race condition: when CreateTankScreen saves a tank it calls
+    // _ref.invalidate(tanksProvider), which triggers a HomeScreen rebuild.
+    // A custom animation route still has its exit animation running at that
+    // point, and the overlapping rebuild causes a _cancelActivePointers crash
+    // on a deactivated element.  MaterialPageRoute has no such race — the same
+    // fix was already applied to _navigateToCreateFirstTank.
     Navigator.of(context).push(
-      ModalScaleRoute(page: const CreateTankScreen()),
+      MaterialPageRoute(builder: (_) => const CreateTankScreen()),
     ).whenComplete(() {
       if (mounted) setState(() => _isNavigatingToCreate = false);
     });
