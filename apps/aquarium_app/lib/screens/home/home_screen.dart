@@ -1854,29 +1854,32 @@ class _StreakHeartsOverlay extends ConsumerStatefulWidget {
   const _StreakHeartsOverlay();
 
   @override
-  ConsumerState<_StreakHeartsOverlay> createState() => _StreakHeartsOverlayState();
+  ConsumerState<_StreakHeartsOverlay> createState() =>
+      _StreakHeartsOverlayState();
 }
 
 class _StreakHeartsOverlayState extends ConsumerState<_StreakHeartsOverlay> {
   bool _streakDismissed = false;
-  bool _wcStreakDismissed = false;
   bool _heartsDismissed = false;
-  int _lastStreak = 0;
-  int _lastWcStreak = 0;
 
   @override
   Widget build(BuildContext context) {
+    // READ-ONLY watches — no state mutations in build()
     final streak = ref.watch(
       userProfileProvider.select((p) => p.value?.currentStreak ?? 0),
     );
     final hearts = ref.watch(heartsStateProvider);
     final lowHearts = hearts.currentHearts <= 1;
 
-    // Reset dismissal if streak milestone changes
-    if (streak != _lastStreak) {
-      _lastStreak = streak;
-      _streakDismissed = false;
-    }
+    // Reset streak dismissal when the value changes — fires AFTER build
+    ref.listen<int>(
+      userProfileProvider.select((p) => p.value?.currentStreak ?? 0),
+      (prev, next) {
+        if (prev != next) {
+          setState(() => _streakDismissed = false);
+        }
+      },
+    );
 
     final topPad = MediaQuery.of(context).padding.top;
 
@@ -1900,45 +1903,8 @@ class _StreakHeartsOverlayState extends ConsumerState<_StreakHeartsOverlay> {
               onDismiss: () => setState(() => _streakDismissed = true),
             ),
 
-          // ── Water change streak banner ─────────────────────────────────
-          Consumer(
-            builder: (context, ref, _) {
-              final tanks = ref.watch(tanksProvider).value ?? [];
-              if (tanks.isEmpty) return const SizedBox.shrink();
-              final logsAsync = ref.watch(allLogsProvider(tanks.first.id));
-              return logsAsync.when(
-                loading: () => const SizedBox.shrink(),
-                error: (e, _) => Center(
-                  child: Text(
-                    'Something went wrong',
-                    style: AppTypography.bodyMedium.copyWith(color: AppColors.textHint),
-                  ),
-                ),
-                data: (logs) {
-                  final wcStreak = TankHealthService.calculateWaterChangeStreak(logs);
-                  if (wcStreak != _lastWcStreak) {
-                    _lastWcStreak = wcStreak;
-                    WidgetsBinding.instance.addPostFrameCallback((_) {
-                      if (mounted) setState(() => _wcStreakDismissed = false);
-                    });
-                  }
-                  if (wcStreak == 0 || _wcStreakDismissed) return const SizedBox.shrink();
-                  return Padding(
-                    padding: const EdgeInsets.only(top: AppSpacing.xs),
-                    child: _DismissibleBanner(
-                      color: DanioColors.tealWater.withAlpha(230),
-                      text: '\u{1F4A7} Water change streak: $wcStreak week${wcStreak == 1 ? "" : "s"}',
-                      textStyle: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                          ),
-                      onDismiss: () => setState(() => _wcStreakDismissed = true),
-                    ),
-                  );
-                },
-              );
-            },
-          ),
+          // ── Water change streak banner (own stateful widget) ───────────
+          const _WcStreakBanner(),
 
           // ── Low hearts banner ──────────────────────────────────────────
           if (lowHearts && hearts.currentHearts >= 0 && !_heartsDismissed) ...[
@@ -1957,6 +1923,67 @@ class _StreakHeartsOverlayState extends ConsumerState<_StreakHeartsOverlay> {
           ],
         ],
       ),
+    );
+  }
+}
+
+/// Extracted water-change streak banner with its own dismissal state.
+/// Avoids nested Consumer side-effects inside the parent build().
+class _WcStreakBanner extends ConsumerStatefulWidget {
+  const _WcStreakBanner();
+
+  @override
+  ConsumerState<_WcStreakBanner> createState() => _WcStreakBannerState();
+}
+
+class _WcStreakBannerState extends ConsumerState<_WcStreakBanner> {
+  bool _dismissed = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final tanks = ref.watch(tanksProvider).value ?? [];
+    if (tanks.isEmpty) return const SizedBox.shrink();
+
+    final logsAsync = ref.watch(allLogsProvider(tanks.first.id));
+
+    // Listen for water-change streak changes to reset dismissal — fires AFTER build
+    ref.listen(
+      allLogsProvider(tanks.first.id),
+      (prev, next) {
+        final prevStreak = prev?.whenOrNull(
+          data: (logs) => TankHealthService.calculateWaterChangeStreak(logs),
+        );
+        final nextStreak = next.whenOrNull(
+          data: (logs) => TankHealthService.calculateWaterChangeStreak(logs),
+        );
+        if (prevStreak != null && nextStreak != null && prevStreak != nextStreak) {
+          setState(() => _dismissed = false);
+        }
+      },
+    );
+
+    return logsAsync.when(
+      loading: () => const SizedBox.shrink(),
+      error: (_, __) => const SizedBox.shrink(),
+      data: (logs) {
+        final wcStreak =
+            TankHealthService.calculateWaterChangeStreak(logs);
+        if (wcStreak == 0 || _dismissed) return const SizedBox.shrink();
+        return Padding(
+          padding: const EdgeInsets.only(top: AppSpacing.xs),
+          child: _DismissibleBanner(
+            color: DanioColors.tealWater.withAlpha(230),
+            text:
+                '\u{1F4A7} Water change streak: $wcStreak week${wcStreak == 1 ? "" : "s"}',
+            textStyle:
+                Theme.of(context).textTheme.bodyMedium!.copyWith(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+            onDismiss: () => setState(() => _dismissed = true),
+          ),
+        );
+      },
     );
   }
 }
