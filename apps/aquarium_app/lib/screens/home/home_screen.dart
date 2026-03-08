@@ -1724,49 +1724,60 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
 }
 
-/// Standalone ConsumerWidget for the streak / hearts overlay.
-///
-/// Extracted from the inline [Builder] in [_HomeScreenState._buildLivingRoomScreen]
-/// so that hearts or streak changes only rebuild this small widget rather than
-/// the entire HomeScreen widget tree.
-class _StreakHeartsOverlay extends ConsumerWidget {
+/// Standalone widget for the streak / hearts overlay.
+/// Positioned top-left. Each banner is individually dismissable via × button.
+/// Dismissed state resets when the streak value changes (new milestone).
+class _StreakHeartsOverlay extends ConsumerStatefulWidget {
   const _StreakHeartsOverlay();
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<_StreakHeartsOverlay> createState() => _StreakHeartsOverlayState();
+}
+
+class _StreakHeartsOverlayState extends ConsumerState<_StreakHeartsOverlay> {
+  bool _streakDismissed = false;
+  bool _wcStreakDismissed = false;
+  bool _heartsDismissed = false;
+  int _lastStreak = 0;
+  int _lastWcStreak = 0;
+
+  @override
+  Widget build(BuildContext context) {
     final streak = ref.watch(
       userProfileProvider.select((p) => p.value?.currentStreak ?? 0),
     );
     final hearts = ref.watch(heartsStateProvider);
     final lowHearts = hearts.currentHearts <= 1;
 
-    if (streak == 0 && !lowHearts) return const SizedBox.shrink();
+    // Reset dismissal if streak milestone changes
+    if (streak != _lastStreak) {
+      _lastStreak = streak;
+      _streakDismissed = false;
+    }
+
+    final topPad = MediaQuery.of(context).padding.top;
 
     return Positioned(
-      bottom: 100 + MediaQuery.of(context).padding.bottom,
+      top: topPad + 8,
       left: 16,
       right: 80,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          if (streak > 0)
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm2, vertical: 6),
-              decoration: BoxDecoration(
-                color: DanioColors.amberGold.withAlpha(230),
-                borderRadius: AppRadius.mediumRadius,
-              ),
-              child: Text(
-                '\u{1F525} $streak day streak!',
-                style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
+          // ── Day streak banner ──────────────────────────────────────────
+          if (streak > 0 && !_streakDismissed)
+            _DismissibleBanner(
+              color: DanioColors.amberGold.withAlpha(230),
+              text: '\u{1F525} $streak day streak!',
+              textStyle: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+              onDismiss: () => setState(() => _streakDismissed = true),
             ),
-          // Water change streak — isolated in its own Consumer to avoid
-          // pulling tanksProvider / allLogsProvider into this widget's scope.
+
+          // ── Water change streak banner ─────────────────────────────────
           Consumer(
             builder: (context, ref, _) {
               final tanks = ref.watch(tanksProvider).value ?? [];
@@ -1777,47 +1788,86 @@ class _StreakHeartsOverlay extends ConsumerWidget {
                 error: (_, __) => const SizedBox.shrink(),
                 data: (logs) {
                   final wcStreak = TankHealthService.calculateWaterChangeStreak(logs);
-                  if (wcStreak == 0) return const SizedBox.shrink();
+                  if (wcStreak != _lastWcStreak) {
+                    _lastWcStreak = wcStreak;
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      if (mounted) setState(() => _wcStreakDismissed = false);
+                    });
+                  }
+                  if (wcStreak == 0 || _wcStreakDismissed) return const SizedBox.shrink();
                   return Padding(
                     padding: const EdgeInsets.only(top: AppSpacing.xs),
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm2, vertical: 6),
-                      decoration: BoxDecoration(
-                        color: DanioColors.tealWater.withAlpha(230),
-                        borderRadius: AppRadius.mediumRadius,
-                      ),
-                      child: Text(
-                        '\u{1F4A7} Water change streak: $wcStreak week${wcStreak == 1 ? "" : "s"}',
-                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
+                    child: _DismissibleBanner(
+                      color: DanioColors.tealWater.withAlpha(230),
+                      text: '\u{1F4A7} Water change streak: $wcStreak week${wcStreak == 1 ? "" : "s"}',
+                      textStyle: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                      onDismiss: () => setState(() => _wcStreakDismissed = true),
                     ),
                   );
                 },
               );
             },
           ),
-          if (lowHearts && hearts.currentHearts >= 0) ...[
+
+          // ── Low hearts banner ──────────────────────────────────────────
+          if (lowHearts && hearts.currentHearts >= 0 && !_heartsDismissed) ...[
             const SizedBox(height: AppSpacing.xs),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm2, vertical: 6),
-              decoration: BoxDecoration(
-                color: AppColors.warning.withAlpha(210),
-                borderRadius: AppRadius.mediumRadius,
-              ),
-              child: Text(
-                hearts.currentHearts == 0
-                    ? '\u{1F494} No hearts left - wait for refill!'
-                    : '\u{26A0}\u{FE0F} You\'re on your last heart - be careful!',
-                style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
+            _DismissibleBanner(
+              color: AppColors.warning.withAlpha(210),
+              text: hearts.currentHearts == 0
+                  ? '\u{1F494} No hearts left - wait for refill!'
+                  : '\u{26A0}\u{FE0F} You\'re on your last heart - be careful!',
+              textStyle: Theme.of(context).textTheme.bodySmall!.copyWith(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w500,
+                  ),
+              onDismiss: () => setState(() => _heartsDismissed = true),
             ),
           ],
+        ],
+      ),
+    );
+  }
+}
+
+/// A banner with a dismiss × button on the right.
+class _DismissibleBanner extends StatelessWidget {
+  final Color color;
+  final String text;
+  final TextStyle textStyle;
+  final VoidCallback onDismiss;
+
+  const _DismissibleBanner({
+    required this.color,
+    required this.text,
+    required this.textStyle,
+    required this.onDismiss,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.only(left: 10, top: 5, bottom: 5, right: 4),
+      decoration: BoxDecoration(
+        color: color,
+        borderRadius: AppRadius.mediumRadius,
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Flexible(
+            child: Text(text, style: textStyle),
+          ),
+          GestureDetector(
+            onTap: onDismiss,
+            child: const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+              child: Icon(Icons.close, size: 14, color: Colors.white70),
+            ),
+          ),
         ],
       ),
     );
