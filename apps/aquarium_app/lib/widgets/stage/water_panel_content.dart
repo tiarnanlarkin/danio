@@ -168,7 +168,7 @@ class _WaterPanelContentState extends ConsumerState<WaterPanelContent>
             builder: (context, _) {
               return SizedBox(
                 width: double.infinity,
-                height: 220,
+                height: 140,
                 child: CustomPaint(
                   painter: WaterVialPainter(
                     phValue: ph,
@@ -198,7 +198,7 @@ class _WaterPanelContentState extends ConsumerState<WaterPanelContent>
             ],
           ),
 
-          const Spacer(),
+          const SizedBox(height: AppSpacing.sm),
 
           // ── Overall status badge ──────────────────────────────────────────
           if (status != _WaterStatus.unknown)

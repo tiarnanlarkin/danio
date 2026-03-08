@@ -254,40 +254,7 @@ class _TempPanelContentState extends ConsumerState<TempPanelContent>
             ],
           ),
 
-          const Spacer(),
-
-          // ── Streak card ──────────────────────────────────────────────────
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.sm2,
-              vertical: AppSpacing.sm,
-            ),
-            decoration: BoxDecoration(
-              color: widget.theme.glassCard,
-              borderRadius: AppRadius.mediumRadius,
-              border: Border.all(color: widget.theme.glassBorder),
-            ),
-            child: streak > 0
-                ? Row(
-                    children: [
-                      const Text('🔥', style: TextStyle(fontSize: 14)),
-                      const SizedBox(width: AppSpacing.xs),
-                      Text(
-                        '$streak day streak',
-                        style: AppTypography.bodySmall.copyWith(
-                          color: AppColors.primary,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ],
-                  )
-                : Text(
-                    'No streak yet — log a reading!',
-                    style: AppTypography.bodySmall
-                        .copyWith(color: widget.theme.textSecondary),
-                  ),
-          ),
+          const SizedBox(height: AppSpacing.sm),
         ],
       ),
     );
