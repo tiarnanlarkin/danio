@@ -339,37 +339,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               ),
             ),
             AmbientTipOverlay(theme: theme),
-            // Panel handle strips — always hittable, pinned to screen edges.
-            // bottom: 0 is correct because the Scaffold body (extendBody:false)
-            // already ends at the NavigationBar top; no extra offset needed.
-            // Alignment.centerLeft/centerRight pins the 48dp hit-target to the
-            // screen edge rather than centering it in the middle of the screen.
-            Positioned(
-              left: 0,
-              top: 0,
-              bottom: 0,
-              child: const Align(
-                alignment: Alignment.centerLeft,
-                child: StageHandleStrip(
-                  panel: StagePanel.temp,
-                  isLeft: true,
-                  icon: Icons.thermostat_rounded,
-                ),
-              ),
-            ),
-            Positioned(
-              right: 0,
-              top: 0,
-              bottom: 0,
-              child: const Align(
-                alignment: Alignment.centerRight,
-                child: StageHandleStrip(
-                  panel: StagePanel.waterQuality,
-                  isLeft: false,
-                  icon: Icons.science_rounded,
-                ),
-              ),
-            ),
+            // Note: StageHandleStrip widgets are rendered by LivingRoomScene
+            // (room_scene.dart) — do NOT add them here too (causes duplicates).
 
             // Top bar overlay
             Positioned(
