@@ -151,29 +151,10 @@ class LivingRoomScene extends ConsumerWidget {
                 ),
               ),
 
-              // === LAYER 5: Stage handle strips + tank badge ===
-
-              // Left handle strip (temperature panel)
-              Positioned(
-                left: 0,
-                top: h * 0.4,
-                child: StageHandleStrip(
-                  panel: StagePanel.temp,
-                  isLeft: true,
-                  icon: Icons.thermostat,
-                ),
-              ),
-
-              // Right handle strip (water quality panel)
-              Positioned(
-                right: 0,
-                top: h * 0.4,
-                child: StageHandleStrip(
-                  panel: StagePanel.waterQuality,
-                  isLeft: false,
-                  icon: Icons.water_drop,
-                ),
-              ),
+              // === LAYER 5: Tank badge ===
+              // Note: StageHandleStrip widgets are rendered by home_screen.dart
+              // (full-height Positioned, 48dp hit area) — do NOT add them here
+              // or they will appear as duplicate tabs.
 
               // Tank glass badge (bottom-right of tank)
               Positioned(
