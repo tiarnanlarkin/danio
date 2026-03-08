@@ -170,6 +170,21 @@ class StageHandleStrip extends ConsumerWidget {
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: () => ref.read(stageProvider.notifier).toggle(panel),
+      // Horizontal drag: swipe toward centre to open, swipe to edge to close.
+      // Left panel: rightward drag (positive dx) = open.
+      // Right panel: leftward drag (negative dx) = open.
+      onHorizontalDragEnd: (details) {
+        final velocity = details.primaryVelocity ?? 0;
+        final openVelocity = isLeft ? velocity > 100 : velocity < -100;
+        final closeVelocity = isLeft ? velocity < -100 : velocity > 100;
+        final notifier = ref.read(stageProvider.notifier);
+        final isOpen = ref.read(stageProvider).openPanels.contains(panel);
+        if (openVelocity && !isOpen) {
+          notifier.toggle(panel);
+        } else if (closeVelocity && isOpen) {
+          notifier.toggle(panel);
+        }
+      },
       // SizedBox ensures a ≥48dp touch target (Material a11y minimum) while
       // the inner Container stays visually narrow at 14dp.
       child: SizedBox(
