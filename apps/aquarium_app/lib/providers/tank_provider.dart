@@ -439,6 +439,76 @@ final latestWaterTestProvider = FutureProvider.family<WaterTestResults?, String>
   return waterLogs.isEmpty ? null : waterLogs.first.waterTest;
 });
 
+/// Full LogEntry for the most recent waterTest log (gives access to timestamp)
+final latestWaterTestEntryProvider = FutureProvider.family<LogEntry?, String>((
+  ref,
+  tankId,
+) async {
+  final logs = await ref.watch(logsProvider(tankId).future);
+  final waterLogs = logs
+      .where((l) => l.type == LogType.waterTest)
+      .toList()
+    ..sort((a, b) => b.timestamp.compareTo(a.timestamp));
+  return waterLogs.isEmpty ? null : waterLogs.first;
+});
+
+/// Consecutive calendar days (counting back from today) with at least one
+/// waterTest log entry.  Uses allLogsProvider so long histories are accurate.
+final testStreakProvider = FutureProvider.family<int, String>((
+  ref,
+  tankId,
+) async {
+  final logs = await ref.watch(allLogsProvider(tankId).future);
+  final testDays = logs
+      .where((l) => l.type == LogType.waterTest)
+      .map((l) => DateTime(l.timestamp.year, l.timestamp.month, l.timestamp.day))
+      .toSet();
+  var streak = 0;
+  final today = DateTime.now();
+  var day = DateTime(today.year, today.month, today.day);
+  while (testDays.contains(day)) {
+    streak++;
+    day = day.subtract(const Duration(days: 1));
+  }
+  return streak;
+});
+
+/// Consecutive calendar weeks (Mon–Sun, ending with the current week) that
+/// contain at least one waterChange log entry.
+final waterChangeStreakProvider = FutureProvider.family<int, String>((
+  ref,
+  tankId,
+) async {
+  final logs = await ref.watch(allLogsProvider(tankId).future);
+
+  DateTime weekStart(DateTime d) {
+    final day = DateTime(d.year, d.month, d.day);
+    return day.subtract(Duration(days: day.weekday - 1));
+  }
+
+  final changeWeeks = logs
+      .where((l) => l.type == LogType.waterChange)
+      .map((l) => weekStart(l.timestamp))
+      .toSet();
+  var streak = 0;
+  var week = weekStart(DateTime.now());
+  while (changeWeeks.contains(week)) {
+    streak++;
+    week = week.subtract(const Duration(days: 7));
+  }
+  return streak;
+});
+
+/// First heater equipment for a tank, or null if none registered.
+final tankHeaterProvider = FutureProvider.family<Equipment?, String>((
+  ref,
+  tankId,
+) async {
+  final equipment = await ref.watch(equipmentProvider(tankId).future);
+  final heaters = equipment.where((e) => e.type == EquipmentType.heater);
+  return heaters.isEmpty ? null : heaters.first;
+});
+
 /// Tasks for a tank (null = all tasks)
 final tasksProvider = FutureProvider.family<List<Task>, String?>((
   ref,
