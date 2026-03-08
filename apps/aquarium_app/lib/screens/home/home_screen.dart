@@ -339,8 +339,35 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               ),
             ),
             AmbientTipOverlay(theme: theme),
-            // Note: StageHandleStrip widgets are rendered by LivingRoomScene
-            // (room_scene.dart) — do NOT add them here too (causes duplicates).
+            // Panel handle strips — always hittable, pinned to screen edges.
+            // Rendered here (not in room_scene.dart) so they span full height
+            // and sit above all other layers. 48dp touch target, 14dp visual.
+            Positioned(
+              left: 0,
+              top: 0,
+              bottom: 0,
+              child: const Align(
+                alignment: Alignment.centerLeft,
+                child: StageHandleStrip(
+                  panel: StagePanel.temp,
+                  isLeft: true,
+                  icon: Icons.thermostat_rounded,
+                ),
+              ),
+            ),
+            Positioned(
+              right: 0,
+              top: 0,
+              bottom: 0,
+              child: const Align(
+                alignment: Alignment.centerRight,
+                child: StageHandleStrip(
+                  panel: StagePanel.waterQuality,
+                  isLeft: false,
+                  icon: Icons.science_rounded,
+                ),
+              ),
+            ),
 
             // Top bar overlay
             Positioned(
