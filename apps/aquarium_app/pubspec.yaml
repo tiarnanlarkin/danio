@@ -59,6 +59,7 @@ dependencies:
   url_launcher: ^6.3.1
   file_picker: ^8.1.7
   flutter_local_notifications: ^18.0.1
+  in_app_review: ^2.0.9
   timezone: ^0.10.0
   archive: ^3.6.1
   

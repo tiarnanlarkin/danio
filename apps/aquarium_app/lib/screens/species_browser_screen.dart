@@ -278,14 +278,17 @@ class _SpeciesCard extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 12),
       child: ListTile(
         onTap: onTap,
-        leading: Container(
-          width: 44,
-          height: 44,
-          decoration: BoxDecoration(
-            color: AppOverlays.primary10,
-            borderRadius: AppRadius.smallRadius,
+        leading: Hero(
+          tag: 'species-icon-${species.scientificName}',
+          child: Container(
+            width: 44,
+            height: 44,
+            decoration: BoxDecoration(
+              color: AppOverlays.primary10,
+              borderRadius: AppRadius.smallRadius,
+            ),
+            child: const Icon(Icons.set_meal, color: AppColors.primary),
           ),
-          child: const Icon(Icons.set_meal, color: AppColors.primary),
         ),
         title: Text(species.commonName, style: AppTypography.labelLarge),
         subtitle: Column(
@@ -367,17 +370,20 @@ class _SpeciesDetailSheet extends StatelessWidget {
             // Header
             Row(
               children: [
-                Container(
-                  width: 60,
-                  height: 60,
-                  decoration: BoxDecoration(
-                    color: AppOverlays.primary10,
-                    borderRadius: AppRadius.mediumRadius,
-                  ),
-                  child: const Icon(
-                    Icons.set_meal,
-                    color: AppColors.primary,
-                    size: 32,
+                Hero(
+                  tag: 'species-icon-${species.scientificName}',
+                  child: Container(
+                    width: 60,
+                    height: 60,
+                    decoration: BoxDecoration(
+                      color: AppOverlays.primary10,
+                      borderRadius: AppRadius.mediumRadius,
+                    ),
+                    child: const Icon(
+                      Icons.set_meal,
+                      color: AppColors.primary,
+                      size: 32,
+                    ),
                   ),
                 ),
                 const SizedBox(width: AppSpacing.md),

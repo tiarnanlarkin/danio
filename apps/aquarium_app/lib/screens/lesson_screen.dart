@@ -17,6 +17,8 @@ import '../theme/app_theme.dart';
 import '../utils/app_constants.dart';
 import '../utils/app_feedback.dart';
 import '../utils/haptic_feedback.dart';
+import 'package:in_app_review/in_app_review.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 /// Screen for viewing a single lesson and taking quizzes
 class LessonScreen extends ConsumerStatefulWidget {
@@ -1315,6 +1317,34 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
             );
           } catch (e) {
             debugPrint('Achievement check failed: $e');
+          }
+        }();
+      }
+
+      // P5-2: In-app review trigger — after 7-day streak or first 100% quiz
+      final reviewProfile = ref.read(userProfileProvider).value;
+      final quizForReview = widget.lesson.quiz;
+      final quizLenForReview = quizForReview?.questions.length;
+      final isPerfectForReview =
+          quizLenForReview != null && _correctAnswers == quizLenForReview;
+      final streakForReview = reviewProfile?.currentStreak ?? 0;
+      if (isPerfectForReview || streakForReview >= 7) {
+        // Fire-and-forget — don't block XP animation
+        // ignore: unawaited_futures
+        () async {
+          try {
+            final prefs = await SharedPreferences.getInstance();
+            final alreadyRequested =
+                prefs.getBool('review_requested') ?? false;
+            if (!alreadyRequested) {
+              final inAppReview = InAppReview.instance;
+              if (await inAppReview.isAvailable()) {
+                await inAppReview.requestReview();
+                await prefs.setBool('review_requested', true);
+              }
+            }
+          } catch (e) {
+            debugPrint('In-app review failed: $e');
           }
         }();
       }

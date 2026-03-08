@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -71,12 +72,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   bool _firstTankPromptShown = false;
   bool _isNavigatingToCreate = false;
   bool _showWelcomeBanner = false;
+  bool _showComebackBanner = false;
   final Set<String> _selectedTankIds = {};
 
   @override
   void initState() {
     super.initState();
     _checkWelcomeBanner();
+    _checkComebackBanner();
   }
 
   Future<void> _checkWelcomeBanner() async {
@@ -88,6 +91,43 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       Future.delayed(const Duration(seconds: 4), () {
         if (mounted) setState(() => _showWelcomeBanner = false);
       });
+    }
+  }
+
+  /// P5-3: Detect broken streak and show comeback banner.
+  /// Reads the persisted profile JSON from SharedPreferences to get
+  /// currentStreak and lastActivityDate without a provider dependency in initState.
+  Future<void> _checkComebackBanner() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final profileJson = prefs.getString('user_profile');
+      if (profileJson == null || !mounted) return;
+
+      final decoded = jsonDecode(profileJson);
+      if (decoded is! Map<String, dynamic>) return;
+
+      final hadStreak = (decoded['currentStreak'] as int?) ?? 0;
+      final lastActivityStr = decoded['lastActivityDate'] as String?;
+      if (hadStreak <= 0 || lastActivityStr == null) return;
+
+      final lastActivity = DateTime.tryParse(lastActivityStr);
+      if (lastActivity == null) return;
+
+      final today = DateTime.now();
+      final todayStr = today.toIso8601String().substring(0, 10);
+      final yesterdayStr = today
+          .subtract(const Duration(days: 1))
+          .toIso8601String()
+          .substring(0, 10);
+      final lastStr = lastActivity.toIso8601String().substring(0, 10);
+
+      final streakBroken = lastStr != todayStr && lastStr != yesterdayStr;
+      if (streakBroken && mounted) {
+        setState(() => _showComebackBanner = true);
+      }
+    } catch (e) {
+      // Non-critical — don't surface comeback banner on error
+      debugPrint('Comeback banner check failed: $e');
     }
   }
 
@@ -710,6 +750,56 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         ),
                       ],
                     ),
+                  ),
+                ),
+              ),
+            ),
+          // P5-3: Comeback banner — shown when a user's streak has been broken
+          if (_showComebackBanner)
+            Positioned(
+              top: MediaQuery.of(context).padding.top + AppSpacing.md,
+              left: AppSpacing.md,
+              right: AppSpacing.md,
+              child: Material(
+                color: Colors.transparent,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.md,
+                    vertical: AppSpacing.sm2,
+                  ),
+                  decoration: BoxDecoration(
+                    color: AppColors.warning.withAlpha(38),
+                    border: Border.all(
+                      color: AppColors.warning.withAlpha(76),
+                    ),
+                    borderRadius: AppRadius.mediumRadius,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withAlpha(20),
+                        blurRadius: 8,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: Row(
+                    children: [
+                      const Text('🐠', style: TextStyle(fontSize: 20)),
+                      const SizedBox(width: AppSpacing.sm2),
+                      Expanded(
+                        child: Text(
+                          'Welcome back! Your fish missed you 🌿',
+                          style: AppTypography.labelLarge.copyWith(
+                            color: AppColors.textPrimary,
+                          ),
+                        ),
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.close, size: 18),
+                        color: AppColors.textSecondary,
+                        onPressed: () =>
+                            setState(() => _showComebackBanner = false),
+                      ),
+                    ],
                   ),
                 ),
               ),

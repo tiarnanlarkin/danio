@@ -10,6 +10,7 @@ import '../../providers/onboarding_provider.dart';
 import '../../providers/tank_provider.dart';
 import '../../theme/app_theme.dart';
 import '../../services/onboarding_service.dart';
+import '../../services/notification_service.dart';
 
 class EnhancedTutorialWalkthroughScreen extends ConsumerStatefulWidget {
   const EnhancedTutorialWalkthroughScreen({super.key});
@@ -130,9 +131,18 @@ class _EnhancedTutorialWalkthroughScreenState
     // Mark onboarding as complete
     final service = await OnboardingService.getInstance();
     await service.completeOnboarding();
-    
+
     if (!mounted) return;
-    
+
+    // P5-1: Request notification permission before entering the app
+    try {
+      await NotificationService().requestPermissions();
+    } catch (_) {
+      // Permission request is best-effort — never block onboarding
+    }
+
+    if (!mounted) return;
+
     // Let _AppRouter handle the transition to TabNavigator naturally.
     ref.invalidate(onboardingCompletedProvider);
     Navigator.of(context).popUntil((route) => route.isFirst);
@@ -177,6 +187,15 @@ class _EnhancedTutorialWalkthroughScreenState
       // Mark onboarding as complete
       final service = await OnboardingService.getInstance();
       await service.completeOnboarding();
+
+      if (!mounted) return;
+
+      // P5-1: Request notification permission before entering the app
+      try {
+        await NotificationService().requestPermissions();
+      } catch (_) {
+        // Permission request is best-effort — never block onboarding
+      }
 
       if (!mounted) return;
 

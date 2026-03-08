@@ -153,7 +153,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen>
                 children: [
                   // Top bar with skip and quick start
                   Padding(
-                    padding: const EdgeInsets.all(8),
+                    padding: const EdgeInsets.all(AppSpacing.sm),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
