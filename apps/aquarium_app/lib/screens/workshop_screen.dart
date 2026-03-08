@@ -8,7 +8,6 @@ import '../widgets/room/interactive_object.dart';
 import 'co2_calculator_screen.dart';
 import 'dosing_calculator_screen.dart';
 import 'compatibility_checker_screen.dart';
-// import 'equipment_screen.dart'; // Requires tankId - use settings instead
 import 'cost_tracker_screen.dart';
 import 'water_change_calculator_screen.dart';
 import 'stocking_calculator_screen.dart';

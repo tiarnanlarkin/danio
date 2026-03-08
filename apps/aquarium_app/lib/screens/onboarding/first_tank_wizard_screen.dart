@@ -107,7 +107,7 @@ class _FirstTankWizardScreenState extends ConsumerState<FirstTankWizardScreen> {
             subtitle: 'Welcome to your aquarium journey!',
           );
         } catch (e, s) {
-          debugPrint('🚨 WIZARD: milestone() threw: $e\n$s');
+          debugPrint('Tank wizard milestone error: $e\n$s');
         }
         // Let _AppRouter handle the transition to TabNavigator naturally.
         ref.invalidate(onboardingCompletedProvider);

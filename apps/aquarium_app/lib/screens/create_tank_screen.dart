@@ -194,8 +194,8 @@ class _CreateTankScreenState extends ConsumerState<CreateTankScreen> {
     if (_currentPage < 2) {
       try {
         FocusManager.instance.primaryFocus?.unfocus();
-      } catch (e) {
-        debugPrint('P1-001 DEBUG: unfocus error: $e');
+      } catch (_) {
+        // unfocus errors are non-critical; ignore silently
       }
       AppHaptics.light();
       _pageController.nextPage(
@@ -586,8 +586,8 @@ class _SizePageState extends State<_SizePage> {
       if (currentText != newText && double.tryParse(currentText) != widget.volumeLitres) {
         _volumeController.text = newText;
       }
-    } catch (e) {
-      debugPrint('P1-001 DEBUG: didUpdateWidget error: $e');
+    } catch (_) {
+      // didUpdateWidget controller sync errors are non-critical; ignore silently
     }
   }
 

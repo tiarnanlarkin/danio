@@ -4,8 +4,6 @@
 // in various contexts throughout the app.
 //
 // Basic usage:
-// import 'package:danio/widgets/mascot/mascot_widgets.dart';
-//
 // MascotBubble(message: "Let's set up your first tank!", mood: MascotMood.encouraging)
 // MascotBubble.fromContext(context: MascotContext.noTanks)
 // MascotAvatar(mood: MascotMood.happy, size: MascotSize.medium)

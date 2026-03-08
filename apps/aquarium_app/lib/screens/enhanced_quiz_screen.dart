@@ -13,7 +13,6 @@ import '../widgets/level_up_dialog.dart';
 import '../services/hearts_service.dart';
 import '../providers/user_profile_provider.dart';
 import '../theme/app_theme.dart';
-// import '../services/firebase_analytics_service.dart';
 
 
 class EnhancedQuizScreen extends ConsumerStatefulWidget {
@@ -55,8 +54,6 @@ class _EnhancedQuizScreenState extends ConsumerState<EnhancedQuizScreen>
   @override
   void initState() {
     super.initState();
-    // FirebaseAnalyticsService().logScreenView('quiz');
-
     _progressController = AnimationController(
       duration: const Duration(milliseconds: 600),
       vsync: this,
