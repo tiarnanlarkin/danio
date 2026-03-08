@@ -168,7 +168,7 @@ class _WaterPanelContentState extends ConsumerState<WaterPanelContent>
             builder: (context, _) {
               return SizedBox(
                 width: double.infinity,
-                height: 140,
+                height: 180,
                 child: CustomPaint(
                   painter: WaterVialPainter(
                     phValue: ph,

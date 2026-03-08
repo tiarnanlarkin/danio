@@ -149,67 +149,72 @@ class _TempPanelContentState extends ConsumerState<TempPanelContent>
           const SizedBox(height: AppSpacing.sm),
 
           // ── Circular gauge ───────────────────────────────────────────────
-          Center(
-            child: AnimatedBuilder(
-              animation: Listenable.merge([_gaugeAnim, _waveAnim]),
-              builder: (context, _) {
-                return SizedBox(
-                  width: 180,
-                  height: 180,
-                  child: Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      // Sine wave background (inside gauge circle, behind arc)
-                      ClipOval(
-                        child: CustomPaint(
-                          size: const Size(140, 140),
-                          painter: _SineWavePainter(
-                            phase: _waveAnim.value * 2 * math.pi,
-                          ),
-                        ),
-                      ),
-
-                      // Gauge arcs + needle
-                      CustomPaint(
-                        size: const Size(180, 180),
-                        painter: TempGaugePainter(
-                          temperature: temp ?? 25.0,
-                          animationValue: Curves.easeOutBack
-                              .transform(_gaugeAnim.value.clamp(0.0, 1.0)),
-                          coldColor: const Color(0xFF42A5F5),
-                          warmColor: const Color(0xFF66BB6A),
-                          hotColor: const Color(0xFFFF9800),
-                          dangerColor: const Color(0xFFEF5350),
-                          textColor: widget.theme.textPrimary,
-                          secondaryTextColor: widget.theme.textSecondary,
-                        ),
-                      ),
-
-                      // Centre text (on top of wave and arc)
-                      Column(
-                        mainAxisSize: MainAxisSize.min,
+          LayoutBuilder(
+            builder: (context, constraints) {
+              final gaugeSize = (constraints.maxWidth * 0.85).clamp(160.0, 280.0);
+              final waveSize = gaugeSize * 0.78;
+              return Center(
+                child: AnimatedBuilder(
+                  animation: Listenable.merge([_gaugeAnim, _waveAnim]),
+                  builder: (context, _) {
+                    return SizedBox(
+                      width: gaugeSize,
+                      height: gaugeSize,
+                      child: Stack(
+                        alignment: Alignment.center,
                         children: [
-                          Text(
-                            temp != null
-                                ? '${temp.toStringAsFixed(1)}°C'
-                                : '--°C',
-                            style: AppTypography.headlineMedium.copyWith(
-                              color: accentColor,
-                              fontWeight: FontWeight.bold,
+                          // Sine wave background (inside gauge circle)
+                          ClipOval(
+                            child: CustomPaint(
+                              size: Size(waveSize, waveSize),
+                              painter: _SineWavePainter(
+                                phase: _waveAnim.value * 2 * math.pi,
+                              ),
                             ),
                           ),
-                          Text(
-                            'Current',
-                            style: AppTypography.labelSmall
-                                .copyWith(color: widget.theme.textSecondary),
+                          // Gauge arc + needle
+                          CustomPaint(
+                            size: Size(gaugeSize, gaugeSize),
+                            painter: TempGaugePainter(
+                              temperature: temp ?? 25.0,
+                              animationValue: Curves.easeOutBack
+                                  .transform(_gaugeAnim.value.clamp(0.0, 1.0)),
+                              coldColor: const Color(0xFF42A5F5),
+                              warmColor: const Color(0xFF66BB6A),
+                              hotColor: const Color(0xFFFF9800),
+                              dangerColor: const Color(0xFFEF5350),
+                              textColor: widget.theme.textPrimary,
+                              secondaryTextColor: widget.theme.textSecondary,
+                            ),
+                          ),
+                          // Centre text
+                          Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                temp != null
+                                    ? '${temp.toStringAsFixed(1)}°C'
+                                    : '--°C',
+                                style: AppTypography.headlineMedium.copyWith(
+                                  color: accentColor,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              Text(
+                                'Current',
+                                style: AppTypography.labelSmall.copyWith(
+                                  color: widget.theme.textSecondary,
+                                ),
+                              ),
+                            ],
                           ),
                         ],
                       ),
-                    ],
-                  ),
-                );
-              },
-            ),
+                    );
+                  },
+                ),
+              );
+            },
           ),
           const SizedBox(height: AppSpacing.sm),
 
