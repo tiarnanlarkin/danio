@@ -109,11 +109,15 @@ class AmbientTimeState {
   }
 }
 
-/// Notifier for ambient time state
+/// Notifier for ambient time state.
+///
+/// Only emits a new state when the discrete time period changes
+/// (dawn→day→dusk→night). The visual transition is handled by
+/// [AnimatedOpacity] in the overlay widget, not by rapid Riverpod
+/// state updates. This eliminates the ~30 rebuilds over 3 seconds
+/// that previously caused excessive widget rebuilds.
 class AmbientTimeNotifier extends StateNotifier<AmbientTimeState> {
   Timer? _updateTimer;
-  Timer? _transitionTimer;
-  TimePeriod? _previousPeriod;
 
   AmbientTimeNotifier()
       : super(AmbientTimeState(
@@ -147,50 +151,19 @@ class AmbientTimeNotifier extends StateNotifier<AmbientTimeState> {
     });
   }
 
-  /// Check if time period has changed and trigger transition
+  /// Check if time period has changed and emit a single state update.
+  /// The overlay's AnimatedOpacity handles the smooth visual transition.
   void _checkAndUpdatePeriod() {
     final newPeriod = _getCurrentPeriod();
     
     if (newPeriod != state.currentPeriod) {
-      _previousPeriod = state.currentPeriod;
-      _startTransition(newPeriod);
+      state = AmbientTimeState(
+        currentPeriod: newPeriod,
+        config: AmbientConfig.fromPeriod(newPeriod),
+        transitionProgress: 1.0,
+        lastUpdate: DateTime.now(),
+      );
     }
-  }
-
-  /// Start a smooth transition to a new time period
-  void _startTransition(TimePeriod newPeriod) {
-    _transitionTimer?.cancel();
-    
-    const transitionDuration = Duration(seconds: 3);
-    const steps = 30; // 30 steps over 3 seconds = ~10fps for transitions
-    final stepDuration = Duration(
-      milliseconds: transitionDuration.inMilliseconds ~/ steps,
-    );
-    
-    int currentStep = 0;
-    
-    _transitionTimer = Timer.periodic(stepDuration, (timer) {
-      currentStep++;
-      final progress = currentStep / steps;
-      
-      if (progress >= 1.0) {
-        timer.cancel();
-        state = AmbientTimeState(
-          currentPeriod: newPeriod,
-          config: AmbientConfig.fromPeriod(newPeriod),
-          transitionProgress: 1.0,
-          lastUpdate: DateTime.now(),
-        );
-        _previousPeriod = null;
-      } else {
-        state = state.copyWith(
-          currentPeriod: newPeriod,
-          config: AmbientConfig.fromPeriod(newPeriod),
-          transitionProgress: progress,
-          lastUpdate: DateTime.now(),
-        );
-      }
-    });
   }
 
   /// Force update to current time (useful for testing or app resume)
@@ -204,17 +177,9 @@ class AmbientTimeNotifier extends StateNotifier<AmbientTimeState> {
     );
   }
 
-  /// Get interpolated config for smooth transitions
-  AmbientConfig? get previousConfig {
-    return _previousPeriod != null 
-        ? AmbientConfig.fromPeriod(_previousPeriod!) 
-        : null;
-  }
-
   @override
   void dispose() {
     _updateTimer?.cancel();
-    _transitionTimer?.cancel();
     super.dispose();
   }
 }

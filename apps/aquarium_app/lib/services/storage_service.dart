@@ -19,7 +19,7 @@ abstract class StorageService {
   Future<void> deleteEquipment(String id);
 
   // Logs
-  Future<List<LogEntry>> getLogsForTank(String tankId, {int? limit});
+  Future<List<LogEntry>> getLogsForTank(String tankId, {int? limit, DateTime? after});
   Future<void> saveLog(LogEntry log);
   Future<void> deleteLog(String id);
 
@@ -103,9 +103,12 @@ class InMemoryStorageService implements StorageService {
 
   // --- Logs ---
   @override
-  Future<List<LogEntry>> getLogsForTank(String tankId, {int? limit}) async {
-    var logs = _logs.values.where((l) => l.tankId == tankId).toList()
-      ..sort((a, b) => b.timestamp.compareTo(a.timestamp));
+  Future<List<LogEntry>> getLogsForTank(String tankId, {int? limit, DateTime? after}) async {
+    var logs = _logs.values.where((l) => l.tankId == tankId).toList();
+    if (after != null) {
+      logs = logs.where((l) => l.timestamp.isAfter(after)).toList();
+    }
+    logs.sort((a, b) => b.timestamp.compareTo(a.timestamp));
     if (limit != null && logs.length > limit) {
       logs = logs.take(limit).toList();
     }

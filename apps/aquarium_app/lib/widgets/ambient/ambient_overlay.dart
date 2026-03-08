@@ -41,30 +41,28 @@ class AmbientLightingOverlay extends ConsumerWidget {
     
     final ambientState = ref.watch(ambientTimeProvider);
     final config = ambientState.config;
-    final progress = ambientState.transitionProgress;
     
     // For day period with no overlay, skip the overlay widgets
-    if (config.overlayOpacity == 0.0 && progress >= 1.0) {
+    if (config.overlayOpacity == 0.0) {
       return child;
     }
     
     final effectiveOpacity = intensityOverride ?? config.overlayOpacity;
-    
-    // Apply easing to transition progress for smoother feel
-    final easedProgress = AppCurves.standard.transform(progress);
     
     return Stack(
       children: [
         // Main content
         child,
         
-        // Color overlay with gradient (if configured)
+        // Color overlay with gradient (if configured).
+        // AnimatedOpacity handles the smooth visual transition when
+        // the time period changes — no rapid Riverpod state updates needed.
         if (config.gradientStart != null && config.gradientEnd != null)
           Positioned.fill(
             child: IgnorePointer(
               child: AnimatedOpacity(
                 duration: AppDurations.long2,
-                opacity: easedProgress,
+                opacity: 1.0,
                 child: Container(
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
@@ -87,7 +85,7 @@ class AmbientLightingOverlay extends ConsumerWidget {
             child: IgnorePointer(
               child: AnimatedOpacity(
                 duration: AppDurations.long2,
-                opacity: easedProgress,
+                opacity: 1.0,
                 child: Container(
                   color: config.overlayColor.withAlpha((effectiveOpacity * 255).round()),
                 ),
@@ -101,7 +99,7 @@ class AmbientLightingOverlay extends ConsumerWidget {
             child: IgnorePointer(
               child: AnimatedOpacity(
                 duration: AppDurations.long2,
-                opacity: easedProgress * 0.3,
+                opacity: 0.3,
                 child: Container(
                   decoration: BoxDecoration(
                     gradient: RadialGradient(

@@ -429,13 +429,24 @@ final logsProvider = FutureProvider.family<List<LogEntry>, String>((
   return storage.getLogsForTank(tankId, limit: 50);
 });
 
-/// All logs for a tank (used for charts/exports)
+/// All logs for a tank (used for charts/exports — no date cap)
 final allLogsProvider = FutureProvider.family<List<LogEntry>, String>((
   ref,
   tankId,
 ) async {
   final storage = ref.watch(storageServiceProvider);
   return storage.getLogsForTank(tankId);
+});
+
+/// Recent logs (last 365 days) — used by streak providers to avoid
+/// loading years of history for users with extensive logs.
+final recentLogsProvider = FutureProvider.family<List<LogEntry>, String>((
+  ref,
+  tankId,
+) async {
+  final storage = ref.watch(storageServiceProvider);
+  final cutoff = DateTime.now().subtract(const Duration(days: 365));
+  return storage.getLogsForTank(tankId, after: cutoff);
 });
 
 /// Latest water test results for a tank (most recent waterTest log entry)
@@ -465,12 +476,13 @@ final latestWaterTestEntryProvider = FutureProvider.family<LogEntry?, String>((
 });
 
 /// Consecutive calendar days (counting back from today) with at least one
-/// waterTest log entry.  Uses allLogsProvider so long histories are accurate.
+/// waterTest log entry.  Uses recentLogsProvider (365-day window) to avoid
+/// loading unbounded history.
 final testStreakProvider = FutureProvider.family<int, String>((
   ref,
   tankId,
 ) async {
-  final logs = await ref.watch(allLogsProvider(tankId).future);
+  final logs = await ref.watch(recentLogsProvider(tankId).future);
   final testDays = logs
       .where((l) => l.type == LogType.waterTest)
       .map((l) => DateTime(l.timestamp.year, l.timestamp.month, l.timestamp.day))
@@ -486,12 +498,13 @@ final testStreakProvider = FutureProvider.family<int, String>((
 });
 
 /// Consecutive calendar weeks (Mon–Sun, ending with the current week) that
-/// contain at least one waterChange log entry.
+/// contain at least one waterChange log entry.  Uses recentLogsProvider
+/// (365-day window) to avoid loading unbounded history.
 final waterChangeStreakProvider = FutureProvider.family<int, String>((
   ref,
   tankId,
 ) async {
-  final logs = await ref.watch(allLogsProvider(tankId).future);
+  final logs = await ref.watch(recentLogsProvider(tankId).future);
 
   DateTime weekStart(DateTime d) {
     final day = DateTime(d.year, d.month, d.day);

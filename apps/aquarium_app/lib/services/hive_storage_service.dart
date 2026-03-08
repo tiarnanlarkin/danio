@@ -186,12 +186,16 @@ class HiveStorageService {
   // Logs
   // -------------------------------------------------------------------------
   
-  Future<List<LogEntry>> getLogsForTank(String tankId, {int? limit}) async {
+  Future<List<LogEntry>> getLogsForTank(String tankId, {int? limit, DateTime? after}) async {
     var logs = _logs.values
         .map((json) => LogEntry.fromJson(Map<String, dynamic>.from(json)))
         .where((log) => log.tankId == tankId)
-        .toList()
-      ..sort((a, b) => b.timestamp.compareTo(a.timestamp));
+        .toList();
+    
+    if (after != null) {
+      logs = logs.where((l) => l.timestamp.isAfter(after)).toList();
+    }
+    logs.sort((a, b) => b.timestamp.compareTo(a.timestamp));
     
     if (limit != null && logs.length > limit) {
       logs = logs.sublist(0, limit);
