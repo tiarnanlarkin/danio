@@ -102,26 +102,40 @@ class _ProfileCreationScreenState extends ConsumerState<ProfileCreationScreen> {
     try {
       final profileNotifier = ref.read(userProfileProvider.notifier);
 
-      await profileNotifier.createProfile(
-        name: _nameController.text.trim().isEmpty
-            ? null
-            : _nameController.text.trim(),
-        experienceLevel: _selectedExperience!,
-        primaryTankType: _selectedTankType!,
-        goals: _selectedGoals.toList(),
-      );
+      // Capture form values before any async work
+      final name = _nameController.text.trim().isEmpty
+          ? null
+          : _nameController.text.trim();
+      final experience = _selectedExperience!;
+      final tankType = _selectedTankType!;
+      final goals = _selectedGoals.toList();
 
       if (!mounted) return;
 
-      // Navigate to placement test
+      // Navigate BEFORE the provider update so _AppRouter's reactive rebuild
+      // (ProfileCreationScreen → TabNavigator) doesn't dispose this widget
+      // mid-execution and crash the pending Navigator.push call.
       Navigator.of(context).push(
         MaterialPageRoute(
           builder: (context) => const EnhancedPlacementTestScreen(),
         ),
       );
+
+      // Create profile after navigation is queued — provider update now
+      // happens with PlacementTestScreen on top, so _AppRouter's rebuild
+      // simply changes the background body (ProfileCreationScreen →
+      // TabNavigator) without affecting the foreground route.
+      await profileNotifier.createProfile(
+        name: name,
+        experienceLevel: experience,
+        primaryTankType: tankType,
+        goals: goals,
+      );
     } catch (e) {
       if (!mounted) return;
 
+      // If profile creation failed, pop back so the user can retry.
+      Navigator.of(context).pop();
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: const Text('Couldn\'t set up your profile. Please try again.'),
