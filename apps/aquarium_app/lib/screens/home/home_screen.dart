@@ -310,27 +310,21 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             Positioned.fill(
               child: Consumer(
                 builder: (context, ref, _) {
-                  final latestTest = ref.watch(latestWaterTestProvider(currentTank.id));
                   final roomTheme = ref.watch(currentRoomThemeProvider);
                   return Stack(
                     children: [
                       SwissArmyPanel.left(
                         theme: roomTheme,
                         child: TempPanelContent(
-                          temperature: latestTest.value?.temperature,
+                          tankId: currentTank.id,
                           theme: roomTheme,
-                          onStatsTap: () => _showStatsInfo(context),
                         ),
                       ),
                       SwissArmyPanel.right(
                         theme: roomTheme,
                         child: WaterPanelContent(
-                          ph: latestTest.value?.ph,
-                          ammonia: latestTest.value?.ammonia,
-                          nitrate: latestTest.value?.nitrate,
-                          nitrite: latestTest.value?.nitrite,
+                          tankId: currentTank.id,
                           theme: roomTheme,
-                          onTestKitTap: () => _showWaterParams(context),
                         ),
                       ),
                     ],

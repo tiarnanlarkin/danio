@@ -1,10 +1,18 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
-/// Upgraded brass instrument-style temperature gauge for the Swiss Army panel.
+/// Gradient arc temperature gauge for the redesigned Temperature panel.
+/// Draws a 240° arc with a blue→cyan→green→yellow→orange→red gradient,
+/// a thin needle, tick marks, and a centre hub.  No opaque faceplate —
+/// the widget layer behind this painter is fully visible through the centre.
 class TempGaugePainter extends CustomPainter {
+  /// Current temperature in °C.
   final double temperature;
-  final double animationValue; // 0.0–1.0
+
+  /// Animation progress 0.0 → 1.0 (eased by caller).
+  final double animationValue;
+
+  // Gradient stop colours (kept as named params so callers can override).
   final Color coldColor;
   final Color warmColor;
   final Color hotColor;
@@ -23,51 +31,41 @@ class TempGaugePainter extends CustomPainter {
     required this.secondaryTextColor,
   });
 
+  // Arc geometry constants
+  static const double _minTemp = 18.0;
+  static const double _maxTemp = 32.0;
+
+  // 240° sweep, starting at 150° from positive-x (≈ bottom-left)
+  static const double _startDeg = 150.0;
+  static const double _sweepDeg = 240.0;
+
+  static double _toRad(double deg) => deg * math.pi / 180.0;
+
   @override
   void paint(Canvas canvas, Size size) {
     final center = Offset(size.width / 2, size.height / 2);
-    final radius = size.width / 2 - 12;
-    final startAngle = math.pi * 0.75;
-    final sweepTotal = math.pi * 1.5;
+    final radius = math.min(size.width, size.height) / 2 - 8;
 
-    // --- Brass faceplate: radial gradient circle ---
-    final facePaint = Paint()
-      ..shader = RadialGradient(
-        center: const Alignment(-0.2, -0.2),
-        radius: 0.9,
-        colors: [
-          const Color(0xFF4A3D30),
-          const Color(0xFF2C2418),
-        ],
-      ).createShader(Rect.fromCircle(center: center, radius: radius + 8));
-    canvas.drawCircle(center, radius + 8, facePaint);
+    final startAngle = _toRad(_startDeg);
+    final sweepTotal = _toRad(_sweepDeg);
 
-    // --- Outer ring border ---
-    canvas.drawCircle(
-      center,
-      radius + 8,
-      Paint()
-        ..color = const Color(0xFF6B5B4F)
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 2,
-    );
-
-    // --- Background arc ---
+    // ── Background arc ────────────────────────────────────────────────────
     canvas.drawArc(
       Rect.fromCircle(center: center, radius: radius),
       startAngle,
       sweepTotal,
       false,
       Paint()
-        ..color = secondaryTextColor.withAlpha(38)
+        ..color = secondaryTextColor.withAlpha(40)
         ..style = PaintingStyle.stroke
-        ..strokeWidth = 10
+        ..strokeWidth = 14
         ..strokeCap = StrokeCap.round,
     );
 
-    // --- Animated progress arc (sweep gradient) ---
-    final progress = ((temperature - 15) / 20).clamp(0.0, 1.0);
-    final animatedProgress = progress * animationValue;
+    // ── Gradient progress arc ─────────────────────────────────────────────
+    final tempProgress =
+        ((temperature - _minTemp) / (_maxTemp - _minTemp)).clamp(0.0, 1.0);
+    final animatedProgress = tempProgress * animationValue;
 
     if (animatedProgress > 0.001) {
       canvas.drawArc(
@@ -79,70 +77,72 @@ class TempGaugePainter extends CustomPainter {
           ..shader = SweepGradient(
             startAngle: startAngle,
             endAngle: startAngle + sweepTotal,
-            colors: [coldColor, warmColor, hotColor, dangerColor],
+            colors: const [
+              Color(0xFF42A5F5), // blue  (cold)
+              Color(0xFF26C6DA), // cyan
+              Color(0xFF66BB6A), // green (optimal)
+              Color(0xFFFFEE58), // yellow
+              Color(0xFFFF9800), // orange
+              Color(0xFFEF5350), // red   (hot)
+            ],
+            stops: const [0.0, 0.2, 0.4, 0.6, 0.8, 1.0],
           ).createShader(Rect.fromCircle(center: center, radius: radius))
           ..style = PaintingStyle.stroke
-          ..strokeWidth = 10
+          ..strokeWidth = 14
           ..strokeCap = StrokeCap.round,
       );
     }
 
-    // --- Tick marks ---
+    // ── Tick marks ────────────────────────────────────────────────────────
     final tickPaint = Paint()
-      ..color = const Color(0xFFAA9977)
-      ..strokeWidth = 1
+      ..color = secondaryTextColor.withAlpha(120)
       ..strokeCap = StrokeCap.round;
 
-    for (var i = 0; i <= 20; i++) {
-      final angle = startAngle + (sweepTotal * i / 20);
-      final isMajor = i % 5 == 0;
-      final innerR = radius - (isMajor ? 18 : 14);
-      final outerR = radius - 8;
+    for (var i = 0; i <= 14; i++) {
+      final angle = startAngle + sweepTotal * i / 14;
+      final isMajor = i % 7 == 0;
+      final innerR = radius - (isMajor ? 14 : 10);
+      final outerR = radius - 4;
 
       canvas.drawLine(
-        Offset(
-          center.dx + math.cos(angle) * innerR,
-          center.dy + math.sin(angle) * innerR,
-        ),
-        Offset(
-          center.dx + math.cos(angle) * outerR,
-          center.dy + math.sin(angle) * outerR,
-        ),
-        isMajor ? (tickPaint..strokeWidth = 2) : (tickPaint..strokeWidth = 1),
+        Offset(center.dx + math.cos(angle) * innerR,
+            center.dy + math.sin(angle) * innerR),
+        Offset(center.dx + math.cos(angle) * outerR,
+            center.dy + math.sin(angle) * outerR),
+        tickPaint..strokeWidth = isMajor ? 2.0 : 1.0,
       );
     }
 
-    // --- Animated needle ---
+    // ── Needle ────────────────────────────────────────────────────────────
     final needleAngle = startAngle + sweepTotal * animatedProgress;
     final needleLength = radius - 22;
-    final needlePaint = Paint()
-      ..color = const Color(0xFFE8734A)
-      ..strokeWidth = 2.5
-      ..strokeCap = StrokeCap.round;
+    final needleColor = _needleColor(temperature);
 
     canvas.drawLine(
       Offset(
-        center.dx + math.cos(needleAngle + math.pi) * 8,
-        center.dy + math.sin(needleAngle + math.pi) * 8,
+        center.dx + math.cos(needleAngle + math.pi) * 6,
+        center.dy + math.sin(needleAngle + math.pi) * 6,
       ),
       Offset(
         center.dx + math.cos(needleAngle) * needleLength,
         center.dy + math.sin(needleAngle) * needleLength,
       ),
-      needlePaint,
+      Paint()
+        ..color = needleColor
+        ..strokeWidth = 2.0
+        ..strokeCap = StrokeCap.round,
     );
 
-    // --- Centre hub ---
+    // ── Centre hub ────────────────────────────────────────────────────────
     canvas.drawCircle(
-      center,
-      6,
-      Paint()..color = const Color(0xFF6B5B4F),
-    );
-    canvas.drawCircle(
-      center,
-      3,
-      Paint()..color = const Color(0xFFAA9977),
-    );
+        center, 5, Paint()..color = secondaryTextColor.withAlpha(80));
+    canvas.drawCircle(center, 3, Paint()..color = needleColor);
+  }
+
+  Color _needleColor(double temp) {
+    if (temp >= 23 && temp <= 27) return const Color(0xFFB45309); // amber/primary
+    if (temp < 20 || temp > 30) return const Color(0xFFEF5350);   // red
+    return const Color(0xFFFF9800);                                 // orange
   }
 
   @override
