@@ -143,6 +143,8 @@ class _AppRouter extends ConsumerStatefulWidget {
 
 class _AppRouterState extends ConsumerState<_AppRouter>
     with WidgetsBindingObserver {
+  bool _hasScheduledNotifications = false;
+
   @override
   void initState() {
     super.initState();
@@ -216,10 +218,13 @@ class _AppRouterState extends ConsumerState<_AppRouter>
     }
 
     // ── 3. Everything ready — show main app ──────────────────────────────
-    // Schedule review notifications (idempotent, cheap to call)
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) _scheduleReviewNotifications();
-    });
+    // Schedule review notifications once after first build completes
+    if (!_hasScheduledNotifications) {
+      _hasScheduledNotifications = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) _scheduleReviewNotifications();
+      });
+    }
 
     return const TabNavigator();
   }

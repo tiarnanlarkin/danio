@@ -2,6 +2,7 @@
 /// Eliminates 347KB startup bottleneck by loading lessons on-demand
 library;
 
+import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/learning.dart';
 
@@ -77,11 +78,8 @@ class LessonState {
 
   Lesson? getLesson(String lessonId) {
     for (final path in loadedPaths.values) {
-      try {
-        return path.lessons.firstWhere((l) => l.id == lessonId);
-      } catch (_) {
-        continue;
-      }
+      final lesson = path.lessons.firstWhereOrNull((l) => l.id == lessonId);
+      if (lesson != null) return lesson;
     }
     return null;
   }
@@ -233,7 +231,6 @@ class LessonProvider extends StateNotifier<LessonState> {
 
     try {
       // Simulate async loading (actual implementation will import chunk files)
-      await Future.delayed(const Duration(milliseconds: 100));
 
       // Load the path content
       final path = await _loadPathContent(pathId);

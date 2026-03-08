@@ -1072,7 +1072,7 @@ class _DanioPageTransitionsBuilder extends PageTransitionsBuilder {
     final curvedAnimation = CurvedAnimation(
       parent: animation,
       curve: Curves.easeOutCubic,
-      reverseCurve: Curves.easeInCubic,
+      reverseCurve: Curves.easeOutCubic,
     );
     return FadeTransition(
       opacity: curvedAnimation,

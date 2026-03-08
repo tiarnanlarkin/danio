@@ -35,7 +35,9 @@ final cloudSyncStatusProvider = StateProvider<CloudSyncStatus>((ref) {
 
 /// Provider for the cloud sync service singleton.
 final cloudSyncServiceProvider = Provider<CloudSyncService>((ref) {
-  return CloudSyncService(ref);
+  final service = CloudSyncService(ref);
+  ref.onDispose(() => service.stopListening());
+  return service;
 });
 
 /// Model for sync conflict notifications.

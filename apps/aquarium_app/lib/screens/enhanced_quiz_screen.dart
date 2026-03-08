@@ -4,6 +4,7 @@ library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../utils/haptic_feedback.dart';
 import '../models/exercises.dart';
 import '../widgets/exercise_widgets.dart';
 import '../widgets/hearts_widgets.dart';
@@ -142,7 +143,11 @@ class _EnhancedQuizScreenState extends ConsumerState<EnhancedQuizScreen>
     }
 
     // Haptic feedback
-    // HapticFeedback.lightImpact(); // Uncomment if you want haptics
+    if (isCorrect) {
+      AppHaptics.success();
+    } else {
+      AppHaptics.error();
+    }
   }
 
   Future<void> _showOutOfHeartsDialog() async {
