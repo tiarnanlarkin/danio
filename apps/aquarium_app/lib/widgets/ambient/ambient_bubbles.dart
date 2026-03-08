@@ -22,17 +22,19 @@ class AmbientBubbles extends ConsumerWidget {
     }
 
     return Positioned.fill(
-      child: IgnorePointer(
-        child: FloatingBubbles.alwaysRepeating(
-          noOfBubbles: bubbleCount,
-          colorsOfBubbles: [
-            AppOverlays.white30,
-            AppOverlays.lightBlue20,
-            AppOverlays.cyan15,
-          ],
-          sizeFactor: 0.12,
-          speed: BubbleSpeed.slow,
-          paintingStyle: PaintingStyle.fill,
+      child: RepaintBoundary(
+        child: IgnorePointer(
+          child: FloatingBubbles.alwaysRepeating(
+            noOfBubbles: bubbleCount,
+            colorsOfBubbles: [
+              AppOverlays.white30,
+              AppOverlays.lightBlue20,
+              AppOverlays.cyan15,
+            ],
+            sizeFactor: 0.12,
+            speed: BubbleSpeed.slow,
+            paintingStyle: PaintingStyle.fill,
+          ),
         ),
       ),
     );
@@ -54,17 +56,24 @@ class AmbientBubblesSubtle extends ConsumerWidget {
       return const SizedBox.shrink();
     }
 
+    // RepaintBoundary lives INSIDE Positioned.fill so that:
+    // (a) Positioned.fill is a direct Stack child (gets StackParentData correctly),
+    // (b) the expensive bubble animation is still isolated for repaint perf.
+    // DO NOT wrap this widget externally in RepaintBoundary — Positioned.fill
+    // cannot find a Stack ancestor through a RepaintBoundary.
     return Positioned.fill(
-      child: IgnorePointer(
-        child: FloatingBubbles.alwaysRepeating(
-          noOfBubbles: bubbleCount,
-          colorsOfBubbles: [
-            AppOverlays.white20,
-            AppOverlays.lightBlue15,
-          ],
-          sizeFactor: 0.08,
-          speed: BubbleSpeed.slow,
-          paintingStyle: PaintingStyle.fill,
+      child: RepaintBoundary(
+        child: IgnorePointer(
+          child: FloatingBubbles.alwaysRepeating(
+            noOfBubbles: bubbleCount,
+            colorsOfBubbles: [
+              AppOverlays.white20,
+              AppOverlays.lightBlue15,
+            ],
+            sizeFactor: 0.08,
+            speed: BubbleSpeed.slow,
+            paintingStyle: PaintingStyle.fill,
+          ),
         ),
       ),
     );

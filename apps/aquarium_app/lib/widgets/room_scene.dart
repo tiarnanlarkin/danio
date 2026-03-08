@@ -1391,8 +1391,10 @@ class _ThemedAquarium extends StatelessWidget {
               child: _SoftBubbles(height: height * 0.5),
             ),
 
-            // Animated floating bubbles — isolated repaint boundary
-            const RepaintBoundary(child: AmbientBubblesSubtle(bubbleCount: 12)),
+            // Animated floating bubbles — RepaintBoundary is inside AmbientBubblesSubtle
+            // DO NOT wrap externally: Positioned.fill inside the widget cannot find a
+            // Stack ancestor through an external RepaintBoundary.
+            const AmbientBubblesSubtle(bubbleCount: 12),
 
             // Water surface effect (Rive animated)
             if (useRiveFish)
