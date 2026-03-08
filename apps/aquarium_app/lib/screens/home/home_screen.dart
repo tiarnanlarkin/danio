@@ -419,7 +419,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               maxHeightFraction: 0.75,
               label: 'Your Tanks',
               emoji: '🐠',
-              backgroundColor: const Color(0xFF3D2416),
+              backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
               backgroundPainter: CustomPaint(
                 painter: SaffianoPainter(),
                 size: Size.infinite,

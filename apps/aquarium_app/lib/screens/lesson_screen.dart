@@ -157,10 +157,10 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
                       // the PracticeScreen card label.
                       // Show full potential XP (base + quiz bonus) so it matches results screen.
                       widget.isPracticeMode
-                          ? '+\${widget.lesson.xpReward ~/ 2} XP'
+                          ? '+${widget.lesson.xpReward ~/ 2} XP'
                           : (widget.lesson.quiz != null
-                              ? 'up to +\${widget.lesson.xpReward + widget.lesson.quiz!.bonusXp} XP'
-                              : '+\${widget.lesson.xpReward} XP'),
+                              ? 'up to +${widget.lesson.xpReward + widget.lesson.quiz!.bonusXp} XP'
+                              : '+${widget.lesson.xpReward} XP'),
                       style: AppTypography.labelMedium.copyWith(
                         color: AppColors.accent,
                       ),
@@ -521,10 +521,14 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    'Question ${_currentQuizQuestion + 1} of ${quiz.questions.length}',
-                    style: AppTypography.labelLarge,
+                  Flexible(
+                    child: Text(
+                      'Question ${_currentQuizQuestion + 1} of ${quiz.questions.length}',
+                      style: AppTypography.labelLarge,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ),
+                  const SizedBox(width: AppSpacing.sm),
                   Text(
                     '$_correctAnswers correct',
                     style: AppTypography.bodyMedium.copyWith(

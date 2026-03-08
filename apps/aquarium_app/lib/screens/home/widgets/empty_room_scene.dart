@@ -160,18 +160,12 @@ class EmptyRoomScene extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                // Finn greeting
+                // Finn greeting — MascotBubble already contains the
+                // "Let's set up your first tank!" message; removed the
+                // duplicate Text below to fix ghost-text rendering (P0-003).
                 MascotBubble.fromContext(
                   context: MascotContext.noTanks,
                   size: MascotSize.small,
-                ),
-                const SizedBox(height: AppSpacing.md),
-                Text(
-                  'Every great fishkeeper starts right here.\nLet\'s set up your first tank! 🐠',
-                  style: AppTypography.bodyMedium.copyWith(
-                    color: AppColors.textSecondary,
-                  ),
-                  textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: AppSpacing.lg2),
                 ElevatedButton.icon(
