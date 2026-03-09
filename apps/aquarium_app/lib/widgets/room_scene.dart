@@ -360,11 +360,8 @@ class _CozyRoomPainter extends CustomPainter {
 
   // Pre-computed withAlpha colors to avoid per-frame allocations in paint()
   late final Color _trimAlpha102 = _trimColor.withAlpha(102);
-  late final Color _waterMidAlpha128 = theme.waterMid.withAlpha(128);
   late final Color _textSecAlpha76 = theme.textSecondary.withAlpha(76);
   late final Color _textSecAlpha64 = theme.textSecondary.withAlpha(64);
-  late final Color _accentBlobAlpha102 = theme.accentBlob.withAlpha(102);
-  late final Color _accentBlobAlpha153 = theme.accentBlob.withAlpha(153);
   late final Color _textSecAlpha51 = theme.textSecondary.withAlpha(51);
   late final Color _waterMidAlpha64 = theme.waterMid.withAlpha(64);
   late final Color _waterMidAlpha38 = theme.waterMid.withAlpha(38);
@@ -566,8 +563,8 @@ class _CozyRoomPainter extends CustomPainter {
     // Small framed picture on wall (left side, above tank)
     final frameLeft = w * 0.02;
     final frameTop = h * 0.22;
-    final frameWidth = w * 0.12;
-    final frameHeight = h * 0.08;
+    final frameWidth = w * 0.14;
+    final frameHeight = h * 0.10;
     
     // Frame
     final frameRect = RRect.fromRectAndRadius(
@@ -579,13 +576,27 @@ class _CozyRoomPainter extends CustomPainter {
       Paint()..color = _trimColor,
     );
     
-    // Picture inside
-    canvas.drawRRect(
-      RRect.fromRectAndRadius(
-        Rect.fromLTWH(frameLeft + 3, frameTop + 3, frameWidth - 6, frameHeight - 6),
-        const Radius.circular(1),
-      ),
-      Paint()..color = _waterMidAlpha128,
+    // Picture content — mini landscape painting
+    final pictureInset = 3.0;
+    final pictureRect = Rect.fromLTWH(
+      frameLeft + pictureInset, frameTop + pictureInset,
+      frameWidth - pictureInset * 2, frameHeight - pictureInset * 2,
+    );
+    // Sky band (top half)
+    canvas.drawRect(
+      Rect.fromLTWH(pictureRect.left, pictureRect.top,
+          pictureRect.width, pictureRect.height / 2),
+      Paint()..color = _isDarkTheme
+          ? const Color(0x806A90A0)   // muted sky
+          : const Color(0x998BB8C8),  // sky blue-grey
+    );
+    // Ground band (bottom half)
+    canvas.drawRect(
+      Rect.fromLTWH(pictureRect.left, pictureRect.top + pictureRect.height / 2,
+          pictureRect.width, pictureRect.height / 2),
+      Paint()..color = _isDarkTheme
+          ? const Color(0x804A7A50)   // dark sage
+          : const Color(0x996B9B6B),  // sage green
     );
   }
 
@@ -653,6 +664,14 @@ class _CozyRoomPainter extends CustomPainter {
       Paint()..shader = skyGradient.createShader(windowRect.outerRect),
     );
 
+    // Warm interior glow on window glass (dark mode only)
+    if (_isDarkTheme) {
+      canvas.drawRRect(
+        windowRect,
+        Paint()..color = const Color(0x0FFFE4B5),  // very subtle warm tint
+      );
+    }
+
     // Window frame border
     canvas.drawRRect(
       windowRect,
@@ -685,9 +704,9 @@ class _CozyRoomPainter extends CustomPainter {
     );
 
     // === CURTAINS ===
-    final curtainColor = _isDarkTheme
-        ? _accentBlobAlpha102
-        : _accentBlobAlpha153;
+    final curtainColor = _isDarkTheme 
+        ? const Color(0x807A6050) 
+        : const Color(0x99B88A68);
     final curtainPaint = Paint()..color = curtainColor;
 
     // Left curtain
@@ -736,7 +755,7 @@ class _CozyRoomPainter extends CustomPainter {
         ..color = _isDarkTheme
             ? _textSecAlpha76
             : AppColors.whiteAlpha60
-        ..strokeWidth = 3
+        ..strokeWidth = 4
         ..strokeCap = StrokeCap.round,
     );
 
