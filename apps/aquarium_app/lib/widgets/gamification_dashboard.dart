@@ -220,7 +220,7 @@ class _StatItem extends StatelessWidget {
         child: Text(
           label,
           style: AppTypography.labelSmall.copyWith(
-            color: AppColors.textSecondary,
+            color: context.textSecondary,
           ),
           overflow: TextOverflow.ellipsis,
         ),
@@ -261,13 +261,13 @@ class _HeartsDisplay extends StatelessWidget {
                   '$current',
                   style: AppTypography.titleMedium.copyWith(
                     fontWeight: FontWeight.bold,
-                    color: current > 0 ? AppColors.error : AppColors.textHint,
+                    color: current > 0 ? AppColors.error : context.textHint,
                   ),
                 ),
                 Text(
                   '/$max',
                   style: AppTypography.bodySmall.copyWith(
-                    color: AppColors.textSecondary,
+                    color: context.textSecondary,
                   ),
                 ),
               ],
@@ -276,14 +276,14 @@ class _HeartsDisplay extends StatelessWidget {
               Text(
                 _formatDuration(timeUntilRefill!),
                 style: AppTypography.labelSmall.copyWith(
-                  color: AppColors.textHint,
+                  color: context.textHint,
                 ),
               )
             else
               Text(
                 'hearts',
                 style: AppTypography.labelSmall.copyWith(
-                  color: AppColors.textSecondary,
+                  color: context.textSecondary,
                 ),
               ),
           ],
@@ -369,7 +369,7 @@ class _DailyGoalProgress extends StatelessWidget {
               Text(
                 '$percentage%',
                 style: AppTypography.labelSmall.copyWith(
-                  color: AppColors.textSecondary,
+                  color: context.textSecondary,
                 ),
               ),
           ],

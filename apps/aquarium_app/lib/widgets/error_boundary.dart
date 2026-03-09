@@ -141,7 +141,7 @@ class _DefaultErrorScreenState extends State<_DefaultErrorScreen> {
                 Text(
                   'Don\'t worry, your data is safe. Try restarting the app or contact support if this keeps happening.',
                   style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    color: isDark ? Colors.white70 : AppColors.textSecondary,
+                    color: isDark ? Colors.white70 : context.textSecondary,
                   ),
                   textAlign: TextAlign.center,
                 ),

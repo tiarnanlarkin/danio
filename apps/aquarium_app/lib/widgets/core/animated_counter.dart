@@ -225,7 +225,7 @@ class XpCounter extends StatelessWidget {
               Text(
                 '${xpToNextLevel! - currentXp} to next level',
                 style: AppTypography.labelSmall.copyWith(
-                  color: AppColors.textSecondary,
+                  color: context.textSecondary,
                 ),
               ),
             ],

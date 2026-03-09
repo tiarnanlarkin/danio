@@ -23,12 +23,12 @@ class NitrogenCycleGuideScreen extends StatelessWidget {
                 children: [
                   Row(
                     children: [
-                      Icon(Icons.lightbulb, color: AppColors.textSecondary),
+                      Icon(Icons.lightbulb, color: context.textSecondary),
                       const SizedBox(width: AppSpacing.sm),
                       Text(
                         'What is the Nitrogen Cycle?',
                         style: AppTypography.headlineSmall.copyWith(
-                          color: AppColors.textSecondary,
+                          color: context.textSecondary,
                         ),
                       ),
                     ],
@@ -257,7 +257,7 @@ class _CycleArrow extends StatelessWidget {
       child: Center(
         child: Column(
           children: [
-            Icon(Icons.arrow_downward, color: AppColors.textHint, size: AppIconSizes.md),
+            Icon(Icons.arrow_downward, color: context.textHint, size: AppIconSizes.md),
             Text('Bacteria convert', style: AppTypography.bodySmall),
           ],
         ),

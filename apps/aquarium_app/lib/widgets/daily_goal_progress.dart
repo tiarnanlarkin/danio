@@ -56,7 +56,7 @@ class DailyGoalProgress extends ConsumerWidget {
                     'XP',
                     style: TextStyle(
                       fontSize: size * 0.12,
-                      color: AppColors.textSecondary,
+                      color: context.textSecondary,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -72,7 +72,7 @@ class DailyGoalProgress extends ConsumerWidget {
                 ? 'Goal complete! 🎉'
                 : 'Daily goal: ${dailyGoal.targetXp}',
             style: AppTypography.bodySmall.copyWith(
-              color: AppColors.textSecondary,
+              color: context.textSecondary,
             ),
             textAlign: TextAlign.center,
           ),
@@ -80,7 +80,7 @@ class DailyGoalProgress extends ConsumerWidget {
             Text(
               '${dailyGoal.remainingXp} XP to go',
               style: AppTypography.bodySmall.copyWith(
-                color: AppColors.textHint,
+                color: context.textHint,
               ),
               textAlign: TextAlign.center,
             ),
@@ -222,7 +222,7 @@ class DailyGoalCard extends ConsumerWidget {
                             ? '+${dailyGoal.bonusXp} bonus XP earned!'
                             : '${dailyGoal.earnedXp}/${dailyGoal.targetXp} XP',
                         style: AppTypography.bodySmall.copyWith(
-                          color: AppColors.textSecondary,
+                          color: context.textSecondary,
                         ),
                       ),
                       if (!dailyGoal.isCompleted) ...[

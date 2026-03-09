@@ -199,7 +199,7 @@ class _StreakCelebrationOverlayState extends State<_StreakCelebrationOverlay>
                       Text(
                         'Your fish appreciate the dedication!',
                         style: AppTypography.bodyMedium.copyWith(
-                          color: AppColors.textSecondary,
+                          color: context.textSecondary,
                         ),
                         textAlign: TextAlign.center,
                       ),

@@ -57,7 +57,7 @@ class AnomalyCard extends ConsumerWidget {
                 child: Text(
                   '+${anomalies.length - 3} more',
                   style: theme.textTheme.bodySmall?.copyWith(
-                    color: AppColors.textSecondary,
+                    color: context.textSecondary,
                   ),
                 ),
               ),

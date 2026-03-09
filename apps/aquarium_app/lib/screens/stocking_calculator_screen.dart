@@ -288,7 +288,7 @@ class _StockingCalculatorScreenState extends State<StockingCalculatorScreen> {
                     child: Text(
                       'Search and add fish above',
                       style: AppTypography.bodyMedium.copyWith(
-                        color: AppColors.textHint,
+                        color: context.textHint,
                       ),
                     ),
                   )

@@ -104,7 +104,7 @@ class TankHealthCard extends StatelessWidget {
                         Text(
                           '/100',
                           style: theme.textTheme.labelSmall?.copyWith(
-                            color: AppColors.textSecondary,
+                            color: context.textSecondary,
                           ),
                         ),
                       ],
@@ -134,7 +134,7 @@ class TankHealthCard extends StatelessWidget {
                             child: Text(
                               factor,
                               style: theme.textTheme.bodySmall?.copyWith(
-                                color: AppColors.textSecondary,
+                                color: context.textSecondary,
                               ),
                             ),
                           ),

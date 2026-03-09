@@ -128,7 +128,7 @@ class _EmptyJournal extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.book_outlined, size: AppIconSizes.xxl, color: AppColors.textHint),
+            Icon(Icons.book_outlined, size: AppIconSizes.xxl, color: context.textHint),
             const SizedBox(height: AppSpacing.md),
             Text('Your story starts here!', style: AppTypography.headlineSmall),
             const SizedBox(height: AppSpacing.sm),
@@ -201,7 +201,7 @@ class _JournalEntryCard extends StatelessWidget {
               const SizedBox(height: AppSpacing.sm2),
               Row(
                 children: [
-                  Icon(Icons.image, size: AppIconSizes.xs, color: AppColors.textSecondary),
+                  Icon(Icons.image, size: AppIconSizes.xs, color: context.textSecondary),
                   const SizedBox(width: AppSpacing.xs),
                   Text(
                     '${entry.photoUrls!.length} photo(s) attached',

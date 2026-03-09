@@ -124,7 +124,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
                 child: Text(
                   'PRACTICE',
                   style: AppTypography.labelSmall.copyWith(
-                    color: AppColors.textSecondary,
+                    color: context.textSecondary,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -227,12 +227,12 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
               if (index == 2) {
                 return Row(
                   children: [
-                    Icon(Icons.timer, size: AppIconSizes.xs, color: AppColors.textSecondary),
+                    Icon(Icons.timer, size: AppIconSizes.xs, color: context.textSecondary),
                     const SizedBox(width: AppSpacing.xs),
                     Text(
                       '${widget.lesson.estimatedMinutes} min read',
                       style: AppTypography.bodySmall.copyWith(
-                        color: AppColors.textSecondary,
+                        color: context.textSecondary,
                       ),
                     ),
                   ],
@@ -491,11 +491,11 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(Icons.image_outlined, size: AppIconSizes.xl, color: AppColors.textHint),
+                Icon(Icons.image_outlined, size: AppIconSizes.xl, color: context.textHint),
                 const SizedBox(height: 8),
                 Text(
                   'Illustration coming soon',
-                  style: AppTypography.bodySmall.copyWith(color: AppColors.textHint),
+                  style: AppTypography.bodySmall.copyWith(color: context.textHint),
                 ),
               ],
             ),
@@ -642,7 +642,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
                                     style: AppTypography.labelLarge.copyWith(
                                       color: isSelected && !_answered
                                           ? AppColors.onPrimary
-                                          : AppColors.textSecondary,
+                                          : context.textSecondary,
                                     ),
                                   ),
                             ),
@@ -676,7 +676,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Icon(Icons.info_outline, color: AppColors.textSecondary),
+                        Icon(Icons.info_outline, color: context.textSecondary),
                         const SizedBox(width: AppSpacing.sm2),
                         Expanded(
                           child: Text(
@@ -840,7 +840,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
                   Text(
                     'You got $_correctAnswers out of ${quiz.questions.length} correct ($percentage%)',
                     style: AppTypography.bodyLarge.copyWith(
-                      color: AppColors.textSecondary,
+                      color: context.textSecondary,
                     ),
                     textAlign: TextAlign.center,
                   ),

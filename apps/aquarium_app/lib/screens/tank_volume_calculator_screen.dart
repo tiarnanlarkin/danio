@@ -167,12 +167,12 @@ class _TankVolumeCalculatorScreenState
                 child: Column(
                   children: [
                     Icon(Icons.calculate_outlined,
-                        color: AppColors.textHint, size: AppIconSizes.lg),
+                        color: context.textHint, size: AppIconSizes.lg),
                     const SizedBox(height: AppSpacing.sm),
                     Text(
                       'Enter dimensions above to calculate',
                       style: AppTypography.bodyMedium
-                          .copyWith(color: AppColors.textHint),
+                          .copyWith(color: context.textHint),
                       textAlign: TextAlign.center,
                     ),
                   ],

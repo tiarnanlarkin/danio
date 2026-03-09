@@ -197,7 +197,7 @@ class _FirstTankWizardScreenState extends ConsumerState<FirstTankWizardScreen> {
           Text(
             'Every great tank has a name. What\'s yours? 🐟',
             style: AppTypography.bodyLarge.copyWith(
-              color: AppColors.textSecondary,
+              color: context.textSecondary,
             ),
             textAlign: TextAlign.center,
           ),
@@ -222,7 +222,7 @@ class _FirstTankWizardScreenState extends ConsumerState<FirstTankWizardScreen> {
           Text(
             'Examples: "Living Room Tank", "Bedroom Aquarium", "My First Tank"',
             style: AppTypography.labelSmall.copyWith(
-              color: AppColors.textSecondary,
+              color: context.textSecondary,
             ),
           ),
         ],
@@ -248,7 +248,7 @@ class _FirstTankWizardScreenState extends ConsumerState<FirstTankWizardScreen> {
           Text(
             'How big is your tank? (A rough estimate is fine!)',
             style: AppTypography.bodyLarge.copyWith(
-              color: AppColors.textSecondary,
+              color: context.textSecondary,
             ),
             textAlign: TextAlign.center,
           ),
@@ -276,7 +276,7 @@ class _FirstTankWizardScreenState extends ConsumerState<FirstTankWizardScreen> {
           Text(
             'Common sizes: 38 L (10 gal), 76 L (20 gal), 114 L (30 gal), 208 L (55 gal)',
             style: AppTypography.labelSmall.copyWith(
-              color: AppColors.textSecondary,
+              color: context.textSecondary,
             ),
           ),
         ],
@@ -302,7 +302,7 @@ class _FirstTankWizardScreenState extends ConsumerState<FirstTankWizardScreen> {
           Text(
             'Not sure yet? Freshwater is the perfect place to start.',
             style: AppTypography.bodyLarge.copyWith(
-              color: AppColors.textSecondary,
+              color: context.textSecondary,
             ),
             textAlign: TextAlign.center,
           ),
@@ -337,7 +337,7 @@ class _FirstTankWizardScreenState extends ConsumerState<FirstTankWizardScreen> {
                           _getTankTypeIcon(type),
                           color: isSelected
                               ? AppColors.primary
-                              : AppColors.textSecondary,
+                              : context.textSecondary,
                         ),
                         const SizedBox(width: AppSpacing.md),
                         Expanded(
@@ -355,7 +355,7 @@ class _FirstTankWizardScreenState extends ConsumerState<FirstTankWizardScreen> {
                               Text(
                                 _getTankTypeDescription(type),
                                 style: AppTypography.bodySmall.copyWith(
-                                  color: AppColors.textSecondary,
+                                  color: context.textSecondary,
                                 ),
                               ),
                             ],
@@ -397,7 +397,7 @@ class _FirstTankWizardScreenState extends ConsumerState<FirstTankWizardScreen> {
           Text(
             'Here\'s what we\'re setting up for you:',
             style: AppTypography.bodyLarge.copyWith(
-              color: AppColors.textSecondary,
+              color: context.textSecondary,
             ),
             textAlign: TextAlign.center,
           ),
@@ -438,7 +438,7 @@ class _FirstTankWizardScreenState extends ConsumerState<FirstTankWizardScreen> {
                   child: Text(
                     'Once it\'s set up, you can add fish, track water readings, and get care reminders — all in one place! 🐠',
                     style: AppTypography.bodySmall.copyWith(
-                      color: AppColors.textSecondary,
+                      color: context.textSecondary,
                     ),
                   ),
                 ),
@@ -459,7 +459,7 @@ class _FirstTankWizardScreenState extends ConsumerState<FirstTankWizardScreen> {
           child: Text(
             '$label:',
             style: AppTypography.labelMedium.copyWith(
-              color: AppColors.textSecondary,
+              color: context.textSecondary,
             ),
           ),
         ),

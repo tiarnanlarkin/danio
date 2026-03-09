@@ -90,7 +90,7 @@ class TermsOfServiceScreen extends StatelessWidget {
               child: Text(
                 'Last Updated: February 7, 2025',
                 style: AppTypography.bodySmall.copyWith(
-                  color: AppColors.textSecondary,
+                  color: context.textSecondary,
                 ),
               ),
             ),
@@ -202,7 +202,7 @@ class TermsOfServiceScreen extends StatelessWidget {
                 Text(
                   content,
                   style: AppTypography.bodySmall.copyWith(
-                    color: highlighted ? AppColors.warning : AppColors.textSecondary,
+                    color: highlighted ? AppColors.warning : context.textSecondary,
                   ),
                 ),
               ],
@@ -261,10 +261,10 @@ class TermsOfServiceScreen extends StatelessWidget {
   Widget _buildContactRow(IconData icon, String text) {
     return Row(
       children: [
-        Icon(icon, size: AppIconSizes.xs, color: AppColors.textSecondary),
+        Icon(icon, size: AppIconSizes.xs, color: context.textSecondary),
         const SizedBox(width: AppSpacing.sm),
         Expanded(
-          child: Text(text, style: TextStyle(color: AppColors.textSecondary)),
+          child: Text(text, style: TextStyle(color: context.textSecondary)),
         ),
       ],
     );

@@ -256,7 +256,7 @@ class LessonErrorWidget extends StatelessWidget {
             Text(
               message,
               style: AppTypography.bodyMedium.copyWith(
-                color: AppColors.textSecondary,
+                color: context.textSecondary,
               ),
               textAlign: TextAlign.center,
             ),

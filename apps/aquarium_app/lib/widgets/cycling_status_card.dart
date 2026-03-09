@@ -133,7 +133,7 @@ class CyclingStatusCard extends StatelessWidget {
   Color _getStatusColor(CyclingStatus status) {
     switch (status) {
       case CyclingStatus.notStarted:
-        return AppColors.textHint;
+        return context.textHint;
       case CyclingStatus.earlyStage:
         return AppColors.warning;
       case CyclingStatus.midCycle:
@@ -143,7 +143,7 @@ class CyclingStatusCard extends StatelessWidget {
       case CyclingStatus.cycled:
         return AppColors.success;
       case CyclingStatus.unknown:
-        return AppColors.textHint;
+        return context.textHint;
     }
   }
 
@@ -211,7 +211,7 @@ class _StatusIcon extends StatelessWidget {
 
     switch (status) {
       case CyclingStatus.notStarted:
-        color = AppColors.textHint;
+        color = context.textHint;
         icon = Icons.hourglass_empty;
         break;
       case CyclingStatus.earlyStage:
@@ -231,7 +231,7 @@ class _StatusIcon extends StatelessWidget {
         icon = Icons.check_circle;
         break;
       case CyclingStatus.unknown:
-        color = AppColors.textHint;
+        color = context.textHint;
         icon = Icons.help_outline;
         break;
     }

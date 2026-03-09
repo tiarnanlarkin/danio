@@ -349,7 +349,7 @@ class ThemeGalleryScreen extends ConsumerWidget {
             const SizedBox(height: AppSpacing.sm2),
             Text(
               'Support the app and unlock exclusive themes with unique animations and special effects.',
-              style: Theme.of(context).textTheme.bodyLarge!.copyWith(color: AppColors.textSecondary),
+              style: Theme.of(context).textTheme.bodyLarge!.copyWith(color: context.textSecondary),
             ),
           ],
         ),

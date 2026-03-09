@@ -70,19 +70,19 @@ class TaskTile extends StatelessWidget {
             : (isDueToday ? Icons.today : Icons.schedule),
         color: isOverdue
             ? AppColors.warning
-            : (isDueToday ? AppColors.info : AppColors.textHint),
+            : (isDueToday ? AppColors.info : context.textHint),
       ),
       title: Text(task.title),
       subtitle: Text(
         task.dueDate != null ? _formatDue(task.dueDate!) : 'No due date',
         style: TextStyle(
-          color: isOverdue ? AppColors.warning : AppColors.textSecondary,
+          color: isOverdue ? AppColors.warning : context.textSecondary,
         ),
       ),
       trailing: IconButton(
         tooltip: 'Delete task',
         icon: const Icon(Icons.check_circle_outline),
-        color: task.isEnabled ? AppColors.success : AppColors.textHint,
+        color: task.isEnabled ? AppColors.success : context.textHint,
         onPressed: task.isEnabled ? onComplete : null,
       ),
     );

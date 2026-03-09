@@ -335,7 +335,7 @@ class _EmptyState extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.notifications_none, size: AppIconSizes.xxl, color: AppColors.textHint),
+            Icon(Icons.notifications_none, size: AppIconSizes.xxl, color: context.textHint),
             const SizedBox(height: AppSpacing.md),
             Text('No Reminders Yet', style: AppTypography.headlineSmall),
             const SizedBox(height: AppSpacing.sm),
@@ -492,7 +492,7 @@ class _ReminderTile extends StatelessWidget {
                   ),
                   if (reminder.isRecurring) ...[
                     const SizedBox(width: AppSpacing.sm),
-                    Icon(Icons.repeat, size: 12, color: AppColors.textHint),
+                    Icon(Icons.repeat, size: 12, color: context.textHint),
                     const SizedBox(width: AppSpacing.xxs),
                     Text(reminder.frequency, style: AppTypography.bodySmall),
                   ],

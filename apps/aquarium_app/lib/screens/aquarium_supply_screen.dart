@@ -300,7 +300,7 @@ class _AquariumSupplyScreenState extends ConsumerState<AquariumSupplyScreen>
           mainAxisSize: MainAxisSize.min,
           children: [
             Icon(Icons.inventory_2_outlined,
-                size: 64, color: AppColors.textHint),
+                size: 64, color: context.textHint),
             const SizedBox(height: AppSpacing.md),
             Text('Your supply shelf is empty!',
                 style: AppTypography.headlineSmall),
@@ -791,7 +791,7 @@ class _SupplyItemSheetState extends State<_SupplyItemSheet> {
                 child: Row(
                   children: [
                     const Icon(Icons.calendar_today,
-                        color: AppColors.textSecondary),
+                        color: context.textSecondary),
                     const SizedBox(width: AppSpacing.sm2),
                     Text(
                       _lastPurchased != null

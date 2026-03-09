@@ -87,7 +87,7 @@ class _PracticeScreenState extends ConsumerState<PracticeScreen> {
             Text(
               'No lessons need review right now. Your knowledge is fresh!',
               style: AppTypography.bodyLarge.copyWith(
-                color: AppColors.textSecondary,
+                color: context.textSecondary,
               ),
               textAlign: TextAlign.center,
             ),
@@ -95,7 +95,7 @@ class _PracticeScreenState extends ConsumerState<PracticeScreen> {
             Text(
               'Complete more lessons to build your practice queue.',
               style: AppTypography.bodyMedium.copyWith(
-                color: AppColors.textHint,
+                color: context.textHint,
               ),
               textAlign: TextAlign.center,
             ),
@@ -175,7 +175,7 @@ class _PracticeScreenState extends ConsumerState<PracticeScreen> {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Icon(Icons.lightbulb_outline, color: AppColors.textSecondary),
+              Icon(Icons.lightbulb_outline, color: context.textSecondary),
               const SizedBox(width: AppSpacing.sm2),
               Expanded(
                 child: Column(
@@ -184,7 +184,7 @@ class _PracticeScreenState extends ConsumerState<PracticeScreen> {
                     Text(
                       'How it works',
                       style: AppTypography.labelLarge.copyWith(
-                        color: AppColors.textSecondary,
+                        color: context.textSecondary,
                       ),
                     ),
                     const SizedBox(height: AppSpacing.xs),
@@ -299,7 +299,7 @@ class _PracticeScreenState extends ConsumerState<PracticeScreen> {
                       Text(
                         pathTitle,
                         style: AppTypography.bodySmall.copyWith(
-                          color: AppColors.textSecondary,
+                          color: context.textSecondary,
                         ),
                       ),
                     ],
@@ -345,7 +345,7 @@ class _PracticeScreenState extends ConsumerState<PracticeScreen> {
                           Text(
                             'Strength',
                             style: AppTypography.labelSmall.copyWith(
-                              color: AppColors.textSecondary,
+                              color: context.textSecondary,
                             ),
                           ),
                           Text(
@@ -379,21 +379,21 @@ class _PracticeScreenState extends ConsumerState<PracticeScreen> {
             // Review stats
             Row(
               children: [
-                Icon(Icons.refresh, size: 14, color: AppColors.textHint),
+                Icon(Icons.refresh, size: 14, color: context.textHint),
                 const SizedBox(width: AppSpacing.xs),
                 Text(
                   'Reviewed ${progress.reviewCount} time${progress.reviewCount == 1 ? '' : 's'}',
                   style: AppTypography.bodySmall.copyWith(
-                    color: AppColors.textHint,
+                    color: context.textHint,
                   ),
                 ),
                 const SizedBox(width: AppSpacing.sm2),
-                Icon(Icons.calendar_today, size: 14, color: AppColors.textHint),
+                Icon(Icons.calendar_today, size: 14, color: context.textHint),
                 const SizedBox(width: AppSpacing.xs),
                 Text(
                   _getTimeSinceReview(progress),
                   style: AppTypography.bodySmall.copyWith(
-                    color: AppColors.textHint,
+                    color: context.textHint,
                   ),
                 ),
               ],

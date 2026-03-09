@@ -64,7 +64,7 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
             padding: AppCardPadding.standard,
             child: Row(
               children: [
-                Icon(Icons.backup, size: AppIconSizes.lg, color: AppColors.textSecondary),
+                Icon(Icons.backup, size: AppIconSizes.lg, color: context.textSecondary),
                 const SizedBox(width: AppSpacing.sm2),
                 Expanded(
                   child: Text(
@@ -131,7 +131,7 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
                       Text(
                         _progressStatus,
                         style: AppTypography.bodySmall.copyWith(
-                          color: AppColors.textSecondary,
+                          color: context.textSecondary,
                         ),
                       ),
                     ],
@@ -196,7 +196,7 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
                   Text(
                     _progressStatus,
                     style: AppTypography.bodySmall.copyWith(
-                      color: AppColors.textSecondary,
+                      color: context.textSecondary,
                     ),
                   ),
                 ],
@@ -855,13 +855,13 @@ class _ExportItem extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
         children: [
-          Icon(icon, size: 18, color: AppColors.textSecondary),
+          Icon(icon, size: 18, color: context.textSecondary),
           const SizedBox(width: AppSpacing.sm2),
           Expanded(child: Text(text, style: AppTypography.bodyMedium)),
           Icon(
             included ? Icons.check_circle : Icons.cancel,
             size: 18,
-            color: included ? AppColors.success : AppColors.textHint,
+            color: included ? AppColors.success : context.textHint,
           ),
         ],
       ),

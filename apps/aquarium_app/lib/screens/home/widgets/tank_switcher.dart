@@ -98,7 +98,7 @@ class TankSwitcher extends StatelessWidget {
                         Text(
                           '${tanks[currentIndex].volumeLitres.toStringAsFixed(0)}L${hasMultipleTanks ? ' • ${currentIndex + 1}/${tanks.length}' : ''}',
                           style: AppTypography.bodySmall.copyWith(
-                            color: AppColors.textSecondary,
+                            color: context.textSecondary,
                           ),
                         ),
                       ],
@@ -109,7 +109,7 @@ class TankSwitcher extends StatelessWidget {
                   if (hasMultipleTanks)
                     Icon(
                       Icons.unfold_more_rounded,
-                      color: AppColors.textHint,
+                      color: context.textHint,
                       size: 18,
                     ),
                 ],

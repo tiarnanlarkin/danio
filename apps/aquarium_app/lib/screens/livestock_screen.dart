@@ -1029,7 +1029,7 @@ class _AddLivestockSheetState extends ConsumerState<_AddLivestockSheet> {
                       Text(
                         'Schooling fish -- keep ${_selectedSpecies!.minSchoolSize}+ together',
                         style: AppTypography.bodySmall.copyWith(
-                          color: AppColors.textSecondary,
+                          color: context.textSecondary,
                         ),
                       ),
                   ],
@@ -1086,7 +1086,7 @@ class _AddLivestockSheetState extends ConsumerState<_AddLivestockSheet> {
       case 'advanced':
         return AppColors.error;
       default:
-        return AppColors.textSecondary;
+        return context.textSecondary;
     }
   }
 
@@ -1229,7 +1229,7 @@ class _BulkAddLivestockSheetState extends ConsumerState<_BulkAddLivestockSheet> 
             Text(
               'One per line. Formats supported: "Neon Tetra, 10", "10 Neon Tetra", "Neon Tetra x10".',
               style: AppTypography.bodySmall.copyWith(
-                color: AppColors.textSecondary,
+                color: context.textSecondary,
               ),
             ),
             const SizedBox(height: AppSpacing.sm2),

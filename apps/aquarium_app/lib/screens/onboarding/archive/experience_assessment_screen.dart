@@ -347,7 +347,7 @@ class _ExperienceAssessmentScreenState
               Text(
                 recommendation,
                 style: AppTypography.bodyLarge.copyWith(
-                  color: AppColors.textSecondary,
+                  color: context.textSecondary,
                 ),
                 textAlign: TextAlign.center,
               ),

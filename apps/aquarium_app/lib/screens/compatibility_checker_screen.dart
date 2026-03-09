@@ -244,7 +244,7 @@ class _CompatibilityCheckerScreenState
                     padding: AppCardPadding.spacious,
                     child: Column(
                       children: [
-                        Icon(Icons.set_meal, size: AppIconSizes.xl, color: AppColors.textHint),
+                        Icon(Icons.set_meal, size: AppIconSizes.xl, color: context.textHint),
                         const SizedBox(height: AppSpacing.sm2),
                         Text(
                           'Add Fish to Check',
@@ -454,7 +454,7 @@ class _ParamRow extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: AppSpacing.xs2),
       child: Row(
         children: [
-          Icon(icon, size: 18, color: AppColors.textSecondary),
+          Icon(icon, size: 18, color: context.textSecondary),
           const SizedBox(width: AppSpacing.sm),
           Expanded(child: Text(label, style: AppTypography.bodyMedium)),
           Text(

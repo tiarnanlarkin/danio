@@ -242,7 +242,7 @@ class _MultipleChoiceWidgetState extends State<MultipleChoiceWidget>
                             style: AppTypography.labelLarge.copyWith(
                               color: isSelected && !widget.isAnswered
                                   ? Colors.white
-                                  : AppColors.textSecondary,
+                                  : context.textSecondary,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
@@ -473,7 +473,7 @@ class _FillBlankWidgetState extends State<FillBlankWidget> {
         Text(
           'Tap a word to fill the blank',
           style: AppTypography.labelMedium.copyWith(
-            color: AppColors.textSecondary,
+            color: context.textSecondary,
           ),
         ),
         const SizedBox(height: AppSpacing.sm2),
@@ -526,7 +526,7 @@ class _FillBlankWidgetState extends State<FillBlankWidget> {
               ? (widget.isAnswered
                     ? (isCorrect ? AppColors.success : AppColors.error)
                     : AppColors.primary)
-              : AppColors.textHint,
+              : context.textHint,
         ),
       ),
     );
@@ -607,7 +607,7 @@ class TrueFalseWidget extends StatelessWidget {
 
     Color? bgColor;
     Color? borderColor;
-    Color iconColor = AppColors.textSecondary;
+    Color iconColor = context.textSecondary;
 
     if (isAnswered) {
       if (isCorrect) {
@@ -756,7 +756,7 @@ class _MatchingWidgetState extends State<MatchingWidget> {
         Text(
           'Tap an item on the left, then tap its match on the right',
           style: AppTypography.bodyMedium.copyWith(
-            color: AppColors.textSecondary,
+            color: context.textSecondary,
           ),
           textAlign: TextAlign.center,
         ),
@@ -1009,13 +1009,13 @@ class _OrderingWidgetState extends State<OrderingWidget> {
           ),
           child: Row(
             children: [
-              Icon(Icons.touch_app, color: AppColors.textSecondary),
+              Icon(Icons.touch_app, color: context.textSecondary),
               const SizedBox(width: AppSpacing.sm2),
               Expanded(
                 child: Text(
                   'Drag items to reorder them',
                   style: AppTypography.bodyMedium.copyWith(
-                    color: AppColors.textSecondary,
+                    color: context.textSecondary,
                   ),
                 ),
               ),
@@ -1095,7 +1095,7 @@ class _OrderingWidgetState extends State<OrderingWidget> {
             const SizedBox(width: AppSpacing.md),
             Expanded(child: Text(text, style: AppTypography.bodyLarge)),
             if (!widget.isAnswered)
-              Icon(Icons.drag_handle, color: AppColors.textSecondary),
+              Icon(Icons.drag_handle, color: context.textSecondary),
             if (widget.isAnswered)
               Icon(
                 isCorrectPosition ? Icons.check_circle : Icons.cancel,
@@ -1137,7 +1137,7 @@ class ExplanationCard extends StatelessWidget {
         children: [
           Icon(
             isCorrect ? Icons.lightbulb_outline : Icons.info_outline,
-            color: AppColors.textSecondary,
+            color: context.textSecondary,
           ),
           const SizedBox(width: AppSpacing.sm2),
           Expanded(
@@ -1147,7 +1147,7 @@ class ExplanationCard extends StatelessWidget {
                 Text(
                   isCorrect ? 'Great job!' : 'Learn from this',
                   style: AppTypography.labelLarge.copyWith(
-                    color: AppColors.textSecondary,
+                    color: context.textSecondary,
                   ),
                 ),
                 const SizedBox(height: AppSpacing.xs),

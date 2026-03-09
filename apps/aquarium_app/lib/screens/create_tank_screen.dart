@@ -503,7 +503,7 @@ class _TypeCard extends StatelessWidget {
                     size: 32,
                     color: isSelected
                         ? AppColors.primary
-                        : AppColors.textSecondary,
+                        : context.textSecondary,
                   ),
                 ),
                 const SizedBox(height: AppSpacing.sm),
@@ -522,7 +522,7 @@ class _TypeCard extends StatelessWidget {
                   child: Text(
                     subtitle,
                     style: AppTypography.bodySmall.copyWith(
-                      color: isDisabled ? AppColors.textHint : null,
+                      color: isDisabled ? context.textHint : null,
                       fontStyle: isDisabled ? FontStyle.italic : null,
                     ),
                     textAlign: TextAlign.center,
@@ -867,10 +867,10 @@ class _WaterTypePage extends StatelessWidget {
                   ),
                   child: Row(
                     children: [
-                      const ExcludeSemantics(
+                      ExcludeSemantics(
                         child: Icon(
                           Icons.calendar_today,
-                          color: AppColors.textSecondary,
+                          color: context.textSecondary,
                         ),
                       ),
                       const SizedBox(width: AppSpacing.sm2),
@@ -881,10 +881,10 @@ class _WaterTypePage extends StatelessWidget {
                         ),
                       ),
                       const Spacer(),
-                      const ExcludeSemantics(
+                      ExcludeSemantics(
                         child: Icon(
                           Icons.edit,
-                          color: AppColors.textHint,
+                          color: context.textHint,
                           size: 18,
                         ),
                       ),

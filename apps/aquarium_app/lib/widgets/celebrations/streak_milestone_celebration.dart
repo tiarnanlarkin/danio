@@ -155,7 +155,7 @@ class _StreakMilestoneCelebrationState extends State<StreakMilestoneCelebration>
                       Text(
                         'Your fish appreciate the dedication!',
                         style: AppTypography.bodyMedium.copyWith(
-                          color: AppColors.textSecondary,
+                          color: context.textSecondary,
                         ),
                         textAlign: TextAlign.center,
                       ),

@@ -128,7 +128,7 @@ class _CalendarGrid extends StatelessWidget {
                 width: cellSize,
                 child: Text(
                   'M',
-                  style: Theme.of(context).textTheme.labelSmall!.copyWith( color: AppColors.textHint),
+                  style: Theme.of(context).textTheme.labelSmall!.copyWith( color: context.textHint),
                   textAlign: TextAlign.center,
                 ),
               ),
@@ -138,7 +138,7 @@ class _CalendarGrid extends StatelessWidget {
                 width: cellSize,
                 child: Text(
                   'W',
-                  style: Theme.of(context).textTheme.labelSmall!.copyWith( color: AppColors.textHint),
+                  style: Theme.of(context).textTheme.labelSmall!.copyWith( color: context.textHint),
                   textAlign: TextAlign.center,
                 ),
               ),
@@ -148,7 +148,7 @@ class _CalendarGrid extends StatelessWidget {
                 width: cellSize,
                 child: Text(
                   'F',
-                  style: Theme.of(context).textTheme.labelSmall!.copyWith( color: AppColors.textHint),
+                  style: Theme.of(context).textTheme.labelSmall!.copyWith( color: context.textHint),
                   textAlign: TextAlign.center,
                 ),
               ),
@@ -208,7 +208,7 @@ class _CalendarGrid extends StatelessWidget {
           child: monthLabel != null
               ? Text(
                   monthLabel,
-                  style: TextStyle(fontSize: 10, color: AppColors.textHint),
+                  style: TextStyle(fontSize: 10, color: context.textHint),
                 )
               : null,
         ),
@@ -319,7 +319,7 @@ class _Legend extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Text('Less', style: Theme.of(context).textTheme.labelSmall!.copyWith( color: AppColors.textHint)),
+        Text('Less', style: Theme.of(context).textTheme.labelSmall!.copyWith( color: context.textHint)),
         const SizedBox(width: AppSpacing.xs),
         _LegendCell(color: AppColors.surfaceVariant, size: cellSize),
         const SizedBox(width: AppSpacing.xxs),
@@ -331,7 +331,7 @@ class _Legend extends StatelessWidget {
         const SizedBox(width: AppSpacing.xxs),
         _LegendCell(color: const Color(0xFFD97706), size: cellSize),
         const SizedBox(width: AppSpacing.xs),
-        Text('More', style: Theme.of(context).textTheme.labelSmall!.copyWith( color: AppColors.textHint)),
+        Text('More', style: Theme.of(context).textTheme.labelSmall!.copyWith( color: context.textHint)),
       ],
     );
   }
@@ -445,7 +445,7 @@ class _StatCard extends StatelessWidget {
           Text(
             label,
             style: AppTypography.bodySmall.copyWith(
-              color: AppColors.textSecondary,
+              color: context.textSecondary,
             ),
             textAlign: TextAlign.center,
           ),

@@ -111,7 +111,7 @@ class EmptyRoomScene extends StatelessWidget {
                 Text(
                   'Your aquarium adventure starts here',
                   style: AppTypography.bodySmall.copyWith(
-                    color: AppColors.textHint,
+                    color: context.textHint,
                   ),
                 ),
               ],
@@ -178,7 +178,7 @@ class EmptyRoomScene extends StatelessWidget {
                   'Add your first tank to get personalised care tips and alerts',
                   textAlign: TextAlign.center,
                   style: AppTypography.bodyMedium.copyWith(
-                    color: AppColors.textSecondary,
+                    color: context.textSecondary,
                   ),
                 ),
                 const SizedBox(height: AppSpacing.lg2),

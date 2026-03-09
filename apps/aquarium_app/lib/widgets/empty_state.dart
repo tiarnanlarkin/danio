@@ -202,7 +202,7 @@ class _EmptyStateState extends State<EmptyState>
                 Text(
                   widget.message,
                   style: AppTypography.bodyMedium.copyWith(
-                    color: AppColors.textSecondary,
+                    color: context.textSecondary,
                   ),
                   textAlign: TextAlign.center,
                 ),
@@ -228,13 +228,13 @@ class _EmptyStateState extends State<EmptyState>
                             Icon(
                               Icons.lightbulb_outline,
                               size: AppIconSizes.xs,
-                              color: AppColors.textSecondary,
+                              color: context.textSecondary,
                             ),
                             const SizedBox(width: AppSpacing.sm),
                             Text(
                               'Quick Tips',
                               style: AppTypography.labelMedium.copyWith(
-                                color: AppColors.textSecondary,
+                                color: context.textSecondary,
                               ),
                             ),
                           ],
@@ -249,14 +249,14 @@ class _EmptyStateState extends State<EmptyState>
                                 Text(
                                   '• ',
                                   style: AppTypography.bodySmall.copyWith(
-                                    color: AppColors.textSecondary,
+                                    color: context.textSecondary,
                                   ),
                                 ),
                                 Expanded(
                                   child: Text(
                                     tip,
                                     style: AppTypography.bodySmall.copyWith(
-                                      color: AppColors.textSecondary,
+                                      color: context.textSecondary,
                                     ),
                                   ),
                                 ),
@@ -325,12 +325,12 @@ class CompactEmptyState extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: AppIconSizes.xl, color: AppColors.textHint),
+          Icon(icon, size: AppIconSizes.xl, color: context.textHint),
           const SizedBox(height: AppSpacing.md),
           Text(
             message,
             style: AppTypography.bodyMedium.copyWith(
-              color: AppColors.textSecondary,
+              color: context.textSecondary,
             ),
             textAlign: TextAlign.center,
           ),

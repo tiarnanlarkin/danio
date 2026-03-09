@@ -58,7 +58,7 @@ class NotificationSettingsScreen extends ConsumerWidget {
                       Text(
                         'Get daily notifications to help maintain your learning streak.',
                         style: AppTypography.bodyMedium.copyWith(
-                          color: AppColors.textSecondary,
+                          color: context.textSecondary,
                         ),
                       ),
                     ],
@@ -144,7 +144,7 @@ class NotificationSettingsScreen extends ConsumerWidget {
                   child: Text(
                     'Reminder Times',
                     style: AppTypography.labelLarge.copyWith(
-                      color: AppColors.textSecondary,
+                      color: context.textSecondary,
                     ),
                   ),
                 );

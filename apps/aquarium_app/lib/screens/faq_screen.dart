@@ -259,7 +259,7 @@ class _FaqItemState extends State<_FaqItem> {
                   ),
                   Icon(
                     _expanded ? Icons.expand_less : Icons.expand_more,
-                    color: AppColors.textSecondary,
+                    color: context.textSecondary,
                   ),
                 ],
               ),

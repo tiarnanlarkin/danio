@@ -385,7 +385,7 @@ class _EmptyState extends StatelessWidget {
             Icon(
               Icons.account_balance_wallet_outlined,
               size: AppIconSizes.xxl,
-              color: AppColors.textHint,
+              color: context.textHint,
             ),
             const SizedBox(height: AppSpacing.md),
             Text(

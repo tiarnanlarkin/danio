@@ -126,12 +126,12 @@ class _DosingCalculatorScreenState extends State<DosingCalculatorScreen> {
                 child: Column(
                   children: [
                     Icon(Icons.science_outlined,
-                        color: AppColors.textHint, size: AppIconSizes.lg),
+                        color: context.textHint, size: AppIconSizes.lg),
                     const SizedBox(height: AppSpacing.sm),
                     Text(
                       'Enter your tank volume above to calculate dose',
                       style: AppTypography.bodyMedium
-                          .copyWith(color: AppColors.textHint),
+                          .copyWith(color: context.textHint),
                       textAlign: TextAlign.center,
                     ),
                   ],

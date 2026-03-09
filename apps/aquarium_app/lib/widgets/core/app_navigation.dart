@@ -234,7 +234,7 @@ class AppTabBar extends StatelessWidget implements PreferredSizeWidget {
       onTap: onTap,
       padding: padding,
       labelColor: AppColors.primary,
-      unselectedLabelColor: isDark ? AppColors.textSecondaryDark : AppColors.textSecondary,
+      unselectedLabelColor: isDark ? AppColors.textSecondaryDark : context.textSecondary,
       labelStyle: AppTypography.labelLarge,
       unselectedLabelStyle: AppTypography.labelMedium,
       indicatorColor: AppColors.primary,
@@ -325,7 +325,7 @@ class _NavBarItem extends StatelessWidget {
     final isDark = theme.brightness == Brightness.dark;
     final color = isSelected 
         ? AppColors.primary 
-        : (isDark ? AppColors.textSecondaryDark : AppColors.textSecondary);
+        : (isDark ? AppColors.textSecondaryDark : context.textSecondary);
 
     return Semantics(
       label: item.label,
@@ -422,7 +422,7 @@ class AppSectionHeader extends StatelessWidget {
           Text(
             title.toUpperCase(),
             style: AppTypography.labelSmall.copyWith(
-              color: isDark ? AppColors.textHintDark : AppColors.textHint,
+              color: isDark ? AppColors.textHintDark : context.textHint,
               letterSpacing: 0.5,
             ),
           ),

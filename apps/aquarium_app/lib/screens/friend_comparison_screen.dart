@@ -580,7 +580,7 @@ class _ProgressChartSection extends StatelessWidget {
                     padding: const EdgeInsets.only(top: 8),
                     child: Text(
                       days[index],
-                      style: TextStyle(fontSize: 10, color: AppColors.textHint),
+                      style: TextStyle(fontSize: 10, color: context.textHint),
                     ),
                   );
                 }
@@ -596,7 +596,7 @@ class _ProgressChartSection extends StatelessWidget {
               getTitlesWidget: (value, meta) {
                 return Text(
                   value.toInt().toString(),
-                  style: TextStyle(fontSize: 10, color: AppColors.textHint),
+                  style: TextStyle(fontSize: 10, color: context.textHint),
                 );
               },
             ),
@@ -717,7 +717,7 @@ class _AchievementCard extends StatelessWidget {
             const SizedBox(height: AppSpacing.xs),
             Text(
               title,
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(color: AppColors.textHint),
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(color: context.textHint),
               textAlign: TextAlign.center,
             ),
           ],

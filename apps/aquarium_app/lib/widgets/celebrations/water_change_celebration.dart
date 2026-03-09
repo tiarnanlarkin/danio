@@ -170,7 +170,7 @@ class _WaterChangeCelebrationState extends State<WaterChangeCelebration>
                       Text(
                         'Your fish are happy \u{1F420}',
                         style: AppTypography.bodyMedium.copyWith(
-                          color: AppColors.textSecondary,
+                          color: context.textSecondary,
                         ),
                       ),
                     ],

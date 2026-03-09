@@ -531,7 +531,7 @@ class _EnhancedQuizScreenState extends ConsumerState<EnhancedQuizScreen>
           children: [
             Icon(
               isCorrect ? Icons.celebration : Icons.lightbulb_outline,
-              color: isCorrect ? AppColors.success : AppColors.textSecondary,
+              color: isCorrect ? AppColors.success : context.textSecondary,
               size: 24,
             ),
             const SizedBox(width: AppSpacing.sm2),
@@ -542,7 +542,7 @@ class _EnhancedQuizScreenState extends ConsumerState<EnhancedQuizScreen>
                   Text(
                     isCorrect ? 'Correct!' : 'Learn from this',
                     style: AppTypography.labelLarge.copyWith(
-                      color: isCorrect ? AppColors.success : AppColors.textSecondary,
+                      color: isCorrect ? AppColors.success : context.textSecondary,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -687,7 +687,7 @@ class _EnhancedQuizScreenState extends ConsumerState<EnhancedQuizScreen>
                       ? '🐠 Your aquarium knowledge is growing!'
                       : '🐠 Every expert was once a beginner.',
                   style: AppTypography.bodyMedium.copyWith(
-                    color: AppColors.textSecondary,
+                    color: context.textSecondary,
                   ),
                   textAlign: TextAlign.center,
                 ),
@@ -732,7 +732,7 @@ class _EnhancedQuizScreenState extends ConsumerState<EnhancedQuizScreen>
                     Text(
                       '$_correctAnswers / ${widget.quiz.maxScore}\ncorrect',
                       style: AppTypography.bodyLarge.copyWith(
-                        color: AppColors.textSecondary,
+                        color: context.textSecondary,
                       ),
                       textAlign: TextAlign.center,
                     ),
@@ -795,7 +795,7 @@ class _EnhancedQuizScreenState extends ConsumerState<EnhancedQuizScreen>
                   Text(
                     'Pass with ${widget.quiz.passingScore}% to earn bonus XP!',
                     style: AppTypography.bodyMedium.copyWith(
-                      color: AppColors.textSecondary,
+                      color: context.textSecondary,
                     ),
                     textAlign: TextAlign.center,
                   ),

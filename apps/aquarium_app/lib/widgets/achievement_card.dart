@@ -153,7 +153,7 @@ class AchievementCard extends StatelessWidget {
                           child: Icon(
                             Icons.lock_outline,
                             size: 32,
-                            color: AppColors.textHint,
+                            color: context.textHint,
                           ),
                         ),
                       ),
@@ -195,7 +195,7 @@ class AchievementCard extends StatelessWidget {
                     achievement.isHidden && isLocked ? '???' : achievement.name,
                     style: Theme.of(context).textTheme.titleSmall?.copyWith(
                       fontWeight: FontWeight.bold,
-                      color: isLocked ? AppColors.textHint : null,
+                      color: isLocked ? context.textHint : null,
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -206,7 +206,7 @@ class AchievementCard extends StatelessWidget {
                         ? 'Hidden achievement'
                         : achievement.description,
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: isLocked ? AppColors.textHint : AppColors.textPrimary,
+                      color: isLocked ? context.textHint : AppColors.textPrimary,
                     ),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
@@ -224,7 +224,7 @@ class AchievementCard extends StatelessWidget {
                     Text(
                       '${progress.currentCount} / ${achievement.targetCount}',
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: AppColors.textHint,
+                        color: context.textHint,
                       ),
                     ),
                   ],

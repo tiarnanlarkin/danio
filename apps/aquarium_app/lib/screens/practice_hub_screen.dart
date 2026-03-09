@@ -113,17 +113,17 @@ class PracticeHubScreen extends ConsumerWidget {
             _StatItem(
               label: 'Due Today',
               value: '$dueCards',
-              color: dueCards > 0 ? AppColors.error : AppColors.textSecondary,
+              color: dueCards > 0 ? AppColors.error : context.textSecondary,
             ),
             _StatItem(
               label: 'Mastered',
               value: '${srState.stats.masteredCards}',
-              color: srState.stats.masteredCards > 0 ? AppColors.success : AppColors.textSecondary,
+              color: srState.stats.masteredCards > 0 ? AppColors.success : context.textSecondary,
             ),
             _StatItem(
               label: 'Total Cards',
               value: '${srState.stats.totalCards}',
-              color: AppColors.textSecondary,
+              color: context.textSecondary,
             ),
           ],
         );
@@ -201,7 +201,7 @@ class PracticeHubScreen extends ConsumerWidget {
                 ? '${streak == 1 ? '1 day' : '$streak days'} 🔥'
                 : '0 days',
             icon: streak > 0 ? Icons.local_fire_department : Icons.local_fire_department_outlined,
-            color: streak > 0 ? AppColors.warning : AppColors.textSecondary,
+            color: streak > 0 ? AppColors.warning : context.textSecondary,
           );
         }
       case 15:
@@ -224,7 +224,7 @@ class PracticeHubScreen extends ConsumerWidget {
               ? '—'
               : '${_calculateAccuracy(srState)}%',
           icon: Icons.track_changes,
-          color: AppColors.textSecondary,
+          color: context.textSecondary,
         );
       default:
         return const SizedBox.shrink();
@@ -266,7 +266,7 @@ class PracticeHubScreen extends ConsumerWidget {
                     Text(
                       subtitle,
                       style: AppTypography.bodyMedium.copyWith(
-                        color: AppColors.textSecondary,
+                        color: context.textSecondary,
                       ),
                     ),
                   ],
@@ -301,7 +301,7 @@ class PracticeHubScreen extends ConsumerWidget {
                   Text(
                     stat.label,
                     style: AppTypography.bodySmall.copyWith(
-                      color: AppColors.textSecondary,
+                      color: context.textSecondary,
                     ),
                     textAlign: TextAlign.center,
                   ),

@@ -197,7 +197,7 @@ class AppEmptyState extends StatelessWidget {
               Text(
                 message!,
                 style: AppTypography.bodyMedium.copyWith(
-                  color: isDark ? AppColors.textSecondaryDark : AppColors.textSecondary,
+                  color: isDark ? AppColors.textSecondaryDark : context.textSecondary,
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -359,7 +359,7 @@ class AppLoadingState extends StatelessWidget {
           Text(
             message!,
             style: AppTypography.bodyMedium.copyWith(
-              color: isDark ? AppColors.textSecondaryDark : AppColors.textSecondary,
+              color: isDark ? AppColors.textSecondaryDark : context.textSecondary,
             ),
             textAlign: TextAlign.center,
           ),
@@ -543,7 +543,7 @@ class AppErrorState extends StatelessWidget {
               Text(
                 message!,
                 style: AppTypography.bodyMedium.copyWith(
-                  color: isDark ? AppColors.textSecondaryDark : AppColors.textSecondary,
+                  color: isDark ? AppColors.textSecondaryDark : context.textSecondary,
                 ),
                 textAlign: TextAlign.center,
               ),

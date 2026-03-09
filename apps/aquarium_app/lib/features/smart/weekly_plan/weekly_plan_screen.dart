@@ -246,7 +246,7 @@ class _WeeklyPlanScreenState extends ConsumerState<WeeklyPlanScreen> {
           Text(
             'Generated ${_formatDate(plan.generatedAt)}',
             style: theme.textTheme.bodySmall?.copyWith(
-              color: AppColors.textSecondary,
+              color: context.textSecondary,
             ),
           ),
           const SizedBox(height: AppSpacing.md),
@@ -307,7 +307,7 @@ class _DayCard extends StatelessWidget {
           '${day.tasks.length} task${day.tasks.length == 1 ? "" : "s"} · '
           '${day.tasks.fold<int>(0, (sum, t) => sum + t.durationMins)} min',
           style: theme.textTheme.bodySmall?.copyWith(
-            color: AppColors.textSecondary,
+            color: context.textSecondary,
           ),
         ),
         initiallyExpanded: index == 0,
@@ -318,7 +318,7 @@ class _DayCard extends StatelessWidget {
             trailing: Text(
               '${task.durationMins}m',
               style: theme.textTheme.bodySmall?.copyWith(
-                color: AppColors.textSecondary,
+                color: context.textSecondary,
               ),
             ),
             dense: true,

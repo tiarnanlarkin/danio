@@ -151,7 +151,7 @@ class _TodayBoardContent extends StatelessWidget {
               Text(
                 'Next ${tasks.length.clamp(0, 3)} task${tasks.length == 1 ? '' : 's'}',
                 style: AppTypography.labelSmall.copyWith(
-                  color: AppColors.textSecondary,
+                  color: context.textSecondary,
                 ),
               ),
             ],
@@ -180,7 +180,7 @@ class _TaskRow extends StatelessWidget {
         ? AppColors.error
         : isToday
         ? AppColors.warning
-        : AppColors.textSecondary;
+        : context.textSecondary;
 
     String dueLabel;
     if (isOverdue) {
@@ -209,7 +209,7 @@ class _TaskRow extends StatelessWidget {
                   ? AppColors.error
                   : isToday
                   ? AppColors.warning
-                  : AppColors.textHint,
+                  : context.textHint,
               shape: BoxShape.circle,
             ),
           ),

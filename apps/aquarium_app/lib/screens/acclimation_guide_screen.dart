@@ -297,7 +297,7 @@ class _StepCard extends StatelessWidget {
                             Icon(
                               Icons.timer,
                               size: 12,
-                              color: AppColors.textSecondary,
+                              color: context.textSecondary,
                             ),
                             const SizedBox(width: AppSpacing.xs),
                             Text(duration, style: AppTypography.bodySmall),

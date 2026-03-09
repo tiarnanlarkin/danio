@@ -82,7 +82,7 @@ class AchievementDetailModal extends StatelessWidget {
                         child: Container(
                           decoration: const BoxDecoration(
                             shape: BoxShape.circle,
-                            color: AppColors.textSecondary,
+                            color: context.textSecondary,
                           ),
                           child: const Center(
                             child: Icon(
@@ -124,7 +124,7 @@ class AchievementDetailModal extends StatelessWidget {
               achievement.isHidden && isLocked ? '???' : achievement.name,
               style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                 fontWeight: FontWeight.bold,
-                color: isLocked ? AppColors.textHint : null,
+                color: isLocked ? context.textHint : null,
               ),
               textAlign: TextAlign.center,
             ),
@@ -152,7 +152,7 @@ class AchievementDetailModal extends StatelessWidget {
                   ? 'This is a hidden achievement. Complete specific actions to reveal and unlock it!'
                   : achievement.description,
               style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                color: isLocked ? AppColors.textHint : AppColors.textPrimary,
+                color: isLocked ? context.textHint : AppColors.textPrimary,
               ),
               textAlign: TextAlign.center,
             ),
@@ -202,7 +202,7 @@ class AchievementDetailModal extends StatelessWidget {
                       '${(progressPercent * 100).toStringAsFixed(1)}% Complete',
                       style: Theme.of(
                         context,
-                      ).textTheme.bodySmall?.copyWith(color: AppColors.textHint),
+                      ).textTheme.bodySmall?.copyWith(color: context.textHint),
                     ),
                   ],
                 ),
@@ -240,7 +240,7 @@ class AchievementDetailModal extends StatelessWidget {
                         'Reward',
                         style: Theme.of(
                           context,
-                        ).textTheme.bodySmall?.copyWith(color: AppColors.textHint),
+                        ).textTheme.bodySmall?.copyWith(color: context.textHint),
                       ),
                     ],
                   ),
@@ -267,7 +267,7 @@ class AchievementDetailModal extends StatelessWidget {
                           'Unlocked',
                           style: Theme.of(
                             context,
-                          ).textTheme.bodySmall?.copyWith(color: AppColors.textHint),
+                          ).textTheme.bodySmall?.copyWith(color: context.textHint),
                         ),
                       ],
                     ),

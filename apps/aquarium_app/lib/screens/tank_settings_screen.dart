@@ -291,7 +291,7 @@ class _TankSettingsScreenState extends ConsumerState<TankSettingsScreen> {
                       children: [
                         const Icon(
                           Icons.calendar_today,
-                          color: AppColors.textSecondary,
+                          color: context.textSecondary,
                         ),
                         const SizedBox(width: AppSpacing.sm2),
                         Text(
@@ -301,7 +301,7 @@ class _TankSettingsScreenState extends ConsumerState<TankSettingsScreen> {
                         const Spacer(),
                         const Icon(
                           Icons.edit,
-                          color: AppColors.textHint,
+                          color: context.textHint,
                           size: 18,
                         ),
                       ],

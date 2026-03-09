@@ -135,7 +135,7 @@ class _TankPickerSheetState extends ConsumerState<TankPickerSheet> {
                         Icons.water,
                         color: isSelected
                             ? AppColors.primary
-                            : AppColors.textSecondary,
+                            : context.textSecondary,
                       ),
                     ),
                     title: Text(
@@ -159,7 +159,7 @@ class _TankPickerSheetState extends ConsumerState<TankPickerSheet> {
                         if (isSelected)
                           Icon(Icons.check_circle, color: AppColors.primary),
                         const SizedBox(width: AppSpacing.sm),
-                        Icon(Icons.drag_handle, color: AppColors.textHint),
+                        Icon(Icons.drag_handle, color: context.textHint),
                       ],
                     ),
                   ),
@@ -174,13 +174,13 @@ class _TankPickerSheetState extends ConsumerState<TankPickerSheet> {
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
               child: Row(
                 children: [
-                  Icon(Icons.info_outline, size: AppIconSizes.xs, color: AppColors.textSecondary),
+                  Icon(Icons.info_outline, size: AppIconSizes.xs, color: context.textSecondary),
                   const SizedBox(width: AppSpacing.sm),
                   Expanded(
                     child: Text(
                       'Tap "Save" to keep this order',
                       style: AppTypography.bodySmall.copyWith(
-                        color: AppColors.textSecondary,
+                        color: context.textSecondary,
                       ),
                     ),
                   ),

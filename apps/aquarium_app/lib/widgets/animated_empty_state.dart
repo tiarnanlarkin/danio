@@ -119,7 +119,7 @@ class _AnimatedEmptyStateState extends State<AnimatedEmptyState>
               child: Text(
                 widget.subtitle,
                 style: AppTypography.bodyMedium.copyWith(
-                  color: AppColors.textSecondary,
+                  color: context.textSecondary,
                 ),
                 textAlign: TextAlign.center,
               ),

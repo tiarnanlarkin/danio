@@ -133,7 +133,7 @@ class SettingsHubScreen extends ConsumerWidget {
         icon: Icons.tune,
         title: 'Preferences',
         subtitle: 'Theme, sounds & notifications',
-        iconColor: AppColors.textSecondary,
+        iconColor: context.textSecondary,
         trailing: const Icon(Icons.chevron_right),
         onTap: () {
           Navigator.push(
@@ -154,7 +154,7 @@ class SettingsHubScreen extends ConsumerWidget {
           icon: Icons.backup,
           title: 'Backup & Restore',
           subtitle: 'Back up & restore your data',
-          iconColor: AppColors.textSecondary,
+          iconColor: context.textSecondary,
           trailing: const Icon(Icons.chevron_right),
           onTap: () {
             Navigator.push(
@@ -173,7 +173,7 @@ class SettingsHubScreen extends ConsumerWidget {
         icon: Icons.info,
         title: 'About',
         subtitle: 'Version, privacy & support',
-        iconColor: AppColors.textSecondary,
+        iconColor: context.textSecondary,
         trailing: const Icon(Icons.chevron_right),
         onTap: () {
           Navigator.push(
@@ -192,7 +192,7 @@ class SettingsHubScreen extends ConsumerWidget {
         child: Text(
           'Danio v1.0.0',
           style: AppTypography.bodySmall.copyWith(
-            color: AppColors.textSecondary,
+            color: context.textSecondary,
           ),
         ),
       ),
@@ -236,7 +236,7 @@ class SettingsHubScreen extends ConsumerWidget {
                 Text(
                   'Level ${profile?.currentLevel ?? 1} • ${profile?.totalXp ?? 0} XP',
                   style: AppTypography.bodyMedium.copyWith(
-                    color: AppColors.textSecondary,
+                    color: context.textSecondary,
                   ),
                 ),
                 const SizedBox(height: AppSpacing.xs),
@@ -244,7 +244,7 @@ class SettingsHubScreen extends ConsumerWidget {
                   // BUG-06: hide fire emoji when streak is 0
                   '${profile?.currentStreak ?? 0} day streak${(profile?.currentStreak ?? 0) > 0 ? " 🔥" : ""}',
                   style: AppTypography.bodySmall.copyWith(
-                    color: (profile?.currentStreak ?? 0) > 0 ? AppColors.warning : AppColors.textSecondary,
+                    color: (profile?.currentStreak ?? 0) > 0 ? AppColors.warning : context.textSecondary,
                     fontWeight: FontWeight.w600,
                   ),
                 ),

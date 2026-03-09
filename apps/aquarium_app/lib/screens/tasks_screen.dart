@@ -73,7 +73,7 @@ class TasksScreen extends ConsumerWidget {
           if (dueToday.isNotEmpty) {
             items.add(_TaskListItem.header(
               title: 'Due Today',
-              color: AppColors.textSecondary,
+              color: context.textSecondary,
               count: dueToday.length,
             ));
             items.addAll(dueToday.map((t) => _TaskListItem.task(t)));
@@ -83,7 +83,7 @@ class TasksScreen extends ConsumerWidget {
           if (upcoming.isNotEmpty) {
             items.add(_TaskListItem.header(
               title: 'Upcoming',
-              color: AppColors.textSecondary,
+              color: context.textSecondary,
               count: upcoming.length,
             ));
             items.addAll(upcoming.map((t) => _TaskListItem.task(t)));
@@ -93,7 +93,7 @@ class TasksScreen extends ConsumerWidget {
           if (disabled.isNotEmpty) {
             items.add(_TaskListItem.header(
               title: 'Disabled',
-              color: AppColors.textHint,
+              color: context.textHint,
               count: disabled.length,
             ));
             items.addAll(disabled.map((t) => _TaskListItem.task(t)));
@@ -491,7 +491,7 @@ class _TaskCard extends StatelessWidget {
           tooltip: 'Toggle task',
           icon: Icon(
             Icons.check_circle_outline,
-            color: task.isEnabled ? AppColors.success : AppColors.textHint,
+            color: task.isEnabled ? AppColors.success : context.textHint,
           ),
           onPressed: task.isEnabled ? onComplete : null,
         ),
@@ -499,7 +499,7 @@ class _TaskCard extends StatelessWidget {
           task.title,
           style: TextStyle(
             decoration: !task.isEnabled ? TextDecoration.lineThrough : null,
-            color: !task.isEnabled ? AppColors.textHint : null,
+            color: !task.isEnabled ? context.textHint : null,
           ),
         ),
         subtitle: Column(
@@ -518,7 +518,7 @@ class _TaskCard extends StatelessWidget {
                 style: TextStyle(
                   color: isOverdue
                       ? AppColors.warning
-                      : (isDueToday ? AppColors.info : AppColors.textSecondary),
+                      : (isDueToday ? AppColors.info : context.textSecondary),
                   fontWeight: (isOverdue || isDueToday)
                       ? FontWeight.w500
                       : FontWeight.normal,
@@ -694,7 +694,7 @@ class _AddTaskSheetState extends State<_AddTaskSheet> {
                   children: [
                     const Icon(
                       Icons.calendar_today,
-                      color: AppColors.textSecondary,
+                      color: context.textSecondary,
                     ),
                     const SizedBox(width: AppSpacing.sm2),
                     Text(

@@ -125,7 +125,7 @@ class _SeasonalTipCardState extends State<SeasonalTipCard>
                     Text(
                       tip.message,
                       style: AppTypography.bodySmall.copyWith(
-                        color: AppColors.textSecondary,
+                        color: context.textSecondary,
                       ),
                     ),
                   ],
@@ -138,7 +138,7 @@ class _SeasonalTipCardState extends State<SeasonalTipCard>
                   child: Icon(
                     Icons.close,
                     size: 18,
-                    color: AppColors.textHint,
+                    color: context.textHint,
                   ),
                 ),
               ),

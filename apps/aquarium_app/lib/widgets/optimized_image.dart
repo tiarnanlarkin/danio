@@ -76,7 +76,7 @@ class OptimizedNetworkImage extends StatelessWidget {
           errorWidget ??
           Icon(
             Icons.broken_image_outlined,
-            color: AppColors.textHint,
+            color: context.textHint,
             size: AppIconSizes.xl,
           ),
     );

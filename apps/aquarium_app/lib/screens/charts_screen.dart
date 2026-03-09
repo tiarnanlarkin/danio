@@ -83,7 +83,7 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(Icons.show_chart, size: AppIconSizes.xxl, color: AppColors.textHint),
+                    Icon(Icons.show_chart, size: AppIconSizes.xxl, color: context.textHint),
                     const SizedBox(height: AppSpacing.md),
                     Text(
                       'Charts unlock with your first test!',
@@ -93,7 +93,7 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
                     const SizedBox(height: AppSpacing.sm),
                     Text(
                       'Log a water test and watch your trends come alive',
-                      style: AppTypography.bodyMedium.copyWith(color: AppColors.textSecondary),
+                      style: AppTypography.bodyMedium.copyWith(color: context.textSecondary),
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: AppSpacing.lg),
@@ -836,7 +836,7 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
                 child: Text(
                   'Maximum 4 parameters',
                   style: AppTypography.bodySmall.copyWith(
-                    color: AppColors.textSecondary,
+                    color: context.textSecondary,
                   ),
                 ),
               ),
@@ -905,13 +905,13 @@ class _ChartControlChip extends StatelessWidget {
             Icon(
               icon,
               size: AppIconSizes.xs,
-              color: isActive ? AppColors.primary : AppColors.textSecondary,
+              color: isActive ? AppColors.primary : context.textSecondary,
             ),
             const SizedBox(width: AppSpacing.xs2),
             Text(
               label,
               style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                color: isActive ? AppColors.primary : AppColors.textSecondary,
+                color: isActive ? AppColors.primary : context.textSecondary,
                 fontWeight: isActive ? FontWeight.w600 : FontWeight.normal,
               ),
             ),

@@ -239,7 +239,7 @@ class _PlacementTestScreenState extends ConsumerState<PlacementTestScreen> {
               ),
               Text(
                 '${_userAnswers.length}/${_test.questions.length} Answered',
-                style: Theme.of(context).textTheme.bodySmall!.copyWith(color: AppColors.textSecondary),
+                style: Theme.of(context).textTheme.bodySmall!.copyWith(color: context.textSecondary),
               ),
             ],
           ),
@@ -305,7 +305,7 @@ class _PlacementTestScreenState extends ConsumerState<PlacementTestScreen> {
                     child: Text(
                       String.fromCharCode(65 + index), // A, B, C, D
                       style: TextStyle(
-                        color: isSelected ? AppColors.onPrimary : AppColors.textSecondary,
+                        color: isSelected ? AppColors.onPrimary : context.textSecondary,
                         fontWeight: FontWeight.bold,
                       ),
                     ),

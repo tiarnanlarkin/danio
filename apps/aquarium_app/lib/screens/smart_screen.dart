@@ -282,14 +282,14 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
                 Text('Anomaly History',
                   style: AppTypography.titleLarge.copyWith(fontWeight: FontWeight.bold)),
                 const Spacer(),
-                Icon(Icons.monitor_heart_outlined, size: 56, color: AppColors.textHint),
+                Icon(Icons.monitor_heart_outlined, size: 56, color: context.textHint),
                 const SizedBox(height: AppSpacing.md),
                 Text('No anomalies detected yet.',
-                  style: AppTypography.bodyLarge.copyWith(color: AppColors.textSecondary),
+                  style: AppTypography.bodyLarge.copyWith(color: context.textSecondary),
                   textAlign: TextAlign.center),
                 const SizedBox(height: AppSpacing.sm),
                 Text('Anomaly detection runs automatically\nwhen you log water parameters.',
-                  style: AppTypography.bodySmall.copyWith(color: AppColors.textHint),
+                  style: AppTypography.bodySmall.copyWith(color: context.textHint),
                   textAlign: TextAlign.center),
                 const SizedBox(height: AppSpacing.lg),
                 ElevatedButton.icon(
@@ -351,7 +351,7 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
     final (icon, color) = switch (severity) {
       AnomalySeverity.critical => (Icons.error, AppColors.error),
       AnomalySeverity.alert => (Icons.warning, AppColors.warning),
-      AnomalySeverity.warning => (Icons.info, AppColors.textSecondary),
+      AnomalySeverity.warning => (Icons.info, context.textSecondary),
     };
     return Icon(icon, color: color, size: AppIconSizes.sm);
   }
@@ -402,7 +402,7 @@ class _OfflineBanner extends StatelessWidget {
             'Snap a photo to ID any fish, get instant health diagnoses, '
             'and receive a personalised weekly care plan — all powered by AI.',
             style: AppTypography.bodySmall.copyWith(
-              color: AppColors.textSecondary,
+              color: context.textSecondary,
             ),
             textAlign: TextAlign.center,
           ),
@@ -413,7 +413,7 @@ class _OfflineBanner extends StatelessWidget {
             'manage tanks, log feedings, and learn at your own pace.\n\n'
             '🚀 Danio Pro will include built-in AI — stay tuned!',
             style: AppTypography.bodySmall.copyWith(
-              color: AppColors.textHint,
+              color: context.textHint,
             ),
             textAlign: TextAlign.center,
           ),
@@ -437,7 +437,7 @@ class _UsageChip extends StatelessWidget {
         Text(
           '$callCount AI call${callCount == 1 ? "" : "s"} this month',
           style: Theme.of(context).textTheme.bodySmall?.copyWith(
-            color: AppColors.textSecondary,
+            color: context.textSecondary,
           ),
         ),
       ],
@@ -494,13 +494,13 @@ class _FeatureCard extends StatelessWidget {
                     Text(
                       subtitle,
                       style: theme.textTheme.bodySmall?.copyWith(
-                        color: AppColors.textSecondary,
+                        color: context.textSecondary,
                       ),
                     ),
                   ],
                 ),
               ),
-              const Icon(Icons.chevron_right, color: AppColors.textSecondary),
+              const Icon(Icons.chevron_right, color: context.textSecondary),
             ],
           ),
         ),
@@ -526,12 +526,12 @@ class _InteractionTile extends StatelessWidget {
     };
 
     return ListTile(
-      leading: Icon(icon, size: AppIconSizes.sm, color: AppColors.textSecondary),
+      leading: Icon(icon, size: AppIconSizes.sm, color: context.textSecondary),
       title: Text(interaction.summary, style: theme.textTheme.bodySmall),
       trailing: Text(
         _SmartScreenState._formatTime(interaction.timestamp),
         style: theme.textTheme.labelSmall?.copyWith(
-          color: AppColors.textSecondary,
+          color: context.textSecondary,
         ),
       ),
       dense: true,

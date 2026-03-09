@@ -257,7 +257,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
                   children: [
                     const Icon(
                       Icons.calendar_today,
-                      color: AppColors.textSecondary,
+                      color: context.textSecondary,
                     ),
                     const SizedBox(width: AppSpacing.sm2),
                     Text(
@@ -356,7 +356,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
                     size: AppIconSizes.xs,
                     color: _bulkEntryMode
                         ? AppColors.primary
-                        : AppColors.textSecondary,
+                        : context.textSecondary,
                   ),
                   const SizedBox(width: AppSpacing.xs),
                   Text(
@@ -364,7 +364,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
                     style: AppTypography.bodySmall.copyWith(
                       color: _bulkEntryMode
                           ? AppColors.primary
-                          : AppColors.textSecondary,
+                          : context.textSecondary,
                       fontWeight: _bulkEntryMode
                           ? FontWeight.w600
                           : FontWeight.normal,
@@ -394,13 +394,13 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
             ),
             child: Row(
               children: [
-                Icon(Icons.history, size: AppIconSizes.xs, color: AppColors.textSecondary),
+                Icon(Icons.history, size: AppIconSizes.xs, color: context.textSecondary),
                 const SizedBox(width: AppSpacing.sm),
                 Expanded(
                   child: Text(
                     'Pre-filled with last test values',
                     style: AppTypography.bodySmall.copyWith(
-                      color: AppColors.textSecondary,
+                      color: context.textSecondary,
                     ),
                   ),
                 ),
@@ -418,7 +418,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
                     });
                   },
                   style: TextButton.styleFrom(
-                    foregroundColor: AppColors.textSecondary,
+                    foregroundColor: context.textSecondary,
                     padding: const EdgeInsets.symmetric(horizontal: 8),
                   ),
                   child: const Text('Clear'),
@@ -1079,13 +1079,13 @@ class _TypeChip extends StatelessWidget {
             Icon(
               icon,
               size: 18,
-              color: isSelected ? Colors.white : AppColors.textSecondary,
+              color: isSelected ? Colors.white : context.textSecondary,
             ),
             const SizedBox(width: AppSpacing.xs2),
             Text(
               label,
               style: TextStyle(
-                color: isSelected ? Colors.white : AppColors.textSecondary,
+                color: isSelected ? Colors.white : context.textSecondary,
                 fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
               ),
             ),
@@ -1164,7 +1164,7 @@ class _ParameterField extends StatelessWidget {
             child: Text(
               idealRange!,
               style: AppTypography.bodySmall.copyWith(
-                color: AppColors.textHint,
+                color: context.textHint,
               ),
             ),
           ),
@@ -1316,7 +1316,7 @@ class _CompactParamField extends StatelessWidget {
             child: Text(
               idealRange!,
               style: AppTypography.bodySmall.copyWith(
-                color: AppColors.textHint,
+                color: context.textHint,
               ),
             ),
           ),

@@ -478,7 +478,7 @@ class _EquipmentCard extends StatelessWidget {
                     style: TextStyle(
                       color: isOverdue
                           ? AppColors.warning
-                          : AppColors.textSecondary,
+                          : context.textSecondary,
                       fontWeight: isOverdue
                           ? FontWeight.w500
                           : FontWeight.normal,
@@ -512,7 +512,7 @@ class _EquipmentCard extends StatelessWidget {
               padding: const EdgeInsets.only(left: 72, right: 16, bottom: 12),
               child: Row(
                 children: [
-                  Icon(Icons.history, size: 14, color: AppColors.textHint),
+                  Icon(Icons.history, size: 14, color: context.textHint),
                   const SizedBox(width: AppSpacing.xs),
                   Text(
                     'Last serviced ${DateFormat('MMM d').format(equipment.lastServiced!)}',

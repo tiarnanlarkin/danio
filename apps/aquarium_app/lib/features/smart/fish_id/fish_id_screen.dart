@@ -250,7 +250,7 @@ Return ONLY valid JSON with these fields (no markdown, no explanation):
             'Take a photo or pick from gallery\nto identify a fish or plant',
             textAlign: TextAlign.center,
             style: theme.textTheme.bodyMedium?.copyWith(
-              color: AppColors.textSecondary,
+              color: context.textSecondary,
             ),
           ),
         ],
@@ -332,7 +332,7 @@ Return ONLY valid JSON with these fields (no markdown, no explanation):
                         r.scientificName,
                         style: theme.textTheme.bodyMedium?.copyWith(
                           fontStyle: FontStyle.italic,
-                          color: AppColors.textSecondary,
+                          color: context.textSecondary,
                         ),
                       ),
                     ],
@@ -350,14 +350,14 @@ Return ONLY valid JSON with these fields (no markdown, no explanation):
                 child: Row(
                   children: [
                     Icon(Icons.info_outline, size: 14,
-                        color: r.confidence == 'low' ? AppColors.warning : AppColors.textSecondary),
+                        color: r.confidence == 'low' ? AppColors.warning : context.textSecondary),
                     const SizedBox(width: AppSpacing.xs),
                     Text(
                       r.confidence == 'low'
                           ? 'Low confidence - verify with another source'
                           : 'Medium confidence',
                       style: theme.textTheme.bodySmall?.copyWith(
-                        color: r.confidence == 'low' ? AppColors.warning : AppColors.textSecondary,
+                        color: r.confidence == 'low' ? AppColors.warning : context.textSecondary,
                         fontStyle: FontStyle.italic,
                       ),
                     ),
@@ -476,7 +476,7 @@ Return ONLY valid JSON with these fields (no markdown, no explanation):
         Text(
           'Care',
           style: Theme.of(context).textTheme.labelSmall?.copyWith(
-            color: AppColors.textSecondary,
+            color: context.textSecondary,
           ),
         ),
         Row(

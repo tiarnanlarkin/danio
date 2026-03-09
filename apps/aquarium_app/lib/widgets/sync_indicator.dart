@@ -82,7 +82,7 @@ class SyncIndicator extends ConsumerWidget {
                     ? AppColors.warning
                     : isSyncing
                     ? AppColors.warning
-                    : AppColors.textSecondary,
+                    : context.textSecondary,
                 size: AppIconSizes.sm,
               ),
             const SizedBox(width: AppSpacing.sm2),
@@ -96,7 +96,7 @@ class SyncIndicator extends ConsumerWidget {
                       ? AppColors.warning
                       : isSyncing
                       ? AppColors.warning
-                      : AppColors.textSecondary,
+                      : context.textSecondary,
                   fontWeight: FontWeight.w500,
                 ),
               ),
@@ -150,14 +150,14 @@ class SyncIndicatorCompact extends ConsumerWidget {
               ),
             )
           else
-            Icon(Icons.cloud_upload, color: AppColors.textSecondary, size: 12),
+            Icon(Icons.cloud_upload, color: context.textSecondary, size: 12),
           const SizedBox(width: AppSpacing.xs),
           Text(
             syncState.isSyncing ? 'Syncing' : '${syncState.queuedCount}',
             style: Theme.of(context).textTheme.bodySmall!.copyWith(
               color: syncState.isSyncing
                   ? AppColors.warning
-                  : AppColors.textSecondary,
+                  : context.textSecondary,
               fontWeight: FontWeight.w500,
             ),
           ),

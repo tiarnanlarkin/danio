@@ -215,7 +215,7 @@ class _TutorialWalkthroughScreenState
             step.description,
             style: Theme.of(
               context,
-            ).textTheme.bodyLarge?.copyWith(color: AppColors.textSecondary),
+            ).textTheme.bodyLarge?.copyWith(color: context.textSecondary),
             textAlign: TextAlign.center,
           ),
         ],
@@ -253,7 +253,7 @@ class _TutorialWalkthroughScreenState
                   Text(
                     'This will be your virtual tank to track your real aquarium',
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: AppColors.textSecondary,
+                      color: context.textSecondary,
                     ),
                     textAlign: TextAlign.center,
                   ),
@@ -502,21 +502,21 @@ class _TankTypeCard extends StatelessWidget {
               Icon(
                 icon,
                 size: 32,
-                color: isSelected ? AppColors.primary : AppColors.textSecondary,
+                color: isSelected ? AppColors.primary : context.textSecondary,
               ),
               const SizedBox(height: AppSpacing.sm),
               Text(
                 label,
                 style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                   fontWeight: FontWeight.w600,
-                  color: isSelected ? AppColors.primary : AppColors.textSecondary,
+                  color: isSelected ? AppColors.primary : context.textSecondary,
                 ),
               ),
               if (isDisabled) ...[
                 const SizedBox(height: AppSpacing.xs),
                 Text(
                   'Coming soon',
-                  style: Theme.of(context).textTheme.bodySmall!.copyWith( color: AppColors.textHint),
+                  style: Theme.of(context).textTheme.bodySmall!.copyWith( color: context.textHint),
                 ),
               ],
             ],
@@ -571,12 +571,12 @@ class _WaterTypeCard extends StatelessWidget {
                     label,
                     style: Theme.of(context).textTheme.titleMedium!.copyWith(
                       fontWeight: FontWeight.w600,
-                      color: isSelected ? AppColors.accent : AppColors.textSecondary,
+                      color: isSelected ? AppColors.accent : context.textSecondary,
                     ),
                   ),
                   Text(
                     subtitle,
-                    style: Theme.of(context).textTheme.bodyMedium!.copyWith( color: AppColors.textSecondary),
+                    style: Theme.of(context).textTheme.bodyMedium!.copyWith( color: context.textSecondary),
                   ),
                 ],
               ),

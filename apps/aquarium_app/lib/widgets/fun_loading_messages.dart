@@ -75,7 +75,7 @@ class _FunLoadingMessageState extends State<FunLoadingMessage>
         _messages[_currentIndex],
         style: widget.style ??
             AppTypography.bodyMedium.copyWith(
-              color: AppColors.textSecondary,
+              color: context.textSecondary,
             ),
         textAlign: TextAlign.center,
       ),

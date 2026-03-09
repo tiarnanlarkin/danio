@@ -71,7 +71,7 @@ class SelectionModePanel extends StatelessWidget {
                     Text(
                       '${selectedIds.length} selected',
                       style: AppTypography.bodySmall.copyWith(
-                        color: AppColors.textSecondary,
+                        color: context.textSecondary,
                       ),
                     ),
                     const SizedBox(width: AppSpacing.sm),
@@ -117,7 +117,7 @@ class SelectionModePanel extends StatelessWidget {
                         Icons.water,
                         color: isSelected
                             ? AppColors.primary
-                            : AppColors.textHint,
+                            : context.textHint,
                       ),
                     );
                   },

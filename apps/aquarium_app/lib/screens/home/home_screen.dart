@@ -810,7 +810,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       ),
                       IconButton(
                         icon: const Icon(Icons.close, size: 18),
-                        color: AppColors.textSecondary,
+                        color: context.textSecondary,
                         onPressed: () =>
                             setState(() => _showComebackBanner = false),
                       ),
@@ -1234,7 +1234,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   const SizedBox(height: AppSpacing.xs),
                   Text(
                     'pH 6.5-7.5  |  Ammonia 0 ppm  |  Nitrite 0 ppm  |  Nitrate <40 ppm',
-                    style: AppTypography.bodySmall.copyWith(color: AppColors.textSecondary),
+                    style: AppTypography.bodySmall.copyWith(color: context.textSecondary),
                   ),
                 ],
               ),
@@ -1249,7 +1249,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       Text('No test results yet', style: AppTypography.bodyMedium),
                       const SizedBox(height: AppSpacing.xs),
                       Text('Log your first water test to see results here!',
-                        style: AppTypography.bodySmall.copyWith(color: AppColors.textSecondary),
+                        style: AppTypography.bodySmall.copyWith(color: context.textSecondary),
                         textAlign: TextAlign.center,
                       ),
                     ],
@@ -1263,7 +1263,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               _buildParamRow('Nitrate', wt.nitrate != null ? '${wt.nitrate!.toStringAsFixed(1)} ppm' : '--', '<40 ppm'),
               const Divider(height: AppSpacing.lg),
               Text('Last tested: ${_timeAgo(latestTest!.timestamp)}',
-                style: AppTypography.bodySmall.copyWith(color: AppColors.textSecondary),
+                style: AppTypography.bodySmall.copyWith(color: context.textSecondary),
               ),
             ],
             const SizedBox(height: AppSpacing.md),
@@ -1273,7 +1273,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             const SizedBox(height: AppSpacing.xs),
             Text(
               'Stable water parameters are the single most important factor in fish health. Test weekly and after any changes to your tank.',
-              style: AppTypography.bodySmall.copyWith(color: AppColors.textSecondary),
+              style: AppTypography.bodySmall.copyWith(color: context.textSecondary),
             ),
             const SizedBox(height: AppSpacing.md),
             SizedBox(
@@ -1306,7 +1306,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           if (ideal.isNotEmpty) ...[
             const SizedBox(width: AppSpacing.sm),
             Text('(ideal: $ideal)',
-              style: AppTypography.bodySmall.copyWith(color: AppColors.textHint),
+              style: AppTypography.bodySmall.copyWith(color: context.textHint),
             ),
           ],
         ],
@@ -1376,7 +1376,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   const SizedBox(height: AppSpacing.xs),
                   Text(
                     'Feed 2-3 times daily  |  Only what they eat in 2 min  |  Variety is key',
-                    style: AppTypography.bodySmall.copyWith(color: AppColors.textSecondary),
+                    style: AppTypography.bodySmall.copyWith(color: context.textSecondary),
                   ),
                 ],
               ),
@@ -1395,7 +1395,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             const SizedBox(height: AppSpacing.xs),
             Text(
               'Overfeeding is the #1 cause of water quality issues. Feed small amounts your fish can finish in 2 minutes.',
-              style: AppTypography.bodySmall.copyWith(color: AppColors.textSecondary),
+              style: AppTypography.bodySmall.copyWith(color: context.textSecondary),
             ),
             const SizedBox(height: AppSpacing.md),
             SizedBox(
@@ -1465,7 +1465,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   const SizedBox(height: AppSpacing.xs),
                   Text(
                     '8-10 hrs light daily  |  Trim dead leaves  |  Root tabs for heavy feeders',
-                    style: AppTypography.bodySmall.copyWith(color: AppColors.textSecondary),
+                    style: AppTypography.bodySmall.copyWith(color: context.textSecondary),
                   ),
                 ],
               ),
@@ -1477,13 +1477,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             const SizedBox(height: AppSpacing.xs),
             Text(
               'Live plants absorb nitrates, produce oxygen, and provide shelter. They are one of the best things you can add to any tank.',
-              style: AppTypography.bodySmall.copyWith(color: AppColors.textSecondary),
+              style: AppTypography.bodySmall.copyWith(color: context.textSecondary),
             ),
             const SizedBox(height: AppSpacing.md),
             Text(
               '\u{1F4A1} Pro tip: Use old tank water to water your houseplants -- packed with nutrients!',
               style: AppTypography.bodySmall.copyWith(
-                color: AppColors.textSecondary,
+                color: context.textSecondary,
                 fontStyle: FontStyle.italic,
               ),
             ),

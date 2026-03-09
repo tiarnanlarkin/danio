@@ -24,7 +24,7 @@ class RoomNavigation extends StatelessWidget {
           Text(
             'Each room has different tools and features',
             style: AppTypography.bodySmall.copyWith(
-              color: AppColors.textSecondary,
+              color: context.textSecondary,
             ),
           ),
           const SizedBox(height: AppSpacing.md),

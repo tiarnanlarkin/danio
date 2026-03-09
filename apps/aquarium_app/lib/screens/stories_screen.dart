@@ -360,7 +360,7 @@ class StoryCard extends StatelessWidget {
                           Text(
                             story.description,
                             style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                              color: AppColors.textSecondary,
+                              color: context.textSecondary,
                             ),
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
@@ -442,7 +442,7 @@ class StoryCard extends StatelessWidget {
                         Text(
                           _getLockReason(story),
                           style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                            color: AppColors.textSecondary,
+                            color: context.textSecondary,
                             fontStyle: FontStyle.italic,
                           ),
                         ),

@@ -56,7 +56,7 @@ class PlacementResultScreen extends ConsumerWidget {
                   Text(
                     'Based on your score, here\'s what we recommend:',
                     style: theme.textTheme.bodyMedium?.copyWith(
-                      color: AppColors.textSecondary,
+                      color: context.textSecondary,
                     ),
                   ),
                   const SizedBox(height: AppSpacing.md),
@@ -232,7 +232,7 @@ class PlacementResultScreen extends ConsumerWidget {
                       Text(
                         '${recommendation.score.round()}% correct',
                         style: theme.textTheme.bodySmall?.copyWith(
-                          color: AppColors.textSecondary,
+                          color: context.textSecondary,
                         ),
                       ),
                     ],
@@ -287,7 +287,7 @@ class PlacementResultScreen extends ConsumerWidget {
               Text(
                 'Skipping ${recommendation.lessonsToSkip.length} of ${path.lessons.length} lessons',
                 style: theme.textTheme.bodySmall?.copyWith(
-                  color: AppColors.textSecondary,
+                  color: context.textSecondary,
                 ),
               ),
             ],
@@ -468,6 +468,6 @@ class PlacementResultScreen extends ConsumerWidget {
     if (score >= 80) return AppColors.success;
     if (score >= 60) return AppColors.primary;
     if (score >= 40) return AppColors.warning;
-    return AppColors.textSecondary;
+    return context.textSecondary;
   }
 }

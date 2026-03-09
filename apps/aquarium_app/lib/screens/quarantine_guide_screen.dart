@@ -240,7 +240,7 @@ class QuarantineGuideScreen extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    Icon(Icons.lightbulb, color: AppColors.textSecondary),
+                    Icon(Icons.lightbulb, color: context.textSecondary),
                     const SizedBox(width: AppSpacing.sm),
                     Text('Pro Tips', style: AppTypography.headlineSmall),
                   ],
@@ -398,7 +398,7 @@ class _SymptomRow extends StatelessWidget {
       child: Row(
         children: [
           Expanded(child: Text(symptom, style: AppTypography.bodyMedium)),
-          Icon(Icons.arrow_forward, size: AppIconSizes.xs, color: AppColors.textHint),
+          Icon(Icons.arrow_forward, size: AppIconSizes.xs, color: context.textHint),
           const SizedBox(width: AppSpacing.sm),
           Expanded(
             child: Text(
@@ -460,7 +460,7 @@ class _TipItem extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(Icons.check, size: AppIconSizes.xs, color: AppColors.textSecondary),
+          Icon(Icons.check, size: AppIconSizes.xs, color: context.textSecondary),
           const SizedBox(width: AppSpacing.sm),
           Expanded(child: Text(text, style: AppTypography.bodySmall)),
         ],

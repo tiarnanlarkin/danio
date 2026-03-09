@@ -277,7 +277,7 @@ class _WishlistItemCard extends StatelessWidget{
                         item.species!,
                         style: AppTypography.bodySmall.copyWith(
                           fontStyle: FontStyle.italic,
-                          color: AppColors.textSecondary,
+                          color: context.textSecondary,
                         ),
                       ),
                     if (item.estimatedPrice != null || item.quantity > 1)
@@ -311,7 +311,7 @@ class _WishlistItemCard extends StatelessWidget{
               ),
               IconButton(
                 icon: const Icon(Icons.delete_outline),
-                color: AppColors.textHint,
+                color: context.textHint,
                 tooltip: 'Delete',
                 onPressed: onDelete,
               ),

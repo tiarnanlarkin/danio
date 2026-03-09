@@ -338,7 +338,7 @@ class _RockCard extends StatelessWidget {
             color: AppOverlays.grey20,
             borderRadius: AppRadius.smallRadius,
           ),
-          child: const Icon(Icons.terrain, color: AppColors.textSecondary),
+          child: const Icon(Icons.terrain, color: context.textSecondary),
         ),
         title: Text(name, style: AppTypography.labelLarge),
         subtitle: Text(
@@ -465,7 +465,7 @@ class _DetailRow extends StatelessWidget {
             child: Text(
               '$label:',
               style: AppTypography.bodySmall.copyWith(
-                color: AppColors.textSecondary,
+                color: context.textSecondary,
               ),
             ),
           ),

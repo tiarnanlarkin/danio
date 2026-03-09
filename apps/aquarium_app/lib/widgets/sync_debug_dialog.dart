@@ -106,7 +106,7 @@ class SyncDebugDialog extends ConsumerWidget {
                             Text(
                               _formatDateTime(action.timestamp),
                               style: Theme.of(context).textTheme.labelSmall!.copyWith(
-                                color: AppColors.textSecondary,
+                                color: context.textSecondary,
                               ),
                             ),
                           ],

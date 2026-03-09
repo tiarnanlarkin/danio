@@ -83,7 +83,7 @@ class _Co2CalculatorScreenState extends State<Co2CalculatorScreen> {
   }
 
   Color get _co2Color {
-    if (_co2Level == null) return AppColors.textHint;
+    if (_co2Level == null) return context.textHint;
     if (_co2Level! < 20) return AppColors.warning;
     if (_co2Level! <= 30) return AppColors.success;
     if (_co2Level! <= 40) return AppColors.warning;
@@ -112,7 +112,7 @@ class _Co2CalculatorScreenState extends State<Co2CalculatorScreen> {
             padding: AppCardPadding.standard,
             child: Row(
               children: [
-                Icon(Icons.bubble_chart, size: AppIconSizes.lg, color: AppColors.textSecondary),
+                Icon(Icons.bubble_chart, size: AppIconSizes.lg, color: context.textSecondary),
                 const SizedBox(width: AppSpacing.sm2),
                 Expanded(
                   child: Text(

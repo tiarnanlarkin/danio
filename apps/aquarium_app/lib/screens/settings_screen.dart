@@ -390,7 +390,7 @@ class SettingsScreen extends ConsumerWidget {
 
           // Water & Parameters
           (_) => ExpansionTile(
-            leading: const Icon(Icons.water_drop, color: AppColors.textSecondary),
+            leading: const Icon(Icons.water_drop, color: context.textSecondary),
             title: const Text('Water & Parameters'),
             subtitle: const Text('Water quality and chemistry'),
             children: [
@@ -700,7 +700,7 @@ class SettingsScreen extends ConsumerWidget {
                   Text(
                     'Complete your goal every day to maintain your streak',
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: AppColors.textSecondary,
+                      color: context.textSecondary,
                     ),
                     textAlign: TextAlign.center,
                   ),
@@ -1287,7 +1287,7 @@ class _SectionHeader extends StatelessWidget {
           Text(
             title.toUpperCase(),
             style: AppTypography.labelLarge.copyWith(
-              color: color ?? (isDark ? AppColors.textSecondaryDark : AppColors.textSecondary),
+              color: color ?? (isDark ? AppColors.textSecondaryDark : context.textSecondary),
               letterSpacing: 1.2,
               fontWeight: FontWeight.w600,
             ),
@@ -1568,7 +1568,7 @@ class _ReducedMotionToggle extends ConsumerWidget {
             child: Text(
               'ℹ️ Your system has animations disabled, but you\'ve manually enabled them in this app.',
               style: AppTypography.bodySmall.copyWith(
-                color: AppColors.textSecondary,
+                color: context.textSecondary,
                 fontStyle: FontStyle.italic,
               ),
             ),

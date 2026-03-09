@@ -86,7 +86,7 @@ class _SpacedRepetitionPracticeScreenState
             Text(
               'No reviews due right now. Your knowledge is fresh!',
               style: AppTypography.bodyLarge.copyWith(
-                color: AppColors.textSecondary,
+                color: context.textSecondary,
               ),
               textAlign: TextAlign.center,
             ),
@@ -95,7 +95,7 @@ class _SpacedRepetitionPracticeScreenState
               Text(
                 'Next review in:',
                 style: AppTypography.labelLarge.copyWith(
-                  color: AppColors.textHint,
+                  color: context.textHint,
                 ),
               ),
               const SizedBox(height: AppSpacing.sm),
@@ -110,7 +110,7 @@ class _SpacedRepetitionPracticeScreenState
               Text(
                 'Complete lessons to build your practice queue.',
                 style: AppTypography.bodyMedium.copyWith(
-                  color: AppColors.textHint,
+                  color: context.textHint,
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -333,7 +333,7 @@ class _SpacedRepetitionPracticeScreenState
                     : AppColors.surfaceVariant,
                 borderRadius: AppRadius.mediumRadius,
               ),
-              child: Icon(icon, color: enabled ? color : AppColors.textHint),
+              child: Icon(icon, color: enabled ? color : context.textHint),
             ),
             const SizedBox(width: AppSpacing.md),
             Expanded(
@@ -344,7 +344,7 @@ class _SpacedRepetitionPracticeScreenState
                     title,
                     style: AppTypography.bodyLarge.copyWith(
                       fontWeight: FontWeight.w600,
-                      color: enabled ? null : AppColors.textHint,
+                      color: enabled ? null : context.textHint,
                     ),
                   ),
                   const SizedBox(height: AppSpacing.xs),
@@ -352,8 +352,8 @@ class _SpacedRepetitionPracticeScreenState
                     description,
                     style: AppTypography.bodySmall.copyWith(
                       color: enabled
-                          ? AppColors.textSecondary
-                          : AppColors.textHint,
+                          ? context.textSecondary
+                          : context.textHint,
                     ),
                   ),
                 ],
@@ -370,7 +370,7 @@ class _SpacedRepetitionPracticeScreenState
               child: Text(
                 count == 0 ? 'None' : '$count',
                 style: AppTypography.labelLarge.copyWith(
-                  color: enabled && count > 0 ? color : AppColors.textHint,
+                  color: enabled && count > 0 ? color : context.textHint,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -379,8 +379,8 @@ class _SpacedRepetitionPracticeScreenState
             Icon(
               Icons.chevron_right,
               color: enabled && count > 0
-                  ? AppColors.textSecondary
-                  : AppColors.textHint,
+                  ? context.textSecondary
+                  : context.textHint,
             ),
           ],
         ),
@@ -423,7 +423,7 @@ class _SpacedRepetitionPracticeScreenState
                           Text(
                             '$count (${percentage.round()}%)',
                             style: AppTypography.labelSmall.copyWith(
-                              color: AppColors.textSecondary,
+                              color: context.textSecondary,
                             ),
                           ),
                         ],
@@ -450,7 +450,7 @@ class _SpacedRepetitionPracticeScreenState
   Color _getMasteryColor(MasteryLevel level) {
     switch (level) {
       case MasteryLevel.new_:
-        return AppColors.textHint;
+        return context.textHint;
       case MasteryLevel.learning:
         return AppColors.warning;
       case MasteryLevel.familiar:
@@ -653,7 +653,7 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
                       Text(
                         '${(progress * 100).round()}% complete',
                         style: AppTypography.bodyMedium.copyWith(
-                          color: AppColors.textSecondary,
+                          color: context.textSecondary,
                         ),
                       ),
                     ],
@@ -700,7 +700,7 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
                         Text(
                           '($accuracy% accuracy)',
                           style: AppTypography.bodySmall.copyWith(
-                            color: AppColors.textSecondary,
+                            color: context.textSecondary,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -739,7 +739,7 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
               Text(
                 _currentCard.masteryLevel.displayName,
                 style: AppTypography.labelLarge.copyWith(
-                  color: AppColors.textSecondary,
+                  color: context.textSecondary,
                 ),
               ),
               const Spacer(),
@@ -775,7 +775,7 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
                 Text(
                   'Review this concept:',
                   style: AppTypography.labelLarge.copyWith(
-                    color: AppColors.textSecondary,
+                    color: context.textSecondary,
                   ),
                 ),
                 const SizedBox(height: AppSpacing.sm2),
@@ -851,7 +851,7 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
             Text(
               'How well did you remember this?',
               style: AppTypography.bodyMedium.copyWith(
-                color: AppColors.textSecondary,
+                color: context.textSecondary,
               ),
             ),
             const SizedBox(height: AppSpacing.sm2),
@@ -954,7 +954,7 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
                     Text(
                       '+${lastResult.xpEarned} XP',
                       style: AppTypography.bodyMedium.copyWith(
-                        color: AppColors.textSecondary,
+                        color: context.textSecondary,
                       ),
                     ),
                   ],
@@ -1115,7 +1115,7 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
                   Text(
                     'Accuracy',
                     style: AppTypography.bodyMedium.copyWith(
-                      color: AppColors.textSecondary,
+                      color: context.textSecondary,
                     ),
                   ),
                 ],
@@ -1183,13 +1183,13 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
         Row(
           children: [
             if (icon != null) ...[
-              Icon(icon, size: 18, color: iconColor ?? AppColors.textSecondary),
+              Icon(icon, size: 18, color: iconColor ?? context.textSecondary),
               const SizedBox(width: AppSpacing.sm),
             ],
             Text(
               label,
               style: AppTypography.bodyMedium.copyWith(
-                color: AppColors.textSecondary,
+                color: context.textSecondary,
               ),
             ),
           ],
@@ -1255,7 +1255,7 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
                       const Icon(
                         Icons.pending,
                         size: AppIconSizes.xs,
-                        color: AppColors.textSecondary,
+                        color: context.textSecondary,
                       ),
                       const SizedBox(width: AppSpacing.xs2),
                       Text(

@@ -330,7 +330,7 @@ class _EmergencyCard extends StatelessWidget {
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Icon(Icons.update, size: AppIconSizes.xs, color: AppColors.textSecondary),
+                      Icon(Icons.update, size: AppIconSizes.xs, color: context.textSecondary),
                       const SizedBox(width: AppSpacing.sm),
                       Expanded(
                         child: Text(

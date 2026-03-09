@@ -155,14 +155,14 @@ class _AppListTileState extends State<AppListTile> {
     }
 
     final titleColor = widget.isDisabled
-        ? (isDark ? AppColors.textHintDark : AppColors.textHint)
+        ? (isDark ? AppColors.textHintDark : context.textHint)
         : widget.isDestructive
             ? AppColors.error
             : (isDark ? AppColors.textPrimaryDark : AppColors.textPrimary);
 
     final subtitleColor = widget.isDisabled
-        ? (isDark ? AppColors.textHintDark : AppColors.textHint).withAlpha(153)
-        : (isDark ? AppColors.textSecondaryDark : AppColors.textSecondary);
+        ? (isDark ? AppColors.textHintDark : context.textHint).withAlpha(153)
+        : (isDark ? AppColors.textSecondaryDark : context.textSecondary);
 
     Widget tile = Container(
       constraints: BoxConstraints(minHeight: widget.minHeight ?? 56),
@@ -203,7 +203,7 @@ class _AppListTileState extends State<AppListTile> {
                   Text(
                     widget.meta!,
                     style: AppTypography.labelSmall.copyWith(
-                      color: isDark ? AppColors.textHintDark : AppColors.textHint,
+                      color: isDark ? AppColors.textHintDark : context.textHint,
                     ),
                   ),
                 ],
@@ -266,10 +266,10 @@ class _AppListTileState extends State<AppListTile> {
         icon.icon,
         size: icon.size ?? AppIconSizes.md,
         color: widget.isDisabled
-            ? (isDark ? AppColors.textHintDark : AppColors.textHint)
+            ? (isDark ? AppColors.textHintDark : context.textHint)
             : widget.isDestructive
                 ? AppColors.error
-                : (icon.color ?? (isDark ? AppColors.textSecondaryDark : AppColors.textSecondary)),
+                : (icon.color ?? (isDark ? AppColors.textSecondaryDark : context.textSecondary)),
       );
     }
     
@@ -312,7 +312,7 @@ class AppListSection extends StatelessWidget {
               child: Text(
                 header!.toUpperCase(),
                 style: AppTypography.labelSmall.copyWith(
-                  color: isDark ? AppColors.textHintDark : AppColors.textHint,
+                  color: isDark ? AppColors.textHintDark : context.textHint,
                   letterSpacing: 0.5,
                 ),
               ),
@@ -335,7 +335,7 @@ class AppListSection extends StatelessWidget {
               child: Text(
                 footer!,
                 style: AppTypography.bodySmall.copyWith(
-                  color: isDark ? AppColors.textHintDark : AppColors.textHint,
+                  color: isDark ? AppColors.textHintDark : context.textHint,
                 ),
               ),
             ),
@@ -403,7 +403,7 @@ class NavListTile extends StatelessWidget {
             Icons.chevron_right,
             color: Theme.of(context).brightness == Brightness.dark
                 ? AppColors.textHintDark
-                : AppColors.textHint,
+                : context.textHint,
           ),
         ],
       ),

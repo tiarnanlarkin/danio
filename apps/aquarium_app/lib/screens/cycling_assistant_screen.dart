@@ -164,7 +164,7 @@ class _PhaseHeader extends StatelessWidget {
       case _CyclePhase.notStarted:
         title = 'Ready to Start Cycling';
         subtitle = 'Add an ammonia source to begin';
-        color = AppColors.textHint;
+        color = context.textHint;
         emoji = '\u{23F3}';
       case _CyclePhase.phase1:
         title = 'Phase 1: Ammonia Spike';
@@ -716,7 +716,7 @@ class _ActionItems extends StatelessWidget {
                   children: [
                     Icon(
                       a.done ? Icons.check_circle : Icons.circle_outlined,
-                      color: a.done ? AppColors.success : AppColors.textHint,
+                      color: a.done ? AppColors.success : context.textHint,
                       size: 20,
                     ),
                     const SizedBox(width: AppSpacing.sm),

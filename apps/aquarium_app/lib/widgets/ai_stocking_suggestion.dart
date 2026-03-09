@@ -187,7 +187,7 @@ class _AiStockingSuggestionSheetState
                             const Icon(
                               Icons.cloud_off,
                               size: 48,
-                              color: AppColors.textHint,
+                              color: context.textHint,
                             ),
                             const SizedBox(height: AppSpacing.md),
                             Text(_error!, style: AppTypography.bodyMedium),

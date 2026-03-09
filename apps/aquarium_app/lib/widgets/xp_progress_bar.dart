@@ -121,7 +121,7 @@ class _XpProgressBarState extends ConsumerState<XpProgressBar>
                         ? '${profile.xpToNextLevel} XP to next level'
                         : 'Max Level!',
                     style: AppTypography.bodySmall.copyWith(
-                      color: AppColors.textSecondary,
+                      color: context.textSecondary,
                     ),
                   ),
                 ],
@@ -189,7 +189,7 @@ class _XpProgressBarState extends ConsumerState<XpProgressBar>
               Text(
                 '${profile.totalXp} Total XP',
                 style: AppTypography.bodySmall.copyWith(
-                  color: AppColors.textHint,
+                  color: context.textHint,
                 ),
               ),
             ],
@@ -343,7 +343,7 @@ class XpProgressCard extends ConsumerWidget {
                                 Text(
                                   profile.levelTitle,
                                   style: AppTypography.bodySmall.copyWith(
-                                    color: AppColors.textSecondary,
+                                    color: context.textSecondary,
                                   ),
                                 ),
                               ],
@@ -371,7 +371,7 @@ class XpProgressCard extends ConsumerWidget {
                           ? '${profile.xpToNextLevel} XP to Level ${profile.currentLevel + 1}'
                           : 'Maximum level reached!',
                       style: AppTypography.bodySmall.copyWith(
-                        color: AppColors.textSecondary,
+                        color: context.textSecondary,
                       ),
                     ),
                   ],

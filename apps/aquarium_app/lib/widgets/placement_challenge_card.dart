@@ -87,7 +87,7 @@ class PlacementChallengeCard extends ConsumerWidget {
                         Text(
                           'Take a quick placement test to unlock your level',
                           style: AppTypography.bodySmall.copyWith(
-                            color: AppColors.textSecondary,
+                            color: context.textSecondary,
                           ),
                         ),
                       ],
@@ -132,7 +132,7 @@ class PlacementChallengeCard extends ConsumerWidget {
                     child: Text(
                       'Skip for now',
                       style: AppTypography.bodySmall.copyWith(
-                        color: AppColors.textSecondary,
+                        color: context.textSecondary,
                       ),
                     ),
                   ),

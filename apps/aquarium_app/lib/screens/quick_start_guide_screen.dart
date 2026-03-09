@@ -348,7 +348,7 @@ class _StepCard extends StatelessWidget {
                       Text(
                         duration,
                         style: AppTypography.bodySmall.copyWith(
-                          color: AppColors.textSecondary,
+                          color: context.textSecondary,
                         ),
                       ),
                     ],
@@ -437,7 +437,7 @@ class _TipBox extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Icon(Icons.lightbulb, size: AppIconSizes.xs, color: AppColors.textSecondary),
+          Icon(Icons.lightbulb, size: AppIconSizes.xs, color: context.textSecondary),
           const SizedBox(width: AppSpacing.sm),
           Expanded(child: Text(text, style: AppTypography.bodySmall)),
         ],

@@ -74,7 +74,7 @@ class _LearningStyleScreenState extends ConsumerState<LearningStyleScreen> {
               Text(
                 "We'll tailor lessons to your style",
                 style: AppTypography.bodyMedium.copyWith(
-                  color: AppColors.textSecondary,
+                  color: context.textSecondary,
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -110,7 +110,7 @@ class _LearningStyleScreenState extends ConsumerState<LearningStyleScreen> {
                 },
                 child: Text(
                   'Skip for now',
-                  style: TextStyle(color: AppColors.textSecondary),
+                  style: TextStyle(color: context.textSecondary),
                 ),
               ),
             ],
@@ -183,7 +183,7 @@ class _OptionCard extends StatelessWidget {
                     Text(
                       option.subtitle,
                       style: AppTypography.bodySmall.copyWith(
-                        color: AppColors.textSecondary,
+                        color: context.textSecondary,
                       ),
                     ),
                   ],

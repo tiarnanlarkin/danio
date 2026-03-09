@@ -144,12 +144,12 @@ class _DetailedHeartsDisplayState extends ConsumerState<DetailedHeartsDisplay> {
           if (timeUntilRefill != null) ...[
             Row(
               children: [
-                Icon(Icons.schedule, size: AppIconSizes.xs, color: AppColors.textSecondary),
+                Icon(Icons.schedule, size: AppIconSizes.xs, color: context.textSecondary),
                 const SizedBox(width: AppSpacing.xs2),
                 Text(
                   'Next heart in ${heartsService.formatTimeRemaining(timeUntilRefill)}',
                   style: AppTypography.bodySmall.copyWith(
-                    color: AppColors.textSecondary,
+                    color: context.textSecondary,
                   ),
                 ),
               ],
@@ -345,7 +345,7 @@ class _OutOfHeartsModalState extends ConsumerState<OutOfHeartsModal> {
             Text(
               'You need hearts to continue lessons. Try practice mode or wait for hearts to refill!',
               style: AppTypography.bodyMedium.copyWith(
-                color: AppColors.textSecondary,
+                color: context.textSecondary,
               ),
               textAlign: TextAlign.center,
             ),

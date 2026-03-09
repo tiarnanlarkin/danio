@@ -273,7 +273,7 @@ class _MascotBubbleState extends State<MascotBubble>
                   child: Icon(
                     Icons.close,
                     size: AppIconSizes.xs,
-                    color: AppColors.textHint,
+                    color: context.textHint,
                   ),
                 ),
               ],
@@ -571,7 +571,7 @@ class MascotBanner extends StatelessWidget {
               icon: const Icon(Icons.close, size: 18),
               onPressed: onDismiss,
               visualDensity: VisualDensity.compact,
-              color: AppColors.textHint,
+              color: context.textHint,
             ),
         ],
       ),

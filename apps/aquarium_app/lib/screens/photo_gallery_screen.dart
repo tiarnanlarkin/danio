@@ -165,7 +165,7 @@ class _EmptyGallery extends StatelessWidget {
             Icon(
               Icons.photo_library_outlined,
               size: AppIconSizes.xxl,
-              color: AppColors.textHint,
+              color: context.textHint,
             ),
             const SizedBox(height: AppSpacing.md),
             Text('No Photos Yet', style: AppTypography.headlineSmall),

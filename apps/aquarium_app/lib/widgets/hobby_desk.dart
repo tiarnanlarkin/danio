@@ -190,7 +190,7 @@ class _ItemWithTooltip extends StatelessWidget {
         Text(
           label,
           style: AppTypography.labelSmall.copyWith(
-            color: AppColors.textSecondary,
+            color: context.textSecondary,
           ),
         ),
       ],
@@ -245,7 +245,7 @@ class ItemDetailPopup extends StatelessWidget {
                     child: Icon(
                       Icons.close,
                       size: 18,
-                      color: AppColors.textHint,
+                      color: context.textHint,
                     ),
                   ),
               ],
@@ -477,7 +477,7 @@ class MiniTankScene extends StatelessWidget {
             Text(
               '${volumeLitres.toStringAsFixed(0)}L',
               style: AppTypography.bodySmall.copyWith(
-                color: AppColors.textHint,
+                color: context.textHint,
               ),
             ),
           ],

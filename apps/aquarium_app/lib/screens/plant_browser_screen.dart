@@ -207,7 +207,7 @@ class _PlantCard extends StatelessWidget {
       case 'Hard':
         return AppColors.error;
       default:
-        return AppColors.textSecondary;
+        return context.textSecondary;
     }
   }
 
@@ -246,7 +246,7 @@ class _PlantCard extends StatelessWidget {
                   color: AppColors.paramWarning,
                 ),
                 if (plant.needsCO2)
-                  _MiniChip(label: 'CO₂', color: AppColors.textSecondary),
+                  _MiniChip(label: 'CO₂', color: context.textSecondary),
               ],
             ),
           ],
@@ -307,7 +307,7 @@ class _PlantDetailSheet extends StatelessWidget {
                 width: 40,
                 height: 4,
                 decoration: BoxDecoration(
-                  color: AppColors.textHint,
+                  color: context.textHint,
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
@@ -447,7 +447,7 @@ class _StatChip extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 14, color: AppColors.textSecondary),
+          Icon(icon, size: 14, color: context.textSecondary),
           const SizedBox(width: AppSpacing.xs2),
           Text(label, style: AppTypography.bodySmall),
         ],

@@ -18,7 +18,7 @@ class ParameterGuideScreen extends StatelessWidget {
             padding: AppCardPadding.standard,
             child: Row(
               children: [
-                Icon(Icons.info_outline, color: AppColors.textSecondary),
+                Icon(Icons.info_outline, color: context.textSecondary),
                 const SizedBox(width: AppSpacing.sm2),
                 Expanded(
                   child: Text(
@@ -122,7 +122,7 @@ class ParameterGuideScreen extends StatelessWidget {
           _ParameterSection(
             title: 'KH (Carbonate Hardness)',
             icon: Icons.shield,
-            color: AppColors.textSecondary,
+            color: context.textSecondary,
             ideal: '4-8 dKH',
             danger: '<2 dKH',
             description:
@@ -371,7 +371,7 @@ class _MiniChip extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 12, color: AppColors.textSecondary),
+          Icon(icon, size: 12, color: context.textSecondary),
           const SizedBox(width: AppSpacing.xs),
           Text(label, style: AppTypography.bodySmall),
         ],

@@ -167,7 +167,7 @@ class _HeaderCard extends StatelessWidget {
                               '',
                           style: AppTypography.bodyMedium.copyWith(
                             fontStyle: FontStyle.italic,
-                            color: AppColors.textSecondary,
+                            color: context.textSecondary,
                           ),
                         ),
                     ],
@@ -252,7 +252,7 @@ class _InfoChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final c = color ?? AppColors.textSecondary;
+    final c = color ?? context.textSecondary;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm3, vertical: AppSpacing.xs2),
       decoration: BoxDecoration(
@@ -461,14 +461,14 @@ class _CareRow extends StatelessWidget{
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, size: 18, color: AppColors.textSecondary),
+          Icon(icon, size: 18, color: context.textSecondary),
           const SizedBox(width: AppSpacing.sm),
           SizedBox(
             width: 100,
             child: Text(
               label,
               style: AppTypography.bodySmall.copyWith(
-                color: AppColors.textSecondary,
+                color: context.textSecondary,
               ),
             ),
           ),
@@ -687,7 +687,7 @@ class _NoSpeciesDataCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              const Icon(Icons.info_outline, color: AppColors.textSecondary),
+              const Icon(Icons.info_outline, color: context.textSecondary),
                 const SizedBox(width: AppSpacing.sm),
                 Text(
                   'Species info not found',

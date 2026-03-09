@@ -129,7 +129,7 @@ class _CompatibilityCheckerWidgetState
                   return Text(
                     'Add a tank first to check compatibility.',
                     style: theme.textTheme.bodySmall?.copyWith(
-                      color: AppColors.textHint,
+                      color: context.textHint,
                     ),
                   );
                 }
@@ -213,11 +213,11 @@ class _CompatibilityCheckerWidgetState
   }
 
   Color get _resultColor {
-    if (_result == null) return AppColors.textSecondary;
+    if (_result == null) return context.textSecondary;
     final lower = _result!.toLowerCase();
     if (lower.contains('incompatible')) return AppColors.error;
     if (lower.contains('caution')) return AppColors.warning;
     if (lower.contains('compatible')) return AppColors.success;
-    return AppColors.textSecondary;
+    return context.textSecondary;
   }
 }

@@ -47,7 +47,7 @@ class SyncStatusWidget extends ConsumerWidget {
         ),
       CloudSyncStatus.disabled => (
           Icons.cloud_off,
-          AppColors.textHint,
+          context.textHint,
           'Cloud disabled',
         ),
     };

@@ -19,7 +19,7 @@ class XpSourceRow extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: AppSpacing.xs2),
       child: Row(
         children: [
-          Icon(icon, size: AppIconSizes.sm, color: AppColors.textSecondary),
+          Icon(icon, size: AppIconSizes.sm, color: context.textSecondary),
           const SizedBox(width: AppSpacing.sm2),
           Expanded(child: Text(label, style: AppTypography.bodyMedium)),
           Container(

@@ -181,7 +181,7 @@ class _EnhancedOnboardingScreenState
                       child: Text(
                         'Skip',
                         style: AppTypography.labelLarge.copyWith(
-                          color: AppColors.textSecondary,
+                          color: context.textSecondary,
                         ),
                       ),
                     ),
@@ -293,7 +293,7 @@ class _WelcomePage extends StatelessWidget {
           Text(
             "Your aquarium journey starts now!\n\nJust a few quick questions and we'll build your personalised learning path.",
             style: AppTypography.bodyLarge.copyWith(
-              color: AppColors.textSecondary,
+              color: context.textSecondary,
             ),
             textAlign: TextAlign.center,
           ),
@@ -365,7 +365,7 @@ class _ExperiencePage extends StatelessWidget {
           Text(
             "No wrong answers here -- this helps us tailor your journey!",
             style: AppTypography.bodyMedium.copyWith(
-              color: AppColors.textSecondary,
+              color: context.textSecondary,
             ),
           ),
           const SizedBox(height: AppSpacing.xl),
@@ -416,7 +416,7 @@ class _TankTypePage extends StatelessWidget {
           Text(
             "We'll tailor your tips and guides to match — don't worry, you can always explore both!",
             style: AppTypography.bodyMedium.copyWith(
-              color: AppColors.textSecondary,
+              color: context.textSecondary,
             ),
           ),
           const SizedBox(height: AppSpacing.xl),
@@ -465,7 +465,7 @@ class _GoalsPage extends StatelessWidget {
           Text(
             "Pick as many as you like!",
             style: AppTypography.bodyMedium.copyWith(
-              color: AppColors.textSecondary,
+              color: context.textSecondary,
             ),
           ),
           const SizedBox(height: AppSpacing.xl),
@@ -551,7 +551,7 @@ class _SelectionCard extends StatelessWidget {
                     Text(
                       description!,
                       style: AppTypography.bodySmall.copyWith(
-                        color: AppColors.textSecondary,
+                        color: context.textSecondary,
                       ),
                     ),
                   ],
@@ -567,7 +567,7 @@ class _SelectionCard extends StatelessWidget {
                   color: isSelected ? AppColors.primary : Colors.transparent,
                   borderRadius: AppRadius.smallRadius,
                   border: Border.all(
-                    color: isSelected ? AppColors.primary : AppColors.textHint,
+                    color: isSelected ? AppColors.primary : context.textHint,
                     width: 2,
                   ),
                 ),
@@ -584,7 +584,7 @@ class _SelectionCard extends StatelessWidget {
                   color: isSelected ? AppColors.primary : Colors.transparent,
                   shape: BoxShape.circle,
                   border: Border.all(
-                    color: isSelected ? AppColors.primary : AppColors.textHint,
+                    color: isSelected ? AppColors.primary : context.textHint,
                     width: 2,
                   ),
                 ),

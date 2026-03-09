@@ -81,7 +81,7 @@ class _EmptySearchState extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(Icons.search, size: AppIconSizes.xxl, color: AppColors.textHint),
+          Icon(Icons.search, size: AppIconSizes.xxl, color: context.textHint),
           const SizedBox(height: AppSpacing.md),
           Text('Search your aquarium data', style: AppTypography.bodyMedium),
           const SizedBox(height: AppSpacing.sm),
@@ -202,7 +202,7 @@ class _SearchResults extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.search_off, size: AppIconSizes.xxl, color: AppColors.textHint),
+            Icon(Icons.search_off, size: AppIconSizes.xxl, color: context.textHint),
             const SizedBox(height: AppSpacing.md),
             Text('Hmm, nothing found for "$query" \u{1F50D}', style: AppTypography.bodyMedium),
           ],
@@ -288,7 +288,7 @@ class _SearchResults extends StatelessWidget {
                   width: 40,
                   height: 4,
                   decoration: BoxDecoration(
-                    color: AppColors.textHint,
+                    color: context.textHint,
                     borderRadius: BorderRadius.circular(2),
                   ),
                 ),

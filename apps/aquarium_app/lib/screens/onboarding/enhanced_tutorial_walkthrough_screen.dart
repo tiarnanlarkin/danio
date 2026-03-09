@@ -312,7 +312,7 @@ class _EnhancedTutorialWalkthroughScreenState
                 ),
                 Text(
                   '${((value) * 100).round()}%',
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(color: AppColors.textHint),
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(color: context.textHint),
                 ),
               ],
             ),
@@ -373,7 +373,7 @@ class _EnhancedTutorialWalkthroughScreenState
               Text(
                 step.description,
                 style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                  color: AppColors.textSecondary,
+                  color: context.textSecondary,
                   height: 1.5,
                 ),
                 textAlign: TextAlign.center,
@@ -420,7 +420,7 @@ class _EnhancedTutorialWalkthroughScreenState
                           Text(
                             'This will be your virtual tank to track your real aquarium',
                             style: Theme.of(context).textTheme.bodyMedium
-                                ?.copyWith(color: AppColors.textSecondary),
+                                ?.copyWith(color: context.textSecondary),
                             textAlign: TextAlign.center,
                           ),
                         ],
@@ -840,7 +840,7 @@ class _TankTypeCard extends StatelessWidget {
                 const SizedBox(height: AppSpacing.xs),
                 Text(
                   'Coming soon',
-                  style: Theme.of(context).textTheme.labelSmall?.copyWith(color: AppColors.textHint),
+                  style: Theme.of(context).textTheme.labelSmall?.copyWith(color: context.textHint),
                 ),
               ],
             ],
@@ -995,7 +995,7 @@ class _SuccessDialogState extends State<_SuccessDialog>
                 const SizedBox(height: AppSpacing.md),
                 Text(
                   'Let\'s start your aquarium journey! 🐠',
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.textHint),
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: context.textHint),
                   textAlign: TextAlign.center,
                 ),
               ],

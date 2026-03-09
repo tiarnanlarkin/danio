@@ -64,7 +64,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
                         Text(
                           'Your data stays on your device',
                           style: AppTypography.bodyMedium.copyWith(
-                            color: AppColors.textSecondary,
+                            color: context.textSecondary,
                           ),
                         ),
                       ],
@@ -85,7 +85,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
             Text(
               'Last Updated: February 6, 2025',
               style: AppTypography.bodySmall.copyWith(
-                color: AppColors.textSecondary,
+                color: context.textSecondary,
                 fontStyle: FontStyle.italic,
               ),
             ),
@@ -234,14 +234,14 @@ class PrivacyPolicyScreen extends StatelessWidget {
                   Text(
                     'Danio v1.0',
                     style: AppTypography.bodySmall.copyWith(
-                      color: AppColors.textSecondary,
+                      color: context.textSecondary,
                     ),
                   ),
                   const SizedBox(height: AppSpacing.xs),
                   Text(
                     'Built for the aquarium community',
                     style: AppTypography.bodySmall.copyWith(
-                      color: AppColors.textSecondary,
+                      color: context.textSecondary,
                       fontStyle: FontStyle.italic,
                     ),
                   ),
@@ -335,7 +335,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
                     size: isNegative ? 16 : 8,
                     color: isNegative
                         ? AppColors.error
-                        : AppColors.textSecondary,
+                        : context.textSecondary,
                   ),
                 ),
                 const SizedBox(width: AppSpacing.sm2),
@@ -415,7 +415,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
                 Text(
                   description,
                   style: AppTypography.bodySmall.copyWith(
-                    color: AppColors.textSecondary,
+                    color: context.textSecondary,
                     height: 1.4,
                   ),
                 ),
@@ -449,7 +449,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
                 Text(
                   description,
                   style: AppTypography.bodySmall.copyWith(
-                    color: AppColors.textSecondary,
+                    color: context.textSecondary,
                   ),
                 ),
               ],
@@ -503,7 +503,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
           Text(
             'Response time: Within 7 business days',
             style: AppTypography.bodySmall.copyWith(
-              color: AppColors.textSecondary,
+              color: context.textSecondary,
               fontStyle: FontStyle.italic,
             ),
           ),

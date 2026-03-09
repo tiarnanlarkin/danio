@@ -153,7 +153,7 @@ class _SpeciesBrowserScreenState extends ConsumerState<SpeciesBrowserScreen> {
                         Text(
                           'Try a different name or clear filters',
                           style: AppTypography.bodyMedium.copyWith(
-                            color: AppColors.textHint,
+                            color: context.textHint,
                           ),
                           textAlign: TextAlign.center,
                         ),
@@ -255,7 +255,7 @@ class _SpeciesCard extends StatelessWidget {
       case 'Advanced':
         return AppColors.error;
       default:
-        return AppColors.textSecondary;
+        return context.textSecondary;
     }
   }
 
@@ -268,7 +268,7 @@ class _SpeciesCard extends StatelessWidget {
       case 'Aggressive':
         return AppColors.error;
       default:
-        return AppColors.textSecondary;
+        return context.textSecondary;
     }
   }
 
@@ -311,7 +311,7 @@ class _SpeciesCard extends StatelessWidget {
                 ),
                 _MiniChip(
                   label: '${species.adultSizeCm.toStringAsFixed(0)}cm',
-                  color: AppColors.textSecondary,
+                  color: context.textSecondary,
                 ),
               ],
             ),
@@ -529,7 +529,7 @@ class _StatChip extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 14, color: AppColors.textSecondary),
+          Icon(icon, size: 14, color: context.textSecondary),
           const SizedBox(width: AppSpacing.xs2),
           Text(label, style: AppTypography.bodySmall),
         ],

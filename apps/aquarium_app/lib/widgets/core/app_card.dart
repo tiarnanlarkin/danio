@@ -385,7 +385,7 @@ class InfoCard extends StatelessWidget {
                   Text(
                     subtitle!,
                     style: AppTypography.bodySmall.copyWith(
-                      color: isDark ? AppColors.textSecondaryDark : AppColors.textSecondary,
+                      color: isDark ? AppColors.textSecondaryDark : context.textSecondary,
                     ),
                   ),
                 ],
@@ -395,7 +395,7 @@ class InfoCard extends StatelessWidget {
           if (onTap != null)
             Icon(
               Icons.chevron_right,
-              color: isDark ? AppColors.textHintDark : AppColors.textHint,
+              color: isDark ? AppColors.textHintDark : context.textHint,
             ),
         ],
       ),
@@ -456,7 +456,7 @@ class StatisticCard extends StatelessWidget {
           Text(
             label,
             style: AppTypography.bodySmall.copyWith(
-              color: isDark ? AppColors.textSecondaryDark : AppColors.textSecondary,
+              color: isDark ? AppColors.textSecondaryDark : context.textSecondary,
             ),
           ),
         ],
@@ -546,7 +546,7 @@ class ActionCard extends StatelessWidget {
             Text(
               description!,
               style: AppTypography.bodySmall.copyWith(
-                color: isDark ? AppColors.textSecondaryDark : AppColors.textSecondary,
+                color: isDark ? AppColors.textSecondaryDark : context.textSecondary,
               ),
             ),
           ],

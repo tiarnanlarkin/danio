@@ -420,13 +420,13 @@ class _TaskTile extends StatelessWidget {
       child: ListTile(
         leading: Icon(
           item.icon,
-          color: checked ? AppColors.success : AppColors.textHint,
+          color: checked ? AppColors.success : context.textHint,
         ),
         title: Text(
           item.label,
           style: AppTypography.bodyMedium.copyWith(
             decoration: checked ? TextDecoration.lineThrough : null,
-            color: checked ? AppColors.textHint : null,
+            color: checked ? context.textHint : null,
           ),
         ),
         trailing: Checkbox(

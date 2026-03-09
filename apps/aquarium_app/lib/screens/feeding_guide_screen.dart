@@ -192,7 +192,7 @@ class FeedingGuideScreen extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    Icon(Icons.no_food, color: AppColors.textSecondary),
+                    Icon(Icons.no_food, color: context.textSecondary),
                     const SizedBox(width: AppSpacing.sm),
                     Text('Fasting Days', style: AppTypography.headlineSmall),
                   ],
@@ -343,7 +343,7 @@ class _FoodTypeCard extends StatelessWidget {
                       Icon(
                         Icons.lightbulb_outline,
                         size: AppIconSizes.xs,
-                        color: AppColors.textSecondary,
+                        color: context.textSecondary,
                       ),
                       const SizedBox(width: AppSpacing.sm),
                       Expanded(

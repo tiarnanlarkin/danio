@@ -160,7 +160,7 @@ class _ProfileCreationScreenState extends ConsumerState<ProfileCreationScreen> {
             child: Text(
               'Skip',
               style: TextStyle(
-                color: _isSubmitting ? AppColors.textHint : AppColors.textSecondary,
+                color: _isSubmitting ? context.textHint : context.textSecondary,
               ),
             ),
           ),
@@ -187,7 +187,7 @@ class _ProfileCreationScreenState extends ConsumerState<ProfileCreationScreen> {
                 Text(
                   'Let\'s personalize your learning experience',
                   style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    color: AppColors.textSecondary,
+                    color: context.textSecondary,
                   ),
                   textAlign: TextAlign.center,
                 ),
@@ -238,7 +238,7 @@ class _ProfileCreationScreenState extends ConsumerState<ProfileCreationScreen> {
                   'Next: A quick quiz to personalise your learning path (2–3 min)',
                   style: Theme.of(
                     context,
-                  ).textTheme.bodySmall?.copyWith(color: AppColors.textHint),
+                  ).textTheme.bodySmall?.copyWith(color: context.textHint),
                   textAlign: TextAlign.center,
                 ),
               ],
@@ -371,7 +371,7 @@ class _ProfileCreationScreenState extends ConsumerState<ProfileCreationScreen> {
                         child: Text(
                           level.description,
                           style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                            color: AppColors.textSecondary,
+                            color: context.textSecondary,
                           ),
                         ),
                       ),
@@ -477,7 +477,7 @@ class _ProfileCreationScreenState extends ConsumerState<ProfileCreationScreen> {
                   child: Text(
                     type.description,
                     style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                      color: AppColors.textSecondary,
+                      color: context.textSecondary,
                     ),
                     textAlign: TextAlign.center,
                     maxLines: 3,

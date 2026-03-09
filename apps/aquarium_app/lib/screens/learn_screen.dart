@@ -209,10 +209,10 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Icon(
+                        Icon(
                           Icons.person_add,
                           size: AppIconSizes.xxl,
-                          color: AppColors.textSecondary,
+                          color: context.textSecondary,
                         ),
                         const SizedBox(height: AppSpacing.md),
                         Text(
@@ -244,7 +244,7 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
                         Text(
                           '\u2728 What you\'ll unlock',
                           style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                            color: AppColors.textSecondary,
+                            color: context.textSecondary,
                           ),
                         ),
                         const SizedBox(height: AppSpacing.sm),
@@ -255,7 +255,7 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
                           '\ud83e\udd16 AI fish identification',
                           textAlign: TextAlign.center,
                           style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                            color: AppColors.textSecondary,
+                            color: context.textSecondary,
                             height: 1.8,
                           ),
                         ),
@@ -316,7 +316,7 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
                                 Text(
                                   '$completedPaths of $totalPaths paths complete',
                                   style: AppTypography.bodySmall.copyWith(
-                                    color: AppColors.textSecondary,
+                                    color: context.textSecondary,
                                   ),
                                 ),
                                 const SizedBox(height: AppSpacing.xs),
@@ -725,7 +725,7 @@ class _StreakCard extends StatelessWidget {
                       Icon(
                         Icons.ac_unit,
                         size: AppIconSizes.xs,
-                        color: hasFreeze ? AppColors.info : AppColors.textHint,
+                        color: hasFreeze ? AppColors.info : context.textHint,
                       ),
                       const SizedBox(width: AppSpacing.xs2),
                       Expanded(
@@ -736,7 +736,7 @@ class _StreakCard extends StatelessWidget {
                           style: AppTypography.bodySmall.copyWith(
                             color: hasFreeze
                                 ? AppColors.info
-                                : AppColors.textHint,
+                                : context.textHint,
                           ),
                         ),
                       ),
@@ -863,7 +863,7 @@ class _LazyLearningPathCardState extends ConsumerState<_LazyLearningPathCard> {
               Text(
                 meta.description,
                 style: AppTypography.bodySmall.copyWith(
-                  color: AppColors.textSecondary,
+                  color: context.textSecondary,
                 ),
                 maxLines: 3,
                 overflow: TextOverflow.ellipsis,
@@ -922,7 +922,7 @@ class _LazyLearningPathCardState extends ConsumerState<_LazyLearningPathCard> {
                       style: AppTypography.labelSmall.copyWith(
                         color: isDark
                             ? AppColors.textSecondaryDark
-                            : AppColors.textSecondary,
+                            : context.textSecondary,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -988,7 +988,7 @@ class _LazyLearningPathCardState extends ConsumerState<_LazyLearningPathCard> {
                       ? AppColors.success
                       : isUnlocked
                           ? AppColors.primary
-                          : AppColors.textHint,
+                          : context.textHint,
                 ),
               ),
             ),
@@ -996,13 +996,13 @@ class _LazyLearningPathCardState extends ConsumerState<_LazyLearningPathCard> {
           title: Text(
             lesson.title,
             style: AppTypography.bodyMedium.copyWith(
-              color: isUnlocked ? null : AppColors.textHint,
+              color: isUnlocked ? null : context.textHint,
             ),
           ),
           subtitle: Text(
             '${lesson.estimatedMinutes} min • ${lesson.xpReward} XP',
             style: AppTypography.bodySmall.copyWith(
-              color: AppColors.textSecondary,
+              color: context.textSecondary,
             ),
           ),
           trailing: isCompleted

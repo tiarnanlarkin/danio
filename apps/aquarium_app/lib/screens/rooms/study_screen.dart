@@ -515,7 +515,7 @@ class _SectionCard extends StatelessWidget {
           Text(
             subtitle,
             style: AppTypography.bodySmall.copyWith(
-              color: AppColors.textSecondary,
+              color: context.textSecondary,
             ),
           ),
           const SizedBox(height: AppSpacing.sm2),
@@ -556,7 +556,7 @@ class _StudyTile extends StatelessWidget {
       title: Text(title, style: AppTypography.labelLarge),
       subtitle: Text(
         subtitle,
-        style: AppTypography.bodySmall.copyWith(color: AppColors.textSecondary),
+        style: AppTypography.bodySmall.copyWith(color: context.textSecondary),
       ),
       trailing: const Icon(Icons.chevron_right),
       onTap: onTap,

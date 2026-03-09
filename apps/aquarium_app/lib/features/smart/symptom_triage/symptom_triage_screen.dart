@@ -377,7 +377,7 @@ class _SymptomTriageScreenState extends ConsumerState<SymptomTriageScreen> {
               Text(
                 _diagnosis.isEmpty ? 'Analysing symptoms...' : 'Thinking...',
                 style: theme.textTheme.bodySmall?.copyWith(
-                  color: AppColors.textSecondary,
+                  color: context.textSecondary,
                 ),
               ),
             ],

@@ -171,7 +171,7 @@ class BottomPlateState extends State<BottomPlate>
                         Text(
                           '${widget.emoji} ${widget.label}',
                           style: AppTypography.labelMedium.copyWith(
-                            color: AppColors.textSecondary,
+                            color: context.textSecondary,
                           ),
                         ),
                       ],

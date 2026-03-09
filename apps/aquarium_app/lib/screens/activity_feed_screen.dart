@@ -86,7 +86,7 @@ class _ActivityFeedScreenState extends ConsumerState<ActivityFeedScreen> {
             error: (e, _) => Center(
               child: Text(
                 'Something went wrong',
-                style: AppTypography.bodyMedium.copyWith(color: AppColors.textHint),
+                style: AppTypography.bodyMedium.copyWith(color: context.textHint),
               ),
             ),
             data: (friends) => _FriendFilterBar(

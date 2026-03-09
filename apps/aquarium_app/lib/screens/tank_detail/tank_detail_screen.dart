@@ -90,7 +90,7 @@ class TankDetailScreen extends ConsumerWidget {
             children: List.generate(
               3,
               (_) => const ListTile(
-                leading: Icon(Icons.schedule, color: AppColors.textHint),
+                leading: Icon(Icons.schedule, color: context.textHint),
                 title: Text('Loading task...'),
                 subtitle: Text('Due soon'),
                 trailing: Icon(Icons.check_circle_outline, color: AppColors.success),
@@ -353,13 +353,13 @@ class TankDetailScreen extends ConsumerWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Icon(Icons.water_drop_outlined, size: 64, color: AppColors.textHint),
+                  const Icon(Icons.water_drop_outlined, size: 64, color: context.textHint),
                   const SizedBox(height: AppSpacing.md),
                   Text('Tank not found', style: AppTypography.headlineSmall),
                   const SizedBox(height: AppSpacing.sm),
                   Text(
                     'This tank may have been deleted.',
-                    style: AppTypography.bodyMedium.copyWith(color: AppColors.textSecondary),
+                    style: AppTypography.bodyMedium.copyWith(color: context.textSecondary),
                   ),
                   const SizedBox(height: AppSpacing.lg),
                   ElevatedButton(
@@ -580,7 +580,7 @@ class TankDetailScreen extends ConsumerWidget {
                     error: (e, _) => Center(
                       child: Text(
                         'Something went wrong',
-                        style: AppTypography.bodyMedium.copyWith(color: AppColors.textHint),
+                        style: AppTypography.bodyMedium.copyWith(color: context.textHint),
                       ),
                     ),
                     data: (logs) => TankHealthCard(tank: tank, logs: logs),
