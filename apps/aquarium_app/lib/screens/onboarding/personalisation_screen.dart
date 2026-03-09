@@ -5,7 +5,7 @@ import '../../models/user_profile.dart';
 import '../../models/tank.dart';
 import '../../providers/user_profile_provider.dart';
 import '../../theme/app_theme.dart';
-import '../../widgets/rive/rive_fish.dart';
+
 import 'journey_reveal_screen.dart';
 
 /// Unified personalisation screen that replaces ExperienceAssessmentScreen
@@ -160,16 +160,6 @@ class _PersonalisationScreenState extends ConsumerState<PersonalisationScreen> {
                       child: Column(
                         children: [
                           const SizedBox(height: AppSpacing.lg),
-                          // Finn fish at top
-                          Semantics(
-                            label: 'Finn the fish mascot',
-                            excludeSemantics: true,
-                            child: const RiveFish(
-                              fishType: RiveFishType.emotional,
-                              size: 80,
-                            ),
-                          ),
-                          const SizedBox(height: AppSpacing.md),
                           // Heading
                           Text(
                             'Tell me about you!',
@@ -236,7 +226,7 @@ class _PersonalisationScreenState extends ConsumerState<PersonalisationScreen> {
                           const SizedBox(height: AppSpacing.xl),
 
                           // Section 3: Name (optional)
-                          _buildSectionLabel('What should Finn call you?'),
+                          _buildSectionLabel('What should we call you?'),
                           const SizedBox(height: AppSpacing.xs),
                           Text(
                             'Optional',
@@ -450,7 +440,7 @@ class _PersonalisationScreenState extends ConsumerState<PersonalisationScreen> {
                   ),
                 )
               : Text(
-                  "Let's Meet Finn! →",
+                  "Let's get started →",
                   style: AppTypography.titleMedium.copyWith(
                     color: Colors.white,
                     fontWeight: FontWeight.w700,

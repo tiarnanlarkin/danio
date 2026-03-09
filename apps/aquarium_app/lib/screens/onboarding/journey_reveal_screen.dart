@@ -6,7 +6,7 @@ import '../../providers/onboarding_provider.dart';
 import '../../providers/user_profile_provider.dart';
 import '../../services/onboarding_service.dart';
 import '../../theme/app_theme.dart';
-import '../../widgets/rive/rive_fish.dart';
+
 
 /// Final onboarding screen — shown after PersonalisationScreen.
 /// Confirms the user's personalised journey and calls completeOnboarding().
@@ -35,9 +35,9 @@ class JourneyRevealScreen extends ConsumerWidget {
     final name = (userName != null && userName!.isNotEmpty) ? userName! : null;
     final greeting = name != null ? 'Hey $name!' : 'Hey there!';
     if (experienceLevel == ExperienceLevel.beginner) {
-      return "$greeting Finn is your personal fish guide — always here to help.";
+      return "$greeting Your personalised fish guide is ready — let's dive in.";
     }
-    return "$greeting We know you know your stuff. Finn's here to keep things sharp.";
+    return "$greeting We know you know your stuff. Let's keep things sharp.";
   }
 
   static const List<_FeaturePill> _features = [
@@ -53,7 +53,7 @@ class JourneyRevealScreen extends ConsumerWidget {
     ),
     _FeaturePill(
       icon: Icons.set_meal_rounded,
-      label: 'Finn — your fish AI',
+      label: 'AI fish assistant',
       color: DanioColors.amberGold,
     ),
   ];
@@ -106,16 +106,6 @@ class JourneyRevealScreen extends ConsumerWidget {
               child: Column(
                 children: [
                   const SizedBox(height: AppSpacing.xxl),
-
-                  // Decorative fish at top-centre
-                  Semantics(
-                    label: 'Finn the fish mascot',
-                    excludeSemantics: true,
-                    child: const RiveFish(
-                      fishType: RiveFishType.emotional,
-                      size: 100,
-                    ),
-                  ),
 
                   const SizedBox(height: AppSpacing.xl),
 
