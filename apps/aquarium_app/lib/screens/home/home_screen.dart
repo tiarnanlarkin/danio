@@ -768,17 +768,18 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 ),
               ),
             ),
-          // Start Here card — first session only (before tutorial seen)
+          // Start Here card — first session only (before tutorial seen or lessons started)
           Consumer(
             builder: (context, ref, _) {
-              final hasSeenTutorial = ref.watch(
-                userProfileProvider.select((p) => p.value?.hasSeenTutorial ?? true),
-              );
-              if (hasSeenTutorial) return const SizedBox.shrink();
-              return Positioned(
-                top: MediaQuery.of(context).padding.top + AppSpacing.md,
-                left: AppSpacing.md,
-                right: AppSpacing.md,
+              final profile = ref.watch(userProfileProvider).value;
+              final shouldHide = profile == null ||
+                  profile.hasSeenTutorial ||
+                  profile.completedLessons.isNotEmpty;
+              if (shouldHide) return const SizedBox.shrink();
+              return Padding(
+                padding: const EdgeInsets.fromLTRB(
+                  AppSpacing.md, AppSpacing.md, AppSpacing.md, 0,
+                ),
                 child: Material(
                   color: Colors.transparent,
                   child: Container(
