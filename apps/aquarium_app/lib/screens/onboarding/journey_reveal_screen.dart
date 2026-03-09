@@ -77,18 +77,23 @@ class JourneyRevealScreen extends ConsumerWidget {
           fit: StackFit.expand,
           children: [
             // Full-screen background image
-            Image.asset(
-              'assets/images/onboarding/onboarding_journey_bg.png',
-              fit: BoxFit.cover,
-              errorBuilder: (_, __, ___) => Container(
-                decoration: const BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                      DanioColors.tealWater,
-                      AppColors.primaryDark,
-                    ],
+            Semantics(
+              image: true,
+              label: 'Underwater aquarium background',
+              excludeSemantics: true,
+              child: Image.asset(
+                'assets/images/onboarding/onboarding_journey_bg.png',
+                fit: BoxFit.cover,
+                errorBuilder: (_, __, ___) => Container(
+                  decoration: const BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        DanioColors.tealWater,
+                        AppColors.primaryDark,
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -103,9 +108,13 @@ class JourneyRevealScreen extends ConsumerWidget {
                   const SizedBox(height: AppSpacing.xxl),
 
                   // Decorative fish at top-centre
-                  const RiveFish(
-                    fishType: RiveFishType.emotional,
-                    size: 100,
+                  Semantics(
+                    label: 'Finn the fish mascot',
+                    excludeSemantics: true,
+                    child: const RiveFish(
+                      fishType: RiveFishType.emotional,
+                      size: 100,
+                    ),
                   ),
 
                   const SizedBox(height: AppSpacing.xl),
@@ -275,33 +284,36 @@ class _LetsGoButtonState extends State<_LetsGoButton>
       onTapCancel: () => _controller.reverse(),
       child: AnimatedBuilder(
         animation: _scale,
-        builder: (_, __) => Transform.scale(
-          scale: _scale.value,
-          child: Container(
-            width: double.infinity,
-            padding: const EdgeInsets.symmetric(vertical: 18),
-            decoration: BoxDecoration(
-              color: DanioColors.tealWater,
-              borderRadius: AppRadius.mediumRadius,
-              boxShadow: const [
-                BoxShadow(
-                  color: AppColors.blackAlpha15,
-                  blurRadius: 20,
-                  offset: Offset(0, 8),
-                ),
-              ],
-            ),
-            child: Center(
-              child: Text(
-                "Let's go →",
-                style: AppTypography.titleMedium.copyWith(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w700,
+        builder: (_, __) {
+          final reduce = MediaQuery.of(context).disableAnimations;
+          return Transform.scale(
+            scale: reduce ? 1.0 : _scale.value,
+            child: Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(vertical: 18),
+              decoration: BoxDecoration(
+                color: DanioColors.tealWater,
+                borderRadius: AppRadius.mediumRadius,
+                boxShadow: const [
+                  BoxShadow(
+                    color: AppColors.blackAlpha15,
+                    blurRadius: 20,
+                    offset: Offset(0, 8),
+                  ),
+                ],
+              ),
+              child: Center(
+                child: Text(
+                  "Let's go →",
+                  style: AppTypography.titleMedium.copyWith(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
               ),
             ),
-          ),
-        ),
+          );
+        },
       ),
     );
   }

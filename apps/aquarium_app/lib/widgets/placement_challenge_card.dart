@@ -54,17 +54,21 @@ class PlacementChallengeCard extends ConsumerWidget {
             children: [
               Row(
                 children: [
-                  Container(
-                    width: 48,
-                    height: 48,
-                    decoration: const BoxDecoration(
-                      color: AppOverlays.accent20,
-                      shape: BoxShape.circle,
-                    ),
-                    child: const Icon(
-                      Icons.set_meal_rounded,
-                      color: AppColors.accent,
-                      size: AppIconSizes.md,
+                  Semantics(
+                    label: 'Placement test',
+                    excludeSemantics: true,
+                    child: Container(
+                      width: 48,
+                      height: 48,
+                      decoration: const BoxDecoration(
+                        color: AppOverlays.accent20,
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(
+                        Icons.set_meal_rounded,
+                        color: AppColors.accent,
+                        size: AppIconSizes.md,
+                      ),
                     ),
                   ),
                   const SizedBox(width: AppSpacing.md),
@@ -122,6 +126,9 @@ class PlacementChallengeCard extends ConsumerWidget {
                           .read(userProfileProvider.notifier)
                           .skipPlacementTest();
                     },
+                    style: TextButton.styleFrom(
+                      minimumSize: const Size(48, 48),
+                    ),
                     child: Text(
                       'Skip for now',
                       style: AppTypography.bodySmall.copyWith(

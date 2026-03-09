@@ -1,3 +1,4 @@
+// ARCHIVED — Phase 4 onboarding cleanup (2026-03-09)
 import 'package:flutter/material.dart';
 import '../../models/models.dart';
 import '../../theme/app_theme.dart';

@@ -161,9 +161,13 @@ class _PersonalisationScreenState extends ConsumerState<PersonalisationScreen> {
                         children: [
                           const SizedBox(height: AppSpacing.lg),
                           // Finn fish at top
-                          const RiveFish(
-                            fishType: RiveFishType.emotional,
-                            size: 80,
+                          Semantics(
+                            label: 'Finn the fish mascot',
+                            excludeSemantics: true,
+                            child: const RiveFish(
+                              fishType: RiveFishType.emotional,
+                              size: 80,
+                            ),
                           ),
                           const SizedBox(height: AppSpacing.md),
                           // Heading
@@ -368,49 +372,61 @@ class _PersonalisationScreenState extends ConsumerState<PersonalisationScreen> {
     required bool isSelected,
     required VoidCallback onTap,
   }) {
-    return GestureDetector(
-      onTap: onTap,
-      child: AnimatedContainer(
-        duration: AppDurations.medium2,
-        curve: AppCurves.standard,
-        constraints: const BoxConstraints(minHeight: 72),
-        padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacing.md,
-          vertical: AppSpacing.md,
-        ),
-        decoration: BoxDecoration(
-          color: isSelected
-              ? AppColors.primaryAlpha25
-              : AppColors.whiteAlpha10,
-          borderRadius: AppRadius.mediumRadius,
-          border: Border.all(
-            color: isSelected
-                ? AppColors.primaryLight
-                : AppColors.whiteAlpha20,
-            width: isSelected ? 2 : 1,
+    final reduce = MediaQuery.of(context).disableAnimations;
+    return Semantics(
+      selected: isSelected,
+      button: true,
+      label: label,
+      child: GestureDetector(
+        onTap: onTap,
+        child: AnimatedContainer(
+          duration: reduce ? Duration.zero : AppDurations.medium2,
+          curve: AppCurves.standard,
+          constraints: const BoxConstraints(minHeight: 72),
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.md,
+            vertical: AppSpacing.md,
           ),
-        ),
-        child: Row(
-          children: [
-            Text(emoji, style: const TextStyle(fontSize: 28)),
-            const SizedBox(width: AppSpacing.md),
-            Expanded(
-              child: Text(
-                label,
-                style: AppTypography.bodyLarge.copyWith(
-                  color: Colors.white,
-                  fontWeight:
-                      isSelected ? FontWeight.w700 : FontWeight.w400,
+          decoration: BoxDecoration(
+            color: isSelected
+                ? AppColors.primaryAlpha25
+                : AppColors.whiteAlpha10,
+            borderRadius: AppRadius.mediumRadius,
+            border: Border.all(
+              color: isSelected
+                  ? AppColors.primaryLight
+                  : AppColors.whiteAlpha20,
+              width: isSelected ? 2 : 1,
+            ),
+          ),
+          child: Row(
+            children: [
+              ExcludeSemantics(
+                child: Text(emoji, style: const TextStyle(fontSize: 28)),
+              ),
+              const SizedBox(width: AppSpacing.md),
+              Expanded(
+                child: Text(
+                  label,
+                  style: AppTypography.bodyLarge.copyWith(
+                    color: Colors.white,
+                    fontWeight:
+                        isSelected ? FontWeight.w700 : FontWeight.w400,
+                  ),
                 ),
               ),
-            ),
-            if (isSelected)
-              const Icon(
-                Icons.check_circle_rounded,
-                color: AppColors.primaryLight,
-                size: AppIconSizes.md,
-              ),
-          ],
+              if (isSelected)
+                Semantics(
+                  label: 'Selected',
+                  excludeSemantics: true,
+                  child: const Icon(
+                    Icons.check_circle_rounded,
+                    color: AppColors.primaryLight,
+                    size: AppIconSizes.md,
+                  ),
+                ),
+            ],
+          ),
         ),
       ),
     );
@@ -494,8 +510,9 @@ class _PrimaryButtonState extends State<_PrimaryButton>
       child: AnimatedBuilder(
         animation: _scaleAnimation,
         builder: (context, child) {
+          final reduce = MediaQuery.of(context).disableAnimations;
           return Transform.scale(
-            scale: _scaleAnimation.value,
+            scale: reduce ? 1.0 : _scaleAnimation.value,
             child: Container(
               padding: const EdgeInsets.symmetric(vertical: 18),
               decoration: BoxDecoration(

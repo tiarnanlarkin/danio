@@ -1,3 +1,4 @@
+// ARCHIVED — Phase 4 onboarding cleanup (2026-03-09)
 /// Interactive tutorial walkthrough for first tank setup
 /// Final step of onboarding flow before entering the main app
 library;
