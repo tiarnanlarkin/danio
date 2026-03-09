@@ -887,6 +887,27 @@ class _CozyRoomPainter extends CustomPainter {
       Offset(w * 0.90, shelfY + 12),
       shelfPaint,
     );
+
+    // Decorative candles
+    final candleBaseY = shelfY;
+    const candleBodyColor = Color(0xFFF5EDE0);
+    const candleWickColor = Color(0xFF4A3D30);
+    const candleFlameColor = Color(0xFFFFB347);
+    const candleGlowColor = Color(0x14FFCC66);
+
+    // Candle 1
+    final c1x = w * 0.76;
+    canvas.drawRect(Rect.fromLTWH(c1x, candleBaseY - 10, 3.5, 10), Paint()..color = candleBodyColor);
+    canvas.drawLine(Offset(c1x + 1.75, candleBaseY - 10), Offset(c1x + 1.75, candleBaseY - 12), Paint()..color = candleWickColor..strokeWidth = 1);
+    canvas.drawCircle(Offset(c1x + 1.75, candleBaseY - 13), 2.5, Paint()..color = candleFlameColor);
+    canvas.drawCircle(Offset(c1x + 1.75, candleBaseY - 13), 8, Paint()..color = candleGlowColor);
+
+    // Candle 2
+    final c2x = w * 0.82;
+    canvas.drawRect(Rect.fromLTWH(c2x, candleBaseY - 12, 4, 12), Paint()..color = candleBodyColor);
+    canvas.drawLine(Offset(c2x + 2, candleBaseY - 12), Offset(c2x + 2, candleBaseY - 14), Paint()..color = candleWickColor..strokeWidth = 1);
+    canvas.drawCircle(Offset(c2x + 2, candleBaseY - 15), 3, Paint()..color = candleFlameColor);
+    canvas.drawCircle(Offset(c2x + 2, candleBaseY - 15), 9, Paint()..color = candleGlowColor);
   }
 
   @override
