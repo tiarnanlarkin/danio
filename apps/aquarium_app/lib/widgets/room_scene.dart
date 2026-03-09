@@ -335,11 +335,11 @@ class _CozyRoomBackground extends StatelessWidget {
         Positioned.fill(
           child: ColorFiltered(
             colorFilter: ColorFilter.mode(
-              const Color(0xFFC68B3E).withAlpha(20), // subtle warm amber wash
+              const Color(0xFFD4956C).withAlpha(30), // subtle warm amber wash
               BlendMode.srcATop,
             ),
             child: Opacity(
-              opacity: 0.20,
+              opacity: 0.25,
               child: Image.asset(
                 'assets/textures/linen-wall.png',
                 repeat: ImageRepeat.repeat,
@@ -432,7 +432,7 @@ class _CozyRoomPainter extends CustomPainter {
     // === WAINSCOTING / WALL PANEL (lower wall section) ===
     final panelTop = h * 0.45;
     final panelPaint = Paint()
-      ..color = Color.lerp(_wallAccent, _floorColor, 0.15)!;
+      ..color = Color.lerp(_wallAccent, _floorColor, 0.25)!;
     canvas.drawRect(
       Rect.fromLTWH(0, panelTop, w, h * 0.17),
       panelPaint,
@@ -468,7 +468,7 @@ class _CozyRoomPainter extends CustomPainter {
       ..color = (_isDarkTheme ? AppColors.blackAlpha15 : AppColors.woodBrownAlpha15)
       ..strokeWidth = 1.5;
     
-    for (var y = floorTop + 15; y < h; y += 18) {
+    for (var y = floorTop + 15; y < h; y += 22) {
       canvas.drawLine(Offset(0, y), Offset(w, y), floorLinePaint);
     }
     
@@ -476,7 +476,7 @@ class _CozyRoomPainter extends CustomPainter {
     final jointPaint = Paint()
       ..color = (_isDarkTheme ? AppColors.blackAlpha08 : AppColors.woodBrownAlpha08)
       ..strokeWidth = 1;
-    for (var x = 0.0; x < w; x += 60) {
+    for (var x = 0.0; x < w; x += 80) {
       canvas.drawLine(Offset(x, floorTop), Offset(x, h), jointPaint);
     }
 
