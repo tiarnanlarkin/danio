@@ -2,14 +2,11 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../providers/onboarding_provider.dart';
-import '../services/onboarding_service.dart';
 import '../theme/app_theme.dart';
 import '../models/user_profile.dart';
 import '../models/tank.dart';
 import '../providers/user_profile_provider.dart';
-import 'onboarding/profile_creation_screen.dart';
-import 'onboarding/experience_assessment_screen.dart';
+import 'onboarding/personalisation_screen.dart';
 
 class OnboardingScreen extends ConsumerStatefulWidget {
   const OnboardingScreen({super.key});
@@ -159,7 +156,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen>
                       children: [
                         // Quick Start - prominent button
                         TextButton.icon(
-                          onPressed: _quickStart,
+                          onPressed: () => _quickStart(context, ref),
                           style: TextButton.styleFrom(
                             foregroundColor: Colors.white,
                             backgroundColor: AppColors.whiteAlpha15,
@@ -372,48 +369,35 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen>
 
   Future<void> _completeOnboarding() async {
     HapticFeedback.mediumImpact();
-    final service = await OnboardingService.getInstance();
-    await service.completeOnboarding();
-
     if (mounted) {
-      // Use push (not pushReplacement) so _AppRouter stays as the base route.
-      // When the onboarding flow finishes, popUntil(route.isFirst) returns
-      // to _AppRouter, which re-evaluates its providers and transitions to
-      // TabNavigator naturally — preventing the duplicate nav bar bug.
+      // Push PersonalisationScreen — it will call completeOnboarding() via
+      // JourneyRevealScreen._letsGo() at the end of the new flow.
       Navigator.of(context).push(
-        MaterialPageRoute(builder: (_) => const ExperienceAssessmentScreen()),
+        MaterialPageRoute(builder: (_) => const PersonalisationScreen()),
       );
     }
   }
 
-  /// Quick Start - Create default profile and skip all onboarding
-  Future<void> _quickStart() async {
+  /// Quick Start — create a default beginner profile and complete onboarding
+  /// without going through the personalisation flow.
+  Future<void> _quickStart(BuildContext context, WidgetRef ref) async {
     try {
       HapticFeedback.mediumImpact();
-      
-      // Create default beginner profile
       await ref.read(userProfileProvider.notifier).createProfile(
-        name: 'Aquarist', // Default name
         experienceLevel: ExperienceLevel.beginner,
         primaryTankType: TankType.freshwater,
-        goals: [UserGoal.keepFishAlive, UserGoal.beautifulDisplay],
+        goals: [UserGoal.keepFishAlive],
       );
-
-      // Mark onboarding as complete and let _AppRouter rebuild naturally.
-      // Do NOT push TabNavigator directly — that causes duplicate nav bars.
-      final service = await OnboardingService.getInstance();
-      await service.completeOnboarding();
-
-      if (mounted) {
-        // Invalidate the provider so _AppRouter re-evaluates and transitions
-        // to TabNavigator itself. Pop all pushed routes back to _AppRouter.
-        ref.invalidate(onboardingCompletedProvider);
+      await ref.read(userProfileProvider.notifier).completeOnboarding();
+      if (context.mounted) {
         Navigator.of(context).popUntil((route) => route.isFirst);
       }
     } catch (e) {
-      if (mounted) {
+      if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Couldn\'t get started. Please try again.')),
+          const SnackBar(
+            content: Text("Couldn't get started. Please try again."),
+          ),
         );
       }
     }

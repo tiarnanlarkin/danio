@@ -7,7 +7,7 @@ import 'providers/user_profile_provider.dart';
 import 'providers/spaced_repetition_provider.dart';
 import 'screens/tab_navigator.dart';
 import 'screens/onboarding_screen.dart';
-import 'screens/onboarding/profile_creation_screen.dart';
+import 'screens/onboarding/personalisation_screen.dart';
 import 'screens/learn_screen.dart';
 import 'screens/spaced_repetition_practice_screen.dart';
 import 'screens/achievements_screen.dart';
@@ -214,7 +214,7 @@ class _AppRouterState extends ConsumerState<_AppRouter>
     final profileExists = profileAsync.value != null;
 
     if (!profileExists) {
-      return const ProfileCreationScreen();
+      return const PersonalisationScreen();
     }
 
     // ── 3. Everything ready — show main app ──────────────────────────────

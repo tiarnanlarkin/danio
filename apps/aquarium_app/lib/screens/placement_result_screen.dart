@@ -15,8 +15,13 @@ import 'onboarding/learning_style_screen.dart';
 
 class PlacementResultScreen extends ConsumerWidget {
   final PlacementResult result;
+  final String source; // 'onboarding' | 'learn_tab'
 
-  const PlacementResultScreen({super.key, required this.result});
+  const PlacementResultScreen({
+    super.key,
+    required this.result,
+    this.source = 'onboarding',
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -88,18 +93,25 @@ class PlacementResultScreen extends ConsumerWidget {
                 children: [
                   FilledButton(
                     onPressed: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (_) =>
-                              const LearningStyleScreen(),
-                        ),
-                      );
+                      if (source == 'learn_tab') {
+                        // From the Learn tab — just pop back
+                        Navigator.of(context).pop();
+                      } else {
+                        // From onboarding — push the next step
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) => const LearningStyleScreen(),
+                          ),
+                        );
+                      }
                     },
                     style: FilledButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 16),
                     ),
                     child: Text(
-                      'Start My Journey! 🚀',
+                      source == 'learn_tab'
+                          ? 'Back to Learning 🐠'
+                          : 'Start My Journey! 🚀',
                       style: Theme.of(context).textTheme.titleMedium!,
                     ),
                   ),
