@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../models/user_profile.dart';
+import '../../providers/onboarding_provider.dart';
 import '../../providers/user_profile_provider.dart';
+import '../../services/onboarding_service.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/rive/rive_fish.dart';
 
@@ -58,7 +60,9 @@ class JourneyRevealScreen extends ConsumerWidget {
 
   Future<void> _letsGo(BuildContext context, WidgetRef ref) async {
     HapticFeedback.mediumImpact();
-    await ref.read(userProfileProvider.notifier).completeOnboarding();
+    final service = await OnboardingService.getInstance();
+    await service.completeOnboarding();
+    ref.invalidate(onboardingCompletedProvider);
     if (context.mounted) {
       Navigator.of(context).popUntil((route) => route.isFirst);
     }

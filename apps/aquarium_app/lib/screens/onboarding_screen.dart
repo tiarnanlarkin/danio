@@ -5,7 +5,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../theme/app_theme.dart';
 import '../models/user_profile.dart';
 import '../models/tank.dart';
+import '../providers/onboarding_provider.dart';
 import '../providers/user_profile_provider.dart';
+import '../services/onboarding_service.dart';
 import 'onboarding/personalisation_screen.dart';
 
 class OnboardingScreen extends ConsumerStatefulWidget {
@@ -388,7 +390,9 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen>
         primaryTankType: TankType.freshwater,
         goals: [UserGoal.keepFishAlive],
       );
-      await ref.read(userProfileProvider.notifier).completeOnboarding();
+      final service = await OnboardingService.getInstance();
+      await service.completeOnboarding();
+      ref.invalidate(onboardingCompletedProvider);
       if (context.mounted) {
         Navigator.of(context).popUntil((route) => route.isFirst);
       }
