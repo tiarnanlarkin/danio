@@ -814,7 +814,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                               ),
                               const SizedBox(height: AppSpacing.xs),
                               Text(
-                                'Begin your first lesson and meet Finn, your fish guide',
+                                'Begin your first lesson and get personalised guidance',
                                 style: AppTypography.bodySmall.copyWith(
                                   color: AppColors.onPrimary.withAlpha(220),
                                 ),

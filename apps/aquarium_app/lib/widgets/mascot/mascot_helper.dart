@@ -138,7 +138,7 @@ class MascotHelper {
   }
   
   /// Get mascot name
-  static String get name => 'Finn';
+  static String get name => 'your fish guide';
   
   // Message database
   static const Map<MascotContext, List<String>> _messagesForContext = {
@@ -176,9 +176,9 @@ class MascotHelper {
     
     // Onboarding
     MascotContext.welcome: [
-      "Hi there! I'm Finn, your aquarium buddy! 🐠",
-      "Welcome to Danio! I'm Finn, and I'll help you along the way!",
-      "Hello, future fish keeper! I'm Finn! 👋",
+      "Hi there! I'm your aquarium guide! 🐠",
+      "Welcome to Danio! I'll help you along the way!",
+      "Hello, future fish keeper! 👋",
     ],
     MascotContext.experienceQuestion: [
       "Tell me about your fishkeeping experience!",
