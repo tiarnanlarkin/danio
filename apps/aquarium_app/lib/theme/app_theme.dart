@@ -1477,7 +1477,10 @@ class AppTheme {
         selectionHandleColor: AppColors.primaryLight,
       ),
 
-      textTheme: GoogleFonts.nunitoTextTheme(),
+      textTheme: GoogleFonts.nunitoTextTheme().apply(
+        bodyColor: AppColors.textPrimaryDark,
+        displayColor: AppColors.textPrimaryDark,
+      ),
     );
   }
 }
@@ -1638,4 +1641,17 @@ class DanioScrollBehavior extends ScrollBehavior {
     // No glow/stretch overscroll indicator
     return child;
   }
+}
+
+extension AdaptiveColors on BuildContext {
+  bool get _isDark => Theme.of(this).brightness == Brightness.dark;
+  Color get textPrimary => _isDark ? AppColors.textPrimaryDark : AppColors.textPrimary;
+  Color get textSecondary => _isDark ? AppColors.textSecondaryDark : AppColors.textSecondary;
+  Color get textHint => _isDark ? AppColors.textHintDark : AppColors.textHint;
+  Color get backgroundColor => _isDark ? AppColors.backgroundDark : AppColors.background;
+  Color get surfaceColor => _isDark ? AppColors.surfaceDark : AppColors.surface;
+  Color get surfaceVariant => _isDark ? AppColors.surfaceVariantDark : AppColors.surfaceVariant;
+  Color get cardColor => _isDark ? AppColors.cardDark : AppColors.card;
+  Color get primaryColor => _isDark ? AppColors.primaryLight : AppColors.primary;
+  Color get borderColor => _isDark ? AppColors.borderDark : AppColors.border;
 }
