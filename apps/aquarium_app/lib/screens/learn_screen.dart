@@ -24,10 +24,43 @@ import '../widgets/placement_challenge_card.dart';
 
 /// The main learning hub - shows learning paths and progress
 /// Features a cozy illustrated "Study Room" header
-class LearnScreen extends ConsumerWidget {
+class LearnScreen extends ConsumerStatefulWidget {
   const LearnScreen({super.key});
 
-  static Widget _buildSkeletonScreen(BuildContext context) {
+  @override
+  ConsumerState<LearnScreen> createState() => _LearnScreenState();
+}
+
+class _LearnScreenState extends ConsumerState<LearnScreen> {
+  final ScrollController _scrollController = ScrollController();
+  bool _hasScrolledToFirstLesson = false;
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  /// Auto-scroll to first lesson module on first visit (no completed lessons).
+  /// Uses a post-frame callback to scroll after the widget tree is laid out.
+  void _maybeScrollToFirstLesson(UserProfile? profile) {
+    if (_hasScrolledToFirstLesson) return;
+    if (profile == null) return;
+    if (profile.completedLessons.isNotEmpty) return;
+
+    _hasScrolledToFirstLesson = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || !_scrollController.hasClients) return;
+      // Scroll past the 320px header to bring the learning paths into view
+      _scrollController.animateTo(
+        320.0,
+        duration: const Duration(milliseconds: 600),
+        curve: Curves.easeOutCubic,
+      );
+    });
+  }
+
+  static Widget _buildSkeletonScreen(BuildContext context, {ScrollController? controller}) {
     return Semantics(
       liveRegion: true,
       label: 'Loading learning content',
@@ -100,7 +133,7 @@ class LearnScreen extends ConsumerWidget {
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final profileAsync = ref.watch(userProfileProvider);
     // Select only the two fields used by StudyRoomScene so that other stat
     // changes (e.g. weeklyXp updates) don't rebuild this 980-line screen.
@@ -117,7 +150,7 @@ class LearnScreen extends ConsumerWidget {
 
     return Scaffold(
       body: profileAsync.when(
-        loading: () => _buildSkeletonScreen(context),
+        loading: () => _buildSkeletonScreen(context, controller: _scrollController),
         error: (e, _) => AppErrorState(
           title: 'Oops! Something went wrong',
           message: 'We could not load your learning paths. Check your connection and try again.',
@@ -131,6 +164,9 @@ class LearnScreen extends ConsumerWidget {
           );
           final completedLessons = profile?.completedLessons.length ?? 0;
 
+          // Phase 3: auto-scroll to first lesson on first visit
+          _maybeScrollToFirstLesson(profile);
+
           return RefreshIndicator(
             onRefresh: () async {
               ref.invalidate(userProfileProvider);
@@ -138,6 +174,7 @@ class LearnScreen extends ConsumerWidget {
               ref.invalidate(pathMetadataProvider);
             },
             child: CustomScrollView(
+              controller: _scrollController,
               slivers: [
               // === Study Room Scene Header ===
               SliverToBoxAdapter(

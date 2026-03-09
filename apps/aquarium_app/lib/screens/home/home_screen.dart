@@ -768,6 +768,112 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 ),
               ),
             ),
+          // Start Here card — first session only (before tutorial seen)
+          Consumer(
+            builder: (context, ref, _) {
+              final hasSeenTutorial = ref.watch(
+                userProfileProvider.select((p) => p.value?.hasSeenTutorial ?? true),
+              );
+              if (hasSeenTutorial) return const SizedBox.shrink();
+              return Positioned(
+                top: MediaQuery.of(context).padding.top + AppSpacing.md,
+                left: AppSpacing.md,
+                right: AppSpacing.md,
+                child: Material(
+                  color: Colors.transparent,
+                  child: Container(
+                    padding: const EdgeInsets.all(AppSpacing.md),
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [DanioColors.coralAccent, AppColors.primary],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
+                      borderRadius: AppRadius.mediumRadius,
+                      boxShadow: [
+                        BoxShadow(
+                          color: DanioColors.coralAccent.withAlpha(60),
+                          blurRadius: 12,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                'Start here →',
+                                style: AppTypography.labelLarge.copyWith(
+                                  color: AppColors.onPrimary,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                              const SizedBox(height: AppSpacing.xs),
+                              Text(
+                                'Begin your first lesson and meet Finn, your fish guide',
+                                style: AppTypography.bodySmall.copyWith(
+                                  color: AppColors.onPrimary.withAlpha(220),
+                                ),
+                              ),
+                              const SizedBox(height: AppSpacing.sm2),
+                              SizedBox(
+                                height: 36,
+                                child: ElevatedButton(
+                                  onPressed: () {
+                                    ref.read(currentTabProvider.notifier).state = 0;
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: AppColors.onPrimary,
+                                    foregroundColor: AppColors.primary,
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: AppSpacing.lg,
+                                    ),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: AppRadius.smallRadius,
+                                    ),
+                                  ),
+                                  child: Text(
+                                    'Begin',
+                                    style: AppTypography.labelMedium.copyWith(
+                                      color: AppColors.primary,
+                                      fontWeight: FontWeight.w700,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(width: AppSpacing.sm),
+                        GestureDetector(
+                          onTap: () {
+                            ref.read(userProfileProvider.notifier).updateProfile(
+                              hasSeenTutorial: true,
+                            );
+                          },
+                          child: SizedBox(
+                            width: 44,
+                            height: 44,
+                            child: Center(
+                              child: Icon(
+                                Icons.close,
+                                size: 20,
+                                color: AppColors.onPrimary.withAlpha(180),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
           // P5-3: Comeback banner — shown when a user's streak has been broken
           if (_showComebackBanner)
             Positioned(

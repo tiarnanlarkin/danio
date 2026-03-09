@@ -152,7 +152,7 @@ class EmptyRoomScene extends StatelessWidget {
           ),
         ),
 
-        // Call to action with Finn mascot
+        // Call to action with warm first-session messaging
         Center(
           child: NotebookCard(
             rotation: 1.5,
@@ -160,23 +160,50 @@ class EmptyRoomScene extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                // Finn greeting — MascotBubble already contains the
-                // "Let's set up your first tank!" message; removed the
-                // duplicate Text below to fix ghost-text rendering (P0-003).
-                MascotBubble.fromContext(
-                  context: MascotContext.noTanks,
-                  size: MascotSize.small,
+                // Fish icon - warm welcome
+                Icon(
+                  Icons.set_meal_rounded,
+                  size: AppIconSizes.xxl,
+                  color: DanioColors.tealWater,
+                ),
+                const SizedBox(height: AppSpacing.md),
+                Text(
+                  'Your tank awaits 🐠',
+                  style: AppTypography.headlineSmall.copyWith(
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.sm),
+                Text(
+                  'Add your first tank to get personalised care tips and alerts',
+                  textAlign: TextAlign.center,
+                  style: AppTypography.bodyMedium.copyWith(
+                    color: AppColors.textSecondary,
+                  ),
                 ),
                 const SizedBox(height: AppSpacing.lg2),
                 ElevatedButton.icon(
                   onPressed: onCreateTank,
                   icon: const Icon(Icons.add),
-                  label: const Text('Add Your Tank'),
+                  label: const Text('Add my tank'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: DanioColors.tealWater,
+                    foregroundColor: AppColors.onPrimary,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.xl,
+                      vertical: AppSpacing.sm2,
+                    ),
+                  ),
                 ),
                 const SizedBox(height: AppSpacing.sm),
                 TextButton(
                   onPressed: onLoadDemo,
-                  child: const Text('Explore a demo tank first'),
+                  child: Text(
+                    'Explore a demo tank first',
+                    style: AppTypography.labelMedium.copyWith(
+                      color: DanioColors.amberText,
+                    ),
+                  ),
                 ),
               ],
             ),
