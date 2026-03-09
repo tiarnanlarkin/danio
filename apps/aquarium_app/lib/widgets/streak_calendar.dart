@@ -164,7 +164,7 @@ class _CalendarGrid extends StatelessWidget {
             // Month labels (vertical)
             Column(
               crossAxisAlignment: CrossAxisAlignment.end,
-              children: _buildMonthLabels(weeks),
+              children: _buildMonthLabels(weeks, context),
             ),
             SizedBox(width: spacing),
 
@@ -182,7 +182,7 @@ class _CalendarGrid extends StatelessWidget {
     );
   }
 
-  List<Widget> _buildMonthLabels(List<List<DailyGoal>> weeks) {
+  List<Widget> _buildMonthLabels(List<List<DailyGoal>> weeks, BuildContext context) {
     final labels = <Widget>[];
     String? lastMonth;
 
@@ -208,7 +208,7 @@ class _CalendarGrid extends StatelessWidget {
           child: monthLabel != null
               ? Text(
                   monthLabel,
-                  style: TextStyle(fontSize: 10, color: AppColors.textHint),
+                  style: TextStyle(fontSize: 10, color: context.textHint),
                 )
               : null,
         ),
@@ -263,7 +263,7 @@ class _DayCell extends StatelessWidget {
       dailyXpGoal: goal.targetXp,
     );
 
-    final color = _getColorForIntensity(intensity);
+    final color = _getColorForIntensity(intensity, context);
 
     return Tooltip(
       message: _getTooltipText(),
@@ -281,10 +281,10 @@ class _DayCell extends StatelessWidget {
     );
   }
 
-  Color _getColorForIntensity(int intensity) {
+  Color _getColorForIntensity(int intensity, BuildContext context) {
     switch (intensity) {
       case 0:
-        return AppColors.surfaceVariant;
+        return context.surfaceVariant;
       case 1:
         return const Color(0xFFFFE6B8); // Light amber
       case 2:
@@ -294,7 +294,7 @@ class _DayCell extends StatelessWidget {
       case 4:
         return const Color(0xFFD97706); // Brand amber gold
       default:
-        return AppColors.surfaceVariant;
+        return context.surfaceVariant;
     }
   }
 
@@ -321,7 +321,7 @@ class _Legend extends StatelessWidget {
       children: [
         Text('Less', style: Theme.of(context).textTheme.labelSmall!.copyWith( color: context.textHint)),
         const SizedBox(width: AppSpacing.xs),
-        _LegendCell(color: AppColors.surfaceVariant, size: cellSize),
+        _LegendCell(color: context.surfaceVariant, size: cellSize),
         const SizedBox(width: AppSpacing.xxs),
         _LegendCell(color: const Color(0xFFFFE6B8), size: cellSize),
         const SizedBox(width: AppSpacing.xxs),
@@ -426,9 +426,9 @@ class _StatCard extends StatelessWidget {
     return Container(
       padding: EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        color: context.surfaceColor,
         borderRadius: AppRadius.mediumRadius,
-        border: Border.all(color: AppColors.surfaceVariant),
+        border: Border.all(color: context.surfaceVariant),
       ),
       child: Column(
         children: [

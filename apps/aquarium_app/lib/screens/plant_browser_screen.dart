@@ -197,7 +197,7 @@ class _PlantCard extends StatelessWidget {
 
   const _PlantCard({required this.plant, required this.onTap});
 
-  Color _difficultyColor() {
+  Color _difficultyColor(BuildContext context) {
     switch (plant.difficulty) {
       case 'Easy':
         return AppColors.success;
@@ -207,7 +207,7 @@ class _PlantCard extends StatelessWidget {
       case 'Hard':
         return AppColors.error;
       default:
-        return AppColors.textSecondary;
+        return context.textSecondary;
     }
   }
 
@@ -240,7 +240,7 @@ class _PlantCard extends StatelessWidget {
             Wrap(
               spacing: 6,
               children: [
-                _MiniChip(label: plant.difficulty, color: _difficultyColor()),
+                _MiniChip(label: plant.difficulty, color: _difficultyColor(context)),
                 _MiniChip(
                   label: plant.lightLevel,
                   color: AppColors.paramWarning,
@@ -441,7 +441,7 @@ class _StatChip extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm3, vertical: AppSpacing.xs2),
       decoration: BoxDecoration(
-        color: AppColors.surfaceVariant,
+        color: context.surfaceVariant,
         borderRadius: AppRadius.mediumRadius,
       ),
       child: Row(

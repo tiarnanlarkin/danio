@@ -341,7 +341,7 @@ class _ProfileCreationScreenState extends ConsumerState<ProfileCreationScreen> {
               color: isSelected ? AppOverlays.accent10 : null,
               borderRadius: AppRadius.mediumRadius,
               border: Border.all(
-                color: isSelected ? AppColors.accent : Theme.of(context).brightness == Brightness.dark ? AppColors.borderDark : AppColors.border,
+                color: isSelected ? AppColors.accent : Theme.of(context).brightness == Brightness.dark ? AppColors.borderDark : context.borderColor,
                 width: 2,
               ),
             ),
@@ -448,7 +448,7 @@ class _ProfileCreationScreenState extends ConsumerState<ProfileCreationScreen> {
             color: isSelected ? AppOverlays.primary10 : null,
             borderRadius: AppRadius.mediumRadius,
             border: Border.all(
-              color: isSelected ? AppColors.primary : Theme.of(context).brightness == Brightness.dark ? AppColors.borderDark : AppColors.border,
+              color: isSelected ? AppColors.primary : Theme.of(context).brightness == Brightness.dark ? AppColors.borderDark : context.borderColor,
               width: 2,
             ),
           ),
@@ -568,7 +568,7 @@ class _ProfileCreationScreenState extends ConsumerState<ProfileCreationScreen> {
         selectedColor: AppColors.accentAlpha20,
         checkmarkColor: AppColors.accent,
         side: BorderSide(
-          color: isSelected ? AppColors.accent : Theme.of(context).brightness == Brightness.dark ? AppColors.borderDark : AppColors.border,
+          color: isSelected ? AppColors.accent : Theme.of(context).brightness == Brightness.dark ? AppColors.borderDark : context.borderColor,
         ),
       ),
     );

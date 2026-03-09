@@ -1287,7 +1287,7 @@ class _SectionHeader extends StatelessWidget {
           Text(
             title.toUpperCase(),
             style: AppTypography.labelLarge.copyWith(
-              color: color ?? (isDark ? AppColors.textSecondaryDark : context.textSecondary),
+              color: color ?? (context.textSecondary),
               letterSpacing: 1.2,
               fontWeight: FontWeight.w600,
             ),

@@ -687,7 +687,7 @@ class _AddTaskSheetState extends State<_AddTaskSheet> {
               child: Container(
                 padding: EdgeInsets.all(AppSpacing.md),
                 decoration: BoxDecoration(
-                  color: AppColors.surfaceVariant,
+                  color: context.surfaceVariant,
                   borderRadius: AppRadius.mediumRadius,
                 ),
                 child: Row(

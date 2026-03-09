@@ -380,7 +380,7 @@ class _TimelineBar extends StatelessWidget {
           height: 32,
           decoration: BoxDecoration(
             borderRadius: AppRadius.smallRadius,
-            color: AppColors.surfaceVariant,
+            color: context.surfaceVariant,
           ),
           child: LayoutBuilder(
             builder: (context, constraints) {
@@ -419,7 +419,7 @@ class _TimelineBar extends StatelessWidget {
                           width,
                       top: 0,
                       bottom: 0,
-                      child: Container(color: AppColors.surfaceVariant),
+                      child: Container(color: context.surfaceVariant),
                     ),
                 ],
               );

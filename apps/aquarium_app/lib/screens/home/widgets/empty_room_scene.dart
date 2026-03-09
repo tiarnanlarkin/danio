@@ -170,7 +170,7 @@ class EmptyRoomScene extends StatelessWidget {
                 Text(
                   'Your tank awaits 🐠',
                   style: AppTypography.headlineSmall.copyWith(
-                    color: AppColors.textPrimary,
+                    color: context.textPrimary,
                   ),
                 ),
                 const SizedBox(height: AppSpacing.sm),

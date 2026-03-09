@@ -126,7 +126,7 @@ class AchievementCard extends StatelessWidget {
                     Positioned.fill(
                       child: Container(
                         decoration: BoxDecoration(
-                          color: AppColors.textPrimary,
+                          color: context.textPrimary,
                           borderRadius: const BorderRadius.vertical(
                             top: Radius.circular(14),
                           ),
@@ -206,7 +206,7 @@ class AchievementCard extends StatelessWidget {
                         ? 'Hidden achievement'
                         : achievement.description,
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: isLocked ? context.textHint : AppColors.textPrimary,
+                      color: isLocked ? context.textHint : context.textPrimary,
                     ),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,

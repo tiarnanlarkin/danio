@@ -165,7 +165,7 @@ class _EnhancedOnboardingScreenState
                             decoration: BoxDecoration(
                               color: index <= _currentPage
                                   ? AppColors.primary
-                                  : AppColors.surfaceVariant,
+                                  : context.surfaceVariant,
                               borderRadius: BorderRadius.circular(2),
                             ),
                           ),
@@ -525,10 +525,10 @@ class _SelectionCard extends StatelessWidget {
         decoration: BoxDecoration(
           color: isSelected
               ? AppOverlays.primary10
-              : AppColors.surface,
+              : context.surfaceColor,
           borderRadius: AppRadius.mediumRadius,
           border: Border.all(
-            color: isSelected ? AppColors.primary : AppColors.surfaceVariant,
+            color: isSelected ? AppColors.primary : context.surfaceVariant,
             width: isSelected ? 2 : 1,
           ),
         ),

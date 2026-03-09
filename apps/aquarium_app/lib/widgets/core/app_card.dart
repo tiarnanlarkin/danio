@@ -242,7 +242,7 @@ class _AppCardState extends State<AppCard> with SingleTickerProviderStateMixin {
     switch (widget.variant) {
       case AppCardVariant.elevated:
         return BoxDecoration(
-          color: widget.backgroundColor ?? (isDark ? AppColors.cardDark : AppColors.card),
+          color: widget.backgroundColor ?? (context.cardColor),
           borderRadius: radius,
           boxShadow: widget.boxShadow ?? (_isPressed ? AppShadows.soft : AppShadows.medium),
         );
@@ -252,14 +252,14 @@ class _AppCardState extends State<AppCard> with SingleTickerProviderStateMixin {
           color: widget.backgroundColor ?? Colors.transparent,
           borderRadius: radius,
           border: widget.border ?? Border.all(
-            color: isDark ? AppColors.borderDark : AppColors.border,
+            color: context.borderColor,
             width: 1,
           ),
         );
         
       case AppCardVariant.filled:
         return BoxDecoration(
-          color: widget.backgroundColor ?? (isDark ? AppColors.surfaceVariantDark : AppColors.surfaceVariant),
+          color: widget.backgroundColor ?? (context.surfaceVariant),
           borderRadius: radius,
         );
         
@@ -377,7 +377,7 @@ class InfoCard extends StatelessWidget {
                 Text(
                   title,
                   style: AppTypography.titleSmall.copyWith(
-                    color: isDark ? AppColors.textPrimaryDark : AppColors.textPrimary,
+                    color: context.textPrimary,
                   ),
                 ),
                 if (subtitle != null) ...[
@@ -385,7 +385,7 @@ class InfoCard extends StatelessWidget {
                   Text(
                     subtitle!,
                     style: AppTypography.bodySmall.copyWith(
-                      color: isDark ? AppColors.textSecondaryDark : context.textSecondary,
+                      color: context.textSecondary,
                     ),
                   ),
                 ],
@@ -395,7 +395,7 @@ class InfoCard extends StatelessWidget {
           if (onTap != null)
             Icon(
               Icons.chevron_right,
-              color: isDark ? AppColors.textHintDark : context.textHint,
+              color: context.textHint,
             ),
         ],
       ),
@@ -448,7 +448,7 @@ class StatisticCard extends StatelessWidget {
           Text(
             value,
             style: AppTypography.headlineMedium.copyWith(
-              color: isDark ? AppColors.textPrimaryDark : AppColors.textPrimary,
+              color: context.textPrimary,
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -456,7 +456,7 @@ class StatisticCard extends StatelessWidget {
           Text(
             label,
             style: AppTypography.bodySmall.copyWith(
-              color: isDark ? AppColors.textSecondaryDark : context.textSecondary,
+              color: context.textSecondary,
             ),
           ),
         ],
@@ -538,7 +538,7 @@ class ActionCard extends StatelessWidget {
           Text(
             title,
             style: AppTypography.titleSmall.copyWith(
-              color: isDark ? AppColors.textPrimaryDark : AppColors.textPrimary,
+              color: context.textPrimary,
             ),
           ),
           if (description != null) ...[
@@ -546,7 +546,7 @@ class ActionCard extends StatelessWidget {
             Text(
               description!,
               style: AppTypography.bodySmall.copyWith(
-                color: isDark ? AppColors.textSecondaryDark : context.textSecondary,
+                color: context.textSecondary,
               ),
             ),
           ],

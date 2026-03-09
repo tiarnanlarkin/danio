@@ -89,7 +89,7 @@ class CyclingStatusCard extends StatelessWidget {
       return const SizedBox.shrink();
     }
 
-    final statusColor = _getStatusColor(status);
+    final statusColor = _getStatusColor(status, context);
     
     return AppCard(
       border: Border.all(color: statusColor, width: 2),
@@ -130,10 +130,10 @@ class CyclingStatusCard extends StatelessWidget {
     );
   }
 
-  Color _getStatusColor(CyclingStatus status) {
+  Color _getStatusColor(CyclingStatus status, BuildContext context) {
     switch (status) {
       case CyclingStatus.notStarted:
-        return AppColors.textHint;
+        return context.textHint;
       case CyclingStatus.earlyStage:
         return AppColors.warning;
       case CyclingStatus.midCycle:
@@ -143,7 +143,7 @@ class CyclingStatusCard extends StatelessWidget {
       case CyclingStatus.cycled:
         return AppColors.success;
       case CyclingStatus.unknown:
-        return AppColors.textHint;
+        return context.textHint;
     }
   }
 
@@ -211,7 +211,7 @@ class _StatusIcon extends StatelessWidget {
 
     switch (status) {
       case CyclingStatus.notStarted:
-        color = AppColors.textHint;
+        color = context.textHint;
         icon = Icons.hourglass_empty;
         break;
       case CyclingStatus.earlyStage:
@@ -231,7 +231,7 @@ class _StatusIcon extends StatelessWidget {
         icon = Icons.check_circle;
         break;
       case CyclingStatus.unknown:
-        color = AppColors.textHint;
+        color = context.textHint;
         icon = Icons.help_outline;
         break;
     }
@@ -282,7 +282,7 @@ class _CyclingProgressBar extends StatelessWidget {
           borderRadius: AppRadius.xsRadius,
           child: LinearProgressIndicator(
             value: _progress,
-            backgroundColor: AppColors.surfaceVariant,
+            backgroundColor: context.surfaceVariant,
             valueColor: AlwaysStoppedAnimation(
               status == CyclingStatus.cycled
                   ? AppColors.success

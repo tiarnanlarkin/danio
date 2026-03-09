@@ -484,7 +484,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
         return Container(
           height: 200,
           decoration: BoxDecoration(
-            color: AppColors.surfaceVariant,
+            color: context.surfaceVariant,
             borderRadius: AppRadius.mediumRadius,
           ),
           child: Center(
@@ -545,7 +545,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
                 borderRadius: AppRadius.xsRadius,
                 child: LinearProgressIndicator(
                   value: (_currentQuizQuestion + 1) / quiz.questions.length,
-                  backgroundColor: AppColors.surfaceVariant,
+                  backgroundColor: context.surfaceVariant,
                   valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
                   minHeight: 8,
                 ),
@@ -610,10 +610,10 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
                   child: Container(
                     padding: EdgeInsets.all(AppSpacing.md),
                     decoration: BoxDecoration(
-                      color: bgColor ?? AppColors.surface,
+                      color: bgColor ?? context.surfaceColor,
                       borderRadius: AppRadius.mediumRadius,
                       border: Border.all(
-                        color: borderColor ?? AppColors.surfaceVariant,
+                        color: borderColor ?? context.surfaceVariant,
                         width: borderColor != null ? 2 : 1,
                       ),
                     ),
@@ -625,7 +625,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
                           decoration: BoxDecoration(
                             color: isSelected && !_answered
                                 ? AppColors.primary
-                                : AppColors.surfaceVariant,
+                                : context.surfaceVariant,
                             shape: BoxShape.circle,
                           ),
                           child: Center(

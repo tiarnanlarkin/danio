@@ -316,11 +316,11 @@ class _SpacedRepetitionPracticeScreenState
         padding: EdgeInsets.all(AppSpacing.md),
         decoration: BoxDecoration(
           color: enabled
-              ? AppColors.surface
+              ? context.surfaceColor
               : AppColors.whiteAlpha50,
           borderRadius: AppRadius.mediumRadius,
           border: Border.all(
-            color: enabled ? color.withAlpha(76) : AppColors.surfaceVariant,
+            color: enabled ? color.withAlpha(76) : context.surfaceVariant,
           ),
         ),
         child: Row(
@@ -330,7 +330,7 @@ class _SpacedRepetitionPracticeScreenState
               decoration: BoxDecoration(
                 color: enabled
                     ? color.withAlpha(26)
-                    : AppColors.surfaceVariant,
+                    : context.surfaceVariant,
                 borderRadius: AppRadius.mediumRadius,
               ),
               child: Icon(icon, color: enabled ? color : context.textHint),
@@ -364,7 +364,7 @@ class _SpacedRepetitionPracticeScreenState
               decoration: BoxDecoration(
                 color: enabled && count > 0
                     ? color.withAlpha(51)
-                    : AppColors.surfaceVariant,
+                    : context.surfaceVariant,
                 borderRadius: AppRadius.mediumRadius,
               ),
               child: Text(
@@ -392,9 +392,9 @@ class _SpacedRepetitionPracticeScreenState
     return Container(
       padding: EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        color: context.surfaceColor,
         borderRadius: AppRadius.mediumRadius,
-        border: Border.all(color: AppColors.surfaceVariant),
+        border: Border.all(color: context.surfaceVariant),
       ),
       child: Column(
         children: MasteryLevel.values.map((level) {
@@ -431,7 +431,7 @@ class _SpacedRepetitionPracticeScreenState
                       const SizedBox(height: AppSpacing.xs),
                       LinearProgressIndicator(
                         value: percentage / 100,
-                        backgroundColor: AppColors.surfaceVariant,
+                        backgroundColor: context.surfaceVariant,
                         valueColor: AlwaysStoppedAnimation<Color>(
                           _getMasteryColor(level),
                         ),
@@ -632,7 +632,7 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
             Container(
               padding: EdgeInsets.all(AppSpacing.md),
               decoration: BoxDecoration(
-                color: AppColors.surface,
+                color: context.surfaceColor,
                 boxShadow: [
                   BoxShadow(
                     color: AppOverlays.black5,
@@ -663,7 +663,7 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
                     borderRadius: AppRadius.xsRadius,
                     child: LinearProgressIndicator(
                       value: progress,
-                      backgroundColor: AppColors.surfaceVariant,
+                      backgroundColor: context.surfaceVariant,
                       valueColor: const AlwaysStoppedAnimation<Color>(
                         AppColors.primary,
                       ),
@@ -758,9 +758,9 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
           Container(
             padding: EdgeInsets.all(AppSpacing.lg),
             decoration: BoxDecoration(
-              color: AppColors.surface,
+              color: context.surfaceColor,
               borderRadius: AppRadius.mediumRadius,
-              border: Border.all(color: AppColors.surfaceVariant),
+              border: Border.all(color: context.surfaceVariant),
               boxShadow: [
                 BoxShadow(
                   color: AppOverlays.black5,
@@ -798,7 +798,7 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
                     child: Text(
                       _currentCard.questionText!,
                       style: AppTypography.bodyMedium.copyWith(
-                        color: AppColors.textPrimary,
+                        color: context.textPrimary,
                         height: 1.5,
                       ),
                     ),
@@ -1229,7 +1229,7 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
             Container(
               padding: EdgeInsets.all(AppSpacing.sm2),
               decoration: BoxDecoration(
-                color: AppColors.surfaceVariant,
+                color: context.surfaceVariant,
                 borderRadius: AppRadius.smallRadius,
               ),
               child: Column(

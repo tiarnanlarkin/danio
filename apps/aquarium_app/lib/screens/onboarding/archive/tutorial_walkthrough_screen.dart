@@ -154,7 +154,7 @@ class _TutorialWalkthroughScreenState
                 // Progress indicator
                 LinearProgressIndicator(
                   value: (_currentStep + 1) / (_steps.length + 1),
-                  backgroundColor: Theme.of(context).brightness == Brightness.dark ? AppColors.surfaceVariantDark : AppColors.surfaceVariant,
+                  backgroundColor: Theme.of(context).brightness == Brightness.dark ? context.surfaceVariant : context.surfaceVariant,
                   valueColor: const AlwaysStoppedAnimation(AppColors.accent),
                 ),
 
@@ -229,7 +229,7 @@ class _TutorialWalkthroughScreenState
         // Progress indicator
         LinearProgressIndicator(
           value: 1.0,
-          backgroundColor: Theme.of(context).brightness == Brightness.dark ? AppColors.surfaceVariantDark : AppColors.surfaceVariant,
+          backgroundColor: Theme.of(context).brightness == Brightness.dark ? context.surfaceVariant : context.surfaceVariant,
           valueColor: const AlwaysStoppedAnimation(AppColors.accent),
         ),
 
@@ -490,10 +490,10 @@ class _TankTypeCard extends StatelessWidget {
           decoration: BoxDecoration(
             color: isSelected
                 ? AppOverlays.primary10
-                : Theme.of(context).brightness == Brightness.dark ? AppColors.surfaceDark : AppColors.surfaceVariant,
+                : Theme.of(context).brightness == Brightness.dark ? AppColors.surfaceDark : context.surfaceVariant,
             borderRadius: AppRadius.mediumRadius,
             border: Border.all(
-              color: isSelected ? AppColors.primary : Theme.of(context).brightness == Brightness.dark ? AppColors.borderDark : AppColors.border,
+              color: isSelected ? AppColors.primary : Theme.of(context).brightness == Brightness.dark ? AppColors.borderDark : context.borderColor,
               width: 2,
             ),
           ),
@@ -552,10 +552,10 @@ class _WaterTypeCard extends StatelessWidget {
         decoration: BoxDecoration(
           color: isSelected
               ? AppOverlays.accent10
-              : Theme.of(context).brightness == Brightness.dark ? AppColors.surfaceDark : AppColors.surfaceVariant,
+              : Theme.of(context).brightness == Brightness.dark ? AppColors.surfaceDark : context.surfaceVariant,
           borderRadius: AppRadius.mediumRadius,
           border: Border.all(
-            color: isSelected ? AppColors.accent : Theme.of(context).brightness == Brightness.dark ? AppColors.borderDark : AppColors.border,
+            color: isSelected ? AppColors.accent : Theme.of(context).brightness == Brightness.dark ? AppColors.borderDark : context.borderColor,
             width: 2,
           ),
         ),

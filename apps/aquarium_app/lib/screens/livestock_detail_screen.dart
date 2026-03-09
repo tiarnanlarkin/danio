@@ -189,7 +189,7 @@ class _HeaderCard extends StatelessWidget {
                   _InfoChip(
                     icon: Icons.psychology,
                     label: species!.temperament,
-                    color: _temperamentColor(species!.temperament),
+                    color: _temperamentColor(species!.temperament, context),
                   ),
                 ],
               ],
@@ -201,7 +201,7 @@ class _HeaderCard extends StatelessWidget {
                   _InfoChip(
                     icon: Icons.school,
                     label: species!.careLevel,
-                    color: _careLevelColor(species!.careLevel),
+                    color: _careLevelColor(species!.careLevel, context),
                   ),
                   const SizedBox(width: AppSpacing.sm),
                   _InfoChip(
@@ -216,7 +216,7 @@ class _HeaderCard extends StatelessWidget {
       );
   }
 
-  Color _temperamentColor(String temperament) {
+  Color _temperamentColor(String temperament, BuildContext context) {
     switch (temperament.toLowerCase()) {
       case 'peaceful':
         return AppColors.success;
@@ -225,11 +225,11 @@ class _HeaderCard extends StatelessWidget {
       case 'aggressive':
         return AppColors.error;
       default:
-        return AppColors.textSecondary;
+        return context.textSecondary;
     }
   }
 
-  Color _careLevelColor(String level) {
+  Color _careLevelColor(String level, BuildContext context) {
     switch (level.toLowerCase()) {
       case 'beginner':
         return AppColors.success;
@@ -238,7 +238,7 @@ class _HeaderCard extends StatelessWidget {
       case 'advanced':
         return AppColors.error;
       default:
-        return AppColors.textSecondary;
+        return context.textSecondary;
     }
   }
 }
@@ -541,7 +541,7 @@ class _ParamPill extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm4, vertical: AppSpacing.sm3),
       decoration: BoxDecoration(
-        color: AppColors.surfaceVariant,
+        color: context.surfaceVariant,
         borderRadius: AppRadius.mediumRadius,
         border: Border.all(color: AppOverlays.surfaceVariant60),
       ),

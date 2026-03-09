@@ -32,15 +32,15 @@ class ThermometerItem extends StatelessWidget {
         child: CustomPaint(
           painter: _ThermometerPainter(
             fillPercent: fillPercent,
-            color: _tempColor(temperature),
+            color: _tempColor(temperature, context),
           ),
         ),
       ),
     ),);
   }
 
-  Color _tempColor(double? temp) {
-    if (temp == null) return AppColors.textHint;
+  Color _tempColor(double? temp, BuildContext context) {
+    if (temp == null) return context.textHint;
     if (temp < 22) return AppColors.info;
     if (temp < 26) return AppColors.success;
     if (temp < 30) return AppColors.warning;
@@ -169,7 +169,7 @@ class TestTubeRack extends StatelessWidget {
         child: CustomPaint(
           painter: _TestTubeRackPainter(
             colors: [
-              _phColor(ph),
+              _phColor(ph, context),
               _ammoniaColor(ammonia),
               _nitriteColor(nitrite),
               _nitrateColor(nitrate),
@@ -180,8 +180,8 @@ class TestTubeRack extends StatelessWidget {
     ),);
   }
 
-  Color _phColor(double? val) {
-    if (val == null) return AppColors.border;
+  Color _phColor(double? val, BuildContext context) {
+    if (val == null) return context.borderColor;
     if (val < 6.5) return AppColors.warning;
     if (val < 7.5) return AppColors.success;
     return AppColors.primary;

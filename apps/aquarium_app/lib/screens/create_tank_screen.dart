@@ -83,7 +83,7 @@ class _CreateTankScreenState extends ConsumerState<CreateTankScreen> {
                 ),
                 child: LinearProgressIndicator(
                   value: (_currentPage + 1) / 3,
-                  backgroundColor: AppColors.surfaceVariant,
+                  backgroundColor: context.surfaceVariant,
                   valueColor: const AlwaysStoppedAnimation(AppColors.primary),
                 ),
               ),
@@ -488,7 +488,7 @@ class _TypeCard extends StatelessWidget {
             decoration: BoxDecoration(
               color: isSelected
                   ? AppOverlays.primary10
-                  : AppColors.surfaceVariant,
+                  : context.surfaceVariant,
               borderRadius: AppRadius.mediumRadius,
               border: Border.all(
                 color: isSelected ? AppColors.primary : Colors.transparent,
@@ -513,7 +513,7 @@ class _TypeCard extends StatelessWidget {
                     style: AppTypography.labelLarge.copyWith(
                       color: isSelected
                           ? AppColors.primary
-                          : AppColors.textPrimary,
+                          : context.textPrimary,
                     ),
                   ),
                 ),
@@ -862,7 +862,7 @@ class _WaterTypePage extends StatelessWidget {
                     vertical: 14,
                   ),
                   decoration: BoxDecoration(
-                    color: AppColors.surfaceVariant,
+                    color: context.surfaceVariant,
                     borderRadius: AppRadius.mediumRadius,
                   ),
                   child: Row(
@@ -975,7 +975,7 @@ class _WaterTypeOption extends StatelessWidget {
           decoration: BoxDecoration(
             color: isSelected
                 ? AppOverlays.primary10
-                : AppColors.surfaceVariant,
+                : context.surfaceVariant,
             borderRadius: AppRadius.mediumRadius,
             border: Border.all(
               color: isSelected ? AppColors.primary : Colors.transparent,
@@ -998,7 +998,7 @@ class _WaterTypeOption extends StatelessWidget {
                         style: AppTypography.labelLarge.copyWith(
                           color: isSelected
                               ? AppColors.primary
-                              : AppColors.textPrimary,
+                              : context.textPrimary,
                         ),
                       ),
                     ),

@@ -11,13 +11,13 @@ class AcclimationGuideScreen extends StatelessWidget {
       appBar: AppBar(title: const Text('Fish Acclimation Guide')),
       body: ListView.builder(
         padding: EdgeInsets.all(AppSpacing.md),
-        itemCount: _buildItems().length,
-        itemBuilder: (context, index) => _buildItems()[index],
+        itemCount: _buildItems(context).length,
+        itemBuilder: (context, index) => _buildItems(context)[index],
       ),
     );
   }
 
-  List<Widget> _buildItems() {
+  List<Widget> _buildItems(BuildContext context) {
     return [
           // Intro
           AppCard(
@@ -28,7 +28,7 @@ class AcclimationGuideScreen extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    Icon(Icons.info_outline, color: AppColors.textSecondary),
+                    Icon(Icons.info_outline, color: context.textSecondary),
                     const SizedBox(width: AppSpacing.sm),
                     Text(
                       'Why Acclimate?',
@@ -288,7 +288,7 @@ class _StepCard extends StatelessWidget {
                           vertical: 2,
                         ),
                         decoration: BoxDecoration(
-                          color: AppColors.surfaceVariant,
+                          color: context.surfaceVariant,
                           borderRadius: AppRadius.smallRadius,
                         ),
                         child: Row(

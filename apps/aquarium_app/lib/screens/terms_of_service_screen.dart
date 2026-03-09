@@ -163,10 +163,10 @@ class TermsOfServiceScreen extends StatelessWidget {
     return Container(
       padding: EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
-        color: highlighted ? AppColors.warningAlpha05 : AppColors.surface,
+        color: highlighted ? AppColors.warningAlpha05 : context.surfaceColor,
         borderRadius: AppRadius.mediumRadius,
         border: Border.all(
-          color: highlighted ? AppColors.warningAlpha20 : AppColors.border,
+          color: highlighted ? AppColors.warningAlpha20 : context.borderColor,
         ),
       ),
       child: Row(
@@ -243,9 +243,9 @@ class TermsOfServiceScreen extends StatelessWidget {
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: AppSpacing.md),
-            _buildContactRow(Icons.email, 'support@aquariumhobbyist.app'),
+            _buildContactRow(Icons.email, 'support@aquariumhobbyist.app', context),
             const SizedBox(height: AppSpacing.sm),
-            _buildContactRow(Icons.person, 'Developer: Tiarnan Larkin'),
+            _buildContactRow(Icons.person, 'Developer: Tiarnan Larkin', context),
           ],
         ),
         actions: [
@@ -258,13 +258,13 @@ class TermsOfServiceScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildContactRow(IconData icon, String text) {
+  Widget _buildContactRow(IconData icon, String text, BuildContext context) {
     return Row(
       children: [
-        Icon(icon, size: AppIconSizes.xs, color: AppColors.textSecondary),
+        Icon(icon, size: AppIconSizes.xs, color: context.textSecondary),
         const SizedBox(width: AppSpacing.sm),
         Expanded(
-          child: Text(text, style: TextStyle(color: AppColors.textSecondary)),
+          child: Text(text, style: TextStyle(color: context.textSecondary)),
         ),
       ],
     );

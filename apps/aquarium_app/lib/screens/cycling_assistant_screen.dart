@@ -272,7 +272,7 @@ class _CycleDiagram extends StatelessWidget {
           borderRadius: AppRadius.xsRadius,
           child: LinearProgressIndicator(
             value: progress,
-            backgroundColor: AppColors.surfaceVariant,
+            backgroundColor: context.surfaceVariant,
             valueColor: AlwaysStoppedAnimation(
               phaseIndex == 4 ? AppColors.success : AppColors.primary,
             ),
@@ -297,7 +297,7 @@ class _CycleDiagram extends StatelessWidget {
                       shape: BoxShape.circle,
                       color: isActive
                           ? (isCurrent ? AppColors.primary : AppColors.success)
-                          : AppColors.surfaceVariant,
+                          : context.surfaceVariant,
                       border: isCurrent
                           ? Border.all(color: AppColors.primary, width: 2)
                           : null,

@@ -496,7 +496,7 @@ class _MistakeItem extends StatelessWidget {
             child: RichText(
               text: TextSpan(
                 style: AppTypography.bodySmall.copyWith(
-                  color: AppColors.textPrimary,
+                  color: context.textPrimary,
                 ),
                 children: [
                   TextSpan(

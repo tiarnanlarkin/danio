@@ -246,7 +246,7 @@ class _SpeciesCard extends StatelessWidget {
 
   const _SpeciesCard({required this.species, required this.onTap});
 
-  Color _careLevelColor() {
+  Color _careLevelColor(BuildContext context) {
     switch (species.careLevel) {
       case 'Easy':
         return AppColors.success;
@@ -255,11 +255,11 @@ class _SpeciesCard extends StatelessWidget {
       case 'Advanced':
         return AppColors.error;
       default:
-        return AppColors.textSecondary;
+        return context.textSecondary;
     }
   }
 
-  Color _temperamentColor() {
+  Color _temperamentColor(BuildContext context) {
     switch (species.temperament) {
       case 'Peaceful':
         return AppColors.success;
@@ -268,7 +268,7 @@ class _SpeciesCard extends StatelessWidget {
       case 'Aggressive':
         return AppColors.error;
       default:
-        return AppColors.textSecondary;
+        return context.textSecondary;
     }
   }
 
@@ -304,10 +304,10 @@ class _SpeciesCard extends StatelessWidget {
             Wrap(
               spacing: 6,
               children: [
-                _MiniChip(label: species.careLevel, color: _careLevelColor()),
+                _MiniChip(label: species.careLevel, color: _careLevelColor(context)),
                 _MiniChip(
                   label: species.temperament,
-                  color: _temperamentColor(),
+                  color: _temperamentColor(context),
                 ),
                 _MiniChip(
                   label: '${species.adultSizeCm.toStringAsFixed(0)}cm',
@@ -523,7 +523,7 @@ class _StatChip extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm3, vertical: AppSpacing.xs2),
       decoration: BoxDecoration(
-        color: AppColors.surfaceVariant,
+        color: context.surfaceVariant,
         borderRadius: AppRadius.mediumRadius,
       ),
       child: Row(

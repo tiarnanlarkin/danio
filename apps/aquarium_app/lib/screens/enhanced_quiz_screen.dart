@@ -319,7 +319,7 @@ class _EnhancedQuizScreenState extends ConsumerState<EnhancedQuizScreen>
                     ),
                     const SizedBox(height: AppSpacing.lg),
                     DefaultTextStyle.merge(
-                      style: TextStyle(color: AppColors.textPrimary),
+                      style: TextStyle(color: context.textPrimary),
                       child: ExerciseWidget(
                         exercise: exercise,
                         onAnswer: _onAnswer,
@@ -436,7 +436,7 @@ class _EnhancedQuizScreenState extends ConsumerState<EnhancedQuizScreen>
                   borderRadius: AppRadius.smallRadius,
                   child: LinearProgressIndicator(
                     value: progress,
-                    backgroundColor: AppColors.surfaceVariant,
+                    backgroundColor: context.surfaceVariant,
                     valueColor: AlwaysStoppedAnimation<Color>(
                       AppColors.primary,
                     ),
@@ -712,7 +712,7 @@ class _EnhancedQuizScreenState extends ConsumerState<EnhancedQuizScreen>
                               return CircularProgressIndicator(
                                 value: value,
                                 strokeWidth: 6,
-                                backgroundColor: AppColors.surfaceVariant,
+                                backgroundColor: context.surfaceVariant,
                                 valueColor: AlwaysStoppedAnimation<Color>(
                                   passed ? AppColors.success : AppColors.warning,
                                 ),

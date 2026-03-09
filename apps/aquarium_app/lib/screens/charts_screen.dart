@@ -421,7 +421,7 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
           drawVerticalLine: false,
           horizontalInterval: _getInterval(_selectedParam),
           getDrawingHorizontalLine: (value) =>
-              FlLine(color: AppColors.surfaceVariant, strokeWidth: 1),
+              FlLine(color: context.surfaceVariant, strokeWidth: 1),
         ),
         titlesData: FlTitlesData(
           leftTitles: AxisTitles(
@@ -893,7 +893,7 @@ class _ChartControlChip extends StatelessWidget {
         decoration: BoxDecoration(
           color: isActive
               ? AppOverlays.primary10
-              : AppColors.surfaceVariant,
+              : context.surfaceVariant,
           borderRadius: AppRadius.largeRadius,
           border: isActive
               ? Border.all(color: AppColors.primary, width: 1.5)

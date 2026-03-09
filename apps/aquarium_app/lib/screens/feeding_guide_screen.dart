@@ -11,13 +11,13 @@ class FeedingGuideScreen extends StatelessWidget {
       appBar: AppBar(title: const Text('Feeding Guide')),
       body: ListView.builder(
         padding: EdgeInsets.all(AppSpacing.md),
-        itemCount: _buildItems().length,
-        itemBuilder: (context, index) => _buildItems()[index],
+        itemCount: _buildItems(context).length,
+        itemBuilder: (context, index) => _buildItems(context)[index],
       ),
     );
   }
 
-  List<Widget> _buildItems() {
+  List<Widget> _buildItems(BuildContext context) {
     return [
           // Golden rule
           AppCard(
@@ -192,7 +192,7 @@ class FeedingGuideScreen extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    Icon(Icons.no_food, color: AppColors.textSecondary),
+                    Icon(Icons.no_food, color: context.textSecondary),
                     const SizedBox(width: AppSpacing.sm),
                     Text('Fasting Days', style: AppTypography.headlineSmall),
                   ],
@@ -335,7 +335,7 @@ class _FoodTypeCard extends StatelessWidget {
                 Container(
                   padding: EdgeInsets.all(AppSpacing.sm),
                   decoration: BoxDecoration(
-                    color: AppColors.surfaceVariant,
+                    color: context.surfaceVariant,
                     borderRadius: AppRadius.smallRadius,
                   ),
                   child: Row(

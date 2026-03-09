@@ -464,7 +464,7 @@ class _ProgressCircle extends StatelessWidget {
               CircularProgressIndicator(
                 value: progress,
                 strokeWidth: 8,
-                backgroundColor: AppColors.surfaceVariant,
+                backgroundColor: context.surfaceVariant,
                 valueColor: AlwaysStoppedAnimation(
                   progress == 1.0 ? AppColors.success : AppColors.primary,
                 ),

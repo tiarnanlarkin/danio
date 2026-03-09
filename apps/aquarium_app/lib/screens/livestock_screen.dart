@@ -969,9 +969,9 @@ class _AddLivestockSheetState extends ConsumerState<_AddLivestockSheet> {
               Container(
                 margin: const EdgeInsets.only(top: 4),
                 decoration: BoxDecoration(
-                  color: AppColors.surfaceVariant,
+                  color: context.surfaceVariant,
                   borderRadius: AppRadius.smallRadius,
-                  border: Border.all(color: AppColors.surfaceVariant),
+                  border: Border.all(color: context.surfaceVariant),
                 ),
                 child: Column(
                   children: _suggestions

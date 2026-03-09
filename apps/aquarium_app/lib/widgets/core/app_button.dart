@@ -291,7 +291,7 @@ class _AppButtonState extends State<AppButton> with SingleTickerProviderStateMix
       case AppButtonVariant.destructive:
         return Colors.white;
       case AppButtonVariant.ghost:
-        return isDark ? AppColors.textPrimaryDark : AppColors.textPrimary;
+        return context.textPrimary;
     }
   }
 
@@ -405,7 +405,7 @@ class AppIconButton extends StatelessWidget {
               icon,
               size: iconSize,
               color: isEnabled 
-                  ? (color ?? (isDark ? AppColors.textPrimaryDark : AppColors.textPrimary))
+                  ? (color ?? (context.textPrimary))
                   : (isDark ? AppOverlays.white30 : AppOverlays.black30),
             ),
           ),

@@ -90,7 +90,7 @@ class TankSwitcher extends StatelessWidget {
                         Text(
                           tanks[currentIndex].name,
                           style: AppTypography.labelLarge.copyWith(
-                            color: AppColors.textPrimary,
+                            color: context.textPrimary,
                             fontWeight: FontWeight.w600,
                           ),
                           overflow: TextOverflow.ellipsis,

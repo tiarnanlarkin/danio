@@ -155,14 +155,14 @@ class _AppListTileState extends State<AppListTile> {
     }
 
     final titleColor = widget.isDisabled
-        ? (isDark ? AppColors.textHintDark : context.textHint)
+        ? (context.textHint)
         : widget.isDestructive
             ? AppColors.error
-            : (isDark ? AppColors.textPrimaryDark : AppColors.textPrimary);
+            : (context.textPrimary);
 
     final subtitleColor = widget.isDisabled
-        ? (isDark ? AppColors.textHintDark : context.textHint).withAlpha(153)
-        : (isDark ? AppColors.textSecondaryDark : context.textSecondary);
+        ? (context.textHint).withAlpha(153)
+        : (context.textSecondary);
 
     Widget tile = Container(
       constraints: BoxConstraints(minHeight: widget.minHeight ?? 56),
@@ -203,7 +203,7 @@ class _AppListTileState extends State<AppListTile> {
                   Text(
                     widget.meta!,
                     style: AppTypography.labelSmall.copyWith(
-                      color: isDark ? AppColors.textHintDark : context.textHint,
+                      color: context.textHint,
                     ),
                   ),
                 ],
@@ -247,7 +247,7 @@ class _AppListTileState extends State<AppListTile> {
           Divider(
             height: 1,
             indent: widget.leading != null ? spacing + 40 : 0,
-            color: isDark ? AppColors.borderDark : AppColors.border,
+            color: context.borderColor,
           ),
         ],
       );
@@ -266,10 +266,10 @@ class _AppListTileState extends State<AppListTile> {
         icon.icon,
         size: icon.size ?? AppIconSizes.md,
         color: widget.isDisabled
-            ? (isDark ? AppColors.textHintDark : context.textHint)
+            ? (context.textHint)
             : widget.isDestructive
                 ? AppColors.error
-                : (icon.color ?? (isDark ? AppColors.textSecondaryDark : context.textSecondary)),
+                : (icon.color ?? (context.textSecondary)),
       );
     }
     
@@ -312,7 +312,7 @@ class AppListSection extends StatelessWidget {
               child: Text(
                 header!.toUpperCase(),
                 style: AppTypography.labelSmall.copyWith(
-                  color: isDark ? AppColors.textHintDark : context.textHint,
+                  color: context.textHint,
                   letterSpacing: 0.5,
                 ),
               ),
@@ -321,21 +321,21 @@ class AppListSection extends StatelessWidget {
           if (isCard)
             Container(
               decoration: BoxDecoration(
-                color: isDark ? AppColors.cardDark : AppColors.card,
+                color: context.cardColor,
                 borderRadius: AppRadius.mediumRadius,
               ),
               clipBehavior: Clip.antiAlias,
-              child: _buildChildren(isDark),
+              child: _buildChildren(isDark, context),
             )
           else
-            _buildChildren(isDark),
+            _buildChildren(isDark, context),
           if (footer != null) ...[
             Padding(
               padding: EdgeInsets.only(left: AppSpacing.xs, top: AppSpacing.sm),
               child: Text(
                 footer!,
                 style: AppTypography.bodySmall.copyWith(
-                  color: isDark ? AppColors.textHintDark : context.textHint,
+                  color: context.textHint,
                 ),
               ),
             ),
@@ -345,7 +345,7 @@ class AppListSection extends StatelessWidget {
     );
   }
 
-  Widget _buildChildren(bool isDark) {
+  Widget _buildChildren(bool isDark, BuildContext context) {
     if (!showDividers) {
       return Column(children: children);
     }
@@ -359,7 +359,7 @@ class AppListSection extends StatelessWidget {
               height: 1,
               indent: AppSpacing.md,
               endIndent: AppSpacing.md,
-              color: isDark ? AppColors.borderDark : AppColors.border,
+              color: context.borderColor,
             ),
         ],
       ],
@@ -402,7 +402,7 @@ class NavListTile extends StatelessWidget {
           Icon(
             Icons.chevron_right,
             color: Theme.of(context).brightness == Brightness.dark
-                ? AppColors.textHintDark
+                ? context.textHint
                 : context.textHint,
           ),
         ],

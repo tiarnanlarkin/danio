@@ -89,7 +89,7 @@ class TankDetailScreen extends ConsumerWidget {
           child: Column(
             children: List.generate(
               3,
-              (_) => const ListTile(
+              (_) => ListTile(
                 leading: Icon(Icons.schedule, color: AppColors.textHint),
                 title: Text('Loading task...'),
                 subtitle: Text('Due soon'),

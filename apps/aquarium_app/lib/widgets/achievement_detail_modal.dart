@@ -152,7 +152,7 @@ class AchievementDetailModal extends StatelessWidget {
                   ? 'This is a hidden achievement. Complete specific actions to reveal and unlock it!'
                   : achievement.description,
               style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                color: isLocked ? context.textHint : AppColors.textPrimary,
+                color: isLocked ? context.textHint : context.textPrimary,
               ),
               textAlign: TextAlign.center,
             ),
@@ -193,7 +193,7 @@ class AchievementDetailModal extends StatelessWidget {
                       child: LinearProgressIndicator(
                         value: progressPercent,
                         minHeight: 12,
-                        backgroundColor: AppColors.card,
+                        backgroundColor: context.cardColor,
                         valueColor: AlwaysStoppedAnimation<Color>(rarityColor),
                       ),
                     ),

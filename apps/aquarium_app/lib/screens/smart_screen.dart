@@ -274,7 +274,7 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
                   width: 40, height: 4,
                   margin: const EdgeInsets.symmetric(vertical: AppSpacing.md),
                   decoration: BoxDecoration(
-                    color: AppColors.border,
+                    color: context.borderColor,
                     borderRadius: BorderRadius.circular(2),
                   ),
                 ),
@@ -316,7 +316,7 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
                   Container(width: 40, height: 4,
                     margin: const EdgeInsets.symmetric(vertical: AppSpacing.md),
                     alignment: Alignment.center,
-                    decoration: BoxDecoration(color: AppColors.border, borderRadius: BorderRadius.circular(2))),
+                    decoration: BoxDecoration(color: context.borderColor, borderRadius: BorderRadius.circular(2))),
                 ]);
               }
               if (i == 1) {

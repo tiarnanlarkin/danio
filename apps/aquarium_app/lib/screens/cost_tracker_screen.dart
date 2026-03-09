@@ -487,7 +487,7 @@ class _CategoryBar extends StatelessWidget {
             borderRadius: AppRadius.xsRadius,
             child: LinearProgressIndicator(
               value: percentage,
-              backgroundColor: AppColors.surfaceVariant,
+              backgroundColor: context.surfaceVariant,
               valueColor: AlwaysStoppedAnimation(AppColors.primary),
               minHeight: 8,
             ),

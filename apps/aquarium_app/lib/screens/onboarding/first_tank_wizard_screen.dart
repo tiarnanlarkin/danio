@@ -125,7 +125,7 @@ class _FirstTankWizardScreenState extends ConsumerState<FirstTankWizardScreen> {
             // Progress indicator
             LinearProgressIndicator(
               value: (_currentStep + 1) / 4,
-              backgroundColor: AppColors.surface,
+              backgroundColor: context.surfaceColor,
               valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
             ),
 
@@ -323,13 +323,13 @@ class _FirstTankWizardScreenState extends ConsumerState<FirstTankWizardScreen> {
                       border: Border.all(
                         color: isSelected
                             ? AppColors.primary
-                            : AppColors.border,
+                            : context.borderColor,
                         width: 2,
                       ),
                       borderRadius: AppRadius.mediumRadius,
                       color: isSelected
                           ? AppOverlays.primary10
-                          : AppColors.surface,
+                          : context.surfaceColor,
                     ),
                     child: Row(
                       children: [
@@ -349,7 +349,7 @@ class _FirstTankWizardScreenState extends ConsumerState<FirstTankWizardScreen> {
                                 style: AppTypography.titleMedium.copyWith(
                                   color: isSelected
                                       ? AppColors.primary
-                                      : AppColors.textPrimary,
+                                      : context.textPrimary,
                                 ),
                               ),
                               Text(

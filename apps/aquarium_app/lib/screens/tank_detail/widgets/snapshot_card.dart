@@ -208,7 +208,7 @@ class ParamPill extends StatelessWidget {
     required this.status,
   });
 
-  Color _statusColor() {
+  Color _statusColor(BuildContext context) {
     switch (status) {
       case ParamStatus.safe:
         return AppColors.paramSafe;
@@ -217,13 +217,13 @@ class ParamPill extends StatelessWidget {
       case ParamStatus.danger:
         return AppColors.paramDanger;
       case ParamStatus.unknown:
-        return AppColors.textHint;
+        return context.textHint;
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final c = _statusColor();
+    final c = _statusColor(context);
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: AppSpacing.sm3),

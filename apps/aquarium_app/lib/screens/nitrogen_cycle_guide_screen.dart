@@ -300,7 +300,7 @@ class _MethodCard extends StatelessWidget {
                     vertical: 4,
                   ),
                   decoration: BoxDecoration(
-                    color: AppColors.surfaceVariant,
+                    color: context.surfaceVariant,
                     borderRadius: AppRadius.smallRadius,
                   ),
                   child: Text(duration, style: AppTypography.bodySmall),

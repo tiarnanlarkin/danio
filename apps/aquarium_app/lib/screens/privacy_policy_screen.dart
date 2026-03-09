@@ -112,7 +112,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
               'Photos (stored in app\'s local directory)',
               'Reminders (notification schedules)',
               'App settings (preferences, themes)',
-            ]),
+            ], context),
 
             _buildHighlight(
               'How Is Data Stored?',
@@ -133,7 +133,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
               'Device information',
               'Crash reports',
               'Advertising identifiers',
-            ], isNegative: true),
+            ], context, isNegative: true),
 
             _buildSection(
               'Third-Party Services',
@@ -145,17 +145,9 @@ class PrivacyPolicyScreen extends StatelessWidget {
               'The app requests the following permissions for local functionality only:',
             ),
 
-            _buildPermissionCard(
-              'Notifications',
-              'To send you reminders about water changes and maintenance tasks. Uses flutter_local_notifications (local only, no external communication).',
-              Icons.notifications,
-            ),
+            _buildPermissionCard('Notifications', 'To send you reminders about water changes and maintenance tasks. Uses flutter_local_notifications (local only, no external communication).', Icons.notifications, context),
 
-            _buildPermissionCard(
-              'Storage/Photos',
-              'To let you add photos to your tanks and create/restore backups. Uses image_picker and file_picker (local file access only).',
-              Icons.photo_library,
-            ),
+            _buildPermissionCard('Storage/Photos', 'To let you add photos to your tanks and create/restore backups. Uses image_picker and file_picker (local file access only).', Icons.photo_library, context),
 
             const SizedBox(height: AppSpacing.md),
 
@@ -170,26 +162,10 @@ class PrivacyPolicyScreen extends StatelessWidget {
               'Since all data is stored locally on your device, you have complete control:',
             ),
 
-            _buildRightCard(
-              'Access',
-              'View all your data anytime within the app',
-              Icons.visibility,
-            ),
-            _buildRightCard(
-              'Export',
-              'Use the Backup feature to export all data to a JSON file',
-              Icons.file_download,
-            ),
-            _buildRightCard(
-              'Delete',
-              'Delete individual items, clear all data, or uninstall the app',
-              Icons.delete,
-            ),
-            _buildRightCard(
-              'Portability',
-              'Backup files are in standard JSON format',
-              Icons.sync_alt,
-            ),
+            _buildRightCard('Access', 'View all your data anytime within the app', Icons.visibility, context),
+            _buildRightCard('Export', 'Use the Backup feature to export all data to a JSON file', Icons.file_download, context),
+            _buildRightCard('Delete', 'Delete individual items, clear all data, or uninstall the app', Icons.delete, context),
+            _buildRightCard('Portability', 'Backup files are in standard JSON format', Icons.sync_alt, context),
 
             _buildSection(
               'Data Security',
@@ -201,7 +177,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
               'No network transmission - app doesn\'t communicate with external servers',
               'Protected by your device\'s security (lock screen, encryption)',
               'No account system - no passwords to leak, no accounts to compromise',
-            ]),
+            ], context),
 
             _buildSection(
               'Backup Security',
@@ -223,7 +199,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
               'If you have questions about this Privacy Policy or data practices:',
             ),
 
-            _buildContactCard(),
+            _buildContactCard(context),
 
             const SizedBox(height: AppSpacing.xl),
 
@@ -317,7 +293,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildBulletList(List<String> items, {bool isNegative = false}) {
+  Widget _buildBulletList(List<String> items, BuildContext context, {bool isNegative = false}) {
     return Padding(
       padding: const EdgeInsets.only(left: 16, bottom: 24),
       child: Column(
@@ -335,7 +311,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
                     size: isNegative ? 16 : 8,
                     color: isNegative
                         ? AppColors.error
-                        : AppColors.textSecondary,
+                        : context.textSecondary,
                   ),
                 ),
                 const SizedBox(width: AppSpacing.sm2),
@@ -385,14 +361,14 @@ class PrivacyPolicyScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildPermissionCard(String title, String description, IconData icon) {
+  Widget _buildPermissionCard(String title, String description, IconData icon, BuildContext context) {
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
-        color: AppColors.card,
+        color: context.cardColor,
         borderRadius: AppRadius.mediumRadius,
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: context.borderColor),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -415,7 +391,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
                 Text(
                   description,
                   style: AppTypography.bodySmall.copyWith(
-                    color: AppColors.textSecondary,
+                    color: context.textSecondary,
                     height: 1.4,
                   ),
                 ),
@@ -427,7 +403,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildRightCard(String title, String description, IconData icon) {
+  Widget _buildRightCard(String title, String description, IconData icon, BuildContext context) {
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: EdgeInsets.all(AppSpacing.md),
@@ -449,7 +425,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
                 Text(
                   description,
                   style: AppTypography.bodySmall.copyWith(
-                    color: AppColors.textSecondary,
+                    color: context.textSecondary,
                   ),
                 ),
               ],
@@ -460,14 +436,14 @@ class PrivacyPolicyScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildContactCard() {
+  Widget _buildContactCard(BuildContext context) {
     return Container(
       margin: const EdgeInsets.only(bottom: 24),
       padding: EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
-        color: AppColors.card,
+        color: context.cardColor,
         borderRadius: AppRadius.mediumRadius,
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: context.borderColor),
       ),
       child: Column(
         children: [
@@ -503,7 +479,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
           Text(
             'Response time: Within 7 business days',
             style: AppTypography.bodySmall.copyWith(
-              color: AppColors.textSecondary,
+              color: context.textSecondary,
               fontStyle: FontStyle.italic,
             ),
           ),

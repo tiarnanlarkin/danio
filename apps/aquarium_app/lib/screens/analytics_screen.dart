@@ -696,7 +696,7 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
 
                 Color color;
                 if (dayData.xp == 0) {
-                  color = Theme.of(context).brightness == Brightness.dark ? AppColors.surfaceVariantDark : AppColors.border;
+                  color = Theme.of(context).brightness == Brightness.dark ? context.surfaceVariant : context.borderColor;
                 } else if (dayData.xp < 25) {
                   color = const Color(0xFFA5D6A7);
                 } else if (dayData.xp < 50) {
@@ -726,7 +726,7 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
             children: [
               Text('Less', style: Theme.of(context).textTheme.labelSmall),
               const SizedBox(width: AppSpacing.xs),
-              _buildLegendBox(Theme.of(context).brightness == Brightness.dark ? AppColors.surfaceVariantDark : AppColors.border),
+              _buildLegendBox(Theme.of(context).brightness == Brightness.dark ? context.surfaceVariant : context.borderColor),
               _buildLegendBox(const Color(0xFFA5D6A7)),
               _buildLegendBox(const Color(0xFF66BB6A)),
               _buildLegendBox(DanioColors.emeraldGreen),
@@ -908,7 +908,7 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
                       const SizedBox(height: AppSpacing.xs),
                       LinearProgressIndicator(
                         value: topic.masteryPercentage,
-                        backgroundColor: Theme.of(context).brightness == Brightness.dark ? AppColors.surfaceVariantDark : AppColors.border,
+                        backgroundColor: Theme.of(context).brightness == Brightness.dark ? context.surfaceVariant : context.borderColor,
                         color: topic.isStrong
                             ? DanioColors.emeraldGreen
                             : topic.needsWork

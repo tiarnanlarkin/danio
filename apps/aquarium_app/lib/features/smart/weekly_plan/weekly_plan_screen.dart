@@ -313,7 +313,7 @@ class _DayCard extends StatelessWidget {
         initiallyExpanded: index == 0,
         children: day.tasks.map((task) {
           return ListTile(
-            leading: _priorityIcon(task.priority),
+            leading: _priorityIcon(task.priority, context),
             title: Text(task.task, style: theme.textTheme.bodyMedium),
             trailing: Text(
               '${task.durationMins}m',
@@ -328,10 +328,10 @@ class _DayCard extends StatelessWidget {
     ).animate(delay: (index * 50).ms).fadeIn().slideX(begin: 0.05);
   }
 
-  Widget _priorityIcon(String priority) {
+  Widget _priorityIcon(String priority, BuildContext context) {
     final (icon, color) = switch (priority.toLowerCase()) {
       'high' => (Icons.arrow_upward, AppColors.error),
-      'low' => (Icons.arrow_downward, AppColors.textSecondary),
+      'low' => (Icons.arrow_downward, context.textSecondary),
       _ => (Icons.remove, AppColors.primary),
     };
     return Icon(icon, size: 16, color: color);

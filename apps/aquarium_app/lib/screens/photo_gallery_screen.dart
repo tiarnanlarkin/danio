@@ -214,7 +214,7 @@ class _PhotoThumbnail extends StatelessWidget {
       onTap: onTap,
       child: Container(
         decoration: BoxDecoration(
-          color: AppColors.surfaceVariant,
+          color: context.surfaceVariant,
           borderRadius: AppRadius.smallRadius,
         ),
         child: ClipRRect(

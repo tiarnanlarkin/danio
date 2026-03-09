@@ -105,7 +105,7 @@ class _AnomalyRow extends ConsumerWidget {
       padding: const EdgeInsets.symmetric(vertical: AppSpacing.xxs),
       child: Row(
         children: [
-          _severityDot(anomaly.severity),
+          _severityDot(anomaly.severity, context),
           const SizedBox(width: AppSpacing.xs),
           Expanded(
             child: Text(
@@ -128,11 +128,11 @@ class _AnomalyRow extends ConsumerWidget {
     );
   }
 
-  Widget _severityDot(AnomalySeverity severity) {
+  Widget _severityDot(AnomalySeverity severity, BuildContext context) {
     final color = switch (severity) {
       AnomalySeverity.critical => AppColors.error,
       AnomalySeverity.alert => AppColors.warning,
-      AnomalySeverity.warning => AppColors.textSecondary,
+      AnomalySeverity.warning => context.textSecondary,
     };
     return Container(
       width: 8,

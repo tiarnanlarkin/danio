@@ -199,7 +199,7 @@ class _ExperienceAssessmentScreenState
             // Progress bar
             LinearProgressIndicator(
               value: progress,
-              backgroundColor: AppColors.surface,
+              backgroundColor: context.surfaceColor,
               valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
             ),
 
@@ -254,13 +254,13 @@ class _ExperienceAssessmentScreenState
                                         border: Border.all(
                                           color: isSelected
                                               ? AppColors.primary
-                                              : AppColors.border,
+                                              : context.borderColor,
                                           width: 2,
                                         ),
                                         borderRadius: AppRadius.mediumRadius,
                                         color: isSelected
                                             ? AppOverlays.primary10
-                                            : AppColors.surface,
+                                            : context.surfaceColor,
                                       ),
                                       child: Row(
                                         children: [
@@ -271,7 +271,7 @@ class _ExperienceAssessmentScreenState
                                                   .copyWith(
                                                     color: isSelected
                                                         ? AppColors.primary
-                                                        : AppColors.textPrimary,
+                                                        : context.textPrimary,
                                                     fontWeight: isSelected
                                                         ? FontWeight.w600
                                                         : FontWeight.normal,

@@ -156,7 +156,7 @@ class _OptionCard extends StatelessWidget {
             : Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(AppRadius.lg),
         border: Border.all(
-          color: isSelected ? AppColors.primary : AppColors.surfaceVariant,
+          color: isSelected ? AppColors.primary : context.surfaceVariant,
           width: isSelected ? 2 : 1,
         ),
       ),

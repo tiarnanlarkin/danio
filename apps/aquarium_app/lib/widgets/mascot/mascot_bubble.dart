@@ -232,7 +232,7 @@ class _MascotBubbleState extends State<MascotBubble>
             vertical: AppSpacing.sm + 4,
           ),
           decoration: BoxDecoration(
-            color: AppColors.surface,
+            color: context.surfaceColor,
             borderRadius: BorderRadius.only(
               topLeft: const Radius.circular(AppRadius.lg),
               topRight: const Radius.circular(AppRadius.lg),
@@ -262,7 +262,7 @@ class _MascotBubbleState extends State<MascotBubble>
                 child: Text(
                   widget.message,
                   style: AppTypography.bodyMedium.copyWith(
-                    color: AppColors.textPrimary,
+                    color: context.textPrimary,
                   ),
                 ),
               ),
@@ -288,7 +288,7 @@ class _MascotBubbleState extends State<MascotBubble>
             child: Container(
               padding: EdgeInsets.all(AppSpacing.xs),
               decoration: BoxDecoration(
-                color: AppColors.surface,
+                color: context.surfaceColor,
                 shape: BoxShape.circle,
                 boxShadow: AppShadows.subtle,
               ),
@@ -555,7 +555,7 @@ class MascotBanner extends StatelessWidget {
                 Text(
                   message,
                   style: AppTypography.bodyMedium.copyWith(
-                    color: AppColors.textPrimary,
+                    color: context.textPrimary,
                   ),
                 ),
                 if (action != null) ...[

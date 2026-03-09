@@ -233,10 +233,10 @@ Return ONLY valid JSON with these fields (no markdown, no explanation):
     return Container(
       height: 200,
       decoration: BoxDecoration(
-        color: isDark ? AppColors.surfaceDark : AppColors.surfaceVariant,
+        color: context.surfaceVariant,
         borderRadius: AppRadius.md2Radius,
         border: Border.all(
-          color: isDark ? AppColors.borderDark : AppColors.border,
+          color: context.borderColor,
           width: 2,
           strokeAlign: BorderSide.strokeAlignInside,
         ),
@@ -485,7 +485,7 @@ Return ONLY valid JSON with these fields (no markdown, no explanation):
             return Icon(
               Icons.star,
               size: 14,
-              color: i < level ? AppColors.warning : AppColors.border,
+              color: i < level ? AppColors.warning : context.borderColor,
             );
           }),
         ),

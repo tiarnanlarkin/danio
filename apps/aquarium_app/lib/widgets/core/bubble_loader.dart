@@ -118,7 +118,7 @@ class _BubbleLoaderState extends State<BubbleLoader> {
           Text(
             widget.message!,
             style: AppTypography.bodyMedium.copyWith(
-              color: isDark ? AppColors.textSecondaryDark : context.textSecondary,
+              color: context.textSecondary,
             ),
             textAlign: TextAlign.center,
           ),

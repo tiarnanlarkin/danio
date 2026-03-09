@@ -58,10 +58,10 @@ class LogTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       leading: CircleAvatar(
-        backgroundColor: _getLogColor(log.type).withAlpha(51),
+        backgroundColor: _getLogColor(log.type, context).withAlpha(51),
         child: Icon(
           _getLogIcon(log.type),
-          color: _getLogColor(log.type),
+          color: _getLogColor(log.type, context),
           size: AppIconSizes.sm,
         ),
       ),
@@ -96,7 +96,7 @@ class LogTile extends StatelessWidget {
     }
   }
 
-  Color _getLogColor(LogType type) {
+  Color _getLogColor(LogType type, BuildContext context) {
     switch (type) {
       case LogType.waterTest:
         return AppColors.primary;
@@ -117,7 +117,7 @@ class LogTile extends StatelessWidget {
       case LogType.taskCompleted:
         return AppColors.success;
       case LogType.other:
-        return AppColors.textHint;
+        return context.textHint;
     }
   }
 

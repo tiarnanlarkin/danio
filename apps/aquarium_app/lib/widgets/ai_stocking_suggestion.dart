@@ -140,7 +140,7 @@ class _AiStockingSuggestionSheetState
               width: 40,
               height: 4,
               decoration: BoxDecoration(
-                color: AppColors.border,
+                color: context.borderColor,
                 borderRadius: BorderRadius.circular(2),
               ),
             ),

@@ -208,7 +208,7 @@ class _PillButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bg = action.backgroundColor ?? Colors.white;
-    final fg = action.foregroundColor ?? AppColors.textPrimary;
+    final fg = action.foregroundColor ?? context.textPrimary;
     final isColored = action.backgroundColor != null &&
         action.backgroundColor != Colors.white;
 

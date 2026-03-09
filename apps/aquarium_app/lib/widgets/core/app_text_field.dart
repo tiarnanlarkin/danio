@@ -247,13 +247,13 @@ class _AppTextFieldState extends State<AppTextField> {
               textCapitalization: widget.textCapitalization,
               style: AppTypography.bodyLarge.copyWith(
                 color: widget.enabled
-                    ? (isDark ? AppColors.textPrimaryDark : AppColors.textPrimary)
-                    : (isDark ? AppColors.textHintDark : context.textHint),
+                    ? (context.textPrimary)
+                    : (context.textHint),
               ),
               decoration: InputDecoration(
                 hintText: widget.hint,
                 hintStyle: AppTypography.bodyLarge.copyWith(
-                  color: isDark ? AppColors.textHintDark : context.textHint,
+                  color: context.textHint,
                 ),
                 border: InputBorder.none,
                 contentPadding: EdgeInsets.symmetric(
@@ -282,7 +282,7 @@ class _AppTextFieldState extends State<AppTextField> {
               style: AppTypography.bodySmall.copyWith(
                 color: widget.errorText != null
                     ? AppColors.error
-                    : (isDark ? AppColors.textHintDark : context.textHint),
+                    : (context.textHint),
               ),
             ),
           ],
@@ -293,7 +293,7 @@ class _AppTextFieldState extends State<AppTextField> {
               child: Text(
                 '${_controller.text.length}/${widget.maxLength}',
                 style: AppTypography.labelSmall.copyWith(
-                  color: isDark ? AppColors.textHintDark : context.textHint,
+                  color: context.textHint,
                 ),
               ),
             ),
@@ -313,7 +313,7 @@ class _AppTextFieldState extends State<AppTextField> {
           child: CircularProgressIndicator(
             strokeWidth: 2,
             valueColor: AlwaysStoppedAnimation(
-              isDark ? AppColors.textHintDark : context.textHint,
+              context.textHint,
             ),
           ),
         ),
@@ -374,9 +374,9 @@ class _AppTextFieldState extends State<AppTextField> {
       case AppTextFieldState.focused:
         return AppColors.primary;
       case AppTextFieldState.disabled:
-        return isDark ? AppColors.textHintDark : context.textHint;
+        return context.textHint;
       default:
-        return isDark ? AppColors.textSecondaryDark : context.textSecondary;
+        return context.textSecondary;
     }
   }
 
@@ -384,7 +384,7 @@ class _AppTextFieldState extends State<AppTextField> {
     if (_state == AppTextFieldState.disabled) {
       return isDark ? AppOverlays.white5 : AppOverlays.black5;
     }
-    return isDark ? AppColors.surfaceDark : AppColors.surface;
+    return context.surfaceColor;
   }
 
   Color _getBorderColor(bool isDark) {
@@ -398,18 +398,18 @@ class _AppTextFieldState extends State<AppTextField> {
       case AppTextFieldState.disabled:
         return isDark ? AppOverlays.white10 : AppOverlays.black10;
       default:
-        return isDark ? AppColors.borderDark : AppColors.border;
+        return context.borderColor;
     }
   }
 
   Color _getIconColor(bool isDark) {
     if (_state == AppTextFieldState.disabled) {
-      return isDark ? AppColors.textHintDark : context.textHint;
+      return context.textHint;
     }
     if (_state == AppTextFieldState.focused) {
       return AppColors.primary;
     }
-    return isDark ? AppColors.textSecondaryDark : context.textSecondary;
+    return context.textSecondary;
   }
 }
 

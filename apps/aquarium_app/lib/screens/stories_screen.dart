@@ -299,7 +299,7 @@ class StoryCard extends StatelessWidget {
               border: Border.all(
                 color: isCompleted
                     ? AppColors.successAlpha40
-                    : AppColors.border,
+                    : context.borderColor,
                 width: isCompleted ? 2 : 1,
               ),
             ),

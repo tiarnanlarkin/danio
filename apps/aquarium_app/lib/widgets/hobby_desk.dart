@@ -267,7 +267,7 @@ class ItemDetailPopup extends StatelessWidget {
                           Text(
                             row.value,
                             style: AppTypography.labelLarge.copyWith(
-                              color: row.color ?? AppColors.textPrimary,
+                              color: row.color ?? context.textPrimary,
                             ),
                           ),
                         ],

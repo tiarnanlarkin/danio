@@ -69,6 +69,7 @@ class PlacementResultScreen extends ConsumerWidget {
                       theme,
                       path,
                       recommendation,
+                      context,
                     );
                   }),
                 ],
@@ -206,6 +207,7 @@ class PlacementResultScreen extends ConsumerWidget {
     ThemeData theme,
     LearningPath path,
     SkipRecommendation recommendation,
+    BuildContext context,
   ) {
     return Card(
       margin: const EdgeInsets.only(bottom: 16),
@@ -232,7 +234,7 @@ class PlacementResultScreen extends ConsumerWidget {
                       Text(
                         '${recommendation.score.round()}% correct',
                         style: theme.textTheme.bodySmall?.copyWith(
-                          color: AppColors.textSecondary,
+                          color: context.textSecondary,
                         ),
                       ),
                     ],
@@ -274,7 +276,7 @@ class PlacementResultScreen extends ConsumerWidget {
             Container(
               padding: EdgeInsets.all(AppSpacing.sm2),
               decoration: BoxDecoration(
-                color: AppColors.surfaceVariant,
+                color: context.surfaceVariant,
                 borderRadius: AppRadius.smallRadius,
               ),
               child: Text(
@@ -287,7 +289,7 @@ class PlacementResultScreen extends ConsumerWidget {
               Text(
                 'Skipping ${recommendation.lessonsToSkip.length} of ${path.lessons.length} lessons',
                 style: theme.textTheme.bodySmall?.copyWith(
-                  color: AppColors.textSecondary,
+                  color: context.textSecondary,
                 ),
               ),
             ],
@@ -392,9 +394,9 @@ class PlacementResultScreen extends ConsumerWidget {
                         title: Text(path.title),
                         subtitle: LinearProgressIndicator(
                           value: score / 100,
-                          backgroundColor: AppColors.surfaceVariant,
+                          backgroundColor: context.surfaceVariant,
                           valueColor: AlwaysStoppedAnimation(
-                            _getScoreColor(score),
+                            _getScoreColor(score, context),
                           ),
                         ),
                         trailing: Column(
@@ -405,7 +407,7 @@ class PlacementResultScreen extends ConsumerWidget {
                               '${score.round()}%',
                               style: theme.textTheme.titleMedium?.copyWith(
                                 fontWeight: FontWeight.bold,
-                                color: _getScoreColor(score),
+                                color: _getScoreColor(score, context),
                               ),
                             ),
                             if (recommendation != null)
@@ -464,10 +466,10 @@ class PlacementResultScreen extends ConsumerWidget {
     }
   }
 
-  Color _getScoreColor(double score) {
+  Color _getScoreColor(double score, BuildContext context) {
     if (score >= 80) return AppColors.success;
     if (score >= 60) return AppColors.primary;
     if (score >= 40) return AppColors.warning;
-    return AppColors.textSecondary;
+    return context.textSecondary;
   }
 }

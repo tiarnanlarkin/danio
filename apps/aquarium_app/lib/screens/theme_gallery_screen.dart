@@ -518,7 +518,7 @@ class _ThemeCard extends StatelessWidget {
         decoration: BoxDecoration(
           borderRadius: AppRadius.largeRadius,
           border: Border.all(
-            color: isSelected ? theme.accentBlob : AppColors.border,
+            color: isSelected ? theme.accentBlob : context.borderColor,
             width: isSelected ? 3 : 1,
           ),
           boxShadow: isSelected

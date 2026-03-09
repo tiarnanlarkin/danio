@@ -284,7 +284,7 @@ class _TankSettingsScreenState extends ConsumerState<TankSettingsScreen> {
                       vertical: 14,
                     ),
                     decoration: BoxDecoration(
-                      color: AppColors.surfaceVariant,
+                      color: context.surfaceVariant,
                       borderRadius: AppRadius.mediumRadius,
                     ),
                     child: Row(

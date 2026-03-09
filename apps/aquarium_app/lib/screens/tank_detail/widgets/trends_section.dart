@@ -191,7 +191,7 @@ class SparklineCard extends StatelessWidget {
         width: 110,
         padding: EdgeInsets.all(AppSpacing.sm2),
         decoration: BoxDecoration(
-          color: AppColors.surfaceVariant,
+          color: context.surfaceVariant,
           borderRadius: AppRadius.mediumRadius,
           border: Border.all(color: AppOverlays.surfaceVariant60),
         ),

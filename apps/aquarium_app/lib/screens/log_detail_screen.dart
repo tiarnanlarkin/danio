@@ -122,7 +122,7 @@ class LogDetailScreen extends ConsumerWidget {
                           errorWidget: Container(
                             width: 120,
                             height: 120,
-                            color: AppColors.surfaceVariant,
+                            color: context.surfaceVariant,
                             child: const Icon(Icons.broken_image_outlined),
                           ),
                         ),
@@ -246,14 +246,14 @@ class _WaterTestCard extends StatelessWidget {
               spacing: 10,
               runSpacing: 10,
               children: [
-                _kv('Temp', test.temperature?.toStringAsFixed(1), '°C'),
-                _kv('pH', test.ph?.toStringAsFixed(1), null),
-                _kv('NH₃', test.ammonia?.toStringAsFixed(2), 'ppm'),
-                _kv('NO₂', test.nitrite?.toStringAsFixed(2), 'ppm'),
-                _kv('NO₃', test.nitrate?.toStringAsFixed(0), 'ppm'),
-                _kv('GH', test.gh?.toStringAsFixed(0), 'dGH'),
-                _kv('KH', test.kh?.toStringAsFixed(0), 'dKH'),
-                _kv('PO₄', test.phosphate?.toStringAsFixed(2), 'ppm'),
+                _kv('Temp', test.temperature?.toStringAsFixed(1), '°C', context),
+                _kv('pH', test.ph?.toStringAsFixed(1), null, context),
+                _kv('NH₃', test.ammonia?.toStringAsFixed(2), 'ppm', context),
+                _kv('NO₂', test.nitrite?.toStringAsFixed(2), 'ppm', context),
+                _kv('NO₃', test.nitrate?.toStringAsFixed(0), 'ppm', context),
+                _kv('GH', test.gh?.toStringAsFixed(0), 'dGH', context),
+                _kv('KH', test.kh?.toStringAsFixed(0), 'dKH', context),
+                _kv('PO₄', test.phosphate?.toStringAsFixed(2), 'ppm', context),
               ],
             ),
           ],
@@ -262,12 +262,12 @@ class _WaterTestCard extends StatelessWidget {
     );
   }
 
-  Widget _kv(String k, String? v, String? unit) {
+  Widget _kv(String k, String? v, String? unit, BuildContext context) {
     final value = (v == null || v == 'null') ? '-' : v;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: AppSpacing.sm3),
       decoration: BoxDecoration(
-        color: AppColors.surfaceVariant,
+        color: context.surfaceVariant,
         borderRadius: AppRadius.mediumRadius,
       ),
       child: Column(

@@ -110,7 +110,7 @@ class _TankPickerSheetState extends ConsumerState<TankPickerSheet> {
                   decoration: BoxDecoration(
                     color: isSelected
                         ? AppOverlays.primary10
-                        : AppColors.surfaceVariant,
+                        : context.surfaceVariant,
                     borderRadius: AppRadius.mediumRadius,
                     border: isSelected
                         ? Border.all(color: AppColors.primary, width: 2)
@@ -143,7 +143,7 @@ class _TankPickerSheetState extends ConsumerState<TankPickerSheet> {
                       style: AppTypography.labelLarge.copyWith(
                         color: isSelected
                             ? AppColors.primary
-                            : AppColors.textPrimary,
+                            : context.textPrimary,
                         fontWeight: isSelected
                             ? FontWeight.w600
                             : FontWeight.w500,

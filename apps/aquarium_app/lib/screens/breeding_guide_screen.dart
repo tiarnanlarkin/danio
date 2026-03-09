@@ -11,13 +11,13 @@ class BreedingGuideScreen extends StatelessWidget {
       appBar: AppBar(title: const Text('Fish Breeding Guide')),
       body: ListView.builder(
         padding: EdgeInsets.all(AppSpacing.md),
-        itemCount: _buildItems().length,
-        itemBuilder: (context, index) => _buildItems()[index],
+        itemCount: _buildItems(context).length,
+        itemBuilder: (context, index) => _buildItems(context)[index],
       ),
     );
   }
 
-  List<Widget> _buildItems() {
+  List<Widget> _buildItems(BuildContext context) {
     return [
           // Intro
           AppCard(
@@ -28,7 +28,7 @@ class BreedingGuideScreen extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    Icon(Icons.favorite, color: AppColors.textSecondary),
+                    Icon(Icons.favorite, color: context.textSecondary),
                     const SizedBox(width: AppSpacing.sm),
                     Text(
                       'Breeding Basics',

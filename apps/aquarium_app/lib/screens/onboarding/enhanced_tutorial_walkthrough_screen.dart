@@ -292,7 +292,7 @@ class _EnhancedTutorialWalkthroughScreenState
           LinearProgressIndicator(
             value: value,
             minHeight: 6,
-            backgroundColor: Theme.of(context).brightness == Brightness.dark ? AppColors.surfaceVariantDark : AppColors.surfaceVariant,
+            backgroundColor: Theme.of(context).brightness == Brightness.dark ? context.surfaceVariant : context.surfaceVariant,
             valueColor: AlwaysStoppedAnimation(
               _currentStep < _steps.length
                   ? _steps[_currentStep].color
@@ -593,7 +593,7 @@ class _EnhancedTutorialWalkthroughScreenState
       shape: RoundedRectangleBorder(
         borderRadius: AppRadius.mediumRadius,
         side: BorderSide(
-          color: _useDemoData ? AppColors.accent : AppColors.border,
+          color: _useDemoData ? AppColors.accent : context.borderColor,
           width: _useDemoData ? 2 : 1,
         ),
       ),
@@ -679,7 +679,7 @@ class _EnhancedTutorialWalkthroughScreenState
           Container(
             padding: EdgeInsets.all(AppSpacing.sm2),
             decoration: BoxDecoration(
-              color: AppColors.card,
+              color: context.cardColor,
               borderRadius: AppRadius.smallRadius,
             ),
             child: Row(
@@ -814,10 +814,10 @@ class _TankTypeCard extends StatelessWidget {
           decoration: BoxDecoration(
             color: isSelected
                 ? AppOverlays.primary10
-                : Theme.of(context).brightness == Brightness.dark ? AppColors.surfaceDark : AppColors.surfaceVariant,
+                : Theme.of(context).brightness == Brightness.dark ? AppColors.surfaceDark : context.surfaceVariant,
             borderRadius: AppRadius.mediumRadius,
             border: Border.all(
-              color: isSelected ? AppColors.primary : Theme.of(context).brightness == Brightness.dark ? AppColors.borderDark : AppColors.border,
+              color: isSelected ? AppColors.primary : Theme.of(context).brightness == Brightness.dark ? AppColors.borderDark : context.borderColor,
               width: isSelected ? 2 : 1,
             ),
           ),
@@ -877,10 +877,10 @@ class _WaterTypeCard extends StatelessWidget {
         decoration: BoxDecoration(
           color: isSelected
               ? AppOverlays.accent10
-              : Theme.of(context).brightness == Brightness.dark ? AppColors.surfaceDark : AppColors.surfaceVariant,
+              : Theme.of(context).brightness == Brightness.dark ? AppColors.surfaceDark : context.surfaceVariant,
           borderRadius: AppRadius.mediumRadius,
           border: Border.all(
-            color: isSelected ? AppColors.accent : Theme.of(context).brightness == Brightness.dark ? AppColors.borderDark : AppColors.border,
+            color: isSelected ? AppColors.accent : Theme.of(context).brightness == Brightness.dark ? AppColors.borderDark : context.borderColor,
             width: isSelected ? 2 : 1,
           ),
         ),

@@ -111,7 +111,7 @@ class _XpProgressBarState extends ConsumerState<XpProgressBar>
                           'Level ${profile.currentLevel}',
                           style: AppTypography.labelMedium.copyWith(
                             fontWeight: FontWeight.bold,
-                            color: AppColors.textPrimary,
+                            color: context.textPrimary,
                           ),
                         ),
                       ],
@@ -144,7 +144,7 @@ class _XpProgressBarState extends ConsumerState<XpProgressBar>
                     Container(
                       height: widget.height,
                       decoration: BoxDecoration(
-                        color: AppColors.surfaceVariant,
+                        color: context.surfaceVariant,
                         borderRadius: BorderRadius.circular(widget.height / 2),
                       ),
                     ),

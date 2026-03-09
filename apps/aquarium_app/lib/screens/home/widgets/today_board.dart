@@ -62,7 +62,7 @@ class TodayBoardCard extends ConsumerWidget {
         ].take(maxItems).toList();
 
         if (combined.isEmpty) {
-          return _buildEmptyState();
+          return _buildEmptyState(context);
         }
 
         return _TodayBoardContent(tasks: combined);
@@ -70,7 +70,7 @@ class TodayBoardCard extends ConsumerWidget {
     );
   }
 
-  Widget _buildEmptyState() {
+  Widget _buildEmptyState(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(
         horizontal: AppSpacing.md,
@@ -93,7 +93,7 @@ class TodayBoardCard extends ConsumerWidget {
           Text(
             'All caught up! 🎉',
             style: AppTypography.labelMedium.copyWith(
-              color: AppColors.textSecondary,
+              color: context.textSecondary,
             ),
           ),
         ],
@@ -218,7 +218,7 @@ class _TaskRow extends StatelessWidget {
             child: Text(
               task.title,
               style: AppTypography.bodySmall.copyWith(
-                color: isOverdue ? AppColors.error : AppColors.textPrimary,
+                color: isOverdue ? AppColors.error : context.textPrimary,
                 fontWeight: isOverdue || isToday
                     ? FontWeight.w600
                     : FontWeight.w400,

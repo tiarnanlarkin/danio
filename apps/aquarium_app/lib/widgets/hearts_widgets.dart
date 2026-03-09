@@ -356,7 +356,7 @@ class _OutOfHeartsModalState extends ConsumerState<OutOfHeartsModal> {
               Container(
                 padding: EdgeInsets.all(AppSpacing.md),
                 decoration: BoxDecoration(
-                  color: AppColors.surfaceVariant,
+                  color: context.surfaceVariant,
                   borderRadius: AppRadius.mediumRadius,
                 ),
                 child: Row(

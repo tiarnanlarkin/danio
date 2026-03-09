@@ -111,7 +111,7 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
                           borderRadius: AppRadius.xsRadius,
                           child: LinearProgressIndicator(
                             value: 0.5,
-                            backgroundColor: AppColors.surfaceVariant,
+                            backgroundColor: context.surfaceVariant,
                             valueColor: const AlwaysStoppedAnimation<Color>(
                               AppColors.primary,
                             ),
@@ -324,7 +324,7 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
                                   borderRadius: AppRadius.xsRadius,
                                   child: LinearProgressIndicator(
                                     value: progress,
-                                    backgroundColor: AppColors.surfaceVariant,
+                                    backgroundColor: context.surfaceVariant,
                                     valueColor: const AlwaysStoppedAnimation<Color>(
                                       AppColors.primary,
                                     ),
@@ -790,7 +790,7 @@ class _LazyLearningPathCardState extends ConsumerState<_LazyLearningPathCard> {
 
     return Container(
       decoration: BoxDecoration(
-        color: isDark ? AppColors.surfaceDark : AppColors.card,
+        color: context.cardColor,
         borderRadius: BorderRadius.circular(AppRadius.lg),
         boxShadow: [
           BoxShadow(
@@ -914,14 +914,14 @@ class _LazyLearningPathCardState extends ConsumerState<_LazyLearningPathCard> {
                     decoration: BoxDecoration(
                       color: isDark
                           ? AppColors.whiteAlpha10
-                          : AppColors.surfaceVariant,
+                          : context.surfaceVariant,
                       borderRadius: AppRadius.md2Radius,
                     ),
                     child: Text(
                       '${widget.completedLessons}/${widget.totalLessons}',
                       style: AppTypography.labelSmall.copyWith(
                         color: isDark
-                            ? AppColors.textSecondaryDark
+                            ? context.textSecondary
                             : context.textSecondary,
                         fontWeight: FontWeight.w600,
                       ),
@@ -974,7 +974,7 @@ class _LazyLearningPathCardState extends ConsumerState<_LazyLearningPathCard> {
                       ? AppOverlays.success20
                       : isUnlocked
                           ? AppOverlays.primary10
-                          : AppColors.surfaceVariant,
+                          : context.surfaceVariant,
                   shape: BoxShape.circle,
                 ),
                 child: Icon(

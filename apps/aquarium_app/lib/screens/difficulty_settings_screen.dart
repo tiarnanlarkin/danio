@@ -635,7 +635,7 @@ class _DifficultySettingsScreenState extends State<DifficultySettingsScreen> {
       child: LinearProgressIndicator(
         value: skillLevel,
         minHeight: 12,
-        backgroundColor: Theme.of(context).brightness == Brightness.dark ? AppColors.surfaceVariantDark : AppColors.border,
+        backgroundColor: Theme.of(context).brightness == Brightness.dark ? context.surfaceVariant : context.borderColor,
         valueColor: AlwaysStoppedAnimation<Color>(
           _getSkillLevelColor(skillLevel),
         ),

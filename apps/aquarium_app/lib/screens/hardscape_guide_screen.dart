@@ -11,13 +11,13 @@ class HardscapeGuideScreen extends StatelessWidget {
       appBar: AppBar(title: const Text('Hardscape Guide')),
       body: ListView.builder(
         padding: EdgeInsets.all(AppSpacing.md),
-        itemCount: _buildItems().length,
-        itemBuilder: (context, index) => _buildItems()[index],
+        itemCount: _buildItems(context).length,
+        itemBuilder: (context, index) => _buildItems(context)[index],
       ),
     );
   }
 
-  List<Widget> _buildItems() {
+  List<Widget> _buildItems(BuildContext context) {
     return [
           // Intro
           AppCard(
@@ -28,7 +28,7 @@ class HardscapeGuideScreen extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    Icon(Icons.landscape, color: AppColors.textSecondary),
+                    Icon(Icons.landscape, color: context.textSecondary),
                     const SizedBox(width: AppSpacing.sm),
                     Text(
                       'What is Hardscape?',

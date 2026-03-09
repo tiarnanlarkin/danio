@@ -37,6 +37,7 @@ class DailyGoalProgress extends ConsumerWidget {
             painter: _CircularProgressPainter(
               progress: dailyGoal.progress,
               isCompleted: dailyGoal.isCompleted,
+              trackColor: context.surfaceVariant,
             ),
             child: Center(
               child: Column(
@@ -93,8 +94,9 @@ class DailyGoalProgress extends ConsumerWidget {
 class _CircularProgressPainter extends CustomPainter {
   final double progress;
   final bool isCompleted;
+  final Color trackColor;
 
-  _CircularProgressPainter({required this.progress, required this.isCompleted});
+  _CircularProgressPainter({required this.progress, required this.isCompleted, required this.trackColor});
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -103,7 +105,7 @@ class _CircularProgressPainter extends CustomPainter {
 
     // Background circle
     final backgroundPaint = Paint()
-      ..color = AppColors.surfaceVariant
+      ..color = trackColor
       ..style = PaintingStyle.stroke
       ..strokeWidth = 8
       ..strokeCap = StrokeCap.round;
@@ -169,7 +171,7 @@ class DailyGoalCard extends ConsumerWidget {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: Theme.of(context).brightness == Brightness.dark
-              ? [AppColors.cardDark, AppColors.surfaceVariantDark]
+              ? [AppColors.cardDark, context.surfaceVariant]
               : [AppOverlays.white95, AppOverlays.white88],
         ),
         borderRadius: AppRadius.mediumRadius,
@@ -213,7 +215,7 @@ class DailyGoalCard extends ConsumerWidget {
                           fontWeight: FontWeight.w600,
                           color: dailyGoal.isCompleted
                               ? AppColors.success
-                              : AppColors.textPrimary,
+                              : context.textPrimary,
                         ),
                       ),
                       const SizedBox(height: AppSpacing.xs),
@@ -229,7 +231,7 @@ class DailyGoalCard extends ConsumerWidget {
                         const SizedBox(height: AppSpacing.xs),
                         LinearProgressIndicator(
                           value: dailyGoal.progress,
-                          backgroundColor: AppColors.surfaceVariant,
+                          backgroundColor: context.surfaceVariant,
                           valueColor: AlwaysStoppedAnimation<Color>(
                             AppColors.primary,
                           ),

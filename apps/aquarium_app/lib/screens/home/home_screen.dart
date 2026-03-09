@@ -167,12 +167,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 color: isDark ? AppColors.backgroundDark : null,
                 gradient: isDark
                     ? null
-                    : const LinearGradient(
+                    : LinearGradient(
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
                         colors: [
                           AppOverlays.surfaceVariant50,
-                          AppColors.surfaceVariant,
+                          context.surfaceVariant,
                         ],
                       ),
               ),
@@ -804,7 +804,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         child: Text(
                           'Welcome back! Your fish missed you 🌿',
                           style: AppTypography.labelLarge.copyWith(
-                            color: AppColors.textPrimary,
+                            color: context.textPrimary,
                           ),
                         ),
                       ),
@@ -954,7 +954,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           children: [
             Container(width: 40, height: 4,
               decoration: BoxDecoration(
-                color: AppColors.border,
+                color: context.borderColor,
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
@@ -1069,7 +1069,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               child: Container(
                 width: 40, height: 4,
                 decoration: BoxDecoration(
-                  color: AppColors.border,
+                  color: context.borderColor,
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
@@ -1541,7 +1541,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         border: Border.all(
                           color: isSelected
                               ? theme.accentBlob
-                              : AppColors.border,
+                              : context.borderColor,
                           width: isSelected ? 3 : 1,
                         ),
                         gradient: LinearGradient(

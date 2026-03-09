@@ -250,7 +250,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
               child: Container(
                 padding: EdgeInsets.all(AppSpacing.md),
                 decoration: BoxDecoration(
-                  color: AppColors.surfaceVariant,
+                  color: context.surfaceVariant,
                   borderRadius: AppRadius.mediumRadius,
                 ),
                 child: Row(
@@ -345,7 +345,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
               decoration: BoxDecoration(
                 color: _bulkEntryMode
                     ? AppOverlays.primary10
-                    : AppColors.surfaceVariant,
+                    : context.surfaceVariant,
                 borderRadius: AppRadius.smallRadius,
               ),
               child: Row(
@@ -434,7 +434,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
           Container(
             padding: EdgeInsets.all(AppSpacing.md),
             decoration: BoxDecoration(
-              color: AppColors.surfaceVariant,
+              color: context.surfaceVariant,
               borderRadius: AppRadius.mediumRadius,
             ),
             child: Column(
@@ -1070,7 +1070,7 @@ class _TypeChip extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
-          color: isSelected ? AppColors.primary : AppColors.surfaceVariant,
+          color: isSelected ? AppColors.primary : context.surfaceVariant,
           borderRadius: AppRadius.largeRadius,
         ),
         child: Row(
@@ -1201,7 +1201,7 @@ class _PhotoGrid extends StatelessWidget {
                 errorBuilder: (_, __, ___) => Container(
                   width: 96,
                   height: 96,
-                  color: AppColors.surfaceVariant,
+                  color: context.surfaceVariant,
                   child: const Icon(Icons.broken_image_outlined),
                 ),
               ),

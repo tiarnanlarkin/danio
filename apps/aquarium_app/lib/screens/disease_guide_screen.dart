@@ -156,7 +156,7 @@ class _DiseaseCard extends StatelessWidget {
                             vertical: 4,
                           ),
                           decoration: BoxDecoration(
-                            color: AppColors.surfaceVariant,
+                            color: context.surfaceVariant,
                             borderRadius: AppRadius.mediumRadius,
                           ),
                           child: Text(s, style: AppTypography.bodySmall),

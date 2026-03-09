@@ -223,7 +223,7 @@ class _PlacementTestScreenState extends ConsumerState<PlacementTestScreen> {
         LinearProgressIndicator(
           value: _progress,
           minHeight: 8,
-          backgroundColor: AppColors.surfaceVariant,
+          backgroundColor: context.surfaceVariant,
           valueColor: const AlwaysStoppedAnimation<Color>(AppColors.accent),
         ),
         Padding(
@@ -284,7 +284,7 @@ class _PlacementTestScreenState extends ConsumerState<PlacementTestScreen> {
               color: backgroundColor,
               borderRadius: AppRadius.mediumRadius,
               border: Border.all(
-                color: borderColor ?? AppColors.border,
+                color: borderColor ?? context.borderColor,
                 width: 2,
               ),
             ),
@@ -299,7 +299,7 @@ class _PlacementTestScreenState extends ConsumerState<PlacementTestScreen> {
                         ? (showResult && isCorrect
                               ? AppColors.success
                               : AppColors.accent)
-                        : AppColors.surfaceVariant,
+                        : context.surfaceVariant,
                   ),
                   child: Center(
                     child: Text(
@@ -334,7 +334,7 @@ class _PlacementTestScreenState extends ConsumerState<PlacementTestScreen> {
     final isCorrect = _selectedAnswer == _currentQuestion.correctIndex;
 
     return Card(
-      color: isCorrect ? AppOverlays.success10 : AppColors.surfaceVariant,
+      color: isCorrect ? AppOverlays.success10 : context.surfaceVariant,
       child: Padding(
         padding: EdgeInsets.all(AppSpacing.md),
         child: Column(

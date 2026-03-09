@@ -215,7 +215,7 @@ class _StockingCalculatorScreenState extends State<StockingCalculatorScreen> {
                       borderRadius: AppRadius.smallRadius,
                       child: LinearProgressIndicator(
                         value: (_stockingPercent / 120).clamp(0, 1),
-                        backgroundColor: AppColors.surfaceVariant,
+                        backgroundColor: context.surfaceVariant,
                         valueColor: AlwaysStoppedAnimation(_stockingColor),
                         minHeight: 12,
                       ),

@@ -401,7 +401,7 @@ class _SubstrateCard extends StatelessWidget {
                   width: double.infinity,
                   padding: const EdgeInsets.all(AppSpacing.sm3),
                   decoration: BoxDecoration(
-                    color: AppColors.surfaceVariant,
+                    color: context.surfaceVariant,
                     borderRadius: AppRadius.smallRadius,
                   ),
                   child: Column(

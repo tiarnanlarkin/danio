@@ -100,7 +100,7 @@ class SkillLevelIndicator extends StatelessWidget {
           child: LinearProgressIndicator(
             value: skillLevel,
             minHeight: 12,
-            backgroundColor: AppColors.surfaceVariant,
+            backgroundColor: context.surfaceVariant,
             valueColor: AlwaysStoppedAnimation<Color>(color),
           ),
         ),

@@ -130,7 +130,7 @@ class _DefaultErrorScreenState extends State<_DefaultErrorScreen> {
                   'Oops! Something went wrong',
                   style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                     fontWeight: FontWeight.bold,
-                    color: isDark ? Colors.white : AppColors.textPrimary,
+                    color: isDark ? Colors.white : context.textPrimary,
                   ),
                   textAlign: TextAlign.center,
                 ),

@@ -310,7 +310,7 @@ class _EnhancedPlacementTestScreenState
               LinearProgressIndicator(
                 value: value,
                 minHeight: 8,
-                backgroundColor: Theme.of(context).brightness == Brightness.dark ? AppColors.surfaceVariantDark : AppColors.surfaceVariant,
+                backgroundColor: Theme.of(context).brightness == Brightness.dark ? context.surfaceVariant : context.surfaceVariant,
                 valueColor: const AlwaysStoppedAnimation<Color>(
                   AppColors.accent,
                 ),
@@ -476,7 +476,7 @@ class _EnhancedPlacementTestScreenState
               color: backgroundColor,
               borderRadius: AppRadius.mediumRadius,
               border: Border.all(
-                color: borderColor ?? (Theme.of(context).brightness == Brightness.dark ? AppColors.borderDark : AppColors.border),
+                color: borderColor ?? (Theme.of(context).brightness == Brightness.dark ? AppColors.borderDark : context.borderColor),
                 width: isSelected || showResult ? 2 : 1,
               ),
               boxShadow: isSelected && !showResult
@@ -500,7 +500,7 @@ class _EnhancedPlacementTestScreenState
                     shape: BoxShape.circle,
                     color: showResult && isCorrect
                         ? AppColors.success
-                        : (isSelected ? AppColors.accent : Theme.of(context).brightness == Brightness.dark ? AppColors.surfaceVariantDark : AppColors.surfaceVariant),
+                        : (isSelected ? AppColors.accent : Theme.of(context).brightness == Brightness.dark ? context.surfaceVariant : context.surfaceVariant),
                   ),
                   child: Center(
                     child: Text(

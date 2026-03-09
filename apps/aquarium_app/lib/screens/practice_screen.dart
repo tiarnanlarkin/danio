@@ -276,9 +276,9 @@ class _PracticeScreenState extends ConsumerState<PracticeScreen> {
       child: Container(
         padding: EdgeInsets.all(AppSpacing.md),
         decoration: BoxDecoration(
-          color: AppColors.surface,
+          color: context.surfaceColor,
           borderRadius: AppRadius.mediumRadius,
-          border: Border.all(color: AppColors.surfaceVariant),
+          border: Border.all(color: context.surfaceVariant),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -362,7 +362,7 @@ class _PracticeScreenState extends ConsumerState<PracticeScreen> {
                         borderRadius: AppRadius.xsRadius,
                         child: LinearProgressIndicator(
                           value: strength / 100,
-                          backgroundColor: AppColors.surfaceVariant,
+                          backgroundColor: context.surfaceVariant,
                           valueColor: AlwaysStoppedAnimation<Color>(
                             strengthColor,
                           ),

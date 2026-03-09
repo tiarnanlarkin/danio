@@ -61,7 +61,7 @@ class AppAppBar extends StatelessWidget implements PreferredSizeWidget {
       title: titleWidget ?? (title != null ? Text(
         title!,
         style: AppTypography.titleMedium.copyWith(
-          color: isDark ? AppColors.textPrimaryDark : AppColors.textPrimary,
+          color: context.textPrimary,
         ),
       ) : null),
       leading: leading,
@@ -70,14 +70,14 @@ class AppAppBar extends StatelessWidget implements PreferredSizeWidget {
       centerTitle: centerTitle,
       backgroundColor: transparent 
           ? Colors.transparent 
-          : (backgroundColor ?? (isDark ? AppColors.surfaceDark : AppColors.surface)),
+          : (backgroundColor ?? (context.surfaceColor)),
       elevation: elevation,
       scrolledUnderElevation: transparent ? 0 : 1,
       surfaceTintColor: Colors.transparent,
       bottom: bottom,
       toolbarHeight: toolbarHeight,
       iconTheme: IconThemeData(
-        color: isDark ? AppColors.textPrimaryDark : AppColors.textPrimary,
+        color: context.textPrimary,
       ),
     );
   }
@@ -118,7 +118,7 @@ class AppBarAction extends StatelessWidget {
       icon: Icon(icon, size: AppIconSizes.md),
       onPressed: onPressed,
       tooltip: tooltip,
-      color: color ?? (isDark ? AppColors.textPrimaryDark : AppColors.textPrimary),
+      color: color ?? (context.textPrimary),
       constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
     );
 
@@ -166,7 +166,7 @@ class AppBackButton extends StatelessWidget {
         tooltip: semanticsLabel ?? 'Go back',
         icon: Icon(Icons.arrow_back_ios_new, size: AppIconSizes.sm),
         onPressed: onPressed ?? () => Navigator.of(context).maybePop(),
-        color: color ?? (isDark ? AppColors.textPrimaryDark : AppColors.textPrimary),
+        color: color ?? (context.textPrimary),
         constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
       ),
     );
@@ -198,7 +198,7 @@ class AppCloseButton extends StatelessWidget {
         tooltip: semanticsLabel ?? 'Close',
         icon: Icon(Icons.close, size: AppIconSizes.md),
         onPressed: onPressed ?? () => Navigator.of(context).maybePop(),
-        color: color ?? (isDark ? AppColors.textPrimaryDark : AppColors.textPrimary),
+        color: color ?? (context.textPrimary),
         constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
       ),
     );
@@ -234,7 +234,7 @@ class AppTabBar extends StatelessWidget implements PreferredSizeWidget {
       onTap: onTap,
       padding: padding,
       labelColor: AppColors.primary,
-      unselectedLabelColor: isDark ? AppColors.textSecondaryDark : context.textSecondary,
+      unselectedLabelColor: context.textSecondary,
       labelStyle: AppTypography.labelLarge,
       unselectedLabelStyle: AppTypography.labelMedium,
       indicatorColor: AppColors.primary,
@@ -271,7 +271,7 @@ class AppBottomNavBar extends StatelessWidget {
     
     return Container(
       decoration: BoxDecoration(
-        color: backgroundColor ?? (isDark ? AppColors.surfaceDark : AppColors.surface),
+        color: backgroundColor ?? (context.surfaceColor),
         boxShadow: [
           BoxShadow(
             color: AppOverlays.black10,
@@ -325,7 +325,7 @@ class _NavBarItem extends StatelessWidget {
     final isDark = theme.brightness == Brightness.dark;
     final color = isSelected 
         ? AppColors.primary 
-        : (isDark ? AppColors.textSecondaryDark : context.textSecondary);
+        : (context.textSecondary);
 
     return Semantics(
       label: item.label,
@@ -422,7 +422,7 @@ class AppSectionHeader extends StatelessWidget {
           Text(
             title.toUpperCase(),
             style: AppTypography.labelSmall.copyWith(
-              color: isDark ? AppColors.textHintDark : context.textHint,
+              color: context.textHint,
               letterSpacing: 0.5,
             ),
           ),

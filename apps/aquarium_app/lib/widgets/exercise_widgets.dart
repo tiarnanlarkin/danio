@@ -200,10 +200,10 @@ class _MultipleChoiceWidgetState extends State<MultipleChoiceWidget>
             curve: AppCurves.standard,
             padding: EdgeInsets.all(AppSpacing.md),
             decoration: BoxDecoration(
-              color: bgColor ?? AppColors.surface,
+              color: bgColor ?? context.surfaceColor,
               borderRadius: AppRadius.mediumRadius,
               border: Border.all(
-                color: borderColor ?? AppColors.surfaceVariant,
+                color: borderColor ?? context.surfaceVariant,
                 width: borderColor != null ? 2 : 1,
               ),
               boxShadow: isSelected && !widget.isAnswered
@@ -225,7 +225,7 @@ class _MultipleChoiceWidgetState extends State<MultipleChoiceWidget>
                   decoration: BoxDecoration(
                     color: isSelected && !widget.isAnswered
                         ? AppColors.primary
-                        : AppColors.surfaceVariant,
+                        : context.surfaceVariant,
                     shape: BoxShape.circle,
                   ),
                   child: Center(
@@ -507,14 +507,14 @@ class _FillBlankWidgetState extends State<FillBlankWidget> {
                         ? AppOverlays.success10
                         : AppOverlays.error10)
                   : AppOverlays.primary10)
-            : AppColors.surfaceVariant,
+            : context.surfaceVariant,
         borderRadius: AppRadius.smallRadius,
         border: Border.all(
           color: selectedWord != null
               ? (widget.isAnswered
                     ? (isCorrect ? AppColors.success : AppColors.error)
                     : AppColors.primary)
-              : AppColors.surfaceVariant,
+              : context.surfaceVariant,
           width: 2,
         ),
       ),
@@ -550,10 +550,10 @@ class _FillBlankWidgetState extends State<FillBlankWidget> {
                 }
               },
         backgroundColor: isUsed
-            ? AppColors.surfaceVariant
+            ? context.surfaceVariant
             : AppOverlays.primary10,
         side: BorderSide(
-          color: isUsed ? AppColors.surfaceVariant : AppColors.primary,
+          color: isUsed ? context.surfaceVariant : AppColors.primary,
         ),
       ),
     );
@@ -640,10 +640,10 @@ class TrueFalseWidget extends StatelessWidget {
           duration: AppDurations.medium4,
           padding: const EdgeInsets.symmetric(vertical: AppSpacing.lg, horizontal: AppSpacing.lg2),
           decoration: BoxDecoration(
-            color: bgColor ?? AppColors.surface,
+            color: bgColor ?? context.surfaceColor,
             borderRadius: AppRadius.mediumRadius,
             border: Border.all(
-              color: borderColor ?? AppColors.surfaceVariant,
+              color: borderColor ?? context.surfaceVariant,
               width: borderColor != null ? 2 : 1,
             ),
             boxShadow: isSelected && !isAnswered
@@ -666,7 +666,7 @@ class TrueFalseWidget extends StatelessWidget {
                 style: AppTypography.headlineSmall.copyWith(
                   color: isSelected || (isAnswered && isCorrect)
                       ? iconColor
-                      : AppColors.textPrimary,
+                      : context.textPrimary,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -832,10 +832,10 @@ class _MatchingWidgetState extends State<MatchingWidget> {
           duration: AppDurations.medium2,
           padding: EdgeInsets.all(AppSpacing.md),
           decoration: BoxDecoration(
-            color: bgColor ?? AppColors.surface,
+            color: bgColor ?? context.surfaceColor,
             borderRadius: AppRadius.mediumRadius,
             border: Border.all(
-              color: borderColor ?? AppColors.surfaceVariant,
+              color: borderColor ?? context.surfaceVariant,
               width: borderColor != null ? 2 : 1,
             ),
           ),
@@ -909,10 +909,10 @@ class _MatchingWidgetState extends State<MatchingWidget> {
           duration: AppDurations.medium2,
           padding: EdgeInsets.all(AppSpacing.md),
           decoration: BoxDecoration(
-            color: bgColor ?? AppColors.surface,
+            color: bgColor ?? context.surfaceColor,
             borderRadius: AppRadius.mediumRadius,
             border: Border.all(
-              color: borderColor ?? AppColors.surfaceVariant,
+              color: borderColor ?? context.surfaceVariant,
               width: borderColor != null ? 2 : 1,
             ),
           ),
@@ -1064,10 +1064,10 @@ class _OrderingWidgetState extends State<OrderingWidget> {
         duration: AppDurations.medium4,
         padding: EdgeInsets.all(AppSpacing.md),
         decoration: BoxDecoration(
-          color: bgColor ?? AppColors.surface,
+          color: bgColor ?? context.surfaceColor,
           borderRadius: AppRadius.mediumRadius,
           border: Border.all(
-            color: borderColor ?? AppColors.surfaceVariant,
+            color: borderColor ?? context.surfaceVariant,
             width: borderColor != null ? 2 : 1,
           ),
         ),

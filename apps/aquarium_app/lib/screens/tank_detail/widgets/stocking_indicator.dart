@@ -70,7 +70,7 @@ class StockingIndicator extends StatelessWidget {
                 borderRadius: AppRadius.xsRadius,
                 child: LinearProgressIndicator(
                   value: (result.percentFull / 100).clamp(0, 1),
-                  backgroundColor: AppColors.surfaceVariant,
+                  backgroundColor: context.surfaceVariant,
                   valueColor: AlwaysStoppedAnimation(color),
                   minHeight: 6,
                 ),
