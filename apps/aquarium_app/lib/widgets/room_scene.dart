@@ -375,6 +375,14 @@ class _CozyRoomPainter extends CustomPainter {
   late final Color _waterMidAlpha31 = theme.waterMid.withAlpha(31);
   late final Color _waterMidAlpha13 = theme.waterMid.withAlpha(13);
 
+  // Warm lighting constants (not theme-dependent)
+  static const _lampAmber38 = Color(0x26FFB347);  // #FFB347 at alpha 38
+  static const _lampAmber20 = Color(0x14FFB347);  // #FFB347 at alpha 20
+  static const _lampBright = Color(0xFFFFCC66);    // Lamp indicator
+  static const _warmHoney25 = Color(0x19F5D68B);  // #F5D68B at alpha 25
+  static const _tankGlow15 = Color(0x0FFFD68B);   // #FFD68B at alpha 15
+  static const _tankGlow20 = Color(0x14FFD68B);   // #FFD68B at alpha 20
+
   // Determine if this is a dark/night theme
   bool get _isDarkTheme {
     final luminance = theme.background1.computeLuminance();
@@ -740,10 +748,10 @@ class _CozyRoomPainter extends CustomPainter {
       final lampGlow = Paint()
         ..shader = RadialGradient(
           center: Alignment.center,
-          radius: 0.5,
+          radius: 0.6,
           colors: [
-            AppColors.whiteAlpha25,
-            AppColors.whiteAlpha12,
+            _lampAmber38,
+            _lampAmber20,
             Colors.transparent,
           ],
         ).createShader(Rect.fromLTWH(0, h * 0.2, w * 0.5, h * 0.5));
@@ -759,10 +767,10 @@ class _CozyRoomPainter extends CustomPainter {
 
       // Small lamp icon hint
       final lampPaint = Paint()
-        ..color = AppColors.whiteAlpha60;
+        ..color = _lampBright;
       canvas.drawCircle(
         Offset(w * 0.08, h * 0.38),
-        6,
+        8,
         lampPaint,
       );
     } else {
@@ -772,7 +780,7 @@ class _CozyRoomPainter extends CustomPainter {
           center: Alignment.topRight,
           radius: 1.2,
           colors: [
-            AppOverlays.cream15,
+            _warmHoney25,
             Colors.transparent,
           ],
         ).createShader(Rect.fromLTWH(0, 0, w, h));
@@ -799,6 +807,26 @@ class _CozyRoomPainter extends CustomPainter {
         height: h * 0.35,
       ),
       aquariumGlow,
+    );
+
+    // === TANK BACKGLOW (warm radiating effect behind tank) ===
+    final tankBackglow = Paint()
+      ..shader = RadialGradient(
+        center: Alignment.center,
+        radius: 0.5,
+        colors: [
+          _isDarkTheme ? _tankGlow20 : _tankGlow15,
+          Colors.transparent,
+        ],
+      ).createShader(Rect.fromLTWH(w * 0.15, h * 0.48, w * 0.7, h * 0.15));
+    
+    canvas.drawOval(
+      Rect.fromCenter(
+        center: Offset(w * 0.5, h * 0.56),
+        width: w * 0.7,
+        height: h * 0.15,
+      ),
+      tankBackglow,
     );
   }
 
