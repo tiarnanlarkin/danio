@@ -383,20 +383,20 @@ class _CozyRoomPainter extends CustomPainter {
 
   // Cozy room uses warm base colors regardless of theme
   Color get _wallColor => _isDarkTheme 
-      ? const Color(0xFF4A5668) // Cozy dark blue-gray (slightly brighter for texture visibility)
-      : const Color(0xFFF5EDE5); // Warm cream
+      ? const Color(0xFF3D3830) // Warm charcoal-brown
+      : const Color(0xFFF2E6D9); // Warmer golden cream
 
   Color get _wallAccent => _isDarkTheme
-      ? const Color(0xFF576070) // Lighter accent (brighter for texture visibility)
-      : const Color(0xFFEDE5D8); // Soft beige
+      ? const Color(0xFF4A4238) // Warm gray-brown
+      : const Color(0xFFE8D8C8); // Deeper warm cream
 
   Color get _floorColor => _isDarkTheme
-      ? const Color(0xFF685448) // Dark wood (slightly brighter)
-      : const Color(0xFFD4B896); // Warm wood
+      ? const Color(0xFF5A4030) // Deep espresso
+      : const Color(0xFFA0805C); // Rich walnut
 
   Color get _trimColor => _isDarkTheme
-      ? const Color(0xFF776860) // Dark trim (slightly brighter)
-      : const Color(0xFF8B7355); // Wood trim
+      ? const Color(0xFF584038) // Dark mahogany
+      : const Color(0xFF6B4E35); // Warm mahogany
 
   @override
   void paint(Canvas canvas, Size size) {
