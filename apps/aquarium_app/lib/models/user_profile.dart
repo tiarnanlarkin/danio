@@ -16,6 +16,8 @@ enum UserGoal {
   breeding, // Want to breed fish
   competition, // Show quality
   relaxation, // Stress relief, zen
+  learnTheScience, // Understand the science behind fishkeeping
+  masterTheHobby, // Become a master aquarist
 }
 
 @immutable
@@ -43,6 +45,7 @@ class UserProfile {
 
   // Placement Test
   final bool hasCompletedPlacementTest;
+  final bool hasSkippedPlacementTest;
   final String? placementResultId; // Reference to PlacementResult
   final DateTime? placementTestDate;
 
@@ -99,6 +102,7 @@ class UserProfile {
     this.completedStories = const [],
     this.storyProgress = const {},
     this.hasCompletedPlacementTest = false,
+    this.hasSkippedPlacementTest = false,
     this.placementResultId,
     this.placementTestDate,
     this.dailyXpGoal = 50,
@@ -252,6 +256,7 @@ class UserProfile {
     List<String>? completedStories,
     Map<String, dynamic>? storyProgress,
     bool? hasCompletedPlacementTest,
+    bool? hasSkippedPlacementTest,
     String? placementResultId,
     DateTime? placementTestDate,
     int? dailyXpGoal,
@@ -292,6 +297,8 @@ class UserProfile {
       storyProgress: storyProgress ?? this.storyProgress,
       hasCompletedPlacementTest:
           hasCompletedPlacementTest ?? this.hasCompletedPlacementTest,
+      hasSkippedPlacementTest:
+          hasSkippedPlacementTest ?? this.hasSkippedPlacementTest,
       placementResultId: placementResultId ?? this.placementResultId,
       placementTestDate: placementTestDate ?? this.placementTestDate,
       dailyXpGoal: dailyXpGoal ?? this.dailyXpGoal,
@@ -337,6 +344,7 @@ class UserProfile {
     'completedStories': completedStories,
     'storyProgress': storyProgress,
     'hasCompletedPlacementTest': hasCompletedPlacementTest,
+    'hasSkippedPlacementTest': hasSkippedPlacementTest,
     'placementResultId': placementResultId,
     'placementTestDate': placementTestDate?.toIso8601String(),
     'dailyXpGoal': dailyXpGoal,
@@ -415,6 +423,8 @@ class UserProfile {
       storyProgress: (json['storyProgress'] as Map<String, dynamic>?) ?? {},
       hasCompletedPlacementTest:
           json['hasCompletedPlacementTest'] as bool? ?? false,
+      hasSkippedPlacementTest:
+          json['hasSkippedPlacementTest'] as bool? ?? false,
       placementResultId: json['placementResultId'] as String?,
       placementTestDate: json['placementTestDate'] != null
           ? DateTime.parse(json['placementTestDate'] as String)
@@ -539,6 +549,10 @@ extension UserGoalExt on UserGoal {
         return 'Show quality';
       case UserGoal.relaxation:
         return 'Relaxation & zen';
+      case UserGoal.learnTheScience:
+        return 'Learn the science';
+      case UserGoal.masterTheHobby:
+        return 'Master the hobby';
     }
   }
 
@@ -554,6 +568,10 @@ extension UserGoalExt on UserGoal {
         return '🏆';
       case UserGoal.relaxation:
         return '🧘';
+      case UserGoal.learnTheScience:
+        return '🔬';
+      case UserGoal.masterTheHobby:
+        return '🎓';
     }
   }
 }

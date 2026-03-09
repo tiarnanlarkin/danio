@@ -80,7 +80,7 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
   Future<void> createProfile({
     String? name,
     required ExperienceLevel experienceLevel,
-    required TankType primaryTankType,
+    TankType primaryTankType = TankType.freshwater,
     required List<UserGoal> goals,
   }) async {
     try {
@@ -142,6 +142,15 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
 
     await _save(updated);
     state = AsyncValue.data(updated);
+  }
+
+  /// Mark placement test as skipped
+  Future<void> skipPlacementTest() async {
+    final current = state.value;
+    if (current == null) return;
+    final updated = current.copyWith(hasSkippedPlacementTest: true);
+    state = AsyncValue.data(updated);
+    await _save(updated);
   }
 
   /// Get today's XP progress
