@@ -20,6 +20,7 @@ import 'spaced_repetition_practice_screen.dart';
 import 'onboarding/profile_creation_screen.dart';
 import '../utils/app_constants.dart';
 import '../widgets/learning_streak_badge.dart';
+import '../widgets/placement_challenge_card.dart';
 
 /// The main learning hub - shows learning paths and progress
 /// Features a cozy illustrated "Study Room" header
@@ -226,6 +227,11 @@ class LearnScreen extends ConsumerWidget {
                   ),
                 )
               else ...[
+                // Placement challenge card (intermediate/expert users only)
+                const SliverToBoxAdapter(
+                  child: PlacementChallengeCard(),
+                ),
+
                 // Learning streak badge
                 if (profile.lessonProgress.isNotEmpty)
                   SliverToBoxAdapter(

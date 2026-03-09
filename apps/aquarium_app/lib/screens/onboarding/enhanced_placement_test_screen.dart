@@ -14,7 +14,12 @@ import '../../theme/app_theme.dart';
 import '../placement_result_screen.dart';
 
 class EnhancedPlacementTestScreen extends ConsumerStatefulWidget {
-  const EnhancedPlacementTestScreen({super.key});
+  final String source;
+
+  const EnhancedPlacementTestScreen({
+    super.key,
+    this.source = 'onboarding',
+  });
 
   @override
   ConsumerState<EnhancedPlacementTestScreen> createState() =>
@@ -151,7 +156,10 @@ class _EnhancedPlacementTestScreenState
 
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) => PlacementResultScreen(result: result),
+        builder: (context) => PlacementResultScreen(
+          result: result,
+          source: widget.source,
+        ),
       ),
     );
   }
