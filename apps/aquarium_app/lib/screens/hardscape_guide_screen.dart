@@ -338,7 +338,7 @@ class _RockCard extends StatelessWidget {
             color: AppOverlays.grey20,
             borderRadius: AppRadius.smallRadius,
           ),
-          child: const Icon(Icons.terrain, color: context.textSecondary),
+          child: Icon(Icons.terrain, color: context.textSecondary),
         ),
         title: Text(name, style: AppTypography.labelLarge),
         subtitle: Text(

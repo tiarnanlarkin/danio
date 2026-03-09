@@ -217,7 +217,7 @@ class ParamPill extends StatelessWidget {
       case ParamStatus.danger:
         return AppColors.paramDanger;
       case ParamStatus.unknown:
-        return context.textHint;
+        return AppColors.textHint;
     }
   }
 

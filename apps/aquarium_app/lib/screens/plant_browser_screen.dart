@@ -207,7 +207,7 @@ class _PlantCard extends StatelessWidget {
       case 'Hard':
         return AppColors.error;
       default:
-        return context.textSecondary;
+        return AppColors.textSecondary;
     }
   }
 

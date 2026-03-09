@@ -261,10 +261,10 @@ class TermsOfServiceScreen extends StatelessWidget {
   Widget _buildContactRow(IconData icon, String text) {
     return Row(
       children: [
-        Icon(icon, size: AppIconSizes.xs, color: context.textSecondary),
+        Icon(icon, size: AppIconSizes.xs, color: AppColors.textSecondary),
         const SizedBox(width: AppSpacing.sm),
         Expanded(
-          child: Text(text, style: TextStyle(color: context.textSecondary)),
+          child: Text(text, style: TextStyle(color: AppColors.textSecondary)),
         ),
       ],
     );

@@ -80,7 +80,7 @@ class AchievementDetailModal extends StatelessWidget {
                     if (isLocked && achievement.isHidden)
                       Positioned.fill(
                         child: Container(
-                          decoration: const BoxDecoration(
+                          decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             color: context.textSecondary,
                           ),

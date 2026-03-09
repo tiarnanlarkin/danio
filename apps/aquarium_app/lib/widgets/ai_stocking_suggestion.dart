@@ -184,7 +184,7 @@ class _AiStockingSuggestionSheetState
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            const Icon(
+                            Icon(
                               Icons.cloud_off,
                               size: 48,
                               color: context.textHint,

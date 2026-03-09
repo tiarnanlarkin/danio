@@ -117,7 +117,7 @@ class LogTile extends StatelessWidget {
       case LogType.taskCompleted:
         return AppColors.success;
       case LogType.other:
-        return context.textHint;
+        return AppColors.textHint;
     }
   }
 

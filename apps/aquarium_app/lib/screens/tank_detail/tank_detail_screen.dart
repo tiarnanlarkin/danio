@@ -90,7 +90,7 @@ class TankDetailScreen extends ConsumerWidget {
             children: List.generate(
               3,
               (_) => const ListTile(
-                leading: Icon(Icons.schedule, color: context.textHint),
+                leading: Icon(Icons.schedule, color: AppColors.textHint),
                 title: Text('Loading task...'),
                 subtitle: Text('Due soon'),
                 trailing: Icon(Icons.check_circle_outline, color: AppColors.success),
@@ -353,7 +353,7 @@ class TankDetailScreen extends ConsumerWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Icon(Icons.water_drop_outlined, size: 64, color: context.textHint),
+                  Icon(Icons.water_drop_outlined, size: 64, color: context.textHint),
                   const SizedBox(height: AppSpacing.md),
                   Text('Tank not found', style: AppTypography.headlineSmall),
                   const SizedBox(height: AppSpacing.sm),

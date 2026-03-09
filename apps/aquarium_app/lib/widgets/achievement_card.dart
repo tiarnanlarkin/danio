@@ -149,7 +149,7 @@ class AchievementCard extends StatelessWidget {
                             top: Radius.circular(14),
                           ),
                         ),
-                        child: const Center(
+                        child: Center(
                           child: Icon(
                             Icons.lock_outline,
                             size: 32,

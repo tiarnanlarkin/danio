@@ -289,7 +289,7 @@ class _TankSettingsScreenState extends ConsumerState<TankSettingsScreen> {
                     ),
                     child: Row(
                       children: [
-                        const Icon(
+                        Icon(
                           Icons.calendar_today,
                           color: context.textSecondary,
                         ),
@@ -299,7 +299,7 @@ class _TankSettingsScreenState extends ConsumerState<TankSettingsScreen> {
                           style: AppTypography.bodyLarge,
                         ),
                         const Spacer(),
-                        const Icon(
+                        Icon(
                           Icons.edit,
                           color: context.textHint,
                           size: 18,

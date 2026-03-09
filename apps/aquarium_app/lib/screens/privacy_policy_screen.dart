@@ -335,7 +335,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
                     size: isNegative ? 16 : 8,
                     color: isNegative
                         ? AppColors.error
-                        : context.textSecondary,
+                        : AppColors.textSecondary,
                   ),
                 ),
                 const SizedBox(width: AppSpacing.sm2),
@@ -415,7 +415,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
                 Text(
                   description,
                   style: AppTypography.bodySmall.copyWith(
-                    color: context.textSecondary,
+                    color: AppColors.textSecondary,
                     height: 1.4,
                   ),
                 ),
@@ -449,7 +449,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
                 Text(
                   description,
                   style: AppTypography.bodySmall.copyWith(
-                    color: context.textSecondary,
+                    color: AppColors.textSecondary,
                   ),
                 ),
               ],
@@ -503,7 +503,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
           Text(
             'Response time: Within 7 business days',
             style: AppTypography.bodySmall.copyWith(
-              color: context.textSecondary,
+              color: AppColors.textSecondary,
               fontStyle: FontStyle.italic,
             ),
           ),

@@ -255,7 +255,7 @@ class _SpeciesCard extends StatelessWidget {
       case 'Advanced':
         return AppColors.error;
       default:
-        return context.textSecondary;
+        return AppColors.textSecondary;
     }
   }
 
@@ -268,7 +268,7 @@ class _SpeciesCard extends StatelessWidget {
       case 'Aggressive':
         return AppColors.error;
       default:
-        return context.textSecondary;
+        return AppColors.textSecondary;
     }
   }
 

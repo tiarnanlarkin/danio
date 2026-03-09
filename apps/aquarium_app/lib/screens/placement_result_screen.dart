@@ -232,7 +232,7 @@ class PlacementResultScreen extends ConsumerWidget {
                       Text(
                         '${recommendation.score.round()}% correct',
                         style: theme.textTheme.bodySmall?.copyWith(
-                          color: context.textSecondary,
+                          color: AppColors.textSecondary,
                         ),
                       ),
                     ],
@@ -287,7 +287,7 @@ class PlacementResultScreen extends ConsumerWidget {
               Text(
                 'Skipping ${recommendation.lessonsToSkip.length} of ${path.lessons.length} lessons',
                 style: theme.textTheme.bodySmall?.copyWith(
-                  color: context.textSecondary,
+                  color: AppColors.textSecondary,
                 ),
               ),
             ],
@@ -468,6 +468,6 @@ class PlacementResultScreen extends ConsumerWidget {
     if (score >= 80) return AppColors.success;
     if (score >= 60) return AppColors.primary;
     if (score >= 40) return AppColors.warning;
-    return context.textSecondary;
+    return AppColors.textSecondary;
   }
 }

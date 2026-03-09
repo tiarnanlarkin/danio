@@ -692,7 +692,7 @@ class _AddTaskSheetState extends State<_AddTaskSheet> {
                 ),
                 child: Row(
                   children: [
-                    const Icon(
+                    Icon(
                       Icons.calendar_today,
                       color: context.textSecondary,
                     ),

@@ -40,7 +40,7 @@ class ThermometerItem extends StatelessWidget {
   }
 
   Color _tempColor(double? temp) {
-    if (temp == null) return context.textHint;
+    if (temp == null) return AppColors.textHint;
     if (temp < 22) return AppColors.info;
     if (temp < 26) return AppColors.success;
     if (temp < 30) return AppColors.warning;

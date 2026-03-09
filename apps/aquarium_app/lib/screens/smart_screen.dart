@@ -351,7 +351,7 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
     final (icon, color) = switch (severity) {
       AnomalySeverity.critical => (Icons.error, AppColors.error),
       AnomalySeverity.alert => (Icons.warning, AppColors.warning),
-      AnomalySeverity.warning => (Icons.info, context.textSecondary),
+      AnomalySeverity.warning => (Icons.info, AppColors.textSecondary),
     };
     return Icon(icon, color: color, size: AppIconSizes.sm);
   }
@@ -500,7 +500,7 @@ class _FeatureCard extends StatelessWidget {
                   ],
                 ),
               ),
-              const Icon(Icons.chevron_right, color: context.textSecondary),
+              Icon(Icons.chevron_right, color: context.textSecondary),
             ],
           ),
         ),

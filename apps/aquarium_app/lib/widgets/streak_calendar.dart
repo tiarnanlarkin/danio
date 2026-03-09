@@ -208,7 +208,7 @@ class _CalendarGrid extends StatelessWidget {
           child: monthLabel != null
               ? Text(
                   monthLabel,
-                  style: TextStyle(fontSize: 10, color: context.textHint),
+                  style: TextStyle(fontSize: 10, color: AppColors.textHint),
                 )
               : null,
         ),

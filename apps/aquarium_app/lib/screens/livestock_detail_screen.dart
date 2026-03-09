@@ -687,7 +687,7 @@ class _NoSpeciesDataCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              const Icon(Icons.info_outline, color: context.textSecondary),
+              Icon(Icons.info_outline, color: context.textSecondary),
                 const SizedBox(width: AppSpacing.sm),
                 Text(
                   'Species info not found',

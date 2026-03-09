@@ -790,7 +790,7 @@ class _SupplyItemSheetState extends State<_SupplyItemSheet> {
                 ),
                 child: Row(
                   children: [
-                    const Icon(Icons.calendar_today,
+                    Icon(Icons.calendar_today,
                         color: context.textSecondary),
                     const SizedBox(width: AppSpacing.sm2),
                     Text(

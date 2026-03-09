@@ -1252,7 +1252,7 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
                   const SizedBox(height: AppSpacing.xs),
                   Row(
                     children: [
-                      const Icon(
+                      Icon(
                         Icons.pending,
                         size: AppIconSizes.xs,
                         color: context.textSecondary,

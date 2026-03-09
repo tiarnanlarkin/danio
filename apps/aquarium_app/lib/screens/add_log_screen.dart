@@ -255,7 +255,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
                 ),
                 child: Row(
                   children: [
-                    const Icon(
+                    Icon(
                       Icons.calendar_today,
                       color: context.textSecondary,
                     ),
