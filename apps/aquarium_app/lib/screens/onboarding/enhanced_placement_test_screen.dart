@@ -508,7 +508,7 @@ class _EnhancedPlacementTestScreenState
                       style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                         color: isSelected || (showResult && isCorrect)
                             ? AppColors.onPrimary
-                            : Colors.black87,
+                            : Theme.of(context).colorScheme.onSurface,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -587,7 +587,7 @@ class _EnhancedPlacementTestScreenState
               Container(
                 padding: EdgeInsets.all(AppSpacing.sm2),
                 decoration: BoxDecoration(
-                  color: AppColors.card,
+                  color: Theme.of(context).colorScheme.surfaceContainerHighest,
                   borderRadius: AppRadius.smallRadius,
                 ),
                 child: Text(
@@ -606,7 +606,7 @@ class _EnhancedPlacementTestScreenState
     return Container(
       padding: EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        color: Theme.of(context).colorScheme.surface,
         boxShadow: [
           BoxShadow(
             color: AppOverlays.black10,
