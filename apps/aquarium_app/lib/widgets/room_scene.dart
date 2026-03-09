@@ -360,10 +360,6 @@ class _CozyRoomPainter extends CustomPainter {
 
   // Pre-computed withAlpha colors to avoid per-frame allocations in paint()
   late final Color _trimAlpha102 = _trimColor.withAlpha(102);
-  late final Color _accentBlobAlpha64 = theme.accentBlob.withAlpha(64);
-  late final Color _accentBlobAlpha89 = theme.accentBlob.withAlpha(89);
-  late final Color _accentBlob2Alpha76 = theme.accentBlob2.withAlpha(76);
-  late final Color _accentBlobAlpha128 = theme.accentBlob.withAlpha(128);
   late final Color _waterMidAlpha128 = theme.waterMid.withAlpha(128);
   late final Color _textSecAlpha76 = theme.textSecondary.withAlpha(76);
   late final Color _textSecAlpha64 = theme.textSecondary.withAlpha(64);
@@ -518,37 +514,51 @@ class _CozyRoomPainter extends CustomPainter {
   }
   
   void _drawRug(Canvas canvas, double w, double h, double floorTop) {
-    // Cozy rug under the tank area
     final rugRect = RRect.fromRectAndRadius(
       Rect.fromLTWH(w * 0.05, floorTop + 8, w * 0.9, h * 0.12),
-      const Radius.circular(8),
+      const Radius.circular(12),  // softened from 8
     );
     
-    // Rug base
+    // Rug base — fixed warm colours (decoupled from theme)
     canvas.drawRRect(
       rugRect,
-      Paint()..color = _isDarkTheme ? _accentBlobAlpha64 : _accentBlobAlpha89,
+      Paint()..color = _isDarkTheme 
+          ? const Color(0xFF8B4F3A)   // dark rust
+          : const Color(0xFFC4725A),  // persian rust
     );
     
-    // Rug pattern (simple stripes)
-    final patternPaint = Paint()
-      ..color = _accentBlob2Alpha76
-      ..strokeWidth = 3;
-    for (var x = w * 0.1; x < w * 0.9; x += 20) {
-      canvas.drawLine(
-        Offset(x, floorTop + 15),
-        Offset(x, floorTop + h * 0.10),
-        patternPaint,
-      );
-    }
+    // Border fill band (between outer and inner borders)
+    final innerRect = RRect.fromRectAndRadius(
+      Rect.fromLTWH(w * 0.05 + 8, floorTop + 16, w * 0.9 - 16, h * 0.12 - 16),
+      const Radius.circular(8),
+    );
+    canvas.drawRRect(
+      innerRect,
+      Paint()..color = _isDarkTheme
+          ? const Color(0x4D8B5A40)   // muted terracotta at 30%
+          : const Color(0x66D4886A),  // warm terracotta at 40%
+    );
     
-    // Rug border
+    // Outer border
     canvas.drawRRect(
       rugRect,
       Paint()
-        ..color = _accentBlobAlpha128
+        ..color = _isDarkTheme
+            ? const Color(0xFF6B3828)   // dark burgundy
+            : const Color(0xFF964B38)   // deep burgundy
         ..style = PaintingStyle.stroke
         ..strokeWidth = 2,
+    );
+    
+    // Inner border
+    canvas.drawRRect(
+      innerRect,
+      Paint()
+        ..color = _isDarkTheme
+            ? const Color(0xFF7A5A42)   // muted terracotta
+            : const Color(0xFFD88C6E)   // warm terracotta
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 1.5,
     );
   }
   
