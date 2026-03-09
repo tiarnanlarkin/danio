@@ -1070,7 +1070,7 @@ class _StandPainter extends CustomPainter {
 
     final woodColor = _isDarkTheme
         ? const Color(0xFF3D3228)
-        : const Color(0xB38B6914);
+        : const Color(0xD97A5C38);  // warmer, slightly more opaque
     final woodHighlight = _isDarkTheme
         ? const Color(0xFF4A3D30)
         : const Color(0x80A67C00);
@@ -1115,30 +1115,84 @@ class _StandPainter extends CustomPainter {
     // Cross support
     canvas.drawRRect(
       RRect.fromRectAndRadius(
-        Rect.fromLTWH(w * 0.05, h * 0.6, w * 0.9, h * 0.12),
+        Rect.fromLTWH(w * 0.05, h * 0.6, w * 0.9, h * 0.15),
         const Radius.circular(2),
       ),
       legPaint,
     );
 
-    // Decorative cabinet door hint
-    final doorPaint = Paint()
-      ..color = woodHighlight
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 1;
-    canvas.drawRRect(
-      RRect.fromRectAndRadius(
-        Rect.fromLTWH(w * 0.2, h * 0.35, w * 0.25, h * 0.55),
-        const Radius.circular(2),
-      ),
-      doorPaint,
+    // Shelf shadow
+    canvas.drawRect(
+      Rect.fromLTWH(w * 0.06, h * 0.6 + h * 0.15, w * 0.88, 2),
+      Paint()..color = const Color(0x14000000),
     );
+
+    // Shelf items
+    final shelfTop = h * 0.6;
+
+    // Book stack (left third)
+    final bookColors = [
+      const Color(0xFF4A6B8C),
+      const Color(0xFF8B5E3C),
+      const Color(0xFF5A8060),
+      const Color(0xFFC4725A),
+    ];
+    final bookOpacity = _isDarkTheme ? 0.8 : 1.0;
+    var bookY = shelfTop - 4;
+    for (var i = 0; i < 4; i++) {
+      final bw = w * (0.18 + (i % 2 == 0 ? 0.02 : 0));
+      bookY -= h * 0.06;
+      canvas.drawRRect(
+        RRect.fromRectAndRadius(
+          Rect.fromLTWH(w * 0.15, bookY, bw, h * 0.055),
+          const Radius.circular(1),
+        ),
+        Paint()..color = bookColors[i].withAlpha((255 * bookOpacity).round()),
+      );
+    }
+
+    // Small potted plant (centre)
+    final potX = w * 0.47;
+    final potW = w * 0.06;
+    final potH = h * 0.08;
+    final potTop = shelfTop - potH;
     canvas.drawRRect(
       RRect.fromRectAndRadius(
-        Rect.fromLTWH(w * 0.55, h * 0.35, w * 0.25, h * 0.55),
+        Rect.fromLTWH(potX, potTop + potH * 0.4, potW, potH * 0.6),
         const Radius.circular(2),
       ),
-      doorPaint,
+      Paint()..color = Color.fromARGB(_isDarkTheme ? 204 : 255, 0xC0, 0x82, 0x5A),
+    );
+    final leafPaint = Paint()
+      ..color = (theme.plantSecondary).withAlpha(_isDarkTheme ? 204 : 255);
+    canvas.drawOval(
+      Rect.fromLTWH(potX - potW * 0.2, potTop, potW * 0.7, potH * 0.5),
+      leafPaint,
+    );
+    canvas.drawOval(
+      Rect.fromLTWH(potX + potW * 0.4, potTop + potH * 0.1, potW * 0.7, potH * 0.45),
+      leafPaint,
+    );
+
+    // Decorative vase (right third)
+    final vaseX = w * 0.65;
+    final vaseW = w * 0.08;
+    final vaseH = h * 0.10;
+    final vaseTop = shelfTop - vaseH + 2;
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(
+        Rect.fromLTWH(vaseX, vaseTop, vaseW, vaseH),
+        Radius.circular(vaseW * 0.3),
+      ),
+      Paint()..color = Color.fromARGB(_isDarkTheme ? 178 : 255, 0x8B, 0xAE, 0xB8),
+    );
+    canvas.drawLine(
+      Offset(vaseX + vaseW * 0.25, vaseTop + vaseH * 0.15),
+      Offset(vaseX + vaseW * 0.25, vaseTop + vaseH * 0.7),
+      Paint()
+        ..color = const Color(0x40FFFFFF)
+        ..strokeWidth = 1.5
+        ..strokeCap = StrokeCap.round,
     );
   }
 
