@@ -1561,48 +1561,41 @@ class _ThemedAquarium extends StatelessWidget {
               ),
             ],
 
-            // Static bubbles (decorative)
-            Positioned(
-              right: width * 0.18,
-              bottom: height * 0.2,
-              child: _SoftBubbles(height: height * 0.5),
-            ),
+            // Static bubbles — DISABLED: contributes to milkiness
+            // Positioned(
+            //   right: width * 0.18,
+            //   bottom: height * 0.2,
+            //   child: _SoftBubbles(height: height * 0.5),
+            // ),
 
-            // Animated floating bubbles — RepaintBoundary is inside AmbientBubblesSubtle
-            // DO NOT wrap externally: Positioned.fill inside the widget cannot find a
-            // Stack ancestor through an external RepaintBoundary.
-            const AmbientBubblesSubtle(bubbleCount: 12),
+            // Animated floating bubbles — DISABLED: contributes to milkiness
+            // const AmbientBubblesSubtle(bubbleCount: 12),
 
-            // Water surface effect (Rive animated)
-            if (useRiveFish)
-              const WaterSurfaceOverlay(
-                height: 30,
-                opacity: 0.15, // design system §2.1: max 15% opacity
-              ),
+            // Water surface effect — DISABLED: not used when useRiveFish=false
 
-            // Light reflection
-            Positioned(
-              top: 4,
-              left: 4,
-              right: 4,
-              child: Container(
-                height: 20,
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [
-                      Colors.transparent,
-                      AppColors.whiteAlpha35,
-                      Colors.transparent,
-                    ],
-                  ),
-                  borderRadius: const BorderRadius.vertical(
-                    top: Radius.circular(20),
-                  ),
-                ),
-              ),
-            ),
+            // Light reflection — DISABLED: whiteAlpha35 strip washes out water
+            // Positioned(
+            //   top: 4,
+            //   left: 4,
+            //   right: 4,
+            //   child: Container(
+            //     height: 20,
+            //     decoration: BoxDecoration(
+            //       gradient: LinearGradient(
+            //         colors: [
+            //           Colors.transparent,
+            //           AppColors.whiteAlpha35,
+            //           Colors.transparent,
+            //         ],
+            //       ),
+            //       borderRadius: const BorderRadius.vertical(
+            //         top: Radius.circular(20),
+            //       ),
+            //     ),
+            //   ),
+            // ),
 
-            // Top light bar
+            // Top light bar — simplified: removed massive glow that washed out tank
             Positioned(
               top: -4,
               left: width * 0.2,
@@ -1610,14 +1603,14 @@ class _ThemedAquarium extends StatelessWidget {
               child: Container(
                 height: 8,
                 decoration: BoxDecoration(
-                  color: const Color(0xFF37474F),
+                  color: const Color(0xFF2C2C2C), // dark hood
                   borderRadius: AppRadius.xsRadius,
                   boxShadow: [
                     BoxShadow(
-                      color: AppOverlays.amber30,
-                      blurRadius: 25,
-                      spreadRadius: 10,
-                      offset: const Offset(0, 15),
+                      color: const Color(0x33FFD080), // subtle warm glow, 20% alpha
+                      blurRadius: 12,
+                      spreadRadius: 2,
+                      offset: const Offset(0, 8),
                     ),
                   ],
                 ),
