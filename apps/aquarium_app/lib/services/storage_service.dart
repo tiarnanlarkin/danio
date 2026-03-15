@@ -170,6 +170,7 @@ class InMemoryStorageService implements StorageService {
       startDate: now.subtract(const Duration(days: 60)),
       targets: WaterTargets.freshwaterTropical(),
       notes: 'Planted community tank',
+      isDemoTank: true,
       createdAt: now.subtract(const Duration(days: 60)),
       updatedAt: now,
     );

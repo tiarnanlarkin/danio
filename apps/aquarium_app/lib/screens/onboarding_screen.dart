@@ -69,6 +69,18 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen>
     ).animate(CurvedAnimation(parent: _contentController, curve: AppCurves.standardDecelerate));
     
     _contentController.forward();
+
+    // Fix: If a profile already exists (force-quit recovery), skip intro slides
+    // and go directly to PersonalisationScreen.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      final profile = ref.read(userProfileProvider).value;
+      if (profile != null) {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (_) => const PersonalisationScreen()),
+        );
+      }
+    });
   }
 
   @override

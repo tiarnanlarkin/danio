@@ -140,6 +140,99 @@ class AchievementChecker {
     return completer.future;
   }
 
+  /// Compute consecutive weekend streaks from weekendActivityDates.
+  /// A "weekend streak" = consecutive weekends (Sat/Sun) with activity.
+  static int _computeWeekendStreaks(List<String> weekendDates) {
+    if (weekendDates.isEmpty) return 0;
+
+    // Parse and sort dates descending
+    final dates = weekendDates
+        .map((d) => DateTime.parse(d))
+        .toList()
+      ..sort((a, b) => b.compareTo(a));
+
+    // Group by week number (weeks start Monday)
+    int weekNumber(DateTime d) {
+      final jan1 = DateTime(d.year, 1, 1);
+      return ((d.difference(jan1).inDays + jan1.weekday - 1) ~/ 7) + d.year * 100;
+    }
+
+    final weeksSeen = dates.map(weekNumber).toSet().toList()..sort((a, b) => b.compareTo(a));
+
+    int streak = 1;
+    for (int i = 1; i < weeksSeen.length; i++) {
+      // Check if consecutive week (difference of 1)
+      if (weeksSeen[i - 1] - weeksSeen[i] == 1) {
+        streak++;
+      } else {
+        break;
+      }
+    }
+
+    // Only count if the most recent weekend includes the current or last weekend
+    final now = DateTime.now();
+    final currentWeekNum = weekNumber(now);
+    final lastWeekNum = weekNumber(now.subtract(const Duration(days: 7)));
+    if (weeksSeen.first != currentWeekNum && weeksSeen.first != lastWeekNum) {
+      return 0; // Streak broken
+    }
+
+    return streak;
+  }
+
+  /// Compute consecutive days with full hearts from fullHeartDates.
+  static int _computeFullHeartsStreak(List<String> fullHeartDates) {
+    if (fullHeartDates.isEmpty) return 0;
+
+    final dates = fullHeartDates
+        .map((d) => DateTime.parse(d))
+        .toSet()
+        .toList()
+      ..sort((a, b) => b.compareTo(a));
+
+    final today = DateTime.now();
+    final todayNorm = DateTime(today.year, today.month, today.day);
+
+    // Must include today or yesterday to be active
+    final first = DateTime(dates.first.year, dates.first.month, dates.first.day);
+    final yesterday = todayNorm.subtract(const Duration(days: 1));
+    if (first != todayNorm && first != yesterday) return 0;
+
+    int streak = 1;
+    for (int i = 1; i < dates.length; i++) {
+      final current = DateTime(dates[i - 1].year, dates[i - 1].month, dates[i - 1].day);
+      final prev = DateTime(dates[i].year, dates[i].month, dates[i].day);
+      if (current.difference(prev).inDays == 1) {
+        streak++;
+      } else {
+        break;
+      }
+    }
+    return streak;
+  }
+
+  /// Compute consecutive days where daily XP goal was met.
+  static int _computeDailyGoalStreaks(Map<String, int> dailyXpHistory, int dailyGoal) {
+    if (dailyXpHistory.isEmpty || dailyGoal <= 0) return 0;
+
+    final today = DateTime.now();
+    int streak = 0;
+
+    for (int i = 0; i < 365; i++) {
+      final date = today.subtract(Duration(days: i));
+      final key = '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
+      final xp = dailyXpHistory[key] ?? 0;
+      if (xp >= dailyGoal) {
+        streak++;
+      } else {
+        // Allow skipping today if no activity yet (still active streak from yesterday)
+        if (i == 0) continue;
+        break;
+      }
+    }
+    return streak;
+  }
+
   /// Check achievements and return newly unlocked ones
   /// Will throw exception on failure - does not fail silently
   Future<List<AchievementUnlockResult>> checkAchievements(
@@ -153,11 +246,43 @@ class AchievementChecker {
         throw Exception('Cannot check achievements: User profile not loaded');
       }
 
+      // Compute derived achievement stats from persistent profile data
+      final weekendStreaks = _computeWeekendStreaks(userProfile.weekendActivityDates);
+      final fullHeartsStreak = _computeFullHeartsStreak(userProfile.fullHeartDates);
+      final dailyGoalStreaks = _computeDailyGoalStreaks(
+        userProfile.dailyXpHistory,
+        userProfile.dailyXpGoal,
+      );
+
+      // Merge computed stats with passed-in stats
+      final enrichedStats = AchievementStats(
+        lessonsCompleted: stats.lessonsCompleted,
+        currentStreak: stats.currentStreak,
+        totalXp: stats.totalXp,
+        perfectScores: stats.perfectScores,
+        friendsCount: stats.friendsCount,
+        dailyTipsRead: stats.dailyTipsRead,
+        practiceSessions: stats.practiceSessions,
+        shopVisits: stats.shopVisits,
+        weekendStreaks: weekendStreaks,
+        dailyGoalStreaks: dailyGoalStreaks,
+        hasCompletedPlacementTest: stats.hasCompletedPlacementTest,
+        lastActivityDate: stats.lastActivityDate,
+        lastLessonCompletedAt: stats.lastLessonCompletedAt,
+        lastLessonDuration: stats.lastLessonDuration,
+        lastLessonScore: stats.lastLessonScore,
+        todayLessonsCompleted: stats.todayLessonsCompleted,
+        completedLessonIds: stats.completedLessonIds,
+        fullHeartsStreak: fullHeartsStreak,
+        reviewsCompleted: stats.reviewsCompleted,
+        reviewStreak: stats.reviewStreak,
+      );
+
       final progressMap = ref.read(achievementProgressProvider);
 
       final results = AchievementService.checkAchievements(
         userProfile: userProfile,
-        stats: stats,
+        stats: enrichedStats,
         progressMap: progressMap,
       );
 

@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:uuid/uuid.dart';
 import '../../models/models.dart';
+import '../create_tank_screen.dart';
 import '../../widgets/core/app_card.dart';
 import '../../widgets/core/bubble_loader.dart';
 import '../../widgets/core/app_states.dart';
@@ -522,6 +523,35 @@ class TankDetailScreen extends ConsumerWidget {
                   ),
                 ],
               ),
+
+              // Demo tank banner
+              if (tank.isDemoTank)
+                SliverToBoxAdapter(
+                  child: GestureDetector(
+                    onTap: () => NavigationThrottle.push(context, const CreateTankScreen()),
+                    child: Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.sm2),
+                      color: DanioColors.amberText.withValues(alpha: 0.15),
+                      child: Row(
+                        children: [
+                          const Text('🐠', style: TextStyle(fontSize: 18)),
+                          const SizedBox(width: AppSpacing.sm),
+                          Expanded(
+                            child: Text(
+                              'Demo Tank — Tap here to create your own',
+                              style: AppTypography.labelMedium.copyWith(
+                                color: DanioColors.amberText,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                          Icon(Icons.arrow_forward_ios, size: 14, color: DanioColors.amberText),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
 
               // Quick stats
               SliverToBoxAdapter(

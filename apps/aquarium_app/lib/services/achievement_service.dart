@@ -287,9 +287,9 @@ class AchievementService {
         break;
 
       case 'completionist':
-        // Unlock all other achievements (excluding this one)
+        // Unlock when all other non-hidden achievements are unlocked
         final otherAchievements = AchievementDefinitions.all
-            .where((a) => a.id != 'completionist')
+            .where((a) => a.id != 'completionist' && !a.isHidden)
             .length;
         final unlockedCount = userProfile.achievements.length;
         shouldUnlock = unlockedCount >= otherAchievements;

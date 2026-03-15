@@ -136,32 +136,8 @@ class QuizQuestion {
   });
 }
 
-/// Achievement/badge the user can earn
-@immutable
-/// @deprecated Use Achievement from models/achievements.dart and
-/// AchievementDefinitions from data/achievements.dart instead.
-/// This legacy class (22 achievements) is kept for backward compatibility
-/// but new code should use the canonical 55+ achievement system.
-class Achievement {
-  final String id;
-  final String title;
-  final String description;
-  final String emoji;
-  final AchievementCategory category;
-  final AchievementTier tier;
-  final bool isSecret;
-
-  const Achievement({
-    required this.id,
-    required this.title,
-    required this.description,
-    required this.emoji,
-    required this.category,
-    this.tier = AchievementTier.bronze,
-    this.isSecret = false,
-  });
-}
-
+/// Legacy achievement category enum — kept for backward compatibility.
+/// New code should use AchievementCategory from models/achievements.dart.
 enum AchievementCategory {
   learning, // Complete lessons
   tracking, // Log data
@@ -171,6 +147,7 @@ enum AchievementCategory {
   special, // Easter eggs, events
 }
 
+/// Achievement tier used by GemRewards for gem calculations.
 enum AchievementTier { bronze, silver, gold, platinum }
 
 extension AchievementTierExt on AchievementTier {
@@ -235,191 +212,7 @@ class DailyTip {
 // PREDEFINED CONTENT
 // ==========================================
 
-/// All achievements available in the app
-/// @deprecated Use AchievementDefinitions from data/achievements.dart instead.
-class Achievements {
-  static const List<Achievement> all = [
-    // Learning achievements
-    Achievement(
-      id: 'first_lesson',
-      title: 'First Steps',
-      description: 'Complete your first lesson',
-      emoji: '📚',
-      category: AchievementCategory.learning,
-      tier: AchievementTier.bronze,
-    ),
-    Achievement(
-      id: 'nitrogen_master',
-      title: 'Cycle Master',
-      description: 'Complete the Nitrogen Cycle path',
-      emoji: '🔄',
-      category: AchievementCategory.learning,
-      tier: AchievementTier.silver,
-    ),
-    Achievement(
-      id: 'quiz_ace',
-      title: 'Quiz Ace',
-      description: 'Get 100% on any quiz',
-      emoji: '🎯',
-      category: AchievementCategory.learning,
-      tier: AchievementTier.gold,
-    ),
-    Achievement(
-      id: 'all_paths',
-      title: 'Scholar',
-      description: 'Complete all learning paths',
-      emoji: '🎓',
-      category: AchievementCategory.learning,
-      tier: AchievementTier.platinum,
-    ),
 
-    // Tracking achievements
-    Achievement(
-      id: 'first_test',
-      title: 'Scientist',
-      description: 'Log your first water test',
-      emoji: '🔬',
-      category: AchievementCategory.tracking,
-      tier: AchievementTier.bronze,
-    ),
-    Achievement(
-      id: 'test_week',
-      title: 'Consistent Tester',
-      description: 'Log water tests 7 days in a row',
-      emoji: '📊',
-      category: AchievementCategory.tracking,
-      tier: AchievementTier.silver,
-    ),
-    Achievement(
-      id: 'test_month',
-      title: 'Data Driven',
-      description: 'Log 30 water tests',
-      emoji: '📈',
-      category: AchievementCategory.tracking,
-      tier: AchievementTier.gold,
-    ),
-    Achievement(
-      id: 'stable_params',
-      title: 'Tank Master',
-      description: 'Maintain stable parameters for 30 days',
-      emoji: '⚖️',
-      category: AchievementCategory.tracking,
-      tier: AchievementTier.platinum,
-    ),
-
-    // Streak achievements
-    Achievement(
-      id: 'streak_3',
-      title: 'Getting Started',
-      description: '3 day streak',
-      emoji: '🔥',
-      category: AchievementCategory.streak,
-      tier: AchievementTier.bronze,
-    ),
-    Achievement(
-      id: 'streak_7',
-      title: 'On a Roll',
-      description: '7 day streak',
-      emoji: '🔥',
-      category: AchievementCategory.streak,
-      tier: AchievementTier.silver,
-    ),
-    Achievement(
-      id: 'streak_30',
-      title: 'Dedicated',
-      description: '30 day streak',
-      emoji: '🔥',
-      category: AchievementCategory.streak,
-      tier: AchievementTier.gold,
-    ),
-    Achievement(
-      id: 'streak_100',
-      title: 'Unstoppable',
-      description: '100 day streak',
-      emoji: '🔥',
-      category: AchievementCategory.streak,
-      tier: AchievementTier.platinum,
-    ),
-
-    // Milestone achievements
-    Achievement(
-      id: 'xp_100',
-      title: 'Level Up',
-      description: 'Earn 100 XP',
-      emoji: '⭐',
-      category: AchievementCategory.milestones,
-      tier: AchievementTier.bronze,
-    ),
-    Achievement(
-      id: 'xp_500',
-      title: 'Rising Star',
-      description: 'Earn 500 XP',
-      emoji: '🌟',
-      category: AchievementCategory.milestones,
-      tier: AchievementTier.silver,
-    ),
-    Achievement(
-      id: 'xp_1000',
-      title: 'Expert Status',
-      description: 'Earn 1000 XP',
-      emoji: '💫',
-      category: AchievementCategory.milestones,
-      tier: AchievementTier.gold,
-    ),
-
-    // Exploration achievements
-    Achievement(
-      id: 'first_tank',
-      title: 'Tank Owner',
-      description: 'Add your first tank',
-      emoji: '🐟',
-      category: AchievementCategory.exploration,
-      tier: AchievementTier.bronze,
-    ),
-    Achievement(
-      id: 'multi_tank',
-      title: 'Tank Collector',
-      description: 'Add 3 or more tanks',
-      emoji: '🏠',
-      category: AchievementCategory.exploration,
-      tier: AchievementTier.silver,
-    ),
-    Achievement(
-      id: 'photo_album',
-      title: 'Photographer',
-      description: 'Add 10 photos to your gallery',
-      emoji: '📷',
-      category: AchievementCategory.exploration,
-      tier: AchievementTier.bronze,
-    ),
-
-    // Special achievements
-    Achievement(
-      id: 'night_owl',
-      title: 'Night Owl',
-      description: 'Log activity after midnight',
-      emoji: '🦉',
-      category: AchievementCategory.special,
-      isSecret: true,
-    ),
-    Achievement(
-      id: 'early_bird',
-      title: 'Early Bird',
-      description: 'Log activity before 6am',
-      emoji: '🐦',
-      category: AchievementCategory.special,
-      isSecret: true,
-    ),
-  ];
-
-  static Achievement? getById(String id) {
-    try {
-      return all.firstWhere((a) => a.id == id);
-    } catch (_) {
-      return null;
-    }
-  }
-}
 
 /// XP reward values for different actions
 class XpRewards {

@@ -33,7 +33,10 @@ class _SpacedRepetitionPracticeScreenState
     final srState = ref.watch(spacedRepetitionProvider);
 
     if (srState.isLoading) {
-      return const Scaffold(body: Center(child: BubbleLoader()));
+      return Scaffold(
+        appBar: AppBar(title: const Text('Practice')),
+        body: const Center(child: BubbleLoader()),
+      );
     }
 
     // If session is active, show session screen

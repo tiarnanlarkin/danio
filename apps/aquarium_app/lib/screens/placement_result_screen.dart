@@ -7,7 +7,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/placement_test.dart';
 import '../models/learning.dart';
 import '../models/user_profile.dart';
-import '../data/lesson_content.dart';
+import '../data/lesson_content_lazy.dart';
+import '../providers/lesson_provider.dart';
 import '../providers/user_profile_provider.dart';
 import '../theme/app_theme.dart';
 import 'onboarding/learning_style_screen.dart';
@@ -25,7 +26,7 @@ class PlacementResultScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
-    final allPaths = LessonContent.allPaths;
+    final allPathsMeta = LessonProvider.allPathMetadata;
 
     return Scaffold(
       appBar: AppBar(
@@ -62,12 +63,12 @@ class PlacementResultScreen extends ConsumerWidget {
                   const SizedBox(height: AppSpacing.md),
 
                   // Recommendations for each path
-                  ...allPaths.map((path) {
-                    final recommendation = result.recommendations[path.id];
+                  ...allPathsMeta.map((meta) {
+                    final recommendation = result.recommendations[meta.id];
                     if (recommendation == null) return const SizedBox.shrink();
                     return _buildPathRecommendation(
                       theme,
-                      path,
+                      meta,
                       recommendation,
                       context,
                     );
@@ -78,8 +79,14 @@ class PlacementResultScreen extends ConsumerWidget {
 
             const SizedBox(height: AppSpacing.lg),
 
-            // XP earned card
-            _buildXpEarnedCard(theme, allPaths),
+            // XP earned card — loads full paths async for XP calculation
+            FutureBuilder<List<LearningPath>>(
+              future: lessonContentLazy.getAllPaths(),
+              builder: (context, snap) {
+                if (!snap.hasData) return const SizedBox.shrink();
+                return _buildXpEarnedCard(theme, snap.data!);
+              },
+            ),
 
             const SizedBox(height: AppSpacing.lg),
 
@@ -205,7 +212,7 @@ class PlacementResultScreen extends ConsumerWidget {
 
   Widget _buildPathRecommendation(
     ThemeData theme,
-    LearningPath path,
+    PathMetadata path,
     SkipRecommendation recommendation,
     BuildContext context,
   ) {
@@ -287,7 +294,7 @@ class PlacementResultScreen extends ConsumerWidget {
             if (recommendation.lessonsToSkip.isNotEmpty) ...[
               const SizedBox(height: AppSpacing.sm),
               Text(
-                'Skipping ${recommendation.lessonsToSkip.length} of ${path.lessons.length} lessons',
+                'Skipping ${recommendation.lessonsToSkip.length} of ${path.lessonIds.length} lessons',
                 style: theme.textTheme.bodySmall?.copyWith(
                   color: context.textSecondary,
                 ),
@@ -378,9 +385,9 @@ class PlacementResultScreen extends ConsumerWidget {
               Expanded(
                 child: ListView.builder(
                   controller: scrollController,
-                  itemCount: LessonContent.allPaths.length,
+                  itemCount: LessonProvider.allPathMetadata.length,
                   itemBuilder: (context, index) {
-                    final path = LessonContent.allPaths[index];
+                    final path = LessonProvider.allPathMetadata[index];
                     final score = result.pathScores[path.id] ?? 0.0;
                     final recommendation = result.recommendations[path.id];
 

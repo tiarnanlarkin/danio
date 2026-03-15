@@ -7,7 +7,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/placement_test.dart';
 import '../models/learning.dart';
 import '../data/placement_test_content.dart';
-import '../data/lesson_content.dart';
+import '../data/lesson_content_lazy.dart';
+import '../providers/lesson_provider.dart';
 import '../providers/user_profile_provider.dart';
 import '../theme/app_theme.dart';
 import '../widgets/core/app_card.dart';
@@ -90,11 +91,14 @@ class _PlacementTestScreenState extends ConsumerState<PlacementTestScreen> {
   }
 
   void _completeTest() async {
+    // Load all paths lazily for result calculation
+    final allPaths = await lessonContentLazy.getAllPaths();
+
     // Calculate result
     final result = PlacementAlgorithm.calculateResult(
       test: _test,
       userAnswers: _userAnswers,
-      allPaths: LessonContent.allPaths,
+      allPaths: allPaths,
     );
 
     // Save result to user profile
@@ -102,7 +106,7 @@ class _PlacementTestScreenState extends ConsumerState<PlacementTestScreen> {
     await profileNotifier.completePlacementTest(
       resultId: result.id,
       lessonsToSkip: result.lessonsToSkip,
-      xpToAward: result.calculateSkipXp(LessonContent.allPaths),
+      xpToAward: result.calculateSkipXp(allPaths),
     );
 
     if (!mounted) return;
@@ -411,7 +415,9 @@ class _PlacementTestScreenState extends ConsumerState<PlacementTestScreen> {
 
   String _getPathName(String pathId) {
     try {
-      return LessonContent.allPaths.firstWhere((p) => p.id == pathId).title;
+      return LessonProvider.allPathMetadata
+          .firstWhere((p) => p.id == pathId)
+          .title;
     } catch (_) {
       return pathId;
     }

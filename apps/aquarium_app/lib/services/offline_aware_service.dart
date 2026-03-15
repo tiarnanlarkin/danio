@@ -1,3 +1,5 @@
+// SCAFFOLDING: Backend sync not yet implemented. Queued actions execute locally only.
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../widgets/offline_indicator.dart';
 import 'sync_service.dart';
@@ -28,6 +30,7 @@ class OfflineAwareService {
       await executeNow(); // Execute locally first
 
       // Then queue for backend sync when connection returns
+      debugPrint('Note: Sync queue is scaffolding — action executed locally only');
       await ref
           .read(syncServiceProvider.notifier)
           .queueAction(type: actionType, data: actionData);

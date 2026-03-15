@@ -299,6 +299,19 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
             updatedHistory = Map.fromEntries(sorted.take(365));
           }
 
+          // Track weekend activity for weekend_warrior achievement
+          List<String>? updatedWeekendDates;
+          if (now.weekday >= 6) { // Saturday (6) or Sunday (7)
+            final todayStr = _formatDate(now);
+            if (!c.weekendActivityDates.contains(todayStr)) {
+              updatedWeekendDates = [...c.weekendActivityDates, todayStr];
+              // Prune to last 100 entries
+              if (updatedWeekendDates.length > 100) {
+                updatedWeekendDates = updatedWeekendDates.sublist(updatedWeekendDates.length - 100);
+              }
+            }
+          }
+
           final updated = c.copyWith(
             totalXp: c.totalXp + effectiveXp + bonusXp,
             currentStreak: newStreak,
@@ -309,6 +322,7 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
             streakFreezeUsedDate: usedFreeze
                 ? now
                 : c.streakFreezeUsedDate,
+            weekendActivityDates: updatedWeekendDates ?? c.weekendActivityDates,
             updatedAt: now,
           );
 
@@ -757,13 +771,9 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
     // Don't double-count
     if (current.achievements.contains(achievementId)) return;
 
-    // Use the new canonical AchievementDefinitions (55+ achievements)
-    // Falls back to legacy Achievements for IDs not yet in the new system
+    // Use canonical AchievementDefinitions (55+ achievements)
     final newAchievement = AchievementDefinitions.getById(achievementId);
-    final legacyAchievement = Achievements.getById(achievementId);
-    final bonusXp = newAchievement?.rarity.xpReward
-        ?? legacyAchievement?.tier.xpBonus
-        ?? 0;
+    final bonusXp = newAchievement?.rarity.xpReward ?? 0;
 
     final updated = current.copyWith(
       achievements: [...current.achievements, achievementId],
@@ -775,17 +785,14 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
     state = AsyncValue.data(updated);
 
     // Award gems for achievement — map rarity to legacy tier for GemRewards
-    final effectiveTier = newAchievement != null
-        ? _rarityToTier(newAchievement.rarity)
-        : legacyAchievement?.tier;
-    if (effectiveTier != null) {
+    if (newAchievement != null) {
+      final effectiveTier = _rarityToTier(newAchievement.rarity);
       final gemsNotifier = ref.read(gemsProvider.notifier);
       final gemReward = GemRewards.getAchievementReward(effectiveTier);
-      final displayName = newAchievement?.name ?? legacyAchievement?.title ?? achievementId;
       await gemsNotifier.addGems(
         amount: gemReward,
         reason: GemEarnReason.achievementUnlock,
-        customReason: 'Achievement: $displayName',
+        customReason: 'Achievement: ${newAchievement.name}',
       );
     }
   }
@@ -820,18 +827,34 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
       final current = state.value;
       if (current == null) return;
 
+      // Track full hearts for heart_collector achievement
+      List<String>? updatedFullHeartDates;
+      if (hearts >= 5) { // maxHearts = 5
+        final now = DateTime.now();
+        final todayStr = '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}';
+        if (!current.fullHeartDates.contains(todayStr)) {
+          updatedFullHeartDates = [...current.fullHeartDates, todayStr];
+          // Prune to last 100 entries
+          if (updatedFullHeartDates.length > 100) {
+            updatedFullHeartDates = updatedFullHeartDates.sublist(updatedFullHeartDates.length - 100);
+          }
+        }
+      }
+
       // copyWith can't null out fields, so roundtrip through JSON when clearing
       UserProfile updated;
       if (clearLastHeartRefill) {
         final json = current.toJson();
         json['hearts'] = hearts;
         json['lastHeartRefill'] = null;
+        json['fullHeartDates'] = (updatedFullHeartDates ?? current.fullHeartDates);
         json['updatedAt'] = DateTime.now().toIso8601String();
         updated = UserProfile.fromJson(json);
       } else {
         updated = current.copyWith(
           hearts: hearts,
           lastHeartRefill: lastHeartRefill ?? current.lastHeartRefill,
+          fullHeartDates: updatedFullHeartDates ?? current.fullHeartDates,
           updatedAt: DateTime.now(),
         );
       }

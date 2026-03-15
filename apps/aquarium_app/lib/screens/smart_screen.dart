@@ -15,6 +15,7 @@ import '../theme/app_theme.dart';
 import '../widgets/compatibility_checker_widget.dart';
 import '../widgets/offline_indicator.dart';
 import 'compatibility_checker_screen.dart';
+import 'settings_screen.dart';
 
 /// Smart Hub - central screen for all AI-powered features.
 class SmartScreen extends ConsumerStatefulWidget {
@@ -122,7 +123,11 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
         children: [
           // API status
           if (!openai.isConfigured)
-            _OfflineBanner()
+            _OfflineBanner(onSettingsTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => const SettingsScreen()),
+              );
+            })
           else
             _UsageChip(callCount: openai.apiCallsThisMonth),
 
@@ -397,63 +402,79 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
 // ── Subwidgets ──────────────────────────────────────────────────────────
 
 class _OfflineBanner extends StatelessWidget {
+  final VoidCallback? onSettingsTap;
+
+  const _OfflineBanner({this.onSettingsTap});
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(AppSpacing.lg),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            AppColors.primaryAlpha08,
-            DanioColors.topaz.withValues(alpha: 0.08),
+    return GestureDetector(
+      onTap: onSettingsTap,
+      child: Container(
+        padding: const EdgeInsets.all(AppSpacing.lg),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              AppColors.primaryAlpha08,
+              DanioColors.topaz.withValues(alpha: 0.08),
+            ],
+          ),
+          borderRadius: AppRadius.mediumRadius,
+          border: Border.all(
+            color: AppColors.primaryAlpha15,
+          ),
+        ),
+        child: Column(
+          children: [
+            Text('🤖', style: Theme.of(context).textTheme.headlineMedium!),
+            const SizedBox(height: AppSpacing.sm),
+            Text(
+              'AI Features — Coming in Danio Pro!',
+              style: AppTypography.titleSmall.copyWith(
+                color: AppColors.primary,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: AppSpacing.sm),
+            Text(
+              'Smart fish identification, health diagnosis, and personalised '
+              'care plans are on the way.',
+              style: AppTypography.bodySmall.copyWith(
+                color: context.textSecondary,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: AppSpacing.md),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.settings, size: 14, color: context.textHint),
+                const SizedBox(width: AppSpacing.xs),
+                Flexible(
+                  child: Text(
+                    'Tap here to connect your OpenAI API key in Settings.',
+                    style: AppTypography.bodySmall.copyWith(
+                      color: AppColors.primary,
+                      fontWeight: FontWeight.w500,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: AppSpacing.xs),
+            Text(
+              'The Compatibility Checker below works offline — no key needed! 👇',
+              style: AppTypography.bodySmall.copyWith(
+                color: AppColors.primary,
+                fontWeight: FontWeight.w500,
+              ),
+              textAlign: TextAlign.center,
+            ),
           ],
         ),
-        borderRadius: AppRadius.mediumRadius,
-        border: Border.all(
-          color: AppColors.primaryAlpha15,
-        ),
-      ),
-      child: Column(
-        children: [
-          Text('🤖', style: Theme.of(context).textTheme.headlineMedium!),
-          const SizedBox(height: AppSpacing.sm),
-          Text(
-            'AI Features — Coming in Danio Pro!',
-            style: AppTypography.titleSmall.copyWith(
-              color: AppColors.primary,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(height: AppSpacing.sm),
-          Text(
-            'Smart fish identification, health diagnosis, and personalised '
-            'care plans are on the way.',
-            style: AppTypography.bodySmall.copyWith(
-              color: context.textSecondary,
-            ),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: AppSpacing.md),
-          Text(
-            'For now, power users can connect their own OpenAI API key '
-            'in Settings → Smart Features.',
-            style: AppTypography.bodySmall.copyWith(
-              color: context.textHint,
-            ),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: AppSpacing.xs),
-          Text(
-            'The Compatibility Checker below works offline — no key needed! 👇',
-            style: AppTypography.bodySmall.copyWith(
-              color: AppColors.primary,
-              fontWeight: FontWeight.w500,
-            ),
-            textAlign: TextAlign.center,
-          ),
-        ],
       ),
     );
   }

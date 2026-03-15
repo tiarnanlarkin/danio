@@ -83,6 +83,10 @@ class UserProfile {
   // Learning style preference: "quick", "deep", or "adaptive"
   final String? learningStylePreference;
 
+  // Achievement tracking
+  final List<String> weekendActivityDates; // 'YYYY-MM-DD' dates of weekend activity
+  final List<String> fullHeartDates; // 'YYYY-MM-DD' dates where hearts were full at session end
+
   final DateTime createdAt;
   final DateTime updatedAt;
 
@@ -123,6 +127,8 @@ class UserProfile {
     this.eveningReminderTime = '19:00',
     this.nightReminderTime = '23:00',
     this.learningStylePreference,
+    this.weekendActivityDates = const [],
+    this.fullHeartDates = const [],
     required this.createdAt,
     required this.updatedAt,
   });
@@ -277,6 +283,8 @@ class UserProfile {
     String? eveningReminderTime,
     String? nightReminderTime,
     String? learningStylePreference,
+    List<String>? weekendActivityDates,
+    List<String>? fullHeartDates,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) {
@@ -321,6 +329,8 @@ class UserProfile {
       eveningReminderTime: eveningReminderTime ?? this.eveningReminderTime,
       nightReminderTime: nightReminderTime ?? this.nightReminderTime,
       learningStylePreference: learningStylePreference ?? this.learningStylePreference,
+      weekendActivityDates: weekendActivityDates ?? this.weekendActivityDates,
+      fullHeartDates: fullHeartDates ?? this.fullHeartDates,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );
@@ -365,6 +375,8 @@ class UserProfile {
     'eveningReminderTime': eveningReminderTime,
     'nightReminderTime': nightReminderTime,
     'learningStylePreference': learningStylePreference,
+    'weekendActivityDates': weekendActivityDates,
+    'fullHeartDates': fullHeartDates,
     'createdAt': createdAt.toIso8601String(),
     'updatedAt': updatedAt.toIso8601String(),
   };
@@ -465,6 +477,16 @@ class UserProfile {
       eveningReminderTime: json['eveningReminderTime'] as String? ?? '19:00',
       nightReminderTime: json['nightReminderTime'] as String? ?? '23:00',
       learningStylePreference: json['learningStylePreference'] as String?,
+      weekendActivityDates:
+          (json['weekendActivityDates'] as List<dynamic>?)
+              ?.map((e) => e as String)
+              .toList() ??
+          [],
+      fullHeartDates:
+          (json['fullHeartDates'] as List<dynamic>?)
+              ?.map((e) => e as String)
+              .toList() ??
+          [],
       createdAt: DateTime.parse(json['createdAt'] as String),
       updatedAt: DateTime.parse(json['updatedAt'] as String),
     );

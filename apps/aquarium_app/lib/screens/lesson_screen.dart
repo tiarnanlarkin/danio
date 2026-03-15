@@ -1,6 +1,6 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
-
+import 'package:flutter/semantics.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/learning.dart';
 import '../providers/lesson_provider.dart';
@@ -732,6 +732,18 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
                             _correctAnswers++;
                           }
                         });
+
+                        // Announce result to screen readers
+                        SemanticsService.announce(
+                          isCorrect
+                              ? 'Correct!'
+                              : 'Incorrect. The correct answer is ${question.options[question.correctIndex]}.',
+                          TextDirection.ltr,
+                        );
+
+                        // Design decision: Quiz failures do not deduct hearts.
+                        // Hearts are deducted per wrong answer during the quiz,
+                        // not on quiz failure overall. This matches Duolingo's model.
 
                         // Handle hearts (only in non-practice mode)
                         if (!widget.isPracticeMode && !isCorrect) {
