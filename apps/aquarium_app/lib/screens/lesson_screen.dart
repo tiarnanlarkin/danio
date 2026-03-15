@@ -649,7 +649,12 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
                           ),
                           const SizedBox(width: AppSpacing.sm2),
                           Expanded(
-                            child: Text(option, style: AppTypography.bodyLarge),
+                            child: Text(
+                              option,
+                              style: AppTypography.bodyLarge,
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 4,
+                            ),
                           ),
                         ],
                       ),

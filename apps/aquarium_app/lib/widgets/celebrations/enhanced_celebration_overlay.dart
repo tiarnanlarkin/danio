@@ -86,6 +86,8 @@ class _EnhancedCelebrationOverlayWrapperState
   }
   
   Widget _buildCelebrationOverlay(EnhancedCelebrationState celebration) {
+    final reduceMotion = MediaQuery.of(context).disableAnimations;
+
     // Determine colors based on celebration level
     final colors = _getCelebrationColors(celebration.level);
     
@@ -96,6 +98,22 @@ class _EnhancedCelebrationOverlayWrapperState
     final particleCount = _getParticleCount(celebration.level);
     
     final hasOverlay = celebration.level != CelebrationLevel.standard;
+
+    // Reduced motion: show static badge card without animations
+    if (reduceMotion) {
+      if (!hasOverlay || celebration.title == null) {
+        return const SizedBox.shrink();
+      }
+      return Positioned.fill(
+        child: GestureDetector(
+          onTap: () => ref.read(enhancedCelebrationProvider.notifier).dismiss(),
+          child: Container(
+            color: AppColors.blackAlpha05,
+            child: Center(child: _buildCelebrationCard(celebration)),
+          ),
+        ),
+      );
+    }
     
     return Positioned.fill(
       child: IgnorePointer(
