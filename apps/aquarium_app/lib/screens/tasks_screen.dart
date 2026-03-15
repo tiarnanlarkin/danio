@@ -100,7 +100,7 @@ class TasksScreen extends ConsumerWidget {
           }
 
           return ListView.builder(
-            padding: EdgeInsets.all(AppSpacing.md),
+            padding: const EdgeInsets.all(AppSpacing.md),
             itemCount: items.length,
             itemBuilder: (context, index) {
               final item = items[index];
@@ -130,7 +130,7 @@ class TasksScreen extends ConsumerWidget {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _showAddDialog(context, ref),
-        tooltip: 'Add task',
+        tooltip: 'Add a new task',
         child: const Icon(Icons.add),
       ),
     );
@@ -265,20 +265,28 @@ class TasksScreen extends ConsumerWidget {
       context: context,
       builder: (ctx) => AlertDialog(
         title: const Text('Delete Task?'),
-        content: Text('Delete "${task.title}"?'),
+        content: Text('Remove "${task.title}" from your task list?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: const Text('Cancel'),
+            child: const Text('Keep'),
           ),
           TextButton(
             onPressed: () async {
               Navigator.pop(ctx);
-              await ref.read(storageServiceProvider).deleteTask(task.id);
-              ref.invalidate(tasksProvider(tankId));
+              try {
+                await ref.read(storageServiceProvider).deleteTask(task.id);
+                ref.invalidate(tasksProvider(tankId));
+              } catch (e) {
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Couldn\'t delete task. Please try again.')),
+                  );
+                }
+              }
             },
             child: const Text(
-              'Delete',
+              'Delete Task',
               style: TextStyle(color: AppColors.error),
             ),
           ),
@@ -351,7 +359,12 @@ class _TaskHistoryDialog extends ConsumerWidget {
             padding: EdgeInsets.all(AppSpacing.sm2),
             child: Center(child: CircularProgressIndicator(color: AppColors.primary)),
           ),
-          error: (err, _) => const Text('Couldn\'t load history. Please try again.'),
+          error: (err, _) => AppErrorState(
+            compact: true,
+            title: 'Couldn\'t load history',
+            message: 'Please close and try again.',
+            onRetry: () => ref.invalidate(allLogsProvider(tankId)),
+          ),
           data: (logs) {
             final completions =
                 logs.where((l) => l.type == LogType.taskCompleted).where((l) {
@@ -685,7 +698,7 @@ class _AddTaskSheetState extends State<_AddTaskSheet> {
               },
               borderRadius: AppRadius.mediumRadius,
               child: Container(
-                padding: EdgeInsets.all(AppSpacing.md),
+                padding: const EdgeInsets.all(AppSpacing.md),
                 decoration: BoxDecoration(
                   color: context.surfaceVariant,
                   borderRadius: AppRadius.mediumRadius,

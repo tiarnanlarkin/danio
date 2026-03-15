@@ -192,7 +192,7 @@ class _MaintenanceChecklistScreenState
           items.add(_ChecklistItem.spacer(AppSpacing.xxl));
 
           return ListView.builder(
-            padding: EdgeInsets.all(AppSpacing.md),
+            padding: const EdgeInsets.all(AppSpacing.md),
             itemCount: items.length,
             itemBuilder: (context, index) {
               final item = items[index];
@@ -273,11 +273,11 @@ class _MaintenanceChecklistScreenState
       context: context,
       builder: (ctx) => AlertDialog(
         title: const Text('Reset Checklist?'),
-        content: const Text('This will uncheck all items. Are you sure?'),
+        content: const Text('This will uncheck all completed items so you can start fresh.'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: const Text('Cancel'),
+            child: const Text('Keep Progress'),
           ),
           FilledButton(
             onPressed: () {

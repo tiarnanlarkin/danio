@@ -133,7 +133,7 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
                   slivers: [
                     // Header padding
                     const SliverPadding(
-                      padding: EdgeInsets.only(top: 16, left: 16, right: 16),
+                      padding: const EdgeInsets.only(top: 16, left: 16, right: 16),
                       sliver: SliverToBoxAdapter(child: SizedBox.shrink()),
                     ),
                     
@@ -191,7 +191,7 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
                       ),
                     if (!_isSelectMode)
                       const SliverPadding(
-                        padding: EdgeInsets.only(top: AppSpacing.md),
+                        padding: const EdgeInsets.only(top: AppSpacing.md),
                         sliver: SliverToBoxAdapter(child: SizedBox.shrink()),
                       ),
 
@@ -241,7 +241,7 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
                       ),
                     if (_isSelectMode)
                       const SliverPadding(
-                        padding: EdgeInsets.only(top: AppSpacing.md),
+                        padding: const EdgeInsets.only(top: AppSpacing.md),
                         sliver: SliverToBoxAdapter(child: SizedBox.shrink()),
                       ),
 
@@ -293,7 +293,7 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
                     
                     // Bottom padding
                     const SliverPadding(
-                      padding: EdgeInsets.only(bottom: 16),
+                      padding: const EdgeInsets.only(bottom: 16),
                       sliver: SliverToBoxAdapter(child: SizedBox.shrink()),
                     ),
                   ],
@@ -303,7 +303,7 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
               // Bulk action buttons
               if (_isSelectMode && _selectedLivestockIds.isNotEmpty)
                 Container(
-                  padding: EdgeInsets.all(AppSpacing.md),
+                  padding: const EdgeInsets.all(AppSpacing.md),
                   decoration: BoxDecoration(
                     color: Theme.of(context).colorScheme.surface,
                     boxShadow: [
@@ -444,17 +444,17 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: Text('Remove ${_selectedLivestockIds.length} livestock?'),
+        title: Text('Remove ${_selectedLivestockIds.length} Livestock?'),
         content: Text('Livestock to remove:\n\n$livestockNames'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
-            child: const Text('Cancel'),
+            child: const Text('Keep'),
           ),
           TextButton(
             onPressed: () => Navigator.pop(ctx, true),
             child: const Text(
-              'Remove',
+              'Remove Livestock',
               style: TextStyle(color: AppColors.error),
             ),
           ),
@@ -546,7 +546,7 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
     return IgnorePointer(
       child: Skeletonizer(
       child: ListView.builder(
-        padding: EdgeInsets.all(AppSpacing.md),
+        padding: const EdgeInsets.all(AppSpacing.md),
         itemCount: placeholders.length + 2, // +2 for summary card and spacing
         itemBuilder: (context, index) {
           if (index == 0) {
@@ -1000,7 +1000,7 @@ class _AddLivestockSheetState extends ConsumerState<_AddLivestockSheet> {
             if (_selectedSpecies != null) ...[
               const SizedBox(height: AppSpacing.sm),
               Container(
-                padding: EdgeInsets.all(AppSpacing.sm2),
+                padding: const EdgeInsets.all(AppSpacing.sm2),
                 decoration: BoxDecoration(
                   color: AppColors.primaryAlpha05,
                   borderRadius: AppRadius.smallRadius,
@@ -1489,12 +1489,12 @@ class _LastFedInfo extends ConsumerWidget {
     return logsAsync.when(
       loading: () => const SizedBox.shrink(),
       error: (_, __) => Padding(
-                    padding: EdgeInsets.all(AppSpacing.sm),
+                    padding: const EdgeInsets.all(AppSpacing.sm),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Icon(Icons.info_outline, size: 14, color: AppColors.warning),
-                        SizedBox(width: AppSpacing.xs),
+                        const SizedBox(width: AppSpacing.xs),
                         Text('Unable to load', style: Theme.of(context).textTheme.bodySmall?.copyWith(color: AppColors.warning)),
                       ],
                     ),

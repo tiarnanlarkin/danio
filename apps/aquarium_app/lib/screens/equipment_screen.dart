@@ -100,7 +100,7 @@ class EquipmentScreen extends ConsumerWidget {
     final placeholders = SkeletonPlaceholders.equipmentList;
     return Skeletonizer(
       child: ListView.builder(
-        padding: EdgeInsets.all(AppSpacing.md),
+        padding: const EdgeInsets.all(AppSpacing.md),
         itemCount: placeholders.length,
         itemBuilder: (context, index) {
           final equipment = placeholders[index];
@@ -155,7 +155,7 @@ class EquipmentScreen extends ConsumerWidget {
               await Future.delayed(AppDurations.long2);
             },
             child: ListView.builder(
-              padding: EdgeInsets.all(AppSpacing.md),
+              padding: const EdgeInsets.all(AppSpacing.md),
               itemCount: equipment.length + (overdue > 0 ? 2 : 0), // +2 for warning card and spacing if overdue
               itemBuilder: (context, index) {
                 // Summary card
@@ -317,24 +317,32 @@ class EquipmentScreen extends ConsumerWidget {
       context: context,
       builder: (ctx) => AlertDialog(
         title: const Text('Remove Equipment?'),
-        content: Text('Remove ${equipment.name}?'),
+        content: Text('Remove "${equipment.name}" from this tank?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: const Text('Cancel'),
+            child: const Text('Keep'),
           ),
           TextButton(
             onPressed: () async {
               Navigator.pop(ctx);
-              final storage = ref.read(storageServiceProvider);
-              await storage.deleteEquipment(equipment.id);
-              // Remove auto maintenance task (if any)
-              await storage.deleteTask(_maintenanceTaskId(equipment.id));
-              ref.invalidate(equipmentProvider(tankId));
-              ref.invalidate(tasksProvider(tankId));
+              try {
+                final storage = ref.read(storageServiceProvider);
+                await storage.deleteEquipment(equipment.id);
+                // Remove auto maintenance task (if any)
+                await storage.deleteTask(_maintenanceTaskId(equipment.id));
+                ref.invalidate(equipmentProvider(tankId));
+                ref.invalidate(tasksProvider(tankId));
+              } catch (e) {
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Couldn\'t remove equipment. Please try again.')),
+                  );
+                }
+              }
             },
             child: const Text(
-              'Remove',
+              'Remove Equipment',
               style: TextStyle(color: AppColors.error),
             ),
           ),
@@ -371,10 +379,15 @@ class _EquipmentHistoryDialog extends ConsumerWidget {
         width: double.maxFinite,
         child: logsAsync.when(
           loading: () => const Padding(
-            padding: EdgeInsets.all(AppSpacing.sm2),
+            padding: const EdgeInsets.all(AppSpacing.sm2),
             child: Center(child: CircularProgressIndicator(color: AppColors.primary)),
           ),
-          error: (err, _) => const Text('Couldn\'t load history. Please try again.'),
+          error: (err, _) => AppErrorState(
+            compact: true,
+            title: 'Couldn\'t load history',
+            message: 'Please close and try again.',
+            onRetry: () => ref.invalidate(allLogsProvider(tankId)),
+          ),
           data: (logs) {
             final maintenance =
                 logs

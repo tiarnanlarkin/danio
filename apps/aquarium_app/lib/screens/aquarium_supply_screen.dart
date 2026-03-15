@@ -225,19 +225,19 @@ class _AquariumSupplyScreenState extends ConsumerState<AquariumSupplyScreen>
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Delete item?'),
-        content: Text('Remove "${item.name}" from inventory?'),
+        title: const Text('Remove Supply?'),
+        content: Text('Remove "${item.name}" from your inventory?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: const Text('Cancel'),
+            child: const Text('Keep'),
           ),
           TextButton(
             onPressed: () {
               Navigator.pop(ctx);
               _delete(item);
             },
-            child: const Text('Delete', style: TextStyle(color: AppColors.error)),
+            child: const Text('Remove Item', style: TextStyle(color: AppColors.error)),
           ),
         ],
       ),
@@ -384,16 +384,16 @@ class _AquariumSupplyScreenState extends ConsumerState<AquariumSupplyScreen>
     }
 
     return ListView(
-      padding: EdgeInsets.all(AppSpacing.md),
+      padding: const EdgeInsets.all(AppSpacing.md),
       children: [
         // Monthly estimate card
         Card(
           child: Padding(
-            padding: EdgeInsets.all(AppSpacing.md),
+            padding: const EdgeInsets.all(AppSpacing.md),
             child: Row(
               children: [
                 Container(
-                  padding: EdgeInsets.all(AppSpacing.sm2),
+                  padding: const EdgeInsets.all(AppSpacing.sm2),
                   decoration: BoxDecoration(
                     color: AppOverlays.primary10,
                     borderRadius: AppRadius.mediumRadius,
@@ -427,7 +427,7 @@ class _AquariumSupplyScreenState extends ConsumerState<AquariumSupplyScreen>
           Text('Low Stock Alert', style: AppTypography.headlineSmall),
           const SizedBox(height: AppSpacing.sm),
           Container(
-            padding: EdgeInsets.all(AppSpacing.md),
+            padding: const EdgeInsets.all(AppSpacing.md),
             decoration: BoxDecoration(
               color: AppColors.warningAlpha10,
               borderRadius: AppRadius.mediumRadius,
@@ -783,7 +783,7 @@ class _SupplyItemSheetState extends State<_SupplyItemSheet> {
               },
               borderRadius: AppRadius.mediumRadius,
               child: Container(
-                padding: EdgeInsets.all(AppSpacing.md),
+                padding: const EdgeInsets.all(AppSpacing.md),
                 decoration: BoxDecoration(
                   color: context.surfaceVariant,
                   borderRadius: AppRadius.mediumRadius,

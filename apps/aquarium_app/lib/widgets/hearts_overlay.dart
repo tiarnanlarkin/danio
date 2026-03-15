@@ -315,7 +315,7 @@ mixin HeartsScreenMixin<T extends ConsumerStatefulWidget> on ConsumerState<T> {
           ),
           FilledButton(
             onPressed: () => Navigator.pop(context, 'wait'),
-            child: const Text('OK'),
+            child: const Text('Got It'),
           ),
         ],
       ),

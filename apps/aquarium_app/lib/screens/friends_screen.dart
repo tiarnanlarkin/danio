@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../theme/app_theme.dart';
 
-/// Social features screen - Coming Soon placeholder
+/// Social features screen — arriving in a future update
 class FriendsScreen extends ConsumerWidget {
   const FriendsScreen({super.key});
 
@@ -16,12 +16,12 @@ class FriendsScreen extends ConsumerWidget {
       ),
       body: Center(
         child: Padding(
-          padding: EdgeInsets.all(AppSpacing.xl),
+          padding: const EdgeInsets.all(AppSpacing.xl),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               Container(
-                padding: EdgeInsets.all(AppSpacing.lg),
+                padding: const EdgeInsets.all(AppSpacing.lg),
                 decoration: BoxDecoration(
                   color: AppOverlays.primary20,
                   shape: BoxShape.circle,
@@ -39,7 +39,7 @@ class FriendsScreen extends ConsumerWidget {
                   borderRadius: AppRadius.mediumRadius,
                 ),
                 child: Text(
-                  'Coming Soon',
+                  'On the Way!',
                   style: theme.textTheme.titleMedium?.copyWith(
                     color: AppColors.onPrimary,
                     fontWeight: FontWeight.bold,
@@ -71,7 +71,7 @@ class FriendsScreen extends ConsumerWidget {
                   Icon(Icons.construction, size: 16, color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6)),
                   const SizedBox(width: AppSpacing.sm),
                   Text(
-                    'We\'re building this for you!',
+                    'Something great is brewing! 🫧',
                     style: theme.textTheme.bodySmall?.copyWith(
                       color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
                       fontStyle: FontStyle.italic,

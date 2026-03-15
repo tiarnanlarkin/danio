@@ -208,7 +208,7 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
                 SliverFillRemaining(
                   hasScrollBody: false,
                   child: Padding(
-                    padding: EdgeInsets.all(AppSpacing.xl),
+                    padding: const EdgeInsets.all(AppSpacing.xl),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -403,7 +403,7 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
     final species = SpeciesDatabase.species;
     if (species.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('No fish facts available yet!')),
+        const SnackBar(content: Text('Fish facts are still loading — check back shortly!')),
       );
       return;
     }
@@ -478,7 +478,7 @@ class _ReviewCardsBanner extends ConsumerWidget {
         },
         borderRadius: AppRadius.mediumRadius,
         child: Container(
-          padding: EdgeInsets.all(AppSpacing.md),
+          padding: const EdgeInsets.all(AppSpacing.md),
           decoration: BoxDecoration(
             gradient: LinearGradient(
               colors: [AppColors.accent, AppOverlays.accent80],
@@ -579,7 +579,7 @@ class _PracticeCard extends ConsumerWidget {
         },
         borderRadius: AppRadius.mediumRadius,
         child: Container(
-          padding: EdgeInsets.all(AppSpacing.md),
+          padding: const EdgeInsets.all(AppSpacing.md),
           decoration: BoxDecoration(
             gradient: LinearGradient(
               colors: [AppColors.primary, AppOverlays.primary80],
@@ -948,7 +948,7 @@ class _LazyLearningPathCardState extends ConsumerState<_LazyLearningPathCard> {
       return [
         const Divider(height: 1),
         const Padding(
-          padding: EdgeInsets.symmetric(vertical: AppSpacing.lg),
+          padding: const EdgeInsets.symmetric(vertical: AppSpacing.lg),
           child: Center(
             child: SizedBox(
               width: 24,

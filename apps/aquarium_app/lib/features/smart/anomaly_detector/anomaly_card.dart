@@ -30,7 +30,7 @@ class AnomalyCard extends ConsumerWidget {
         borderRadius: AppRadius.md2Radius,
       ),
       child: Padding(
-        padding: EdgeInsets.all(AppSpacing.md),
+        padding: const EdgeInsets.all(AppSpacing.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -121,7 +121,7 @@ class _AnomalyRow extends ConsumerWidget {
             onPressed: () {
               ref.read(anomalyHistoryProvider.notifier).dismiss(anomaly.id);
             },
-            tooltip: 'Dismiss',
+            tooltip: 'Dismiss this alert',
           ),
         ],
       ),

@@ -2,7 +2,7 @@ import 'package:danio/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-/// Leaderboard screen - Coming Soon placeholder
+/// Leaderboard screen — arriving in a future update
 class LeaderboardScreen extends ConsumerWidget {
   const LeaderboardScreen({super.key});
 
@@ -13,12 +13,12 @@ class LeaderboardScreen extends ConsumerWidget {
       appBar: AppBar(title: const Text('Leaderboard'), centerTitle: true),
       body: Center(
         child: Padding(
-          padding: EdgeInsets.all(AppSpacing.xl),
+          padding: const EdgeInsets.all(AppSpacing.xl),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               Container(
-                padding: EdgeInsets.all(AppSpacing.lg),
+                padding: const EdgeInsets.all(AppSpacing.lg),
                 decoration: BoxDecoration(
                   color: AppColors.xpAlpha20,
                   shape: BoxShape.circle,
@@ -36,7 +36,7 @@ class LeaderboardScreen extends ConsumerWidget {
                   borderRadius: AppRadius.md2Radius,
                 ),
                 child: Text(
-                  'Coming Soon',
+                  'On the Way!',
                   style: theme.textTheme.titleMedium?.copyWith(
                     color: AppColors.onPrimary,
                     fontWeight: FontWeight.bold,
@@ -67,7 +67,7 @@ class LeaderboardScreen extends ConsumerWidget {
                   Icon(Icons.construction, size: 16, color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6)),
                   const SizedBox(width: AppSpacing.sm),
                   Text(
-                    'We\'re building this for you!',
+                    'Something great is brewing! 🫧',
                     style: theme.textTheme.bodySmall?.copyWith(
                       color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
                       fontStyle: FontStyle.italic,

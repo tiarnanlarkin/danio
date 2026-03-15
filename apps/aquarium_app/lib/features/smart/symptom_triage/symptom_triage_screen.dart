@@ -1,9 +1,13 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../services/api_rate_limiter.dart';
 import '../../../services/openai_service.dart';
 import '../../../theme/app_theme.dart';
+import '../../../widgets/offline_indicator.dart';
 import '../smart_providers.dart';
 
 /// Common fish health symptoms for quick-select chips.
@@ -75,8 +79,21 @@ class _SymptomTriageScreenState extends ConsumerState<SymptomTriageScreen> {
   Future<void> _runDiagnosis() async {
     final openai = ref.read(openAIServiceProvider);
     if (!openai.isConfigured) {
-      setState(() => _error = 'AI features require an OpenAI API key.\n'
-          'This feature is coming soon! Stay tuned for updates.');
+      setState(() => _error = 'Symptom Triage isn\'t available yet — we\'re working on bringing it to you! 🩺');
+      return;
+    }
+
+    // Offline check.
+    final isOnline = ref.read(isOnlineProvider);
+    if (!isOnline) {
+      setState(() => _error = OpenAIUserMessages.offline);
+      return;
+    }
+
+    // Rate limit check.
+    final rateLimiter = ref.read(apiRateLimiterProvider);
+    if (!rateLimiter.canRequest(AIFeature.symptomTriage)) {
+      setState(() => _error = OpenAIUserMessages.rateLimited);
       return;
     }
 
@@ -141,14 +158,18 @@ class _SymptomTriageScreenState extends ConsumerState<SymptomTriageScreen> {
         setState(() => _diagnosis += chunk);
       }
 
-      // Record in AI history.
+      // Record rate limit & AI history.
+      rateLimiter.recordRequest(AIFeature.symptomTriage);
       ref.read(aiHistoryProvider.notifier).add(
         type: 'symptom_triage',
         summary: 'Triage: $symptoms',
       );
+    } on TimeoutException {
+      if (!mounted) return;
+      setState(() => _error = OpenAIUserMessages.timeout);
     } on OpenAIException catch (e) {
       if (!mounted) return;
-      setState(() => _error = 'AI error: ${e.message}');
+      setState(() => _error = e.message);
     } catch (e) {
       if (!mounted) return;
       setState(() => _error = 'Something went wrong. Give it another go!');
@@ -336,7 +357,7 @@ class _SymptomTriageScreenState extends ConsumerState<SymptomTriageScreen> {
       return Card(
         color: AppColors.errorAlpha10,
         child: Padding(
-          padding: EdgeInsets.all(AppSpacing.md),
+          padding: const EdgeInsets.all(AppSpacing.md),
           child: Column(
             children: [
               Row(

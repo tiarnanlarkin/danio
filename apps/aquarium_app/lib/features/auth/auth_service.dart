@@ -44,11 +44,11 @@ class AuthService {
       if (response.user != null) {
         return AuthResult.success(response.user!);
       }
-      return const AuthResult.error('Sign-up succeeded but no user returned.');
+      return const AuthResult.error('Something went wrong during sign-up. Please try again.');
     } on AuthException catch (e) {
       return AuthResult.error(e.message);
     } catch (e) {
-      return AuthResult.error(e.toString());
+      return const AuthResult.error('Something went wrong. Please check your connection and try again.');
     }
   }
 
@@ -66,11 +66,11 @@ class AuthService {
       if (response.user != null) {
         return AuthResult.success(response.user!);
       }
-      return const AuthResult.error('Sign-in succeeded but no user returned.');
+      return const AuthResult.error('Something went wrong during sign-in. Please try again.');
     } on AuthException catch (e) {
       return AuthResult.error(e.message);
     } catch (e) {
-      return AuthResult.error(e.toString());
+      return const AuthResult.error('Something went wrong. Please check your connection and try again.');
     }
   }
 
@@ -95,7 +95,7 @@ class AuthService {
     } on AuthException catch (e) {
       return AuthResult.error(e.message);
     } catch (e) {
-      return AuthResult.error(e.toString());
+      return const AuthResult.error('Something went wrong. Please check your connection and try again.');
     }
   }
 
@@ -112,7 +112,7 @@ class AuthService {
     } on AuthException catch (e) {
       return AuthResult.error(e.message);
     } catch (e) {
-      return AuthResult.error(e.toString());
+      return const AuthResult.error('Something went wrong. Please check your connection and try again.');
     }
   }
 

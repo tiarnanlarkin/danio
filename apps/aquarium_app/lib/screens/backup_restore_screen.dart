@@ -50,7 +50,7 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
     return Scaffold(
       appBar: AppBar(title: const Text('Backup & Restore')),
       body: ListView.builder(
-        padding: EdgeInsets.all(AppSpacing.md),
+        padding: const EdgeInsets.all(AppSpacing.md),
         itemCount: items.length,
         itemBuilder: (context, index) => items[index],
       ),
@@ -89,7 +89,7 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
             ),
             data: (tanks) => Card(
               child: Padding(
-                padding: EdgeInsets.all(AppSpacing.md),
+                padding: const EdgeInsets.all(AppSpacing.md),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -494,7 +494,7 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
             'Imported $imported tank${imported == 1 ? '' : 's'} with all data successfully!',
           );
         } else {
-          AppFeedback.showWarning(context, 'No tanks were imported');
+          AppFeedback.showWarning(context, 'No tanks found in this backup file.');
         }
       }
     } catch (e) {

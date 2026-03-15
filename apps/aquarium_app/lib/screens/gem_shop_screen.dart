@@ -230,7 +230,7 @@ class _GemShopScreenState extends ConsumerState<GemShopScreen>
         // Show error message
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(result.errorMessage ?? 'Purchase failed'),
+            content: Text(result.errorMessage ?? 'Couldn\'t complete this purchase. Please try again.'),
             backgroundColor: AppColors.error,
           ),
         );
@@ -298,7 +298,7 @@ class _GemShopScreenState extends ConsumerState<GemShopScreen>
                   ),
                   const SizedBox(height: AppSpacing.lg2),
                   Container(
-                    padding: EdgeInsets.all(AppSpacing.md),
+                    padding: const EdgeInsets.all(AppSpacing.md),
                     decoration: BoxDecoration(
                       color: GemShopColors.glassCard,
                       borderRadius: AppRadius.mediumRadius,
@@ -432,7 +432,7 @@ class _ShopItemGrid extends ConsumerWidget {
     }
 
     return GridView.builder(
-      padding: EdgeInsets.all(AppSpacing.md),
+      padding: const EdgeInsets.all(AppSpacing.md),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
         childAspectRatio: 0.75,
@@ -509,7 +509,7 @@ class _ShopItemCard extends ConsumerWidget {
                 children: [
                   // Content
                   Padding(
-                    padding: EdgeInsets.all(AppSpacing.md),
+                    padding: const EdgeInsets.all(AppSpacing.md),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [

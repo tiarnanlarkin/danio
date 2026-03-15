@@ -153,7 +153,7 @@ class _LogsScreenState extends ConsumerState<LogsScreen> {
       ),
       ),
       floatingActionButton: FloatingActionButton(
-        tooltip: 'Add Log',
+        tooltip: 'Add a new log entry',
         child: const Icon(Icons.add),
         onPressed: () => _showAddLogSheet(context),
       ),
@@ -264,7 +264,7 @@ class _LogsScreenState extends ConsumerState<LogsScreen> {
 
             return SafeArea(
               child: Padding(
-                padding: EdgeInsets.all(AppSpacing.md),
+                padding: const EdgeInsets.all(AppSpacing.md),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.stretch,

@@ -453,7 +453,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     const Spacer(),
                     // Hearts indicator
                     const Padding(
-                      padding: EdgeInsets.only(right: AppSpacing.sm),
+                      padding: const EdgeInsets.only(right: AppSpacing.sm),
                       child: HeartIndicator(compact: true),
                     ),
 
@@ -734,7 +734,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 child: Material(
                   color: Colors.transparent,
                   child: Container(
-                    padding: EdgeInsets.symmetric(
+                    padding: const EdgeInsets.symmetric(
                       horizontal: AppSpacing.lg,
                       vertical: AppSpacing.md,
                     ),
@@ -811,6 +811,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       IconButton(
                         icon: const Icon(Icons.close, size: 18),
                         color: context.textSecondary,
+                        tooltip: 'Dismiss welcome banner',
                         onPressed: () =>
                             setState(() => _showComebackBanner = false),
                       ),
@@ -1053,7 +1054,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           color: Theme.of(context).scaffoldBackgroundColor,
           borderRadius: const BorderRadius.vertical(top: Radius.circular(AppRadius.lg)),
         ),
-        padding: EdgeInsets.all(AppSpacing.md),
+        padding: const EdgeInsets.all(AppSpacing.md),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -1127,9 +1128,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   /// Get the current tank ID based on tank index
   String? _getCurrentTankId() {
     final tanksAsync = ref.read(tanksProvider);
-    return tanksAsync.valueOrNull?.isNotEmpty == true
-        ? tanksAsync.valueOrNull![_currentTankIndex % tanksAsync.valueOrNull!.length].id
-        : null;
+    final tanks = tanksAsync.valueOrNull;
+    if (tanks == null || tanks.isEmpty) return null;
+    return tanks[_currentTankIndex % tanks.length].id;
   }
 
   void _showStatsInfo(BuildContext context) {
@@ -1157,7 +1158,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       rows: [
         ItemDetailRow(
           label: 'Temperature',
-          value: temp != null ? '${temp.toStringAsFixed(1)} °C' : 'No data yet',
+          value: temp != null ? '${temp.toStringAsFixed(1)} °C' : 'Not recorded yet',
         ),
         ItemDetailRow(
           label: 'Last fed',
@@ -1187,8 +1188,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
       builder: (ctx) => Container(
-        margin: EdgeInsets.all(AppSpacing.md),
-        padding: EdgeInsets.all(AppSpacing.lg2),
+        margin: const EdgeInsets.all(AppSpacing.md),
+        padding: const EdgeInsets.all(AppSpacing.lg2),
         decoration: BoxDecoration(
           color: Theme.of(context).scaffoldBackgroundColor,
           borderRadius: AppRadius.largeRadius,
@@ -1209,7 +1210,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             const SizedBox(height: AppSpacing.md),
             Container(
               width: double.infinity,
-              padding: EdgeInsets.all(AppSpacing.sm2),
+              padding: const EdgeInsets.all(AppSpacing.sm2),
               decoration: BoxDecoration(
                 color: AppColors.accent.withAlpha(20),
                 borderRadius: AppRadius.mediumRadius,
@@ -1236,7 +1237,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             if (wt == null || !wt.hasValues) ...[
               Center(
                 child: Padding(
-                  padding: EdgeInsets.symmetric(vertical: AppSpacing.lg),
+                  padding: const EdgeInsets.symmetric(vertical: AppSpacing.lg),
                   child: Column(
                     children: [
                       Text('No test results yet', style: AppTypography.bodyMedium),
@@ -1329,8 +1330,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
       builder: (ctx) => Container(
-        margin: EdgeInsets.all(AppSpacing.md),
-        padding: EdgeInsets.all(AppSpacing.lg2),
+        margin: const EdgeInsets.all(AppSpacing.md),
+        padding: const EdgeInsets.all(AppSpacing.lg2),
         decoration: BoxDecoration(
           color: Theme.of(context).scaffoldBackgroundColor,
           borderRadius: AppRadius.largeRadius,
@@ -1351,7 +1352,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             const SizedBox(height: AppSpacing.md),
             Container(
               width: double.infinity,
-              padding: EdgeInsets.all(AppSpacing.sm2),
+              padding: const EdgeInsets.all(AppSpacing.sm2),
               decoration: BoxDecoration(
                 color: AppColors.secondary.withAlpha(20),
                 borderRadius: AppRadius.mediumRadius,
@@ -1418,8 +1419,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
       builder: (ctx) => Container(
-        margin: EdgeInsets.all(AppSpacing.md),
-        padding: EdgeInsets.all(AppSpacing.lg2),
+        margin: const EdgeInsets.all(AppSpacing.md),
+        padding: const EdgeInsets.all(AppSpacing.lg2),
         decoration: BoxDecoration(
           color: Theme.of(context).scaffoldBackgroundColor,
           borderRadius: AppRadius.largeRadius,
@@ -1440,7 +1441,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             const SizedBox(height: AppSpacing.md),
             Container(
               width: double.infinity,
-              padding: EdgeInsets.all(AppSpacing.sm2),
+              padding: const EdgeInsets.all(AppSpacing.sm2),
               decoration: BoxDecoration(
                 color: DanioColors.emeraldGreen.withAlpha(20),
                 borderRadius: AppRadius.mediumRadius,
@@ -1493,8 +1494,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       context: context,
       backgroundColor: Colors.transparent,
       builder: (ctx) => Container(
-        margin: EdgeInsets.all(AppSpacing.md),
-        padding: EdgeInsets.all(AppSpacing.lg2),
+        margin: const EdgeInsets.all(AppSpacing.md),
+        padding: const EdgeInsets.all(AppSpacing.lg2),
         decoration: BoxDecoration(
           color: Theme.of(context).scaffoldBackgroundColor,
           borderRadius: AppRadius.largeRadius,
@@ -1528,7 +1529,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     },
                     child: Container(
                       width: 100,
-                      padding: EdgeInsets.all(AppSpacing.sm2),
+                      padding: const EdgeInsets.all(AppSpacing.sm2),
                       decoration: BoxDecoration(
                         borderRadius: AppRadius.mediumRadius,
                         border: Border.all(
@@ -1605,7 +1606,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       context: context,
       backgroundColor: Colors.transparent,
       builder: (ctx) => Container(
-        margin: EdgeInsets.all(AppSpacing.md),
+        margin: const EdgeInsets.all(AppSpacing.md),
         child: ItemDetailPopup(
           title: title,
           icon: icon,
@@ -1623,8 +1624,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
       builder: (ctx) => Container(
-        margin: EdgeInsets.all(AppSpacing.md),
-        padding: EdgeInsets.all(AppSpacing.lg2),
+        margin: const EdgeInsets.all(AppSpacing.md),
+        padding: const EdgeInsets.all(AppSpacing.lg2),
         decoration: BoxDecoration(
           color: Theme.of(context).scaffoldBackgroundColor,
           borderRadius: AppRadius.largeRadius,
@@ -1692,8 +1693,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
       builder: (ctx) => Container(
-        margin: EdgeInsets.all(AppSpacing.md),
-        padding: EdgeInsets.all(AppSpacing.lg2),
+        margin: const EdgeInsets.all(AppSpacing.md),
+        padding: const EdgeInsets.all(AppSpacing.lg2),
         decoration: BoxDecoration(
           color: Theme.of(context).scaffoldBackgroundColor,
           borderRadius: AppRadius.largeRadius,
@@ -1770,13 +1771,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
-            child: const Text('Cancel'),
+            child: const Text('Keep'),
           ),
           TextButton(
             onPressed: () => Navigator.pop(ctx, true),
-            child: const Text(
-              'Delete',
-              style: TextStyle(color: AppColors.error),
+            child: Text(
+              'Delete ${_selectedTankIds.length > 1 ? 'Tanks' : 'Tank'}',
+              style: const TextStyle(color: AppColors.error),
             ),
           ),
         ],

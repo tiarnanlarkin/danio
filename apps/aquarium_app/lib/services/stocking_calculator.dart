@@ -33,7 +33,7 @@ class StockingCalculator {
       return const StockingResult(
         level: StockingLevel.understocked,
         percentFull: 0,
-        summary: 'No livestock - room for new additions!',
+        summary: 'No livestock yet — plenty of room for new friends!',
         suggestions: [
           'Consider starting with hardy species like tetras or guppies.',
         ],

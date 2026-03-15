@@ -47,7 +47,7 @@ class TankHealthService {
     int waterChangeScore;
     if (waterChanges.isEmpty) {
       waterChangeScore = 0;
-      factors.add('No water changes logged');
+      factors.add('No water changes logged yet');
     } else {
       final daysSince =
           now.difference(waterChanges.first.timestamp).inDays;
@@ -56,13 +56,13 @@ class TankHealthService {
         factors.add('Water changed ${daysSince == 0 ? "today" : "$daysSince days ago"}');
       } else if (daysSince <= 10) {
         waterChangeScore = 25;
-        factors.add('Water change due ($daysSince days ago)');
+        factors.add('Water change due — last one was $daysSince days ago');
       } else if (daysSince <= 14) {
         waterChangeScore = 15;
-        factors.add('Water change overdue ($daysSince days)');
+        factors.add('Water change overdue — $daysSince days since the last one');
       } else {
         waterChangeScore = 5;
-        factors.add('Water change very overdue ($daysSince days)');
+        factors.add('Water change very overdue — $daysSince days and counting!');
       }
     }
 
@@ -84,7 +84,7 @@ class TankHealthService {
       // Stale test penalty
       if (daysSinceTest > 14) {
         paramScore = 15;
-        factors.add('Water test data is stale ($daysSinceTest days old)');
+        factors.add('Last water test was $daysSinceTest days ago — time for a fresh one!');
       } else {
         int paramPoints = 0;
         int paramCount = 0;
@@ -98,7 +98,7 @@ class TankHealthService {
             paramPoints += 5;
             factors.add('Ammonia slightly elevated (${latest.ammonia} ppm)');
           } else {
-            factors.add('Ammonia dangerous (${latest.ammonia} ppm)');
+            factors.add('Ammonia at dangerous levels (${latest.ammonia} ppm) — act quickly!');
           }
         }
 
@@ -111,7 +111,7 @@ class TankHealthService {
             paramPoints += 5;
             factors.add('Nitrite slightly elevated (${latest.nitrite} ppm)');
           } else {
-            factors.add('Nitrite dangerous (${latest.nitrite} ppm)');
+            factors.add('Nitrite at dangerous levels (${latest.nitrite} ppm) — act quickly!');
           }
         }
 
@@ -147,7 +147,7 @@ class TankHealthService {
 
         if (paramCount == 0) {
           paramScore = 20; // No params tested
-          factors.add('Test more parameters for a better score');
+          factors.add('Test more parameters for a more accurate score');
         } else {
           // Scale to 40 points max
           paramScore = (paramPoints / (paramCount * 10) * 40).round();
@@ -172,13 +172,13 @@ class TankHealthService {
       regularityScore = 20;
     } else if (recentLogs >= 4) {
       regularityScore = 15;
-      factors.add('Log more often for better insights');
+      factors.add('Log more often for richer insights');
     } else if (recentLogs >= 1) {
       regularityScore = 8;
       factors.add('Try logging at least weekly');
     } else {
       regularityScore = 0;
-      factors.add('No recent activity logged');
+      factors.add('No activity logged recently — your fish are waiting! 🐟');
     }
 
     // --- Total ---

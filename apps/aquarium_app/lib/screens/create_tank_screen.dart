@@ -132,7 +132,7 @@ class _CreateTankScreenState extends ConsumerState<CreateTankScreen> {
               SafeArea(
                 top: false,
                 child: Padding(
-                padding: EdgeInsets.all(AppSpacing.md),
+                padding: const EdgeInsets.all(AppSpacing.md),
                 child: Row(
                   children: [
                     if (_currentPage > 0)
@@ -341,7 +341,7 @@ class _BasicInfoPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      padding: EdgeInsets.all(AppSpacing.lg),
+      padding: const EdgeInsets.all(AppSpacing.lg),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -421,20 +421,20 @@ class _TypeSelector extends StatelessWidget {
           child: _TypeCard(
             icon: Icons.waves,
             title: 'Marine',
-            subtitle: 'Coming soon',
+            subtitle: 'Arriving soon',
             isSelected: selected == TankType.marine,
             isDisabled: true,
             onTap: () {
-              // Show coming soon message when user taps disabled Marine option
+              // Show message when user taps disabled Marine option
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Row(
                     children: const [
                       Icon(Icons.waves, color: Colors.white),
-                      SizedBox(width: AppSpacing.sm2),
+                      const SizedBox(width: AppSpacing.sm2),
                       Expanded(
                         child: Text(
-                          'Marine tank support is coming soon! 🐠🦀🐙',
+                          'Marine tanks are on the way — stay tuned! 🐠🦀🐙',
                         ),
                       ),
                     ],
@@ -472,7 +472,7 @@ class _TypeCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Semantics(
       label: A11yLabels.selectableItem(title, isSelected),
-      hint: isDisabled ? 'Coming soon' : subtitle,
+      hint: isDisabled ? 'Arriving soon' : subtitle,
       button: true,
       enabled: !isDisabled,
       selected: isSelected,
@@ -484,7 +484,7 @@ class _TypeCard extends StatelessWidget {
           onTap: onTap,
           borderRadius: AppRadius.mediumRadius,
           child: Container(
-            padding: EdgeInsets.all(AppSpacing.md),
+            padding: const EdgeInsets.all(AppSpacing.md),
             decoration: BoxDecoration(
               color: isSelected
                   ? AppOverlays.primary10
@@ -601,7 +601,7 @@ class _SizePageState extends State<_SizePage> {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      padding: EdgeInsets.all(AppSpacing.lg),
+      padding: const EdgeInsets.all(AppSpacing.lg),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -796,7 +796,7 @@ class _WaterTypePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      padding: EdgeInsets.all(AppSpacing.lg),
+      padding: const EdgeInsets.all(AppSpacing.lg),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -971,7 +971,7 @@ class _WaterTypeOption extends StatelessWidget {
         onTap: onTap,
         borderRadius: AppRadius.mediumRadius,
         child: Container(
-          padding: EdgeInsets.all(AppSpacing.md),
+          padding: const EdgeInsets.all(AppSpacing.md),
           decoration: BoxDecoration(
             color: isSelected
                 ? AppOverlays.primary10

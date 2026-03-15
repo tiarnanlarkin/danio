@@ -125,7 +125,7 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
         cards: [],
         stats: stats,
         isLoading: false,
-        errorMessage: 'Failed to load review data: ${e.toString()}',
+        errorMessage: 'Couldn't load your review cards. Please try again.',
       );
     }
   }
@@ -184,7 +184,7 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
       await _scheduleNotifications();
     } catch (e) {
       state = state.copyWith(
-        errorMessage: 'Failed to create review card: ${e.toString()}',
+        errorMessage: 'Couldn't create that review card. Please try again.',
       );
       rethrow;
     }
@@ -294,7 +294,7 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
     } catch (e) {
       // Log error but don't break lesson completion flow
       state = state.copyWith(
-        errorMessage: 'Failed to auto-seed review cards: ${e.toString()}',
+        errorMessage: 'Couldn't set up your review cards. Please try again.',
       );
       // Don't rethrow - lesson completion should still succeed
     }
@@ -325,7 +325,7 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
   }) async {
     final cardIndex = state.cards.indexWhere((c) => c.id == cardId);
     if (cardIndex == -1) {
-      state = state.copyWith(errorMessage: 'Card not found: $cardId');
+      state = state.copyWith(errorMessage: 'That review card couldn't be found.');
       return; // Don't break flow
     }
 
@@ -365,7 +365,7 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
         cards: originalCards,
         stats: originalStats,
         errorMessage:
-            'Failed to save card review (will retry): ${e.toString()}',
+            'Couldn\'t save that review — it\'ll retry automatically.',
       );
       // Don't rethrow - let review flow continue
     }
@@ -384,7 +384,7 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
       state = state.copyWith(currentSession: session, clearError: true);
     } catch (e) {
       state = state.copyWith(
-        errorMessage: 'Failed to start review session: ${e.toString()}',
+        errorMessage: 'Couldn't start your review session. Please try again.',
       );
       rethrow;
     }
@@ -445,7 +445,7 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
       return result;
     } catch (e) {
       state = state.copyWith(
-        errorMessage: 'Error recording result: ${e.toString()}',
+        errorMessage: 'Couldn't save your answer. Your progress is safe — try again.',
       );
       rethrow;
     }
@@ -483,7 +483,7 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
       await _scheduleNotifications();
     } catch (e) {
       state = state.copyWith(
-        errorMessage: 'Failed to save session completion: ${e.toString()}',
+        errorMessage: 'Couldn't save your session results. Don't worry — your progress is tracked.',
       );
       rethrow;
     }
@@ -581,7 +581,7 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
     } catch (e) {
       // Don't break flow on streak update failure
       state = state.copyWith(
-        errorMessage: 'Failed to update review streak: ${e.toString()}',
+        errorMessage: 'Couldn't update your streak. It'll catch up next time.',
       );
     }
   }
@@ -621,7 +621,7 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
     } catch (e) {
       // Don't break flow on achievement check failure
       state = state.copyWith(
-        errorMessage: 'Failed to check achievements: ${e.toString()}',
+        errorMessage: 'Couldn't check for new achievements right now.',
       );
     }
   }
@@ -661,7 +661,7 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
     } catch (e) {
       // Don't break flow on achievement check failure
       state = state.copyWith(
-        errorMessage: 'Failed to check achievements: ${e.toString()}',
+        errorMessage: 'Couldn't check for new achievements right now.',
       );
     }
   }
@@ -683,7 +683,7 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
     } catch (e) {
       // Don't break flow on notification scheduling failure
       state = state.copyWith(
-        errorMessage: 'Failed to schedule notifications: ${e.toString()}',
+        errorMessage: 'Couldn't set up your review reminders.',
       );
     }
   }
@@ -712,7 +712,7 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
       await _saveData();
     } catch (e) {
       state = state.copyWith(
-        errorMessage: 'Failed to delete card: ${e.toString()}',
+        errorMessage: 'Couldn't remove that card. Please try again.',
       );
       rethrow;
     }

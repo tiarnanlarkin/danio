@@ -81,7 +81,7 @@ class WishlistScreen extends ConsumerWidget {
               onAction: () => _showAddDialog(context, ref),
             )
           : ListView.builder(
-              padding: EdgeInsets.all(AppSpacing.md),
+              padding: const EdgeInsets.all(AppSpacing.md),
               itemCount: items.length,
               itemBuilder: (context, index) {
                 final item = items[index];
@@ -153,12 +153,12 @@ class WishlistScreen extends ConsumerWidget {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Delete Item?'),
+        title: const Text('Remove From Wishlist?'),
         content: Text('Remove "${item.name}" from your wishlist?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: const Text('Cancel'),
+            child: const Text('Keep'),
           ),
           TextButton(
             onPressed: () {
@@ -166,7 +166,7 @@ class WishlistScreen extends ConsumerWidget {
               Navigator.pop(ctx);
             },
             style: TextButton.styleFrom(foregroundColor: AppColors.error),
-            child: const Text('Delete'),
+            child: const Text('Remove Item'),
           ),
         ],
       ),
@@ -182,7 +182,7 @@ class WishlistScreen extends ConsumerWidget {
       context: context,
       backgroundColor: Colors.transparent,
       builder: (ctx) => Container(
-        margin: EdgeInsets.all(AppSpacing.md),
+        margin: const EdgeInsets.all(AppSpacing.md),
         decoration: BoxDecoration(
           color: Theme.of(context).scaffoldBackgroundColor,
           borderRadius: AppRadius.largeRadius,
@@ -191,7 +191,7 @@ class WishlistScreen extends ConsumerWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Padding(
-              padding: EdgeInsets.all(AppSpacing.lg2),
+              padding: const EdgeInsets.all(AppSpacing.lg2),
               child: Row(
                 children: [
                   const Icon(Icons.check_circle, color: AppColors.success),
@@ -254,7 +254,7 @@ class _WishlistItemCard extends StatelessWidget{
         onTap: onTap,
         borderRadius: AppRadius.mediumRadius,
         child: Padding(
-          padding: EdgeInsets.all(AppSpacing.md),
+          padding: const EdgeInsets.all(AppSpacing.md),
           child: Row(
             children: [
               Container(
@@ -312,7 +312,7 @@ class _WishlistItemCard extends StatelessWidget{
               IconButton(
                 icon: const Icon(Icons.delete_outline),
                 color: context.textHint,
-                tooltip: 'Delete',
+                tooltip: 'Remove from wishlist',
                 onPressed: onDelete,
               ),
             ],
@@ -385,7 +385,7 @@ class _AddEditItemSheetState extends State<_AddEditItemSheet> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.all(AppSpacing.md),
+      margin: const EdgeInsets.all(AppSpacing.md),
       padding: EdgeInsets.only(
         bottom: MediaQuery.of(context).viewInsets.bottom,
       ),
@@ -394,7 +394,7 @@ class _AddEditItemSheetState extends State<_AddEditItemSheet> {
         borderRadius: AppRadius.largeRadius,
       ),
       child: SingleChildScrollView(
-        padding: EdgeInsets.all(AppSpacing.lg),
+        padding: const EdgeInsets.all(AppSpacing.lg),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,

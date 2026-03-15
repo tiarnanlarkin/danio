@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -6,8 +7,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../models/models.dart';
 import '../../../providers/tank_provider.dart';
+import '../../../services/api_rate_limiter.dart';
 import '../../../services/openai_service.dart';
 import '../../../theme/app_theme.dart';
+import '../../../widgets/offline_indicator.dart';
 import '../models/smart_models.dart';
 import '../smart_providers.dart';
 
@@ -39,8 +42,21 @@ class _WeeklyPlanScreenState extends ConsumerState<WeeklyPlanScreen> {
   Future<void> _generate() async {
     final openai = ref.read(openAIServiceProvider);
     if (!openai.isConfigured) {
-      setState(() => _error = 'AI features require an OpenAI API key.\n'
-          'This feature is coming soon! Stay tuned for updates.');
+      setState(() => _error = 'Weekly Planner isn\'t available yet — we\'re working on bringing it to you! 📋');
+      return;
+    }
+
+    // Offline check.
+    final isOnline = ref.read(isOnlineProvider);
+    if (!isOnline) {
+      setState(() => _error = OpenAIUserMessages.offline);
+      return;
+    }
+
+    // Rate limit check.
+    final rateLimiter = ref.read(apiRateLimiterProvider);
+    if (!rateLimiter.canRequest(AIFeature.weeklyPlan)) {
+      setState(() => _error = OpenAIUserMessages.rateLimited);
       return;
     }
 
@@ -117,14 +133,18 @@ class _WeeklyPlanScreenState extends ConsumerState<WeeklyPlanScreen> {
         'generated_at': DateTime.now().toIso8601String(),
       });
 
+      rateLimiter.recordRequest(AIFeature.weeklyPlan);
       ref.read(weeklyPlanProvider.notifier).save(plan);
       ref.read(aiHistoryProvider.notifier).add(
         type: 'weekly_plan',
         summary: 'Generated weekly maintenance plan',
       );
+    } on TimeoutException {
+      if (!mounted) return;
+      setState(() => _error = OpenAIUserMessages.timeout);
     } on OpenAIException catch (e) {
       if (!mounted) return;
-      setState(() => _error = 'AI error: ${e.message}');
+      setState(() => _error = e.message);
     } catch (e) {
       if (!mounted) return;
       setState(() => _error = 'Couldn\'t generate your plan. Try again in a moment.');
@@ -146,7 +166,7 @@ class _WeeklyPlanScreenState extends ConsumerState<WeeklyPlanScreen> {
           IconButton(
             icon: const Icon(Icons.refresh),
             onPressed: _loading ? null : _generate,
-            tooltip: 'Regenerate',
+            tooltip: 'Generate a new plan',
           ),
         ],
       ),
@@ -166,7 +186,7 @@ class _WeeklyPlanScreenState extends ConsumerState<WeeklyPlanScreen> {
         mainAxisSize: MainAxisSize.min,
         children: [
           CircularProgressIndicator(color: AppColors.primary),
-          SizedBox(height: AppSpacing.md),
+          const SizedBox(height: AppSpacing.md),
           Text('Generating your weekly plan...'),
         ],
       ),
@@ -176,7 +196,7 @@ class _WeeklyPlanScreenState extends ConsumerState<WeeklyPlanScreen> {
   Widget _buildError(ThemeData theme) {
     return Center(
       child: Padding(
-        padding: EdgeInsets.all(AppSpacing.lg),
+        padding: const EdgeInsets.all(AppSpacing.lg),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -225,7 +245,7 @@ class _WeeklyPlanScreenState extends ConsumerState<WeeklyPlanScreen> {
       });
 
     return ListView.builder(
-      padding: EdgeInsets.all(AppSpacing.md),
+      padding: const EdgeInsets.all(AppSpacing.md),
       itemCount: sortedDays.length + 1, // +1 for footer
       itemBuilder: (context, index) {
         if (index == sortedDays.length) {

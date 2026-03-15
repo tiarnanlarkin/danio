@@ -46,7 +46,7 @@ class LogDetailScreen extends ConsumerWidget {
             actions: [
               IconButton(
                 icon: const Icon(Icons.edit),
-                tooltip: 'Edit',
+                tooltip: 'Edit this log entry',
                 onPressed: () => Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -60,13 +60,13 @@ class LogDetailScreen extends ConsumerWidget {
               ),
               IconButton(
                 icon: const Icon(Icons.delete_outline),
-                tooltip: 'Delete',
+                tooltip: 'Delete this log entry',
                 onPressed: () => _confirmDelete(context, ref, log),
               ),
             ],
           ),
           body: SingleChildScrollView(
-            padding: EdgeInsets.all(AppSpacing.md),
+            padding: const EdgeInsets.all(AppSpacing.md),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -148,17 +148,17 @@ class LogDetailScreen extends ConsumerWidget {
     final ok = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Delete log?'),
+        title: const Text('Delete Log Entry?'),
         content: const Text('This cannot be undone.'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
-            child: const Text('Cancel'),
+            child: const Text('Keep'),
           ),
           TextButton(
             onPressed: () => Navigator.pop(ctx, true),
             child: const Text(
-              'Delete',
+              'Delete Log',
               style: TextStyle(color: AppColors.error),
             ),
           ),
@@ -236,7 +236,7 @@ class _WaterTestCard extends StatelessWidget {
     return Card(
       margin: EdgeInsets.zero,
       child: Padding(
-        padding: EdgeInsets.all(AppSpacing.md),
+        padding: const EdgeInsets.all(AppSpacing.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -295,7 +295,7 @@ class _WaterChangeCard extends StatelessWidget {
     return Card(
       margin: EdgeInsets.zero,
       child: Padding(
-        padding: EdgeInsets.all(AppSpacing.md),
+        padding: const EdgeInsets.all(AppSpacing.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

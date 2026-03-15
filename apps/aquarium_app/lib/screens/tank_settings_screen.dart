@@ -100,7 +100,7 @@ class _TankSettingsScreenState extends ConsumerState<TankSettingsScreen> {
             child: Form(
               key: _formKey,
               child: ListView.builder(
-                padding: EdgeInsets.all(AppSpacing.md),
+                padding: const EdgeInsets.all(AppSpacing.md),
                 itemCount: _buildItems(tank).length,
                 itemBuilder: (context, index) => _buildItems(tank)[index],
               ),
@@ -137,14 +137,14 @@ class _TankSettingsScreenState extends ConsumerState<TankSettingsScreen> {
                     ),
                     DropdownMenuItem(
                       value: TankType.marine,
-                      child: Text('Marine (coming soon)'),
+                      child: Text('Marine (arriving soon)'),
                     ),
                   ],
                   onChanged: (v) {
                     if (v == null) return;
                     // Keep MVP simple: prevent switching to marine for now.
                     if (v == TankType.marine) {
-                      AppFeedback.showInfo(context, 'Marine is coming soon.');
+                      AppFeedback.showInfo(context, 'Marine tanks are on the way — stay tuned!');
                       return;
                     }
                     setState(() => _type = v);
@@ -403,17 +403,17 @@ class _TankSettingsScreenState extends ConsumerState<TankSettingsScreen> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Delete tank?'),
-        content: const Text('You\'ll have 5 seconds to undo.'),
+        title: const Text('Delete Tank?'),
+        content: const Text('This will remove all livestock, equipment, logs, and tasks. You\'ll have 5 seconds to undo.'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
-            child: const Text('Cancel'),
+            child: const Text('Keep Tank'),
           ),
           TextButton(
             onPressed: () => Navigator.pop(ctx, true),
             child: const Text(
-              'Delete',
+              'Delete Tank',
               style: TextStyle(color: AppColors.error),
             ),
           ),

@@ -64,7 +64,7 @@ class _ActivityFeedScreenState extends ConsumerState<ActivityFeedScreen> {
             onPressed: () {
               ref.read(friendActivitiesProvider.notifier).reload();
             },
-            tooltip: 'Refresh',
+            tooltip: 'Refresh activity feed',
           ),
           if (_selectedFriendId != null)
             IconButton(
@@ -245,13 +245,13 @@ class _ActivityFeedView extends StatelessWidget {
       },
       child: ListView.builder(
         controller: scrollController,
-        padding: EdgeInsets.all(AppSpacing.md),
+        padding: const EdgeInsets.all(AppSpacing.md),
         itemCount: activities.length + (hasMore ? 1 : 0),
         itemBuilder: (context, index) {
           if (index >= activities.length) {
             // Loading indicator for "load more"
             return const Padding(
-              padding: EdgeInsets.all(AppSpacing.md),
+              padding: const EdgeInsets.all(AppSpacing.md),
               child: Center(child: CircularProgressIndicator(color: AppColors.primary)),
             );
           }
@@ -326,7 +326,7 @@ class _ActivityTile extends ConsumerWidget {
         },
         borderRadius: AppRadius.mediumRadius,
         child: Padding(
-          padding: EdgeInsets.all(AppSpacing.sm2),
+          padding: const EdgeInsets.all(AppSpacing.sm2),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

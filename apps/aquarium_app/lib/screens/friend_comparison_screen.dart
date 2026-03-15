@@ -49,7 +49,7 @@ class _FriendComparisonScreenState
                 child: Row(
                   children: [
                     Icon(Icons.person_remove, color: AppColors.error),
-                    SizedBox(width: AppSpacing.sm),
+                    const SizedBox(width: AppSpacing.sm),
                     Text('Remove Friend', style: TextStyle(color: AppColors.error)),
                   ],
                 ),
@@ -204,7 +204,7 @@ class _FriendComparisonScreenState
                 'Removed ${widget.friend.displayName} from friends',
               );
             },
-            child: const Text('Remove'),
+            child: const Text('Remove Friend'),
           ),
         ],
       ),
@@ -222,7 +222,7 @@ class _HeaderSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.all(AppSpacing.md),
+      padding: const EdgeInsets.all(AppSpacing.md),
       child: Row(
         children: [
           Expanded(
@@ -275,7 +275,7 @@ class _UserCard extends StatelessWidget {
     return Card(
       elevation: AppElevation.level1,
       child: Padding(
-        padding: EdgeInsets.all(AppSpacing.sm2),
+        padding: const EdgeInsets.all(AppSpacing.sm2),
         child: Column(
           children: [
             CircleAvatar(
@@ -517,7 +517,7 @@ class _ProgressChartSection extends StatelessWidget {
         Container(
           height: 200,
           margin: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
-          padding: EdgeInsets.all(AppSpacing.md),
+          padding: const EdgeInsets.all(AppSpacing.md),
           decoration: BoxDecoration(
             color: Theme.of(context).colorScheme.surfaceContainerLowest,
             borderRadius: AppRadius.mediumRadius,
@@ -702,7 +702,7 @@ class _AchievementCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       child: Padding(
-        padding: EdgeInsets.all(AppSpacing.md),
+        padding: const EdgeInsets.all(AppSpacing.md),
         child: Column(
           children: [
             Icon(Icons.emoji_events, size: 40, color: color),

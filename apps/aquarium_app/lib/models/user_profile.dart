@@ -522,7 +522,7 @@ extension TankTypeExt on TankType {
       case TankType.freshwater:
         return 'Tropical or coldwater fish';
       case TankType.marine:
-        return 'Saltwater fish (coming soon)';
+        return 'Saltwater fish — arriving soon!';
     }
   }
 

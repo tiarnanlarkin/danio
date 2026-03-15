@@ -135,7 +135,7 @@ class ThemeGalleryScreen extends ConsumerWidget {
                     ),
                   ),
                   const SizedBox(width: AppSpacing.sm3),
-                  Text('Coming Soon', style: AppTypography.headlineSmall),
+                  Text('Arriving Soon', style: AppTypography.headlineSmall),
                 ],
               ),
             ),
@@ -325,7 +325,7 @@ class ThemeGalleryScreen extends ConsumerWidget {
         title: Row(
           children: [
             Container(
-              padding: EdgeInsets.all(AppSpacing.sm),
+              padding: const EdgeInsets.all(AppSpacing.sm),
               decoration: BoxDecoration(
                 gradient: const LinearGradient(
                   colors: [Color(0xFFFFD700), Color(0xFFFFA500)],
@@ -343,7 +343,7 @@ class ThemeGalleryScreen extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Premium themes are coming soon!',
+              'Premium themes are on the way!',
               style: Theme.of(context).textTheme.titleMedium!,
             ),
             const SizedBox(height: AppSpacing.sm2),
@@ -551,7 +551,7 @@ class _ThemeCard extends StatelessWidget {
                     color: AppOverlays.black40,
                     child: Center(
                       child: Container(
-                        padding: EdgeInsets.all(AppSpacing.sm2),
+                        padding: const EdgeInsets.all(AppSpacing.sm2),
                         decoration: BoxDecoration(
                           color: AppOverlays.black50,
                           shape: BoxShape.circle,
@@ -596,7 +596,7 @@ class _ThemeCard extends StatelessWidget {
                   top: 8,
                   right: 8,
                   child: Container(
-                    padding: EdgeInsets.all(AppSpacing.xs),
+                    padding: const EdgeInsets.all(AppSpacing.xs),
                     decoration: BoxDecoration(
                       color: theme.accentBlob,
                       shape: BoxShape.circle,

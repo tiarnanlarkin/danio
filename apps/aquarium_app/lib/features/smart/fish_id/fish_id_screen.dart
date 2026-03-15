@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
@@ -6,8 +7,10 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../../../services/api_rate_limiter.dart';
 import '../../../services/openai_service.dart';
 import '../../../theme/app_theme.dart';
+import '../../../widgets/offline_indicator.dart';
 import '../models/smart_models.dart';
 import '../smart_providers.dart';
 
@@ -86,8 +89,21 @@ Return ONLY valid JSON with these fields (no markdown, no explanation):
 
     final openai = ref.read(openAIServiceProvider);
     if (!openai.isConfigured) {
-      setState(() => _error = 'AI features require an OpenAI API key.\n'
-          'This feature is coming soon! Stay tuned for updates.');
+      setState(() => _error = 'Fish ID isn\'t available yet — we\'re working on bringing it to you! 🐟');
+      return;
+    }
+
+    // Offline check.
+    final isOnline = ref.read(isOnlineProvider);
+    if (!isOnline) {
+      setState(() => _error = OpenAIUserMessages.offline);
+      return;
+    }
+
+    // Rate limit check.
+    final rateLimiter = ref.read(apiRateLimiterProvider);
+    if (!rateLimiter.canRequest(AIFeature.fishId)) {
+      setState(() => _error = OpenAIUserMessages.rateLimited);
       return;
     }
 
@@ -130,7 +146,8 @@ Return ONLY valid JSON with these fields (no markdown, no explanation):
       final json = jsonDecode(text) as Map<String, dynamic>;
       final identification = IdentificationResult.fromJson(json);
 
-      // Record in AI history.
+      // Record rate limit & AI history.
+      rateLimiter.recordRequest(AIFeature.fishId);
       ref.read(aiHistoryProvider.notifier).add(
         type: 'fish_id',
         summary: 'Identified: ${identification.commonName}',
@@ -141,10 +158,16 @@ Return ONLY valid JSON with these fields (no markdown, no explanation):
         _result = identification;
         _loading = false;
       });
+    } on TimeoutException {
+      if (!mounted) return;
+      setState(() {
+        _error = OpenAIUserMessages.timeout;
+        _loading = false;
+      });
     } on OpenAIException catch (e) {
       if (!mounted) return;
       setState(() {
-        _error = 'AI error: ${e.message}';
+        _error = e.message;
         _loading = false;
       });
     } catch (e) {
@@ -167,7 +190,7 @@ Return ONLY valid JSON with these fields (no markdown, no explanation):
         centerTitle: true,
       ),
       body: SingleChildScrollView(
-        padding: EdgeInsets.all(AppSpacing.md),
+        padding: const EdgeInsets.all(AppSpacing.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -261,7 +284,7 @@ Return ONLY valid JSON with these fields (no markdown, no explanation):
   Widget _buildLoading() {
     return Center(
       child: Padding(
-        padding: EdgeInsets.all(AppSpacing.xl),
+        padding: const EdgeInsets.all(AppSpacing.xl),
         child: Column(
           children: [
             const CircularProgressIndicator(color: AppColors.primary),
@@ -280,7 +303,7 @@ Return ONLY valid JSON with these fields (no markdown, no explanation):
     return Card(
       color: AppColors.errorAlpha10,
       child: Padding(
-        padding: EdgeInsets.all(AppSpacing.md),
+        padding: const EdgeInsets.all(AppSpacing.md),
         child: Row(
           children: [
             const Icon(Icons.error_outline, color: AppColors.error),
@@ -305,7 +328,7 @@ Return ONLY valid JSON with these fields (no markdown, no explanation):
         borderRadius: AppRadius.md2Radius,
       ),
       child: Padding(
-        padding: EdgeInsets.all(AppSpacing.md),
+        padding: const EdgeInsets.all(AppSpacing.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

@@ -240,14 +240,14 @@ class ShopStreetScreen extends ConsumerWidget {
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (ctx) => Container(
-        margin: EdgeInsets.all(AppSpacing.md),
+        margin: const EdgeInsets.all(AppSpacing.md),
         padding: EdgeInsets.only(bottom: MediaQuery.of(ctx).viewInsets.bottom),
         decoration: BoxDecoration(
           color: Theme.of(context).scaffoldBackgroundColor,
           borderRadius: AppRadius.largeRadius,
         ),
         child: SingleChildScrollView(
-          padding: EdgeInsets.all(AppSpacing.lg),
+          padding: const EdgeInsets.all(AppSpacing.lg),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -340,12 +340,12 @@ class ShopStreetScreen extends ConsumerWidget {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Delete Shop?'),
-        content: Text('Remove "${shop.name}" from your list?'),
+        title: const Text('Remove Shop?'),
+        content: Text('Remove "${shop.name}" from your saved shops?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: const Text('Cancel'),
+            child: const Text('Keep'),
           ),
           TextButton(
             onPressed: () {
@@ -353,7 +353,7 @@ class ShopStreetScreen extends ConsumerWidget {
               Navigator.pop(ctx);
             },
             style: TextButton.styleFrom(foregroundColor: AppColors.error),
-            child: const Text('Delete'),
+            child: const Text('Remove Shop'),
           ),
         ],
       ),
@@ -365,11 +365,11 @@ class _ShopHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.all(AppSpacing.lg2),
+      padding: const EdgeInsets.all(AppSpacing.lg2),
       child: Row(
         children: [
           Container(
-            padding: EdgeInsets.all(AppSpacing.sm2),
+            padding: const EdgeInsets.all(AppSpacing.sm2),
             decoration: BoxDecoration(
               color: ShopColors.glassCard,
               borderRadius: AppRadius.mediumRadius,
@@ -437,7 +437,7 @@ class _ShopSection extends StatelessWidget {
           child: BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
             child: Container(
-              padding: EdgeInsets.all(AppSpacing.lg2),
+              padding: const EdgeInsets.all(AppSpacing.lg2),
               decoration: BoxDecoration(
                 color: ShopColors.glassCard,
                 borderRadius: AppRadius.largeRadius,
@@ -446,7 +446,7 @@ class _ShopSection extends StatelessWidget {
               child: Row(
               children: [
                 Container(
-                  padding: EdgeInsets.all(AppSpacing.sm2),
+                  padding: const EdgeInsets.all(AppSpacing.sm2),
                   decoration: BoxDecoration(
                     color: Color((color.value & 0x00FFFFFF) | 0x33000000), // 20% opacity
                     borderRadius: AppRadius.mediumRadius,
@@ -532,7 +532,7 @@ class _BudgetCard extends StatelessWidget {
           child: BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
             child: Container(
-              padding: EdgeInsets.all(AppSpacing.lg2),
+              padding: const EdgeInsets.all(AppSpacing.lg2),
               decoration: BoxDecoration(
               color: ShopColors.glassCard,
               borderRadius: AppRadius.largeRadius,
@@ -650,7 +650,7 @@ class _LocalShopsCard extends StatelessWidget {
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
         child: Container(
-          padding: EdgeInsets.all(AppSpacing.lg2),
+          padding: const EdgeInsets.all(AppSpacing.lg2),
           decoration: BoxDecoration(
             color: ShopColors.glassCard,
             borderRadius: AppRadius.largeRadius,
