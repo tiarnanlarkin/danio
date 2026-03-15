@@ -94,7 +94,7 @@ class _TabNavigatorState extends ConsumerState<TabNavigator>
       child: LevelUpListener(
       child: PopScope(
         canPop: false,
-        onPopInvoked: (bool didPop) async {
+        onPopInvokedWithResult: (bool didPop, _) async {
           if (didPop) return;
 
           // Check if current tab has screens in its stack

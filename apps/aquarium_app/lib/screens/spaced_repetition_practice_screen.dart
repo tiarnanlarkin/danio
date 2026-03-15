@@ -600,7 +600,7 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
 
     return PopScope(
       canPop: false,
-      onPopInvoked: (bool didPop) async {
+      onPopInvokedWithResult: (bool didPop, _) async {
         if (!didPop) {
           final shouldPop = await _showExitDialog();
           if (shouldPop == true && mounted && context.mounted) {
