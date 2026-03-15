@@ -135,6 +135,9 @@ class TankActions {
     WaterTargets? targets,
     String? notes,
   }) async {
+    if (volumeLitres <= 0) {
+      throw ArgumentError('Tank volume must be positive');
+    }
     try {
       final now = DateTime.now();
       final tank = Tank(

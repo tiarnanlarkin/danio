@@ -30,6 +30,7 @@ class SampleData {
       startDate: now.subtract(const Duration(days: 60)),
       targets: WaterTargets.freshwaterTropical(),
       notes: 'Planted community tank',
+      isDemoTank: true,
       createdAt: now.subtract(const Duration(days: 60)),
       updatedAt: now,
     );
@@ -166,6 +167,7 @@ class SampleData {
       startDate: now.subtract(const Duration(days: 60)),
       targets: WaterTargets.freshwaterTropical(),
       notes: 'Demo data - feel free to edit or delete.',
+      isDemoTank: true,
       createdAt: now,
       updatedAt: now,
     );

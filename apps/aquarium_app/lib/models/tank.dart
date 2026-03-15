@@ -24,7 +24,14 @@ class WaterTargets {
     this.ghMax,
     this.khMin,
     this.khMax,
-  });
+  })  : assert(tempMin == null || tempMax == null || tempMin <= tempMax,
+             'tempMin must be <= tempMax'),
+        assert(phMin == null || phMax == null || phMin <= phMax,
+             'phMin must be <= phMax'),
+        assert(ghMin == null || ghMax == null || ghMin <= ghMax,
+             'ghMin must be <= ghMax'),
+        assert(khMin == null || khMax == null || khMin <= khMax,
+             'khMin must be <= khMax');
 
   /// Default freshwater tropical targets
   factory WaterTargets.freshwaterTropical() => const WaterTargets(
@@ -87,6 +94,7 @@ class Tank {
   final String? notes;
   final String? imageUrl; // Local path or URL
   final int sortOrder; // For custom tank ordering (lower = first)
+  final bool isDemoTank; // Whether this is a demo/sample tank
   final DateTime createdAt;
   final DateTime updatedAt;
 
@@ -103,6 +111,7 @@ class Tank {
     this.notes,
     this.imageUrl,
     this.sortOrder = 0,
+    this.isDemoTank = false,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -123,6 +132,7 @@ class Tank {
     String? notes,
     String? imageUrl,
     int? sortOrder,
+    bool? isDemoTank,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) {
@@ -139,6 +149,7 @@ class Tank {
       notes: notes ?? this.notes,
       imageUrl: imageUrl ?? this.imageUrl,
       sortOrder: sortOrder ?? this.sortOrder,
+      isDemoTank: isDemoTank ?? this.isDemoTank,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );
@@ -167,6 +178,7 @@ class Tank {
     'notes': notes,
     'imageUrl': imageUrl,
     'sortOrder': sortOrder,
+    'isDemoTank': isDemoTank,
     'createdAt': createdAt.toIso8601String(),
     'updatedAt': updatedAt.toIso8601String(),
   };
@@ -201,6 +213,7 @@ class Tank {
       notes: json['notes'] as String?,
       imageUrl: json['imageUrl'] as String?,
       sortOrder: (json['sortOrder'] as int?) ?? 0,
+      isDemoTank: (json['isDemoTank'] as bool?) ?? false,
       createdAt: DateTime.parse(json['createdAt'] as String),
       updatedAt: DateTime.parse(json['updatedAt'] as String),
     );

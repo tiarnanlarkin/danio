@@ -298,7 +298,7 @@ class AchievementService {
       case 'midnight_scholar':
         if (stats.lastLessonCompletedAt != null) {
           final time = stats.lastLessonCompletedAt!;
-          shouldUnlock = time.hour == 0 && time.minute == 0;
+          shouldUnlock = time.hour == 0; // Any time between midnight and 1AM
         }
         break;
 

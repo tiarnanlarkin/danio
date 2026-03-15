@@ -147,7 +147,13 @@ class HeartsService {
     final profile = _profile;
     if (profile == null) return;
 
-    await _updateHearts(HeartsConfig.maxHearts, updateRefillTime: false);
+    // Clear the refill timer — hearts are full, no timer needed
+    final notifier = ref.read(userProfileProvider.notifier);
+    await notifier.updateHearts(
+      hearts: HeartsConfig.maxHearts,
+      lastHeartRefill: null,
+      clearLastHeartRefill: true,
+    );
   }
 
   /// Internal method to update hearts count

@@ -24,17 +24,29 @@ class WaterTestResults {
   final double? phosphate; // PO4 ppm
   final double? co2; // mg/L (usually calculated)
 
-  const WaterTestResults({
-    this.temperature,
-    this.ph,
-    this.ammonia,
-    this.nitrite,
-    this.nitrate,
-    this.gh,
-    this.kh,
-    this.phosphate,
-    this.co2,
-  });
+  /// Creates validated water test results.
+  /// Values are silently clamped to valid ranges:
+  /// - pH: 0–14, temperature: 0–50°C
+  /// - ammonia, nitrite, nitrate, gh, kh, phosphate, co2: >= 0
+  WaterTestResults({
+    double? temperature,
+    double? ph,
+    double? ammonia,
+    double? nitrite,
+    double? nitrate,
+    double? gh,
+    double? kh,
+    double? phosphate,
+    double? co2,
+  })  : temperature = temperature?.clamp(0, 50),
+        ph = ph?.clamp(0, 14),
+        ammonia = ammonia != null && ammonia < 0 ? 0 : ammonia,
+        nitrite = nitrite != null && nitrite < 0 ? 0 : nitrite,
+        nitrate = nitrate != null && nitrate < 0 ? 0 : nitrate,
+        gh = gh != null && gh < 0 ? 0 : gh,
+        kh = kh != null && kh < 0 ? 0 : kh,
+        phosphate = phosphate != null && phosphate < 0 ? 0 : phosphate,
+        co2 = co2 != null && co2 < 0 ? 0 : co2;
 
   /// Check if any values are present
   bool get hasValues =>

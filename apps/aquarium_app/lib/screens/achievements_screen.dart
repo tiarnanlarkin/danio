@@ -49,9 +49,13 @@ class _AchievementsScreenState extends ConsumerState<AchievementsScreen> {
       filteredAchievementsProvider(filter),
     );
 
-    // Calculate stats
-    final totalAchievements = AchievementDefinitions.all.length;
-    final unlockedCount = progressMap.values.where((p) => p.isUnlocked).length;
+    // Calculate stats (exclude hidden achievements from totals)
+    final visibleAchievements = AchievementDefinitions.all.where((a) => !a.isHidden).toList();
+    final totalAchievements = visibleAchievements.length;
+    final unlockedCount = visibleAchievements.where((a) {
+      final progress = progressMap[a.id];
+      return progress?.isUnlocked ?? false;
+    }).length;
 
     return Scaffold(
       appBar: AppBar(

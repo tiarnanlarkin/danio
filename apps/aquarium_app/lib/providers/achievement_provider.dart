@@ -395,7 +395,12 @@ final filteredAchievementsProvider =
     Provider.family<List<Achievement>, AchievementFilter>((ref, filter) {
       final progressMap = ref.watch(achievementProgressProvider);
 
-      List<Achievement> achievements = AchievementDefinitions.all;
+      // Exclude hidden achievements unless they've been unlocked
+      List<Achievement> achievements = AchievementDefinitions.all.where((a) {
+        if (!a.isHidden) return true;
+        final progress = progressMap[a.id];
+        return progress?.isUnlocked ?? false;
+      }).toList();
 
       // Filter by lock status
       if (filter.showUnlockedOnly) {
@@ -476,9 +481,14 @@ class AchievementFilter {
 
 enum AchievementSortBy { rarity, dateUnlocked, progress, name }
 
-/// Provider for completion percentage
+/// Provider for completion percentage (excludes hidden achievements)
 final achievementCompletionProvider = Provider<double>((ref) {
   final progressMap = ref.watch(achievementProgressProvider);
-  final unlockedCount = progressMap.values.where((p) => p.isUnlocked).length;
-  return unlockedCount / AchievementDefinitions.all.length;
+  final visibleAchievements = AchievementDefinitions.all.where((a) => !a.isHidden).toList();
+  final unlockedCount = visibleAchievements.where((a) {
+    final progress = progressMap[a.id];
+    return progress?.isUnlocked ?? false;
+  }).length;
+  if (visibleAchievements.isEmpty) return 0.0;
+  return unlockedCount / visibleAchievements.length;
 });

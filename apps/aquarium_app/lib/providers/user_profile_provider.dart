@@ -240,7 +240,7 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
             current = c;
           }
 
-          final now = DateTime.now();
+          final now = DateTime.now().toUtc();
           final today = _normalizeDate(now);
 
           int newStreak = c.currentStreak;
@@ -259,7 +259,8 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
               newStreak = c.currentStreak + 1;
             } else if (dayDifference == 2 &&
                 c.hasStreakFreeze &&
-                !c.streakFreezeUsedThisWeek) {
+                !c.streakFreezeUsedThisWeek &&
+                c.currentStreak > 0) {
               // 1 day gap + freeze available = use freeze to save streak
               newStreak = c.currentStreak + 1; // Continue streak
               usedFreeze = true;
@@ -345,10 +346,11 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
     }
   }
 
-  /// Normalize a DateTime to midnight local time for consistent date comparisons
-  /// This prevents timezone and DST issues when comparing dates
+  /// Normalize a DateTime to UTC midnight for consistent date comparisons
+  /// Using UTC prevents timezone shifts and DST from resetting streaks
   DateTime _normalizeDate(DateTime dateTime) {
-    return DateTime(dateTime.year, dateTime.month, dateTime.day);
+    final utc = dateTime.toUtc();
+    return DateTime.utc(utc.year, utc.month, utc.day);
   }
 
   /// Add XP and update daily progress
@@ -807,19 +809,32 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
   }
 
   /// Update hearts count (for hearts/lives system)
+  /// Set [clearLastHeartRefill] to true to explicitly null out lastHeartRefill
+  /// (e.g. after refillToMax so no stale timer remains).
   Future<void> updateHearts({
     required int hearts,
     DateTime? lastHeartRefill,
+    bool clearLastHeartRefill = false,
   }) async {
     try {
       final current = state.value;
       if (current == null) return;
 
-      final updated = current.copyWith(
-        hearts: hearts,
-        lastHeartRefill: lastHeartRefill ?? current.lastHeartRefill,
-        updatedAt: DateTime.now(),
-      );
+      // copyWith can't null out fields, so roundtrip through JSON when clearing
+      UserProfile updated;
+      if (clearLastHeartRefill) {
+        final json = current.toJson();
+        json['hearts'] = hearts;
+        json['lastHeartRefill'] = null;
+        json['updatedAt'] = DateTime.now().toIso8601String();
+        updated = UserProfile.fromJson(json);
+      } else {
+        updated = current.copyWith(
+          hearts: hearts,
+          lastHeartRefill: lastHeartRefill ?? current.lastHeartRefill,
+          updatedAt: DateTime.now(),
+        );
+      }
 
       await _save(updated);
       state = AsyncValue.data(updated);

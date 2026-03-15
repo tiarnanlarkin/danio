@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../data/species_database.dart';
+import '../providers/tank_provider.dart';
 import '../theme/app_theme.dart';
 import '../widgets/core/app_card.dart';
 
-class CompatibilityCheckerScreen extends StatefulWidget {
+class CompatibilityCheckerScreen extends ConsumerStatefulWidget {
   const CompatibilityCheckerScreen({super.key});
 
   @override
-  State<CompatibilityCheckerScreen> createState() =>
+  ConsumerState<CompatibilityCheckerScreen> createState() =>
       _CompatibilityCheckerScreenState();
 }
 
 class _CompatibilityCheckerScreenState
-    extends State<CompatibilityCheckerScreen> {
+    extends ConsumerState<CompatibilityCheckerScreen> {
   final List<SpeciesInfo> _selectedSpecies = [];
   String _searchQuery = '';
 
@@ -44,11 +46,11 @@ class _CompatibilityCheckerScreenState
         final a = _selectedSpecies[i];
         final b = _selectedSpecies[j];
 
-        // Check explicit incompatibility
+        // Check explicit incompatibility (exact match on name/family)
         if (a.avoidWith.any(
           (name) =>
-              b.commonName.toLowerCase().contains(name.toLowerCase()) ||
-              b.family.toLowerCase().contains(name.toLowerCase()),
+              b.commonName.toLowerCase() == name.toLowerCase() ||
+              b.family.toLowerCase() == name.toLowerCase(),
         )) {
           issues.add(
             _CompatibilityIssue(
@@ -61,8 +63,8 @@ class _CompatibilityCheckerScreenState
           );
         } else if (b.avoidWith.any(
           (name) =>
-              a.commonName.toLowerCase().contains(name.toLowerCase()) ||
-              a.family.toLowerCase().contains(name.toLowerCase()),
+              a.commonName.toLowerCase() == name.toLowerCase() ||
+              a.family.toLowerCase() == name.toLowerCase(),
         )) {
           issues.add(
             _CompatibilityIssue(
@@ -144,6 +146,28 @@ class _CompatibilityCheckerScreenState
               reason:
                   'Large size difference: ${larger.commonName} (${larger.adultSizeCm.toStringAsFixed(0)}cm) '
                   'may see ${smaller.commonName} (${smaller.adultSizeCm.toStringAsFixed(0)}cm) as food',
+            ),
+          );
+        }
+      }
+    }
+
+    // Tank size check: warn if any species needs a bigger tank than user has
+    final tanks = ref.read(tanksProvider).valueOrNull;
+    if (tanks != null && tanks.isNotEmpty && _selectedSpecies.isNotEmpty) {
+      // Use the largest tank the user owns as reference
+      final largestTankVolume = tanks
+          .map((t) => t.volumeLitres)
+          .reduce((a, b) => a > b ? a : b);
+      for (final species in _selectedSpecies) {
+        if (species.minTankLitres > largestTankVolume) {
+          issues.add(
+            _CompatibilityIssue(
+              species1: species.commonName,
+              species2: '',
+              severity: _Severity.warning,
+              reason:
+                  '⚠️ ${species.commonName} requires at least ${species.minTankLitres.toStringAsFixed(0)}ℓ — your tank may be too small',
             ),
           );
         }

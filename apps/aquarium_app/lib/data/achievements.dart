@@ -57,6 +57,7 @@ class AchievementDefinitions {
     icon: '🎓',
     rarity: AchievementRarity.silver,
     category: AchievementCategory.learningProgress,
+    isHidden: true,
   );
 
   static const intermediateMaster = Achievement(
@@ -66,6 +67,7 @@ class AchievementDefinitions {
     icon: '🏅',
     rarity: AchievementRarity.gold,
     category: AchievementCategory.learningProgress,
+    isHidden: true,
   );
 
   static const advancedMaster = Achievement(
@@ -75,6 +77,7 @@ class AchievementDefinitions {
     icon: '🏆',
     rarity: AchievementRarity.platinum,
     category: AchievementCategory.learningProgress,
+    isHidden: true,
   );
 
   static const waterChemistryMaster = Achievement(
@@ -84,6 +87,7 @@ class AchievementDefinitions {
     icon: '⚗️',
     rarity: AchievementRarity.gold,
     category: AchievementCategory.learningProgress,
+    isHidden: true,
   );
 
   static const plantsMaster = Achievement(
@@ -93,6 +97,7 @@ class AchievementDefinitions {
     icon: '🌿',
     rarity: AchievementRarity.gold,
     category: AchievementCategory.learningProgress,
+    isHidden: true,
   );
 
   static const livestockMaster = Achievement(
@@ -102,6 +107,7 @@ class AchievementDefinitions {
     icon: '🐡',
     rarity: AchievementRarity.gold,
     category: AchievementCategory.learningProgress,
+    isHidden: true,
   );
 
   // ========================================================================
