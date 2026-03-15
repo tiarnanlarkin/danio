@@ -1,3 +1,7 @@
+// TODO(cleanup): This 4,975-line file duplicates content in data/lessons/ individual files.
+// Still imported by: placement_test_screen.dart, placement_result_screen.dart,
+// enhanced_placement_test_screen.dart. Migrate those screens to use individual
+// lesson files, then delete this file.
 /// Lesson content for the learning system
 /// The "Duolingo for fishkeeping" curriculum
 ///

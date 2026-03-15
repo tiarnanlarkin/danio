@@ -754,6 +754,9 @@ class _StreakCard extends StatelessWidget {
   }
 }
 
+/// Path IDs with mostly stub/empty content — gated as "Coming Soon".
+const _comingSoonPathIds = {'fish_health', 'species_care', 'advanced_topics'};
+
 /// Lazy-loading learning path card.
 /// Shows metadata (emoji, title, description, progress) immediately.
 /// Loads full LearningPath only when the user expands the card.

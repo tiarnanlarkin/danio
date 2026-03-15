@@ -51,7 +51,6 @@ import '../../widgets/stage/lighting_pulse.dart';
 import '../../painters/leather_grain_painter.dart';
 import '../../painters/saffiano_painter.dart';
 import '../../widgets/fun_loading_messages.dart';
-import '../house_navigator.dart';
 import '../tank_settings_screen.dart';
 import '../../utils/app_page_routes.dart';
 import '../../utils/navigation_throttle.dart';
