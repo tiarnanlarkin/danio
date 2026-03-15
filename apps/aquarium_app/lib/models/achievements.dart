@@ -140,9 +140,11 @@ class Achievement {
       icon: json['icon'] as String,
       rarity: AchievementRarity.values.firstWhere(
         (e) => e.name == json['rarity'],
+        orElse: () => AchievementRarity.bronze,
       ),
       category: AchievementCategory.values.firstWhere(
         (e) => e.name == json['category'],
+        orElse: () => AchievementCategory.learningProgress,
       ),
       targetCount: json['targetCount'] as int?,
       isHidden: json['isHidden'] as bool? ?? false,

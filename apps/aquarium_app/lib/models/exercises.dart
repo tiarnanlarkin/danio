@@ -36,6 +36,7 @@ abstract class Exercise {
   factory Exercise.fromJson(Map<String, dynamic> json) {
     final type = ExerciseType.values.firstWhere(
       (e) => e.toString() == 'ExerciseType.${json['type']}',
+      orElse: () => ExerciseType.multipleChoice,
     );
 
     switch (type) {

@@ -77,8 +77,9 @@ class ShopItem {
       emoji: json['emoji'] as String,
       category: ShopItemCategory.values.firstWhere(
         (e) => e.name == json['category'],
+        orElse: () => ShopItemCategory.extras,
       ),
-      type: ShopItemType.values.firstWhere((e) => e.name == json['type']),
+      type: ShopItemType.values.firstWhere((e) => e.name == json['type'], orElse: () => ShopItemType.xpBoost),
       gemCost: json['gemCost'] as int,
       isConsumable: json['isConsumable'] as bool? ?? true,
       durationHours: json['durationHours'] as int?,

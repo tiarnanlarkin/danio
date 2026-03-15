@@ -156,7 +156,7 @@ class Task {
       tankId: json['tankId'] as String?,
       title: json['title'] as String,
       description: json['description'] as String?,
-      recurrence: RecurrenceType.values.firstWhere((e) => e.name == json['recurrence']),
+      recurrence: RecurrenceType.values.firstWhere((e) => e.name == json['recurrence'], orElse: () => RecurrenceType.none),
       intervalDays: json['intervalDays'] as int?,
       dueDate: json['dueDate'] != null ? DateTime.parse(json['dueDate'] as String) : null,
       priority: TaskPriority.values.firstWhere(

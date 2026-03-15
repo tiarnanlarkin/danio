@@ -79,6 +79,15 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
     });
   }
 
+  /// Save immediately, bypassing debounce. Use for critical state changes
+  /// (XP, streaks, lesson completions, achievements) that must not be lost.
+  Future<void> _saveImmediate(UserProfile profile) async {
+    _pendingSave = null;
+    _saveDebouncer.cancel();
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_key, jsonEncode(profile.toJson()));
+  }
+
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(_lifecycleListener);
@@ -302,7 +311,7 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
             updatedAt: now,
           );
 
-          await _save(updated);
+          await _saveImmediate(updated);
           state = AsyncValue.data(updated);
 
           // Award gems for milestones
@@ -393,7 +402,7 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
       updatedAt: DateTime.now(),
     );
 
-    await _save(updated);
+    await _saveImmediate(updated);
     state = AsyncValue.data(updated);
 
     /// XP Flow:
@@ -476,7 +485,7 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
         updatedAt: now,
       );
 
-      await _save(updated);
+      await _saveImmediate(updated);
       state = AsyncValue.data(updated);
 
       // Award gems for lesson completion
@@ -636,7 +645,7 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
       updatedAt: now,
     );
 
-    await _save(updated);
+    await _saveImmediate(updated);
     state = AsyncValue.data(updated);
 
     // Award gems for placement test
@@ -760,7 +769,7 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
       updatedAt: DateTime.now(),
     );
 
-    await _save(updated);
+    await _saveImmediate(updated);
     state = AsyncValue.data(updated);
 
     // Award gems for achievement — map rarity to legacy tier for GemRewards

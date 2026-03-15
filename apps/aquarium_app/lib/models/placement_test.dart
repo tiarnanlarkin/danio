@@ -252,6 +252,7 @@ class SkipRecommendation {
       score: json['score'],
       skipLevel: SkipLevel.values.firstWhere(
         (e) => e.name == json['skipLevel'],
+        orElse: () => SkipLevel.none,
       ),
       lessonsToSkip: List<String>.from(json['lessonsToSkip']),
       startFromLessonId: json['startFromLessonId'],

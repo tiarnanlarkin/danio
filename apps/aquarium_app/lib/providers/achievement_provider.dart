@@ -173,49 +173,24 @@ class AchievementChecker {
             .read(achievementProgressProvider.notifier)
             .updateMultiple(updates);
 
-        // Update user profile with newly unlocked achievement IDs and award XP
+        // Update user profile with newly unlocked achievement IDs
+        // Gems are awarded ONLY via unlockAchievement() to prevent double-awarding.
         final newlyUnlocked = results.where((r) => r.wasJustUnlocked).toList();
 
         if (newlyUnlocked.isNotEmpty) {
-          final newAchievementIds = newlyUnlocked
-              .map((r) => r.achievement.id)
-              .toList();
-          final totalXpAwarded = newlyUnlocked.fold<int>(
-            0,
-            (sum, r) => sum + r.xpAwarded,
-          );
+          // Delegate to unlockAchievement() which handles:
+          //   - duplicate guard (achievements.contains check)
+          //   - XP award
+          //   - gem award (single source of truth)
+          for (final result in newlyUnlocked) {
+            await ref
+                .read(userProfileProvider.notifier)
+                .unlockAchievement(result.achievement.id);
+          }
 
-          // Update user profile
-          final currentAchievements = userProfile.achievements;
-          final updatedAchievements = [
-            ...currentAchievements,
-            ...newAchievementIds,
-          ];
-
-          await ref
-              .read(userProfileProvider.notifier)
-              .updateAchievements(
-                achievements: updatedAchievements,
-                xpToAdd: totalXpAwarded,
-              );
-
-          // Award gems and show celebration for each unlocked achievement
+          // Show celebration for each unlocked achievement
           for (final result in newlyUnlocked) {
             final gemReward = _getGemReward(result.achievement.rarity);
-
-            // Award gems
-            try {
-              await ref
-                  .read(gemsProvider.notifier)
-                  .addGems(
-                    amount: gemReward,
-                    reason: GemEarnReason.achievementUnlock,
-                    customReason: result.achievement.name,
-                  );
-            } catch (e) {
-              debugPrint('Warning: Failed to award gems for achievement: $e');
-              // Continue even if gem award fails
-            }
 
             // Show celebration dialog.
             // P0-002 FIX: Wait for the current frame to fully complete before

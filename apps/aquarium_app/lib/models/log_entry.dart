@@ -165,7 +165,7 @@ class LogEntry {
     return LogEntry(
       id: json['id'] as String,
       tankId: json['tankId'] as String,
-      type: LogType.values.firstWhere((e) => e.name == json['type']),
+      type: LogType.values.firstWhere((e) => e.name == json['type'], orElse: () => LogType.observation),
       timestamp: DateTime.parse(json['timestamp'] as String),
       waterTest: json['waterTest'] != null
           ? WaterTestResults.fromJson(Map<String, dynamic>.from(json['waterTest'] as Map))

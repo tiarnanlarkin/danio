@@ -155,7 +155,7 @@ class Equipment {
     return Equipment(
       id: json['id'] as String,
       tankId: json['tankId'] as String,
-      type: EquipmentType.values.firstWhere((e) => e.name == json['type']),
+      type: EquipmentType.values.firstWhere((e) => e.name == json['type'], orElse: () => EquipmentType.filter),
       name: json['name'] as String,
       brand: json['brand'] as String?,
       model: json['model'] as String?,
