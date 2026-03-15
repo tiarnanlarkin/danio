@@ -238,48 +238,8 @@ class LivingRoomScene extends ConsumerWidget {
                   ),
                 ),
 
-              // Theme switcher hint (top center)
-              Positioned(
-                top: 8,
-                left: 0,
-                right: 0,
-                child: Center(
-                  child: Semantics(
-                    label: 'Change room theme',
-                    button: true,
-                    child: GestureDetector(
-                      onTap: onThemeTap,
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 4,
-                        ),
-                        decoration: BoxDecoration(
-                          color: theme.glassCard,
-                          borderRadius: AppRadius.mediumRadius,
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(
-                              Icons.palette,
-                              size: 14,
-                              color: theme.textSecondary,
-                            ),
-                            const SizedBox(width: AppSpacing.xs),
-                            Text(
-                              theme.name,
-                              style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                                color: theme.textSecondary,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
+              // Theme switcher removed from top centre — was hidden behind camera punch-hole
+              // Theme selection will move to quick action menu or settings
             ],
           ),
         );
