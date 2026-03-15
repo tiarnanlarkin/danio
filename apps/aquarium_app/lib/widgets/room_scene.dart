@@ -1319,18 +1319,21 @@ class _ThemedAquarium extends StatelessWidget {
         child: Stack(
           children: [
             // Water gradient — crystal clear teal, fixed palette (design system §2.3)
-            Container(
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  stops: [0.0, 0.25, 0.65, 1.0],
-                  colors: [
-                    Color(0xFF9ED8EC), // waterSurface — icy top
-                    Color(0xFF6BBDD8), // waterMidUpper — clear mid
-                    Color(0xFF4A9DB5), // waterMidLower — deeper
-                    Color(0xFF2D7A94), // waterDepth — dark bottom
-                  ],
+            // MUST use Positioned.fill so the gradient fills the entire tank
+            Positioned.fill(
+              child: Container(
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    stops: [0.0, 0.25, 0.65, 1.0],
+                    colors: [
+                      Color(0xFF9ED8EC), // waterSurface — icy top
+                      Color(0xFF6BBDD8), // waterMidUpper — clear mid
+                      Color(0xFF4A9DB5), // waterMidLower — deeper
+                      Color(0xFF2D7A94), // waterDepth — dark bottom
+                    ],
+                  ),
                 ),
               ),
             ),
