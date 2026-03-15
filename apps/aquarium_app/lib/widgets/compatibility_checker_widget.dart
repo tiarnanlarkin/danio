@@ -1,10 +1,14 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../providers/tank_provider.dart';
+import '../services/api_rate_limiter.dart';
 import '../services/openai_service.dart';
 import '../features/smart/smart_providers.dart';
 import '../theme/app_theme.dart';
+import '../widgets/offline_indicator.dart';
 
 /// AI-powered tank compatibility checker.
 /// User enters a species, AI checks if it's compatible with their tank.
@@ -35,6 +39,20 @@ class _CompatibilityCheckerWidgetState
 
     final openai = ref.read(openAIServiceProvider);
     if (!openai.isConfigured) return;
+
+    // Offline check.
+    final isOnline = ref.read(isOnlineProvider);
+    if (!isOnline) {
+      setState(() => _result = OpenAIUserMessages.offline);
+      return;
+    }
+
+    // Rate limit check.
+    final rateLimiter = ref.read(apiRateLimiterProvider);
+    if (!rateLimiter.canRequest(AIFeature.compatibilityCheck)) {
+      setState(() => _result = OpenAIUserMessages.rateLimited);
+      return;
+    }
 
     // Get tank details
     final tankAsync = ref.read(tankProvider(_selectedTankId!));
@@ -78,6 +96,7 @@ class _CompatibilityCheckerWidgetState
         maxTokens: 300,
       );
 
+      rateLimiter.recordRequest(AIFeature.compatibilityCheck);
       ref.read(aiHistoryProvider.notifier).add(
             type: 'compatibility_check',
             summary: 'Checked: $species in ${tank.name}',
@@ -85,6 +104,12 @@ class _CompatibilityCheckerWidgetState
 
       if (!mounted) return;
       setState(() => _result = result.text);
+    } on TimeoutException {
+      if (!mounted) return;
+      setState(() => _result = OpenAIUserMessages.timeout);
+    } on OpenAIException catch (e) {
+      if (!mounted) return;
+      setState(() => _result = e.message);
     } catch (e) {
       if (!mounted) return;
       setState(() =>
@@ -104,7 +129,7 @@ class _CompatibilityCheckerWidgetState
         borderRadius: AppRadius.md2Radius,
       ),
       child: Padding(
-        padding: EdgeInsets.all(AppSpacing.md),
+        padding: const EdgeInsets.all(AppSpacing.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -160,7 +185,10 @@ class _CompatibilityCheckerWidgetState
                   height: 48,
                   child: Center(
                       child: CircularProgressIndicator(strokeWidth: 2))),
-              error: (_, __) => const Text('Could not load tanks'),
+              error: (_, __) => Text(
+                'Could not load tanks',
+                style: TextStyle(color: Theme.of(context).colorScheme.error),
+              ),
             ),
             const SizedBox(height: AppSpacing.sm),
             TextField(
@@ -172,7 +200,7 @@ class _CompatibilityCheckerWidgetState
                 isDense: true,
                 suffixIcon: _loading
                     ? const Padding(
-                        padding: EdgeInsets.all(AppSpacing.sm2),
+                        padding: const EdgeInsets.all(AppSpacing.sm2),
                         child: SizedBox(
                           width: 16,
                           height: 16,
@@ -192,7 +220,7 @@ class _CompatibilityCheckerWidgetState
               const SizedBox(height: AppSpacing.sm),
               Container(
                 width: double.infinity,
-                padding: EdgeInsets.all(AppSpacing.sm),
+                padding: const EdgeInsets.all(AppSpacing.sm),
                 decoration: BoxDecoration(
                   color: _resultColor.withValues(alpha: 0.08),
                   borderRadius: AppRadius.smallRadius,

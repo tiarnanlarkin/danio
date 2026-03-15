@@ -84,8 +84,14 @@ class Story {
     return true;
   }
 
-  /// Get the starting scene
-  StoryScene get startScene => scenes.first;
+  /// Get the starting scene (falls back to a placeholder if scenes is empty)
+  StoryScene get startScene => scenes.isNotEmpty
+      ? scenes.first
+      : const StoryScene(
+          id: 'empty',
+          text: 'This story has no scenes yet.',
+          choices: [],
+        );
 
   /// Find a scene by ID
   StoryScene? getSceneById(String sceneId) {

@@ -6,6 +6,7 @@ import '../models/models.dart';
 import '../providers/tank_provider.dart';
 import '../theme/app_theme.dart';
 import '../widgets/core/app_card.dart';
+import '../widgets/core/app_states.dart';
 
 class LivestockValueScreen extends ConsumerStatefulWidget {
   final String tankId;
@@ -58,12 +59,16 @@ class _LivestockValueScreenState extends ConsumerState<LivestockValueScreen> {
       ),
       body: livestockAsync.when(
         loading: () => const Center(child: BubbleLoader()),
-        error: (e, _) => const Center(child: Text('Couldn\'t load values right now')),
+        error: (e, _) => AppErrorState(
+          title: 'Couldn\'t load values',
+          message: 'Something went wrong loading your livestock data.',
+          onRetry: () => ref.invalidate(livestockProvider(widget.tankId)),
+        ),
         data: (livestock) {
           if (livestock.isEmpty) {
             return Center(
               child: Padding(
-                padding: EdgeInsets.all(AppSpacing.xl),
+                padding: const EdgeInsets.all(AppSpacing.xl),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -92,7 +97,7 @@ class _LivestockValueScreenState extends ConsumerState<LivestockValueScreen> {
           final totalItems = 6 + livestock.length + 4;
 
           return ListView.builder(
-            padding: EdgeInsets.all(AppSpacing.md),
+            padding: const EdgeInsets.all(AppSpacing.md),
             itemCount: totalItems,
             itemBuilder: (context, index) {
               // Total value card

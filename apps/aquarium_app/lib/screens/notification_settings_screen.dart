@@ -40,7 +40,7 @@ class NotificationSettingsScreen extends ConsumerWidget {
               // Header
               if (index == 0) {
                 return Padding(
-                  padding: EdgeInsets.all(AppSpacing.md),
+                  padding: const EdgeInsets.all(AppSpacing.md),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -215,9 +215,9 @@ class NotificationSettingsScreen extends ConsumerWidget {
               // Info section
               if (enabledIndex == 6) {
                 return Padding(
-                  padding: EdgeInsets.all(AppSpacing.md),
+                  padding: const EdgeInsets.all(AppSpacing.md),
                   child: Container(
-                    padding: EdgeInsets.all(AppSpacing.md),
+                    padding: const EdgeInsets.all(AppSpacing.md),
                     decoration: BoxDecoration(
                       color: AppOverlays.primary10,
                       borderRadius: AppRadius.mediumRadius,
@@ -314,12 +314,12 @@ class NotificationSettingsScreen extends ConsumerWidget {
     String fieldName,
   ) async {
     final parts = currentTime.split(':');
-    final hour = int.parse(parts[0]);
-    final minute = int.parse(parts[1]);
+    final hour = int.tryParse(parts.isNotEmpty ? parts[0] : '') ?? 9;
+    final minute = int.tryParse(parts.length > 1 ? parts[1] : '') ?? 0;
 
     final time = await showTimePicker(
       context: context,
-      initialTime: TimeOfDay(hour: hour, minute: minute),
+      initialTime: TimeOfDay(hour: hour.clamp(0, 23), minute: minute.clamp(0, 59)),
       builder: (context, child) {
         return Theme(
           data: Theme.of(context).copyWith(
@@ -379,16 +379,16 @@ class NotificationSettingsScreen extends ConsumerWidget {
     final nightParts = (profile.nightReminderTime ?? '23:00').split(':');
 
     final morningTime = TimeOfDay(
-      hour: int.parse(morningParts[0]),
-      minute: int.parse(morningParts[1]),
+      hour: (int.tryParse(morningParts[0]) ?? 9).clamp(0, 23),
+      minute: (int.tryParse(morningParts.length > 1 ? morningParts[1] : '') ?? 0).clamp(0, 59),
     );
     final eveningTime = TimeOfDay(
-      hour: int.parse(eveningParts[0]),
-      minute: int.parse(eveningParts[1]),
+      hour: (int.tryParse(eveningParts[0]) ?? 19).clamp(0, 23),
+      minute: (int.tryParse(eveningParts.length > 1 ? eveningParts[1] : '') ?? 0).clamp(0, 59),
     );
     final nightTime = TimeOfDay(
-      hour: int.parse(nightParts[0]),
-      minute: int.parse(nightParts[1]),
+      hour: (int.tryParse(nightParts[0]) ?? 23).clamp(0, 23),
+      minute: (int.tryParse(nightParts.length > 1 ? nightParts[1] : '') ?? 0).clamp(0, 59),
     );
 
     // Get today's XP

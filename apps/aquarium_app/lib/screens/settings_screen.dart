@@ -612,16 +612,22 @@ class SettingsScreen extends ConsumerWidget {
             title: 'Add Sample Tank',
             subtitle: 'Explore the app with demo data',
             onTap: () async {
-              final actions = ref.read(tankActionsProvider);
-              final demoTank = await actions.addDemoTank();
-              if (context.mounted) {
-                AppFeedback.showSuccess(context, 'Sample tank added!');
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => TankDetailScreen(tankId: demoTank.id),
-                  ),
-                );
+              try {
+                final actions = ref.read(tankActionsProvider);
+                final demoTank = await actions.addDemoTank();
+                if (context.mounted) {
+                  AppFeedback.showSuccess(context, 'Sample tank added!');
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => TankDetailScreen(tankId: demoTank.id),
+                    ),
+                  );
+                }
+              } catch (e) {
+                if (context.mounted) {
+                  AppFeedback.showError(context, 'Couldn\'t add sample tank. Please try again.');
+                }
               }
             },
           ),
@@ -689,7 +695,7 @@ class SettingsScreen extends ConsumerWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Padding(
-              padding: EdgeInsets.all(AppSpacing.md),
+              padding: const EdgeInsets.all(AppSpacing.md),
               child: Column(
                 children: [
                   Text(
@@ -1059,7 +1065,7 @@ void _showThemePicker(
         mainAxisSize: MainAxisSize.min,
         children: [
           Padding(
-            padding: EdgeInsets.all(AppSpacing.md),
+            padding: const EdgeInsets.all(AppSpacing.md),
             child: Text(
               'Choose Theme',
               style: Theme.of(context).textTheme.titleLarge,
@@ -1245,7 +1251,7 @@ class _NotificationsToggle extends ConsumerWidget {
         ),
         if (notificationsEnabled)
           AppListTile(
-            leading: SizedBox(width: AppSpacing.lg),
+            leading: const SizedBox(width: AppSpacing.lg),
             title: 'Test Notification',
             subtitle: 'Send a test notification',
             onTap: () => _testNotification(context),
@@ -1320,7 +1326,7 @@ class _LearnCard extends ConsumerWidget {
           ),
           borderRadius: BorderRadius.circular(AppRadius.lg),
           child: Container(
-            padding: EdgeInsets.all(AppSpacing.lg2),
+            padding: const EdgeInsets.all(AppSpacing.lg2),
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topLeft,

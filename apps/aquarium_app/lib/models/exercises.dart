@@ -352,7 +352,7 @@ class MatchingExercise extends Exercise {
         leftItems: List<String>.from(json['leftItems']),
         rightItems: List<String>.from(json['rightItems']),
         correctPairs: (json['correctPairs'] as Map).map(
-          (k, v) => MapEntry(int.parse(k.toString()), v as int),
+          (k, v) => MapEntry(int.tryParse(k.toString()) ?? 0, v as int),
         ),
         leftImages: json['leftImages'] != null
             ? List<String>.from(json['leftImages'])

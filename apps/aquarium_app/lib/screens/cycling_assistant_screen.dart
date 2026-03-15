@@ -7,6 +7,7 @@ import '../providers/storage_provider.dart';
 import '../providers/tank_provider.dart';
 import '../theme/app_theme.dart';
 import '../widgets/core/app_card.dart';
+import '../widgets/core/app_states.dart';
 
 /// Interactive Nitrogen Cycle Assistant - guides beginners through tank cycling.
 ///
@@ -29,14 +30,28 @@ class CyclingAssistantScreen extends ConsumerWidget {
       ),
       body: tankAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (e, _) => const Center(child: Text('Something went wrong. Please try again.')),
+        error: (e, _) => AppErrorState(
+          title: 'Couldn\'t load tank',
+          message: 'Something went wrong loading your tank data.',
+          onRetry: () {
+            ref.invalidate(tankProvider(tankId));
+            ref.invalidate(allLogsProvider(tankId));
+          },
+        ),
         data: (tank) {
           if (tank == null) {
-            return const Center(child: Text('Tank not found'));
+            return const AppErrorState(
+              title: 'Tank not found',
+              message: 'This tank may have been deleted.',
+            );
           }
           return logsAsync.when(
             loading: () => const Center(child: CircularProgressIndicator()),
-            error: (e, _) => const Center(child: Text('Something went wrong. Please try again.')),
+            error: (e, _) => AppErrorState(
+              title: 'Couldn\'t load logs',
+              message: 'Something went wrong loading your water test data.',
+              onRetry: () => ref.invalidate(allLogsProvider(tankId)),
+            ),
             data: (logs) => _CyclingAssistantBody(tank: tank, logs: logs),
           );
         },
@@ -62,7 +77,7 @@ class _CyclingAssistantBody extends StatelessWidget {
     final tankAgeDays = DateTime.now().difference(tank.startDate).inDays;
 
     return ListView(
-      padding: EdgeInsets.all(AppSpacing.md),
+      padding: const EdgeInsets.all(AppSpacing.md),
       children: [
         // Phase indicator
         _PhaseHeader(phase: phase, tankAgeDays: tankAgeDays)
@@ -323,7 +338,7 @@ class _CycleDiagram extends StatelessWidget {
   Widget _buildLatestReadings(LogEntry latest) {
     final wt = latest.waterTest!;
     return Container(
-      padding: EdgeInsets.all(AppSpacing.sm2),
+      padding: const EdgeInsets.all(AppSpacing.sm2),
       decoration: BoxDecoration(
         color: AppOverlays.surfaceVariant50,
         borderRadius: AppRadius.smallRadius,
@@ -754,7 +769,7 @@ class _CycledCelebration extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(AppSpacing.lg),
+      padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [

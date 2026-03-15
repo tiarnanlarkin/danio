@@ -83,7 +83,7 @@ String conceptDisplayName(String conceptId) {
   final quizMatch = RegExp(r'^(.+)_quiz_q(\d+)$').firstMatch(conceptId);
   if (quizMatch != null) {
     final lessonId = quizMatch.group(1)!;
-    final qNum = int.parse(quizMatch.group(2)!) + 1;
+    final qNum = (int.tryParse(quizMatch.group(2) ?? '') ?? 0) + 1;
     final title = _lessonTitles[lessonId] ?? _titleFromId(lessonId);
     return '$title - Quiz Q$qNum';
   }
