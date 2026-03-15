@@ -6,6 +6,7 @@ import '../models/shop_item.dart';
 import '../models/purchase_result.dart';
 import '../providers/gems_provider.dart';
 import '../services/shop_service.dart';
+import '../providers/inventory_provider.dart'; // ownsItemProvider
 import '../data/shop_catalog.dart';
 import '../theme/app_theme.dart';
 import '../widgets/empty_state.dart';

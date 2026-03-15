@@ -230,12 +230,7 @@ class ShopService {
     return ShopCatalog.availableItems;
   }
 }
-
-/// Provider to check if user owns a specific item
-final ownsItemProvider = Provider.family<bool, String>((ref, itemId) {
-  final shopService = ref.watch(shopServiceProvider);
-  return shopService.ownsItem(itemId);
-});
+// ownsItemProvider is defined in inventory_provider.dart — use that import.
 
 /// Provider for item quantity
 final itemQuantityProvider = Provider.family<int, String>((ref, itemId) {
