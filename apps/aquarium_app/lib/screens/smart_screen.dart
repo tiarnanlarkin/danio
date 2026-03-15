@@ -14,6 +14,7 @@ import '../services/openai_service.dart';
 import '../theme/app_theme.dart';
 import '../widgets/compatibility_checker_widget.dart';
 import '../widgets/offline_indicator.dart';
+import 'compatibility_checker_screen.dart';
 
 /// Smart Hub - central screen for all AI-powered features.
 class SmartScreen extends ConsumerStatefulWidget {
@@ -169,8 +170,22 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
                   )
                 : null,
           ).animate(delay: 100.ms).fadeIn().slideX(begin: 0.05),
-          // Compatibility Checker
+          // Compatibility Checker (AI version when key configured)
           if (openai.isConfigured) ...[const SizedBox(height: AppSpacing.sm), const CompatibilityCheckerWidget()],
+
+          // Offline Compatibility Checker — always available (uses local species data)
+          if (!openai.isConfigured) ...[
+            const SizedBox(height: AppSpacing.sm),
+            _FeatureCard(
+              icon: Icons.compare_arrows,
+              title: 'Compatibility Checker',
+              subtitle: 'Check if your fish are compatible — works offline!',
+              color: AppColors.success,
+              onTap: () => Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => const CompatibilityCheckerScreen()),
+              ),
+            ).animate(delay: 150.ms).fadeIn().slideX(begin: 0.05),
+          ],
 
           // Ask Danio - quick question
           if (openai.isConfigured) ...[
@@ -402,19 +417,19 @@ class _OfflineBanner extends StatelessWidget {
       ),
       child: Column(
         children: [
-          Icon(Icons.auto_awesome, color: AppColors.primary, size: AppIconSizes.lg),
+          Text('🤖', style: Theme.of(context).textTheme.headlineMedium!),
           const SizedBox(height: AppSpacing.sm),
           Text(
-            'Supercharge Danio with AI 🧠',
+            'AI Features — Coming in Danio Pro!',
             style: AppTypography.titleSmall.copyWith(
               color: AppColors.primary,
               fontWeight: FontWeight.bold,
             ),
           ),
-          const SizedBox(height: AppSpacing.xs),
+          const SizedBox(height: AppSpacing.sm),
           Text(
-            'Snap a photo to ID any fish, get instant health diagnoses, '
-            'and receive a personalised weekly care plan — all powered by AI.',
+            'Smart fish identification, health diagnosis, and personalised '
+            'care plans are on the way.',
             style: AppTypography.bodySmall.copyWith(
               color: context.textSecondary,
             ),
@@ -422,12 +437,19 @@ class _OfflineBanner extends StatelessWidget {
           ),
           const SizedBox(height: AppSpacing.md),
           Text(
-            'To enable, add your OpenAI API key in Settings → Smart Features.\n\n'
-            'Everything else in Danio still works great without it — track water, '
-            'manage tanks, log feedings, and learn at your own pace.\n\n'
-            '🚀 Danio Pro will include built-in AI — stay tuned!',
+            'For now, power users can connect their own OpenAI API key '
+            'in Settings → Smart Features.',
             style: AppTypography.bodySmall.copyWith(
               color: context.textHint,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: AppSpacing.xs),
+          Text(
+            'The Compatibility Checker below works offline — no key needed! 👇',
+            style: AppTypography.bodySmall.copyWith(
+              color: AppColors.primary,
+              fontWeight: FontWeight.w500,
             ),
             textAlign: TextAlign.center,
           ),

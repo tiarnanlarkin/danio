@@ -787,13 +787,16 @@ class _LazyLearningPathCardState extends ConsumerState<_LazyLearningPathCard> {
     final isComplete =
         widget.completedLessons == widget.totalLessons && widget.totalLessons > 0;
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final isComingSoon = _comingSoonPathIds.contains(meta.id);
 
     // Watch load state for this path
     final lessonState = ref.watch(lessonProvider);
     final loadedPath = lessonState.getPath(meta.id);
     final isLoading = lessonState.isPathLoading(meta.id);
 
-    return Container(
+    return Opacity(
+      opacity: isComingSoon ? 0.6 : 1.0,
+      child: Container(
       decoration: BoxDecoration(
         color: context.cardColor,
         borderRadius: BorderRadius.circular(AppRadius.lg),
@@ -813,7 +816,9 @@ class _LazyLearningPathCardState extends ConsumerState<_LazyLearningPathCard> {
       ),
       child: Theme(
         data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
-        child: ExpansionTile(
+        child: isComingSoon
+            ? _buildComingSoonTile(context, meta, isDark)
+            : ExpansionTile(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(AppRadius.lg),
           ),
@@ -939,6 +944,101 @@ class _LazyLearningPathCardState extends ConsumerState<_LazyLearningPathCard> {
           children: _buildExpandedContent(loadedPath, isLoading),
         ),
       ),
+      ),
+    );
+  }
+
+  /// Builds a non-expandable tile for "Coming Soon" paths with a badge.
+  Widget _buildComingSoonTile(BuildContext context, PathMetadata meta, bool isDark) {
+    return ListTile(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(AppRadius.lg),
+      ),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      leading: Container(
+        width: 52,
+        height: 52,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              AppColors.primaryAlpha15,
+              AppColors.primaryAlpha10,
+            ],
+          ),
+          borderRadius: AppRadius.mediumRadius,
+          border: Border.all(
+            color: AppColors.primaryAlpha15,
+            width: 1,
+          ),
+        ),
+        child: Center(
+          child: Text(meta.emoji, style: Theme.of(context).textTheme.headlineSmall!),
+        ),
+      ),
+      title: Row(
+        children: [
+          Expanded(
+            child: Text(
+              meta.title,
+              style: AppTypography.labelLarge.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            decoration: BoxDecoration(
+              color: DanioColors.amberGold.withValues(alpha: 0.15),
+              borderRadius: AppRadius.md2Radius,
+              border: Border.all(
+                color: DanioColors.amberGold.withValues(alpha: 0.4),
+              ),
+            ),
+            child: Text(
+              'Coming Soon 🚧',
+              style: AppTypography.labelSmall.copyWith(
+                color: DanioColors.amberGold,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+        ],
+      ),
+      subtitle: Padding(
+        padding: const EdgeInsets.only(top: 4),
+        child: Text(
+          meta.description,
+          style: AppTypography.bodySmall.copyWith(
+            color: context.textSecondary,
+          ),
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+        ),
+      ),
+      onTap: () {
+        showDialog(
+          context: context,
+          builder: (ctx) => AlertDialog(
+            title: Row(
+              children: [
+                Text('${meta.emoji} ', style: Theme.of(context).textTheme.headlineSmall!),
+                const Expanded(child: Text('Coming Soon!')),
+              ],
+            ),
+            content: Text(
+              'The "${meta.title}" path is coming soon — stay tuned! '
+              'We\'re working on quality content for this topic.',
+              style: AppTypography.bodyLarge,
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(ctx).pop(),
+                child: const Text('Got it!'),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 
