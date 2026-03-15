@@ -692,22 +692,22 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     return ListTile(
       dense: true,
       selected: isSelected,
-      selectedTileColor: Colors.white.withAlpha(25),
+      selectedTileColor: context.textPrimary.withAlpha(25),
       leading: Icon(
         Icons.set_meal_rounded,
-        color: isSelected ? Colors.white : Colors.white70,
+        color: isSelected ? context.textPrimary : context.textSecondary,
         size: 20,
       ),
       title: Text(
         tank.name,
         style: TextStyle(
-          color: isSelected ? Colors.white : Colors.white70,
+          color: isSelected ? context.textPrimary : context.textSecondary,
           fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
         ),
       ),
       subtitle: Text(
         '${tank.volumeLitres.toStringAsFixed(0)}L',
-        style: TextStyle(color: AppColors.whiteAlpha50, fontSize: 12),
+        style: TextStyle(color: context.textSecondary.withAlpha(128), fontSize: 12),
       ),
       onTap: () => setState(() => _currentTankIndex = index),
     );

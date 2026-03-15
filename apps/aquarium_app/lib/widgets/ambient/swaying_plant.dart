@@ -50,7 +50,8 @@ class SwayingPlant extends StatelessWidget {
     
     // RepaintBoundary isolates this animated plant from repainting
     // the rest of the scene on every animation frame.
-    return RepaintBoundary(
+    return ExcludeSemantics(
+      child: RepaintBoundary(
       child: Animate(
         onPlay: (controller) => controller.repeat(reverse: true),
         effects: [
@@ -73,6 +74,7 @@ class SwayingPlant extends StatelessWidget {
         ],
         child: child,
       ),
+    ),
     );
   }
 }

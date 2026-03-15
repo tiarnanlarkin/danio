@@ -67,7 +67,7 @@ class FriendsNotifier extends StateNotifier<AsyncValue<List<Friend>>> {
           state = AsyncValue.data(cached);
           return;
         }
-      } catch (_) {}
+      } catch (e) { debugPrint('Error loading friends cache: $e'); }
       state = AsyncValue.error(e, st);
     }
   }
@@ -191,7 +191,7 @@ class FriendActivitiesNotifier
           state = AsyncValue.data(cached);
           return;
         }
-      } catch (_) {}
+      } catch (e) { debugPrint('Error loading activity cache: $e'); }
       state = AsyncValue.error(e, st);
     }
   }
@@ -234,7 +234,7 @@ class FriendActivitiesNotifier
         state = AsyncValue.data(activities);
         return;
       }
-    } catch (_) {}
+    } catch (e) { debugPrint('Error fetching activity feed: $e'); }
 
     // Fallback: generate mock activities from provided friends
     final activities = generateMockActivities(friends, activitiesPerFriend: 4);
@@ -272,7 +272,7 @@ class EncouragementsNotifier
           state = AsyncValue.data(cached);
           return;
         }
-      } catch (_) {}
+      } catch (e) { debugPrint('Error loading encouragements cache: $e'); }
       state = AsyncValue.error(e, st);
     }
   }
