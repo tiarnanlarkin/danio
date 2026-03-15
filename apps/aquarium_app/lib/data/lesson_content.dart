@@ -24,6 +24,7 @@ import '../models/user_profile.dart';
 /// All learning paths available in the app
 /// ⚠️ WARNING: Loading all paths at once = 347KB of data
 /// Consider using LessonProvider for lazy loading instead
+@Deprecated('Use LessonProvider or lesson_content_lazy.dart instead')
 class LessonContent {
   static List<LearningPath> get allPaths => [
     nitrogenCyclePath,

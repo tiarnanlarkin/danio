@@ -582,143 +582,71 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
             ),
           ),
         ]
-        // Standard entry mode - detailed form
+        // Standard entry mode - data-driven form
+        // Each _WaterParamField manages its own TextFormField state,
+        // so typing in one field doesn't rebuild the others.
         else ...[
-          // Temperature & pH row
-          Row(
-            children: [
-              Expanded(
-                child: _ParameterField(
-                  label: 'Temperature',
-                  unit: '°C',
-                  value: _temperature,
-                  onChanged: (v) => setState(() => _temperature = v),
-                  idealRange: 'Ideal: 24–27°C',
-                  maxValue: 50,
-                ),
-              ),
-              const SizedBox(width: AppSpacing.sm2),
-              Expanded(
-                child: _ParameterField(
-                  label: 'pH',
-                  value: _ph,
-                  onChanged: (v) => setState(() => _ph = v),
-                  decimal: true,
-                  idealRange: 'Ideal: 6.5–7.5',
-                  maxValue: 14,
-                ),
-              ),
-            ],
-          ),
+          _WaterParamRow(fields: [
+            _WaterParamField(label: 'Temperature', unit: '°C', value: _temperature,
+              onChanged: (v) => setState(() => _temperature = v),
+              idealRange: 'Ideal: 24–27°C', maxValue: 50),
+            _WaterParamField(label: 'pH', value: _ph,
+              onChanged: (v) => setState(() => _ph = v),
+              decimal: true, idealRange: 'Ideal: 6.5–7.5', maxValue: 14),
+          ]),
 
           const SizedBox(height: AppSpacing.md),
           const Divider(),
           const SizedBox(height: AppSpacing.md),
 
-          // Nitrogen cycle
           Text('Nitrogen Cycle', style: AppTypography.labelLarge),
           const SizedBox(height: AppSpacing.sm2),
-          Row(
-            children: [
-              Expanded(
-                child: _ParameterField(
-                  label: 'Ammonia (NH₃)',
-                  unit: 'ppm',
-                  value: _ammonia,
-                  onChanged: (v) => setState(() => _ammonia = v),
-                  warningThreshold: 0.25,
-                  dangerThreshold: 0.5,
-                  idealRange: 'Ideal: 0 ppm',
-                  maxValue: 20,
-                ),
-              ),
-              const SizedBox(width: AppSpacing.sm2),
-              Expanded(
-                child: _ParameterField(
-                  label: 'Nitrite (NO₂)',
-                  unit: 'ppm',
-                  value: _nitrite,
-                  onChanged: (v) => setState(() => _nitrite = v),
-                  warningThreshold: 0.25,
-                  dangerThreshold: 0.5,
-                  idealRange: 'Ideal: 0 ppm',
-                  maxValue: 20,
-                ),
-              ),
-            ],
-          ),
+          _WaterParamRow(fields: [
+            _WaterParamField(label: 'Ammonia (NH₃)', unit: 'ppm', value: _ammonia,
+              onChanged: (v) => setState(() => _ammonia = v),
+              warningThreshold: 0.25, dangerThreshold: 0.5,
+              idealRange: 'Ideal: 0 ppm', maxValue: 20),
+            _WaterParamField(label: 'Nitrite (NO₂)', unit: 'ppm', value: _nitrite,
+              onChanged: (v) => setState(() => _nitrite = v),
+              warningThreshold: 0.25, dangerThreshold: 0.5,
+              idealRange: 'Ideal: 0 ppm', maxValue: 20),
+          ]),
           const SizedBox(height: AppSpacing.sm2),
-          Row(
-            children: [
-              Expanded(
-                child: _ParameterField(
-                  label: 'Nitrate (NO₃)',
-                  unit: 'ppm',
-                  value: _nitrate,
-                  onChanged: (v) => setState(() => _nitrate = v),
-                  warningThreshold: 20,
-                  dangerThreshold: 40,
-                  idealRange: 'Ideal: <20 ppm',
-                  maxValue: 500,
-                ),
-              ),
-              const Expanded(child: SizedBox()), // Placeholder for alignment
-            ],
-          ),
+          _WaterParamRow(fields: [
+            _WaterParamField(label: 'Nitrate (NO₃)', unit: 'ppm', value: _nitrate,
+              onChanged: (v) => setState(() => _nitrate = v),
+              warningThreshold: 20, dangerThreshold: 40,
+              idealRange: 'Ideal: <20 ppm', maxValue: 500),
+            null, // spacer
+          ]),
 
           const SizedBox(height: AppSpacing.md),
           const Divider(),
           const SizedBox(height: AppSpacing.md),
 
-          // Hardness
           Text('Hardness', style: AppTypography.labelLarge),
           const SizedBox(height: AppSpacing.sm2),
-          Row(
-            children: [
-              Expanded(
-                child: _ParameterField(
-                  label: 'GH',
-                  unit: 'dGH',
-                  value: _gh,
-                  onChanged: (v) => setState(() => _gh = v),
-                  idealRange: 'Ideal: 4–8 dGH',
-                ),
-              ),
-              const SizedBox(width: AppSpacing.sm2),
-              Expanded(
-                child: _ParameterField(
-                  label: 'KH',
-                  unit: 'dKH',
-                  value: _kh,
-                  onChanged: (v) => setState(() => _kh = v),
-                  idealRange: 'Ideal: 3–8 dKH',
-                ),
-              ),
-            ],
-          ),
+          _WaterParamRow(fields: [
+            _WaterParamField(label: 'GH', unit: 'dGH', value: _gh,
+              onChanged: (v) => setState(() => _gh = v),
+              idealRange: 'Ideal: 4–8 dGH'),
+            _WaterParamField(label: 'KH', unit: 'dKH', value: _kh,
+              onChanged: (v) => setState(() => _kh = v),
+              idealRange: 'Ideal: 3–8 dKH'),
+          ]),
 
           const SizedBox(height: AppSpacing.md),
           const Divider(),
           const SizedBox(height: AppSpacing.md),
 
-          // Other
           Text('Other', style: AppTypography.labelLarge),
           const SizedBox(height: AppSpacing.sm2),
-          Row(
-            children: [
-              Expanded(
-                child: _ParameterField(
-                  label: 'Phosphate (PO₄)',
-                  unit: 'ppm',
-                  value: _phosphate,
-                  onChanged: (v) => setState(() => _phosphate = v),
-                  decimal: true,
-                  idealRange: 'Ideal: 0–1 ppm',
-                ),
-              ),
-              const Expanded(child: SizedBox()),
-            ],
-          ),
+          _WaterParamRow(fields: [
+            _WaterParamField(label: 'Phosphate (PO₄)', unit: 'ppm', value: _phosphate,
+              onChanged: (v) => setState(() => _phosphate = v),
+              decimal: true, idealRange: 'Ideal: 0–1 ppm'),
+            null, // spacer
+          ]),
         ],
       ],
     );
@@ -1126,6 +1054,70 @@ class _TypeChip extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+/// Reusable water parameter field — wraps _ParameterField for the
+/// standard (non-bulk) water test form. Each instance is a StatelessWidget
+/// so only the changed field rebuilds when the parent calls setState.
+class _WaterParamField extends StatelessWidget {
+  final String label;
+  final String? unit;
+  final double? value;
+  final ValueChanged<double?> onChanged;
+  final bool decimal;
+  final double? warningThreshold;
+  final double? dangerThreshold;
+  final String? idealRange;
+  final double? maxValue;
+
+  const _WaterParamField({
+    required this.label,
+    this.unit,
+    required this.value,
+    required this.onChanged,
+    this.decimal = false,
+    this.warningThreshold,
+    this.dangerThreshold,
+    this.idealRange,
+    this.maxValue,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return _ParameterField(
+      label: label,
+      unit: unit,
+      value: value,
+      onChanged: onChanged,
+      decimal: decimal,
+      warningThreshold: warningThreshold,
+      dangerThreshold: dangerThreshold,
+      idealRange: idealRange,
+      maxValue: maxValue,
+    );
+  }
+}
+
+/// Lays out a row of water param fields with consistent spacing.
+/// Null entries become empty spacers for alignment.
+class _WaterParamRow extends StatelessWidget {
+  final List<_WaterParamField?> fields;
+
+  const _WaterParamRow({required this.fields});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        for (int i = 0; i < fields.length; i++) ...[
+          if (i > 0) const SizedBox(width: AppSpacing.sm2),
+          Expanded(
+            child: fields[i] ?? const SizedBox(),
+          ),
+        ],
+      ],
     );
   }
 }

@@ -8,7 +8,8 @@ import 'package:confetti/confetti.dart';
 import '../../models/placement_test.dart';
 import '../../models/learning.dart';
 import '../../data/placement_test_content.dart';
-import '../../data/lesson_content.dart';
+import '../../data/lesson_content_lazy.dart';
+import '../../providers/lesson_provider.dart';
 import '../../providers/user_profile_provider.dart';
 import '../../theme/app_theme.dart';
 import '../placement_result_screen.dart';
@@ -139,17 +140,20 @@ class _EnhancedPlacementTestScreenState
   }
 
   void _completeTest() async {
+    // Load all paths lazily for result calculation
+    final allPaths = await lessonContentLazy.getAllPaths();
+
     final result = PlacementAlgorithm.calculateResult(
       test: _test,
       userAnswers: _userAnswers,
-      allPaths: LessonContent.allPaths,
+      allPaths: allPaths,
     );
 
     final profileNotifier = ref.read(userProfileProvider.notifier);
     await profileNotifier.completePlacementTest(
       resultId: result.id,
       lessonsToSkip: result.lessonsToSkip,
-      xpToAward: result.calculateSkipXp(LessonContent.allPaths),
+      xpToAward: result.calculateSkipXp(allPaths),
     );
 
     if (!mounted) return;
@@ -660,14 +664,16 @@ class _EnhancedPlacementTestScreenState
 
   String _getPathName(String pathId) {
     try {
-      return LessonContent.allPaths.firstWhere((p) => p.id == pathId).title;
+      return LessonProvider.allPathMetadata
+          .firstWhere((p) => p.id == pathId)
+          .title;
     } catch (_) {
       return pathId;
     }
   }
 
   Color _getPathColor(String pathId) {
-    final index = LessonContent.allPaths.indexWhere((p) => p.id == pathId);
+    final index = LessonProvider.allPathMetadata.indexWhere((p) => p.id == pathId);
     final colors = [
       AppColors.primary,
       AppColors.secondary,

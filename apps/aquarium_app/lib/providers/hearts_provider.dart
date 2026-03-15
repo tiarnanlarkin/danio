@@ -43,16 +43,32 @@ class HeartsState {
     );
   }
 
+  /// Build from just the hearts count — avoids watching the full UserProfile.
+  factory HeartsState.fromHearts(int? hearts, HeartsService service) {
+    final h = hearts ?? HeartsConfig.startingHearts;
+    return HeartsState(
+      currentHearts: h,
+      maxHearts: HeartsConfig.maxHearts,
+      hasHearts: h > 0,
+      timeUntilNextRefill: null, // refill timer checked on-demand
+      heartsDisplay: service.getHeartsDisplay(),
+    );
+  }
+
   double get percentage => currentHearts / maxHearts;
   bool get isFull => currentHearts >= maxHearts;
   bool get isEmpty => currentHearts <= 0;
 }
 
 /// Provider that watches hearts state reactively
+/// Uses .select() to only rebuild when hearts-related fields change,
+/// not on every XP gain or other profile update.
 final heartsStateProvider = Provider<HeartsState>((ref) {
-  final profile = ref.watch(userProfileProvider).value;
+  final hearts = ref.watch(
+    userProfileProvider.select((a) => a.value?.hearts),
+  );
   final service = ref.watch(heartsServiceProvider);
-  return HeartsState.fromProfile(profile, service);
+  return HeartsState.fromHearts(hearts, service);
 });
 
 /// Provider for hearts actions

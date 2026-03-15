@@ -550,131 +550,20 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               ),
             ),
 
-            // Speed Dial FAB - radial menu for quick actions
-            // ROADMAP: P3 — Add inline 'Quick Log' bottom sheet with pH/temp/ammonia fields for one-tap logging from home screen
-            // for even faster water param entry without navigating to full log screen
-            // Positioned above the dashboard with safe area padding
-            Positioned(
-              bottom: 70 + MediaQuery.of(context).padding.bottom,
-              right: 16,
-              child: IgnorePointer(
-                // Hide the FAB from touch events while the tank creation wizard
-                // is open — the FAB occupies the same screen position as the
-                // wizard's Next/Create buttons, causing mis-taps.
-                ignoring: _isNavigatingToCreate,
-                child: Opacity(
-                  opacity: _isNavigatingToCreate ? 0.0 : 1.0,
-                  child: SpeedDialFAB(
-                actions: [
-                  SpeedDialAction(
-                    icon: Icons.calendar_view_month_rounded,
-                    label: 'Stats',
-                    backgroundColor: Theme.of(context).colorScheme.surface,
-                    foregroundColor: AppColors.primary,  // Brand amber
-                    onPressed: () => _showStatsInfo(context),
-                  ),
-                  SpeedDialAction(
-                    icon: Icons.water_drop_rounded,
-                    label: 'Water Change',
-                    backgroundColor: AppColors.accent,  // Teal - brand water color
-                    foregroundColor: Colors.white,
-                    onPressed: () => _navigateToWaterChange(context, currentTank),
-                  ),
-                  SpeedDialAction(
-                    icon: Icons.restaurant_rounded,
-                    label: 'Feed',
-                    backgroundColor: Theme.of(context).colorScheme.surface,
-                    foregroundColor: DanioColors.coralAccent,
-                    onPressed: () => _showFeedingInfo(context),
-                  ),
-                  SpeedDialAction(
-                    icon: Icons.science_rounded,
-                    label: 'Quick Test',
-                    backgroundColor: AppColors.primary,
-                    foregroundColor: Colors.white,
-                    onPressed: () => _navigateToQuickTest(context, currentTank),
-                  ),
-                  SpeedDialAction(
-                    icon: Icons.water_rounded,
-                    label: 'Add Tank',
-                    backgroundColor: Theme.of(context).colorScheme.surface,
-                    foregroundColor: Theme.of(context).colorScheme.onSurface,
-                    onPressed: () => _navigateToCreateTank(context),
-                  ),
-                ],
-              ),
-                ), // end Opacity
-              ), // end IgnorePointer
+            // Speed Dial FAB - extracted to own widget for isolated rebuilds
+            _RoomControlFAB(
+              isHidden: _isNavigatingToCreate,
+              onStats: () => _showStatsInfo(context),
+              onWaterChange: () => _navigateToWaterChange(context, currentTank),
+              onFeed: () => _showFeedingInfo(context),
+              onQuickTest: () => _navigateToQuickTest(context, currentTank),
+              onAddTank: () => _navigateToCreateTank(context),
             ),
 
-            // (stage system Offstage block closed above)
-
-            // Seasonal tip replaced by AmbientTipOverlay in stage system
-
-            // Daily goal nudge - shows if user has 0 XP today
+            // Daily goal nudge - extracted to own ConsumerWidget
             if (!_dailyNudgeDismissed)
-              Builder(
-                builder: (context) {
-                  final todayKey = DateTime.now().toIso8601String().split('T')[0];
-                  final todayXp = ref.watch(userProfileProvider.select(
-                    (p) => p.value?.dailyXpHistory[todayKey] ?? 0,
-                  ));
-                  if (todayXp > 0) return const SizedBox.shrink();
-                  return Positioned(
-                    top: MediaQuery.of(context).padding.top + 60,
-                    left: 16,
-                    right: 16,
-                    child: GestureDetector(
-                      onTap: () => setState(() => _dailyNudgeDismissed = true),
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: AppSpacing.md,
-                          vertical: AppSpacing.sm2,
-                        ),
-                        decoration: BoxDecoration(
-                          color: AppColors.primaryAlpha90,
-                          borderRadius: AppRadius.mediumRadius,
-                          boxShadow: [
-                            BoxShadow(
-                              color: AppOverlays.black20,
-                              blurRadius: 8,
-                              offset: const Offset(0, 2),
-                            ),
-                          ],
-                        ),
-                        child: Row(
-                          children: [
-                            Text(
-                              '\u{1F3AF}',
-                              style: Theme.of(context).textTheme.titleLarge!,
-                            ),
-                            const SizedBox(width: AppSpacing.sm),
-                            Expanded(
-                              child: Text(
-                                "Start a quick lesson to earn XP today!",
-                                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                  color: AppColors.onPrimary,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                            ),
-                            SizedBox(
-                              width: 44,
-                              height: 44,
-                              child: Center(
-                                child: Icon(
-                                  Icons.close,
-                                  size: 18,
-                                  color: AppColors.onPrimary.withAlpha(180),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  );
-                },
+              _DailyNudgeBanner(
+                onDismiss: () => setState(() => _dailyNudgeDismissed = true),
               ),
           ],
         );
@@ -2011,6 +1900,154 @@ class _DismissibleBanner extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Extracted widgets — each watches only its own slice of state
+// ---------------------------------------------------------------------------
+
+/// Speed Dial FAB for quick actions from the home screen.
+/// Stateless — only rebuilds when its callbacks or visibility change.
+class _RoomControlFAB extends StatelessWidget {
+  final bool isHidden;
+  final VoidCallback onStats;
+  final VoidCallback onWaterChange;
+  final VoidCallback onFeed;
+  final VoidCallback onQuickTest;
+  final VoidCallback onAddTank;
+
+  const _RoomControlFAB({
+    required this.isHidden,
+    required this.onStats,
+    required this.onWaterChange,
+    required this.onFeed,
+    required this.onQuickTest,
+    required this.onAddTank,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Positioned(
+      bottom: 70 + MediaQuery.of(context).padding.bottom,
+      right: 16,
+      child: IgnorePointer(
+        ignoring: isHidden,
+        child: Opacity(
+          opacity: isHidden ? 0.0 : 1.0,
+          child: SpeedDialFAB(
+            actions: [
+              SpeedDialAction(
+                icon: Icons.calendar_view_month_rounded,
+                label: 'Stats',
+                backgroundColor: Theme.of(context).colorScheme.surface,
+                foregroundColor: AppColors.primary,
+                onPressed: onStats,
+              ),
+              SpeedDialAction(
+                icon: Icons.water_drop_rounded,
+                label: 'Water Change',
+                backgroundColor: AppColors.accent,
+                foregroundColor: Colors.white,
+                onPressed: onWaterChange,
+              ),
+              SpeedDialAction(
+                icon: Icons.restaurant_rounded,
+                label: 'Feed',
+                backgroundColor: Theme.of(context).colorScheme.surface,
+                foregroundColor: DanioColors.coralAccent,
+                onPressed: onFeed,
+              ),
+              SpeedDialAction(
+                icon: Icons.science_rounded,
+                label: 'Quick Test',
+                backgroundColor: AppColors.primary,
+                foregroundColor: Colors.white,
+                onPressed: onQuickTest,
+              ),
+              SpeedDialAction(
+                icon: Icons.water_rounded,
+                label: 'Add Tank',
+                backgroundColor: Theme.of(context).colorScheme.surface,
+                foregroundColor: Theme.of(context).colorScheme.onSurface,
+                onPressed: onAddTank,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Daily nudge banner — only rebuilds when today's XP changes.
+class _DailyNudgeBanner extends ConsumerWidget {
+  final VoidCallback onDismiss;
+
+  const _DailyNudgeBanner({required this.onDismiss});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final todayKey = DateTime.now().toIso8601String().split('T')[0];
+    final todayXp = ref.watch(userProfileProvider.select(
+      (p) => p.value?.dailyXpHistory[todayKey] ?? 0,
+    ));
+    if (todayXp > 0) return const SizedBox.shrink();
+
+    return Positioned(
+      top: MediaQuery.of(context).padding.top + 60,
+      left: 16,
+      right: 16,
+      child: GestureDetector(
+        onTap: onDismiss,
+        child: Container(
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.md,
+            vertical: AppSpacing.sm2,
+          ),
+          decoration: BoxDecoration(
+            color: AppColors.primaryAlpha90,
+            borderRadius: AppRadius.mediumRadius,
+            boxShadow: [
+              BoxShadow(
+                color: AppOverlays.black20,
+                blurRadius: 8,
+                offset: const Offset(0, 2),
+              ),
+            ],
+          ),
+          child: Row(
+            children: [
+              Text(
+                '\u{1F3AF}',
+                style: Theme.of(context).textTheme.titleLarge!,
+              ),
+              const SizedBox(width: AppSpacing.sm),
+              Expanded(
+                child: Text(
+                  "Start a quick lesson to earn XP today!",
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: AppColors.onPrimary,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+              SizedBox(
+                width: 44,
+                height: 44,
+                child: Center(
+                  child: Icon(
+                    Icons.close,
+                    size: 18,
+                    color: AppColors.onPrimary.withAlpha(180),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

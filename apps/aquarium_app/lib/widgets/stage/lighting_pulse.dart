@@ -69,41 +69,49 @@ class _LightingPulseWrapperState extends ConsumerState<LightingPulseWrapper>
     _wasWaterOpen = waterOpen;
 
     return ExcludeSemantics(
-      child: AnimatedBuilder(
-      animation: Listenable.merge([_warmPulse, _coolPulse]),
-      builder: (context, _) {
-        final warmValue = Curves.easeInOutSine.transform(_warmPulse.value);
-        final coolValue = Curves.easeInOutSine.transform(_coolPulse.value);
+      child: Stack(
+        children: [
+          widget.child, // room scene — never repaints for the pulse
+          IgnorePointer(
+            child: AnimatedBuilder(
+              animation: Listenable.merge([_warmPulse, _coolPulse]),
+              builder: (context, _) {
+                final warmValue =
+                    Curves.easeInOutSine.transform(_warmPulse.value);
+                final coolValue =
+                    Curves.easeInOutSine.transform(_coolPulse.value);
 
-        Widget child = widget.child;
+                if (warmValue < 0.001 && coolValue < 0.001) {
+                  return const SizedBox.shrink();
+                }
 
-        if (warmValue > 0.001) {
-          child = ColorFiltered(
-            colorFilter: ColorFilter.mode(
-              DanioMaterials.warmAmberPulse.withAlpha(
-                (warmValue * 20).round().clamp(0, 255),
-              ),
-              BlendMode.srcOver,
+                // Blend warm amber and cool blue into a single overlay colour
+                final warmAlpha = (warmValue * 20).round().clamp(0, 255);
+                final coolAlpha = (coolValue * 15).round().clamp(0, 255);
+
+                return Stack(
+                  children: [
+                    if (warmAlpha > 0)
+                      Positioned.fill(
+                        child: ColoredBox(
+                          color: DanioMaterials.warmAmberPulse
+                              .withAlpha(warmAlpha),
+                        ),
+                      ),
+                    if (coolAlpha > 0)
+                      Positioned.fill(
+                        child: ColoredBox(
+                          color: DanioMaterials.coolBluePulse
+                              .withAlpha(coolAlpha),
+                        ),
+                      ),
+                  ],
+                );
+              },
             ),
-            child: child,
-          );
-        }
-
-        if (coolValue > 0.001) {
-          child = ColorFiltered(
-            colorFilter: ColorFilter.mode(
-              DanioMaterials.coolBluePulse.withAlpha(
-                (coolValue * 15).round().clamp(0, 255),
-              ),
-              BlendMode.srcOver,
-            ),
-            child: child,
-          );
-        }
-
-        return child;
-      },
-    ),
+          ),
+        ],
+      ),
     );
   }
 }
