@@ -13,7 +13,7 @@ class GemRewards {
   static const int reviewLesson = 2;
 
   // Daily Goals & Streaks
-  static const int dailyGoalMet = 5;
+  static const int dailyGoalMet = 2;
   static const int streak7Days = 10;
   static const int streak30Days = 25;
   static const int streak100Days = 100;

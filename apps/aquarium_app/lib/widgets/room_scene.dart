@@ -341,7 +341,7 @@ class _CozyRoomBackground extends StatelessWidget {
             child: Opacity(
               opacity: 0.25,
               child: Image.asset(
-                'assets/textures/linen-wall.png',
+                'assets/textures/linen-wall.webp',
                 repeat: ImageRepeat.repeat,
                 fit: BoxFit.none,
               ),

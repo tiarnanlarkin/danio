@@ -17,7 +17,11 @@
 -keep class * implements com.google.gson.JsonDeserializer
 
 ## Keep data classes (adjust package name as needed)
--keep class com.tiarnanlarkin.aquarium.aquarium_app.** { *; }
+-keep class com.tiarnanlarkin.danio.** { *; }
+
+## Hive database
+-keep class io.hive.** { *; }
+-keep class * extends io.hive.TypeAdapter { *; }
 
 ## Play Core (deferred components - not used but required by Flutter)
 -dontwarn com.google.android.play.core.**

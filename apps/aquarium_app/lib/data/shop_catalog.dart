@@ -257,6 +257,43 @@ class ShopCatalog {
       isConsumable: false,
       orderIndex: 29,
     ),
+
+    // ==================== PREMIUM COSMETICS ====================
+    ShopItem(
+      id: 'golden_tank_frame',
+      name: 'Golden Tank Frame',
+      description: 'A luxurious golden frame for your tank display. Show everyone you mean business!',
+      emoji: '🖼️',
+      category: ShopItemCategory.cosmetics,
+      type: ShopItemType.tankTheme,
+      gemCost: 150,
+      isConsumable: false,
+      orderIndex: 30,
+    ),
+
+    ShopItem(
+      id: 'legendary_badge_display',
+      name: 'Legendary Badge Display',
+      description: 'An exclusive showcase for your achievements. Only the dedicated earn this.',
+      emoji: '🏅',
+      category: ShopItemCategory.cosmetics,
+      type: ShopItemType.profileBadge,
+      gemCost: 250,
+      isConsumable: false,
+      orderIndex: 31,
+    ),
+
+    ShopItem(
+      id: 'master_aquarist_title',
+      name: 'Master Aquarist Title',
+      description: 'The ultimate title. Displayed on your profile for all to see. True mastery.',
+      emoji: '👑',
+      category: ShopItemCategory.cosmetics,
+      type: ShopItemType.profileBadge,
+      gemCost: 500,
+      isConsumable: false,
+      orderIndex: 32,
+    ),
   ];
 
   /// Get item by ID

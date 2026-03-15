@@ -141,7 +141,7 @@ class _AmbientTipOverlayState extends ConsumerState<AmbientTipOverlay>
                   borderRadius: AppRadius.mediumRadius,
                   border: Border.all(color: widget.theme.glassBorder, width: 0.5),
                   image: const DecorationImage(
-                    image: AssetImage('assets/textures/felt-teal.png'),
+                    image: AssetImage('assets/textures/felt-teal.webp'),
                     fit: BoxFit.cover,
                     opacity: 0.15,
                   ),

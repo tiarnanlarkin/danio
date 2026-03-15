@@ -17,6 +17,7 @@ import 'services/hearts_service.dart';
 import 'services/celebration_service.dart';
 import 'services/xp_animation_service.dart';
 import 'services/supabase_service.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'theme/app_theme.dart';
 import 'utils/performance_monitor.dart';
 import 'widgets/performance_overlay.dart';
@@ -32,6 +33,9 @@ const bool _showPerformanceOverlay = false; // Set to true to show FPS overlay
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Disable runtime font fetching — use bundled/system fonts only
+  GoogleFonts.config.allowRuntimeFetching = false;
 
   // ROADMAP: Configure Firebase for push notifications and analytics — see docs/FIREBASE_SETUP_GUIDE.md
 

@@ -82,7 +82,7 @@ class JourneyRevealScreen extends ConsumerWidget {
               label: 'Underwater aquarium background',
               excludeSemantics: true,
               child: Image.asset(
-                'assets/images/onboarding/onboarding_journey_bg.png',
+                'assets/images/onboarding/onboarding_journey_bg.webp',
                 fit: BoxFit.cover,
                 errorBuilder: (_, __, ___) => Container(
                   decoration: const BoxDecoration(

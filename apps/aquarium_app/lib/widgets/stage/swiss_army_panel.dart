@@ -220,7 +220,7 @@ class StageHandleStrip extends ConsumerWidget {
                 right: isLeft ? const Radius.circular(8) : Radius.zero,
               ),
               image: const DecorationImage(
-                image: AssetImage('assets/textures/slate-dark.png'),
+                image: AssetImage('assets/textures/slate-dark.webp'),
                 fit: BoxFit.cover,
                 opacity: 0.6,
               ),

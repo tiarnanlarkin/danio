@@ -99,7 +99,6 @@ flutter:
     - assets/images/onboarding/
     - assets/images/illustrations/
     - assets/images/error_states/
-    - assets/images/features/
     - assets/icons/badges/
     - assets/animations/
     - assets/textures/
