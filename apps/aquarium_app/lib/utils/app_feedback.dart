@@ -148,7 +148,7 @@ class AppFeedback {
               height: 20,
               child: CircularProgressIndicator(
                 strokeWidth: 2,
-                valueColor: const AlwaysStoppedAnimation(AppColors.onPrimary),
+                valueColor: AlwaysStoppedAnimation(AppColors.onPrimary),
               ),
             ),
             const SizedBox(width: AppSpacing.sm2),
