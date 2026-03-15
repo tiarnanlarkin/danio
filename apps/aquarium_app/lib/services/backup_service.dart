@@ -118,7 +118,7 @@ class BackupService {
         if (await jsonTempFile.exists()) {
           await jsonTempFile.delete();
         }
-      } catch (_) {}
+      } catch (e) { debugPrint('Error cleaning up temp file: $e'); }
     }
   }
 

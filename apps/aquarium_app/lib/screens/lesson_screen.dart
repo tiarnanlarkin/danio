@@ -1174,7 +1174,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
           // fall back to plain XP award so the user still gets credit.
           try {
             await ref.read(userProfileProvider.notifier).addXp(practiceXp);
-          } catch (_) {}
+          } catch (e) { debugPrint('Error awarding practice XP: $e'); }
         }
 
         final heartsService = ref.read(heartsServiceProvider);
