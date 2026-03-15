@@ -51,9 +51,30 @@ class _CreateTankScreenState extends ConsumerState<CreateTankScreen> {
     super.dispose();
   }
 
+  bool get _hasUnsavedData => _name.isNotEmpty || _volumeLitres > 0 || _currentPage > 0;
+
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return PopScope(
+      canPop: !_hasUnsavedData || _isCreating,
+      onPopInvokedWithResult: (didPop, _) async {
+        if (didPop) return;
+        final shouldPop = await showDialog<bool>(
+          context: context,
+          builder: (ctx) => AlertDialog(
+            title: const Text('Discard new tank?'),
+            content: const Text('You have unsaved changes. Are you sure you want to go back?'),
+            actions: [
+              TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Cancel')),
+              TextButton(onPressed: () => Navigator.pop(ctx, true), child: const Text('Discard')),
+            ],
+          ),
+        );
+        if (shouldPop == true && context.mounted) {
+          Navigator.pop(context);
+        }
+      },
+      child: GestureDetector(
       onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
       child: Scaffold(
       appBar: AppBar(
@@ -64,7 +85,14 @@ class _CreateTankScreenState extends ConsumerState<CreateTankScreen> {
           child: IconButton(
             icon: const Icon(Icons.close),
             tooltip: 'Close and discard new tank',
-            onPressed: () => Navigator.of(context).pop(),
+            onPressed: () {
+              if (_hasUnsavedData) {
+                // Let PopScope handle confirmation
+                Navigator.maybePop(context);
+              } else {
+                Navigator.pop(context);
+              }
+            },
           ),
         ),
       ),
@@ -173,6 +201,7 @@ class _CreateTankScreenState extends ConsumerState<CreateTankScreen> {
           ),
         ),
       ),
+    ),
     ),
     );
   }

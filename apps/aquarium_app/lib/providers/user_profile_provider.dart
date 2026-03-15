@@ -1,15 +1,13 @@
 import 'dart:convert';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 import '../models/tank.dart'; // For TankType enum
 import '../models/user_profile.dart';
-import '../models/learning.dart';
+import '../models/learning.dart'; // AchievementTier
 import '../data/achievements.dart'; // New canonical achievement definitions
 import '../models/achievements.dart'; // AchievementRarity
-import '../models/learning.dart'; // AchievementTier
 import '../models/daily_goal.dart';
 import '../models/lesson_progress.dart';
 import '../models/gem_economy.dart';

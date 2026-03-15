@@ -69,6 +69,20 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
   String _notes = '';
   DateTime _timestamp = DateTime.now();
 
+  /// Whether the user has entered any data worth protecting.
+  bool get _hasUnsavedData =>
+      _temperature != null ||
+      _ph != null ||
+      _ammonia != null ||
+      _nitrite != null ||
+      _nitrate != null ||
+      _gh != null ||
+      _kh != null ||
+      _phosphate != null ||
+      _waterChangePercent != null ||
+      _notes.isNotEmpty ||
+      _photoPaths.isNotEmpty;
+
   @override
   void initState() {
     super.initState();
@@ -159,7 +173,26 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return PopScope(
+      canPop: !_hasUnsavedData || _isSaving,
+      onPopInvokedWithResult: (didPop, _) async {
+        if (didPop) return;
+        final shouldPop = await showDialog<bool>(
+          context: context,
+          builder: (ctx) => AlertDialog(
+            title: const Text('Discard changes?'),
+            content: const Text('You have unsaved data. Are you sure you want to go back?'),
+            actions: [
+              TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Cancel')),
+              TextButton(onPressed: () => Navigator.pop(ctx, true), child: const Text('Discard')),
+            ],
+          ),
+        );
+        if (shouldPop == true && context.mounted) {
+          Navigator.pop(context);
+        }
+      },
+      child: GestureDetector(
       onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
       child: Scaffold(
       appBar: AppBar(
@@ -293,6 +326,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
         ),
       ),
           ),
+    ),
     ),
     );
   }
