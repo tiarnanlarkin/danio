@@ -162,7 +162,7 @@ final nitrogenCyclePath = LearningPath(
           const LessonSection(
             type: LessonSectionType.text,
             content:
-                'A second type of bacteria (Nitrobacter) converts nitrite into nitrate. Nitrate is much less toxic - fish can tolerate levels up to 20-40 ppm.',
+                'Modern research shows Nitrospira bacteria (not just the traditionally cited Nitrobacter) handle most nitrite-to-nitrate conversion in aquarium filters. The science has evolved — the key point is that these beneficial bacteria need time, oxygen, and surface area to colonise your filter.',
           ),
           const LessonSection(
             type: LessonSectionType.tip,

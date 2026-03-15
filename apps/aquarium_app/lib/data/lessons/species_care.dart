@@ -36,7 +36,7 @@ final speciesCarePath = LearningPath(
           const LessonSection(
             type: LessonSectionType.keyPoint,
             content:
-                'Minimum 5 gallons, heated to 78-80°F, filtered water. No bowls!',
+                'Minimum 10 gallons (40 litres), heated to 78-82°F (25.6-27.8°C), filtered water. No bowls!',
           ),
           const LessonSection(
             type: LessonSectionType.warning,

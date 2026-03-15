@@ -1656,7 +1656,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   child: OutlinedButton.icon(
                     onPressed: () {
                       Navigator.pop(ctx);
-                      _showDailyGoalDetails(context);
+                      _showDailyGoalDetails(screenContext);
                     },
                     icon: const Icon(Icons.flag),
                     label: const Text('Daily Goal'),
@@ -1667,7 +1667,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   child: OutlinedButton.icon(
                     onPressed: () {
                       Navigator.pop(ctx);
-                      _showStreakCalendar(context);
+                      _showStreakCalendar(screenContext);
                     },
                     icon: const Icon(Icons.calendar_month),
                     label: const Text('Calendar'),

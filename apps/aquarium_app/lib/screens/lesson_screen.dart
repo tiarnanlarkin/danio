@@ -47,6 +47,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
   bool _showHeartAnimation = false;
   bool _heartGained = false;
   bool _isCompletingLesson = false;
+  bool _isExitingDueToHearts = false;
   int? _levelBeforeLesson;
 
   @override

@@ -49,7 +49,7 @@ final maintenancePath = LearningPath(
           const LessonSection(
             type: LessonSectionType.warning,
             content:
-                'Never replace all the water at once. Massive changes shock fish and can crash your cycle. 50% max in emergencies.',
+                'In emergencies (ammonia or nitrite spikes), large water changes of 50-75% are safe when the new water is temperature-matched and dechlorinated. For routine maintenance, 25-50% weekly is the sweet spot.',
           ),
         ],
         quiz: Quiz(

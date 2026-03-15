@@ -407,7 +407,7 @@ final plantedTankPath = LearningPath(
           const LessonSection(
             type: LessonSectionType.text,
             content:
-                'Yeast + sugar in a bottle produces CO2 via fermentation. Cheap but inconsistent - production varies daily, and it can crash overnight killing fish (CO2 becomes toxic at high levels).',
+                '⚠️ DIY CO2 is risky with fish. A yeast batch crash overnight can dump CO2 and suffocate fish by morning. If using DIY CO2, always run an airstone at night to prevent crashes, and never use it as your only CO2 source in a stocked tank.',
           ),
           const LessonSection(
             type: LessonSectionType.heading,
