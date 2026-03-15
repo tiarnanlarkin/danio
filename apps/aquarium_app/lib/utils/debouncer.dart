@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 class Debouncer {
   final Duration delay;
   Timer? _timer;
+  VoidCallback? _pendingAction;
 
   Debouncer({this.delay = const Duration(milliseconds: 300)});
 
@@ -15,12 +16,25 @@ class Debouncer {
   /// If called again before delay expires, previous call is cancelled
   void run(VoidCallback action) {
     _timer?.cancel();
-    _timer = Timer(delay, action);
+    _pendingAction = action;
+    _timer = Timer(delay, () {
+      _pendingAction = null;
+      action();
+    });
   }
 
   /// Cancel any pending execution
   void cancel() {
     _timer?.cancel();
+  }
+
+  /// Flush: if a callback is pending, execute it immediately and cancel the timer.
+  void flush() {
+    if (_timer?.isActive == true) {
+      _timer!.cancel();
+      _pendingAction?.call();
+      _pendingAction = null;
+    }
   }
 
   /// Dispose of the debouncer

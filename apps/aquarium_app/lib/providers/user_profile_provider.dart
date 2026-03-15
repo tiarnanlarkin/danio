@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
@@ -30,10 +31,13 @@ final userProfileProvider =
 class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
   UserProfileNotifier(this.ref) : super(const AsyncValue.loading()) {
     _load();
+    _lifecycleListener = _ProfileLifecycleListener(_flushPendingSave);
+    WidgetsBinding.instance.addObserver(_lifecycleListener);
   }
 
   final Ref ref;
   static const _key = 'user_profile';
+  late final _ProfileLifecycleListener _lifecycleListener;
 
   /// Debouncer collapses rapid successive saves (e.g. lesson complete → XP → gems)
   /// into a single disk write after 200ms of inactivity.
@@ -41,6 +45,11 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
 
   /// The latest profile pending a debounced write.
   UserProfile? _pendingSave;
+
+  /// Flush any pending debounced save immediately (called on lifecycle pause/detach).
+  void _flushPendingSave() {
+    _saveDebouncer.flush();
+  }
 
   Future<void> _load() async {
     try {
@@ -71,7 +80,9 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(_lifecycleListener);
     // Flush any pending save before disposal
+    _saveDebouncer.flush();
     _saveDebouncer.dispose();
     super.dispose();
   }
@@ -988,5 +999,21 @@ class LevelUpEventNotifier extends StateNotifier<LevelUpEvent?> {
       levelTitle: title,
       timestamp: DateTime.now(),
     );
+  }
+}
+
+/// Lifecycle observer that flushes pending profile saves when the app
+/// is paused or detached, preventing XP/data loss on sudden app kill.
+class _ProfileLifecycleListener extends WidgetsBindingObserver {
+  _ProfileLifecycleListener(this._onFlush);
+
+  final VoidCallback _onFlush;
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused ||
+        state == AppLifecycleState.detached) {
+      _onFlush();
+    }
   }
 }
