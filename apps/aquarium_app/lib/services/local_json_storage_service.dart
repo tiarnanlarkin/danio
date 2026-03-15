@@ -354,9 +354,20 @@ class LocalJsonStorageService implements StorageService {
       'tasks': _tasks.map((k, v) => MapEntry(k, _taskToJson(v))),
     };
 
-    // Atomic write using temp file
+    // Atomic write: .tmp → rename, with .bak of previous version
     final tmp = File('${file.path}.tmp');
     await tmp.writeAsString(jsonEncode(payload));
+
+    // Keep a backup of the previous version for crash recovery
+    if (await file.exists()) {
+      final bak = File('${file.path}.bak');
+      try {
+        await file.copy(bak.path);
+      } catch (_) {
+        // Best-effort backup — don't block the save
+      }
+    }
+
     await tmp.rename(file.path);
 
     // Log successful saves (can be removed in production)
