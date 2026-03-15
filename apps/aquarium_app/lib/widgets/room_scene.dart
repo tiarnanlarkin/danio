@@ -118,7 +118,7 @@ class LivingRoomScene extends ConsumerWidget {
 
               // === LAYER 3: Furniture stand for aquarium ===
               Positioned(
-                top: h * 0.60,
+                top: h * 0.66,
                 left: w * 0.06,
                 right: w * 0.06,
                 child: _AquariumStand(
@@ -130,7 +130,7 @@ class LivingRoomScene extends ConsumerWidget {
 
               // === LAYER 4: 3D Aquarium illustration (center, sitting on stand) ===
               Positioned(
-                top: h * 0.18,
+                top: h * 0.24,
                 left: w * 0.06,
                 right: w * 0.06,
                 child: Hero(
@@ -153,10 +153,10 @@ class LivingRoomScene extends ConsumerWidget {
               // or they will appear as duplicate tabs.
 
               // Tank glass badge — etched manufacturer sticker at bottom-right corner of glass
-              // Tank bottom edge = h*0.18 + h*0.44 = h*0.62; right edge = w - w*0.06 = w*0.94
+              // Tank bottom edge = h*0.24 + h*0.44 = h*0.68; right edge = w - w*0.06 = w*0.94
               // Position so badge overlaps the glass border at the very corner.
               Positioned(
-                bottom: h - (h * 0.62) + 4, // 4dp above bottom of scene (overlapping glass border)
+                bottom: h - (h * 0.68) + 4, // 4dp above bottom of scene (overlapping glass border)
                 right: w * 0.06 + 4,        // 4dp inside right edge of tank glass
                 child: TankGlassBadge(
                   tankName: tankName,

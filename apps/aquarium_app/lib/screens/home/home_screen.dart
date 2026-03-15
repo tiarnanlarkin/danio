@@ -2007,7 +2007,7 @@ class _RoomControlFAB extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Positioned(
-      bottom: 70 + MediaQuery.of(context).padding.bottom,
+      bottom: 130 + MediaQuery.of(context).padding.bottom,
       right: 16,
       child: IgnorePointer(
         ignoring: isHidden,
