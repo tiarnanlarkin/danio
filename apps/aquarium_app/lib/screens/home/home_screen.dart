@@ -862,7 +862,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     _isNavigatingToCreate = true;
 
     // Capture navigator before any async gap so it remains valid after awaits.
-    final navigator = Navigator.of(context, rootNavigator: true);
+    // Use the tab-level navigator (not rootNavigator) so screens stay within
+    // the tab shell and keep the bottom nav bar visible.
+    final navigator = Navigator.of(context);
 
     // Snapshot tank count BEFORE pushing so we can detect the new tank after pop.
     final tanksBefore = ref.read(tanksProvider).valueOrNull ?? [];

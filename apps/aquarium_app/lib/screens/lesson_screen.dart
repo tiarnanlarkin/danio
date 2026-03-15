@@ -96,6 +96,9 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
       canPop: false,
       onPopInvokedWithResult: (didPop, _) async {
         if (didPop) return;
+        // If we're programmatically exiting due to out-of-hearts, skip the
+        // confirm dialog — the hearts modal already handled the user's choice.
+        if (_isExitingDueToHearts) return;
         // Capture navigator before the async gap to avoid
         // use_build_context_synchronously lint.
         final nav = Navigator.of(context);
@@ -767,6 +770,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
                                   );
                                 } else if (mounted) {
                                   // "Wait" or close — go back to the learn hub
+                                  _isExitingDueToHearts = true;
                                   Navigator.of(context).pop();
                                 }
                               }
