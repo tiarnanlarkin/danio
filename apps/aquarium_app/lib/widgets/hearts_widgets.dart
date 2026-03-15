@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../services/hearts_service.dart';
 import '../providers/user_profile_provider.dart';
+import '../providers/gems_provider.dart';
+import '../screens/gem_shop_screen.dart';
 import '../theme/app_theme.dart';
 import '../utils/app_constants.dart';
 import 'dart:async';
@@ -374,6 +376,47 @@ class _OutOfHeartsModalState extends ConsumerState<OutOfHeartsModal> {
                 ),
               ),
             const SizedBox(height: AppSpacing.lg),
+
+            // Gem balance indicator
+            Builder(
+              builder: (context) {
+                final gemBalance = ref.watch(gemBalanceProvider);
+                return Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.md,
+                    vertical: AppSpacing.sm,
+                  ),
+                  decoration: BoxDecoration(
+                    color: AppOverlays.info10,
+                    borderRadius: AppRadius.mediumRadius,
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text('💎', style: TextStyle(fontSize: 18)),
+                      const SizedBox(width: AppSpacing.sm),
+                      Text(
+                        '$gemBalance gems',
+                        style: AppTypography.labelLarge.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(width: AppSpacing.sm),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                          Navigator.of(context).push(
+                            MaterialPageRoute(builder: (_) => const GemShopScreen()),
+                          );
+                        },
+                        child: const Text('Get More'),
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
+            const SizedBox(height: AppSpacing.md),
 
             // Options
             Column(

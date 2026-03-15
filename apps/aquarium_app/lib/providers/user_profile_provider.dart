@@ -349,6 +349,11 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
           await _saveImmediate(updated);
           state = AsyncValue.data(updated);
 
+          // Notify UI if a streak freeze was consumed
+          if (usedFreeze) {
+            ref.read(streakFreezeUsedProvider.notifier).state = true;
+          }
+
           // Award gems for milestones
           final gemsNotifier = ref.read(gemsProvider.notifier);
 
@@ -1069,3 +1074,9 @@ class _ProfileLifecycleListener extends WidgetsBindingObserver {
     }
   }
 }
+
+/// Notifies the UI when a streak freeze was consumed during recordActivity.
+/// Set to true when a freeze is used; the UI should reset it after showing
+/// a notification.
+final streakFreezeUsedProvider = StateProvider<bool>((ref) => false);
+

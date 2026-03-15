@@ -628,6 +628,7 @@ class LocalJsonStorageService implements StorageService {
     'notes': t.notes,
     'imageUrl': t.imageUrl,
     'sortOrder': t.sortOrder,
+    'isDemoTank': t.isDemoTank,
     'createdAt': t.createdAt.toIso8601String(),
     'updatedAt': t.updatedAt.toIso8601String(),
   };
@@ -650,6 +651,7 @@ class LocalJsonStorageService implements StorageService {
       notes: m['notes'] as String?,
       imageUrl: m['imageUrl'] as String?,
       sortOrder: (m['sortOrder'] as int?) ?? 0,
+      isDemoTank: (m['isDemoTank'] as bool?) ?? false,
       createdAt: DateTime.parse(m['createdAt'] as String),
       updatedAt: DateTime.parse(m['updatedAt'] as String),
     );

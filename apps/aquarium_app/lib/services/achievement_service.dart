@@ -124,14 +124,63 @@ class AchievementService {
         break;
 
       case 'beginner_master':
+        // Beginner paths: nitrogen_cycle, water_parameters, first_fish
+        final beginnerIds = LessonProvider.allPathMetadata
+            .where((p) => ['nitrogen_cycle', 'water_parameters', 'first_fish'].contains(p.id))
+            .expand((p) => p.lessonIds)
+            .toSet();
+        shouldUnlock = beginnerIds.isNotEmpty &&
+            beginnerIds.every((id) => stats.completedLessonIds.contains(id));
+        break;
+
       case 'intermediate_master':
+        // Intermediate paths: maintenance, planted_tank, equipment
+        final intermediateIds = LessonProvider.allPathMetadata
+            .where((p) => ['maintenance', 'planted_tank', 'equipment'].contains(p.id))
+            .expand((p) => p.lessonIds)
+            .toSet();
+        shouldUnlock = intermediateIds.isNotEmpty &&
+            intermediateIds.every((id) => stats.completedLessonIds.contains(id));
+        break;
+
       case 'advanced_master':
+        // Advanced paths: fish_health, species_care, advanced_topics
+        final advancedIds = LessonProvider.allPathMetadata
+            .where((p) => ['fish_health', 'species_care', 'advanced_topics'].contains(p.id))
+            .expand((p) => p.lessonIds)
+            .toSet();
+        shouldUnlock = advancedIds.isNotEmpty &&
+            advancedIds.every((id) => stats.completedLessonIds.contains(id));
+        break;
+
       case 'water_chemistry_master':
+        // Water chemistry path: water_parameters
+        final waterChemIds = LessonProvider.allPathMetadata
+            .where((p) => p.id == 'water_parameters')
+            .expand((p) => p.lessonIds)
+            .toSet();
+        shouldUnlock = waterChemIds.isNotEmpty &&
+            waterChemIds.every((id) => stats.completedLessonIds.contains(id));
+        break;
+
       case 'plants_master':
+        // Plants path: planted_tank
+        final plantIds = LessonProvider.allPathMetadata
+            .where((p) => p.id == 'planted_tank')
+            .expand((p) => p.lessonIds)
+            .toSet();
+        shouldUnlock = plantIds.isNotEmpty &&
+            plantIds.every((id) => stats.completedLessonIds.contains(id));
+        break;
+
       case 'livestock_master':
-        // Not implemented: Requires LessonContent.allPaths integration
-        // Deferred to future release when lesson path system is finalized
-        shouldUnlock = false;
+        // Livestock paths: first_fish, fish_health, species_care
+        final livestockIds = LessonProvider.allPathMetadata
+            .where((p) => ['first_fish', 'fish_health', 'species_care'].contains(p.id))
+            .expand((p) => p.lessonIds)
+            .toSet();
+        shouldUnlock = livestockIds.isNotEmpty &&
+            livestockIds.every((id) => stats.completedLessonIds.contains(id));
         break;
 
       case 'placement_complete':

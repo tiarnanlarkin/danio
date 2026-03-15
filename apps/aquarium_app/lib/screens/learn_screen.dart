@@ -174,6 +174,28 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // Listen for streak freeze consumption and show a notification
+    ref.listen<bool>(streakFreezeUsedProvider, (prev, next) {
+      if (next && mounted) {
+        ref.read(streakFreezeUsedProvider.notifier).state = false;
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Row(
+              children: [
+                Text('🧊', style: TextStyle(fontSize: 20)),
+                SizedBox(width: 8),
+                Expanded(
+                  child: Text('Streak freeze used! Your streak was saved.'),
+                ),
+              ],
+            ),
+            duration: Duration(seconds: 4),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      }
+    });
+
     final profileAsync = ref.watch(userProfileProvider);
     // Select only the two fields used by StudyRoomScene so that other stat
     // changes (e.g. weeklyXp updates) don't rebuild this 980-line screen.

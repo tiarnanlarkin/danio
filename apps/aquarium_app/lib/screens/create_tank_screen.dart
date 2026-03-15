@@ -395,6 +395,7 @@ class _BasicInfoPage extends StatelessWidget {
               textField: true,
               child: TextFormField(
                 initialValue: name,
+                maxLength: 50,
                 decoration: const InputDecoration(
                   labelText: 'Tank name',
                   hintText: 'e.g., Living Room Tank',
@@ -599,11 +600,15 @@ class _SizePageState extends State<_SizePage> {
   late TextEditingController _volumeController;
   bool _disposed = false;
 
+  /// Format volume without trailing ".0" for whole numbers.
+  static String _formatVolume(double v) =>
+      v == v.roundToDouble() ? v.toStringAsFixed(0) : v.toString();
+
   @override
   void initState() {
     super.initState();
     _volumeController = TextEditingController(
-      text: widget.volumeLitres > 0 ? widget.volumeLitres.toString() : '',
+      text: widget.volumeLitres > 0 ? _formatVolume(widget.volumeLitres) : '',
     );
   }
 
@@ -614,7 +619,7 @@ class _SizePageState extends State<_SizePage> {
     // Update text field when volume changes externally (e.g., from presets)
     try {
       final currentText = _volumeController.text;
-      final newText = widget.volumeLitres > 0 ? widget.volumeLitres.toString() : '';
+      final newText = widget.volumeLitres > 0 ? _formatVolume(widget.volumeLitres) : '';
       if (currentText != newText && double.tryParse(currentText) != widget.volumeLitres) {
         _volumeController.text = newText;
       }

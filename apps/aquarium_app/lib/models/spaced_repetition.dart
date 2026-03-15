@@ -130,7 +130,8 @@ class ReviewCard {
     if (strength >= 0.9) return ReviewInterval.day30;
     if (strength >= 0.8) return ReviewInterval.day14;
     if (strength >= 0.6) return ReviewInterval.day7;
-    // Below 0.6 stays at day1 until mastery improves
+    if (strength >= 0.4) return ReviewInterval.day3;
+    // Below 0.4 stays at day1 until mastery improves
     return ReviewInterval.day1;
   }
 

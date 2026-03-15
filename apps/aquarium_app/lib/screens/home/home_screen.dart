@@ -38,6 +38,7 @@ import 'widgets/tank_picker_sheet.dart';
 import 'widgets/xp_source_row.dart';
 import 'widgets/selection_mode_panel.dart';
 import 'widgets/empty_room_scene.dart';
+import 'widgets/today_board.dart';
 import '../backup_restore_screen.dart';
 import '../tab_navigator.dart';
 import '../../widgets/stage/stage_provider.dart';
@@ -519,14 +520,21 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             // rebuild scope; only heartsStateProvider + streak selector fire here.
             const _StreakHeartsOverlay(),
 
+            // P0-2 FIX: Wire in TodayBoardCard above the bottom plates
+            Positioned(
+              bottom: 72, // above both stacked plates (32 peek + 32 peek + 8 padding)
+              left: 16,
+              right: 16,
+              child: TodayBoardCard(tankId: currentTank.id),
+            ),
+
             // Bottom Plates — Tanks (behind) then Progress (front, renders on top)
+            // P0-1 FIX: Stagger peekHeights so both drag handles are visible.
+            // "Your Tanks" sits behind at bottomOffset: 32 (above the front
+            // plate's peek strip), and "Your Progress" sits in front at 0.
             BottomPlate(
               peekHeight: 32,
-              // bottomOffset: 0 is correct because TabNavigator uses
-              // extendBody: false — the Scaffold body already ends at the
-              // NavigationBar top. Setting 80 here caused the plate to float
-              // 80dp above the nav bar (a visible gap + content blockage).
-              bottomOffset: 0,
+              bottomOffset: 32,
               maxHeightFraction: 0.75,
               label: 'Your Tanks',
               emoji: '🐠',
@@ -639,16 +647,24 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     // Navigation to other rooms (Learn, Workshop, Shop, etc.) is handled
     // by TabNavigator's tab system, not a BottomNavigationBar here.
     // Note: FAB is handled inside _buildLivingRoomScreen() Stack, not here
+    // P0-5 FIX: Only show the highest-priority overlay banner to prevent
+    // visual stacking at the same position. Priority: welcome > comeback.
+    final showWelcome = _showWelcomeBanner;
+    final showComeback = _showComebackBanner && !showWelcome;
+
     return Scaffold(
       body: Stack(
         children: [
           Positioned.fill(child: _buildLivingRoomScreen()),
-          if (_showWelcomeBanner)
+          if (showWelcome)
             Positioned(
               top: MediaQuery.of(context).padding.top + AppSpacing.md,
               left: AppSpacing.md,
               right: AppSpacing.md,
-              child: AnimatedOpacity(
+              // P1 FIX: Allow manual dismiss of welcome banner
+              child: GestureDetector(
+                onTap: () => setState(() => _showWelcomeBanner = false),
+                child: AnimatedOpacity(
                 opacity: _showWelcomeBanner ? 1.0 : 0.0,
                 duration: AppDurations.long2,
                 child: Material(
@@ -687,10 +703,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   ),
                 ),
               ),
+              ),
             ),
 
           // P5-3: Comeback banner — shown when a user's streak has been broken
-          if (_showComebackBanner)
+          if (showComeback)
             Positioned(
               top: MediaQuery.of(context).padding.top + AppSpacing.md,
               left: AppSpacing.md,
@@ -814,6 +831,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         orElse: () => tanksAfter.first,
       );
       if (mounted) {
+        // Update _currentTankIndex to point to the new tank
+        final newIndex = tanksAfter.indexOf(newTank);
+        if (newIndex >= 0) {
+          setState(() => _currentTankIndex = newIndex);
+        }
         ref.read(currentTabProvider.notifier).state = 2; // Switch to Tank tab
         navigator.push(
           TankDetailRoute(page: TankDetailScreen(tankId: newTank.id)),
@@ -837,10 +859,23 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     // fix was already applied to _navigateToCreateFirstTank.
     Navigator.of(context).push(
       MaterialPageRoute(builder: (_) => const CreateTankScreen()),
-    ).whenComplete(() {
+    ).whenComplete(() async {
       if (mounted) {
         setState(() => _isNavigatingToCreate = false);
+        final tanksBefore = ref.read(tanksProvider).valueOrNull ?? [];
         ref.invalidate(tanksProvider); // Re-fetch after pop animation completes
+        // Update _currentTankIndex to the newly created tank
+        final tanksAfter = await ref.read(tanksProvider.future).timeout(
+          const Duration(seconds: 3),
+          onTimeout: () => [],
+        );
+        if (mounted && tanksAfter.length > tanksBefore.length) {
+          final beforeIds = tanksBefore.map((t) => t.id).toSet();
+          final newIndex = tanksAfter.indexWhere((t) => !beforeIds.contains(t.id));
+          if (newIndex >= 0) {
+            setState(() => _currentTankIndex = newIndex);
+          }
+        }
       }
     });
   }
@@ -1925,13 +1960,17 @@ class _DismissibleBanner extends StatelessWidget {
             Flexible(
               child: Text(text, style: textStyle),
             ),
-            GestureDetector(
-              onTap: onDismiss,
-              child: const SizedBox(
-                width: 44,
-                height: 44,
-                child: Center(
-                  child: Icon(Icons.close, size: 14, color: Colors.white70),
+            Semantics(
+              label: 'Dismiss banner',
+              button: true,
+              child: GestureDetector(
+                onTap: onDismiss,
+                child: const SizedBox(
+                  width: 44,
+                  height: 44,
+                  child: Center(
+                    child: Icon(Icons.close, size: 14, color: Colors.white70),
+                  ),
                 ),
               ),
             ),
@@ -2033,8 +2072,10 @@ class _DailyNudgeBanner extends ConsumerWidget {
     ));
     if (todayXp > 0) return const SizedBox.shrink();
 
+    // P0-5 FIX: Push daily nudge below the streak/hearts overlay area
+    // to prevent banner stacking at identical top positions.
     return Positioned(
-      top: MediaQuery.of(context).padding.top + 60,
+      top: MediaQuery.of(context).padding.top + 100,
       left: 16,
       right: 16,
       child: GestureDetector(

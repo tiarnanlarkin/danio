@@ -282,6 +282,39 @@ class _EnhancedQuizScreenState extends ConsumerState<EnhancedQuizScreen>
 
   @override
   Widget build(BuildContext context) {
+    // Guard: no exercises available
+    if (widget.quiz.exercises.isEmpty) {
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.all(AppSpacing.lg2),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(Icons.quiz_outlined, size: 48, color: Theme.of(context).hintColor),
+              const SizedBox(height: AppSpacing.md),
+              Text(
+                'No questions available',
+                style: AppTypography.titleMedium.copyWith(
+                  color: Theme.of(context).textTheme.bodySmall?.color,
+                ),
+              ),
+              const SizedBox(height: AppSpacing.sm),
+              Text(
+                'Check back soon — new questions are on the way!',
+                style: AppTypography.bodyMedium,
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: AppSpacing.lg),
+              OutlinedButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('Go Back'),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
     if (_quizComplete) {
       return _buildResults();
     }
