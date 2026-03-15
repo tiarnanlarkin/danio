@@ -138,6 +138,10 @@ class QuizQuestion {
 
 /// Achievement/badge the user can earn
 @immutable
+/// @deprecated Use Achievement from models/achievements.dart and
+/// AchievementDefinitions from data/achievements.dart instead.
+/// This legacy class (22 achievements) is kept for backward compatibility
+/// but new code should use the canonical 55+ achievement system.
 class Achievement {
   final String id;
   final String title;
@@ -232,6 +236,7 @@ class DailyTip {
 // ==========================================
 
 /// All achievements available in the app
+/// @deprecated Use AchievementDefinitions from data/achievements.dart instead.
 class Achievements {
   static const List<Achievement> all = [
     // Learning achievements

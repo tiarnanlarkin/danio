@@ -7,6 +7,7 @@ import 'package:uuid/uuid.dart';
 import '../models/tank.dart'; // For TankType enum
 import '../models/user_profile.dart';
 import '../models/learning.dart';
+import '../data/achievements.dart'; // New canonical achievement definitions
 import '../models/daily_goal.dart';
 import '../models/lesson_progress.dart';
 import '../models/gem_economy.dart';
@@ -745,9 +746,13 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
     // Don't double-count
     if (current.achievements.contains(achievementId)) return;
 
-    // Get bonus XP from achievement tier
-    final achievement = Achievements.getById(achievementId);
-    final bonusXp = achievement?.tier.xpBonus ?? 0;
+    // Use the new canonical AchievementDefinitions (55+ achievements)
+    // Falls back to legacy Achievements for IDs not yet in the new system
+    final newAchievement = AchievementDefinitions.getById(achievementId);
+    final legacyAchievement = Achievements.getById(achievementId);
+    final bonusXp = newAchievement?.rarity.xpReward
+        ?? legacyAchievement?.tier.xpBonus
+        ?? 0;
 
     final updated = current.copyWith(
       achievements: [...current.achievements, achievementId],
@@ -758,14 +763,18 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
     await _save(updated);
     state = AsyncValue.data(updated);
 
-    // Award gems for achievement
-    if (achievement != null) {
+    // Award gems for achievement — map rarity to legacy tier for GemRewards
+    final effectiveTier = newAchievement != null
+        ? _rarityToTier(newAchievement.rarity)
+        : legacyAchievement?.tier;
+    if (effectiveTier != null) {
       final gemsNotifier = ref.read(gemsProvider.notifier);
-      final gemReward = GemRewards.getAchievementReward(achievement.tier);
+      final gemReward = GemRewards.getAchievementReward(effectiveTier);
+      final displayName = newAchievement?.name ?? legacyAchievement?.title ?? achievementId;
       await gemsNotifier.addGems(
         amount: gemReward,
         reason: GemEarnReason.achievementUnlock,
-        customReason: 'Achievement: ${achievement.title}',
+        customReason: 'Achievement: $displayName',
       );
     }
   }
@@ -999,6 +1008,20 @@ class LevelUpEventNotifier extends StateNotifier<LevelUpEvent?> {
       levelTitle: title,
       timestamp: DateTime.now(),
     );
+  }
+}
+
+/// Maps new AchievementRarity to legacy AchievementTier for GemRewards compat.
+AchievementTier _rarityToTier(AchievementRarity rarity) {
+  switch (rarity) {
+    case AchievementRarity.bronze:
+      return AchievementTier.bronze;
+    case AchievementRarity.silver:
+      return AchievementTier.silver;
+    case AchievementRarity.gold:
+      return AchievementTier.gold;
+    case AchievementRarity.platinum:
+      return AchievementTier.platinum;
   }
 }
 
