@@ -1,3 +1,4 @@
+// TODO: Hidden until feature ships (CA-002)
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../theme/app_theme.dart';

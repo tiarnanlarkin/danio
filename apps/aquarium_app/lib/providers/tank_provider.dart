@@ -188,8 +188,8 @@ class TankActions {
     }
   }
 
-  /// Delete a tank and all related data
-  Future<void> deleteTank(String id) async {
+  /// Delete a tank and all related data (internal — use softDeleteTank from UI)
+  Future<void> _permanentlyDelete(String id) async {
     try {
       await _storage.deleteTank(id);
       _ref.invalidate(tanksProvider);

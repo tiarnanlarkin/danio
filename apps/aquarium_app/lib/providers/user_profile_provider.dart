@@ -14,7 +14,7 @@ import '../models/gem_economy.dart';
 import '../models/gem_transaction.dart';
 import '../models/leaderboard.dart'; // For League and WeekPeriod
 import '../models/shop_item.dart'; // For InventoryItem
-import '../models/spaced_repetition.dart'; // For ConceptType
+// spaced_repetition.dart no longer needed — card seeding delegated to SpacedRepetitionProvider
 import 'lesson_provider.dart';
 import 'gems_provider.dart';
 import 'spaced_repetition_provider.dart'; // For creating review cards
@@ -209,12 +209,18 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
     state = AsyncValue.data(updated);
   }
 
+  /// Single source of truth for XP boost calculation.
+  /// All XP additions MUST go through this helper to prevent double-boosting.
+  int _applyXp(int amount, {bool xpBoostActive = false}) {
+    return xpBoostActive ? amount * 2 : amount;
+  }
+
   /// Award XP and handle streak logic (with streak freeze support)
   /// Now uses offline-aware service to queue changes when offline
   /// If xpBoostActive is true, the XP amount will be doubled
   Future<void> recordActivity({int xp = 0, bool xpBoostActive = false}) async {
-    // Apply XP boost multiplier if active
-    final effectiveXp = xpBoostActive ? xp * 2 : xp;
+    // Apply XP boost multiplier via single helper
+    final effectiveXp = _applyXp(xp, xpBoostActive: xpBoostActive);
     try {
       var current = state.value;
       if (current == null) return;
@@ -375,8 +381,8 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
     final current = state.value;
     if (current == null) return;
 
-    // Apply XP boost multiplier if active
-    final effectiveAmount = xpBoostActive ? amount * 2 : amount;
+    // Apply XP boost multiplier via single helper
+    final effectiveAmount = _applyXp(amount, xpBoostActive: xpBoostActive);
 
     // Check and reset weekly XP if needed
     final currentWeek = WeekPeriod.current();
@@ -534,32 +540,21 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
     }
   }
 
-  /// Create spaced repetition review cards for a completed lesson
-  /// Seeds 3-5 cards from key lesson concepts
+  /// Create spaced repetition review cards for a completed lesson.
+  /// Delegates to SpacedRepetitionProvider.autoSeedFromLesson() — single source of truth.
   Future<void> _createReviewCardsForLesson(String lessonId) async {
     try {
-      // Import is at top of file, access via ref
-      final spacedRepetitionNotifier = ref.read(
-        spacedRepetitionProvider.notifier,
-      );
-
-      // Find the lesson in lesson content (lazy-loads path if needed)
       final lesson = await _findLessonById(lessonId);
       if (lesson == null) return; // Lesson not found, skip
 
-      // Extract reviewable concepts from lesson
-      final concepts = _extractReviewableConceptsFromLesson(lesson);
-
-      // Create a review card for each concept (3-5 cards per lesson)
-      for (final concept in concepts.take(5)) {
-        await spacedRepetitionNotifier.createCard(
-          conceptId: concept,
-          conceptType: ConceptType.lesson,
-        );
-      }
+      // Delegate to the single card-seeding implementation
+      await ref.read(spacedRepetitionProvider.notifier).autoSeedFromLesson(
+        lessonId: lessonId,
+        lessonSections: lesson.sections,
+        quizQuestions: lesson.quiz?.questions,
+      );
     } catch (e) {
       // Don't fail lesson completion if card creation fails
-      // Just log and continue
       debugPrint(
         'Warning: Failed to create review cards for lesson $lessonId: $e',
       );
@@ -584,33 +579,6 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
       }
     }
     return null;
-  }
-
-  /// Extract 3-5 reviewable concepts from a lesson
-  /// Creates concept IDs from key points, tips, warnings, and quiz questions
-  List<String> _extractReviewableConceptsFromLesson(Lesson lesson) {
-    final concepts = <String>[];
-
-    // Extract key points, tips, and warnings from sections
-    for (var i = 0; i < lesson.sections.length; i++) {
-      final section = lesson.sections[i];
-      if (section.type == LessonSectionType.keyPoint ||
-          section.type == LessonSectionType.tip ||
-          section.type == LessonSectionType.warning) {
-        // Use lesson ID + section index as concept ID
-        concepts.add('${lesson.id}_section_$i');
-      }
-    }
-
-    // Extract quiz questions
-    if (lesson.quiz != null) {
-      for (var i = 0; i < lesson.quiz!.questions.length; i++) {
-        concepts.add('${lesson.id}_quiz_$i');
-      }
-    }
-
-    // Return 3-5 concepts (prioritize key points and quiz questions)
-    return concepts.take(5).toList();
   }
 
   /// Complete placement test and apply results
