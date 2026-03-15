@@ -118,7 +118,7 @@ class LivingRoomScene extends ConsumerWidget {
 
               // === LAYER 3: Furniture stand for aquarium ===
               Positioned(
-                top: h * 0.58,
+                top: h * 0.60,
                 left: w * 0.06,
                 right: w * 0.06,
                 child: _AquariumStand(
@@ -130,7 +130,7 @@ class LivingRoomScene extends ConsumerWidget {
 
               // === LAYER 4: 3D Aquarium illustration (center, sitting on stand) ===
               Positioned(
-                top: h * 0.22,
+                top: h * 0.18,
                 left: w * 0.06,
                 right: w * 0.06,
                 child: Hero(
@@ -139,7 +139,7 @@ class LivingRoomScene extends ConsumerWidget {
                     onTap: onTankTap,
                     child: _ThemedAquarium(
                       width: w * 0.88,
-                      height: h * 0.38,
+                      height: h * 0.44,
                       theme: theme,
                       useRiveFish: useRiveFish,
                     ),
@@ -153,10 +153,9 @@ class LivingRoomScene extends ConsumerWidget {
               // or they will appear as duplicate tabs.
 
               // Tank glass badge — sits ON the bottom-right corner of tank glass
-              // Tank is at top: h*0.22, height: h*0.38, so bottom edge = h*0.60
-              // Right edge: w*0.06 from right
+              // Tank is at top: h*0.18, height: h*0.44, so bottom edge = h*0.62
               Positioned(
-                top: h * 0.22 + h * 0.38 - 20, // 20dp overlapping bottom edge of tank
+                top: h * 0.18 + h * 0.44 - 20, // 20dp overlapping bottom edge of tank
                 right: w * 0.08,
                 child: TankGlassBadge(
                   tankName: tankName,
@@ -1176,73 +1175,7 @@ class _StandPainter extends CustomPainter {
       Paint()..color = const Color(0x14000000),
     );
 
-    // Shelf items
-    final shelfTop = h * 0.6;
-
-    // Book stack (left third)
-    final bookColors = [
-      const Color(0xFF4A6B8C),
-      const Color(0xFF8B5E3C),
-      const Color(0xFF5A8060),
-      const Color(0xFFC4725A),
-    ];
-    final bookOpacity = _isDarkTheme ? 0.8 : 1.0;
-    var bookY = shelfTop - 4;
-    for (var i = 0; i < 4; i++) {
-      final bw = w * (0.18 + (i % 2 == 0 ? 0.02 : 0));
-      bookY -= h * 0.06;
-      canvas.drawRRect(
-        RRect.fromRectAndRadius(
-          Rect.fromLTWH(w * 0.15, bookY, bw, h * 0.055),
-          const Radius.circular(1),
-        ),
-        Paint()..color = bookColors[i].withAlpha((255 * bookOpacity).round()),
-      );
-    }
-
-    // Small potted plant (centre)
-    final potX = w * 0.47;
-    final potW = w * 0.06;
-    final potH = h * 0.08;
-    final potTop = shelfTop - potH;
-    canvas.drawRRect(
-      RRect.fromRectAndRadius(
-        Rect.fromLTWH(potX, potTop + potH * 0.4, potW, potH * 0.6),
-        const Radius.circular(2),
-      ),
-      Paint()..color = Color.fromARGB(_isDarkTheme ? 204 : 255, 0xC0, 0x82, 0x5A),
-    );
-    final leafPaint = Paint()
-      ..color = (theme.plantSecondary).withAlpha(_isDarkTheme ? 204 : 255);
-    canvas.drawOval(
-      Rect.fromLTWH(potX - potW * 0.2, potTop, potW * 0.7, potH * 0.5),
-      leafPaint,
-    );
-    canvas.drawOval(
-      Rect.fromLTWH(potX + potW * 0.4, potTop + potH * 0.1, potW * 0.7, potH * 0.45),
-      leafPaint,
-    );
-
-    // Decorative vase (right third)
-    final vaseX = w * 0.65;
-    final vaseW = w * 0.08;
-    final vaseH = h * 0.10;
-    final vaseTop = shelfTop - vaseH + 2;
-    canvas.drawRRect(
-      RRect.fromRectAndRadius(
-        Rect.fromLTWH(vaseX, vaseTop, vaseW, vaseH),
-        Radius.circular(vaseW * 0.3),
-      ),
-      Paint()..color = Color.fromARGB(_isDarkTheme ? 178 : 255, 0x8B, 0xAE, 0xB8),
-    );
-    canvas.drawLine(
-      Offset(vaseX + vaseW * 0.25, vaseTop + vaseH * 0.15),
-      Offset(vaseX + vaseW * 0.25, vaseTop + vaseH * 0.7),
-      Paint()
-        ..color = const Color(0x40FFFFFF)
-        ..strokeWidth = 1.5
-        ..strokeCap = StrokeCap.round,
-    );
+    // Shelf items removed — clean open shelf
   }
 
   @override
