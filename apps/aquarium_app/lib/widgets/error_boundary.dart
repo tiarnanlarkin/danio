@@ -34,7 +34,8 @@ class _ErrorBoundaryState extends State<ErrorBoundary> {
   void initState() {
     super.initState();
     
-    // Capture errors in this widget's subtree
+    // Capture errors in this widget's subtree — chain with previous handler
+    final previousHandler = FlutterError.onError;
     FlutterError.onError = (details) {
       widget.onError?.call(details);
 
@@ -54,6 +55,9 @@ class _ErrorBoundaryState extends State<ErrorBoundary> {
           }
         });
       }
+
+      // Chain to previous handler so other error reporting (e.g. Crashlytics) still works
+      previousHandler?.call(details);
     };
   }
 

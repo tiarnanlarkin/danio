@@ -104,7 +104,7 @@ class ShopCatalog {
       emoji: '❤️',
       category: ShopItemCategory.extras,
       type: ShopItemType.heartsRefill,
-      gemCost: 30,
+      gemCost: 50,
       isConsumable: true,
       quantity: 1,
       orderIndex: 12,
