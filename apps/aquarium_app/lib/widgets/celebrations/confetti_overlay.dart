@@ -248,6 +248,12 @@ class _ConfettiOverlayState extends State<ConfettiOverlay> {
   
   @override
   Widget build(BuildContext context) {
+    final reduceMotion = MediaQuery.of(context).disableAnimations;
+    if (reduceMotion) {
+      // Purely decorative — skip confetti entirely when reduced motion is on
+      return widget.child ?? const SizedBox.shrink();
+    }
+
     return Stack(
       children: [
         if (widget.child != null) widget.child!,

@@ -681,6 +681,7 @@ class LocalJsonStorageService implements StorageService {
     'dateAdded': l.dateAdded.toIso8601String(),
     'source': l.source,
     'temperament': l.temperament?.name,
+    'healthStatus': l.healthStatus.name,
     'notes': l.notes,
     'imageUrl': l.imageUrl,
     'createdAt': l.createdAt.toIso8601String(),
@@ -705,6 +706,12 @@ class LocalJsonStorageService implements StorageService {
               (e) => e.name == m['temperament'],
               orElse: () => Temperament.peaceful,
             ),
+      healthStatus: m['healthStatus'] != null
+          ? HealthStatus.values.firstWhere(
+              (e) => e.name == m['healthStatus'],
+              orElse: () => HealthStatus.healthy,
+            )
+          : HealthStatus.healthy,
       notes: m['notes'] as String?,
       imageUrl: m['imageUrl'] as String?,
       createdAt: DateTime.parse(m['createdAt'] as String),
