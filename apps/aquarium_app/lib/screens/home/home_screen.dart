@@ -520,24 +520,31 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             // rebuild scope; only heartsStateProvider + streak selector fire here.
             const _StreakHeartsOverlay(),
 
-            // P0-2 FIX: Wire in TodayBoardCard above the bottom plates
-            Positioned(
-              bottom: 72, // above both stacked plates (32 peek + 32 peek + 8 padding)
-              left: 16,
-              right: 16,
-              child: TodayBoardCard(tankId: currentTank.id),
+            // Filing-cabinet BottomPlate tabs — staggered so all 3 tab tops are visible.
+            // Render order: Today (back, bottomOffset: 64) → Tanks (mid, 32) → Progress (front, 0)
+            // Today Board tab — amber (#E8A030), behind all others
+            BottomPlate(
+              peekHeight: 32,
+              bottomOffset: 64,
+              maxHeightFraction: 0.55,
+              label: 'Today',
+              emoji: '📋',
+              tabColor: const Color(0xFFE8A030),
+              backgroundColor: Theme.of(context).colorScheme.surface,
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+                child: TodayBoardCard(tankId: currentTank.id),
+              ),
             ),
 
-            // Bottom Plates — Tanks (behind) then Progress (front, renders on top)
-            // P0-1 FIX: Stagger peekHeights so both drag handles are visible.
-            // "Your Tanks" sits behind at bottomOffset: 32 (above the front
-            // plate's peek strip), and "Your Progress" sits in front at 0.
+            // Your Tanks tab — teal (#4A9DB5), behind Progress
             BottomPlate(
               peekHeight: 32,
               bottomOffset: 32,
               maxHeightFraction: 0.75,
               label: 'Your Tanks',
               emoji: '🐠',
+              tabColor: const Color(0xFF4A9DB5),
               backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
               backgroundPainter: CustomPaint(
                 painter: SaffianoPainter(),
@@ -573,12 +580,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               ),
             ),
 
+            // Your Progress tab — coral (#E8503A), front/top
             BottomPlate(
               peekHeight: 32,
-              bottomOffset: 0, // Scaffold body ends at nav bar top; no extra offset needed
+              bottomOffset: 0,
               maxHeightFraction: 0.65,
               label: 'Your Progress',
               emoji: '🔥',
+              tabColor: const Color(0xFFE8503A),
               backgroundColor: Theme.of(context).colorScheme.surface,
               backgroundPainter: CustomPaint(
                 painter: LeatherGrainPainter(),

@@ -15,6 +15,11 @@ class BottomPlate extends StatefulWidget {
   final Color? backgroundColor;
   final double bottomOffset;
 
+  /// Optional colour for the peek-strip tab (the visible handle area).
+  /// When set, the tab gets a coloured background with rounded top corners,
+  /// creating a filing-cabinet tab effect.
+  final Color? tabColor;
+
   const BottomPlate({
     super.key,
     required this.peekHeight,
@@ -25,6 +30,7 @@ class BottomPlate extends StatefulWidget {
     this.backgroundPainter,
     this.backgroundColor,
     this.bottomOffset = 0,
+    this.tabColor,
   });
 
   @override
@@ -152,8 +158,16 @@ class BottomPlateState extends State<BottomPlate>
               Column(
                 children: [
                   // Drag handle peek strip
-                  SizedBox(
+                  Container(
                     height: widget.peekHeight,
+                    decoration: widget.tabColor != null
+                        ? BoxDecoration(
+                            color: widget.tabColor,
+                            borderRadius: const BorderRadius.vertical(
+                              top: Radius.circular(12),
+                            ),
+                          )
+                        : null,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -162,7 +176,9 @@ class BottomPlateState extends State<BottomPlate>
                           width: 40,
                           height: 4,
                           decoration: BoxDecoration(
-                            color: AppOverlays.black20,
+                            color: widget.tabColor != null
+                                ? Colors.white.withValues(alpha: 0.5)
+                                : AppOverlays.black20,
                             borderRadius: AppRadius.pillRadius,
                           ),
                         ),
@@ -170,7 +186,12 @@ class BottomPlateState extends State<BottomPlate>
                         Text(
                           '${widget.emoji} ${widget.label}',
                           style: AppTypography.labelMedium.copyWith(
-                            color: context.textSecondary,
+                            color: widget.tabColor != null
+                                ? Colors.white
+                                : context.textSecondary,
+                            fontWeight: widget.tabColor != null
+                                ? FontWeight.w600
+                                : FontWeight.w400,
                           ),
                         ),
                       ],
