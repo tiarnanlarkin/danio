@@ -139,21 +139,21 @@ class AppChip extends StatelessWidget {
                     size: _getIconSize(),
                     color: _getForegroundColor(effectiveColor, isDark),
                   ),
-                  SizedBox(width: AppSpacing.xs),
+                  const SizedBox(width: AppSpacing.xs),
                 ] else if (icon != null) ...[
                   Icon(
                     icon,
                     size: _getIconSize(),
                     color: _getForegroundColor(effectiveColor, isDark),
                   ),
-                  SizedBox(width: AppSpacing.xs),
+                  const SizedBox(width: AppSpacing.xs),
                 ],
                 Text(
                   label,
                   style: _getTextStyle(effectiveColor, isDark),
                 ),
                 if (onDeleted != null) ...[
-                  SizedBox(width: AppSpacing.xs),
+                  const SizedBox(width: AppSpacing.xs),
                   Semantics(
                     label: 'Delete $label',
                     button: true,
@@ -193,11 +193,11 @@ class AppChip extends StatelessWidget {
   EdgeInsets _getPadding() {
     switch (size) {
       case AppChipSize.small:
-        return EdgeInsets.symmetric(horizontal: AppSpacing.sm);
+        return const EdgeInsets.symmetric(horizontal: AppSpacing.sm);
       case AppChipSize.medium:
-        return EdgeInsets.symmetric(horizontal: AppSpacing.md);
+        return const EdgeInsets.symmetric(horizontal: AppSpacing.md);
       case AppChipSize.large:
-        return EdgeInsets.symmetric(horizontal: AppSpacing.lg);
+        return const EdgeInsets.symmetric(horizontal: AppSpacing.lg);
     }
   }
 

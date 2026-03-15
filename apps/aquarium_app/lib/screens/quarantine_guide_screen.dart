@@ -10,7 +10,7 @@ class QuarantineGuideScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: const Text('Quarantine Guide')),
       body: ListView(
-        padding: EdgeInsets.all(AppSpacing.md),
+        padding: const EdgeInsets.all(AppSpacing.md),
         children: [
           // Why quarantine
           AppCard(
@@ -293,7 +293,7 @@ class _SetupCard extends StatelessWidget {
     return Card(
       margin: const EdgeInsets.only(bottom: 8),
       child: Padding(
-        padding: EdgeInsets.all(AppSpacing.sm2),
+        padding: const EdgeInsets.all(AppSpacing.sm2),
         child: Row(
           children: [
             Icon(icon, color: AppColors.primary),
@@ -330,7 +330,7 @@ class _ProtocolStep extends StatelessWidget {
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
       child: Padding(
-        padding: EdgeInsets.all(AppSpacing.md),
+        padding: const EdgeInsets.all(AppSpacing.md),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -430,7 +430,7 @@ class _MedCard extends StatelessWidget {
     return Card(
       margin: const EdgeInsets.only(bottom: 8),
       child: Padding(
-        padding: EdgeInsets.all(AppSpacing.sm2),
+        padding: const EdgeInsets.all(AppSpacing.sm2),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

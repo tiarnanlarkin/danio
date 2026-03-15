@@ -100,7 +100,7 @@ class CyclingStatusCard extends StatelessWidget {
           Row(
             children: [
               _StatusIcon(status: status),
-              SizedBox(width: AppSpacing.md),
+              const SizedBox(width: AppSpacing.md),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -121,9 +121,9 @@ class CyclingStatusCard extends StatelessWidget {
               ),
             ],
           ),
-          SizedBox(height: AppSpacing.md),
+          const SizedBox(height: AppSpacing.md),
           _CyclingProgressBar(status: status),
-          SizedBox(height: AppSpacing.md),
+          const SizedBox(height: AppSpacing.md),
           Text(_statusAdvice(status), style: AppTypography.bodySmall),
         ],
       ),
@@ -291,7 +291,7 @@ class _CyclingProgressBar extends StatelessWidget {
             minHeight: 8,
           ),
         ),
-        SizedBox(height: AppSpacing.sm - 2),
+        const SizedBox(height: AppSpacing.sm - 2),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [

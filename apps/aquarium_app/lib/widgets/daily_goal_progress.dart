@@ -195,7 +195,7 @@ class DailyGoalCard extends ConsumerWidget {
           onTap: onTap,
           borderRadius: AppRadius.mediumRadius,
           child: Padding(
-            padding: EdgeInsets.all(AppSpacing.md),
+            padding: const EdgeInsets.all(AppSpacing.md),
             child: Row(
               children: [
                 // Circular progress

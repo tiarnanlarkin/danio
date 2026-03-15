@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -7,9 +9,11 @@ import '../features/smart/models/smart_models.dart';
 import '../features/smart/smart_providers.dart';
 import '../features/smart/symptom_triage/symptom_triage_screen.dart';
 import '../features/smart/weekly_plan/weekly_plan_screen.dart';
+import '../services/api_rate_limiter.dart';
 import '../services/openai_service.dart';
 import '../theme/app_theme.dart';
 import '../widgets/compatibility_checker_widget.dart';
+import '../widgets/offline_indicator.dart';
 
 /// Smart Hub - central screen for all AI-powered features.
 class SmartScreen extends ConsumerStatefulWidget {
@@ -37,6 +41,20 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
     final openai = ref.read(openAIServiceProvider);
     if (!openai.isConfigured) return;
 
+    // Offline check.
+    final isOnline = ref.read(isOnlineProvider);
+    if (!isOnline) {
+      setState(() => _askResponse = OpenAIUserMessages.offline);
+      return;
+    }
+
+    // Rate limit check.
+    final rateLimiter = ref.read(apiRateLimiterProvider);
+    if (!rateLimiter.canRequest(AIFeature.askDanio)) {
+      setState(() => _askResponse = OpenAIUserMessages.rateLimited);
+      return;
+    }
+
     setState(() {
       _askLoading = true;
       _askResponse = null;
@@ -57,12 +75,16 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
         ],
         maxTokens: 300,
       );
+      rateLimiter.recordRequest(AIFeature.askDanio);
       ref.read(aiHistoryProvider.notifier).add(
         type: 'ask_danio',
         summary: 'Asked: ${question.length > 40 ? '${question.substring(0, 40)}...' : question}',
       );
       if (!mounted) return;
       setState(() => _askResponse = result.text);
+    } on TimeoutException {
+      if (!mounted) return;
+      setState(() => _askResponse = OpenAIUserMessages.timeout);
     } catch (e) {
       if (!mounted) return;
       final isAuthError = e is OpenAIException && (e.statusCode == 401 || e.statusCode == 403);
@@ -90,7 +112,7 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
       ),
       body: ListView(
         // BUG-04: bottom padding so Anomaly History card isn't clipped by bottom nav
-        padding: EdgeInsets.only(
+        padding: const EdgeInsets.only(
           left: AppSpacing.md,
           right: AppSpacing.md,
           top: AppSpacing.md,
@@ -158,7 +180,7 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
                 borderRadius: AppRadius.md2Radius,
               ),
               child: Padding(
-                padding: EdgeInsets.all(AppSpacing.md),
+                padding: const EdgeInsets.all(AppSpacing.md),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -184,7 +206,7 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
                         isDense: true,
                         suffixIcon: _askLoading
                             ? const Padding(
-                                padding: EdgeInsets.all(AppSpacing.sm2),
+                                padding: const EdgeInsets.all(AppSpacing.sm2),
                                 child: SizedBox(
                                   width: 16, height: 16,
                                   child: CircularProgressIndicator(strokeWidth: 2),
@@ -205,7 +227,7 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
                       const SizedBox(height: AppSpacing.sm),
                       Container(
                         width: double.infinity,
-                        padding: EdgeInsets.all(AppSpacing.sm),
+                        padding: const EdgeInsets.all(AppSpacing.sm),
                         decoration: BoxDecoration(
                           color: AppColors.primaryAlpha05,
                           borderRadius: AppRadius.smallRadius,
@@ -363,7 +385,7 @@ class _OfflineBanner extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(AppSpacing.lg),
+      padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topLeft,
@@ -465,7 +487,7 @@ class _FeatureCard extends StatelessWidget {
         onTap: onTap,
         borderRadius: AppRadius.md2Radius,
         child: Padding(
-          padding: EdgeInsets.all(AppSpacing.md),
+          padding: const EdgeInsets.all(AppSpacing.md),
           child: Row(
             children: [
               CircleAvatar(

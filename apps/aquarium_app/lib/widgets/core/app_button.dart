@@ -183,21 +183,21 @@ class _AppButtonState extends State<AppButton> with SingleTickerProviderStateMix
                       valueColor: AlwaysStoppedAnimation(_getForegroundColor(isDark)),
                     ),
                   ),
-                  SizedBox(width: AppSpacing.sm),
+                  const SizedBox(width: AppSpacing.sm),
                 ] else if (widget.leadingIcon != null) ...[
                   Icon(
                     widget.leadingIcon,
                     size: _getIconSize(),
                     color: _getForegroundColor(isDark),
                   ),
-                  SizedBox(width: AppSpacing.sm),
+                  const SizedBox(width: AppSpacing.sm),
                 ],
                 Text(
                   widget.label,
                   style: _getTextStyle(isDark),
                 ),
                 if (widget.trailingIcon != null && !widget.isLoading) ...[
-                  SizedBox(width: AppSpacing.sm),
+                  const SizedBox(width: AppSpacing.sm),
                   Icon(
                     widget.trailingIcon,
                     size: _getIconSize(),
@@ -238,11 +238,11 @@ class _AppButtonState extends State<AppButton> with SingleTickerProviderStateMix
   EdgeInsets _getPadding() {
     switch (widget.size) {
       case AppButtonSize.small:
-        return EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: AppSpacing.xs);
+        return const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: AppSpacing.xs);
       case AppButtonSize.medium:
-        return EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.sm);
+        return const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.sm);
       case AppButtonSize.large:
-        return EdgeInsets.symmetric(horizontal: AppSpacing.lg, vertical: AppSpacing.md);
+        return const EdgeInsets.symmetric(horizontal: AppSpacing.lg, vertical: AppSpacing.md);
     }
   }
 

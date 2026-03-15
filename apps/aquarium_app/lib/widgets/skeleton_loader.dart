@@ -107,7 +107,7 @@ class SkeletonCard extends StatelessWidget {
         height: height ?? 100,
         margin:
             padding ?? const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.sm),
-        padding: EdgeInsets.all(AppSpacing.md),
+        padding: const EdgeInsets.all(AppSpacing.md),
         decoration: BoxDecoration(
           color: Theme.of(context).brightness == Brightness.dark
               ? context.surfaceVariant
@@ -167,7 +167,7 @@ class SkeletonGrid extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GridView.builder(
-      padding: EdgeInsets.all(AppSpacing.md),
+      padding: const EdgeInsets.all(AppSpacing.md),
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: crossAxisCount,
         childAspectRatio: childAspectRatio,
@@ -213,8 +213,8 @@ class SkeletonChart extends StatelessWidget {
     return ShimmerLoading(
       child: Container(
         height: height,
-        margin: EdgeInsets.all(AppSpacing.md),
-        padding: EdgeInsets.all(AppSpacing.md),
+        margin: const EdgeInsets.all(AppSpacing.md),
+        padding: const EdgeInsets.all(AppSpacing.md),
         decoration: BoxDecoration(
           color: Theme.of(context).brightness == Brightness.dark
               ? context.surfaceVariant
@@ -274,7 +274,7 @@ class SkeletonStoryCard extends StatelessWidget {
         child: Row(
           children: [
             Padding(
-              padding: EdgeInsets.all(AppSpacing.md),
+              padding: const EdgeInsets.all(AppSpacing.md),
               child: SkeletonBox(
                 width: 80,
                 height: 80,
@@ -283,7 +283,7 @@ class SkeletonStoryCard extends StatelessWidget {
             ),
             Expanded(
               child: Padding(
-                padding: EdgeInsets.all(AppSpacing.md),
+                padding: const EdgeInsets.all(AppSpacing.md),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -324,8 +324,8 @@ class SkeletonAchievementCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return ShimmerLoading(
       child: Container(
-        margin: EdgeInsets.all(AppSpacing.sm),
-        padding: EdgeInsets.all(AppSpacing.md),
+        margin: const EdgeInsets.all(AppSpacing.sm),
+        padding: const EdgeInsets.all(AppSpacing.md),
         decoration: BoxDecoration(
           color: Theme.of(context).brightness == Brightness.dark
               ? context.surfaceVariant

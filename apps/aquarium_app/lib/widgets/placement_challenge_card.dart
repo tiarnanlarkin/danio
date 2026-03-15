@@ -36,7 +36,7 @@ class PlacementChallengeCard extends ConsumerWidget {
             AppSpacing.md,
             0,
           ),
-          padding: EdgeInsets.all(AppSpacing.lg),
+          padding: const EdgeInsets.all(AppSpacing.lg),
           decoration: BoxDecoration(
             gradient: LinearGradient(
               colors: [

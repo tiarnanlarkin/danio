@@ -185,7 +185,7 @@ class _RemindersScreenState extends ConsumerState<RemindersScreen> {
               onAction: _addReminder,
             )
           : ListView.builder(
-              padding: EdgeInsets.all(AppSpacing.md),
+              padding: const EdgeInsets.all(AppSpacing.md),
               itemCount: _calculateItemCount(overdue, upcoming),
               itemBuilder: (context, index) {
                 int currentIndex = 0;
@@ -331,7 +331,7 @@ class _EmptyState extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Padding(
-        padding: EdgeInsets.all(AppSpacing.xl),
+        padding: const EdgeInsets.all(AppSpacing.xl),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [

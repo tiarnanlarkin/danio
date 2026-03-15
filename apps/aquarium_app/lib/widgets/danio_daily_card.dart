@@ -36,7 +36,7 @@ class DanioDailyCard extends StatelessWidget {
           Row(
             children: [
               Container(
-                padding: EdgeInsets.all(AppSpacing.sm),
+                padding: const EdgeInsets.all(AppSpacing.sm),
                 decoration: BoxDecoration(
                   color: AppColors.primaryAlpha10,
                   borderRadius: AppRadius.smallRadius,
@@ -101,7 +101,7 @@ class DanioDailyCard extends StatelessWidget {
           // Motivation
           Container(
             width: double.infinity,
-            padding: EdgeInsets.all(AppSpacing.sm2),
+            padding: const EdgeInsets.all(AppSpacing.sm2),
             decoration: BoxDecoration(
               color: AppColors.success.withAlpha(15),
               borderRadius: AppRadius.smallRadius,

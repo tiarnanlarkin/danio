@@ -196,7 +196,7 @@ class _CompatibilityCheckerScreenState
         children: [
           // Search bar
           Padding(
-            padding: EdgeInsets.all(AppSpacing.md),
+            padding: const EdgeInsets.all(AppSpacing.md),
             child: TextField(
               decoration: InputDecoration(
                 hintText: 'Search fish to add...',
@@ -236,7 +236,7 @@ class _CompatibilityCheckerScreenState
 
           Expanded(
             child: ListView(
-              padding: EdgeInsets.all(AppSpacing.md),
+              padding: const EdgeInsets.all(AppSpacing.md),
               children: [
                 // Selected species
                 if (_selectedSpecies.isEmpty)

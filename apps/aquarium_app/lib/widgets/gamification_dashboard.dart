@@ -131,7 +131,7 @@ class GamificationDashboard extends ConsumerWidget {
       elevation: AppElevation.level1,
       shape: RoundedRectangleBorder(borderRadius: AppRadius.mediumRadius),
       child: Padding(
-        padding: EdgeInsets.all(AppSpacing.md),
+        padding: const EdgeInsets.all(AppSpacing.md),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: List.generate(4, (i) => Column(
@@ -165,7 +165,7 @@ class GamificationDashboard extends ConsumerWidget {
         child: Row(
           children: [
             Icon(Icons.error_outline, color: AppColors.error),
-            SizedBox(width: AppSpacing.sm),
+            const SizedBox(width: AppSpacing.sm),
             Text('Unable to load stats'),
           ],
         ),
@@ -403,12 +403,12 @@ class MiniGamificationDisplay extends ConsumerWidget {
     return profileAsync.when(
       loading: () => const SizedBox.shrink(),
       error: (_, __) => Padding(
-                    padding: EdgeInsets.all(AppSpacing.sm),
+                    padding: const EdgeInsets.all(AppSpacing.sm),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Icon(Icons.info_outline, size: 14, color: AppColors.warning),
-                        SizedBox(width: AppSpacing.xs),
+                        const SizedBox(width: AppSpacing.xs),
                         Text('Unable to load', style: Theme.of(context).textTheme.bodySmall?.copyWith(color: AppColors.warning)),
                       ],
                     ),

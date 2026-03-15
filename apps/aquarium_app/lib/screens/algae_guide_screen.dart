@@ -230,7 +230,7 @@ class AlgaeGuideScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: const Text('Algae Identification & Control')),
       body: ListView.builder(
-        padding: EdgeInsets.all(AppSpacing.md),
+        padding: const EdgeInsets.all(AppSpacing.md),
         itemCount: totalItems,
         itemBuilder: (context, index) {
           int currentIndex = 0;

@@ -217,7 +217,7 @@ class _EnhancedPlacementTestScreenState
               // Question content
               Expanded(
                 child: SingleChildScrollView(
-                  padding: EdgeInsets.all(AppSpacing.md),
+                  padding: const EdgeInsets.all(AppSpacing.md),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
@@ -242,7 +242,7 @@ class _EnhancedPlacementTestScreenState
                             borderRadius: AppRadius.mediumRadius,
                           ),
                           child: Padding(
-                            padding: EdgeInsets.all(AppSpacing.lg2),
+                            padding: const EdgeInsets.all(AppSpacing.lg2),
                             child: Text(
                               _currentQuestion.question,
                               style: theme.textTheme.titleLarge?.copyWith(
@@ -344,7 +344,7 @@ class _EnhancedPlacementTestScreenState
                 Row(
                   children: [
                     const Icon(Icons.quiz, size: AppIconSizes.xs, color: AppColors.accent),
-                    SizedBox(width: AppSpacing.xs),
+                    const SizedBox(width: AppSpacing.xs),
                     Text(
                       '${(_progress * 100).round()}% Complete',
                       style: Theme.of(context).textTheme.bodySmall!.copyWith(
@@ -471,7 +471,7 @@ class _EnhancedPlacementTestScreenState
           borderRadius: AppRadius.mediumRadius,
           child: AnimatedContainer(
             duration: AppDurations.medium2,
-            padding: EdgeInsets.all(AppSpacing.md),
+            padding: const EdgeInsets.all(AppSpacing.md),
             decoration: BoxDecoration(
               color: backgroundColor,
               borderRadius: AppRadius.mediumRadius,
@@ -514,7 +514,7 @@ class _EnhancedPlacementTestScreenState
                     ),
                   ),
                 ),
-                SizedBox(width: AppSpacing.md),
+                const SizedBox(width: AppSpacing.md),
                 Expanded(
                   child: Text(
                     _currentQuestion.options[index],
@@ -562,7 +562,7 @@ class _EnhancedPlacementTestScreenState
           ),
         ),
         child: Padding(
-          padding: EdgeInsets.all(AppSpacing.md),
+          padding: const EdgeInsets.all(AppSpacing.md),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -573,7 +573,7 @@ class _EnhancedPlacementTestScreenState
                     color: isCorrect ? AppColors.success : AppColors.primary,
                     size: AppIconSizes.md,
                   ),
-                  SizedBox(width: AppSpacing.sm),
+                  const SizedBox(width: AppSpacing.sm),
                   Text(
                     isCorrect ? 'Excellent! 🎉' : 'Good to know! 💡',
                     style: Theme.of(context).textTheme.titleMedium!.copyWith(
@@ -583,9 +583,9 @@ class _EnhancedPlacementTestScreenState
                   ),
                 ],
               ),
-              SizedBox(height: AppSpacing.sm2),
+              const SizedBox(height: AppSpacing.sm2),
               Container(
-                padding: EdgeInsets.all(AppSpacing.sm2),
+                padding: const EdgeInsets.all(AppSpacing.sm2),
                 decoration: BoxDecoration(
                   color: Theme.of(context).colorScheme.surfaceContainerHighest,
                   borderRadius: AppRadius.smallRadius,
@@ -604,7 +604,7 @@ class _EnhancedPlacementTestScreenState
 
   Widget _buildNavigationButtons(bool isAnswered) {
     return Container(
-      padding: EdgeInsets.all(AppSpacing.md),
+      padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
         boxShadow: [

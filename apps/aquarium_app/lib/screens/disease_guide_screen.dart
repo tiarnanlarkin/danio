@@ -29,7 +29,7 @@ class _DiseaseGuideScreenState extends State<DiseaseGuideScreen> {
         children: [
           // Search
           Padding(
-            padding: EdgeInsets.all(AppSpacing.md),
+            padding: const EdgeInsets.all(AppSpacing.md),
             child: TextField(
               decoration: InputDecoration(
                 hintText: 'Search by disease or symptom...',
@@ -49,7 +49,7 @@ class _DiseaseGuideScreenState extends State<DiseaseGuideScreen> {
             child: Card(
               color: AppOverlays.warning10,
               child: Padding(
-                padding: EdgeInsets.all(AppSpacing.sm2),
+                padding: const EdgeInsets.all(AppSpacing.sm2),
                 child: Row(
                   children: [
                     Icon(
@@ -75,7 +75,7 @@ class _DiseaseGuideScreenState extends State<DiseaseGuideScreen> {
           // List
           Expanded(
             child: ListView.builder(
-              padding: EdgeInsets.all(AppSpacing.md),
+              padding: const EdgeInsets.all(AppSpacing.md),
               itemCount: diseases.length,
               itemBuilder: (ctx, i) => _DiseaseCard(disease: diseases[i]),
             ),

@@ -10,7 +10,7 @@ class SubstrateGuideScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: const Text('Substrate Guide')),
       body: ListView(
-        padding: EdgeInsets.all(AppSpacing.md),
+        padding: const EdgeInsets.all(AppSpacing.md),
         children: [
           // Intro
           AppCard(
@@ -445,7 +445,7 @@ class _TankTypeCard extends StatelessWidget {
     return Card(
       margin: const EdgeInsets.only(bottom: 8),
       child: Padding(
-        padding: EdgeInsets.all(AppSpacing.sm2),
+        padding: const EdgeInsets.all(AppSpacing.sm2),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

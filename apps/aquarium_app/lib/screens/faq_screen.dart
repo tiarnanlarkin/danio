@@ -9,7 +9,7 @@ class FaqScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: const Text('FAQ')),
       body: ListView.builder(
-        padding: EdgeInsets.all(AppSpacing.md),
+        padding: const EdgeInsets.all(AppSpacing.md),
         itemCount: _buildItems().length,
         itemBuilder: (context, index) => _buildItems()[index],
       ),
@@ -197,7 +197,7 @@ class FaqScreen extends StatelessWidget {
             ],
           ),
 
-          SizedBox(height: AppSpacing.xxl),
+          const SizedBox(height: AppSpacing.xxl),
         ];
   }
 }
@@ -245,7 +245,7 @@ class _FaqItemState extends State<_FaqItem> {
         onTap: () => setState(() => _expanded = !_expanded),
         borderRadius: AppRadius.mediumRadius,
         child: Padding(
-          padding: EdgeInsets.all(AppSpacing.md),
+          padding: const EdgeInsets.all(AppSpacing.md),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

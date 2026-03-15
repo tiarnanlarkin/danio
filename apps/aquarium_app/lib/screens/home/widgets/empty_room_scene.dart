@@ -156,7 +156,7 @@ class EmptyRoomScene extends StatelessWidget {
         Center(
           child: NotebookCard(
             rotation: 1.5,
-            padding: EdgeInsets.all(AppSpacing.lg),
+            padding: const EdgeInsets.all(AppSpacing.lg),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [

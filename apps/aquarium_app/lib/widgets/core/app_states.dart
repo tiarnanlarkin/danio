@@ -191,7 +191,7 @@ class AppEmptyState extends StatelessWidget {
             
             // Message
             if (message != null) ...[
-              SizedBox(height: AppSpacing.sm),
+              const SizedBox(height: AppSpacing.sm),
               Text(
                 message!,
                 style: AppTypography.bodyMedium.copyWith(
@@ -209,7 +209,7 @@ class AppEmptyState extends StatelessWidget {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.primary,
                   foregroundColor: Colors.white,
-                  padding: EdgeInsets.symmetric(
+                  padding: const EdgeInsets.symmetric(
                     horizontal: AppSpacing.lg,
                     vertical: AppSpacing.md,
                   ),
@@ -222,7 +222,7 @@ class AppEmptyState extends StatelessWidget {
             ],
             
             if (secondaryActionLabel != null) ...[
-              SizedBox(height: AppSpacing.sm),
+              const SizedBox(height: AppSpacing.sm),
               TextButton(
                 onPressed: onSecondaryAction,
                 child: Text(secondaryActionLabel!),
@@ -418,7 +418,7 @@ class _LoadingDotsState extends State<_LoadingDots>
               child: Container(
                 width: 8,
                 height: 8,
-                margin: EdgeInsets.symmetric(horizontal: 4),
+                margin: const EdgeInsets.symmetric(horizontal: 4),
                 decoration: BoxDecoration(
                   color: AppColors.primary,
                   shape: BoxShape.circle,
@@ -534,7 +534,7 @@ class AppErrorState extends StatelessWidget {
             ),
             
             if (message != null) ...[
-              SizedBox(height: AppSpacing.sm),
+              const SizedBox(height: AppSpacing.sm),
               Text(
                 message!,
                 style: AppTypography.bodyMedium.copyWith(
@@ -553,7 +553,7 @@ class AppErrorState extends StatelessWidget {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.primary,
                   foregroundColor: Colors.white,
-                  padding: EdgeInsets.symmetric(
+                  padding: const EdgeInsets.symmetric(
                     horizontal: AppSpacing.lg,
                     vertical: AppSpacing.md,
                   ),
@@ -562,7 +562,7 @@ class AppErrorState extends StatelessWidget {
             ],
             
             if (showReportLink && onReport != null) ...[
-              SizedBox(height: AppSpacing.sm),
+              const SizedBox(height: AppSpacing.sm),
               TextButton(
                 onPressed: onReport,
                 child: Text('Report Issue'),

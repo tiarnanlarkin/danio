@@ -170,7 +170,7 @@ class _EnhancedCelebrationOverlayWrapperState
     return GestureDetector(
       onTap: () => ref.read(enhancedCelebrationProvider.notifier).dismiss(),
       child: Container(
-        margin: EdgeInsets.all(AppSpacing.xl),
+        margin: const EdgeInsets.all(AppSpacing.xl),
         constraints: const BoxConstraints(maxWidth: 400),
         decoration: BoxDecoration(
           gradient: LinearGradient(
@@ -192,7 +192,7 @@ class _EnhancedCelebrationOverlayWrapperState
           children: [
             // Main content
             Padding(
-              padding: EdgeInsets.all(AppSpacing.xl),
+              padding: const EdgeInsets.all(AppSpacing.xl),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -216,7 +216,7 @@ class _EnhancedCelebrationOverlayWrapperState
                     ),
                   ),
                   
-                  SizedBox(height: AppSpacing.lg),
+                  const SizedBox(height: AppSpacing.lg),
                   
                   // Title
                   Text(
@@ -231,7 +231,7 @@ class _EnhancedCelebrationOverlayWrapperState
                   
                   // Subtitle
                   if (celebration.subtitle != null) ...[
-                    SizedBox(height: AppSpacing.md),
+                    const SizedBox(height: AppSpacing.md),
                     Text(
                       celebration.subtitle!,
                       style: Theme.of(context).textTheme.titleLarge!.copyWith(
@@ -253,7 +253,7 @@ class _EnhancedCelebrationOverlayWrapperState
             
             // Tap to dismiss hint
             Container(
-              padding: EdgeInsets.all(AppSpacing.md),
+              padding: const EdgeInsets.all(AppSpacing.md),
               decoration: BoxDecoration(
                 color: AppColors.blackAlpha05,
                 borderRadius: const BorderRadius.only(
@@ -269,7 +269,7 @@ class _EnhancedCelebrationOverlayWrapperState
                     color: AppColors.whiteAlpha05,
                     size: AppIconSizes.xs,
                   ),
-                  SizedBox(width: AppSpacing.sm),
+                  const SizedBox(width: AppSpacing.sm),
                   Text(
                     'Tap anywhere to dismiss',
                     style: Theme.of(context).textTheme.bodyLarge!.copyWith(

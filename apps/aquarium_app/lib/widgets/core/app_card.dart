@@ -313,11 +313,11 @@ class _AppCardState extends State<AppCard> with SingleTickerProviderStateMixin {
       case AppCardPadding.none:
         return EdgeInsets.zero;
       case AppCardPadding.compact:
-        return EdgeInsets.all(AppSpacing.sm);
+        return const EdgeInsets.all(AppSpacing.sm);
       case AppCardPadding.standard:
-        return EdgeInsets.all(AppSpacing.md);
+        return const EdgeInsets.all(AppSpacing.md);
       case AppCardPadding.spacious:
-        return EdgeInsets.all(AppSpacing.lg);
+        return const EdgeInsets.all(AppSpacing.lg);
     }
   }
 }
@@ -358,7 +358,7 @@ class InfoCard extends StatelessWidget {
       child: Row(
         children: [
           Container(
-            padding: EdgeInsets.all(AppSpacing.sm),
+            padding: const EdgeInsets.all(AppSpacing.sm),
             decoration: BoxDecoration(
               color: (iconColor ?? AppColors.primary).withAlpha(38),
               borderRadius: AppRadius.smallRadius,
@@ -369,7 +369,7 @@ class InfoCard extends StatelessWidget {
               size: AppIconSizes.md,
             ),
           ),
-          SizedBox(width: AppSpacing.md),
+          const SizedBox(width: AppSpacing.md),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -381,7 +381,7 @@ class InfoCard extends StatelessWidget {
                   ),
                 ),
                 if (subtitle != null) ...[
-                  SizedBox(height: AppSpacing.xs),
+                  const SizedBox(height: AppSpacing.xs),
                   Text(
                     subtitle!,
                     style: AppTypography.bodySmall.copyWith(
@@ -444,7 +444,7 @@ class StatisticCard extends StatelessWidget {
                 _TrendBadge(trend: trend!),
             ],
           ),
-          SizedBox(height: AppSpacing.sm),
+          const SizedBox(height: AppSpacing.sm),
           Text(
             value,
             style: AppTypography.headlineMedium.copyWith(
@@ -452,7 +452,7 @@ class StatisticCard extends StatelessWidget {
               fontWeight: FontWeight.bold,
             ),
           ),
-          SizedBox(height: AppSpacing.xs),
+          const SizedBox(height: AppSpacing.xs),
           Text(
             label,
             style: AppTypography.bodySmall.copyWith(
@@ -476,7 +476,7 @@ class _TrendBadge extends StatelessWidget {
     final color = isPositive ? AppColors.success : AppColors.error;
     
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: AppSpacing.xs),
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: AppSpacing.xs),
       decoration: BoxDecoration(
         color: color.withAlpha(38),
         borderRadius: AppRadius.smallRadius,
@@ -489,7 +489,7 @@ class _TrendBadge extends StatelessWidget {
             size: AppIconSizes.xs,
             color: color,
           ),
-          SizedBox(width: AppSpacing.xs),
+          const SizedBox(width: AppSpacing.xs),
           Text(
             '${isPositive ? '+' : ''}${trend.toStringAsFixed(1)}%',
             style: AppTypography.labelSmall.copyWith(color: color),
@@ -533,7 +533,7 @@ class ActionCard extends StatelessWidget {
         children: [
           if (icon != null) ...[
             Icon(icon, size: AppIconSizes.lg, color: color),
-            SizedBox(height: AppSpacing.sm),
+            const SizedBox(height: AppSpacing.sm),
           ],
           Text(
             title,
@@ -542,7 +542,7 @@ class ActionCard extends StatelessWidget {
             ),
           ),
           if (description != null) ...[
-            SizedBox(height: AppSpacing.xs),
+            const SizedBox(height: AppSpacing.xs),
             Text(
               description!,
               style: AppTypography.bodySmall.copyWith(
@@ -550,14 +550,14 @@ class ActionCard extends StatelessWidget {
               ),
             ),
           ],
-          SizedBox(height: AppSpacing.md),
+          const SizedBox(height: AppSpacing.md),
           SizedBox(
             width: double.infinity,
             child: TextButton(
               onPressed: onAction,
               style: TextButton.styleFrom(
                 foregroundColor: color,
-                padding: EdgeInsets.symmetric(vertical: AppSpacing.sm),
+                padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
               ),
               child: Text(actionLabel),
             ),

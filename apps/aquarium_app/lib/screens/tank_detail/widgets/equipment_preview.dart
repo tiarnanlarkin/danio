@@ -42,7 +42,7 @@ class EquipmentPreview extends StatelessWidget {
               margin: EdgeInsets.zero,
               color: isOverdue ? AppOverlays.warning10 : null,
               child: Padding(
-                padding: EdgeInsets.all(AppSpacing.sm2),
+                padding: const EdgeInsets.all(AppSpacing.sm2),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [

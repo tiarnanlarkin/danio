@@ -206,7 +206,7 @@ class _TutorialOverlayState extends ConsumerState<TutorialOverlay>
             borderRadius: AppRadius.mediumRadius,
           ),
           child: Padding(
-            padding: EdgeInsets.all(AppSpacing.lg2),
+            padding: const EdgeInsets.all(AppSpacing.lg2),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -233,7 +233,7 @@ class _TutorialOverlayState extends ConsumerState<TutorialOverlay>
                     ),
                   ],
                 ),
-                SizedBox(height: AppSpacing.sm2),
+                const SizedBox(height: AppSpacing.sm2),
 
                 // Title
                 Text(
@@ -243,7 +243,7 @@ class _TutorialOverlayState extends ConsumerState<TutorialOverlay>
                     color: Colors.black87,
                   ),
                 ),
-                SizedBox(height: AppSpacing.sm),
+                const SizedBox(height: AppSpacing.sm),
 
                 // Description
                 Text(

@@ -166,7 +166,7 @@ class _PlacementTestScreenState extends ConsumerState<PlacementTestScreen> {
           // Question content
           Expanded(
             child: SingleChildScrollView(
-              padding: EdgeInsets.all(AppSpacing.md),
+              padding: const EdgeInsets.all(AppSpacing.md),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
@@ -279,7 +279,7 @@ class _PlacementTestScreenState extends ConsumerState<PlacementTestScreen> {
           onTap: showResult ? null : () => _selectAnswer(index),
           borderRadius: AppRadius.mediumRadius,
           child: Container(
-            padding: EdgeInsets.all(AppSpacing.md),
+            padding: const EdgeInsets.all(AppSpacing.md),
             decoration: BoxDecoration(
               color: backgroundColor,
               borderRadius: AppRadius.mediumRadius,
@@ -311,7 +311,7 @@ class _PlacementTestScreenState extends ConsumerState<PlacementTestScreen> {
                     ),
                   ),
                 ),
-                SizedBox(width: AppSpacing.md),
+                const SizedBox(width: AppSpacing.md),
                 Expanded(
                   child: Text(
                     _currentQuestion.options[index],
@@ -336,7 +336,7 @@ class _PlacementTestScreenState extends ConsumerState<PlacementTestScreen> {
     return Card(
       color: isCorrect ? AppOverlays.success10 : context.surfaceVariant,
       child: Padding(
-        padding: EdgeInsets.all(AppSpacing.md),
+        padding: const EdgeInsets.all(AppSpacing.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -346,7 +346,7 @@ class _PlacementTestScreenState extends ConsumerState<PlacementTestScreen> {
                   isCorrect ? Icons.check_circle : Icons.info,
                   color: isCorrect ? AppColors.success : AppColors.primary,
                 ),
-                SizedBox(width: AppSpacing.sm),
+                const SizedBox(width: AppSpacing.sm),
                 Text(
                   isCorrect ? 'Correct!' : 'Not quite...',
                   style: Theme.of(context).textTheme.titleMedium!.copyWith(
@@ -356,7 +356,7 @@ class _PlacementTestScreenState extends ConsumerState<PlacementTestScreen> {
                 ),
               ],
             ),
-            SizedBox(height: AppSpacing.sm),
+            const SizedBox(height: AppSpacing.sm),
             Text(
               _currentQuestion.explanation!,
               style: Theme.of(context).textTheme.bodyLarge!,

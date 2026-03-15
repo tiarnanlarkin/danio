@@ -190,7 +190,7 @@ class _AppListTileState extends State<AppListTile> {
                   overflow: TextOverflow.ellipsis,
                 ),
                 if (widget.subtitle != null) ...[
-                  SizedBox(height: AppSpacing.xs),
+                  const SizedBox(height: AppSpacing.xs),
                   Text(
                     widget.subtitle!,
                     style: AppTypography.bodySmall.copyWith(color: subtitleColor),
@@ -199,7 +199,7 @@ class _AppListTileState extends State<AppListTile> {
                   ),
                 ],
                 if (widget.meta != null) ...[
-                  SizedBox(height: AppSpacing.xs),
+                  const SizedBox(height: AppSpacing.xs),
                   Text(
                     widget.meta!,
                     style: AppTypography.labelSmall.copyWith(
@@ -302,13 +302,13 @@ class AppListSection extends StatelessWidget {
     final isDark = theme.brightness == Brightness.dark;
     
     return Padding(
-      padding: margin ?? EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.sm),
+      padding: margin ?? const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.sm),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           if (header != null) ...[
             Padding(
-              padding: EdgeInsets.only(left: AppSpacing.xs, bottom: AppSpacing.sm),
+              padding: const EdgeInsets.only(left: AppSpacing.xs, bottom: AppSpacing.sm),
               child: Text(
                 header!.toUpperCase(),
                 style: AppTypography.labelSmall.copyWith(
@@ -331,7 +331,7 @@ class AppListSection extends StatelessWidget {
             _buildChildren(isDark, context),
           if (footer != null) ...[
             Padding(
-              padding: EdgeInsets.only(left: AppSpacing.xs, top: AppSpacing.sm),
+              padding: const EdgeInsets.only(left: AppSpacing.xs, top: AppSpacing.sm),
               child: Text(
                 footer!,
                 style: AppTypography.bodySmall.copyWith(
@@ -397,7 +397,7 @@ class NavListTile extends StatelessWidget {
         children: [
           if (badge != null) ...[
             badge!,
-            SizedBox(width: AppSpacing.sm),
+            const SizedBox(width: AppSpacing.sm),
           ],
           Icon(
             Icons.chevron_right,

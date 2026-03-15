@@ -1,13 +1,19 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../services/api_rate_limiter.dart';
 import '../services/openai_service.dart';
 import '../theme/app_theme.dart';
+import '../widgets/offline_indicator.dart';
 
 /// AI-powered stocking suggestion bottom sheet.
 ///
 /// Takes tank context (size, current fish, water type) and asks
 /// OpenAI for compatible fish suggestions. No other aquarium app
 /// offers AI stocking advice integrated into a calculator.
-class AiStockingSuggestionSheet extends StatefulWidget {
+class AiStockingSuggestionSheet extends ConsumerStatefulWidget {
   final double tankLitres;
   final List<String> currentFish;
   final double stockingPercent;
@@ -55,12 +61,12 @@ class AiStockingSuggestionSheet extends StatefulWidget {
   }
 
   @override
-  State<AiStockingSuggestionSheet> createState() =>
+  ConsumerState<AiStockingSuggestionSheet> createState() =>
       _AiStockingSuggestionSheetState();
 }
 
 class _AiStockingSuggestionSheetState
-    extends State<AiStockingSuggestionSheet> {
+    extends ConsumerState<AiStockingSuggestionSheet> {
   String? _suggestion;
   bool _loading = false;
   String? _error;
@@ -72,6 +78,26 @@ class _AiStockingSuggestionSheetState
   }
 
   Future<void> _fetchSuggestion() async {
+    final openai = ref.read(openAIServiceProvider);
+    if (!openai.isConfigured) {
+      setState(() => _error = 'AI stocking suggestions aren\'t available yet — we\'re working on bringing them to you! 🐟');
+      return;
+    }
+
+    // Offline check.
+    final isOnline = ref.read(isOnlineProvider);
+    if (!isOnline) {
+      setState(() => _error = OpenAIUserMessages.offline);
+      return;
+    }
+
+    // Rate limit check.
+    final rateLimiter = ref.read(apiRateLimiterProvider);
+    if (!rateLimiter.canRequest(AIFeature.stockingSuggestion)) {
+      setState(() => _error = OpenAIUserMessages.rateLimited);
+      return;
+    }
+
     setState(() {
       _loading = true;
       _error = null;
@@ -98,8 +124,7 @@ class _AiStockingSuggestionSheetState
           'and bioload. Be specific and practical. If the tank is nearly full, '
           'suggest smaller species or say no more fish.';
 
-      final service = OpenAIService();
-      final result = await service.chatCompletion(
+      final result = await openai.chatCompletion(
         messages: [
           const ChatMessage(
             role: 'system',
@@ -111,9 +136,25 @@ class _AiStockingSuggestionSheetState
         ],
       );
 
+      rateLimiter.recordRequest(AIFeature.stockingSuggestion);
+
       if (mounted) {
         setState(() {
           _suggestion = result.text;
+          _loading = false;
+        });
+      }
+    } on TimeoutException {
+      if (mounted) {
+        setState(() {
+          _error = OpenAIUserMessages.timeout;
+          _loading = false;
+        });
+      }
+    } on OpenAIException catch (e) {
+      if (mounted) {
+        setState(() {
+          _error = e.message;
           _loading = false;
         });
       }
@@ -130,7 +171,7 @@ class _AiStockingSuggestionSheetState
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.all(AppSpacing.lg2),
+      padding: const EdgeInsets.all(AppSpacing.lg2),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -174,7 +215,7 @@ class _AiStockingSuggestionSheetState
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         CircularProgressIndicator(),
-                        SizedBox(height: AppSpacing.md),
+                        const SizedBox(height: AppSpacing.md),
                         Text('Analyzing your tank...'),
                       ],
                     ),

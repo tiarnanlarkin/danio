@@ -279,7 +279,7 @@ class AppBottomNavBar extends StatelessWidget {
       ),
       child: SafeArea(
         child: Padding(
-          padding: EdgeInsets.symmetric(vertical: AppSpacing.sm),
+          padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: List.generate(items.length, (index) {
@@ -330,7 +330,7 @@ class _NavBarItem extends StatelessWidget {
         onTap: onTap,
         borderRadius: AppRadius.smallRadius,
         child: Padding(
-          padding: EdgeInsets.symmetric(
+          padding: const EdgeInsets.symmetric(
             horizontal: AppSpacing.md,
             vertical: AppSpacing.sm,
           ),
@@ -357,7 +357,7 @@ class _NavBarItem extends StatelessWidget {
                 ),
               ),
               if (showLabel) ...[
-                SizedBox(height: AppSpacing.xs),
+                const SizedBox(height: AppSpacing.xs),
                 Text(
                   item.label,
                   style: AppTypography.labelSmall.copyWith(

@@ -110,7 +110,7 @@ class _WaterChangeCelebrationState extends State<WaterChangeCelebration>
           color: Colors.transparent,
           child: Center(
             child: Container(
-              padding: EdgeInsets.symmetric(
+              padding: const EdgeInsets.symmetric(
                 horizontal: AppSpacing.lg,
                 vertical: AppSpacing.md,
               ),
@@ -177,7 +177,7 @@ class _WaterChangeCelebrationState extends State<WaterChangeCelebration>
                   );
                 },
                 child: Container(
-                  padding: EdgeInsets.symmetric(
+                  padding: const EdgeInsets.symmetric(
                     horizontal: AppSpacing.lg,
                     vertical: AppSpacing.md,
                   ),

@@ -90,7 +90,7 @@ class _AchievementsScreenState extends ConsumerState<AchievementsScreen> {
         children: [
           // Progress header
           Container(
-            padding: EdgeInsets.all(AppSpacing.md),
+            padding: const EdgeInsets.all(AppSpacing.md),
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topLeft,
@@ -145,7 +145,7 @@ class _AchievementsScreenState extends ConsumerState<AchievementsScreen> {
           // Filters
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
-            padding: EdgeInsets.all(AppSpacing.sm),
+            padding: const EdgeInsets.all(AppSpacing.sm),
             child: Row(
               children: [
                 // Filter by lock status
@@ -355,7 +355,7 @@ class _AchievementsScreenState extends ConsumerState<AchievementsScreen> {
                           onTap: () => _showAchievementDetail(
                             context, achievement, progress),
                           child: Padding(
-                            padding: EdgeInsets.all(AppSpacing.sm2),
+                            padding: const EdgeInsets.all(AppSpacing.sm2),
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
@@ -395,12 +395,12 @@ class _AchievementsScreenState extends ConsumerState<AchievementsScreen> {
               ),
             ),
           ),
-          const SliverToBoxAdapter(child: SizedBox(height: AppSpacing.sm)),
+          const SliverToBoxAdapter(child: const SizedBox(height: AppSpacing.sm)),
         ],
 
         // Main grid (sorted: unlocked → in progress → locked)
         SliverPadding(
-          padding: EdgeInsets.all(AppSpacing.md),
+          padding: const EdgeInsets.all(AppSpacing.md),
           sliver: SliverGrid(
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,

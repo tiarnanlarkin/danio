@@ -184,7 +184,7 @@ class _AchievementNotificationWidgetState
                         // Header with rarity color
                         Container(
                           width: double.infinity,
-                          padding: EdgeInsets.all(AppSpacing.lg),
+                          padding: const EdgeInsets.all(AppSpacing.lg),
                           decoration: BoxDecoration(
                             gradient: LinearGradient(
                               begin: Alignment.topLeft,
@@ -237,7 +237,7 @@ class _AchievementNotificationWidgetState
 
                         // Content
                         Padding(
-                          padding: EdgeInsets.all(AppSpacing.lg),
+                          padding: const EdgeInsets.all(AppSpacing.lg),
                           child: Column(
                             children: [
                               // Rarity badge
@@ -287,7 +287,7 @@ class _AchievementNotificationWidgetState
 
                               // XP reward
                               Container(
-                                padding: EdgeInsets.all(AppSpacing.md),
+                                padding: const EdgeInsets.all(AppSpacing.md),
                                 decoration: BoxDecoration(
                                   color: Colors.amber.shade50,
                                   borderRadius: AppRadius.mediumRadius,

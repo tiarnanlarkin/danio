@@ -71,7 +71,7 @@ class WorkshopScreen extends ConsumerWidget {
 
             // Tool cards
             SliverPadding(
-              padding: EdgeInsets.all(AppSpacing.md),
+              padding: const EdgeInsets.all(AppSpacing.md),
               sliver: SliverGrid(
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
@@ -233,14 +233,14 @@ class _WorkshopHeader extends ConsumerWidget {
     final isNewUser = !(profile?.hasSeenTutorial ?? false);
 
     return Padding(
-      padding: EdgeInsets.all(AppSpacing.lg2),
+      padding: const EdgeInsets.all(AppSpacing.lg2),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
               Container(
-                padding: EdgeInsets.all(AppSpacing.sm2),
+                padding: const EdgeInsets.all(AppSpacing.sm2),
                 decoration: BoxDecoration(
                   color: WorkshopColors.glassCard,
                   borderRadius: AppRadius.mediumRadius,
@@ -264,7 +264,7 @@ class _WorkshopHeader extends ConsumerWidget {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    SizedBox(height: AppSpacing.xs),
+                    const SizedBox(height: AppSpacing.xs),
                     Text(
                       'Tools & calculators',
                       style: Theme.of(context).textTheme.bodyLarge!.copyWith(
@@ -311,7 +311,7 @@ class _ToolCard extends StatelessWidget {
         child: BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
           child: Container(
-            padding: EdgeInsets.all(AppSpacing.md),
+            padding: const EdgeInsets.all(AppSpacing.md),
             decoration: BoxDecoration(
               color: WorkshopColors.glassCard,
               borderRadius: AppRadius.largeRadius,
@@ -362,7 +362,7 @@ class _QuickConversions extends StatelessWidget {
         child: BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
           child: Container(
-            padding: EdgeInsets.all(AppSpacing.lg2),
+            padding: const EdgeInsets.all(AppSpacing.lg2),
             decoration: BoxDecoration(
               color: WorkshopColors.glassCard,
               borderRadius: AppRadius.largeRadius,

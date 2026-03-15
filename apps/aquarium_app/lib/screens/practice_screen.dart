@@ -66,7 +66,7 @@ class _PracticeScreenState extends ConsumerState<PracticeScreen> {
   Widget _buildEmptyState(BuildContext context) {
     return Center(
       child: Padding(
-        padding: EdgeInsets.all(AppSpacing.xl),
+        padding: const EdgeInsets.all(AppSpacing.xl),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -114,13 +114,13 @@ class _PracticeScreenState extends ConsumerState<PracticeScreen> {
     final totalItems = 5 + weakLessons.length;
 
     return ListView.builder(
-      padding: EdgeInsets.all(AppSpacing.lg2),
+      padding: const EdgeInsets.all(AppSpacing.lg2),
       itemCount: totalItems,
       itemBuilder: (context, index) {
         // Header
         if (index == 0) {
           return Container(
-          padding: EdgeInsets.all(AppSpacing.md),
+          padding: const EdgeInsets.all(AppSpacing.md),
           decoration: BoxDecoration(
             gradient: AppColors.primaryGradient,
             borderRadius: AppRadius.mediumRadius,
@@ -166,7 +166,7 @@ class _PracticeScreenState extends ConsumerState<PracticeScreen> {
         // Info card
         if (index == 1) {
           return Container(
-          padding: EdgeInsets.all(AppSpacing.md),
+          padding: const EdgeInsets.all(AppSpacing.md),
           decoration: BoxDecoration(
             color: AppOverlays.info10,
             borderRadius: AppRadius.mediumRadius,
@@ -274,7 +274,7 @@ class _PracticeScreenState extends ConsumerState<PracticeScreen> {
       },
       borderRadius: AppRadius.mediumRadius,
       child: Container(
-        padding: EdgeInsets.all(AppSpacing.md),
+        padding: const EdgeInsets.all(AppSpacing.md),
         decoration: BoxDecoration(
           color: context.surfaceColor,
           borderRadius: AppRadius.mediumRadius,

@@ -79,7 +79,7 @@ class SkillLevelIndicator extends StatelessWidget {
       children: [
         if (label != null)
           Padding(
-            padding: EdgeInsets.only(bottom: AppSpacing.sm),
+            padding: const EdgeInsets.only(bottom: AppSpacing.sm),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -132,7 +132,7 @@ class PerformanceTrendWidget extends StatelessWidget {
     final color = _getTrendColor();
 
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: AppSpacing.sm + 2, vertical: AppSpacing.xs + 1),
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm + 2, vertical: AppSpacing.xs + 1),
       decoration: BoxDecoration(
         color: color.withAlpha(26),
         borderRadius: AppRadius.mediumRadius,
@@ -143,7 +143,7 @@ class PerformanceTrendWidget extends StatelessWidget {
         children: [
           Text(trend.emoji, style: Theme.of(context).textTheme.bodyLarge!),
           if (showLabel) ...[
-            SizedBox(width: AppSpacing.sm - 2),
+            const SizedBox(width: AppSpacing.sm - 2),
             Text(
               trend.displayName,
               style: Theme.of(context).textTheme.bodySmall!.copyWith(
@@ -237,7 +237,7 @@ class _SkillLevelUpAnimationState extends State<SkillLevelUpAnimation>
           child: Transform.scale(
             scale: _scaleAnimation.value,
             child: Container(
-              padding: EdgeInsets.all(AppSpacing.lg),
+              padding: const EdgeInsets.all(AppSpacing.lg),
               decoration: BoxDecoration(
                 gradient: const LinearGradient(
                   colors: [DanioColors.topaz, DanioColors.amberGold],
@@ -257,7 +257,7 @@ class _SkillLevelUpAnimationState extends State<SkillLevelUpAnimation>
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text('🎉', style: Theme.of(context).textTheme.headlineMedium!.copyWith(fontSize: 48)),
-                  SizedBox(height: AppSpacing.md),
+                  const SizedBox(height: AppSpacing.md),
                   Text(
                     'LEVEL UP!',
                     style: Theme.of(context).textTheme.headlineSmall!.copyWith(
@@ -301,7 +301,7 @@ class DifficultyChangeNotification extends StatelessWidget {
     final icon = isIncrease ? Icons.arrow_upward : Icons.arrow_downward;
 
     return Container(
-      padding: EdgeInsets.all(AppSpacing.md),
+      padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
         color: color.withAlpha(26),
         borderRadius: AppRadius.mediumRadius,
@@ -310,7 +310,7 @@ class DifficultyChangeNotification extends StatelessWidget {
       child: Row(
         children: [
           Icon(icon, color: color, size: AppIconSizes.lg),
-          SizedBox(width: AppSpacing.md),
+          const SizedBox(width: AppSpacing.md),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

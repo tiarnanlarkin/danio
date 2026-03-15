@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:math' as math;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -8,6 +9,12 @@ import 'package:http/http.dart' as http;
 /// OpenAI API key - passed via dart-define at build time.
 /// Usage: flutter run --dart-define=OPENAI_API_KEY=sk-...
 const String _apiKey = String.fromEnvironment('OPENAI_API_KEY');
+
+/// Maximum prompt length in characters (≈16k tokens).
+const int _maxPromptChars = 32000;
+
+/// Maximum base64-encoded image size in bytes (≈4 MB).
+const int _maxImageBase64Bytes = 4 * 1024 * 1024;
 
 /// Models used by the smart layer.
 class OpenAIModels {
@@ -49,13 +56,28 @@ class OpenAIException implements Exception {
   String toString() => 'OpenAIException($statusCode): $message';
 }
 
+/// User-facing error messages for common failure modes.
+class OpenAIUserMessages {
+  static const rateLimited =
+      "You've used your AI assists for this hour — try again in a bit! 🐟";
+  static const timeout =
+      'The request took too long. Please check your connection and try again.';
+  static const offline =
+      'This feature needs an internet connection. '
+      'Your fish data is safe offline! 🐠';
+  static const serverError =
+      'Our AI service is temporarily unavailable. Please try again in a few minutes.';
+  static const unexpectedError =
+      'Something went wrong. Please try again.';
+}
+
 /// Thin wrapper around the OpenAI HTTP API.
 ///
 /// Supports chat completions, vision, and streaming.
 /// Includes rate-limiting and retry logic.
 class OpenAIService {
   static const _baseUrl = 'https://api.openai.com/v1';
-  static const _maxRetries = 3;
+  static const _maxRetries = 2; // 1 initial + 1 retry
   static const _rateLimitDelay = Duration(milliseconds: 500);
   static const _requestTimeout = Duration(seconds: 30);
 
@@ -82,6 +104,7 @@ class OpenAIService {
   }) async {
     _trackMonthlyUsage();
     _assertConfigured();
+    _guardPromptLength(messages);
     await _rateLimit();
 
     final body = <String, dynamic>{
@@ -117,6 +140,7 @@ class OpenAIService {
   }) async* {
     _trackMonthlyUsage();
     _assertConfigured();
+    _guardPromptLength(messages);
     await _rateLimit();
 
     final body = <String, dynamic>{
@@ -168,6 +192,13 @@ class OpenAIService {
     String model = OpenAIModels.vision,
     int? maxTokens,
   }) async {
+    // Guard against oversized images.
+    if (base64Image.length > _maxImageBase64Bytes) {
+      throw const OpenAIException(
+        'Image is too large. Please use a smaller or lower-quality photo.',
+      );
+    }
+
     final messages = [
       ChatMessage(
         role: 'user',
@@ -207,6 +238,27 @@ class OpenAIService {
     }
   }
 
+  /// Reject prompts that are unreasonably large to prevent cost spikes.
+  void _guardPromptLength(List<ChatMessage> messages) {
+    int totalChars = 0;
+    for (final m in messages) {
+      if (m.content is String) {
+        totalChars += (m.content as String).length;
+      } else if (m.content is List) {
+        for (final part in m.content as List) {
+          if (part is Map && part['type'] == 'text') {
+            totalChars += (part['text'] as String?)?.length ?? 0;
+          }
+        }
+      }
+    }
+    if (totalChars > _maxPromptChars) {
+      throw const OpenAIException(
+        'Your message is too long. Please shorten it and try again.',
+      );
+    }
+  }
+
   Future<void> _rateLimit() async {
     final elapsed = DateTime.now().difference(_lastCallTime);
     if (elapsed < _rateLimitDelay) {
@@ -241,27 +293,60 @@ class OpenAIService {
         if (response.statusCode == 200) return response;
 
         if (response.statusCode == 429 && attempt < _maxRetries) {
-          // Rate limited - back off exponentially.
-          final delay = Duration(seconds: attempt * 2);
+          // Rate limited — exponential backoff.
+          final delay = Duration(
+            seconds: math.min(attempt * 2, 16),
+          );
           debugPrint('OpenAI rate limited, retrying in ${delay.inSeconds}s');
           await Future<void>.delayed(delay);
           continue;
         }
 
         if (response.statusCode >= 500 && attempt < _maxRetries) {
-          await Future<void>.delayed(Duration(seconds: attempt));
+          // Transient server error — retry once with backoff.
+          final delay = Duration(seconds: math.min(attempt * 2, 16));
+          debugPrint('OpenAI server error ${response.statusCode}, retrying in ${delay.inSeconds}s');
+          await Future<void>.delayed(delay);
           continue;
+        }
+
+        // Terminal error — provide user-friendly messages.
+        if (response.statusCode == 401 || response.statusCode == 403) {
+          throw OpenAIException(
+            'Your API key appears to be invalid or expired. '
+            'Please check your key in Settings → Smart Features.',
+            statusCode: response.statusCode,
+          );
+        }
+        if (response.statusCode == 429) {
+          throw const OpenAIException(
+            'The AI service is busy right now. Please try again in a minute.',
+            statusCode: 429,
+          );
+        }
+        if (response.statusCode >= 500) {
+          throw OpenAIException(
+            OpenAIUserMessages.serverError,
+            statusCode: response.statusCode,
+          );
         }
 
         throw OpenAIException(
           'API error: ${response.body}',
           statusCode: response.statusCode,
         );
+      } on TimeoutException {
+        if (attempt >= _maxRetries) {
+          throw const OpenAIException(OpenAIUserMessages.timeout);
+        }
+        await Future<void>.delayed(Duration(seconds: attempt * 2));
       } on http.ClientException catch (e) {
         if (attempt >= _maxRetries) {
-          throw OpenAIException('Network error: $e');
+          throw OpenAIException(
+            'Network error — please check your internet connection. ($e)',
+          );
         }
-        await Future<void>.delayed(Duration(seconds: attempt));
+        await Future<void>.delayed(Duration(seconds: attempt * 2));
       }
     }
   }

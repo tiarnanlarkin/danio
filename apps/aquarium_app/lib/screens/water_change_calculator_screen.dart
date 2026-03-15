@@ -130,7 +130,7 @@ class _WaterChangeCalculatorScreenState
     return Scaffold(
       appBar: AppBar(title: const Text('Water Change Calculator')),
       body: ListView(
-        padding: EdgeInsets.all(AppSpacing.md),
+        padding: const EdgeInsets.all(AppSpacing.md),
         children: [
           AppCard(
             backgroundColor: AppOverlays.info10,

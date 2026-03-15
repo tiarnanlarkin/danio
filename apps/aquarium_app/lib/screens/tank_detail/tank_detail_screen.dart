@@ -141,7 +141,7 @@ class TankDetailScreen extends ConsumerWidget {
               child: Card(
                 margin: EdgeInsets.zero,
                 child: Padding(
-                  padding: EdgeInsets.all(AppSpacing.sm2),
+                  padding: const EdgeInsets.all(AppSpacing.sm2),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -175,7 +175,7 @@ class TankDetailScreen extends ConsumerWidget {
               child: Card(
                 margin: EdgeInsets.zero,
                 child: Padding(
-                  padding: EdgeInsets.all(AppSpacing.sm2),
+                  padding: const EdgeInsets.all(AppSpacing.sm2),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -314,7 +314,7 @@ class TankDetailScreen extends ConsumerWidget {
                 behavior: SnackBarBehavior.floating,
                 duration: const Duration(seconds: 2),
                 shape: RoundedRectangleBorder(borderRadius: AppRadius.mediumRadius),
-                margin: EdgeInsets.all(AppSpacing.md),
+                margin: const EdgeInsets.all(AppSpacing.md),
               ),
             );
           },
@@ -566,7 +566,7 @@ class TankDetailScreen extends ConsumerWidget {
               // Quick stats
               SliverToBoxAdapter(
                 child: Padding(
-                  padding: EdgeInsets.all(AppSpacing.md),
+                  padding: const EdgeInsets.all(AppSpacing.md),
                   child: QuickStats(tank: tank, logsAsync: logsAllAsync, livestockAsync: livestockAsync, equipmentAsync: equipmentAsync),
                 ).animate().fadeIn(duration: 300.ms).slideY(begin: 0.1, end: 0, duration: 300.ms),
               ),
@@ -587,7 +587,7 @@ class TankDetailScreen extends ConsumerWidget {
                   ),
                 ),
               ),
-              const SliverToBoxAdapter(child: SizedBox(height: AppSpacing.sm)),
+              const SliverToBoxAdapter(child: const SizedBox(height: AppSpacing.sm)),
               // Action buttons
               SliverToBoxAdapter(
                 child: Padding(
@@ -628,7 +628,7 @@ class TankDetailScreen extends ConsumerWidget {
                 ),
               ),
 
-              const SliverToBoxAdapter(child: SizedBox(height: AppSpacing.md)),
+              const SliverToBoxAdapter(child: const SizedBox(height: AppSpacing.md)),
 
               // Dashboard: latest snapshot
               SliverToBoxAdapter(
@@ -639,12 +639,12 @@ class TankDetailScreen extends ConsumerWidget {
                       title: 'Latest Water Snapshot',
                     ),
                     error: (_, __) => Padding(
-                    padding: EdgeInsets.all(AppSpacing.sm),
+                    padding: const EdgeInsets.all(AppSpacing.sm),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Icon(Icons.info_outline, size: 14, color: AppColors.warning),
-                        SizedBox(width: AppSpacing.xs),
+                        const SizedBox(width: AppSpacing.xs),
                         Text('Unable to load', style: Theme.of(context).textTheme.bodySmall?.copyWith(color: AppColors.warning)),
                       ],
                     ),
@@ -654,7 +654,7 @@ class TankDetailScreen extends ConsumerWidget {
                 ),
               ),
 
-              const SliverToBoxAdapter(child: SizedBox(height: AppSpacing.sm2)),
+              const SliverToBoxAdapter(child: const SizedBox(height: AppSpacing.sm2)),
 
               // Dashboard: trends
               SliverToBoxAdapter(
@@ -663,12 +663,12 @@ class TankDetailScreen extends ConsumerWidget {
                   child: logsAllAsync.when(
                     loading: () => const DashboardLoadingCard(title: 'Trends'),
                     error: (_, __) => Padding(
-                    padding: EdgeInsets.all(AppSpacing.sm),
+                    padding: const EdgeInsets.all(AppSpacing.sm),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Icon(Icons.info_outline, size: 14, color: AppColors.warning),
-                        SizedBox(width: AppSpacing.xs),
+                        const SizedBox(width: AppSpacing.xs),
                         Text('Unable to load', style: Theme.of(context).textTheme.bodySmall?.copyWith(color: AppColors.warning)),
                       ],
                     ),
@@ -688,7 +688,7 @@ class TankDetailScreen extends ConsumerWidget {
                 ),
               ),
 
-              const SliverToBoxAdapter(child: SizedBox(height: AppSpacing.sm2)),
+              const SliverToBoxAdapter(child: const SizedBox(height: AppSpacing.sm2)),
 
               // Dashboard: alerts
               SliverToBoxAdapter(
@@ -697,12 +697,12 @@ class TankDetailScreen extends ConsumerWidget {
                   child: logsAllAsync.when(
                     loading: () => const DashboardLoadingCard(title: 'Alerts'),
                     error: (_, __) => Padding(
-                    padding: EdgeInsets.all(AppSpacing.sm),
+                    padding: const EdgeInsets.all(AppSpacing.sm),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Icon(Icons.info_outline, size: 14, color: AppColors.warning),
-                        SizedBox(width: AppSpacing.xs),
+                        const SizedBox(width: AppSpacing.xs),
                         Text('Unable to load', style: Theme.of(context).textTheme.bodySmall?.copyWith(color: AppColors.warning)),
                       ],
                     ),
@@ -712,19 +712,19 @@ class TankDetailScreen extends ConsumerWidget {
                 ),
               ),
 
-              const SliverToBoxAdapter(child: SizedBox(height: AppSpacing.lg)),
+              const SliverToBoxAdapter(child: const SizedBox(height: AppSpacing.lg)),
 
               // Cycling status (for tanks < 90 days old)
               SliverToBoxAdapter(
                 child: logsAllAsync.when(
                   loading: () => const SizedBox.shrink(),
                   error: (_, __) => Padding(
-                    padding: EdgeInsets.all(AppSpacing.sm),
+                    padding: const EdgeInsets.all(AppSpacing.sm),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Icon(Icons.info_outline, size: 14, color: AppColors.warning),
-                        SizedBox(width: AppSpacing.xs),
+                        const SizedBox(width: AppSpacing.xs),
                         Text('Unable to load', style: Theme.of(context).textTheme.bodySmall?.copyWith(color: AppColors.warning)),
                       ],
                     ),
@@ -797,12 +797,12 @@ class TankDetailScreen extends ConsumerWidget {
                 child: tasksAsync.when(
                   loading: () => _buildTaskSkeletonPreview(),
                   error: (_, __) => Padding(
-                    padding: EdgeInsets.all(AppSpacing.sm),
+                    padding: const EdgeInsets.all(AppSpacing.sm),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Icon(Icons.info_outline, size: 14, color: AppColors.warning),
-                        SizedBox(width: AppSpacing.xs),
+                        const SizedBox(width: AppSpacing.xs),
                         Text('Unable to load', style: Theme.of(context).textTheme.bodySmall?.copyWith(color: AppColors.warning)),
                       ],
                     ),
@@ -814,7 +814,7 @@ class TankDetailScreen extends ConsumerWidget {
                 ),
               ),
 
-              const SliverToBoxAdapter(child: SizedBox(height: AppSpacing.md)),
+              const SliverToBoxAdapter(child: const SizedBox(height: AppSpacing.md)),
 
               // Recent logs
               SliverToBoxAdapter(
@@ -833,12 +833,12 @@ class TankDetailScreen extends ConsumerWidget {
                 child: logsRecentAsync.when(
                   loading: () => _buildLogsSkeletonList(),
                   error: (_, __) => Padding(
-                    padding: EdgeInsets.all(AppSpacing.sm),
+                    padding: const EdgeInsets.all(AppSpacing.sm),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Icon(Icons.info_outline, size: 14, color: AppColors.warning),
-                        SizedBox(width: AppSpacing.xs),
+                        const SizedBox(width: AppSpacing.xs),
                         Text('Unable to load', style: Theme.of(context).textTheme.bodySmall?.copyWith(color: AppColors.warning)),
                       ],
                     ),
@@ -856,7 +856,7 @@ class TankDetailScreen extends ConsumerWidget {
                 ),
               ),
 
-              const SliverToBoxAdapter(child: SizedBox(height: AppSpacing.md)),
+              const SliverToBoxAdapter(child: const SizedBox(height: AppSpacing.md)),
 
               // Livestock
               SliverToBoxAdapter(
@@ -883,12 +883,12 @@ class TankDetailScreen extends ConsumerWidget {
                 child: livestockAsync.when(
                   loading: () => _buildLivestockSkeletonPreview(),
                   error: (_, __) => Padding(
-                    padding: EdgeInsets.all(AppSpacing.sm),
+                    padding: const EdgeInsets.all(AppSpacing.sm),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Icon(Icons.info_outline, size: 14, color: AppColors.warning),
-                        SizedBox(width: AppSpacing.xs),
+                        const SizedBox(width: AppSpacing.xs),
                         Text('Unable to load', style: Theme.of(context).textTheme.bodySmall?.copyWith(color: AppColors.warning)),
                       ],
                     ),
@@ -902,12 +902,12 @@ class TankDetailScreen extends ConsumerWidget {
                 child: livestockAsync.when(
                   loading: () => const SizedBox.shrink(),
                   error: (_, __) => Padding(
-                    padding: EdgeInsets.all(AppSpacing.sm),
+                    padding: const EdgeInsets.all(AppSpacing.sm),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Icon(Icons.info_outline, size: 14, color: AppColors.warning),
-                        SizedBox(width: AppSpacing.xs),
+                        const SizedBox(width: AppSpacing.xs),
                         Text('Unable to load', style: Theme.of(context).textTheme.bodySmall?.copyWith(color: AppColors.warning)),
                       ],
                     ),
@@ -923,7 +923,7 @@ class TankDetailScreen extends ConsumerWidget {
                 ),
               ),
 
-              const SliverToBoxAdapter(child: SizedBox(height: AppSpacing.md)),
+              const SliverToBoxAdapter(child: const SizedBox(height: AppSpacing.md)),
 
               // Equipment
               SliverToBoxAdapter(
@@ -942,12 +942,12 @@ class TankDetailScreen extends ConsumerWidget {
                 child: equipmentAsync.when(
                   loading: () => _buildEquipmentSkeletonPreview(),
                   error: (_, __) => Padding(
-                    padding: EdgeInsets.all(AppSpacing.sm),
+                    padding: const EdgeInsets.all(AppSpacing.sm),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Icon(Icons.info_outline, size: 14, color: AppColors.warning),
-                        SizedBox(width: AppSpacing.xs),
+                        const SizedBox(width: AppSpacing.xs),
                         Text('Unable to load', style: Theme.of(context).textTheme.bodySmall?.copyWith(color: AppColors.warning)),
                       ],
                     ),

@@ -10,7 +10,7 @@ class AcclimationGuideScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: const Text('Fish Acclimation Guide')),
       body: ListView.builder(
-        padding: EdgeInsets.all(AppSpacing.md),
+        padding: const EdgeInsets.all(AppSpacing.md),
         itemCount: _buildItems(context).length,
         itemBuilder: (context, index) => _buildItems(context)[index],
       ),

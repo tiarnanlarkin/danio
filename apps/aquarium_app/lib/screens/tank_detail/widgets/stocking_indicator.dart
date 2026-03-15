@@ -46,7 +46,7 @@ class StockingIndicator extends StatelessWidget {
       child: Card(
         margin: EdgeInsets.zero,
         child: Padding(
-          padding: EdgeInsets.all(AppSpacing.sm2),
+          padding: const EdgeInsets.all(AppSpacing.sm2),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

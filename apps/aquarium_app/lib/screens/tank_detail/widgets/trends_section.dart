@@ -27,7 +27,7 @@ class TrendsRow extends StatelessWidget {
       return Card(
         margin: EdgeInsets.zero,
         child: Padding(
-          padding: EdgeInsets.all(AppSpacing.md),
+          padding: const EdgeInsets.all(AppSpacing.md),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -57,7 +57,7 @@ class TrendsRow extends StatelessWidget {
     return Card(
       margin: EdgeInsets.zero,
       child: Padding(
-        padding: EdgeInsets.all(AppSpacing.md),
+        padding: const EdgeInsets.all(AppSpacing.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -189,7 +189,7 @@ class SparklineCard extends StatelessWidget {
       borderRadius: AppRadius.mediumRadius,
       child: Container(
         width: 110,
-        padding: EdgeInsets.all(AppSpacing.sm2),
+        padding: const EdgeInsets.all(AppSpacing.sm2),
         decoration: BoxDecoration(
           color: context.surfaceVariant,
           borderRadius: AppRadius.mediumRadius,

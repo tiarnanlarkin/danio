@@ -196,7 +196,7 @@ class _StoryPlayerScreenState extends ConsumerState<StoryPlayerScreen>
             ),
             const SizedBox(height: AppSpacing.lg),
             Container(
-              padding: EdgeInsets.all(AppSpacing.md),
+              padding: const EdgeInsets.all(AppSpacing.md),
               decoration: BoxDecoration(
                 color: AppOverlays.amber20,
                 borderRadius: AppRadius.mediumRadius,
@@ -298,7 +298,7 @@ class _StoryPlayerScreenState extends ConsumerState<StoryPlayerScreen>
     final progressValue = visitedScenes / totalScenes;
 
     return Container(
-      padding: EdgeInsets.all(AppSpacing.md),
+      padding: const EdgeInsets.all(AppSpacing.md),
       child: Column(
         children: [
           Row(
@@ -363,8 +363,8 @@ class _StoryPlayerScreenState extends ConsumerState<StoryPlayerScreen>
     return FadeTransition(
       opacity: _textOpacity,
       child: Container(
-        margin: EdgeInsets.all(AppSpacing.lg),
-        padding: EdgeInsets.all(AppSpacing.lg),
+        margin: const EdgeInsets.all(AppSpacing.lg),
+        padding: const EdgeInsets.all(AppSpacing.lg),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: AppRadius.largeRadius,
@@ -388,7 +388,7 @@ class _StoryPlayerScreenState extends ConsumerState<StoryPlayerScreen>
                     style: Theme.of(context).textTheme.headlineMedium!.copyWith(fontSize: 48),
                   ),
                 ),
-              if (_currentScene!.imageUrl != null) SizedBox(height: AppSpacing.md),
+              if (_currentScene!.imageUrl != null) const SizedBox(height: AppSpacing.md),
 
               // Scene text
               Text(
@@ -429,7 +429,7 @@ class _StoryPlayerScreenState extends ConsumerState<StoryPlayerScreen>
       child: FadeTransition(
         opacity: _textOpacity,
         child: ListView.builder(
-          padding: EdgeInsets.all(AppSpacing.lg),
+          padding: const EdgeInsets.all(AppSpacing.lg),
           itemCount: _currentScene!.choices.length,
           itemBuilder: (context, index) {
             final choice = _currentScene!.choices[index];
@@ -454,7 +454,7 @@ class _StoryPlayerScreenState extends ConsumerState<StoryPlayerScreen>
             : AppOverlays.orange90,
         child: Center(
           child: Padding(
-            padding: EdgeInsets.all(AppSpacing.xl),
+            padding: const EdgeInsets.all(AppSpacing.xl),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -465,7 +465,7 @@ class _StoryPlayerScreenState extends ConsumerState<StoryPlayerScreen>
                   size: 80,
                   color: Colors.white,
                 ),
-                SizedBox(height: AppSpacing.lg),
+                const SizedBox(height: AppSpacing.lg),
                 Text(
                   _feedbackMessage ?? '',
                   style: Theme.of(context).textTheme.headlineSmall!.copyWith(
@@ -522,7 +522,7 @@ class _ChoiceButton extends StatelessWidget {
         onTap: onPressed,
         borderRadius: AppRadius.mediumRadius,
         child: Container(
-          padding: EdgeInsets.all(AppSpacing.lg2),
+          padding: const EdgeInsets.all(AppSpacing.lg2),
           decoration: BoxDecoration(
             borderRadius: AppRadius.mediumRadius,
             border: Border.all(color: const Color(0xFFFFE082), width: 2),

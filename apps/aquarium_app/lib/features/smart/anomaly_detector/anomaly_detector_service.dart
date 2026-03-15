@@ -1,8 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../models/models.dart';
+import '../../../services/api_rate_limiter.dart';
 import '../../../services/openai_service.dart';
 import '../models/smart_models.dart';
 import '../smart_providers.dart';
@@ -16,8 +19,9 @@ const _uuid = Uuid();
 /// recommends actions.
 class AnomalyDetectorService {
   final OpenAIService _openai;
+  final ApiRateLimiter _rateLimiter;
 
-  AnomalyDetectorService(this._openai);
+  AnomalyDetectorService(this._openai, this._rateLimiter);
 
   /// Run anomaly detection on a list of water-test log entries for a tank.
   ///
@@ -125,8 +129,10 @@ class AnomalyDetectorService {
       }
     }
 
-    // --- AI explanation pass (if anomalies found and API available) ---
-    if (anomalies.isNotEmpty && _openai.isConfigured) {
+    // --- AI explanation pass (if anomalies found, API available, and under rate limit) ---
+    if (anomalies.isNotEmpty &&
+        _openai.isConfigured &&
+        _rateLimiter.canRequest(AIFeature.anomalyDetector)) {
       try {
         final descriptions = anomalies.map((a) => a.description).join('; ');
         final result = await _openai.chatCompletion(
@@ -155,6 +161,8 @@ class AnomalyDetectorService {
           maxTokens: 300,
         );
 
+        _rateLimiter.recordRequest(AIFeature.anomalyDetector);
+
         // Apply AI explanation to the first anomaly (or all via a single
         // combined explanation).
         for (int i = 0; i < anomalies.length; i++) {
@@ -162,6 +170,9 @@ class AnomalyDetectorService {
             aiExplanation: result.text,
           );
         }
+      } on TimeoutException {
+        debugPrint('Anomaly AI explanation timed out');
+        // Continue without AI explanation - rules-based results are still valid.
       } catch (e) {
         debugPrint('Anomaly AI explanation failed: $e');
         // Continue without AI explanation - rules-based results are still valid.
@@ -175,7 +186,8 @@ class AnomalyDetectorService {
 /// Riverpod provider for the anomaly detector.
 final anomalyDetectorProvider = Provider<AnomalyDetectorService>((ref) {
   final openai = ref.watch(openAIServiceProvider);
-  return AnomalyDetectorService(openai);
+  final rateLimiter = ref.watch(apiRateLimiterProvider);
+  return AnomalyDetectorService(openai, rateLimiter);
 });
 
 /// Run anomaly detection for a tank and store results.

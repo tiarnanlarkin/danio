@@ -48,7 +48,7 @@ class _DosingCalculatorScreenState extends State<DosingCalculatorScreen> {
     return Scaffold(
       appBar: AppBar(title: const Text('Dosing Calculator')),
       body: SingleChildScrollView(
-        padding: EdgeInsets.all(AppSpacing.md),
+        padding: const EdgeInsets.all(AppSpacing.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -102,7 +102,7 @@ class _DosingCalculatorScreenState extends State<DosingCalculatorScreen> {
                     value: _dosePerLitres,
                     decoration: const InputDecoration(
                       suffixText: 'L',
-                      contentPadding: EdgeInsets.symmetric(horizontal: 12),
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 12),
                     ),
                     items: [5, 10, 20, 25, 40, 50, 100].map((v) {
                       return DropdownMenuItem(

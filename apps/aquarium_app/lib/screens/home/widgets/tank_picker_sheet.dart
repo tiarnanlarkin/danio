@@ -36,7 +36,7 @@ class _TankPickerSheetState extends ConsumerState<TankPickerSheet> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.all(AppSpacing.md),
+      margin: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
         color: Theme.of(context).scaffoldBackgroundColor,
         borderRadius: AppRadius.largeRadius,
@@ -57,7 +57,7 @@ class _TankPickerSheetState extends ConsumerState<TankPickerSheet> {
 
           // Header
           Padding(
-            padding: EdgeInsets.all(AppSpacing.lg2),
+            padding: const EdgeInsets.all(AppSpacing.lg2),
             child: Row(
               children: [
                 Icon(Icons.water_drop, color: AppColors.primary),

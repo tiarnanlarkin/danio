@@ -51,7 +51,7 @@ class StoriesCard extends ConsumerWidget {
         },
         borderRadius: AppRadius.mediumRadius,
         child: Container(
-          padding: EdgeInsets.all(AppSpacing.lg2),
+          padding: const EdgeInsets.all(AppSpacing.lg2),
           decoration: BoxDecoration(
             borderRadius: AppRadius.mediumRadius,
             gradient: LinearGradient(
@@ -66,7 +66,7 @@ class StoriesCard extends ConsumerWidget {
               Row(
                 children: [
                   Container(
-                    padding: EdgeInsets.all(AppSpacing.sm2),
+                    padding: const EdgeInsets.all(AppSpacing.sm2),
                     decoration: BoxDecoration(
                       color: AppOverlays.white20,
                       borderRadius: AppRadius.mediumRadius,
@@ -146,7 +146,7 @@ class StoriesCard extends ConsumerWidget {
               if (suggestedStory != null) ...[
                 const SizedBox(height: AppSpacing.md),
                 Container(
-                  padding: EdgeInsets.all(AppSpacing.sm2),
+                  padding: const EdgeInsets.all(AppSpacing.sm2),
                   decoration: BoxDecoration(
                     color: AppOverlays.white15,
                     borderRadius: AppRadius.mediumRadius,

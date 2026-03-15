@@ -198,7 +198,7 @@ class _MultipleChoiceWidgetState extends State<MultipleChoiceWidget>
             child: AnimatedContainer(
             duration: AppDurations.medium4,
             curve: AppCurves.standard,
-            padding: EdgeInsets.all(AppSpacing.md),
+            padding: const EdgeInsets.all(AppSpacing.md),
             decoration: BoxDecoration(
               color: bgColor ?? context.surfaceColor,
               borderRadius: AppRadius.mediumRadius,
@@ -830,7 +830,7 @@ class _MatchingWidgetState extends State<MatchingWidget> {
           borderRadius: AppRadius.mediumRadius,
           child: AnimatedContainer(
           duration: AppDurations.medium2,
-          padding: EdgeInsets.all(AppSpacing.md),
+          padding: const EdgeInsets.all(AppSpacing.md),
           decoration: BoxDecoration(
             color: bgColor ?? context.surfaceColor,
             borderRadius: AppRadius.mediumRadius,
@@ -907,7 +907,7 @@ class _MatchingWidgetState extends State<MatchingWidget> {
           borderRadius: AppRadius.mediumRadius,
           child: AnimatedContainer(
           duration: AppDurations.medium2,
-          padding: EdgeInsets.all(AppSpacing.md),
+          padding: const EdgeInsets.all(AppSpacing.md),
           decoration: BoxDecoration(
             color: bgColor ?? context.surfaceColor,
             borderRadius: AppRadius.mediumRadius,
@@ -1002,7 +1002,7 @@ class _OrderingWidgetState extends State<OrderingWidget> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Container(
-          padding: EdgeInsets.all(AppSpacing.md),
+          padding: const EdgeInsets.all(AppSpacing.md),
           decoration: BoxDecoration(
             color: AppOverlays.info10,
             borderRadius: AppRadius.mediumRadius,
@@ -1062,7 +1062,7 @@ class _OrderingWidgetState extends State<OrderingWidget> {
       padding: const EdgeInsets.only(bottom: AppSpacing.sm2),
       child: AnimatedContainer(
         duration: AppDurations.medium4,
-        padding: EdgeInsets.all(AppSpacing.md),
+        padding: const EdgeInsets.all(AppSpacing.md),
         decoration: BoxDecoration(
           color: bgColor ?? context.surfaceColor,
           borderRadius: AppRadius.mediumRadius,
@@ -1126,7 +1126,7 @@ class ExplanationCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return AnimatedContainer(
       duration: AppDurations.medium4,
-      padding: EdgeInsets.all(AppSpacing.md),
+      padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
         color: AppOverlays.info10,
         borderRadius: AppRadius.mediumRadius,

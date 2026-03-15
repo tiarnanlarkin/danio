@@ -218,7 +218,7 @@ class _AppTextFieldState extends State<AppTextField> {
                 color: _getLabelColor(isDark),
               ),
             ),
-            SizedBox(height: AppSpacing.sm),
+            const SizedBox(height: AppSpacing.sm),
           ],
           AnimatedContainer(
             duration: AppDurations.short,
@@ -256,7 +256,7 @@ class _AppTextFieldState extends State<AppTextField> {
                   color: context.textHint,
                 ),
                 border: InputBorder.none,
-                contentPadding: EdgeInsets.symmetric(
+                contentPadding: const EdgeInsets.symmetric(
                   horizontal: AppSpacing.md,
                   vertical: AppSpacing.md,
                 ),
@@ -276,7 +276,7 @@ class _AppTextFieldState extends State<AppTextField> {
             ),
           ),
           if (widget.errorText != null || widget.helperText != null) ...[
-            SizedBox(height: AppSpacing.xs),
+            const SizedBox(height: AppSpacing.xs),
             Text(
               widget.errorText ?? widget.helperText ?? '',
               style: AppTypography.bodySmall.copyWith(
@@ -287,7 +287,7 @@ class _AppTextFieldState extends State<AppTextField> {
             ),
           ],
           if (widget.maxLength != null) ...[
-            SizedBox(height: AppSpacing.xs),
+            const SizedBox(height: AppSpacing.xs),
             Align(
               alignment: Alignment.centerRight,
               child: Text(
@@ -306,7 +306,7 @@ class _AppTextFieldState extends State<AppTextField> {
   Widget? _buildSuffix(bool isDark) {
     if (widget.isLoading) {
       return Padding(
-        padding: EdgeInsets.all(AppSpacing.sm),
+        padding: const EdgeInsets.all(AppSpacing.sm),
         child: SizedBox(
           width: AppIconSizes.sm,
           height: AppIconSizes.sm,

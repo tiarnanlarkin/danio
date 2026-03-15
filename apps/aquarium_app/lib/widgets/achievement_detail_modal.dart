@@ -33,7 +33,7 @@ class AchievementDetailModal extends StatelessWidget {
         color: Theme.of(context).colorScheme.surface,
         borderRadius: const BorderRadius.vertical(top: Radius.circular(AppRadius.lg)),
       ),
-      padding: EdgeInsets.all(AppSpacing.lg),
+      padding: const EdgeInsets.all(AppSpacing.lg),
       child: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -42,7 +42,7 @@ class AchievementDetailModal extends StatelessWidget {
             Container(
               width: 40,
               height: 4,
-              margin: EdgeInsets.only(bottom: AppSpacing.md),
+              margin: const EdgeInsets.only(bottom: AppSpacing.md),
               decoration: BoxDecoration(
                 color: Theme.of(context).colorScheme.outlineVariant,
                 borderRadius: BorderRadius.circular(2),
@@ -162,7 +162,7 @@ class AchievementDetailModal extends StatelessWidget {
             // Progress section
             if (achievement.targetCount != null) ...[
               Container(
-                padding: EdgeInsets.all(AppSpacing.md),
+                padding: const EdgeInsets.all(AppSpacing.md),
                 decoration: BoxDecoration(
                   color: Theme.of(context).colorScheme.surfaceContainerHighest,
                   borderRadius: AppRadius.mediumRadius,
@@ -212,7 +212,7 @@ class AchievementDetailModal extends StatelessWidget {
 
             // Reward info
             Container(
-              padding: EdgeInsets.all(AppSpacing.md),
+              padding: const EdgeInsets.all(AppSpacing.md),
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.topLeft,
@@ -281,7 +281,7 @@ class AchievementDetailModal extends StatelessWidget {
             // Status
             if (isLocked)
               Container(
-                padding: EdgeInsets.all(AppSpacing.sm2),
+                padding: const EdgeInsets.all(AppSpacing.sm2),
                 decoration: BoxDecoration(
                   // Warm tint adapts to dark mode
                   color: isDark ? AppColors.primaryAlpha10 : AppColors.primaryAlpha08,
@@ -308,7 +308,7 @@ class AchievementDetailModal extends StatelessWidget {
               )
             else
               Container(
-                padding: EdgeInsets.all(AppSpacing.sm2),
+                padding: const EdgeInsets.all(AppSpacing.sm2),
                 decoration: BoxDecoration(
                   // Warm amber tint — works in both light and dark
                   color: isDark ? AppColors.warningAlpha12 : AppColors.warningAlpha10,

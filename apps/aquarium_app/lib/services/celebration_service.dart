@@ -370,7 +370,7 @@ class _CelebrationOverlayWrapperState extends ConsumerState<CelebrationOverlayWr
     return GestureDetector(
       onTap: () => ref.read(celebrationProvider.notifier).dismiss(),
       child: Container(
-        margin: EdgeInsets.all(AppSpacing.xl),
+        margin: const EdgeInsets.all(AppSpacing.xl),
         padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 32),
         decoration: BoxDecoration(
           gradient: LinearGradient(
@@ -394,7 +394,7 @@ class _CelebrationOverlayWrapperState extends ConsumerState<CelebrationOverlayWr
               emoji,
               style: Theme.of(context).textTheme.headlineMedium!.copyWith(fontSize: 64),
             ),
-            SizedBox(height: AppSpacing.md),
+            const SizedBox(height: AppSpacing.md),
             Text(
               celebration.title!,
               style: Theme.of(context).textTheme.headlineMedium!.copyWith(
@@ -404,7 +404,7 @@ class _CelebrationOverlayWrapperState extends ConsumerState<CelebrationOverlayWr
               textAlign: TextAlign.center,
             ),
             if (celebration.subtitle != null) ...[
-              SizedBox(height: AppSpacing.sm),
+              const SizedBox(height: AppSpacing.sm),
               Text(
                 celebration.subtitle!,
                 style: Theme.of(context).textTheme.titleMedium!.copyWith(
@@ -413,7 +413,7 @@ class _CelebrationOverlayWrapperState extends ConsumerState<CelebrationOverlayWr
                 textAlign: TextAlign.center,
               ),
             ],
-            SizedBox(height: AppSpacing.lg),
+            const SizedBox(height: AppSpacing.lg),
             Text(
               'Tap to dismiss',
               style: Theme.of(context).textTheme.bodySmall!.copyWith(

@@ -109,8 +109,8 @@ class _StreakMilestoneCelebrationState extends State<StreakMilestoneCelebration>
       return IgnorePointer(
         child: Center(
           child: Container(
-            margin: EdgeInsets.symmetric(horizontal: AppSpacing.xl),
-            padding: EdgeInsets.symmetric(
+            margin: const EdgeInsets.symmetric(horizontal: AppSpacing.xl),
+            padding: const EdgeInsets.symmetric(
               horizontal: AppSpacing.lg,
               vertical: AppSpacing.lg2,
             ),
@@ -149,8 +149,8 @@ class _StreakMilestoneCelebrationState extends State<StreakMilestoneCelebration>
               child: Transform.scale(
                 scale: _scale.value,
                 child: Container(
-                  margin: EdgeInsets.symmetric(horizontal: AppSpacing.xl),
-                  padding: EdgeInsets.symmetric(
+                  margin: const EdgeInsets.symmetric(horizontal: AppSpacing.xl),
+                  padding: const EdgeInsets.symmetric(
                     horizontal: AppSpacing.lg,
                     vertical: AppSpacing.lg2,
                   ),

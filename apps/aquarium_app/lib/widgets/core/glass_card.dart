@@ -138,7 +138,7 @@ class _GlassCardState extends State<GlassCard> with SingleTickerProviderStateMix
             ),
             child: Container(
               decoration: _buildDecoration(isDark, radius),
-              padding: widget.padding ?? EdgeInsets.all(AppSpacing.md),
+              padding: widget.padding ?? const EdgeInsets.all(AppSpacing.md),
               child: widget.child,
             ),
           ),
@@ -362,7 +362,7 @@ class SoftCard extends StatelessWidget {
       width: width,
       height: height,
       margin: margin,
-      padding: padding ?? EdgeInsets.all(AppSpacing.md),
+      padding: padding ?? const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
         color: backgroundColor ?? (isDark ? const Color(0xFF2A2220) : Colors.white),
         borderRadius: radius,

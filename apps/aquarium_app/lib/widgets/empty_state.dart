@@ -135,7 +135,7 @@ class _EmptyStateState extends State<EmptyState>
   Widget build(BuildContext context) {
     return Center(
       child: SingleChildScrollView(
-        padding: EdgeInsets.all(AppSpacing.xl),
+        padding: const EdgeInsets.all(AppSpacing.xl),
         child: FadeTransition(
           opacity: _fadeAnimation,
           child: ScaleTransition(
@@ -211,7 +211,7 @@ class _EmptyStateState extends State<EmptyState>
                 if (widget.tips != null && widget.tips!.isNotEmpty) ...[
                   const SizedBox(height: AppSpacing.lg),
                   Container(
-                    padding: EdgeInsets.all(AppSpacing.md),
+                    padding: const EdgeInsets.all(AppSpacing.md),
                     decoration: BoxDecoration(
                       color: AppOverlays.info5,
                       borderRadius: AppRadius.mediumRadius,
@@ -321,7 +321,7 @@ class CompactEmptyState extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.all(AppSpacing.lg),
+      padding: const EdgeInsets.all(AppSpacing.lg),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [

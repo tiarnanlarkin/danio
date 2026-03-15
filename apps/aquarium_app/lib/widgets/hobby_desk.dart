@@ -34,7 +34,7 @@ class HobbyDesk extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(AppSpacing.md),
+      padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
         // Wooden desk surface
         gradient: LinearGradient(
@@ -226,7 +226,7 @@ class ItemDetailPopup extends StatelessWidget {
         children: [
           // Header
           Container(
-            padding: EdgeInsets.all(AppSpacing.sm2),
+            padding: const EdgeInsets.all(AppSpacing.sm2),
             decoration: BoxDecoration(
               color: color.withAlpha(26),
               borderRadius: const BorderRadius.vertical(
@@ -254,7 +254,7 @@ class ItemDetailPopup extends StatelessWidget {
 
           // Content
           Padding(
-            padding: EdgeInsets.all(AppSpacing.sm2),
+            padding: const EdgeInsets.all(AppSpacing.sm2),
             child: Column(
               children: rows
                   .map(

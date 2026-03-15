@@ -73,7 +73,7 @@ class PhotoGalleryScreen extends ConsumerWidget {
             slivers: [
               // Top padding
               const SliverPadding(
-                padding: EdgeInsets.only(top: 16),
+                padding: const EdgeInsets.only(top: 16),
                 sliver: SliverToBoxAdapter(child: SizedBox.shrink()),
               ),
               
@@ -121,14 +121,14 @@ class PhotoGalleryScreen extends ConsumerWidget {
                 
                 // Spacing after each month
                 const SliverPadding(
-                  padding: EdgeInsets.only(bottom: AppSpacing.md),
+                  padding: const EdgeInsets.only(bottom: AppSpacing.md),
                   sliver: SliverToBoxAdapter(child: SizedBox.shrink()),
                 ),
               ],
               
               // Bottom padding
               const SliverPadding(
-                padding: EdgeInsets.only(bottom: 16),
+                padding: const EdgeInsets.only(bottom: 16),
                 sliver: SliverToBoxAdapter(child: SizedBox.shrink()),
               ),
             ],
@@ -158,7 +158,7 @@ class _EmptyGallery extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Padding(
-        padding: EdgeInsets.all(AppSpacing.xl),
+        padding: const EdgeInsets.all(AppSpacing.xl),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -316,7 +316,7 @@ class _PhotoViewerScreenState extends State<_PhotoViewerScreen> {
                     minScale: 0.5,
                     maxScale: 4.0,
                     child: Container(
-                      margin: EdgeInsets.all(AppSpacing.md),
+                      margin: const EdgeInsets.all(AppSpacing.md),
                       decoration: BoxDecoration(
                         color: Colors.black,
                         borderRadius: AppRadius.mediumRadius,
@@ -337,7 +337,7 @@ class _PhotoViewerScreenState extends State<_PhotoViewerScreen> {
           if (photo.notes != null && photo.notes!.isNotEmpty)
             Container(
               width: double.infinity,
-              padding: EdgeInsets.all(AppSpacing.md),
+              padding: const EdgeInsets.all(AppSpacing.md),
               color: Colors.black87,
               child: Text(
                 photo.notes!,

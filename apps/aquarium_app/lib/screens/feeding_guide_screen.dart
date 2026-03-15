@@ -10,7 +10,7 @@ class FeedingGuideScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: const Text('Feeding Guide')),
       body: ListView.builder(
-        padding: EdgeInsets.all(AppSpacing.md),
+        padding: const EdgeInsets.all(AppSpacing.md),
         itemCount: _buildItems(context).length,
         itemBuilder: (context, index) => _buildItems(context)[index],
       ),
@@ -333,7 +333,7 @@ class _FoodTypeCard extends StatelessWidget {
                 ),
                 const SizedBox(height: AppSpacing.sm2),
                 Container(
-                  padding: EdgeInsets.all(AppSpacing.sm),
+                  padding: const EdgeInsets.all(AppSpacing.sm),
                   decoration: BoxDecoration(
                     color: context.surfaceVariant,
                     borderRadius: AppRadius.smallRadius,

@@ -134,7 +134,7 @@ class _SeasonalTipCardState extends State<SeasonalTipCard>
               GestureDetector(
                 onTap: _dismiss,
                 child: Padding(
-                  padding: EdgeInsets.all(AppSpacing.xs),
+                  padding: const EdgeInsets.all(AppSpacing.xs),
                   child: Icon(
                     Icons.close,
                     size: 18,

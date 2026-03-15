@@ -102,7 +102,7 @@ class _AppPerformanceOverlayState extends State<AppPerformanceOverlay> {
       color: Colors.black87,
       borderRadius: AppRadius.smallRadius,
       child: Padding(
-        padding: EdgeInsets.all(AppSpacing.sm),
+        padding: const EdgeInsets.all(AppSpacing.sm),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
@@ -204,7 +204,7 @@ class _PerformanceDebugScreenState extends State<PerformanceDebugScreen> {
       body: report == null
           ? const Center(child: CircularProgressIndicator(color: AppColors.primary))
           : ListView(
-              padding: EdgeInsets.all(AppSpacing.md),
+              padding: const EdgeInsets.all(AppSpacing.md),
               children: [
                 _buildStatusCard(report),
                 const SizedBox(height: AppSpacing.md),
@@ -220,7 +220,7 @@ class _PerformanceDebugScreenState extends State<PerformanceDebugScreen> {
     return Card(
       color: report.meetsTarget ? Colors.green.shade50 : Colors.red.shade50,
       child: Padding(
-        padding: EdgeInsets.all(AppSpacing.md),
+        padding: const EdgeInsets.all(AppSpacing.md),
         child: Column(
           children: [
             Icon(
@@ -247,7 +247,7 @@ class _PerformanceDebugScreenState extends State<PerformanceDebugScreen> {
   Widget _buildMetricsCard(PerformanceReport report) {
     return Card(
       child: Padding(
-        padding: EdgeInsets.all(AppSpacing.md),
+        padding: const EdgeInsets.all(AppSpacing.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -341,7 +341,7 @@ class _PerformanceDebugScreenState extends State<PerformanceDebugScreen> {
 
     return Card(
       child: Padding(
-        padding: EdgeInsets.all(AppSpacing.md),
+        padding: const EdgeInsets.all(AppSpacing.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

@@ -167,7 +167,7 @@ class _ProfileCreationScreenState extends ConsumerState<ProfileCreationScreen> {
         ],
       ),
       body: SingleChildScrollView(
-        padding: EdgeInsets.all(AppSpacing.lg),
+        padding: const EdgeInsets.all(AppSpacing.lg),
         child: FocusTraversalGroup(
           policy: OrderedTraversalPolicy(),
           child: Form(
@@ -336,7 +336,7 @@ class _ProfileCreationScreenState extends ConsumerState<ProfileCreationScreen> {
           onTap: () => setState(() => _selectedExperience = level),
           borderRadius: AppRadius.mediumRadius,
           child: Container(
-            padding: EdgeInsets.all(AppSpacing.md),
+            padding: const EdgeInsets.all(AppSpacing.md),
             decoration: BoxDecoration(
               color: isSelected ? AppOverlays.accent10 : null,
               borderRadius: AppRadius.mediumRadius,
@@ -353,7 +353,7 @@ class _ProfileCreationScreenState extends ConsumerState<ProfileCreationScreen> {
                     style: Theme.of(context).textTheme.headlineMedium!,
                   ),
                 ),
-                SizedBox(width: AppSpacing.md),
+                const SizedBox(width: AppSpacing.md),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -366,7 +366,7 @@ class _ProfileCreationScreenState extends ConsumerState<ProfileCreationScreen> {
                           ),
                         ),
                       ),
-                      SizedBox(height: AppSpacing.xs),
+                      const SizedBox(height: AppSpacing.xs),
                       ExcludeSemantics(
                         child: Text(
                           level.description,
@@ -443,7 +443,7 @@ class _ProfileCreationScreenState extends ConsumerState<ProfileCreationScreen> {
         onTap: () => setState(() => _selectedTankType = type),
         borderRadius: AppRadius.mediumRadius,
         child: Container(
-          padding: EdgeInsets.all(AppSpacing.sm2),
+          padding: const EdgeInsets.all(AppSpacing.sm2),
           decoration: BoxDecoration(
             color: isSelected ? AppOverlays.primary10 : null,
             borderRadius: AppRadius.mediumRadius,
@@ -459,7 +459,7 @@ class _ProfileCreationScreenState extends ConsumerState<ProfileCreationScreen> {
               ExcludeSemantics(
                 child: Text(type.emoji, style: Theme.of(context).textTheme.headlineMedium!.copyWith(fontSize: 40)),
               ),
-              SizedBox(height: AppSpacing.xs2),
+              const SizedBox(height: AppSpacing.xs2),
               ExcludeSemantics(
                 child: Text(
                   type.displayName,
@@ -471,7 +471,7 @@ class _ProfileCreationScreenState extends ConsumerState<ProfileCreationScreen> {
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
-              SizedBox(height: 3),
+              const SizedBox(height: 3),
               Flexible(
                 child: ExcludeSemantics(
                   child: Text(

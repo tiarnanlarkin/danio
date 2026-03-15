@@ -367,7 +367,7 @@ class StreakCalendarScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(title: const Text('Activity Calendar')),
       body: SingleChildScrollView(
-        padding: EdgeInsets.all(AppSpacing.md),
+        padding: const EdgeInsets.all(AppSpacing.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -424,7 +424,7 @@ class _StatCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(AppSpacing.md),
+      padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
         color: context.surfaceColor,
         borderRadius: AppRadius.mediumRadius,

@@ -34,7 +34,7 @@ class _TankComparisonScreenState extends ConsumerState<TankComparisonScreen> {
           if (tanks.length < 2) {
             return Center(
               child: Padding(
-                padding: EdgeInsets.all(AppSpacing.xl),
+                padding: const EdgeInsets.all(AppSpacing.xl),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -70,7 +70,7 @@ class _TankComparisonScreenState extends ConsumerState<TankComparisonScreen> {
               : tanks[1];
 
           return ListView(
-            padding: EdgeInsets.all(AppSpacing.md),
+            padding: const EdgeInsets.all(AppSpacing.md),
             children: [
               // Tank selectors
               Row(
@@ -84,7 +84,7 @@ class _TankComparisonScreenState extends ConsumerState<TankComparisonScreen> {
                     ),
                   ),
                   const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 8),
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
                     child: Icon(Icons.compare_arrows),
                   ),
                   Expanded(
@@ -150,7 +150,7 @@ class _TankSelector extends StatelessWidget {
       value: selectedId,
       decoration: const InputDecoration(
         border: OutlineInputBorder(),
-        contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       ),
       items: tanks
           .where((t) => t.id != excludeId)
@@ -179,7 +179,7 @@ class _ComparisonSection extends StatelessWidget {
     return Card(
       margin: const EdgeInsets.only(bottom: 16),
       child: Padding(
-        padding: EdgeInsets.all(AppSpacing.md),
+        padding: const EdgeInsets.all(AppSpacing.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
