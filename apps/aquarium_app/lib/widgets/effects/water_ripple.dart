@@ -41,6 +41,9 @@ class _WaterRippleState extends State<WaterRipple>
 
   @override
   Widget build(BuildContext context) {
+    final reduceMotion = MediaQuery.of(context).disableAnimations;
+    if (reduceMotion) return const SizedBox.shrink();
+
     return AnimatedBuilder(
       animation: _controller,
       builder: (context, child) {

@@ -36,7 +36,7 @@ class SwayingPlant extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (!enabled) return child;
+    if (!enabled || MediaQuery.of(context).disableAnimations) return child;
     
     // Stagger duration based on index for natural look
     // Each plant gets a slightly different timing

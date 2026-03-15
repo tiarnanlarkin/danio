@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart' hide PerformanceOverlay;
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'providers/onboarding_provider.dart';
 import 'providers/settings_provider.dart';
@@ -61,6 +62,12 @@ void main() async {
       }
     },
   );
+
+  // Lock orientation to portrait
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
 
   // Initialize Supabase (safe to call - returns false if credentials are
   // placeholders, and the app continues in offline-only mode).

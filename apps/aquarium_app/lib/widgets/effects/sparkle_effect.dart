@@ -105,6 +105,9 @@ class _SparkleEffectState extends State<SparkleEffect>
 
   @override
   Widget build(BuildContext context) {
+    final reduceMotion = MediaQuery.of(context).disableAnimations;
+    if (reduceMotion) return widget.child;
+
     return Stack(
       children: [
         widget.child,

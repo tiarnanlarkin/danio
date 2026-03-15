@@ -83,6 +83,34 @@ class _XpAwardAnimationState extends State<XpAwardAnimation>
 
   @override
   Widget build(BuildContext context) {
+    final reduceMotion = MediaQuery.of(context).disableAnimations;
+    if (reduceMotion) {
+      // Show static "+XP" text without animation
+      return Container(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [AppColors.warning, AppColors.warningAlpha80],
+          ),
+          borderRadius: AppRadius.largeRadius,
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Icon(Icons.star, color: Colors.white, size: AppIconSizes.md),
+            const SizedBox(width: AppSpacing.sm),
+            Text(
+              '+${widget.xpAmount} XP',
+              style: AppTypography.headlineSmall.copyWith(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
     return AnimatedBuilder(
       animation: _controller,
       builder: (context, child) {
