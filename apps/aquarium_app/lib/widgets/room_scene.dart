@@ -61,24 +61,27 @@ class LivingRoomScene extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Wrap entire scene with day/night ambient lighting overlay
-    return AmbientLightingOverlay(
-      child: LayoutBuilder(
-        builder: (context, constraints) {
-          final w = constraints.maxWidth;
-          final h = constraints.maxHeight.isFinite
-              ? constraints.maxHeight
-              : w * 1.4;
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final w = constraints.maxWidth;
+        final h = constraints.maxHeight.isFinite
+            ? constraints.maxHeight
+            : w * 1.4;
 
-          return SizedBox(
-            width: w,
-            height: h,
-            child: Stack(
-              // BUG-03: clip room scene children to prevent overflow into panel area
-              clipBehavior: Clip.hardEdge,
-              children: [
-                // === LAYER 1: Cozy room background with walls, floor, window ===
-                Positioned.fill(child: _CozyRoomBackground(theme: theme)),
+        return SizedBox(
+          width: w,
+          height: h,
+          child: Stack(
+            // BUG-03: clip room scene children to prevent overflow into panel area
+            clipBehavior: Clip.hardEdge,
+            children: [
+              // === LAYER 1: Cozy room background with walls, floor, window ===
+              // AmbientLightingOverlay wraps ONLY the room background — not the tank
+              Positioned.fill(
+                child: AmbientLightingOverlay(
+                  child: _CozyRoomBackground(theme: theme),
+                ),
+              ),
 
               // === LAYER 2: Decorative room elements (plants, shelves, lamp) ===
               // Tall plant on left side — BUG-03: repositioned to stay above stand boundary
@@ -284,8 +287,7 @@ class LivingRoomScene extends ConsumerWidget {
             ],
           ),
         );
-        },
-      ),
+      },
     );
   }
 }
@@ -1294,16 +1296,21 @@ class _ThemedAquarium extends StatelessWidget {
       height: height,
       decoration: BoxDecoration(
         borderRadius: AppRadius.largeRadius,
-        boxShadow: [
+        // Glass border: icy blue, 2dp, border ONLY — no fill (design system §2.4)
+        border: Border.all(
+          color: const Color(0xFFB8DDE8), // glassBorder
+          width: 2.0,
+        ),
+        boxShadow: const [
           BoxShadow(
-            color: theme.waterMid.withAlpha(102),
-            blurRadius: 30,
-            spreadRadius: 5,
+            color: Color(0x1A000000), // 10% black — outer shadow
+            blurRadius: 12,
+            offset: Offset(0, 4),
           ),
           BoxShadow(
-            color: AppOverlays.black15,
-            blurRadius: 20,
-            offset: const Offset(0, 10),
+            color: Color(0x337FBECC), // 20% icy inner glow
+            blurRadius: 6,
+            spreadRadius: -2,
           ),
         ],
       ),
@@ -1311,38 +1318,40 @@ class _ThemedAquarium extends StatelessWidget {
         borderRadius: AppRadius.largeRadius,
         child: Stack(
           children: [
-            // Water gradient
+            // Water gradient — crystal clear teal, fixed palette (design system §2.3)
             Container(
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
-                  colors: [theme.waterTop, theme.waterMid, theme.waterBottom],
+                  stops: [0.0, 0.25, 0.65, 1.0],
+                  colors: [
+                    Color(0xFF9ED8EC), // waterSurface — icy top
+                    Color(0xFF6BBDD8), // waterMidUpper — clear mid
+                    Color(0xFF4A9DB5), // waterMidLower — deeper
+                    Color(0xFF2D7A94), // waterDepth — dark bottom
+                  ],
                 ),
               ),
             ),
 
-            // Glass frame
-            Container(
-              decoration: BoxDecoration(
-                borderRadius: AppRadius.largeRadius,
-                border: Border.all(
-                  color: AppOverlays.white50,
-                  width: 4,
-                ),
-              ),
-            ),
-
-            // Sand/substrate
+            // Sand/substrate — warm beige, fixed palette (design system §5)
             Positioned(
               bottom: 0,
               left: 0,
               right: 0,
               child: Container(
                 height: height * 0.18,
-                decoration: BoxDecoration(
-                  color: theme.sand,
-                  borderRadius: const BorderRadius.only(
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      Color(0xFFE8D5B0), // sandLight — warm cream
+                      Color(0xFFD4BC8A), // sandMid
+                    ],
+                  ),
+                  borderRadius: BorderRadius.only(
                     bottomLeft: Radius.circular(20),
                     bottomRight: Radius.circular(20),
                   ),
@@ -1403,25 +1412,19 @@ class _ThemedAquarium extends StatelessWidget {
               Positioned(
                 top: height * 0.25,
                 left: width * 0.02,
-                child: Opacity(
-                  opacity: 0.7, // Slightly faded to appear further back
-                  child: RiveFish(
-                    fishType: RiveFishType.emotional,
-                    size: height * 0.18,
-                  ),
+                child: RiveFish(
+                  fishType: RiveFishType.emotional,
+                  size: height * 0.18,
                 ),
               ),
               // Small fish in back - behind right plant
               Positioned(
                 top: height * 0.35,
                 right: width * 0.02,
-                child: Opacity(
-                  opacity: 0.7,
-                  child: RiveFish(
-                    fishType: RiveFishType.joystick,
-                    size: height * 0.16,
-                    flipHorizontal: true,
-                  ),
+                child: RiveFish(
+                  fishType: RiveFishType.joystick,
+                  size: height * 0.16,
+                  flipHorizontal: true,
                 ),
               ),
             ],
@@ -1522,10 +1525,10 @@ class _ThemedAquarium extends StatelessWidget {
                 ),
               ),
             ] else ...[
-              // Animated swimming fish
+              // Animated swimming fish — flat vector palette (design system §1.4)
               _AnimatedSwimmingFish(
                 size: 28,
-                color: theme.fish1,
+                color: const Color(0xFFE8503A), // fishCoralRed
                 tankWidth: width,
                 tankHeight: height,
                 baseTop: 0.22,
@@ -1535,7 +1538,7 @@ class _ThemedAquarium extends StatelessWidget {
               ),
               _AnimatedSwimmingFish(
                 size: AppIconSizes.md,
-                color: theme.fish2,
+                color: const Color(0xFF3A78C9), // fishCobaltBlue
                 tankWidth: width,
                 tankHeight: height,
                 baseTop: 0.40,
@@ -1545,7 +1548,7 @@ class _ThemedAquarium extends StatelessWidget {
               ),
               _AnimatedSwimmingFish(
                 size: AppIconSizes.sm,
-                color: theme.fish3,
+                color: const Color(0xFFE8A030), // fishAmberGold
                 tankWidth: width,
                 tankHeight: height,
                 baseTop: 0.55,
@@ -1571,7 +1574,7 @@ class _ThemedAquarium extends StatelessWidget {
             if (useRiveFish)
               const WaterSurfaceOverlay(
                 height: 30,
-                opacity: 0.3,
+                opacity: 0.15, // design system §2.1: max 15% opacity
               ),
 
             // Light reflection
