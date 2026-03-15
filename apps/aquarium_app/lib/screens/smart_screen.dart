@@ -269,15 +269,6 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
           if (anomalies.isEmpty) {
             return Column(
               children: [
-                // Drag handle
-                Container(
-                  width: 40, height: 4,
-                  margin: const EdgeInsets.symmetric(vertical: AppSpacing.md),
-                  decoration: BoxDecoration(
-                    color: context.borderColor,
-                    borderRadius: BorderRadius.circular(2),
-                  ),
-                ),
                 const SizedBox(height: AppSpacing.sm),
                 Text('Anomaly History',
                   style: AppTypography.titleLarge.copyWith(fontWeight: FontWeight.bold)),
@@ -312,12 +303,7 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
             itemCount: anomalies.length + 2,
             itemBuilder: (ctx, i) {
               if (i == 0) {
-                return Column(children: [
-                  Container(width: 40, height: 4,
-                    margin: const EdgeInsets.symmetric(vertical: AppSpacing.md),
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(color: context.borderColor, borderRadius: BorderRadius.circular(2))),
-                ]);
+                return const SizedBox(height: AppSpacing.sm);
               }
               if (i == 1) {
                 return Padding(

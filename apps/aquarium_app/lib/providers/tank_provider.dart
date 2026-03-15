@@ -535,7 +535,7 @@ final tankHeaterProvider = FutureProvider.family<Equipment?, String>((
 });
 
 /// Tasks for a tank (null = all tasks)
-final tasksProvider = FutureProvider.family<List<Task>, String?>((
+final tasksProvider = FutureProvider.autoDispose.family<List<Task>, String?>((
   ref,
   tankId,
 ) async {

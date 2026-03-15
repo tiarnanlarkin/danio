@@ -11,8 +11,8 @@ class HeartsConfig {
   static const int maxHearts = 5;
   static const int startingHearts = 5;
   static const Duration refillInterval = Duration(
-    minutes: 5,
-  ); // 5 minutes per heart
+    minutes: 60,
+  ); // 1 hour per heart (5 hours for full refill)
   static const int practiceReward = 1; // Hearts earned for completing practice
 }
 

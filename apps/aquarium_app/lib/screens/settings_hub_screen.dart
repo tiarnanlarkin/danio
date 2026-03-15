@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/user_profile_provider.dart';
 import '../theme/app_theme.dart';
 import '../utils/app_constants.dart';
+
+const String appVersion = String.fromEnvironment('APP_VERSION', defaultValue: '1.0.0');
 import '../widgets/common/common_widgets.dart';
 import 'settings_screen.dart';
 // friends_screen.dart — hidden until feature ships (CA-002)
@@ -190,7 +192,7 @@ class SettingsHubScreen extends ConsumerWidget {
       // === App Version Footer ===
       Center(
         child: Text(
-          'Danio v1.0.0',
+          'Danio v$appVersion',
           style: AppTypography.bodySmall.copyWith(
             color: context.textSecondary,
           ),

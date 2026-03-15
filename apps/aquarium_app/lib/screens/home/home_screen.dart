@@ -952,13 +952,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Container(width: 40, height: 4,
-              decoration: BoxDecoration(
-                color: context.borderColor,
-                borderRadius: BorderRadius.circular(2),
-              ),
-            ),
-            const SizedBox(height: AppSpacing.sm2),
             Text('Quick Water Test', style: AppTypography.headlineSmall),
             const SizedBox(height: AppSpacing.md),
             Row(

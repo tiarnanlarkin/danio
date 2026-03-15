@@ -616,6 +616,7 @@ class LocalJsonStorageService implements StorageService {
     'targets': _targetsToJson(t.targets),
     'notes': t.notes,
     'imageUrl': t.imageUrl,
+    'sortOrder': t.sortOrder,
     'createdAt': t.createdAt.toIso8601String(),
     'updatedAt': t.updatedAt.toIso8601String(),
   };
@@ -637,6 +638,7 @@ class LocalJsonStorageService implements StorageService {
       targets: _targetsFromJson(m['targets']),
       notes: m['notes'] as String?,
       imageUrl: m['imageUrl'] as String?,
+      sortOrder: (m['sortOrder'] as int?) ?? 0,
       createdAt: DateTime.parse(m['createdAt'] as String),
       updatedAt: DateTime.parse(m['updatedAt'] as String),
     );

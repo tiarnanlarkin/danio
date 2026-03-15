@@ -357,18 +357,33 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
     final updatedHistory = Map<String, int>.from(current.dailyXpHistory);
     updatedHistory[todayKey] = (updatedHistory[todayKey] ?? 0) + effectiveAmount;
 
+    // Prune dailyXpHistory to last 365 entries to prevent unbounded growth
+    Map<String, int> prunedHistory = updatedHistory;
+    if (updatedHistory.length > 365) {
+      final sorted = updatedHistory.entries.toList()
+        ..sort((a, b) => b.key.compareTo(a.key));
+      prunedHistory = Map.fromEntries(sorted.take(365));
+    }
+
     final updated = current.copyWith(
       totalXp: current.totalXp + effectiveAmount,
       weeklyXP: weeklyXP,
       weekStartDate: newWeekStart,
       league: newLeague,
-      dailyXpHistory: updatedHistory,
+      dailyXpHistory: prunedHistory,
       updatedAt: DateTime.now(),
     );
 
     await _save(updated);
     state = AsyncValue.data(updated);
 
+    /// XP Flow:
+    /// 1. addXp() - adds base XP to totalXp and dailyXpHistory
+    /// 2. recordActivity(xp: 0) - handles streak bonus, daily goal, weekly reset
+    ///    Note: xp: 0 is intentional — base XP already added by addXp()
+    ///    The streak bonusXp is added here on TOP of the base XP.
+    /// DO NOT refactor these into a single method without understanding
+    /// the streak bonus logic in recordActivity().
     // Record activity for streak tracking
     await recordActivity(xp: 0); // XP already added above
   }
