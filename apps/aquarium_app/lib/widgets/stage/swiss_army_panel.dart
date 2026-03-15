@@ -204,17 +204,17 @@ class StageHandleStrip extends ConsumerWidget {
         }
       },
       // SizedBox ensures a ≥48dp touch target (Material a11y minimum) while
-      // the inner Container stays visually narrow at 14dp.
+      // the inner Container stays visually narrow at 20dp.
       child: SizedBox(
         width: 48,
         height: 80,
         child: Align(
           alignment: isLeft ? Alignment.centerLeft : Alignment.centerRight,
           child: Container(
-            width: 14,
+            width: 20,
             height: 80,
             decoration: BoxDecoration(
-              color: AppOverlays.black40,
+              color: AppOverlays.black60,
               borderRadius: BorderRadius.horizontal(
                 left: isLeft ? Radius.zero : const Radius.circular(8),
                 right: isLeft ? const Radius.circular(8) : Radius.zero,
@@ -226,7 +226,11 @@ class StageHandleStrip extends ConsumerWidget {
               ),
             ),
             child: Center(
-              child: Icon(icon, color: Colors.white, size: 16),
+              child: Icon(
+                isLeft ? Icons.chevron_right : Icons.chevron_left,
+                color: Colors.white,
+                size: 18,
+              ),
             ),
           ),
         ),

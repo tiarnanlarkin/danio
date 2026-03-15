@@ -425,34 +425,36 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             ),
             AmbientTipOverlay(theme: theme),
             // Panel handle strips — always hittable, pinned to screen edges.
-            // Rendered here (not in room_scene.dart) so they span full height
-            // and sit above all other layers. 48dp touch target, 14dp visual.
-            Positioned(
-              left: 0,
-              top: 0,
-              bottom: 0,
-              child: const Align(
-                alignment: Alignment.centerLeft,
-                child: StageHandleStrip(
-                  panel: StagePanel.temp,
-                  isLeft: true,
-                  icon: Icons.thermostat_rounded,
+            // Positioned at the tank's vertical midpoint (tank occupies ~24%-68%
+            // of screen height, so midpoint ≈ 46% from top). Using a fraction-
+            // based top offset so it scales across device sizes.
+            // 48dp touch target, 20dp visual.
+            Builder(builder: (context) {
+              final screenH = MediaQuery.of(context).size.height;
+              // Tank top ≈ 24% of scene height, tank bottom ≈ 68%.
+              // Place handle at tank vertical centre (46%) minus half handle height (40dp).
+              final topOffset = screenH * 0.38;
+              return Stack(children: [
+                Positioned(
+                  left: 0,
+                  top: topOffset,
+                  child: const StageHandleStrip(
+                    panel: StagePanel.temp,
+                    isLeft: true,
+                    icon: Icons.thermostat_rounded,
+                  ),
                 ),
-              ),
-            ),
-            Positioned(
-              right: 0,
-              top: 0,
-              bottom: 0,
-              child: const Align(
-                alignment: Alignment.centerRight,
-                child: StageHandleStrip(
-                  panel: StagePanel.waterQuality,
-                  isLeft: false,
-                  icon: Icons.science_rounded,
+                Positioned(
+                  right: 0,
+                  top: topOffset,
+                  child: const StageHandleStrip(
+                    panel: StagePanel.waterQuality,
+                    isLeft: false,
+                    icon: Icons.science_rounded,
+                  ),
                 ),
-              ),
-            ),
+              ]);
+            }),
 
             // Top bar overlay
             Positioned(
@@ -533,7 +535,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               peekHeight: 32,
               bottomOffset: 32,
               maxHeightFraction: 0.75,
-              label: 'Your Tanks',
+              label: 'Tanks',
               emoji: '🐠',
               tabColor: const Color(0xFF4A9DB5),
               backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
@@ -576,7 +578,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               peekHeight: 32,
               bottomOffset: 0,
               maxHeightFraction: 0.65,
-              label: 'Your Progress',
+              label: 'Progress',
               emoji: '🔥',
               tabColor: const Color(0xFFE8503A),
               backgroundColor: Theme.of(context).colorScheme.surface,

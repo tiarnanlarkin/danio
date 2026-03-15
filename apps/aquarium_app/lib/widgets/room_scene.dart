@@ -1254,7 +1254,7 @@ class _ThemedAquarium extends StatelessWidget {
               left: 0,
               right: 0,
               child: Container(
-                height: height * 0.18,
+                height: height * 0.12,
                 decoration: const BoxDecoration(
                   gradient: LinearGradient(
                     begin: Alignment.topCenter,
