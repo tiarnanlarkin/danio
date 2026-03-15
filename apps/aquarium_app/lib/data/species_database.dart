@@ -158,7 +158,7 @@ const List<SpeciesInfo> _allSpecies = [
     minSchoolSize: 6,
     temperament: 'Peaceful',
     diet: 'Omnivore - flakes, micro pellets, frozen/live foods',
-    adultSizeCm: 5,
+    adultSizeCm: 4,
     swimLevel: 'Middle',
     description:
         'Similar to Neon Tetra but with more vibrant red extending the full body length. Prefers warmer, softer water. Beautiful in planted tanks.',
@@ -516,7 +516,7 @@ const List<SpeciesInfo> _allSpecies = [
     temperament: 'Peaceful',
     diet:
         'Herbivore - algae wafers, vegetables (zucchini, cucumber), driftwood',
-    adultSizeCm: 15,
+    adultSizeCm: 12,
     swimLevel: 'Bottom',
     description:
         'Excellent algae eater that stays reasonably small (unlike Common Pleco). Needs driftwood for digestion. Mostly nocturnal. Males have bristles.',
@@ -2807,7 +2807,7 @@ const List<SpeciesInfo> _allSpecies = [
     commonName: 'Chinese Algae Eater',
     scientificName: 'Gyrinocheilus aymonieri',
     family: 'Gyrinocheilidae',
-    careLevel: 'Beginner',
+    careLevel: 'Intermediate',
     minTankLitres: 150,
     minTempC: 22,
     maxTempC: 28,
@@ -2867,7 +2867,7 @@ const List<SpeciesInfo> _allSpecies = [
     description:
         'Hardy, larger tetra with red fins. Notorious plant eater - not suitable for planted tanks. Very tolerant of water conditions.',
     compatibleWith: ['Other robust Tetras', 'Barbs', 'Cichlids'],
-    avoidWith: ['Live plants', 'Long-finned fish', 'Small delicate fish'],
+    avoidWith: ['Live plants', 'Planted tanks', 'Long-finned fish', 'Small delicate fish'],
   ),
   SpeciesInfo(
     commonName: 'Scarlet Badis',
@@ -2975,8 +2975,8 @@ const List<SpeciesInfo> _allSpecies = [
     adultSizeCm: 25,
     swimLevel: 'Bottom',
     description:
-        'Neotenic salamander that remains aquatic. Requires cold water - CANNOT tolerate tropical temperatures. No tankmates recommended as they eat anything that fits in mouth.',
+        'Neotenic salamander that remains aquatic. Requires cold water - CANNOT tolerate tropical temperatures. No tankmates recommended as they eat anything that fits in mouth. ⚠️ Legal restrictions apply in some regions. Check local laws before purchasing.',
     compatibleWith: ['Other similar-sized Axolotls (with caution)'],
-    avoidWith: ['Tropical fish', 'Small fish', 'Fish with spines', 'Warm water'],
+    avoidWith: ['All fish species', 'Tropical fish', 'Small fish', 'Fish with spines', 'Warm water'],
   ),
 ];

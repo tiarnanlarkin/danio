@@ -223,7 +223,7 @@ final equipmentPath = LearningPath(
           const LessonSection(
             type: LessonSectionType.text,
             content:
-                'The standard rule: 3-5 watts per liter. A 60-liter tank needs 180-300W. Go bigger in cold rooms, smaller in warm rooms. Undersizing means the heater runs constantly (shorter lifespan).',
+                'The standard rule: 1-3 watts per litre for modern tanks in typical room temperatures, up to 5W/L for larger tanks or cold rooms. A 60-litre tank typically needs 60-180W. Undersizing means the heater runs constantly (shorter lifespan).',
           ),
           const LessonSection(
             type: LessonSectionType.tip,
@@ -287,16 +287,16 @@ final equipmentPath = LearningPath(
           questions: [
             const QuizQuestion(
               id: 'eq_heat_q1',
-              question: 'How many watts per liter do you need?',
+              question: 'How many watts per litre do you typically need?',
               options: [
-                '1 watt',
-                '3-5 watts',
+                '0.5 watts',
+                '1-3 watts (up to 5W/L for cold rooms)',
                 '10+ watts',
                 'Watts don\'t matter',
               ],
               correctIndex: 1,
               explanation:
-                  '3-5 watts per liter is standard. A 60L tank needs 180-300W. Adjust based on room temperature.',
+                  '1-3 watts per litre is standard for modern tanks in typical room temperatures, up to 5W/L for larger tanks or cold rooms.',
             ),
             const QuizQuestion(
               id: 'eq_heat_q2',

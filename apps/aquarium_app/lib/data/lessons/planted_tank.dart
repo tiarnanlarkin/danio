@@ -238,7 +238,7 @@ final plantedTankPath = LearningPath(
           const LessonSection(
             type: LessonSectionType.warning,
             content:
-                'Aquasoil releases ammonia during the first 2-4 weeks! You MUST cycle it thoroughly before adding fish. Many beginners skip this and kill their fish.',
+                'Aquasoil releases ammonia during the first 2-6 weeks! You MUST cycle it thoroughly before adding fish. Many beginners skip this and kill their fish.',
           ),
           const LessonSection(
             type: LessonSectionType.heading,
@@ -272,7 +272,7 @@ final plantedTankPath = LearningPath(
               id: 'plant_sub_q1',
               question: 'What does "inert" substrate mean?',
               options: [
-                'It\'s dead',
+                'It actively releases nutrients',
                 'It doesn\'t affect water chemistry or provide nutrients',
                 'It kills plants',
                 'It\'s the best type',
@@ -306,7 +306,7 @@ final plantedTankPath = LearningPath(
               ],
               correctIndex: 1,
               explanation:
-                  'Aquasoil releases ammonia for 2-4 weeks as organic matter breaks down. You must cycle it like a new tank before adding fish!',
+                  'Aquasoil releases ammonia for 2-6 weeks as organic matter breaks down. You must cycle it like a new tank before adding fish!',
             ),
             const QuizQuestion(
               id: 'plant_sub_q4',
@@ -440,7 +440,7 @@ final plantedTankPath = LearningPath(
           const LessonSection(
             type: LessonSectionType.funFact,
             content:
-                'Takashi Amano, the godfather of aquascaping, ran CO2 on his legendary tanks. But he also said: "Nature doesn\'t use CO2 regulators - respect the plants\' natural needs first."',
+                'Remember: healthy plants start with the right environment — lighting, nutrients, and CO2 in balance.',
           ),
         ],
         quiz: Quiz(

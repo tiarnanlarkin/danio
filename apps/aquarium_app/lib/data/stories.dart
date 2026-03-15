@@ -53,7 +53,7 @@ class Stories {
       StoryScene(
         id: 'bad_start',
         text:
-            'Alex shakes their head. "That would be New Tank Syndrome - the ammonia from fish waste would spike before beneficial bacteria establish. Your fish could die within days."\n\n"Let us do this right," Alex suggests. What should you do?',
+            'Alex shakes their head. "That would be New Tank Syndrome - the ammonia from fish waste would spike before beneficial bacteria establish. Your fish could die within days."\n\n"Let's do this right," Alex suggests. What should you do?',
         choices: [
           StoryChoice(
             id: 'learn_cycle',
@@ -408,7 +408,7 @@ class Stories {
       StoryScene(
         id: 'pleco_warning',
         text:
-            '"That\'s a common pleco," Maria warns. "They can grow to 18 inches! Way too big for a 20-gallon."\n\nShe shows you smaller alternatives: "Bristlenose plecos stay under 5 inches, or consider otocinclus catfish."',
+            '"That\'s a common pleco," Maria warns. "They can grow to 18 inches (45cm+)! Way too big for a 20-gallon."\n\nShe shows you smaller alternatives: "Bristlenose plecos stay under 5 inches, or consider otocinclus catfish."',
         choices: [
           StoryChoice(
             id: 'bristlenose',
@@ -631,7 +631,7 @@ class Stories {
       StoryScene(
         id: 'temp_check',
         text:
-            'Before adding the new water, you check temperature:\n• Tank water: 76°F\n• New water: 65°F\n\nThat\'s an 11-degree difference! What do you do?',
+            'Before adding the new water, you check temperature:\n• Tank water: 76°F (24°C)\n• New water: 65°F (18°C)\n\nThat\'s an 11°F (6°C) difference! What do you do?',
         choices: [
           StoryChoice(
             id: 'warm_it',
@@ -653,7 +653,7 @@ class Stories {
       StoryScene(
         id: 'perfect_match',
         text:
-            'You add hot water to warm the new water to 76°F. Perfect match!\n\nYou slowly pour the water back into the tank, aiming for the decorations to diffuse the flow. The fish seem unbothered.',
+            'You add hot water to warm the new water to 76°F (24°C). Perfect match!\n\nYou slowly pour the water back into the tank, aiming for the decorations to diffuse the flow. The fish seem unbothered.',
         choices: [
           StoryChoice(
             id: 'finish_up',
