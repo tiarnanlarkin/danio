@@ -432,9 +432,9 @@ class _TankSettingsScreenState extends ConsumerState<TankSettingsScreen> {
       },
     );
 
-    // Navigate back to home immediately
+    // Navigate back: pop TankSettings and TankDetail only (2 screens)
     if (mounted) {
-      Navigator.of(context).popUntil((route) => route.isFirst);
+      Navigator.of(context)..pop()..pop();
 
       // Show SnackBar with Undo option
       ScaffoldMessenger.of(context).showSnackBar(

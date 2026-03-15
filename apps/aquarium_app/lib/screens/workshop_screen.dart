@@ -55,20 +55,30 @@ class WorkshopScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Container(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: WorkshopColors.gradientColors(context),
+    return Scaffold(
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: WorkshopColors.gradientColors(context),
+          ),
         ),
-      ),
-      child: SafeArea(
-        bottom: false,
-        child: CustomScrollView(
-          slivers: [
-            // Header
-            SliverToBoxAdapter(child: _WorkshopHeader()),
+        child: SafeArea(
+          bottom: false,
+          child: CustomScrollView(
+            slivers: [
+              // AppBar with back button
+              SliverAppBar(
+                title: const Text('🔧 Workshop'),
+                backgroundColor: Colors.transparent,
+                foregroundColor: WorkshopColors.textPrimary,
+                elevation: 0,
+                pinned: true,
+              ),
+
+              // Header
+              SliverToBoxAdapter(child: _WorkshopHeader()),
 
             // Tool cards
             SliverPadding(
@@ -169,6 +179,7 @@ class WorkshopScreen extends ConsumerWidget {
             const SliverToBoxAdapter(child: SizedBox(height: kScrollEndPadding)),
           ],
         ),
+      ),
       ),
     );
   }

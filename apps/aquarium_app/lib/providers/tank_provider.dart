@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
 import '../models/models.dart';
@@ -344,12 +345,16 @@ class TankActions {
       final allLivestock = await storage.getLivestockForTank(fromTankId);
 
       for (final id in livestockIds) {
-        final livestock = allLivestock.firstWhere(
-          (l) => l.id == id,
-          orElse: () => throw StateError('Livestock not found: $id'),
-        );
-        final moved = livestock.copyWith(tankId: toTankId);
-        await storage.saveLivestock(moved);
+        try {
+          final livestock = allLivestock.firstWhere(
+            (l) => l.id == id,
+          );
+          final moved = livestock.copyWith(tankId: toTankId);
+          await storage.saveLivestock(moved);
+        } on StateError {
+          debugPrint('bulkMoveLivestock: skipping missing livestock $id');
+          continue;
+        }
       }
 
       _ref.invalidate(livestockProvider(fromTankId));

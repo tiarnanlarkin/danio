@@ -1610,6 +1610,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   void _showStatsDetails(BuildContext context) {
+    // Capture the screen-level context before opening the sheet.
+    // The sheet's builder context (ctx) will be deactivated after Navigator.pop(ctx),
+    // so any navigation after dismissing the sheet must use screenContext.
+    final screenContext = context;
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,

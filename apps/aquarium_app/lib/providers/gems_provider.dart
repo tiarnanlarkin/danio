@@ -61,6 +61,7 @@ class GemsNotifier extends StateNotifier<AsyncValue<GemsState>> {
   }
 
   static const _key = 'gems_state';
+  bool _spending = false;
 
   Future<void> _load() async {
     try {
@@ -158,54 +159,58 @@ class GemsNotifier extends StateNotifier<AsyncValue<GemsState>> {
     String? itemName,
   }) async {
     if (amount <= 0) return false;
-
-    final current = state.value;
-    if (current == null) {
-      throw Exception('Cannot spend gems: Gems state not loaded');
-    }
-
-    // Check if user has enough gems
-    if (current.balance < amount) {
-      return false;
-    }
-
-    // Store original state for rollback
-    final originalState = current;
+    if (_spending) return false;
+    _spending = true;
 
     try {
-      final now = DateTime.now();
-      final newBalance = current.balance - amount;
+      final current = state.value;
+      if (current == null) {
+        throw Exception('Cannot spend gems: Gems state not loaded');
+      }
 
-      final transaction = GemTransaction(
-        id: _uuid.v4(),
-        type: GemTransactionType.spend,
-        amount: -amount, // Negative for spending
-        reason: itemName ?? 'Shop purchase',
-        itemId: itemId,
-        timestamp: now,
-        balanceAfter: newBalance,
-      );
+      // Check if user has enough gems
+      if (current.balance < amount) {
+        return false;
+      }
 
-      final updatedTransactions = [transaction, ...current.transactions];
-      final trimmedTransactions = updatedTransactions.take(100).toList();
+      // Store original state for rollback
+      final originalState = current;
 
-      final updatedState = current.copyWith(
-        balance: newBalance,
-        transactions: trimmedTransactions,
-        lastUpdated: now,
-      );
+      try {
+        final now = DateTime.now();
+        final newBalance = current.balance - amount;
 
-      // Atomic: save first, then update state
-      // If save fails, state won't be updated (rollback)
-      await _save(updatedState);
-      state = AsyncValue.data(updatedState);
-      return true;
-    } catch (e, st) {
-      // Rollback: restore original state
-      state = AsyncValue.data(originalState);
-      // Set error state temporarily
-      state = AsyncValue.error(e, st);
-      rethrow;
+        final transaction = GemTransaction(
+          id: _uuid.v4(),
+          type: GemTransactionType.spend,
+          amount: -amount, // Negative for spending
+          reason: itemName ?? 'Shop purchase',
+          itemId: itemId,
+          timestamp: now,
+          balanceAfter: newBalance,
+        );
+
+        final updatedTransactions = [transaction, ...current.transactions];
+        final trimmedTransactions = updatedTransactions.take(100).toList();
+
+        final updatedState = current.copyWith(
+          balance: newBalance,
+          transactions: trimmedTransactions,
+          lastUpdated: now,
+        );
+
+        // Atomic: save first, then update state
+        // If save fails, state won't be updated (rollback)
+        await _save(updatedState);
+        state = AsyncValue.data(updatedState);
+        return true;
+      } catch (e, st) {
+        // Rollback: restore original state
+        state = AsyncValue.data(originalState);
+        rethrow;
+      }
+    } finally {
+      _spending = false;
     }
   }
 

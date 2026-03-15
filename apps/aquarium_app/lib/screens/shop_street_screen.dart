@@ -58,20 +58,30 @@ class ShopStreetScreen extends ConsumerWidget {
     final budget = ref.watch(budgetProvider);
     final shops = ref.watch(localShopsProvider);
 
-    return Container(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: ShopColors.gradientColors(context),
+    return Scaffold(
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: ShopColors.gradientColors(context),
+          ),
         ),
-      ),
-      child: SafeArea(
-        bottom: false,
-        child: CustomScrollView(
-          slivers: [
-            // Header
-            SliverToBoxAdapter(child: _ShopHeader()),
+        child: SafeArea(
+          bottom: false,
+          child: CustomScrollView(
+            slivers: [
+              // AppBar with back button
+              SliverAppBar(
+                title: const Text('🏪 Shop Street'),
+                backgroundColor: Colors.transparent,
+                foregroundColor: ShopColors.textPrimary,
+                elevation: 0,
+                pinned: true,
+              ),
+
+              // Header
+              SliverToBoxAdapter(child: _ShopHeader()),
 
             // Shop sections
             SliverPadding(
@@ -140,6 +150,7 @@ class ShopStreetScreen extends ConsumerWidget {
             const SliverToBoxAdapter(child: SizedBox(height: kScrollEndPadding)),
           ],
         ),
+      ),
       ),
     );
   }
