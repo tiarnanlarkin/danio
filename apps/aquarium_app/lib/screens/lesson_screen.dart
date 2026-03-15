@@ -62,7 +62,34 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
           _levelBeforeLesson = profile.currentLevel;
         });
       }
+      _maybeExplainHearts();
     });
+  }
+
+  /// Show a one-time explanation of the hearts system on the user's first lesson.
+  Future<void> _maybeExplainHearts() async {
+    if (widget.isPracticeMode) return;
+    final prefs = await SharedPreferences.getInstance();
+    final explained = prefs.getBool('hearts_explained') ?? false;
+    if (explained) return;
+    await prefs.setBool('hearts_explained', true);
+    if (!mounted) return;
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('❤️ Hearts'),
+        content: const Text(
+          'Hearts are your learning lives! You lose one per wrong quiz answer. '
+          'They refill over time, or you can use gems to refill instantly.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(),
+            child: const Text('Got it!'),
+          ),
+        ],
+      ),
+    );
   }
 
   /// Shows a confirmation dialog before discarding mid-quiz progress.

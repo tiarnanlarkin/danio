@@ -16,6 +16,7 @@ import 'unit_converter_screen.dart';
 import 'tank_volume_calculator_screen.dart';
 import 'lighting_schedule_screen.dart';
 import '../utils/navigation_throttle.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 // charts_screen.dart requires tankId - accessed from tank detail screen
 
 /// Workshop colors - practical maker space theme
@@ -50,11 +51,40 @@ class WorkshopColors {
 }
 
 /// Workshop Room - Tools & Calculators
-class WorkshopScreen extends ConsumerWidget {
+class WorkshopScreen extends ConsumerStatefulWidget {
   const WorkshopScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<WorkshopScreen> createState() => _WorkshopScreenState();
+}
+
+class _WorkshopScreenState extends ConsumerState<WorkshopScreen> {
+  @override
+  void initState() {
+    super.initState();
+    _showFirstVisitTooltip();
+  }
+
+  Future<void> _showFirstVisitTooltip() async {
+    final prefs = await SharedPreferences.getInstance();
+    final visited = prefs.getBool('tab_4_workshop_visited') ?? false;
+    if (!visited) {
+      await prefs.setBool('tab_4_workshop_visited', true);
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('🔧 The Workshop — calculators, guides, and tools'),
+            duration: Duration(seconds: 4),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(

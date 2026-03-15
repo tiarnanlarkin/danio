@@ -7,6 +7,7 @@ import '../widgets/hearts_widgets.dart';
 import 'spaced_repetition_practice_screen.dart';
 import 'practice_screen.dart';
 import 'achievements_screen.dart';
+import 'tab_navigator.dart';
 import '../utils/navigation_throttle.dart';
 
 /// Practice Hub - Central location for all quiz and practice activities
@@ -89,10 +90,12 @@ class PracticeHubScreen extends ConsumerWidget {
           return _buildHeroCard(
             context,
             title: 'All Caught Up! 🎉',
-            subtitle: 'No cards due right now. Great job!',
+            subtitle: 'All caught up — try a new lesson? →',
             icon: Icons.check_circle,
             color: AppColors.success,
-            onTap: null,
+            onTap: () {
+              ref.read(currentTabProvider.notifier).state = 0;
+            },
           );
         }
       case 1:

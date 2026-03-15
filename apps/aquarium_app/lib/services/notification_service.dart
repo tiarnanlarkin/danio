@@ -22,7 +22,14 @@ class NotificationService {
   // Cached schedule mode — resolved once on first scheduling call (P2-007).
   AndroidScheduleMode? _cachedScheduleMode;
 
-  // Callback for handling notification taps
+  // Callback for handling notification taps.
+  // TODO(UX-sprint11): Notification tap handlers should switch to the correct
+  // tab via ref.read(currentTabProvider.notifier).state = X instead of pushing
+  // a new route onto the root navigator (which loses the tab bar). The current
+  // handler is set in main.dart and uses navigatorKey.currentState?.push(...).
+  // To fix properly, the handler needs access to a WidgetRef or a ProviderContainer
+  // so it can update currentTabProvider. This requires refactoring the notification
+  // initialization to accept a ProviderContainer reference.
   Function(String?)? onNotificationTap;
 
   /// Initialize the notification service.

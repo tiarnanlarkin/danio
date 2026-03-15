@@ -13,6 +13,7 @@ import '../services/api_rate_limiter.dart';
 import '../services/openai_service.dart';
 import '../theme/app_theme.dart';
 import '../widgets/compatibility_checker_widget.dart';
+import '../widgets/core/bubble_loader.dart';
 import '../widgets/offline_indicator.dart';
 import 'compatibility_checker_screen.dart';
 import 'settings_screen.dart';
@@ -228,8 +229,8 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
                             ? const Padding(
                                 padding: EdgeInsets.all(AppSpacing.sm2),
                                 child: SizedBox(
-                                  width: 16, height: 16,
-                                  child: CircularProgressIndicator(strokeWidth: 2),
+                                  width: 24, height: 24,
+                                  child: BubbleLoader(),
                                 ),
                               )
                             : IconButton(

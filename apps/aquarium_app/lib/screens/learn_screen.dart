@@ -22,6 +22,7 @@ import '../utils/app_constants.dart';
 import '../widgets/learning_streak_badge.dart';
 import '../widgets/placement_challenge_card.dart';
 import '../utils/navigation_throttle.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 /// The main learning hub - shows learning paths and progress
 /// Features a cozy illustrated "Study Room" header
@@ -35,6 +36,31 @@ class LearnScreen extends ConsumerStatefulWidget {
 class _LearnScreenState extends ConsumerState<LearnScreen> {
   final ScrollController _scrollController = ScrollController();
   bool _hasScrolledToFirstLesson = false;
+  final GlobalKey _firstPathKey = GlobalKey();
+
+  @override
+  void initState() {
+    super.initState();
+    _showFirstVisitTooltip();
+  }
+
+  Future<void> _showFirstVisitTooltip() async {
+    final prefs = await SharedPreferences.getInstance();
+    final visited = prefs.getBool('tab_0_visited') ?? false;
+    if (!visited) {
+      await prefs.setBool('tab_0_visited', true);
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('📚 Welcome to the Study Room — your learning hub!'),
+            duration: Duration(seconds: 4),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      });
+    }
+  }
 
   @override
   void dispose() {
@@ -52,12 +78,22 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
     _hasScrolledToFirstLesson = true;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted || !_scrollController.hasClients) return;
-      // Scroll past the 320px header to bring the learning paths into view
-      _scrollController.animateTo(
-        320.0,
-        duration: const Duration(milliseconds: 600),
-        curve: Curves.easeOutCubic,
-      );
+      // Scroll to the first learning path section dynamically
+      final keyContext = _firstPathKey.currentContext;
+      if (keyContext != null) {
+        Scrollable.ensureVisible(
+          keyContext,
+          duration: const Duration(milliseconds: 600),
+          curve: Curves.easeOutCubic,
+        );
+      } else {
+        // Fallback if key not yet attached
+        _scrollController.animateTo(
+          320.0,
+          duration: const Duration(milliseconds: 600),
+          curve: Curves.easeOutCubic,
+        );
+      }
     });
   }
 
@@ -289,6 +325,7 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
 
                 // Learning paths header with overall progress
                 SliverToBoxAdapter(
+                  key: _firstPathKey,
                   child: Padding(
                     padding: const EdgeInsets.fromLTRB(AppSpacing.md, AppSpacing.md, AppSpacing.md, AppSpacing.xs),
                     child: Column(

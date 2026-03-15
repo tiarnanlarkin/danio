@@ -80,6 +80,40 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     super.initState();
     _checkWelcomeBanner();
     _checkComebackBanner();
+    _showFirstVisitTooltip();
+  }
+
+  Future<void> _showFirstVisitTooltip() async {
+    final prefs = await SharedPreferences.getInstance();
+    final visited = prefs.getBool('tab_2_visited') ?? false;
+    if (!visited) {
+      await prefs.setBool('tab_2_visited', true);
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('🏠 This is your Living Room — manage your aquariums here'),
+            duration: Duration(seconds: 4),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      });
+    }
+    // Fix 3: Show stage panels hint on first visit
+    final panelsShown = prefs.getBool('stage_panels_shown') ?? false;
+    if (!panelsShown) {
+      await prefs.setBool('stage_panels_shown', true);
+      // Delay slightly so it appears after the room tooltip
+      await Future.delayed(const Duration(seconds: 5));
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('💡 Swipe from the edges to see your tank\'s temperature and water quality panels!'),
+          duration: Duration(seconds: 4),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    }
   }
 
   Future<void> _checkWelcomeBanner() async {
@@ -1877,29 +1911,32 @@ class _DismissibleBanner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.only(left: 10, top: 5, bottom: 5, right: 4),
-      decoration: BoxDecoration(
-        color: color,
-        borderRadius: AppRadius.mediumRadius,
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Flexible(
-            child: Text(text, style: textStyle),
-          ),
-          GestureDetector(
-            onTap: onDismiss,
-            child: const SizedBox(
-              width: 44,
-              height: 44,
-              child: Center(
-                child: Icon(Icons.close, size: 14, color: Colors.white70),
+    return Semantics(
+      liveRegion: true,
+      child: Container(
+        padding: const EdgeInsets.only(left: 10, top: 5, bottom: 5, right: 4),
+        decoration: BoxDecoration(
+          color: color,
+          borderRadius: AppRadius.mediumRadius,
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Flexible(
+              child: Text(text, style: textStyle),
+            ),
+            GestureDetector(
+              onTap: onDismiss,
+              child: const SizedBox(
+                width: 44,
+                height: 44,
+                child: Center(
+                  child: Icon(Icons.close, size: 14, color: Colors.white70),
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
