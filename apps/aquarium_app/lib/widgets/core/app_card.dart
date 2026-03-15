@@ -349,7 +349,6 @@ class InfoCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
     
     return AppCard(
       variant: AppCardVariant.filled,
@@ -425,7 +424,6 @@ class StatisticCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
     final primaryColor = color ?? AppColors.primary;
     
     return AppCard(
@@ -522,7 +520,6 @@ class ActionCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
     final color = accentColor ?? AppColors.primary;
     
     return AppCard(

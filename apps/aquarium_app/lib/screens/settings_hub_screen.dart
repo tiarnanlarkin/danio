@@ -3,19 +3,19 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/user_profile_provider.dart';
 import '../theme/app_theme.dart';
 import '../utils/app_constants.dart';
-
-const String appVersion = String.fromEnvironment('APP_VERSION', defaultValue: '1.0.0');
+import '../utils/navigation_throttle.dart';
 import '../widgets/common/common_widgets.dart';
+import 'about_screen.dart';
+import 'achievements_screen.dart';
+import 'analytics_screen.dart';
+import 'backup_restore_screen.dart';
 import 'settings_screen.dart';
 // friends_screen.dart — hidden until feature ships (CA-002)
 // leaderboard_screen.dart — hidden until feature ships (CA-003)
 import 'shop_street_screen.dart';
 import 'workshop_screen.dart';
-import 'achievements_screen.dart';
-import 'analytics_screen.dart';
-import 'backup_restore_screen.dart';
-import 'about_screen.dart';
-import '../utils/navigation_throttle.dart';
+
+const String appVersion = String.fromEnvironment('APP_VERSION', defaultValue: '1.0.0');
 
 /// Settings Hub - Consolidates all secondary features
 /// This is Tab 3 in the new navigation structure

@@ -55,7 +55,6 @@ class AppAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
     
     return AppBar(
       title: titleWidget ?? (title != null ? Text(
@@ -112,7 +111,6 @@ class AppBarAction extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
     
     Widget button = IconButton(
       icon: Icon(icon, size: AppIconSizes.md),
@@ -157,7 +155,6 @@ class AppBackButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
     
     return Semantics(
       label: semanticsLabel ?? 'Go back',
@@ -189,7 +186,6 @@ class AppCloseButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
     
     return Semantics(
       label: semanticsLabel ?? 'Close',
@@ -225,7 +221,6 @@ class AppTabBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
     
     return TabBar(
       controller: controller,

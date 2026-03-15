@@ -168,7 +168,7 @@ class _AchievementNotificationWidgetState
                   child: Container(
                     constraints: const BoxConstraints(maxWidth: 400),
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: Theme.of(context).colorScheme.surface,
                       borderRadius: AppRadius.largeRadius,
                       boxShadow: [
                         BoxShadow(
@@ -214,7 +214,7 @@ class _AchievementNotificationWidgetState
                                 width: 100,
                                 height: 100,
                                 decoration: BoxDecoration(
-                                  color: Colors.white,
+                                  color: Theme.of(context).colorScheme.surface,
                                   shape: BoxShape.circle,
                                   boxShadow: [
                                     BoxShadow(

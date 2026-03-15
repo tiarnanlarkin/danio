@@ -68,7 +68,7 @@ class _HouseNavigatorState extends ConsumerState<HouseNavigator> {
       name: 'Workshop',
       icon: Icons.build,
       emoji: '🔧',
-      color: Color(0xFF5D4E37), // Brown
+      color: AppColors.woodBrown, // Brown
     ),
     RoomInfo(
       name: 'Shop Street',

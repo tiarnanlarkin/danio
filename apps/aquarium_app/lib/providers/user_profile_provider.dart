@@ -8,6 +8,8 @@ import '../models/tank.dart'; // For TankType enum
 import '../models/user_profile.dart';
 import '../models/learning.dart';
 import '../data/achievements.dart'; // New canonical achievement definitions
+import '../models/achievements.dart'; // AchievementRarity
+import '../models/learning.dart'; // AchievementTier
 import '../models/daily_goal.dart';
 import '../models/lesson_progress.dart';
 import '../models/gem_economy.dart';
