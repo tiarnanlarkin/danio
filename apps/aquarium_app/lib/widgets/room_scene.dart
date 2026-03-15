@@ -293,15 +293,15 @@ String _backgroundForTheme(RoomThemeType type) {
   switch (type) {
     case RoomThemeType.cozyLiving:
     case RoomThemeType.eveningGlow:
-      return 'assets/backgrounds/room-bg-cozy-living.png';
+      return 'assets/backgrounds/room-bg-cozy-living.webp';
     case RoomThemeType.midnight:
-      return 'assets/backgrounds/room-bg-midnight.png';
+      return 'assets/backgrounds/room-bg-midnight.webp';
     case RoomThemeType.ocean:
-      return 'assets/backgrounds/room-bg-ocean.png';
+      return 'assets/backgrounds/room-bg-ocean.webp';
     case RoomThemeType.forest:
-      return 'assets/backgrounds/room-bg-forest.png';
+      return 'assets/backgrounds/room-bg-forest.webp';
     default:
-      return 'assets/backgrounds/room-bg-cozy-living.png';
+      return 'assets/backgrounds/room-bg-cozy-living.webp';
   }
 }
 
