@@ -6,7 +6,7 @@ import 'learning.dart';
 
 class GemRewards {
   // Lesson & Learning
-  static const int lessonComplete = 5;
+  static const int lessonComplete = 3;
   static const int quizPass = 3;
   static const int quizPerfect = 5;
   static const int placementTest = 10;

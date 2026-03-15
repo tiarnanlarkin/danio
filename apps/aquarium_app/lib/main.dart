@@ -253,15 +253,20 @@ class _AppRouterState extends ConsumerState<_AppRouter>
               Icon(
                 Icons.water_drop,
                 size: 80,
-                color: isDark ? Colors.black : Colors.white,
+                color: Colors.white,
               ),
               const SizedBox(height: AppSpacing.md),
               Text(
                 'Danio',
                 style: Theme.of(context).textTheme.headlineMedium!.copyWith(
                   fontWeight: FontWeight.bold,
-                  color: isDark ? Colors.black : Colors.white,
+                  color: Colors.white,
                 ),
+              ),
+              const SizedBox(height: AppSpacing.lg),
+              const CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.white70),
+                strokeWidth: 2,
               ),
             ],
           ),
