@@ -53,7 +53,7 @@ class Stories {
       StoryScene(
         id: 'bad_start',
         text:
-            'Alex shakes their head. "That would be New Tank Syndrome - the ammonia from fish waste would spike before beneficial bacteria establish. Your fish could die within days."\n\n"Let's do this right," Alex suggests. What should you do?',
+            'Alex shakes their head. "That would be New Tank Syndrome - the ammonia from fish waste would spike before beneficial bacteria establish. Your fish could die within days."\n\n"Let\'s do this right," Alex suggests. What should you do?',
         choices: [
           StoryChoice(
             id: 'learn_cycle',

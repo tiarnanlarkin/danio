@@ -118,7 +118,7 @@ class SampleData {
         tankId: tank.id,
         type: LogType.waterTest,
         timestamp: now.subtract(const Duration(days: 1)),
-        waterTest: const WaterTestResults(
+        waterTest: WaterTestResults(
           temperature: 25.5,
           ph: 7.0,
           ammonia: 0,
@@ -252,7 +252,7 @@ class SampleData {
         tankId: tank.id,
         type: LogType.waterTest,
         timestamp: now.subtract(const Duration(days: 1)),
-        waterTest: const WaterTestResults(
+        waterTest: WaterTestResults(
           temperature: 25.5,
           ph: 7.0,
           ammonia: 0,

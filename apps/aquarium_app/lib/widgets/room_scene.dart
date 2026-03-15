@@ -190,6 +190,55 @@ class LivingRoomScene extends ConsumerWidget {
                   ),
                 ),
 
+              // P0-3 FIX: Add visual tap targets for test kit, food, and plant
+              if (onTestKitTap != null)
+                Positioned(
+                  bottom: h * 0.28,
+                  left: w * 0.05,
+                  child: InteractiveObject(
+                    icon: Icons.science_rounded,
+                    label: 'Test Kit',
+                    onTap: onTestKitTap,
+                    size: 44,
+                    iconColor: const Color(0xFF64B5F6),
+                    glowColor: const Color(0xFF64B5F6),
+                    isNewUser: isNewUser,
+                    animationStyle: InteractiveAnimationStyle.shimmer,
+                  ),
+                ),
+
+              if (onFoodTap != null)
+                Positioned(
+                  bottom: h * 0.28,
+                  left: w * 0.38,
+                  child: InteractiveObject(
+                    icon: Icons.restaurant_rounded,
+                    label: 'Feed',
+                    onTap: onFoodTap,
+                    size: 44,
+                    iconColor: const Color(0xFFFF8A65),
+                    glowColor: const Color(0xFFFF8A65),
+                    isNewUser: isNewUser,
+                    animationStyle: InteractiveAnimationStyle.bounce,
+                  ),
+                ),
+
+              if (onPlantTap != null)
+                Positioned(
+                  bottom: h * 0.28,
+                  right: w * 0.05,
+                  child: InteractiveObject(
+                    icon: Icons.eco_rounded,
+                    label: 'Plants',
+                    onTap: onPlantTap,
+                    size: 44,
+                    iconColor: const Color(0xFF81C784),
+                    glowColor: const Color(0xFF81C784),
+                    isNewUser: isNewUser,
+                    animationStyle: InteractiveAnimationStyle.pulse,
+                  ),
+                ),
+
               // Theme switcher hint (top center)
               Positioned(
                 top: 8,
@@ -1683,7 +1732,8 @@ class _FishPainter extends CustomPainter {
       ..close();
     canvas.drawPath(tailPath, paint);
 
-    // Fin
+    // Fin — use a separate Paint to avoid mutating the body paint's color
+    final finPaint = Paint()..color = _finColor;
     final finPath = Path()
       ..moveTo(size.width * 0.25, size.height * 0.2)
       ..quadraticBezierTo(
@@ -1693,7 +1743,7 @@ class _FishPainter extends CustomPainter {
         size.height * 0.15,
       )
       ..close();
-    canvas.drawPath(finPath, paint..color = _finColor);
+    canvas.drawPath(finPath, finPaint);
 
     // Eye
     canvas.drawCircle(

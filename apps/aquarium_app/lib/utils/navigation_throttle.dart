@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 /// ```
 class NavigationThrottle {
   static bool _isNavigating = false;
+  // ignore: unused_field — tracks the safety timer Future for logical pairing
   static Future<void>? _safetyTimer;
 
   /// Starts a 5-second safety-reset timer that clears the navigation lock

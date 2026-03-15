@@ -28,7 +28,9 @@ class TodayBoardCard extends ConsumerWidget {
 
     return tasksAsync.when(
       loading: () => const SizedBox.shrink(),
-      error: (_, __) => Padding(
+      error: (_, __) => Semantics(
+                    label: 'Unable to load today board',
+                    child: Padding(
                     padding: const EdgeInsets.all(AppSpacing.sm),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
@@ -38,7 +40,7 @@ class TodayBoardCard extends ConsumerWidget {
                         Text('Unable to load', style: Theme.of(context).textTheme.bodySmall?.copyWith(color: AppColors.warning)),
                       ],
                     ),
-                  ),
+                  ),),
       data: (tasks) {
         // Build ordered list: overdue first, then today, then upcoming
         final overdue = tasks.where((t) => t.isOverdue && t.isEnabled).toList();
@@ -140,11 +142,14 @@ class _TodayBoardContent extends StatelessWidget {
                 color: hasOverdue ? AppColors.warning : AppColors.primary,
               ),
               const SizedBox(width: AppSpacing.xs),
-              Text(
-                hasOverdue ? 'Today board · Needs attention' : 'Today board',
-                style: AppTypography.labelSmall.copyWith(
-                  color: hasOverdue ? AppColors.warning : AppColors.primary,
-                  letterSpacing: 0.4,
+              Semantics(
+                header: true,
+                child: Text(
+                  hasOverdue ? 'Today board · Needs attention' : 'Today board',
+                  style: AppTypography.labelSmall.copyWith(
+                    color: hasOverdue ? AppColors.warning : AppColors.primary,
+                    letterSpacing: 0.4,
+                  ),
                 ),
               ),
               const Spacer(),

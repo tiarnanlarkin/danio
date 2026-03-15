@@ -37,6 +37,7 @@ class PracticeHubScreen extends ConsumerWidget {
         itemCount: _getPracticeHubItemCount(dueCards, totalCards),
         itemBuilder: (context, index) => _buildPracticeHubItem(
           context,
+          ref,
           index,
           dueCards,
           totalCards,
@@ -56,6 +57,7 @@ class PracticeHubScreen extends ConsumerWidget {
 
   Widget _buildPracticeHubItem(
     BuildContext context,
+    WidgetRef ref,
     int index,
     int dueCards,
     int totalCards,

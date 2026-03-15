@@ -188,17 +188,6 @@ class TankActions {
     }
   }
 
-  /// Delete a tank and all related data (internal — use softDeleteTank from UI)
-  Future<void> _permanentlyDelete(String id) async {
-    try {
-      await _storage.deleteTank(id);
-      _ref.invalidate(tanksProvider);
-    } catch (e) {
-      // Let UI handle the error
-      rethrow;
-    }
-  }
-
   /// Soft delete a tank (marks for deletion, can be undone within 5 seconds)
   /// Returns a callback to undo the deletion
   void softDeleteTank(String id, {void Function()? onUndoExpired}) {

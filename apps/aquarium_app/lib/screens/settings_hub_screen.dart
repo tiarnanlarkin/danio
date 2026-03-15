@@ -30,7 +30,7 @@ class SettingsHubScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('🧰 Toolbox'),
+        title: const Text('More'),
       ),
       body: ListView.builder(
         padding: const EdgeInsets.all(AppSpacing.md),

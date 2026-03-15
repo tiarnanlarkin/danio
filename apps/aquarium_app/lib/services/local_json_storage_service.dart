@@ -787,7 +787,7 @@ class LocalJsonStorageService implements StorageService {
   };
 
   WaterTestResults _waterTestFromJson(dynamic raw) {
-    if (raw is! Map) return const WaterTestResults();
+    if (raw is! Map) return WaterTestResults();
     final m = raw.cast<String, dynamic>();
     return WaterTestResults(
       temperature: _toDouble(m['temperature']),

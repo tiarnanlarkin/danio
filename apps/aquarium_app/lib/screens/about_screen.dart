@@ -18,16 +18,11 @@ class AboutScreen extends StatelessWidget {
           children: [
             const SizedBox(height: AppSpacing.lg),
 
-            // App icon placeholder
+            // App icon
             Container(
               width: 100,
               height: 100,
               decoration: BoxDecoration(
-                gradient: const LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [AppColors.primary, AppColors.secondary],
-                ),
                 borderRadius: AppRadius.largeRadius,
                 boxShadow: [
                   BoxShadow(
@@ -37,10 +32,28 @@ class AboutScreen extends StatelessWidget {
                   ),
                 ],
               ),
-              child: const Icon(
-                Icons.water_drop,
-                size: 48,
-                color: Colors.white,
+              child: ClipRRect(
+                borderRadius: AppRadius.largeRadius,
+                child: Image.asset(
+                  'assets/icons/app_icon.png',
+                  width: 100,
+                  height: 100,
+                  fit: BoxFit.cover,
+                  errorBuilder: (_, __, ___) => Container(
+                    decoration: const BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [AppColors.primary, AppColors.secondary],
+                      ),
+                    ),
+                    child: const Icon(
+                      Icons.water_drop,
+                      size: 48,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
               ),
             ),
 

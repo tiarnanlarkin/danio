@@ -37,14 +37,47 @@ const bool _showPerformanceOverlay = false; // Set to true to show FPS overlay
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Disable runtime font fetching — use bundled/system fonts only
-  GoogleFonts.config.allowRuntimeFetching = false;
+  // Allow runtime font fetching — Fredoka & Nunito are not bundled as .ttf
+  // assets, so GoogleFonts must fetch them on first use. They are cached by
+  // the package for subsequent launches.
+  GoogleFonts.config.allowRuntimeFetching = true;
 
   // Lock orientation to portrait (lightweight, keeps first frame fast)
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
+
+  // ── Error handling: set up BEFORE runApp so first-frame errors are captured ──
+  // In debug mode, log to console. In release mode, install a preliminary
+  // handler that captures errors; we upgrade to Crashlytics once Firebase
+  // initialises in the post-frame callback.
+  if (kReleaseMode) {
+    FlutterError.onError = (FlutterErrorDetails details) {
+      FlutterError.presentError(details);
+    };
+    PlatformDispatcher.instance.onError = (error, stack) {
+      debugPrint('Platform error (pre-Firebase): $error\n$stack');
+      return true;
+    };
+  } else {
+    final originalOnError = FlutterError.onError;
+    FlutterError.onError = (FlutterErrorDetails details) {
+      debugPrint('========== FLUTTER ERROR ==========');
+      debugPrint('${details.exception}');
+      debugPrint('${details.stack}');
+      debugPrint('===================================');
+      originalOnError?.call(details);
+    };
+
+    GlobalErrorHandler.initialize(
+      onError: (error, stack) {
+        if (kDebugMode) {
+          debugPrint('Global error caught: $error\n$stack');
+        }
+      },
+    );
+  }
 
   // ── Defer heavy init to after the first frame ─────────────────────────
   // Firebase, Supabase, and Notifications are moved to a post-frame
@@ -60,7 +93,7 @@ void main() async {
       debugPrint('⚠️ Firebase init failed (app will run without it): $e');
     }
 
-    // ── Error handling: debug vs release ────────────────────────────────
+    // ── Upgrade error handlers to Crashlytics now that Firebase is ready ──
     if (kReleaseMode && firebaseInitialized) {
       FlutterError.onError =
           FirebaseCrashlytics.instance.recordFlutterFatalError;
@@ -69,23 +102,6 @@ void main() async {
         FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
         return true;
       };
-    } else {
-      final originalOnError = FlutterError.onError;
-      FlutterError.onError = (FlutterErrorDetails details) {
-        debugPrint('========== FLUTTER ERROR ==========');
-        debugPrint('${details.exception}');
-        debugPrint('${details.stack}');
-        debugPrint('===================================');
-        originalOnError?.call(details);
-      };
-
-      GlobalErrorHandler.initialize(
-        onError: (error, stack) {
-          if (kDebugMode) {
-            debugPrint('Global error caught: $error\n$stack');
-          }
-        },
-      );
     }
 
     // Initialize Supabase (safe to call - returns false if credentials are
@@ -274,10 +290,18 @@ class _AppRouterState extends ConsumerState<_AppRouter>
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(
-                Icons.water_drop,
-                size: 80,
-                color: Colors.white,
+              ClipRRect(
+                borderRadius: BorderRadius.circular(20),
+                child: Image.asset(
+                  'assets/icons/app_icon.png',
+                  width: 80,
+                  height: 80,
+                  errorBuilder: (_, __, ___) => const Icon(
+                    Icons.water_drop,
+                    size: 80,
+                    color: Colors.white,
+                  ),
+                ),
               ),
               const SizedBox(height: AppSpacing.md),
               Text(

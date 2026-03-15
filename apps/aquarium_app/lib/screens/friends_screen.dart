@@ -1,4 +1,5 @@
-// TODO: Hidden until feature ships (CA-002)
+// TRACKED: CA-002 — Friends feature hidden until social backend ships.
+// See: prd/danio-master-audit-consolidated.md → T3-10
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../theme/app_theme.dart';

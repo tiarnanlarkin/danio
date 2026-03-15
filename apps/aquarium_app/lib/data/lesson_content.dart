@@ -1,7 +1,8 @@
-// TODO(cleanup): This 4,975-line file duplicates content in data/lessons/ individual files.
+// TRACKED: CLEANUP-001 — This ~5K-line file duplicates content in data/lessons/.
 // Still imported by: placement_test_screen.dart, placement_result_screen.dart,
-// enhanced_placement_test_screen.dart. Migrate those screens to use individual
-// lesson files, then delete this file.
+// enhanced_placement_test_screen.dart. To remove: migrate those screens to use
+// individual lesson files from data/lessons/, then delete this file.
+// Tracked in: prd/danio-master-audit-consolidated.md → T3-01
 /// Lesson content for the learning system
 /// The "Duolingo for fishkeeping" curriculum
 ///

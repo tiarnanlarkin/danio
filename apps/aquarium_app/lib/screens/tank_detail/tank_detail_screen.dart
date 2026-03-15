@@ -265,7 +265,33 @@ class TankDetailScreen extends ConsumerWidget {
     }
   }
 
-  void _deleteTank(BuildContext context, WidgetRef ref, Tank tank) {
+  Future<void> _deleteTank(BuildContext context, WidgetRef ref, Tank tank) async {
+    // P0-4 FIX: Show confirmation dialog before soft-deleting
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Delete Tank?'),
+        content: Text(
+          'Delete ${tank.name}? This action can be undone for 5 seconds.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: const Text('Keep Tank'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: const Text(
+              'Delete Tank',
+              style: TextStyle(color: AppColors.error),
+            ),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed != true || !context.mounted) return;
+
     final actions = ref.read(tankActionsProvider);
     final navigator = Navigator.of(context);
     final messenger = ScaffoldMessenger.of(context);

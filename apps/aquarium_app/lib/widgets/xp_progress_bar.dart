@@ -56,10 +56,8 @@ class _XpProgressBarState extends ConsumerState<XpProgressBar>
 
   void _updateProgress(double newProgress) {
     if (newProgress != _targetProgress) {
-      setState(() {
-        _currentProgress = _targetProgress;
-        _targetProgress = newProgress;
-      });
+      _currentProgress = _targetProgress;
+      _targetProgress = newProgress;
       _controller.forward(from: 0.0);
     }
   }
@@ -77,6 +75,16 @@ class _XpProgressBarState extends ConsumerState<XpProgressBar>
             totalXp: p.totalXp,
           ))));
 
+    // Listen for level progress changes and animate — avoids calling setState
+    // from addPostFrameCallback inside build().
+    ref.listen(
+      userProfileProvider.select((a) => a.whenData((p) => p?.levelProgress ?? 0.0)),
+      (prev, next) {
+        final progress = next.valueOrNull ?? 0.0;
+        _updateProgress(progress);
+      },
+    );
+
     return xpData.when(
       loading: () => const SizedBox.shrink(),
       error: (_, __) => Padding(
@@ -92,11 +100,6 @@ class _XpProgressBarState extends ConsumerState<XpProgressBar>
                   ),
       data: (data) {
         if (data == null) return const SizedBox.shrink();
-
-        // Update animation target when profile changes
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          if (mounted) _updateProgress(data.levelProgress);
-        });
 
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -229,7 +232,21 @@ class _ShimmerEffectState extends State<_ShimmerEffect>
     _shimmerController = AnimationController(
       duration: AppDurations.celebration,
       vsync: this,
-    )..repeat();
+    );
+    if (widget.isAnimating) {
+      _shimmerController.repeat();
+    }
+  }
+
+  @override
+  void didUpdateWidget(_ShimmerEffect oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // P1 FIX: Start/stop shimmer controller to match animation state
+    if (widget.isAnimating && !oldWidget.isAnimating) {
+      _shimmerController.repeat();
+    } else if (!widget.isAnimating && oldWidget.isAnimating) {
+      _shimmerController.stop();
+    }
   }
 
   @override

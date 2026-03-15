@@ -113,7 +113,7 @@ class BottomPlateState extends State<BottomPlate>
       right: 0,
       height: currentHeight + bottomPad,
       child: Semantics(
-        label: 'Drag to expand tanks panel',
+        label: '${widget.label} panel, ${isOpen ? "expanded" : "collapsed"}. Drag to ${isOpen ? "collapse" : "expand"}',
         child: GestureDetector(
           behavior: HitTestBehavior.opaque,
           onVerticalDragUpdate: (d) => _onDragUpdate(d, maxDragDistance),
