@@ -157,44 +157,49 @@ class BottomPlateState extends State<BottomPlate>
               // Content
               Column(
                 children: [
-                  // Drag handle peek strip
-                  Container(
+                  // Drag handle peek strip — always centred
+                  SizedBox(
                     height: widget.peekHeight,
-                    decoration: widget.tabColor != null
-                        ? BoxDecoration(
-                            color: widget.tabColor,
-                            borderRadius: const BorderRadius.vertical(
-                              top: Radius.circular(12),
+                    child: Center(
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 4),
+                        decoration: widget.tabColor != null
+                            ? BoxDecoration(
+                                color: widget.tabColor,
+                                borderRadius: const BorderRadius.vertical(
+                                  top: Radius.circular(12),
+                                ),
+                              )
+                            : null,
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            // Pill handle
+                            Container(
+                              width: 20,
+                              height: 3,
+                              margin: const EdgeInsets.only(right: 8),
+                              decoration: BoxDecoration(
+                                color: widget.tabColor != null
+                                    ? Colors.white.withValues(alpha: 0.5)
+                                    : AppOverlays.black20,
+                                borderRadius: AppRadius.pillRadius,
+                              ),
                             ),
-                          )
-                        : null,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        // Pill handle
-                        Container(
-                          width: 40,
-                          height: 4,
-                          decoration: BoxDecoration(
-                            color: widget.tabColor != null
-                                ? Colors.white.withValues(alpha: 0.5)
-                                : AppOverlays.black20,
-                            borderRadius: AppRadius.pillRadius,
-                          ),
+                            Text(
+                              '${widget.emoji} ${widget.label}',
+                              style: AppTypography.labelMedium.copyWith(
+                                color: widget.tabColor != null
+                                    ? Colors.white
+                                    : context.textSecondary,
+                                fontWeight: widget.tabColor != null
+                                    ? FontWeight.w600
+                                    : FontWeight.w400,
+                              ),
+                            ),
+                          ],
                         ),
-                        const SizedBox(height: AppSpacing.xs),
-                        Text(
-                          '${widget.emoji} ${widget.label}',
-                          style: AppTypography.labelMedium.copyWith(
-                            color: widget.tabColor != null
-                                ? Colors.white
-                                : context.textSecondary,
-                            fontWeight: widget.tabColor != null
-                                ? FontWeight.w600
-                                : FontWeight.w400,
-                          ),
-                        ),
-                      ],
+                      ),
                     ),
                   ),
                   // Expandable content
