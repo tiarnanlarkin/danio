@@ -2,6 +2,7 @@ import 'package:danio/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'dart:math' as math;
+import '../providers/room_theme_provider.dart';
 import '../theme/room_themes.dart';
 import 'ambient/ambient_bubbles.dart';
 import 'ambient/ambient_overlay.dart';
@@ -75,28 +76,21 @@ class LivingRoomScene extends ConsumerWidget {
             // BUG-03: clip room scene children to prevent overflow into panel area
             clipBehavior: Clip.hardEdge,
             children: [
-              // === LAYER 1: Cozy room background with walls, floor, window ===
-              // AmbientLightingOverlay wraps ONLY the room background — not the tank
+              // === LAYER 1: Background image with ambient lighting overlay ===
+              // AmbientLightingOverlay wraps the background image for time-of-day tinting.
+              // _CozyRoomBackground and plant widgets are retired — room is now image-based.
               Positioned.fill(
                 child: AmbientLightingOverlay(
-                  child: _CozyRoomBackground(theme: theme),
+                  child: Image.asset(
+                    _backgroundForTheme(ref.watch(roomThemeProvider)),
+                    fit: BoxFit.cover,
+                  ),
                 ),
               ),
 
-              // === LAYER 2: Decorative room elements (plants, shelves, lamp) ===
-              // Tall plant on left side — BUG-03: repositioned to stay above stand boundary
-              Positioned(
-                bottom: h * 0.38,
-                left: w * 0.02,
-                child: _RoomPlant(height: h * 0.20, theme: theme),
-              ),
-              
-              // Small plant on shelf (right)
-              Positioned(
-                top: h * 0.12,
-                right: w * 0.08,
-                child: _ShelfPlant(size: w * 0.08, theme: theme),
-              ),
+              // === LAYER 2: Decorative room elements ===
+              // Plants, shelves, lamp are now part of the background image.
+              // Only sparkles for special themes remain here.
 
               // Stars/sparkles for whimsical themes
               if (theme.name == 'Whimsical' || theme.name == 'Midnight' || theme.name == 'Aurora') ...[
@@ -124,11 +118,11 @@ class LivingRoomScene extends ConsumerWidget {
 
               // === LAYER 3: Furniture stand for aquarium ===
               Positioned(
-                top: h * 0.54,
-                left: w * 0.08,
-                right: w * 0.08,
+                top: h * 0.58,
+                left: w * 0.06,
+                right: w * 0.06,
                 child: _AquariumStand(
-                  width: w * 0.84,
+                  width: w * 0.88,
                   height: h * 0.08,
                   theme: theme,
                 ),
@@ -136,16 +130,16 @@ class LivingRoomScene extends ConsumerWidget {
 
               // === LAYER 4: 3D Aquarium illustration (center, sitting on stand) ===
               Positioned(
-                top: h * 0.26,
-                left: w * 0.1,
-                right: w * 0.1,
+                top: h * 0.22,
+                left: w * 0.06,
+                right: w * 0.06,
                 child: Hero(
                   tag: 'tank-card-$tankId',
                   child: RippleContainer(
                     onTap: onTankTap,
                     child: _ThemedAquarium(
-                      width: w * 0.8,
-                      height: h * 0.30,
+                      width: w * 0.88,
+                      height: h * 0.38,
                       theme: theme,
                       useRiveFish: useRiveFish,
                     ),
@@ -292,6 +286,25 @@ class LivingRoomScene extends ConsumerWidget {
   }
 }
 
+// === BACKGROUND IMAGE MAPPING ===
+
+/// Maps a [RoomThemeType] to the corresponding background image asset path.
+String _backgroundForTheme(RoomThemeType type) {
+  switch (type) {
+    case RoomThemeType.cozyLiving:
+    case RoomThemeType.eveningGlow:
+      return 'assets/backgrounds/room-bg-cozy-living.png';
+    case RoomThemeType.midnight:
+      return 'assets/backgrounds/room-bg-midnight.png';
+    case RoomThemeType.ocean:
+      return 'assets/backgrounds/room-bg-ocean.png';
+    case RoomThemeType.forest:
+      return 'assets/backgrounds/room-bg-forest.png';
+    default:
+      return 'assets/backgrounds/room-bg-cozy-living.png';
+  }
+}
+
 // === SPARKLE (for whimsical/night themes) ===
 
 class _Sparkle extends StatelessWidget {
@@ -366,8 +379,9 @@ class _SparklePainter extends CustomPainter {
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
 
-// === COZY ROOM BACKGROUND - Actual room with walls, floor, window ===
+// === COZY ROOM BACKGROUND - Kept for reference; superseded by background images ===
 
+// ignore: unused_element
 class _CozyRoomBackground extends StatelessWidget {
   final RoomTheme theme;
 
@@ -967,8 +981,9 @@ class _CozyRoomPainter extends CustomPainter {
   bool shouldRepaint(covariant _CozyRoomPainter old) => old.theme != theme;
 }
 
-// === ROOM PLANT (decorative floor plant) ===
+// === ROOM PLANT (decorative floor plant) - Kept for reference; now in background image ===
 
+// ignore: unused_element
 class _RoomPlant extends StatelessWidget {
   final double height;
   final RoomTheme theme;
@@ -1049,8 +1064,9 @@ class _RoomPlantPainter extends CustomPainter {
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
 
-// === SHELF PLANT (small decorative plant) ===
+// === SHELF PLANT (small decorative plant) - Kept for reference; now in background image ===
 
+// ignore: unused_element
 class _ShelfPlant extends StatelessWidget {
   final double size;
   final RoomTheme theme;

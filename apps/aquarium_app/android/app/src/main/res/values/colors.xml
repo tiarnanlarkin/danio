@@ -9,4 +9,5 @@
     <color name="danio_amber">#B45309</color>
     <color name="danio_amber_light">#D97706</color>
     <color name="danio_amber_dark">#92400E</color>
+	<color name="ic_launcher_background">#FFFFFF</color>
 </resources>
