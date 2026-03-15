@@ -126,7 +126,10 @@ class BottomPlateState extends State<BottomPlate>
           onVerticalDragEnd: _onDragEnd,
           child: Container(
           decoration: BoxDecoration(
-            color: bg,
+            // Fade the panel body in as the user drags up.
+            // At _dragExtent == 0 (fully collapsed), background is transparent —
+            // only the coloured tab peek strip is visible.
+            color: bg.withAlpha((_dragExtent * 255).round().clamp(0, 255)),
             borderRadius: const BorderRadius.vertical(
               top: Radius.circular(24),
             ),

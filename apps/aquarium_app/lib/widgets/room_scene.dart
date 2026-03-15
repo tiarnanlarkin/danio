@@ -152,11 +152,12 @@ class LivingRoomScene extends ConsumerWidget {
               // (full-height Positioned, 48dp hit area) — do NOT add them here
               // or they will appear as duplicate tabs.
 
-              // Tank glass badge — sits ON the bottom-right corner of tank glass
-              // Tank is at top: h*0.18, height: h*0.44, so bottom edge = h*0.62
+              // Tank glass badge — etched manufacturer sticker at bottom-right corner of glass
+              // Tank bottom edge = h*0.18 + h*0.44 = h*0.62; right edge = w - w*0.06 = w*0.94
+              // Position so badge overlaps the glass border at the very corner.
               Positioned(
-                top: h * 0.18 + h * 0.44 - 20, // 20dp overlapping bottom edge of tank
-                right: w * 0.08,
+                bottom: h - (h * 0.62) + 4, // 4dp above bottom of scene (overlapping glass border)
+                right: w * 0.06 + 4,        // 4dp inside right edge of tank glass
                 child: TankGlassBadge(
                   tankName: tankName,
                   tankVolume: tankVolume,
@@ -166,76 +167,76 @@ class LivingRoomScene extends ConsumerWidget {
 
 
               // === LAYER 6: Interactive objects ===
-              // Journal object (left side of scene)
-              if (onJournalTap != null)
-                Positioned(
-                  bottom: h * 0.15,
-                  left: w * 0.05,
-                  child: LivingRoomObjects.journal(
-                    onTap: onJournalTap!,
-                    isNewUser: isNewUser,
-                  ),
-                ),
-
-              // Calendar/Schedule object (right side of scene)
-              if (onCalendarTap != null)
-                Positioned(
-                  bottom: h * 0.15,
-                  right: w * 0.05,
-                  child: LivingRoomObjects.calendar(
-                    onTap: onCalendarTap!,
-                    isNewUser: isNewUser,
-                  ),
-                ),
-
-              // P0-3 FIX: Add visual tap targets for test kit, food, and plant
-              if (onTestKitTap != null)
-                Positioned(
-                  bottom: h * 0.28,
-                  left: w * 0.05,
-                  child: InteractiveObject(
-                    icon: Icons.science_rounded,
-                    label: 'Test Kit',
-                    onTap: onTestKitTap,
-                    size: 44,
-                    iconColor: const Color(0xFF64B5F6),
-                    glowColor: const Color(0xFF64B5F6),
-                    isNewUser: isNewUser,
-                    animationStyle: InteractiveAnimationStyle.shimmer,
-                  ),
-                ),
-
-              if (onFoodTap != null)
-                Positioned(
-                  bottom: h * 0.28,
-                  left: w * 0.38,
-                  child: InteractiveObject(
-                    icon: Icons.restaurant_rounded,
-                    label: 'Feed',
-                    onTap: onFoodTap,
-                    size: 44,
-                    iconColor: const Color(0xFFFF8A65),
-                    glowColor: const Color(0xFFFF8A65),
-                    isNewUser: isNewUser,
-                    animationStyle: InteractiveAnimationStyle.bounce,
-                  ),
-                ),
-
-              if (onPlantTap != null)
-                Positioned(
-                  bottom: h * 0.28,
-                  right: w * 0.05,
-                  child: InteractiveObject(
-                    icon: Icons.eco_rounded,
-                    label: 'Plants',
-                    onTap: onPlantTap,
-                    size: 44,
-                    iconColor: const Color(0xFF81C784),
-                    glowColor: const Color(0xFF81C784),
-                    isNewUser: isNewUser,
-                    animationStyle: InteractiveAnimationStyle.pulse,
-                  ),
-                ),
+              // REMOVED: scattered interactive objects replaced by quick action menu (separate sprint).
+              // onTap callbacks are kept in the constructor — they're still needed.
+              //
+              // if (onJournalTap != null)
+              //   Positioned(
+              //     bottom: h * 0.15,
+              //     left: w * 0.05,
+              //     child: LivingRoomObjects.journal(
+              //       onTap: onJournalTap!,
+              //       isNewUser: isNewUser,
+              //     ),
+              //   ),
+              //
+              // if (onCalendarTap != null)
+              //   Positioned(
+              //     bottom: h * 0.15,
+              //     right: w * 0.05,
+              //     child: LivingRoomObjects.calendar(
+              //       onTap: onCalendarTap!,
+              //       isNewUser: isNewUser,
+              //     ),
+              //   ),
+              //
+              // if (onTestKitTap != null)
+              //   Positioned(
+              //     bottom: h * 0.28,
+              //     left: w * 0.05,
+              //     child: InteractiveObject(
+              //       icon: Icons.science_rounded,
+              //       label: 'Test Kit',
+              //       onTap: onTestKitTap,
+              //       size: 44,
+              //       iconColor: const Color(0xFF64B5F6),
+              //       glowColor: const Color(0xFF64B5F6),
+              //       isNewUser: isNewUser,
+              //       animationStyle: InteractiveAnimationStyle.shimmer,
+              //     ),
+              //   ),
+              //
+              // if (onFoodTap != null)
+              //   Positioned(
+              //     bottom: h * 0.28,
+              //     left: w * 0.38,
+              //     child: InteractiveObject(
+              //       icon: Icons.restaurant_rounded,
+              //       label: 'Feed',
+              //       onTap: onFoodTap,
+              //       size: 44,
+              //       iconColor: const Color(0xFFFF8A65),
+              //       glowColor: const Color(0xFFFF8A65),
+              //       isNewUser: isNewUser,
+              //       animationStyle: InteractiveAnimationStyle.bounce,
+              //     ),
+              //   ),
+              //
+              // if (onPlantTap != null)
+              //   Positioned(
+              //     bottom: h * 0.28,
+              //     right: w * 0.05,
+              //     child: InteractiveObject(
+              //       icon: Icons.eco_rounded,
+              //       label: 'Plants',
+              //       onTap: onPlantTap,
+              //       size: 44,
+              //       iconColor: const Color(0xFF81C784),
+              //       glowColor: const Color(0xFF81C784),
+              //       isNewUser: isNewUser,
+              //       animationStyle: InteractiveAnimationStyle.pulse,
+              //     ),
+              //   ),
 
               // Theme switcher removed from top centre — was hidden behind camera punch-hole
               // Theme selection will move to quick action menu or settings
@@ -1237,10 +1238,10 @@ class _ThemedAquarium extends StatelessWidget {
                     end: Alignment.bottomCenter,
                     stops: [0.0, 0.25, 0.65, 1.0],
                     colors: [
-                      Color(0xFF9ED8EC), // waterSurface — icy top
-                      Color(0xFF6BBDD8), // waterMidUpper — clear mid
-                      Color(0xFF4A9DB5), // waterMidLower — deeper
-                      Color(0xFF2D7A94), // waterDepth — dark bottom
+                      Color(0xEB9ED8EC), // waterSurface — icy top (~92% opacity)
+                      Color(0xEB6BBDD8), // waterMidUpper — clear mid (~92% opacity)
+                      Color(0xEB4A9DB5), // waterMidLower — deeper (~92% opacity)
+                      Color(0xEB2D7A94), // waterDepth — dark bottom (~92% opacity)
                     ],
                   ),
                 ),

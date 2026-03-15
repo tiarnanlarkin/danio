@@ -475,16 +475,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 ),
                 child: Row(
                   children: [
-                    Flexible(
-                      child: Text(
-                        currentTank.name,
-                        style: AppTypography.headlineSmall.copyWith(
-                          color: Colors.white,
-                          shadows: [Shadow(color: AppOverlays.black50, blurRadius: 4)],
-                        ),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
+                    // Tank name removed — now shown only via TankGlassBadge on the tank glass.
                     const Spacer(),
                     // Hearts indicator
                     const Padding(
