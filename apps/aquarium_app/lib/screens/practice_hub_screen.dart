@@ -192,16 +192,8 @@ class PracticeHubScreen extends ConsumerWidget {
         );
       case 17:
         return const SizedBox(height: AppSpacing.sm2);
-      case 18: // Practice Accuracy card
-        return _buildProgressCard(
-          context,
-          title: 'Practice Accuracy',
-          value: srState.stats.reviewsToday == 0
-              ? '—'
-              : '${_calculateAccuracy(srState)}%',
-          icon: Icons.track_changes,
-          color: context.textSecondary,
-        );
+      case 18: // Practice Accuracy card — hidden until tracking is implemented
+        return const SizedBox.shrink();
       default:
         return const SizedBox.shrink();
     }

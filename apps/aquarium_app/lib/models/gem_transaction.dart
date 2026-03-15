@@ -55,7 +55,7 @@ class GemTransaction {
   factory GemTransaction.fromJson(Map<String, dynamic> json) {
     return GemTransaction(
       id: json['id'] as String,
-      type: GemTransactionType.values.firstWhere((e) => e.name == json['type']),
+      type: GemTransactionType.values.firstWhere((e) => e.name == json['type'], orElse: () => GemTransactionType.earned),
       amount: json['amount'] as int,
       reason: json['reason'] as String?,
       itemId: json['itemId'] as String?,

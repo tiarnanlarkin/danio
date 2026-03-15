@@ -171,6 +171,7 @@ class ReviewCard {
       conceptId: json['conceptId'],
       conceptType: ConceptType.values.firstWhere(
         (t) => t.toString().split('.').last == json['conceptType'],
+        orElse: () => ConceptType.vocabulary,
       ),
       strength: json['strength'],
       lastReviewed: DateTime.parse(json['lastReviewed']),

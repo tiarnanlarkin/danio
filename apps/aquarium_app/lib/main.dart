@@ -134,7 +134,7 @@ class DanioApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final settings = ref.watch(settingsProvider);
+    final themeMode = ref.watch(settingsProvider.select((s) => s.flutterThemeMode));
 
     return MaterialApp(
       scrollBehavior: const DanioScrollBehavior(),
@@ -143,7 +143,7 @@ class DanioApp extends ConsumerWidget {
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light,
       darkTheme: AppTheme.dark,
-      themeMode: settings.flutterThemeMode,
+      themeMode: themeMode,
       // navigatorObservers: [
       // ],
       builder: (context, child) => XpAnimationListener(

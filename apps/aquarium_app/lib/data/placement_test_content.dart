@@ -315,7 +315,7 @@ class PlacementTestContent {
     // Question 17: Beginner level
     const PlacementQuestion(
       id: 'pt_q1',
-      pathId: 'planted_tank',
+      pathId: 'planted',
       question: 'What do aquatic plants need to grow (besides water)?',
       options: [
         'Just light - plants don\'t need anything else',
@@ -332,7 +332,7 @@ class PlacementTestContent {
     // Question 18: Intermediate level
     const PlacementQuestion(
       id: 'pt_q2',
-      pathId: 'planted_tank',
+      pathId: 'planted',
       question: 'What causes plants to show yellow leaves with green veins?',
       options: [
         'Too much light',
@@ -349,7 +349,7 @@ class PlacementTestContent {
     // Question 19: Intermediate level
     const PlacementQuestion(
       id: 'pt_q3',
-      pathId: 'planted_tank',
+      pathId: 'planted',
       question: 'What is the "Walstad method" for planted tanks?',
       options: [
         'A high-tech method requiring CO₂ injection and strong lights',
@@ -366,7 +366,7 @@ class PlacementTestContent {
     // Question 20: Advanced level
     const PlacementQuestion(
       id: 'pt_q4',
-      pathId: 'planted_tank',
+      pathId: 'planted',
       question:
           'What is the Redfield Ratio and why does it matter for planted tanks?',
       options: [

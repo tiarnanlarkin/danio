@@ -53,7 +53,7 @@ class Livestock {
       dateAdded: DateTime.parse(json['dateAdded'] as String),
       source: json['source'] as String?,
       temperament: json['temperament'] != null
-          ? Temperament.values.firstWhere((e) => e.name == json['temperament'])
+          ? Temperament.values.firstWhere((e) => e.name == json['temperament'], orElse: () => Temperament.peaceful)
           : null,
       notes: json['notes'] as String?,
       imageUrl: json['imageUrl'] as String?,

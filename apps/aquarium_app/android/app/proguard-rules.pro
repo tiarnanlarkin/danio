@@ -6,7 +6,7 @@
 -keep class io.flutter.**  { *; }
 -keep class io.flutter.plugins.**  { *; }
 
-## Gson (if used)
+## Gson (if used by plugins)
 -keepattributes Signature
 -keepattributes *Annotation*
 -dontwarn sun.misc.**
@@ -16,13 +16,9 @@
 -keep class * implements com.google.gson.JsonSerializer
 -keep class * implements com.google.gson.JsonDeserializer
 
-## Keep data classes (adjust package name as needed)
--keep class com.tiarnanlarkin.danio.** { *; }
-
-## Hive database
--keep class io.hive.** { *; }
--keep class * extends io.hive.TypeAdapter { *; }
-
-## Play Core (deferred components - not used but required by Flutter)
+## Play Core (deferred components - required by Flutter)
 -dontwarn com.google.android.play.core.**
 -keep class com.google.android.play.core.** { *; }
+
+## Firebase
+-keep class com.google.firebase.** { *; }

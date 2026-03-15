@@ -87,8 +87,7 @@ class _TabNavigatorState extends ConsumerState<TabNavigator>
   @override
   Widget build(BuildContext context) {
     final currentTab = ref.watch(currentTabProvider);
-    final srState = ref.watch(spacedRepetitionProvider);
-    final dueCardsCount = srState.stats.dueCards;
+    final dueCardsCount = ref.watch(spacedRepetitionProvider.select((s) => s.stats.dueCards));
 
     return StreakMilestoneListener(
       child: LevelUpListener(

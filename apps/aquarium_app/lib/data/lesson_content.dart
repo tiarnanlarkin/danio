@@ -950,7 +950,7 @@ class LessonContent {
           const LessonSection(
             type: LessonSectionType.text,
             content:
-                'For tropical tanks, a reliable heater is essential. Get one rated for your tank size (usually 3-5 watts per litre). Always use a separate thermometer to verify - built-in heater dials are often inaccurate.',
+                'For tropical tanks, a reliable heater is essential. Get one rated for your tank size (usually 1-2 watts per litre (or 3-5 watts per gallon)). Always use a separate thermometer to verify - built-in heater dials are often inaccurate.',
           ),
           const LessonSection(
             type: LessonSectionType.tip,
@@ -4147,7 +4147,7 @@ class LessonContent {
           const LessonSection(
             type: LessonSectionType.text,
             content:
-                'The standard rule: 3-5 watts per liter. A 60-liter tank needs 180-300W. Go bigger in cold rooms, smaller in warm rooms. Undersizing means the heater runs constantly (shorter lifespan).',
+                'The standard rule: 1-2 watts per litre (or 3-5 watts per gallon). A 60-litre tank needs 60-120W. Go bigger in cold rooms, smaller in warm rooms. Undersizing means the heater runs constantly (shorter lifespan).',
           ),
           const LessonSection(
             type: LessonSectionType.tip,
@@ -4220,7 +4220,7 @@ class LessonContent {
               ],
               correctIndex: 1,
               explanation:
-                  '3-5 watts per liter is standard. A 60L tank needs 180-300W. Adjust based on room temperature.',
+                  '1-2 watts per litre (or 3-5 watts per gallon) is standard. A 60L tank needs 60-120W. Adjust based on room temperature.',
             ),
             const QuizQuestion(
               id: 'eq_heat_q2',
@@ -4664,7 +4664,7 @@ class LessonContent {
           const LessonSection(
             type: LessonSectionType.keyPoint,
             content:
-                'Minimum 5 gallons, heated to 78-80°F, filtered water. No bowls!',
+                'Minimum 5 gallons, heated to 24-28°C (75-82°F), filtered water. No bowls!',
           ),
           const LessonSection(
             type: LessonSectionType.warning,
