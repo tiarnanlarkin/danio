@@ -343,6 +343,8 @@ class _CozyRoomBackground extends StatelessWidget {
                 'assets/textures/linen-wall.webp',
                 repeat: ImageRepeat.repeat,
                 fit: BoxFit.none,
+                cacheWidth: 256,
+                cacheHeight: 256,
               ),
             ),
           ),

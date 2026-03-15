@@ -41,86 +41,85 @@ void main() async {
   // Disable runtime font fetching — use bundled/system fonts only
   GoogleFonts.config.allowRuntimeFetching = false;
 
-  // Initialize Firebase — graceful fallback if google-services.json is missing
-  bool firebaseInitialized = false;
-  try {
-    await Firebase.initializeApp();
-    firebaseInitialized = true;
-    debugPrint('✅ Firebase initialized successfully');
-  } catch (e) {
-    debugPrint('⚠️ Firebase init failed (app will run without it): $e');
-  }
-
-  // ── Error handling: debug vs release ──────────────────────────────────
-  if (kReleaseMode && firebaseInitialized) {
-    // Release mode: route errors to Crashlytics
-    FlutterError.onError =
-        FirebaseCrashlytics.instance.recordFlutterFatalError;
-
-    PlatformDispatcher.instance.onError = (error, stack) {
-      FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
-      return true;
-    };
-  } else {
-    // Debug mode (or Firebase unavailable): log to console
-    final originalOnError = FlutterError.onError;
-    FlutterError.onError = (FlutterErrorDetails details) {
-      debugPrint('========== FLUTTER ERROR ==========');
-      debugPrint('${details.exception}');
-      debugPrint('${details.stack}');
-      debugPrint('===================================');
-      originalOnError?.call(details);
-    };
-
-    // Initialize global error handler for debug
-    GlobalErrorHandler.initialize(
-      onError: (error, stack) {
-        if (kDebugMode) {
-          debugPrint('Global error caught: $error\n$stack');
-        }
-      },
-    );
-  }
-
-  // Lock orientation to portrait
+  // Lock orientation to portrait (lightweight, keeps first frame fast)
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
 
-  // Initialize Supabase (safe to call - returns false if credentials are
-  // placeholders, and the app continues in offline-only mode).
-  await SupabaseService.initialize();
+  // ── Defer heavy init to after the first frame ─────────────────────────
+  // Firebase, Supabase, and Notifications are moved to a post-frame
+  // callback so the splash/loading screen renders instantly.
+  WidgetsBinding.instance.addPostFrameCallback((_) async {
+    // Initialize Firebase — graceful fallback if google-services.json is missing
+    bool firebaseInitialized = false;
+    try {
+      await Firebase.initializeApp();
+      firebaseInitialized = true;
+      debugPrint('✅ Firebase initialized successfully');
+    } catch (e) {
+      debugPrint('⚠️ Firebase init failed (app will run without it): $e');
+    }
 
-  // Start performance monitoring in debug mode if enabled
-  if (_enablePerformanceMonitoring) {
-    performanceMonitor.startMonitoring();
-  }
+    // ── Error handling: debug vs release ────────────────────────────────
+    if (kReleaseMode && firebaseInitialized) {
+      FlutterError.onError =
+          FirebaseCrashlytics.instance.recordFlutterFatalError;
 
-  // Initialize notifications with navigation callback
-  final notificationService = NotificationService();
-  await notificationService.initialize(
-    onSelectNotification: (payload) {
-      // Navigate based on notification payload
-      if (payload == 'learn') {
-        navigatorKey.currentState?.push(
-          MaterialPageRoute(builder: (_) => const LearnScreen()),
-        );
-      } else if (payload == 'review') {
-        // Navigate to review/practice screen
-        navigatorKey.currentState?.push(
-          MaterialPageRoute(
-            builder: (_) => const SpacedRepetitionPracticeScreen(),
-          ),
-        );
-      } else if (payload == 'achievements') {
-        // Navigate to achievements screen
-        navigatorKey.currentState?.push(
-          MaterialPageRoute(builder: (_) => const AchievementsScreen()),
-        );
-      }
-    },
-  );
+      PlatformDispatcher.instance.onError = (error, stack) {
+        FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+        return true;
+      };
+    } else {
+      final originalOnError = FlutterError.onError;
+      FlutterError.onError = (FlutterErrorDetails details) {
+        debugPrint('========== FLUTTER ERROR ==========');
+        debugPrint('${details.exception}');
+        debugPrint('${details.stack}');
+        debugPrint('===================================');
+        originalOnError?.call(details);
+      };
+
+      GlobalErrorHandler.initialize(
+        onError: (error, stack) {
+          if (kDebugMode) {
+            debugPrint('Global error caught: $error\n$stack');
+          }
+        },
+      );
+    }
+
+    // Initialize Supabase (safe to call - returns false if credentials are
+    // placeholders, and the app continues in offline-only mode).
+    await SupabaseService.initialize();
+
+    // Start performance monitoring in debug mode if enabled
+    if (_enablePerformanceMonitoring) {
+      performanceMonitor.startMonitoring();
+    }
+
+    // Initialize notifications with navigation callback
+    final notificationService = NotificationService();
+    await notificationService.initialize(
+      onSelectNotification: (payload) {
+        if (payload == 'learn') {
+          navigatorKey.currentState?.push(
+            MaterialPageRoute(builder: (_) => const LearnScreen()),
+          );
+        } else if (payload == 'review') {
+          navigatorKey.currentState?.push(
+            MaterialPageRoute(
+              builder: (_) => const SpacedRepetitionPracticeScreen(),
+            ),
+          );
+        } else if (payload == 'achievements') {
+          navigatorKey.currentState?.push(
+            MaterialPageRoute(builder: (_) => const AchievementsScreen()),
+          );
+        }
+      },
+    );
+  });
 
   runApp(
     ErrorBoundary(

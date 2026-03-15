@@ -14,18 +14,26 @@ class PlacementChallengeCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final profileAsync = ref.watch(userProfileProvider);
+    // Select only the three fields this widget checks — avoids rebuilds
+    // when unrelated profile data (XP, streak, gems, etc.) changes.
+    final placementData = ref.watch(userProfileProvider.select((a) => a.whenData((p) => p == null
+        ? null
+        : (
+            experienceLevel: p.experienceLevel,
+            hasCompletedPlacementTest: p.hasCompletedPlacementTest,
+            hasSkippedPlacementTest: p.hasSkippedPlacementTest,
+          ))));
 
-    return profileAsync.when(
+    return placementData.when(
       loading: () => const SizedBox.shrink(),
       error: (_, __) => const SizedBox.shrink(),
-      data: (profile) {
-        if (profile == null) return const SizedBox.shrink();
-        if (profile.experienceLevel == ExperienceLevel.beginner) {
+      data: (data) {
+        if (data == null) return const SizedBox.shrink();
+        if (data.experienceLevel == ExperienceLevel.beginner) {
           return const SizedBox.shrink();
         }
-        if (profile.hasCompletedPlacementTest ||
-            profile.hasSkippedPlacementTest) {
+        if (data.hasCompletedPlacementTest ||
+            data.hasSkippedPlacementTest) {
           return const SizedBox.shrink();
         }
 

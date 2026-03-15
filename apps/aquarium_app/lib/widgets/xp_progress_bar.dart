@@ -66,9 +66,18 @@ class _XpProgressBarState extends ConsumerState<XpProgressBar>
 
   @override
   Widget build(BuildContext context) {
-    final profileAsync = ref.watch(userProfileProvider);
+    // Select only the four fields this widget uses — avoids rebuilds when
+    // unrelated profile data (streak, gems, completedLessons, etc.) changes.
+    final xpData = ref.watch(userProfileProvider.select((a) => a.whenData((p) => p == null
+        ? null
+        : (
+            levelProgress: p.levelProgress,
+            currentLevel: p.currentLevel,
+            xpToNextLevel: p.xpToNextLevel,
+            totalXp: p.totalXp,
+          ))));
 
-    return profileAsync.when(
+    return xpData.when(
       loading: () => const SizedBox.shrink(),
       error: (_, __) => Padding(
                     padding: const EdgeInsets.all(AppSpacing.sm),
@@ -81,12 +90,12 @@ class _XpProgressBarState extends ConsumerState<XpProgressBar>
                       ],
                     ),
                   ),
-      data: (profile) {
-        if (profile == null) return const SizedBox.shrink();
+      data: (data) {
+        if (data == null) return const SizedBox.shrink();
 
         // Update animation target when profile changes
         WidgetsBinding.instance.addPostFrameCallback((_) {
-          if (mounted) _updateProgress(profile.levelProgress);
+          if (mounted) _updateProgress(data.levelProgress);
         });
 
         return Column(
@@ -108,7 +117,7 @@ class _XpProgressBarState extends ConsumerState<XpProgressBar>
                         ),
                         const SizedBox(width: AppSpacing.xs),
                         Text(
-                          'Level ${profile.currentLevel}',
+                          'Level ${data.currentLevel}',
                           style: AppTypography.labelMedium.copyWith(
                             fontWeight: FontWeight.bold,
                             color: context.textPrimary,
@@ -117,8 +126,8 @@ class _XpProgressBarState extends ConsumerState<XpProgressBar>
                       ],
                     ),
                   Text(
-                    profile.xpToNextLevel > 0
-                        ? '${profile.xpToNextLevel} XP to next level'
+                    data.xpToNextLevel > 0
+                        ? '${data.xpToNextLevel} XP to next level'
                         : 'Max Level!',
                     style: AppTypography.bodySmall.copyWith(
                       color: context.textSecondary,
@@ -187,7 +196,7 @@ class _XpProgressBarState extends ConsumerState<XpProgressBar>
             if (widget.showLabels) ...[
               const SizedBox(height: AppSpacing.xs),
               Text(
-                '${profile.totalXp} Total XP',
+                '${data.totalXp} Total XP',
                 style: AppTypography.bodySmall.copyWith(
                   color: context.textHint,
                 ),
@@ -269,9 +278,17 @@ class XpProgressCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final profileAsync = ref.watch(userProfileProvider);
+    // Select only XP/level fields to avoid rebuilds from unrelated changes.
+    final xpCardData = ref.watch(userProfileProvider.select((a) => a.whenData((p) => p == null
+        ? null
+        : (
+            currentLevel: p.currentLevel,
+            levelTitle: p.levelTitle,
+            totalXp: p.totalXp,
+            xpToNextLevel: p.xpToNextLevel,
+          ))));
 
-    return profileAsync.when(
+    return xpCardData.when(
       loading: () => const SizedBox.shrink(),
       error: (_, __) => Padding(
                     padding: const EdgeInsets.all(AppSpacing.sm),
@@ -284,8 +301,8 @@ class XpProgressCard extends ConsumerWidget {
                       ],
                     ),
                   ),
-      data: (profile) {
-        if (profile == null) return const SizedBox.shrink();
+      data: (data) {
+        if (data == null) return const SizedBox.shrink();
 
         return Container(
           decoration: BoxDecoration(
@@ -335,13 +352,13 @@ class XpProgressCard extends ConsumerWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  'Level ${profile.currentLevel}',
+                                  'Level ${data.currentLevel}',
                                   style: AppTypography.headlineSmall.copyWith(
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
                                 Text(
-                                  profile.levelTitle,
+                                  data.levelTitle,
                                   style: AppTypography.bodySmall.copyWith(
                                     color: context.textSecondary,
                                   ),
@@ -351,7 +368,7 @@ class XpProgressCard extends ConsumerWidget {
                           ],
                         ),
                         Text(
-                          '${profile.totalXp} XP',
+                          '${data.totalXp} XP',
                           style: AppTypography.labelLarge.copyWith(
                             color: AppColors.warning,
                             fontWeight: FontWeight.bold,
@@ -367,8 +384,8 @@ class XpProgressCard extends ConsumerWidget {
                     ),
                     const SizedBox(height: AppSpacing.sm),
                     Text(
-                      profile.xpToNextLevel > 0
-                          ? '${profile.xpToNextLevel} XP to Level ${profile.currentLevel + 1}'
+                      data.xpToNextLevel > 0
+                          ? '${data.xpToNextLevel} XP to Level ${data.currentLevel + 1}'
                           : 'Maximum level reached!',
                       style: AppTypography.bodySmall.copyWith(
                         color: context.textSecondary,

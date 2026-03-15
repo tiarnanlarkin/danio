@@ -32,10 +32,10 @@ class AmbientLightingOverlay extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final settings = ref.watch(settingsProvider);
+    final ambientEnabled = ref.watch(settingsProvider.select((s) => s.ambientLightingEnabled));
     
     // If ambient lighting is disabled, just return the child
-    if (!settings.ambientLightingEnabled) {
+    if (!ambientEnabled) {
       return child;
     }
     
@@ -132,9 +132,9 @@ class AmbientTankOverlay extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final settings = ref.watch(settingsProvider);
+    final ambientEnabled = ref.watch(settingsProvider.select((s) => s.ambientLightingEnabled));
     
-    if (!settings.ambientLightingEnabled) {
+    if (!ambientEnabled) {
       return child;
     }
     
@@ -200,9 +200,9 @@ class AmbientTimeIndicator extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final settings = ref.watch(settingsProvider);
+    final ambientEnabled = ref.watch(settingsProvider.select((s) => s.ambientLightingEnabled));
     
-    if (!settings.ambientLightingEnabled) {
+    if (!ambientEnabled) {
       return const SizedBox.shrink();
     }
     

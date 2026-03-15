@@ -25,40 +25,42 @@ class GamificationDashboard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final profileAsync = ref.watch(userProfileProvider);
-    final gemsAsync = ref.watch(gemsProvider);
-    final heartsState = ref.watch(heartsStateProvider);
+    // Select only the fields this dashboard actually displays from
+    // the profile — avoids rebuilds when unrelated profile data changes.
+    final dashData = ref.watch(userProfileProvider.select((a) => a.whenData((p) => p == null
+        ? null
+        : (
+            currentStreak: p.currentStreak,
+            totalXp: p.totalXp,
+            dailyXpGoal: p.dailyXpGoal,
+          ))));
 
-    return profileAsync.when(
+    return dashData.when(
       loading: () => _buildLoadingState(context),
       error: (_, __) => _buildErrorState(),
-      data: (profile) {
-        if (profile == null) return const SizedBox.shrink();
+      data: (data) {
+        if (data == null) return const SizedBox.shrink();
 
-        final gems = gemsAsync.value?.balance ?? 0;
-        final dailyGoal = ref.watch(todaysDailyGoalProvider);
-        final todayXp = dailyGoal?.earnedXp ?? 0;
-        final goalXp = profile.dailyXpGoal;
-        final progress = goalXp > 0 ? (todayXp / goalXp).clamp(0.0, 1.0) : 0.0;
-
+        // Each stat row is its own ConsumerWidget so that gems, hearts,
+        // and daily-goal changes only rebuild their own row.
         final content = Padding(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: AppSpacing.sm4),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Row 1: Streak and XP
+              // Row 1: Streak and XP (from profile select above)
               Row(
                 children: [
                   _StatItem(
                     icon: '🔥',
-                    value: '${profile.currentStreak}',
+                    value: '${data.currentStreak}',
                     label: 'day streak',
                     color: DanioColors.amberGold,
                   ),
                   const Spacer(),
                   _StatItem(
                     icon: '⭐',
-                    value: _formatNumber(profile.totalXp),
+                    value: _formatNumber(data.totalXp),
                     label: 'XP',
                     color: AppColors.accent,
                     alignRight: true,
@@ -67,37 +69,12 @@ class GamificationDashboard extends ConsumerWidget {
               ),
               const SizedBox(height: AppSpacing.sm2),
 
-              // Row 2: Gems, Today XP, and Hearts
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(child: _StatItem(
-                    icon: '💎',
-                    value: _formatNumber(gems),
-                    label: 'gems',
-                    color: DanioColors.tealWater,
-                  )),
-                  Expanded(child: _StatItem(
-                    icon: '⚡',
-                    value: _formatNumber(todayXp),
-                    label: 'today',
-                    color: DanioColors.emeraldGreen,
-                  )),
-                  Expanded(child: _HeartsDisplay(
-                    current: heartsState.currentHearts,
-                    max: heartsState.maxHearts,
-                    timeUntilRefill: heartsState.timeUntilNextRefill,
-                  )),
-                ],
-              ),
+              // Row 2: Gems, Today XP, and Hearts — each watches its own provider
+              _GemsTodayHeartsRow(dailyXpGoal: data.dailyXpGoal),
               const SizedBox(height: AppSpacing.md),
 
               // Row 3: Daily Goal Progress
-              _DailyGoalProgress(
-                current: todayXp,
-                goal: goalXp,
-                progress: progress,
-              ),
+              _DailyGoalProgressRow(dailyXpGoal: data.dailyXpGoal),
             ],
           ),
         );
@@ -180,6 +157,71 @@ class GamificationDashboard extends ConsumerWidget {
       return '${(number / 1000).toStringAsFixed(1)}k';
     }
     return number.toString();
+  }
+}
+
+/// Row 2 sub-widget: gems, today-XP, hearts.
+/// Each value comes from its own provider so changes don't rebuild the
+/// entire dashboard.
+class _GemsTodayHeartsRow extends ConsumerWidget {
+  final int dailyXpGoal;
+  const _GemsTodayHeartsRow({required this.dailyXpGoal});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final gems = ref.watch(gemsProvider.select((a) => a.value?.balance ?? 0));
+    final heartsState = ref.watch(heartsStateProvider);
+    final dailyGoal = ref.watch(todaysDailyGoalProvider);
+    final todayXp = dailyGoal?.earnedXp ?? 0;
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Expanded(child: _StatItem(
+          icon: '💎',
+          value: _formatNumber(gems),
+          label: 'gems',
+          color: DanioColors.tealWater,
+        )),
+        Expanded(child: _StatItem(
+          icon: '⚡',
+          value: _formatNumber(todayXp),
+          label: 'today',
+          color: DanioColors.emeraldGreen,
+        )),
+        Expanded(child: _HeartsDisplay(
+          current: heartsState.currentHearts,
+          max: heartsState.maxHearts,
+          timeUntilRefill: heartsState.timeUntilNextRefill,
+        )),
+      ],
+    );
+  }
+
+  static String _formatNumber(int number) {
+    if (number >= 1000) {
+      return '${(number / 1000).toStringAsFixed(1)}k';
+    }
+    return number.toString();
+  }
+}
+
+/// Row 3 sub-widget: daily goal progress bar.
+class _DailyGoalProgressRow extends ConsumerWidget {
+  final int dailyXpGoal;
+  const _DailyGoalProgressRow({required this.dailyXpGoal});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final dailyGoal = ref.watch(todaysDailyGoalProvider);
+    final todayXp = dailyGoal?.earnedXp ?? 0;
+    final progress = dailyXpGoal > 0 ? (todayXp / dailyXpGoal).clamp(0.0, 1.0) : 0.0;
+
+    return _DailyGoalProgress(
+      current: todayXp,
+      goal: dailyXpGoal,
+      progress: progress,
+    );
   }
 }
 
@@ -397,10 +439,13 @@ class MiniGamificationDisplay extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final profileAsync = ref.watch(userProfileProvider);
+    // Select only currentStreak — the sole profile field this widget uses.
+    final streakAsync = ref.watch(
+      userProfileProvider.select((a) => a.whenData((p) => p?.currentStreak)),
+    );
     final gemsBalance = ref.watch(gemBalanceProvider);
 
-    return profileAsync.when(
+    return streakAsync.when(
       loading: () => const SizedBox.shrink(),
       error: (_, __) => Padding(
                     padding: const EdgeInsets.all(AppSpacing.sm),
@@ -413,14 +458,14 @@ class MiniGamificationDisplay extends ConsumerWidget {
                       ],
                     ),
                   ),
-      data: (profile) {
-        if (profile == null) return const SizedBox.shrink();
+      data: (currentStreak) {
+        if (currentStreak == null) return const SizedBox.shrink();
 
         return Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             // Streak
-            _MiniStat(emoji: '🔥', value: profile.currentStreak),
+            _MiniStat(emoji: '🔥', value: currentStreak),
             const SizedBox(width: AppSpacing.sm2),
             // Gems
             _MiniStat(emoji: '💎', value: gemsBalance),
