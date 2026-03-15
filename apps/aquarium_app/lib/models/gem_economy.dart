@@ -15,7 +15,9 @@ class GemRewards {
   // Daily Goals & Streaks
   static const int dailyGoalMet = 2;
   static const int streak7Days = 10;
+  static const int streak14Days = 15;
   static const int streak30Days = 25;
+  static const int streak50Days = 35;
   static const int streak100Days = 100;
 
   // Level Progression
@@ -38,9 +40,9 @@ class GemRewards {
   /// Calculate gems for streak milestone
   static int getStreakMilestoneReward(int streakDays) {
     if (streakDays == 7) return streak7Days;
-    if (streakDays == 14) return streak7Days;
+    if (streakDays == 14) return streak14Days;
     if (streakDays == 30) return streak30Days;
-    if (streakDays == 50) return streak30Days;
+    if (streakDays == 50) return streak50Days;
     if (streakDays == 100) return streak100Days;
     if (streakDays == 365) return 365;
     return 0;

@@ -416,10 +416,11 @@ class AchievementService {
     return null;
   }
 
-  /// Get completion percentage
+  /// Get completion percentage (excludes hidden achievements)
   static double getCompletionPercentage(List<String> unlockedIds) {
-    if (AchievementDefinitions.all.isEmpty) return 0.0;
-    return unlockedIds.length / AchievementDefinitions.all.length;
+    final visible = AchievementDefinitions.all.where((a) => !a.isHidden).toList();
+    if (visible.isEmpty) return 0.0;
+    return unlockedIds.length / visible.length;
   }
 
   /// Get achievements grouped by category
