@@ -10,14 +10,11 @@ import '../../theme/room_themes.dart';
 
 // ── Colour constants ──────────────────────────────────────────────────────────
 const _kTeal = Color(0xFF3BBFB0);
-const _kTealLight = Color(0xFF5DD4C8);
 const _kTealDark = Color(0xFF279E91);
 const _kAmberGold = Color(0xFFD97706);
-const _kAmberGoldLight = Color(0xFFF59E0B);
 const _kCharcoal = Color(0xFF2D3436);
 const _kCream = Color(0xFFFFF5E8);
 const _kGreen = Color(0xFF22C55E);
-const _kGreenDark = Color(0xFF16A34A);
 const _kAmberWarn = Color(0xFFF59E0B);
 const _kBlueWarn = Color(0xFF3B82F6);
 
@@ -625,7 +622,6 @@ class _ThermometerPainter extends CustomPainter {
     final bulbCy = h - bulbRadius - 2;
     final tubePaddingBottom = bulbCy - bulbRadius - tubeHalfW;
     final tubeTop = 14.0;
-    const tubeLeft = 0.0;
     // Tube centre X
     final cx = w / 2;
 
