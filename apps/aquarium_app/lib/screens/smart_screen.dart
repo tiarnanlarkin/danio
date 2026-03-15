@@ -319,7 +319,7 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
               final a = anomalies[i - 2];
               return ListTile(
                 leading: _severityIcon(a.severity),
-                title: Text(a.description),
+                title: Text(a.description, maxLines: 2, overflow: TextOverflow.ellipsis),
                 subtitle: Text(
                   '${a.parameter} · ${_formatTime(a.detectedAt)}'
                   '${a.dismissed ? " · dismissed" : ""}',
