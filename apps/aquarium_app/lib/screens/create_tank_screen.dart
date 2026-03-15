@@ -431,7 +431,7 @@ class _TypeSelector extends StatelessWidget {
                   content: Row(
                     children: const [
                       Icon(Icons.waves, color: Colors.white),
-                      const SizedBox(width: AppSpacing.sm2),
+                      SizedBox(width: AppSpacing.sm2),
                       Expanded(
                         child: Text(
                           'Marine tanks are on the way — stay tuned! 🐠🦀🐙',

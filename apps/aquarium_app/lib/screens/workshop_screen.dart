@@ -15,6 +15,7 @@ import 'stocking_calculator_screen.dart';
 import 'unit_converter_screen.dart';
 import 'tank_volume_calculator_screen.dart';
 import 'lighting_schedule_screen.dart';
+import '../utils/navigation_throttle.dart';
 // charts_screen.dart requires tankId - accessed from tank detail screen
 
 /// Workshop colors - practical maker space theme
@@ -85,84 +86,49 @@ class WorkshopScreen extends ConsumerWidget {
                     title: 'Water Change',
                     subtitle: 'Calculate changes',
                     color: const Color(0xFFFFCA28),
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => const WaterChangeCalculatorScreen(),
-                      ),
-                    ),
+                    onTap: () => NavigationThrottle.push(context, const WaterChangeCalculatorScreen()),
                   ),
                   _ToolCard(
                     icon: Icons.set_meal,
                     title: 'Stocking',
                     subtitle: 'Fish capacity',
                     color: DanioColors.tealWater,
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => const StockingCalculatorScreen(),
-                      ),
-                    ),
+                    onTap: () => NavigationThrottle.push(context, const StockingCalculatorScreen()),
                   ),
                   _ToolCard(
                     icon: Icons.science,
                     title: 'CO₂ Calculator',
                     subtitle: 'From pH & KH',
                     color: const Color(0xFFFFCA28),
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => const Co2CalculatorScreen(),
-                      ),
-                    ),
+                    onTap: () => NavigationThrottle.push(context, const Co2CalculatorScreen()),
                   ),
                   _ToolCard(
                     icon: Icons.medication_liquid,
                     title: 'Dosing',
                     subtitle: 'Fertilizer calculator',
                     color: AppColors.accentAlt,
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => const DosingCalculatorScreen(),
-                      ),
-                    ),
+                    onTap: () => NavigationThrottle.push(context, const DosingCalculatorScreen()),
                   ),
                   _ToolCard(
                     icon: Icons.swap_horiz,
                     title: 'Unit Converter',
                     subtitle: 'Convert units',
                     color: AppColors.xp,
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => const UnitConverterScreen(),
-                      ),
-                    ),
+                    onTap: () => NavigationThrottle.push(context, const UnitConverterScreen()),
                   ),
                   _ToolCard(
                     icon: Icons.calculate,
                     title: 'Tank Volume',
                     subtitle: 'Calculate capacity',
                     color: WorkshopColors.accent,
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => const TankVolumeCalculatorScreen(),
-                      ),
-                    ),
+                    onTap: () => NavigationThrottle.push(context, const TankVolumeCalculatorScreen()),
                   ),
                   _ToolCard(
                     icon: Icons.lightbulb,
                     title: 'Lighting',
                     subtitle: 'Schedule lights',
                     color: AppColors.warning,
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => const LightingScheduleScreen(),
-                      ),
-                    ),
+                    onTap: () => NavigationThrottle.push(context, const LightingScheduleScreen()),
                   ),
                   _ToolCard(
                     icon: Icons.bar_chart,
@@ -176,12 +142,7 @@ class WorkshopScreen extends ConsumerWidget {
                     title: 'Compatibility',
                     subtitle: 'Check fish matches',
                     color: AppColors.primaryLight,
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => const CompatibilityCheckerScreen(),
-                      ),
-                    ),
+                    onTap: () => NavigationThrottle.push(context, const CompatibilityCheckerScreen()),
                   ),
                   _ToolCard(
                     icon: Icons.build_circle,
@@ -195,12 +156,7 @@ class WorkshopScreen extends ConsumerWidget {
                     title: 'Cost Tracker',
                     subtitle: 'Track expenses',
                     color: DanioColors.tealWater,
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => const CostTrackerScreen(),
-                      ),
-                    ),
+                    onTap: () => NavigationThrottle.push(context, const CostTrackerScreen()),
                   ),
                 ]),
               ),

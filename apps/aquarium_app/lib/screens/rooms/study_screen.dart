@@ -16,6 +16,7 @@ import '../glossary_screen.dart';
 import '../faq_screen.dart';
 import '../species_browser_screen.dart';
 import '../plant_browser_screen.dart';
+import '../../utils/navigation_throttle.dart';
 
 /// The Study room - Learning & Knowledge hub
 /// Part of the "House Navigation" system - navigation between rooms
@@ -59,10 +60,7 @@ class StudyScreen extends ConsumerWidget {
                     title: 'Learning Paths',
                     subtitle: 'Duolingo-style lessons & quizzes',
                     color: AppColors.primary,
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (_) => const LearnScreen()),
-                    ),
+                    onTap: () => NavigationThrottle.push(context, const LearnScreen()),
                   ),
                 ],
               ),
@@ -82,36 +80,21 @@ class StudyScreen extends ConsumerWidget {
                     title: 'Nitrogen Cycle',
                     subtitle: 'The most important concept',
                     color: AppColors.accent,
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => const NitrogenCycleGuideScreen(),
-                      ),
-                    ),
+                    onTap: () => NavigationThrottle.push(context, const NitrogenCycleGuideScreen()),
                   ),
                   _StudyTile(
                     icon: Icons.science,
                     title: 'Water Parameters',
                     subtitle: 'pH, temperature, hardness & more',
                     color: AppColors.primary,
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => const ParameterGuideScreen(),
-                      ),
-                    ),
+                    onTap: () => NavigationThrottle.push(context, const ParameterGuideScreen()),
                   ),
                   _StudyTile(
                     icon: Icons.local_hospital,
                     title: 'Fish Diseases',
                     subtitle: 'Identify and treat common illnesses',
                     color: AppColors.error,
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => const DiseaseGuideScreen(),
-                      ),
-                    ),
+                    onTap: () => NavigationThrottle.push(context, const DiseaseGuideScreen()),
                   ),
                 ],
               ),
@@ -131,48 +114,28 @@ class StudyScreen extends ConsumerWidget {
                     title: 'Acclimation',
                     subtitle: 'Safely introduce new fish',
                     color: AppColors.warning,
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => const AcclimationGuideScreen(),
-                      ),
-                    ),
+                    onTap: () => NavigationThrottle.push(context, const AcclimationGuideScreen()),
                   ),
                   _StudyTile(
                     icon: Icons.shield,
                     title: 'Quarantine',
                     subtitle: 'Protect your tank from disease',
                     color: AppColors.accentAlt,
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => const QuarantineGuideScreen(),
-                      ),
-                    ),
+                    onTap: () => NavigationThrottle.push(context, const QuarantineGuideScreen()),
                   ),
                   _StudyTile(
                     icon: Icons.restaurant,
                     title: 'Feeding',
                     subtitle: 'Nutrition and feeding schedules',
                     color: AppColors.xp,
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => const FeedingGuideScreen(),
-                      ),
-                    ),
+                    onTap: () => NavigationThrottle.push(context, const FeedingGuideScreen()),
                   ),
                   _StudyTile(
                     icon: Icons.favorite,
                     title: 'Breeding',
                     subtitle: 'Raise the next generation',
                     color: DanioColors.coralAccent,
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => const BreedingGuideScreen(),
-                      ),
-                    ),
+                    onTap: () => NavigationThrottle.push(context, const BreedingGuideScreen()),
                   ),
                 ],
               ),
@@ -192,12 +155,7 @@ class StudyScreen extends ConsumerWidget {
                     title: 'Algae Control',
                     subtitle: 'Identify and eliminate algae',
                     color: AppColors.primary,
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => const AlgaeGuideScreen(),
-                      ),
-                    ),
+                    onTap: () => NavigationThrottle.push(context, const AlgaeGuideScreen()),
                   ),
                 ],
               ),
@@ -217,44 +175,28 @@ class StudyScreen extends ConsumerWidget {
                     title: 'Species Browser',
                     subtitle: 'Explore fish species',
                     color: AppColors.accent,
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => const SpeciesBrowserScreen(),
-                      ),
-                    ),
+                    onTap: () => NavigationThrottle.push(context, const SpeciesBrowserScreen()),
                   ),
                   _StudyTile(
                     icon: Icons.eco,
                     title: 'Plant Browser',
                     subtitle: 'Explore aquatic plants',
                     color: AppColors.primary,
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => const PlantBrowserScreen(),
-                      ),
-                    ),
+                    onTap: () => NavigationThrottle.push(context, const PlantBrowserScreen()),
                   ),
                   _StudyTile(
                     icon: Icons.menu_book,
                     title: 'Glossary',
                     subtitle: 'Fishkeeping terminology',
                     color: AppColors.secondary,
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (_) => const GlossaryScreen()),
-                    ),
+                    onTap: () => NavigationThrottle.push(context, const GlossaryScreen()),
                   ),
                   _StudyTile(
                     icon: Icons.help_outline,
                     title: 'FAQ',
                     subtitle: 'Common questions answered',
                     color: AppColors.secondaryDark,
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (_) => const FaqScreen()),
-                    ),
+                    onTap: () => NavigationThrottle.push(context, const FaqScreen()),
                   ),
                 ],
               ),

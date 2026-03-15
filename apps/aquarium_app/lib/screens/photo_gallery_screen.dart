@@ -8,6 +8,7 @@ import '../providers/tank_provider.dart';
 import '../theme/app_theme.dart';
 import '../widgets/optimized_image.dart';
 import '../widgets/core/app_states.dart';
+import '../utils/navigation_throttle.dart';
 
 class PhotoGalleryScreen extends ConsumerWidget {
   final String tankId;
@@ -73,7 +74,7 @@ class PhotoGalleryScreen extends ConsumerWidget {
             slivers: [
               // Top padding
               const SliverPadding(
-                padding: const EdgeInsets.only(top: 16),
+                padding: EdgeInsets.only(top: 16),
                 sliver: SliverToBoxAdapter(child: SizedBox.shrink()),
               ),
               
@@ -121,14 +122,14 @@ class PhotoGalleryScreen extends ConsumerWidget {
                 
                 // Spacing after each month
                 const SliverPadding(
-                  padding: const EdgeInsets.only(bottom: AppSpacing.md),
+                  padding: EdgeInsets.only(bottom: AppSpacing.md),
                   sliver: SliverToBoxAdapter(child: SizedBox.shrink()),
                 ),
               ],
               
               // Bottom padding
               const SliverPadding(
-                padding: const EdgeInsets.only(bottom: 16),
+                padding: EdgeInsets.only(bottom: 16),
                 sliver: SliverToBoxAdapter(child: SizedBox.shrink()),
               ),
             ],
@@ -143,13 +144,7 @@ class PhotoGalleryScreen extends ConsumerWidget {
     List<_PhotoEntry> photos,
     int initialIndex,
   ) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) =>
-            _PhotoViewerScreen(photos: photos, initialIndex: initialIndex),
-      ),
-    );
+    NavigationThrottle.push(context, _PhotoViewerScreen(photos: photos, initialIndex: initialIndex));
   }
 }
 

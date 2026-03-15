@@ -3,6 +3,7 @@ import '../theme/app_theme.dart';
 import '../screens/learn_screen.dart';
 import '../screens/workshop_screen.dart';
 import '../screens/shop_street_screen.dart';
+import '../utils/navigation_throttle.dart';
 
 /// Room navigation widget - can be placed in settings or as an overlay
 class RoomNavigation extends StatelessWidget {
@@ -36,10 +37,7 @@ class RoomNavigation extends StatelessWidget {
                   name: 'Study',
                   description: 'Learn & guides',
                   color: const Color(0xFF1A237E),
-                  onTap: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (_) => const LearnScreen()),
-                  ),
+                  onTap: () => NavigationThrottle.push(context, const LearnScreen()),
                 ),
               ),
               const SizedBox(width: AppSpacing.sm2),
@@ -49,10 +47,7 @@ class RoomNavigation extends StatelessWidget {
                   name: 'Workshop',
                   description: 'Tools & calculators',
                   color: const Color(0xFF5D4037),
-                  onTap: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (_) => const WorkshopScreen()),
-                  ),
+                  onTap: () => NavigationThrottle.push(context, const WorkshopScreen()),
                 ),
               ),
             ],
@@ -63,10 +58,7 @@ class RoomNavigation extends StatelessWidget {
             name: 'Shop Street',
             description: 'Wishlist & costs',
             color: const Color(0xFF2E7D32),
-            onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(builder: (_) => const ShopStreetScreen()),
-            ),
+            onTap: () => NavigationThrottle.push(context, const ShopStreetScreen()),
           ),
         ],
       ),

@@ -125,20 +125,20 @@ class TermsOfServiceScreen extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(AppSpacing.md),
               decoration: BoxDecoration(
-                color: const Color(0xFFFFF8E1),
+                color: AppColors.warningAlpha10,
                 borderRadius: AppRadius.mediumRadius,
-                border: Border.all(color: const Color(0xFFFFE082)),
+                border: Border.all(color: AppColors.warningAlpha30),
               ),
               child: Row(
                 children: [
-                  Icon(Icons.info_outline, color: const Color(0xFFFFA000), size: AppIconSizes.md),
+                  Icon(Icons.info_outline, color: AppColors.warning, size: AppIconSizes.md),
                   const SizedBox(width: AppSpacing.md),
                   Expanded(
                     child: Text(
                       'By using Danio, you agree to these terms. '
                       'If you don\'t agree, please uninstall the app.',
                       style: AppTypography.bodySmall.copyWith(
-                        color: const Color(0xFFFF6F00),
+                        color: AppColors.warning,
                       ),
                     ),
                   ),

@@ -15,6 +15,7 @@ import '../widgets/core/app_states.dart';
 import '../widgets/mascot/mascot_widgets.dart';
 import 'add_log_screen.dart';
 import 'log_detail_screen.dart';
+import '../utils/navigation_throttle.dart';
 
 class LogsScreen extends ConsumerStatefulWidget {
   final String tankId;
@@ -68,12 +69,7 @@ class _LogsScreenState extends ConsumerState<LogsScreen> {
                     'Start logging water tests, maintenance, and events to track your tank\'s history',
                 mascotContext: MascotContext.noLogs,
                 actionLabel: 'Add Log Entry',
-                onAction: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => AddLogScreen(tankId: widget.tankId),
-                  ),
-                ),
+                onAction: () => NavigationThrottle.push(context, AddLogScreen(tankId: widget.tankId)),
               );
             } else {
               // Has logs but filtered out
@@ -129,15 +125,10 @@ class _LogsScreenState extends ConsumerState<LogsScreen> {
                           ).format(log.timestamp),
                         ),
                         trailing: const Icon(Icons.chevron_right),
-                        onTap: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => LogDetailScreen(
+                        onTap: () => NavigationThrottle.push(context, LogDetailScreen(
                               tankId: widget.tankId,
                               logId: log.id,
-                            ),
-                          ),
-                        ),
+                            )),
                       ),
                     )
                         .animate()
@@ -407,12 +398,7 @@ class _LogsScreenState extends ConsumerState<LogsScreen> {
   }
 
   void _openAdd(BuildContext context, LogType type) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => AddLogScreen(tankId: widget.tankId, initialType: type),
-      ),
-    );
+    NavigationThrottle.push(context, AddLogScreen(tankId: widget.tankId, initialType: type));
   }
 
   static String _typeName(LogType type) {

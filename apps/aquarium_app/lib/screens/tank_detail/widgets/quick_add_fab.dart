@@ -145,7 +145,7 @@ class MiniFabOption extends StatelessWidget {
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: AppSpacing.xs2),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: Theme.of(context).colorScheme.surface,
             borderRadius: AppRadius.xsRadius,
             boxShadow: [
               BoxShadow(

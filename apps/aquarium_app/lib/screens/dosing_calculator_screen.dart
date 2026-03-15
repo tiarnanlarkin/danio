@@ -102,7 +102,7 @@ class _DosingCalculatorScreenState extends State<DosingCalculatorScreen> {
                     value: _dosePerLitres,
                     decoration: const InputDecoration(
                       suffixText: 'L',
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 12),
+                      contentPadding: EdgeInsets.symmetric(horizontal: 12),
                     ),
                     items: [5, 10, 20, 25, 40, 50, 100].map((v) {
                       return DropdownMenuItem(

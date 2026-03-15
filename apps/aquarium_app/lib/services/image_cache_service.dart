@@ -3,6 +3,7 @@ import 'dart:ui' as ui;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
+import '../theme/app_theme.dart';
 import 'package:path/path.dart' as path;
 
 /// Service for optimizing image loading and caching
@@ -215,7 +216,7 @@ class CachedImage extends StatelessWidget {
       },
       errorBuilder: (context, error, stackTrace) {
         return errorWidget ??
-            const Center(child: Icon(Icons.broken_image, color: Colors.grey));
+            Center(child: Icon(Icons.broken_image, color: AppColors.textHint));
       },
     );
   }

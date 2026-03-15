@@ -7,6 +7,7 @@ import '../widgets/hearts_widgets.dart';
 import 'spaced_repetition_practice_screen.dart';
 import 'practice_screen.dart';
 import 'achievements_screen.dart';
+import '../utils/navigation_throttle.dart';
 
 /// Practice Hub - Central location for all quiz and practice activities
 /// This is Tab 1 in the new navigation structure
@@ -25,7 +26,7 @@ class PracticeHubScreen extends ConsumerWidget {
         title: const Text('🧪 Practice'),
         actions: const [
           Padding(
-            padding: const EdgeInsets.only(right: 8),
+            padding: EdgeInsets.only(right: 8),
             child: Center(child: HeartIndicator(compact: true)),
           ),
         ],
@@ -70,12 +71,7 @@ class PracticeHubScreen extends ConsumerWidget {
             icon: Icons.replay,
             color: AppColors.error,
             onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const SpacedRepetitionPracticeScreen(),
-                ),
-              );
+              NavigationThrottle.push(context, const SpacedRepetitionPracticeScreen());
             },
           );
         } else if (totalCards > 0) {
@@ -86,12 +82,7 @@ class PracticeHubScreen extends ConsumerWidget {
             icon: Icons.auto_stories,
             color: AppColors.primary,
             onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const SpacedRepetitionPracticeScreen(),
-                ),
-              );
+              NavigationThrottle.push(context, const SpacedRepetitionPracticeScreen());
             },
           );
         } else {
@@ -141,12 +132,7 @@ class PracticeHubScreen extends ConsumerWidget {
           icon: Icons.psychology,
           iconColor: AppColors.primary,
           onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const SpacedRepetitionPracticeScreen(),
-              ),
-            );
+            NavigationThrottle.push(context, const SpacedRepetitionPracticeScreen());
           },
         );
       case 7:
@@ -159,12 +145,7 @@ class PracticeHubScreen extends ConsumerWidget {
           icon: Icons.flash_on,
           iconColor: AppColors.warning,
           onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const PracticeScreen(),
-              ),
-            );
+            NavigationThrottle.push(context, const PracticeScreen());
           },
         );
       case 9:
@@ -177,12 +158,7 @@ class PracticeHubScreen extends ConsumerWidget {
           icon: Icons.emoji_events,
           iconColor: AppColors.success,
           onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const AchievementsScreen(),
-              ),
-            );
+            NavigationThrottle.push(context, const AchievementsScreen());
           },
         );
       case 11:

@@ -286,7 +286,7 @@ class StoryCard extends StatelessWidget {
     return Opacity(
       opacity: isUnlocked ? 1.0 : 0.6,
       child: Material(
-        color: Colors.white,
+        color: Theme.of(context).cardColor,
         elevation: isUnlocked ? AppElevation.level2 : AppElevation.level1,
         borderRadius: AppRadius.mediumRadius,
         child: InkWell(

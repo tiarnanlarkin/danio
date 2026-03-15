@@ -15,6 +15,7 @@ import 'achievements_screen.dart';
 import 'analytics_screen.dart';
 import 'backup_restore_screen.dart';
 import 'about_screen.dart';
+import '../utils/navigation_throttle.dart';
 
 /// Settings Hub - Consolidates all secondary features
 /// This is Tab 3 in the new navigation structure
@@ -58,12 +59,7 @@ class SettingsHubScreen extends ConsumerWidget {
         iconColor: AppColors.success,
         trailing: const Icon(Icons.chevron_right),
         onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const ShopStreetScreen(),
-            ),
-          );
+          NavigationThrottle.push(context, const ShopStreetScreen());
         },
       ),
 
@@ -76,12 +72,7 @@ class SettingsHubScreen extends ConsumerWidget {
         iconColor: AppColors.warning,
         trailing: const Icon(Icons.chevron_right),
         onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const AchievementsScreen(),
-            ),
-          );
+          NavigationThrottle.push(context, const AchievementsScreen());
         },
       ),
 
@@ -98,12 +89,7 @@ class SettingsHubScreen extends ConsumerWidget {
         iconColor: AppColors.primary, // BUG-10: was textSecondary (gray), now warm amber
         trailing: const Icon(Icons.chevron_right),
         onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const WorkshopScreen(),
-            ),
-          );
+          NavigationThrottle.push(context, const WorkshopScreen());
         },
       ),
 
@@ -116,12 +102,7 @@ class SettingsHubScreen extends ConsumerWidget {
         iconColor: AppColors.primary,
         trailing: const Icon(Icons.chevron_right),
         onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const AnalyticsScreen(),
-            ),
-          );
+          NavigationThrottle.push(context, const AnalyticsScreen());
         },
       ),
 
@@ -138,12 +119,7 @@ class SettingsHubScreen extends ConsumerWidget {
         iconColor: context.textSecondary,
         trailing: const Icon(Icons.chevron_right),
         onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const SettingsScreen(),
-            ),
-          );
+          NavigationThrottle.push(context, const SettingsScreen());
         },
       ),
 
@@ -159,12 +135,7 @@ class SettingsHubScreen extends ConsumerWidget {
           iconColor: context.textSecondary,
           trailing: const Icon(Icons.chevron_right),
           onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const BackupRestoreScreen(),
-              ),
-            );
+            NavigationThrottle.push(context, const BackupRestoreScreen());
           },
         ),
       ),
@@ -178,12 +149,7 @@ class SettingsHubScreen extends ConsumerWidget {
         iconColor: context.textSecondary,
         trailing: const Icon(Icons.chevron_right),
         onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const AboutScreen(),
-            ),
-          );
+          NavigationThrottle.push(context, const AboutScreen());
         },
       ),
 
@@ -258,12 +224,7 @@ class SettingsHubScreen extends ConsumerWidget {
             tooltip: 'Settings',
             icon: const Icon(Icons.edit),
             onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const SettingsScreen(),
-                ),
-              );
+              NavigationThrottle.push(context, const SettingsScreen());
             },
           ),
         ],

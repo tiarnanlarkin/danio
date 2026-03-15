@@ -395,7 +395,7 @@ class _AchievementsScreenState extends ConsumerState<AchievementsScreen> {
               ),
             ),
           ),
-          const SliverToBoxAdapter(child: const SizedBox(height: AppSpacing.sm)),
+          const SliverToBoxAdapter(child: SizedBox(height: AppSpacing.sm)),
         ],
 
         // Main grid (sorted: unlocked → in progress → locked)

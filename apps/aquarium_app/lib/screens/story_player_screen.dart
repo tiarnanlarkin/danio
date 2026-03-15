@@ -366,7 +366,7 @@ class _StoryPlayerScreenState extends ConsumerState<StoryPlayerScreen>
         margin: const EdgeInsets.all(AppSpacing.lg),
         padding: const EdgeInsets.all(AppSpacing.lg),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Theme.of(context).colorScheme.surface,
           borderRadius: AppRadius.largeRadius,
           boxShadow: [
             BoxShadow(

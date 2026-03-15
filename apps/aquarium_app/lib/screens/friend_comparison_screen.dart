@@ -49,7 +49,7 @@ class _FriendComparisonScreenState
                 child: Row(
                   children: [
                     Icon(Icons.person_remove, color: AppColors.error),
-                    const SizedBox(width: AppSpacing.sm),
+                    SizedBox(width: AppSpacing.sm),
                     Text('Remove Friend', style: TextStyle(color: AppColors.error)),
                   ],
                 ),

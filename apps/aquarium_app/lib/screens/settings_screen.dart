@@ -61,6 +61,7 @@ import '../providers/user_profile_provider.dart';
 import '../widgets/room_navigation.dart';
 import '../utils/accessibility_utils.dart';
 import '../models/adaptive_difficulty.dart';
+import '../utils/navigation_throttle.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -91,10 +92,7 @@ class SettingsScreen extends ConsumerWidget {
             icon: Icons.account_circle,
             title: 'Account & Sync',
             subtitle: 'Sign in, backup, multi-device sync',
-            onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(builder: (_) => const AccountScreen()),
-            ),
+            onTap: () => NavigationThrottle.push(context, const AccountScreen()),
           ),
 
           // Learning System (Duolingo-style)
@@ -122,21 +120,13 @@ class SettingsScreen extends ConsumerWidget {
             icon: Icons.color_lens_outlined,
             title: 'Room Themes',
             subtitle: 'Customize your living room style',
-            onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(builder: (_) => const ThemeGalleryScreen()),
-            ),
+            onTap: () => NavigationThrottle.push(context, const ThemeGalleryScreen()),
           ),
           (_) => NavListTile(
             icon: Icons.tune,
             title: 'Difficulty Settings',
             subtitle: 'Adjust app complexity level',
-            onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (_) => const _DifficultySettingsWrapper(),
-              ),
-            ),
+            onTap: () => NavigationThrottle.push(context, const _DifficultySettingsWrapper()),
           ),
           (_) => const _AmbientLightingToggle(),
 
@@ -155,12 +145,7 @@ class SettingsScreen extends ConsumerWidget {
             icon: Icons.notifications_active,
             title: 'Streak Reminders',
             subtitle: 'Daily notifications to maintain your streak',
-            onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (_) => const NotificationSettingsScreen(),
-              ),
-            ),
+            onTap: () => NavigationThrottle.push(context, const NotificationSettingsScreen()),
           ),
           (_) => const _NotificationsToggle(),
 
@@ -172,120 +157,73 @@ class SettingsScreen extends ConsumerWidget {
             icon: Icons.notifications_active,
             title: 'Reminders',
             subtitle: 'Schedule maintenance tasks',
-            onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(builder: (_) => const RemindersScreen()),
-            ),
+            onTap: () => NavigationThrottle.push(context, const RemindersScreen()),
           ),
           (_) => NavListTile(
             icon: Icons.favorite,
             title: 'Fish Wishlist',
             subtitle: 'Track fish you want to keep',
-            onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (_) =>
-                    const WishlistScreen(category: WishlistCategory.fish),
-              ),
-            ),
+            onTap: () => NavigationThrottle.push(context, const WishlistScreen(category: WishlistCategory.fish)),
           ),
           (_) => NavListTile(
             icon: Icons.compare,
             title: 'Compare Tanks',
             subtitle: 'Side-by-side tank comparison',
-            onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(builder: (_) => const TankComparisonScreen()),
-            ),
+            onTap: () => NavigationThrottle.push(context, const TankComparisonScreen()),
           ),
           (_) => NavListTile(
             icon: Icons.calculate_outlined,
             title: 'Water Change Calculator',
             subtitle: 'Calculate how much water to change',
-            onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (_) => const WaterChangeCalculatorScreen(),
-              ),
-            ),
+            onTap: () => NavigationThrottle.push(context, const WaterChangeCalculatorScreen()),
           ),
           (_) => NavListTile(
             icon: Icons.bubble_chart,
             title: 'CO2 Calculator',
             subtitle: 'Calculate CO2 from pH and KH',
-            onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(builder: (_) => const Co2CalculatorScreen()),
-            ),
+            onTap: () => NavigationThrottle.push(context, const Co2CalculatorScreen()),
           ),
           (_) => NavListTile(
             icon: Icons.science_outlined,
             title: 'Dosing Calculator',
             subtitle: 'Calculate fertilizer & medication doses',
-            onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(builder: (_) => const DosingCalculatorScreen()),
-            ),
+            onTap: () => NavigationThrottle.push(context, const DosingCalculatorScreen()),
           ),
           (_) => NavListTile(
             icon: Icons.straighten,
             title: 'Unit Converter',
             subtitle: 'Volume, temperature, length, hardness',
-            onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(builder: (_) => const UnitConverterScreen()),
-            ),
+            onTap: () => NavigationThrottle.push(context, const UnitConverterScreen()),
           ),
           (_) => NavListTile(
             icon: Icons.view_in_ar,
             title: 'Tank Volume Calculator',
             subtitle: 'Calculate volume for any tank shape',
-            onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (_) => const TankVolumeCalculatorScreen(),
-              ),
-            ),
+            onTap: () => NavigationThrottle.push(context, const TankVolumeCalculatorScreen()),
           ),
           (_) => NavListTile(
             icon: Icons.account_balance_wallet,
             title: 'Cost Tracker',
             subtitle: 'Track aquarium expenses',
-            onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(builder: (_) => const CostTrackerScreen()),
-            ),
+            onTap: () => NavigationThrottle.push(context, const CostTrackerScreen()),
           ),
           (_) => NavListTile(
             icon: Icons.compare_arrows,
             title: 'Compatibility Checker',
             subtitle: 'Check if fish work together',
-            onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (_) => const CompatibilityCheckerScreen(),
-              ),
-            ),
+            onTap: () => NavigationThrottle.push(context, const CompatibilityCheckerScreen()),
           ),
           (_) => NavListTile(
             icon: Icons.lightbulb,
             title: 'Lighting Schedule',
             subtitle: 'Optimize light duration for your setup',
-            onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(builder: (_) => const LightingScheduleScreen()),
-            ),
+            onTap: () => NavigationThrottle.push(context, const LightingScheduleScreen()),
           ),
           (_) => NavListTile(
             icon: Icons.bar_chart,
             title: 'Stocking Calculator',
             subtitle: 'Check if your tank is overstocked',
-            onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (_) => const StockingCalculatorScreen(),
-              ),
-            ),
+            onTap: () => NavigationThrottle.push(context, const StockingCalculatorScreen()),
           ),
 
           (_) => const Divider(),
@@ -296,10 +234,7 @@ class SettingsScreen extends ConsumerWidget {
             icon: Icons.storefront,
             title: 'Shop Street',
             subtitle: 'Find aquarium supplies online',
-            onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(builder: (_) => const ShopStreetScreen()),
-            ),
+            onTap: () => NavigationThrottle.push(context, const ShopStreetScreen()),
           ),
 
           (_) => const Divider(),
@@ -355,35 +290,20 @@ class SettingsScreen extends ConsumerWidget {
                 icon: Icons.rocket_launch,
                 title: 'Quick Start Guide',
                 subtitle: 'Setting up your first aquarium',
-                onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => const QuickStartGuideScreen(),
-                  ),
-                ),
+                onTap: () => NavigationThrottle.push(context, const QuickStartGuideScreen()),
               ),
               NavListTile(
                 icon: Icons.emergency,
                 iconColor: AppColors.error,
                 title: 'Emergency Guide',
                 subtitle: 'Urgent problems & immediate actions',
-                onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => const EmergencyGuideScreen(),
-                  ),
-                ),
+                onTap: () => NavigationThrottle.push(context, const EmergencyGuideScreen()),
               ),
               NavListTile(
                 icon: Icons.autorenew,
                 title: 'Nitrogen Cycle Guide',
                 subtitle: 'Learn how to cycle your tank',
-                onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => const NitrogenCycleGuideScreen(),
-                  ),
-                ),
+                onTap: () => NavigationThrottle.push(context, const NitrogenCycleGuideScreen()),
               ),
             ],
           ),
@@ -398,21 +318,13 @@ class SettingsScreen extends ConsumerWidget {
                 icon: Icons.analytics_outlined,
                 title: 'Water Parameters Guide',
                 subtitle: 'Ideal ranges for common fish',
-                onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => const ParameterGuideScreen(),
-                  ),
-                ),
+                onTap: () => NavigationThrottle.push(context, const ParameterGuideScreen()),
               ),
               NavListTile(
                 icon: Icons.grass,
                 title: 'Algae Guide',
                 subtitle: 'Identify and control common algae',
-                onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => const AlgaeGuideScreen()),
-                ),
+                onTap: () => NavigationThrottle.push(context, const AlgaeGuideScreen()),
               ),
             ],
           ),
@@ -427,52 +339,31 @@ class SettingsScreen extends ConsumerWidget {
                 icon: Icons.restaurant,
                 title: 'Feeding Guide',
                 subtitle: 'How much, how often, what types',
-                onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => const FeedingGuideScreen()),
-                ),
+                onTap: () => NavigationThrottle.push(context, const FeedingGuideScreen()),
               ),
               NavListTile(
                 icon: Icons.healing,
                 title: 'Fish Disease Guide',
                 subtitle: 'Identify and treat common diseases',
-                onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => const DiseaseGuideScreen()),
-                ),
+                onTap: () => NavigationThrottle.push(context, const DiseaseGuideScreen()),
               ),
               NavListTile(
                 icon: Icons.sync_alt,
                 title: 'Acclimation Guide',
                 subtitle: 'How to safely add new fish',
-                onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => const AcclimationGuideScreen(),
-                  ),
-                ),
+                onTap: () => NavigationThrottle.push(context, const AcclimationGuideScreen()),
               ),
               NavListTile(
                 icon: Icons.local_hospital,
                 title: 'Quarantine Guide',
                 subtitle: 'Setup, protocol, medications',
-                onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => const QuarantineGuideScreen(),
-                  ),
-                ),
+                onTap: () => NavigationThrottle.push(context, const QuarantineGuideScreen()),
               ),
               NavListTile(
                 icon: Icons.favorite,
                 title: 'Breeding Guide',
                 subtitle: 'Methods, conditioning, raising fry',
-                onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => const BreedingGuideScreen(),
-                  ),
-                ),
+                onTap: () => NavigationThrottle.push(context, const BreedingGuideScreen()),
               ),
             ],
           ),
@@ -487,34 +378,19 @@ class SettingsScreen extends ConsumerWidget {
                 icon: Icons.build,
                 title: 'Equipment Guide',
                 subtitle: 'Filters, heaters, lights, CO2, testing',
-                onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => const EquipmentGuideScreen(),
-                  ),
-                ),
+                onTap: () => NavigationThrottle.push(context, const EquipmentGuideScreen()),
               ),
               NavListTile(
                 icon: Icons.layers,
                 title: 'Substrate Guide',
                 subtitle: 'Types, recommendations, layering',
-                onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => const SubstrateGuideScreen(),
-                  ),
-                ),
+                onTap: () => NavigationThrottle.push(context, const SubstrateGuideScreen()),
               ),
               NavListTile(
                 icon: Icons.terrain,
                 title: 'Hardscape Guide',
                 subtitle: 'Rocks, driftwood, aquascaping tips',
-                onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => const HardscapeGuideScreen(),
-                  ),
-                ),
+                onTap: () => NavigationThrottle.push(context, const HardscapeGuideScreen()),
               ),
             ],
           ),
@@ -529,12 +405,7 @@ class SettingsScreen extends ConsumerWidget {
                 icon: Icons.flight,
                 title: 'Vacation Planning',
                 subtitle: 'Prepare your tank for time away',
-                onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => const VacationGuideScreen(),
-                  ),
-                ),
+                onTap: () => NavigationThrottle.push(context, const VacationGuideScreen()),
               ),
             ],
           ),
@@ -549,50 +420,31 @@ class SettingsScreen extends ConsumerWidget {
                 icon: Icons.set_meal,
                 title: 'Fish Database',
                 subtitle: '45+ species with care info',
-                onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => const SpeciesBrowserScreen(),
-                  ),
-                ),
+                onTap: () => NavigationThrottle.push(context, const SpeciesBrowserScreen()),
               ),
               NavListTile(
                 icon: Icons.eco,
                 title: 'Plant Database',
                 subtitle: '20+ aquarium plants with care info',
-                onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => const PlantBrowserScreen()),
-                ),
+                onTap: () => NavigationThrottle.push(context, const PlantBrowserScreen()),
               ),
               NavListTile(
                 icon: Icons.menu_book,
                 title: 'Glossary',
                 subtitle: '50+ aquarium terms explained',
-                onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => const GlossaryScreen()),
-                ),
+                onTap: () => NavigationThrottle.push(context, const GlossaryScreen()),
               ),
               NavListTile(
                 icon: Icons.quiz,
                 title: 'FAQ',
                 subtitle: 'Frequently asked questions',
-                onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => const FaqScreen()),
-                ),
+                onTap: () => NavigationThrottle.push(context, const FaqScreen()),
               ),
               NavListTile(
                 icon: Icons.build_circle,
                 title: 'Troubleshooting',
                 subtitle: 'Common problems & solutions',
-                onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => const TroubleshootingScreen(),
-                  ),
-                ),
+                onTap: () => NavigationThrottle.push(context, const TroubleshootingScreen()),
               ),
             ],
           ),
@@ -617,12 +469,7 @@ class SettingsScreen extends ConsumerWidget {
                 final demoTank = await actions.addDemoTank();
                 if (context.mounted) {
                   AppFeedback.showSuccess(context, 'Sample tank added!');
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => TankDetailScreen(tankId: demoTank.id),
-                    ),
-                  );
+                  NavigationThrottle.push(context, TankDetailScreen(tankId: demoTank.id));
                 }
               } catch (e) {
                 if (context.mounted) {
@@ -635,19 +482,13 @@ class SettingsScreen extends ConsumerWidget {
             icon: Icons.backup,
             title: 'Backup & Restore',
             subtitle: 'Export or import your tank data',
-            onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(builder: (_) => const BackupRestoreScreen()),
-            ),
+            onTap: () => NavigationThrottle.push(context, const BackupRestoreScreen()),
           ),
           (_) => NavListTile(
             icon: Icons.info_outline,
             title: 'About',
             subtitle: 'Version info and features',
-            onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(builder: (_) => const AboutScreen()),
-            ),
+            onTap: () => NavigationThrottle.push(context, const AboutScreen()),
           ),
 
           (_) => const Divider(),
@@ -1320,10 +1161,7 @@ class _LearnCard extends ConsumerWidget {
         color: Colors.transparent,
         borderRadius: BorderRadius.circular(AppRadius.lg),
         child: InkWell(
-          onTap: () => Navigator.push(
-            context,
-            MaterialPageRoute(builder: (_) => const LearnScreen()),
-          ),
+          onTap: () => NavigationThrottle.push(context, const LearnScreen()),
           borderRadius: BorderRadius.circular(AppRadius.lg),
           child: Container(
             padding: const EdgeInsets.all(AppSpacing.lg2),

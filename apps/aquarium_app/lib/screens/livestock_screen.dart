@@ -23,6 +23,7 @@ import '../widgets/empty_state.dart';
 import '../widgets/core/app_states.dart';
 import '../widgets/mascot/mascot_widgets.dart';
 import 'livestock_detail_screen.dart';
+import '../utils/navigation_throttle.dart';
 
 const _uuid = Uuid();
 
@@ -133,7 +134,7 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
                   slivers: [
                     // Header padding
                     const SliverPadding(
-                      padding: const EdgeInsets.only(top: 16, left: 16, right: 16),
+                      padding: EdgeInsets.only(top: 16, left: 16, right: 16),
                       sliver: SliverToBoxAdapter(child: SizedBox.shrink()),
                     ),
                     
@@ -191,7 +192,7 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
                       ),
                     if (!_isSelectMode)
                       const SliverPadding(
-                        padding: const EdgeInsets.only(top: AppSpacing.md),
+                        padding: EdgeInsets.only(top: AppSpacing.md),
                         sliver: SliverToBoxAdapter(child: SizedBox.shrink()),
                       ),
 
@@ -241,7 +242,7 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
                       ),
                     if (_isSelectMode)
                       const SliverPadding(
-                        padding: const EdgeInsets.only(top: AppSpacing.md),
+                        padding: EdgeInsets.only(top: AppSpacing.md),
                         sliver: SliverToBoxAdapter(child: SizedBox.shrink()),
                       ),
 
@@ -264,15 +265,10 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
                             isSelected: _selectedLivestockIds.contains(l.id),
                             onTap: _isSelectMode
                                 ? () => _toggleLivestockSelection(l.id)
-                                : () => Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (_) => LivestockDetailScreen(
+                                : () => NavigationThrottle.push(context, LivestockDetailScreen(
                                         tankId: widget.tankId,
                                         livestock: l,
-                                      ),
-                                    ),
-                                  ),
+                                      )),
                             onEdit: () => _showEditDialog(context, ref, l),
                             onDelete: () => _confirmDelete(context, ref, l),
                           )
@@ -293,7 +289,7 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
                     
                     // Bottom padding
                     const SliverPadding(
-                      padding: const EdgeInsets.only(bottom: 16),
+                      padding: EdgeInsets.only(bottom: 16),
                       sliver: SliverToBoxAdapter(child: SizedBox.shrink()),
                     ),
                   ],

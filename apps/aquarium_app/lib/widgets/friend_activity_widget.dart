@@ -9,6 +9,7 @@ import '../providers/friends_provider.dart';
 import '../screens/activity_feed_screen.dart';
 import '../screens/friend_comparison_screen.dart';
 import '../theme/app_theme.dart';
+import '../utils/navigation_throttle.dart';
 
 /// Compact friend activity widget showing recent 3 activities
 class FriendActivityWidget extends ConsumerWidget {
@@ -44,12 +45,7 @@ class FriendActivityWidget extends ConsumerWidget {
               // Header
               InkWell(
                 onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => const ActivityFeedScreen(),
-                    ),
-                  );
+                  NavigationThrottle.push(context, const ActivityFeedScreen());
                 },
                 borderRadius: const BorderRadius.vertical(
                   top: Radius.circular(16),
@@ -91,12 +87,7 @@ class FriendActivityWidget extends ConsumerWidget {
               // View all button
               InkWell(
                 onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => const ActivityFeedScreen(),
-                    ),
-                  );
+                  NavigationThrottle.push(context, const ActivityFeedScreen());
                 },
                 borderRadius: const BorderRadius.vertical(
                   bottom: Radius.circular(16),
@@ -140,12 +131,7 @@ class _CompactActivityTile extends ConsumerWidget {
             (f) => f.id == activity.friendId,
             orElse: () => friends.first,
           );
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (_) => FriendComparisonScreen(friend: friend),
-            ),
-          );
+          NavigationThrottle.push(context, FriendComparisonScreen(friend: friend));
         });
       },
       child: Padding(
@@ -291,12 +277,7 @@ class _BannerActivityCard extends ConsumerWidget {
                 (f) => f.id == activity.friendId,
                 orElse: () => friends.first,
               );
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => FriendComparisonScreen(friend: friend),
-                ),
-              );
+              NavigationThrottle.push(context, FriendComparisonScreen(friend: friend));
             });
           },
           borderRadius: AppRadius.mediumRadius,

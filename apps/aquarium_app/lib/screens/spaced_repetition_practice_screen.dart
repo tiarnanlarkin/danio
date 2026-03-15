@@ -859,7 +859,7 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
               const Column(
                 children: [
                   CircularProgressIndicator(color: AppColors.primary),
-                  const SizedBox(height: AppSpacing.sm),
+                  SizedBox(height: AppSpacing.sm),
                   Text('Submitting...'),
                 ],
               )
@@ -878,7 +878,7 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Icon(Icons.close),
-                          const SizedBox(height: AppSpacing.xs),
+                          SizedBox(height: AppSpacing.xs),
                           Text('Forgot'),
                         ],
                       ),
@@ -897,7 +897,7 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Icon(Icons.check),
-                          const SizedBox(height: AppSpacing.xs),
+                          SizedBox(height: AppSpacing.xs),
                           Text('Remembered'),
                         ],
                       ),
@@ -1214,7 +1214,7 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
         title: const Row(
           children: [
             Icon(Icons.exit_to_app, color: AppColors.warning),
-            const SizedBox(width: AppSpacing.sm2),
+            SizedBox(width: AppSpacing.sm2),
             Text('Exit Session?'),
           ],
         ),

@@ -727,7 +727,7 @@ class _EnhancedTutorialWalkthroughScreenState
     return Container(
       padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.surface,
         boxShadow: [
           BoxShadow(
             color: AppOverlays.black5,

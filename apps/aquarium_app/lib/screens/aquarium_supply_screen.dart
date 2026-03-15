@@ -138,6 +138,7 @@ class _AquariumSupplyScreenState extends ConsumerState<AquariumSupplyScreen>
     if (!mounted) return;
     if (raw != null) {
       final list = jsonDecode(raw) as List;
+      if (!mounted) return;
       setState(() {
         _items = list
             .map((e) => AquariumSupplyItem.fromJson(e as Map<String, dynamic>))
@@ -146,6 +147,7 @@ class _AquariumSupplyScreenState extends ConsumerState<AquariumSupplyScreen>
         _loading = false;
       });
     } else {
+      if (!mounted) return;
       setState(() {
         _loading = false;
       });

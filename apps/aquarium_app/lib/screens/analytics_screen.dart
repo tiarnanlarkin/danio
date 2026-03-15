@@ -157,21 +157,21 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
           const SizedBox(height: AppSpacing.md),
           // Overview skeleton
           const Padding(
-            padding: const EdgeInsets.all(AppSpacing.md),
+            padding: EdgeInsets.all(AppSpacing.md),
             child: Column(
               children: [
                 Row(
                   children: [
                     Expanded(child: SkeletonCard(height: 80)),
-                    const SizedBox(width: AppSpacing.sm2),
+                    SizedBox(width: AppSpacing.sm2),
                     Expanded(child: SkeletonCard(height: 80)),
                   ],
                 ),
-                const SizedBox(height: AppSpacing.sm2),
+                SizedBox(height: AppSpacing.sm2),
                 Row(
                   children: [
                     Expanded(child: SkeletonCard(height: 80)),
-                    const SizedBox(width: AppSpacing.sm2),
+                    SizedBox(width: AppSpacing.sm2),
                     Expanded(child: SkeletonCard(height: 80)),
                   ],
                 ),
@@ -182,7 +182,7 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
           const SkeletonChart(height: 200),
           const SkeletonChart(height: 200),
           const Padding(
-            padding: const EdgeInsets.all(AppSpacing.md),
+            padding: EdgeInsets.all(AppSpacing.md),
             child: Column(
               children: [
                 SkeletonCard(height: 60),

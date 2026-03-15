@@ -165,7 +165,7 @@ class GamificationDashboard extends ConsumerWidget {
         child: Row(
           children: [
             Icon(Icons.error_outline, color: AppColors.error),
-            const SizedBox(width: AppSpacing.sm),
+            SizedBox(width: AppSpacing.sm),
             Text('Unable to load stats'),
           ],
         ),

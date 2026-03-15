@@ -379,7 +379,7 @@ class _EquipmentHistoryDialog extends ConsumerWidget {
         width: double.maxFinite,
         child: logsAsync.when(
           loading: () => const Padding(
-            padding: const EdgeInsets.all(AppSpacing.sm2),
+            padding: EdgeInsets.all(AppSpacing.sm2),
             child: Center(child: CircularProgressIndicator(color: AppColors.primary)),
           ),
           error: (err, _) => AppErrorState(

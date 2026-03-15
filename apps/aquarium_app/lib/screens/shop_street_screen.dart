@@ -8,6 +8,7 @@ import '../theme/app_theme.dart';
 import '../utils/app_constants.dart';
 import 'gem_shop_screen.dart';
 import 'wishlist_screen.dart';
+import '../utils/navigation_throttle.dart';
 
 /// Shop Street colors - fresh outdoor market theme
 /// Adapts slightly for dark mode to maintain readability
@@ -83,14 +84,9 @@ class ShopStreetScreen extends ConsumerWidget {
                     icon: Icons.favorite,
                     color: DanioColors.coralAccent,
                     itemCount: fishCount,
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => const WishlistScreen(
+                    onTap: () => NavigationThrottle.push(context, const WishlistScreen(
                           category: WishlistCategory.fish,
-                        ),
-                      ),
-                    ),
+                        )),
                   ),
                   const SizedBox(height: AppSpacing.sm2),
                   _ShopSection(
@@ -99,14 +95,9 @@ class ShopStreetScreen extends ConsumerWidget {
                     icon: Icons.eco,
                     color: const Color(0xFFFFCA28),
                     itemCount: plantCount,
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => const WishlistScreen(
+                    onTap: () => NavigationThrottle.push(context, const WishlistScreen(
                           category: WishlistCategory.plant,
-                        ),
-                      ),
-                    ),
+                        )),
                   ),
                   const SizedBox(height: AppSpacing.sm2),
                   _ShopSection(
@@ -115,14 +106,9 @@ class ShopStreetScreen extends ConsumerWidget {
                     icon: Icons.build,
                     color: const Color(0xFFFFCA28),
                     itemCount: equipmentCount,
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => const WishlistScreen(
+                    onTap: () => NavigationThrottle.push(context, const WishlistScreen(
                           category: WishlistCategory.equipment,
-                        ),
-                      ),
-                    ),
+                        )),
                   ),
                   const SizedBox(height: AppSpacing.sm2),
                   _ShopSection(
@@ -131,12 +117,7 @@ class ShopStreetScreen extends ConsumerWidget {
                     icon: Icons.diamond,
                     color: AppColors.accentAlt,
                     itemCount: 0,
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => const GemShopScreen(),
-                      ),
-                    ),
+                    onTap: () => NavigationThrottle.push(context, const GemShopScreen()),
                   ),
                   const SizedBox(height: AppSpacing.lg),
                   _BudgetCard(

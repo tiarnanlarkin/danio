@@ -215,7 +215,7 @@ class _AiStockingSuggestionSheetState
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         CircularProgressIndicator(),
-                        const SizedBox(height: AppSpacing.md),
+                        SizedBox(height: AppSpacing.md),
                         Text('Analyzing your tank...'),
                       ],
                     ),

@@ -364,7 +364,7 @@ class SoftCard extends StatelessWidget {
       margin: margin,
       padding: padding ?? const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
-        color: backgroundColor ?? (isDark ? const Color(0xFF2A2220) : Colors.white),
+        color: backgroundColor ?? (isDark ? AppColors.cardDark : AppColors.card),
         borderRadius: radius,
         boxShadow: [
           BoxShadow(

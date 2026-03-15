@@ -197,7 +197,7 @@ class FaqScreen extends StatelessWidget {
             ],
           ),
 
-          const SizedBox(height: AppSpacing.xxl),
+          SizedBox(height: AppSpacing.xxl),
         ];
   }
 }

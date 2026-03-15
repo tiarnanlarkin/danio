@@ -84,7 +84,7 @@ class _TankComparisonScreenState extends ConsumerState<TankComparisonScreen> {
                     ),
                   ),
                   const Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                    padding: EdgeInsets.symmetric(horizontal: 8),
                     child: Icon(Icons.compare_arrows),
                   ),
                   Expanded(
@@ -150,7 +150,7 @@ class _TankSelector extends StatelessWidget {
       value: selectedId,
       decoration: const InputDecoration(
         border: OutlineInputBorder(),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       ),
       items: tanks
           .where((t) => t.id != excludeId)

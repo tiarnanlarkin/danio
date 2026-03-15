@@ -216,7 +216,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
               children: [
                 Expanded(child: Divider()),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+                  padding: EdgeInsets.symmetric(horizontal: AppSpacing.md),
                   child: Text('or'),
                 ),
                 Expanded(child: Divider()),

@@ -10,6 +10,7 @@ import '../providers/tank_provider.dart';
 import '../services/image_cache_service.dart';
 import '../theme/app_theme.dart';
 import 'add_log_screen.dart';
+import '../utils/navigation_throttle.dart';
 
 class LogDetailScreen extends ConsumerWidget {
   final String tankId;
@@ -47,16 +48,11 @@ class LogDetailScreen extends ConsumerWidget {
               IconButton(
                 icon: const Icon(Icons.edit),
                 tooltip: 'Edit this log entry',
-                onPressed: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => AddLogScreen(
+                onPressed: () => NavigationThrottle.push(context, AddLogScreen(
                       tankId: tankId,
                       initialType: log.type,
                       existingLog: log,
-                    ),
-                  ),
-                ),
+                    )),
               ),
               IconButton(
                 icon: const Icon(Icons.delete_outline),

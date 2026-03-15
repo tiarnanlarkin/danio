@@ -135,7 +135,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
         actions: [
           if (!widget.isPracticeMode) ...[
             const Padding(
-              padding: const EdgeInsets.only(right: 8),
+              padding: EdgeInsets.only(right: 8),
               child: Center(child: HeartIndicator(compact: true)),
             ),
           ],
@@ -301,7 +301,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
                             ),
                           ),
                         ),
-                        const SizedBox(width: AppSpacing.sm2),
+                        SizedBox(width: AppSpacing.sm2),
                         Text('Completing...'),
                       ],
                     )
@@ -911,7 +911,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
                             ),
                           ),
                         ),
-                        const SizedBox(width: AppSpacing.sm2),
+                        SizedBox(width: AppSpacing.sm2),
                         Text('Completing...'),
                       ],
                     )

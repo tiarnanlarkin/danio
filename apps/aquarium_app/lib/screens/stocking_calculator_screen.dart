@@ -261,7 +261,7 @@ class _StockingCalculatorScreenState extends State<StockingCalculatorScreen> {
               decoration: BoxDecoration(
                 color: Theme.of(context).cardColor,
                 borderRadius: AppRadius.mediumRadius,
-                boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 8)],
+                boxShadow: [BoxShadow(color: AppOverlays.black12, blurRadius: 8)],
               ),
               child: ListView.builder(
                 shrinkWrap: true,

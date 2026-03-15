@@ -3,6 +3,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../theme/app_theme.dart';
 import 'privacy_policy_screen.dart';
 import 'terms_of_service_screen.dart';
+import '../utils/navigation_throttle.dart';
 
 class AboutScreen extends StatelessWidget {
   const AboutScreen({super.key});
@@ -115,12 +116,7 @@ class AboutScreen extends StatelessWidget {
                 TextButton.icon(
                   icon: const Icon(Icons.gavel, size: 18),
                   label: const Text('Terms'),
-                  onPressed: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const TermsOfServiceScreen(),
-                    ),
-                  ),
+                  onPressed: () => NavigationThrottle.push(context, const TermsOfServiceScreen()),
                 ),
                 TextButton.icon(
                   icon: const Icon(Icons.code, size: 18),
@@ -142,10 +138,7 @@ class AboutScreen extends StatelessWidget {
   }
 
   void _showPrivacyInfo(BuildContext context) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const PrivacyPolicyScreen()),
-    );
+    NavigationThrottle.push(context, const PrivacyPolicyScreen());
   }
 }
 

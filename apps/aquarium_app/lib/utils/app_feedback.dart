@@ -17,12 +17,12 @@ class AppFeedback {
       SnackBar(
         content: Row(
           children: [
-            const Icon(Icons.check_circle, color: Colors.white, size: 20),
+            const Icon(Icons.check_circle, color: AppColors.onSuccess, size: 20),
             const SizedBox(width: AppSpacing.sm2),
             Expanded(
               child: Text(
                 message,
-                style: AppTypography.bodyMedium.copyWith(color: Colors.white),
+                style: AppTypography.bodyMedium.copyWith(color: AppColors.onSuccess),
               ),
             ),
           ],
@@ -47,12 +47,12 @@ class AppFeedback {
       SnackBar(
         content: Row(
           children: [
-            const Icon(Icons.error_outline, color: Colors.white, size: 20),
+            const Icon(Icons.error_outline, color: AppColors.onError, size: 20),
             const SizedBox(width: AppSpacing.sm2),
             Expanded(
               child: Text(
                 message,
-                style: AppTypography.bodyMedium.copyWith(color: Colors.white),
+                style: AppTypography.bodyMedium.copyWith(color: AppColors.onError),
               ),
             ),
           ],
@@ -65,7 +65,7 @@ class AppFeedback {
         action: onRetry != null
             ? SnackBarAction(
                 label: 'Retry',
-                textColor: Colors.white,
+                textColor: AppColors.onError,
                 onPressed: onRetry,
               )
             : null,
@@ -80,12 +80,12 @@ class AppFeedback {
       SnackBar(
         content: Row(
           children: [
-            const Icon(Icons.warning_amber, color: Colors.black87, size: 20),
+            const Icon(Icons.warning_amber, color: AppColors.onWarning, size: 20),
             const SizedBox(width: AppSpacing.sm2),
             Expanded(
               child: Text(
                 message,
-                style: AppTypography.bodyMedium.copyWith(color: Colors.black87),
+                style: AppTypography.bodyMedium.copyWith(color: AppColors.onWarning),
               ),
             ),
           ],
@@ -105,12 +105,12 @@ class AppFeedback {
       SnackBar(
         content: Row(
           children: [
-            const Icon(Icons.info_outline, color: Colors.white, size: 20),
+            const Icon(Icons.info_outline, color: AppColors.onSecondary, size: 20),
             const SizedBox(width: AppSpacing.sm2),
             Expanded(
               child: Text(
                 message,
-                style: AppTypography.bodyMedium.copyWith(color: Colors.white),
+                style: AppTypography.bodyMedium.copyWith(color: AppColors.onSecondary),
               ),
             ),
           ],
@@ -148,14 +148,14 @@ class AppFeedback {
               height: 20,
               child: CircularProgressIndicator(
                 strokeWidth: 2,
-                valueColor: AlwaysStoppedAnimation(Colors.white),
+                valueColor: const AlwaysStoppedAnimation(AppColors.onPrimary),
               ),
             ),
             const SizedBox(width: AppSpacing.sm2),
             Expanded(
               child: Text(
                 message,
-                style: AppTypography.bodyMedium.copyWith(color: Colors.white),
+                style: AppTypography.bodyMedium.copyWith(color: AppColors.onPrimary),
               ),
             ),
           ],

@@ -200,7 +200,7 @@ class _CompatibilityCheckerWidgetState
                 isDense: true,
                 suffixIcon: _loading
                     ? const Padding(
-                        padding: const EdgeInsets.all(AppSpacing.sm2),
+                        padding: EdgeInsets.all(AppSpacing.sm2),
                         child: SizedBox(
                           width: 16,
                           height: 16,

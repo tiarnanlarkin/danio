@@ -206,7 +206,7 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
                         isDense: true,
                         suffixIcon: _askLoading
                             ? const Padding(
-                                padding: const EdgeInsets.all(AppSpacing.sm2),
+                                padding: EdgeInsets.all(AppSpacing.sm2),
                                 child: SizedBox(
                                   width: 16, height: 16,
                                   child: CircularProgressIndicator(strokeWidth: 2),

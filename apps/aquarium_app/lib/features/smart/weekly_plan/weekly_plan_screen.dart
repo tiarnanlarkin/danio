@@ -186,7 +186,7 @@ class _WeeklyPlanScreenState extends ConsumerState<WeeklyPlanScreen> {
         mainAxisSize: MainAxisSize.min,
         children: [
           CircularProgressIndicator(color: AppColors.primary),
-          const SizedBox(height: AppSpacing.md),
+          SizedBox(height: AppSpacing.md),
           Text('Generating your weekly plan...'),
         ],
       ),

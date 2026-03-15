@@ -207,10 +207,10 @@ class _PillButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bg = action.backgroundColor ?? Colors.white;
+    final bg = action.backgroundColor ?? context.cardColor;
     final fg = action.foregroundColor ?? context.textPrimary;
     final isColored = action.backgroundColor != null &&
-        action.backgroundColor != Colors.white;
+        action.backgroundColor != context.cardColor;
 
     return Semantics(
       button: true,
@@ -227,7 +227,7 @@ class _PillButton extends StatelessWidget {
             borderRadius: AppRadius.largeRadius,
             boxShadow: [
               BoxShadow(
-                color: (isColored ? bg : Colors.black)
+                color: (isColored ? bg : AppColors.blackAlpha40)
                     .withAlpha(isColored ? 80 : 40),
                 blurRadius: 8,
                 offset: const Offset(0, 3),

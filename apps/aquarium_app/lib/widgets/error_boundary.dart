@@ -300,19 +300,19 @@ mixin ErrorHandlerMixin<T extends StatefulWidget> on State<T> {
       color: AppColors.error,
       child: Row(
         children: [
-          const Icon(Icons.error_outline, color: Colors.white),
+          const Icon(Icons.error_outline, color: AppColors.onError),
           const SizedBox(width: AppSpacing.sm2),
           Expanded(
             child: Text(
               _errorMessage!,
-              style: const TextStyle(color: Colors.white),
+              style: const TextStyle(color: AppColors.onError),
             ),
           ),
           Semantics(
             label: 'Close error message',
             button: true,
             child: IconButton(
-              icon: const Icon(Icons.close, color: Colors.white),
+              icon: const Icon(Icons.close, color: AppColors.onError),
               onPressed: clearError,
               tooltip: 'Close error message',
             ),

@@ -441,7 +441,7 @@ class _DropCheckerRow extends StatelessWidget {
             decoration: BoxDecoration(
               color: color,
               shape: BoxShape.circle,
-              border: Border.all(color: Colors.black12),
+              border: Border.all(color: AppOverlays.black12),
             ),
           ),
           const SizedBox(width: AppSpacing.sm2),

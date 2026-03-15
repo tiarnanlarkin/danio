@@ -21,6 +21,7 @@ import 'onboarding/profile_creation_screen.dart';
 import '../utils/app_constants.dart';
 import '../widgets/learning_streak_badge.dart';
 import '../widgets/placement_challenge_card.dart';
+import '../utils/navigation_throttle.dart';
 
 /// The main learning hub - shows learning paths and progress
 /// Features a cozy illustrated "Study Room" header
@@ -226,12 +227,7 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
                         const SizedBox(height: AppSpacing.lg),
                         ElevatedButton.icon(
                           onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => const ProfileCreationScreen(),
-                              ),
-                            );
+                            NavigationThrottle.push(context, const ProfileCreationScreen());
                           },
                           icon: const Icon(Icons.arrow_forward),
                           label: const Text('Create Profile'),
@@ -948,7 +944,7 @@ class _LazyLearningPathCardState extends ConsumerState<_LazyLearningPathCard> {
       return [
         const Divider(height: 1),
         const Padding(
-          padding: const EdgeInsets.symmetric(vertical: AppSpacing.lg),
+          padding: EdgeInsets.symmetric(vertical: AppSpacing.lg),
           child: Center(
             child: SizedBox(
               width: 24,
@@ -1022,15 +1018,10 @@ class _LazyLearningPathCardState extends ConsumerState<_LazyLearningPathCard> {
           enabled: isUnlocked,
           onTap: isUnlocked
               ? () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => LessonScreen(
+                  NavigationThrottle.push(context, LessonScreen(
                         lesson: lesson,
                         pathTitle: path.title,
-                      ),
-                    ),
-                  );
+                      ));
                 }
               : () {
                   ScaffoldMessenger.of(context).showSnackBar(

@@ -237,7 +237,7 @@ class _InfoRow extends StatelessWidget {
           value,
           style: Theme.of(context).textTheme.bodyLarge!.copyWith(
             fontWeight: FontWeight.bold,
-            color: color ?? Colors.black87,
+            color: color ?? Theme.of(context).colorScheme.onSurface,
           ),
         ),
       ],

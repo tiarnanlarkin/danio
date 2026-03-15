@@ -54,6 +54,7 @@ import '../../widgets/fun_loading_messages.dart';
 import '../house_navigator.dart';
 import '../tank_settings_screen.dart';
 import '../../utils/app_page_routes.dart';
+import '../../utils/navigation_throttle.dart';
 
 /// HomeScreen - The Living Room in the House Navigator
 /// This is just the tank management view - navigation between rooms
@@ -453,7 +454,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     const Spacer(),
                     // Hearts indicator
                     const Padding(
-                      padding: const EdgeInsets.only(right: AppSpacing.sm),
+                      padding: EdgeInsets.only(right: AppSpacing.sm),
                       child: HeartIndicator(compact: true),
                     ),
 
@@ -472,10 +473,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     IconButton(
                       icon: const Icon(Icons.settings_outlined, color: Colors.white),
                       tooltip: 'Tank Settings',
-                      onPressed: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (_) => TankSettingsScreen(tankId: currentTank.id)),
-                      ),
+                      onPressed: () => NavigationThrottle.push(context, TankSettingsScreen(tankId: currentTank.id)),
                     ),
                   ],
                 ),
@@ -790,7 +788,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     borderRadius: AppRadius.mediumRadius,
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withAlpha(20),
+                        color: AppColors.blackAlpha08,
                         blurRadius: 8,
                         offset: const Offset(0, 2),
                       ),
@@ -987,6 +985,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   final temp = double.tryParse(tempC.text);
                   final ammonia = double.tryParse(ammoniaC.text);
                   if (ph == null && temp == null && ammonia == null) return;
+                  // Dismiss immediately to prevent double-tap
+                  Navigator.pop(ctx);
                   final now = DateTime.now();
                   final log = LogEntry(
                     id: now.microsecondsSinceEpoch.toString(),
@@ -1002,7 +1002,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   ref.invalidate(logsProvider(tank.id));
                   ref.invalidate(allLogsProvider(tank.id));
                   await ref.read(userProfileProvider.notifier).addXp(10);
-                  if (ctx.mounted) Navigator.pop(ctx);
                 },
               ),
             ),
@@ -1074,7 +1073,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             ListTile(
               leading: const Icon(Icons.notifications_outlined),
               title: const Text('Reminders'),
-              onTap: () { Navigator.pop(ctx); Navigator.push(context, RoomSlideRoute(page: const RemindersScreen())); },
+              onTap: () { Navigator.pop(ctx); NavigationThrottle.push(context, const RemindersScreen(), route: RoomSlideRoute(page: const RemindersScreen())); },
             ),
             ListTile(
               leading: const Icon(Icons.book_outlined),
@@ -1094,10 +1093,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               title: const Text('Analytics'),
               onTap: () {
                 Navigator.pop(ctx);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => const AnalyticsScreen()),
-                );
+                NavigationThrottle.push(context, const AnalyticsScreen());
               },
             ),
             ListTile(
@@ -1105,7 +1101,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               title: const Text('Species Search'),
               onTap: () {
                 Navigator.pop(ctx);
-                Navigator.push(context, RoomSlideRoute(page: const SearchScreen()));
+                NavigationThrottle.push(context, const SearchScreen(), route: RoomSlideRoute(page: const SearchScreen()));
               },
             ),
             SizedBox(height: MediaQuery.of(context).padding.bottom + 8),
@@ -1275,9 +1271,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               child: ElevatedButton.icon(
                 onPressed: () {
                   Navigator.pop(ctx);
-                  Navigator.push(context, RoomSlideRoute(
-                    page: AddLogScreen(tankId: tankId, initialType: LogType.waterTest),
-                  ));
+                  NavigationThrottle.push(context, AddLogScreen(tankId: tankId, initialType: LogType.waterTest), route: RoomSlideRoute(page: AddLogScreen(tankId: tankId, initialType: LogType.waterTest)));
                 },
                 icon: const Icon(Icons.science, size: 18),
                 label: const Text('Log Water Test'),
@@ -1397,9 +1391,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               child: ElevatedButton.icon(
                 onPressed: () {
                   Navigator.pop(ctx);
-                  Navigator.push(context, RoomSlideRoute(
-                    page: AddLogScreen(tankId: tankId, initialType: LogType.feeding),
-                  ));
+                  NavigationThrottle.push(context, AddLogScreen(tankId: tankId, initialType: LogType.feeding), route: RoomSlideRoute(page: AddLogScreen(tankId: tankId, initialType: LogType.feeding)));
                 },
                 icon: const Icon(Icons.restaurant, size: 18),
                 label: const Text('Log Feeding'),
@@ -1737,10 +1729,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   void _showStreakCalendar(BuildContext context) {
-    Navigator.push(
-      context,
-      RoomSlideRoute(page: const StreakCalendarScreen()),
-    );
+    NavigationThrottle.push(context, const StreakCalendarScreen(), route: RoomSlideRoute(page: const StreakCalendarScreen()));
   }
 
   Future<void> _bulkDelete(BuildContext context, List<Tank> allTanks) async {
@@ -1831,12 +1820,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         _selectedTankIds.clear();
       });
       
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const BackupRestoreScreen(),
-        ),
-      );
+      NavigationThrottle.push(context, const BackupRestoreScreen());
     }
   }
 

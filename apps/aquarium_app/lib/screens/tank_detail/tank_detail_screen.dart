@@ -49,6 +49,7 @@ import 'widgets/tank_health_card.dart';
 import '../../widgets/water_trend_arrows.dart';
 import 'widgets/quick_add_fab.dart';
 import 'widgets/stocking_indicator.dart';
+import '../../utils/navigation_throttle.dart';
 
 const _uuid = Uuid();
 
@@ -425,15 +426,10 @@ class TankDetailScreen extends ConsumerWidget {
                   IconButton(
                     icon: const Icon(Icons.checklist, color: Colors.white),
                     tooltip: 'Checklist',
-                    onPressed: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => MaintenanceChecklistScreen(
+                    onPressed: () => NavigationThrottle.push(context, MaintenanceChecklistScreen(
                           tankId: tankId,
                           tankName: tank.name,
-                        ),
-                      ),
-                    ),
+                        )),
                   ),
                   IconButton(
                     icon: const Icon(
@@ -441,72 +437,36 @@ class TankDetailScreen extends ConsumerWidget {
                       color: Colors.white,
                     ),
                     tooltip: 'Gallery',
-                    onPressed: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => PhotoGalleryScreen(
+                    onPressed: () => NavigationThrottle.push(context, PhotoGalleryScreen(
                           tankId: tankId,
                           tankName: tank.name,
-                        ),
-                      ),
-                    ),
+                        )),
                   ),
                   IconButton(
                     icon: const Icon(Icons.book_outlined, color: Colors.white),
                     tooltip: 'Journal',
-                    onPressed: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => JournalScreen(tankId: tankId),
-                      ),
-                    ),
+                    onPressed: () => NavigationThrottle.push(context, JournalScreen(tankId: tankId)),
                   ),
                   IconButton(
                     icon: const Icon(Icons.show_chart, color: Colors.white),
                     tooltip: 'Charts',
-                    onPressed: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => ChartsScreen(tankId: tankId),
-                      ),
-                    ),
+                    onPressed: () => NavigationThrottle.push(context, ChartsScreen(tankId: tankId)),
                   ),
                   PopupMenuButton<String>(
                     icon: const Icon(Icons.more_vert, color: Colors.white),
                     onSelected: (value) {
                       switch (value) {
                         case 'settings':
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) =>
-                                  TankSettingsScreen(tankId: tankId),
-                            ),
-                          );
+                          NavigationThrottle.push(context, TankSettingsScreen(tankId: tankId));
                         case 'compare':
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => const TankComparisonScreen(),
-                            ),
-                          );
+                          NavigationThrottle.push(context, const TankComparisonScreen());
                         case 'costs':
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => const CostTrackerScreen(),
-                            ),
-                          );
+                          NavigationThrottle.push(context, const CostTrackerScreen());
                         case 'value':
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => LivestockValueScreen(
+                          NavigationThrottle.push(context, LivestockValueScreen(
                                 tankId: tankId,
                                 tankName: tank.name,
-                              ),
-                            ),
-                          );
+                              ));
                         case 'delete':
                           _deleteTank(context, ref, tank);
                       }
@@ -587,7 +547,7 @@ class TankDetailScreen extends ConsumerWidget {
                   ),
                 ),
               ),
-              const SliverToBoxAdapter(child: const SizedBox(height: AppSpacing.sm)),
+              const SliverToBoxAdapter(child: SizedBox(height: AppSpacing.sm)),
               // Action buttons
               SliverToBoxAdapter(
                 child: Padding(
@@ -628,7 +588,7 @@ class TankDetailScreen extends ConsumerWidget {
                 ),
               ),
 
-              const SliverToBoxAdapter(child: const SizedBox(height: AppSpacing.md)),
+              const SliverToBoxAdapter(child: SizedBox(height: AppSpacing.md)),
 
               // Dashboard: latest snapshot
               SliverToBoxAdapter(
@@ -654,7 +614,7 @@ class TankDetailScreen extends ConsumerWidget {
                 ),
               ),
 
-              const SliverToBoxAdapter(child: const SizedBox(height: AppSpacing.sm2)),
+              const SliverToBoxAdapter(child: SizedBox(height: AppSpacing.sm2)),
 
               // Dashboard: trends
               SliverToBoxAdapter(
@@ -676,19 +636,13 @@ class TankDetailScreen extends ConsumerWidget {
                     data: (logs) => TrendsRow(
                       tank: tank,
                       logs: logs,
-                      onOpenCharts: (param) => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) =>
-                              ChartsScreen(tankId: tankId, initialParam: param),
-                        ),
-                      ),
+                      onOpenCharts: (param) => NavigationThrottle.push(context, ChartsScreen(tankId: tankId, initialParam: param)),
                     ),
                   ),
                 ),
               ),
 
-              const SliverToBoxAdapter(child: const SizedBox(height: AppSpacing.sm2)),
+              const SliverToBoxAdapter(child: SizedBox(height: AppSpacing.sm2)),
 
               // Dashboard: alerts
               SliverToBoxAdapter(
@@ -712,7 +666,7 @@ class TankDetailScreen extends ConsumerWidget {
                 ),
               ),
 
-              const SliverToBoxAdapter(child: const SizedBox(height: AppSpacing.lg)),
+              const SliverToBoxAdapter(child: SizedBox(height: AppSpacing.lg)),
 
               // Cycling status (for tanks < 90 days old)
               SliverToBoxAdapter(
@@ -732,12 +686,7 @@ class TankDetailScreen extends ConsumerWidget {
                   data: (logs) => Padding(
                     padding: const EdgeInsets.fromLTRB(AppSpacing.md, 0, AppSpacing.md, AppSpacing.md),
                     child: GestureDetector(
-                      onTap: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => CyclingAssistantScreen(tankId: tank.id),
-                        ),
-                      ),
+                      onTap: () => NavigationThrottle.push(context, CyclingAssistantScreen(tankId: tank.id)),
                       child: CyclingStatusCard(tank: tank, logs: logs),
                     ),
                   ),
@@ -784,12 +733,7 @@ class TankDetailScreen extends ConsumerWidget {
                       );
                     },
                   ),
-                  onViewAll: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => TasksScreen(tankId: tankId),
-                    ),
-                  ),
+                  onViewAll: () => NavigationThrottle.push(context, TasksScreen(tankId: tankId)),
                 ),
               ),
 
@@ -814,18 +758,13 @@ class TankDetailScreen extends ConsumerWidget {
                 ),
               ),
 
-              const SliverToBoxAdapter(child: const SizedBox(height: AppSpacing.md)),
+              const SliverToBoxAdapter(child: SizedBox(height: AppSpacing.md)),
 
               // Recent logs
               SliverToBoxAdapter(
                 child: SectionHeader(
                   title: 'Recent Activity',
-                  onViewAll: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => LogsScreen(tankId: tankId),
-                    ),
-                  ),
+                  onViewAll: () => NavigationThrottle.push(context, LogsScreen(tankId: tankId)),
                 ),
               ),
 
@@ -845,18 +784,12 @@ class TankDetailScreen extends ConsumerWidget {
                   ),
                   data: (logs) => LogsList(
                     logs: logs.take(5).toList(),
-                    onTap: (log) => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) =>
-                            LogDetailScreen(tankId: tankId, logId: log.id),
-                      ),
-                    ),
+                    onTap: (log) => NavigationThrottle.push(context, LogDetailScreen(tankId: tankId, logId: log.id)),
                   ),
                 ),
               ),
 
-              const SliverToBoxAdapter(child: const SizedBox(height: AppSpacing.md)),
+              const SliverToBoxAdapter(child: SizedBox(height: AppSpacing.md)),
 
               // Livestock
               SliverToBoxAdapter(
@@ -870,12 +803,7 @@ class TankDetailScreen extends ConsumerWidget {
                       style: AppTypography.bodySmall,
                     ),
                   ),
-                  onViewAll: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => LivestockScreen(tankId: tankId),
-                    ),
-                  ),
+                  onViewAll: () => NavigationThrottle.push(context, LivestockScreen(tankId: tankId)),
                 ),
               ),
 
@@ -923,18 +851,13 @@ class TankDetailScreen extends ConsumerWidget {
                 ),
               ),
 
-              const SliverToBoxAdapter(child: const SizedBox(height: AppSpacing.md)),
+              const SliverToBoxAdapter(child: SizedBox(height: AppSpacing.md)),
 
               // Equipment
               SliverToBoxAdapter(
                 child: SectionHeader(
                   title: 'Equipment',
-                  onViewAll: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => EquipmentScreen(tankId: tankId),
-                    ),
-                  ),
+                  onViewAll: () => NavigationThrottle.push(context, EquipmentScreen(tankId: tankId)),
                 ),
               ),
 
@@ -999,11 +922,6 @@ class TankDetailScreen extends ConsumerWidget {
   }
 
   void _navigateToAddLog(BuildContext context, LogType type) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => AddLogScreen(tankId: tankId, initialType: type),
-      ),
-    );
+    NavigationThrottle.push(context, AddLogScreen(tankId: tankId, initialType: type));
   }
 }

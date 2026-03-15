@@ -13,6 +13,7 @@ import '../widgets/empty_state.dart';
 import '../widgets/core/app_states.dart';
 import 'friend_comparison_screen.dart';
 import '../widgets/mascot/mascot_widgets.dart';
+import '../utils/navigation_throttle.dart';
 
 /// Standalone activity feed screen
 class ActivityFeedScreen extends ConsumerStatefulWidget {
@@ -251,7 +252,7 @@ class _ActivityFeedView extends StatelessWidget {
           if (index >= activities.length) {
             // Loading indicator for "load more"
             return const Padding(
-              padding: const EdgeInsets.all(AppSpacing.md),
+              padding: EdgeInsets.all(AppSpacing.md),
               child: Center(child: CircularProgressIndicator(color: AppColors.primary)),
             );
           }
@@ -316,12 +317,7 @@ class _ActivityTile extends ConsumerWidget {
               (f) => f.id == activity.friendId,
               orElse: () => friends.first,
             );
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (_) => FriendComparisonScreen(friend: friend),
-              ),
-            );
+            NavigationThrottle.push(context, FriendComparisonScreen(friend: friend));
           });
         },
         borderRadius: AppRadius.mediumRadius,

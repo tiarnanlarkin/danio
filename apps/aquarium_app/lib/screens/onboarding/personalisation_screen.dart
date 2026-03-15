@@ -102,6 +102,7 @@ class _PersonalisationScreenState extends ConsumerState<PersonalisationScreen> {
         );
       }
     } catch (e) {
+      if (!mounted) return;
       setState(() {
         _isSubmitting = false;
         _errorMessage = 'Something went wrong. Please try again.';
