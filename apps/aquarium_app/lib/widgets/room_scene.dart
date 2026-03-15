@@ -152,10 +152,12 @@ class LivingRoomScene extends ConsumerWidget {
               // (full-height Positioned, 48dp hit area) — do NOT add them here
               // or they will appear as duplicate tabs.
 
-              // Tank glass badge (bottom-right of tank)
+              // Tank glass badge — sits ON the bottom-right corner of tank glass
+              // Tank is at top: h*0.22, height: h*0.38, so bottom edge = h*0.60
+              // Right edge: w*0.06 from right
               Positioned(
-                bottom: h * 0.27,
-                right: w * 0.12,
+                top: h * 0.22 + h * 0.38 - 20, // 20dp overlapping bottom edge of tank
+                right: w * 0.08,
                 child: TankGlassBadge(
                   tankName: tankName,
                   tankVolume: tankVolume,
