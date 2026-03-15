@@ -952,7 +952,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text('Quick Water Test', style: AppTypography.headlineSmall),
+            Semantics(header: true, child: Text('Quick Water Test', style: AppTypography.headlineSmall)),
             const SizedBox(height: AppSpacing.md),
             Row(
               children: [
@@ -1068,7 +1068,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               ),
             ),
             const SizedBox(height: AppSpacing.md),
-            Text('Tank Toolbox 🔧', style: AppTypography.headlineSmall),
+            Semantics(header: true, child: Text('Tank Toolbox 🔧', style: AppTypography.headlineSmall)),
             const SizedBox(height: AppSpacing.sm2),
             ListTile(
               leading: const Icon(Icons.notifications_outlined),
@@ -1202,7 +1202,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 children: [
                   const Text('\u{1F9EA}', style: TextStyle(fontSize: 40)),
                   const SizedBox(height: AppSpacing.sm),
-                  Text('Water Parameters', style: AppTypography.headlineSmall),
+                  Semantics(header: true, child: Text('Water Parameters', style: AppTypography.headlineSmall)),
                 ],
               ),
             ),
@@ -1344,7 +1344,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 children: [
                   const Text('\u{1F3A3}', style: TextStyle(fontSize: 40)),
                   const SizedBox(height: AppSpacing.sm),
-                  Text('Feeding', style: AppTypography.headlineSmall),
+                  Semantics(header: true, child: Text('Feeding', style: AppTypography.headlineSmall)),
                 ],
               ),
             ),
@@ -1433,7 +1433,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 children: [
                   const Text('\u{1FAB4}', style: TextStyle(fontSize: 40)),
                   const SizedBox(height: AppSpacing.sm),
-                  Text('Tank Plants', style: AppTypography.headlineSmall),
+                  Semantics(header: true, child: Text('Tank Plants', style: AppTypography.headlineSmall)),
                 ],
               ),
             ),
@@ -1507,7 +1507,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               children: [
                 const Icon(Icons.palette, size: AppIconSizes.md),
                 const SizedBox(width: AppSpacing.sm2),
-                Text('Room Theme', style: AppTypography.headlineSmall),
+                Semantics(header: true, child: Text('Room Theme', style: AppTypography.headlineSmall)),
               ],
             ),
             const SizedBox(height: AppSpacing.lg2),
@@ -1636,7 +1636,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               children: [
                 const Icon(Icons.insights, color: AppColors.primary),
                 const SizedBox(width: AppSpacing.sm2),
-                Text('Your Progress', style: AppTypography.headlineSmall),
+                Semantics(header: true, child: Text('Your Progress', style: AppTypography.headlineSmall)),
                 const Spacer(),
                 Semantics(
                   label: 'Close progress',
@@ -1705,7 +1705,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               children: [
                 const Icon(Icons.flag, color: AppColors.primary),
                 const SizedBox(width: AppSpacing.sm2),
-                Text('Daily Goal', style: AppTypography.headlineSmall),
+                Semantics(header: true, child: Text('Daily Goal', style: AppTypography.headlineSmall)),
                 const Spacer(),
                 Semantics(
                   label: 'Close daily goal',

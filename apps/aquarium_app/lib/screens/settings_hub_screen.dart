@@ -274,11 +274,14 @@ class SettingsHubScreen extends ConsumerWidget {
   Widget _buildSectionHeader(String title) {
     return Padding(
       padding: const EdgeInsets.only(left: AppSpacing.xs),
-      child: Text(
-        title,
-        style: AppTypography.titleMedium.copyWith(
-          color: AppColors.primary, // BUG-09: all section headers now use consistent warm amber
-          fontWeight: FontWeight.w600,
+      child: Semantics(
+        header: true,
+        child: Text(
+          title,
+          style: AppTypography.titleMedium.copyWith(
+            color: AppColors.primary, // BUG-09: all section headers now use consistent warm amber
+            fontWeight: FontWeight.w600,
+          ),
         ),
       ),
     );

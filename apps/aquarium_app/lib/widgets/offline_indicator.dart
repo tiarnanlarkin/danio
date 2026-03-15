@@ -47,11 +47,14 @@ class OfflineIndicator extends ConsumerWidget {
           Icon(Icons.wifi_off, color: AppColors.warning, size: AppIconSizes.sm),
           const SizedBox(width: AppSpacing.sm2),
           Expanded(
-            child: Text(
-              "You're offline - some features may not work",
-              style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                color: AppColors.warning,
-                fontWeight: FontWeight.w500,
+            child: Semantics(
+              liveRegion: true,
+              child: Text(
+                "You're offline - some features may not work",
+                style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                  color: AppColors.warning,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
             ),
           ),

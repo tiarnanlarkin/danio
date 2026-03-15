@@ -87,17 +87,20 @@ class SyncIndicator extends ConsumerWidget {
               ),
             const SizedBox(width: AppSpacing.sm2),
             Expanded(
-              child: Text(
-                statusMessage,
-                style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                  color: isError
-                      ? AppColors.error
-                      : hasConflicts
-                      ? AppColors.warning
-                      : isSyncing
-                      ? AppColors.warning
-                      : context.textSecondary,
-                  fontWeight: FontWeight.w500,
+              child: Semantics(
+                liveRegion: true,
+                child: Text(
+                  statusMessage,
+                  style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                    color: isError
+                        ? AppColors.error
+                        : hasConflicts
+                        ? AppColors.warning
+                        : isSyncing
+                        ? AppColors.warning
+                        : context.textSecondary,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
               ),
             ),

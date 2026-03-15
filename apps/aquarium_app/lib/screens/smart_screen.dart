@@ -210,10 +210,13 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
                           color: AppColors.primaryAlpha05,
                           borderRadius: AppRadius.smallRadius,
                         ),
-                        child: SelectableText(
-                          _askResponse!,
-                          style: theme.textTheme.bodyMedium?.copyWith(
-                            height: 1.4,
+                        child: Semantics(
+                          liveRegion: true,
+                          child: SelectableText(
+                            _askResponse!,
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                              height: 1.4,
+                            ),
                           ),
                         ),
                       ),
@@ -238,10 +241,13 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
 
           // Recent AI interactions
           if (history.isNotEmpty) ...[
-            Text(
-              'Recent AI Activity',
-              style: theme.textTheme.titleSmall?.copyWith(
-                fontWeight: FontWeight.w600,
+            Semantics(
+              header: true,
+              child: Text(
+                'Recent AI Activity',
+                style: theme.textTheme.titleSmall?.copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ),
             const SizedBox(height: AppSpacing.sm),

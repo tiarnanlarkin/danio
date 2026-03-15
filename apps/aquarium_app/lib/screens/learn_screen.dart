@@ -78,7 +78,10 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
           SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.fromLTRB(AppSpacing.md, AppSpacing.md, AppSpacing.md, AppSpacing.sm2),
-              child: Text('Learning Paths', style: AppTypography.headlineSmall),
+              child: Semantics(
+                header: true,
+                child: Text('Learning Paths', style: AppTypography.headlineSmall),
+              ),
             ),
           ),
           // Skeleton learning path cards
@@ -295,9 +298,12 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          'Learning Paths',
-                          style: AppTypography.headlineSmall,
+                        Semantics(
+                          header: true,
+                          child: Text(
+                            'Learning Paths',
+                            style: AppTypography.headlineSmall,
+                          ),
                         ),
                         const SizedBox(height: AppSpacing.sm),
                         Builder(
