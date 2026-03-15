@@ -111,7 +111,7 @@ class InventoryItem {
     return DateTime.now().isAfter(expiresAt!);
   }
 
-  bool get isValid => !isExpired || !isActive;
+  bool get isValid => !isExpired;
 
   InventoryItem copyWith({
     String? itemId,
