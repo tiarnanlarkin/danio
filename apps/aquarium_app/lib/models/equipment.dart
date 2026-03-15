@@ -74,8 +74,10 @@ class Equipment {
 
   /// Percentage of lifespan used (0-100+)
   double? get lifespanUsedPercent {
-    if (expectedLifespanMonths == null || ageInMonths == null) return null;
-    return (ageInMonths! / expectedLifespanMonths!) * 100;
+    final age = ageInMonths;
+    final lifespan = expectedLifespanMonths;
+    if (lifespan == null || age == null) return null;
+    return (age / lifespan) * 100;
   }
 
   /// Is equipment nearing end of lifespan (>80%)
@@ -92,10 +94,11 @@ class Equipment {
 
   /// Expected replacement date
   DateTime? get expectedReplacementDate {
-    if (expectedLifespanMonths == null) return null;
+    final lifespan = expectedLifespanMonths;
+    if (lifespan == null) return null;
     final date = purchaseDate ?? installedDate;
     if (date == null) return null;
-    return DateTime(date.year, date.month + expectedLifespanMonths!, date.day);
+    return DateTime(date.year, date.month + lifespan, date.day);
   }
 
   /// Default lifespan for equipment type (in months)

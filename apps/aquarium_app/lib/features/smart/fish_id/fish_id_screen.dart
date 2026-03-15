@@ -113,7 +113,9 @@ Return ONLY valid JSON with these fields (no markdown, no explanation):
     });
 
     try {
-      final bytes = await _selectedImage!.readAsBytes();
+      final image = _selectedImage;
+      if (image == null) return;
+      final bytes = await image.readAsBytes();
       final base64 = base64Encode(bytes);
 
       final result = await openai.chatCompletion(
@@ -395,9 +397,9 @@ Return ONLY valid JSON with these fields (no markdown, no explanation):
                 runSpacing: AppSpacing.xs,
                 children: [
                   if (r.maxSizeCm != null)
-                    _paramChip('Max Size', '${r.maxSizeCm!.toStringAsFixed(0)} cm'),
+                    _paramChip('Max Size', '${r.maxSizeCm?.toStringAsFixed(0) ?? '?'} cm'),
                   if (r.diet != null)
-                    _paramChip('Diet', r.diet!),
+                    _paramChip('Diet', r.diet ?? 'Unknown'),
                 ],
               ),
               const SizedBox(height: AppSpacing.md),

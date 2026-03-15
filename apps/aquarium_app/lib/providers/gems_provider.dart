@@ -63,8 +63,8 @@ class GemsNotifier extends StateNotifier<AsyncValue<GemsState>> {
   static const _key = 'gems_state';
   static const _cumulativeKey = 'gems_cumulative';
   bool _spending = false;
-  final int _cumulativeEarned = 0;
-  final int _cumulativeSpent = 0;
+  int _cumulativeEarned = 0;
+  int _cumulativeSpent = 0;
 
   Future<void> _load() async {
     try {
@@ -160,12 +160,10 @@ class GemsNotifier extends StateNotifier<AsyncValue<GemsState>> {
       );
 
       final updatedTransactions = [transaction, ...current.transactions];
-      // Keep only last 100 transactions
-      final trimmedTransactions = updatedTransactions.take(100).toList();
-
+      // Keep full transaction history (no cap — lifetime totals must be accurate)
       final updatedState = current.copyWith(
         balance: newBalance,
-        transactions: trimmedTransactions,
+        transactions: updatedTransactions,
         lastUpdated: now,
       );
 
@@ -200,7 +198,8 @@ class GemsNotifier extends StateNotifier<AsyncValue<GemsState>> {
         return false;
       }
 
-      // Store original state for rollb      final originalState = current;
+      // Store original state for rollback
+      final originalState = current;
 
       try {
         final now = DateTime.now();
@@ -217,11 +216,10 @@ class GemsNotifier extends StateNotifier<AsyncValue<GemsState>> {
         );
 
         final updatedTransactions = [transaction, ...current.transactions];
-        final trimmedTransactions = updatedTransactions.take(100).toList();
 
         final updatedState = current.copyWith(
           balance: newBalance,
-          transactions: trimmedTransactions,
+          transactions: updatedTransactions,
           lastUpdated: now,
         );
 
@@ -268,11 +266,10 @@ class GemsNotifier extends StateNotifier<AsyncValue<GemsState>> {
       );
 
       final updatedTransactions = [transaction, ...current.transactions];
-      final trimmedTransactions = updatedTransactions.take(100).toList();
 
       final updatedState = current.copyWith(
         balance: newBalance,
-        transactions: trimmedTransactions,
+        transactions: updatedTransactions,
         lastUpdated: now,
       );
 
@@ -342,11 +339,10 @@ class GemsNotifier extends StateNotifier<AsyncValue<GemsState>> {
       );
 
       final updatedTransactions = [transaction, ...current.transactions];
-      final trimmedTransactions = updatedTransactions.take(100).toList();
 
       final updatedState = current.copyWith(
         balance: newBalance,
-        transactions: trimmedTransactions,
+        transactions: updatedTransactions,
         lastUpdated: now,
       );
 

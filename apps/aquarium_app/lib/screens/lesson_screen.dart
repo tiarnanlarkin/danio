@@ -541,7 +541,24 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
     }
 
     final quiz = widget.lesson.quiz;
-    if (quiz == null) return const SizedBox.shrink();
+    if (quiz == null || quiz.questions.isEmpty) {
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.all(AppSpacing.xl),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(Icons.quiz_outlined, size: 48, color: context.textHint),
+              const SizedBox(height: AppSpacing.md),
+              Text(
+                'Quiz coming soon!',
+                style: AppTypography.titleMedium.copyWith(color: context.textSecondary),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
     final question = quiz.questions[_currentQuizQuestion];
 
     return Column(
@@ -703,24 +720,30 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
 
                 // Explanation content
                 if (index == 4 + question.options.length) {
-                  return Container(
-                    padding: const EdgeInsets.all(AppSpacing.md),
-                    decoration: BoxDecoration(
-                      color: AppOverlays.info10,
-                      borderRadius: AppRadius.mediumRadius,
-                    ),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Icon(Icons.info_outline, color: context.textSecondary),
-                        const SizedBox(width: AppSpacing.sm2),
-                        Expanded(
-                          child: Text(
-                            question.explanation!,
-                            style: AppTypography.bodyMedium,
+                  return Semantics(
+                    label: 'Explanation: ${question.explanation!}',
+                    liveRegion: true,
+                    child: Container(
+                      padding: const EdgeInsets.all(AppSpacing.md),
+                      decoration: BoxDecoration(
+                        color: AppOverlays.info10,
+                        borderRadius: AppRadius.mediumRadius,
+                      ),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Icon(Icons.info_outline, color: context.textSecondary,
+                            semanticLabel: 'Explanation',
                           ),
-                        ),
-                      ],
+                          const SizedBox(width: AppSpacing.sm2),
+                          Expanded(
+                            child: Text(
+                              question.explanation!,
+                              style: AppTypography.bodyMedium,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   );
                 }

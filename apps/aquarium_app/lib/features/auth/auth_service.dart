@@ -36,8 +36,10 @@ class AuthService {
     required String password,
   }) async {
     if (!_available) return const AuthResult.unavailable();
+    final auth = _auth;
+    if (auth == null) return const AuthResult.unavailable();
     try {
-      final response = await _auth!.signUp(
+      final response = await auth.signUp(
         email: email,
         password: password,
       );
@@ -58,8 +60,10 @@ class AuthService {
     required String password,
   }) async {
     if (!_available) return const AuthResult.unavailable();
+    final auth = _auth;
+    if (auth == null) return const AuthResult.unavailable();
     try {
-      final response = await _auth!.signInWithPassword(
+      final response = await auth.signInWithPassword(
         email: email,
         password: password,
       );
@@ -81,8 +85,10 @@ class AuthService {
   /// Sign in with Google via Supabase OAuth.
   Future<AuthResult> signInWithGoogle() async {
     if (!_available) return const AuthResult.unavailable();
+    final auth = _auth;
+    if (auth == null) return const AuthResult.unavailable();
     try {
-      final success = await _auth!.signInWithOAuth(
+      final success = await auth.signInWithOAuth(
         OAuthProvider.google,
         redirectTo: 'io.supabase.aquariumapp://login-callback/',
       );
@@ -106,8 +112,10 @@ class AuthService {
   /// Send a password-reset email.
   Future<AuthResult> resetPassword(String email) async {
     if (!_available) return const AuthResult.unavailable();
+    final auth = _auth;
+    if (auth == null) return const AuthResult.unavailable();
     try {
-      await _auth!.resetPasswordForEmail(email);
+      await auth.resetPasswordForEmail(email);
       return const AuthResult.passwordResetSent();
     } on AuthException catch (e) {
       return AuthResult.error(e.message);
@@ -123,7 +131,7 @@ class AuthService {
   Future<void> signOut() async {
     if (!_available) return;
     try {
-      await _auth!.signOut();
+      await _auth?.signOut();
     } catch (e) {
       debugPrint('[AuthService] Sign-out error: $e');
     }

@@ -1,10 +1,19 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Required for network calls (Supabase, OpenAI, etc.) -->
+    <uses-permission android:name="android.permission.INTERNET"/>
+    
     <!-- Notification permissions for Android 13+ -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
     <uses-permission android:name="android.permission.VIBRATE"/>
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
     
-    <!-- Exact alarm permission for scheduled notifications -->
+    <!-- Exact alarm permission for scheduled notifications.
+         Play Store justification: Danio uses exact alarms to schedule user-configured
+         tank maintenance reminders (water changes, filter cleaning, feeding schedules)
+         and spaced-repetition review notifications at precise times set by the user.
+         These are core app features — imprecise alarms would miss the user's chosen
+         reminder time by up to 15 minutes, defeating the purpose for time-sensitive
+         tank care tasks. See NotificationService.scheduleReviewReminder(). -->
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"/>
     
     <!-- Camera and media permissions (camera used for Fish ID feature) -->
