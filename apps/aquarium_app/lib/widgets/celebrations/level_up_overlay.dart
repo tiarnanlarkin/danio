@@ -251,7 +251,51 @@ class _LevelUpOverlayState extends State<LevelUpOverlay>
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    
+    final reduceMotion = MediaQuery.of(context).disableAnimations;
+
+    // Reduced motion: show static level text without animations/confetti
+    if (reduceMotion) {
+      return Material(
+        type: MaterialType.transparency,
+        child: GestureDetector(
+          onTap: _dismiss,
+          behavior: HitTestBehavior.opaque,
+          child: Container(
+            color: AppOverlays.black60,
+            child: Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  _buildLevelUpText(),
+                  const SizedBox(height: AppSpacing.lg),
+                  _buildLevelNumber(),
+                  if (widget.levelTitle != null) ...[
+                    const SizedBox(height: AppSpacing.md),
+                    _buildLevelTitle(),
+                  ],
+                  const SizedBox(height: AppSpacing.xl),
+                  ElevatedButton(
+                    onPressed: _dismiss,
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                      backgroundColor: const Color(0xFF8B6BAE),
+                      foregroundColor: Colors.white,
+                    ),
+                    child: Text(
+                      'Continue',
+                      style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+
     return Material(
       type: MaterialType.transparency,
       child: GestureDetector(

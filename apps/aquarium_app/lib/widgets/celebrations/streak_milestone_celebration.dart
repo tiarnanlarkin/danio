@@ -103,6 +103,42 @@ class _StreakMilestoneCelebrationState extends State<StreakMilestoneCelebration>
 
   @override
   Widget build(BuildContext context) {
+    final reduceMotion = MediaQuery.of(context).disableAnimations;
+    if (reduceMotion) {
+      // Show static milestone message without animation
+      return IgnorePointer(
+        child: Center(
+          child: Container(
+            margin: EdgeInsets.symmetric(horizontal: AppSpacing.xl),
+            padding: EdgeInsets.symmetric(
+              horizontal: AppSpacing.lg,
+              vertical: AppSpacing.lg2,
+            ),
+            decoration: BoxDecoration(
+              color: Theme.of(context).scaffoldBackgroundColor.withAlpha(240),
+              borderRadius: AppRadius.largeRadius,
+              border: Border.all(color: AppColors.primary.withAlpha(60), width: 2),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(_emoji, style: const TextStyle(fontSize: 52)),
+                const SizedBox(height: AppSpacing.sm),
+                Text(
+                  _message,
+                  style: AppTypography.headlineSmall.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.primary,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
+
     return IgnorePointer(
       child: AnimatedBuilder(
         animation: _controller,

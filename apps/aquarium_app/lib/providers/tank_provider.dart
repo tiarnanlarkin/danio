@@ -74,7 +74,7 @@ final tanksProvider = FutureProvider<List<Tank>>((ref) async {
 });
 
 /// Single tank by ID
-final tankProvider = FutureProvider.family<Tank?, String>((ref, id) async {
+final tankProvider = FutureProvider.autoDispose.family<Tank?, String>((ref, id) async {
   final storage = ref.watch(storageServiceProvider);
   return storage.getTank(id);
 });
@@ -399,7 +399,7 @@ class TankActions {
 }
 
 /// Livestock for a tank (excludes soft-deleted livestock)
-final livestockProvider = FutureProvider.family<List<Livestock>, String>((
+final livestockProvider = FutureProvider.autoDispose.family<List<Livestock>, String>((
   ref,
   tankId,
 ) async {
@@ -412,7 +412,7 @@ final livestockProvider = FutureProvider.family<List<Livestock>, String>((
 });
 
 /// Equipment for a tank
-final equipmentProvider = FutureProvider.family<List<Equipment>, String>((
+final equipmentProvider = FutureProvider.autoDispose.family<List<Equipment>, String>((
   ref,
   tankId,
 ) async {
@@ -421,7 +421,7 @@ final equipmentProvider = FutureProvider.family<List<Equipment>, String>((
 });
 
 /// Logs for a tank (recent only; used for previews / activity lists)
-final logsProvider = FutureProvider.family<List<LogEntry>, String>((
+final logsProvider = FutureProvider.autoDispose.family<List<LogEntry>, String>((
   ref,
   tankId,
 ) async {
@@ -430,7 +430,7 @@ final logsProvider = FutureProvider.family<List<LogEntry>, String>((
 });
 
 /// All logs for a tank (used for charts/exports — no date cap)
-final allLogsProvider = FutureProvider.family<List<LogEntry>, String>((
+final allLogsProvider = FutureProvider.autoDispose.family<List<LogEntry>, String>((
   ref,
   tankId,
 ) async {
@@ -440,7 +440,7 @@ final allLogsProvider = FutureProvider.family<List<LogEntry>, String>((
 
 /// Recent logs (last 365 days) — used by streak providers to avoid
 /// loading years of history for users with extensive logs.
-final recentLogsProvider = FutureProvider.family<List<LogEntry>, String>((
+final recentLogsProvider = FutureProvider.autoDispose.family<List<LogEntry>, String>((
   ref,
   tankId,
 ) async {
@@ -450,7 +450,7 @@ final recentLogsProvider = FutureProvider.family<List<LogEntry>, String>((
 });
 
 /// Latest water test results for a tank (most recent waterTest log entry)
-final latestWaterTestProvider = FutureProvider.family<WaterTestResults?, String>((
+final latestWaterTestProvider = FutureProvider.autoDispose.family<WaterTestResults?, String>((
   ref,
   tankId,
 ) async {
@@ -463,7 +463,7 @@ final latestWaterTestProvider = FutureProvider.family<WaterTestResults?, String>
 });
 
 /// Full LogEntry for the most recent waterTest log (gives access to timestamp)
-final latestWaterTestEntryProvider = FutureProvider.family<LogEntry?, String>((
+final latestWaterTestEntryProvider = FutureProvider.autoDispose.family<LogEntry?, String>((
   ref,
   tankId,
 ) async {
@@ -478,7 +478,7 @@ final latestWaterTestEntryProvider = FutureProvider.family<LogEntry?, String>((
 /// Consecutive calendar days (counting back from today) with at least one
 /// waterTest log entry.  Uses recentLogsProvider (365-day window) to avoid
 /// loading unbounded history.
-final testStreakProvider = FutureProvider.family<int, String>((
+final testStreakProvider = FutureProvider.autoDispose.family<int, String>((
   ref,
   tankId,
 ) async {
@@ -500,7 +500,7 @@ final testStreakProvider = FutureProvider.family<int, String>((
 /// Consecutive calendar weeks (Mon–Sun, ending with the current week) that
 /// contain at least one waterChange log entry.  Uses recentLogsProvider
 /// (365-day window) to avoid loading unbounded history.
-final waterChangeStreakProvider = FutureProvider.family<int, String>((
+final waterChangeStreakProvider = FutureProvider.autoDispose.family<int, String>((
   ref,
   tankId,
 ) async {
@@ -525,7 +525,7 @@ final waterChangeStreakProvider = FutureProvider.family<int, String>((
 });
 
 /// First heater equipment for a tank, or null if none registered.
-final tankHeaterProvider = FutureProvider.family<Equipment?, String>((
+final tankHeaterProvider = FutureProvider.autoDispose.family<Equipment?, String>((
   ref,
   tankId,
 ) async {

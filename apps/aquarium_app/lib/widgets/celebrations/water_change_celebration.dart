@@ -102,6 +102,49 @@ class _WaterChangeCelebrationState extends State<WaterChangeCelebration>
 
   @override
   Widget build(BuildContext context) {
+    final reduceMotion = MediaQuery.of(context).disableAnimations;
+    if (reduceMotion) {
+      // Show static celebration message without animation
+      return IgnorePointer(
+        child: Material(
+          color: Colors.transparent,
+          child: Center(
+            child: Container(
+              padding: EdgeInsets.symmetric(
+                horizontal: AppSpacing.lg,
+                vertical: AppSpacing.md,
+              ),
+              decoration: BoxDecoration(
+                color: Theme.of(context).scaffoldBackgroundColor.withAlpha(230),
+                borderRadius: AppRadius.largeRadius,
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Text('\u{1F4A7}', style: TextStyle(fontSize: 40)),
+                  const SizedBox(height: AppSpacing.sm),
+                  Text(
+                    'Fresh water!',
+                    style: AppTypography.headlineSmall.copyWith(
+                      color: AppColors.accent,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: AppSpacing.xs),
+                  Text(
+                    'Your fish are happy \u{1F420}',
+                    style: AppTypography.bodyMedium.copyWith(
+                      color: context.textSecondary,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+
     return IgnorePointer(
       child: Material(
         color: Colors.transparent,

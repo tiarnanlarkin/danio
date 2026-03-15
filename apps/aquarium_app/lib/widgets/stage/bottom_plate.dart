@@ -12,7 +12,7 @@ class BottomPlate extends StatefulWidget {
   final String emoji;
   final Widget child;
   final Widget? backgroundPainter; // CustomPaint or similar for texture
-  final Color backgroundColor;
+  final Color? backgroundColor;
   final double bottomOffset;
 
   const BottomPlate({
@@ -23,9 +23,7 @@ class BottomPlate extends StatefulWidget {
     required this.emoji,
     required this.child,
     this.backgroundPainter,
-    // Callers should pass Theme.of(context).colorScheme.surface for dark-mode support.
-    // Fallback to context.surfaceColor (light) to avoid blinding white on dark backgrounds.
-    this.backgroundColor = AppColors.surface,
+    this.backgroundColor,
     this.bottomOffset = 0,
   });
 
@@ -101,6 +99,7 @@ class BottomPlateState extends State<BottomPlate>
 
   @override
   Widget build(BuildContext context) {
+    final bg = widget.backgroundColor ?? Theme.of(context).colorScheme.surface;
     final screenHeight = MediaQuery.of(context).size.height;
     final bottomPad = MediaQuery.of(context).padding.bottom;
     final maxDragDistance =
@@ -121,7 +120,7 @@ class BottomPlateState extends State<BottomPlate>
           onVerticalDragEnd: _onDragEnd,
           child: Container(
           decoration: BoxDecoration(
-            color: widget.backgroundColor,
+            color: bg,
             borderRadius: const BorderRadius.vertical(
               top: Radius.circular(24),
             ),
