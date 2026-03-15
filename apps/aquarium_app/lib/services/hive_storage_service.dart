@@ -1,3 +1,6 @@
+// FUTURE: Not currently wired into the app. Using LocalJsonStorageService instead.
+// This implementation is retained for potential future migration to Hive.
+
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:flutter/foundation.dart';
 import '../models/models.dart';
@@ -43,7 +46,7 @@ class HiveStorageService {
   late Box<Map> _settings;
   late Box<Map> _learningProgress;
   late Box<Map> _economy;
-  // ignore: unused_field
+  // Metadata box — opened for schema version tracking during initialization
   late Box<dynamic> _metadata;
   
   HiveStorageService._();
