@@ -1035,15 +1035,6 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Container(
-                width: 40,
-                height: 4,
-                decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.outlineVariant,
-                  borderRadius: BorderRadius.circular(2),
-                ),
-              ),
-              const SizedBox(height: AppSpacing.lg),
               Text('🎉', style: Theme.of(context).textTheme.headlineMedium!.copyWith(fontSize: 40)),
               const SizedBox(height: AppSpacing.sm),
               Text(

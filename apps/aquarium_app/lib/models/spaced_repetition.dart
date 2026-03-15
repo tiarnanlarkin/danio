@@ -96,6 +96,12 @@ class ReviewCard {
       interval: newInterval,
     );
 
+    // Cap history to 50 entries to prevent unbounded growth
+    final newHistory = [...history, attempt];
+    final cappedHistory = newHistory.length > 50
+        ? newHistory.sublist(newHistory.length - 50)
+        : newHistory;
+
     return ReviewCard(
       id: id,
       conceptId: conceptId,
@@ -107,7 +113,7 @@ class ReviewCard {
       correctCount: correctCount + (correct ? 1 : 0),
       incorrectCount: incorrectCount + (correct ? 0 : 1),
       currentInterval: newInterval,
-      history: [...history, attempt],
+      history: cappedHistory,
       questionText: questionText,
     );
   }

@@ -265,10 +265,17 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
           final todayKey = _formatDate(today);
           final previousTodayXp = c.dailyXpHistory[todayKey] ?? 0;
           final todayXp = previousTodayXp + effectiveXp + bonusXp;
-          final updatedHistory = {
+          var updatedHistory = {
             ...c.dailyXpHistory,
             todayKey: todayXp,
           };
+
+          // Prune dailyXpHistory to last 365 entries
+          if (updatedHistory.length > 365) {
+            final sorted = updatedHistory.entries.toList()
+              ..sort((a, b) => b.key.compareTo(a.key));
+            updatedHistory = Map.fromEntries(sorted.take(365));
+          }
 
           final updated = c.copyWith(
             totalXp: c.totalXp + effectiveXp + bonusXp,
@@ -477,8 +484,10 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
         );
       }
 
-      // Record activity for streak tracking
-      await recordActivity(xp: 0); // XP already added above
+      /// XP Flow: xp: 0 is intentional — base XP already added above.
+      /// recordActivity() handles streak bonus, daily goal, weekly reset.
+      /// See addXp() for the full XP flow documentation.
+      await recordActivity(xp: 0);
 
       // AUTO-SEED REVIEW CARDS: Create spaced repetition cards for this lesson
       await _createReviewCardsForLesson(lessonId);
