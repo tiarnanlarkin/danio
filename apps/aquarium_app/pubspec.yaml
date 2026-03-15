@@ -74,11 +74,10 @@ dependencies:
   crypto: ^3.0.6
   pointycastle: ^3.9.1
   
-  # Firebase (configuration pending - see docs/setup/FIREBASE_SETUP_GUIDE.md)
-  # firebase_core: ^2.24.2
-  # firebase_analytics: ^10.7.4
-  # firebase_crashlytics: ^3.4.9
-  # firebase_performance: ^0.9.3+6
+  # Firebase (configuration pending - see android/app/FIREBASE_SETUP.md)
+  firebase_core: ^2.24.2
+  firebase_analytics: ^10.7.4
+  firebase_crashlytics: ^3.4.9
 
 dev_dependencies:
   flutter_test:
