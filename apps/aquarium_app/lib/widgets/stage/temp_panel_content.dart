@@ -10,18 +10,19 @@ import '../../theme/room_themes.dart';
 
 // ── Colour constants ──────────────────────────────────────────────────────────
 const _kTeal = Color(0xFF3BBFB0);
-const _kTealDark = Color(0xFF279E91);
+const _kTealDark = Color(0xFF2D7A94);
+const _kTealLight = Color(0xFF9ED8EC);
 const _kAmberGold = Color(0xFFD97706);
 const _kCharcoal = Color(0xFF2D3436);
-const _kCream = Color(0xFFFFF5E8);
-const _kGreen = Color(0xFF22C55E);
-const _kAmberWarn = Color(0xFFF59E0B);
-const _kBlueWarn = Color(0xFF3B82F6);
+const _kCream = Color(0xFFFFF8F0);
+const _kGreen = Color(0xFF5AAF7A);
+const _kAmberWarn = Color(0xFFC99524);
+const _kRedWarn = Color(0xFFD96A6A);
 
 // ── Panel content ─────────────────────────────────────────────────────────────
 
-/// Illustrated temperature panel — redesigned for the Swiss Army stage system.
-/// Keeps all existing Riverpod provider wiring; only the visual layer changed.
+/// Rich, fully-packed temperature panel for the Swiss Army stage system.
+/// Keeps all existing Riverpod provider wiring.
 class TempPanelContent extends ConsumerStatefulWidget {
   final String tankId;
   final RoomTheme theme;
@@ -40,9 +41,9 @@ class _TempPanelContentState extends ConsumerState<TempPanelContent>
     with TickerProviderStateMixin {
   late final AnimationController _fillAnim;
 
-  static const double _optimalMin = 24.0;
-  static const double _optimalMax = 26.0;
-  static const double _gaugeMin = 20.0;
+  static const double _defaultOptimalMin = 24.0;
+  static const double _defaultOptimalMax = 26.0;
+  static const double _gaugeMin = 18.0;
   static const double _gaugeMax = 30.0;
 
   @override
@@ -50,7 +51,7 @@ class _TempPanelContentState extends ConsumerState<TempPanelContent>
     super.initState();
     _fillAnim = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 900),
+      duration: const Duration(milliseconds: 1100),
     );
     Future.delayed(const Duration(milliseconds: 200), () {
       if (mounted) _fillAnim.forward(from: 0);
@@ -74,10 +75,12 @@ class _TempPanelContentState extends ConsumerState<TempPanelContent>
     return '${diff.inDays}d ago';
   }
 
-  _TempStatus _status(double temp) {
-    if (temp >= _optimalMin && temp <= _optimalMax) return _TempStatus.perfect;
-    if (temp > _optimalMax) return _TempStatus.warm;
-    return _TempStatus.cool;
+  _TempStatus _status(double temp, double optMin, double optMax) {
+    if (temp >= optMin && temp <= optMax) return _TempStatus.perfect;
+    if (temp > optMax) {
+      return (temp - optMax) > 2.0 ? _TempStatus.tooHot : _TempStatus.warm;
+    }
+    return (optMin - temp) > 2.0 ? _TempStatus.tooCold : _TempStatus.cool;
   }
 
   // ── Build ─────────────────────────────────────────────────────────────────
@@ -89,62 +92,79 @@ class _TempPanelContentState extends ConsumerState<TempPanelContent>
         ref.watch(latestWaterTestEntryProvider(widget.tankId));
     final streakAsync = ref.watch(testStreakProvider(widget.tankId));
     final logsAsync = ref.watch(logsProvider(widget.tankId));
+    final heaterAsync = ref.watch(tankHeaterProvider(widget.tankId));
 
     final temp = latestTestAsync.value?.temperature;
-    final status = temp != null ? _status(temp) : null;
     final lastEntry = latestEntryAsync.value;
     final streak = streakAsync.value ?? 0;
+
+    // Pull optimal range from heater settings if available
+    final heater = heaterAsync.value;
+    final optimalMin = (heater?.settings?['optimalMin'] as num?)?.toDouble()
+        ?? _defaultOptimalMin;
+    final optimalMax = (heater?.settings?['optimalMax'] as num?)?.toDouble()
+        ?? _defaultOptimalMax;
+
+    final status = temp != null ? _status(temp, optimalMin, optimalMax) : null;
 
     // Build 7-day sparkline data from recent logs
     final recentLogs = logsAsync.value ?? [];
     final sparkData = _buildSparkData(recentLogs);
 
+    // Stats from spark data
+    final double? minTemp = sparkData.isNotEmpty
+        ? sparkData.reduce(math.min)
+        : null;
+    final double? maxTemp = sparkData.isNotEmpty
+        ? sparkData.reduce(math.max)
+        : null;
+    final double? avgTemp = sparkData.isNotEmpty
+        ? sparkData.reduce((a, b) => a + b) / sparkData.length
+        : null;
+
     return Container(
       color: _kCream,
       child: SingleChildScrollView(
         physics: const ClampingScrollPhysics(),
-        padding: const EdgeInsets.fromLTRB(
-            AppSpacing.md, AppSpacing.md, AppSpacing.md, AppSpacing.lg),
+        padding: const EdgeInsets.fromLTRB(16, 14, 16, 20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             // ── Header ───────────────────────────────────────────────────
-            _Header(theme: widget.theme, streak: streak),
-            const SizedBox(height: AppSpacing.md),
+            _Header(streak: streak),
+            const SizedBox(height: 14),
 
-            // ── Thermometer + temperature display ────────────────────────
-            _ThermometerSection(
+            // ── Hero: Thermometer + big readout ──────────────────────────
+            _HeroSection(
               temp: temp,
               fillAnim: _fillAnim,
               gaugeMin: _gaugeMin,
               gaugeMax: _gaugeMax,
-              optimalMin: _optimalMin,
-              optimalMax: _optimalMax,
+              optimalMin: optimalMin,
+              optimalMax: optimalMax,
+              status: status,
+              lastEntry: lastEntry,
+              formatTimestamp: _formatTimestamp,
             ),
-            const SizedBox(height: AppSpacing.sm),
+            const SizedBox(height: 14),
 
-            // ── Status badge ─────────────────────────────────────────────
-            if (status != null) _StatusBadge(status: status),
-            const SizedBox(height: AppSpacing.md),
+            // ── Divider ──────────────────────────────────────────────────
+            Container(
+              height: 1,
+              color: _kTeal.withAlpha(40),
+            ),
+            const SizedBox(height: 14),
 
-            // ── Last reading ─────────────────────────────────────────────
-            if (lastEntry != null)
-              _InfoRow(
-                label: 'Last reading',
-                value: _formatTimestamp(lastEntry.timestamp),
-                icon: Icons.access_time_rounded,
-              ),
-            const SizedBox(height: AppSpacing.xs),
-
-            // ── 7-day sparkline ──────────────────────────────────────────
-            if (sparkData.isNotEmpty) ...[
-              const SizedBox(height: AppSpacing.sm),
-              _SparklineCard(data: sparkData),
-              const SizedBox(height: AppSpacing.sm),
-            ],
+            // ── 7-Day Trend section ──────────────────────────────────────
+            _TrendSection(
+              sparkData: sparkData,
+              minTemp: minTemp,
+              maxTemp: maxTemp,
+              avgTemp: avgTemp,
+            ),
+            const SizedBox(height: 14),
 
             // ── Log Temperature button ───────────────────────────────────
-            const SizedBox(height: AppSpacing.sm),
             _LogButton(tankId: widget.tankId),
           ],
         ),
@@ -157,13 +177,13 @@ class _TempPanelContentState extends ConsumerState<TempPanelContent>
     final now = DateTime.now();
     final result = <double>[];
     for (var i = 6; i >= 0; i--) {
-      final day =
-          DateTime(now.year, now.month, now.day - i);
+      final day = DateTime(now.year, now.month, now.day - i);
       final dayLogs = logs.where((l) {
         if (l.type != LogType.waterTest) return false;
         final t = l.waterTest?.temperature;
         if (t == null) return false;
-        final ld = DateTime(l.timestamp.year, l.timestamp.month, l.timestamp.day);
+        final ld = DateTime(
+            l.timestamp.year, l.timestamp.month, l.timestamp.day);
         return ld == day;
       }).toList()
         ..sort((a, b) => b.timestamp.compareTo(a.timestamp));
@@ -178,35 +198,47 @@ class _TempPanelContentState extends ConsumerState<TempPanelContent>
 // ── Header ────────────────────────────────────────────────────────────────────
 
 class _Header extends StatelessWidget {
-  final RoomTheme theme;
   final int streak;
 
-  const _Header({required this.theme, required this.streak});
+  const _Header({required this.streak});
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
         Container(
-          width: 36,
-          height: 36,
-          decoration: const BoxDecoration(
-            color: _kTeal,
+          width: 38,
+          height: 38,
+          decoration: BoxDecoration(
+            gradient: const LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [Color(0xFF3BBFB0), Color(0xFF2D7A94)],
+            ),
             shape: BoxShape.circle,
+            boxShadow: [
+              BoxShadow(
+                color: _kTeal.withAlpha(80),
+                blurRadius: 8,
+                offset: const Offset(0, 3),
+              ),
+            ],
           ),
           child: const Icon(Icons.thermostat_rounded,
-              color: Colors.white, size: 20),
+              color: Colors.white, size: 22),
         ),
         const SizedBox(width: AppSpacing.sm),
         Text(
           'Temperature',
-          style: AppTypography.titleMedium.copyWith(color: _kCharcoal),
+          style: AppTypography.titleMedium.copyWith(
+            color: _kCharcoal,
+            fontWeight: FontWeight.w800,
+          ),
         ),
         const Spacer(),
         if (streak > 0)
           Container(
-            padding: const EdgeInsets.symmetric(
-                horizontal: AppSpacing.sm, vertical: 3),
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
             decoration: BoxDecoration(
               color: _kAmberGold.withAlpha(30),
               borderRadius: AppRadius.pillRadius,
@@ -215,13 +247,14 @@ class _Header extends StatelessWidget {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Text('🔥', style: TextStyle(fontSize: 12)),
-                const SizedBox(width: 3),
+                const Text('🔥', style: TextStyle(fontSize: 13)),
+                const SizedBox(width: 4),
                 Text(
-                  '$streak',
+                  '$streak day streak',
                   style: AppTypography.labelSmall.copyWith(
                     color: _kAmberGold,
-                    fontWeight: FontWeight.w700,
+                    fontWeight: FontWeight.w800,
+                    fontSize: 11,
                   ),
                 ),
               ],
@@ -232,42 +265,50 @@ class _Header extends StatelessWidget {
   }
 }
 
-// ── Thermometer Section ───────────────────────────────────────────────────────
+// ── Hero Section ──────────────────────────────────────────────────────────────
 
-class _ThermometerSection extends StatelessWidget {
+class _HeroSection extends StatelessWidget {
   final double? temp;
   final AnimationController fillAnim;
   final double gaugeMin;
   final double gaugeMax;
   final double optimalMin;
   final double optimalMax;
+  final _TempStatus? status;
+  final LogEntry? lastEntry;
+  final String Function(DateTime) formatTimestamp;
 
-  const _ThermometerSection({
+  const _HeroSection({
     required this.temp,
     required this.fillAnim,
     required this.gaugeMin,
     required this.gaugeMax,
     required this.optimalMin,
     required this.optimalMax,
+    required this.status,
+    required this.lastEntry,
+    required this.formatTimestamp,
   });
 
   @override
   Widget build(BuildContext context) {
-    const thermometerH = 220.0;
-    const thermometerW = 52.0;
+    // Fixed thermometer dimensions — nice and large
+    const thermW = 56.0;
+    const thermH = 300.0;
 
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // ── Illustrated thermometer ──────────────────────────────────────
+        // ── Large thermometer ────────────────────────────────────────────
         SizedBox(
-          width: thermometerW,
-          height: thermometerH,
+          width: thermW,
+          height: thermH,
           child: AnimatedBuilder(
             animation: fillAnim,
             builder: (context, _) {
               final fillFraction = temp != null
-                  ? ((temp! - gaugeMin) / (gaugeMax - gaugeMin)).clamp(0.0, 1.0)
+                  ? ((temp! - gaugeMin) / (gaugeMax - gaugeMin))
+                      .clamp(0.0, 1.0)
                   : 0.0;
               final animatedFill =
                   Curves.easeOutCubic.transform(fillAnim.value) * fillFraction;
@@ -284,48 +325,77 @@ class _ThermometerSection extends StatelessWidget {
           ),
         ),
 
-        const SizedBox(width: AppSpacing.sm),
+        const SizedBox(width: 8),
 
-        // ── Range tick labels ────────────────────────────────────────────
+        // ── Scale labels on the LEFT of gauge ───────────────────────────
         SizedBox(
-          height: thermometerH,
-          child: _RangeLabels(
+          width: 28,
+          height: thermH,
+          child: _ScaleLabels(
             gaugeMin: gaugeMin,
             gaugeMax: gaugeMax,
           ),
         ),
 
-        const SizedBox(width: AppSpacing.md),
+        const SizedBox(width: 12),
 
-        // ── Temperature readout ──────────────────────────────────────────
+        // ── Right column: big temp + badge + info ────────────────────────
         Expanded(
-          child: Padding(
-            padding: const EdgeInsets.only(top: AppSpacing.lg2),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  temp != null ? '${temp!.toStringAsFixed(1)}°C' : '--°C',
-                  style: AppTypography.headlineLarge.copyWith(
-                    color: _kCharcoal,
-                    fontWeight: FontWeight.w800,
-                    fontSize: 38,
-                    letterSpacing: -1,
-                  ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Big temp display
+              Text(
+                temp != null ? '${temp!.toStringAsFixed(1)}°C' : '--°C',
+                style: AppTypography.headlineLarge.copyWith(
+                  color: _kCharcoal,
+                  fontWeight: FontWeight.w800,
+                  fontSize: 42,
+                  letterSpacing: -1.5,
+                  height: 1.0,
                 ),
-                const SizedBox(height: 2),
-                Text(
-                  'Current',
-                  style: AppTypography.bodySmall
-                      .copyWith(color: _kCharcoal.withAlpha(100)),
+              ),
+              const SizedBox(height: 2),
+              Text(
+                'current temperature',
+                style: AppTypography.labelSmall.copyWith(
+                  color: _kCharcoal.withAlpha(110),
+                  fontSize: 11,
                 ),
-                const SizedBox(height: AppSpacing.md),
-                _OptimalRangeChip(
-                  min: optimalMin,
-                  max: optimalMax,
+              ),
+              const SizedBox(height: 14),
+
+              // Status badge
+              if (status != null) _StatusBadge(status: status!),
+
+              const SizedBox(height: 14),
+
+              // Optimal range indicator
+              _OptimalRangeRow(min: optimalMin, max: optimalMax),
+              const SizedBox(height: 12),
+
+              // Fish decorations — stacked at different heights
+              const _FishDecorations(),
+              const SizedBox(height: 12),
+
+              // Last logged timestamp
+              if (lastEntry != null)
+                Row(
+                  children: [
+                    Icon(Icons.access_time_rounded,
+                        size: 12,
+                        color: _kCharcoal.withAlpha(100)),
+                    const SizedBox(width: 4),
+                    Text(
+                      'Last logged: ${formatTimestamp(lastEntry!.timestamp)}',
+                      style: AppTypography.labelSmall.copyWith(
+                        color: _kCharcoal.withAlpha(120),
+                        fontSize: 11,
+                      ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
+            ],
           ),
         ),
       ],
@@ -333,17 +403,17 @@ class _ThermometerSection extends StatelessWidget {
   }
 }
 
-// ── Range Labels ──────────────────────────────────────────────────────────────
+// ── Scale Labels ──────────────────────────────────────────────────────────────
 
-class _RangeLabels extends StatelessWidget {
+class _ScaleLabels extends StatelessWidget {
   final double gaugeMin;
   final double gaugeMax;
 
-  const _RangeLabels({required this.gaugeMin, required this.gaugeMax});
+  const _ScaleLabels({required this.gaugeMin, required this.gaugeMax});
 
   @override
   Widget build(BuildContext context) {
-    // Labels at 20, 22, 24, 26, 28, 30
+    // Labels every 2 degrees from gaugeMax down to gaugeMin
     final labels = <double>[];
     for (var t = gaugeMax; t >= gaugeMin; t -= 2) {
       labels.add(t);
@@ -352,24 +422,32 @@ class _RangeLabels extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         final h = constraints.maxHeight;
-        // Thermometer bulb area: ~36px at bottom, tube top ~20px from top
-        const topPad = 20.0;
-        const bottomPad = 38.0;
-        final usableH = h - topPad - bottomPad;
+        // These match the painter geometry:
+        const bulbRadius = 20.0;
+        const tubeTopPad = 16.0;
+        final bulbCy = h - bulbRadius - 4;
+        final tubeBotY = bulbCy - bulbRadius - 2;
+        const tubeTopY = tubeTopPad;
+        final usableH = tubeBotY - tubeTopY;
 
         return Stack(
           children: List.generate(labels.length, (i) {
-            final temp = labels[i];
-            final fraction = (temp - gaugeMin) / (gaugeMax - gaugeMin);
-            final y = topPad + usableH * (1.0 - fraction) - 7;
+            final t = labels[i];
+            final frac = (t - gaugeMin) / (gaugeMax - gaugeMin);
+            final y = tubeTopY + usableH * (1.0 - frac) - 7;
+            final isMajor = t % 4 == 0;
             return Positioned(
               top: y,
+              right: 0,
               child: Text(
-                '${temp.toInt()}°',
+                '${t.toInt()}°',
                 style: AppTypography.labelSmall.copyWith(
-                  color: _kCharcoal.withAlpha(140),
-                  fontSize: 10,
-                  fontWeight: FontWeight.w700,
+                  color: isMajor
+                      ? _kCharcoal.withAlpha(180)
+                      : _kCharcoal.withAlpha(110),
+                  fontSize: isMajor ? 10 : 9,
+                  fontWeight:
+                      isMajor ? FontWeight.w700 : FontWeight.w500,
                 ),
               ),
             );
@@ -380,30 +458,88 @@ class _RangeLabels extends StatelessWidget {
   }
 }
 
-// ── Optimal Range Chip ────────────────────────────────────────────────────────
+// ── Optimal Range Row ─────────────────────────────────────────────────────────
 
-class _OptimalRangeChip extends StatelessWidget {
+class _OptimalRangeRow extends StatelessWidget {
   final double min;
   final double max;
 
-  const _OptimalRangeChip({required this.min, required this.max});
+  const _OptimalRangeRow({required this.min, required this.max});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacing.sm, vertical: AppSpacing.xs),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       decoration: BoxDecoration(
-        color: _kTeal.withAlpha(25),
+        color: _kGreen.withAlpha(20),
         borderRadius: AppRadius.pillRadius,
-        border: Border.all(color: _kTeal.withAlpha(80)),
+        border: Border.all(color: _kGreen.withAlpha(70)),
       ),
-      child: Text(
-        'Optimal ${min.toInt()}–${max.toInt()}°C',
-        style: AppTypography.labelSmall.copyWith(
-          color: _kTealDark,
-          fontWeight: FontWeight.w700,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 8,
+            height: 8,
+            decoration: const BoxDecoration(
+              color: _kGreen,
+              shape: BoxShape.circle,
+            ),
+          ),
+          const SizedBox(width: 5),
+          Text(
+            'Optimal ${min.toInt()}–${max.toInt()}°C',
+            style: AppTypography.labelSmall.copyWith(
+              color: _kGreen,
+              fontWeight: FontWeight.w700,
+              fontSize: 11,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ── Fish Decorations ──────────────────────────────────────────────────────────
+
+class _FishDecorations extends StatelessWidget {
+  const _FishDecorations();
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        _FishChip(label: '🐟', opacity: 1.0),
+        const SizedBox(width: 6),
+        _FishChip(label: '🐠', opacity: 0.85),
+        const SizedBox(width: 6),
+        _FishChip(label: '🐡', opacity: 0.7),
+      ],
+    );
+  }
+}
+
+class _FishChip extends StatelessWidget {
+  final String label;
+  final double opacity;
+
+  const _FishChip({required this.label, required this.opacity});
+
+  @override
+  Widget build(BuildContext context) {
+    return Opacity(
+      opacity: opacity,
+      child: Container(
+        width: 32,
+        height: 32,
+        decoration: BoxDecoration(
+          color: _kTeal.withAlpha(25),
+          shape: BoxShape.circle,
+          border: Border.all(color: _kTeal.withAlpha(60)),
         ),
+        alignment: Alignment.center,
+        child: Text(label, style: const TextStyle(fontSize: 16)),
       ),
     );
   }
@@ -418,46 +554,38 @@ class _StatusBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isPerfect = status == _TempStatus.perfect;
-    final isWarm = status == _TempStatus.warm;
-
-    final bgColor = isPerfect
-        ? _kGreen
-        : isWarm
-            ? _kAmberWarn
-            : _kBlueWarn;
-    final label = isPerfect
-        ? 'Perfect!'
-        : isWarm
-            ? 'A little warm'
-            : 'A little cool';
-    final icon = isPerfect ? '🐟' : isWarm ? '☀️' : '❄️';
+    final (bgColor, label, icon) = switch (status) {
+      _TempStatus.perfect => (_kGreen, 'Perfect!', '🐟'),
+      _TempStatus.warm => (_kAmberWarn, 'A little warm', '☀️'),
+      _TempStatus.cool => (_kAmberWarn, 'A little cool', '❄️'),
+      _TempStatus.tooHot => (_kRedWarn, 'Too hot!', '🔥'),
+      _TempStatus.tooCold => (_kRedWarn, 'Too cold!', '🥶'),
+    };
 
     return Container(
-      padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacing.md, vertical: AppSpacing.sm),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(
         color: bgColor,
         borderRadius: AppRadius.largeRadius,
         boxShadow: [
           BoxShadow(
             color: bgColor.withAlpha(100),
-            blurRadius: 12,
-            offset: const Offset(0, 4),
+            blurRadius: 10,
+            offset: const Offset(0, 3),
           ),
         ],
       ),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
         children: [
-          Text(icon, style: const TextStyle(fontSize: 22)),
-          const SizedBox(width: AppSpacing.sm),
+          Text(icon, style: const TextStyle(fontSize: 18)),
+          const SizedBox(width: 6),
           Text(
             label,
-            style: AppTypography.titleSmall.copyWith(
+            style: AppTypography.labelSmall.copyWith(
               color: Colors.white,
               fontWeight: FontWeight.w800,
-              fontSize: 18,
+              fontSize: 14,
             ),
           ),
         ],
@@ -466,79 +594,197 @@ class _StatusBadge extends StatelessWidget {
   }
 }
 
-// ── Info Row ──────────────────────────────────────────────────────────────────
+// ── Trend Section ─────────────────────────────────────────────────────────────
 
-class _InfoRow extends StatelessWidget {
-  final String label;
-  final String value;
-  final IconData icon;
+class _TrendSection extends StatelessWidget {
+  final List<double> sparkData;
+  final double? minTemp;
+  final double? maxTemp;
+  final double? avgTemp;
 
-  const _InfoRow({
-    required this.label,
-    required this.value,
-    required this.icon,
+  const _TrendSection({
+    required this.sparkData,
+    required this.minTemp,
+    required this.maxTemp,
+    required this.avgTemp,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Row(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Icon(icon, size: 14, color: _kCharcoal.withAlpha(100)),
-        const SizedBox(width: AppSpacing.xs),
-        Text(
-          label,
-          style: AppTypography.bodySmall
-              .copyWith(color: _kCharcoal.withAlpha(120)),
+        // Section header
+        Row(
+          children: [
+            const Icon(Icons.show_chart_rounded, size: 16, color: _kTealDark),
+            const SizedBox(width: 6),
+            Text(
+              '7-Day Trend',
+              style: AppTypography.titleMedium.copyWith(
+                color: _kCharcoal,
+                fontWeight: FontWeight.w800,
+                fontSize: 15,
+              ),
+            ),
+          ],
         ),
-        const Spacer(),
-        Text(
-          value,
-          style: AppTypography.bodySmall.copyWith(
-            color: _kCharcoal,
-            fontWeight: FontWeight.w700,
+        const SizedBox(height: 10),
+
+        // Sparkline chart
+        Container(
+          decoration: BoxDecoration(
+            color: Colors.white.withAlpha(200),
+            borderRadius: AppRadius.largeRadius,
+            border: Border.all(color: _kTeal.withAlpha(50)),
+            boxShadow: [
+              BoxShadow(
+                color: _kTeal.withAlpha(20),
+                blurRadius: 8,
+                offset: const Offset(0, 2),
+              ),
+            ],
+          ),
+          child: Column(
+            children: [
+              // Chart area
+              Padding(
+                padding: const EdgeInsets.fromLTRB(12, 12, 12, 4),
+                child: SizedBox(
+                  height: 72,
+                  child: sparkData.length >= 2
+                      ? CustomPaint(
+                          size: const Size(double.infinity, 72),
+                          painter: _SparklinePainter(data: sparkData),
+                        )
+                      : Center(
+                          child: Text(
+                            'No data yet — log some readings!',
+                            style: AppTypography.labelSmall.copyWith(
+                              color: _kCharcoal.withAlpha(100),
+                              fontSize: 11,
+                            ),
+                          ),
+                        ),
+                ),
+              ),
+
+              // Day labels under chart
+              if (sparkData.length >= 2)
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(12, 0, 12, 10),
+                  child: _DayLabels(count: sparkData.length),
+                ),
+            ],
           ),
         ),
+        const SizedBox(height: 10),
+
+        // Stats row
+        if (minTemp != null && maxTemp != null && avgTemp != null)
+          Container(
+            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 4),
+            child: Row(
+              children: [
+                _StatCell(
+                    label: 'Min',
+                    value: '${minTemp!.toStringAsFixed(1)}°',
+                    color: _kTealDark),
+                _StatDivider(),
+                _StatCell(
+                    label: 'Avg',
+                    value: '${avgTemp!.toStringAsFixed(1)}°',
+                    color: _kTeal),
+                _StatDivider(),
+                _StatCell(
+                    label: 'Max',
+                    value: '${maxTemp!.toStringAsFixed(1)}°',
+                    color: _kAmberWarn),
+              ],
+            ),
+          ),
       ],
     );
   }
 }
 
-// ── Sparkline Card ────────────────────────────────────────────────────────────
+class _StatCell extends StatelessWidget {
+  final String label;
+  final String value;
+  final Color color;
 
-class _SparklineCard extends StatelessWidget {
-  final List<double> data;
-
-  const _SparklineCard({required this.data});
+  const _StatCell(
+      {required this.label, required this.value, required this.color});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(AppSpacing.sm),
-      decoration: BoxDecoration(
-        color: Colors.white.withAlpha(180),
-        borderRadius: AppRadius.largeRadius,
-        border: Border.all(color: _kTeal.withAlpha(50)),
-      ),
+    return Expanded(
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            '7-day trend',
-            style: AppTypography.labelSmall.copyWith(
-              color: _kCharcoal.withAlpha(140),
-              fontWeight: FontWeight.w700,
+            value,
+            style: AppTypography.headlineLarge.copyWith(
+              color: color,
+              fontWeight: FontWeight.w800,
+              fontSize: 18,
+              height: 1.0,
             ),
           ),
-          const SizedBox(height: AppSpacing.xs),
-          SizedBox(
-            height: 48,
-            child: CustomPaint(
-              size: const Size(double.infinity, 48),
-              painter: _SparklinePainter(data: data),
+          const SizedBox(height: 2),
+          Text(
+            label,
+            style: AppTypography.labelSmall.copyWith(
+              color: _kCharcoal.withAlpha(120),
+              fontSize: 10,
+              fontWeight: FontWeight.w600,
             ),
           ),
         ],
       ),
+    );
+  }
+}
+
+class _StatDivider extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 1,
+      height: 28,
+      color: _kCharcoal.withAlpha(30),
+      margin: const EdgeInsets.symmetric(horizontal: 4),
+    );
+  }
+}
+
+// ── Day Labels ────────────────────────────────────────────────────────────────
+
+class _DayLabels extends StatelessWidget {
+  final int count;
+
+  const _DayLabels({required this.count});
+
+  @override
+  Widget build(BuildContext context) {
+    final now = DateTime.now();
+    final days = List.generate(count, (i) {
+      final d = now.subtract(Duration(days: count - 1 - i));
+      if (i == count - 1) return 'Today';
+      const names = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+      return names[(d.weekday - 1) % 7];
+    });
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: days
+          .map((d) => Text(
+                d,
+                style: AppTypography.labelSmall.copyWith(
+                  fontSize: 9,
+                  color: _kCharcoal.withAlpha(100),
+                  fontWeight: d == 'Today' ? FontWeight.w700 : FontWeight.w500,
+                ),
+              ))
+          .toList(),
     );
   }
 }
@@ -554,12 +800,9 @@ class _LogButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       width: double.infinity,
-      height: 52,
+      height: 48,
       child: ElevatedButton.icon(
         onPressed: () {
-          // Navigate to log temperature flow
-          // The home screen's bottom nav or modal handles this;
-          // for now we show a snack confirming tap.
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: const Text('Log temperature — coming soon!'),
@@ -571,18 +814,22 @@ class _LogButton extends StatelessWidget {
             ),
           );
         },
-        icon: const Icon(Icons.thermostat_rounded, size: 20),
-        label: Text(
+        icon: const Icon(Icons.add_rounded, size: 20),
+        label: const Text(
           'Log Temperature',
-          style: AppTypography.labelLarge,
+          style: TextStyle(
+            fontWeight: FontWeight.w800,
+            fontSize: 15,
+            letterSpacing: 0.2,
+          ),
         ),
         style: ElevatedButton.styleFrom(
           backgroundColor: _kAmberGold,
           foregroundColor: Colors.white,
           elevation: 0,
+          shadowColor: Colors.transparent,
           shape: RoundedRectangleBorder(
-              borderRadius: AppRadius.largeRadius),
-          textStyle: AppTypography.labelLarge,
+              borderRadius: BorderRadius.circular(12)),
         ),
       ),
     );
@@ -591,10 +838,16 @@ class _LogButton extends StatelessWidget {
 
 // ── Enums ─────────────────────────────────────────────────────────────────────
 
-enum _TempStatus { perfect, warm, cool }
+enum _TempStatus { perfect, warm, cool, tooHot, tooCold }
 
 // ── ThermometerPainter ────────────────────────────────────────────────────────
 
+/// Large thermometer CustomPainter:
+/// - Thick tube (40dp wide, full height)
+/// - Teal liquid with gradient fill
+/// - Green optimal zone overlay labelled "Optimal"
+/// - Tick marks every 2° on the right side of tube
+/// - Bulb at bottom with highlight
 class _ThermometerPainter extends CustomPainter {
   final double fillFraction; // 0.0 – 1.0
   final double optimalMin;
@@ -615,120 +868,137 @@ class _ThermometerPainter extends CustomPainter {
     final w = size.width;
     final h = size.height;
 
-    // ── Geometry constants ───────────────────────────────────────────────
-    const bulbRadius = 17.0;
-    const tubeHalfW = 8.0;
-    const tubeTopRadius = 8.0;
-    final bulbCy = h - bulbRadius - 2;
-    final tubePaddingBottom = bulbCy - bulbRadius - tubeHalfW;
-    final tubeTop = 14.0;
-    // Tube centre X
+    // ── Geometry ─────────────────────────────────────────────────────────
+    const bulbRadius = 20.0;
+    const tubeHalfW = 13.0;   // 26dp wide tube
+    const tubeTopRadius = 13.0;
+    const tubeTopPad = 16.0;
     final cx = w / 2;
+    final bulbCy = h - bulbRadius - 4;
+    final tubeBotY = bulbCy - bulbRadius - 2;
+    const tubeTopY = tubeTopPad;
+    final tubeUsable = tubeBotY - tubeTopY;
 
-    // ── Background shapes ────────────────────────────────────────────────
-
-    // Tube (outer — light grey)
-    final tubeOuterPaint = Paint()
-      ..color = _kCharcoal.withAlpha(18)
+    // ── Background fill (light grey tube) ────────────────────────────────
+    final bgPaint = Paint()
+      ..color = _kCharcoal.withAlpha(15)
       ..style = PaintingStyle.fill;
-    final tubeOuter = RRect.fromRectAndCorners(
-      Rect.fromLTWH(
-          cx - tubeHalfW - 2, tubeTop, (tubeHalfW + 2) * 2, tubePaddingBottom - tubeTop),
+
+    final tubeRect = RRect.fromRectAndCorners(
+      Rect.fromLTWH(cx - tubeHalfW, tubeTopY, tubeHalfW * 2, tubeBotY - tubeTopY),
       topLeft: const Radius.circular(tubeTopRadius),
       topRight: const Radius.circular(tubeTopRadius),
     );
-    canvas.drawRRect(tubeOuter, tubeOuterPaint);
+    canvas.drawRRect(tubeRect, bgPaint);
+    canvas.drawCircle(Offset(cx, bulbCy), bulbRadius, bgPaint);
 
-    // Bulb (outer — light grey)
-    canvas.drawCircle(
-      Offset(cx, bulbCy),
-      bulbRadius,
-      tubeOuterPaint,
-    );
-
-    // ── Optimal range zone on tube ───────────────────────────────────────
-    final zoneMinFrac =
-        (optimalMin - gaugeMin) / (gaugeMax - gaugeMin);
-    final zoneMaxFrac =
-        (optimalMax - gaugeMin) / (gaugeMax - gaugeMin);
-    final tubeUsable = tubePaddingBottom - tubeTop;
-    final zoneTop =
-        tubePaddingBottom - zoneMaxFrac * tubeUsable;
-    final zoneBottom =
-        tubePaddingBottom - zoneMinFrac * tubeUsable;
+    // ── Optimal zone overlay ──────────────────────────────────────────────
+    final zoneMinFrac = (optimalMin - gaugeMin) / (gaugeMax - gaugeMin);
+    final zoneMaxFrac = (optimalMax - gaugeMin) / (gaugeMax - gaugeMin);
+    final zoneTop = tubeBotY - zoneMaxFrac * tubeUsable;
+    final zoneBot = tubeBotY - zoneMinFrac * tubeUsable;
 
     final zonePaint = Paint()
       ..color = _kGreen.withAlpha(55)
       ..style = PaintingStyle.fill;
-    final zoneRect = RRect.fromRectAndCorners(
-      Rect.fromLTRB(
-          cx - tubeHalfW + 1, zoneTop, cx + tubeHalfW - 1, zoneBottom),
+    canvas.drawRRect(
+      RRect.fromRectAndCorners(
+        Rect.fromLTRB(cx - tubeHalfW + 2, zoneTop, cx + tubeHalfW - 2, zoneBot),
+      ),
+      zonePaint,
     );
-    canvas.drawRRect(zoneRect, zonePaint);
 
-    // ── Fill (teal liquid) ───────────────────────────────────────────────
-    final fillH = (tubePaddingBottom - tubeTop) * fillFraction;
-    final fillTop = tubePaddingBottom - fillH;
+    // "Optimal" label inside zone
+    final optTP = TextPainter(
+      text: TextSpan(
+        text: 'OPT',
+        style: TextStyle(
+          color: _kGreen.withAlpha(220),
+          fontSize: 7,
+          fontWeight: FontWeight.w700,
+        ),
+      ),
+      textDirection: TextDirection.ltr,
+    )..layout(maxWidth: tubeHalfW * 2 - 4);
+    optTP.paint(
+      canvas,
+      Offset(cx - optTP.width / 2, (zoneTop + zoneBot) / 2 - optTP.height / 2),
+    );
 
-    final liquidPaint = Paint()
-      ..color = _kTeal
-      ..style = PaintingStyle.fill;
+    // ── Liquid fill (teal gradient) ───────────────────────────────────────
+    final fillH = tubeUsable * fillFraction;
+    final fillTopY = tubeBotY - fillH;
 
     if (fillH > 0) {
-      final fillRRect = RRect.fromRectAndCorners(
-        Rect.fromLTRB(
-            cx - tubeHalfW + 1, fillTop, cx + tubeHalfW - 1, tubePaddingBottom),
-        topLeft: Radius.circular(fillH > 10 ? 6 : 0),
-        topRight: Radius.circular(fillH > 10 ? 6 : 0),
+      final liquidShader = LinearGradient(
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+        colors: [_kTealLight, _kTealDark],
+      ).createShader(Rect.fromLTRB(
+          cx - tubeHalfW + 2, fillTopY, cx + tubeHalfW - 2, tubeBotY));
+      final fillPaint = Paint()
+        ..shader = liquidShader
+        ..style = PaintingStyle.fill;
+
+      canvas.drawRRect(
+        RRect.fromRectAndCorners(
+          Rect.fromLTRB(
+              cx - tubeHalfW + 2, fillTopY, cx + tubeHalfW - 2, tubeBotY),
+          topLeft: Radius.circular(fillH > 10 ? 8 : 0),
+          topRight: Radius.circular(fillH > 10 ? 8 : 0),
+        ),
+        fillPaint,
       );
-      canvas.drawRRect(fillRRect, liquidPaint);
     }
 
-    // Bulb fill (always full teal when any temp present)
-    final bulbFillPaint = Paint()
-      ..color = fillFraction > 0 ? _kTeal : _kCharcoal.withAlpha(30)
-      ..style = PaintingStyle.fill;
-    canvas.drawCircle(Offset(cx, bulbCy), bulbRadius - 2, bulbFillPaint);
-
-    // Bulb highlight
+    // ── Bulb fill ─────────────────────────────────────────────────────────
     canvas.drawCircle(
-      Offset(cx - bulbRadius * 0.25, bulbCy - bulbRadius * 0.25),
-      bulbRadius * 0.22,
+      Offset(cx, bulbCy),
+      bulbRadius - 2,
       Paint()
-        ..color = Colors.white.withAlpha(120)
+        ..color = fillFraction > 0 ? _kTealDark : _kCharcoal.withAlpha(30)
+        ..style = PaintingStyle.fill,
+    );
+    // Bulb shine
+    canvas.drawCircle(
+      Offset(cx - bulbRadius * 0.28, bulbCy - bulbRadius * 0.28),
+      bulbRadius * 0.2,
+      Paint()
+        ..color = Colors.white.withAlpha(130)
         ..style = PaintingStyle.fill,
     );
 
-    // ── Tube outline stroke ──────────────────────────────────────────────
-    final outlinePaint = Paint()
-      ..color = _kCharcoal.withAlpha(40)
+    // ── Tube outline stroke ───────────────────────────────────────────────
+    final strokePaint = Paint()
+      ..color = _kCharcoal.withAlpha(45)
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.5;
-    canvas.drawRRect(tubeOuter, outlinePaint);
-    canvas.drawCircle(Offset(cx, bulbCy), bulbRadius, outlinePaint);
+      ..strokeWidth = 2.0;
+    canvas.drawRRect(tubeRect, strokePaint);
+    canvas.drawCircle(Offset(cx, bulbCy), bulbRadius, strokePaint);
 
-    // ── Tick marks on the tube ───────────────────────────────────────────
-    final tickPaint = Paint()
-      ..color = _kCharcoal.withAlpha(60)
-      ..strokeWidth = 1.2
-      ..strokeCap = StrokeCap.round;
-
+    // ── Tick marks (right side of tube) ──────────────────────────────────
     for (var t = gaugeMin; t <= gaugeMax; t += 2) {
       final frac = (t - gaugeMin) / (gaugeMax - gaugeMin);
-      final ty = tubePaddingBottom - frac * tubeUsable;
-      final isMajor = t % 4 == 0;
-      final tickLength = isMajor ? 7.0 : 4.0;
+      final ty = tubeBotY - frac * tubeUsable;
+      final isMajor = (t.toInt() % 4 == 0);
+      final tickLen = isMajor ? 6.0 : 4.0;
+      final tickPaint = Paint()
+        ..color = _kCharcoal.withAlpha(isMajor ? 90 : 55)
+        ..strokeWidth = isMajor ? 1.5 : 1.0
+        ..strokeCap = StrokeCap.round;
       canvas.drawLine(
         Offset(cx + tubeHalfW - 1, ty),
-        Offset(cx + tubeHalfW + tickLength - 1, ty),
-        tickPaint..strokeWidth = isMajor ? 1.5 : 1.0,
+        Offset(cx + tubeHalfW + tickLen, ty),
+        tickPaint,
       );
     }
   }
 
   @override
   bool shouldRepaint(covariant _ThermometerPainter old) =>
-      old.fillFraction != fillFraction;
+      old.fillFraction != fillFraction ||
+      old.optimalMin != optimalMin ||
+      old.optimalMax != optimalMax;
 }
 
 // ── SparklinePainter ──────────────────────────────────────────────────────────
@@ -746,35 +1016,45 @@ class _SparklinePainter extends CustomPainter {
     final maxV = data.reduce(math.max);
     final range = (maxV - minV).abs();
     final safeRange = range < 0.5 ? 1.0 : range;
+    const vPad = 6.0;
 
     double xOf(int i) => size.width * i / (data.length - 1);
-    double yOf(double v) =>
-        size.height - (size.height * (v - minV) / safeRange).clamp(4, size.height - 4);
+    double yOf(double v) {
+      final norm = (v - minV) / safeRange;
+      return size.height - vPad - norm * (size.height - vPad * 2);
+    }
 
-    // Fill
-    final fillPath = Path();
-    fillPath.moveTo(xOf(0), size.height);
+    // Filled area
+    final fillPath = Path()..moveTo(xOf(0), size.height);
     for (var i = 0; i < data.length; i++) {
-      fillPath.lineTo(xOf(i), yOf(data[i]));
+      final x0 = i == 0 ? xOf(0) : xOf(i - 1);
+      final y0 = i == 0 ? yOf(data[0]) : yOf(data[i - 1]);
+      final x1 = xOf(i);
+      final y1 = yOf(data[i]);
+      if (i == 0) {
+        fillPath.lineTo(x1, y1);
+      } else {
+        final cpx = (x0 + x1) / 2;
+        fillPath.cubicTo(cpx, y0, cpx, y1, x1, y1);
+      }
     }
     fillPath.lineTo(xOf(data.length - 1), size.height);
     fillPath.close();
+
     canvas.drawPath(
       fillPath,
       Paint()
         ..shader = LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
-          colors: [_kTeal.withAlpha(80), _kTeal.withAlpha(10)],
+          colors: [_kTeal.withAlpha(100), _kTeal.withAlpha(8)],
         ).createShader(Rect.fromLTWH(0, 0, size.width, size.height))
         ..style = PaintingStyle.fill,
     );
 
     // Line
-    final linePath = Path();
-    linePath.moveTo(xOf(0), yOf(data[0]));
+    final linePath = Path()..moveTo(xOf(0), yOf(data[0]));
     for (var i = 1; i < data.length; i++) {
-      // Smooth with simple catmull-rom shortcut
       final x0 = xOf(i - 1);
       final y0 = yOf(data[i - 1]);
       final x1 = xOf(i);
@@ -792,21 +1072,16 @@ class _SparklinePainter extends CustomPainter {
         ..strokeJoin = StrokeJoin.round,
     );
 
-    // Dots
+    // Dot markers
     for (var i = 0; i < data.length; i++) {
       canvas.drawCircle(
-        Offset(xOf(i), yOf(data[i])),
-        3.5,
-        Paint()..color = _kTealDark,
-      );
+          Offset(xOf(i), yOf(data[i])), 4.0, Paint()..color = _kTealDark);
       canvas.drawCircle(
-        Offset(xOf(i), yOf(data[i])),
-        2.0,
-        Paint()..color = Colors.white,
-      );
+          Offset(xOf(i), yOf(data[i])), 2.2, Paint()..color = Colors.white);
     }
   }
 
   @override
-  bool shouldRepaint(covariant _SparklinePainter old) => old.data != data;
+  bool shouldRepaint(covariant _SparklinePainter old) =>
+      old.data != data;
 }
