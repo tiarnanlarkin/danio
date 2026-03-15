@@ -60,8 +60,6 @@ class FishLoader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
     final fishColor = color ?? AppColors.primary;
 
     return Column(

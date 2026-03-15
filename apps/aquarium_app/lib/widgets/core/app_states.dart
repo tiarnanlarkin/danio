@@ -155,8 +155,6 @@ class AppEmptyState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
     final effectiveIconColor = iconColor ?? AppColors.primary;
     
     return Center(
@@ -505,9 +503,6 @@ class AppErrorState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-    
     return Center(
       child: Padding(
         padding: EdgeInsets.all(compact ? AppSpacing.md : AppSpacing.xl),

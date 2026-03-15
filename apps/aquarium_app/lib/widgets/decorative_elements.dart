@@ -17,9 +17,11 @@ class SoftBlob extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CustomPaint(
-      size: Size(size, size),
-      painter: _BlobPainter(color: color.withAlpha(38), seed: seed),
+    return ExcludeSemantics(
+      child: CustomPaint(
+        size: Size(size, size),
+        painter: _BlobPainter(color: color.withAlpha(38), seed: seed),
+      ),
     );
   }
 }

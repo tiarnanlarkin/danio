@@ -82,8 +82,6 @@ class _BubbleLoaderState extends State<BubbleLoader> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
     final bubbleColor = widget.color ?? AppColors.accent;
     
     return Semantics(

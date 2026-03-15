@@ -266,9 +266,6 @@ class AppBottomNavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-    
     return Container(
       decoration: BoxDecoration(
         color: backgroundColor ?? (context.surfaceColor),
@@ -321,8 +318,6 @@ class _NavBarItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
     final color = isSelected 
         ? AppColors.primary 
         : (context.textSecondary);
@@ -409,9 +404,6 @@ class AppSectionHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-    
     return Padding(
       padding: padding ?? EdgeInsets.fromLTRB(
         AppSpacing.md, AppSpacing.lg, AppSpacing.md, AppSpacing.sm,

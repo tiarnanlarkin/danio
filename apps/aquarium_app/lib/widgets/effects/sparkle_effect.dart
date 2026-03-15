@@ -108,7 +108,8 @@ class _SparkleEffectState extends State<SparkleEffect>
     final reduceMotion = MediaQuery.of(context).disableAnimations;
     if (reduceMotion) return widget.child;
 
-    return Stack(
+    return ExcludeSemantics(
+      child: Stack(
       children: [
         widget.child,
         if (widget.isActive)
@@ -129,6 +130,7 @@ class _SparkleEffectState extends State<SparkleEffect>
             ),
           ),
       ],
+    ),
     );
   }
 }

@@ -68,7 +68,8 @@ class _LightingPulseWrapperState extends ConsumerState<LightingPulseWrapper>
     }
     _wasWaterOpen = waterOpen;
 
-    return AnimatedBuilder(
+    return ExcludeSemantics(
+      child: AnimatedBuilder(
       animation: Listenable.merge([_warmPulse, _coolPulse]),
       builder: (context, _) {
         final warmValue = Curves.easeInOutSine.transform(_warmPulse.value);
@@ -102,6 +103,7 @@ class _LightingPulseWrapperState extends ConsumerState<LightingPulseWrapper>
 
         return child;
       },
+    ),
     );
   }
 }

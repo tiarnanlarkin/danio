@@ -116,12 +116,14 @@ class _RiveWaterEffectState extends State<RiveWaterEffect> {
       );
     }
 
-    return Opacity(
-      opacity: widget.opacity,
-      child: SizedBox(
-        width: widget.width,
-        height: widget.height,
-        child: child,
+    return ExcludeSemantics(
+      child: Opacity(
+        opacity: widget.opacity,
+        child: SizedBox(
+          width: widget.width,
+          height: widget.height,
+          child: child,
+        ),
       ),
     );
   }

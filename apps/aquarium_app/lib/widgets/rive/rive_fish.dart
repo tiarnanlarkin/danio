@@ -229,10 +229,12 @@ class _RiveFishState extends State<RiveFish> {
       );
     }
 
-    return SizedBox(
-      width: widget.size,
-      height: widget.size,
-      child: child,
+    return ExcludeSemantics(
+      child: SizedBox(
+        width: widget.size,
+        height: widget.size,
+        child: child,
+      ),
     );
   }
 }

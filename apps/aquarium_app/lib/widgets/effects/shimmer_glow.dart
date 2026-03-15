@@ -51,7 +51,8 @@ class _ShimmerGlowState extends State<ShimmerGlow>
 
     final color = widget.glowColor ?? AppColors.primary;
 
-    return AnimatedBuilder(
+    return ExcludeSemantics(
+      child: AnimatedBuilder(
       animation: _controller,
       builder: (context, child) {
         // Shimmer sweep: a semi-transparent gradient stripe that sweeps across.
@@ -92,6 +93,7 @@ class _ShimmerGlowState extends State<ShimmerGlow>
         );
       },
       child: widget.child,
+    ),
     );
   }
 }
