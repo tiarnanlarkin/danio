@@ -15,6 +15,7 @@ import '../services/achievement_service.dart';
 import '../services/notification_service.dart';
 import '../widgets/achievement_unlocked_dialog.dart';
 import '../main.dart'; // For navigatorKey
+import '../utils/debouncer.dart';
 import 'user_profile_provider.dart';
 import 'gems_provider.dart';
 
@@ -35,6 +36,10 @@ class AchievementProgressNotifier
 
   final Ref ref;
   static const _key = 'achievement_progress';
+
+  /// Debouncer collapses rapid successive saves (e.g. multiple achievement checks
+  /// in quick succession) into a single disk write after 500ms of inactivity.
+  final _saveDebouncer = Debouncer(delay: const Duration(milliseconds: 500));
 
   Future<void> _load() async {
     try {
@@ -62,18 +67,20 @@ class AchievementProgressNotifier
   }
 
   Future<void> _save() async {
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      final Map<String, dynamic> toSave = {};
+    _saveDebouncer.run(() async {
+      try {
+        final prefs = await SharedPreferences.getInstance();
+        final Map<String, dynamic> toSave = {};
 
-      state.forEach((key, value) {
-        toSave[key] = value.toJson();
-      });
+        state.forEach((key, value) {
+          toSave[key] = value.toJson();
+        });
 
-      await prefs.setString(_key, jsonEncode(toSave));
-    } catch (e) {
-      throw Exception('Failed to save achievement progress: $e');
-    }
+        await prefs.setString(_key, jsonEncode(toSave));
+      } catch (e) {
+        debugPrint('Failed to save achievement progress: $e');
+      }
+    });
   }
 
   /// Update progress for a single achievement

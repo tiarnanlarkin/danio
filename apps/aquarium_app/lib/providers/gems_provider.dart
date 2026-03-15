@@ -63,8 +63,8 @@ class GemsNotifier extends StateNotifier<AsyncValue<GemsState>> {
   static const _key = 'gems_state';
   static const _cumulativeKey = 'gems_cumulative';
   bool _spending = false;
-  int _cumulativeEarned = 0;
-  int _cumulativeSpent = 0;
+  final int _cumulativeEarned = 0;
+  final int _cumulativeSpent = 0;
 
   Future<void> _load() async {
     try {
@@ -170,10 +170,6 @@ class GemsNotifier extends StateNotifier<AsyncValue<GemsState>> {
       );
 
       await _save(updatedState);
-      // Update cumulative counter atomically
-      _cumulativeEarned += amount;
-      final prefs = await SharedPreferences.getInstance();
-      await _saveCumulative(prefs);
       state = AsyncValue.data(updatedState);
     } catch (e, st) {
       state = AsyncValue.error(e, st);
@@ -204,8 +200,7 @@ class GemsNotifier extends StateNotifier<AsyncValue<GemsState>> {
         return false;
       }
 
-      // Store original state for rollback
-      final originalState = current;
+      // Store original state for rollb      final originalState = current;
 
       try {
         final now = DateTime.now();
@@ -233,13 +228,9 @@ class GemsNotifier extends StateNotifier<AsyncValue<GemsState>> {
         // Atomic: save first, then update state
         // If save fails, state won't be updated (rollback)
         await _save(updatedState);
-        // Update cumulative counter atomically
-        _cumulativeSpent += amount;
-        final prefs = await SharedPreferences.getInstance();
-        await _saveCumulative(prefs);
         state = AsyncValue.data(updatedState);
         return true;
-      } catch (e, st) {
+      } catch (e) {
         // Rollback: restore original state
         state = AsyncValue.data(originalState);
         rethrow;
@@ -286,10 +277,6 @@ class GemsNotifier extends StateNotifier<AsyncValue<GemsState>> {
       );
 
       await _save(updatedState);
-      // Refund reverses a spend — reduce cumulative spent
-      _cumulativeSpent = (_cumulativeSpent - amount).clamp(0, _cumulativeSpent);
-      final prefs = await SharedPreferences.getInstance();
-      await _saveCumulative(prefs);
       state = AsyncValue.data(updatedState);
     } catch (e, st) {
       state = AsyncValue.error(e, st);
@@ -304,21 +291,28 @@ class GemsNotifier extends StateNotifier<AsyncValue<GemsState>> {
     return current.transactions.take(count).toList();
   }
 
-  /// Get total gems earned (all time) — uses persisted cumulative counter,
-  /// not truncated transaction history.
-  int get totalEarned => _cumulativeEarned;
+  /// Get total gems earned (all time)
+  int get totalEarned {
+    final current = state.value;
+    if (current == null) return 0;
+    return current.transactions
+        .where((t) => t.type == GemTransactionType.earn)
+        .fold(0, (sum, t) => sum + t.amount);
+  }
 
-  /// Get total gems spent (all time) — uses persisted cumulative counter,
-  /// not truncated transaction history.
-  int get totalSpent => _cumulativeSpent;
+  /// Get total gems spent (all time)
+  int get totalSpent {
+    final current = state.value;
+    if (current == null) return 0;
+    return current.transactions
+        .where((t) => t.type == GemTransactionType.spend)
+        .fold(0, (sum, t) => sum + t.amount.abs());
+  }
 
   /// Reset gems (for testing/debugging)
   Future<void> reset() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove(_key);
-    await prefs.remove(_cumulativeKey);
-    _cumulativeEarned = 0;
-    _cumulativeSpent = 0;
     await _load();
   }
 
@@ -357,10 +351,6 @@ class GemsNotifier extends StateNotifier<AsyncValue<GemsState>> {
       );
 
       await _save(updatedState);
-      // Grant counts as earned
-      _cumulativeEarned += amount;
-      final prefs = await SharedPreferences.getInstance();
-      await _saveCumulative(prefs);
       state = AsyncValue.data(updatedState);
     } catch (e, st) {
       state = AsyncValue.error(e, st);

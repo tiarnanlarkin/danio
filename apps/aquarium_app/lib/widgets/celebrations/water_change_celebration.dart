@@ -165,58 +165,58 @@ class _WaterChangeCelebrationState extends State<WaterChangeCelebration>
             ),
             // Center message
             Center(
-              child: AnimatedBuilder(
-                animation: _messageController,
-                builder: (context, child) {
-                  return Opacity(
-                    opacity: _messageFade.value,
-                    child: Transform.scale(
+              child: FadeTransition(
+                opacity: _messageFade,
+                child: AnimatedBuilder(
+                  animation: _messageScale,
+                  builder: (context, child) {
+                    return Transform.scale(
                       scale: _messageScale.value,
                       child: child,
+                    );
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.lg,
+                      vertical: AppSpacing.md,
                     ),
-                  );
-                },
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppSpacing.lg,
-                    vertical: AppSpacing.md,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Theme.of(context)
-                        .scaffoldBackgroundColor
-                        .withAlpha(230),
-                    borderRadius: AppRadius.largeRadius,
-                    boxShadow: [
-                      BoxShadow(
-                        color: AppColors.accent.withAlpha(40),
-                        blurRadius: 20,
-                        spreadRadius: 2,
-                      ),
-                    ],
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const Text(
-                        '\u{1F4A7}',
-                        style: TextStyle(fontSize: 40),
-                      ),
-                      const SizedBox(height: AppSpacing.sm),
-                      Text(
-                        'Fresh water!',
-                        style: AppTypography.headlineSmall.copyWith(
-                          color: AppColors.accent,
-                          fontWeight: FontWeight.bold,
+                    decoration: BoxDecoration(
+                      color: Theme.of(context)
+                          .scaffoldBackgroundColor
+                          .withAlpha(230),
+                      borderRadius: AppRadius.largeRadius,
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppColors.accent.withAlpha(40),
+                          blurRadius: 20,
+                          spreadRadius: 2,
                         ),
-                      ),
-                      const SizedBox(height: AppSpacing.xs),
-                      Text(
-                        'Your fish are happy \u{1F420}',
-                        style: AppTypography.bodyMedium.copyWith(
-                          color: context.textSecondary,
+                      ],
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Text(
+                          '\u{1F4A7}',
+                          style: TextStyle(fontSize: 40),
                         ),
-                      ),
-                    ],
+                        const SizedBox(height: AppSpacing.sm),
+                        Text(
+                          'Fresh water!',
+                          style: AppTypography.headlineSmall.copyWith(
+                            color: AppColors.accent,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(height: AppSpacing.xs),
+                        Text(
+                          'Your fish are happy \u{1F420}',
+                          style: AppTypography.bodyMedium.copyWith(
+                            color: context.textSecondary,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),

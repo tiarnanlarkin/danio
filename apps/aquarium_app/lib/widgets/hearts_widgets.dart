@@ -18,10 +18,9 @@ class HeartIndicator extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final profile = ref.watch(userProfileProvider).value;
-    if (profile == null) return const SizedBox.shrink();
+    final hearts = ref.watch(userProfileProvider.select((a) => a.value?.hearts));
+    if (hearts == null) return const SizedBox.shrink();
 
-    final hearts = profile.hearts;
     final maxHearts = HeartsConfig.maxHearts;
 
     // Compact mode: dark overlay style for use on scene backgrounds

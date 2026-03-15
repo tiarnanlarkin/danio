@@ -114,18 +114,20 @@ class _SparkleEffectState extends State<SparkleEffect>
         widget.child,
         if (widget.isActive)
           Positioned.fill(
-            child: IgnorePointer(
-              child: AnimatedBuilder(
-                animation: _controller,
-                builder: (context, child) {
-                  return CustomPaint(
-                    painter: _SparklePainter(
-                      particles: _particles,
-                      progress: _controller.value,
-                      color: widget.sparkleColor,
-                    ),
-                  );
-                },
+            child: RepaintBoundary(
+              child: IgnorePointer(
+                child: AnimatedBuilder(
+                  animation: _controller,
+                  builder: (context, child) {
+                    return CustomPaint(
+                      painter: _SparklePainter(
+                        particles: _particles,
+                        progress: _controller.value,
+                        color: widget.sparkleColor,
+                      ),
+                    );
+                  },
+                ),
               ),
             ),
           ),

@@ -84,6 +84,7 @@ class JourneyRevealScreen extends ConsumerWidget {
               child: Image.asset(
                 'assets/images/onboarding/onboarding_journey_bg.webp',
                 fit: BoxFit.cover,
+                cacheWidth: 800,
                 errorBuilder: (_, __, ___) => Container(
                   decoration: const BoxDecoration(
                     gradient: LinearGradient(

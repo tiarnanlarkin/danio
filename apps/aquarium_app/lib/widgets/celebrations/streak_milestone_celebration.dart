@@ -140,68 +140,69 @@ class _StreakMilestoneCelebrationState extends State<StreakMilestoneCelebration>
     }
 
     return IgnorePointer(
-      child: AnimatedBuilder(
-        animation: _controller,
-        builder: (context, child) {
-          return Opacity(
-            opacity: _fade.value,
-            child: Center(
+      child: FadeTransition(
+        opacity: _fade,
+        child: AnimatedBuilder(
+          animation: _scale,
+          builder: (context, child) {
+            return Center(
               child: Transform.scale(
                 scale: _scale.value,
-                child: Container(
-                  margin: const EdgeInsets.symmetric(horizontal: AppSpacing.xl),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppSpacing.lg,
-                    vertical: AppSpacing.lg2,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Theme.of(context)
-                        .scaffoldBackgroundColor
-                        .withAlpha(240),
-                    borderRadius: AppRadius.largeRadius,
-                    boxShadow: [
-                      BoxShadow(
-                        color: AppColors.primaryAlpha20,
-                        blurRadius: 30,
-                        spreadRadius: 5,
-                      ),
-                    ],
-                    border: Border.all(
-                      color: AppColors.primary.withAlpha(60),
-                      width: 2,
-                    ),
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        _emoji,
-                        style: const TextStyle(fontSize: 52),
-                      ),
-                      const SizedBox(height: AppSpacing.sm),
-                      Text(
-                        _message,
-                        style: AppTypography.headlineSmall.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.primary,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                      const SizedBox(height: AppSpacing.xs),
-                      Text(
-                        'Your fish appreciate the dedication!',
-                        style: AppTypography.bodyMedium.copyWith(
-                          color: context.textSecondary,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ],
-                  ),
+                child: child,
+              ),
+            );
+          },
+          child: Container(
+            margin: const EdgeInsets.symmetric(horizontal: AppSpacing.xl),
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.lg,
+              vertical: AppSpacing.lg2,
+            ),
+            decoration: BoxDecoration(
+              color: Theme.of(context)
+                  .scaffoldBackgroundColor
+                  .withAlpha(240),
+              borderRadius: AppRadius.largeRadius,
+              boxShadow: [
+                BoxShadow(
+                  color: AppColors.primaryAlpha20,
+                  blurRadius: 30,
+                  spreadRadius: 5,
                 ),
+              ],
+              border: Border.all(
+                color: AppColors.primary.withAlpha(60),
+                width: 2,
               ),
             ),
-          );
-        },
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  _emoji,
+                  style: const TextStyle(fontSize: 52),
+                ),
+                const SizedBox(height: AppSpacing.sm),
+                Text(
+                  _message,
+                  style: AppTypography.headlineSmall.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.primary,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: AppSpacing.xs),
+                Text(
+                  'Your fish appreciate the dedication!',
+                  style: AppTypography.bodyMedium.copyWith(
+                    color: context.textSecondary,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }

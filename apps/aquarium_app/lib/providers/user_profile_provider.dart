@@ -74,6 +74,8 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
       final toSave = _pendingSave;
       if (toSave == null) return;
       _pendingSave = null;
+      // Cap dailyXpHistory to last 365 days before persisting
+      _trimXpHistory(toSave);
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString(_key, jsonEncode(toSave.toJson()));
     });
@@ -84,8 +86,20 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
   Future<void> _saveImmediate(UserProfile profile) async {
     _pendingSave = null;
     _saveDebouncer.cancel();
+    // Cap dailyXpHistory to last 365 days before persisting
+    _trimXpHistory(profile);
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(_key, jsonEncode(profile.toJson()));
+  }
+
+  /// Remove dailyXpHistory entries older than 365 days to prevent unbounded growth.
+  void _trimXpHistory(UserProfile profile) {
+    if (profile.dailyXpHistory.length <= 365) return;
+    final cutoff = DateTime.now().subtract(const Duration(days: 365));
+    profile.dailyXpHistory.removeWhere((key, _) {
+      final date = DateTime.tryParse(key);
+      return date != null && date.isBefore(cutoff);
+    });
   }
 
   @override
