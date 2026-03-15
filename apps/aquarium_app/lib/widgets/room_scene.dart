@@ -568,15 +568,16 @@ class _CozyRoomPainter extends CustomPainter {
       const Radius.circular(12),  // softened from 8
     );
     
-    // Rug base — fixed warm colours (decoupled from theme)
+    // Double-border pattern: outer ring = rust-copper fill band, centre = rugBase
+    // Step 1: Fill whole rug with border band colour (#D88C6E / dark equivalent)
     canvas.drawRRect(
       rugRect,
       Paint()..color = _isDarkTheme 
-          ? const Color(0xFF8B4F3A)   // dark rust
-          : const Color(0xFFC4725A),  // persian rust
+          ? const Color(0xFF7A4A34)   // dark rust-copper band
+          : const Color(0xFFD88C6E),  // rust-copper band
     );
     
-    // Border fill band (between outer and inner borders)
+    // Step 2: Fill inner field with rugBase (covers centre, leaving border ring visible)
     final innerRect = RRect.fromRectAndRadius(
       Rect.fromLTWH(w * 0.05 + 8, floorTop + 16, w * 0.9 - 16, h * 0.12 - 16),
       const Radius.circular(8),
@@ -584,8 +585,8 @@ class _CozyRoomPainter extends CustomPainter {
     canvas.drawRRect(
       innerRect,
       Paint()..color = _isDarkTheme
-          ? const Color(0x4D8B5A40)   // muted terracotta at 30%
-          : const Color(0x66D4886A),  // warm terracotta at 40%
+          ? const Color(0xFF8B4F3A)   // dark rust (rugBaseDark)
+          : const Color(0xFFC4725A),  // persian rust (rugBase)
     );
     
     // Outer border
@@ -720,7 +721,7 @@ class _CozyRoomPainter extends CustomPainter {
     if (_isDarkTheme) {
       canvas.drawRRect(
         windowRect,
-        Paint()..color = const Color(0x0FFFE4B5),  // very subtle warm tint
+        Paint()..color = const Color(0x26FFE4B5),  // warm interior glow at 15% alpha
       );
     }
 
@@ -1141,12 +1142,9 @@ class _StandPainter extends CustomPainter {
     final w = size.width;
     final h = size.height;
 
-    final woodColor = _isDarkTheme
-        ? const Color(0xFF3D3228)
-        : const Color(0xD97A5C38);  // warmer, slightly more opaque
-    final woodHighlight = _isDarkTheme
-        ? const Color(0xFF4A3D30)
-        : const Color(0x80A67C00);
+    // Dark charcoal metal frame per §6.4 — NOT wood coloured
+    const woodColor = Color(0xFF2A2A2A);      // standPrimary charcoal
+    const woodHighlight = Color(0xFF404040);  // standHighlight
 
     // Stand top surface
     final topRect = RRect.fromRectAndRadius(
@@ -1876,47 +1874,6 @@ class _AnimatedSwimmingFishState extends State<_AnimatedSwimmingFish>
   }
 }
 
-class _SoftBubbles extends StatelessWidget {
-  final double height;
 
-  const _SoftBubbles({required this.height});
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: 30,
-      height: height,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          _Bubble(size: 10),
-          _Bubble(size: 7),
-          _Bubble(size: 12),
-          _Bubble(size: 6),
-          _Bubble(size: 9),
-        ],
-      ),
-    );
-  }
-}
-
-class _Bubble extends StatelessWidget {
-  final double size;
-
-  const _Bubble({required this.size});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: size,
-      height: size,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: AppOverlays.white40,
-        border: Border.all(color: AppOverlays.white60, width: 1),
-      ),
-    );
-  }
-}
 
 
