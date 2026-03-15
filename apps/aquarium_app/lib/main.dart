@@ -1,7 +1,10 @@
+import 'dart:ui' show PlatformDispatcher;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart' hide PerformanceOverlay;
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'providers/onboarding_provider.dart';
 import 'providers/settings_provider.dart';
 import 'providers/user_profile_provider.dart';
@@ -38,11 +41,28 @@ void main() async {
   // Disable runtime font fetching — use bundled/system fonts only
   GoogleFonts.config.allowRuntimeFetching = false;
 
-  // ROADMAP: Configure Firebase for push notifications and analytics — see docs/FIREBASE_SETUP_GUIDE.md
+  // Initialize Firebase — graceful fallback if google-services.json is missing
+  bool firebaseInitialized = false;
+  try {
+    await Firebase.initializeApp();
+    firebaseInitialized = true;
+    debugPrint('✅ Firebase initialized successfully');
+  } catch (e) {
+    debugPrint('⚠️ Firebase init failed (app will run without it): $e');
+  }
 
-  // Capture full Flutter framework errors to logcat for QA debugging.
-  // Remove before release or restrict to kDebugMode.
-  if (kDebugMode) {
+  // ── Error handling: debug vs release ──────────────────────────────────
+  if (kReleaseMode && firebaseInitialized) {
+    // Release mode: route errors to Crashlytics
+    FlutterError.onError =
+        FirebaseCrashlytics.instance.recordFlutterFatalError;
+
+    PlatformDispatcher.instance.onError = (error, stack) {
+      FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+      return true;
+    };
+  } else {
+    // Debug mode (or Firebase unavailable): log to console
     final originalOnError = FlutterError.onError;
     FlutterError.onError = (FlutterErrorDetails details) {
       debugPrint('========== FLUTTER ERROR ==========');
@@ -51,17 +71,16 @@ void main() async {
       debugPrint('===================================');
       originalOnError?.call(details);
     };
-  }
 
-  // Initialize global error handler
-  GlobalErrorHandler.initialize(
-    onError: (error, stack) {
-      // Log to console in debug mode
-      if (kDebugMode) {
-        debugPrint('Global error caught: $error\n$stack');
-      }
-    },
-  );
+    // Initialize global error handler for debug
+    GlobalErrorHandler.initialize(
+      onError: (error, stack) {
+        if (kDebugMode) {
+          debugPrint('Global error caught: $error\n$stack');
+        }
+      },
+    );
+  }
 
   // Lock orientation to portrait
   await SystemChrome.setPreferredOrientations([
