@@ -39,38 +39,43 @@ class TankHealthService {
     final factors = <String>[];
 
     // --- 1. Water change recency (35 points) ---
-    final waterChanges = logs
-        .where((l) => l.type == LogType.waterChange)
-        .toList()
-      ..sort((a, b) => b.timestamp.compareTo(a.timestamp));
+    final waterChanges =
+        logs.where((l) => l.type == LogType.waterChange).toList()
+          ..sort((a, b) => b.timestamp.compareTo(a.timestamp));
 
     int waterChangeScore;
     if (waterChanges.isEmpty) {
       waterChangeScore = 0;
       factors.add('No water changes logged yet');
     } else {
-      final daysSince =
-          now.difference(waterChanges.first.timestamp).inDays;
+      final daysSince = now.difference(waterChanges.first.timestamp).inDays;
       if (daysSince <= 7) {
         waterChangeScore = 35;
-        factors.add('Water changed ${daysSince == 0 ? "today" : "$daysSince days ago"}');
+        factors.add(
+          'Water changed ${daysSince == 0 ? "today" : "$daysSince days ago"}',
+        );
       } else if (daysSince <= 10) {
         waterChangeScore = 25;
         factors.add('Water change due — last one was $daysSince days ago');
       } else if (daysSince <= 14) {
         waterChangeScore = 15;
-        factors.add('Water change overdue — $daysSince days since the last one');
+        factors.add(
+          'Water change overdue — $daysSince days since the last one',
+        );
       } else {
         waterChangeScore = 5;
-        factors.add('Water change very overdue — $daysSince days and counting!');
+        factors.add(
+          'Water change very overdue — $daysSince days and counting!',
+        );
       }
     }
 
     // --- 2. Water parameter quality (40 points) ---
-    final waterTests = logs
-        .where((l) => l.type == LogType.waterTest && l.waterTest != null)
-        .toList()
-      ..sort((a, b) => b.timestamp.compareTo(a.timestamp));
+    final waterTests =
+        logs
+            .where((l) => l.type == LogType.waterTest && l.waterTest != null)
+            .toList()
+          ..sort((a, b) => b.timestamp.compareTo(a.timestamp));
 
     int paramScore;
     if (waterTests.isEmpty) {
@@ -78,13 +83,14 @@ class TankHealthService {
       factors.add('No water tests logged yet');
     } else {
       final latest = waterTests.first.waterTest!;
-      final daysSinceTest =
-          now.difference(waterTests.first.timestamp).inDays;
+      final daysSinceTest = now.difference(waterTests.first.timestamp).inDays;
 
       // Stale test penalty
       if (daysSinceTest > 14) {
         paramScore = 15;
-        factors.add('Last water test was $daysSinceTest days ago — time for a fresh one!');
+        factors.add(
+          'Last water test was $daysSinceTest days ago — time for a fresh one!',
+        );
       } else {
         int paramPoints = 0;
         int paramCount = 0;
@@ -98,7 +104,9 @@ class TankHealthService {
             paramPoints += 5;
             factors.add('Ammonia slightly elevated (${latest.ammonia} ppm)');
           } else {
-            factors.add('Ammonia at dangerous levels (${latest.ammonia} ppm) — act quickly!');
+            factors.add(
+              'Ammonia at dangerous levels (${latest.ammonia} ppm) — act quickly!',
+            );
           }
         }
 
@@ -111,7 +119,9 @@ class TankHealthService {
             paramPoints += 5;
             factors.add('Nitrite slightly elevated (${latest.nitrite} ppm)');
           } else {
-            factors.add('Nitrite at dangerous levels (${latest.nitrite} ppm) — act quickly!');
+            factors.add(
+              'Nitrite at dangerous levels (${latest.nitrite} ppm) — act quickly!',
+            );
           }
         }
 
@@ -161,8 +171,9 @@ class TankHealthService {
     // --- 3. Logging regularity (25 points) ---
     // How many logs in the last 30 days?
     final thirtyDaysAgo = now.subtract(const Duration(days: 30));
-    final recentLogs =
-        logs.where((l) => l.timestamp.isAfter(thirtyDaysAgo)).length;
+    final recentLogs = logs
+        .where((l) => l.timestamp.isAfter(thirtyDaysAgo))
+        .length;
 
     int regularityScore;
     if (recentLogs >= 12) {
@@ -219,18 +230,18 @@ class TankHealthService {
   /// Calculate water change streak (consecutive weeks with at least one
   /// water change logged).
   static int calculateWaterChangeStreak(List<LogEntry> logs) {
-    final waterChanges = logs
-        .where((l) => l.type == LogType.waterChange)
-        .toList()
-      ..sort((a, b) => b.timestamp.compareTo(a.timestamp));
+    final waterChanges =
+        logs.where((l) => l.type == LogType.waterChange).toList()
+          ..sort((a, b) => b.timestamp.compareTo(a.timestamp));
 
     if (waterChanges.isEmpty) return 0;
 
     final now = DateTime.now();
     // Normalise to Monday of this week
     final todayStart = DateTime(now.year, now.month, now.day);
-    final currentMonday =
-        todayStart.subtract(Duration(days: todayStart.weekday - 1));
+    final currentMonday = todayStart.subtract(
+      Duration(days: todayStart.weekday - 1),
+    );
 
     int streak = 0;
     var checkWeekMonday = currentMonday;
@@ -245,8 +256,7 @@ class TankHealthService {
 
       if (hasChangeThisWeek) {
         streak++;
-        checkWeekMonday =
-            checkWeekMonday.subtract(const Duration(days: 7));
+        checkWeekMonday = checkWeekMonday.subtract(const Duration(days: 7));
       } else {
         break;
       }

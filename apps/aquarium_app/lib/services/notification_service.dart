@@ -567,7 +567,11 @@ class NotificationService {
     } else {
       // Schedule for 10 AM on the day the water change is due
       scheduledDate = DateTime(
-        now.year, now.month, now.day + daysUntilReminder, 10, 0,
+        now.year,
+        now.month,
+        now.day + daysUntilReminder,
+        10,
+        0,
       );
     }
 

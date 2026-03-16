@@ -50,7 +50,10 @@ class _FriendComparisonScreenState
                   children: [
                     Icon(Icons.person_remove, color: AppColors.error),
                     SizedBox(width: AppSpacing.sm),
-                    Text('Remove Friend', style: TextStyle(color: AppColors.error)),
+                    Text(
+                      'Remove Friend',
+                      style: TextStyle(color: AppColors.error),
+                    ),
                   ],
                 ),
               ),
@@ -66,7 +69,9 @@ class _FriendComparisonScreenState
         ),
         data: (userProfile) {
           if (userProfile == null) {
-            return const Center(child: Text('Looks like your profile isn\'t set up yet'));
+            return const Center(
+              child: Text('Looks like your profile isn\'t set up yet'),
+            );
           }
 
           return SingleChildScrollView(
@@ -135,7 +140,9 @@ class _FriendComparisonScreenState
                       decoration: BoxDecoration(
                         color: isSelected
                             ? AppOverlays.primary20
-                            : Theme.of(context).colorScheme.surfaceContainerHighest,
+                            : Theme.of(
+                                context,
+                              ).colorScheme.surfaceContainerHighest,
                         shape: BoxShape.circle,
                         border: isSelected
                             ? Border.all(color: AppColors.primary, width: 2)
@@ -144,7 +151,9 @@ class _FriendComparisonScreenState
                       child: Center(
                         child: Text(
                           emoji,
-                          style: Theme.of(context).textTheme.headlineMedium?.copyWith(),
+                          style: Theme.of(
+                            context,
+                          ).textTheme.headlineMedium?.copyWith(),
                         ),
                       ),
                     ),
@@ -235,10 +244,14 @@ class _HeaderSection extends StatelessWidget {
             ),
           ),
           const SizedBox(width: AppSpacing.md),
-          Builder(builder: (context) => Text(
-            'VS',
-            style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
-          )),
+          Builder(
+            builder: (context) => Text(
+              'VS',
+              style: Theme.of(
+                context,
+              ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+            ),
+          ),
           const SizedBox(width: AppSpacing.md),
           Expanded(
             child: _UserCard(
@@ -282,12 +295,17 @@ class _UserCard extends StatelessWidget {
               radius: 30,
               backgroundColor: (isUser ? AppColors.primary : AppColors.primary)
                   .withAlpha(51),
-              child: Text(emoji, style: Theme.of(context).textTheme.headlineMedium?.copyWith()),
+              child: Text(
+                emoji,
+                style: Theme.of(context).textTheme.headlineMedium?.copyWith(),
+              ),
             ),
             const SizedBox(height: AppSpacing.sm),
             Text(
               name,
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+              style: Theme.of(
+                context,
+              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: AppSpacing.xs),
@@ -299,9 +317,9 @@ class _UserCard extends StatelessWidget {
               ),
               child: Text(
                 level,
-                style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
+                style: Theme.of(
+                  context,
+                ).textTheme.labelSmall?.copyWith(fontWeight: FontWeight.bold),
               ),
             ),
             const SizedBox(height: AppSpacing.sm),
@@ -312,9 +330,9 @@ class _UserCard extends StatelessWidget {
                 const SizedBox(width: AppSpacing.xs),
                 Text(
                   '$xp XP',
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
                 ),
               ],
             ),
@@ -373,10 +391,14 @@ class _StatsComparisonSection extends StatelessWidget {
       children: [
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
-          child: Builder(builder: (context) => Text(
-            'Stats Comparison',
-            style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
-          )),
+          child: Builder(
+            builder: (context) => Text(
+              'Stats Comparison',
+              style: Theme.of(
+                context,
+              ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+            ),
+          ),
         ),
         const SizedBox(height: AppSpacing.sm2),
         ...stats.map((stat) {
@@ -430,9 +452,9 @@ class _StatComparisonRow extends StatelessWidget {
               const SizedBox(width: AppSpacing.sm),
               Text(
                 label,
-                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                  fontWeight: FontWeight.w600,
-                ),
+                style: Theme.of(
+                  context,
+                ).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w600),
               ),
             ],
           ),
@@ -445,7 +467,11 @@ class _StatComparisonRow extends StatelessWidget {
                   textAlign: TextAlign.left,
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.bold,
-                    color: winner == 'user' ? AppColors.success : Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+                    color: winner == 'user'
+                        ? AppColors.success
+                        : Theme.of(
+                            context,
+                          ).colorScheme.onSurface.withOpacity(0.6),
                   ),
                 ),
               ),
@@ -479,7 +505,11 @@ class _StatComparisonRow extends StatelessWidget {
                   textAlign: TextAlign.right,
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.bold,
-                    color: winner == 'friend' ? AppColors.success : Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+                    color: winner == 'friend'
+                        ? AppColors.success
+                        : Theme.of(
+                            context,
+                          ).colorScheme.onSurface.withOpacity(0.6),
                   ),
                 ),
               ),
@@ -508,10 +538,14 @@ class _ProgressChartSection extends StatelessWidget {
       children: [
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
-          child: Builder(builder: (context) => Text(
-            'Weekly Progress',
-            style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
-          )),
+          child: Builder(
+            builder: (context) => Text(
+              'Weekly Progress',
+              style: Theme.of(
+                context,
+              ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+            ),
+          ),
         ),
         const SizedBox(height: AppSpacing.sm2),
         Container(
@@ -521,7 +555,9 @@ class _ProgressChartSection extends StatelessWidget {
           decoration: BoxDecoration(
             color: Theme.of(context).colorScheme.surfaceContainerLowest,
             borderRadius: AppRadius.mediumRadius,
-            border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
+            border: Border.all(
+              color: Theme.of(context).colorScheme.outlineVariant,
+            ),
           ),
           child: _buildChart(context),
         ),
@@ -543,7 +579,8 @@ class _ProgressChartSection extends StatelessWidget {
 
       // Use real user data if available, otherwise mock
       final userXp = userProfile.dailyXpHistory[dateKey] ?? random.nextInt(100);
-      final friendXp = 20 + Random(friend.id.hashCode + i).nextInt(80); // Deterministic mock
+      final friendXp =
+          20 + Random(friend.id.hashCode + i).nextInt(80); // Deterministic mock
 
       userSpots.add(FlSpot((6 - i).toDouble(), userXp.toDouble()));
       friendSpots.add(FlSpot((6 - i).toDouble(), friendXp.toDouble()));
@@ -556,7 +593,10 @@ class _ProgressChartSection extends StatelessWidget {
           drawVerticalLine: false,
           horizontalInterval: 50,
           getDrawingHorizontalLine: (value) {
-            return FlLine(color: Theme.of(context).colorScheme.outlineVariant, strokeWidth: 1);
+            return FlLine(
+              color: Theme.of(context).colorScheme.outlineVariant,
+              strokeWidth: 1,
+            );
           },
         ),
         titlesData: FlTitlesData(
@@ -616,10 +656,7 @@ class _ProgressChartSection extends StatelessWidget {
             barWidth: 3,
             isStrokeCapRound: true,
             dotData: const FlDotData(show: true),
-            belowBarData: BarAreaData(
-              show: true,
-              color: AppOverlays.blue10,
-            ),
+            belowBarData: BarAreaData(show: true, color: AppOverlays.blue10),
           ),
           // Friend line (secondary color)
           LineChartBarData(
@@ -629,10 +666,7 @@ class _ProgressChartSection extends StatelessWidget {
             barWidth: 3,
             isStrokeCapRound: true,
             dotData: const FlDotData(show: true),
-            belowBarData: BarAreaData(
-              show: true,
-              color: AppOverlays.orange10,
-            ),
+            belowBarData: BarAreaData(show: true, color: AppOverlays.orange10),
           ),
         ],
       ),
@@ -654,10 +688,14 @@ class _AchievementsSection extends StatelessWidget {
       children: [
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
-          child: Builder(builder: (context) => Text(
-            'Achievements',
-            style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
-          )),
+          child: Builder(
+            builder: (context) => Text(
+              'Achievements',
+              style: Theme.of(
+                context,
+              ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+            ),
+          ),
         ),
         const SizedBox(height: AppSpacing.sm2),
         Padding(
@@ -717,7 +755,9 @@ class _AchievementCard extends StatelessWidget {
             const SizedBox(height: AppSpacing.xs),
             Text(
               title,
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(color: context.textHint),
+              style: Theme.of(
+                context,
+              ).textTheme.bodySmall?.copyWith(color: context.textHint),
               textAlign: TextAlign.center,
             ),
           ],

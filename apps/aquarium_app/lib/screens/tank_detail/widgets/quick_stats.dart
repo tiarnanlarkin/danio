@@ -73,18 +73,28 @@ class QuickStats extends StatelessWidget {
               const SizedBox(height: AppSpacing.md),
               // Water change indicator
               logsAsync.when(
-                loading: () => const _WaterChangeIndicator(label: '...', isOverdue: false),
+                loading: () =>
+                    const _WaterChangeIndicator(label: '...', isOverdue: false),
                 error: (_, __) => Padding(
-                    padding: const EdgeInsets.all(AppSpacing.sm),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(Icons.info_outline, size: 14, color: AppColors.warning),
-                        const SizedBox(width: AppSpacing.xs),
-                        Text('Unable to load', style: Theme.of(context).textTheme.bodySmall?.copyWith(color: AppColors.warning)),
-                      ],
-                    ),
+                  padding: const EdgeInsets.all(AppSpacing.sm),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Icons.info_outline,
+                        size: 14,
+                        color: AppColors.warning,
+                      ),
+                      const SizedBox(width: AppSpacing.xs),
+                      Text(
+                        'Unable to load',
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: AppColors.warning,
+                        ),
+                      ),
+                    ],
                   ),
+                ),
                 data: (logs) {
                   final lastChange = logs
                       .where((l) => l.type == LogType.waterChange)
@@ -95,13 +105,15 @@ class QuickStats extends StatelessWidget {
                       isOverdue: true,
                     );
                   }
-                  final days = DateTime.now().difference(lastChange.timestamp).inDays;
+                  final days = DateTime.now()
+                      .difference(lastChange.timestamp)
+                      .inDays;
                   final isOverdue = days > 7;
                   final label = days == 0
                       ? 'Last water change: Today'
                       : days == 1
-                          ? 'Last water change: Yesterday'
-                          : 'Last water change: $days days ago';
+                      ? 'Last water change: Yesterday'
+                      : 'Last water change: $days days ago';
                   return _WaterChangeIndicator(
                     label: label,
                     isOverdue: isOverdue,
@@ -128,15 +140,14 @@ class QuickStats extends StatelessWidget {
       chips.add(_CountChip(icon: Icons.set_meal, label: '$fishCount fish'));
     }
     if (equipCount != null) {
-      chips.add(_CountChip(icon: Icons.filter_alt, label: '$equipCount equipment'));
+      chips.add(
+        _CountChip(icon: Icons.filter_alt, label: '$equipCount equipment'),
+      );
     }
 
     if (chips.isEmpty) return const SizedBox.shrink();
 
-    return Wrap(
-      spacing: AppSpacing.sm,
-      children: chips,
-    );
+    return Wrap(spacing: AppSpacing.sm, children: chips);
   }
 
   String _formatAgeLong(DateTime date) {
@@ -176,9 +187,7 @@ class _WaterChangeIndicator extends StatelessWidget {
         vertical: AppSpacing.sm,
       ),
       decoration: BoxDecoration(
-        color: isOverdue
-            ? AppColors.warningAlpha12
-            : AppColors.successAlpha12,
+        color: isOverdue ? AppColors.warningAlpha12 : AppColors.successAlpha12,
         borderRadius: AppRadius.mediumRadius,
       ),
       child: Row(

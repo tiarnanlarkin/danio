@@ -108,10 +108,10 @@ class GemsNotifier extends StateNotifier<AsyncValue<GemsState>> {
   }
 
   Future<void> _saveCumulative(SharedPreferences prefs) async {
-    await prefs.setString(_cumulativeKey, jsonEncode({
-      'earned': _cumulativeEarned,
-      'spent': _cumulativeSpent,
-    }));
+    await prefs.setString(
+      _cumulativeKey,
+      jsonEncode({'earned': _cumulativeEarned, 'spent': _cumulativeSpent}),
+    );
   }
 
   Future<void> _save(GemsState gemsState) async {

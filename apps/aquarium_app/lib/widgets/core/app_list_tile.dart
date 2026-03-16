@@ -3,10 +3,10 @@ import 'package:flutter/services.dart';
 import '../../theme/app_theme.dart';
 
 /// A unified list tile component for all list contexts.
-/// 
+///
 /// Consolidates 35+ inline list item variants into a single, flexible component.
 /// Provides consistent spacing, accessibility, and optional swipe actions.
-/// 
+///
 /// Example:
 /// ```dart
 /// AppListTile(
@@ -20,55 +20,55 @@ import '../../theme/app_theme.dart';
 class AppListTile extends StatefulWidget {
   /// Primary text
   final String title;
-  
+
   /// Secondary text (optional)
   final String? subtitle;
-  
+
   /// Tertiary text or metadata (optional)
   final String? meta;
-  
+
   /// Leading widget (icon, avatar, image)
   final Widget? leading;
-  
+
   /// Trailing widget (icon, badge, switch)
   final Widget? trailing;
-  
+
   /// Called when tile is tapped
   final VoidCallback? onTap;
-  
+
   /// Called when tile is long-pressed
   final VoidCallback? onLongPress;
-  
+
   /// Whether the tile is in a selected state
   final bool isSelected;
-  
+
   /// Whether the tile is disabled
   final bool isDisabled;
-  
+
   /// Whether to use destructive styling (for delete actions)
   final bool isDestructive;
-  
+
   /// Minimum height (defaults to 56dp for accessibility)
   final double? minHeight;
-  
+
   /// Custom padding
   final EdgeInsets? padding;
-  
+
   /// Background color
   final Color? backgroundColor;
-  
+
   /// Selected background color
   final Color? selectedColor;
-  
+
   /// Content padding between elements
   final double? contentSpacing;
-  
+
   /// Whether to show a divider below
   final bool showDivider;
-  
+
   /// Dense mode (reduced vertical padding)
   final bool dense;
-  
+
   /// Enable haptic feedback
   final bool enableHaptics;
 
@@ -101,8 +101,9 @@ class AppListTile extends StatefulWidget {
 class _AppListTileState extends State<AppListTile> {
   bool _isPressed = false;
 
-  bool get _isInteractive => 
-      (widget.onTap != null || widget.onLongPress != null) && !widget.isDisabled;
+  bool get _isInteractive =>
+      (widget.onTap != null || widget.onLongPress != null) &&
+      !widget.isDisabled;
 
   void _handleTapDown(TapDownDetails details) {
     if (_isInteractive) {
@@ -136,14 +137,16 @@ class _AppListTileState extends State<AppListTile> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
-    
-    final effectivePadding = widget.padding ?? EdgeInsets.symmetric(
-      horizontal: AppSpacing.md,
-      vertical: widget.dense ? AppSpacing.sm : AppSpacing.md,
-    );
-    
+
+    final effectivePadding =
+        widget.padding ??
+        EdgeInsets.symmetric(
+          horizontal: AppSpacing.md,
+          vertical: widget.dense ? AppSpacing.sm : AppSpacing.md,
+        );
+
     final spacing = widget.contentSpacing ?? AppSpacing.md;
-    
+
     // Determine colors
     Color? bgColor;
     if (widget.isSelected) {
@@ -157,8 +160,8 @@ class _AppListTileState extends State<AppListTile> {
     final titleColor = widget.isDisabled
         ? (context.textHint)
         : widget.isDestructive
-            ? AppColors.error
-            : (context.textPrimary);
+        ? AppColors.error
+        : (context.textPrimary);
 
     final subtitleColor = widget.isDisabled
         ? (context.textHint).withAlpha(153)
@@ -184,7 +187,9 @@ class _AppListTileState extends State<AppListTile> {
                   widget.title,
                   style: AppTypography.bodyLarge.copyWith(
                     color: titleColor,
-                    fontWeight: widget.isSelected ? FontWeight.w600 : FontWeight.normal,
+                    fontWeight: widget.isSelected
+                        ? FontWeight.w600
+                        : FontWeight.normal,
                   ),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
@@ -193,7 +198,9 @@ class _AppListTileState extends State<AppListTile> {
                   const SizedBox(height: AppSpacing.xs),
                   Text(
                     widget.subtitle!,
-                    style: AppTypography.bodySmall.copyWith(color: subtitleColor),
+                    style: AppTypography.bodySmall.copyWith(
+                      color: subtitleColor,
+                    ),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -258,7 +265,7 @@ class _AppListTileState extends State<AppListTile> {
 
   Widget _buildLeading(bool isDark) {
     if (widget.leading == null) return const SizedBox.shrink();
-    
+
     // Apply consistent styling to icon widgets
     if (widget.leading is Icon) {
       final icon = widget.leading as Icon;
@@ -268,11 +275,11 @@ class _AppListTileState extends State<AppListTile> {
         color: widget.isDisabled
             ? (context.textHint)
             : widget.isDestructive
-                ? AppColors.error
-                : (icon.color ?? (context.textSecondary)),
+            ? AppColors.error
+            : (icon.color ?? (context.textSecondary)),
       );
     }
-    
+
     return widget.leading!;
   }
 }
@@ -300,15 +307,23 @@ class AppListSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
-    
+
     return Padding(
-      padding: margin ?? const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.sm),
+      padding:
+          margin ??
+          const EdgeInsets.symmetric(
+            horizontal: AppSpacing.md,
+            vertical: AppSpacing.sm,
+          ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           if (header != null) ...[
             Padding(
-              padding: const EdgeInsets.only(left: AppSpacing.xs, bottom: AppSpacing.sm),
+              padding: const EdgeInsets.only(
+                left: AppSpacing.xs,
+                bottom: AppSpacing.sm,
+              ),
               child: Text(
                 header!.toUpperCase(),
                 style: AppTypography.labelSmall.copyWith(
@@ -331,7 +346,10 @@ class AppListSection extends StatelessWidget {
             _buildChildren(isDark, context),
           if (footer != null) ...[
             Padding(
-              padding: const EdgeInsets.only(left: AppSpacing.xs, top: AppSpacing.sm),
+              padding: const EdgeInsets.only(
+                left: AppSpacing.xs,
+                top: AppSpacing.sm,
+              ),
               child: Text(
                 footer!,
                 style: AppTypography.bodySmall.copyWith(
@@ -349,7 +367,7 @@ class AppListSection extends StatelessWidget {
     if (!showDividers) {
       return Column(children: children);
     }
-    
+
     return Column(
       children: [
         for (int i = 0; i < children.length; i++) ...[
@@ -395,10 +413,7 @@ class NavListTile extends StatelessWidget {
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          if (badge != null) ...[
-            badge!,
-            const SizedBox(width: AppSpacing.sm),
-          ],
+          if (badge != null) ...[badge!, const SizedBox(width: AppSpacing.sm)],
           Icon(
             Icons.chevron_right,
             color: Theme.of(context).brightness == Brightness.dark

@@ -11,14 +11,10 @@ import 'package:flutter/material.dart';
 import 'package:rive/rive.dart';
 
 /// Types of Rive fish available
-enum RiveFishType {
-  puffer,
-  joystick,
-  emotional,
-}
+enum RiveFishType { puffer, joystick, emotional }
 
 /// A widget that displays animated Rive fish
-/// 
+///
 /// Supports multiple fish types with interactive behaviors:
 /// - Puffer: Inflates/deflates on tap
 /// - Joystick: Eyes track interaction, blinks
@@ -46,7 +42,7 @@ class RiveFish extends StatefulWidget {
 class _RiveFishState extends State<RiveFish> {
   Artboard? _artboard;
   StateMachineController? _controller;
-  
+
   // State machine inputs for interaction
   SMITrigger? _tapTrigger;
   SMIBool? _hoverInput;
@@ -74,7 +70,7 @@ class _RiveFishState extends State<RiveFish> {
     try {
       final file = await RiveFile.asset(_assetPath);
       final artboard = file.mainArtboard.instance();
-      
+
       // Try common state machine names
       final stateMachineNames = [
         'State Machine 1',
@@ -84,18 +80,18 @@ class _RiveFishState extends State<RiveFish> {
         'SM',
         'state_machine',
       ];
-      
+
       StateMachineController? controller;
       for (final name in stateMachineNames) {
         controller = StateMachineController.fromArtboard(artboard, name);
         if (controller != null) break;
       }
-      
+
       if (controller != null) {
         artboard.addController(controller);
         _setupInputs(controller);
       }
-      
+
       if (mounted) {
         setState(() {
           _artboard = artboard;
@@ -109,7 +105,15 @@ class _RiveFishState extends State<RiveFish> {
 
   void _setupInputs(StateMachineController controller) {
     // Common trigger names for tap interactions
-    final triggerNames = ['Tap', 'tap', 'Click', 'click', 'Trigger', 'inflate', 'Inflate'];
+    final triggerNames = [
+      'Tap',
+      'tap',
+      'Click',
+      'click',
+      'Trigger',
+      'inflate',
+      'Inflate',
+    ];
     for (final name in triggerNames) {
       final input = controller.findInput<bool>(name);
       if (input is SMITrigger) {
@@ -117,7 +121,7 @@ class _RiveFishState extends State<RiveFish> {
         break;
       }
     }
-    
+
     // Common bool names for hover
     final hoverNames = ['Hover', 'hover', 'isHover', 'IsHover', 'over'];
     for (final name in hoverNames) {
@@ -127,11 +131,11 @@ class _RiveFishState extends State<RiveFish> {
         break;
       }
     }
-    
+
     // Number inputs for position tracking (joystick/emotional fish)
     final xNames = ['X', 'x', 'posX', 'PosX', 'mouseX'];
     final yNames = ['Y', 'y', 'posY', 'PosY', 'mouseY'];
-    
+
     for (final name in xNames) {
       final input = controller.findInput<double>(name);
       if (input is SMINumber) {
@@ -139,7 +143,7 @@ class _RiveFishState extends State<RiveFish> {
         break;
       }
     }
-    
+
     for (final name in yNames) {
       final input = controller.findInput<double>(name);
       if (input is SMINumber) {
@@ -161,9 +165,11 @@ class _RiveFishState extends State<RiveFish> {
   void _onPointerMove(PointerEvent event, BoxConstraints constraints) {
     if (_xInput != null || _yInput != null) {
       // Normalize position to -1 to 1 range (common for Rive inputs)
-      final normalizedX = (event.localPosition.dx / constraints.maxWidth) * 2 - 1;
-      final normalizedY = (event.localPosition.dy / constraints.maxHeight) * 2 - 1;
-      
+      final normalizedX =
+          (event.localPosition.dx / constraints.maxWidth) * 2 - 1;
+      final normalizedY =
+          (event.localPosition.dy / constraints.maxHeight) * 2 - 1;
+
       // Some Rive files use 0-100 range instead
       _xInput?.value = normalizedX * 100;
       _yInput?.value = normalizedY * 100;
@@ -180,10 +186,7 @@ class _RiveFishState extends State<RiveFish> {
   Widget build(BuildContext context) {
     if (_artboard == null) {
       // Loading placeholder - transparent to not show loading spinners everywhere
-      return SizedBox(
-        width: widget.size,
-        height: widget.size,
-      );
+      return SizedBox(width: widget.size, height: widget.size);
     }
 
     Widget child = LayoutBuilder(
@@ -212,10 +215,7 @@ class _RiveFishState extends State<RiveFish> {
 
     // Apply horizontal flip if needed
     if (widget.flipHorizontal) {
-      child = Transform.scale(
-        scaleX: -1,
-        child: child,
-      );
+      child = Transform.scale(scaleX: -1, child: child);
     }
 
     // Apply tint if specified
@@ -230,17 +230,13 @@ class _RiveFishState extends State<RiveFish> {
     }
 
     return ExcludeSemantics(
-      child: SizedBox(
-        width: widget.size,
-        height: widget.size,
-        child: child,
-      ),
+      child: SizedBox(width: widget.size, height: widget.size, child: child),
     );
   }
 }
 
 /// A positioned Rive fish that can swim around the tank
-/// 
+///
 /// Use this for placing multiple fish at specific positions
 class PositionedRiveFish extends StatefulWidget {
   final RiveFishType fishType;
@@ -272,20 +268,16 @@ class _PositionedRiveFishState extends State<PositionedRiveFish>
   @override
   void initState() {
     super.initState();
-    
+
     if (widget.swimAnimation) {
       _swimController = AnimationController(
         vsync: this,
         duration: widget.swimDuration,
       )..repeat(reverse: true);
-      
-      _swimAnimation = Tween<double>(
-        begin: -10,
-        end: 10,
-      ).animate(CurvedAnimation(
-        parent: _swimController,
-        curve: AppCurves.standard,
-      ));
+
+      _swimAnimation = Tween<double>(begin: -10, end: 10).animate(
+        CurvedAnimation(parent: _swimController, curve: AppCurves.standard),
+      );
     } else {
       _swimController = AnimationController(vsync: this);
       _swimAnimation = const AlwaysStoppedAnimation(0);

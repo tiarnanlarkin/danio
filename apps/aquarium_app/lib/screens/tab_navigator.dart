@@ -87,195 +87,194 @@ class _TabNavigatorState extends ConsumerState<TabNavigator>
   @override
   Widget build(BuildContext context) {
     final currentTab = ref.watch(currentTabProvider);
-    final dueCardsCount = ref.watch(spacedRepetitionProvider.select((s) => s.stats.dueCards));
+    final dueCardsCount = ref.watch(
+      spacedRepetitionProvider.select((s) => s.stats.dueCards),
+    );
 
     return StreakMilestoneListener(
       child: LevelUpListener(
-      child: PopScope(
-        canPop: false,
-        onPopInvokedWithResult: (bool didPop, _) async {
-          if (didPop) return;
+        child: PopScope(
+          canPop: false,
+          onPopInvokedWithResult: (bool didPop, _) async {
+            if (didPop) return;
 
-          // Check if current tab has screens in its stack
-          final currentNavigator = _navigatorKeys[currentTab].currentState;
-          if (currentNavigator != null && currentNavigator.canPop()) {
-            // Defer pop to next frame to avoid accessing a deactivating element's
-            // ancestor during NavigatorState._cancelActivePointers (lifecycle assertion)
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              if (currentNavigator.canPop()) {
-                currentNavigator.pop();
-              }
-            });
-            return;
-          }
+            // Check if current tab has screens in its stack
+            final currentNavigator = _navigatorKeys[currentTab].currentState;
+            if (currentNavigator != null && currentNavigator.canPop()) {
+              // Defer pop to next frame to avoid accessing a deactivating element's
+              // ancestor during NavigatorState._cancelActivePointers (lifecycle assertion)
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                if (currentNavigator.canPop()) {
+                  currentNavigator.pop();
+                }
+              });
+              return;
+            }
 
-          // At tab root - implement double-back-to-exit
-          final now = DateTime.now();
-          if (_lastBackPress == null ||
-              now.difference(_lastBackPress!) > const Duration(seconds: 2)) {
-            // First back press - show toast
-            _lastBackPress = now;
-            _scaffoldMessenger.showSnackBar(
-              const SnackBar(
-                content: Text('Tap back once more to leave'),
-                duration: Duration(seconds: 2),
-                behavior: SnackBarBehavior.floating,
-              ),
-            );
-            return;
-          }
-
-          // Second back press within 2 seconds - exit app
-          SystemNavigator.pop();
-        },
-        child: Scaffold(
-          body: Stack(
-            children: [
-              // === Main Tab Content ===
-              // Each tab has its own Navigator to preserve state
-              // Wrapped in FadeTransition for smooth tab switching
-              FadeTransition(
-                opacity: _fadeAnimation,
-                child: IndexedStack(
-                  index: currentTab,
-                  children: [
-                    // Tab 0: Learn
-                    Navigator(
-                      key: _navigatorKeys[0],
-                      onGenerateRoute: (settings) {
-                        return MaterialPageRoute(
-                          builder: (context) => const LearnScreen(),
-                          settings: settings,
-                        );
-                      },
-                    ),
-                    // Tab 1: Quiz/Practice
-                    Navigator(
-                      key: _navigatorKeys[1],
-                      onGenerateRoute: (settings) {
-                        return MaterialPageRoute(
-                          builder: (context) => const PracticeHubScreen(),
-                          settings: settings,
-                        );
-                      },
-                    ),
-                    // Tab 2: Tank
-                    Navigator(
-                      key: _navigatorKeys[2],
-                      onGenerateRoute: (settings) {
-                        return MaterialPageRoute(
-                          builder: (context) => const HomeScreen(),
-                          settings: settings,
-                        );
-                      },
-                    ),
-                    // Tab 3: Smart
-                    Navigator(
-                      key: _navigatorKeys[3],
-                      onGenerateRoute: (settings) {
-                        return MaterialPageRoute(
-                          builder: (context) => const SmartScreen(),
-                          settings: settings,
-                        );
-                      },
-                    ),
-                    // Tab 4: Settings
-                    Navigator(
-                      key: _navigatorKeys[4],
-                      onGenerateRoute: (settings) {
-                        return MaterialPageRoute(
-                          builder: (context) => const SettingsHubScreen(),
-                          settings: settings,
-                        );
-                      },
-                    ),
-                  ],
+            // At tab root - implement double-back-to-exit
+            final now = DateTime.now();
+            if (_lastBackPress == null ||
+                now.difference(_lastBackPress!) > const Duration(seconds: 2)) {
+              // First back press - show toast
+              _lastBackPress = now;
+              _scaffoldMessenger.showSnackBar(
+                const SnackBar(
+                  content: Text('Tap back once more to leave'),
+                  duration: Duration(seconds: 2),
+                  behavior: SnackBarBehavior.floating,
                 ),
-              ),
+              );
+              return;
+            }
 
-              // === Offline/Sync Indicators at Top ===
-              Positioned(
-                top: 0,
-                left: 0,
-                right: 0,
-                child: SafeArea(
-                  bottom: false,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: const [
-                      OfflineIndicator(),
-                      SyncIndicator(),
+            // Second back press within 2 seconds - exit app
+            SystemNavigator.pop();
+          },
+          child: Scaffold(
+            body: Stack(
+              children: [
+                // === Main Tab Content ===
+                // Each tab has its own Navigator to preserve state
+                // Wrapped in FadeTransition for smooth tab switching
+                FadeTransition(
+                  opacity: _fadeAnimation,
+                  child: IndexedStack(
+                    index: currentTab,
+                    children: [
+                      // Tab 0: Learn
+                      Navigator(
+                        key: _navigatorKeys[0],
+                        onGenerateRoute: (settings) {
+                          return MaterialPageRoute(
+                            builder: (context) => const LearnScreen(),
+                            settings: settings,
+                          );
+                        },
+                      ),
+                      // Tab 1: Quiz/Practice
+                      Navigator(
+                        key: _navigatorKeys[1],
+                        onGenerateRoute: (settings) {
+                          return MaterialPageRoute(
+                            builder: (context) => const PracticeHubScreen(),
+                            settings: settings,
+                          );
+                        },
+                      ),
+                      // Tab 2: Tank
+                      Navigator(
+                        key: _navigatorKeys[2],
+                        onGenerateRoute: (settings) {
+                          return MaterialPageRoute(
+                            builder: (context) => const HomeScreen(),
+                            settings: settings,
+                          );
+                        },
+                      ),
+                      // Tab 3: Smart
+                      Navigator(
+                        key: _navigatorKeys[3],
+                        onGenerateRoute: (settings) {
+                          return MaterialPageRoute(
+                            builder: (context) => const SmartScreen(),
+                            settings: settings,
+                          );
+                        },
+                      ),
+                      // Tab 4: Settings
+                      Navigator(
+                        key: _navigatorKeys[4],
+                        onGenerateRoute: (settings) {
+                          return MaterialPageRoute(
+                            builder: (context) => const SettingsHubScreen(),
+                            settings: settings,
+                          );
+                        },
+                      ),
                     ],
                   ),
                 ),
-              ),
-            ],
-          ),
 
-          // === Bottom Navigation Bar ===
-          bottomNavigationBar: NavigationBar(
-            selectedIndex: currentTab,
-            onDestinationSelected: (index) {
-              if (index == currentTab) {
-                // Tapped current tab - scroll to top if possible
-                final navigator = _navigatorKeys[index].currentState;
-                if (navigator != null && navigator.canPop()) {
-                  // Pop to root of this tab
-                  navigator.popUntil((route) => route.isFirst);
+                // === Offline/Sync Indicators at Top ===
+                Positioned(
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  child: SafeArea(
+                    bottom: false,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: const [OfflineIndicator(), SyncIndicator()],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+
+            // === Bottom Navigation Bar ===
+            bottomNavigationBar: NavigationBar(
+              selectedIndex: currentTab,
+              onDestinationSelected: (index) {
+                if (index == currentTab) {
+                  // Tapped current tab - scroll to top if possible
+                  final navigator = _navigatorKeys[index].currentState;
+                  if (navigator != null && navigator.canPop()) {
+                    // Pop to root of this tab
+                    navigator.popUntil((route) => route.isFirst);
+                  }
+                } else {
+                  // Animate tab transition
+                  _onTabChanged(index, currentTab);
                 }
-              } else {
-                // Animate tab transition
-                _onTabChanged(index, currentTab);
-              }
-              // Switch tabs
-              ref.read(currentTabProvider.notifier).state = index;
-              // Haptic feedback
-              HapticFeedback.selectionClick();
-            },
-            destinations: [
-              // Learn tab
-              const NavigationDestination(
-                icon: Icon(Icons.auto_stories_outlined),
-                selectedIcon: Icon(Icons.auto_stories),
-                label: 'Learn',
-              ),
-              // Quiz tab with badge for due cards
-              NavigationDestination(
-                icon: Badge(
-                  isLabelVisible: dueCardsCount > 0,
-                  label: Text(dueCardsCount > 99 ? '99+' : '$dueCardsCount'),
-                  child: const Icon(Icons.quiz_outlined),
+                // Switch tabs
+                ref.read(currentTabProvider.notifier).state = index;
+                // Haptic feedback
+                HapticFeedback.selectionClick();
+              },
+              destinations: [
+                // Learn tab
+                const NavigationDestination(
+                  icon: Icon(Icons.auto_stories_outlined),
+                  selectedIcon: Icon(Icons.auto_stories),
+                  label: 'Learn',
                 ),
-                selectedIcon: Badge(
-                  isLabelVisible: dueCardsCount > 0,
-                  label: Text(dueCardsCount > 99 ? '99+' : '$dueCardsCount'),
-                  child: const Icon(Icons.quiz),
+                // Quiz tab with badge for due cards
+                NavigationDestination(
+                  icon: Badge(
+                    isLabelVisible: dueCardsCount > 0,
+                    label: Text(dueCardsCount > 99 ? '99+' : '$dueCardsCount'),
+                    child: const Icon(Icons.quiz_outlined),
+                  ),
+                  selectedIcon: Badge(
+                    isLabelVisible: dueCardsCount > 0,
+                    label: Text(dueCardsCount > 99 ? '99+' : '$dueCardsCount'),
+                    child: const Icon(Icons.quiz),
+                  ),
+                  label: 'Practice',
                 ),
-                label: 'Practice',
-              ),
-              // Tank tab
-              const NavigationDestination(
-                icon: Icon(Icons.water_outlined),
-                selectedIcon: Icon(Icons.water),
-                label: 'Tank',
-              ),
-              // Smart tab
-              const NavigationDestination(
-                icon: Icon(Icons.psychology_outlined),
-                selectedIcon: Icon(Icons.psychology),
-                label: 'Smart',
-              ),
-              // More tab (profile, shop, tools, settings, about)
-              const NavigationDestination(
-                icon: Icon(Icons.grid_view_outlined),
-                selectedIcon: Icon(Icons.grid_view),
-                label: 'More',
-              ),
-            ],
+                // Tank tab
+                const NavigationDestination(
+                  icon: Icon(Icons.water_outlined),
+                  selectedIcon: Icon(Icons.water),
+                  label: 'Tank',
+                ),
+                // Smart tab
+                const NavigationDestination(
+                  icon: Icon(Icons.psychology_outlined),
+                  selectedIcon: Icon(Icons.psychology),
+                  label: 'Smart',
+                ),
+                // More tab (profile, shop, tools, settings, about)
+                const NavigationDestination(
+                  icon: Icon(Icons.grid_view_outlined),
+                  selectedIcon: Icon(Icons.grid_view),
+                  label: 'More',
+                ),
+              ],
+            ),
           ),
         ),
       ),
-    ),
     );
   }
 }

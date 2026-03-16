@@ -88,7 +88,8 @@ class _CompatibilityCheckerWidgetState
           ),
           ChatMessage(
             role: 'user',
-            content: 'I have a $tankSize litre ${tank.type.name} tank with: '
+            content:
+                'I have a $tankSize litre ${tank.type.name} tank with: '
                 '$fishList. Is a $species compatible? Check temperament, '
                 'water parameters, space requirements, and schooling needs.',
           ),
@@ -97,7 +98,9 @@ class _CompatibilityCheckerWidgetState
       );
 
       rateLimiter.recordRequest(AIFeature.compatibilityCheck);
-      ref.read(aiHistoryProvider.notifier).add(
+      ref
+          .read(aiHistoryProvider.notifier)
+          .add(
             type: 'compatibility_check',
             summary: 'Checked: $species in ${tank.name}',
           );
@@ -112,8 +115,10 @@ class _CompatibilityCheckerWidgetState
       setState(() => _result = e.message);
     } catch (e) {
       if (!mounted) return;
-      setState(() =>
-          _result = 'Could not check compatibility right now. Try again later.');
+      setState(
+        () => _result =
+            'Could not check compatibility right now. Try again later.',
+      );
     } finally {
       if (mounted) setState(() => _loading = false);
     }
@@ -125,9 +130,7 @@ class _CompatibilityCheckerWidgetState
     final tanksAsync = ref.watch(tanksProvider);
 
     return Card(
-      shape: RoundedRectangleBorder(
-        borderRadius: AppRadius.md2Radius,
-      ),
+      shape: RoundedRectangleBorder(borderRadius: AppRadius.md2Radius),
       child: Padding(
         padding: const EdgeInsets.all(AppSpacing.md),
         child: Column(
@@ -135,8 +138,7 @@ class _CompatibilityCheckerWidgetState
           children: [
             Row(
               children: [
-                Icon(Icons.compare_arrows,
-                    color: AppColors.primary, size: 20),
+                Icon(Icons.compare_arrows, color: AppColors.primary, size: 20),
                 const SizedBox(width: AppSpacing.sm),
                 Text(
                   'Compatibility Checker',
@@ -173,18 +175,18 @@ class _CompatibilityCheckerWidgetState
                     isDense: true,
                   ),
                   items: tanks
-                      .map((t) => DropdownMenuItem(
-                            value: t.id,
-                            child: Text(t.name),
-                          ))
+                      .map(
+                        (t) =>
+                            DropdownMenuItem(value: t.id, child: Text(t.name)),
+                      )
                       .toList(),
                   onChanged: (v) => setState(() => _selectedTankId = v),
                 );
               },
               loading: () => const SizedBox(
-                  height: 48,
-                  child: Center(
-                      child: CircularProgressIndicator(strokeWidth: 2))),
+                height: 48,
+                child: Center(child: CircularProgressIndicator(strokeWidth: 2)),
+              ),
               error: (_, __) => Text(
                 'Could not load tanks',
                 style: TextStyle(color: Theme.of(context).colorScheme.error),
@@ -208,7 +210,7 @@ class _CompatibilityCheckerWidgetState
                         ),
                       )
                     : IconButton(
-                      tooltip: 'Remove species',
+                        tooltip: 'Remove species',
                         icon: const Icon(Icons.search),
                         onPressed: _checkCompatibility,
                       ),

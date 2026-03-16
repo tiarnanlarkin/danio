@@ -90,7 +90,7 @@ class CyclingStatusCard extends StatelessWidget {
     }
 
     final statusColor = _getStatusColor(status, context);
-    
+
     return AppCard(
       border: Border.all(color: statusColor, width: 2),
       backgroundColor: statusColor.withAlpha(13),

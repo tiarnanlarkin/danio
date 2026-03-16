@@ -42,7 +42,10 @@ class _WeeklyPlanScreenState extends ConsumerState<WeeklyPlanScreen> {
   Future<void> _generate() async {
     final openai = ref.read(openAIServiceProvider);
     if (!openai.isConfigured) {
-      setState(() => _error = 'Weekly Planner isn\'t available yet — we\'re working on bringing it to you! 📋');
+      setState(
+        () => _error =
+            'Weekly Planner isn\'t available yet — we\'re working on bringing it to you! 📋',
+      );
       return;
     }
 
@@ -108,7 +111,8 @@ class _WeeklyPlanScreenState extends ConsumerState<WeeklyPlanScreen> {
         messages: [
           const ChatMessage(
             role: 'system',
-            content: 'You are Danio AI, an expert aquarium maintenance planner '
+            content:
+                'You are Danio AI, an expert aquarium maintenance planner '
                 'with deep knowledge of freshwater and marine fishkeeping. '
                 'Create practical, tailored maintenance schedules based on the '
                 'specific tanks, species, and bioload provided. Consider tank '
@@ -135,10 +139,12 @@ class _WeeklyPlanScreenState extends ConsumerState<WeeklyPlanScreen> {
 
       rateLimiter.recordRequest(AIFeature.weeklyPlan);
       ref.read(weeklyPlanProvider.notifier).save(plan);
-      ref.read(aiHistoryProvider.notifier).add(
-        type: 'weekly_plan',
-        summary: 'Generated weekly maintenance plan',
-      );
+      ref
+          .read(aiHistoryProvider.notifier)
+          .add(
+            type: 'weekly_plan',
+            summary: 'Generated weekly maintenance plan',
+          );
     } on TimeoutException {
       if (!mounted) return;
       setState(() => _error = OpenAIUserMessages.timeout);
@@ -147,7 +153,9 @@ class _WeeklyPlanScreenState extends ConsumerState<WeeklyPlanScreen> {
       setState(() => _error = e.message);
     } catch (e) {
       if (!mounted) return;
-      setState(() => _error = 'Couldn\'t generate your plan. Try again in a moment.');
+      setState(
+        () => _error = 'Couldn\'t generate your plan. Try again in a moment.',
+      );
     } finally {
       if (mounted) setState(() => _loading = false);
     }
@@ -173,10 +181,10 @@ class _WeeklyPlanScreenState extends ConsumerState<WeeklyPlanScreen> {
       body: _loading
           ? _buildLoading()
           : _error != null
-              ? _buildError(theme)
-              : plan != null
-                  ? _buildPlan(theme, plan)
-                  : _buildEmpty(theme),
+          ? _buildError(theme)
+          : plan != null
+          ? _buildPlan(theme, plan)
+          : _buildEmpty(theme),
     );
   }
 
@@ -204,10 +212,7 @@ class _WeeklyPlanScreenState extends ConsumerState<WeeklyPlanScreen> {
             const SizedBox(height: AppSpacing.md),
             Text(_error!, textAlign: TextAlign.center),
             const SizedBox(height: AppSpacing.md),
-            FilledButton(
-              onPressed: _generate,
-              child: const Text('Retry'),
-            ),
+            FilledButton(onPressed: _generate, child: const Text('Retry')),
           ],
         ),
       ),
@@ -303,9 +308,7 @@ class _DayCard extends StatelessWidget {
     final theme = Theme.of(context);
     return Card(
       margin: const EdgeInsets.only(bottom: AppSpacing.sm),
-      shape: RoundedRectangleBorder(
-        borderRadius: AppRadius.md2Radius,
-      ),
+      shape: RoundedRectangleBorder(borderRadius: AppRadius.md2Radius),
       child: ExpansionTile(
         leading: CircleAvatar(
           backgroundColor: AppColors.primaryAlpha10,

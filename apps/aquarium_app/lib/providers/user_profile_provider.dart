@@ -171,7 +171,8 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
       morningReminderTime: morningReminderTime ?? current.morningReminderTime,
       eveningReminderTime: eveningReminderTime ?? current.eveningReminderTime,
       nightReminderTime: nightReminderTime ?? current.nightReminderTime,
-      learningStylePreference: learningStylePreference ?? current.learningStylePreference,
+      learningStylePreference:
+          learningStylePreference ?? current.learningStylePreference,
       updatedAt: DateTime.now(),
     );
 
@@ -307,10 +308,7 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
           final todayKey = _formatDate(today);
           final previousTodayXp = c.dailyXpHistory[todayKey] ?? 0;
           final todayXp = previousTodayXp + effectiveXp + bonusXp;
-          var updatedHistory = {
-            ...c.dailyXpHistory,
-            todayKey: todayXp,
-          };
+          var updatedHistory = {...c.dailyXpHistory, todayKey: todayXp};
 
           // Prune dailyXpHistory to last 365 entries
           if (updatedHistory.length > 365) {
@@ -321,13 +319,16 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
 
           // Track weekend activity for weekend_warrior achievement
           List<String>? updatedWeekendDates;
-          if (now.weekday >= 6) { // Saturday (6) or Sunday (7)
+          if (now.weekday >= 6) {
+            // Saturday (6) or Sunday (7)
             final todayStr = _formatDate(now);
             if (!c.weekendActivityDates.contains(todayStr)) {
               updatedWeekendDates = [...c.weekendActivityDates, todayStr];
               // Prune to last 100 entries
               if (updatedWeekendDates.length > 100) {
-                updatedWeekendDates = updatedWeekendDates.sublist(updatedWeekendDates.length - 100);
+                updatedWeekendDates = updatedWeekendDates.sublist(
+                  updatedWeekendDates.length - 100,
+                );
               }
             }
           }
@@ -336,7 +337,11 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
           final activityXpTotal = effectiveXp + bonusXp;
           final weeklyUpdate = activityXpTotal > 0
               ? _updatedWeeklyXP(c, activityXpTotal)
-              : (weeklyXP: c.weeklyXP, weekStartDate: c.weekStartDate, league: c.league);
+              : (
+                  weeklyXP: c.weeklyXP,
+                  weekStartDate: c.weekStartDate,
+                  league: c.league,
+                );
 
           final updated = c.copyWith(
             totalXp: c.totalXp + activityXpTotal,
@@ -348,9 +353,7 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
             lastActivityDate: now,
             dailyXpHistory: updatedHistory,
             hasStreakFreeze: usedFreeze ? false : c.hasStreakFreeze,
-            streakFreezeUsedDate: usedFreeze
-                ? now
-                : c.streakFreezeUsedDate,
+            streakFreezeUsedDate: usedFreeze ? now : c.streakFreezeUsedDate,
             weekendActivityDates: updatedWeekendDates ?? c.weekendActivityDates,
             updatedAt: now,
           );
@@ -379,8 +382,7 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
           }
 
           // Daily goal completion gems (first time reaching goal today)
-          if (previousTodayXp < c.dailyXpGoal &&
-              todayXp >= c.dailyXpGoal) {
+          if (previousTodayXp < c.dailyXpGoal && todayXp >= c.dailyXpGoal) {
             await gemsNotifier.addGems(
               amount: GemRewards.dailyGoalMet,
               reason: GemEarnReason.dailyGoalMet,
@@ -433,7 +435,8 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
     // Update today's XP in history
     final todayKey = getTodayKey();
     final updatedHistory = Map<String, int>.from(current.dailyXpHistory);
-    updatedHistory[todayKey] = (updatedHistory[todayKey] ?? 0) + effectiveAmount;
+    updatedHistory[todayKey] =
+        (updatedHistory[todayKey] ?? 0) + effectiveAmount;
 
     // Prune dailyXpHistory to last 365 entries to prevent unbounded growth
     Map<String, int> prunedHistory = updatedHistory;
@@ -552,7 +555,11 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
       // Update weekly XP
       final weeklyUpdate = xpReward > 0
           ? _updatedWeeklyXP(current, xpReward)
-          : (weeklyXP: current.weeklyXP, weekStartDate: current.weekStartDate, league: current.league);
+          : (
+              weeklyXP: current.weeklyXP,
+              weekStartDate: current.weekStartDate,
+              league: current.league,
+            );
 
       final updated = current.copyWith(
         completedLessons: [...current.completedLessons, lessonId],
@@ -606,11 +613,13 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
       if (lesson == null) return; // Lesson not found, skip
 
       // Delegate to the single card-seeding implementation
-      await ref.read(spacedRepetitionProvider.notifier).autoSeedFromLesson(
-        lessonId: lessonId,
-        lessonSections: lesson.sections,
-        quizQuestions: lesson.quiz?.questions,
-      );
+      await ref
+          .read(spacedRepetitionProvider.notifier)
+          .autoSeedFromLesson(
+            lessonId: lessonId,
+            lessonSections: lesson.sections,
+            quizQuestions: lesson.quiz?.questions,
+          );
     } catch (e) {
       // Don't fail lesson completion if card creation fails
       debugPrint(
@@ -679,7 +688,11 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
     // Update weekly XP
     final weeklyUpdate = xpToAward > 0
         ? _updatedWeeklyXP(current, xpToAward)
-        : (weeklyXP: current.weeklyXP, weekStartDate: current.weekStartDate, league: current.league);
+        : (
+            weeklyXP: current.weeklyXP,
+            weekStartDate: current.weekStartDate,
+            league: current.league,
+          );
 
     final updated = current.copyWith(
       hasCompletedPlacementTest: true,
@@ -735,7 +748,11 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
     // Update weekly XP
     final weeklyUpdate = xpReward > 0
         ? _updatedWeeklyXP(current, xpReward)
-        : (weeklyXP: current.weeklyXP, weekStartDate: current.weekStartDate, league: current.league);
+        : (
+            weeklyXP: current.weeklyXP,
+            weekStartDate: current.weekStartDate,
+            league: current.league,
+          );
 
     final updated = current.copyWith(
       lessonProgress: updatedProgress,
@@ -821,7 +838,11 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
     // Update weekly XP
     final weeklyUpdate = bonusXp > 0
         ? _updatedWeeklyXP(current, bonusXp)
-        : (weeklyXP: current.weeklyXP, weekStartDate: current.weekStartDate, league: current.league);
+        : (
+            weeklyXP: current.weeklyXP,
+            weekStartDate: current.weekStartDate,
+            league: current.league,
+          );
 
     final updated = current.copyWith(
       achievements: [...current.achievements, achievementId],
@@ -859,7 +880,11 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
     // Update weekly XP
     final weeklyUpdate = xpToAdd > 0
         ? _updatedWeeklyXP(current, xpToAdd)
-        : (weeklyXP: current.weeklyXP, weekStartDate: current.weekStartDate, league: current.league);
+        : (
+            weeklyXP: current.weeklyXP,
+            weekStartDate: current.weekStartDate,
+            league: current.league,
+          );
 
     final updated = current.copyWith(
       achievements: achievements,
@@ -902,14 +927,18 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
 
       // Track full hearts for heart_collector achievement
       List<String>? updatedFullHeartDates;
-      if (hearts >= 5) { // maxHearts = 5
+      if (hearts >= 5) {
+        // maxHearts = 5
         final now = DateTime.now();
-        final todayStr = '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}';
+        final todayStr =
+            '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}';
         if (!current.fullHeartDates.contains(todayStr)) {
           updatedFullHeartDates = [...current.fullHeartDates, todayStr];
           // Prune to last 100 entries
           if (updatedFullHeartDates.length > 100) {
-            updatedFullHeartDates = updatedFullHeartDates.sublist(updatedFullHeartDates.length - 100);
+            updatedFullHeartDates = updatedFullHeartDates.sublist(
+              updatedFullHeartDates.length - 100,
+            );
           }
         }
       }
@@ -920,7 +949,8 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
         final json = current.toJson();
         json['hearts'] = hearts;
         json['lastHeartRefill'] = null;
-        json['fullHeartDates'] = (updatedFullHeartDates ?? current.fullHeartDates);
+        json['fullHeartDates'] =
+            (updatedFullHeartDates ?? current.fullHeartDates);
         json['updatedAt'] = DateTime.now().toIso8601String();
         updated = UserProfile.fromJson(json);
       } else {
@@ -1087,9 +1117,10 @@ class LevelUpEvent {
 
 /// Provider that tracks level changes and emits level-up events
 /// Use this in UI widgets to trigger level-up celebrations
-final levelUpEventProvider = StateNotifierProvider<LevelUpEventNotifier, LevelUpEvent?>((ref) {
-  return LevelUpEventNotifier(ref);
-});
+final levelUpEventProvider =
+    StateNotifierProvider<LevelUpEventNotifier, LevelUpEvent?>((ref) {
+      return LevelUpEventNotifier(ref);
+    });
 
 class LevelUpEventNotifier extends StateNotifier<LevelUpEvent?> {
   LevelUpEventNotifier(this.ref) : super(null) {
@@ -1097,11 +1128,11 @@ class LevelUpEventNotifier extends StateNotifier<LevelUpEvent?> {
     ref.listen<AsyncValue<UserProfile?>>(userProfileProvider, (previous, next) {
       final prevProfile = previous?.value;
       final nextProfile = next.value;
-      
+
       if (prevProfile != null && nextProfile != null) {
         final prevLevel = prevProfile.currentLevel;
         final nextLevel = nextProfile.currentLevel;
-        
+
         // Level up detected!
         if (nextLevel > prevLevel) {
           state = LevelUpEvent(
@@ -1120,7 +1151,7 @@ class LevelUpEventNotifier extends StateNotifier<LevelUpEvent?> {
   void clearEvent() {
     state = null;
   }
-  
+
   /// Manually trigger a level up event (for testing)
   void triggerLevelUp(int level, String title) {
     state = LevelUpEvent(
@@ -1165,4 +1196,3 @@ class _ProfileLifecycleListener extends WidgetsBindingObserver {
 /// Set to true when a freeze is used; the UI should reset it after showing
 /// a notification.
 final streakFreezeUsedProvider = StateProvider<bool>((ref) => false);
-

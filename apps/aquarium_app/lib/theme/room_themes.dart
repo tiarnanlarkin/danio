@@ -435,7 +435,7 @@ class RoomTheme {
     plantPrimary: Color(0xFF6BA87C), // Healthy green
     plantSecondary: Color(0xFF8BC89C), // Light sage
     fish1: Color(0xFFFF9078), // Warm coral fish
-    fish2: Color(0xFF78B8D8), // Sky blue fish  
+    fish2: Color(0xFF78B8D8), // Sky blue fish
     fish3: Color(0xFFE8B868), // Golden fish
     glassCard: Color(0x28FFFFFF), // Soft frosted
     glassBorder: Color(0x45FFFFFF), // Warm border
@@ -515,7 +515,7 @@ class RoomTheme {
   }
 
   static List<RoomTheme> get allThemes => [
-    cozyLiving,  // New cozy themes first for discoverability
+    cozyLiving, // New cozy themes first for discoverability
     eveningGlow,
     ocean,
     pastel,

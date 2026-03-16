@@ -8,10 +8,10 @@ import '../../providers/user_profile_provider.dart';
 import 'level_up_overlay.dart';
 
 /// Widget that listens for level-up events and shows celebrations
-/// 
+///
 /// Wrap this around your main content to automatically show level-up
 /// celebrations whenever the user gains enough XP to level up.
-/// 
+///
 /// ```dart
 /// LevelUpListener(
 ///   child: HomeScreen(),
@@ -19,15 +19,11 @@ import 'level_up_overlay.dart';
 /// ```
 class LevelUpListener extends ConsumerStatefulWidget {
   final Widget child;
-  
+
   /// Whether to show the celebration (can be disabled for certain screens)
   final bool enabled;
 
-  const LevelUpListener({
-    super.key,
-    required this.child,
-    this.enabled = true,
-  });
+  const LevelUpListener({super.key, required this.child, this.enabled = true});
 
   @override
   ConsumerState<LevelUpListener> createState() => _LevelUpListenerState();
@@ -57,16 +53,16 @@ class _LevelUpListenerState extends ConsumerState<LevelUpListener> {
 
   Future<void> _showLevelUpCelebration(LevelUpEvent event) async {
     if (!mounted) return;
-    
+
     _isShowingCelebration = true;
-    
+
     // Show the level up overlay
     await LevelUpOverlay.show(
       context,
       newLevel: event.newLevel,
       levelTitle: event.levelTitle,
     );
-    
+
     // Clear the event after showing
     if (mounted) {
       ref.read(levelUpEventProvider.notifier).clearEvent();
@@ -79,9 +75,6 @@ class _LevelUpListenerState extends ConsumerState<LevelUpListener> {
 extension LevelUpListenerExtension on Widget {
   /// Wrap this widget with a LevelUpListener
   Widget withLevelUpListener({bool enabled = true}) {
-    return LevelUpListener(
-      enabled: enabled,
-      child: this,
-    );
+    return LevelUpListener(enabled: enabled, child: this);
   }
 }

@@ -98,9 +98,7 @@ class _LevelUpDialogState extends State<LevelUpDialog>
           child: ScaleTransition(
             scale: _scaleAnimation,
             child: Dialog(
-              shape: RoundedRectangleBorder(
-                borderRadius: AppRadius.xlRadius,
-              ),
+              shape: RoundedRectangleBorder(borderRadius: AppRadius.xlRadius),
               child: Container(
                 padding: const EdgeInsets.all(AppSpacing.xl),
                 decoration: BoxDecoration(
@@ -143,11 +141,12 @@ class _LevelUpDialogState extends State<LevelUpDialog>
                     // "Level Up!" text
                     Text(
                       'Level Up!',
-                      style: Theme.of(context).textTheme.headlineMedium!.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                        letterSpacing: 1,
-                      ),
+                      style: Theme.of(context).textTheme.headlineMedium!
+                          .copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                            letterSpacing: 1,
+                          ),
                     ),
                     const SizedBox(height: AppSpacing.md),
 
@@ -165,18 +164,20 @@ class _LevelUpDialogState extends State<LevelUpDialog>
                         children: [
                           Text(
                             'Level ${widget.newLevel}',
-                            style: Theme.of(context).textTheme.headlineMedium!.copyWith(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
+                            style: Theme.of(context).textTheme.headlineMedium!
+                                .copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
                           ),
                           const SizedBox(height: AppSpacing.xs),
                           Text(
                             widget.levelTitle,
-                            style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w500,
-                            ),
+                            style: Theme.of(context).textTheme.titleLarge!
+                                .copyWith(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w500,
+                                ),
                           ),
                         ],
                       ),
@@ -212,9 +213,8 @@ class _LevelUpDialogState extends State<LevelUpDialog>
                             Expanded(
                               child: Text(
                                 widget.unlockMessage!,
-                                style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                                  color: Colors.white,
-                                ),
+                                style: Theme.of(context).textTheme.bodyLarge!
+                                    .copyWith(color: Colors.white),
                               ),
                             ),
                           ],
@@ -240,9 +240,8 @@ class _LevelUpDialogState extends State<LevelUpDialog>
                         ),
                         child: Text(
                           'Continue',
-                          style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                            fontWeight: FontWeight.bold,
-                          ),
+                          style: Theme.of(context).textTheme.titleLarge!
+                              .copyWith(fontWeight: FontWeight.bold),
                         ),
                       ),
                     ),

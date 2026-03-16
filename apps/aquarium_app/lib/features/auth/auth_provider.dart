@@ -90,10 +90,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
     if (result.isSuccess) {
       state = AuthState(user: result.user);
     } else {
-      state = state.copyWith(
-        isLoading: false,
-        error: result.errorMessage,
-      );
+      state = state.copyWith(isLoading: false, error: result.errorMessage);
     }
   }
 
@@ -106,10 +103,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
     if (result.isSuccess) {
       state = AuthState(user: result.user);
     } else {
-      state = state.copyWith(
-        isLoading: false,
-        error: result.errorMessage,
-      );
+      state = state.copyWith(isLoading: false, error: result.errorMessage);
     }
   }
 
@@ -117,10 +111,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
     state = state.copyWith(isLoading: true, error: null);
     final result = await AuthService.instance.signInWithGoogle();
     if (result.isError) {
-      state = state.copyWith(
-        isLoading: false,
-        error: result.errorMessage,
-      );
+      state = state.copyWith(isLoading: false, error: result.errorMessage);
     }
     // On pendingRedirect, keep loading - the auth stream will update state.
   }

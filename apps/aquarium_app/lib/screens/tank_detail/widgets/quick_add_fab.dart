@@ -143,7 +143,10 @@ class MiniFabOption extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: AppSpacing.xs2),
+          padding: const EdgeInsets.symmetric(
+            horizontal: 12,
+            vertical: AppSpacing.xs2,
+          ),
           decoration: BoxDecoration(
             color: Theme.of(context).colorScheme.surface,
             borderRadius: AppRadius.xsRadius,

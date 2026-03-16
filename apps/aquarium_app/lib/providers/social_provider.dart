@@ -25,22 +25,25 @@ final socialServiceProvider = Provider<SocialService>((ref) {
 // ---------------------------------------------------------------------------
 
 /// Async list of accepted friends (auto-fetched).
-final socialFriendsProvider =
-    FutureProvider.autoDispose<List<Friend>>((ref) async {
+final socialFriendsProvider = FutureProvider.autoDispose<List<Friend>>((
+  ref,
+) async {
   final social = ref.watch(socialServiceProvider);
   return social.getFriends();
 });
 
 /// Incoming pending friend requests.
-final pendingRequestsProvider =
-    FutureProvider.autoDispose<List<FriendRequest>>((ref) async {
-  final social = ref.watch(socialServiceProvider);
-  return social.getPendingRequests();
-});
+final pendingRequestsProvider = FutureProvider.autoDispose<List<FriendRequest>>(
+  (ref) async {
+    final social = ref.watch(socialServiceProvider);
+    return social.getPendingRequests();
+  },
+);
 
 /// Outgoing sent requests.
-final sentRequestsProvider =
-    FutureProvider.autoDispose<List<FriendRequest>>((ref) async {
+final sentRequestsProvider = FutureProvider.autoDispose<List<FriendRequest>>((
+  ref,
+) async {
   final social = ref.watch(socialServiceProvider);
   return social.getSentRequests();
 });
@@ -52,9 +55,9 @@ final sentRequestsProvider =
 /// Activity feed (own + friends' activities), most recent first.
 final socialActivityFeedProvider =
     FutureProvider.autoDispose<List<FriendActivity>>((ref) async {
-  final social = ref.watch(socialServiceProvider);
-  return social.getActivityFeed(limit: 50);
-});
+      final social = ref.watch(socialServiceProvider);
+      return social.getActivityFeed(limit: 50);
+    });
 
 // ---------------------------------------------------------------------------
 // Leaderboard
@@ -66,14 +69,14 @@ final socialActivityFeedProvider =
 /// build a dedicated notifier that reads the user profile.
 final leaderboardProvider = FutureProvider.autoDispose
     .family<List<LeaderboardEntry>, LeaderboardParams>((ref, params) async {
-  final social = ref.watch(socialServiceProvider);
-  return social.getLeaderboard(
-    currentUserId: params.userId,
-    currentUsername: params.username,
-    currentUserXP: params.weeklyXp,
-    currentUserLeague: params.league,
-  );
-});
+      final social = ref.watch(socialServiceProvider);
+      return social.getLeaderboard(
+        currentUserId: params.userId,
+        currentUsername: params.username,
+        currentUserXP: params.weeklyXp,
+        currentUserLeague: params.league,
+      );
+    });
 
 /// Parameter object for [leaderboardProvider].
 class LeaderboardParams {
@@ -109,20 +112,20 @@ class LeaderboardParams {
 /// Unread encouragements.
 final unreadEncouragementsProvider =
     FutureProvider.autoDispose<List<FriendEncouragement>>((ref) async {
-  final social = ref.watch(socialServiceProvider);
-  return social.getUnreadEncouragements();
-});
+      final social = ref.watch(socialServiceProvider);
+      return social.getUnreadEncouragements();
+    });
 
 /// Realtime stream of pending friend requests.
 final pendingRequestsStreamProvider =
     StreamProvider.autoDispose<List<FriendRequest>>((ref) {
-  final social = ref.watch(socialServiceProvider);
-  return social.watchPendingRequests();
-});
+      final social = ref.watch(socialServiceProvider);
+      return social.watchPendingRequests();
+    });
 
 /// Realtime stream of unread encouragements.
 final encouragementsStreamProvider =
     StreamProvider.autoDispose<List<FriendEncouragement>>((ref) {
-  final social = ref.watch(socialServiceProvider);
-  return social.watchEncouragements();
-});
+      final social = ref.watch(socialServiceProvider);
+      return social.watchEncouragements();
+    });

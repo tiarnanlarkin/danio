@@ -15,7 +15,10 @@ import 'settings_screen.dart';
 import 'shop_street_screen.dart';
 import 'workshop_screen.dart';
 
-const String appVersion = String.fromEnvironment('APP_VERSION', defaultValue: '1.0.0');
+const String appVersion = String.fromEnvironment(
+  'APP_VERSION',
+  defaultValue: '1.0.0',
+);
 
 /// Settings Hub - Consolidates all secondary features
 /// This is Tab 3 in the new navigation structure
@@ -29,9 +32,7 @@ class SettingsHubScreen extends ConsumerWidget {
     final items = _buildListItems(context, profile);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('More'),
-      ),
+      appBar: AppBar(title: const Text('More')),
       body: ListView.builder(
         padding: const EdgeInsets.all(AppSpacing.md),
         itemCount: items.length,
@@ -44,7 +45,6 @@ class SettingsHubScreen extends ConsumerWidget {
     return [
       // === Profile Card ===
       _buildProfileCard(context, profile),
-
 
       const SizedBox(height: AppSpacing.lg),
 
@@ -97,7 +97,8 @@ class SettingsHubScreen extends ConsumerWidget {
           icon: Icons.build,
           title: 'Workshop',
           subtitle: 'Calculators, guides & planners',
-          iconColor: AppColors.primary, // BUG-10: was textSecondary (gray), now warm amber
+          iconColor: AppColors
+              .primary, // BUG-10: was textSecondary (gray), now warm amber
           trailing: const Icon(Icons.chevron_right),
           onTap: () {
             NavigationThrottle.push(context, const WorkshopScreen());
@@ -187,9 +188,7 @@ class SettingsHubScreen extends ConsumerWidget {
       Center(
         child: Text(
           'Danio v$appVersion',
-          style: AppTypography.bodySmall.copyWith(
-            color: context.textSecondary,
-          ),
+          style: AppTypography.bodySmall.copyWith(color: context.textSecondary),
         ),
       ),
       const SizedBox(height: AppSpacing.sm),
@@ -204,66 +203,69 @@ class SettingsHubScreen extends ConsumerWidget {
     return Semantics(
       label: '$name, Level $level, $xp XP, $streak day streak',
       child: CozyCard(
-      child: Row(
-        children: [
-          // Avatar
-          CircleAvatar(
-            radius: kAvatarSizeMd,
-            backgroundColor: AppColors.primaryAlpha05,
-            child: profile?.name != null && profile!.name.isNotEmpty
-                ? Text(
-                    profile.name[0].toUpperCase(),
-                    style: Theme.of(context).textTheme.headlineMedium!.copyWith(
-                      fontWeight: FontWeight.bold,
+        child: Row(
+          children: [
+            // Avatar
+            CircleAvatar(
+              radius: kAvatarSizeMd,
+              backgroundColor: AppColors.primaryAlpha05,
+              child: profile?.name != null && profile!.name.isNotEmpty
+                  ? Text(
+                      profile.name[0].toUpperCase(),
+                      style: Theme.of(context).textTheme.headlineMedium!
+                          .copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.primary,
+                          ),
+                    )
+                  : const Icon(
+                      Icons.person,
+                      size: AppIconSizes.lg,
                       color: AppColors.primary,
                     ),
-                  )
-                : const Icon(
-                    Icons.person,
-                    size: AppIconSizes.lg,
-                    color: AppColors.primary,
-                  ),
-          ),
-          const SizedBox(width: AppSpacing.md),
-          // Profile Info
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  profile?.name ?? 'Aquarist',
-                  style: AppTypography.titleLarge,
-                ),
-                const SizedBox(height: AppSpacing.xs),
-                Text(
-                  'Level ${profile?.currentLevel ?? 1} • ${profile?.totalXp ?? 0} XP',
-                  style: AppTypography.bodyMedium.copyWith(
-                    color: context.textSecondary,
-                  ),
-                ),
-                const SizedBox(height: AppSpacing.xs),
-                Text(
-                  // BUG-06: hide fire emoji when streak is 0
-                  '${profile?.currentStreak ?? 0} day streak${(profile?.currentStreak ?? 0) > 0 ? " 🔥" : ""}',
-                  style: AppTypography.bodySmall.copyWith(
-                    color: (profile?.currentStreak ?? 0) > 0 ? AppColors.warning : context.textSecondary,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ],
             ),
-          ),
-          // Edit button
-          IconButton(
-            tooltip: 'Settings',
-            icon: const Icon(Icons.edit),
-            onPressed: () {
-              NavigationThrottle.push(context, const SettingsScreen());
-            },
-          ),
-        ],
+            const SizedBox(width: AppSpacing.md),
+            // Profile Info
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    profile?.name ?? 'Aquarist',
+                    style: AppTypography.titleLarge,
+                  ),
+                  const SizedBox(height: AppSpacing.xs),
+                  Text(
+                    'Level ${profile?.currentLevel ?? 1} • ${profile?.totalXp ?? 0} XP',
+                    style: AppTypography.bodyMedium.copyWith(
+                      color: context.textSecondary,
+                    ),
+                  ),
+                  const SizedBox(height: AppSpacing.xs),
+                  Text(
+                    // BUG-06: hide fire emoji when streak is 0
+                    '${profile?.currentStreak ?? 0} day streak${(profile?.currentStreak ?? 0) > 0 ? " 🔥" : ""}',
+                    style: AppTypography.bodySmall.copyWith(
+                      color: (profile?.currentStreak ?? 0) > 0
+                          ? AppColors.warning
+                          : context.textSecondary,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            // Edit button
+            IconButton(
+              tooltip: 'Settings',
+              icon: const Icon(Icons.edit),
+              onPressed: () {
+                NavigationThrottle.push(context, const SettingsScreen());
+              },
+            ),
+          ],
+        ),
       ),
-    ),
     );
   }
 
@@ -275,7 +277,8 @@ class SettingsHubScreen extends ConsumerWidget {
         child: Text(
           title,
           style: AppTypography.titleMedium.copyWith(
-            color: AppColors.primary, // BUG-09: all section headers now use consistent warm amber
+            color: AppColors
+                .primary, // BUG-09: all section headers now use consistent warm amber
             fontWeight: FontWeight.w600,
           ),
         ),

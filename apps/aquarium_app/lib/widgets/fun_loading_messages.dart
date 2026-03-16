@@ -73,10 +73,9 @@ class _FunLoadingMessageState extends State<FunLoadingMessage>
       opacity: _fadeAnimation,
       child: Text(
         _messages[_currentIndex],
-        style: widget.style ??
-            AppTypography.bodyMedium.copyWith(
-              color: context.textSecondary,
-            ),
+        style:
+            widget.style ??
+            AppTypography.bodyMedium.copyWith(color: context.textSecondary),
         textAlign: TextAlign.center,
       ),
     );

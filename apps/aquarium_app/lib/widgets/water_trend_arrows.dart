@@ -8,18 +8,15 @@ class WaterTrendArrows extends StatelessWidget {
   final List<LogEntry> logs;
   final Tank tank;
 
-  const WaterTrendArrows({
-    super.key,
-    required this.logs,
-    required this.tank,
-  });
+  const WaterTrendArrows({super.key, required this.logs, required this.tank});
 
   @override
   Widget build(BuildContext context) {
-    final tests = logs
-        .where((l) => l.type == LogType.waterTest && l.waterTest != null)
-        .toList()
-      ..sort((a, b) => b.timestamp.compareTo(a.timestamp)); // newest first
+    final tests =
+        logs
+            .where((l) => l.type == LogType.waterTest && l.waterTest != null)
+            .toList()
+          ..sort((a, b) => b.timestamp.compareTo(a.timestamp)); // newest first
 
     if (tests.length < 2) return const SizedBox.shrink();
 
@@ -118,10 +115,7 @@ class _TrendChip extends StatelessWidget {
             const SizedBox(width: AppSpacing.xs),
             Text(
               arrow,
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                color: color,
-              ),
+              style: TextStyle(fontWeight: FontWeight.bold, color: color),
             ),
           ],
         ),
@@ -149,4 +143,5 @@ class _TrendChip extends StatelessWidget {
 }
 
 enum _Trend { up, down, stable }
+
 enum _ParamHealth { good, borderline, concerning }

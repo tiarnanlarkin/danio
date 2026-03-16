@@ -65,14 +65,12 @@ class PrimaryActionTile extends StatelessWidget {
             width: 44,
             height: 44,
             decoration: BoxDecoration(
-              color: iconBackgroundColor ?? effectiveIconColor.withAlpha(26), // ~10%
+              color:
+                  iconBackgroundColor ??
+                  effectiveIconColor.withAlpha(26), // ~10%
               borderRadius: BorderRadius.circular(AppRadius.md2),
             ),
-            child: Icon(
-              icon,
-              color: effectiveIconColor,
-              size: AppIconSizes.md,
-            ),
+            child: Icon(icon, color: effectiveIconColor, size: AppIconSizes.md),
           ),
           const SizedBox(width: AppSpacing.sm2),
           Expanded(
@@ -91,7 +89,9 @@ class PrimaryActionTile extends StatelessWidget {
                   Text(
                     subtitle!,
                     style: AppTypography.bodySmall.copyWith(
-                      color: Theme.of(context).colorScheme.onSurface.withAlpha(153), // ~60%
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.onSurface.withAlpha(153), // ~60%
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,

@@ -23,8 +23,7 @@ class LogDetailScreen extends ConsumerWidget {
     final logsAsync = ref.watch(allLogsProvider(tankId));
 
     return logsAsync.when(
-      loading: () =>
-          const Scaffold(body: Center(child: BubbleLoader())),
+      loading: () => const Scaffold(body: Center(child: BubbleLoader())),
       error: (err, _) => Scaffold(
         appBar: AppBar(title: const Text('Log')),
         body: const Center(child: Text('Couldn\'t load this log entry')),
@@ -48,11 +47,14 @@ class LogDetailScreen extends ConsumerWidget {
               IconButton(
                 icon: const Icon(Icons.edit),
                 tooltip: 'Edit this log entry',
-                onPressed: () => NavigationThrottle.push(context, AddLogScreen(
-                      tankId: tankId,
-                      initialType: log.type,
-                      existingLog: log,
-                    )),
+                onPressed: () => NavigationThrottle.push(
+                  context,
+                  AddLogScreen(
+                    tankId: tankId,
+                    initialType: log.type,
+                    existingLog: log,
+                  ),
+                ),
               ),
               IconButton(
                 icon: const Icon(Icons.delete_outline),
@@ -242,7 +244,12 @@ class _WaterTestCard extends StatelessWidget {
               spacing: 10,
               runSpacing: 10,
               children: [
-                _kv('Temp', test.temperature?.toStringAsFixed(1), '°C', context),
+                _kv(
+                  'Temp',
+                  test.temperature?.toStringAsFixed(1),
+                  '°C',
+                  context,
+                ),
                 _kv('pH', test.ph?.toStringAsFixed(1), null, context),
                 _kv('NH₃', test.ammonia?.toStringAsFixed(2), 'ppm', context),
                 _kv('NO₂', test.nitrite?.toStringAsFixed(2), 'ppm', context),
@@ -261,7 +268,10 @@ class _WaterTestCard extends StatelessWidget {
   Widget _kv(String k, String? v, String? unit, BuildContext context) {
     final value = (v == null || v == 'null') ? '-' : v;
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: AppSpacing.sm3),
+      padding: const EdgeInsets.symmetric(
+        horizontal: 12,
+        vertical: AppSpacing.sm3,
+      ),
       decoration: BoxDecoration(
         color: context.surfaceVariant,
         borderRadius: AppRadius.mediumRadius,

@@ -29,10 +29,7 @@ class _LightingPulseWrapperState extends ConsumerState<LightingPulseWrapper>
       vsync: this,
       duration: AppDurations.long3, // 800ms
     );
-    _coolPulse = AnimationController(
-      vsync: this,
-      duration: AppDurations.long3,
-    );
+    _coolPulse = AnimationController(vsync: this, duration: AppDurations.long3);
   }
 
   @override
@@ -76,10 +73,12 @@ class _LightingPulseWrapperState extends ConsumerState<LightingPulseWrapper>
             child: AnimatedBuilder(
               animation: Listenable.merge([_warmPulse, _coolPulse]),
               builder: (context, _) {
-                final warmValue =
-                    Curves.easeInOutSine.transform(_warmPulse.value);
-                final coolValue =
-                    Curves.easeInOutSine.transform(_coolPulse.value);
+                final warmValue = Curves.easeInOutSine.transform(
+                  _warmPulse.value,
+                );
+                final coolValue = Curves.easeInOutSine.transform(
+                  _coolPulse.value,
+                );
 
                 if (warmValue < 0.001 && coolValue < 0.001) {
                   return const SizedBox.shrink();
@@ -94,15 +93,17 @@ class _LightingPulseWrapperState extends ConsumerState<LightingPulseWrapper>
                     if (warmAlpha > 0)
                       Positioned.fill(
                         child: ColoredBox(
-                          color: DanioMaterials.warmAmberPulse
-                              .withAlpha(warmAlpha),
+                          color: DanioMaterials.warmAmberPulse.withAlpha(
+                            warmAlpha,
+                          ),
                         ),
                       ),
                     if (coolAlpha > 0)
                       Positioned.fill(
                         child: ColoredBox(
-                          color: DanioMaterials.coolBluePulse
-                              .withAlpha(coolAlpha),
+                          color: DanioMaterials.coolBluePulse.withAlpha(
+                            coolAlpha,
+                          ),
                         ),
                       ),
                   ],

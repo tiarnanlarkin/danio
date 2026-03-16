@@ -1,6 +1,7 @@
 /// Performance Overlay Widget
 /// Shows real-time FPS, frame time, and memory metrics during development
 library;
+
 import 'package:danio/theme/app_theme.dart';
 
 import 'dart:async';
@@ -202,7 +203,9 @@ class _PerformanceDebugScreenState extends State<PerformanceDebugScreen> {
         ],
       ),
       body: report == null
-          ? const Center(child: CircularProgressIndicator(color: AppColors.primary))
+          ? const Center(
+              child: CircularProgressIndicator(color: AppColors.primary),
+            )
           : ListView(
               padding: const EdgeInsets.all(AppSpacing.md),
               children: [
@@ -253,7 +256,9 @@ class _PerformanceDebugScreenState extends State<PerformanceDebugScreen> {
           children: [
             Text(
               'Frame Metrics',
-              style: Theme.of(context).textTheme.titleLarge!.copyWith( fontWeight: FontWeight.bold),
+              style: Theme.of(
+                context,
+              ).textTheme.titleLarge!.copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: AppSpacing.md),
             _buildMetricRow(
@@ -318,7 +323,9 @@ class _PerformanceDebugScreenState extends State<PerformanceDebugScreen> {
           Expanded(
             child: Text(
               'Target: $target',
-              style: Theme.of(context).textTheme.bodySmall!.copyWith(color: Colors.grey),
+              style: Theme.of(
+                context,
+              ).textTheme.bodySmall!.copyWith(color: context.textHint),
             ),
           ),
         ],
@@ -347,12 +354,16 @@ class _PerformanceDebugScreenState extends State<PerformanceDebugScreen> {
           children: [
             Text(
               'Widget Rebuilds (Top 10)',
-              style: Theme.of(context).textTheme.titleLarge!.copyWith(fontWeight: FontWeight.bold),
+              style: Theme.of(
+                context,
+              ).textTheme.titleLarge!.copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: AppSpacing.sm),
             Text(
               'Widgets with excessive rebuilds may need optimization',
-              style: Theme.of(context).textTheme.bodySmall!.copyWith(color: Colors.grey),
+              style: Theme.of(
+                context,
+              ).textTheme.bodySmall!.copyWith(color: context.textHint),
             ),
             const SizedBox(height: AppSpacing.md),
             ...rebuilds.take(10).map((entry) {
@@ -373,14 +384,18 @@ class _PerformanceDebugScreenState extends State<PerformanceDebugScreen> {
                         vertical: 2,
                       ),
                       decoration: BoxDecoration(
-                        color: isHigh ? Colors.orange : Colors.grey.shade200,
+                        color: isHigh
+                            ? AppColors.warning
+                            : context.surfaceVariant,
                         borderRadius: AppRadius.xsRadius,
                       ),
                       child: Text(
                         '${entry.value}',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          color: isHigh ? Colors.white : Colors.black87,
+                          color: isHigh
+                              ? AppColors.onWarning
+                              : context.textPrimary,
                         ),
                       ),
                     ),

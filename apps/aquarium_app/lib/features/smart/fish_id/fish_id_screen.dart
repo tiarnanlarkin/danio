@@ -134,7 +134,10 @@ Return ONLY valid JSON with these fields (no markdown, no explanation):
 
     final openai = ref.read(openAIServiceProvider);
     if (!openai.isConfigured) {
-      setState(() => _error = 'Fish ID isn\'t available yet — we\'re working on bringing it to you! 🐟');
+      setState(
+        () => _error =
+            'Fish ID isn\'t available yet — we\'re working on bringing it to you! 🐟',
+      );
       return;
     }
 
@@ -195,10 +198,12 @@ Return ONLY valid JSON with these fields (no markdown, no explanation):
 
       // Record rate limit & AI history.
       rateLimiter.recordRequest(AIFeature.fishId);
-      ref.read(aiHistoryProvider.notifier).add(
-        type: 'fish_id',
-        summary: 'Identified: ${identification.commonName}',
-      );
+      ref
+          .read(aiHistoryProvider.notifier)
+          .add(
+            type: 'fish_id',
+            summary: 'Identified: ${identification.commonName}',
+          );
 
       if (!mounted) return;
       setState(() {
@@ -371,9 +376,7 @@ Return ONLY valid JSON with these fields (no markdown, no explanation):
     final r = _result!;
     return Card(
       elevation: AppElevation.level1,
-      shape: RoundedRectangleBorder(
-        borderRadius: AppRadius.md2Radius,
-      ),
+      shape: RoundedRectangleBorder(borderRadius: AppRadius.md2Radius),
       child: Padding(
         padding: const EdgeInsets.all(AppSpacing.md),
         child: Column(
@@ -419,15 +422,22 @@ Return ONLY valid JSON with these fields (no markdown, no explanation):
                 padding: const EdgeInsets.only(bottom: AppSpacing.sm),
                 child: Row(
                   children: [
-                    Icon(Icons.info_outline, size: 14,
-                        color: r.confidence == 'low' ? AppColors.warning : context.textSecondary),
+                    Icon(
+                      Icons.info_outline,
+                      size: 14,
+                      color: r.confidence == 'low'
+                          ? AppColors.warning
+                          : context.textSecondary,
+                    ),
                     const SizedBox(width: AppSpacing.xs),
                     Text(
                       r.confidence == 'low'
                           ? 'Low confidence - verify with another source'
                           : 'Medium confidence',
                       style: theme.textTheme.bodySmall?.copyWith(
-                        color: r.confidence == 'low' ? AppColors.warning : context.textSecondary,
+                        color: r.confidence == 'low'
+                            ? AppColors.warning
+                            : context.textSecondary,
                         fontStyle: FontStyle.italic,
                       ),
                     ),
@@ -442,9 +452,11 @@ Return ONLY valid JSON with these fields (no markdown, no explanation):
                 runSpacing: AppSpacing.xs,
                 children: [
                   if (r.maxSizeCm != null)
-                    _paramChip('Max Size', '${r.maxSizeCm?.toStringAsFixed(0) ?? '?'} cm'),
-                  if (r.diet != null)
-                    _paramChip('Diet', r.diet ?? 'Unknown'),
+                    _paramChip(
+                      'Max Size',
+                      '${r.maxSizeCm?.toStringAsFixed(0) ?? '?'} cm',
+                    ),
+                  if (r.diet != null) _paramChip('Diet', r.diet ?? 'Unknown'),
                 ],
               ),
               const SizedBox(height: AppSpacing.md),
@@ -453,8 +465,9 @@ Return ONLY valid JSON with these fields (no markdown, no explanation):
             // Water parameters
             Text(
               'Water Parameters',
-              style: theme.textTheme.titleSmall
-                  ?.copyWith(fontWeight: FontWeight.w600),
+              style: theme.textTheme.titleSmall?.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
             ),
             const SizedBox(height: AppSpacing.xs),
             Wrap(
@@ -472,18 +485,23 @@ Return ONLY valid JSON with these fields (no markdown, no explanation):
             if (r.tankMates.isNotEmpty) ...[
               Text(
                 'Compatible Tank Mates',
-                style: theme.textTheme.titleSmall
-                    ?.copyWith(fontWeight: FontWeight.w600),
+                style: theme.textTheme.titleSmall?.copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
               ),
               const SizedBox(height: AppSpacing.xs),
               Wrap(
                 spacing: AppSpacing.xs,
                 runSpacing: AppSpacing.xs,
-                children: r.tankMates.map((mate) => Chip(
-                  label: Text(mate, style: theme.textTheme.bodySmall),
-                  visualDensity: VisualDensity.compact,
-                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                )).toList(),
+                children: r.tankMates
+                    .map(
+                      (mate) => Chip(
+                        label: Text(mate, style: theme.textTheme.bodySmall),
+                        visualDensity: VisualDensity.compact,
+                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      ),
+                    )
+                    .toList(),
               ),
               const SizedBox(height: AppSpacing.md),
             ],
@@ -491,8 +509,9 @@ Return ONLY valid JSON with these fields (no markdown, no explanation):
             // Compatibility
             Text(
               'Compatibility Notes',
-              style: theme.textTheme.titleSmall
-                  ?.copyWith(fontWeight: FontWeight.w600),
+              style: theme.textTheme.titleSmall?.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
             ),
             const SizedBox(height: AppSpacing.xs),
             Text(r.compatibilityNotes, style: theme.textTheme.bodyMedium),
@@ -501,8 +520,9 @@ Return ONLY valid JSON with these fields (no markdown, no explanation):
             // Care tips
             Text(
               'Care Tips',
-              style: theme.textTheme.titleSmall
-                  ?.copyWith(fontWeight: FontWeight.w600),
+              style: theme.textTheme.titleSmall?.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
             ),
             const SizedBox(height: AppSpacing.xs),
             ...r.careTips.map(
@@ -545,9 +565,9 @@ Return ONLY valid JSON with these fields (no markdown, no explanation):
       children: [
         Text(
           'Care',
-          style: Theme.of(context).textTheme.labelSmall?.copyWith(
-            color: context.textSecondary,
-          ),
+          style: Theme.of(
+            context,
+          ).textTheme.labelSmall?.copyWith(color: context.textSecondary),
         ),
         Row(
           mainAxisSize: MainAxisSize.min,

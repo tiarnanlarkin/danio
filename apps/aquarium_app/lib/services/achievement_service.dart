@@ -126,30 +126,50 @@ class AchievementService {
       case 'beginner_master':
         // Beginner paths: nitrogen_cycle, water_parameters, first_fish
         final beginnerIds = LessonProvider.allPathMetadata
-            .where((p) => ['nitrogen_cycle', 'water_parameters', 'first_fish'].contains(p.id))
+            .where(
+              (p) => [
+                'nitrogen_cycle',
+                'water_parameters',
+                'first_fish',
+              ].contains(p.id),
+            )
             .expand((p) => p.lessonIds)
             .toSet();
-        shouldUnlock = beginnerIds.isNotEmpty &&
+        shouldUnlock =
+            beginnerIds.isNotEmpty &&
             beginnerIds.every((id) => stats.completedLessonIds.contains(id));
         break;
 
       case 'intermediate_master':
         // Intermediate paths: maintenance, planted_tank, equipment
         final intermediateIds = LessonProvider.allPathMetadata
-            .where((p) => ['maintenance', 'planted_tank', 'equipment'].contains(p.id))
+            .where(
+              (p) =>
+                  ['maintenance', 'planted_tank', 'equipment'].contains(p.id),
+            )
             .expand((p) => p.lessonIds)
             .toSet();
-        shouldUnlock = intermediateIds.isNotEmpty &&
-            intermediateIds.every((id) => stats.completedLessonIds.contains(id));
+        shouldUnlock =
+            intermediateIds.isNotEmpty &&
+            intermediateIds.every(
+              (id) => stats.completedLessonIds.contains(id),
+            );
         break;
 
       case 'advanced_master':
         // Advanced paths: fish_health, species_care, advanced_topics
         final advancedIds = LessonProvider.allPathMetadata
-            .where((p) => ['fish_health', 'species_care', 'advanced_topics'].contains(p.id))
+            .where(
+              (p) => [
+                'fish_health',
+                'species_care',
+                'advanced_topics',
+              ].contains(p.id),
+            )
             .expand((p) => p.lessonIds)
             .toSet();
-        shouldUnlock = advancedIds.isNotEmpty &&
+        shouldUnlock =
+            advancedIds.isNotEmpty &&
             advancedIds.every((id) => stats.completedLessonIds.contains(id));
         break;
 
@@ -159,7 +179,8 @@ class AchievementService {
             .where((p) => p.id == 'water_parameters')
             .expand((p) => p.lessonIds)
             .toSet();
-        shouldUnlock = waterChemIds.isNotEmpty &&
+        shouldUnlock =
+            waterChemIds.isNotEmpty &&
             waterChemIds.every((id) => stats.completedLessonIds.contains(id));
         break;
 
@@ -169,17 +190,22 @@ class AchievementService {
             .where((p) => p.id == 'planted_tank')
             .expand((p) => p.lessonIds)
             .toSet();
-        shouldUnlock = plantIds.isNotEmpty &&
+        shouldUnlock =
+            plantIds.isNotEmpty &&
             plantIds.every((id) => stats.completedLessonIds.contains(id));
         break;
 
       case 'livestock_master':
         // Livestock paths: first_fish, fish_health, species_care
         final livestockIds = LessonProvider.allPathMetadata
-            .where((p) => ['first_fish', 'fish_health', 'species_care'].contains(p.id))
+            .where(
+              (p) =>
+                  ['first_fish', 'fish_health', 'species_care'].contains(p.id),
+            )
             .expand((p) => p.lessonIds)
             .toSet();
-        shouldUnlock = livestockIds.isNotEmpty &&
+        shouldUnlock =
+            livestockIds.isNotEmpty &&
             livestockIds.every((id) => stats.completedLessonIds.contains(id));
         break;
 
@@ -337,15 +363,17 @@ class AchievementService {
 
       case 'completionist':
         // Unlock when all other non-hidden achievements are unlocked
-        final visibleOther = AchievementDefinitions.all
-            .where((a) => a.id != 'completionist' && !a.isHidden);
+        final visibleOther = AchievementDefinitions.all.where(
+          (a) => a.id != 'completionist' && !a.isHidden,
+        );
         final otherAchievements = visibleOther.length;
         // Only count unlocked achievements that are visible and not completionist itself
         final visibleOtherIds = visibleOther.map((a) => a.id).toSet();
         final unlockedCount = userProfile.achievements
             .where((id) => visibleOtherIds.contains(id))
             .length;
-        shouldUnlock = otherAchievements > 0 && unlockedCount >= otherAchievements;
+        shouldUnlock =
+            otherAchievements > 0 && unlockedCount >= otherAchievements;
         break;
 
       case 'midnight_scholar':
@@ -471,7 +499,9 @@ class AchievementService {
 
   /// Get completion percentage (excludes hidden achievements)
   static double getCompletionPercentage(List<String> unlockedIds) {
-    final visible = AchievementDefinitions.all.where((a) => !a.isHidden).toList();
+    final visible = AchievementDefinitions.all
+        .where((a) => !a.isHidden)
+        .toList();
     if (visible.isEmpty) return 0.0;
     return unlockedIds.length / visible.length;
   }

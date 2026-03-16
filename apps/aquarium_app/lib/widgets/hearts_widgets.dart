@@ -20,7 +20,9 @@ class HeartIndicator extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final hearts = ref.watch(userProfileProvider.select((a) => a.value?.hearts));
+    final hearts = ref.watch(
+      userProfileProvider.select((a) => a.value?.hearts),
+    );
     if (hearts == null) return const SizedBox.shrink();
 
     final maxHearts = HeartsConfig.maxHearts;
@@ -36,9 +38,7 @@ class HeartIndicator extends ConsumerWidget {
     final iconColor = compact
         ? Colors.white
         : (hearts > 0 ? AppColors.error : AppOverlays.error50);
-    final textColor = compact
-        ? Colors.white
-        : AppColors.error;
+    final textColor = compact ? Colors.white : AppColors.error;
 
     return Container(
       padding: EdgeInsets.symmetric(
@@ -63,10 +63,7 @@ class HeartIndicator extends ConsumerWidget {
             '$hearts/$maxHearts',
             style:
                 (compact ? AppTypography.labelSmall : AppTypography.labelMedium)
-                    .copyWith(
-                      color: textColor,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    .copyWith(color: textColor, fontWeight: FontWeight.bold),
           ),
         ],
       ),
@@ -114,10 +111,7 @@ class _DetailedHeartsDisplayState extends ConsumerState<DetailedHeartsDisplay> {
       padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [
-            AppOverlays.error10,
-            AppOverlays.error5,
-          ],
+          colors: [AppOverlays.error10, AppOverlays.error5],
         ),
         borderRadius: AppRadius.mediumRadius,
         border: Border.all(color: AppOverlays.error20),
@@ -132,9 +126,7 @@ class _DetailedHeartsDisplayState extends ConsumerState<DetailedHeartsDisplay> {
                   padding: const EdgeInsets.only(right: 8),
                   child: Icon(
                     filled ? Icons.favorite : Icons.favorite_border,
-                    color: filled
-                        ? AppColors.error
-                        : AppOverlays.error30,
+                    color: filled ? AppColors.error : AppOverlays.error30,
                     size: 32,
                   ),
                 ),
@@ -145,7 +137,11 @@ class _DetailedHeartsDisplayState extends ConsumerState<DetailedHeartsDisplay> {
           if (timeUntilRefill != null) ...[
             Row(
               children: [
-                Icon(Icons.schedule, size: AppIconSizes.xs, color: context.textSecondary),
+                Icon(
+                  Icons.schedule,
+                  size: AppIconSizes.xs,
+                  color: context.textSecondary,
+                ),
                 const SizedBox(width: AppSpacing.xs2),
                 Text(
                   'Next heart in ${heartsService.formatTimeRemaining(timeUntilRefill)}',
@@ -191,10 +187,7 @@ class _HeartAnimationState extends State<HeartAnimation>
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      duration: kQuizRevealDelay,
-      vsync: this,
-    );
+    _controller = AnimationController(duration: kQuizRevealDelay, vsync: this);
 
     _scaleAnimation = TweenSequence<double>([
       TweenSequenceItem(
@@ -221,10 +214,16 @@ class _HeartAnimationState extends State<HeartAnimation>
       ),
     );
 
-    _slideAnimation = Tween<Offset>(
-      begin: Offset.zero,
-      end: Offset(0, widget.gained ? -0.5 : 0.5),
-    ).animate(CurvedAnimation(parent: _controller, curve: AppCurves.standardDecelerate));
+    _slideAnimation =
+        Tween<Offset>(
+          begin: Offset.zero,
+          end: Offset(0, widget.gained ? -0.5 : 0.5),
+        ).animate(
+          CurvedAnimation(
+            parent: _controller,
+            curve: AppCurves.standardDecelerate,
+          ),
+        );
 
     _controller.forward().then((_) {
       widget.onComplete?.call();
@@ -329,7 +328,12 @@ class _OutOfHeartsModalState extends ConsumerState<OutOfHeartsModal> {
                 shape: BoxShape.circle,
               ),
               child: Center(
-                child: Text('💔', style: Theme.of(context).textTheme.headlineMedium!.copyWith(fontSize: 56)),
+                child: Text(
+                  '💔',
+                  style: Theme.of(
+                    context,
+                  ).textTheme.headlineMedium!.copyWith(fontSize: 56),
+                ),
               ),
             ),
             const SizedBox(height: AppSpacing.lg2),
@@ -406,7 +410,9 @@ class _OutOfHeartsModalState extends ConsumerState<OutOfHeartsModal> {
                         onPressed: () {
                           Navigator.of(context).pop();
                           Navigator.of(context).push(
-                            MaterialPageRoute(builder: (_) => const GemShopScreen()),
+                            MaterialPageRoute(
+                              builder: (_) => const GemShopScreen(),
+                            ),
                           );
                         },
                         child: const Text('Get More'),
@@ -482,9 +488,7 @@ class CompactHeartsDisplay extends ConsumerWidget {
               padding: const EdgeInsets.only(right: 4),
               child: Icon(
                 filled ? Icons.favorite : Icons.favorite_border,
-                color: filled
-                    ? AppColors.error
-                    : AppOverlays.error30,
+                color: filled ? AppColors.error : AppOverlays.error30,
                 size: AppIconSizes.sm,
               ),
             ),

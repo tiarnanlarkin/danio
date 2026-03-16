@@ -29,8 +29,14 @@ class SupabaseService {
   //       3. Run the migration SQL from lib/supabase/migrations/001_initial.sql
   //       See also: aquarium-roadmap/cloud_setup.md
   // ---------------------------------------------------------------------------
-  static const String _supabaseUrl = String.fromEnvironment('SUPABASE_URL', defaultValue: '');
-  static const String _supabaseAnonKey = String.fromEnvironment('SUPABASE_ANON_KEY', defaultValue: '');
+  static const String _supabaseUrl = String.fromEnvironment(
+    'SUPABASE_URL',
+    defaultValue: '',
+  );
+  static const String _supabaseAnonKey = String.fromEnvironment(
+    'SUPABASE_ANON_KEY',
+    defaultValue: '',
+  );
 
   /// The underlying Supabase client.
   SupabaseClient get client => Supabase.instance.client;
@@ -57,8 +63,10 @@ class SupabaseService {
 
     // Skip if credentials are still placeholders
     if (_supabaseUrl.isEmpty || _supabaseAnonKey.isEmpty) {
-      debugPrint('[SupabaseService] Placeholder credentials detected - '
-          'running in offline-only mode.');
+      debugPrint(
+        '[SupabaseService] Placeholder credentials detected - '
+        'running in offline-only mode.',
+      );
       return false;
     }
 

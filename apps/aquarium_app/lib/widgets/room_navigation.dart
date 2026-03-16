@@ -37,7 +37,8 @@ class RoomNavigation extends StatelessWidget {
                   name: 'Study',
                   description: 'Learn & guides',
                   color: const Color(0xFF1A237E),
-                  onTap: () => NavigationThrottle.push(context, const LearnScreen()),
+                  onTap: () =>
+                      NavigationThrottle.push(context, const LearnScreen()),
                 ),
               ),
               const SizedBox(width: AppSpacing.sm2),
@@ -47,7 +48,8 @@ class RoomNavigation extends StatelessWidget {
                   name: 'Workshop',
                   description: 'Tools & calculators',
                   color: const Color(0xFF5D4037),
-                  onTap: () => NavigationThrottle.push(context, const WorkshopScreen()),
+                  onTap: () =>
+                      NavigationThrottle.push(context, const WorkshopScreen()),
                 ),
               ),
             ],
@@ -58,7 +60,8 @@ class RoomNavigation extends StatelessWidget {
             name: 'Shop Street',
             description: 'Wishlist & costs',
             color: const Color(0xFF2E7D32),
-            onTap: () => NavigationThrottle.push(context, const ShopStreetScreen()),
+            onTap: () =>
+                NavigationThrottle.push(context, const ShopStreetScreen()),
           ),
         ],
       ),
@@ -106,7 +109,10 @@ class _RoomCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(emoji, style: Theme.of(context).textTheme.headlineMedium!.copyWith()),
+            Text(
+              emoji,
+              style: Theme.of(context).textTheme.headlineMedium!.copyWith(),
+            ),
             const SizedBox(height: AppSpacing.sm),
             Text(
               name,

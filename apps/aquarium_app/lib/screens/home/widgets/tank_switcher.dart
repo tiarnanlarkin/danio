@@ -30,10 +30,7 @@ class TankSwitcher extends StatelessWidget {
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [
-            AppOverlays.white95,
-            AppOverlays.white88,
-          ],
+          colors: [AppOverlays.white95, AppOverlays.white88],
         ),
         borderRadius: AppRadius.mediumRadius,
         boxShadow: [
@@ -66,10 +63,7 @@ class TankSwitcher extends StatelessWidget {
                       gradient: LinearGradient(
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
-                        colors: [
-                          AppOverlays.primary15,
-                          AppOverlays.primary8,
-                        ],
+                        colors: [AppOverlays.primary15, AppOverlays.primary8],
                       ),
                       borderRadius: AppRadius.smallRadius,
                     ),

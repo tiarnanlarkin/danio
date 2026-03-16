@@ -4,10 +4,10 @@ import 'package:flutter_animate/flutter_animate.dart';
 import '../../theme/app_theme.dart';
 
 /// An aquarium-themed loading indicator with rising bubbles.
-/// 
+///
 /// Creates a visual effect of multiple bubbles rising and fading,
 /// matching the aquatic theme of the app.
-/// 
+///
 /// Example:
 /// ```dart
 /// BubbleLoader()  // Default size
@@ -17,13 +17,13 @@ import '../../theme/app_theme.dart';
 class BubbleLoader extends StatefulWidget {
   /// Overall size of the loader
   final double size;
-  
+
   /// Number of bubbles
   final int bubbleCount;
-  
+
   /// Primary bubble color
   final Color? color;
-  
+
   /// Optional message below the loader
   final String? message;
 
@@ -36,28 +36,12 @@ class BubbleLoader extends StatefulWidget {
   });
 
   /// Compact bubble loader for inline use
-  const BubbleLoader.small({
-    Key? key,
-    Color? color,
-  }) : this(
-    key: key,
-    size: 32,
-    bubbleCount: 3,
-    color: color,
-  );
+  const BubbleLoader.small({Key? key, Color? color})
+    : this(key: key, size: 32, bubbleCount: 3, color: color);
 
   /// Large bubble loader for full-screen loading
-  const BubbleLoader.large({
-    Key? key,
-    String? message,
-    Color? color,
-  }) : this(
-    key: key,
-    size: 100,
-    bubbleCount: 7,
-    message: message,
-    color: color,
-  );
+  const BubbleLoader.large({Key? key, String? message, Color? color})
+    : this(key: key, size: 100, bubbleCount: 7, message: message, color: color);
 
   @override
   State<BubbleLoader> createState() => _BubbleLoaderState();
@@ -83,46 +67,46 @@ class _BubbleLoaderState extends State<BubbleLoader> {
   @override
   Widget build(BuildContext context) {
     final bubbleColor = widget.color ?? AppColors.accent;
-    
+
     return Semantics(
       liveRegion: true,
       label: widget.message ?? 'Loading',
       child: Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        SizedBox(
-          width: widget.size,
-          height: widget.size,
-          child: Stack(
-            children: _bubbles.map((bubble) {
-              final bubbleSize = widget.size * 0.2 * bubble.size;
-              
-              return Positioned(
-                left: bubble.x * widget.size - bubbleSize / 2,
-                bottom: 0,
-                child: _Bubble(
-                  size: bubbleSize,
-                  color: bubbleColor,
-                  delay: bubble.delay,
-                  duration: bubble.duration,
-                  riseHeight: widget.size,
-                ),
-              );
-            }).toList(),
-          ),
-        ),
-        if (widget.message != null) ...[
-          const SizedBox(height: AppSpacing.md),
-          Text(
-            widget.message!,
-            style: AppTypography.bodyMedium.copyWith(
-              color: context.textSecondary,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          SizedBox(
+            width: widget.size,
+            height: widget.size,
+            child: Stack(
+              children: _bubbles.map((bubble) {
+                final bubbleSize = widget.size * 0.2 * bubble.size;
+
+                return Positioned(
+                  left: bubble.x * widget.size - bubbleSize / 2,
+                  bottom: 0,
+                  child: _Bubble(
+                    size: bubbleSize,
+                    color: bubbleColor,
+                    delay: bubble.delay,
+                    duration: bubble.duration,
+                    riseHeight: widget.size,
+                  ),
+                );
+              }).toList(),
             ),
-            textAlign: TextAlign.center,
           ),
+          if (widget.message != null) ...[
+            const SizedBox(height: AppSpacing.md),
+            Text(
+              widget.message!,
+              style: AppTypography.bodyMedium.copyWith(
+                color: context.textSecondary,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ],
         ],
-      ],
-    ),
+      ),
     );
   }
 }
@@ -159,27 +143,18 @@ class _Bubble extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: size,
-      height: size,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        gradient: RadialGradient(
-          colors: [
-            color.withAlpha(204),
-            color.withAlpha(102),
-          ],
-          center: const Alignment(-0.3, -0.3),
-        ),
-        border: Border.all(
-          color: color.withAlpha(153),
-          width: 1,
-        ),
-      ),
-    )
-        .animate(
-          onPlay: (controller) => controller.repeat(),
-          delay: delay,
+          width: size,
+          height: size,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            gradient: RadialGradient(
+              colors: [color.withAlpha(204), color.withAlpha(102)],
+              center: const Alignment(-0.3, -0.3),
+            ),
+            border: Border.all(color: color.withAlpha(153), width: 1),
+          ),
         )
+        .animate(onPlay: (controller) => controller.repeat(), delay: delay)
         .fadeIn(duration: 200.ms)
         .then()
         .moveY(
@@ -188,11 +163,7 @@ class _Bubble extends StatelessWidget {
           duration: duration,
           curve: AppCurves.standardDecelerate,
         )
-        .fadeOut(
-          begin: 0.8,
-          duration: duration * 0.3,
-          delay: duration * 0.7,
-        )
+        .fadeOut(begin: 0.8, duration: duration * 0.3, delay: duration * 0.7)
         .scaleXY(
           begin: 1.0,
           end: 0.6,
@@ -207,22 +178,18 @@ class BubbleLoadingScreen extends StatelessWidget {
   final String? message;
   final Color? backgroundColor;
 
-  const BubbleLoadingScreen({
-    super.key,
-    this.message,
-    this.backgroundColor,
-  });
+  const BubbleLoadingScreen({super.key, this.message, this.backgroundColor});
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
-    
+
     return Container(
-      color: backgroundColor ?? (isDark ? AppColors.backgroundDark : AppColors.background),
-      child: Center(
-        child: BubbleLoader.large(message: message),
-      ),
+      color:
+          backgroundColor ??
+          (isDark ? AppColors.backgroundDark : AppColors.background),
+      child: Center(child: BubbleLoader.large(message: message)),
     );
   }
 }

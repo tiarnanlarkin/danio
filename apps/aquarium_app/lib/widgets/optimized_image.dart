@@ -55,9 +55,7 @@ class OptimizedNetworkImage extends StatelessWidget {
       fit: fit,
       memCacheWidth: cacheWidth,
       memCacheHeight: cacheHeight,
-      fadeInDuration: fadeIn
-          ? AppDurations.medium4
-          : Duration.zero,
+      fadeInDuration: fadeIn ? AppDurations.medium4 : Duration.zero,
       placeholder: (context, url) =>
           placeholder ??
           Center(

@@ -92,48 +92,53 @@ class PlacementResultScreen extends ConsumerWidget {
 
             // Action buttons
             Padding(
-              padding: const EdgeInsets.fromLTRB(AppSpacing.md, AppSpacing.md, AppSpacing.md, 0),
+              padding: const EdgeInsets.fromLTRB(
+                AppSpacing.md,
+                AppSpacing.md,
+                AppSpacing.md,
+                0,
+              ),
               child: SafeArea(
                 top: false,
                 child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  FilledButton(
-                    onPressed: () {
-                      if (source == 'learn_tab') {
-                        // From the Learn tab — just pop back
-                        Navigator.of(context).pop();
-                      } else {
-                        // From onboarding — push the next step
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (_) => const LearningStyleScreen(),
-                          ),
-                        );
-                      }
-                    },
-                    style: FilledButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 16),
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    FilledButton(
+                      onPressed: () {
+                        if (source == 'learn_tab') {
+                          // From the Learn tab — just pop back
+                          Navigator.of(context).pop();
+                        } else {
+                          // From onboarding — push the next step
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (_) => const LearningStyleScreen(),
+                            ),
+                          );
+                        }
+                      },
+                      style: FilledButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                      ),
+                      child: Text(
+                        source == 'learn_tab'
+                            ? 'Back to Learning 🐠'
+                            : 'Start My Journey! 🚀',
+                        style: Theme.of(context).textTheme.titleMedium!,
+                      ),
                     ),
-                    child: Text(
-                      source == 'learn_tab'
-                          ? 'Back to Learning 🐠'
-                          : 'Start My Journey! 🚀',
-                      style: Theme.of(context).textTheme.titleMedium!,
+                    const SizedBox(height: AppSpacing.sm2),
+                    OutlinedButton(
+                      onPressed: () {
+                        _showDetailedBreakdown(context, theme);
+                      },
+                      style: OutlinedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                      ),
+                      child: const Text('View Detailed Breakdown'),
                     ),
-                  ),
-                  const SizedBox(height: AppSpacing.sm2),
-                  OutlinedButton(
-                    onPressed: () {
-                      _showDetailedBreakdown(context, theme);
-                    },
-                    style: OutlinedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                    ),
-                    child: const Text('View Detailed Breakdown'),
-                  ),
-                ],
-              ),
+                  ],
+                ),
               ),
             ),
           ],
@@ -268,8 +273,7 @@ class PlacementResultScreen extends ConsumerWidget {
                       const SizedBox(width: AppSpacing.xs),
                       Text(
                         _getSkipLevelLabel(recommendation.skipLevel),
-                        style: TextStyle(
-                          fontSize: 12,
+                        style: AppTypography.labelSmall.copyWith(
                           fontWeight: FontWeight.bold,
                           color: _getSkipLevelColor(recommendation.skipLevel),
                         ),
@@ -288,7 +292,7 @@ class PlacementResultScreen extends ConsumerWidget {
               ),
               child: Text(
                 recommendation.description,
-                style: const TextStyle(fontSize: 14),
+                style: AppTypography.bodyMedium,
               ),
             ),
             if (recommendation.lessonsToSkip.isNotEmpty) ...[
@@ -319,10 +323,7 @@ class PlacementResultScreen extends ConsumerWidget {
       padding: const EdgeInsets.all(AppSpacing.lg2),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
-          colors: [
-            AppOverlays.accent10,
-            AppOverlays.accent5,
-          ],
+          colors: [AppOverlays.accent10, AppOverlays.accent5],
         ),
         borderRadius: AppRadius.mediumRadius,
         border: Border.all(color: AppOverlays.accent30),
@@ -335,7 +336,11 @@ class PlacementResultScreen extends ConsumerWidget {
               color: AppOverlays.accent20,
               shape: BoxShape.circle,
             ),
-            child: const Icon(Icons.star, color: AppColors.accent, size: AppIconSizes.lg),
+            child: const Icon(
+              Icons.star,
+              color: AppColors.accent,
+              size: AppIconSizes.lg,
+            ),
           ),
           const SizedBox(width: AppSpacing.md),
           Expanded(

@@ -26,30 +26,26 @@ class SyncStatusWidget extends ConsumerWidget {
 
     final (IconData icon, Color color, String tooltip) = switch (status) {
       CloudSyncStatus.synced => (
-          Icons.cloud_done_outlined,
-          AppColors.success,
-          'Synced',
-        ),
-      CloudSyncStatus.syncing => (
-          Icons.sync,
-          AppColors.primary,
-          'Syncing...',
-        ),
+        Icons.cloud_done_outlined,
+        AppColors.success,
+        'Synced',
+      ),
+      CloudSyncStatus.syncing => (Icons.sync, AppColors.primary, 'Syncing...'),
       CloudSyncStatus.offline => (
-          Icons.cloud_off_outlined,
-          AppColors.warning,
-          'Offline - changes queued',
-        ),
+        Icons.cloud_off_outlined,
+        AppColors.warning,
+        'Offline - changes queued',
+      ),
       CloudSyncStatus.error => (
-          Icons.error_outline,
-          AppColors.error,
-          'Sync error',
-        ),
+        Icons.error_outline,
+        AppColors.error,
+        'Sync error',
+      ),
       CloudSyncStatus.disabled => (
-          Icons.cloud_off,
-          context.textHint,
-          'Cloud disabled',
-        ),
+        Icons.cloud_off,
+        context.textHint,
+        'Cloud disabled',
+      ),
     };
 
     return Tooltip(

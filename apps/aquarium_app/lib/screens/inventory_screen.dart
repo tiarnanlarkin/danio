@@ -201,7 +201,10 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen>
         SnackBar(
           content: Row(
             children: [
-              Text(shopItem.emoji, style: Theme.of(context).textTheme.headlineSmall!),
+              Text(
+                shopItem.emoji,
+                style: Theme.of(context).textTheme.headlineSmall!,
+              ),
               const SizedBox(width: AppSpacing.sm2),
               Expanded(
                 child: Text(
@@ -259,7 +262,10 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen>
               ),
               title: Row(
                 children: [
-                  Text(shopItem.emoji, style: Theme.of(context).textTheme.headlineMedium!),
+                  Text(
+                    shopItem.emoji,
+                    style: Theme.of(context).textTheme.headlineMedium!,
+                  ),
                   const SizedBox(width: AppSpacing.sm2),
                   Expanded(
                     child: Text(
@@ -299,10 +305,11 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen>
                         ),
                         Text(
                           'x${item.quantity}',
-                          style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                            color: InventoryColors.goldAccent,
-                            fontWeight: FontWeight.bold,
-                          ),
+                          style: Theme.of(context).textTheme.titleLarge
+                              ?.copyWith(
+                                color: InventoryColors.goldAccent,
+                                fontWeight: FontWeight.bold,
+                              ),
                         ),
                       ],
                     ),
@@ -430,10 +437,7 @@ class _InventoryItemCard extends StatelessWidget {
           decoration: BoxDecoration(
             color: InventoryColors.glassCard,
             borderRadius: AppRadius.largeRadius,
-            border: Border.all(
-              color: accentColor.withAlpha(128),
-              width: 2,
-            ),
+            border: Border.all(color: accentColor.withAlpha(128), width: 2),
           ),
           child: Padding(
             padding: const EdgeInsets.all(AppSpacing.sm2),
@@ -446,7 +450,9 @@ class _InventoryItemCard extends StatelessWidget {
                   children: [
                     Text(
                       shopItem.emoji,
-                      style: Theme.of(context).textTheme.headlineMedium!.copyWith(),
+                      style: Theme.of(
+                        context,
+                      ).textTheme.headlineMedium!.copyWith(),
                     ),
                     if (item.quantity > 1 || shopItem.isConsumable)
                       Container(
@@ -460,10 +466,11 @@ class _InventoryItemCard extends StatelessWidget {
                         ),
                         child: Text(
                           'x${item.quantity}',
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: AppColors.onPrimary,
-                            fontWeight: FontWeight.bold,
-                          ),
+                          style: Theme.of(context).textTheme.bodySmall
+                              ?.copyWith(
+                                color: AppColors.onPrimary,
+                                fontWeight: FontWeight.bold,
+                              ),
                         ),
                       ),
                   ],
@@ -486,9 +493,8 @@ class _InventoryItemCard extends StatelessWidget {
                       ? _ExpiryTimer(expiresAt: item.expiresAt!)
                       : Text(
                           shopItem.description,
-                          style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                            color: InventoryColors.textSecondary,
-                          ),
+                          style: Theme.of(context).textTheme.labelSmall
+                              ?.copyWith(color: InventoryColors.textSecondary),
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                         ),
@@ -578,22 +584,19 @@ class _HeartsChip extends StatelessWidget {
   final int currentHearts;
   final int maxHearts;
 
-  const _HeartsChip({
-    required this.currentHearts,
-    required this.maxHearts,
-  });
+  const _HeartsChip({required this.currentHearts, required this.maxHearts});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: AppSpacing.xs2),
+      padding: const EdgeInsets.symmetric(
+        horizontal: 12,
+        vertical: AppSpacing.xs2,
+      ),
       decoration: BoxDecoration(
         color: AppOverlays.red20,
         borderRadius: AppRadius.mediumRadius,
-        border: Border.all(
-          color: AppOverlays.red50,
-          width: 2,
-        ),
+        border: Border.all(color: AppOverlays.red50, width: 2),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,

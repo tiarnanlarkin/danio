@@ -50,12 +50,14 @@ class IdentificationResult {
       hardness: json['hardness'] as String? ?? 'Moderate',
       maxSizeCm: (json['max_size_cm'] as num?)?.toDouble(),
       diet: json['diet'] as String?,
-      tankMates: (json['tank_mates'] as List<dynamic>?)
+      tankMates:
+          (json['tank_mates'] as List<dynamic>?)
               ?.map((e) => e.toString())
               .toList() ??
           [],
       compatibilityNotes: json['compatibility_notes'] as String? ?? '',
-      careTips: (json['care_tips'] as List<dynamic>?)
+      careTips:
+          (json['care_tips'] as List<dynamic>?)
               ?.map((e) => e.toString())
               .toList() ??
           [],
@@ -195,14 +197,12 @@ class PlanDay {
   const PlanDay({required this.day, required this.tasks});
 
   factory PlanDay.fromJson(Map<String, dynamic> json) {
-    final tasksList = (json['tasks'] as List<dynamic>?)
+    final tasksList =
+        (json['tasks'] as List<dynamic>?)
             ?.map((t) => PlanTask.fromJson(t as Map<String, dynamic>))
             .toList() ??
         [];
-    return PlanDay(
-      day: json['day'] as String? ?? '',
-      tasks: tasksList,
-    );
+    return PlanDay(day: json['day'] as String? ?? '', tasks: tasksList);
   }
 
   Map<String, dynamic> toJson() => {
@@ -219,7 +219,8 @@ class WeeklyPlan {
   const WeeklyPlan({required this.days, required this.generatedAt});
 
   factory WeeklyPlan.fromJson(Map<String, dynamic> json) {
-    final daysList = (json['days'] as List<dynamic>?)
+    final daysList =
+        (json['days'] as List<dynamic>?)
             ?.map((d) => PlanDay.fromJson(d as Map<String, dynamic>))
             .toList() ??
         [];

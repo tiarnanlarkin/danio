@@ -6,34 +6,34 @@ import '../../theme/app_theme.dart';
 class AppAppBar extends StatelessWidget implements PreferredSizeWidget {
   /// Title text
   final String? title;
-  
+
   /// Title widget (alternative to text title)
   final Widget? titleWidget;
-  
+
   /// Leading widget (defaults to back button if canPop)
   final Widget? leading;
-  
+
   /// Whether to show back button automatically
   final bool automaticallyImplyLeading;
-  
+
   /// Action buttons
   final List<Widget>? actions;
-  
+
   /// Whether to center the title
   final bool centerTitle;
-  
+
   /// Background color
   final Color? backgroundColor;
-  
+
   /// Elevation
   final double elevation;
-  
+
   /// Whether this is a transparent/overlay app bar
   final bool transparent;
-  
+
   /// Bottom widget (tabs, etc.)
   final PreferredSizeWidget? bottom;
-  
+
   /// Custom height
   final double? toolbarHeight;
 
@@ -54,29 +54,30 @@ class AppAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-    
     return AppBar(
-      title: titleWidget ?? (title != null ? Text(
-        title!,
-        style: AppTypography.titleMedium.copyWith(
-          color: context.textPrimary,
-        ),
-      ) : null),
+      title:
+          titleWidget ??
+          (title != null
+              ? Text(
+                  title!,
+                  style: AppTypography.titleMedium.copyWith(
+                    color: context.textPrimary,
+                  ),
+                )
+              : null),
       leading: leading,
       automaticallyImplyLeading: automaticallyImplyLeading,
       actions: actions,
       centerTitle: centerTitle,
-      backgroundColor: transparent 
-          ? Colors.transparent 
+      backgroundColor: transparent
+          ? Colors.transparent
           : (backgroundColor ?? (context.surfaceColor)),
       elevation: elevation,
       scrolledUnderElevation: transparent ? 0 : 1,
       surfaceTintColor: Colors.transparent,
       bottom: bottom,
       toolbarHeight: toolbarHeight,
-      iconTheme: IconThemeData(
-        color: context.textPrimary,
-      ),
+      iconTheme: IconThemeData(color: context.textPrimary),
     );
   }
 
@@ -109,7 +110,6 @@ class AppBarAction extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    
     Widget button = IconButton(
       icon: Icon(icon, size: AppIconSizes.md),
       onPressed: onPressed,
@@ -121,10 +121,12 @@ class AppBarAction extends StatelessWidget {
     if (showBadge) {
       button = Badge(
         isLabelVisible: badgeCount != null && badgeCount! > 0,
-        label: badgeCount != null ? Text(
-          badgeCount! > 99 ? '99+' : badgeCount.toString(),
-          style: Theme.of(context).textTheme.labelSmall!,
-        ) : null,
+        label: badgeCount != null
+            ? Text(
+                badgeCount! > 99 ? '99+' : badgeCount.toString(),
+                style: Theme.of(context).textTheme.labelSmall!,
+              )
+            : null,
         child: button,
       );
     }
@@ -152,7 +154,6 @@ class AppBackButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    
     return Semantics(
       label: semanticsLabel ?? 'Go back',
       button: true,
@@ -182,7 +183,6 @@ class AppCloseButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    
     return Semantics(
       label: semanticsLabel ?? 'Close',
       button: true,
@@ -216,7 +216,6 @@ class AppTabBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-    
     return TabBar(
       controller: controller,
       tabs: tabs,
@@ -275,7 +274,7 @@ class AppBottomNavBar extends StatelessWidget {
             children: List.generate(items.length, (index) {
               final item = items[index];
               final isSelected = index == currentIndex;
-              
+
               return _NavBarItem(
                 item: item,
                 isSelected: isSelected,
@@ -308,9 +307,7 @@ class _NavBarItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = isSelected 
-        ? AppColors.primary 
-        : (context.textSecondary);
+    final color = isSelected ? AppColors.primary : (context.textSecondary);
 
     return Semantics(
       label: item.label,
@@ -335,9 +332,13 @@ class _NavBarItem extends StatelessWidget {
                   borderRadius: AppRadius.smallRadius,
                 ),
                 child: Badge(
-                  isLabelVisible: item.badgeCount != null && item.badgeCount! > 0,
-                  label: item.badgeCount != null 
-                      ? Text(item.badgeCount.toString(), style: Theme.of(context).textTheme.labelSmall!)
+                  isLabelVisible:
+                      item.badgeCount != null && item.badgeCount! > 0,
+                  label: item.badgeCount != null
+                      ? Text(
+                          item.badgeCount.toString(),
+                          style: Theme.of(context).textTheme.labelSmall!,
+                        )
                       : null,
                   child: Icon(
                     isSelected ? item.activeIcon ?? item.icon : item.icon,
@@ -352,7 +353,9 @@ class _NavBarItem extends StatelessWidget {
                   item.label,
                   style: AppTypography.labelSmall.copyWith(
                     color: color,
-                    fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+                    fontWeight: isSelected
+                        ? FontWeight.w600
+                        : FontWeight.normal,
                   ),
                 ),
               ],
@@ -395,9 +398,14 @@ class AppSectionHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: padding ?? EdgeInsets.fromLTRB(
-        AppSpacing.md, AppSpacing.lg, AppSpacing.md, AppSpacing.sm,
-      ),
+      padding:
+          padding ??
+          EdgeInsets.fromLTRB(
+            AppSpacing.md,
+            AppSpacing.lg,
+            AppSpacing.md,
+            AppSpacing.sm,
+          ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -446,7 +454,7 @@ class AppScaffold extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
-    
+
     return Scaffold(
       appBar: appBar,
       body: body,
@@ -454,7 +462,9 @@ class AppScaffold extends StatelessWidget {
       floatingActionButtonLocation: floatingActionButtonLocation,
       bottomNavigationBar: bottomNavigationBar,
       drawer: drawer,
-      backgroundColor: backgroundColor ?? (isDark ? AppColors.backgroundDark : AppColors.background),
+      backgroundColor:
+          backgroundColor ??
+          (isDark ? AppColors.backgroundDark : AppColors.background),
       extendBodyBehindAppBar: extendBodyBehindAppBar,
       extendBody: extendBody,
       resizeToAvoidBottomInset: resizeToAvoidBottomInset,

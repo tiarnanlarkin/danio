@@ -325,7 +325,9 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
   }) async {
     final cardIndex = state.cards.indexWhere((c) => c.id == cardId);
     if (cardIndex == -1) {
-      state = state.copyWith(errorMessage: "That review card couldn't be found.");
+      state = state.copyWith(
+        errorMessage: "That review card couldn't be found.",
+      );
       return; // Don't break flow
     }
 
@@ -445,7 +447,8 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
       return result;
     } catch (e) {
       state = state.copyWith(
-        errorMessage: "Couldn't save your answer. Your progress is safe — try again.",
+        errorMessage:
+            "Couldn't save your answer. Your progress is safe — try again.",
       );
       rethrow;
     }
@@ -483,7 +486,8 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
       await _scheduleNotifications();
     } catch (e) {
       state = state.copyWith(
-        errorMessage: "Couldn't save your session results. Don't worry — your progress is tracked.",
+        errorMessage:
+            "Couldn't save your session results. Don't worry — your progress is tracked.",
       );
       rethrow;
     }

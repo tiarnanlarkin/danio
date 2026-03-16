@@ -73,12 +73,13 @@ class ApiRateLimiter {
       for (final key in keys) {
         final feature = key.substring(_prefsPrefix.length);
         final raw = prefs.getStringList(key) ?? [];
-        final stamps = raw
-            .map((s) => DateTime.tryParse(s))
-            .whereType<DateTime>()
-            .where((t) => t.isAfter(cutoff))
-            .toList()
-          ..sort();
+        final stamps =
+            raw
+                .map((s) => DateTime.tryParse(s))
+                .whereType<DateTime>()
+                .where((t) => t.isAfter(cutoff))
+                .toList()
+              ..sort();
         if (stamps.isNotEmpty) {
           _timestamps[feature] = stamps;
         }

@@ -34,10 +34,7 @@ class FirebaseAnalyticsService {
       _log('tank_created', {'tank_type': tankType});
 
   /// Fires when a quiz is passed.
-  Future<void> logQuizPassed({
-    required String quizId,
-    required int score,
-  }) =>
+  Future<void> logQuizPassed({required String quizId, required int score}) =>
       _log('quiz_passed', {'quiz_id': quizId, 'score': score});
 
   /// Fires when the Smart fish ID feature is used.

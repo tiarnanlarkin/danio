@@ -4,6 +4,7 @@ library;
 
 /// Duration constants
 const kQuizRevealDelay = Duration(milliseconds: 1200);
+
 /// Duration for SnackBars with undo actions. Must exceed the soft-delete
 /// timer (5s) so the SnackBar is still visible when the timer fires.
 const kSnackbarDuration = Duration(seconds: 6);

@@ -12,7 +12,8 @@ class LearningStreakBadge extends StatelessWidget {
   /// Calculate consecutive days with at least 1 lesson completed,
   /// ending today or yesterday (to allow for timezone edge cases).
   static int calculateLearningStreak(
-      Map<String, LessonProgress> lessonProgress) {
+    Map<String, LessonProgress> lessonProgress,
+  ) {
     if (lessonProgress.isEmpty) return 0;
 
     // Collect all unique dates where lessons were completed or reviewed
@@ -29,12 +30,10 @@ class LearningStreakBadge extends StatelessWidget {
     // Check consecutive days ending today or yesterday
     final today = DateTime.now();
     final todayKey = _dateKey(today);
-    final yesterdayKey =
-        _dateKey(today.subtract(const Duration(days: 1)));
+    final yesterdayKey = _dateKey(today.subtract(const Duration(days: 1)));
 
     // Must have activity today or yesterday to have an active streak
-    if (!activeDays.contains(todayKey) &&
-        !activeDays.contains(yesterdayKey)) {
+    if (!activeDays.contains(todayKey) && !activeDays.contains(yesterdayKey)) {
       return 0;
     }
 
@@ -69,10 +68,7 @@ class LearningStreakBadge extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppOverlays.primary10,
         borderRadius: AppRadius.largeRadius,
-        border: Border.all(
-          color: AppOverlays.primary30,
-          width: 1,
-        ),
+        border: Border.all(color: AppOverlays.primary30, width: 1),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,

@@ -63,7 +63,8 @@ class _SymptomTriageScreenState extends ConsumerState<SymptomTriageScreen> {
 
   void _nextStep() {
     if (_step == 0) {
-      if (_selectedSymptoms.isEmpty && _freeTextController.text.trim().isEmpty) {
+      if (_selectedSymptoms.isEmpty &&
+          _freeTextController.text.trim().isEmpty) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Select at least one symptom')),
         );
@@ -79,7 +80,10 @@ class _SymptomTriageScreenState extends ConsumerState<SymptomTriageScreen> {
   Future<void> _runDiagnosis() async {
     final openai = ref.read(openAIServiceProvider);
     if (!openai.isConfigured) {
-      setState(() => _error = 'Symptom Triage isn\'t available yet — we\'re working on bringing it to you! 🩺');
+      setState(
+        () => _error =
+            'Symptom Triage isn\'t available yet — we\'re working on bringing it to you! 🩺',
+      );
       return;
     }
 
@@ -104,7 +108,9 @@ class _SymptomTriageScreenState extends ConsumerState<SymptomTriageScreen> {
     ].join(', ');
 
     final params = StringBuffer();
-    if (_phController.text.isNotEmpty) params.write('pH: ${_phController.text}, ');
+    if (_phController.text.isNotEmpty) {
+      params.write('pH: ${_phController.text}, ');
+    }
     if (_ammoniaController.text.isNotEmpty) {
       params.write('Ammonia: ${_ammoniaController.text} ppm, ');
     }
@@ -135,7 +141,8 @@ class _SymptomTriageScreenState extends ConsumerState<SymptomTriageScreen> {
         messages: [
           const ChatMessage(
             role: 'system',
-            content: 'You are Danio AI, an expert aquatic veterinarian and fish '
+            content:
+                'You are Danio AI, an expert aquatic veterinarian and fish '
                 'health specialist with 20+ years of experience diagnosing '
                 'freshwater and marine fish diseases. You think systematically: '
                 'consider the most likely diagnoses first, rule out common causes, '
@@ -160,10 +167,9 @@ class _SymptomTriageScreenState extends ConsumerState<SymptomTriageScreen> {
 
       // Record rate limit & AI history.
       rateLimiter.recordRequest(AIFeature.symptomTriage);
-      ref.read(aiHistoryProvider.notifier).add(
-        type: 'symptom_triage',
-        summary: 'Triage: $symptoms',
-      );
+      ref
+          .read(aiHistoryProvider.notifier)
+          .add(type: 'symptom_triage', summary: 'Triage: $symptoms');
     } on TimeoutException {
       if (!mounted) return;
       setState(() => _error = OpenAIUserMessages.timeout);
@@ -183,10 +189,7 @@ class _SymptomTriageScreenState extends ConsumerState<SymptomTriageScreen> {
     final theme = Theme.of(context);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Symptom Triage'),
-        centerTitle: true,
-      ),
+      appBar: AppBar(title: const Text('Symptom Triage'), centerTitle: true),
       body: Stepper(
         currentStep: _step,
         onStepContinue: _step < 2 ? _nextStep : null,
@@ -218,9 +221,7 @@ class _SymptomTriageScreenState extends ConsumerState<SymptomTriageScreen> {
           // Step 1: Symptoms
           Step(
             title: const Text('What\'s wrong?'),
-            subtitle: _step > 0
-                ? Text(_selectedSymptoms.join(', '))
-                : null,
+            subtitle: _step > 0 ? Text(_selectedSymptoms.join(', ')) : null,
             isActive: _step >= 0,
             state: _step > 0 ? StepState.complete : StepState.indexed,
             content: _buildSymptomsStep(theme),
@@ -364,7 +365,12 @@ class _SymptomTriageScreenState extends ConsumerState<SymptomTriageScreen> {
                 children: [
                   const Icon(Icons.error_outline, color: AppColors.error),
                   const SizedBox(width: AppSpacing.sm),
-                  Expanded(child: Text(_error!, style: const TextStyle(color: AppColors.error))),
+                  Expanded(
+                    child: Text(
+                      _error!,
+                      style: const TextStyle(color: AppColors.error),
+                    ),
+                  ),
                 ],
               ),
               const SizedBox(height: AppSpacing.sm),

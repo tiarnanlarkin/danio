@@ -7,22 +7,22 @@ import '../../theme/app_theme.dart';
 enum GlassVariant {
   /// Standard frosted glass
   frosted,
-  
+
   /// Soft puffy (cotton candy style)
   soft,
-  
+
   /// Aurora gradient glass
   aurora,
-  
+
   /// Cozy warm card
   cozy,
-  
+
   /// Watercolor style (subtle gradient tint)
   watercolor,
 }
 
 /// A premium glassmorphism card with blur effects.
-/// 
+///
 /// Inspired by high-end app designs with:
 /// - Backdrop blur for true glass effect
 /// - Subtle borders and glows
@@ -62,7 +62,8 @@ class GlassCard extends StatefulWidget {
   State<GlassCard> createState() => _GlassCardState();
 }
 
-class _GlassCardState extends State<GlassCard> with SingleTickerProviderStateMixin {
+class _GlassCardState extends State<GlassCard>
+    with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _scaleAnimation;
 
@@ -73,9 +74,10 @@ class _GlassCardState extends State<GlassCard> with SingleTickerProviderStateMix
       duration: AppDurations.short,
       vsync: this,
     );
-    _scaleAnimation = Tween<double>(begin: 1.0, end: 0.98).animate(
-      CurvedAnimation(parent: _controller, curve: AppCurves.standard),
-    );
+    _scaleAnimation = Tween<double>(
+      begin: 1.0,
+      end: 0.98,
+    ).animate(CurvedAnimation(parent: _controller, curve: AppCurves.standard));
   }
 
   @override
@@ -116,7 +118,7 @@ class _GlassCardState extends State<GlassCard> with SingleTickerProviderStateMix
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final radius = widget.borderRadius ?? AppRadius.largeRadius;
-    
+
     Widget card = AnimatedBuilder(
       animation: _scaleAnimation,
       builder: (context, child) {
@@ -183,9 +185,7 @@ class _GlassCardState extends State<GlassCard> with SingleTickerProviderStateMix
           : (isDark ? AppColors.whiteAlpha08 : AppColors.whiteAlpha70),
       borderRadius: radius,
       border: Border.all(
-        color: isDark 
-            ? AppColors.whiteAlpha12 
-            : AppColors.whiteAlpha50,
+        color: isDark ? AppColors.whiteAlpha12 : AppColors.whiteAlpha50,
         width: 1.5,
       ),
       boxShadow: [
@@ -201,7 +201,7 @@ class _GlassCardState extends State<GlassCard> with SingleTickerProviderStateMix
           blurRadius: 20,
           offset: const Offset(0, 8),
         ),
-        ],
+      ],
     );
   }
 
@@ -209,8 +209,8 @@ class _GlassCardState extends State<GlassCard> with SingleTickerProviderStateMix
     return BoxDecoration(
       color: widget.tintColor != null
           ? widget.tintColor == const Color(0xFF2A2220)
-              ? AppColors.primaryAlpha90
-              : AppColors.whiteAlpha90
+                ? AppColors.primaryAlpha90
+                : AppColors.whiteAlpha90
           : (isDark ? AppColors.whiteAlpha08 : AppColors.whiteAlpha70),
       borderRadius: radius,
       boxShadow: [
@@ -245,14 +245,8 @@ class _GlassCardState extends State<GlassCard> with SingleTickerProviderStateMix
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
         colors: isDark
-            ? [
-                AppColors.primaryAlpha85,
-                const Color(0xFF1C1917).withAlpha(242),
-              ]
-            : [
-                AppColors.primaryAlpha90,
-                AppColors.whiteAlpha95,
-              ],
+            ? [AppColors.primaryAlpha85, const Color(0xFF1C1917).withAlpha(242)]
+            : [AppColors.primaryAlpha90, AppColors.whiteAlpha95],
       ),
       borderRadius: radius,
       border: Border.all(
@@ -279,9 +273,7 @@ class _GlassCardState extends State<GlassCard> with SingleTickerProviderStateMix
       color: isDark ? const Color(0xFF2A2220) : const Color(0xFFFFFBF5),
       borderRadius: radius,
       border: Border.all(
-        color: isDark
-            ? AppColors.warningAlpha20
-            : AppColors.warningAlpha12,
+        color: isDark ? AppColors.warningAlpha20 : AppColors.warningAlpha12,
         width: 1,
       ),
       boxShadow: [
@@ -315,10 +307,7 @@ class _GlassCardState extends State<GlassCard> with SingleTickerProviderStateMix
         stops: const [0.0, 0.5, 1.0],
       ),
       borderRadius: radius,
-      border: Border.all(
-        color: tint.withAlpha(isDark ? 38 : 26),
-        width: 1,
-      ),
+      border: Border.all(color: tint.withAlpha(isDark ? 38 : 26), width: 1),
       boxShadow: [
         BoxShadow(
           color: tint.withAlpha(isDark ? 26 : 15),
@@ -364,7 +353,8 @@ class SoftCard extends StatelessWidget {
       margin: margin,
       padding: padding ?? const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
-        color: backgroundColor ?? (isDark ? AppColors.cardDark : AppColors.card),
+        color:
+            backgroundColor ?? (isDark ? AppColors.cardDark : AppColors.card),
         borderRadius: radius,
         boxShadow: [
           BoxShadow(
@@ -373,12 +363,16 @@ class SoftCard extends StatelessWidget {
             offset: const Offset(0, 2),
           ),
           BoxShadow(
-            color: isDark ? AppColors.blackAlpha15 : const Color(0x08000000), // 0.03
+            color: isDark
+                ? AppColors.blackAlpha15
+                : const Color(0x08000000), // 0.03
             blurRadius: 20,
             offset: const Offset(0, 8),
           ),
           BoxShadow(
-            color: isDark ? AppColors.blackAlpha10 : const Color(0x05000000), // 0.02
+            color: isDark
+                ? AppColors.blackAlpha10
+                : const Color(0x05000000), // 0.02
             blurRadius: 40,
             offset: const Offset(0, 16),
           ),

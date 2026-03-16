@@ -80,9 +80,7 @@ class DailyGoalProgress extends ConsumerWidget {
           if (!dailyGoal.isCompleted)
             Text(
               '${dailyGoal.remainingXp} XP to go',
-              style: AppTypography.bodySmall.copyWith(
-                color: context.textHint,
-              ),
+              style: AppTypography.bodySmall.copyWith(color: context.textHint),
               textAlign: TextAlign.center,
             ),
         ],
@@ -96,7 +94,11 @@ class _CircularProgressPainter extends CustomPainter {
   final bool isCompleted;
   final Color trackColor;
 
-  _CircularProgressPainter({required this.progress, required this.isCompleted, required this.trackColor});
+  _CircularProgressPainter({
+    required this.progress,
+    required this.isCompleted,
+    required this.trackColor,
+  });
 
   @override
   void paint(Canvas canvas, Size size) {

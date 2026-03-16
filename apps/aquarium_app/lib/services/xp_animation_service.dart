@@ -53,7 +53,8 @@ class XpAnimationListener extends ConsumerStatefulWidget {
   const XpAnimationListener({super.key, required this.child});
 
   @override
-  ConsumerState<XpAnimationListener> createState() => _XpAnimationListenerState();
+  ConsumerState<XpAnimationListener> createState() =>
+      _XpAnimationListenerState();
 }
 
 class _XpAnimationListenerState extends ConsumerState<XpAnimationListener> {
@@ -90,7 +91,9 @@ class _XpAnimationListenerState extends ConsumerState<XpAnimationListener> {
       if (!mounted) return;
 
       final overlayState = Overlay.maybeOf(context, rootOverlay: true);
-      if (overlayState == null) return; // Overlay not yet available — skip silently
+      if (overlayState == null) {
+        return; // Overlay not yet available — skip silently
+      }
 
       _currentOverlay = OverlayEntry(
         builder: (context) => Positioned(

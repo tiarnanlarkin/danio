@@ -80,7 +80,10 @@ class _AiStockingSuggestionSheetState
   Future<void> _fetchSuggestion() async {
     final openai = ref.read(openAIServiceProvider);
     if (!openai.isConfigured) {
-      setState(() => _error = 'AI stocking suggestions aren\'t available yet — we\'re working on bringing them to you! 🐟');
+      setState(
+        () => _error =
+            'AI stocking suggestions aren\'t available yet — we\'re working on bringing them to you! 🐟',
+      );
       return;
     }
 
@@ -128,7 +131,8 @@ class _AiStockingSuggestionSheetState
         messages: [
           const ChatMessage(
             role: 'system',
-            content: 'You are Danio, a friendly aquarium expert. '
+            content:
+                'You are Danio, a friendly aquarium expert. '
                 'Give practical, specific fish stocking advice. '
                 'Use emoji sparingly. Be concise but helpful.',
           ),
@@ -221,31 +225,31 @@ class _AiStockingSuggestionSheetState
                     ),
                   )
                 : _error != null
-                    ? Center(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(
-                              Icons.cloud_off,
-                              size: 48,
-                              color: context.textHint,
-                            ),
-                            const SizedBox(height: AppSpacing.md),
-                            Text(_error!, style: AppTypography.bodyMedium),
-                            const SizedBox(height: AppSpacing.md),
-                            ElevatedButton(
-                              onPressed: _fetchSuggestion,
-                              child: const Text('Try Again'),
-                            ),
-                          ],
+                ? Center(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.cloud_off,
+                          size: 48,
+                          color: context.textHint,
                         ),
-                      )
-                    : SingleChildScrollView(
-                        child: Text(
-                          _suggestion ?? '',
-                          style: AppTypography.bodyMedium,
+                        const SizedBox(height: AppSpacing.md),
+                        Text(_error!, style: AppTypography.bodyMedium),
+                        const SizedBox(height: AppSpacing.md),
+                        ElevatedButton(
+                          onPressed: _fetchSuggestion,
+                          child: const Text('Try Again'),
                         ),
-                      ),
+                      ],
+                    ),
+                  )
+                : SingleChildScrollView(
+                    child: Text(
+                      _suggestion ?? '',
+                      style: AppTypography.bodyMedium,
+                    ),
+                  ),
           ),
         ],
       ),

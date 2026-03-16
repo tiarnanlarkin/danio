@@ -10,10 +10,7 @@ class LeatherGrainPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     // 1. Fill with base cognac colour
-    canvas.drawRect(
-      Offset.zero & size,
-      Paint()..color = baseColor,
-    );
+    canvas.drawRect(Offset.zero & size, Paint()..color = baseColor);
 
     // 2. Edge burnishing — slightly darker at top and bottom, like worn leather
     _drawEdgeBurnishing(canvas, size);
@@ -66,7 +63,12 @@ class LeatherGrainPainter extends CustomPainter {
     );
 
     // Bottom edge burnish
-    final bottomRect = Rect.fromLTWH(0, size.height * 0.82, size.width, size.height * 0.18);
+    final bottomRect = Rect.fromLTWH(
+      0,
+      size.height * 0.82,
+      size.width,
+      size.height * 0.18,
+    );
     final bottomGradient = LinearGradient(
       begin: Alignment.bottomCenter,
       end: Alignment.topCenter,

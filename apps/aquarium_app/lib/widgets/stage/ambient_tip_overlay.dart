@@ -51,17 +51,11 @@ class _AmbientTipOverlayState extends ConsumerState<AmbientTipOverlay>
       vsync: this,
       duration: const Duration(milliseconds: 500),
     );
-    _slideAnim = Tween<Offset>(
-      begin: const Offset(0.5, 0.5),
-      end: Offset.zero,
-    ).animate(CurvedAnimation(
-      parent: _animController,
-      curve: Curves.easeOutBack,
-    ));
-    _fadeAnim = CurvedAnimation(
-      parent: _animController,
-      curve: Curves.easeOut,
-    );
+    _slideAnim = Tween<Offset>(begin: const Offset(0.5, 0.5), end: Offset.zero)
+        .animate(
+          CurvedAnimation(parent: _animController, curve: Curves.easeOutBack),
+        );
+    _fadeAnim = CurvedAnimation(parent: _animController, curve: Curves.easeOut);
 
     _scheduleNext();
   }
@@ -79,9 +73,10 @@ class _AmbientTipOverlayState extends ConsumerState<AmbientTipOverlay>
       return;
     }
 
-    final available = List.generate(_tips.length, (i) => i)
-        .where((i) => !_shownTips.contains(i))
-        .toList();
+    final available = List.generate(
+      _tips.length,
+      (i) => i,
+    ).where((i) => !_shownTips.contains(i)).toList();
     if (available.isEmpty) {
       _shownTips.clear();
       _scheduleNext();
@@ -139,7 +134,10 @@ class _AmbientTipOverlayState extends ConsumerState<AmbientTipOverlay>
                 decoration: BoxDecoration(
                   color: widget.theme.glassCard,
                   borderRadius: AppRadius.mediumRadius,
-                  border: Border.all(color: widget.theme.glassBorder, width: 0.5),
+                  border: Border.all(
+                    color: widget.theme.glassBorder,
+                    width: 0.5,
+                  ),
                   image: const DecorationImage(
                     image: AssetImage('assets/textures/felt-teal.webp'),
                     fit: BoxFit.cover,

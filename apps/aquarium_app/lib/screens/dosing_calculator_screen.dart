@@ -45,193 +45,201 @@ class _DosingCalculatorScreenState extends State<DosingCalculatorScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Dosing Calculator')),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(AppSpacing.md),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Tank volume
-            Text('Tank Volume', style: AppTypography.headlineSmall),
-            const SizedBox(height: AppSpacing.sm),
-            TextFormField(
-              controller: _volumeController,
-              decoration: const InputDecoration(
-                hintText: 'e.g., 120 litres',
-                suffixText: 'L',
-              ),
-              keyboardType: const TextInputType.numberWithOptions(
-                decimal: true,
-              ),
-              inputFormatters: [
-                FilteringTextInputFormatter.allow(RegExp(r'[\d.]')),
-              ],
-              onChanged: (_) => setState(() {}),
-            ),
-
-            const SizedBox(height: AppSpacing.lg),
-
-            // Dose per X litres
-            Text('Recommended Dose', style: AppTypography.headlineSmall),
-            const SizedBox(height: AppSpacing.sm),
-            Row(
-              children: [
-                Expanded(
-                  child: TextFormField(
-                    controller: _dosePerController,
-                    decoration: const InputDecoration(
-                      hintText: 'Amount',
-                      suffixText: 'ml',
-                    ),
-                    keyboardType: const TextInputType.numberWithOptions(
-                      decimal: true,
-                    ),
-                    inputFormatters: [
-                      FilteringTextInputFormatter.allow(RegExp(r'[\d.]')),
-                    ],
-                    onChanged: (_) => setState(() {}),
-                  ),
+    return GestureDetector(
+      onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+      child: Scaffold(
+        appBar: AppBar(title: const Text('Dosing Calculator')),
+        body: SingleChildScrollView(
+          padding: const EdgeInsets.all(AppSpacing.md),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Tank volume
+              Text('Tank Volume', style: AppTypography.headlineSmall),
+              const SizedBox(height: AppSpacing.sm),
+              TextFormField(
+                controller: _volumeController,
+                decoration: const InputDecoration(
+                  hintText: 'e.g., 120 litres',
+                  suffixText: 'L',
                 ),
-                const SizedBox(width: AppSpacing.sm2),
-                const Text('per'),
-                const SizedBox(width: AppSpacing.sm2),
-                SizedBox(
-                  width: 100,
-                  child: DropdownButtonFormField<double>(
-                    value: _dosePerLitres,
-                    decoration: const InputDecoration(
-                      suffixText: 'L',
-                      contentPadding: EdgeInsets.symmetric(horizontal: 12),
-                    ),
-                    items: [5, 10, 20, 25, 40, 50, 100].map((v) {
-                      return DropdownMenuItem(
-                        value: v.toDouble(),
-                        child: Text('$v'),
-                      );
-                    }).toList(),
-                    onChanged: (v) => setState(() => _dosePerLitres = v ?? 10),
-                  ),
+                keyboardType: const TextInputType.numberWithOptions(
+                  decimal: true,
                 ),
-              ],
-            ),
-
-            const SizedBox(height: AppSpacing.xl),
-
-            // Result
-            if (_tankVolume == null || _totalDose == null) ...[
-              AppCard(
-                backgroundColor: AppOverlays.info10,
-                padding: AppCardPadding.spacious,
-                child: Column(
-                  children: [
-                    Icon(Icons.science_outlined,
-                        color: context.textHint, size: AppIconSizes.lg),
-                    const SizedBox(height: AppSpacing.sm),
-                    Text(
-                      'Enter your tank volume above to calculate dose',
-                      style: AppTypography.bodyMedium
-                          .copyWith(color: context.textHint),
-                      textAlign: TextAlign.center,
-                    ),
-                  ],
-                ),
-              ),
-            ] else ...[
-              AppCard(
-                padding: AppCardPadding.spacious,
-                child: Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.science,
-                          color: AppColors.primary,
-                          size: 32,
-                        ),
-                        const SizedBox(width: AppSpacing.sm2),
-                        Text(
-                          '${_totalDose!.toStringAsFixed(2)} ml',
-                          style: AppTypography.headlineLarge.copyWith(
-                            color: AppColors.primary,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: AppSpacing.sm),
-                    Text(
-                      'Total dose for your tank',
-                      style: AppTypography.bodyMedium,
-                    ),
-                    const SizedBox(height: AppSpacing.md),
-                    const Divider(),
-                    const SizedBox(height: AppSpacing.md),
-                    _ResultRow(
-                      label: 'Tank volume',
-                      value: '${_tankVolume!.toStringAsFixed(0)} L',
-                    ),
-                    _ResultRow(
-                      label: 'Dose rate',
-                      value:
-                          '${_dosePer!.toStringAsFixed(1)} ml per ${_dosePerLitres.toStringAsFixed(0)} L',
-                    ),
-                  ],
-                ),
+                inputFormatters: [
+                  FilteringTextInputFormatter.allow(RegExp(r'[\d.]')),
+                ],
+                onChanged: (_) => setState(() {}),
               ),
 
               const SizedBox(height: AppSpacing.lg),
 
-              // Common products
-              Text('Common Products', style: AppTypography.headlineSmall),
-              const SizedBox(height: AppSpacing.sm2),
-              _ProductPreset(
-                name: 'Seachem Prime',
-                dose: 5,
-                per: 200,
-                onTap: () => setState(() {
-                  _dosePerController.text = '5';
-                  _dosePerLitres = 200;
-                }),
+              // Dose per X litres
+              Text('Recommended Dose', style: AppTypography.headlineSmall),
+              const SizedBox(height: AppSpacing.sm),
+              Row(
+                children: [
+                  Expanded(
+                    child: TextFormField(
+                      controller: _dosePerController,
+                      decoration: const InputDecoration(
+                        hintText: 'Amount',
+                        suffixText: 'ml',
+                      ),
+                      keyboardType: const TextInputType.numberWithOptions(
+                        decimal: true,
+                      ),
+                      inputFormatters: [
+                        FilteringTextInputFormatter.allow(RegExp(r'[\d.]')),
+                      ],
+                      onChanged: (_) => setState(() {}),
+                    ),
+                  ),
+                  const SizedBox(width: AppSpacing.sm2),
+                  const Text('per'),
+                  const SizedBox(width: AppSpacing.sm2),
+                  SizedBox(
+                    width: 100,
+                    child: DropdownButtonFormField<double>(
+                      value: _dosePerLitres,
+                      decoration: const InputDecoration(
+                        suffixText: 'L',
+                        contentPadding: EdgeInsets.symmetric(horizontal: 12),
+                      ),
+                      items: [5, 10, 20, 25, 40, 50, 100].map((v) {
+                        return DropdownMenuItem(
+                          value: v.toDouble(),
+                          child: Text('$v'),
+                        );
+                      }).toList(),
+                      onChanged: (v) =>
+                          setState(() => _dosePerLitres = v ?? 10),
+                    ),
+                  ),
+                ],
               ),
-              _ProductPreset(
-                name: 'Seachem Stability',
-                dose: 5,
-                per: 40,
-                onTap: () => setState(() {
-                  _dosePerController.text = '5';
-                  _dosePerLitres = 40;
-                }),
-              ),
-              _ProductPreset(
-                name: 'API Stress Coat',
-                dose: 5,
-                per: 40,
-                onTap: () => setState(() {
-                  _dosePerController.text = '5';
-                  _dosePerLitres = 40;
-                }),
-              ),
-              _ProductPreset(
-                name: 'Tropica Specialised',
-                dose: 1,
-                per: 25,
-                onTap: () => setState(() {
-                  _dosePerController.text = '1';
-                  _dosePerLitres = 25;
-                }),
-              ),
-              _ProductPreset(
-                name: 'Easy Green (Aquarium Co-Op)',
-                dose: 1,
-                per: 10,
-                onTap: () => setState(() {
-                  _dosePerController.text = '1';
-                  _dosePerLitres = 10;
-                }),
-              ),
+
+              const SizedBox(height: AppSpacing.xl),
+
+              // Result
+              if (_tankVolume == null || _totalDose == null) ...[
+                AppCard(
+                  backgroundColor: AppOverlays.info10,
+                  padding: AppCardPadding.spacious,
+                  child: Column(
+                    children: [
+                      Icon(
+                        Icons.science_outlined,
+                        color: context.textHint,
+                        size: AppIconSizes.lg,
+                      ),
+                      const SizedBox(height: AppSpacing.sm),
+                      Text(
+                        'Enter your tank volume above to calculate dose',
+                        style: AppTypography.bodyMedium.copyWith(
+                          color: context.textHint,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  ),
+                ),
+              ] else ...[
+                AppCard(
+                  padding: AppCardPadding.spacious,
+                  child: Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.science,
+                            color: AppColors.primary,
+                            size: 32,
+                          ),
+                          const SizedBox(width: AppSpacing.sm2),
+                          Text(
+                            '${_totalDose!.toStringAsFixed(2)} ml',
+                            style: AppTypography.headlineLarge.copyWith(
+                              color: AppColors.primary,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: AppSpacing.sm),
+                      Text(
+                        'Total dose for your tank',
+                        style: AppTypography.bodyMedium,
+                      ),
+                      const SizedBox(height: AppSpacing.md),
+                      const Divider(),
+                      const SizedBox(height: AppSpacing.md),
+                      _ResultRow(
+                        label: 'Tank volume',
+                        value: '${_tankVolume!.toStringAsFixed(0)} L',
+                      ),
+                      _ResultRow(
+                        label: 'Dose rate',
+                        value:
+                            '${_dosePer!.toStringAsFixed(1)} ml per ${_dosePerLitres.toStringAsFixed(0)} L',
+                      ),
+                    ],
+                  ),
+                ),
+
+                const SizedBox(height: AppSpacing.lg),
+
+                // Common products
+                Text('Common Products', style: AppTypography.headlineSmall),
+                const SizedBox(height: AppSpacing.sm2),
+                _ProductPreset(
+                  name: 'Seachem Prime',
+                  dose: 5,
+                  per: 200,
+                  onTap: () => setState(() {
+                    _dosePerController.text = '5';
+                    _dosePerLitres = 200;
+                  }),
+                ),
+                _ProductPreset(
+                  name: 'Seachem Stability',
+                  dose: 5,
+                  per: 40,
+                  onTap: () => setState(() {
+                    _dosePerController.text = '5';
+                    _dosePerLitres = 40;
+                  }),
+                ),
+                _ProductPreset(
+                  name: 'API Stress Coat',
+                  dose: 5,
+                  per: 40,
+                  onTap: () => setState(() {
+                    _dosePerController.text = '5';
+                    _dosePerLitres = 40;
+                  }),
+                ),
+                _ProductPreset(
+                  name: 'Tropica Specialised',
+                  dose: 1,
+                  per: 25,
+                  onTap: () => setState(() {
+                    _dosePerController.text = '1';
+                    _dosePerLitres = 25;
+                  }),
+                ),
+                _ProductPreset(
+                  name: 'Easy Green (Aquarium Co-Op)',
+                  dose: 1,
+                  per: 10,
+                  onTap: () => setState(() {
+                    _dosePerController.text = '1';
+                    _dosePerLitres = 10;
+                  }),
+                ),
+              ],
             ],
-          ],
+          ),
         ),
       ),
     );

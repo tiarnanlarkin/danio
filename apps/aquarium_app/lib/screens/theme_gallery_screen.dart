@@ -30,12 +30,13 @@ class ThemeGalleryScreen extends ConsumerWidget {
                 'Theme Gallery',
                 style: TextStyle(
                   color: Colors.white,
-                  shadows: [
-                    Shadow(color: AppOverlays.black50, blurRadius: 8),
-                  ],
+                  shadows: [Shadow(color: AppOverlays.black50, blurRadius: 8)],
                 ),
               ),
-              titlePadding: const EdgeInsets.only(left: AppSpacing.md, bottom: AppSpacing.md),
+              titlePadding: const EdgeInsets.only(
+                left: AppSpacing.md,
+                bottom: AppSpacing.md,
+              ),
             ),
             backgroundColor: RoomTheme.fromType(currentTheme).background1,
           ),
@@ -43,7 +44,12 @@ class ThemeGalleryScreen extends ConsumerWidget {
           // Section: Free Themes
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(AppSpacing.lg2, AppSpacing.lg, AppSpacing.lg2, AppSpacing.sm2),
+              padding: const EdgeInsets.fromLTRB(
+                AppSpacing.lg2,
+                AppSpacing.lg,
+                AppSpacing.lg2,
+                AppSpacing.sm2,
+              ),
               child: Row(
                 children: [
                   Container(
@@ -105,7 +111,12 @@ class ThemeGalleryScreen extends ConsumerWidget {
           // Section: Premium Themes (Coming Soon)
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(AppSpacing.lg2, AppSpacing.xl, AppSpacing.lg2, AppSpacing.sm2),
+              padding: const EdgeInsets.fromLTRB(
+                AppSpacing.lg2,
+                AppSpacing.xl,
+                AppSpacing.lg2,
+                AppSpacing.sm2,
+              ),
               child: Row(
                 children: [
                   Container(
@@ -143,7 +154,12 @@ class ThemeGalleryScreen extends ConsumerWidget {
 
           // Premium theme placeholder grid
           SliverPadding(
-            padding: const EdgeInsets.fromLTRB(AppSpacing.md, 0, AppSpacing.md, AppSpacing.xl),
+            padding: const EdgeInsets.fromLTRB(
+              AppSpacing.md,
+              0,
+              AppSpacing.md,
+              AppSpacing.xl,
+            ),
             sliver: SliverGrid(
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
@@ -332,7 +348,11 @@ class ThemeGalleryScreen extends ConsumerWidget {
                 ),
                 borderRadius: AppRadius.mediumRadius,
               ),
-              child: const Icon(Icons.star, color: Colors.white, size: AppIconSizes.sm),
+              child: const Icon(
+                Icons.star,
+                color: Colors.white,
+                size: AppIconSizes.sm,
+              ),
             ),
             const SizedBox(width: AppSpacing.sm2),
             const Text('Premium Theme'),
@@ -349,7 +369,9 @@ class ThemeGalleryScreen extends ConsumerWidget {
             const SizedBox(height: AppSpacing.sm2),
             Text(
               'Support the app and unlock exclusive themes with unique animations and special effects.',
-              style: Theme.of(context).textTheme.bodyLarge!.copyWith(color: context.textSecondary),
+              style: Theme.of(
+                context,
+              ).textTheme.bodyLarge!.copyWith(color: context.textSecondary),
             ),
           ],
         ),
@@ -466,7 +488,10 @@ class _CurrentThemePreview extends StatelessWidget {
             bottom: 60,
             left: 16,
             child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm2, vertical: 6),
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.sm2,
+                vertical: 6,
+              ),
               decoration: BoxDecoration(
                 color: AppOverlays.white20,
                 borderRadius: AppRadius.largeRadius,
@@ -474,7 +499,11 @@ class _CurrentThemePreview extends StatelessWidget {
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Icon(Icons.check_circle, size: AppIconSizes.xs, color: Colors.white),
+                  const Icon(
+                    Icons.check_circle,
+                    size: AppIconSizes.xs,
+                    color: Colors.white,
+                  ),
                   const SizedBox(width: AppSpacing.xs2),
                   Text(
                     'Current: ${theme.name}',
@@ -623,10 +652,7 @@ class _ThemeCard extends StatelessWidget {
                     gradient: LinearGradient(
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
-                      colors: [
-                        Colors.transparent,
-                        AppOverlays.black60,
-                      ],
+                      colors: [Colors.transparent, AppOverlays.black60],
                     ),
                   ),
                   child: Column(
@@ -694,10 +720,7 @@ class _MiniRoomPreview extends StatelessWidget {
                     theme.waterMid.withAlpha(76),
                   ],
                 ),
-                border: Border.all(
-                  color: theme.sand.withAlpha(204),
-                  width: 2,
-                ),
+                border: Border.all(color: theme.sand.withAlpha(204), width: 2),
                 borderRadius: BorderRadius.circular(2),
               ),
             ),

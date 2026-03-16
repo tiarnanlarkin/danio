@@ -7,7 +7,11 @@ class EmptyRoomScene extends StatelessWidget {
   final VoidCallback onCreateTank;
   final VoidCallback onLoadDemo;
 
-  const EmptyRoomScene({super.key, required this.onCreateTank, required this.onLoadDemo});
+  const EmptyRoomScene({
+    super.key,
+    required this.onCreateTank,
+    required this.onLoadDemo,
+  });
 
   @override
   Widget build(BuildContext context) {

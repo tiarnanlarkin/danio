@@ -74,13 +74,17 @@ class _AnimatedFlameState extends State<AnimatedFlame>
       final phase = index * 0.15; // Stagger by 15%
       return TweenSequence<double>([
         TweenSequenceItem(
-          tween: Tween<double>(begin: 0.85, end: 1.0)
-              .chain(CurveTween(curve: AppCurves.standard)),
+          tween: Tween<double>(
+            begin: 0.85,
+            end: 1.0,
+          ).chain(CurveTween(curve: AppCurves.standard)),
           weight: 50,
         ),
         TweenSequenceItem(
-          tween: Tween<double>(begin: 1.0, end: 0.85)
-              .chain(CurveTween(curve: AppCurves.standard)),
+          tween: Tween<double>(
+            begin: 1.0,
+            end: 0.85,
+          ).chain(CurveTween(curve: AppCurves.standard)),
           weight: 50,
         ),
       ]).animate(
@@ -97,13 +101,17 @@ class _AnimatedFlameState extends State<AnimatedFlame>
 
     _celebrationScale = TweenSequence<double>([
       TweenSequenceItem(
-        tween: Tween<double>(begin: 1.0, end: 1.3)
-            .chain(CurveTween(curve: AppCurves.standardDecelerate)),
+        tween: Tween<double>(
+          begin: 1.0,
+          end: 1.3,
+        ).chain(CurveTween(curve: AppCurves.standardDecelerate)),
         weight: 40,
       ),
       TweenSequenceItem(
-        tween: Tween<double>(begin: 1.3, end: 1.0)
-            .chain(CurveTween(curve: AppCurves.elastic)),
+        tween: Tween<double>(
+          begin: 1.3,
+          end: 1.0,
+        ).chain(CurveTween(curve: AppCurves.elastic)),
         weight: 60,
       ),
     ]).animate(_celebrationController);
@@ -181,8 +189,7 @@ class _AnimatedFlameState extends State<AnimatedFlame>
         _celebrationController,
       ]),
       builder: (context, child) {
-        final scale =
-            widget.showCelebration ? _celebrationScale.value : 1.0;
+        final scale = widget.showCelebration ? _celebrationScale.value : 1.0;
 
         return Transform.scale(
           scale: scale,
@@ -199,14 +206,17 @@ class _AnimatedFlameState extends State<AnimatedFlame>
                 CustomPaint(
                   size: Size(widget.size * 0.7, widget.size * 0.85),
                   painter: FlamePainter(
-                    tongueValues: _tongueAnimations.map((a) => a.value).toList(),
+                    tongueValues: _tongueAnimations
+                        .map((a) => a.value)
+                        .toList(),
                     colors: _flameColors,
                     intensity: _flameIntensity,
                   ),
                 ),
 
                 // Celebration particles
-                if (widget.showCelebration && _celebrationController.isAnimating)
+                if (widget.showCelebration &&
+                    _celebrationController.isAnimating)
                   _buildCelebrationParticles(),
               ],
             ),
@@ -226,8 +236,12 @@ class _AnimatedFlameState extends State<AnimatedFlame>
         shape: BoxShape.circle,
         gradient: RadialGradient(
           colors: [
-            _flameColors[1].withAlpha((_glowAnimation.value * _flameIntensity * 255).round()),
-            _flameColors[2].withAlpha((_glowAnimation.value * 0.3 * 255).round()),
+            _flameColors[1].withAlpha(
+              (_glowAnimation.value * _flameIntensity * 255).round(),
+            ),
+            _flameColors[2].withAlpha(
+              (_glowAnimation.value * 0.3 * 255).round(),
+            ),
             Colors.transparent,
           ],
           stops: const [0.0, 0.5, 1.0],
@@ -356,8 +370,12 @@ class FlamePainter extends CustomPainter {
       begin: Alignment.bottomCenter,
       end: Alignment.topCenter,
       colors: [
-        colors[colors.length - 1].withAlpha(((0.9 - index * 0.1) * 255).round()),
-        colors[(index * 2) % colors.length].withAlpha(((0.85 - index * 0.08) * 255).round()),
+        colors[colors.length - 1].withAlpha(
+          ((0.9 - index * 0.1) * 255).round(),
+        ),
+        colors[(index * 2) % colors.length].withAlpha(
+          ((0.85 - index * 0.08) * 255).round(),
+        ),
         colors[0].withAlpha(((0.7 - index * 0.1) * 255).round()),
       ],
       stops: const [0.0, 0.4, 1.0],
@@ -410,17 +428,17 @@ class StreakFlameDisplay extends StatelessWidget {
         if (showCount && streakCount > 0) ...[
           const SizedBox(height: AppSpacing.xs),
           Text(
-            '$streakCount',
-            style: TextStyle(
-              fontSize: size * 0.35,
-              fontWeight: FontWeight.bold,
-              color: const Color(0xFFFF6B35),
-            ),
-          )
+                '$streakCount',
+                style: TextStyle(
+                  fontSize: size * 0.35,
+                  fontWeight: FontWeight.bold,
+                  color: const Color(0xFFFF6B35),
+                ),
+              )
               .animate(onPlay: (c) => c.repeat(reverse: true))
               .shimmer(
                 duration: 2.seconds,
-                color: const Color(0x4DFFCA28),  // 30% amber
+                color: const Color(0x4DFFCA28), // 30% amber
               ),
         ],
       ],

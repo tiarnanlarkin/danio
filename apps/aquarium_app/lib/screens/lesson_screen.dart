@@ -54,7 +54,8 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
   @override
   void initState() {
     super.initState();
-    _lessonStartTime = DateTime.now(); // PS-11: Record when user starts the lesson
+    _lessonStartTime =
+        DateTime.now(); // PS-11: Record when user starts the lesson
     // Capture current level for level-up detection
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
@@ -137,93 +138,97 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
         }
       },
       child: Scaffold(
-      appBar: AppBar(
-        title: Row(
-          children: [
-            Flexible(
-              child: Text(
-                widget.pathTitle,
-                overflow: TextOverflow.ellipsis,
+        appBar: AppBar(
+          title: Row(
+            children: [
+              Flexible(
+                child: Text(widget.pathTitle, overflow: TextOverflow.ellipsis),
               ),
-            ),
-            if (widget.isPracticeMode) ...[
-              const SizedBox(width: AppSpacing.sm),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                decoration: BoxDecoration(
-                  color: AppOverlays.accent20,
-                  borderRadius: AppRadius.smallRadius,
+              if (widget.isPracticeMode) ...[
+                const SizedBox(width: AppSpacing.sm),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
+                  decoration: BoxDecoration(
+                    color: AppOverlays.accent20,
+                    borderRadius: AppRadius.smallRadius,
+                  ),
+                  child: Text(
+                    'PRACTICE',
+                    style: AppTypography.labelSmall.copyWith(
+                      color: context.textSecondary,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ),
-                child: Text(
-                  'PRACTICE',
-                  style: AppTypography.labelSmall.copyWith(
-                    color: context.textSecondary,
-                    fontWeight: FontWeight.bold,
+              ],
+            ],
+          ),
+          actions: [
+            if (!widget.isPracticeMode) ...[
+              const Padding(
+                padding: EdgeInsets.only(right: 8),
+                child: Center(child: HeartIndicator(compact: true)),
+              ),
+            ],
+            Padding(
+              padding: const EdgeInsets.only(right: 16),
+              child: Center(
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 6,
+                  ),
+                  decoration: BoxDecoration(
+                    color: AppOverlays.accent20,
+                    borderRadius: AppRadius.mediumRadius,
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(
+                        Icons.star,
+                        size: AppIconSizes.xs,
+                        color: AppColors.accent,
+                      ),
+                      const SizedBox(width: AppSpacing.xs),
+                      Text(
+                        // Practice mode awards half XP — keep consistent with
+                        // the PracticeScreen card label.
+                        // Show full potential XP (base + quiz bonus) so it matches results screen.
+                        widget.isPracticeMode
+                            ? '+${widget.lesson.xpReward ~/ 2} XP'
+                            : 'up to +${widget.lesson.xpReward + (widget.lesson.quiz?.bonusXp ?? 0)} XP',
+                        style: AppTypography.labelMedium.copyWith(
+                          color: AppColors.accent,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
-            ],
+            ),
           ],
         ),
-        actions: [
-          if (!widget.isPracticeMode) ...[
-            const Padding(
-              padding: EdgeInsets.only(right: 8),
-              child: Center(child: HeartIndicator(compact: true)),
-            ),
+        body: Stack(
+          children: [
+            _showQuiz ? _buildQuiz() : _buildLesson(),
+            // Heart animation overlay
+            if (_showHeartAnimation)
+              Center(
+                child: HeartAnimation(
+                  gained: _heartGained,
+                  onComplete: () {
+                    setState(() => _showHeartAnimation = false);
+                  },
+                ),
+              ),
           ],
-          Padding(
-            padding: const EdgeInsets.only(right: 16),
-            child: Center(
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 6,
-                ),
-                decoration: BoxDecoration(
-                  color: AppOverlays.accent20,
-                  borderRadius: AppRadius.mediumRadius,
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Icon(Icons.star, size: AppIconSizes.xs, color: AppColors.accent),
-                    const SizedBox(width: AppSpacing.xs),
-                    Text(
-                      // Practice mode awards half XP — keep consistent with
-                      // the PracticeScreen card label.
-                      // Show full potential XP (base + quiz bonus) so it matches results screen.
-                      widget.isPracticeMode
-                          ? '+${widget.lesson.xpReward ~/ 2} XP'
-                          : 'up to +${widget.lesson.xpReward + (widget.lesson.quiz?.bonusXp ?? 0)} XP',
-                      style: AppTypography.labelMedium.copyWith(
-                        color: AppColors.accent,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-      body: Stack(
-        children: [
-          _showQuiz ? _buildQuiz() : _buildLesson(),
-          // Heart animation overlay
-          if (_showHeartAnimation)
-            Center(
-              child: HeartAnimation(
-                gained: _heartGained,
-                onComplete: () {
-                  setState(() => _showHeartAnimation = false);
-                },
-              ),
-            ),
-        ],
-      ),     // closes Stack (body of Scaffold)
-      ),     // closes Scaffold (child of PopScope)
-    );       // closes PopScope
+        ), // closes Stack (body of Scaffold)
+      ), // closes Scaffold (child of PopScope)
+    ); // closes PopScope
   }
 
   Widget _buildLesson() {
@@ -234,7 +239,12 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
       children: [
         Expanded(
           child: ListView.builder(
-            padding: EdgeInsets.fromLTRB(AppSpacing.lg2, AppSpacing.lg2, AppSpacing.lg2, 160),
+            padding: EdgeInsets.fromLTRB(
+              AppSpacing.lg2,
+              AppSpacing.lg2,
+              AppSpacing.lg2,
+              160,
+            ),
             itemCount: totalItems,
             itemBuilder: (context, index) {
               // Lesson title with Hero animation
@@ -260,7 +270,11 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
               if (index == 2) {
                 return Row(
                   children: [
-                    Icon(Icons.timer, size: AppIconSizes.xs, color: context.textSecondary),
+                    Icon(
+                      Icons.timer,
+                      size: AppIconSizes.xs,
+                      color: context.textSecondary,
+                    ),
                     const SizedBox(width: AppSpacing.xs),
                     Text(
                       '${widget.lesson.estimatedMinutes} min read',
@@ -372,7 +386,11 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Icon(Icons.lightbulb, color: AppColors.primary, size: AppIconSizes.md),
+              Icon(
+                Icons.lightbulb,
+                color: AppColors.primary,
+                size: AppIconSizes.md,
+              ),
               const SizedBox(width: AppSpacing.sm2),
               Expanded(
                 child: Text(
@@ -397,7 +415,11 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Icon(Icons.tips_and_updates, color: AppColors.success, size: AppIconSizes.md),
+              Icon(
+                Icons.tips_and_updates,
+                color: AppColors.success,
+                size: AppIconSizes.md,
+              ),
               const SizedBox(width: AppSpacing.sm2),
               Expanded(
                 child: Column(
@@ -429,7 +451,11 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Icon(Icons.warning_amber, color: AppColors.warning, size: AppIconSizes.md),
+              Icon(
+                Icons.warning_amber,
+                color: AppColors.warning,
+                size: AppIconSizes.md,
+              ),
               const SizedBox(width: AppSpacing.sm2),
               Expanded(
                 child: Column(
@@ -524,11 +550,17 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(Icons.image_outlined, size: AppIconSizes.xl, color: context.textHint),
+                Icon(
+                  Icons.image_outlined,
+                  size: AppIconSizes.xl,
+                  color: context.textHint,
+                ),
                 const SizedBox(height: 8),
                 Text(
                   'Visual guide on the way!',
-                  style: AppTypography.bodySmall.copyWith(color: context.textHint),
+                  style: AppTypography.bodySmall.copyWith(
+                    color: context.textHint,
+                  ),
                 ),
               ],
             ),
@@ -554,7 +586,9 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
               const SizedBox(height: AppSpacing.md),
               Text(
                 'Quiz coming soon!',
-                style: AppTypography.titleMedium.copyWith(color: context.textSecondary),
+                style: AppTypography.titleMedium.copyWith(
+                  color: context.textSecondary,
+                ),
               ),
             ],
           ),
@@ -607,7 +641,12 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
         Expanded(
           child: ListView.builder(
             padding: const EdgeInsets.symmetric(horizontal: 20),
-            itemCount: 3 + question.options.length + (_answered && question.explanation != null ? 2 : 0), // spacing + question + spacing + options + (spacing + explanation if answered)
+            itemCount:
+                3 +
+                question.options.length +
+                (_answered && question.explanation != null
+                    ? 2
+                    : 0), // spacing + question + spacing + options + (spacing + explanation if answered)
             itemBuilder: (context, index) {
               // Spacing at top
               if (index == 0) {
@@ -616,7 +655,10 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
 
               // Question text
               if (index == 1) {
-                return Text(question.question, style: AppTypography.headlineMedium);
+                return Text(
+                  question.question,
+                  style: AppTypography.headlineMedium,
+                );
               }
 
               // Spacing after question
@@ -628,73 +670,73 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
               if (index >= 3 && index < 3 + question.options.length) {
                 final optionIndex = index - 3;
                 final option = question.options[optionIndex];
-              final isSelected = _selectedAnswer == optionIndex;
-              final isCorrect = optionIndex == question.correctIndex;
+                final isSelected = _selectedAnswer == optionIndex;
+                final isCorrect = optionIndex == question.correctIndex;
 
-              Color? bgColor;
-              Color? borderColor;
-              IconData? icon;
+                Color? bgColor;
+                Color? borderColor;
+                IconData? icon;
 
-              if (_answered) {
-                if (isCorrect) {
-                  bgColor = AppOverlays.success10;
-                  borderColor = AppColors.success;
-                  icon = Icons.check_circle;
-                } else if (isSelected && !isCorrect) {
-                  bgColor = AppOverlays.error10;
-                  borderColor = AppColors.error;
-                  icon = Icons.cancel;
+                if (_answered) {
+                  if (isCorrect) {
+                    bgColor = AppOverlays.success10;
+                    borderColor = AppColors.success;
+                    icon = Icons.check_circle;
+                  } else if (isSelected && !isCorrect) {
+                    bgColor = AppOverlays.error10;
+                    borderColor = AppColors.error;
+                    icon = Icons.cancel;
+                  }
+                } else if (isSelected) {
+                  bgColor = AppOverlays.primary10;
+                  borderColor = AppColors.primary;
                 }
-              } else if (isSelected) {
-                bgColor = AppOverlays.primary10;
-                borderColor = AppColors.primary;
-              }
 
-              return Padding(
-                padding: const EdgeInsets.only(bottom: 12),
-                child: InkWell(
-                  onTap: _answered
-                      ? null
-                      : () => setState(() => _selectedAnswer = optionIndex),
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 12),
+                  child: InkWell(
+                    onTap: _answered
+                        ? null
+                        : () => setState(() => _selectedAnswer = optionIndex),
                     borderRadius: AppRadius.mediumRadius,
-                  child: Container(
-                    padding: const EdgeInsets.all(AppSpacing.md),
-                    decoration: BoxDecoration(
-                      color: bgColor ?? context.surfaceColor,
-                      borderRadius: AppRadius.mediumRadius,
-                      border: Border.all(
-                        color: borderColor ?? context.surfaceVariant,
-                        width: borderColor != null ? 2 : 1,
+                    child: Container(
+                      padding: const EdgeInsets.all(AppSpacing.md),
+                      decoration: BoxDecoration(
+                        color: bgColor ?? context.surfaceColor,
+                        borderRadius: AppRadius.mediumRadius,
+                        border: Border.all(
+                          color: borderColor ?? context.surfaceVariant,
+                          width: borderColor != null ? 2 : 1,
+                        ),
                       ),
-                    ),
-                    child: Row(
-                      children: [
-                        Container(
-                          width: 32,
-                          height: 32,
-                          decoration: BoxDecoration(
-                            color: isSelected && !_answered
-                                ? AppColors.primary
-                                : context.surfaceVariant,
-                            shape: BoxShape.circle,
-                          ),
-                          child: Center(
-                            child: icon != null
-                                ? Icon(
-                                    icon,
-                                    size: AppIconSizes.sm,
-                                    color: isCorrect
-                                        ? AppColors.success
-                                        : AppColors.error,
-                                  )
-                                : Text(
-                                    String.fromCharCode(65 + optionIndex),
-                                    style: AppTypography.labelLarge.copyWith(
-                                      color: isSelected && !_answered
-                                          ? AppColors.onPrimary
-                                          : context.textSecondary,
+                      child: Row(
+                        children: [
+                          Container(
+                            width: 32,
+                            height: 32,
+                            decoration: BoxDecoration(
+                              color: isSelected && !_answered
+                                  ? AppColors.primary
+                                  : context.surfaceVariant,
+                              shape: BoxShape.circle,
+                            ),
+                            child: Center(
+                              child: icon != null
+                                  ? Icon(
+                                      icon,
+                                      size: AppIconSizes.sm,
+                                      color: isCorrect
+                                          ? AppColors.success
+                                          : AppColors.error,
+                                    )
+                                  : Text(
+                                      String.fromCharCode(65 + optionIndex),
+                                      style: AppTypography.labelLarge.copyWith(
+                                        color: isSelected && !_answered
+                                            ? AppColors.onPrimary
+                                            : context.textSecondary,
+                                      ),
                                     ),
-                                  ),
                             ),
                           ),
                           const SizedBox(width: AppSpacing.sm2),
@@ -734,7 +776,9 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Icon(Icons.info_outline, color: context.textSecondary,
+                          Icon(
+                            Icons.info_outline,
+                            color: context.textSecondary,
                             semanticLabel: 'Explanation',
                           ),
                           const SizedBox(width: AppSpacing.sm2),
@@ -812,9 +856,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
                             // Check if out of hearts
                             if (!heartsService.hasHeartsAvailable) {
                               // Wait for animation to finish
-                              await Future.delayed(
-                                kQuizRevealDelay,
-                              );
+                              await Future.delayed(kQuizRevealDelay);
                               if (mounted) {
                                 final result = await showOutOfHeartsModal(
                                   context,
@@ -860,8 +902,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
               child: Text(
                 !_answered
                     ? 'Check Answer'
-                    : _currentQuizQuestion <
-                          quiz.questions.length - 1
+                    : _currentQuizQuestion < quiz.questions.length - 1
                     ? 'Next Question'
                     : 'See Results',
               ),
@@ -901,7 +942,9 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
                     child: Center(
                       child: Text(
                         passed ? '🎉' : '📚',
-                        style: Theme.of(context).textTheme.headlineMedium!.copyWith(fontSize: 56),
+                        style: Theme.of(
+                          context,
+                        ).textTheme.headlineMedium!.copyWith(fontSize: 56),
                       ),
                     ),
                   ),
@@ -929,7 +972,11 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
                     ),
                     child: Column(
                       children: [
-                        const Icon(Icons.star, color: AppColors.onPrimary, size: 40),
+                        const Icon(
+                          Icons.star,
+                          color: AppColors.onPrimary,
+                          size: 40,
+                        ),
                         const SizedBox(height: AppSpacing.sm),
                         Text(
                           '+$totalXp XP',
@@ -1047,20 +1094,35 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
     );
   }
 
-
   /// Varied quiz passed messages based on score
-    static String _passedMessage(int percentage) {
+  static String _passedMessage(int percentage) {
     final messages = percentage == 100
-        ? const ["Perfect score! You're a natural!", "Flawless! Your fish would be proud!", "100%! Aquarium genius!"]
+        ? const [
+            "Perfect score! You're a natural!",
+            "Flawless! Your fish would be proud!",
+            "100%! Aquarium genius!",
+          ]
         : percentage >= 80
-            ? const ["Brilliant work!", "Nailed it!", "You're swimming through these!"]
-            : const ["Nice job - you passed!", "Well done, keep building!", "Solid effort!"];
+        ? const [
+            "Brilliant work!",
+            "Nailed it!",
+            "You're swimming through these!",
+          ]
+        : const [
+            "Nice job - you passed!",
+            "Well done, keep building!",
+            "Solid effort!",
+          ];
     return messages[math.Random().nextInt(messages.length)];
   }
 
   /// Encouraging try-again messages
-    static String _tryAgainMessage() {
-    const messages = ["Almost there - give it another go!", "Every expert was once a beginner!", "Review and try again - you've got this!"];
+  static String _tryAgainMessage() {
+    const messages = [
+      "Almost there - give it another go!",
+      "Every expert was once a beginner!",
+      "Review and try again - you've got this!",
+    ];
     return messages[math.Random().nextInt(messages.length)];
   }
 
@@ -1100,7 +1162,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
       showDragHandle: true,
       isDismissible: true,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.lg)),
       ),
       builder: (ctx) {
         final theme = Theme.of(ctx);
@@ -1109,7 +1171,12 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text('🎉', style: Theme.of(context).textTheme.headlineMedium!.copyWith(fontSize: 40)),
+              Text(
+                '🎉',
+                style: Theme.of(
+                  context,
+                ).textTheme.headlineMedium!.copyWith(fontSize: 40),
+              ),
               const SizedBox(height: AppSpacing.sm),
               Text(
                 'Lesson Complete!',
@@ -1131,14 +1198,18 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
                     Text(
                       'Ready for the next one?',
                       style: theme.textTheme.bodyMedium?.copyWith(
-                        color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.onSurface.withOpacity(0.6),
                       ),
                     ),
                     const SizedBox(height: AppSpacing.sm),
                     Row(
                       children: [
-                        const Icon(Icons.arrow_forward_rounded,
-                            color: AppColors.primary),
+                        const Icon(
+                          Icons.arrow_forward_rounded,
+                          color: AppColors.primary,
+                        ),
                         const SizedBox(width: AppSpacing.sm),
                         Expanded(
                           child: Text(
@@ -1184,10 +1255,8 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
         // Replace current lesson screen with next lesson
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(
-            builder: (_) => LessonScreen(
-              lesson: nextLesson,
-              pathTitle: widget.pathTitle,
-            ),
+            builder: (_) =>
+                LessonScreen(lesson: nextLesson, pathTitle: widget.pathTitle),
           ),
         );
       } else {
@@ -1243,7 +1312,9 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
           // fall back to plain XP award so the user still gets credit.
           try {
             await ref.read(userProfileProvider.notifier).addXp(practiceXp);
-          } catch (e) { debugPrint('Error awarding practice XP: $e'); }
+          } catch (e) {
+            debugPrint('Error awarding practice XP: $e');
+          }
         }
 
         final heartsService = ref.read(heartsServiceProvider);
@@ -1286,7 +1357,10 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
       }
 
       // PS-12 FIX: Capture lastActivityDate BEFORE completeLesson updates it
-      final previousLastActivityDate = ref.read(userProfileProvider).value?.lastActivityDate;
+      final previousLastActivityDate = ref
+          .read(userProfileProvider)
+          .value
+          ?.lastActivityDate;
 
       // Record completion and XP (also awards lesson gems automatically)
       await ref
@@ -1357,14 +1431,13 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
 
         // Calculate today's lessons completed
         final todayKey = DateTime.now().toIso8601String().split('T')[0];
-        final todayLessons = profile.completedLessons
-            .where((id) {
+        final todayLessons =
+            profile.completedLessons.where((id) {
               final progress = profile.lessonProgress[id];
               return progress != null &&
                   progress.completedDate.toIso8601String().split('T')[0] ==
                       todayKey;
-            })
-            .length +
+            }).length +
             1; // +1 for this lesson
 
         // PS-10 FIX: Use persistent perfectScoreCount instead of broken achievements count
@@ -1412,8 +1485,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
         () async {
           try {
             final prefs = await SharedPreferences.getInstance();
-            final alreadyRequested =
-                prefs.getBool('review_requested') ?? false;
+            final alreadyRequested = prefs.getBool('review_requested') ?? false;
             if (!alreadyRequested) {
               final inAppReview = InAppReview.instance;
               if (await inAppReview.isAvailable()) {

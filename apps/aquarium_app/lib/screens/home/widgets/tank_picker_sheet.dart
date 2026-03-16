@@ -128,7 +128,7 @@ class _TankPickerSheetState extends ConsumerState<TankPickerSheet> {
                       decoration: BoxDecoration(
                         color: isSelected
                             ? AppOverlays.primary20
-                            : Colors.white,
+                            : context.surfaceVariant,
                         borderRadius: AppRadius.mediumRadius,
                       ),
                       child: Icon(
@@ -174,7 +174,11 @@ class _TankPickerSheetState extends ConsumerState<TankPickerSheet> {
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
               child: Row(
                 children: [
-                  Icon(Icons.info_outline, size: AppIconSizes.xs, color: context.textSecondary),
+                  Icon(
+                    Icons.info_outline,
+                    size: AppIconSizes.xs,
+                    color: context.textSecondary,
+                  ),
                   const SizedBox(width: AppSpacing.sm),
                   Expanded(
                     child: Text(

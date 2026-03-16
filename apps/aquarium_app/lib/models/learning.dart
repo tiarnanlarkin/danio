@@ -212,8 +212,6 @@ class DailyTip {
 // PREDEFINED CONTENT
 // ==========================================
 
-
-
 /// XP reward values for different actions
 class XpRewards {
   static const int lessonComplete = 50;
@@ -226,7 +224,7 @@ class XpRewards {
   static const int addLivestock = 10;
   static const int addPhoto = 5;
   static const int journalEntry = 10;
-  
+
   // Hobby activity rewards
   static const int createTank = 25;
   static const int addEquipment = 10;

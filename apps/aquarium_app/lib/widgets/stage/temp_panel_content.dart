@@ -88,8 +88,9 @@ class _TempPanelContentState extends ConsumerState<TempPanelContent>
   @override
   Widget build(BuildContext context) {
     final latestTestAsync = ref.watch(latestWaterTestProvider(widget.tankId));
-    final latestEntryAsync =
-        ref.watch(latestWaterTestEntryProvider(widget.tankId));
+    final latestEntryAsync = ref.watch(
+      latestWaterTestEntryProvider(widget.tankId),
+    );
     final streakAsync = ref.watch(testStreakProvider(widget.tankId));
     final logsAsync = ref.watch(logsProvider(widget.tankId));
     final heaterAsync = ref.watch(tankHeaterProvider(widget.tankId));
@@ -100,10 +101,12 @@ class _TempPanelContentState extends ConsumerState<TempPanelContent>
 
     // Pull optimal range from heater settings if available
     final heater = heaterAsync.value;
-    final optimalMin = (heater?.settings?['optimalMin'] as num?)?.toDouble()
-        ?? _defaultOptimalMin;
-    final optimalMax = (heater?.settings?['optimalMax'] as num?)?.toDouble()
-        ?? _defaultOptimalMax;
+    final optimalMin =
+        (heater?.settings?['optimalMin'] as num?)?.toDouble() ??
+        _defaultOptimalMin;
+    final optimalMax =
+        (heater?.settings?['optimalMax'] as num?)?.toDouble() ??
+        _defaultOptimalMax;
 
     final status = temp != null ? _status(temp, optimalMin, optimalMax) : null;
 
@@ -149,10 +152,7 @@ class _TempPanelContentState extends ConsumerState<TempPanelContent>
             const SizedBox(height: 14),
 
             // ── Divider ──────────────────────────────────────────────────
-            Container(
-              height: 1,
-              color: _kTeal.withAlpha(40),
-            ),
+            Container(height: 1, color: _kTeal.withAlpha(40)),
             const SizedBox(height: 14),
 
             // ── 7-Day Trend section ──────────────────────────────────────
@@ -183,10 +183,12 @@ class _TempPanelContentState extends ConsumerState<TempPanelContent>
         final t = l.waterTest?.temperature;
         if (t == null) return false;
         final ld = DateTime(
-            l.timestamp.year, l.timestamp.month, l.timestamp.day);
+          l.timestamp.year,
+          l.timestamp.month,
+          l.timestamp.day,
+        );
         return ld == day;
-      }).toList()
-        ..sort((a, b) => b.timestamp.compareTo(a.timestamp));
+      }).toList()..sort((a, b) => b.timestamp.compareTo(a.timestamp));
       if (dayLogs.isNotEmpty) {
         result.add(dayLogs.first.waterTest!.temperature!);
       }
@@ -224,8 +226,11 @@ class _Header extends StatelessWidget {
               ),
             ],
           ),
-          child: const Icon(Icons.thermostat_rounded,
-              color: Colors.white, size: 22),
+          child: const Icon(
+            Icons.thermostat_rounded,
+            color: Colors.white,
+            size: 22,
+          ),
         ),
         const SizedBox(width: AppSpacing.sm),
         Text(
@@ -307,8 +312,7 @@ class _HeroSection extends StatelessWidget {
             animation: fillAnim,
             builder: (context, _) {
               final fillFraction = temp != null
-                  ? ((temp! - gaugeMin) / (gaugeMax - gaugeMin))
-                      .clamp(0.0, 1.0)
+                  ? ((temp! - gaugeMin) / (gaugeMax - gaugeMin)).clamp(0.0, 1.0)
                   : 0.0;
               final animatedFill =
                   Curves.easeOutCubic.transform(fillAnim.value) * fillFraction;
@@ -331,10 +335,7 @@ class _HeroSection extends StatelessWidget {
         SizedBox(
           width: 28,
           height: thermH,
-          child: _ScaleLabels(
-            gaugeMin: gaugeMin,
-            gaugeMax: gaugeMax,
-          ),
+          child: _ScaleLabels(gaugeMin: gaugeMin, gaugeMax: gaugeMax),
         ),
 
         const SizedBox(width: 12),
@@ -382,9 +383,11 @@ class _HeroSection extends StatelessWidget {
               if (lastEntry != null)
                 Row(
                   children: [
-                    Icon(Icons.access_time_rounded,
-                        size: 12,
-                        color: _kCharcoal.withAlpha(100)),
+                    Icon(
+                      Icons.access_time_rounded,
+                      size: 12,
+                      color: _kCharcoal.withAlpha(100),
+                    ),
                     const SizedBox(width: 4),
                     Text(
                       'Last logged: ${formatTimestamp(lastEntry!.timestamp)}',
@@ -446,8 +449,7 @@ class _ScaleLabels extends StatelessWidget {
                       ? _kCharcoal.withAlpha(180)
                       : _kCharcoal.withAlpha(110),
                   fontSize: isMajor ? 10 : 9,
-                  fontWeight:
-                      isMajor ? FontWeight.w700 : FontWeight.w500,
+                  fontWeight: isMajor ? FontWeight.w700 : FontWeight.w500,
                 ),
               ),
             );
@@ -687,19 +689,22 @@ class _TrendSection extends StatelessWidget {
             child: Row(
               children: [
                 _StatCell(
-                    label: 'Min',
-                    value: '${minTemp!.toStringAsFixed(1)}°',
-                    color: _kTealDark),
+                  label: 'Min',
+                  value: '${minTemp!.toStringAsFixed(1)}°',
+                  color: _kTealDark,
+                ),
                 _StatDivider(),
                 _StatCell(
-                    label: 'Avg',
-                    value: '${avgTemp!.toStringAsFixed(1)}°',
-                    color: _kTeal),
+                  label: 'Avg',
+                  value: '${avgTemp!.toStringAsFixed(1)}°',
+                  color: _kTeal,
+                ),
                 _StatDivider(),
                 _StatCell(
-                    label: 'Max',
-                    value: '${maxTemp!.toStringAsFixed(1)}°',
-                    color: _kAmberWarn),
+                  label: 'Max',
+                  value: '${maxTemp!.toStringAsFixed(1)}°',
+                  color: _kAmberWarn,
+                ),
               ],
             ),
           ),
@@ -713,8 +718,11 @@ class _StatCell extends StatelessWidget {
   final String value;
   final Color color;
 
-  const _StatCell(
-      {required this.label, required this.value, required this.color});
+  const _StatCell({
+    required this.label,
+    required this.value,
+    required this.color,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -776,14 +784,16 @@ class _DayLabels extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: days
-          .map((d) => Text(
-                d,
-                style: AppTypography.labelSmall.copyWith(
-                  fontSize: 9,
-                  color: _kCharcoal.withAlpha(100),
-                  fontWeight: d == 'Today' ? FontWeight.w700 : FontWeight.w500,
-                ),
-              ))
+          .map(
+            (d) => Text(
+              d,
+              style: AppTypography.labelSmall.copyWith(
+                fontSize: 9,
+                color: _kCharcoal.withAlpha(100),
+                fontWeight: d == 'Today' ? FontWeight.w700 : FontWeight.w500,
+              ),
+            ),
+          )
           .toList(),
     );
   }
@@ -809,7 +819,8 @@ class _LogButton extends StatelessWidget {
               backgroundColor: _kAmberGold,
               behavior: SnackBarBehavior.floating,
               shape: RoundedRectangleBorder(
-                  borderRadius: AppRadius.mediumRadius),
+                borderRadius: AppRadius.mediumRadius,
+              ),
               duration: const Duration(seconds: 2),
             ),
           );
@@ -829,7 +840,8 @@ class _LogButton extends StatelessWidget {
           elevation: 0,
           shadowColor: Colors.transparent,
           shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12)),
+            borderRadius: BorderRadius.circular(12),
+          ),
         ),
       ),
     );
@@ -870,7 +882,7 @@ class _ThermometerPainter extends CustomPainter {
 
     // ── Geometry ─────────────────────────────────────────────────────────
     const bulbRadius = 20.0;
-    const tubeHalfW = 13.0;   // 26dp wide tube
+    const tubeHalfW = 13.0; // 26dp wide tube
     const tubeTopRadius = 13.0;
     const tubeTopPad = 16.0;
     final cx = w / 2;
@@ -885,7 +897,12 @@ class _ThermometerPainter extends CustomPainter {
       ..style = PaintingStyle.fill;
 
     final tubeRect = RRect.fromRectAndCorners(
-      Rect.fromLTWH(cx - tubeHalfW, tubeTopY, tubeHalfW * 2, tubeBotY - tubeTopY),
+      Rect.fromLTWH(
+        cx - tubeHalfW,
+        tubeTopY,
+        tubeHalfW * 2,
+        tubeBotY - tubeTopY,
+      ),
       topLeft: const Radius.circular(tubeTopRadius),
       topRight: const Radius.circular(tubeTopRadius),
     );
@@ -930,12 +947,19 @@ class _ThermometerPainter extends CustomPainter {
     final fillTopY = tubeBotY - fillH;
 
     if (fillH > 0) {
-      final liquidShader = LinearGradient(
-        begin: Alignment.topCenter,
-        end: Alignment.bottomCenter,
-        colors: [_kTealLight, _kTealDark],
-      ).createShader(Rect.fromLTRB(
-          cx - tubeHalfW + 2, fillTopY, cx + tubeHalfW - 2, tubeBotY));
+      final liquidShader =
+          LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [_kTealLight, _kTealDark],
+          ).createShader(
+            Rect.fromLTRB(
+              cx - tubeHalfW + 2,
+              fillTopY,
+              cx + tubeHalfW - 2,
+              tubeBotY,
+            ),
+          );
       final fillPaint = Paint()
         ..shader = liquidShader
         ..style = PaintingStyle.fill;
@@ -943,7 +967,11 @@ class _ThermometerPainter extends CustomPainter {
       canvas.drawRRect(
         RRect.fromRectAndCorners(
           Rect.fromLTRB(
-              cx - tubeHalfW + 2, fillTopY, cx + tubeHalfW - 2, tubeBotY),
+            cx - tubeHalfW + 2,
+            fillTopY,
+            cx + tubeHalfW - 2,
+            tubeBotY,
+          ),
           topLeft: Radius.circular(fillH > 10 ? 8 : 0),
           topRight: Radius.circular(fillH > 10 ? 8 : 0),
         ),
@@ -1075,13 +1103,18 @@ class _SparklinePainter extends CustomPainter {
     // Dot markers
     for (var i = 0; i < data.length; i++) {
       canvas.drawCircle(
-          Offset(xOf(i), yOf(data[i])), 4.0, Paint()..color = _kTealDark);
+        Offset(xOf(i), yOf(data[i])),
+        4.0,
+        Paint()..color = _kTealDark,
+      );
       canvas.drawCircle(
-          Offset(xOf(i), yOf(data[i])), 2.2, Paint()..color = Colors.white);
+        Offset(xOf(i), yOf(data[i])),
+        2.2,
+        Paint()..color = Colors.white,
+      );
     }
   }
 
   @override
-  bool shouldRepaint(covariant _SparklinePainter old) =>
-      old.data != data;
+  bool shouldRepaint(covariant _SparklinePainter old) => old.data != data;
 }

@@ -88,7 +88,8 @@ class _WaterChangeCalculatorScreenState
       setState(() {
         _changePercent = null;
         _changeVolume = null;
-        _recommendation = 'Unable to calculate — tap water nitrate is too close to current nitrate.';
+        _recommendation =
+            'Unable to calculate — tap water nitrate is too close to current nitrate.';
       });
       return;
     }
@@ -137,7 +138,11 @@ class _WaterChangeCalculatorScreenState
             padding: AppCardPadding.standard,
             child: Row(
               children: [
-                Icon(Icons.calculate, size: AppIconSizes.lg, color: context.textSecondary),
+                Icon(
+                  Icons.calculate,
+                  size: AppIconSizes.lg,
+                  color: context.textSecondary,
+                ),
                 const SizedBox(width: AppSpacing.sm2),
                 Expanded(
                   child: Text(
@@ -222,10 +227,7 @@ class _WaterChangeCalculatorScreenState
               padding: AppCardPadding.spacious,
               child: Column(
                 children: [
-                  Text(
-                    'Water Change Needed',
-                    style: AppTypography.labelLarge,
-                  ),
+                  Text('Water Change Needed', style: AppTypography.labelLarge),
                   const SizedBox(height: AppSpacing.sm2),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -241,11 +243,7 @@ class _WaterChangeCalculatorScreenState
                           Text('of tank', style: AppTypography.bodySmall),
                         ],
                       ),
-                      Container(
-                        width: 1,
-                        height: 40,
-                        color: context.textHint,
-                      ),
+                      Container(width: 1, height: 40, color: context.textHint),
                       Column(
                         children: [
                           Text(
@@ -271,7 +269,11 @@ class _WaterChangeCalculatorScreenState
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Icon(Icons.lightbulb, color: AppColors.warning, size: AppIconSizes.sm),
+                  Icon(
+                    Icons.lightbulb,
+                    color: AppColors.warning,
+                    size: AppIconSizes.sm,
+                  ),
                   const SizedBox(width: AppSpacing.sm2),
                   Expanded(
                     child: Text(

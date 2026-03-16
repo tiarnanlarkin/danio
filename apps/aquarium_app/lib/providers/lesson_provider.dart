@@ -18,12 +18,7 @@ import '../data/lessons/species_care.dart' deferred as species_care;
 import '../data/lessons/advanced_topics.dart' deferred as advanced_topics;
 
 /// Lesson loading state
-enum LessonLoadState {
-  notLoaded,
-  loading,
-  loaded,
-  error,
-}
+enum LessonLoadState { notLoaded, loading, loaded, error }
 
 /// Metadata for a learning path (loaded immediately)
 class PathMetadata {
@@ -104,7 +99,7 @@ class LessonProvider extends StateNotifier<LessonState> {
         'nc_how_to',
         'nc_testing',
         'nc_spikes',
-        'nc_minicycle'
+        'nc_minicycle',
       ],
     ),
     PathMetadata(
@@ -126,7 +121,7 @@ class LessonProvider extends StateNotifier<LessonState> {
         'ff_hardy',
         'ff_acclimation',
         'ff_stocking',
-        'ff_compatibility'
+        'ff_compatibility',
       ],
     ),
     PathMetadata(
@@ -140,7 +135,7 @@ class LessonProvider extends StateNotifier<LessonState> {
         'tm_filter',
         'tm_algae',
         'tm_schedule',
-        'tm_equipment'
+        'tm_equipment',
       ],
     ),
     PathMetadata(
@@ -154,7 +149,7 @@ class LessonProvider extends StateNotifier<LessonState> {
         'pt_lighting',
         'pt_co2',
         'pt_fertilizers',
-        'pt_easy_plants'
+        'pt_easy_plants',
       ],
     ),
     PathMetadata(
@@ -168,7 +163,7 @@ class LessonProvider extends StateNotifier<LessonState> {
         'eq_heaters',
         'eq_lighting',
         'eq_air_pump',
-        'eq_substrate'
+        'eq_substrate',
       ],
     ),
     PathMetadata(
@@ -182,7 +177,7 @@ class LessonProvider extends StateNotifier<LessonState> {
         'fh_ich',
         'fh_fin_rot',
         'fh_quarantine',
-        'fh_prevention'
+        'fh_prevention',
       ],
     ),
     PathMetadata(
@@ -196,7 +191,7 @@ class LessonProvider extends StateNotifier<LessonState> {
         'sc_tetras',
         'sc_guppies',
         'sc_goldfish',
-        'sc_cichlids'
+        'sc_cichlids',
       ],
     ),
     PathMetadata(
@@ -209,7 +204,7 @@ class LessonProvider extends StateNotifier<LessonState> {
         'at_breeding',
         'at_aquascaping',
         'at_saltwater',
-        'at_biotopes'
+        'at_biotopes',
       ],
     ),
   ];
@@ -237,10 +232,7 @@ class LessonProvider extends StateNotifier<LessonState> {
 
       if (path != null) {
         state = state.copyWith(
-          loadedPaths: {
-            ...state.loadedPaths,
-            pathId: path,
-          },
+          loadedPaths: {...state.loadedPaths, pathId: path},
           pathLoadStates: {
             ...state.pathLoadStates,
             pathId: LessonLoadState.loaded,
@@ -278,7 +270,7 @@ class LessonProvider extends StateNotifier<LessonState> {
     // Import statement is synchronous in Dart, but we use Future
     // to simulate async behavior and allow for future enhancements
     // (e.g., loading from network, IndexedDB, etc.)
-    
+
     // The actual import happens on first call - Dart tree-shaking
     // ensures unused chunks aren't included in the bundle
     switch (pathId) {
@@ -372,10 +364,7 @@ class LessonProvider extends StateNotifier<LessonState> {
     paths.remove(pathId);
     states.remove(pathId);
 
-    state = state.copyWith(
-      loadedPaths: paths,
-      pathLoadStates: states,
-    );
+    state = state.copyWith(loadedPaths: paths, pathLoadStates: states);
   }
 
   /// Public getters for external access

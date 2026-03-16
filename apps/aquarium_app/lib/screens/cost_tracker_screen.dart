@@ -118,60 +118,60 @@ class _CostTrackerScreenState extends ConsumerState<CostTrackerScreen> {
     return GestureDetector(
       onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
       child: Scaffold(
-      appBar: AppBar(
-        title: const Text('Cost Tracker'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.settings),
-            tooltip: 'Cost tracker settings',
-            onPressed: _showSettings,
-          ),
-        ],
-      ),
-      body: _expenses.isEmpty
-          ? _EmptyState(onAdd: _addExpense)
-          : ListView.builder(
-              padding: const EdgeInsets.all(AppSpacing.md),
-              itemCount: _buildItemCount(),
-              itemBuilder: (context, index) {
-                return _buildListItem(index);
-              },
+        appBar: AppBar(
+          title: const Text('Cost Tracker'),
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.settings),
+              tooltip: 'Cost tracker settings',
+              onPressed: _showSettings,
             ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: _addExpense,
-        icon: const Icon(Icons.add),
-        label: const Text('Add Expense'),
+          ],
+        ),
+        body: _expenses.isEmpty
+            ? _EmptyState(onAdd: _addExpense)
+            : ListView.builder(
+                padding: const EdgeInsets.all(AppSpacing.md),
+                itemCount: _buildItemCount(),
+                itemBuilder: (context, index) {
+                  return _buildListItem(index);
+                },
+              ),
+        floatingActionButton: FloatingActionButton.extended(
+          onPressed: _addExpense,
+          icon: const Icon(Icons.add),
+          label: const Text('Add Expense'),
+        ),
       ),
-    ),
     );
   }
 
   int _buildItemCount() {
     final sortedCategories = _byCategory.entries.toList()
       ..sort((a, b) => b.value.compareTo(a.value));
-    
+
     int count = 0;
     count += 3; // Summary cards row, spacing, all-time card
     count += 1; // Spacing after summary
-    
+
     if (_byCategory.isNotEmpty) {
       count += 2; // "By Category" header + spacing
       count += sortedCategories.length; // Category bars
       count += 1; // Spacing after categories
     }
-    
+
     count += 2; // "Recent Expenses" header + spacing
     count += _expenses.length; // Expense tiles
-    
+
     return count;
   }
 
   Widget _buildListItem(int index) {
     final sortedCategories = _byCategory.entries.toList()
       ..sort((a, b) => b.value.compareTo(a.value));
-    
+
     int currentIndex = 0;
-    
+
     // Summary cards row
     if (index == currentIndex++) {
       return Row(
@@ -196,12 +196,12 @@ class _CostTrackerScreenState extends ConsumerState<CostTrackerScreen> {
         ],
       );
     }
-    
+
     // Spacing
     if (index == currentIndex++) {
       return const SizedBox(height: AppSpacing.sm2);
     }
-    
+
     // All-time total card
     if (index == currentIndex++) {
       return _SummaryCard(
@@ -211,24 +211,24 @@ class _CostTrackerScreenState extends ConsumerState<CostTrackerScreen> {
         color: AppColors.success,
       );
     }
-    
+
     // Spacing
     if (index == currentIndex++) {
       return const SizedBox(height: AppSpacing.lg);
     }
-    
+
     // Category breakdown section
     if (_byCategory.isNotEmpty) {
       // "By Category" header
       if (index == currentIndex++) {
         return Text('By Category', style: AppTypography.headlineSmall);
       }
-      
+
       // Spacing
       if (index == currentIndex++) {
         return const SizedBox(height: AppSpacing.sm2);
       }
-      
+
       // Category bars
       if (index < currentIndex + sortedCategories.length) {
         final categoryEntry = sortedCategories[index - currentIndex];
@@ -240,23 +240,23 @@ class _CostTrackerScreenState extends ConsumerState<CostTrackerScreen> {
         );
       }
       currentIndex += sortedCategories.length;
-      
+
       // Spacing
       if (index == currentIndex++) {
         return const SizedBox(height: AppSpacing.lg);
       }
     }
-    
+
     // "Recent Expenses" header
     if (index == currentIndex++) {
       return Text('Recent Expenses', style: AppTypography.headlineSmall);
     }
-    
+
     // Spacing
     if (index == currentIndex++) {
       return const SizedBox(height: AppSpacing.sm2);
     }
-    
+
     // Expense tiles
     final expenseIndex = index - currentIndex;
     return _ExpenseTile(

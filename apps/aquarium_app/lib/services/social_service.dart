@@ -137,7 +137,9 @@ class SocialService {
     try {
       final res = await _client
           .from('profiles')
-          .select('id, username, display_name, avatar_emoji, current_level, level_title')
+          .select(
+            'id, username, display_name, avatar_emoji, current_level, level_title',
+          )
           .or('username.ilike.%$query%,display_name.ilike.%$query%')
           .neq('id', _uid)
           .limit(20);
@@ -179,8 +181,7 @@ class SocialService {
 
       return List<Map<String, dynamic>>.from(res).map((row) {
         final isRequester = row['requester_id'] == _uid;
-        final friendProfile =
-            isRequester ? row['addressee'] : row['requester'];
+        final friendProfile = isRequester ? row['addressee'] : row['requester'];
         final friendsSince = DateTime.parse(row['created_at'] as String);
         return _friendFromSupabase(
           friendProfile as Map<String, dynamic>,
@@ -207,10 +208,13 @@ class SocialService {
   /// Accept a pending friend request.
   Future<void> acceptFriendRequest(String friendshipId) async {
     if (!_isLive) return;
-    await _client.from('friendships').update({
-      'status': 'accepted',
-      'responded_at': DateTime.now().toUtc().toIso8601String(),
-    }).eq('id', friendshipId);
+    await _client
+        .from('friendships')
+        .update({
+          'status': 'accepted',
+          'responded_at': DateTime.now().toUtc().toIso8601String(),
+        })
+        .eq('id', friendshipId);
   }
 
   /// Reject / decline a friend request.
@@ -304,7 +308,9 @@ class SocialService {
     await _client
         .from('friendships')
         .delete()
-        .or('and(requester_id.eq.$_uid,addressee_id.eq.$friendOrUserId),and(requester_id.eq.$friendOrUserId,addressee_id.eq.$_uid)');
+        .or(
+          'and(requester_id.eq.$_uid,addressee_id.eq.$friendOrUserId),and(requester_id.eq.$friendOrUserId,addressee_id.eq.$_uid)',
+        );
   }
 
   /// Block a user.
@@ -322,10 +328,10 @@ class SocialService {
   Future<bool> areFriends(String userId) async {
     if (!_isLive) return false;
     try {
-      final res = await _client.rpc('are_friends', params: {
-        'user_a': _uid,
-        'user_b': userId,
-      });
+      final res = await _client.rpc(
+        'are_friends',
+        params: {'user_a': _uid, 'user_b': userId},
+      );
       return res == true;
     } catch (e) {
       return false;
@@ -344,9 +350,10 @@ class SocialService {
   }) async {
     if (!_isLive) {
       final mockFriends = generateMockFriends(count: 10);
-      return generateMockActivities(mockFriends, activitiesPerFriend: 4)
-          .take(limit)
-          .toList();
+      return generateMockActivities(
+        mockFriends,
+        activitiesPerFriend: 4,
+      ).take(limit).toList();
     }
     try {
       var filterQuery = _client.from('activity_feed').select('''
@@ -357,10 +364,15 @@ class SocialService {
       ''');
 
       if (before != null) {
-        filterQuery = filterQuery.lt('created_at', before.toUtc().toIso8601String());
+        filterQuery = filterQuery.lt(
+          'created_at',
+          before.toUtc().toIso8601String(),
+        );
       }
 
-      final res = await filterQuery.order('created_at', ascending: false).limit(limit);
+      final res = await filterQuery
+          .order('created_at', ascending: false)
+          .limit(limit);
 
       return List<Map<String, dynamic>>.from(res).map((row) {
         final user = row['user'] as Map<String, dynamic>;
@@ -379,9 +391,10 @@ class SocialService {
     } catch (e) {
       debugPrint('[SocialService] getActivityFeed error: $e');
       final mockFriends = generateMockFriends(count: 10);
-      return generateMockActivities(mockFriends, activitiesPerFriend: 4)
-          .take(limit)
-          .toList();
+      return generateMockActivities(
+        mockFriends,
+        activitiesPerFriend: 4,
+      ).take(limit).toList();
     }
   }
 
@@ -625,17 +638,19 @@ class SocialService {
         .map((rows) {
           return rows
               .where((r) => r['status'] == 'pending')
-              .map((row) => FriendRequest(
-                    id: row['id'] as String,
-                    fromUserId: row['requester_id'] as String,
-                    fromUsername: '',
-                    fromDisplayName: '',
-                    toUserId: _uid,
-                    toUsername: 'you',
-                    status: FriendRequestStatus.pending,
-                    createdAt: DateTime.parse(row['created_at'] as String),
-                    message: row['message'] as String?,
-                  ))
+              .map(
+                (row) => FriendRequest(
+                  id: row['id'] as String,
+                  fromUserId: row['requester_id'] as String,
+                  fromUsername: '',
+                  fromDisplayName: '',
+                  toUserId: _uid,
+                  toUsername: 'you',
+                  status: FriendRequestStatus.pending,
+                  createdAt: DateTime.parse(row['created_at'] as String),
+                  message: row['message'] as String?,
+                ),
+              )
               .toList();
         });
   }
@@ -650,15 +665,17 @@ class SocialService {
         .map((rows) {
           return rows
               .where((r) => r['is_read'] == false)
-              .map((row) => FriendEncouragement(
-                    id: row['id'] as String,
-                    fromUserId: row['from_user_id'] as String,
-                    toUserId: row['to_user_id'] as String,
-                    emoji: row['emoji'] as String,
-                    message: row['message'] as String?,
-                    timestamp: DateTime.parse(row['created_at'] as String),
-                    isRead: false,
-                  ))
+              .map(
+                (row) => FriendEncouragement(
+                  id: row['id'] as String,
+                  fromUserId: row['from_user_id'] as String,
+                  toUserId: row['to_user_id'] as String,
+                  emoji: row['emoji'] as String,
+                  message: row['message'] as String?,
+                  timestamp: DateTime.parse(row['created_at'] as String),
+                  isRead: false,
+                ),
+              )
               .toList();
         });
   }

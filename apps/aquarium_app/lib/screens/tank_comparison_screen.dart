@@ -38,7 +38,11 @@ class _TankComparisonScreenState extends ConsumerState<TankComparisonScreen> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(Icons.compare, size: AppIconSizes.xxl, color: context.textHint),
+                    Icon(
+                      Icons.compare,
+                      size: AppIconSizes.xxl,
+                      color: context.textHint,
+                    ),
                     const SizedBox(height: AppSpacing.md),
                     Text(
                       'Need at Least 2 Tanks',

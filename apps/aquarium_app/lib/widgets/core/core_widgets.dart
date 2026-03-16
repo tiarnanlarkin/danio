@@ -1,5 +1,5 @@
 /// Core widget library for the Aquarium App.
-/// 
+///
 /// This barrel file exports all core UI components for easy importing:
 /// ```dart
 /// import 'package:danio/widgets/core/core_widgets.dart';

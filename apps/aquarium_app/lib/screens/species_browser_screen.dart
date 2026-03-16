@@ -11,14 +11,16 @@ class SpeciesBrowserScreen extends ConsumerStatefulWidget {
   const SpeciesBrowserScreen({super.key});
 
   @override
-  ConsumerState<SpeciesBrowserScreen> createState() => _SpeciesBrowserScreenState();
+  ConsumerState<SpeciesBrowserScreen> createState() =>
+      _SpeciesBrowserScreenState();
 }
 
 class _SpeciesBrowserScreenState extends ConsumerState<SpeciesBrowserScreen> {
   String _searchQuery = '';
   String? _careLevelFilter;
   String? _temperamentFilter;
-  final Set<String> _researchedSpecies = {}; // Track researched species this session
+  final Set<String> _researchedSpecies =
+      {}; // Track researched species this session
 
   /// Debounce search input to avoid filtering on every keystroke
   final _searchDebouncer = Debouncer(delay: const Duration(milliseconds: 250));
@@ -211,7 +213,10 @@ class _SpeciesBrowserScreenState extends ConsumerState<SpeciesBrowserScreen> {
     );
   }
 
-  Future<void> _showSpeciesDetail(BuildContext context, SpeciesInfo species) async {
+  Future<void> _showSpeciesDetail(
+    BuildContext context,
+    SpeciesInfo species,
+  ) async {
     // Award XP for researching a new species (once per session per species)
     if (!_researchedSpecies.contains(species.scientificName)) {
       _researchedSpecies.add(species.scientificName);
@@ -304,7 +309,10 @@ class _SpeciesCard extends StatelessWidget {
             Wrap(
               spacing: 6,
               children: [
-                _MiniChip(label: species.careLevel, color: _careLevelColor(context)),
+                _MiniChip(
+                  label: species.careLevel,
+                  color: _careLevelColor(context),
+                ),
                 _MiniChip(
                   label: species.temperament,
                   color: _temperamentColor(context),
@@ -332,15 +340,15 @@ class _MiniChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xs2, vertical: 2),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.xs2,
+        vertical: 2,
+      ),
       decoration: BoxDecoration(
         color: color.withAlpha(26),
         borderRadius: AppRadius.smallRadius,
       ),
-      child: Text(
-        label,
-        style: AppTypography.bodySmall.copyWith(color: color),
-      ),
+      child: Text(label, style: AppTypography.bodySmall.copyWith(color: color)),
     );
   }
 }
@@ -359,7 +367,9 @@ class _SpeciesDetailSheet extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: Theme.of(context).scaffoldBackgroundColor,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(AppRadius.lg)),
+        borderRadius: const BorderRadius.vertical(
+          top: Radius.circular(AppRadius.lg),
+        ),
       ),
       child: SingleChildScrollView(
         controller: scrollController,
@@ -521,7 +531,10 @@ class _StatChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm3, vertical: AppSpacing.xs2),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.sm3,
+        vertical: AppSpacing.xs2,
+      ),
       decoration: BoxDecoration(
         color: context.surfaceVariant,
         borderRadius: AppRadius.mediumRadius,

@@ -10,7 +10,7 @@ import '../../theme/app_theme.dart';
 import 'confetti_overlay.dart';
 
 /// Full-screen level up celebration overlay
-/// 
+///
 /// Animation sequence:
 /// 1. Screen dims (dark overlay fades in)
 /// 2. "LEVEL UP!" text scales from 0 → 1.2 → 1.0 with bounce
@@ -20,16 +20,16 @@ import 'confetti_overlay.dart';
 class LevelUpOverlay extends StatefulWidget {
   /// The new level achieved
   final int newLevel;
-  
+
   /// Optional level title (e.g., "Aquarist", "Expert")
   final String? levelTitle;
-  
+
   /// Callback when overlay is dismissed
   final VoidCallback? onDismiss;
-  
+
   /// Duration before auto-dismiss (default 3 seconds)
   final Duration autoDismissDuration;
-  
+
   /// Whether to show the overlay (for animated visibility)
   final bool isVisible;
 
@@ -41,7 +41,7 @@ class LevelUpOverlay extends StatefulWidget {
     this.autoDismissDuration = const Duration(seconds: 3),
     this.isVisible = true,
   });
-  
+
   /// Show level up overlay as a dialog
   static Future<void> show(
     BuildContext context, {
@@ -76,21 +76,21 @@ class _LevelUpOverlayState extends State<LevelUpOverlay>
   late AnimationController _levelController;
   late AnimationController _glowController;
   late AnimationController _particleController;
-  
+
   // Confetti controllers
   late ConfettiController _leftConfettiController;
   late ConfettiController _rightConfettiController;
-  
+
   // Animations
   late Animation<double> _overlayFade;
   late Animation<double> _textScale;
   late Animation<double> _levelScale;
   late Animation<double> _levelFade;
   late Animation<double> _glowPulse;
-  
+
   // Prevent double-dismiss (auto-dismiss + button tap race condition)
   bool _isDismissing = false;
-  
+
   // Sparkle particles
   final List<_SparkleParticle> _sparkles = [];
   final _random = math.Random();
@@ -102,7 +102,7 @@ class _LevelUpOverlayState extends State<LevelUpOverlay>
     _initializeConfetti();
     _generateSparkles();
     _startAnimationSequence();
-    
+
     // Haptic feedback
     HapticFeedback.heavyImpact();
   }
@@ -117,7 +117,7 @@ class _LevelUpOverlayState extends State<LevelUpOverlay>
       parent: _overlayController,
       curve: AppCurves.standardDecelerate,
     );
-    
+
     // "LEVEL UP!" text bounce scale (600ms)
     _textController = AnimationController(
       vsync: this,
@@ -125,17 +125,21 @@ class _LevelUpOverlayState extends State<LevelUpOverlay>
     );
     _textScale = TweenSequence<double>([
       TweenSequenceItem(
-        tween: Tween(begin: 0.0, end: 1.2)
-            .chain(CurveTween(curve: AppCurves.standardDecelerate)),
+        tween: Tween(
+          begin: 0.0,
+          end: 1.2,
+        ).chain(CurveTween(curve: AppCurves.standardDecelerate)),
         weight: 60,
       ),
       TweenSequenceItem(
-        tween: Tween(begin: 1.2, end: 1.0)
-            .chain(CurveTween(curve: AppCurves.elastic)),
+        tween: Tween(
+          begin: 1.2,
+          end: 1.0,
+        ).chain(CurveTween(curve: AppCurves.elastic)),
         weight: 40,
       ),
     ]).animate(_textController);
-    
+
     // Level number appearance (500ms)
     _levelController = AnimationController(
       vsync: this,
@@ -149,7 +153,7 @@ class _LevelUpOverlayState extends State<LevelUpOverlay>
       parent: _levelController,
       curve: AppCurves.standardAccelerate,
     );
-    
+
     // Glow pulse (continuous)
     _glowController = AnimationController(
       vsync: this,
@@ -158,7 +162,7 @@ class _LevelUpOverlayState extends State<LevelUpOverlay>
     _glowPulse = Tween<double>(begin: 0.5, end: 1.0).animate(
       CurvedAnimation(parent: _glowController, curve: AppCurves.standard),
     );
-    
+
     // Particle animation (2 seconds)
     _particleController = AnimationController(
       vsync: this,
@@ -177,14 +181,16 @@ class _LevelUpOverlayState extends State<LevelUpOverlay>
 
   void _generateSparkles() {
     for (int i = 0; i < 20; i++) {
-      _sparkles.add(_SparkleParticle(
-        angle: _random.nextDouble() * 2 * math.pi,
-        distance: 80 + _random.nextDouble() * 120,
-        size: 4 + _random.nextDouble() * 8,
-        delay: _random.nextDouble() * 0.3,
-        rotationSpeed: (_random.nextDouble() - 0.5) * 4,
-        color: _getSparkleColor(_random.nextInt(5)),
-      ));
+      _sparkles.add(
+        _SparkleParticle(
+          angle: _random.nextDouble() * 2 * math.pi,
+          distance: 80 + _random.nextDouble() * 120,
+          size: 4 + _random.nextDouble() * 8,
+          delay: _random.nextDouble() * 0.3,
+          rotationSpeed: (_random.nextDouble() - 0.5) * 4,
+          color: _getSparkleColor(_random.nextInt(5)),
+        ),
+      );
     }
   }
 
@@ -202,24 +208,24 @@ class _LevelUpOverlayState extends State<LevelUpOverlay>
   void _startAnimationSequence() async {
     // Step 1: Fade in overlay
     _overlayController.forward();
-    
+
     await Future.delayed(AppDurations.medium2);
-    
+
     // Step 2: "LEVEL UP!" text bounces in
     _textController.forward();
-    
+
     await Future.delayed(AppDurations.medium4);
-    
+
     // Step 3: Level number appears with glow
     _levelController.forward();
     _glowController.repeat(reverse: true);
-    
+
     // Step 4: Fire confetti and sparkles
     await Future.delayed(AppDurations.medium2);
     _leftConfettiController.play();
     _rightConfettiController.play();
     _particleController.forward();
-    
+
     // Step 5: Auto-dismiss after duration
     await Future.delayed(widget.autoDismissDuration);
     if (mounted && !_isDismissing) {
@@ -277,7 +283,10 @@ class _LevelUpOverlayState extends State<LevelUpOverlay>
                   ElevatedButton(
                     onPressed: _dismiss,
                     style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 32,
+                        vertical: 16,
+                      ),
                       backgroundColor: const Color(0xFF8B6BAE),
                       foregroundColor: Colors.white,
                     ),
@@ -306,11 +315,9 @@ class _LevelUpOverlayState extends State<LevelUpOverlay>
             // Dark overlay
             FadeTransition(
               opacity: _overlayFade,
-              child: Container(
-                color: AppOverlays.black60,
-              ),
+              child: Container(color: AppOverlays.black60),
             ),
-            
+
             // Sparkle particles
             AnimatedBuilder(
               animation: _particleController,
@@ -323,7 +330,7 @@ class _LevelUpOverlayState extends State<LevelUpOverlay>
                 size: size,
               ),
             ),
-            
+
             // Confetti from left
             Positioned(
               left: 0,
@@ -339,7 +346,7 @@ class _LevelUpOverlayState extends State<LevelUpOverlay>
                 createParticlePath: _createStarPath,
               ),
             ),
-            
+
             // Confetti from right
             Positioned(
               right: 0,
@@ -355,7 +362,7 @@ class _LevelUpOverlayState extends State<LevelUpOverlay>
                 createParticlePath: _createStarPath,
               ),
             ),
-            
+
             // Central content
             Center(
               child: Column(
@@ -366,9 +373,9 @@ class _LevelUpOverlayState extends State<LevelUpOverlay>
                     scale: _textScale,
                     child: _buildLevelUpText(),
                   ),
-                  
+
                   const SizedBox(height: AppSpacing.lg),
-                  
+
                   // Level number with glow
                   FadeTransition(
                     opacity: _levelFade,
@@ -377,7 +384,7 @@ class _LevelUpOverlayState extends State<LevelUpOverlay>
                       child: _buildLevelNumber(),
                     ),
                   ),
-                  
+
                   // Level title (if provided)
                   if (widget.levelTitle != null) ...[
                     const SizedBox(height: AppSpacing.md),
@@ -386,9 +393,9 @@ class _LevelUpOverlayState extends State<LevelUpOverlay>
                       child: _buildLevelTitle(),
                     ),
                   ],
-                  
+
                   const SizedBox(height: AppSpacing.xl),
-                  
+
                   // Continue button instead of just tap hint
                   FadeTransition(
                     opacity: _overlayFade,
@@ -410,9 +417,9 @@ class _LevelUpOverlayState extends State<LevelUpOverlay>
                       ),
                     ),
                   ),
-                  
+
                   const SizedBox(height: AppSpacing.sm),
-                  
+
                   // Tap anywhere hint
                   FadeTransition(
                     opacity: _overlayFade,
@@ -483,16 +490,16 @@ class _LevelUpOverlayState extends State<LevelUpOverlay>
             ),
             boxShadow: [
               BoxShadow(
-                color: const Color(0xFF8B6BAE).withValues(
-                  alpha: 0.4 + _glowPulse.value * 0.4,
-                ),
+                color: const Color(
+                  0xFF8B6BAE,
+                ).withValues(alpha: 0.4 + _glowPulse.value * 0.4),
                 blurRadius: 30 + _glowPulse.value * 20,
                 spreadRadius: 5 + _glowPulse.value * 10,
               ),
               BoxShadow(
-                color: const Color(0xFFD946EF).withValues(
-                  alpha: 0.3 + _glowPulse.value * 0.3,
-                ),
+                color: const Color(
+                  0xFFD946EF,
+                ).withValues(alpha: 0.3 + _glowPulse.value * 0.3),
                 blurRadius: 50 + _glowPulse.value * 30,
                 spreadRadius: 10,
               ),
@@ -527,10 +534,7 @@ class _LevelUpOverlayState extends State<LevelUpOverlay>
       decoration: BoxDecoration(
         color: AppOverlays.white15,
         borderRadius: AppRadius.pillRadius,
-        border: Border.all(
-          color: AppOverlays.white30,
-          width: 1,
-        ),
+        border: Border.all(color: AppOverlays.white30, width: 1),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -611,8 +615,8 @@ class _SparklePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     for (final sparkle in sparkles) {
-      final effectiveProgress = ((progress - sparkle.delay) / (1 - sparkle.delay))
-          .clamp(0.0, 1.0);
+      final effectiveProgress =
+          ((progress - sparkle.delay) / (1 - sparkle.delay)).clamp(0.0, 1.0);
       if (effectiveProgress <= 0) continue;
 
       // Fade out near the end
@@ -682,21 +686,14 @@ class _SparklePainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(_SparklePainter oldDelegate) => 
+  bool shouldRepaint(_SparklePainter oldDelegate) =>
       progress != oldDelegate.progress;
 }
 
 /// Extension to trigger level up celebration from CelebrationService
 extension LevelUpCelebration on BuildContext {
   /// Show level up celebration overlay
-  void showLevelUpCelebration({
-    required int newLevel,
-    String? levelTitle,
-  }) {
-    LevelUpOverlay.show(
-      this,
-      newLevel: newLevel,
-      levelTitle: levelTitle,
-    );
+  void showLevelUpCelebration({required int newLevel, String? levelTitle}) {
+    LevelUpOverlay.show(this, newLevel: newLevel, levelTitle: levelTitle);
   }
 }

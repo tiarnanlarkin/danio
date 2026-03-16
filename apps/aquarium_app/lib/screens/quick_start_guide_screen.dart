@@ -17,7 +17,11 @@ class QuickStartGuideScreen extends StatelessWidget {
             padding: AppCardPadding.standard,
             child: Column(
               children: [
-                Icon(Icons.rocket_launch, size: AppIconSizes.xl, color: AppColors.primary),
+                Icon(
+                  Icons.rocket_launch,
+                  size: AppIconSizes.xl,
+                  color: AppColors.primary,
+                ),
                 const SizedBox(height: AppSpacing.sm2),
                 Text(
                   'Your First Aquarium',
@@ -437,7 +441,11 @@ class _TipBox extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Icon(Icons.lightbulb, size: AppIconSizes.xs, color: context.textSecondary),
+          Icon(
+            Icons.lightbulb,
+            size: AppIconSizes.xs,
+            color: context.textSecondary,
+          ),
           const SizedBox(width: AppSpacing.sm),
           Expanded(child: Text(text, style: AppTypography.bodySmall)),
         ],

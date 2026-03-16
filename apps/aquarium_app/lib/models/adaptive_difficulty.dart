@@ -388,7 +388,10 @@ class UserSkillProfile {
           (json['manualOverrides'] as Map<String, dynamic>?)?.map(
             (key, value) => MapEntry(
               key,
-              DifficultyLevel.values.firstWhere((e) => e.name == value, orElse: () => DifficultyLevel.easy),
+              DifficultyLevel.values.firstWhere(
+                (e) => e.name == value,
+                orElse: () => DifficultyLevel.easy,
+              ),
             ),
           ) ??
           {},

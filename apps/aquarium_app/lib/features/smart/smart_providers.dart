@@ -35,10 +35,7 @@ class AIHistoryNotifier extends StateNotifier<List<AIInteraction>> {
         .toList();
   }
 
-  Future<void> add({
-    required String type,
-    required String summary,
-  }) async {
+  Future<void> add({required String type, required String summary}) async {
     final interaction = AIInteraction(
       id: _uuid.v4(),
       type: type,
@@ -58,8 +55,8 @@ class AIHistoryNotifier extends StateNotifier<List<AIInteraction>> {
 
 final aiHistoryProvider =
     StateNotifierProvider<AIHistoryNotifier, List<AIInteraction>>(
-  (ref) => AIHistoryNotifier(),
-);
+      (ref) => AIHistoryNotifier(),
+    );
 
 // ── Anomaly History ─────────────────────────────────────────────────────
 
@@ -114,8 +111,8 @@ class AnomalyHistoryNotifier extends StateNotifier<List<Anomaly>> {
 
 final anomalyHistoryProvider =
     StateNotifierProvider<AnomalyHistoryNotifier, List<Anomaly>>(
-  (ref) => AnomalyHistoryNotifier(),
-);
+      (ref) => AnomalyHistoryNotifier(),
+    );
 
 // ── Weekly Plan Cache ───────────────────────────────────────────────────
 
@@ -152,5 +149,5 @@ class WeeklyPlanNotifier extends StateNotifier<WeeklyPlan?> {
 
 final weeklyPlanProvider =
     StateNotifierProvider<WeeklyPlanNotifier, WeeklyPlan?>(
-  (ref) => WeeklyPlanNotifier(),
-);
+      (ref) => WeeklyPlanNotifier(),
+    );

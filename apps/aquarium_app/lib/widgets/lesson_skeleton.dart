@@ -183,9 +183,10 @@ class _ShimmerAnimationState extends State<_ShimmerAnimation>
       duration: AppDurations.celebration,
     )..repeat();
 
-    _animation = Tween<double>(begin: -1.0, end: 2.0).animate(
-      CurvedAnimation(parent: _controller, curve: AppCurves.standard),
-    );
+    _animation = Tween<double>(
+      begin: -1.0,
+      end: 2.0,
+    ).animate(CurvedAnimation(parent: _controller, curve: AppCurves.standard));
   }
 
   @override
@@ -227,11 +228,7 @@ class LessonErrorWidget extends StatelessWidget {
   final String message;
   final VoidCallback? onRetry;
 
-  const LessonErrorWidget({
-    super.key,
-    required this.message,
-    this.onRetry,
-  });
+  const LessonErrorWidget({super.key, required this.message, this.onRetry});
 
   @override
   Widget build(BuildContext context) {

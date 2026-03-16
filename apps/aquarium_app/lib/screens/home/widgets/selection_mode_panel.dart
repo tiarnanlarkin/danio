@@ -38,10 +38,7 @@ class SelectionModePanel extends StatelessWidget {
                 offset: const Offset(0, 6),
               ),
             ],
-            border: Border.all(
-              color: AppOverlays.white60,
-              width: 1.5,
-            ),
+            border: Border.all(color: AppOverlays.white60, width: 1.5),
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -159,7 +156,10 @@ class SelectionModePanel extends StatelessWidget {
                     borderRadius: AppRadius.mediumRadius,
                   ),
                 ),
-                icon: const Icon(Icons.file_download_outlined, size: AppIconSizes.sm),
+                icon: const Icon(
+                  Icons.file_download_outlined,
+                  size: AppIconSizes.sm,
+                ),
                 label: const Text('Export'),
               ),
             ),

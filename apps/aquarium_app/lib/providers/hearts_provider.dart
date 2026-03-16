@@ -64,9 +64,7 @@ class HeartsState {
 /// Uses .select() to only rebuild when hearts-related fields change,
 /// not on every XP gain or other profile update.
 final heartsStateProvider = Provider<HeartsState>((ref) {
-  final hearts = ref.watch(
-    userProfileProvider.select((a) => a.value?.hearts),
-  );
+  final hearts = ref.watch(userProfileProvider.select((a) => a.value?.hearts));
   final service = ref.watch(heartsServiceProvider);
   return HeartsState.fromHearts(hearts, service);
 });

@@ -23,10 +23,7 @@ class QuarantineGuideScreen extends StatelessWidget {
                   children: [
                     Icon(Icons.shield, color: AppColors.warning),
                     const SizedBox(width: AppSpacing.sm),
-                    Text(
-                      'Why Quarantine?',
-                      style: AppTypography.headlineSmall,
-                    ),
+                    Text('Why Quarantine?', style: AppTypography.headlineSmall),
                   ],
                 ),
                 const SizedBox(height: AppSpacing.sm2),
@@ -143,10 +140,7 @@ class QuarantineGuideScreen extends StatelessWidget {
               children: [
                 _SymptomRow(symptom: 'White spots', indicates: 'Ich'),
                 const Divider(),
-                _SymptomRow(
-                  symptom: 'Gold dust coating',
-                  indicates: 'Velvet',
-                ),
+                _SymptomRow(symptom: 'Gold dust coating', indicates: 'Velvet'),
                 const Divider(),
                 _SymptomRow(
                   symptom: 'Frayed/rotting fins',
@@ -398,7 +392,11 @@ class _SymptomRow extends StatelessWidget {
       child: Row(
         children: [
           Expanded(child: Text(symptom, style: AppTypography.bodyMedium)),
-          Icon(Icons.arrow_forward, size: AppIconSizes.xs, color: context.textHint),
+          Icon(
+            Icons.arrow_forward,
+            size: AppIconSizes.xs,
+            color: context.textHint,
+          ),
           const SizedBox(width: AppSpacing.sm),
           Expanded(
             child: Text(
@@ -460,7 +458,11 @@ class _TipItem extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(Icons.check, size: AppIconSizes.xs, color: context.textSecondary),
+          Icon(
+            Icons.check,
+            size: AppIconSizes.xs,
+            color: context.textSecondary,
+          ),
           const SizedBox(width: AppSpacing.sm),
           Expanded(child: Text(text, style: AppTypography.bodySmall)),
         ],

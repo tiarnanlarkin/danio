@@ -19,274 +19,265 @@ class BreedingGuideScreen extends StatelessWidget {
 
   List<Widget> _buildItems(BuildContext context) {
     return [
-          // Intro
-          AppCard(
-            backgroundColor: AppOverlays.info10,
-            padding: AppCardPadding.standard,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+      // Intro
+      AppCard(
+        backgroundColor: AppOverlays.info10,
+        padding: AppCardPadding.standard,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
               children: [
-                Row(
-                  children: [
-                    Icon(Icons.favorite, color: context.textSecondary),
-                    const SizedBox(width: AppSpacing.sm),
-                    Text(
-                      'Breeding Basics',
-                      style: AppTypography.headlineSmall,
-                    ),
-                  ],
-                ),
-                const SizedBox(height: AppSpacing.sm2),
-                Text(
-                  'Breeding fish can be rewarding! Most fish breed readily in the right conditions. '
-                  'Key factors: healthy parents, proper diet, and appropriate environment.',
-                  style: AppTypography.bodyMedium,
-                ),
+                Icon(Icons.favorite, color: context.textSecondary),
+                const SizedBox(width: AppSpacing.sm),
+                Text('Breeding Basics', style: AppTypography.headlineSmall),
               ],
             ),
-          ),
+            const SizedBox(height: AppSpacing.sm2),
+            Text(
+              'Breeding fish can be rewarding! Most fish breed readily in the right conditions. '
+              'Key factors: healthy parents, proper diet, and appropriate environment.',
+              style: AppTypography.bodyMedium,
+            ),
+          ],
+        ),
+      ),
 
-          const SizedBox(height: AppSpacing.lg),
+      const SizedBox(height: AppSpacing.lg),
 
-          // Breeding types
-          Text('Breeding Methods', style: AppTypography.headlineMedium),
-          const SizedBox(height: AppSpacing.md),
+      // Breeding types
+      Text('Breeding Methods', style: AppTypography.headlineMedium),
+      const SizedBox(height: AppSpacing.md),
 
-          _MethodCard(
-            title: 'Livebearers',
-            icon: Icons.child_friendly,
-            description: 'Give birth to free-swimming fry. Easiest to breed.',
-            examples: 'Guppies, Mollies, Platies, Swordtails, Endlers',
-            tips: [
-              'Males have modified anal fin (gonopodium)',
-              'Females store sperm - can have multiple batches',
-              'Provide hiding spots (plants, breeding boxes)',
-              'Separate pregnant females or provide dense plants',
-              'Adults will eat fry - protection needed',
-            ],
-          ),
-          _MethodCard(
-            title: 'Egg Scatterers',
-            icon: Icons.scatter_plot,
-            description:
-                'Scatter eggs over plants/substrate. Parents often eat eggs.',
-            examples: 'Tetras, Danios, Barbs, Rasboras',
-            tips: [
-              'Use spawning mops or fine-leaved plants',
-              'Marbles on bottom catch eggs safely',
-              'Remove parents after spawning',
-              'Eggs hatch in 24-72 hours typically',
-              'Fry need infusoria then baby brine shrimp',
-            ],
-          ),
-          _MethodCard(
-            title: 'Egg Depositors',
-            icon: Icons.egg,
-            description:
-                'Lay eggs on surfaces (rocks, leaves, glass). Often guard eggs.',
-            examples: 'Corydoras, Angelfish, Discus, Bristlenose Plecos',
-            tips: [
-              'Provide flat surfaces for egg laying',
-              'Some species guard eggs, others don\'t',
-              'Corydoras: T-position spawning behavior',
-              'Angelfish: Both parents often guard',
-              'Plecos: Male guards eggs in caves',
-            ],
-          ),
-          _MethodCard(
-            title: 'Mouthbrooders',
-            icon: Icons.face,
-            description: 'Parent holds eggs/fry in mouth for protection.',
-            examples: 'African Cichlids, Betta (some), Arowanas',
-            tips: [
-              'Female (usually) carries eggs in mouth',
-              'Don\'t feed holding parent - they fast',
-              'Fry released after 2-4 weeks',
-              'Can strip eggs from mouth if needed',
-              'Holding female may be stressed',
-            ],
-          ),
-          _MethodCard(
-            title: 'Bubble Nesters',
-            icon: Icons.bubble_chart,
-            description: 'Build floating bubble nests for eggs.',
-            examples: 'Bettas, Gouramis',
-            tips: [
-              'Male builds nest, attracts female',
-              'Spawning embrace under nest',
-              'Male guards nest and fry',
-              'Remove female after spawning',
-              'Keep water still - bubbles fragile',
-            ],
-          ),
+      _MethodCard(
+        title: 'Livebearers',
+        icon: Icons.child_friendly,
+        description: 'Give birth to free-swimming fry. Easiest to breed.',
+        examples: 'Guppies, Mollies, Platies, Swordtails, Endlers',
+        tips: [
+          'Males have modified anal fin (gonopodium)',
+          'Females store sperm - can have multiple batches',
+          'Provide hiding spots (plants, breeding boxes)',
+          'Separate pregnant females or provide dense plants',
+          'Adults will eat fry - protection needed',
+        ],
+      ),
+      _MethodCard(
+        title: 'Egg Scatterers',
+        icon: Icons.scatter_plot,
+        description:
+            'Scatter eggs over plants/substrate. Parents often eat eggs.',
+        examples: 'Tetras, Danios, Barbs, Rasboras',
+        tips: [
+          'Use spawning mops or fine-leaved plants',
+          'Marbles on bottom catch eggs safely',
+          'Remove parents after spawning',
+          'Eggs hatch in 24-72 hours typically',
+          'Fry need infusoria then baby brine shrimp',
+        ],
+      ),
+      _MethodCard(
+        title: 'Egg Depositors',
+        icon: Icons.egg,
+        description:
+            'Lay eggs on surfaces (rocks, leaves, glass). Often guard eggs.',
+        examples: 'Corydoras, Angelfish, Discus, Bristlenose Plecos',
+        tips: [
+          'Provide flat surfaces for egg laying',
+          'Some species guard eggs, others don\'t',
+          'Corydoras: T-position spawning behavior',
+          'Angelfish: Both parents often guard',
+          'Plecos: Male guards eggs in caves',
+        ],
+      ),
+      _MethodCard(
+        title: 'Mouthbrooders',
+        icon: Icons.face,
+        description: 'Parent holds eggs/fry in mouth for protection.',
+        examples: 'African Cichlids, Betta (some), Arowanas',
+        tips: [
+          'Female (usually) carries eggs in mouth',
+          'Don\'t feed holding parent - they fast',
+          'Fry released after 2-4 weeks',
+          'Can strip eggs from mouth if needed',
+          'Holding female may be stressed',
+        ],
+      ),
+      _MethodCard(
+        title: 'Bubble Nesters',
+        icon: Icons.bubble_chart,
+        description: 'Build floating bubble nests for eggs.',
+        examples: 'Bettas, Gouramis',
+        tips: [
+          'Male builds nest, attracts female',
+          'Spawning embrace under nest',
+          'Male guards nest and fry',
+          'Remove female after spawning',
+          'Keep water still - bubbles fragile',
+        ],
+      ),
 
-          const SizedBox(height: AppSpacing.lg),
+      const SizedBox(height: AppSpacing.lg),
 
-          // General conditioning
-          Text('Conditioning Breeders', style: AppTypography.headlineMedium),
-          const SizedBox(height: AppSpacing.md),
+      // General conditioning
+      Text('Conditioning Breeders', style: AppTypography.headlineMedium),
+      const SizedBox(height: AppSpacing.md),
 
-          AppCard(
-            padding: AppCardPadding.standard,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+      AppCard(
+        padding: AppCardPadding.standard,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _ConditionItem(
+              title: 'Diet',
+              description:
+                  'Feed high-protein foods: live/frozen brine shrimp, bloodworms, daphnia. Multiple small meals daily.',
+            ),
+            const Divider(),
+            _ConditionItem(
+              title: 'Water Quality',
+              description:
+                  'Pristine water, frequent small changes. Many species triggered by cooler water change.',
+            ),
+            const Divider(),
+            _ConditionItem(
+              title: 'Temperature',
+              description:
+                  'Slight increase (1-2°C) can trigger breeding. Simulate rainy season.',
+            ),
+            const Divider(),
+            _ConditionItem(
+              title: 'Ratio',
+              description:
+                  'Usually 1 male to 2-3 females. Reduces stress on single female.',
+            ),
+            const Divider(),
+            _ConditionItem(
+              title: 'Privacy',
+              description:
+                  'Dim lighting, hiding spots, separate breeding tank often helps.',
+            ),
+          ],
+        ),
+      ),
+
+      const SizedBox(height: AppSpacing.lg),
+
+      // Raising fry
+      Text('Raising Fry', style: AppTypography.headlineMedium),
+      const SizedBox(height: AppSpacing.md),
+
+      _FryStageCard(
+        stage: 'Day 1-3',
+        title: 'Egg/Yolk Sac Stage',
+        feeding: 'No feeding needed - fry absorb yolk sac',
+        care: 'Keep water clean, gentle aeration, low light',
+      ),
+      _FryStageCard(
+        stage: 'Day 3-7',
+        title: 'First Feeding',
+        feeding: 'Infusoria, liquid fry food, green water, vinegar eels',
+        care: 'Feed small amounts multiple times daily',
+      ),
+      _FryStageCard(
+        stage: 'Week 1-2',
+        title: 'Growing',
+        feeding: 'Baby brine shrimp, microworms, crushed flakes',
+        care: 'Frequent small water changes, remove uneaten food',
+      ),
+      _FryStageCard(
+        stage: 'Week 3+',
+        title: 'Juvenile',
+        feeding: 'Crushed flakes, small pellets, frozen foods',
+        care: 'Separate by size if needed, regular maintenance',
+      ),
+
+      const SizedBox(height: AppSpacing.lg),
+
+      // Easy breeders
+      Text('Easiest Fish to Breed', style: AppTypography.headlineMedium),
+      const SizedBox(height: AppSpacing.md),
+
+      AppCard(
+        padding: AppCardPadding.standard,
+        child: Column(
+          children: [
+            _EasyBreederRow(
+              fish: 'Guppies',
+              difficulty: 'Very Easy',
+              notes:
+                  'Will breed constantly. Separate sexes to control population.',
+            ),
+            const Divider(),
+            _EasyBreederRow(
+              fish: 'Platies',
+              difficulty: 'Very Easy',
+              notes: 'Prolific livebearers. Fry large enough to survive.',
+            ),
+            const Divider(),
+            _EasyBreederRow(
+              fish: 'Convict Cichlids',
+              difficulty: 'Easy',
+              notes: 'Aggressive parents protect fry. Cave spawners.',
+            ),
+            const Divider(),
+            _EasyBreederRow(
+              fish: 'Bristlenose Plecos',
+              difficulty: 'Easy',
+              notes: 'Male guards eggs in cave. Large fry.',
+            ),
+            const Divider(),
+            _EasyBreederRow(
+              fish: 'Cherry Shrimp',
+              difficulty: 'Easy',
+              notes: 'Breed readily in planted tanks. No intervention needed.',
+            ),
+            const Divider(),
+            _EasyBreederRow(
+              fish: 'Corydoras',
+              difficulty: 'Moderate',
+              notes: 'Cool water change triggers spawning. Eggs on glass.',
+            ),
+            const Divider(),
+            _EasyBreederRow(
+              fish: 'Bettas',
+              difficulty: 'Moderate',
+              notes: 'Male builds bubble nest. Remove female after spawning.',
+            ),
+          ],
+        ),
+      ),
+
+      const SizedBox(height: AppSpacing.lg),
+
+      // Warning
+      AppCard(
+        backgroundColor: AppOverlays.warning10,
+        padding: AppCardPadding.standard,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
               children: [
-                _ConditionItem(
-                  title: 'Diet',
-                  description:
-                      'Feed high-protein foods: live/frozen brine shrimp, bloodworms, daphnia. Multiple small meals daily.',
-                ),
-                const Divider(),
-                _ConditionItem(
-                  title: 'Water Quality',
-                  description:
-                      'Pristine water, frequent small changes. Many species triggered by cooler water change.',
-                ),
-                const Divider(),
-                _ConditionItem(
-                  title: 'Temperature',
-                  description:
-                      'Slight increase (1-2°C) can trigger breeding. Simulate rainy season.',
-                ),
-                const Divider(),
-                _ConditionItem(
-                  title: 'Ratio',
-                  description:
-                      'Usually 1 male to 2-3 females. Reduces stress on single female.',
-                ),
-                const Divider(),
-                _ConditionItem(
-                  title: 'Privacy',
-                  description:
-                      'Dim lighting, hiding spots, separate breeding tank often helps.',
-                ),
+                Icon(Icons.warning_amber, color: AppColors.warning),
+                const SizedBox(width: AppSpacing.sm),
+                Text('Before You Breed', style: AppTypography.headlineSmall),
               ],
             ),
-          ),
-
-          const SizedBox(height: AppSpacing.lg),
-
-          // Raising fry
-          Text('Raising Fry', style: AppTypography.headlineMedium),
-          const SizedBox(height: AppSpacing.md),
-
-          _FryStageCard(
-            stage: 'Day 1-3',
-            title: 'Egg/Yolk Sac Stage',
-            feeding: 'No feeding needed - fry absorb yolk sac',
-            care: 'Keep water clean, gentle aeration, low light',
-          ),
-          _FryStageCard(
-            stage: 'Day 3-7',
-            title: 'First Feeding',
-            feeding: 'Infusoria, liquid fry food, green water, vinegar eels',
-            care: 'Feed small amounts multiple times daily',
-          ),
-          _FryStageCard(
-            stage: 'Week 1-2',
-            title: 'Growing',
-            feeding: 'Baby brine shrimp, microworms, crushed flakes',
-            care: 'Frequent small water changes, remove uneaten food',
-          ),
-          _FryStageCard(
-            stage: 'Week 3+',
-            title: 'Juvenile',
-            feeding: 'Crushed flakes, small pellets, frozen foods',
-            care: 'Separate by size if needed, regular maintenance',
-          ),
-
-          const SizedBox(height: AppSpacing.lg),
-
-          // Easy breeders
-          Text('Easiest Fish to Breed', style: AppTypography.headlineMedium),
-          const SizedBox(height: AppSpacing.md),
-
-          AppCard(
-            padding: AppCardPadding.standard,
-            child: Column(
-              children: [
-                _EasyBreederRow(
-                  fish: 'Guppies',
-                  difficulty: 'Very Easy',
-                  notes:
-                      'Will breed constantly. Separate sexes to control population.',
-                ),
-                const Divider(),
-                _EasyBreederRow(
-                  fish: 'Platies',
-                  difficulty: 'Very Easy',
-                  notes: 'Prolific livebearers. Fry large enough to survive.',
-                ),
-                const Divider(),
-                _EasyBreederRow(
-                  fish: 'Convict Cichlids',
-                  difficulty: 'Easy',
-                  notes: 'Aggressive parents protect fry. Cave spawners.',
-                ),
-                const Divider(),
-                _EasyBreederRow(
-                  fish: 'Bristlenose Plecos',
-                  difficulty: 'Easy',
-                  notes: 'Male guards eggs in cave. Large fry.',
-                ),
-                const Divider(),
-                _EasyBreederRow(
-                  fish: 'Cherry Shrimp',
-                  difficulty: 'Easy',
-                  notes:
-                      'Breed readily in planted tanks. No intervention needed.',
-                ),
-                const Divider(),
-                _EasyBreederRow(
-                  fish: 'Corydoras',
-                  difficulty: 'Moderate',
-                  notes:
-                      'Cool water change triggers spawning. Eggs on glass.',
-                ),
-                const Divider(),
-                _EasyBreederRow(
-                  fish: 'Bettas',
-                  difficulty: 'Moderate',
-                  notes:
-                      'Male builds bubble nest. Remove female after spawning.',
-                ),
-              ],
+            const SizedBox(height: AppSpacing.sm2),
+            Text(
+              '• Have a plan for the fry - can you home them?\n'
+              '• Breeding tanks and supplies add cost\n'
+              '• Livebearers can quickly overpopulate\n'
+              '• Quality over quantity - cull runts humanely\n'
+              '• Don\'t release into wild - ever',
+              style: AppTypography.bodyMedium,
             ),
-          ),
+          ],
+        ),
+      ),
 
-          const SizedBox(height: AppSpacing.lg),
-
-          // Warning
-          AppCard(
-            backgroundColor: AppOverlays.warning10,
-            padding: AppCardPadding.standard,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Icon(Icons.warning_amber, color: AppColors.warning),
-                    const SizedBox(width: AppSpacing.sm),
-                    Text(
-                      'Before You Breed',
-                      style: AppTypography.headlineSmall,
-                    ),
-                  ],
-                ),
-                const SizedBox(height: AppSpacing.sm2),
-                Text(
-                  '• Have a plan for the fry - can you home them?\n'
-                  '• Breeding tanks and supplies add cost\n'
-                  '• Livebearers can quickly overpopulate\n'
-                  '• Quality over quantity - cull runts humanely\n'
-                  '• Don\'t release into wild - ever',
-                  style: AppTypography.bodyMedium,
-                ),
-              ],
-            ),
-          ),
-
-          const SizedBox(height: AppSpacing.xxl),
+      const SizedBox(height: AppSpacing.xxl),
     ];
   }
 }
@@ -341,7 +332,11 @@ class _MethodCard extends StatelessWidget {
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Icon(Icons.check, size: AppIconSizes.xs, color: AppColors.success),
+                        Icon(
+                          Icons.check,
+                          size: AppIconSizes.xs,
+                          color: AppColors.success,
+                        ),
                         const SizedBox(width: AppSpacing.sm),
                         Expanded(
                           child: Text(t, style: AppTypography.bodySmall),

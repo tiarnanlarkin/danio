@@ -89,10 +89,7 @@ class _AnimatedEmptyStateState extends State<AnimatedEmptyState>
                   child: child,
                 );
               },
-              child: Text(
-                widget.emoji,
-                style: const TextStyle(fontSize: 64),
-              ),
+              child: Text(widget.emoji, style: const TextStyle(fontSize: 64)),
             ),
             const SizedBox(height: AppSpacing.lg),
 

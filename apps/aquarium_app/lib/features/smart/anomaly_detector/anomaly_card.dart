@@ -24,51 +24,48 @@ class AnomalyCard extends ConsumerWidget {
     final theme = Theme.of(context);
 
     return Card(
-      elevation: AppElevation.level1,
-      color: _cardColor(anomalies),
-      shape: RoundedRectangleBorder(
-        borderRadius: AppRadius.md2Radius,
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.md),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
+          elevation: AppElevation.level1,
+          color: _cardColor(anomalies),
+          shape: RoundedRectangleBorder(borderRadius: AppRadius.md2Radius),
+          child: Padding(
+            padding: const EdgeInsets.all(AppSpacing.md),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Icon(
-                  Icons.warning_amber_rounded,
-                  color: _iconColor(anomalies),
+                Row(
+                  children: [
+                    Icon(
+                      Icons.warning_amber_rounded,
+                      color: _iconColor(anomalies),
+                    ),
+                    const SizedBox(width: AppSpacing.sm),
+                    Text(
+                      '${anomalies.length} Anomal${anomalies.length == 1 ? 'y' : 'ies'} Detected',
+                      style: theme.textTheme.titleSmall?.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
                 ),
-                const SizedBox(width: AppSpacing.sm),
-                Text(
-                  '${anomalies.length} Anomal${anomalies.length == 1 ? 'y' : 'ies'} Detected',
-                  style: theme.textTheme.titleSmall?.copyWith(
-                    fontWeight: FontWeight.w600,
+                const SizedBox(height: AppSpacing.sm),
+                ...anomalies.take(3).map((a) => _AnomalyRow(anomaly: a)),
+                if (anomalies.length > 3)
+                  Padding(
+                    padding: const EdgeInsets.only(top: AppSpacing.xs),
+                    child: Text(
+                      '+${anomalies.length - 3} more',
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: context.textSecondary,
+                      ),
+                    ),
                   ),
-                ),
               ],
             ),
-            const SizedBox(height: AppSpacing.sm),
-            ...anomalies.take(3).map((a) => _AnomalyRow(anomaly: a)),
-            if (anomalies.length > 3)
-              Padding(
-                padding: const EdgeInsets.only(top: AppSpacing.xs),
-                child: Text(
-                  '+${anomalies.length - 3} more',
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: context.textSecondary,
-                  ),
-                ),
-              ),
-          ],
-        ),
-      ),
-    ).animate().fadeIn(duration: 300.ms).shake(
-      hz: 2,
-      duration: 500.ms,
-      offset: const Offset(2, 0),
-    );
+          ),
+        )
+        .animate()
+        .fadeIn(duration: 300.ms)
+        .shake(hz: 2, duration: 500.ms, offset: const Offset(2, 0));
   }
 
   Color _cardColor(List<Anomaly> anomalies) {

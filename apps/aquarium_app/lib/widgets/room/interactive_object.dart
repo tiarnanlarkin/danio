@@ -63,9 +63,9 @@ class InteractiveObject extends StatefulWidget {
 ///
 /// Defines different visual attention-getting behaviors for interactive elements.
 enum InteractiveAnimationStyle {
-  pulse,   // Gentle glow pulse
-  bounce,  // Subtle bounce
-  wobble,  // Slight rotation wobble
+  pulse, // Gentle glow pulse
+  bounce, // Subtle bounce
+  wobble, // Slight rotation wobble
   shimmer, // Shimmering highlight
 }
 
@@ -88,13 +88,9 @@ class _InteractiveObjectState extends State<InteractiveObject>
       duration: Duration(milliseconds: widget.isNewUser ? 1200 : 2000),
     );
 
-    _pulseAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _pulseController,
-      curve: AppCurves.standard,
-    ));
+    _pulseAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _pulseController, curve: AppCurves.standard),
+    );
 
     // Press animation (on tap)
     _pressController = AnimationController(
@@ -102,13 +98,12 @@ class _InteractiveObjectState extends State<InteractiveObject>
       duration: AppDurations.short,
     );
 
-    _scaleAnimation = Tween<double>(
-      begin: 1.0,
-      end: 0.9,
-    ).animate(CurvedAnimation(
-      parent: _pressController,
-      curve: AppCurves.standardDecelerate,
-    ));
+    _scaleAnimation = Tween<double>(begin: 1.0, end: 0.9).animate(
+      CurvedAnimation(
+        parent: _pressController,
+        curve: AppCurves.standardDecelerate,
+      ),
+    );
 
     // Start pulsing for new users, or with subtle animation for others
     if (widget.isNewUser) {
@@ -120,17 +115,20 @@ class _InteractiveObjectState extends State<InteractiveObject>
   }
 
   void _startSubtlePulse() {
-    Future.delayed(Duration(milliseconds: 500 + math.Random().nextInt(2000)), () {
-      if (mounted) {
-        _pulseController.forward().then((_) {
-          if (mounted) {
-            _pulseController.reverse().then((_) {
-              if (mounted) _startSubtlePulse();
-            });
-          }
-        });
-      }
-    });
+    Future.delayed(
+      Duration(milliseconds: 500 + math.Random().nextInt(2000)),
+      () {
+        if (mounted) {
+          _pulseController.forward().then((_) {
+            if (mounted) {
+              _pulseController.reverse().then((_) {
+                if (mounted) _startSubtlePulse();
+              });
+            }
+          });
+        }
+      },
+    );
   }
 
   @override
@@ -210,37 +208,42 @@ class _InteractiveObjectState extends State<InteractiveObject>
   }
 
   Widget _buildObjectWithAnimation() {
-    final glowColor = widget.glowColor ?? 
-        widget.iconColor?.withAlpha(128) ?? 
+    final glowColor =
+        widget.glowColor ??
+        widget.iconColor?.withAlpha(128) ??
         AppOverlays.white30;
 
     final glowIntensity = widget.isNewUser ? 0.6 : 0.3;
     final glowRadius = widget.isNewUser ? 20.0 : 12.0;
 
-    Widget content = widget.child ?? Container(
-      width: widget.size,
-      height: widget.size,
-      decoration: BoxDecoration(
-        color: widget.backgroundColor ?? Colors.transparent,
-        shape: BoxShape.circle,
-        boxShadow: [
-          // Glow effect
-          if (widget.animationStyle == InteractiveAnimationStyle.pulse)
-            BoxShadow(
-              color: glowColor.withAlpha((_pulseAnimation.value * glowIntensity * 255).round()),
-              blurRadius: glowRadius + (_pulseAnimation.value * 10),
-              spreadRadius: _pulseAnimation.value * 4,
+    Widget content =
+        widget.child ??
+        Container(
+          width: widget.size,
+          height: widget.size,
+          decoration: BoxDecoration(
+            color: widget.backgroundColor ?? Colors.transparent,
+            shape: BoxShape.circle,
+            boxShadow: [
+              // Glow effect
+              if (widget.animationStyle == InteractiveAnimationStyle.pulse)
+                BoxShadow(
+                  color: glowColor.withAlpha(
+                    (_pulseAnimation.value * glowIntensity * 255).round(),
+                  ),
+                  blurRadius: glowRadius + (_pulseAnimation.value * 10),
+                  spreadRadius: _pulseAnimation.value * 4,
+                ),
+            ],
+          ),
+          child: Center(
+            child: Icon(
+              widget.icon,
+              size: widget.size * 0.6,
+              color: widget.iconColor ?? Colors.white,
             ),
-        ],
-      ),
-      child: Center(
-        child: Icon(
-          widget.icon,
-          size: widget.size * 0.6,
-          color: widget.iconColor ?? Colors.white,
-        ),
-      ),
-    );
+          ),
+        );
 
     // Apply animation style
     switch (widget.animationStyle) {
@@ -250,10 +253,7 @@ class _InteractiveObjectState extends State<InteractiveObject>
           child: content,
         );
       case InteractiveAnimationStyle.shimmer:
-        return _ShimmerWrapper(
-          animation: _pulseAnimation,
-          child: content,
-        );
+        return _ShimmerWrapper(animation: _pulseAnimation, child: content);
       default:
         return content;
     }
@@ -294,10 +294,7 @@ class _ShimmerWrapper extends StatelessWidget {
   final Animation<double> animation;
   final Widget child;
 
-  const _ShimmerWrapper({
-    required this.animation,
-    required this.child,
-  });
+  const _ShimmerWrapper({required this.animation, required this.child});
 
   @override
   Widget build(BuildContext context) {
@@ -306,16 +303,8 @@ class _ShimmerWrapper extends StatelessWidget {
         return LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: const [
-            Colors.white,
-            Colors.white54,
-            Colors.white,
-          ],
-          stops: [
-            0.0,
-            animation.value,
-            1.0,
-          ],
+          colors: const [Colors.white, Colors.white54, Colors.white],
+          stops: [0.0, animation.value, 1.0],
         ).createShader(bounds);
       },
       blendMode: BlendMode.srcATop,

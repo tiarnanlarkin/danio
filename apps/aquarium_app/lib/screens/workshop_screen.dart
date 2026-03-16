@@ -110,106 +110,135 @@ class _WorkshopScreenState extends ConsumerState<WorkshopScreen> {
               // Header
               SliverToBoxAdapter(child: _WorkshopHeader()),
 
-            // Tool cards
-            SliverPadding(
-              padding: const EdgeInsets.all(AppSpacing.md),
-              sliver: SliverGrid(
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  mainAxisSpacing: 12,
-                  crossAxisSpacing: 12,
-                  childAspectRatio: 1.1,
+              // Tool cards
+              SliverPadding(
+                padding: const EdgeInsets.all(AppSpacing.md),
+                sliver: SliverGrid(
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    mainAxisSpacing: 12,
+                    crossAxisSpacing: 12,
+                    childAspectRatio: 1.1,
+                  ),
+                  delegate: SliverChildListDelegate([
+                    _ToolCard(
+                      icon: Icons.water_drop,
+                      title: 'Water Change',
+                      subtitle: 'Calculate changes',
+                      color: const Color(0xFFFFCA28),
+                      onTap: () => NavigationThrottle.push(
+                        context,
+                        const WaterChangeCalculatorScreen(),
+                      ),
+                    ),
+                    _ToolCard(
+                      icon: Icons.set_meal,
+                      title: 'Stocking',
+                      subtitle: 'Fish capacity',
+                      color: DanioColors.tealWater,
+                      onTap: () => NavigationThrottle.push(
+                        context,
+                        const StockingCalculatorScreen(),
+                      ),
+                    ),
+                    _ToolCard(
+                      icon: Icons.science,
+                      title: 'CO₂ Calculator',
+                      subtitle: 'From pH & KH',
+                      color: const Color(0xFFFFCA28),
+                      onTap: () => NavigationThrottle.push(
+                        context,
+                        const Co2CalculatorScreen(),
+                      ),
+                    ),
+                    _ToolCard(
+                      icon: Icons.medication_liquid,
+                      title: 'Dosing',
+                      subtitle: 'Fertilizer calculator',
+                      color: AppColors.accentAlt,
+                      onTap: () => NavigationThrottle.push(
+                        context,
+                        const DosingCalculatorScreen(),
+                      ),
+                    ),
+                    _ToolCard(
+                      icon: Icons.swap_horiz,
+                      title: 'Unit Converter',
+                      subtitle: 'Convert units',
+                      color: AppColors.xp,
+                      onTap: () => NavigationThrottle.push(
+                        context,
+                        const UnitConverterScreen(),
+                      ),
+                    ),
+                    _ToolCard(
+                      icon: Icons.calculate,
+                      title: 'Tank Volume',
+                      subtitle: 'Calculate capacity',
+                      color: WorkshopColors.accent,
+                      onTap: () => NavigationThrottle.push(
+                        context,
+                        const TankVolumeCalculatorScreen(),
+                      ),
+                    ),
+                    _ToolCard(
+                      icon: Icons.lightbulb,
+                      title: 'Lighting',
+                      subtitle: 'Schedule lights',
+                      color: AppColors.warning,
+                      onTap: () => NavigationThrottle.push(
+                        context,
+                        const LightingScheduleScreen(),
+                      ),
+                    ),
+                    _ToolCard(
+                      icon: Icons.bar_chart,
+                      title: 'Charts',
+                      subtitle: 'Analytics & trends',
+                      color: AppColors.secondaryDark,
+                      onTap: () => _showChartsInfo(context),
+                    ),
+                    _ToolCard(
+                      icon: Icons.set_meal,
+                      title: 'Compatibility',
+                      subtitle: 'Check fish matches',
+                      color: AppColors.primaryLight,
+                      onTap: () => NavigationThrottle.push(
+                        context,
+                        const CompatibilityCheckerScreen(),
+                      ),
+                    ),
+                    _ToolCard(
+                      icon: Icons.build_circle,
+                      title: 'Equipment',
+                      subtitle: 'Manage gear',
+                      color: WorkshopColors.metal,
+                      onTap: () => _showEquipmentInfo(context),
+                    ),
+                    _ToolCard(
+                      icon: Icons.attach_money,
+                      title: 'Cost Tracker',
+                      subtitle: 'Track expenses',
+                      color: DanioColors.tealWater,
+                      onTap: () => NavigationThrottle.push(
+                        context,
+                        const CostTrackerScreen(),
+                      ),
+                    ),
+                  ]),
                 ),
-                delegate: SliverChildListDelegate([
-                  _ToolCard(
-                    icon: Icons.water_drop,
-                    title: 'Water Change',
-                    subtitle: 'Calculate changes',
-                    color: const Color(0xFFFFCA28),
-                    onTap: () => NavigationThrottle.push(context, const WaterChangeCalculatorScreen()),
-                  ),
-                  _ToolCard(
-                    icon: Icons.set_meal,
-                    title: 'Stocking',
-                    subtitle: 'Fish capacity',
-                    color: DanioColors.tealWater,
-                    onTap: () => NavigationThrottle.push(context, const StockingCalculatorScreen()),
-                  ),
-                  _ToolCard(
-                    icon: Icons.science,
-                    title: 'CO₂ Calculator',
-                    subtitle: 'From pH & KH',
-                    color: const Color(0xFFFFCA28),
-                    onTap: () => NavigationThrottle.push(context, const Co2CalculatorScreen()),
-                  ),
-                  _ToolCard(
-                    icon: Icons.medication_liquid,
-                    title: 'Dosing',
-                    subtitle: 'Fertilizer calculator',
-                    color: AppColors.accentAlt,
-                    onTap: () => NavigationThrottle.push(context, const DosingCalculatorScreen()),
-                  ),
-                  _ToolCard(
-                    icon: Icons.swap_horiz,
-                    title: 'Unit Converter',
-                    subtitle: 'Convert units',
-                    color: AppColors.xp,
-                    onTap: () => NavigationThrottle.push(context, const UnitConverterScreen()),
-                  ),
-                  _ToolCard(
-                    icon: Icons.calculate,
-                    title: 'Tank Volume',
-                    subtitle: 'Calculate capacity',
-                    color: WorkshopColors.accent,
-                    onTap: () => NavigationThrottle.push(context, const TankVolumeCalculatorScreen()),
-                  ),
-                  _ToolCard(
-                    icon: Icons.lightbulb,
-                    title: 'Lighting',
-                    subtitle: 'Schedule lights',
-                    color: AppColors.warning,
-                    onTap: () => NavigationThrottle.push(context, const LightingScheduleScreen()),
-                  ),
-                  _ToolCard(
-                    icon: Icons.bar_chart,
-                    title: 'Charts',
-                    subtitle: 'Analytics & trends',
-                    color: AppColors.secondaryDark,
-                    onTap: () => _showChartsInfo(context),
-                  ),
-                  _ToolCard(
-                    icon: Icons.set_meal,
-                    title: 'Compatibility',
-                    subtitle: 'Check fish matches',
-                    color: AppColors.primaryLight,
-                    onTap: () => NavigationThrottle.push(context, const CompatibilityCheckerScreen()),
-                  ),
-                  _ToolCard(
-                    icon: Icons.build_circle,
-                    title: 'Equipment',
-                    subtitle: 'Manage gear',
-                    color: WorkshopColors.metal,
-                    onTap: () => _showEquipmentInfo(context),
-                  ),
-                  _ToolCard(
-                    icon: Icons.attach_money,
-                    title: 'Cost Tracker',
-                    subtitle: 'Track expenses',
-                    color: DanioColors.tealWater,
-                    onTap: () => NavigationThrottle.push(context, const CostTrackerScreen()),
-                  ),
-                ]),
               ),
-            ),
 
-            // Quick conversions section
-            SliverToBoxAdapter(child: _QuickConversions()),
+              // Quick conversions section
+              SliverToBoxAdapter(child: _QuickConversions()),
 
-            // Bottom padding for navigation bar
-            const SliverToBoxAdapter(child: SizedBox(height: kScrollEndPadding)),
-          ],
+              // Bottom padding for navigation bar
+              const SliverToBoxAdapter(
+                child: SizedBox(height: kScrollEndPadding),
+              ),
+            ],
+          ),
         ),
-      ),
       ),
     );
   }
@@ -256,10 +285,11 @@ class _WorkshopHeader extends ConsumerWidget {
                   children: [
                     Text(
                       '🔧 Workshop',
-                      style: Theme.of(context).textTheme.headlineSmall!.copyWith(
-                        color: WorkshopColors.textPrimary,
-                        fontWeight: FontWeight.bold,
-                      ),
+                      style: Theme.of(context).textTheme.headlineSmall!
+                          .copyWith(
+                            color: WorkshopColors.textPrimary,
+                            fontWeight: FontWeight.bold,
+                          ),
                     ),
                     const SizedBox(height: AppSpacing.xs),
                     Text(
@@ -281,7 +311,6 @@ class _WorkshopHeader extends ConsumerWidget {
       ),
     );
   }
-
 }
 
 class _ToolCard extends StatelessWidget {

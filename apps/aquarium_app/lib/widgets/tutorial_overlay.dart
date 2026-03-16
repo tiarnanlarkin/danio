@@ -202,9 +202,7 @@ class _TutorialOverlayState extends ConsumerState<TutorialOverlay>
         child: Card(
           color: Colors.white,
           elevation: AppElevation.level3,
-          shape: RoundedRectangleBorder(
-            borderRadius: AppRadius.mediumRadius,
-          ),
+          shape: RoundedRectangleBorder(borderRadius: AppRadius.mediumRadius),
           child: Padding(
             padding: const EdgeInsets.all(AppSpacing.lg2),
             child: Column(

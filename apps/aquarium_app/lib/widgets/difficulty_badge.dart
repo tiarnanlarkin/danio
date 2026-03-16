@@ -1,6 +1,7 @@
 /// Reusable difficulty badge widget
 /// Shows difficulty level with color-coded styling
 library;
+
 import 'package:danio/theme/app_theme.dart';
 
 import 'package:flutter/material.dart';
@@ -132,7 +133,10 @@ class PerformanceTrendWidget extends StatelessWidget {
     final color = _getTrendColor();
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm + 2, vertical: AppSpacing.xs + 1),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.sm + 2,
+        vertical: AppSpacing.xs + 1,
+      ),
       decoration: BoxDecoration(
         color: color.withAlpha(26),
         borderRadius: AppRadius.mediumRadius,
@@ -256,7 +260,12 @@ class _SkillLevelUpAnimationState extends State<SkillLevelUpAnimation>
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text('🎉', style: Theme.of(context).textTheme.headlineMedium!.copyWith(fontSize: 48)),
+                  Text(
+                    '🎉',
+                    style: Theme.of(
+                      context,
+                    ).textTheme.headlineMedium!.copyWith(fontSize: 48),
+                  ),
                   const SizedBox(height: AppSpacing.md),
                   Text(
                     'LEVEL UP!',
@@ -269,7 +278,9 @@ class _SkillLevelUpAnimationState extends State<SkillLevelUpAnimation>
                   Text(
                     widget.message,
                     textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.titleMedium!.copyWith(color: Colors.white),
+                    style: Theme.of(
+                      context,
+                    ).textTheme.titleMedium!.copyWith(color: Colors.white),
                   ),
                 ],
               ),
@@ -317,11 +328,21 @@ class DifficultyChangeNotification extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    Text(oldLevel.emoji, style: Theme.of(context).textTheme.titleMedium!),
+                    Text(
+                      oldLevel.emoji,
+                      style: Theme.of(context).textTheme.titleMedium!,
+                    ),
                     const SizedBox(width: AppSpacing.xs),
-                    Icon(Icons.arrow_forward, size: AppIconSizes.xs, color: color),
+                    Icon(
+                      Icons.arrow_forward,
+                      size: AppIconSizes.xs,
+                      color: color,
+                    ),
                     const SizedBox(width: AppSpacing.xs),
-                    Text(newLevel.emoji, style: Theme.of(context).textTheme.titleMedium!),
+                    Text(
+                      newLevel.emoji,
+                      style: Theme.of(context).textTheme.titleMedium!,
+                    ),
                     const SizedBox(width: AppSpacing.sm),
                     Text(
                       newLevel.displayName,
@@ -335,7 +356,9 @@ class DifficultyChangeNotification extends StatelessWidget {
                 const SizedBox(height: AppSpacing.xs),
                 Text(
                   reason,
-                  style: AppTypography.bodySmall.copyWith(color: context.textSecondary),
+                  style: AppTypography.bodySmall.copyWith(
+                    color: context.textSecondary,
+                  ),
                 ),
               ],
             ),
@@ -365,11 +388,7 @@ class MasteryBadge extends StatelessWidget {
         ),
         borderRadius: BorderRadius.circular(12 * size),
         boxShadow: [
-          BoxShadow(
-            color: AppOverlays.amber30,
-            blurRadius: 8,
-            spreadRadius: 2,
-          ),
+          BoxShadow(color: AppOverlays.amber30, blurRadius: 8, spreadRadius: 2),
         ],
       ),
       child: Row(

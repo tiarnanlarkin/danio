@@ -25,18 +25,19 @@ class ThermometerItem extends StatelessWidget {
       label: 'Thermometer. Tap to view tank stats',
       button: true,
       child: GestureDetector(
-      onTap: onTap,
-      child: SizedBox(
-        width: height * 0.3,
-        height: height,
-        child: CustomPaint(
-          painter: _ThermometerPainter(
-            fillPercent: fillPercent,
-            color: _tempColor(temperature, context),
+        onTap: onTap,
+        child: SizedBox(
+          width: height * 0.3,
+          height: height,
+          child: CustomPaint(
+            painter: _ThermometerPainter(
+              fillPercent: fillPercent,
+              color: _tempColor(temperature, context),
+            ),
           ),
         ),
       ),
-    ),);
+    );
   }
 
   Color _tempColor(double? temp, BuildContext context) {
@@ -162,22 +163,23 @@ class TestTubeRack extends StatelessWidget {
       label: 'Test tubes. Tap to log water parameters',
       button: true,
       child: GestureDetector(
-      onTap: onTap,
-      child: SizedBox(
-        width: width,
-        height: width * 0.9,
-        child: CustomPaint(
-          painter: _TestTubeRackPainter(
-            colors: [
-              _phColor(ph, context),
-              _ammoniaColor(ammonia),
-              _nitriteColor(nitrite),
-              _nitrateColor(nitrate),
-            ],
+        onTap: onTap,
+        child: SizedBox(
+          width: width,
+          height: width * 0.9,
+          child: CustomPaint(
+            painter: _TestTubeRackPainter(
+              colors: [
+                _phColor(ph, context),
+                _ammoniaColor(ammonia),
+                _nitriteColor(nitrite),
+                _nitrateColor(nitrate),
+              ],
+            ),
           ),
         ),
       ),
-    ),);
+    );
   }
 
   Color _phColor(double? val, BuildContext context) {
@@ -196,8 +198,12 @@ class TestTubeRack extends StatelessWidget {
 
   Color _nitriteColor(double? val) {
     if (val == null) return Colors.grey.shade300;
-    if (val < 0.25) return Colors.purple.shade100; // semantic color — nitrite level indicator
-    if (val < 1.0) return Colors.purple.shade300; // semantic color — nitrite level indicator
+    if (val < 0.25) {
+      return Colors.purple.shade100; // semantic color — nitrite level indicator
+    }
+    if (val < 1.0) {
+      return Colors.purple.shade300; // semantic color — nitrite level indicator
+    }
     return Colors.purple.shade600; // semantic color — nitrite level indicator
   }
 
@@ -312,18 +318,19 @@ class FilterItem extends StatelessWidget {
       label: 'Filter. Tap to view equipment',
       button: true,
       child: GestureDetector(
-      onTap: onTap,
-      child: SizedBox(
-        width: height * 0.6,
-        height: height,
-        child: CustomPaint(
-          painter: _FilterPainter(
-            mediaTypes: mediaTypes ?? ['sponge', 'ceramic', 'carbon'],
-            isRunning: isRunning,
+        onTap: onTap,
+        child: SizedBox(
+          width: height * 0.6,
+          height: height,
+          child: CustomPaint(
+            painter: _FilterPainter(
+              mediaTypes: mediaTypes ?? ['sponge', 'ceramic', 'carbon'],
+              isRunning: isRunning,
+            ),
           ),
         ),
       ),
-    ),);
+    );
   }
 }
 
@@ -489,18 +496,19 @@ class FoodJarItem extends StatelessWidget {
       label: 'Fish food. Tap to log feeding',
       button: true,
       child: GestureDetector(
-      onTap: onTap,
-      child: SizedBox(
-        width: height * 0.6,
-        height: height,
-        child: CustomPaint(
-          painter: _FoodJarPainter(
-            foodType: foodType ?? 'flakes',
-            fillLevel: fillLevel,
+        onTap: onTap,
+        child: SizedBox(
+          width: height * 0.6,
+          height: height,
+          child: CustomPaint(
+            painter: _FoodJarPainter(
+              foodType: foodType ?? 'flakes',
+              fillLevel: fillLevel,
+            ),
           ),
         ),
       ),
-    ),);
+    );
   }
 }
 
@@ -623,15 +631,16 @@ class HeaterItem extends StatelessWidget {
       label: 'Heater. Tap to view equipment',
       button: true,
       child: GestureDetector(
-      onTap: onTap,
-      child: SizedBox(
-        width: height * 0.25,
-        height: height,
-        child: CustomPaint(
-          painter: _HeaterPainter(setTemp: setTemp, isOn: isOn),
+        onTap: onTap,
+        child: SizedBox(
+          width: height * 0.25,
+          height: height,
+          child: CustomPaint(
+            painter: _HeaterPainter(setTemp: setTemp, isOn: isOn),
+          ),
         ),
       ),
-    ),);
+    );
   }
 }
 
@@ -730,15 +739,16 @@ class LightItem extends StatelessWidget {
       label: 'Aquarium light. Tap to view lighting',
       button: true,
       child: GestureDetector(
-      onTap: onTap,
-      child: SizedBox(
-        width: width,
-        height: width * 0.35,
-        child: CustomPaint(
-          painter: _LightPainter(isOn: isOn, brightness: brightness),
+        onTap: onTap,
+        child: SizedBox(
+          width: width,
+          height: width * 0.35,
+          child: CustomPaint(
+            painter: _LightPainter(isOn: isOn, brightness: brightness),
+          ),
         ),
       ),
-    ),);
+    );
   }
 }
 
@@ -791,9 +801,7 @@ class _LightPainter extends CustomPainter {
 
     // LED dots
     final ledPaint = Paint()
-      ..color = isOn
-          ? AppColors.whiteAlpha08
-          : const Color(0xFF718096);
+      ..color = isOn ? AppColors.whiteAlpha08 : const Color(0xFF718096);
 
     for (var x = panelRect.left + 6; x < panelRect.right - 6; x += 8) {
       canvas.drawCircle(Offset(x, panelRect.center.dy), 2, ledPaint);
@@ -828,13 +836,14 @@ class NetItem extends StatelessWidget {
       label: 'Fish net. Tap to manage livestock',
       button: true,
       child: GestureDetector(
-      onTap: onTap,
-      child: SizedBox(
-        width: size,
-        height: size * 1.5,
-        child: CustomPaint(painter: _NetPainter()),
+        onTap: onTap,
+        child: SizedBox(
+          width: size,
+          height: size * 1.5,
+          child: CustomPaint(painter: _NetPainter()),
+        ),
       ),
-    ),);
+    );
   }
 }
 
@@ -928,13 +937,14 @@ class BucketItem extends StatelessWidget {
       label: 'Water bucket. Tap to log water change',
       button: true,
       child: GestureDetector(
-      onTap: onTap,
-      child: SizedBox(
-        width: height * 0.9,
-        height: height,
-        child: CustomPaint(painter: _BucketPainter(fillLevel: fillLevel)),
+        onTap: onTap,
+        child: SizedBox(
+          width: height * 0.9,
+          height: height,
+          child: CustomPaint(painter: _BucketPainter(fillLevel: fillLevel)),
+        ),
       ),
-    ),);
+    );
   }
 }
 

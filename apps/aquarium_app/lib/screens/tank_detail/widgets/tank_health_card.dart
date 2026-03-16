@@ -15,11 +15,7 @@ class TankHealthCard extends StatelessWidget {
   final Tank tank;
   final List<LogEntry> logs;
 
-  const TankHealthCard({
-    super.key,
-    required this.tank,
-    required this.logs,
-  });
+  const TankHealthCard({super.key, required this.tank, required this.logs});
 
   @override
   Widget build(BuildContext context) {
@@ -39,128 +35,131 @@ class TankHealthCard extends StatelessWidget {
     }
 
     return AppCard(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Header
-          Row(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Icon(Icons.monitor_heart_outlined,
-                  size: AppIconSizes.sm, color: scoreColor),
-              const SizedBox(width: AppSpacing.sm),
-              Text(
-                'Tank Health Score',
-                style: theme.textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              const Spacer(),
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppSpacing.sm,
-                  vertical: AppSpacing.xs,
-                ),
-                decoration: BoxDecoration(
-                  color: scoreColor.withAlpha(25),
-                  borderRadius: AppRadius.smallRadius,
-                ),
-                child: Text(
-                  health.label,
-                  style: theme.textTheme.labelSmall?.copyWith(
+              // Header
+              Row(
+                children: [
+                  Icon(
+                    Icons.monitor_heart_outlined,
+                    size: AppIconSizes.sm,
                     color: scoreColor,
-                    fontWeight: FontWeight.w600,
                   ),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: AppSpacing.md),
-
-          // Score gauge + factors
-          Row(
-            children: [
-              // Circular gauge
-              SizedBox(
-                width: 100,
-                height: 100,
-                child: CustomPaint(
-                  painter: _HealthGaugePainter(
-                    score: health.score,
-                    color: scoreColor,
-                    backgroundColor:
-                        theme.colorScheme.surfaceContainerHighest,
-                  ),
-                  child: Center(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          '${health.score}',
-                          style: theme.textTheme.headlineMedium?.copyWith(
-                            fontWeight: FontWeight.w700,
-                            color: scoreColor,
-                          ),
-                        ),
-                        Text(
-                          '/100',
-                          style: theme.textTheme.labelSmall?.copyWith(
-                            color: context.textSecondary,
-                          ),
-                        ),
-                      ],
+                  const SizedBox(width: AppSpacing.sm),
+                  Text(
+                    'Tank Health Score',
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
-                ),
+                  const Spacer(),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.sm,
+                      vertical: AppSpacing.xs,
+                    ),
+                    decoration: BoxDecoration(
+                      color: scoreColor.withAlpha(25),
+                      borderRadius: AppRadius.smallRadius,
+                    ),
+                    child: Text(
+                      health.label,
+                      style: theme.textTheme.labelSmall?.copyWith(
+                        color: scoreColor,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ],
               ),
-              const SizedBox(width: AppSpacing.lg),
+              const SizedBox(height: AppSpacing.md),
 
-              // Factor bullets
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: health.factors.take(4).map((factor) {
-                    return Padding(
-                      padding:
-                          const EdgeInsets.only(bottom: AppSpacing.xs),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            _factorIcon(factor),
-                            style: theme.textTheme.bodySmall,
-                          ),
-                          const SizedBox(width: AppSpacing.xs),
-                          Expanded(
-                            child: Text(
-                              factor,
-                              style: theme.textTheme.bodySmall?.copyWith(
+              // Score gauge + factors
+              Row(
+                children: [
+                  // Circular gauge
+                  SizedBox(
+                    width: 100,
+                    height: 100,
+                    child: CustomPaint(
+                      painter: _HealthGaugePainter(
+                        score: health.score,
+                        color: scoreColor,
+                        backgroundColor:
+                            theme.colorScheme.surfaceContainerHighest,
+                      ),
+                      child: Center(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              '${health.score}',
+                              style: theme.textTheme.headlineMedium?.copyWith(
+                                fontWeight: FontWeight.w700,
+                                color: scoreColor,
+                              ),
+                            ),
+                            Text(
+                              '/100',
+                              style: theme.textTheme.labelSmall?.copyWith(
                                 color: context.textSecondary,
                               ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    );
-                  }).toList(),
-                ),
+                    ),
+                  ),
+                  const SizedBox(width: AppSpacing.lg),
+
+                  // Factor bullets
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: health.factors.take(4).map((factor) {
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: AppSpacing.xs),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                _factorIcon(factor),
+                                style: theme.textTheme.bodySmall,
+                              ),
+                              const SizedBox(width: AppSpacing.xs),
+                              Expanded(
+                                child: Text(
+                                  factor,
+                                  style: theme.textTheme.bodySmall?.copyWith(
+                                    color: context.textSecondary,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
-        ],
-      ),
-    ).animate().fadeIn(duration: 400.ms).slideY(
-          begin: 0.1,
-          end: 0,
-          duration: 400.ms,
-        );
+        )
+        .animate()
+        .fadeIn(duration: 400.ms)
+        .slideY(begin: 0.1, end: 0, duration: 400.ms);
   }
 
   String _factorIcon(String factor) {
     if (factor.contains('great') || factor.contains('Excellent')) {
       return '\u2705'; // check
     }
-    if (factor.contains('overdue') || factor.contains('dangerous') ||
-        factor.contains('At Risk') || factor.contains('very high')) {
+    if (factor.contains('overdue') ||
+        factor.contains('dangerous') ||
+        factor.contains('At Risk') ||
+        factor.contains('very high')) {
       return '\u26A0\uFE0F'; // warning
     }
     if (factor.contains('No ')) {

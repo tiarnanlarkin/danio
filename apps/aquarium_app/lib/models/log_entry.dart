@@ -38,15 +38,15 @@ class WaterTestResults {
     double? kh,
     double? phosphate,
     double? co2,
-  })  : temperature = temperature?.clamp(0, 50),
-        ph = ph?.clamp(0, 14),
-        ammonia = ammonia != null && ammonia < 0 ? 0 : ammonia,
-        nitrite = nitrite != null && nitrite < 0 ? 0 : nitrite,
-        nitrate = nitrate != null && nitrate < 0 ? 0 : nitrate,
-        gh = gh != null && gh < 0 ? 0 : gh,
-        kh = kh != null && kh < 0 ? 0 : kh,
-        phosphate = phosphate != null && phosphate < 0 ? 0 : phosphate,
-        co2 = co2 != null && co2 < 0 ? 0 : co2;
+  }) : temperature = temperature?.clamp(0, 50),
+       ph = ph?.clamp(0, 14),
+       ammonia = ammonia != null && ammonia < 0 ? 0 : ammonia,
+       nitrite = nitrite != null && nitrite < 0 ? 0 : nitrite,
+       nitrate = nitrate != null && nitrate < 0 ? 0 : nitrate,
+       gh = gh != null && gh < 0 ? 0 : gh,
+       kh = kh != null && kh < 0 ? 0 : kh,
+       phosphate = phosphate != null && phosphate < 0 ? 0 : phosphate,
+       co2 = co2 != null && co2 < 0 ? 0 : co2;
 
   /// Check if any values are present
   bool get hasValues =>
@@ -59,7 +59,6 @@ class WaterTestResults {
       kh != null ||
       phosphate != null ||
       co2 != null;
-
 
   factory WaterTestResults.fromJson(Map<String, dynamic> json) {
     return WaterTestResults(
@@ -172,15 +171,19 @@ class LogEntry {
     }
   }
 
-
   factory LogEntry.fromJson(Map<String, dynamic> json) {
     return LogEntry(
       id: json['id'] as String,
       tankId: json['tankId'] as String,
-      type: LogType.values.firstWhere((e) => e.name == json['type'], orElse: () => LogType.observation),
+      type: LogType.values.firstWhere(
+        (e) => e.name == json['type'],
+        orElse: () => LogType.observation,
+      ),
       timestamp: DateTime.parse(json['timestamp'] as String),
       waterTest: json['waterTest'] != null
-          ? WaterTestResults.fromJson(Map<String, dynamic>.from(json['waterTest'] as Map))
+          ? WaterTestResults.fromJson(
+              Map<String, dynamic>.from(json['waterTest'] as Map),
+            )
           : null,
       waterChangePercent: json['waterChangePercent'] as int?,
       title: json['title'] as String?,

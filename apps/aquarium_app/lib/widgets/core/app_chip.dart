@@ -6,10 +6,10 @@ import '../../theme/app_theme.dart';
 enum AppChipVariant {
   /// Filled background
   filled,
-  
+
   /// Outlined with border
   outlined,
-  
+
   /// Tonal (subtle filled)
   tonal,
 }
@@ -18,19 +18,19 @@ enum AppChipVariant {
 enum AppChipSize {
   /// Small: 32dp height (compact visual, 48dp touch target)
   small,
-  
+
   /// Medium: 36dp height (default, 48dp touch target)
   medium,
-  
+
   /// Large: 40dp height (48dp touch target)
   large,
 }
 
 /// A unified chip component for tags, filters, and selections.
-/// 
+///
 /// Consolidates 30+ chip/badge variants into a single component.
 /// Supports selection, deletion, and various visual styles.
-/// 
+///
 /// Example:
 /// ```dart
 /// AppChip(
@@ -42,37 +42,37 @@ enum AppChipSize {
 class AppChip extends StatelessWidget {
   /// Label text
   final String label;
-  
+
   /// Visual variant
   final AppChipVariant variant;
-  
+
   /// Size
   final AppChipSize size;
-  
+
   /// Optional leading icon
   final IconData? icon;
-  
+
   /// Custom color (affects background/border based on variant)
   final Color? color;
-  
+
   /// Whether the chip is selected
   final bool isSelected;
-  
+
   /// Whether the chip is disabled
   final bool isDisabled;
-  
+
   /// Called when chip is tapped
   final VoidCallback? onTap;
-  
+
   /// Called when delete icon is tapped (shows delete icon when non-null)
   final VoidCallback? onDeleted;
-  
+
   /// Custom delete icon
   final IconData? deleteIcon;
-  
+
   /// Whether to show a checkmark when selected
   final bool showCheckmark;
-  
+
   /// Semantic label for accessibility
   final String? semanticsLabel;
 
@@ -97,29 +97,29 @@ class AppChip extends StatelessWidget {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
     final effectiveColor = color ?? AppColors.primary;
-    
+
     final isInteractive = onTap != null && !isDisabled;
-    
+
     // Material Design 3: Ensure minimum 48dp touch target
     // Visual height can be smaller, but touch area must be 48dp
     final visualHeight = _getHeight();
     final minTouchTarget = AppTouchTargets.minimum;
-    
+
     return Semantics(
       button: isInteractive,
       selected: isSelected,
       enabled: !isDisabled,
       label: semanticsLabel ?? label,
       child: GestureDetector(
-        onTap: isInteractive ? () {
-          HapticFeedback.selectionClick();
-          onTap!();
-        } : null,
+        onTap: isInteractive
+            ? () {
+                HapticFeedback.selectionClick();
+                onTap!();
+              }
+            : null,
         child: Container(
           // Ensure minimum touch target height
-          constraints: BoxConstraints(
-            minHeight: minTouchTarget,
-          ),
+          constraints: BoxConstraints(minHeight: minTouchTarget),
           alignment: Alignment.center,
           child: AnimatedContainer(
             duration: AppDurations.short,
@@ -148,10 +148,7 @@ class AppChip extends StatelessWidget {
                   ),
                   const SizedBox(width: AppSpacing.xs),
                 ],
-                Text(
-                  label,
-                  style: _getTextStyle(effectiveColor, isDark),
-                ),
+                Text(label, style: _getTextStyle(effectiveColor, isDark)),
                 if (onDeleted != null) ...[
                   const SizedBox(width: AppSpacing.xs),
                   Semantics(
@@ -216,7 +213,7 @@ class AppChip extends StatelessWidget {
     if (isDisabled) {
       return isDark ? AppOverlays.white10 : AppOverlays.black10;
     }
-    
+
     switch (variant) {
       case AppChipVariant.filled:
         return isSelected ? baseColor : baseColor.withAlpha(38);
@@ -229,14 +226,14 @@ class AppChip extends StatelessWidget {
 
   Border? _getBorder(Color baseColor, bool isDark) {
     if (variant != AppChipVariant.outlined) return null;
-    
+
     if (isDisabled) {
       return Border.all(
         color: isDark ? AppOverlays.white20 : AppOverlays.black20,
         width: 1,
       );
     }
-    
+
     return Border.all(
       color: isSelected ? baseColor : baseColor.withAlpha(128),
       width: isSelected ? 1.5 : 1,
@@ -247,7 +244,7 @@ class AppChip extends StatelessWidget {
     if (isDisabled) {
       return isDark ? AppOverlays.white30 : AppOverlays.black30;
     }
-    
+
     switch (variant) {
       case AppChipVariant.filled:
         return isSelected ? Colors.white : baseColor;
@@ -259,7 +256,7 @@ class AppChip extends StatelessWidget {
 
   TextStyle _getTextStyle(Color baseColor, bool isDark) {
     final color = _getForegroundColor(baseColor, isDark);
-    
+
     switch (size) {
       case AppChipSize.small:
         return AppTypography.labelSmall.copyWith(color: color);
@@ -275,19 +272,19 @@ class AppChip extends StatelessWidget {
 class AppBadge extends StatelessWidget {
   /// Badge content (text or number)
   final String? label;
-  
+
   /// Count to display (alternative to label)
   final int? count;
-  
+
   /// Badge color
   final Color? color;
-  
+
   /// Whether this is a dot badge (no content)
   final bool isDot;
-  
+
   /// Size (affects padding and font)
   final AppChipSize size;
-  
+
   /// Whether to show pulse animation (for notifications)
   final bool pulse;
 
@@ -301,14 +298,11 @@ class AppBadge extends StatelessWidget {
     this.pulse = false,
   });
 
-  const AppBadge.dot({
-    super.key,
-    this.color,
-    this.pulse = false,
-  }) : label = null,
-       count = null,
-       isDot = true,
-       size = AppChipSize.small;
+  const AppBadge.dot({super.key, this.color, this.pulse = false})
+    : label = null,
+      count = null,
+      isDot = true,
+      size = AppChipSize.small;
 
   const AppBadge.count({
     super.key,
@@ -322,13 +316,15 @@ class AppBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final effectiveColor = color ?? AppColors.error;
-    
+
     if (isDot) {
       return _buildDot(effectiveColor);
     }
-    
-    final displayText = label ?? (count != null ? (count! > 99 ? '99+' : count.toString()) : '');
-    
+
+    final displayText =
+        label ??
+        (count != null ? (count! > 99 ? '99+' : count.toString()) : '');
+
     return Container(
       constraints: BoxConstraints(
         minWidth: _getMinWidth(),
@@ -342,30 +338,27 @@ class AppBadge extends StatelessWidget {
         borderRadius: BorderRadius.circular(_getHeight() / 2),
       ),
       alignment: Alignment.center,
-      child: Text(
-        displayText,
-        style: _getTextStyle(),
-      ),
+      child: Text(displayText, style: _getTextStyle()),
     );
   }
 
   Widget _buildDot(Color effectiveColor) {
-    final dotSize = size == AppChipSize.small ? 8.0 : 
-                    size == AppChipSize.medium ? 10.0 : 12.0;
-    
+    final dotSize = size == AppChipSize.small
+        ? 8.0
+        : size == AppChipSize.medium
+        ? 10.0
+        : 12.0;
+
     Widget dot = Container(
       width: dotSize,
       height: dotSize,
-      decoration: BoxDecoration(
-        color: effectiveColor,
-        shape: BoxShape.circle,
-      ),
+      decoration: BoxDecoration(color: effectiveColor, shape: BoxShape.circle),
     );
-    
+
     if (pulse) {
       dot = _PulsingDot(color: effectiveColor, size: dotSize);
     }
-    
+
     return dot;
   }
 
@@ -422,7 +415,8 @@ class _PulsingDot extends StatefulWidget {
   State<_PulsingDot> createState() => _PulsingDotState();
 }
 
-class _PulsingDotState extends State<_PulsingDot> with SingleTickerProviderStateMixin {
+class _PulsingDotState extends State<_PulsingDot>
+    with SingleTickerProviderStateMixin {
   late AnimationController _controller;
 
   @override
@@ -454,7 +448,9 @@ class _PulsingDotState extends State<_PulsingDot> with SingleTickerProviderState
               height: widget.size + (8 * _controller.value),
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: widget.color.withAlpha((0.3 * (1 - _controller.value) * 255).round()),
+                color: widget.color.withAlpha(
+                  (0.3 * (1 - _controller.value) * 255).round(),
+                ),
               ),
             ),
             // Core dot
@@ -498,21 +494,21 @@ class AppChipGroup extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final chips = options.map((option) => AppChip(
-      label: option,
-      variant: variant,
-      size: size,
-      isSelected: selected.contains(option),
-      showCheckmark: !singleSelect,
-      onTap: () => onToggle(option),
-    )).toList();
+    final chips = options
+        .map(
+          (option) => AppChip(
+            label: option,
+            variant: variant,
+            size: size,
+            isSelected: selected.contains(option),
+            showCheckmark: !singleSelect,
+            onTap: () => onToggle(option),
+          ),
+        )
+        .toList();
 
     if (wrap) {
-      return Wrap(
-        spacing: spacing,
-        runSpacing: spacing,
-        children: chips,
-      );
+      return Wrap(spacing: spacing, runSpacing: spacing, children: chips);
     }
 
     return SingleChildScrollView(

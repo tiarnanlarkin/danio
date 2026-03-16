@@ -6,16 +6,16 @@ import '../../theme/app_theme.dart';
 enum AppButtonVariant {
   /// Primary action - filled with primary color
   primary,
-  
+
   /// Secondary action - outlined style
   secondary,
-  
+
   /// Tertiary/text-only action
   text,
-  
+
   /// Destructive action (delete, remove)
   destructive,
-  
+
   /// Ghost button - minimal styling
   ghost,
 }
@@ -24,19 +24,19 @@ enum AppButtonVariant {
 enum AppButtonSize {
   /// Small: 48dp height (Material Design 3 minimum)
   small,
-  
+
   /// Medium: 48dp height (default, same as small for consistency)
   medium,
-  
+
   /// Large: 56dp height (tablet/prominent actions)
   large,
 }
 
 /// A unified button component with consistent styling, accessibility, and haptics.
-/// 
+///
 /// Replaces direct usage of ElevatedButton, TextButton, OutlinedButton
 /// with app-specific styling and behavior.
-/// 
+///
 /// Example:
 /// ```dart
 /// AppButton(
@@ -48,31 +48,31 @@ enum AppButtonSize {
 class AppButton extends StatefulWidget {
   /// Button label text
   final String label;
-  
+
   /// Called when button is pressed. Null disables the button.
   final VoidCallback? onPressed;
-  
+
   /// Visual variant of the button
   final AppButtonVariant variant;
-  
+
   /// Size of the button
   final AppButtonSize size;
-  
+
   /// Optional icon before the label
   final IconData? leadingIcon;
-  
+
   /// Optional icon after the label
   final IconData? trailingIcon;
-  
+
   /// Shows loading spinner and disables interaction
   final bool isLoading;
-  
+
   /// Expands button to full width of parent
   final bool isFullWidth;
-  
+
   /// Custom semantic label for accessibility
   final String? semanticsLabel;
-  
+
   /// Whether to provide haptic feedback on press
   final bool enableHaptics;
 
@@ -94,7 +94,8 @@ class AppButton extends StatefulWidget {
   State<AppButton> createState() => _AppButtonState();
 }
 
-class _AppButtonState extends State<AppButton> with SingleTickerProviderStateMixin {
+class _AppButtonState extends State<AppButton>
+    with SingleTickerProviderStateMixin {
   late AnimationController _scaleController;
   late Animation<double> _scaleAnimation;
 
@@ -145,7 +146,7 @@ class _AppButtonState extends State<AppButton> with SingleTickerProviderStateMix
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
-    
+
     return Semantics(
       button: true,
       enabled: _isEnabled,
@@ -171,7 +172,9 @@ class _AppButtonState extends State<AppButton> with SingleTickerProviderStateMix
               boxShadow: _getShadow(),
             ),
             child: Row(
-              mainAxisSize: widget.isFullWidth ? MainAxisSize.max : MainAxisSize.min,
+              mainAxisSize: widget.isFullWidth
+                  ? MainAxisSize.max
+                  : MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 if (widget.isLoading) ...[
@@ -180,7 +183,9 @@ class _AppButtonState extends State<AppButton> with SingleTickerProviderStateMix
                     height: _getIconSize(),
                     child: CircularProgressIndicator(
                       strokeWidth: 2,
-                      valueColor: AlwaysStoppedAnimation(_getForegroundColor(isDark)),
+                      valueColor: AlwaysStoppedAnimation(
+                        _getForegroundColor(isDark),
+                      ),
                     ),
                   ),
                   const SizedBox(width: AppSpacing.sm),
@@ -192,10 +197,7 @@ class _AppButtonState extends State<AppButton> with SingleTickerProviderStateMix
                   ),
                   const SizedBox(width: AppSpacing.sm),
                 ],
-                Text(
-                  widget.label,
-                  style: _getTextStyle(isDark),
-                ),
+                Text(widget.label, style: _getTextStyle(isDark)),
                 if (widget.trailingIcon != null && !widget.isLoading) ...[
                   const SizedBox(width: AppSpacing.sm),
                   Icon(
@@ -238,11 +240,20 @@ class _AppButtonState extends State<AppButton> with SingleTickerProviderStateMix
   EdgeInsets _getPadding() {
     switch (widget.size) {
       case AppButtonSize.small:
-        return const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: AppSpacing.xs);
+        return const EdgeInsets.symmetric(
+          horizontal: AppSpacing.sm,
+          vertical: AppSpacing.xs,
+        );
       case AppButtonSize.medium:
-        return const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.sm);
+        return const EdgeInsets.symmetric(
+          horizontal: AppSpacing.md,
+          vertical: AppSpacing.sm,
+        );
       case AppButtonSize.large:
-        return const EdgeInsets.symmetric(horizontal: AppSpacing.lg, vertical: AppSpacing.md);
+        return const EdgeInsets.symmetric(
+          horizontal: AppSpacing.lg,
+          vertical: AppSpacing.md,
+        );
     }
   }
 
@@ -261,7 +272,7 @@ class _AppButtonState extends State<AppButton> with SingleTickerProviderStateMix
     if (!_isEnabled) {
       return isDark ? AppOverlays.white10 : AppOverlays.black10;
     }
-    
+
     switch (widget.variant) {
       case AppButtonVariant.primary:
         return AppColors.primary;
@@ -280,7 +291,7 @@ class _AppButtonState extends State<AppButton> with SingleTickerProviderStateMix
     if (!_isEnabled) {
       return isDark ? AppOverlays.white30 : AppOverlays.black30;
     }
-    
+
     switch (widget.variant) {
       case AppButtonVariant.primary:
         return Colors.white;
@@ -298,8 +309,8 @@ class _AppButtonState extends State<AppButton> with SingleTickerProviderStateMix
   Border? _getBorder(bool isDark) {
     if (widget.variant == AppButtonVariant.secondary) {
       return Border.all(
-        color: _isEnabled 
-            ? AppColors.primary 
+        color: _isEnabled
+            ? AppColors.primary
             : (isDark ? AppOverlays.white20 : AppOverlays.black20),
         width: 1.5,
       );
@@ -309,15 +320,17 @@ class _AppButtonState extends State<AppButton> with SingleTickerProviderStateMix
 
   List<BoxShadow>? _getShadow() {
     if (!_isEnabled) return null;
-    
+
     switch (widget.variant) {
       case AppButtonVariant.primary:
       case AppButtonVariant.destructive:
         return [
           BoxShadow(
-            color: (widget.variant == AppButtonVariant.primary 
-                ? AppColors.primary 
-                : AppColors.error).withAlpha(76),
+            color:
+                (widget.variant == AppButtonVariant.primary
+                        ? AppColors.primary
+                        : AppColors.error)
+                    .withAlpha(76),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -329,7 +342,7 @@ class _AppButtonState extends State<AppButton> with SingleTickerProviderStateMix
 
   TextStyle _getTextStyle(bool isDark) {
     final color = _getForegroundColor(isDark);
-    
+
     switch (widget.size) {
       case AppButtonSize.small:
         return AppTypography.labelSmall.copyWith(color: color);
@@ -368,14 +381,18 @@ class AppIconButton extends StatelessWidget {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
     final isEnabled = onPressed != null;
-    
+
     // Material Design 3: minimum 48x48dp touch targets
-    final double buttonSize = size == AppButtonSize.small ? AppTouchTargets.minimum : 
-                              size == AppButtonSize.medium ? AppTouchTargets.minimum : 
-                              AppTouchTargets.medium;
-    final double iconSize = size == AppButtonSize.small ? AppIconSizes.sm : 
-                            size == AppButtonSize.medium ? AppIconSizes.md : 
-                            AppIconSizes.lg;
+    final double buttonSize = size == AppButtonSize.small
+        ? AppTouchTargets.minimum
+        : size == AppButtonSize.medium
+        ? AppTouchTargets.minimum
+        : AppTouchTargets.medium;
+    final double iconSize = size == AppButtonSize.small
+        ? AppIconSizes.sm
+        : size == AppButtonSize.medium
+        ? AppIconSizes.md
+        : AppIconSizes.lg;
 
     // Require semantic label for icon-only buttons
     assert(
@@ -392,10 +409,12 @@ class AppIconButton extends StatelessWidget {
         color: backgroundColor ?? Colors.transparent,
         borderRadius: BorderRadius.circular(buttonSize / 2),
         child: InkWell(
-          onTap: isEnabled ? () {
-            if (enableHaptics) HapticFeedback.lightImpact();
-            onPressed!();
-          } : null,
+          onTap: isEnabled
+              ? () {
+                  if (enableHaptics) HapticFeedback.lightImpact();
+                  onPressed!();
+                }
+              : null,
           borderRadius: BorderRadius.circular(buttonSize / 2),
           child: Container(
             width: buttonSize,
@@ -404,7 +423,7 @@ class AppIconButton extends StatelessWidget {
             child: Icon(
               icon,
               size: iconSize,
-              color: isEnabled 
+              color: isEnabled
                   ? (color ?? (context.textPrimary))
                   : (isDark ? AppOverlays.white30 : AppOverlays.black30),
             ),

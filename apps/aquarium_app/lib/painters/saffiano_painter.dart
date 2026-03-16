@@ -10,15 +10,14 @@ class SaffianoPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     // 1. Fill with dark espresso base
-    canvas.drawRect(
-      Offset.zero & size,
-      Paint()..color = baseColor,
-    );
+    canvas.drawRect(Offset.zero & size, Paint()..color = baseColor);
 
     // 2. Primary diagonal crosshatch grid (45° / 135°)
     final primaryPaint = Paint()
-      ..color = Colors.white.withAlpha(30) // 12% opacity — was 6%
-      ..strokeWidth = 0.8              // was 0.5
+      ..color = Colors.white
+          .withAlpha(30) // 12% opacity — was 6%
+      ..strokeWidth =
+          0.8 // was 0.5
       ..style = PaintingStyle.stroke;
 
     const spacing = 8.0;
@@ -44,7 +43,8 @@ class SaffianoPainter extends CustomPainter {
 
     // 3. Secondary crosshatch at ~30° offset for realistic crosshatch depth
     final secondaryPaint = Paint()
-      ..color = Colors.white.withAlpha(14) // ~5% opacity — subtle accent layer
+      ..color = Colors.white
+          .withAlpha(14) // ~5% opacity — subtle accent layer
       ..strokeWidth = 0.5
       ..style = PaintingStyle.stroke;
 
@@ -71,7 +71,12 @@ class SaffianoPainter extends CustomPainter {
   }
 
   /// Tiny dots at the crosshatch intersections for authentic Saffiano texture.
-  void _drawIntersectionDots(Canvas canvas, Size size, double maxDim, double spacing) {
+  void _drawIntersectionDots(
+    Canvas canvas,
+    Size size,
+    double maxDim,
+    double spacing,
+  ) {
     final dotPaint = Paint()
       ..color = Colors.white.withAlpha(20)
       ..style = PaintingStyle.fill;

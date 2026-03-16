@@ -19,211 +19,205 @@ class FeedingGuideScreen extends StatelessWidget {
 
   List<Widget> _buildItems(BuildContext context) {
     return [
-          // Golden rule
-          AppCard(
-            backgroundColor: AppOverlays.warning10,
-            padding: AppCardPadding.standard,
-            child: Column(
+      // Golden rule
+      AppCard(
+        backgroundColor: AppOverlays.warning10,
+        padding: AppCardPadding.standard,
+        child: Column(
+          children: [
+            Row(
               children: [
-                Row(
-                  children: [
-                    Icon(Icons.star, color: AppColors.warning),
-                    const SizedBox(width: AppSpacing.sm),
-                    Text(
-                      'The Golden Rule',
-                      style: AppTypography.headlineSmall,
-                    ),
-                  ],
-                ),
-                const SizedBox(height: AppSpacing.sm2),
-                Text(
-                  'Feed only what fish can consume in 2-3 minutes. '
-                  'Overfeeding is the #1 cause of poor water quality in aquariums.',
-                  style: AppTypography.bodyMedium,
-                ),
+                Icon(Icons.star, color: AppColors.warning),
+                const SizedBox(width: AppSpacing.sm),
+                Text('The Golden Rule', style: AppTypography.headlineSmall),
               ],
             ),
-          ),
+            const SizedBox(height: AppSpacing.sm2),
+            Text(
+              'Feed only what fish can consume in 2-3 minutes. '
+              'Overfeeding is the #1 cause of poor water quality in aquariums.',
+              style: AppTypography.bodyMedium,
+            ),
+          ],
+        ),
+      ),
 
-          const SizedBox(height: AppSpacing.lg),
+      const SizedBox(height: AppSpacing.lg),
 
-          // Frequency
-          Text('How Often to Feed', style: AppTypography.headlineMedium),
-          const SizedBox(height: AppSpacing.md),
+      // Frequency
+      Text('How Often to Feed', style: AppTypography.headlineMedium),
+      const SizedBox(height: AppSpacing.md),
 
-          _FrequencyCard(
-            fishType: 'Adult tropical fish',
-            frequency: '1-2× daily',
-            notes: 'Most fish do fine with once daily feeding',
-          ),
-          _FrequencyCard(
-            fishType: 'Fry/juveniles',
-            frequency: '3-4× daily',
-            notes: 'Small frequent meals for growing fish',
-          ),
-          _FrequencyCard(
-            fishType: 'Bettas',
-            frequency: '1-2× daily',
-            notes: 'Skip 1 day per week to prevent bloat',
-          ),
-          _FrequencyCard(
-            fishType: 'Corydoras/bottom feeders',
-            frequency: '1× daily (evening)',
-            notes: 'Feed sinking pellets after lights out',
-          ),
-          _FrequencyCard(
-            fishType: 'Plecos',
-            frequency: 'Every 2-3 days',
-            notes: 'Algae wafers or vegetables at night',
-          ),
-          _FrequencyCard(
-            fishType: 'Shrimp',
-            frequency: 'Every 2-3 days',
-            notes: 'They graze on biofilm between feedings',
-          ),
+      _FrequencyCard(
+        fishType: 'Adult tropical fish',
+        frequency: '1-2× daily',
+        notes: 'Most fish do fine with once daily feeding',
+      ),
+      _FrequencyCard(
+        fishType: 'Fry/juveniles',
+        frequency: '3-4× daily',
+        notes: 'Small frequent meals for growing fish',
+      ),
+      _FrequencyCard(
+        fishType: 'Bettas',
+        frequency: '1-2× daily',
+        notes: 'Skip 1 day per week to prevent bloat',
+      ),
+      _FrequencyCard(
+        fishType: 'Corydoras/bottom feeders',
+        frequency: '1× daily (evening)',
+        notes: 'Feed sinking pellets after lights out',
+      ),
+      _FrequencyCard(
+        fishType: 'Plecos',
+        frequency: 'Every 2-3 days',
+        notes: 'Algae wafers or vegetables at night',
+      ),
+      _FrequencyCard(
+        fishType: 'Shrimp',
+        frequency: 'Every 2-3 days',
+        notes: 'They graze on biofilm between feedings',
+      ),
 
-          const SizedBox(height: AppSpacing.lg),
+      const SizedBox(height: AppSpacing.lg),
 
-          // Food types
-          Text('Food Types', style: AppTypography.headlineMedium),
-          const SizedBox(height: AppSpacing.md),
+      // Food types
+      Text('Food Types', style: AppTypography.headlineMedium),
+      const SizedBox(height: AppSpacing.md),
 
-          _FoodTypeCard(
-            name: 'Flakes',
-            icon: Icons.layers,
-            suitableFor: 'Surface and mid-water feeders',
-            pros: ['Convenient', 'Variety of formulas', 'Most fish accept'],
-            cons: [
-              'Degrades water quality quickly',
-              'Loses nutrients over time',
-            ],
-            tips: 'Crush for smaller fish. Remove uneaten flakes.',
-          ),
-          _FoodTypeCard(
-            name: 'Pellets',
-            icon: Icons.circle,
-            suitableFor: 'Most tropical fish',
-            pros: ['Less messy', 'Holds nutrients better', 'Portion control'],
-            cons: ['Some fish won\'t accept', 'Can expand in stomach'],
-            tips: 'Soak briefly before feeding to prevent bloat.',
-          ),
-          _FoodTypeCard(
-            name: 'Frozen Foods',
-            icon: Icons.ac_unit,
-            suitableFor: 'Carnivores, picky eaters',
-            pros: ['High protein', 'Entices fussy fish', 'Good variety'],
-            cons: ['Requires freezer', 'Can cloud water', 'More expensive'],
-            tips: 'Thaw in tank water, drain liquid before feeding.',
-          ),
-          _FoodTypeCard(
-            name: 'Live Foods',
-            icon: Icons.bug_report,
-            suitableFor: 'Carnivores, breeding conditioning',
-            pros: [
-              'Natural hunting behavior',
-              'Highly nutritious',
-              'Great for fry',
-            ],
-            cons: ['Disease risk', 'Requires culturing', 'Expensive'],
-            tips: 'Quarantine or culture your own for safety.',
-          ),
-          _FoodTypeCard(
-            name: 'Vegetables',
-            icon: Icons.eco,
-            suitableFor: 'Herbivores, plecos, snails',
-            pros: ['Cheap', 'Natural fiber', 'Good variety'],
-            cons: ['Can cloud water', 'Remove uneaten portions'],
-            tips: 'Blanch zucchini, cucumber, or peas. Remove after 24h.',
-          ),
-          _FoodTypeCard(
-            name: 'Algae Wafers',
-            icon: Icons.grass,
-            suitableFor: 'Plecos, snails, shrimp, otos',
-            pros: ['Sinks quickly', 'Long-lasting', 'Complete nutrition'],
-            cons: ['Other fish may steal', 'Can break apart'],
-            tips: 'Drop in after lights out for nocturnal feeders.',
-          ),
+      _FoodTypeCard(
+        name: 'Flakes',
+        icon: Icons.layers,
+        suitableFor: 'Surface and mid-water feeders',
+        pros: ['Convenient', 'Variety of formulas', 'Most fish accept'],
+        cons: ['Degrades water quality quickly', 'Loses nutrients over time'],
+        tips: 'Crush for smaller fish. Remove uneaten flakes.',
+      ),
+      _FoodTypeCard(
+        name: 'Pellets',
+        icon: Icons.circle,
+        suitableFor: 'Most tropical fish',
+        pros: ['Less messy', 'Holds nutrients better', 'Portion control'],
+        cons: ['Some fish won\'t accept', 'Can expand in stomach'],
+        tips: 'Soak briefly before feeding to prevent bloat.',
+      ),
+      _FoodTypeCard(
+        name: 'Frozen Foods',
+        icon: Icons.ac_unit,
+        suitableFor: 'Carnivores, picky eaters',
+        pros: ['High protein', 'Entices fussy fish', 'Good variety'],
+        cons: ['Requires freezer', 'Can cloud water', 'More expensive'],
+        tips: 'Thaw in tank water, drain liquid before feeding.',
+      ),
+      _FoodTypeCard(
+        name: 'Live Foods',
+        icon: Icons.bug_report,
+        suitableFor: 'Carnivores, breeding conditioning',
+        pros: [
+          'Natural hunting behavior',
+          'Highly nutritious',
+          'Great for fry',
+        ],
+        cons: ['Disease risk', 'Requires culturing', 'Expensive'],
+        tips: 'Quarantine or culture your own for safety.',
+      ),
+      _FoodTypeCard(
+        name: 'Vegetables',
+        icon: Icons.eco,
+        suitableFor: 'Herbivores, plecos, snails',
+        pros: ['Cheap', 'Natural fiber', 'Good variety'],
+        cons: ['Can cloud water', 'Remove uneaten portions'],
+        tips: 'Blanch zucchini, cucumber, or peas. Remove after 24h.',
+      ),
+      _FoodTypeCard(
+        name: 'Algae Wafers',
+        icon: Icons.grass,
+        suitableFor: 'Plecos, snails, shrimp, otos',
+        pros: ['Sinks quickly', 'Long-lasting', 'Complete nutrition'],
+        cons: ['Other fish may steal', 'Can break apart'],
+        tips: 'Drop in after lights out for nocturnal feeders.',
+      ),
 
-          const SizedBox(height: AppSpacing.lg),
+      const SizedBox(height: AppSpacing.lg),
 
-          // Common mistakes
-          Text('Common Mistakes', style: AppTypography.headlineMedium),
-          const SizedBox(height: AppSpacing.md),
+      // Common mistakes
+      Text('Common Mistakes', style: AppTypography.headlineMedium),
+      const SizedBox(height: AppSpacing.md),
 
-          AppCard(
-            padding: AppCardPadding.standard,
-            child: Column(
+      AppCard(
+        padding: AppCardPadding.standard,
+        child: Column(
+          children: [
+            _MistakeItem(
+              mistake: 'Overfeeding',
+              consequence: 'Ammonia spikes, algae blooms, obese fish',
+              fix: 'Feed less, skip a day weekly, remove uneaten food',
+            ),
+            const Divider(),
+            _MistakeItem(
+              mistake: 'Only one food type',
+              consequence: 'Nutritional deficiencies',
+              fix: 'Rotate between 2-3 different foods',
+            ),
+            const Divider(),
+            _MistakeItem(
+              mistake: 'Ignoring bottom feeders',
+              consequence: 'Starvation, aggression',
+              fix: 'Provide sinking foods specifically for them',
+            ),
+            const Divider(),
+            _MistakeItem(
+              mistake: 'Feeding right after lights on',
+              consequence: 'Fish may not be active/hungry',
+              fix: 'Wait 30 mins after lights on',
+            ),
+          ],
+        ),
+      ),
+
+      const SizedBox(height: AppSpacing.lg),
+
+      // Fasting
+      AppCard(
+        backgroundColor: AppOverlays.info10,
+        padding: AppCardPadding.standard,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
               children: [
-                _MistakeItem(
-                  mistake: 'Overfeeding',
-                  consequence: 'Ammonia spikes, algae blooms, obese fish',
-                  fix: 'Feed less, skip a day weekly, remove uneaten food',
-                ),
-                const Divider(),
-                _MistakeItem(
-                  mistake: 'Only one food type',
-                  consequence: 'Nutritional deficiencies',
-                  fix: 'Rotate between 2-3 different foods',
-                ),
-                const Divider(),
-                _MistakeItem(
-                  mistake: 'Ignoring bottom feeders',
-                  consequence: 'Starvation, aggression',
-                  fix: 'Provide sinking foods specifically for them',
-                ),
-                const Divider(),
-                _MistakeItem(
-                  mistake: 'Feeding right after lights on',
-                  consequence: 'Fish may not be active/hungry',
-                  fix: 'Wait 30 mins after lights on',
-                ),
+                Icon(Icons.no_food, color: context.textSecondary),
+                const SizedBox(width: AppSpacing.sm),
+                Text('Fasting Days', style: AppTypography.headlineSmall),
               ],
             ),
-          ),
-
-          const SizedBox(height: AppSpacing.lg),
-
-          // Fasting
-          AppCard(
-            backgroundColor: AppOverlays.info10,
-            padding: AppCardPadding.standard,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Icon(Icons.no_food, color: context.textSecondary),
-                    const SizedBox(width: AppSpacing.sm),
-                    Text('Fasting Days', style: AppTypography.headlineSmall),
-                  ],
-                ),
-                const SizedBox(height: AppSpacing.sm2),
-                Text(
-                  'Skipping 1-2 feeding days per week is actually beneficial:',
-                  style: AppTypography.bodyMedium,
-                ),
-                const SizedBox(height: AppSpacing.sm),
-                Text(
-                  '• Gives digestive system a rest',
-                  style: AppTypography.bodySmall,
-                ),
-                Text(
-                  '• Helps prevent bloat (especially bettas)',
-                  style: AppTypography.bodySmall,
-                ),
-                Text(
-                  '• Encourages scavenging behavior',
-                  style: AppTypography.bodySmall,
-                ),
-                Text(
-                  '• Fish can go 1-2 weeks without food if needed',
-                  style: AppTypography.bodySmall,
-                ),
-              ],
+            const SizedBox(height: AppSpacing.sm2),
+            Text(
+              'Skipping 1-2 feeding days per week is actually beneficial:',
+              style: AppTypography.bodyMedium,
             ),
-          ),
+            const SizedBox(height: AppSpacing.sm),
+            Text(
+              '• Gives digestive system a rest',
+              style: AppTypography.bodySmall,
+            ),
+            Text(
+              '• Helps prevent bloat (especially bettas)',
+              style: AppTypography.bodySmall,
+            ),
+            Text(
+              '• Encourages scavenging behavior',
+              style: AppTypography.bodySmall,
+            ),
+            Text(
+              '• Fish can go 1-2 weeks without food if needed',
+              style: AppTypography.bodySmall,
+            ),
+          ],
+        ),
+      ),
 
-          const SizedBox(height: AppSpacing.xxl),
+      const SizedBox(height: AppSpacing.xxl),
     ];
   }
 }
@@ -247,7 +241,10 @@ class _FrequencyCard extends StatelessWidget {
         title: Text(fishType, style: AppTypography.labelLarge),
         subtitle: Text(notes, style: AppTypography.bodySmall),
         trailing: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: AppSpacing.xs2),
+          padding: const EdgeInsets.symmetric(
+            horizontal: 12,
+            vertical: AppSpacing.xs2,
+          ),
           decoration: BoxDecoration(
             color: AppOverlays.primary10,
             borderRadius: AppRadius.mediumRadius,

@@ -12,48 +12,51 @@ library;
 
 class WaterLimits {
   // Ammonia (NH₃/NH₄⁺) — ppm
-  static const double ammoniaSafe = 0.0;        // Target: undetectable
-  static const double ammoniaWarning = 0.25;    // Slightly elevated — investigate
-  static const double ammoniaDanger = 0.5;      // Toxic — immediate action required
+  static const double ammoniaSafe = 0.0; // Target: undetectable
+  static const double ammoniaWarning = 0.25; // Slightly elevated — investigate
+  static const double ammoniaDanger = 0.5; // Toxic — immediate action required
 
   // Nitrite (NO₂⁻) — ppm
-  static const double nitriteSafe = 0.0;        // Target: undetectable
-  static const double nitriteWarning = 0.25;    // Slightly elevated — watch closely
-  static const double nitriteDanger = 0.5;      // Toxic — immediate water change
+  static const double nitriteSafe = 0.0; // Target: undetectable
+  static const double nitriteWarning =
+      0.25; // Slightly elevated — watch closely
+  static const double nitriteDanger = 0.5; // Toxic — immediate water change
 
   // Nitrate (NO₃⁻) — ppm
-  static const double nitrateIdeal = 20.0;      // 0–20: excellent
+  static const double nitrateIdeal = 20.0; // 0–20: excellent
   static const double nitrateAcceptable = 40.0; // 20–40: fine for most fish
-  static const double nitrateWarning = 80.0;    // 40–80: perform water change
+  static const double nitrateWarning = 80.0; // 40–80: perform water change
   // > 80 ppm: danger — large water change needed immediately
 
   // pH
   static const double phAbsoluteMin = 0.0;
   static const double phAbsoluteMax = 14.0;
-  static const double phFreshwaterMin = 6.0;    // Soft, acidic floor for most fish
-  static const double phFreshwaterMax = 8.5;    // Hard, alkaline ceiling for most fish
+  static const double phFreshwaterMin = 6.0; // Soft, acidic floor for most fish
+  static const double phFreshwaterMax =
+      8.5; // Hard, alkaline ceiling for most fish
   static const double phNeutral = 7.0;
 
   // Temperature — °C
-  static const double tempMinColdwater = 10.0;  // Minimum for cold-water species
-  static const double tempMaxColdwater = 22.0;  // Maximum for cold-water species
-  static const double tempMinTropical = 22.0;   // Minimum for tropical species
-  static const double tempMaxTropical = 30.0;   // Maximum for tropical species
-  static const double tempAbsoluteMin = 5.0;    // Below this = fish emergency
-  static const double tempAbsoluteMax = 35.0;   // Above this = fish emergency
+  static const double tempMinColdwater = 10.0; // Minimum for cold-water species
+  static const double tempMaxColdwater = 22.0; // Maximum for cold-water species
+  static const double tempMinTropical = 22.0; // Minimum for tropical species
+  static const double tempMaxTropical = 30.0; // Maximum for tropical species
+  static const double tempAbsoluteMin = 5.0; // Below this = fish emergency
+  static const double tempAbsoluteMax = 35.0; // Above this = fish emergency
 
   // General hardness (GH) — dGH
-  static const double ghSoft = 4.0;             // < 4: soft water
-  static const double ghMedium = 12.0;          // 4–12: medium water
-  static const double ghHard = 20.0;            // > 12: hard water
+  static const double ghSoft = 4.0; // < 4: soft water
+  static const double ghMedium = 12.0; // 4–12: medium water
+  static const double ghHard = 20.0; // > 12: hard water
 
   // Carbonate hardness / alkalinity (KH) — dKH
-  static const double khLow = 3.0;              // < 3: pH unstable, risk of crash
-  static const double khStable = 6.0;           // 3–6: adequate buffering
-  static const double khHigh = 12.0;            // > 12: very hard / alkaline
+  static const double khLow = 3.0; // < 3: pH unstable, risk of crash
+  static const double khStable = 6.0; // 3–6: adequate buffering
+  static const double khHigh = 12.0; // > 12: very hard / alkaline
 
   // pH variance tolerance for parameter checks
-  static const double phToleranceSlight = 0.5;  // Within ±0.5: slight out-of-range
+  static const double phToleranceSlight =
+      0.5; // Within ±0.5: slight out-of-range
 }
 
 // ────────────────────────────────────────────────────────────────────────────

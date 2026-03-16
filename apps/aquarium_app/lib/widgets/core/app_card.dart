@@ -6,16 +6,16 @@ import '../../theme/app_theme.dart';
 enum AppCardVariant {
   /// Default elevated card with shadow
   elevated,
-  
+
   /// Card with border outline
   outlined,
-  
+
   /// Filled with surface color
   filled,
-  
+
   /// Glassmorphism effect (translucent with blur)
   glass,
-  
+
   /// Gradient background
   gradient,
 }
@@ -24,22 +24,22 @@ enum AppCardVariant {
 enum AppCardPadding {
   /// No padding
   none,
-  
+
   /// Compact: 8dp
   compact,
-  
+
   /// Standard: 16dp
   standard,
-  
+
   /// Spacious: 24dp
   spacious,
 }
 
 /// A unified card component providing consistent styling across the app.
-/// 
+///
 /// Consolidates 45+ card variants into a single, composable component.
 /// Supports different visual variants, structured layouts, and interactions.
-/// 
+///
 /// Example:
 /// ```dart
 /// AppCard(
@@ -56,55 +56,55 @@ enum AppCardPadding {
 class AppCard extends StatefulWidget {
   /// Main content of the card
   final Widget child;
-  
+
   /// Visual variant
   final AppCardVariant variant;
-  
+
   /// Internal padding
   final AppCardPadding padding;
-  
+
   /// Custom padding (overrides padding preset)
   final EdgeInsets? customPadding;
-  
+
   /// Optional header widget (appears above child)
   final Widget? header;
-  
+
   /// Optional footer widget (appears below child)
   final Widget? footer;
-  
+
   /// Called when card is tapped
   final VoidCallback? onTap;
-  
+
   /// Called when card is long-pressed
   final VoidCallback? onLongPress;
-  
+
   /// Custom background color
   final Color? backgroundColor;
-  
+
   /// Gradient for gradient variant
   final LinearGradient? gradient;
-  
+
   /// Custom border radius
   final BorderRadius? borderRadius;
-  
+
   /// Custom shadow
   final List<BoxShadow>? boxShadow;
-  
+
   /// Custom border
   final Border? border;
-  
+
   /// Width constraint
   final double? width;
-  
+
   /// Height constraint
   final double? height;
-  
+
   /// Margin around the card
   final EdgeInsets? margin;
-  
+
   /// Semantic label for accessibility
   final String? semanticsLabel;
-  
+
   /// Whether to clip child content
   final bool clipBehavior;
 
@@ -194,7 +194,7 @@ class _AppCardState extends State<AppCard> with SingleTickerProviderStateMixin {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
-    
+
     Widget card = AnimatedBuilder(
       animation: _scaleAnimation,
       builder: (context, child) {
@@ -227,10 +227,7 @@ class _AppCardState extends State<AppCard> with SingleTickerProviderStateMixin {
         ),
       );
     } else if (widget.semanticsLabel != null) {
-      card = Semantics(
-        label: widget.semanticsLabel,
-        child: card,
-      );
+      card = Semantics(label: widget.semanticsLabel, child: card);
     }
 
     return card;
@@ -238,31 +235,31 @@ class _AppCardState extends State<AppCard> with SingleTickerProviderStateMixin {
 
   BoxDecoration _buildDecoration(bool isDark) {
     final radius = widget.borderRadius ?? AppRadius.mediumRadius;
-    
+
     switch (widget.variant) {
       case AppCardVariant.elevated:
         return BoxDecoration(
           color: widget.backgroundColor ?? (context.cardColor),
           borderRadius: radius,
-          boxShadow: widget.boxShadow ?? (_isPressed ? AppShadows.soft : AppShadows.medium),
+          boxShadow:
+              widget.boxShadow ??
+              (_isPressed ? AppShadows.soft : AppShadows.medium),
         );
-        
+
       case AppCardVariant.outlined:
         return BoxDecoration(
           color: widget.backgroundColor ?? Colors.transparent,
           borderRadius: radius,
-          border: widget.border ?? Border.all(
-            color: context.borderColor,
-            width: 1,
-          ),
+          border:
+              widget.border ?? Border.all(color: context.borderColor, width: 1),
         );
-        
+
       case AppCardVariant.filled:
         return BoxDecoration(
           color: widget.backgroundColor ?? (context.surfaceVariant),
           borderRadius: radius,
         );
-        
+
       case AppCardVariant.glass:
         return BoxDecoration(
           color: isDark ? AppOverlays.white10 : AppOverlays.black10,
@@ -272,7 +269,7 @@ class _AppCardState extends State<AppCard> with SingleTickerProviderStateMixin {
             width: 1,
           ),
         );
-        
+
       case AppCardVariant.gradient:
         return BoxDecoration(
           gradient: widget.gradient ?? AppColors.primaryGradient,
@@ -284,11 +281,8 @@ class _AppCardState extends State<AppCard> with SingleTickerProviderStateMixin {
 
   Widget _buildContent() {
     final effectivePadding = widget.customPadding ?? _getPaddingForPreset();
-    
-    Widget content = Padding(
-      padding: effectivePadding,
-      child: widget.child,
-    );
+
+    Widget content = Padding(padding: effectivePadding, child: widget.child);
 
     if (widget.header != null || widget.footer != null) {
       content = Column(
@@ -296,10 +290,7 @@ class _AppCardState extends State<AppCard> with SingleTickerProviderStateMixin {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           if (widget.header != null) widget.header!,
-          Padding(
-            padding: effectivePadding,
-            child: widget.child,
-          ),
+          Padding(padding: effectivePadding, child: widget.child),
           if (widget.footer != null) widget.footer!,
         ],
       );
@@ -348,7 +339,6 @@ class InfoCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    
     return AppCard(
       variant: AppCardVariant.filled,
       backgroundColor: backgroundColor,
@@ -390,11 +380,7 @@ class InfoCard extends StatelessWidget {
               ],
             ),
           ),
-          if (onTap != null)
-            Icon(
-              Icons.chevron_right,
-              color: context.textHint,
-            ),
+          if (onTap != null) Icon(Icons.chevron_right, color: context.textHint),
         ],
       ),
     );
@@ -423,7 +409,7 @@ class StatisticCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final primaryColor = color ?? AppColors.primary;
-    
+
     return AppCard(
       variant: AppCardVariant.elevated,
       onTap: onTap,
@@ -436,8 +422,7 @@ class StatisticCard extends StatelessWidget {
             children: [
               if (icon != null)
                 Icon(icon, size: AppIconSizes.md, color: primaryColor),
-              if (trend != null)
-                _TrendBadge(trend: trend!),
+              if (trend != null) _TrendBadge(trend: trend!),
             ],
           ),
           const SizedBox(height: AppSpacing.sm),
@@ -470,9 +455,12 @@ class _TrendBadge extends StatelessWidget {
   Widget build(BuildContext context) {
     final isPositive = trend >= 0;
     final color = isPositive ? AppColors.success : AppColors.error;
-    
+
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: AppSpacing.xs),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.sm,
+        vertical: AppSpacing.xs,
+      ),
       decoration: BoxDecoration(
         color: color.withAlpha(38),
         borderRadius: AppRadius.smallRadius,
@@ -518,7 +506,7 @@ class ActionCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final color = accentColor ?? AppColors.primary;
-    
+
     return AppCard(
       variant: AppCardVariant.outlined,
       border: Border.all(color: color.withAlpha(76), width: 1.5),

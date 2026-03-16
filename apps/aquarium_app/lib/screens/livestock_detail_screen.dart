@@ -46,16 +46,25 @@ class LivestockDetailScreen extends ConsumerWidget {
             tankAsync.when(
               loading: () => const SizedBox.shrink(),
               error: (_, __) => Padding(
-                    padding: const EdgeInsets.all(AppSpacing.sm),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(Icons.info_outline, size: 14, color: AppColors.warning),
-                        const SizedBox(width: AppSpacing.xs),
-                        Text('Unable to load', style: Theme.of(context).textTheme.bodySmall?.copyWith(color: AppColors.warning)),
-                      ],
+                padding: const EdgeInsets.all(AppSpacing.sm),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      Icons.info_outline,
+                      size: 14,
+                      color: AppColors.warning,
                     ),
-                  ),
+                    const SizedBox(width: AppSpacing.xs),
+                    Text(
+                      'Unable to load',
+                      style: Theme.of(
+                        context,
+                      ).textTheme.bodySmall?.copyWith(color: AppColors.warning),
+                    ),
+                  ],
+                ),
+              ),
               data: (tank) {
                 if (tank == null) return const SizedBox.shrink();
 
@@ -66,9 +75,17 @@ class LivestockDetailScreen extends ConsumerWidget {
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(Icons.info_outline, size: 14, color: AppColors.warning),
+                        Icon(
+                          Icons.info_outline,
+                          size: 14,
+                          color: AppColors.warning,
+                        ),
                         const SizedBox(width: AppSpacing.xs),
-                        Text('Unable to load', style: Theme.of(context).textTheme.bodySmall?.copyWith(color: AppColors.warning)),
+                        Text(
+                          'Unable to load',
+                          style: Theme.of(context).textTheme.bodySmall
+                              ?.copyWith(color: AppColors.warning),
+                        ),
                       ],
                     ),
                   ),
@@ -152,68 +169,65 @@ class _HeaderCard extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: AppSpacing.md),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      livestock.commonName,
+                      style: AppTypography.headlineMedium,
+                    ),
+                    if (livestock.scientificName != null || species != null)
                       Text(
-                        livestock.commonName,
-                        style: AppTypography.headlineMedium,
-                      ),
-                      if (livestock.scientificName != null || species != null)
-                        Text(
-                          livestock.scientificName ??
-                              species?.scientificName ??
-                              '',
-                          style: AppTypography.bodyMedium.copyWith(
-                            fontStyle: FontStyle.italic,
-                            color: context.textSecondary,
-                          ),
+                        livestock.scientificName ??
+                            species?.scientificName ??
+                            '',
+                        style: AppTypography.bodyMedium.copyWith(
+                          fontStyle: FontStyle.italic,
+                          color: context.textSecondary,
                         ),
-                    ],
-                  ),
+                      ),
+                  ],
                 ),
-              ],
-            ),
-            const SizedBox(height: AppSpacing.md),
-            Row(
-              children: [
-                _InfoChip(icon: Icons.tag, label: '×${livestock.count}'),
-                if (species != null) ...[
-                  const SizedBox(width: AppSpacing.sm),
-                  _InfoChip(
-                    icon: Icons.straighten,
-                    label: '${species!.adultSizeCm.toStringAsFixed(0)} cm',
-                  ),
-                  const SizedBox(width: AppSpacing.sm),
-                  _InfoChip(
-                    icon: Icons.psychology,
-                    label: species!.temperament,
-                    color: _temperamentColor(species!.temperament, context),
-                  ),
-                ],
-              ],
-            ),
-            if (species != null) ...[
-              const SizedBox(height: AppSpacing.sm2),
-              Row(
-                children: [
-                  _InfoChip(
-                    icon: Icons.school,
-                    label: species!.careLevel,
-                    color: _careLevelColor(species!.careLevel, context),
-                  ),
-                  const SizedBox(width: AppSpacing.sm),
-                  _InfoChip(
-                    icon: Icons.family_restroom,
-                    label: species!.family,
-                  ),
-                ],
               ),
             ],
+          ),
+          const SizedBox(height: AppSpacing.md),
+          Row(
+            children: [
+              _InfoChip(icon: Icons.tag, label: '×${livestock.count}'),
+              if (species != null) ...[
+                const SizedBox(width: AppSpacing.sm),
+                _InfoChip(
+                  icon: Icons.straighten,
+                  label: '${species!.adultSizeCm.toStringAsFixed(0)} cm',
+                ),
+                const SizedBox(width: AppSpacing.sm),
+                _InfoChip(
+                  icon: Icons.psychology,
+                  label: species!.temperament,
+                  color: _temperamentColor(species!.temperament, context),
+                ),
+              ],
+            ],
+          ),
+          if (species != null) ...[
+            const SizedBox(height: AppSpacing.sm2),
+            Row(
+              children: [
+                _InfoChip(
+                  icon: Icons.school,
+                  label: species!.careLevel,
+                  color: _careLevelColor(species!.careLevel, context),
+                ),
+                const SizedBox(width: AppSpacing.sm),
+                _InfoChip(icon: Icons.family_restroom, label: species!.family),
+              ],
+            ),
           ],
-        ),
-      );
+        ],
+      ),
+    );
   }
 
   Color _temperamentColor(String temperament, BuildContext context) {
@@ -254,11 +268,16 @@ class _InfoChip extends StatelessWidget {
   Widget build(BuildContext context) {
     final c = color ?? context.textSecondary;
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm3, vertical: AppSpacing.xs2),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.sm3,
+        vertical: AppSpacing.xs2,
+      ),
       decoration: BoxDecoration(
         color: Color((c.value & 0x00FFFFFF) | 0x19000000), // 10% opacity
         borderRadius: AppRadius.mediumRadius,
-        border: Border.all(color: Color((c.value & 0x00FFFFFF) | 0x4D000000)), // 30% opacity
+        border: Border.all(
+          color: Color((c.value & 0x00FFFFFF) | 0x4D000000),
+        ), // 30% opacity
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -304,34 +323,36 @@ class _CompatibilityCard extends StatelessWidget {
 
     return AppCard(
       padding: AppCardPadding.standard,
-      backgroundColor: Color((color.value & 0x00FFFFFF) | 0x0D000000), // 5% opacity
+      backgroundColor: Color(
+        (color.value & 0x00FFFFFF) | 0x0D000000,
+      ), // 5% opacity
       child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Icon(icon, color: color),
-                const SizedBox(width: AppSpacing.sm),
-                Text(
-                  title,
-                  style: AppTypography.headlineSmall.copyWith(color: color),
-                ),
-              ],
-            ),
-            if (issues.isEmpty && level == CompatibilityLevel.compatible) ...[
-              const SizedBox(height: AppSpacing.sm),
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(icon, color: color),
+              const SizedBox(width: AppSpacing.sm),
               Text(
-                'Parameters and tankmates look good.',
-                style: AppTypography.bodyMedium,
+                title,
+                style: AppTypography.headlineSmall.copyWith(color: color),
               ),
             ],
-            if (issues.isNotEmpty) ...[
-              const SizedBox(height: AppSpacing.sm2),
-              ...issues.map((issue) => _IssueRow(issue: issue)),
-            ],
+          ),
+          if (issues.isEmpty && level == CompatibilityLevel.compatible) ...[
+            const SizedBox(height: AppSpacing.sm),
+            Text(
+              'Parameters and tankmates look good.',
+              style: AppTypography.bodyMedium,
+            ),
           ],
-        ),
-      );
+          if (issues.isNotEmpty) ...[
+            const SizedBox(height: AppSpacing.sm2),
+            ...issues.map((issue) => _IssueRow(issue: issue)),
+          ],
+        ],
+      ),
+    );
   }
 }
 
@@ -407,43 +428,39 @@ class _CareGuideCard extends StatelessWidget {
           Row(
             children: [
               const Icon(Icons.auto_stories, color: AppColors.primary),
-                const SizedBox(width: AppSpacing.sm),
-                Text('Care Guide', style: AppTypography.headlineSmall),
-              ],
-            ),
-            const SizedBox(height: AppSpacing.sm2),
-            Text(species.description, style: AppTypography.bodyMedium),
-            const SizedBox(height: AppSpacing.md),
+              const SizedBox(width: AppSpacing.sm),
+              Text('Care Guide', style: AppTypography.headlineSmall),
+            ],
+          ),
+          const SizedBox(height: AppSpacing.sm2),
+          Text(species.description, style: AppTypography.bodyMedium),
+          const SizedBox(height: AppSpacing.md),
 
-            _CareRow(
-              icon: Icons.restaurant,
-              label: 'Diet',
-              value: species.diet,
-            ),
-            _CareRow(
-              icon: Icons.water,
-              label: 'Swim Level',
-              value: species.swimLevel,
-            ),
-            _CareRow(
-              icon: Icons.group,
-              label: 'Min School Size',
-              value: species.minSchoolSize == 1
-                  ? 'Can be kept singly'
-                  : '${species.minSchoolSize}+',
-            ),
-            _CareRow(
-              icon: Icons.straighten,
-              label: 'Min Tank Size',
-              value: '${species.minTankLitres.toStringAsFixed(0)} litres',
-            ),
-          ],
-        ),
-      );
+          _CareRow(icon: Icons.restaurant, label: 'Diet', value: species.diet),
+          _CareRow(
+            icon: Icons.water,
+            label: 'Swim Level',
+            value: species.swimLevel,
+          ),
+          _CareRow(
+            icon: Icons.group,
+            label: 'Min School Size',
+            value: species.minSchoolSize == 1
+                ? 'Can be kept singly'
+                : '${species.minSchoolSize}+',
+          ),
+          _CareRow(
+            icon: Icons.straighten,
+            label: 'Min Tank Size',
+            value: '${species.minTankLitres.toStringAsFixed(0)} litres',
+          ),
+        ],
+      ),
+    );
   }
 }
 
-class _CareRow extends StatelessWidget{
+class _CareRow extends StatelessWidget {
   final IconData icon;
   final String label;
   final String value;
@@ -494,38 +511,38 @@ class _ParametersCard extends StatelessWidget {
           Row(
             children: [
               const Icon(Icons.science, color: AppColors.primary),
-                const SizedBox(width: AppSpacing.sm),
-                Text('Ideal Parameters', style: AppTypography.headlineSmall),
-              ],
-            ),
-            const SizedBox(height: AppSpacing.md),
-            Wrap(
-              spacing: 12,
-              runSpacing: 12,
-              children: [
+              const SizedBox(width: AppSpacing.sm),
+              Text('Ideal Parameters', style: AppTypography.headlineSmall),
+            ],
+          ),
+          const SizedBox(height: AppSpacing.md),
+          Wrap(
+            spacing: 12,
+            runSpacing: 12,
+            children: [
+              _ParamPill(
+                label: 'Temp',
+                value:
+                    '${species.minTempC.toStringAsFixed(0)}-${species.maxTempC.toStringAsFixed(0)}',
+                unit: '°C',
+              ),
+              _ParamPill(
+                label: 'pH',
+                value:
+                    '${species.minPh.toStringAsFixed(1)}-${species.maxPh.toStringAsFixed(1)}',
+              ),
+              if (species.minGh != null && species.maxGh != null)
                 _ParamPill(
-                  label: 'Temp',
+                  label: 'GH',
                   value:
-                      '${species.minTempC.toStringAsFixed(0)}-${species.maxTempC.toStringAsFixed(0)}',
-                  unit: '°C',
+                      '${species.minGh!.toStringAsFixed(0)}-${species.maxGh!.toStringAsFixed(0)}',
+                  unit: 'dGH',
                 ),
-                _ParamPill(
-                  label: 'pH',
-                  value:
-                      '${species.minPh.toStringAsFixed(1)}-${species.maxPh.toStringAsFixed(1)}',
-                ),
-                if (species.minGh != null && species.maxGh != null)
-                  _ParamPill(
-                    label: 'GH',
-                    value:
-                        '${species.minGh!.toStringAsFixed(0)}-${species.maxGh!.toStringAsFixed(0)}',
-                    unit: 'dGH',
-                  ),
-              ],
-            ),
-          ],
-        ),
-      );
+            ],
+          ),
+        ],
+      ),
+    );
   }
 }
 
@@ -539,7 +556,10 @@ class _ParamPill extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm4, vertical: AppSpacing.sm3),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.sm4,
+        vertical: AppSpacing.sm3,
+      ),
       decoration: BoxDecoration(
         color: context.surfaceVariant,
         borderRadius: AppRadius.mediumRadius,
@@ -579,75 +599,73 @@ class _CompatibilityNotesCard extends StatelessWidget {
           Row(
             children: [
               const Icon(Icons.groups, color: AppColors.primary),
+              const SizedBox(width: AppSpacing.sm),
+              Text('Tank Mates', style: AppTypography.headlineSmall),
+            ],
+          ),
+          if (species.compatibleWith.isNotEmpty) ...[
+            const SizedBox(height: AppSpacing.sm2),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Icon(
+                  Icons.check_circle,
+                  size: 18,
+                  color: AppColors.success,
+                ),
                 const SizedBox(width: AppSpacing.sm),
-                Text('Tank Mates', style: AppTypography.headlineSmall),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Good matches:', style: AppTypography.labelLarge),
+                      const SizedBox(height: AppSpacing.xs),
+                      Wrap(
+                        spacing: 6,
+                        runSpacing: 6,
+                        children: species.compatibleWith
+                            .map((s) => _CompanionChip(name: s, isGood: true))
+                            .toList(),
+                      ),
+                    ],
+                  ),
+                ),
               ],
             ),
-            if (species.compatibleWith.isNotEmpty) ...[
-              const SizedBox(height: AppSpacing.sm2),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Icon(
-                    Icons.check_circle,
-                    size: 18,
-                    color: AppColors.success,
-                  ),
-                  const SizedBox(width: AppSpacing.sm),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('Good matches:', style: AppTypography.labelLarge),
-                        const SizedBox(height: AppSpacing.xs),
-                        Wrap(
-                          spacing: 6,
-                          runSpacing: 6,
-                          children: species.compatibleWith
-                              .map((s) => _CompanionChip(name: s, isGood: true))
-                              .toList(),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ],
-            if (species.avoidWith.isNotEmpty) ...[
-              const SizedBox(height: AppSpacing.md),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Icon(
-                    Icons.do_not_disturb,
-                    size: 18,
-                    color: AppColors.error,
-                  ),
-                  const SizedBox(width: AppSpacing.sm),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('Avoid:', style: AppTypography.labelLarge),
-                        const SizedBox(height: AppSpacing.xs),
-                        Wrap(
-                          spacing: 6,
-                          runSpacing: 6,
-                          children: species.avoidWith
-                              .map(
-                                (s) => _CompanionChip(name: s, isGood: false),
-                              )
-                              .toList(),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ],
           ],
-        ),
-      );
+          if (species.avoidWith.isNotEmpty) ...[
+            const SizedBox(height: AppSpacing.md),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Icon(
+                  Icons.do_not_disturb,
+                  size: 18,
+                  color: AppColors.error,
+                ),
+                const SizedBox(width: AppSpacing.sm),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Avoid:', style: AppTypography.labelLarge),
+                      const SizedBox(height: AppSpacing.xs),
+                      Wrap(
+                        spacing: 6,
+                        runSpacing: 6,
+                        children: species.avoidWith
+                            .map((s) => _CompanionChip(name: s, isGood: false))
+                            .toList(),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ],
+      ),
+    );
   }
 }
 
@@ -661,11 +679,16 @@ class _CompanionChip extends StatelessWidget {
   Widget build(BuildContext context) {
     final color = isGood ? AppColors.success : AppColors.error;
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm3, vertical: 4),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.sm3,
+        vertical: 4,
+      ),
       decoration: BoxDecoration(
         color: Color((color.value & 0x00FFFFFF) | 0x19000000), // 10% opacity
         borderRadius: AppRadius.mediumRadius,
-        border: Border.all(color: Color((color.value & 0x00FFFFFF) | 0x4D000000)), // 30% opacity
+        border: Border.all(
+          color: Color((color.value & 0x00FFFFFF) | 0x4D000000),
+        ), // 30% opacity
       ),
       child: Text(name, style: AppTypography.bodySmall.copyWith(color: color)),
     );
@@ -688,25 +711,25 @@ class _NoSpeciesDataCard extends StatelessWidget {
           Row(
             children: [
               Icon(Icons.info_outline, color: context.textSecondary),
-                const SizedBox(width: AppSpacing.sm),
-                Text(
-                  'Species info not found',
-                  style: AppTypography.headlineSmall,
-                ),
-              ],
-            ),
-            const SizedBox(height: AppSpacing.sm),
-            Text(
-              'We don\'t have care data for "${livestock.commonName}" in our database yet.\n\n'
-              'Consider researching:\n'
-              '• Temperature and pH requirements\n'
-              '• Minimum tank size\n'
-              '• Schooling needs\n'
-              '• Compatible tank mates',
-              style: AppTypography.bodyMedium,
-            ),
-          ],
-        ),
-      );
+              const SizedBox(width: AppSpacing.sm),
+              Text(
+                'Species info not found',
+                style: AppTypography.headlineSmall,
+              ),
+            ],
+          ),
+          const SizedBox(height: AppSpacing.sm),
+          Text(
+            'We don\'t have care data for "${livestock.commonName}" in our database yet.\n\n'
+            'Consider researching:\n'
+            '• Temperature and pH requirements\n'
+            '• Minimum tank size\n'
+            '• Schooling needs\n'
+            '• Compatible tank mates',
+            style: AppTypography.bodyMedium,
+          ),
+        ],
+      ),
+    );
   }
 }

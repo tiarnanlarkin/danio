@@ -17,13 +17,7 @@ import 'supabase_service.dart';
 // ---------------------------------------------------------------------------
 
 /// High-level sync status for the UI.
-enum CloudSyncStatus {
-  synced,
-  syncing,
-  offline,
-  error,
-  disabled,
-}
+enum CloudSyncStatus { synced, syncing, offline, error, disabled }
 
 /// Riverpod provider for current sync status.
 final cloudSyncStatusProvider = StateProvider<CloudSyncStatus>((ref) {
@@ -95,12 +89,12 @@ class OfflineQueueEntry {
   }) : createdAt = createdAt ?? DateTime.now();
 
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'table': table,
-        'operation': operation,
-        'data': data,
-        'createdAt': createdAt.toIso8601String(),
-      };
+    'id': id,
+    'table': table,
+    'operation': operation,
+    'data': data,
+    'createdAt': createdAt.toIso8601String(),
+  };
 
   factory OfflineQueueEntry.fromJson(Map<String, dynamic> json) {
     return OfflineQueueEntry(
@@ -209,7 +203,9 @@ class CloudSyncService {
     _mergeRemoteRecord(table, newRecord, remoteUpdatedAt);
   }
 
-  Future<void> _handleWaterParameterChange(PostgresChangePayload payload) async {
+  Future<void> _handleWaterParameterChange(
+    PostgresChangePayload payload,
+  ) async {
     // Water parameters: always append, never overwrite
     final newRecord = payload.newRecord;
     if (newRecord.isEmpty) return;
@@ -232,16 +228,19 @@ class CloudSyncService {
         final log = LogEntry(
           id: recordId,
           tankId: tankId,
-          timestamp: DateTime.tryParse(newRecord['tested_at'] as String? ?? '') ??
-              now,
+          timestamp:
+              DateTime.tryParse(newRecord['tested_at'] as String? ?? '') ?? now,
           type: LogType.waterTest,
           notes: newRecord['notes'] as String? ?? 'Synced from cloud',
           waterTest: _parseWaterTestFromRemote(newRecord),
-          createdAt: DateTime.tryParse(newRecord['created_at'] as String? ?? '') ??
+          createdAt:
+              DateTime.tryParse(newRecord['created_at'] as String? ?? '') ??
               now,
         );
         await storage.saveLog(log);
-        debugPrint('[CloudSync] Appended water parameter $recordId for tank $tankId');
+        debugPrint(
+          '[CloudSync] Appended water parameter $recordId for tank $tankId',
+        );
       }
     } catch (e) {
       debugPrint('[CloudSync] Failed to merge water parameter: $e');
@@ -283,8 +282,10 @@ class CloudSyncService {
     if (remoteUpdatedAt != null) {
       final gap = DateTime.now().difference(remoteUpdatedAt);
       if (gap.inHours > 24) {
-        debugPrint('[CloudSync] WARNING: >24h divergence on $table '
-            'record ${record['id']}');
+        debugPrint(
+          '[CloudSync] WARNING: >24h divergence on $table '
+          'record ${record['id']}',
+        );
         // Show conflict notification via a global key snackbar
         _showConflictNotification(table, record['id'] as String? ?? 'unknown');
       }
@@ -298,8 +299,10 @@ class CloudSyncService {
   /// Show a conflict notification via the sync conflict provider.
   /// UI widgets can watch [syncConflictProvider] to show snackbars.
   void _showConflictNotification(String table, String recordId) {
-    debugPrint('[CloudSync] ⚠️ CONFLICT: $table/$recordId has >24h divergence. '
-        'Remote data may differ from local. Latest version kept.');
+    debugPrint(
+      '[CloudSync] ⚠️ CONFLICT: $table/$recordId has >24h divergence. '
+      'Remote data may differ from local. Latest version kept.',
+    );
 
     // Post to a conflict notification provider that the UI can listen to
     _ref.read(_syncConflictProvider.notifier).state = SyncConflict(
@@ -373,11 +376,11 @@ class CloudSyncService {
           ? TankType.marine
           : TankType.freshwater,
       volumeLitres: (record['volume_litres'] as num?)?.toDouble() ?? 0,
-      startDate: DateTime.tryParse(record['start_date'] as String? ?? '') ??
-          now,
+      startDate:
+          DateTime.tryParse(record['start_date'] as String? ?? '') ?? now,
       targets: WaterTargets.freshwaterTropical(),
-      createdAt: DateTime.tryParse(record['created_at'] as String? ?? '') ??
-          now,
+      createdAt:
+          DateTime.tryParse(record['created_at'] as String? ?? '') ?? now,
       updatedAt: remoteUpdatedAt ?? now,
     );
     await storage.saveTank(tank);
@@ -390,9 +393,9 @@ class CloudSyncService {
   ) async {
     final id = record['id'] as String;
     final tankId = record['tank_id'] as String? ?? '';
-    final existing = (await storage.getLivestockForTank(tankId))
-        .where((l) => l.id == id)
-        .firstOrNull;
+    final existing = (await storage.getLivestockForTank(
+      tankId,
+    )).where((l) => l.id == id).firstOrNull;
 
     if (existing != null && remoteUpdatedAt != null) {
       if (existing.updatedAt.isAfter(remoteUpdatedAt)) return;
@@ -402,13 +405,19 @@ class CloudSyncService {
     final livestock = Livestock(
       id: id,
       tankId: tankId,
-      commonName: record['common_name'] as String? ?? record['name'] as String? ?? 'Unknown',
+      commonName:
+          record['common_name'] as String? ??
+          record['name'] as String? ??
+          'Unknown',
       scientificName: record['scientific_name'] as String?,
-      count: (record['count'] as num?)?.toInt() ?? (record['quantity'] as num?)?.toInt() ?? 1,
-      dateAdded: DateTime.tryParse(record['date_added'] as String? ?? '') ??
-          now,
-      createdAt: DateTime.tryParse(record['created_at'] as String? ?? '') ??
-          now,
+      count:
+          (record['count'] as num?)?.toInt() ??
+          (record['quantity'] as num?)?.toInt() ??
+          1,
+      dateAdded:
+          DateTime.tryParse(record['date_added'] as String? ?? '') ?? now,
+      createdAt:
+          DateTime.tryParse(record['created_at'] as String? ?? '') ?? now,
       updatedAt: remoteUpdatedAt ?? now,
     );
     await storage.saveLivestock(livestock);
@@ -421,9 +430,9 @@ class CloudSyncService {
   ) async {
     final id = record['id'] as String;
     final tankId = record['tank_id'] as String? ?? '';
-    final existing = (await storage.getEquipmentForTank(tankId))
-        .where((e) => e.id == id)
-        .firstOrNull;
+    final existing = (await storage.getEquipmentForTank(
+      tankId,
+    )).where((e) => e.id == id).firstOrNull;
 
     if (existing != null && remoteUpdatedAt != null) {
       if (existing.updatedAt.isAfter(remoteUpdatedAt)) return;
@@ -437,8 +446,8 @@ class CloudSyncService {
       name: record['name'] as String? ?? 'Unknown',
       type: equipmentType,
       brand: record['brand'] as String?,
-      createdAt: DateTime.tryParse(record['created_at'] as String? ?? '') ??
-          now,
+      createdAt:
+          DateTime.tryParse(record['created_at'] as String? ?? '') ?? now,
       updatedAt: remoteUpdatedAt ?? now,
     );
     await storage.saveEquipment(equipment);
@@ -467,8 +476,8 @@ class CloudSyncService {
       recurrence: RecurrenceType.none,
       dueDate: DateTime.tryParse(record['due_date'] as String? ?? ''),
       isEnabled: record['is_enabled'] as bool? ?? true,
-      createdAt: DateTime.tryParse(record['created_at'] as String? ?? '') ??
-          now,
+      createdAt:
+          DateTime.tryParse(record['created_at'] as String? ?? '') ?? now,
       updatedAt: remoteUpdatedAt ?? now,
     );
     await storage.saveTask(task);
@@ -493,12 +502,12 @@ class CloudSyncService {
     final log = LogEntry(
       id: id,
       tankId: tankId,
-      timestamp: DateTime.tryParse(record['entry_date'] as String? ?? '') ??
-          now,
+      timestamp:
+          DateTime.tryParse(record['entry_date'] as String? ?? '') ?? now,
       type: LogType.observation,
       notes: record['notes'] as String? ?? '',
-      createdAt: DateTime.tryParse(record['created_at'] as String? ?? '') ??
-          now,
+      createdAt:
+          DateTime.tryParse(record['created_at'] as String? ?? '') ?? now,
     );
     await storage.saveLog(log);
   }
@@ -545,8 +554,7 @@ class CloudSyncService {
     if (userId == null) return;
 
     _isRunning = true;
-    _ref.read(cloudSyncStatusProvider.notifier).state =
-        CloudSyncStatus.syncing;
+    _ref.read(cloudSyncStatusProvider.notifier).state = CloudSyncStatus.syncing;
 
     try {
       // 1. Flush offline queue first
@@ -562,8 +570,7 @@ class CloudSyncService {
       debugPrint('[CloudSync] Full sync completed');
     } catch (e) {
       debugPrint('[CloudSync] Sync error: $e');
-      _ref.read(cloudSyncStatusProvider.notifier).state =
-          CloudSyncStatus.error;
+      _ref.read(cloudSyncStatusProvider.notifier).state = CloudSyncStatus.error;
     } finally {
       _isRunning = false;
     }
@@ -668,30 +675,36 @@ class CloudSyncService {
     final isOnline = await _checkConnectivity();
 
     if (!isOnline || !SupabaseService.isInitialised) {
-      await queueOfflineChange(OfflineQueueEntry(
-        id: id,
-        table: table,
-        operation: operation,
-        data: data,
-      ));
+      await queueOfflineChange(
+        OfflineQueueEntry(
+          id: id,
+          table: table,
+          operation: operation,
+          data: data,
+        ),
+      );
       return;
     }
 
     try {
-      await _pushEntry(OfflineQueueEntry(
-        id: id,
-        table: table,
-        operation: operation,
-        data: data,
-      ));
+      await _pushEntry(
+        OfflineQueueEntry(
+          id: id,
+          table: table,
+          operation: operation,
+          data: data,
+        ),
+      );
     } catch (e) {
       // Network error - queue for retry
-      await queueOfflineChange(OfflineQueueEntry(
-        id: id,
-        table: table,
-        operation: operation,
-        data: data,
-      ));
+      await queueOfflineChange(
+        OfflineQueueEntry(
+          id: id,
+          table: table,
+          operation: operation,
+          data: data,
+        ),
+      );
     }
 
     scheduleSync();

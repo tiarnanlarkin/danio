@@ -14,15 +14,17 @@ const String kGdprAnalyticsConsentKey = 'gdpr_analytics_consent';
 /// makes a choice on the consent screen.
 Future<void> applyAnalyticsConsent(bool accepted) async {
   try {
-    await FirebaseAnalytics.instance
-        .setAnalyticsCollectionEnabled(accepted);
+    await FirebaseAnalytics.instance.setAnalyticsCollectionEnabled(accepted);
   } catch (_) {
     // Firebase may not be initialised — safe to ignore.
   }
   try {
-    await FirebaseCrashlytics.instance
-        .setCrashlyticsCollectionEnabled(accepted);
-  } catch (_) {}
+    await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(
+      accepted,
+    );
+  } catch (_) {
+    // Firebase may not be initialised — safe to ignore.
+  }
 }
 
 /// A clean Material Design screen that explains what data Danio collects and

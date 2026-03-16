@@ -10,9 +10,9 @@ import '../../theme/app_theme.dart';
 /// system or user prefers reduced motion.
 class AmbientBubbles extends ConsumerWidget {
   final int bubbleCount;
-  
+
   const AmbientBubbles({super.key, this.bubbleCount = 20});
-  
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final reducedMotion = ref.watch(reducedMotionProvider);
@@ -47,9 +47,9 @@ class AmbientBubbles extends ConsumerWidget {
 /// Respects reduced motion preferences.
 class AmbientBubblesSubtle extends ConsumerWidget {
   final int bubbleCount;
-  
+
   const AmbientBubblesSubtle({super.key, this.bubbleCount = 10});
-  
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final reducedMotion = ref.watch(reducedMotionProvider);
@@ -69,10 +69,7 @@ class AmbientBubblesSubtle extends ConsumerWidget {
           child: IgnorePointer(
             child: FloatingBubbles.alwaysRepeating(
               noOfBubbles: bubbleCount,
-              colorsOfBubbles: [
-                AppOverlays.white20,
-                AppOverlays.lightBlue15,
-              ],
+              colorsOfBubbles: [AppOverlays.white20, AppOverlays.lightBlue15],
               sizeFactor: 0.08,
               speed: BubbleSpeed.slow,
               paintingStyle: PaintingStyle.fill,

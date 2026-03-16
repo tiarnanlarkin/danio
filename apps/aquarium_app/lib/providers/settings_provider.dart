@@ -32,8 +32,10 @@ class AppSettings {
       themeMode: themeMode ?? this.themeMode,
       useMetric: useMetric ?? this.useMetric,
       notificationsEnabled: notificationsEnabled ?? this.notificationsEnabled,
-      ambientLightingEnabled: ambientLightingEnabled ?? this.ambientLightingEnabled,
-      hapticFeedbackEnabled: hapticFeedbackEnabled ?? this.hapticFeedbackEnabled,
+      ambientLightingEnabled:
+          ambientLightingEnabled ?? this.ambientLightingEnabled,
+      hapticFeedbackEnabled:
+          hapticFeedbackEnabled ?? this.hapticFeedbackEnabled,
     );
   }
 

@@ -131,7 +131,11 @@ class TermsOfServiceScreen extends StatelessWidget {
               ),
               child: Row(
                 children: [
-                  Icon(Icons.info_outline, color: AppColors.warning, size: AppIconSizes.md),
+                  Icon(
+                    Icons.info_outline,
+                    color: AppColors.warning,
+                    size: AppIconSizes.md,
+                  ),
                   const SizedBox(width: AppSpacing.md),
                   Expanded(
                     child: Text(
@@ -202,7 +206,9 @@ class TermsOfServiceScreen extends StatelessWidget {
                 Text(
                   content,
                   style: AppTypography.bodySmall.copyWith(
-                    color: highlighted ? AppColors.warning : context.textSecondary,
+                    color: highlighted
+                        ? AppColors.warning
+                        : context.textSecondary,
                   ),
                 ),
               ],
@@ -243,9 +249,17 @@ class TermsOfServiceScreen extends StatelessWidget {
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: AppSpacing.md),
-            _buildContactRow(Icons.email, 'support@aquariumhobbyist.app', context),
+            _buildContactRow(
+              Icons.email,
+              'support@aquariumhobbyist.app',
+              context,
+            ),
             const SizedBox(height: AppSpacing.sm),
-            _buildContactRow(Icons.person, 'Developer: Tiarnan Larkin', context),
+            _buildContactRow(
+              Icons.person,
+              'Developer: Tiarnan Larkin',
+              context,
+            ),
           ],
         ),
         actions: [

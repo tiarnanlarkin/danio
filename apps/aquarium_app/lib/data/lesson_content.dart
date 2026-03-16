@@ -7,12 +7,12 @@
 /// The "Duolingo for fishkeeping" curriculum
 ///
 /// ⚠️ LEGACY FILE - 212KB startup cost
-/// 
+///
 /// NEW APPROACH: Use lazy-loaded chunks in lib/data/lessons/
 /// - Each learning path is a separate file (20-40KB each)
 /// - Use LessonProvider for lazy loading (lib/providers/lesson_provider.dart)
 /// - Skeleton states available (lib/widgets/lesson_skeleton.dart)
-/// 
+///
 /// This file remains for backward compatibility. Gradually migrate to:
 /// - ref.watch(lessonProvider) for Riverpod screens
 /// - lessonContentLazy.loadPath(pathId) for non-Riverpod code
@@ -1617,12 +1617,7 @@ class LessonContent {
             const QuizQuestion(
               id: 'ff_choose_q1',
               question: 'Which of these fish is a great choice for beginners?',
-              options: [
-                'Discus',
-                'Zebra danios',
-                'Oscars',
-                'Common plecos',
-              ],
+              options: ['Discus', 'Zebra danios', 'Oscars', 'Common plecos'],
               correctIndex: 1,
               explanation:
                   'Zebra danios are extremely hardy, active schoolers that tolerate a wide range of water conditions - perfect for beginners learning the ropes.',
@@ -1642,7 +1637,8 @@ class LessonContent {
             ),
             const QuizQuestion(
               id: 'ff_choose_q3',
-              question: 'What does "hardy" mean when describing a fish species?',
+              question:
+                  'What does "hardy" mean when describing a fish species?',
               options: [
                 'The fish is large and strong',
                 'The fish can tolerate beginner mistakes and water quality fluctuations',

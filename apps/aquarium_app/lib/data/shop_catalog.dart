@@ -262,7 +262,8 @@ class ShopCatalog {
     ShopItem(
       id: 'golden_tank_frame',
       name: 'Golden Tank Frame',
-      description: 'A luxurious golden frame for your tank display. Show everyone you mean business!',
+      description:
+          'A luxurious golden frame for your tank display. Show everyone you mean business!',
       emoji: '🖼️',
       category: ShopItemCategory.cosmetics,
       type: ShopItemType.tankTheme,
@@ -274,7 +275,8 @@ class ShopCatalog {
     ShopItem(
       id: 'legendary_badge_display',
       name: 'Legendary Badge Display',
-      description: 'An exclusive showcase for your achievements. Only the dedicated earn this.',
+      description:
+          'An exclusive showcase for your achievements. Only the dedicated earn this.',
       emoji: '🏅',
       category: ShopItemCategory.cosmetics,
       type: ShopItemType.profileBadge,
@@ -286,7 +288,8 @@ class ShopCatalog {
     ShopItem(
       id: 'master_aquarist_title',
       name: 'Master Aquarist Title',
-      description: 'The ultimate title. Displayed on your profile for all to see. True mastery.',
+      description:
+          'The ultimate title. Displayed on your profile for all to see. True mastery.',
       emoji: '👑',
       category: ShopItemCategory.cosmetics,
       type: ShopItemType.profileBadge,

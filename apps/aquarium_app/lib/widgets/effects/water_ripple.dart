@@ -22,14 +22,15 @@ class _WaterRippleState extends State<WaterRipple>
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      duration: const Duration(milliseconds: 600),
-      vsync: this,
-    )..addStatusListener((status) {
-        if (status == AnimationStatus.completed) {
-          widget.onComplete();
-        }
-      });
+    _controller =
+        AnimationController(
+          duration: const Duration(milliseconds: 600),
+          vsync: this,
+        )..addStatusListener((status) {
+          if (status == AnimationStatus.completed) {
+            widget.onComplete();
+          }
+        });
     _controller.forward();
   }
 

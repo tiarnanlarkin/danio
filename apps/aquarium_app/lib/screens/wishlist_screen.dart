@@ -231,7 +231,7 @@ class WishlistScreen extends ConsumerWidget {
   }
 }
 
-class _WishlistItemCard extends StatelessWidget{
+class _WishlistItemCard extends StatelessWidget {
   final WishlistItem item;
   final Color accentColor;
   final VoidCallback onTap;

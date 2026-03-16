@@ -40,7 +40,6 @@ class Livestock {
     required this.updatedAt,
   });
 
-
   factory Livestock.fromJson(Map<String, dynamic> json) {
     return Livestock(
       id: json['id'] as String,
@@ -53,13 +52,18 @@ class Livestock {
       dateAdded: DateTime.parse(json['dateAdded'] as String),
       source: json['source'] as String?,
       temperament: json['temperament'] != null
-          ? Temperament.values.firstWhere((e) => e.name == json['temperament'], orElse: () => Temperament.peaceful)
+          ? Temperament.values.firstWhere(
+              (e) => e.name == json['temperament'],
+              orElse: () => Temperament.peaceful,
+            )
           : null,
       notes: json['notes'] as String?,
       imageUrl: json['imageUrl'] as String?,
       healthStatus: json['healthStatus'] != null
-          ? HealthStatus.values.firstWhere((e) => e.name == json['healthStatus'],
-              orElse: () => HealthStatus.healthy)
+          ? HealthStatus.values.firstWhere(
+              (e) => e.name == json['healthStatus'],
+              orElse: () => HealthStatus.healthy,
+            )
           : HealthStatus.healthy,
       createdAt: DateTime.parse(json['createdAt'] as String),
       updatedAt: DateTime.parse(json['updatedAt'] as String),

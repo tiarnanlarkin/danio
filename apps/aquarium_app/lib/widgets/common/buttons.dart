@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import '../../theme/app_theme.dart';
 import '../core/app_button.dart';
 
-export '../core/app_button.dart' show AppButton, AppButtonVariant, AppButtonSize;
+export '../core/app_button.dart'
+    show AppButton, AppButtonVariant, AppButtonSize;
 
 /// Standardised primary action button.
 ///

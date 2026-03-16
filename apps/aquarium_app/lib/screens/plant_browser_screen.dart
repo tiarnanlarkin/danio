@@ -18,7 +18,8 @@ class _PlantBrowserScreenState extends ConsumerState<PlantBrowserScreen> {
   String? _difficultyFilter;
   String? _placementFilter;
   bool _lowTechOnly = false;
-  final Set<String> _researchedPlants = {}; // Track researched plants this session
+  final Set<String> _researchedPlants =
+      {}; // Track researched plants this session
 
   List<PlantInfo> get _filteredPlants {
     var results = PlantDatabase.plants;
@@ -166,7 +167,7 @@ class _PlantBrowserScreenState extends ConsumerState<PlantBrowserScreen> {
       await ref
           .read(userProfileProvider.notifier)
           .recordActivity(xp: XpRewards.plantResearched);
-      
+
       // Show XP animation
       if (mounted) {
         ref.showXpAnimation(XpRewards.plantResearched);
@@ -240,7 +241,10 @@ class _PlantCard extends StatelessWidget {
             Wrap(
               spacing: 6,
               children: [
-                _MiniChip(label: plant.difficulty, color: _difficultyColor(context)),
+                _MiniChip(
+                  label: plant.difficulty,
+                  color: _difficultyColor(context),
+                ),
                 _MiniChip(
                   label: plant.lightLevel,
                   color: AppColors.paramWarning,
@@ -266,15 +270,15 @@ class _MiniChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xs2, vertical: 2),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.xs2,
+        vertical: 2,
+      ),
       decoration: BoxDecoration(
         color: color.withAlpha(26),
         borderRadius: AppRadius.smallRadius,
       ),
-      child: Text(
-        label,
-        style: AppTypography.bodySmall.copyWith(color: color),
-      ),
+      child: Text(label, style: AppTypography.bodySmall.copyWith(color: color)),
     );
   }
 }
@@ -293,7 +297,9 @@ class _PlantDetailSheet extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: Theme.of(context).scaffoldBackgroundColor,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(AppRadius.lg)),
+        borderRadius: const BorderRadius.vertical(
+          top: Radius.circular(AppRadius.lg),
+        ),
       ),
       child: SingleChildScrollView(
         controller: scrollController,
@@ -410,7 +416,11 @@ class _PlantDetailSheet extends StatelessWidget {
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Icon(Icons.eco, size: AppIconSizes.xs, color: AppColors.success),
+                        Icon(
+                          Icons.eco,
+                          size: AppIconSizes.xs,
+                          color: AppColors.success,
+                        ),
                         const SizedBox(width: AppSpacing.sm),
                         Expanded(
                           child: Text(tip, style: AppTypography.bodyMedium),
@@ -439,7 +449,10 @@ class _StatChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm3, vertical: AppSpacing.xs2),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.sm3,
+        vertical: AppSpacing.xs2,
+      ),
       decoration: BoxDecoration(
         color: context.surfaceVariant,
         borderRadius: AppRadius.mediumRadius,

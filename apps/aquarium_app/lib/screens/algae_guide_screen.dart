@@ -9,7 +9,8 @@ class AlgaeGuideScreen extends StatelessWidget {
   static final _algaeTypes = [
     _AlgaeData(
       name: 'Green Spot Algae (GSA)',
-      appearance: 'Hard green spots on glass, slow-growing plants, and hardscape',
+      appearance:
+          'Hard green spots on glass, slow-growing plants, and hardscape',
       color: DanioColors.emeraldGreen,
       causes: [
         'Low phosphate',
@@ -26,7 +27,8 @@ class AlgaeGuideScreen extends StatelessWidget {
     ),
     _AlgaeData(
       name: 'Green Dust Algae (GDA)',
-      appearance: 'Soft green film on glass that wipes off easily, returns quickly',
+      appearance:
+          'Soft green film on glass that wipes off easily, returns quickly',
       color: DanioColors.emeraldGreen,
       causes: ['New tank syndrome', 'Unstable CO2', 'Nutrient imbalance'],
       solutions: [
@@ -103,7 +105,8 @@ class AlgaeGuideScreen extends StatelessWidget {
     ),
     _AlgaeData(
       name: 'Blue-Green Algae (Cyanobacteria)',
-      appearance: 'Slimy blue-green sheets, strong musty smell, peels off in sheets',
+      appearance:
+          'Slimy blue-green sheets, strong musty smell, peels off in sheets',
       color: DanioColors.tealWater,
       causes: [
         'Low nitrate',
@@ -124,11 +127,7 @@ class AlgaeGuideScreen extends StatelessWidget {
       name: 'Brown Diatoms',
       appearance: 'Brown dusty coating on everything, common in new tanks',
       color: DanioColors.coralAccent,
-      causes: [
-        'New tank (silicates in water)',
-        'Low light',
-        'High silicates',
-      ],
+      causes: ['New tank (silicates in water)', 'Low light', 'High silicates'],
       solutions: [
         'Usually resolves on its own in 4-8 weeks',
         'Otocinclus, nerite snails love it',
@@ -141,11 +140,7 @@ class AlgaeGuideScreen extends StatelessWidget {
       name: 'Green Fuzz Algae',
       appearance: 'Short fuzzy green carpet on plants and surfaces',
       color: DanioColors.emeraldGreen,
-      causes: [
-        'Imbalanced nutrients',
-        'Inconsistent CO2',
-        'Excess light',
-      ],
+      causes: ['Imbalanced nutrients', 'Inconsistent CO2', 'Excess light'],
       solutions: [
         'Balance nutrients (usually low nitrogen)',
         'Stabilize CO2',
@@ -173,22 +168,26 @@ class AlgaeGuideScreen extends StatelessWidget {
     _CrewData(
       name: 'Amano Shrimp',
       eats: 'Hair algae, most soft algae',
-      notes: 'Best algae eaters. Need groups of 5+. Won\'t breed in freshwater.',
+      notes:
+          'Best algae eaters. Need groups of 5+. Won\'t breed in freshwater.',
     ),
     _CrewData(
       name: 'Nerite Snails',
       eats: 'Green spot, diatoms, general film',
-      notes: 'Excellent cleaners. Leave white eggs on hardscape (won\'t hatch in freshwater).',
+      notes:
+          'Excellent cleaners. Leave white eggs on hardscape (won\'t hatch in freshwater).',
     ),
     _CrewData(
       name: 'Otocinclus',
       eats: 'Diatoms, soft green algae',
-      notes: 'Peaceful, need groups of 6+. Sensitive - add to mature tanks only.',
+      notes:
+          'Peaceful, need groups of 6+. Sensitive - add to mature tanks only.',
     ),
     _CrewData(
       name: 'Siamese Algae Eater',
       eats: 'BBA, hair algae (when young)',
-      notes: 'True SAE only. Gets large (15cm), may stop eating algae when older.',
+      notes:
+          'True SAE only. Gets large (15cm), may stop eating algae when older.',
     ),
     _CrewData(
       name: 'Bristlenose Pleco',
@@ -215,7 +214,8 @@ class AlgaeGuideScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Calculate total items: intro + spacing + algae title + algae cards + spacing + crew title + crew cards + spacing + checklist title + checklist card + spacing
-    final totalItems = 1 + // intro
+    final totalItems =
+        1 + // intro
         1 + // spacing
         1 + // algae types section
         _algaeTypes.length +
@@ -332,7 +332,10 @@ class AlgaeGuideScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text('Prevention Checklist', style: AppTypography.headlineMedium),
+                Text(
+                  'Prevention Checklist',
+                  style: AppTypography.headlineMedium,
+                ),
                 const SizedBox(height: AppSpacing.md),
               ],
             );
@@ -464,7 +467,11 @@ class _AlgaeCard extends StatelessWidget {
                   ),
                   child: Row(
                     children: [
-                      Icon(Icons.shield, size: AppIconSizes.xs, color: AppColors.info),
+                      Icon(
+                        Icons.shield,
+                        size: AppIconSizes.xs,
+                        color: AppColors.info,
+                      ),
                       const SizedBox(width: AppSpacing.sm),
                       Expanded(
                         child: Text(
@@ -551,7 +558,11 @@ class _ChecklistItem extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
         children: [
-          Icon(Icons.check_box_outlined, size: AppIconSizes.sm, color: AppColors.success),
+          Icon(
+            Icons.check_box_outlined,
+            size: AppIconSizes.sm,
+            color: AppColors.success,
+          ),
           const SizedBox(width: AppSpacing.sm2),
           Expanded(child: Text(text, style: AppTypography.bodyMedium)),
         ],

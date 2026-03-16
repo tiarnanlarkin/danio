@@ -30,10 +30,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
                 gradient: LinearGradient(
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
-                  colors: [
-                    AppOverlays.primary10,
-                    AppOverlays.secondary10,
-                  ],
+                  colors: [AppOverlays.primary10, AppOverlays.secondary10],
                 ),
                 borderRadius: AppRadius.mediumRadius,
               ),
@@ -125,15 +122,19 @@ class PrivacyPolicyScreen extends StatelessWidget {
               'We do not collect, transmit, or have access to:',
             ),
 
-            _buildBulletList([
-              'Personal identification information',
-              'Email addresses or phone numbers',
-              'Location data',
-              'Usage analytics or statistics',
-              'Device information',
-              'Crash reports',
-              'Advertising identifiers',
-            ], context, isNegative: true),
+            _buildBulletList(
+              [
+                'Personal identification information',
+                'Email addresses or phone numbers',
+                'Location data',
+                'Usage analytics or statistics',
+                'Device information',
+                'Crash reports',
+                'Advertising identifiers',
+              ],
+              context,
+              isNegative: true,
+            ),
 
             _buildSection(
               'Third-Party Services',
@@ -145,9 +146,19 @@ class PrivacyPolicyScreen extends StatelessWidget {
               'The app requests the following permissions for local functionality only:',
             ),
 
-            _buildPermissionCard('Notifications', 'To send you reminders about water changes and maintenance tasks. Uses flutter_local_notifications (local only, no external communication).', Icons.notifications, context),
+            _buildPermissionCard(
+              'Notifications',
+              'To send you reminders about water changes and maintenance tasks. Uses flutter_local_notifications (local only, no external communication).',
+              Icons.notifications,
+              context,
+            ),
 
-            _buildPermissionCard('Storage/Photos', 'To let you add photos to your tanks and create/restore backups. Uses image_picker and file_picker (local file access only).', Icons.photo_library, context),
+            _buildPermissionCard(
+              'Storage/Photos',
+              'To let you add photos to your tanks and create/restore backups. Uses image_picker and file_picker (local file access only).',
+              Icons.photo_library,
+              context,
+            ),
 
             const SizedBox(height: AppSpacing.md),
 
@@ -162,10 +173,30 @@ class PrivacyPolicyScreen extends StatelessWidget {
               'Since all data is stored locally on your device, you have complete control:',
             ),
 
-            _buildRightCard('Access', 'View all your data anytime within the app', Icons.visibility, context),
-            _buildRightCard('Export', 'Use the Backup feature to export all data to a JSON file', Icons.file_download, context),
-            _buildRightCard('Delete', 'Delete individual items, clear all data, or uninstall the app', Icons.delete, context),
-            _buildRightCard('Portability', 'Backup files are in standard JSON format', Icons.sync_alt, context),
+            _buildRightCard(
+              'Access',
+              'View all your data anytime within the app',
+              Icons.visibility,
+              context,
+            ),
+            _buildRightCard(
+              'Export',
+              'Use the Backup feature to export all data to a JSON file',
+              Icons.file_download,
+              context,
+            ),
+            _buildRightCard(
+              'Delete',
+              'Delete individual items, clear all data, or uninstall the app',
+              Icons.delete,
+              context,
+            ),
+            _buildRightCard(
+              'Portability',
+              'Backup files are in standard JSON format',
+              Icons.sync_alt,
+              context,
+            ),
 
             _buildSection(
               'Data Security',
@@ -293,7 +324,11 @@ class PrivacyPolicyScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildBulletList(List<String> items, BuildContext context, {bool isNegative = false}) {
+  Widget _buildBulletList(
+    List<String> items,
+    BuildContext context, {
+    bool isNegative = false,
+  }) {
     return Padding(
       padding: const EdgeInsets.only(left: 16, bottom: 24),
       child: Column(
@@ -309,9 +344,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
                   child: Icon(
                     isNegative ? Icons.close : Icons.circle,
                     size: isNegative ? 16 : 8,
-                    color: isNegative
-                        ? AppColors.error
-                        : context.textSecondary,
+                    color: isNegative ? AppColors.error : context.textSecondary,
                   ),
                 ),
                 const SizedBox(width: AppSpacing.sm2),
@@ -361,7 +394,12 @@ class PrivacyPolicyScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildPermissionCard(String title, String description, IconData icon, BuildContext context) {
+  Widget _buildPermissionCard(
+    String title,
+    String description,
+    IconData icon,
+    BuildContext context,
+  ) {
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(AppSpacing.md),
@@ -403,7 +441,12 @@ class PrivacyPolicyScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildRightCard(String title, String description, IconData icon, BuildContext context) {
+  Widget _buildRightCard(
+    String title,
+    String description,
+    IconData icon,
+    BuildContext context,
+  ) {
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(AppSpacing.md),
@@ -449,7 +492,11 @@ class PrivacyPolicyScreen extends StatelessWidget {
         children: [
           Row(
             children: [
-              const Icon(Icons.email, color: AppColors.primary, size: AppIconSizes.md),
+              const Icon(
+                Icons.email,
+                color: AppColors.primary,
+                size: AppIconSizes.md,
+              ),
               const SizedBox(width: AppSpacing.sm2),
               Expanded(
                 child: Column(

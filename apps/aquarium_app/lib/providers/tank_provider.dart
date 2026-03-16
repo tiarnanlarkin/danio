@@ -75,7 +75,10 @@ final tanksProvider = FutureProvider<List<Tank>>((ref) async {
 });
 
 /// Single tank by ID
-final tankProvider = FutureProvider.autoDispose.family<Tank?, String>((ref, id) async {
+final tankProvider = FutureProvider.autoDispose.family<Tank?, String>((
+  ref,
+  id,
+) async {
   final storage = ref.watch(storageServiceProvider);
   return storage.getTank(id);
 });
@@ -338,9 +341,7 @@ class TankActions {
 
       for (final id in livestockIds) {
         try {
-          final livestock = allLivestock.firstWhere(
-            (l) => l.id == id,
-          );
+          final livestock = allLivestock.firstWhere((l) => l.id == id);
           final moved = livestock.copyWith(tankId: toTankId);
           await storage.saveLivestock(moved);
         } on StateError {
@@ -396,26 +397,22 @@ class TankActions {
 }
 
 /// Livestock for a tank (excludes soft-deleted livestock)
-final livestockProvider = FutureProvider.autoDispose.family<List<Livestock>, String>((
-  ref,
-  tankId,
-) async {
-  final storage = ref.watch(storageServiceProvider);
-  final allLivestock = await storage.getLivestockForTank(tankId);
-  final softDeleteLivestock = ref.watch(_softDeleteLivestockStateProvider);
-  return allLivestock
-      .where((livestock) => !softDeleteLivestock.isDeleted(livestock.id))
-      .toList();
-});
+final livestockProvider = FutureProvider.autoDispose
+    .family<List<Livestock>, String>((ref, tankId) async {
+      final storage = ref.watch(storageServiceProvider);
+      final allLivestock = await storage.getLivestockForTank(tankId);
+      final softDeleteLivestock = ref.watch(_softDeleteLivestockStateProvider);
+      return allLivestock
+          .where((livestock) => !softDeleteLivestock.isDeleted(livestock.id))
+          .toList();
+    });
 
 /// Equipment for a tank
-final equipmentProvider = FutureProvider.autoDispose.family<List<Equipment>, String>((
-  ref,
-  tankId,
-) async {
-  final storage = ref.watch(storageServiceProvider);
-  return storage.getEquipmentForTank(tankId);
-});
+final equipmentProvider = FutureProvider.autoDispose
+    .family<List<Equipment>, String>((ref, tankId) async {
+      final storage = ref.watch(storageServiceProvider);
+      return storage.getEquipmentForTank(tankId);
+    });
 
 /// Logs for a tank (recent only; used for previews / activity lists)
 final logsProvider = FutureProvider.autoDispose.family<List<LogEntry>, String>((
@@ -427,50 +424,41 @@ final logsProvider = FutureProvider.autoDispose.family<List<LogEntry>, String>((
 });
 
 /// All logs for a tank (used for charts/exports — no date cap)
-final allLogsProvider = FutureProvider.autoDispose.family<List<LogEntry>, String>((
-  ref,
-  tankId,
-) async {
-  final storage = ref.watch(storageServiceProvider);
-  return storage.getLogsForTank(tankId);
-});
+final allLogsProvider = FutureProvider.autoDispose
+    .family<List<LogEntry>, String>((ref, tankId) async {
+      final storage = ref.watch(storageServiceProvider);
+      return storage.getLogsForTank(tankId);
+    });
 
 /// Recent logs (last 365 days) — used by streak providers to avoid
 /// loading years of history for users with extensive logs.
-final recentLogsProvider = FutureProvider.autoDispose.family<List<LogEntry>, String>((
-  ref,
-  tankId,
-) async {
-  final storage = ref.watch(storageServiceProvider);
-  final cutoff = DateTime.now().subtract(const Duration(days: 365));
-  return storage.getLogsForTank(tankId, after: cutoff);
-});
+final recentLogsProvider = FutureProvider.autoDispose
+    .family<List<LogEntry>, String>((ref, tankId) async {
+      final storage = ref.watch(storageServiceProvider);
+      final cutoff = DateTime.now().subtract(const Duration(days: 365));
+      return storage.getLogsForTank(tankId, after: cutoff);
+    });
 
 /// Latest water test results for a tank (most recent waterTest log entry)
-final latestWaterTestProvider = FutureProvider.autoDispose.family<WaterTestResults?, String>((
-  ref,
-  tankId,
-) async {
-  final logs = await ref.watch(logsProvider(tankId).future);
-  final waterLogs = logs
-      .where((l) => l.type == LogType.waterTest && l.waterTest != null)
-      .toList()
-    ..sort((a, b) => b.timestamp.compareTo(a.timestamp));
-  return waterLogs.isEmpty ? null : waterLogs.first.waterTest;
-});
+final latestWaterTestProvider = FutureProvider.autoDispose
+    .family<WaterTestResults?, String>((ref, tankId) async {
+      final logs = await ref.watch(logsProvider(tankId).future);
+      final waterLogs =
+          logs
+              .where((l) => l.type == LogType.waterTest && l.waterTest != null)
+              .toList()
+            ..sort((a, b) => b.timestamp.compareTo(a.timestamp));
+      return waterLogs.isEmpty ? null : waterLogs.first.waterTest;
+    });
 
 /// Full LogEntry for the most recent waterTest log (gives access to timestamp)
-final latestWaterTestEntryProvider = FutureProvider.autoDispose.family<LogEntry?, String>((
-  ref,
-  tankId,
-) async {
-  final logs = await ref.watch(logsProvider(tankId).future);
-  final waterLogs = logs
-      .where((l) => l.type == LogType.waterTest)
-      .toList()
-    ..sort((a, b) => b.timestamp.compareTo(a.timestamp));
-  return waterLogs.isEmpty ? null : waterLogs.first;
-});
+final latestWaterTestEntryProvider = FutureProvider.autoDispose
+    .family<LogEntry?, String>((ref, tankId) async {
+      final logs = await ref.watch(logsProvider(tankId).future);
+      final waterLogs = logs.where((l) => l.type == LogType.waterTest).toList()
+        ..sort((a, b) => b.timestamp.compareTo(a.timestamp));
+      return waterLogs.isEmpty ? null : waterLogs.first;
+    });
 
 /// Consecutive calendar days (counting back from today) with at least one
 /// waterTest log entry.  Uses recentLogsProvider (365-day window) to avoid
@@ -482,7 +470,9 @@ final testStreakProvider = FutureProvider.autoDispose.family<int, String>((
   final logs = await ref.watch(recentLogsProvider(tankId).future);
   final testDays = logs
       .where((l) => l.type == LogType.waterTest)
-      .map((l) => DateTime(l.timestamp.year, l.timestamp.month, l.timestamp.day))
+      .map(
+        (l) => DateTime(l.timestamp.year, l.timestamp.month, l.timestamp.day),
+      )
       .toSet();
   var streak = 0;
   final today = DateTime.now();
@@ -497,39 +487,35 @@ final testStreakProvider = FutureProvider.autoDispose.family<int, String>((
 /// Consecutive calendar weeks (Mon–Sun, ending with the current week) that
 /// contain at least one waterChange log entry.  Uses recentLogsProvider
 /// (365-day window) to avoid loading unbounded history.
-final waterChangeStreakProvider = FutureProvider.autoDispose.family<int, String>((
-  ref,
-  tankId,
-) async {
-  final logs = await ref.watch(recentLogsProvider(tankId).future);
+final waterChangeStreakProvider = FutureProvider.autoDispose
+    .family<int, String>((ref, tankId) async {
+      final logs = await ref.watch(recentLogsProvider(tankId).future);
 
-  DateTime weekStart(DateTime d) {
-    final day = DateTime(d.year, d.month, d.day);
-    return day.subtract(Duration(days: day.weekday - 1));
-  }
+      DateTime weekStart(DateTime d) {
+        final day = DateTime(d.year, d.month, d.day);
+        return day.subtract(Duration(days: day.weekday - 1));
+      }
 
-  final changeWeeks = logs
-      .where((l) => l.type == LogType.waterChange)
-      .map((l) => weekStart(l.timestamp))
-      .toSet();
-  var streak = 0;
-  var week = weekStart(DateTime.now());
-  while (changeWeeks.contains(week)) {
-    streak++;
-    week = week.subtract(const Duration(days: 7));
-  }
-  return streak;
-});
+      final changeWeeks = logs
+          .where((l) => l.type == LogType.waterChange)
+          .map((l) => weekStart(l.timestamp))
+          .toSet();
+      var streak = 0;
+      var week = weekStart(DateTime.now());
+      while (changeWeeks.contains(week)) {
+        streak++;
+        week = week.subtract(const Duration(days: 7));
+      }
+      return streak;
+    });
 
 /// First heater equipment for a tank, or null if none registered.
-final tankHeaterProvider = FutureProvider.autoDispose.family<Equipment?, String>((
-  ref,
-  tankId,
-) async {
-  final equipment = await ref.watch(equipmentProvider(tankId).future);
-  final heaters = equipment.where((e) => e.type == EquipmentType.heater);
-  return heaters.isEmpty ? null : heaters.first;
-});
+final tankHeaterProvider = FutureProvider.autoDispose
+    .family<Equipment?, String>((ref, tankId) async {
+      final equipment = await ref.watch(equipmentProvider(tankId).future);
+      final heaters = equipment.where((e) => e.type == EquipmentType.heater);
+      return heaters.isEmpty ? null : heaters.first;
+    });
 
 /// Tasks for a tank (null = all tasks)
 final tasksProvider = FutureProvider.autoDispose.family<List<Task>, String?>((

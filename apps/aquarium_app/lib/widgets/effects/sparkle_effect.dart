@@ -3,13 +3,13 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
 /// A sparkle/glitter effect overlay that adds magical shine to widgets.
-/// 
+///
 /// Perfect for:
 /// - Achievement unlocks
 /// - Rare items/fish
 /// - Premium features
 /// - Celebration moments
-/// 
+///
 /// Example:
 /// ```dart
 /// SparkleEffect(
@@ -20,20 +20,20 @@ import 'package:flutter/material.dart';
 class SparkleEffect extends StatefulWidget {
   /// The widget to add sparkles to
   final Widget child;
-  
+
   /// Whether the sparkle effect is active
   final bool isActive;
-  
+
   /// Number of sparkle particles
   final int particleCount;
-  
+
   /// Color of the sparkles (default: gold)
   final Color sparkleColor;
-  
+
   /// Size range of sparkles
   final double minSize;
   final double maxSize;
-  
+
   /// Duration of one sparkle cycle
   final Duration cycleDuration;
 
@@ -65,9 +65,9 @@ class _SparkleEffectState extends State<SparkleEffect>
       duration: widget.cycleDuration,
       vsync: this,
     );
-    
+
     _generateParticles();
-    
+
     if (widget.isActive) {
       _controller.repeat();
     }
@@ -78,7 +78,9 @@ class _SparkleEffectState extends State<SparkleEffect>
       return _SparkleParticle(
         x: _random.nextDouble(),
         y: _random.nextDouble(),
-        size: widget.minSize + _random.nextDouble() * (widget.maxSize - widget.minSize),
+        size:
+            widget.minSize +
+            _random.nextDouble() * (widget.maxSize - widget.minSize),
         delay: _random.nextDouble(),
         duration: 0.3 + _random.nextDouble() * 0.4,
       );
@@ -110,29 +112,29 @@ class _SparkleEffectState extends State<SparkleEffect>
 
     return ExcludeSemantics(
       child: Stack(
-      children: [
-        widget.child,
-        if (widget.isActive)
-          Positioned.fill(
-            child: RepaintBoundary(
-              child: IgnorePointer(
-                child: AnimatedBuilder(
-                  animation: _controller,
-                  builder: (context, child) {
-                    return CustomPaint(
-                      painter: _SparklePainter(
-                        particles: _particles,
-                        progress: _controller.value,
-                        color: widget.sparkleColor,
-                      ),
-                    );
-                  },
+        children: [
+          widget.child,
+          if (widget.isActive)
+            Positioned.fill(
+              child: RepaintBoundary(
+                child: IgnorePointer(
+                  child: AnimatedBuilder(
+                    animation: _controller,
+                    builder: (context, child) {
+                      return CustomPaint(
+                        painter: _SparklePainter(
+                          particles: _particles,
+                          progress: _controller.value,
+                          color: widget.sparkleColor,
+                        ),
+                      );
+                    },
+                  ),
                 ),
               ),
             ),
-          ),
-      ],
-    ),
+        ],
+      ),
     );
   }
 }
@@ -169,26 +171,31 @@ class _SparklePainter extends CustomPainter {
     for (final particle in particles) {
       // Calculate particle's local progress
       final localProgress = (progress - particle.delay) % 1.0;
-      
+
       // Only draw if within the particle's active window
       if (localProgress < particle.duration) {
         final normalizedProgress = localProgress / particle.duration;
-        
+
         // Fade in then fade out
         final opacity = normalizedProgress < 0.5
             ? normalizedProgress * 2
             : (1 - normalizedProgress) * 2;
-        
+
         // Scale up then down
         final scale = normalizedProgress < 0.5
             ? 0.5 + normalizedProgress
             : 1.5 - normalizedProgress;
-        
+
         final x = particle.x * size.width;
         final y = particle.y * size.height;
         final sparkleSize = particle.size * scale;
-        
-        _drawSparkle(canvas, Offset(x, y), sparkleSize, color.withAlpha((opacity.clamp(0.0, 1.0) * 255).round()));
+
+        _drawSparkle(
+          canvas,
+          Offset(x, y),
+          sparkleSize,
+          color.withAlpha((opacity.clamp(0.0, 1.0) * 255).round()),
+        );
       }
     }
   }
@@ -197,26 +204,26 @@ class _SparklePainter extends CustomPainter {
     final paint = Paint()
       ..color = color
       ..style = PaintingStyle.fill;
-    
+
     // Draw a 4-pointed star
     final path = Path();
-    
+
     // Vertical line
     path.moveTo(center.dx, center.dy - size);
     path.lineTo(center.dx - size * 0.2, center.dy);
     path.lineTo(center.dx, center.dy + size);
     path.lineTo(center.dx + size * 0.2, center.dy);
     path.close();
-    
+
     // Horizontal line
     path.moveTo(center.dx - size, center.dy);
     path.lineTo(center.dx, center.dy - size * 0.2);
     path.lineTo(center.dx + size, center.dy);
     path.lineTo(center.dx, center.dy + size * 0.2);
     path.close();
-    
+
     canvas.drawPath(path, paint);
-    
+
     // Add glow
     final glowPaint = Paint()
       ..color = color.withAlpha((color.opacity * 0.3 * 255).round())
@@ -231,7 +238,7 @@ class _SparklePainter extends CustomPainter {
 }
 
 /// A shimmer effect that creates a sweeping shine across a widget.
-/// 
+///
 /// Great for:
 /// - Loading placeholders
 /// - Premium/locked content hints
@@ -263,10 +270,7 @@ class _ShimmerEffectState extends State<ShimmerEffect>
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      duration: widget.duration,
-      vsync: this,
-    );
+    _controller = AnimationController(duration: widget.duration, vsync: this);
     if (widget.isActive) {
       _controller.repeat();
     }
@@ -302,7 +306,7 @@ class _ShimmerEffectState extends State<ShimmerEffect>
           shaderCallback: (bounds) {
             final progress = _controller.value;
             final startX = bounds.width * (progress * 2 - 0.5);
-            
+
             return LinearGradient(
               begin: Alignment.centerLeft,
               end: Alignment.centerRight,

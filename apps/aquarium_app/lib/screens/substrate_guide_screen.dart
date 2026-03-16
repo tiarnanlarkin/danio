@@ -252,7 +252,9 @@ class SubstrateGuideScreen extends StatelessWidget {
                 _LayerRow(
                   layer: 'Middle',
                   material: 'Power Sand / Pumice (optional, 1-2cm)',
-                  color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+                  color: Theme.of(
+                    context,
+                  ).colorScheme.onSurface.withOpacity(0.6),
                 ),
                 _LayerRow(
                   layer: 'Bottom',
@@ -282,27 +284,27 @@ class SubstrateGuideScreen extends StatelessWidget {
                     Icon(Icons.lightbulb, color: AppColors.warning),
                     const SizedBox(width: AppSpacing.sm),
                     Text('Pro Tips', style: AppTypography.headlineSmall),
-                ],
-              ),
-              const SizedBox(height: AppSpacing.sm2),
-              _TipItem(
-                text: 'Rinse all substrate before use - even "pre-washed"',
-              ),
-              _TipItem(
-                text: 'Slope substrate higher in back for depth illusion',
-              ),
-              _TipItem(text: 'Use substrate dividers to create zones'),
-              _TipItem(
-                text: 'Never vacuum planted areas deeply - disturbs roots',
-              ),
-              _TipItem(text: 'Dark substrate makes fish colors pop'),
-              _TipItem(
-                text:
-                    'Calculate amount: L × W × depth (cm) ÷ 1000 = litres needed',
-              ),
-            ],
+                  ],
+                ),
+                const SizedBox(height: AppSpacing.sm2),
+                _TipItem(
+                  text: 'Rinse all substrate before use - even "pre-washed"',
+                ),
+                _TipItem(
+                  text: 'Slope substrate higher in back for depth illusion',
+                ),
+                _TipItem(text: 'Use substrate dividers to create zones'),
+                _TipItem(
+                  text: 'Never vacuum planted areas deeply - disturbs roots',
+                ),
+                _TipItem(text: 'Dark substrate makes fish colors pop'),
+                _TipItem(
+                  text:
+                      'Calculate amount: L × W × depth (cm) ÷ 1000 = litres needed',
+                ),
+              ],
+            ),
           ),
-        ),
 
           const SizedBox(height: AppSpacing.xxl),
         ],

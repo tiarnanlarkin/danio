@@ -60,7 +60,9 @@ class _StreakMilestoneCelebrationState extends State<StreakMilestoneCelebration>
     if (widget.streakDays >= 50) return 'Incredible! 50-day streak!';
     if (widget.streakDays >= 30) return 'A whole month! Unstoppable!';
     if (widget.streakDays >= 14) return '2-week warrior! Keep going!';
-    if (widget.streakDays >= 7) return '${widget.streakDays}-day streak! You\'re on fire!';
+    if (widget.streakDays >= 7) {
+      return '${widget.streakDays}-day streak! You\'re on fire!';
+    }
     return '${widget.streakDays}-day streak! Nice start!';
   }
 
@@ -82,10 +84,7 @@ class _StreakMilestoneCelebrationState extends State<StreakMilestoneCelebration>
       TweenSequenceItem(tween: Tween(begin: 0.3, end: 1.1), weight: 15),
       TweenSequenceItem(tween: Tween(begin: 1.1, end: 1.0), weight: 10),
       TweenSequenceItem(tween: Tween(begin: 1.0, end: 1.0), weight: 75),
-    ]).animate(CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeOut,
-    ));
+    ]).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
 
     _controller.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
@@ -117,7 +116,10 @@ class _StreakMilestoneCelebrationState extends State<StreakMilestoneCelebration>
             decoration: BoxDecoration(
               color: Theme.of(context).scaffoldBackgroundColor.withAlpha(240),
               borderRadius: AppRadius.largeRadius,
-              border: Border.all(color: AppColors.primary.withAlpha(60), width: 2),
+              border: Border.all(
+                color: AppColors.primary.withAlpha(60),
+                width: 2,
+              ),
             ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -146,10 +148,7 @@ class _StreakMilestoneCelebrationState extends State<StreakMilestoneCelebration>
           animation: _scale,
           builder: (context, child) {
             return Center(
-              child: Transform.scale(
-                scale: _scale.value,
-                child: child,
-              ),
+              child: Transform.scale(scale: _scale.value, child: child),
             );
           },
           child: Container(
@@ -159,9 +158,7 @@ class _StreakMilestoneCelebrationState extends State<StreakMilestoneCelebration>
               vertical: AppSpacing.lg2,
             ),
             decoration: BoxDecoration(
-              color: Theme.of(context)
-                  .scaffoldBackgroundColor
-                  .withAlpha(240),
+              color: Theme.of(context).scaffoldBackgroundColor.withAlpha(240),
               borderRadius: AppRadius.largeRadius,
               boxShadow: [
                 BoxShadow(
@@ -178,10 +175,7 @@ class _StreakMilestoneCelebrationState extends State<StreakMilestoneCelebration>
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text(
-                  _emoji,
-                  style: const TextStyle(fontSize: 52),
-                ),
+                Text(_emoji, style: const TextStyle(fontSize: 52)),
                 const SizedBox(height: AppSpacing.sm),
                 Text(
                   _message,

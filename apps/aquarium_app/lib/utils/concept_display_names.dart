@@ -74,7 +74,8 @@ String conceptDisplayName(String conceptId) {
   final sectionMatch = RegExp(r'^(.+)_section_(\d+)$').firstMatch(conceptId);
   if (sectionMatch != null) {
     final lessonId = sectionMatch.group(1)!;
-    final sectionNum = int.parse(sectionMatch.group(2)!) + 1; // 0-indexed → 1-indexed
+    final sectionNum =
+        int.parse(sectionMatch.group(2)!) + 1; // 0-indexed → 1-indexed
     final title = _lessonTitles[lessonId] ?? _titleFromId(lessonId);
     return '$title - Key Point $sectionNum';
   }

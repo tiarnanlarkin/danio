@@ -79,14 +79,16 @@ class _LearningStyleScreenState extends ConsumerState<LearningStyleScreen> {
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: AppSpacing.xl),
-              ..._options.map((option) => Padding(
-                    padding: const EdgeInsets.only(bottom: 12),
-                    child: _OptionCard(
-                      option: option,
-                      isSelected: _selected == option.key,
-                      onTap: () => setState(() => _selected = option.key),
-                    ),
-                  )),
+              ..._options.map(
+                (option) => Padding(
+                  padding: const EdgeInsets.only(bottom: 12),
+                  child: _OptionCard(
+                    option: option,
+                    isSelected: _selected == option.key,
+                    onTap: () => setState(() => _selected = option.key),
+                  ),
+                ),
+              ),
               const Spacer(flex: 2),
               FilledButton(
                 onPressed: _selected != null ? _continue : null,
@@ -103,8 +105,7 @@ class _LearningStyleScreenState extends ConsumerState<LearningStyleScreen> {
                 onPressed: () {
                   Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (_) =>
-                          const EnhancedTutorialWalkthroughScreen(),
+                      builder: (_) => const EnhancedTutorialWalkthroughScreen(),
                     ),
                   );
                 },
@@ -167,7 +168,10 @@ class _OptionCard extends StatelessWidget {
           padding: const EdgeInsets.all(AppSpacing.md),
           child: Row(
             children: [
-              Text(option.emoji, style: Theme.of(context).textTheme.headlineMedium!.copyWith()),
+              Text(
+                option.emoji,
+                style: Theme.of(context).textTheme.headlineMedium!.copyWith(),
+              ),
               const SizedBox(width: AppSpacing.md),
               Expanded(
                 child: Column(

@@ -58,8 +58,10 @@ class _PracticeScreenState extends ConsumerState<PracticeScreen> {
       body: weakLessons.isEmpty
           ? _buildEmptyState(context)
           : !_pathsLoaded
-              ? const Center(child: CircularProgressIndicator(color: AppColors.primary))
-              : _buildPracticeList(context, ref, weakLessons),
+          ? const Center(
+              child: CircularProgressIndicator(color: AppColors.primary),
+            )
+          : _buildPracticeList(context, ref, weakLessons),
     );
   }
 
@@ -78,7 +80,12 @@ class _PracticeScreenState extends ConsumerState<PracticeScreen> {
                 shape: BoxShape.circle,
               ),
               child: Center(
-                child: Text('🎯', style: Theme.of(context).textTheme.headlineMedium!.copyWith(fontSize: 56)),
+                child: Text(
+                  '🎯',
+                  style: Theme.of(
+                    context,
+                  ).textTheme.headlineMedium!.copyWith(fontSize: 56),
+                ),
               ),
             ),
             const SizedBox(height: AppSpacing.lg),
@@ -94,9 +101,7 @@ class _PracticeScreenState extends ConsumerState<PracticeScreen> {
             const SizedBox(height: AppSpacing.xl),
             Text(
               'Complete more lessons to build your practice queue.',
-              style: AppTypography.bodyMedium.copyWith(
-                color: context.textHint,
-              ),
+              style: AppTypography.bodyMedium.copyWith(color: context.textHint),
               textAlign: TextAlign.center,
             ),
           ],
@@ -120,83 +125,83 @@ class _PracticeScreenState extends ConsumerState<PracticeScreen> {
         // Header
         if (index == 0) {
           return Container(
-          padding: const EdgeInsets.all(AppSpacing.md),
-          decoration: BoxDecoration(
-            gradient: AppColors.primaryGradient,
-            borderRadius: AppRadius.mediumRadius,
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  const Icon(
-                    Icons.fitness_center,
-                    color: Colors.white,
-                    size: 32,
-                  ),
-                  const SizedBox(width: AppSpacing.sm2),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Practice Mode',
-                          style: AppTypography.headlineMedium.copyWith(
-                            color: Colors.white,
-                          ),
-                        ),
-                        const SizedBox(height: AppSpacing.xs),
-                        Text(
-                          'Review lessons before you forget them',
-                          style: AppTypography.bodyMedium.copyWith(
-                            color: Colors.white70,
-                          ),
-                        ),
-                      ],
+            padding: const EdgeInsets.all(AppSpacing.md),
+            decoration: BoxDecoration(
+              gradient: AppColors.primaryGradient,
+              borderRadius: AppRadius.mediumRadius,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    const Icon(
+                      Icons.fitness_center,
+                      color: Colors.white,
+                      size: 32,
                     ),
-                  ),
-                ],
-              ),
-            ],
-          ),
+                    const SizedBox(width: AppSpacing.sm2),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Practice Mode',
+                            style: AppTypography.headlineMedium.copyWith(
+                              color: Colors.white,
+                            ),
+                          ),
+                          const SizedBox(height: AppSpacing.xs),
+                          Text(
+                            'Review lessons before you forget them',
+                            style: AppTypography.bodyMedium.copyWith(
+                              color: Colors.white70,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           );
         }
 
         // Info card
         if (index == 1) {
           return Container(
-          padding: const EdgeInsets.all(AppSpacing.md),
-          decoration: BoxDecoration(
-            color: AppOverlays.info10,
-            borderRadius: AppRadius.mediumRadius,
-            border: Border.all(color: AppOverlays.accent20),
-          ),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Icon(Icons.lightbulb_outline, color: context.textSecondary),
-              const SizedBox(width: AppSpacing.sm2),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'How it works',
-                      style: AppTypography.labelLarge.copyWith(
-                        color: context.textSecondary,
+            padding: const EdgeInsets.all(AppSpacing.md),
+            decoration: BoxDecoration(
+              color: AppOverlays.info10,
+              borderRadius: AppRadius.mediumRadius,
+              border: Border.all(color: AppOverlays.accent20),
+            ),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Icon(Icons.lightbulb_outline, color: context.textSecondary),
+                const SizedBox(width: AppSpacing.sm2),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'How it works',
+                        style: AppTypography.labelLarge.copyWith(
+                          color: context.textSecondary,
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: AppSpacing.xs),
-                    Text(
-                      'Lesson strength decays over time: 100% → 70% (1 day) → 40% (7 days) → 0% (30 days). Review before they\'re forgotten!',
-                      style: AppTypography.bodySmall,
-                    ),
-                  ],
+                      const SizedBox(height: AppSpacing.xs),
+                      Text(
+                        'Lesson strength decays over time: 100% → 70% (1 day) → 40% (7 days) → 0% (30 days). Review before they\'re forgotten!',
+                        style: AppTypography.bodySmall,
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ],
-          ),
+              ],
+            ),
           );
         }
 

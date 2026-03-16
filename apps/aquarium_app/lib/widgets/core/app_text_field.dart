@@ -6,27 +6,27 @@ import '../../theme/app_theme.dart';
 enum AppTextFieldState {
   /// Default state
   normal,
-  
+
   /// Field has focus
   focused,
-  
+
   /// Field has error
   error,
-  
+
   /// Field is valid/success
   success,
-  
+
   /// Field is disabled
   disabled,
-  
+
   /// Field is loading/validating
   loading,
 }
 
 /// A unified text field component with consistent styling and validation states.
-/// 
+///
 /// Supports error/success states, loading indicators, and helper text.
-/// 
+///
 /// Example:
 /// ```dart
 /// AppTextField(
@@ -39,88 +39,88 @@ enum AppTextFieldState {
 class AppTextField extends StatefulWidget {
   /// Label text above the field
   final String? label;
-  
+
   /// Hint text inside the field
   final String? hint;
-  
+
   /// Helper text below the field
   final String? helperText;
-  
+
   /// Error text (displays in error state)
   final String? errorText;
-  
+
   /// Initial value
   final String? initialValue;
-  
+
   /// Text controller (alternative to initialValue)
   final TextEditingController? controller;
-  
+
   /// Focus node
   final FocusNode? focusNode;
-  
+
   /// Keyboard type
   final TextInputType? keyboardType;
-  
+
   /// Input formatters
   final List<TextInputFormatter>? inputFormatters;
-  
+
   /// Text input action
   final TextInputAction? textInputAction;
-  
+
   /// Max length
   final int? maxLength;
-  
+
   /// Max lines (null for auto-expand)
   final int? maxLines;
-  
+
   /// Min lines
   final int minLines;
-  
+
   /// Whether field is obscured (password)
   final bool obscureText;
-  
+
   /// Whether field is enabled
   final bool enabled;
-  
+
   /// Whether field is read-only
   final bool readOnly;
-  
+
   /// Auto-correct
   final bool autocorrect;
-  
+
   /// Show loading indicator
   final bool isLoading;
-  
+
   /// Show success state
   final bool isSuccess;
-  
+
   /// Leading icon
   final IconData? prefixIcon;
-  
+
   /// Trailing icon
   final IconData? suffixIcon;
-  
+
   /// Custom suffix widget
   final Widget? suffix;
-  
+
   /// Called when value changes
   final ValueChanged<String>? onChanged;
-  
+
   /// Called when field is submitted
   final ValueChanged<String>? onSubmitted;
-  
+
   /// Called when field gains/loses focus
   final ValueChanged<bool>? onFocusChange;
-  
+
   /// Called when field is tapped
   final VoidCallback? onTap;
-  
+
   /// Semantic label for accessibility
   final String? semanticsLabel;
-  
+
   /// Auto-fill hints
   final Iterable<String>? autofillHints;
-  
+
   /// Text capitalization
   final TextCapitalization textCapitalization;
 
@@ -171,7 +171,8 @@ class _AppTextFieldState extends State<AppTextField> {
   void initState() {
     super.initState();
     _focusNode = widget.focusNode ?? FocusNode();
-    _controller = widget.controller ?? TextEditingController(text: widget.initialValue);
+    _controller =
+        widget.controller ?? TextEditingController(text: widget.initialValue);
     _obscureText = widget.obscureText;
     _focusNode.addListener(_handleFocusChange);
   }
@@ -202,7 +203,7 @@ class _AppTextFieldState extends State<AppTextField> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
-    
+
     return Semantics(
       label: widget.semanticsLabel ?? widget.label,
       textField: true,
@@ -312,9 +313,7 @@ class _AppTextFieldState extends State<AppTextField> {
           height: AppIconSizes.sm,
           child: CircularProgressIndicator(
             strokeWidth: 2,
-            valueColor: AlwaysStoppedAnimation(
-              context.textHint,
-            ),
+            valueColor: AlwaysStoppedAnimation(context.textHint),
           ),
         ),
       );
@@ -329,11 +328,7 @@ class _AppTextFieldState extends State<AppTextField> {
     }
 
     if (widget.errorText != null) {
-      return Icon(
-        Icons.error,
-        color: AppColors.error,
-        size: AppIconSizes.md,
-      );
+      return Icon(Icons.error, color: AppColors.error, size: AppIconSizes.md);
     }
 
     if (widget.obscureText) {

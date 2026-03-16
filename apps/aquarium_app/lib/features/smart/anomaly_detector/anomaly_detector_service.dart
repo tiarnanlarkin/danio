@@ -30,10 +30,11 @@ class AnomalyDetectorService {
     required String tankId,
     required List<LogEntry> logs,
   }) async {
-    final waterTests = logs
-        .where((l) => l.type == LogType.waterTest && l.waterTest != null)
-        .toList()
-      ..sort((a, b) => b.timestamp.compareTo(a.timestamp)); // newest first
+    final waterTests =
+        logs
+            .where((l) => l.type == LogType.waterTest && l.waterTest != null)
+            .toList()
+          ..sort((a, b) => b.timestamp.compareTo(a.timestamp)); // newest first
 
     if (waterTests.isEmpty) return [];
 
@@ -45,8 +46,10 @@ class AnomalyDetectorService {
     for (int i = 0; i < waterTests.length - 1; i++) {
       final recent = waterTests[i];
       final older = waterTests[i + 1];
-      final hoursBetween =
-          recent.timestamp.difference(older.timestamp).inHours.abs();
+      final hoursBetween = recent.timestamp
+          .difference(older.timestamp)
+          .inHours
+          .abs();
 
       if (hoursBetween > 24 || hoursBetween == 0) continue;
 
@@ -57,16 +60,18 @@ class AnomalyDetectorService {
       if (rw.ph != null && ow.ph != null) {
         final drift = (rw.ph! - ow.ph!).abs();
         if (drift > 0.5) {
-          anomalies.add(Anomaly(
-            id: _uuid.v4(),
-            tankId: tankId,
-            parameter: 'pH',
-            description:
-                'pH drifted ${drift.toStringAsFixed(1)} in ${hoursBetween}h '
-                '(${ow.ph} → ${rw.ph})',
-            severity: AnomalySeverity.warning,
-            detectedAt: DateTime.now(),
-          ));
+          anomalies.add(
+            Anomaly(
+              id: _uuid.v4(),
+              tankId: tankId,
+              parameter: 'pH',
+              description:
+                  'pH drifted ${drift.toStringAsFixed(1)} in ${hoursBetween}h '
+                  '(${ow.ph} → ${rw.ph})',
+              severity: AnomalySeverity.warning,
+              detectedAt: DateTime.now(),
+            ),
+          );
         }
       }
 
@@ -74,16 +79,18 @@ class AnomalyDetectorService {
       if (rw.temperature != null && ow.temperature != null) {
         final spike = (rw.temperature! - ow.temperature!).abs();
         if (spike > 3) {
-          anomalies.add(Anomaly(
-            id: _uuid.v4(),
-            tankId: tankId,
-            parameter: 'Temperature',
-            description:
-                'Temperature changed ${spike.toStringAsFixed(1)}°C in '
-                '${hoursBetween}h (${ow.temperature} → ${rw.temperature}°C)',
-            severity: AnomalySeverity.alert,
-            detectedAt: DateTime.now(),
-          ));
+          anomalies.add(
+            Anomaly(
+              id: _uuid.v4(),
+              tankId: tankId,
+              parameter: 'Temperature',
+              description:
+                  'Temperature changed ${spike.toStringAsFixed(1)}°C in '
+                  '${hoursBetween}h (${ow.temperature} → ${rw.temperature}°C)',
+              severity: AnomalySeverity.alert,
+              detectedAt: DateTime.now(),
+            ),
+          );
         }
       }
     }
@@ -94,38 +101,44 @@ class AnomalyDetectorService {
 
       // Ammonia - any non-zero reading is critical
       if (latest.ammonia != null && latest.ammonia! > 0) {
-        anomalies.add(Anomaly(
-          id: _uuid.v4(),
-          tankId: tankId,
-          parameter: 'Ammonia',
-          description: 'Ammonia detected: ${latest.ammonia} ppm',
-          severity: AnomalySeverity.critical,
-          detectedAt: DateTime.now(),
-        ));
+        anomalies.add(
+          Anomaly(
+            id: _uuid.v4(),
+            tankId: tankId,
+            parameter: 'Ammonia',
+            description: 'Ammonia detected: ${latest.ammonia} ppm',
+            severity: AnomalySeverity.critical,
+            detectedAt: DateTime.now(),
+          ),
+        );
       }
 
       // Nitrite - any non-zero reading is critical
       if (latest.nitrite != null && latest.nitrite! > 0) {
-        anomalies.add(Anomaly(
-          id: _uuid.v4(),
-          tankId: tankId,
-          parameter: 'Nitrite',
-          description: 'Nitrite detected: ${latest.nitrite} ppm',
-          severity: AnomalySeverity.critical,
-          detectedAt: DateTime.now(),
-        ));
+        anomalies.add(
+          Anomaly(
+            id: _uuid.v4(),
+            tankId: tankId,
+            parameter: 'Nitrite',
+            description: 'Nitrite detected: ${latest.nitrite} ppm',
+            severity: AnomalySeverity.critical,
+            detectedAt: DateTime.now(),
+          ),
+        );
       }
 
       // Nitrate > 40 ppm
       if (latest.nitrate != null && latest.nitrate! > 40) {
-        anomalies.add(Anomaly(
-          id: _uuid.v4(),
-          tankId: tankId,
-          parameter: 'Nitrate',
-          description: 'Nitrate high: ${latest.nitrate} ppm',
-          severity: AnomalySeverity.warning,
-          detectedAt: DateTime.now(),
-        ));
+        anomalies.add(
+          Anomaly(
+            id: _uuid.v4(),
+            tankId: tankId,
+            parameter: 'Nitrate',
+            description: 'Nitrate high: ${latest.nitrate} ppm',
+            severity: AnomalySeverity.warning,
+            detectedAt: DateTime.now(),
+          ),
+        );
       }
     }
 
@@ -166,9 +179,7 @@ class AnomalyDetectorService {
         // Apply AI explanation to the first anomaly (or all via a single
         // combined explanation).
         for (int i = 0; i < anomalies.length; i++) {
-          anomalies[i] = anomalies[i].copyWith(
-            aiExplanation: result.text,
-          );
+          anomalies[i] = anomalies[i].copyWith(aiExplanation: result.text);
         }
       } on TimeoutException {
         debugPrint('Anomaly AI explanation timed out');
@@ -206,10 +217,12 @@ Future<List<Anomaly>> runAnomalyDetection({
 
     // Record in AI history if AI was used.
     if (anomalies.any((a) => a.aiExplanation != null)) {
-      ref.read(aiHistoryProvider.notifier).add(
-        type: 'anomaly',
-        summary: 'Detected ${anomalies.length} anomaly(ies)',
-      );
+      ref
+          .read(aiHistoryProvider.notifier)
+          .add(
+            type: 'anomaly',
+            summary: 'Detected ${anomalies.length} anomaly(ies)',
+          );
     }
   }
 

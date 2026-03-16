@@ -26,27 +26,25 @@ class SwissArmyPanel extends ConsumerStatefulWidget {
     Key? key,
     required RoomTheme theme,
     required Widget child,
-  }) =>
-      SwissArmyPanel(
-        key: key,
-        panel: StagePanel.temp,
-        isLeft: true,
-        theme: theme,
-        child: child,
-      );
+  }) => SwissArmyPanel(
+    key: key,
+    panel: StagePanel.temp,
+    isLeft: true,
+    theme: theme,
+    child: child,
+  );
 
   factory SwissArmyPanel.right({
     Key? key,
     required RoomTheme theme,
     required Widget child,
-  }) =>
-      SwissArmyPanel(
-        key: key,
-        panel: StagePanel.waterQuality,
-        isLeft: false,
-        theme: theme,
-        child: child,
-      );
+  }) => SwissArmyPanel(
+    key: key,
+    panel: StagePanel.waterQuality,
+    isLeft: false,
+    theme: theme,
+    child: child,
+  );
 
   @override
   ConsumerState<SwissArmyPanel> createState() => _SwissArmyPanelState();
@@ -114,7 +112,9 @@ class _SwissArmyPanelState extends ConsumerState<SwissArmyPanel>
           right: widget.isLeft ? null : 0,
           width: panelWidth,
           child: Transform(
-            alignment: widget.isLeft ? Alignment.centerLeft : Alignment.centerRight,
+            alignment: widget.isLeft
+                ? Alignment.centerLeft
+                : Alignment.centerRight,
             transform: Matrix4.identity()
               ..translate(translateX, translateY)
               ..rotateZ(rotateZ),
@@ -131,9 +131,15 @@ class _SwissArmyPanelState extends ConsumerState<SwissArmyPanel>
                     border: Border(
                       left: widget.isLeft
                           ? BorderSide.none
-                          : BorderSide(color: widget.theme.glassBorder, width: 1),
+                          : BorderSide(
+                              color: widget.theme.glassBorder,
+                              width: 1,
+                            ),
                       right: widget.isLeft
-                          ? BorderSide(color: widget.theme.glassBorder, width: 1)
+                          ? BorderSide(
+                              color: widget.theme.glassBorder,
+                              width: 1,
+                            )
                           : BorderSide.none,
                     ),
                   ),
@@ -186,56 +192,56 @@ class StageHandleStrip extends ConsumerWidget {
       label: 'Open stage panel',
       button: true,
       child: GestureDetector(
-      behavior: HitTestBehavior.opaque,
-      onTap: () => ref.read(stageProvider.notifier).toggle(panel),
-      // Horizontal drag: swipe toward centre to open, swipe to edge to close.
-      // Left panel: rightward drag (positive dx) = open.
-      // Right panel: leftward drag (negative dx) = open.
-      onHorizontalDragEnd: (details) {
-        final velocity = details.primaryVelocity ?? 0;
-        final openVelocity = isLeft ? velocity > 100 : velocity < -100;
-        final closeVelocity = isLeft ? velocity < -100 : velocity > 100;
-        final notifier = ref.read(stageProvider.notifier);
-        final isOpen = ref.read(stageProvider).openPanels.contains(panel);
-        if (openVelocity && !isOpen) {
-          notifier.toggle(panel);
-        } else if (closeVelocity && isOpen) {
-          notifier.toggle(panel);
-        }
-      },
-      // SizedBox ensures a ≥48dp touch target (Material a11y minimum) while
-      // the inner Container stays visually narrow at 20dp.
-      child: SizedBox(
-        width: 48,
-        height: 80,
-        child: Align(
-          alignment: isLeft ? Alignment.centerLeft : Alignment.centerRight,
-          child: Container(
-            width: 20,
-            height: 80,
-            decoration: BoxDecoration(
-              color: AppOverlays.black60,
-              borderRadius: BorderRadius.horizontal(
-                left: isLeft ? Radius.zero : const Radius.circular(8),
-                right: isLeft ? const Radius.circular(8) : Radius.zero,
+        behavior: HitTestBehavior.opaque,
+        onTap: () => ref.read(stageProvider.notifier).toggle(panel),
+        // Horizontal drag: swipe toward centre to open, swipe to edge to close.
+        // Left panel: rightward drag (positive dx) = open.
+        // Right panel: leftward drag (negative dx) = open.
+        onHorizontalDragEnd: (details) {
+          final velocity = details.primaryVelocity ?? 0;
+          final openVelocity = isLeft ? velocity > 100 : velocity < -100;
+          final closeVelocity = isLeft ? velocity < -100 : velocity > 100;
+          final notifier = ref.read(stageProvider.notifier);
+          final isOpen = ref.read(stageProvider).openPanels.contains(panel);
+          if (openVelocity && !isOpen) {
+            notifier.toggle(panel);
+          } else if (closeVelocity && isOpen) {
+            notifier.toggle(panel);
+          }
+        },
+        // SizedBox ensures a ≥48dp touch target (Material a11y minimum) while
+        // the inner Container stays visually narrow at 20dp.
+        child: SizedBox(
+          width: 48,
+          height: 80,
+          child: Align(
+            alignment: isLeft ? Alignment.centerLeft : Alignment.centerRight,
+            child: Container(
+              width: 20,
+              height: 80,
+              decoration: BoxDecoration(
+                color: AppOverlays.black60,
+                borderRadius: BorderRadius.horizontal(
+                  left: isLeft ? Radius.zero : const Radius.circular(8),
+                  right: isLeft ? const Radius.circular(8) : Radius.zero,
+                ),
+                image: const DecorationImage(
+                  image: AssetImage('assets/textures/slate-dark.webp'),
+                  fit: BoxFit.cover,
+                  opacity: 0.6,
+                ),
               ),
-              image: const DecorationImage(
-                image: AssetImage('assets/textures/slate-dark.webp'),
-                fit: BoxFit.cover,
-                opacity: 0.6,
-              ),
-            ),
-            child: Center(
-              child: Icon(
-                isLeft ? Icons.chevron_right : Icons.chevron_left,
-                color: Colors.white,
-                size: 18,
+              child: Center(
+                child: Icon(
+                  isLeft ? Icons.chevron_right : Icons.chevron_left,
+                  color: Colors.white,
+                  size: 18,
+                ),
               ),
             ),
           ),
         ),
       ),
-    ),
     );
   }
 }

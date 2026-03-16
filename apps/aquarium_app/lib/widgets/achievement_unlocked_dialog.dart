@@ -1,6 +1,7 @@
 /// Full-screen celebratory dialog for achievement unlocks
 /// Shows confetti, achievement details, and rewards (XP + Gems)
 library;
+
 import 'package:danio/theme/app_theme.dart';
 
 import 'package:flutter/material.dart';
@@ -138,11 +139,12 @@ class _AchievementUnlockedDialogState extends State<AchievementUnlockedDialog>
                         // "Achievement Unlocked" header
                         Text(
                           '🎉 ACHIEVEMENT UNLOCKED! 🎉',
-                          style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            letterSpacing: 2,
-                          ),
+                          style: Theme.of(context).textTheme.titleLarge!
+                              .copyWith(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                letterSpacing: 2,
+                              ),
                           textAlign: TextAlign.center,
                         ),
 
@@ -166,7 +168,9 @@ class _AchievementUnlockedDialogState extends State<AchievementUnlockedDialog>
                           child: Center(
                             child: Text(
                               widget.achievement.icon,
-                              style: Theme.of(context).textTheme.headlineMedium!.copyWith(),
+                              style: Theme.of(
+                                context,
+                              ).textTheme.headlineMedium!.copyWith(),
                             ),
                           ),
                         ),
@@ -189,11 +193,12 @@ class _AchievementUnlockedDialogState extends State<AchievementUnlockedDialog>
                           ),
                           child: Text(
                             widget.achievement.rarity.displayName.toUpperCase(),
-                            style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              letterSpacing: 1.5,
-                            ),
+                            style: Theme.of(context).textTheme.bodyLarge!
+                                .copyWith(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  letterSpacing: 1.5,
+                                ),
                           ),
                         ),
 
@@ -204,11 +209,12 @@ class _AchievementUnlockedDialogState extends State<AchievementUnlockedDialog>
                           padding: const EdgeInsets.symmetric(horizontal: 24),
                           child: Text(
                             widget.achievement.name,
-                            style: Theme.of(context).textTheme.headlineMedium!.copyWith(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              height: 1.2,
-                            ),
+                            style: Theme.of(context).textTheme.headlineMedium!
+                                .copyWith(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  height: 1.2,
+                                ),
                             textAlign: TextAlign.center,
                           ),
                         ),
@@ -220,10 +226,11 @@ class _AchievementUnlockedDialogState extends State<AchievementUnlockedDialog>
                           padding: const EdgeInsets.symmetric(horizontal: 32),
                           child: Text(
                             widget.achievement.description,
-                            style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                              color: AppOverlays.white90,
-                              height: 1.4,
-                            ),
+                            style: Theme.of(context).textTheme.titleMedium!
+                                .copyWith(
+                                  color: AppOverlays.white90,
+                                  height: 1.4,
+                                ),
                             textAlign: TextAlign.center,
                           ),
                         ),
@@ -246,11 +253,12 @@ class _AchievementUnlockedDialogState extends State<AchievementUnlockedDialog>
                             children: [
                               Text(
                                 'REWARDS',
-                                style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  letterSpacing: 1.5,
-                                ),
+                                style: Theme.of(context).textTheme.bodyLarge!
+                                    .copyWith(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      letterSpacing: 1.5,
+                                    ),
                               ),
                               const SizedBox(height: AppSpacing.md),
                               Row(
@@ -297,10 +305,11 @@ class _AchievementUnlockedDialogState extends State<AchievementUnlockedDialog>
                               ),
                               child: Text(
                                 'Awesome!',
-                                style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                  letterSpacing: 1,
-                                ),
+                                style: Theme.of(context).textTheme.titleLarge!
+                                    .copyWith(
+                                      fontWeight: FontWeight.bold,
+                                      letterSpacing: 1,
+                                    ),
                               ),
                             ),
                           ),

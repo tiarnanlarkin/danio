@@ -115,7 +115,11 @@ class SyncIndicator extends ConsumerWidget {
                 child: const Text('Retry'),
               )
             else
-              Icon(Icons.info_outline, size: AppIconSizes.xs, color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6)),
+              Icon(
+                Icons.info_outline,
+                size: AppIconSizes.xs,
+                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+              ),
           ],
         ),
       ),
@@ -152,7 +156,9 @@ class SyncIndicatorCompact extends ConsumerWidget {
               height: 12,
               child: CircularProgressIndicator(
                 strokeWidth: 2,
-                valueColor: AlwaysStoppedAnimation<Color>(const Color(0xFFFF6F00)),
+                valueColor: AlwaysStoppedAnimation<Color>(
+                  const Color(0xFFFF6F00),
+                ),
               ),
             )
           else

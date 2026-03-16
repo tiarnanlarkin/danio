@@ -37,10 +37,10 @@ class _XpAwardAnimationState extends State<XpAwardAnimation>
     );
 
     // Slide upward animation
-    _slideAnimation = Tween<Offset>(
-      begin: Offset.zero,
-      end: const Offset(0, -1.5),
-    ).animate(CurvedAnimation(parent: _controller, curve: AppCurves.emphasized));
+    _slideAnimation =
+        Tween<Offset>(begin: Offset.zero, end: const Offset(0, -1.5)).animate(
+          CurvedAnimation(parent: _controller, curve: AppCurves.emphasized),
+        );
 
     // Fade out animation (starts fading after 50% of animation)
     _fadeAnimation = Tween<double>(begin: 1.0, end: 0.0).animate(
@@ -127,10 +127,7 @@ class _XpAwardAnimationState extends State<XpAwardAnimation>
                 ),
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
-                    colors: [
-                      AppColors.warning,
-                      AppColors.warningAlpha80,
-                    ],
+                    colors: [AppColors.warning, AppColors.warningAlpha80],
                   ),
                   borderRadius: AppRadius.largeRadius,
                   boxShadow: [
@@ -144,7 +141,11 @@ class _XpAwardAnimationState extends State<XpAwardAnimation>
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Icon(Icons.star, color: Colors.white, size: AppIconSizes.md),
+                    const Icon(
+                      Icons.star,
+                      color: Colors.white,
+                      size: AppIconSizes.md,
+                    ),
                     const SizedBox(width: AppSpacing.sm),
                     Text(
                       '+${widget.xpAmount} XP',

@@ -63,8 +63,8 @@ class TempGaugePainter extends CustomPainter {
     );
 
     // ── Gradient progress arc ─────────────────────────────────────────────
-    final tempProgress =
-        ((temperature - _minTemp) / (_maxTemp - _minTemp)).clamp(0.0, 1.0);
+    final tempProgress = ((temperature - _minTemp) / (_maxTemp - _minTemp))
+        .clamp(0.0, 1.0);
     final animatedProgress = tempProgress * animationValue;
 
     if (animatedProgress > 0.001) {
@@ -105,10 +105,14 @@ class TempGaugePainter extends CustomPainter {
       final outerR = radius - 4;
 
       canvas.drawLine(
-        Offset(center.dx + math.cos(angle) * innerR,
-            center.dy + math.sin(angle) * innerR),
-        Offset(center.dx + math.cos(angle) * outerR,
-            center.dy + math.sin(angle) * outerR),
+        Offset(
+          center.dx + math.cos(angle) * innerR,
+          center.dy + math.sin(angle) * innerR,
+        ),
+        Offset(
+          center.dx + math.cos(angle) * outerR,
+          center.dy + math.sin(angle) * outerR,
+        ),
         tickPaint..strokeWidth = isMajor ? 2.0 : 1.0,
       );
     }
@@ -135,14 +139,19 @@ class TempGaugePainter extends CustomPainter {
 
     // ── Centre hub ────────────────────────────────────────────────────────
     canvas.drawCircle(
-        center, 5, Paint()..color = secondaryTextColor.withAlpha(80));
+      center,
+      5,
+      Paint()..color = secondaryTextColor.withAlpha(80),
+    );
     canvas.drawCircle(center, 3, Paint()..color = needleColor);
   }
 
   Color _needleColor(double temp) {
-    if (temp >= 23 && temp <= 27) return const Color(0xFFB45309); // amber/primary
-    if (temp < 20 || temp > 30) return const Color(0xFFEF5350);   // red
-    return const Color(0xFFFF9800);                                 // orange
+    if (temp >= 23 && temp <= 27) {
+      return const Color(0xFFB45309); // amber/primary
+    }
+    if (temp < 20 || temp > 30) return const Color(0xFFEF5350); // red
+    return const Color(0xFFFF9800); // orange
   }
 
   @override

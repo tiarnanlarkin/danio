@@ -17,12 +17,18 @@ class AppFeedback {
       SnackBar(
         content: Row(
           children: [
-            const Icon(Icons.check_circle, color: AppColors.onSuccess, size: 20),
+            const Icon(
+              Icons.check_circle,
+              color: AppColors.onSuccess,
+              size: 20,
+            ),
             const SizedBox(width: AppSpacing.sm2),
             Expanded(
               child: Text(
                 message,
-                style: AppTypography.bodyMedium.copyWith(color: AppColors.onSuccess),
+                style: AppTypography.bodyMedium.copyWith(
+                  color: AppColors.onSuccess,
+                ),
               ),
             ),
           ],
@@ -52,7 +58,9 @@ class AppFeedback {
             Expanded(
               child: Text(
                 message,
-                style: AppTypography.bodyMedium.copyWith(color: AppColors.onError),
+                style: AppTypography.bodyMedium.copyWith(
+                  color: AppColors.onError,
+                ),
               ),
             ),
           ],
@@ -80,12 +88,18 @@ class AppFeedback {
       SnackBar(
         content: Row(
           children: [
-            const Icon(Icons.warning_amber, color: AppColors.onWarning, size: 20),
+            const Icon(
+              Icons.warning_amber,
+              color: AppColors.onWarning,
+              size: 20,
+            ),
             const SizedBox(width: AppSpacing.sm2),
             Expanded(
               child: Text(
                 message,
-                style: AppTypography.bodyMedium.copyWith(color: AppColors.onWarning),
+                style: AppTypography.bodyMedium.copyWith(
+                  color: AppColors.onWarning,
+                ),
               ),
             ),
           ],
@@ -105,12 +119,18 @@ class AppFeedback {
       SnackBar(
         content: Row(
           children: [
-            const Icon(Icons.info_outline, color: AppColors.onSecondary, size: 20),
+            const Icon(
+              Icons.info_outline,
+              color: AppColors.onSecondary,
+              size: 20,
+            ),
             const SizedBox(width: AppSpacing.sm2),
             Expanded(
               child: Text(
                 message,
-                style: AppTypography.bodyMedium.copyWith(color: AppColors.onSecondary),
+                style: AppTypography.bodyMedium.copyWith(
+                  color: AppColors.onSecondary,
+                ),
               ),
             ),
           ],
@@ -155,7 +175,9 @@ class AppFeedback {
             Expanded(
               child: Text(
                 message,
-                style: AppTypography.bodyMedium.copyWith(color: AppColors.onPrimary),
+                style: AppTypography.bodyMedium.copyWith(
+                  color: AppColors.onPrimary,
+                ),
               ),
             ),
           ],

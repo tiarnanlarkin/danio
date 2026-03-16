@@ -63,19 +63,14 @@ class DrawerListItem extends StatelessWidget {
       );
     } else if (badgeCount != null && badgeCount! > 0) {
       badge = Container(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 6,
-          vertical: 2,
-        ),
+        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
         decoration: BoxDecoration(
           color: AppColors.error,
           borderRadius: BorderRadius.circular(AppRadius.pill),
         ),
         child: Text(
           badgeCount! > 99 ? '99+' : '$badgeCount',
-          style: AppTypography.labelSmall.copyWith(
-            color: AppColors.onError,
-          ),
+          style: AppTypography.labelSmall.copyWith(color: AppColors.onError),
         ),
       );
     }

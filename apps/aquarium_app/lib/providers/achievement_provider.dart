@@ -153,18 +153,18 @@ class AchievementChecker {
     if (weekendDates.isEmpty) return 0;
 
     // Parse and sort dates descending
-    final dates = weekendDates
-        .map((d) => DateTime.parse(d))
-        .toList()
+    final dates = weekendDates.map((d) => DateTime.parse(d)).toList()
       ..sort((a, b) => b.compareTo(a));
 
     // Group by week number (weeks start Monday)
     int weekNumber(DateTime d) {
       final jan1 = DateTime(d.year, 1, 1);
-      return ((d.difference(jan1).inDays + jan1.weekday - 1) ~/ 7) + d.year * 100;
+      return ((d.difference(jan1).inDays + jan1.weekday - 1) ~/ 7) +
+          d.year * 100;
     }
 
-    final weeksSeen = dates.map(weekNumber).toSet().toList()..sort((a, b) => b.compareTo(a));
+    final weeksSeen = dates.map(weekNumber).toSet().toList()
+      ..sort((a, b) => b.compareTo(a));
 
     int streak = 1;
     for (int i = 1; i < weeksSeen.length; i++) {
@@ -191,23 +191,28 @@ class AchievementChecker {
   static int _computeFullHeartsStreak(List<String> fullHeartDates) {
     if (fullHeartDates.isEmpty) return 0;
 
-    final dates = fullHeartDates
-        .map((d) => DateTime.parse(d))
-        .toSet()
-        .toList()
+    final dates = fullHeartDates.map((d) => DateTime.parse(d)).toSet().toList()
       ..sort((a, b) => b.compareTo(a));
 
     final today = DateTime.now();
     final todayNorm = DateTime(today.year, today.month, today.day);
 
     // Must include today or yesterday to be active
-    final first = DateTime(dates.first.year, dates.first.month, dates.first.day);
+    final first = DateTime(
+      dates.first.year,
+      dates.first.month,
+      dates.first.day,
+    );
     final yesterday = todayNorm.subtract(const Duration(days: 1));
     if (first != todayNorm && first != yesterday) return 0;
 
     int streak = 1;
     for (int i = 1; i < dates.length; i++) {
-      final current = DateTime(dates[i - 1].year, dates[i - 1].month, dates[i - 1].day);
+      final current = DateTime(
+        dates[i - 1].year,
+        dates[i - 1].month,
+        dates[i - 1].day,
+      );
       final prev = DateTime(dates[i].year, dates[i].month, dates[i].day);
       if (current.difference(prev).inDays == 1) {
         streak++;
@@ -219,7 +224,10 @@ class AchievementChecker {
   }
 
   /// Compute consecutive days where daily XP goal was met.
-  static int _computeDailyGoalStreaks(Map<String, int> dailyXpHistory, int dailyGoal) {
+  static int _computeDailyGoalStreaks(
+    Map<String, int> dailyXpHistory,
+    int dailyGoal,
+  ) {
     if (dailyXpHistory.isEmpty || dailyGoal <= 0) return 0;
 
     final today = DateTime.now();
@@ -227,7 +235,8 @@ class AchievementChecker {
 
     for (int i = 0; i < 365; i++) {
       final date = today.subtract(Duration(days: i));
-      final key = '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
+      final key =
+          '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
       final xp = dailyXpHistory[key] ?? 0;
       if (xp >= dailyGoal) {
         streak++;
@@ -254,8 +263,12 @@ class AchievementChecker {
       }
 
       // Compute derived achievement stats from persistent profile data
-      final weekendStreaks = _computeWeekendStreaks(userProfile.weekendActivityDates);
-      final fullHeartsStreak = _computeFullHeartsStreak(userProfile.fullHeartDates);
+      final weekendStreaks = _computeWeekendStreaks(
+        userProfile.weekendActivityDates,
+      );
+      final fullHeartsStreak = _computeFullHeartsStreak(
+        userProfile.fullHeartDates,
+      );
       final dailyGoalStreaks = _computeDailyGoalStreaks(
         userProfile.dailyXpHistory,
         userProfile.dailyXpGoal,
@@ -391,7 +404,8 @@ class AchievementChecker {
       currentStreak: currentStreak,
       totalXp: totalXp,
       perfectScores: perfectScores,
-      lastActivityDate: previousLastActivityDate, // PS-12: Pass previous activity date
+      lastActivityDate:
+          previousLastActivityDate, // PS-12: Pass previous activity date
       lastLessonCompletedAt: lessonCompletedAt,
       lastLessonDuration: lessonDuration,
       lastLessonScore: lessonScore,
@@ -618,7 +632,9 @@ enum AchievementSortBy { rarity, dateUnlocked, progress, name }
 /// Provider for completion percentage (excludes hidden achievements)
 final achievementCompletionProvider = Provider<double>((ref) {
   final progressMap = ref.watch(achievementProgressProvider);
-  final visibleAchievements = AchievementDefinitions.all.where((a) => !a.isHidden).toList();
+  final visibleAchievements = AchievementDefinitions.all
+      .where((a) => !a.isHidden)
+      .toList();
   final unlockedCount = visibleAchievements.where((a) {
     final progress = progressMap[a.id];
     return progress?.isUnlocked ?? false;

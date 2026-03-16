@@ -177,7 +177,10 @@ class _StockingCalculatorScreenState extends State<StockingCalculatorScreen> {
                 const SizedBox(width: AppSpacing.sm2),
                 Column(
                   children: [
-                    Text('Plants', style: Theme.of(context).textTheme.bodySmall!),
+                    Text(
+                      'Plants',
+                      style: Theme.of(context).textTheme.bodySmall!,
+                    ),
                     Switch(
                       value: _hasLivePlants,
                       onChanged: (v) => setState(() => _hasLivePlants = v),
@@ -261,7 +264,9 @@ class _StockingCalculatorScreenState extends State<StockingCalculatorScreen> {
               decoration: BoxDecoration(
                 color: Theme.of(context).cardColor,
                 borderRadius: AppRadius.mediumRadius,
-                boxShadow: [BoxShadow(color: AppOverlays.black12, blurRadius: 8)],
+                boxShadow: [
+                  BoxShadow(color: AppOverlays.black12, blurRadius: 8),
+                ],
               ),
               child: ListView.builder(
                 shrinkWrap: true,
@@ -270,7 +275,10 @@ class _StockingCalculatorScreenState extends State<StockingCalculatorScreen> {
                   final species = _searchResults[i];
                   return ListTile(
                     dense: true,
-                    leading: const Icon(Icons.add_circle_outline, size: AppIconSizes.sm),
+                    leading: const Icon(
+                      Icons.add_circle_outline,
+                      size: AppIconSizes.sm,
+                    ),
                     title: Text(species.commonName),
                     subtitle: Text(
                       '${species.adultSizeCm.toStringAsFixed(0)}cm adult',

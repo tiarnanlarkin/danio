@@ -129,7 +129,10 @@ class AboutScreen extends StatelessWidget {
                 TextButton.icon(
                   icon: const Icon(Icons.gavel, size: 18),
                   label: const Text('Terms'),
-                  onPressed: () => NavigationThrottle.push(context, const TermsOfServiceScreen()),
+                  onPressed: () => NavigationThrottle.push(
+                    context,
+                    const TermsOfServiceScreen(),
+                  ),
                 ),
                 TextButton.icon(
                   icon: const Icon(Icons.code, size: 18),

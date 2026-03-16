@@ -5,21 +5,21 @@ import '../../providers/settings_provider.dart';
 import '../../services/ambient_time_service.dart';
 
 /// Ambient lighting overlay that changes based on time of day.
-/// 
+///
 /// Applies subtle color overlays to create atmosphere:
 /// - Dawn (6-9): Warm orange tint, soft morning light
 /// - Day (9-17): Natural colors, no overlay
 /// - Dusk (17-20): Golden hour warmth
 /// - Night (20-6): Blue moonlight, cozy feel
-/// 
+///
 /// Uses [IgnorePointer] to ensure it doesn't block interactions.
 class AmbientLightingOverlay extends ConsumerWidget {
   /// The child widget to apply the overlay to
   final Widget child;
-  
+
   /// Whether to show a subtle vignette effect
   final bool showVignette;
-  
+
   /// Override intensity (0.0 to 1.0). Null uses default from config.
   final double? intensityOverride;
 
@@ -32,28 +32,30 @@ class AmbientLightingOverlay extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final ambientEnabled = ref.watch(settingsProvider.select((s) => s.ambientLightingEnabled));
-    
+    final ambientEnabled = ref.watch(
+      settingsProvider.select((s) => s.ambientLightingEnabled),
+    );
+
     // If ambient lighting is disabled, just return the child
     if (!ambientEnabled) {
       return child;
     }
-    
+
     final ambientState = ref.watch(ambientTimeProvider);
     final config = ambientState.config;
-    
+
     // For day period with no overlay, skip the overlay widgets
     if (config.overlayOpacity == 0.0) {
       return child;
     }
-    
+
     final effectiveOpacity = intensityOverride ?? config.overlayOpacity;
-    
+
     return Stack(
       children: [
         // Main content
         child,
-        
+
         // Color overlay with gradient (if configured).
         // AnimatedOpacity handles the smooth visual transition when
         // the time period changes — no rapid Riverpod state updates needed.
@@ -68,17 +70,14 @@ class AmbientLightingOverlay extends ConsumerWidget {
                     gradient: LinearGradient(
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
-                      colors: [
-                        config.gradientStart!,
-                        config.gradientEnd!,
-                      ],
+                      colors: [config.gradientStart!, config.gradientEnd!],
                     ),
                   ),
                 ),
               ),
             ),
           ),
-        
+
         // Main color tint overlay
         if (effectiveOpacity > 0)
           Positioned.fill(
@@ -87,12 +86,14 @@ class AmbientLightingOverlay extends ConsumerWidget {
                 duration: AppDurations.long2,
                 opacity: 1.0,
                 child: Container(
-                  color: config.overlayColor.withAlpha((effectiveOpacity * 255).round()),
+                  color: config.overlayColor.withAlpha(
+                    (effectiveOpacity * 255).round(),
+                  ),
                 ),
               ),
             ),
           ),
-        
+
         // Vignette effect for mood
         if (showVignette && ambientState.currentPeriod != TimePeriod.day)
           Positioned.fill(
@@ -105,10 +106,7 @@ class AmbientLightingOverlay extends ConsumerWidget {
                     gradient: RadialGradient(
                       center: Alignment.center,
                       radius: 1.2,
-                      colors: [
-                        Colors.transparent,
-                        AppOverlays.black15,
-                      ],
+                      colors: [Colors.transparent, AppOverlays.black15],
                     ),
                   ),
                 ),
@@ -125,70 +123,133 @@ class AmbientLightingOverlay extends ConsumerWidget {
 class AmbientTankOverlay extends ConsumerWidget {
   final Widget child;
 
-  const AmbientTankOverlay({
-    super.key,
-    required this.child,
-  });
+  const AmbientTankOverlay({super.key, required this.child});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final ambientEnabled = ref.watch(settingsProvider.select((s) => s.ambientLightingEnabled));
-    
+    final ambientEnabled = ref.watch(
+      settingsProvider.select((s) => s.ambientLightingEnabled),
+    );
+
     if (!ambientEnabled) {
       return child;
     }
-    
+
     final ambientState = ref.watch(ambientTimeProvider);
     final config = ambientState.config;
-    
+
     // For day, use ColorFiltered with identity matrix (no change)
     if (config.overlayOpacity == 0.0) {
       return child;
     }
-    
+
     // Apply subtle color filter based on time period
     return ColorFiltered(
       colorFilter: _buildColorFilter(ambientState.currentPeriod, config),
       child: child,
     );
   }
-  
+
   ColorFilter _buildColorFilter(TimePeriod period, AmbientConfig config) {
     switch (period) {
       case TimePeriod.dawn:
         // Warm orange tint - slightly increase red/orange
         return const ColorFilter.matrix(<double>[
-          1.05, 0.0, 0.0, 0.0, 10.0,
-          0.0, 1.0, 0.0, 0.0, 5.0,
-          0.0, 0.0, 0.95, 0.0, -5.0,
-          0.0, 0.0, 0.0, 1.0, 0.0,
+          1.05,
+          0.0,
+          0.0,
+          0.0,
+          10.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          5.0,
+          0.0,
+          0.0,
+          0.95,
+          0.0,
+          -5.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
         ]);
-      
+
       case TimePeriod.day:
         // Identity matrix - no change
         return const ColorFilter.matrix(<double>[
-          1.0, 0.0, 0.0, 0.0, 0.0,
-          0.0, 1.0, 0.0, 0.0, 0.0,
-          0.0, 0.0, 1.0, 0.0, 0.0,
-          0.0, 0.0, 0.0, 1.0, 0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
         ]);
-      
+
       case TimePeriod.dusk:
         // Golden hour - warm orange/yellow tint
         return const ColorFilter.matrix(<double>[
-          1.08, 0.0, 0.0, 0.0, 15.0,
-          0.0, 1.02, 0.0, 0.0, 8.0,
-          0.0, 0.0, 0.92, 0.0, -10.0,
-          0.0, 0.0, 0.0, 1.0, 0.0,
+          1.08,
+          0.0,
+          0.0,
+          0.0,
+          15.0,
+          0.0,
+          1.02,
+          0.0,
+          0.0,
+          8.0,
+          0.0,
+          0.0,
+          0.92,
+          0.0,
+          -10.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
         ]);
-      
+
       case TimePeriod.night:
         // Blue moonlight - reduce brightness, add blue tint
         return const ColorFilter.matrix(<double>[
-          0.85, 0.0, 0.05, 0.0, -10.0,
-          0.0, 0.88, 0.05, 0.0, -8.0,
-          0.0, 0.0, 1.1, 0.0, 15.0,
-          0.0, 0.0, 0.0, 1.0, 0.0,
+          0.85,
+          0.0,
+          0.05,
+          0.0,
+          -10.0,
+          0.0,
+          0.88,
+          0.05,
+          0.0,
+          -8.0,
+          0.0,
+          0.0,
+          1.1,
+          0.0,
+          15.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
         ]);
     }
   }
@@ -200,17 +261,19 @@ class AmbientTimeIndicator extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final ambientEnabled = ref.watch(settingsProvider.select((s) => s.ambientLightingEnabled));
-    
+    final ambientEnabled = ref.watch(
+      settingsProvider.select((s) => s.ambientLightingEnabled),
+    );
+
     if (!ambientEnabled) {
       return const SizedBox.shrink();
     }
-    
+
     final ambientState = ref.watch(ambientTimeProvider);
     final config = ambientState.config;
-    
+
     final icon = _getIcon(ambientState.currentPeriod);
-    
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
@@ -224,15 +287,15 @@ class AmbientTimeIndicator extends ConsumerWidget {
           const SizedBox(width: AppSpacing.xs),
           Text(
             config.name,
-            style: Theme.of(context).textTheme.bodySmall!.copyWith(
-              color: Colors.white70,
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.bodySmall!.copyWith(color: Colors.white70),
           ),
         ],
       ),
     );
   }
-  
+
   IconData _getIcon(TimePeriod period) {
     switch (period) {
       case TimePeriod.dawn:

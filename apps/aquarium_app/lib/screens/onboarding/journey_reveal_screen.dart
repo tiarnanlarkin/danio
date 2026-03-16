@@ -9,7 +9,6 @@ import '../../services/notification_service.dart';
 import '../../services/onboarding_service.dart';
 import '../../theme/app_theme.dart';
 
-
 /// Final onboarding screen — shown after PersonalisationScreen.
 /// Confirms the user's personalised journey and calls completeOnboarding().
 class JourneyRevealScreen extends ConsumerWidget {
@@ -92,10 +91,7 @@ class JourneyRevealScreen extends ConsumerWidget {
                     gradient: LinearGradient(
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
-                      colors: [
-                        DanioColors.tealWater,
-                        AppColors.primaryDark,
-                      ],
+                      colors: [DanioColors.tealWater, AppColors.primaryDark],
                     ),
                   ),
                 ),
@@ -155,7 +151,9 @@ class JourneyRevealScreen extends ConsumerWidget {
                       horizontal: AppSpacing.lg,
                     ),
                     child: Column(
-                      children: _features.map((f) => _buildFeaturePill(f)).toList(),
+                      children: _features
+                          .map((f) => _buildFeaturePill(f))
+                          .toList(),
                     ),
                   ),
 
@@ -163,9 +161,7 @@ class JourneyRevealScreen extends ConsumerWidget {
 
                   // Notification permission prompt
                   const Padding(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: AppSpacing.lg,
-                    ),
+                    padding: EdgeInsets.symmetric(horizontal: AppSpacing.lg),
                     child: _NotificationPermissionCard(),
                   ),
 
@@ -183,9 +179,7 @@ class JourneyRevealScreen extends ConsumerWidget {
                       button: true,
                       label: "Let's go",
                       hint: 'Complete onboarding and start using Danio',
-                      child: _LetsGoButton(
-                        onTap: () => _letsGo(context, ref),
-                      ),
+                      child: _LetsGoButton(onTap: () => _letsGo(context, ref)),
                     ),
                   ),
                 ],
@@ -201,44 +195,44 @@ class JourneyRevealScreen extends ConsumerWidget {
     return Semantics(
       label: feature.label,
       child: Padding(
-      padding: const EdgeInsets.only(bottom: AppSpacing.sm2),
-      child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacing.md,
-          vertical: AppSpacing.md,
-        ),
-        decoration: BoxDecoration(
-          color: AppColors.whiteAlpha15,
-          borderRadius: AppRadius.mediumRadius,
-          border: Border.all(color: AppColors.whiteAlpha20),
-        ),
-        child: Row(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(AppSpacing.sm),
-              decoration: BoxDecoration(
-                color: feature.color.withAlpha(51),
-                borderRadius: AppRadius.smallRadius,
+        padding: const EdgeInsets.only(bottom: AppSpacing.sm2),
+        child: Container(
+          width: double.infinity,
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.md,
+            vertical: AppSpacing.md,
+          ),
+          decoration: BoxDecoration(
+            color: AppColors.whiteAlpha15,
+            borderRadius: AppRadius.mediumRadius,
+            border: Border.all(color: AppColors.whiteAlpha20),
+          ),
+          child: Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(AppSpacing.sm),
+                decoration: BoxDecoration(
+                  color: feature.color.withAlpha(51),
+                  borderRadius: AppRadius.smallRadius,
+                ),
+                child: Icon(
+                  feature.icon,
+                  color: feature.color,
+                  size: AppIconSizes.md,
+                ),
               ),
-              child: Icon(
-                feature.icon,
-                color: feature.color,
-                size: AppIconSizes.md,
+              const SizedBox(width: AppSpacing.md),
+              Text(
+                feature.label,
+                style: AppTypography.bodyLarge.copyWith(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
-            ),
-            const SizedBox(width: AppSpacing.md),
-            Text(
-              feature.label,
-              style: AppTypography.bodyLarge.copyWith(
-                color: Colors.white,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
-    ),
     );
   }
 }
@@ -382,9 +376,10 @@ class _LetsGoButtonState extends State<_LetsGoButton>
       duration: AppDurations.short,
       vsync: this,
     );
-    _scale = Tween<double>(begin: 1.0, end: 0.95).animate(
-      CurvedAnimation(parent: _controller, curve: AppCurves.standard),
-    );
+    _scale = Tween<double>(
+      begin: 1.0,
+      end: 0.95,
+    ).animate(CurvedAnimation(parent: _controller, curve: AppCurves.standard));
   }
 
   @override

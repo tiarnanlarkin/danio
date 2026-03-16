@@ -3,10 +3,10 @@ import '../../theme/app_theme.dart';
 import 'mascot_helper.dart';
 
 /// A speech bubble widget featuring Finn the mascot fish.
-/// 
+///
 /// Displays a message with an animated speech bubble and the mascot character.
 /// The mascot's appearance changes based on mood.
-/// 
+///
 /// Example:
 /// ```dart
 /// MascotBubble(
@@ -18,25 +18,25 @@ import 'mascot_helper.dart';
 class MascotBubble extends StatefulWidget {
   /// The message to display in the speech bubble
   final String message;
-  
+
   /// The mood of the mascot, affects appearance
   final MascotMood mood;
-  
+
   /// Optional callback when the bubble is tapped
   final VoidCallback? onTap;
-  
+
   /// Optional callback when the dismiss button is pressed
   final VoidCallback? onDismiss;
-  
+
   /// Whether to show a dismiss button
   final bool showDismiss;
-  
+
   /// Whether to animate the entrance
   final bool animateEntrance;
-  
+
   /// Size of the mascot (small, medium, large)
   final MascotSize size;
-  
+
   /// Position of the mascot relative to the bubble
   final MascotPosition position;
 
@@ -51,7 +51,7 @@ class MascotBubble extends StatefulWidget {
     this.size = MascotSize.medium,
     this.position = MascotPosition.left,
   });
-  
+
   /// Create a mascot bubble from a context
   factory MascotBubble.fromContext({
     Key? key,
@@ -92,50 +92,42 @@ class _MascotBubbleState extends State<MascotBubble>
   @override
   void initState() {
     super.initState();
-    
+
     // Bubble entrance animation
     _bubbleController = AnimationController(
       duration: AppDurations.long2,
       vsync: this,
     );
-    
+
     _scaleAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(
-        parent: _bubbleController,
-        curve: AppCurves.elastic,
-      ),
+      CurvedAnimation(parent: _bubbleController, curve: AppCurves.elastic),
     );
-    
+
     _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(
         parent: _bubbleController,
         curve: const Interval(0.0, 0.5, curve: AppCurves.standardDecelerate),
       ),
     );
-    
-    _slideAnimation = Tween<Offset>(
-      begin: const Offset(0, 0.3),
-      end: Offset.zero,
-    ).animate(
-      CurvedAnimation(
-        parent: _bubbleController,
-        curve: AppCurves.emphasized,
-      ),
-    );
-    
+
+    _slideAnimation =
+        Tween<Offset>(begin: const Offset(0, 0.3), end: Offset.zero).animate(
+          CurvedAnimation(
+            parent: _bubbleController,
+            curve: AppCurves.emphasized,
+          ),
+        );
+
     // Fish bobbing animation (continuous)
     _fishController = AnimationController(
       duration: const Duration(milliseconds: 2000),
       vsync: this,
     );
-    
+
     _fishBobAnimation = Tween<double>(begin: -4, end: 4).animate(
-      CurvedAnimation(
-        parent: _fishController,
-        curve: AppCurves.standard,
-      ),
+      CurvedAnimation(parent: _fishController, curve: AppCurves.standard),
     );
-    
+
     // Start animations
     if (widget.animateEntrance) {
       _bubbleController.forward();
@@ -155,7 +147,7 @@ class _MascotBubbleState extends State<MascotBubble>
   @override
   Widget build(BuildContext context) {
     final dimensions = widget.size.dimensions;
-    
+
     return SlideTransition(
       position: _slideAnimation,
       child: FadeTransition(
@@ -250,10 +242,7 @@ class _MascotBubbleState extends State<MascotBubble>
                 offset: const Offset(0, 4),
               ),
             ],
-            border: Border.all(
-              color: AppColors.primaryAlpha20,
-              width: 1,
-            ),
+            border: Border.all(color: AppColors.primaryAlpha20, width: 1),
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
@@ -341,30 +330,17 @@ class _MascotBubbleState extends State<MascotBubble>
 }
 
 /// Size options for the mascot
-enum MascotSize {
-  small,
-  medium,
-  large,
-}
+enum MascotSize { small, medium, large }
 
 extension on MascotSize {
   _MascotDimensions get dimensions {
     switch (this) {
       case MascotSize.small:
-        return const _MascotDimensions(
-          mascotSize: 40,
-          emojiSize: 20,
-        );
+        return const _MascotDimensions(mascotSize: 40, emojiSize: 20);
       case MascotSize.medium:
-        return const _MascotDimensions(
-          mascotSize: 56,
-          emojiSize: 28,
-        );
+        return const _MascotDimensions(mascotSize: 56, emojiSize: 28);
       case MascotSize.large:
-        return const _MascotDimensions(
-          mascotSize: 80,
-          emojiSize: 40,
-        );
+        return const _MascotDimensions(mascotSize: 80, emojiSize: 40);
     }
   }
 }
@@ -373,17 +349,11 @@ class _MascotDimensions {
   final double mascotSize;
   final double emojiSize;
 
-  const _MascotDimensions({
-    required this.mascotSize,
-    required this.emojiSize,
-  });
+  const _MascotDimensions({required this.mascotSize, required this.emojiSize});
 }
 
 /// Position of the mascot relative to the bubble
-enum MascotPosition {
-  left,
-  right,
-}
+enum MascotPosition { left, right }
 
 /// A compact mascot widget without the speech bubble
 /// Useful for inline display or decoration
@@ -417,11 +387,12 @@ class _MascotAvatarState extends State<MascotAvatar>
       duration: const Duration(milliseconds: 2000),
       vsync: this,
     );
-    
-    _bobAnimation = Tween<double>(begin: -3, end: 3).animate(
-      CurvedAnimation(parent: _controller, curve: AppCurves.standard),
-    );
-    
+
+    _bobAnimation = Tween<double>(
+      begin: -3,
+      end: 3,
+    ).animate(CurvedAnimation(parent: _controller, curve: AppCurves.standard));
+
     if (widget.animate) {
       _controller.repeat(reverse: true);
     }
@@ -436,7 +407,7 @@ class _MascotAvatarState extends State<MascotAvatar>
   @override
   Widget build(BuildContext context) {
     final dimensions = widget.size.dimensions;
-    
+
     Widget avatar = AnimatedBuilder(
       animation: _bobAnimation,
       builder: (context, child) {
@@ -466,14 +437,11 @@ class _MascotAvatarState extends State<MascotAvatar>
         );
       },
     );
-    
+
     if (widget.onTap != null) {
-      return GestureDetector(
-        onTap: widget.onTap,
-        child: avatar,
-      );
+      return GestureDetector(onTap: widget.onTap, child: avatar);
     }
-    
+
     return avatar;
   }
 
@@ -535,17 +503,11 @@ class MascotBanner extends StatelessWidget {
           ],
         ),
         borderRadius: AppRadius.largeRadius,
-        border: Border.all(
-          color: AppColors.primaryAlpha20,
-          width: 1,
-        ),
+        border: Border.all(color: AppColors.primaryAlpha20, width: 1),
       ),
       child: Row(
         children: [
-          MascotAvatar(
-            mood: mood,
-            size: MascotSize.small,
-          ),
+          MascotAvatar(mood: mood, size: MascotSize.small),
           const SizedBox(width: AppSpacing.md),
           Expanded(
             child: Column(

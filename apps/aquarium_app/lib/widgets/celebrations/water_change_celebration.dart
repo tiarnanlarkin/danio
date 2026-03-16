@@ -23,16 +23,14 @@ class WaterChangeCelebration extends StatefulWidget {
     final overlay = Overlay.of(context, rootOverlay: true);
     late OverlayEntry entry;
     entry = OverlayEntry(
-      builder: (ctx) => WaterChangeCelebration(
-        onComplete: () => entry.remove(),
-      ),
+      builder: (ctx) =>
+          WaterChangeCelebration(onComplete: () => entry.remove()),
     );
     overlay.insert(entry);
   }
 
   @override
-  State<WaterChangeCelebration> createState() =>
-      _WaterChangeCelebrationState();
+  State<WaterChangeCelebration> createState() => _WaterChangeCelebrationState();
 }
 
 class _WaterChangeCelebrationState extends State<WaterChangeCelebration>
@@ -50,13 +48,15 @@ class _WaterChangeCelebrationState extends State<WaterChangeCelebration>
 
     // Create 25 droplets with random positions and speeds
     for (int i = 0; i < 25; i++) {
-      _droplets.add(_Droplet(
-        x: random.nextDouble(),
-        startDelay: random.nextDouble() * 0.4,
-        speed: 0.6 + random.nextDouble() * 0.8,
-        wobbleOffset: random.nextDouble() * math.pi * 2,
-        size: 20.0 + random.nextDouble() * 16.0,
-      ));
+      _droplets.add(
+        _Droplet(
+          x: random.nextDouble(),
+          startDelay: random.nextDouble() * 0.4,
+          speed: 0.6 + random.nextDouble() * 0.8,
+          wobbleOffset: random.nextDouble() * math.pi * 2,
+          size: 20.0 + random.nextDouble() * 16.0,
+        ),
+      );
     }
 
     // Droplet cascade: 3 seconds
@@ -80,14 +80,14 @@ class _WaterChangeCelebrationState extends State<WaterChangeCelebration>
       TweenSequenceItem(tween: Tween(begin: 1.0, end: 1.0), weight: 50),
       TweenSequenceItem(tween: Tween(begin: 1.0, end: 0.0), weight: 30),
     ]).animate(_messageController);
-    _messageScale = TweenSequence<double>([
-      TweenSequenceItem(tween: Tween(begin: 0.5, end: 1.05), weight: 20),
-      TweenSequenceItem(tween: Tween(begin: 1.05, end: 1.0), weight: 10),
-      TweenSequenceItem(tween: Tween(begin: 1.0, end: 1.0), weight: 70),
-    ]).animate(CurvedAnimation(
-      parent: _messageController,
-      curve: Curves.easeOut,
-    ));
+    _messageScale =
+        TweenSequence<double>([
+          TweenSequenceItem(tween: Tween(begin: 0.5, end: 1.05), weight: 20),
+          TweenSequenceItem(tween: Tween(begin: 1.05, end: 1.0), weight: 10),
+          TweenSequenceItem(tween: Tween(begin: 1.0, end: 1.0), weight: 70),
+        ]).animate(
+          CurvedAnimation(parent: _messageController, curve: Curves.easeOut),
+        );
 
     _dropletController.forward();
     _messageController.forward();
@@ -181,9 +181,9 @@ class _WaterChangeCelebrationState extends State<WaterChangeCelebration>
                       vertical: AppSpacing.md,
                     ),
                     decoration: BoxDecoration(
-                      color: Theme.of(context)
-                          .scaffoldBackgroundColor
-                          .withAlpha(230),
+                      color: Theme.of(
+                        context,
+                      ).scaffoldBackgroundColor.withAlpha(230),
                       borderRadius: AppRadius.largeRadius,
                       boxShadow: [
                         BoxShadow(
@@ -196,10 +196,7 @@ class _WaterChangeCelebrationState extends State<WaterChangeCelebration>
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const Text(
-                          '\u{1F4A7}',
-                          style: TextStyle(fontSize: 40),
-                        ),
+                        const Text('\u{1F4A7}', style: TextStyle(fontSize: 40)),
                         const SizedBox(height: AppSpacing.sm),
                         Text(
                           'Fresh water!',
@@ -256,18 +253,23 @@ class _DropletPainter extends CustomPainter {
 
     for (final droplet in droplets) {
       final adjustedProgress =
-          ((progress - droplet.startDelay) / (1.0 - droplet.startDelay))
-              .clamp(0.0, 1.0);
+          ((progress - droplet.startDelay) / (1.0 - droplet.startDelay)).clamp(
+            0.0,
+            1.0,
+          );
       if (adjustedProgress <= 0) continue;
 
-      final x = droplet.x * size.width +
+      final x =
+          droplet.x * size.width +
           math.sin(adjustedProgress * math.pi * 3 + droplet.wobbleOffset) * 15;
-      final y = -droplet.size + adjustedProgress * (size.height + droplet.size * 2) * droplet.speed;
+      final y =
+          -droplet.size +
+          adjustedProgress * (size.height + droplet.size * 2) * droplet.speed;
       final opacity = adjustedProgress < 0.1
           ? adjustedProgress / 0.1
           : adjustedProgress > 0.8
-              ? (1.0 - adjustedProgress) / 0.2
-              : 1.0;
+          ? (1.0 - adjustedProgress) / 0.2
+          : 1.0;
 
       if (y > size.height || opacity <= 0) continue;
 

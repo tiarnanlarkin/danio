@@ -4,10 +4,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// Time periods for ambient lighting
 enum TimePeriod {
-  dawn,   // 6:00 - 9:00
-  day,    // 9:00 - 17:00
-  dusk,   // 17:00 - 20:00
-  night,  // 20:00 - 6:00
+  dawn, // 6:00 - 9:00
+  day, // 9:00 - 17:00
+  dusk, // 17:00 - 20:00
+  night, // 20:00 - 6:00
 }
 
 /// Ambient lighting configuration for each time period
@@ -120,18 +120,20 @@ class AmbientTimeNotifier extends StateNotifier<AmbientTimeState> {
   Timer? _updateTimer;
 
   AmbientTimeNotifier()
-      : super(AmbientTimeState(
+    : super(
+        AmbientTimeState(
           currentPeriod: _getCurrentPeriod(),
           config: AmbientConfig.fromPeriod(_getCurrentPeriod()),
           lastUpdate: DateTime.now(),
-        )) {
+        ),
+      ) {
     _startPeriodicUpdate();
   }
 
   /// Get the current time period based on hour
   static TimePeriod _getCurrentPeriod() {
     final hour = DateTime.now().hour;
-    
+
     if (hour >= 6 && hour < 9) {
       return TimePeriod.dawn;
     } else if (hour >= 9 && hour < 17) {
@@ -155,7 +157,7 @@ class AmbientTimeNotifier extends StateNotifier<AmbientTimeState> {
   /// The overlay's AnimatedOpacity handles the smooth visual transition.
   void _checkAndUpdatePeriod() {
     final newPeriod = _getCurrentPeriod();
-    
+
     if (newPeriod != state.currentPeriod) {
       state = AmbientTimeState(
         currentPeriod: newPeriod,
@@ -185,9 +187,10 @@ class AmbientTimeNotifier extends StateNotifier<AmbientTimeState> {
 }
 
 /// Provider for ambient time state
-final ambientTimeProvider = StateNotifierProvider<AmbientTimeNotifier, AmbientTimeState>((ref) {
-  return AmbientTimeNotifier();
-});
+final ambientTimeProvider =
+    StateNotifierProvider<AmbientTimeNotifier, AmbientTimeState>((ref) {
+      return AmbientTimeNotifier();
+    });
 
 /// Convenience provider for just the current config
 final ambientConfigProvider = Provider<AmbientConfig>((ref) {

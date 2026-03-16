@@ -241,7 +241,9 @@ class _CompatibilityCheckerScreenState
               decoration: BoxDecoration(
                 color: Theme.of(context).cardColor,
                 borderRadius: AppRadius.mediumRadius,
-                boxShadow: [BoxShadow(color: AppOverlays.black12, blurRadius: 8)],
+                boxShadow: [
+                  BoxShadow(color: AppOverlays.black12, blurRadius: 8),
+                ],
               ),
               child: ListView.builder(
                 shrinkWrap: true,
@@ -268,7 +270,11 @@ class _CompatibilityCheckerScreenState
                     padding: AppCardPadding.spacious,
                     child: Column(
                       children: [
-                        Icon(Icons.set_meal, size: AppIconSizes.xl, color: context.textHint),
+                        Icon(
+                          Icons.set_meal,
+                          size: AppIconSizes.xl,
+                          color: context.textHint,
+                        ),
                         const SizedBox(height: AppSpacing.sm2),
                         Text(
                           'Add Fish to Check',
@@ -296,7 +302,10 @@ class _CompatibilityCheckerScreenState
                         .map(
                           (s) => Chip(
                             label: Text(s.commonName),
-                            deleteIcon: const Icon(Icons.close, size: AppIconSizes.xs),
+                            deleteIcon: const Icon(
+                              Icons.close,
+                              size: AppIconSizes.xs,
+                            ),
                             onDeleted: () => _removeSpecies(s),
                           ),
                         )
@@ -404,8 +413,7 @@ class _CompatibilityCheckerScreenState
                           _ParamRow(
                             icon: Icons.water,
                             label: 'Minimum tank',
-                            value:
-                                '${_minTankSize.toStringAsFixed(0)}+ litres',
+                            value: '${_minTankSize.toStringAsFixed(0)}+ litres',
                           ),
                           _ParamRow(
                             icon: Icons.thermostat,

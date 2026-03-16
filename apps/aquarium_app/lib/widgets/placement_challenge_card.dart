@@ -16,13 +16,19 @@ class PlacementChallengeCard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     // Select only the three fields this widget checks — avoids rebuilds
     // when unrelated profile data (XP, streak, gems, etc.) changes.
-    final placementData = ref.watch(userProfileProvider.select((a) => a.whenData((p) => p == null
-        ? null
-        : (
-            experienceLevel: p.experienceLevel,
-            hasCompletedPlacementTest: p.hasCompletedPlacementTest,
-            hasSkippedPlacementTest: p.hasSkippedPlacementTest,
-          ))));
+    final placementData = ref.watch(
+      userProfileProvider.select(
+        (a) => a.whenData(
+          (p) => p == null
+              ? null
+              : (
+                  experienceLevel: p.experienceLevel,
+                  hasCompletedPlacementTest: p.hasCompletedPlacementTest,
+                  hasSkippedPlacementTest: p.hasSkippedPlacementTest,
+                ),
+        ),
+      ),
+    );
 
     return placementData.when(
       loading: () => const SizedBox.shrink(),
@@ -32,8 +38,7 @@ class PlacementChallengeCard extends ConsumerWidget {
         if (data.experienceLevel == ExperienceLevel.beginner) {
           return const SizedBox.shrink();
         }
-        if (data.hasCompletedPlacementTest ||
-            data.hasSkippedPlacementTest) {
+        if (data.hasCompletedPlacementTest || data.hasSkippedPlacementTest) {
           return const SizedBox.shrink();
         }
 
@@ -47,10 +52,7 @@ class PlacementChallengeCard extends ConsumerWidget {
           padding: const EdgeInsets.all(AppSpacing.lg),
           decoration: BoxDecoration(
             gradient: LinearGradient(
-              colors: [
-                AppOverlays.accent10,
-                AppOverlays.amber20,
-              ],
+              colors: [AppOverlays.accent10, AppOverlays.amber20],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),

@@ -83,74 +83,84 @@ class ShopStreetScreen extends ConsumerWidget {
               // Header
               SliverToBoxAdapter(child: _ShopHeader()),
 
-            // Shop sections
-            SliverPadding(
-              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
-              sliver: SliverList(
-                delegate: SliverChildListDelegate([
-                  _ShopSection(
-                    title: '🐟 Fish Wishlist',
-                    subtitle: 'Species you want to keep',
-                    icon: Icons.favorite,
-                    color: DanioColors.coralAccent,
-                    itemCount: fishCount,
-                    onTap: () => NavigationThrottle.push(context, const WishlistScreen(
-                          category: WishlistCategory.fish,
-                        )),
-                  ),
-                  const SizedBox(height: AppSpacing.sm2),
-                  _ShopSection(
-                    title: '🌿 Plant Wishlist',
-                    subtitle: 'Plants to add to your tank',
-                    icon: Icons.eco,
-                    color: const Color(0xFFFFCA28),
-                    itemCount: plantCount,
-                    onTap: () => NavigationThrottle.push(context, const WishlistScreen(
-                          category: WishlistCategory.plant,
-                        )),
-                  ),
-                  const SizedBox(height: AppSpacing.sm2),
-                  _ShopSection(
-                    title: '🛠️ Equipment Wishlist',
-                    subtitle: 'Gear upgrades planned',
-                    icon: Icons.build,
-                    color: const Color(0xFFFFCA28),
-                    itemCount: equipmentCount,
-                    onTap: () => NavigationThrottle.push(context, const WishlistScreen(
+              // Shop sections
+              SliverPadding(
+                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+                sliver: SliverList(
+                  delegate: SliverChildListDelegate([
+                    _ShopSection(
+                      title: '🐟 Fish Wishlist',
+                      subtitle: 'Species you want to keep',
+                      icon: Icons.favorite,
+                      color: DanioColors.coralAccent,
+                      itemCount: fishCount,
+                      onTap: () => NavigationThrottle.push(
+                        context,
+                        const WishlistScreen(category: WishlistCategory.fish),
+                      ),
+                    ),
+                    const SizedBox(height: AppSpacing.sm2),
+                    _ShopSection(
+                      title: '🌿 Plant Wishlist',
+                      subtitle: 'Plants to add to your tank',
+                      icon: Icons.eco,
+                      color: const Color(0xFFFFCA28),
+                      itemCount: plantCount,
+                      onTap: () => NavigationThrottle.push(
+                        context,
+                        const WishlistScreen(category: WishlistCategory.plant),
+                      ),
+                    ),
+                    const SizedBox(height: AppSpacing.sm2),
+                    _ShopSection(
+                      title: '🛠️ Equipment Wishlist',
+                      subtitle: 'Gear upgrades planned',
+                      icon: Icons.build,
+                      color: const Color(0xFFFFCA28),
+                      itemCount: equipmentCount,
+                      onTap: () => NavigationThrottle.push(
+                        context,
+                        const WishlistScreen(
                           category: WishlistCategory.equipment,
-                        )),
-                  ),
-                  const SizedBox(height: AppSpacing.sm2),
-                  _ShopSection(
-                    title: '💎 Gem Shop',
-                    subtitle: 'Spend gems on rewards & cosmetics',
-                    icon: Icons.diamond,
-                    color: AppColors.accentAlt,
-                    itemCount: 0,
-                    onTap: () => NavigationThrottle.push(context, const GemShopScreen()),
-                  ),
-                  const SizedBox(height: AppSpacing.lg),
-                  _BudgetCard(
-                    budget: budget,
-                    onEdit: () => _showBudgetDialog(context, ref, budget),
-                  ),
-                  const SizedBox(height: AppSpacing.lg),
-                  _LocalShopsCard(
-                    shops: shops,
-                    onAddShop: () => _showAddShopDialog(context, ref),
-                    onEditShop: (shop) =>
-                        _showEditShopDialog(context, ref, shop),
-                    onDeleteShop: (shop) => _deleteShop(context, ref, shop),
-                  ),
-                ]),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: AppSpacing.sm2),
+                    _ShopSection(
+                      title: '💎 Gem Shop',
+                      subtitle: 'Spend gems on rewards & cosmetics',
+                      icon: Icons.diamond,
+                      color: AppColors.accentAlt,
+                      itemCount: 0,
+                      onTap: () => NavigationThrottle.push(
+                        context,
+                        const GemShopScreen(),
+                      ),
+                    ),
+                    const SizedBox(height: AppSpacing.lg),
+                    _BudgetCard(
+                      budget: budget,
+                      onEdit: () => _showBudgetDialog(context, ref, budget),
+                    ),
+                    const SizedBox(height: AppSpacing.lg),
+                    _LocalShopsCard(
+                      shops: shops,
+                      onAddShop: () => _showAddShopDialog(context, ref),
+                      onEditShop: (shop) =>
+                          _showEditShopDialog(context, ref, shop),
+                      onDeleteShop: (shop) => _deleteShop(context, ref, shop),
+                    ),
+                  ]),
+                ),
               ),
-            ),
 
-            // Bottom padding
-            const SliverToBoxAdapter(child: SizedBox(height: kScrollEndPadding)),
-          ],
+              // Bottom padding
+              const SliverToBoxAdapter(
+                child: SizedBox(height: kScrollEndPadding),
+              ),
+            ],
+          ),
         ),
-      ),
       ),
     );
   }
@@ -377,18 +387,24 @@ class _ShopHeader extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Builder(builder: (context) => Text(
-                '🏪 Shop Street',
-                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                  color: ShopColors.textPrimary,
-                  fontWeight: FontWeight.bold,
+              Builder(
+                builder: (context) => Text(
+                  '🏪 Shop Street',
+                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                    color: ShopColors.textPrimary,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-              )),
+              ),
               const SizedBox(height: AppSpacing.xs),
-              Builder(builder: (context) => Text(
-                'Wishlists & shopping',
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: ShopColors.textSecondary),
-              )),
+              Builder(
+                builder: (context) => Text(
+                  'Wishlists & shopping',
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: ShopColors.textSecondary,
+                  ),
+                ),
+              ),
             ],
           ),
         ],
@@ -436,69 +452,71 @@ class _ShopSection extends StatelessWidget {
                 border: Border.all(color: ShopColors.glassBorder),
               ),
               child: Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(AppSpacing.sm2),
-                  decoration: BoxDecoration(
-                    color: Color((color.value & 0x00FFFFFF) | 0x33000000), // 20% opacity
-                    borderRadius: AppRadius.mediumRadius,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(AppSpacing.sm2),
+                    decoration: BoxDecoration(
+                      color: Color(
+                        (color.value & 0x00FFFFFF) | 0x33000000,
+                      ), // 20% opacity
+                      borderRadius: AppRadius.mediumRadius,
+                    ),
+                    child: Icon(icon, color: color, size: 28),
                   ),
-                  child: Icon(icon, color: color, size: 28),
-                ),
-                const SizedBox(width: AppSpacing.md),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        title,
-                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          color: ShopColors.textPrimary,
-                          fontWeight: FontWeight.w600,
+                  const SizedBox(width: AppSpacing.md),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          title,
+                          style: Theme.of(context).textTheme.titleMedium
+                              ?.copyWith(
+                                color: ShopColors.textPrimary,
+                                fontWeight: FontWeight.w600,
+                              ),
                         ),
-                      ),
-                      const SizedBox(height: AppSpacing.xs),
-                      Text(
-                        subtitle,
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: ShopColors.textSecondary,
+                        const SizedBox(height: AppSpacing.xs),
+                        Text(
+                          subtitle,
+                          style: Theme.of(context).textTheme.bodySmall
+                              ?.copyWith(color: ShopColors.textSecondary),
                         ),
-                      ),
-                    ],
-                  ),
-                ),
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 6,
-                  ),
-                  decoration: BoxDecoration(
-                    color: itemCount > 0
-                        ? ShopColors.accentAlpha20
-                        : ShopColors.glassCard,
-                    borderRadius: AppRadius.mediumRadius,
-                  ),
-                  child: Text(
-                    '$itemCount',
-                    style: TextStyle(
-                      color: itemCount > 0
-                          ? ShopColors.accent
-                          : ShopColors.textSecondary,
-                      fontWeight: FontWeight.bold,
+                      ],
                     ),
                   ),
-                ),
-                const SizedBox(width: AppSpacing.sm),
-                const Icon(
-                  Icons.chevron_right,
-                  color: ShopColors.textSecondary,
-                ),
-              ],
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 6,
+                    ),
+                    decoration: BoxDecoration(
+                      color: itemCount > 0
+                          ? ShopColors.accentAlpha20
+                          : ShopColors.glassCard,
+                      borderRadius: AppRadius.mediumRadius,
+                    ),
+                    child: Text(
+                      '$itemCount',
+                      style: TextStyle(
+                        color: itemCount > 0
+                            ? ShopColors.accent
+                            : ShopColors.textSecondary,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: AppSpacing.sm),
+                  const Icon(
+                    Icons.chevron_right,
+                    color: ShopColors.textSecondary,
+                  ),
+                ],
+              ),
             ),
           ),
         ),
       ),
-    ),
     );
   }
 }
@@ -526,98 +544,107 @@ class _BudgetCard extends StatelessWidget {
             child: Container(
               padding: const EdgeInsets.all(AppSpacing.lg2),
               decoration: BoxDecoration(
-              color: ShopColors.glassCard,
-              borderRadius: AppRadius.largeRadius,
-              border: Border.all(color: ShopColors.glassBorder),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    const Icon(
-                      Icons.account_balance_wallet,
-                      color: ShopColors.accent,
-                    ),
-                    const SizedBox(width: AppSpacing.sm2),
-                    Builder(builder: (context) => Text(
-                      'Monthly Budget',
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        color: ShopColors.textPrimary,
-                        fontWeight: FontWeight.w600,
+                color: ShopColors.glassCard,
+                borderRadius: AppRadius.largeRadius,
+                border: Border.all(color: ShopColors.glassBorder),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      const Icon(
+                        Icons.account_balance_wallet,
+                        color: ShopColors.accent,
                       ),
-                    )),
-                    const Spacer(),
-                    Icon(
-                      Icons.edit,
-                      color: ShopColors.textSecondaryAlpha50,
-                      size: 18,
-                    ),
-                  ],
-                ),
-                const SizedBox(height: AppSpacing.lg2),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          '£${budget.spentThisMonth.toStringAsFixed(2)}',
-                          style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                            color: ShopColors.accent,
-                            fontWeight: FontWeight.bold,
-                          ),
+                      const SizedBox(width: AppSpacing.sm2),
+                      Builder(
+                        builder: (context) => Text(
+                          'Monthly Budget',
+                          style: Theme.of(context).textTheme.titleMedium
+                              ?.copyWith(
+                                color: ShopColors.textPrimary,
+                                fontWeight: FontWeight.w600,
+                              ),
                         ),
-                        Builder(builder: (context) => Text(
-                          'spent this month',
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: ShopColors.textSecondary,
-                          ),
-                        )),
-                      ],
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Text(
-                          '£${budget.remaining.toStringAsFixed(2)}',
-                          style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                            color: ShopColors.textPrimary,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                        Builder(builder: (context) => Text(
-                          'remaining',
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: ShopColors.textSecondary,
-                          ),
-                        )),
-                      ],
-                    ),
-                  ],
-                ),
-                const SizedBox(height: AppSpacing.md),
-                ClipRRect(
-                  borderRadius: AppRadius.xsRadius,
-                  child: LinearProgressIndicator(
-                    value: budget.percentUsed,
-                    // P2-005: background3 is opaque deep-green which made the
-                    // empty track look "nearly full". Use a transparent white
-                    // track so only the accent fill is visible.
-                    backgroundColor: ShopColors.glassBorder,
-                    valueColor: AlwaysStoppedAnimation<Color>(
-                      budget.percentUsed > 0.9 ? AppColors.error : ShopColors.accent,
-                    ),
-                    minHeight: 8,
+                      ),
+                      const Spacer(),
+                      Icon(
+                        Icons.edit,
+                        color: ShopColors.textSecondaryAlpha50,
+                        size: 18,
+                      ),
+                    ],
                   ),
-                ),
-              ],
+                  const SizedBox(height: AppSpacing.lg2),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            '£${budget.spentThisMonth.toStringAsFixed(2)}',
+                            style: Theme.of(context).textTheme.headlineMedium
+                                ?.copyWith(
+                                  color: ShopColors.accent,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                          ),
+                          Builder(
+                            builder: (context) => Text(
+                              'spent this month',
+                              style: Theme.of(context).textTheme.bodySmall
+                                  ?.copyWith(color: ShopColors.textSecondary),
+                            ),
+                          ),
+                        ],
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Text(
+                            '£${budget.remaining.toStringAsFixed(2)}',
+                            style: Theme.of(context).textTheme.titleLarge
+                                ?.copyWith(
+                                  color: ShopColors.textPrimary,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                          ),
+                          Builder(
+                            builder: (context) => Text(
+                              'remaining',
+                              style: Theme.of(context).textTheme.bodySmall
+                                  ?.copyWith(color: ShopColors.textSecondary),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: AppSpacing.md),
+                  ClipRRect(
+                    borderRadius: AppRadius.xsRadius,
+                    child: LinearProgressIndicator(
+                      value: budget.percentUsed,
+                      // P2-005: background3 is opaque deep-green which made the
+                      // empty track look "nearly full". Use a transparent white
+                      // track so only the accent fill is visible.
+                      backgroundColor: ShopColors.glassBorder,
+                      valueColor: AlwaysStoppedAnimation<Color>(
+                        budget.percentUsed > 0.9
+                            ? AppColors.error
+                            : ShopColors.accent,
+                      ),
+                      minHeight: 8,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
       ),
-    ),
     );
   }
 }
@@ -655,13 +682,15 @@ class _LocalShopsCard extends StatelessWidget {
                 children: [
                   const Icon(Icons.location_on, color: ShopColors.awning),
                   const SizedBox(width: AppSpacing.sm2),
-                  Builder(builder: (context) => Text(
-                    'Local Fish Shops',
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      color: ShopColors.textPrimary,
-                      fontWeight: FontWeight.w600,
+                  Builder(
+                    builder: (context) => Text(
+                      'Local Fish Shops',
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        color: ShopColors.textPrimary,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
-                  )),
+                  ),
                 ],
               ),
               const SizedBox(height: AppSpacing.md),
@@ -671,9 +700,7 @@ class _LocalShopsCard extends StatelessWidget {
                   child: Center(
                     child: Text(
                       'No shops added yet',
-                      style: TextStyle(
-                        color: ShopColors.textSecondaryAlpha70,
-                      ),
+                      style: TextStyle(color: ShopColors.textSecondaryAlpha70),
                     ),
                   ),
                 )
@@ -762,9 +789,9 @@ class _ShopTile extends StatelessWidget {
             if (shop.rating != null)
               Text(
                 '⭐ ${shop.rating!.toStringAsFixed(1)}',
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: ShopColors.accentLight,
-                ),
+                style: Theme.of(
+                  context,
+                ).textTheme.bodySmall?.copyWith(color: ShopColors.accentLight),
               ),
             IconButton(
               tooltip: 'Close',

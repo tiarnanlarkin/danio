@@ -81,10 +81,13 @@ class _HeartsChangeOverlayState extends State<HeartsChangeOverlay>
     ]).animate(_controller);
 
     // Slide up or down based on gained/lost
-    _slideAnimation = Tween<Offset>(
-      begin: Offset.zero,
-      end: Offset(0, widget.gained ? -0.3 : 0.3),
-    ).animate(CurvedAnimation(parent: _controller, curve: AppCurves.emphasized));
+    _slideAnimation =
+        Tween<Offset>(
+          begin: Offset.zero,
+          end: Offset(0, widget.gained ? -0.3 : 0.3),
+        ).animate(
+          CurvedAnimation(parent: _controller, curve: AppCurves.emphasized),
+        );
 
     // Slight rotation for drama
     _rotationAnimation = Tween<double>(
@@ -150,17 +153,17 @@ class _HeartsChangeOverlayState extends State<HeartsChangeOverlay>
                           const SizedBox(height: AppSpacing.md),
                           Text(
                             widget.gained ? '+1 Heart' : '-1 Heart',
-                            style: Theme.of(context).textTheme.headlineMedium!.copyWith(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
+                            style: Theme.of(context).textTheme.headlineMedium!
+                                .copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
                           ),
                           const SizedBox(height: AppSpacing.sm),
                           Text(
                             widget.gained ? 'Great job! 🎉' : 'Keep trying! 💪',
-                            style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                              color: Colors.white70,
-                            ),
+                            style: Theme.of(context).textTheme.titleMedium!
+                                .copyWith(color: Colors.white70),
                           ),
                         ],
                       ),
@@ -241,7 +244,11 @@ class _HeartsStatusBannerState extends ConsumerState<HeartsStatusBanner> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Icon(Icons.favorite, color: Colors.white, size: AppIconSizes.xs),
+                    const Icon(
+                      Icons.favorite,
+                      color: Colors.white,
+                      size: AppIconSizes.xs,
+                    ),
                     const SizedBox(width: AppSpacing.sm),
                     Text(
                       'Next heart in ${heartsService.formatTimeRemaining(timeUntilRefill)}',

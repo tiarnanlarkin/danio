@@ -36,41 +36,44 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
   Widget build(BuildContext context) {
     final tanksAsync = ref.watch(tanksProvider);
 
-    return Scaffold(
-      appBar: AppBar(
-        title: TextField(
-          controller: _searchController,
-          autofocus: true,
-          decoration: const InputDecoration(
-            hintText: 'Search tanks, fish, equipment...',
-            border: InputBorder.none,
-            filled: false,
+    return GestureDetector(
+      onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+      child: Scaffold(
+        appBar: AppBar(
+          title: TextField(
+            controller: _searchController,
+            autofocus: true,
+            decoration: const InputDecoration(
+              hintText: 'Search tanks, fish, equipment...',
+              border: InputBorder.none,
+              filled: false,
+            ),
+            onChanged: (value) => setState(() => _query = value.toLowerCase()),
           ),
-          onChanged: (value) => setState(() => _query = value.toLowerCase()),
-        ),
-        actions: [
-          if (_query.isNotEmpty)
-            IconButton(
-              icon: const Icon(Icons.clear),
-              tooltip: 'Clear search',
-              onPressed: () {
-                _searchController.clear();
-                setState(() => _query = '');
-              },
-            ),
-        ],
-      ),
-      body: _query.isEmpty
-          ? _EmptySearchState()
-          : tanksAsync.when(
-              loading: () => const Center(child: BubbleLoader()),
-              error: (e, _) => AppErrorState(
-                message: "Couldn't search right now. Tap to try again.",
-                onRetry: () => ref.invalidate(tanksProvider),
+          actions: [
+            if (_query.isNotEmpty)
+              IconButton(
+                icon: const Icon(Icons.clear),
+                tooltip: 'Clear search',
+                onPressed: () {
+                  _searchController.clear();
+                  setState(() => _query = '');
+                },
               ),
-              data: (tanks) =>
-                  _SearchResults(query: _query, tanks: tanks, ref: ref),
-            ),
+          ],
+        ),
+        body: _query.isEmpty
+            ? _EmptySearchState()
+            : tanksAsync.when(
+                loading: () => const Center(child: BubbleLoader()),
+                error: (e, _) => AppErrorState(
+                  message: "Couldn't search right now. Tap to try again.",
+                  onRetry: () => ref.invalidate(tanksProvider),
+                ),
+                data: (tanks) =>
+                    _SearchResults(query: _query, tanks: tanks, ref: ref),
+              ),
+      ),
     );
   }
 }
@@ -121,7 +124,10 @@ class _SearchResults extends StatelessWidget {
             subtitle:
                 '${tank.volumeLitres.toStringAsFixed(0)}L ${tank.type.name}',
             icon: Icons.water,
-            onTap: () => NavigationThrottle.push(context, TankDetailScreen(tankId: tank.id)),
+            onTap: () => NavigationThrottle.push(
+              context,
+              TankDetailScreen(tankId: tank.id),
+            ),
           ),
         );
       }
@@ -140,7 +146,10 @@ class _SearchResults extends StatelessWidget {
                 title: l.commonName,
                 subtitle: 'in ${tank.name} (×${l.count})',
                 icon: Icons.set_meal,
-                onTap: () => NavigationThrottle.push(context, LivestockDetailScreen(tankId: tank.id, livestock: l)),
+                onTap: () => NavigationThrottle.push(
+                  context,
+                  LivestockDetailScreen(tankId: tank.id, livestock: l),
+                ),
               ),
             );
           }
@@ -160,7 +169,10 @@ class _SearchResults extends StatelessWidget {
                 title: e.name,
                 subtitle: '${e.typeName} in ${tank.name}',
                 icon: Icons.build,
-                onTap: () => NavigationThrottle.push(context, TankDetailScreen(tankId: tank.id)),
+                onTap: () => NavigationThrottle.push(
+                  context,
+                  TankDetailScreen(tankId: tank.id),
+                ),
               ),
             );
           }
@@ -187,9 +199,16 @@ class _SearchResults extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.search_off, size: AppIconSizes.xxl, color: context.textHint),
+            Icon(
+              Icons.search_off,
+              size: AppIconSizes.xxl,
+              color: context.textHint,
+            ),
             const SizedBox(height: AppSpacing.md),
-            Text('Hmm, nothing found for "$query" \u{1F50D}', style: AppTypography.bodyMedium),
+            Text(
+              'Hmm, nothing found for "$query" \u{1F50D}',
+              style: AppTypography.bodyMedium,
+            ),
           ],
         ),
       );
@@ -211,27 +230,44 @@ class _SearchResults extends StatelessWidget {
 
     // Build flat list of items for ListView.builder
     final items = <_SearchListItem>[];
-    
+
     if (tankResults.isNotEmpty) {
-      items.add(_SearchListItem.header(title: 'Tanks', count: tankResults.length));
+      items.add(
+        _SearchListItem.header(title: 'Tanks', count: tankResults.length),
+      );
       items.addAll(tankResults.map((r) => _SearchListItem.result(r)));
       items.add(_SearchListItem.spacer());
     }
-    
+
     if (livestockResults.isNotEmpty) {
-      items.add(_SearchListItem.header(title: 'Livestock', count: livestockResults.length));
+      items.add(
+        _SearchListItem.header(
+          title: 'Livestock',
+          count: livestockResults.length,
+        ),
+      );
       items.addAll(livestockResults.map((r) => _SearchListItem.result(r)));
       items.add(_SearchListItem.spacer());
     }
-    
+
     if (equipmentResults.isNotEmpty) {
-      items.add(_SearchListItem.header(title: 'Equipment', count: equipmentResults.length));
+      items.add(
+        _SearchListItem.header(
+          title: 'Equipment',
+          count: equipmentResults.length,
+        ),
+      );
       items.addAll(equipmentResults.map((r) => _SearchListItem.result(r)));
       items.add(_SearchListItem.spacer());
     }
-    
+
     if (speciesResultsList.isNotEmpty) {
-      items.add(_SearchListItem.header(title: 'Species Database', count: speciesResultsList.length));
+      items.add(
+        _SearchListItem.header(
+          title: 'Species Database',
+          count: speciesResultsList.length,
+        ),
+      );
       items.addAll(speciesResultsList.map((r) => _SearchListItem.result(r)));
     }
 
@@ -240,9 +276,12 @@ class _SearchResults extends StatelessWidget {
       itemCount: items.length,
       itemBuilder: (context, index) {
         final item = items[index];
-        
+
         if (item.isHeader) {
-          return _SectionHeader(title: item.headerTitle!, count: item.headerCount!);
+          return _SectionHeader(
+            title: item.headerTitle!,
+            count: item.headerCount!,
+          );
         } else if (item.isSpacer) {
           return const SizedBox(height: AppSpacing.md);
         } else {
@@ -332,7 +371,10 @@ class _InfoChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm3, vertical: 4),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.sm3,
+        vertical: 4,
+      ),
       decoration: BoxDecoration(
         color: context.surfaceVariant,
         borderRadius: AppRadius.mediumRadius,
@@ -376,21 +418,13 @@ class _SearchListItem {
     this.result,
   });
 
-  factory _SearchListItem.header({
-    required String title,
-    required int count,
-  }) =>
-      _SearchListItem._(
-        isHeader: true,
-        headerTitle: title,
-        headerCount: count,
-      );
+  factory _SearchListItem.header({required String title, required int count}) =>
+      _SearchListItem._(isHeader: true, headerTitle: title, headerCount: count);
 
   factory _SearchListItem.result(_SearchResult result) =>
       _SearchListItem._(result: result);
 
-  factory _SearchListItem.spacer() =>
-      _SearchListItem._(isSpacer: true);
+  factory _SearchListItem.spacer() => _SearchListItem._(isSpacer: true);
 }
 
 class _SectionHeader extends StatelessWidget {
@@ -426,7 +460,11 @@ class _ResultTile extends StatelessWidget {
       child: ListTile(
         leading: CircleAvatar(
           backgroundColor: AppOverlays.primary10,
-          child: Icon(result.icon, color: AppColors.primary, size: AppIconSizes.sm),
+          child: Icon(
+            result.icon,
+            color: AppColors.primary,
+            size: AppIconSizes.sm,
+          ),
         ),
         title: Text(result.title),
         subtitle: Text(result.subtitle, style: AppTypography.bodySmall),

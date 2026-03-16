@@ -7,19 +7,19 @@ import 'package:shared_preferences/shared_preferences.dart';
 class ReducedMotionState {
   /// Whether reduced motion is enabled (system OR user preference)
   final bool isEnabled;
-  
+
   /// System-level reduced motion setting
   final bool systemPreference;
-  
+
   /// User's manual override (null = follow system)
   final bool? userOverride;
-  
+
   const ReducedMotionState({
     required this.isEnabled,
     required this.systemPreference,
     this.userOverride,
   });
-  
+
   ReducedMotionState copyWith({
     bool? isEnabled,
     bool? systemPreference,
@@ -31,42 +31,42 @@ class ReducedMotionState {
       userOverride: userOverride ?? this.userOverride,
     );
   }
-  
+
   /// Get effective duration multiplier for animations
   /// Returns 1.0 for normal, 0.0 for instant (disabled), 0.3 for reduced
   double get durationMultiplier => isEnabled ? 0.3 : 1.0;
-  
+
   /// Get whether to show simplified animations vs disabled completely
   bool get useSimplifiedAnimations => isEnabled;
-  
+
   /// Get whether to disable decorative animations completely
   bool get disableDecorativeAnimations => isEnabled;
 }
 
 /// Notifier for managing reduced motion settings
 class ReducedMotionNotifier extends StateNotifier<ReducedMotionState> {
-  ReducedMotionNotifier() : super(const ReducedMotionState(
-    isEnabled: false,
-    systemPreference: false,
-  )) {
+  ReducedMotionNotifier()
+    : super(
+        const ReducedMotionState(isEnabled: false, systemPreference: false),
+      ) {
     _initialize();
   }
-  
+
   static const _userOverrideKey = 'reduced_motion_override';
-  
+
   Future<void> _initialize() async {
     // Load saved user preference
     await _loadUserPreference();
-    
+
     // Check system setting
     await _checkSystemSetting();
   }
-  
+
   /// Load user's manual override from storage
   Future<void> _loadUserPreference() async {
     try {
       final prefs = await SharedPreferences.getInstance();
-      
+
       // Check if user has set a manual override
       if (prefs.containsKey(_userOverrideKey)) {
         final override = prefs.getBool(_userOverrideKey);
@@ -79,7 +79,7 @@ class ReducedMotionNotifier extends StateNotifier<ReducedMotionState> {
       debugPrint('Failed to load reduced motion preference: $e');
     }
   }
-  
+
   /// Check Android system setting for reduced motion
   Future<void> _checkSystemSetting() async {
     try {
@@ -87,7 +87,7 @@ class ReducedMotionNotifier extends StateNotifier<ReducedMotionState> {
       // When animations are disabled system-wide, this returns 0.0
       final systemSetting = await _getSystemAnimationScale();
       final systemPreference = systemSetting == 0.0;
-      
+
       state = state.copyWith(
         systemPreference: systemPreference,
         isEnabled: state.userOverride ?? systemPreference,
@@ -97,11 +97,13 @@ class ReducedMotionNotifier extends StateNotifier<ReducedMotionState> {
       // Fall back to user preference or default
     }
   }
-  
+
   /// Get system animation scale via platform channel
   Future<double> _getSystemAnimationScale() async {
     try {
-      const platform = MethodChannel('com.tiarnanlarkin.aquarium/accessibility');
+      const platform = MethodChannel(
+        'com.tiarnanlarkin.aquarium/accessibility',
+      );
       final result = await platform.invokeMethod<double>('getAnimationScale');
       return result ?? 1.0;
     } catch (e) {
@@ -110,12 +112,12 @@ class ReducedMotionNotifier extends StateNotifier<ReducedMotionState> {
       return 1.0;
     }
   }
-  
+
   /// Set user's manual override preference
   Future<void> setUserPreference(bool? enabled) async {
     try {
       final prefs = await SharedPreferences.getInstance();
-      
+
       if (enabled == null) {
         // Clear override - follow system
         await prefs.remove(_userOverrideKey);
@@ -126,16 +128,13 @@ class ReducedMotionNotifier extends StateNotifier<ReducedMotionState> {
       } else {
         // Set manual override
         await prefs.setBool(_userOverrideKey, enabled);
-        state = state.copyWith(
-          userOverride: enabled,
-          isEnabled: enabled,
-        );
+        state = state.copyWith(userOverride: enabled, isEnabled: enabled);
       }
     } catch (e) {
       debugPrint('Failed to save reduced motion preference: $e');
     }
   }
-  
+
   /// Refresh system setting (call when app resumes)
   Future<void> refresh() async {
     await _checkSystemSetting();
@@ -143,9 +142,10 @@ class ReducedMotionNotifier extends StateNotifier<ReducedMotionState> {
 }
 
 /// Provider for reduced motion state
-final reducedMotionProvider = StateNotifierProvider<ReducedMotionNotifier, ReducedMotionState>(
-  (ref) => ReducedMotionNotifier(),
-);
+final reducedMotionProvider =
+    StateNotifierProvider<ReducedMotionNotifier, ReducedMotionState>(
+      (ref) => ReducedMotionNotifier(),
+    );
 
 /// Extension to get reduced motion state easily in widgets
 extension ReducedMotionBuildContext on BuildContext {
@@ -168,7 +168,7 @@ class ReducedMotionHelper {
     bool canDisable = false,
   }) {
     if (!state.isEnabled) return normal;
-    
+
     if (canDisable) {
       // For decorative animations, disable completely
       return Duration.zero;
@@ -177,7 +177,7 @@ class ReducedMotionHelper {
       return normal * state.durationMultiplier;
     }
   }
-  
+
   /// Get curve adjusted for reduced motion
   static Curve curve(Curve normal, ReducedMotionState state) {
     if (state.isEnabled) {

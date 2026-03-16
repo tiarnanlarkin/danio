@@ -1,6 +1,7 @@
 /// Achievement Card Widget - Displays achievement in grid
 /// Shows locked/unlocked state with progress bar
 library;
+
 import 'package:danio/theme/app_theme.dart';
 
 import 'package:flutter/material.dart';
@@ -41,7 +42,6 @@ class _AnimatedProgressBar extends StatelessWidget {
   }
 }
 
-
 /// Displays an achievement card in grid layout showing locked/unlocked state.
 ///
 /// Shows achievement icon, title, description, and progress bar. Locked
@@ -51,6 +51,7 @@ class AchievementCard extends StatelessWidget {
   final Achievement achievement;
   final AchievementProgress progress;
   final VoidCallback onTap;
+
   /// Whether to show sparkle effect (for newly unlocked)
   final bool showSparkle;
 
@@ -88,152 +89,161 @@ class AchievementCard extends StatelessWidget {
           splashColor: rarityColor.withAlpha(40),
           highlightColor: rarityColor.withAlpha(20),
           child: Container(
-          decoration: BoxDecoration(
-            borderRadius: AppRadius.mediumRadius,
-            border: Border.all(
-              color: isLocked ? Theme.of(context).colorScheme.outlineVariant : rarityColor,
-              width: isLocked ? 1 : 3,
+            decoration: BoxDecoration(
+              borderRadius: AppRadius.mediumRadius,
+              border: Border.all(
+                color: isLocked
+                    ? Theme.of(context).colorScheme.outlineVariant
+                    : rarityColor,
+                width: isLocked ? 1 : 3,
+              ),
+              boxShadow: isLocked
+                  ? []
+                  : [
+                      BoxShadow(
+                        color: rarityColor.withAlpha(76),
+                        blurRadius: 8,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
             ),
-            boxShadow: isLocked
-                ? []
-                : [
-                    BoxShadow(
-                      color: rarityColor.withAlpha(76),
-                      blurRadius: 8,
-                      offset: const Offset(0, 2),
-                    ),
-                  ],
-          ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            // Icon and rarity badge
-            Expanded(
-              child: Stack(
-                children: [
-                  // Icon
-                  Center(
-                    child: Text(
-                      achievement.icon,
-                      style: Theme.of(context).textTheme.headlineMedium!.copyWith(
-                        color: isLocked ? AppColors.blackAlpha25 : null,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                // Icon and rarity badge
+                Expanded(
+                  child: Stack(
+                    children: [
+                      // Icon
+                      Center(
+                        child: Text(
+                          achievement.icon,
+                          style: Theme.of(context).textTheme.headlineMedium!
+                              .copyWith(
+                                color: isLocked ? AppColors.blackAlpha25 : null,
+                              ),
+                        ),
                       ),
-                    ),
+
+                      // Locked overlay
+                      if (isLocked && achievement.isHidden)
+                        Positioned.fill(
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: context.textPrimary,
+                              borderRadius: const BorderRadius.vertical(
+                                top: Radius.circular(14),
+                              ),
+                            ),
+                            child: const Center(
+                              child: Icon(
+                                Icons.lock,
+                                size: AppIconSizes.xl,
+                                color: AppColors.whiteAlpha70,
+                              ),
+                            ),
+                          ),
+                        )
+                      else if (isLocked)
+                        Positioned.fill(
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: AppOverlays.white70,
+                              borderRadius: const BorderRadius.vertical(
+                                top: Radius.circular(14),
+                              ),
+                            ),
+                            child: Center(
+                              child: Icon(
+                                Icons.lock_outline,
+                                size: 32,
+                                color: context.textHint,
+                              ),
+                            ),
+                          ),
+                        ),
+
+                      // Rarity badge
+                      Positioned(
+                        top: AppSpacing.sm,
+                        right: AppSpacing.sm,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: AppSpacing.sm,
+                            vertical: AppSpacing.xs,
+                          ),
+                          decoration: BoxDecoration(
+                            color: rarityColor,
+                            borderRadius: AppRadius.mediumRadius,
+                          ),
+                          child: Text(
+                            achievement.rarity.displayName.toUpperCase(),
+                            style: Theme.of(context).textTheme.labelSmall!
+                                .copyWith(
+                                  color: AppColors.onPrimary,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
+                ),
 
-                  // Locked overlay
-                  if (isLocked && achievement.isHidden)
-                    Positioned.fill(
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: context.textPrimary,
-                          borderRadius: const BorderRadius.vertical(
-                            top: Radius.circular(14),
-                          ),
-                        ),
-                        child: const Center(
-                          child: Icon(
-                            Icons.lock,
-                            size: AppIconSizes.xl,
-                            color: AppColors.whiteAlpha70,
-                          ),
-                        ),
-                      ),
-                    )
-                  else if (isLocked)
-                    Positioned.fill(
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: AppOverlays.white70,
-                          borderRadius: const BorderRadius.vertical(
-                            top: Radius.circular(14),
-                          ),
-                        ),
-                        child: Center(
-                          child: Icon(
-                            Icons.lock_outline,
-                            size: 32,
-                            color: context.textHint,
-                          ),
-                        ),
-                      ),
-                    ),
-
-                  // Rarity badge
-                  Positioned(
-                    top: AppSpacing.sm,
-                    right: AppSpacing.sm,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: AppSpacing.sm,
-                        vertical: AppSpacing.xs,
-                      ),
-                      decoration: BoxDecoration(
-                        color: rarityColor,
-                        borderRadius: AppRadius.mediumRadius,
-                      ),
-                      child: Text(
-                        achievement.rarity.displayName.toUpperCase(),
-                        style: Theme.of(context).textTheme.labelSmall!.copyWith(
-                          color: AppColors.onPrimary,
+                // Name and description
+                Container(
+                  padding: const EdgeInsets.all(AppSpacing.md),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        achievement.isHidden && isLocked
+                            ? '???'
+                            : achievement.name,
+                        style: Theme.of(context).textTheme.titleSmall?.copyWith(
                           fontWeight: FontWeight.bold,
+                          color: isLocked ? context.textHint : null,
                         ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-
-            // Name and description
-            Container(
-              padding: const EdgeInsets.all(AppSpacing.md),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    achievement.isHidden && isLocked ? '???' : achievement.name,
-                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: isLocked ? context.textHint : null,
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  const SizedBox(height: AppSpacing.xs),
-                  Text(
-                    achievement.isHidden && isLocked
-                        ? 'Hidden achievement'
-                        : achievement.description,
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: isLocked ? context.textHint : context.textPrimary,
-                    ),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-
-                  // Progress bar for in-progress achievements
-                  if (hasProgress) ...[
-                    const SizedBox(height: AppSpacing.sm),
-                    _AnimatedProgressBar(
-                      value: progressPercent,
-                      color: rarityColor,
-                      backgroundColor: Theme.of(context).colorScheme.outlineVariant,
-                    ),
-                    const SizedBox(height: AppSpacing.xs),
-                    Text(
-                      '${progress.currentCount} / ${achievement.targetCount}',
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: context.textHint,
+                      const SizedBox(height: AppSpacing.xs),
+                      Text(
+                        achievement.isHidden && isLocked
+                            ? 'Hidden achievement'
+                            : achievement.description,
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: isLocked
+                              ? context.textHint
+                              : context.textPrimary,
+                        ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
                       ),
-                    ),
-                  ],
-                ],
-              ),
+
+                      // Progress bar for in-progress achievements
+                      if (hasProgress) ...[
+                        const SizedBox(height: AppSpacing.sm),
+                        _AnimatedProgressBar(
+                          value: progressPercent,
+                          color: rarityColor,
+                          backgroundColor: Theme.of(
+                            context,
+                          ).colorScheme.outlineVariant,
+                        ),
+                        const SizedBox(height: AppSpacing.xs),
+                        Text(
+                          '${progress.currentCount} / ${achievement.targetCount}',
+                          style: Theme.of(context).textTheme.bodySmall
+                              ?.copyWith(color: context.textHint),
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
-      ),
+          ),
         ),
       ),
     );

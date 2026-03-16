@@ -20,7 +20,10 @@ class SectionHeader extends StatelessWidget {
       child: Row(
         children: [
           Text(title, style: AppTypography.headlineSmall),
-          if (trailing != null) ...[const SizedBox(width: AppSpacing.sm), trailing!],
+          if (trailing != null) ...[
+            const SizedBox(width: AppSpacing.sm),
+            trailing!,
+          ],
           const Spacer(),
           if (onViewAll != null)
             TextButton(onPressed: onViewAll, child: const Text('View All')),

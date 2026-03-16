@@ -40,7 +40,10 @@ class SyncAction {
 
   factory SyncAction.fromJson(Map<String, dynamic> json) => SyncAction(
     id: json['id'] as String,
-    type: SyncActionType.values.firstWhere((e) => e.name == json['type'], orElse: () => SyncActionType.profileUpdate),
+    type: SyncActionType.values.firstWhere(
+      (e) => e.name == json['type'],
+      orElse: () => SyncActionType.profileUpdate,
+    ),
     data: Map<String, dynamic>.from(json['data'] as Map),
     timestamp: DateTime.parse(json['timestamp'] as String),
   );

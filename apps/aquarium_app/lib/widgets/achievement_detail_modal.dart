@@ -1,6 +1,7 @@
 /// Achievement Detail Modal - Detailed view when tapping achievement
 /// Shows full description, progress, unlock date, and XP reward
 library;
+
 import 'package:danio/theme/app_theme.dart';
 
 import 'package:flutter/material.dart';
@@ -31,7 +32,9 @@ class AchievementDetailModal extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(AppRadius.lg)),
+        borderRadius: const BorderRadius.vertical(
+          top: Radius.circular(AppRadius.lg),
+        ),
       ),
       padding: const EdgeInsets.all(AppSpacing.lg),
       child: SingleChildScrollView(
@@ -73,9 +76,10 @@ class AchievementDetailModal extends StatelessWidget {
                   children: [
                     Text(
                       achievement.icon,
-                      style: Theme.of(context).textTheme.headlineMedium!.copyWith(
-                        color: isLocked ? AppColors.blackAlpha25 : null,
-                      ),
+                      style: Theme.of(context).textTheme.headlineMedium!
+                          .copyWith(
+                            color: isLocked ? AppColors.blackAlpha25 : null,
+                          ),
                     ),
                     if (isLocked && achievement.isHidden)
                       Positioned.fill(
@@ -102,7 +106,10 @@ class AchievementDetailModal extends StatelessWidget {
 
             // Rarity badge
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: AppSpacing.xs2),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: AppSpacing.xs2,
+              ),
               decoration: BoxDecoration(
                 color: rarityColor,
                 borderRadius: AppRadius.mediumRadius,
@@ -133,7 +140,10 @@ class AchievementDetailModal extends StatelessWidget {
 
             // Category badge
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: AppSpacing.xs2),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 12,
+                vertical: AppSpacing.xs2,
+              ),
               decoration: BoxDecoration(
                 color: Theme.of(context).colorScheme.surfaceContainerHigh,
                 borderRadius: AppRadius.mediumRadius,
@@ -229,7 +239,11 @@ class AchievementDetailModal extends StatelessWidget {
                 children: [
                   Column(
                     children: [
-                      const Icon(Icons.star, color: AppColors.xp, size: AppIconSizes.lg),
+                      const Icon(
+                        Icons.star,
+                        color: AppColors.xp,
+                        size: AppIconSizes.lg,
+                      ),
                       const SizedBox(height: AppSpacing.xs),
                       Text(
                         '${achievement.rarity.xpReward} XP',
@@ -238,9 +252,9 @@ class AchievementDetailModal extends StatelessWidget {
                       ),
                       Text(
                         'Reward',
-                        style: Theme.of(
-                          context,
-                        ).textTheme.bodySmall?.copyWith(color: context.textHint),
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: context.textHint,
+                        ),
                       ),
                     ],
                   ),
@@ -265,9 +279,8 @@ class AchievementDetailModal extends StatelessWidget {
                         ),
                         Text(
                           'Unlocked',
-                          style: Theme.of(
-                            context,
-                          ).textTheme.bodySmall?.copyWith(color: context.textHint),
+                          style: Theme.of(context).textTheme.bodySmall
+                              ?.copyWith(color: context.textHint),
                         ),
                       ],
                     ),
@@ -284,10 +297,14 @@ class AchievementDetailModal extends StatelessWidget {
                 padding: const EdgeInsets.all(AppSpacing.sm2),
                 decoration: BoxDecoration(
                   // Warm tint adapts to dark mode
-                  color: isDark ? AppColors.primaryAlpha10 : AppColors.primaryAlpha08,
+                  color: isDark
+                      ? AppColors.primaryAlpha10
+                      : AppColors.primaryAlpha08,
                   borderRadius: AppRadius.smallRadius,
                   border: Border.all(
-                    color: isDark ? AppColors.primaryAlpha30 : AppColors.primaryAlpha25,
+                    color: isDark
+                        ? AppColors.primaryAlpha30
+                        : AppColors.primaryAlpha25,
                   ),
                 ),
                 child: Row(
@@ -298,7 +315,9 @@ class AchievementDetailModal extends StatelessWidget {
                       child: Text(
                         'Keep learning to unlock this achievement!',
                         style: TextStyle(
-                          color: isDark ? AppColors.primaryLight : AppColors.primary,
+                          color: isDark
+                              ? AppColors.primaryLight
+                              : AppColors.primary,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
@@ -311,10 +330,14 @@ class AchievementDetailModal extends StatelessWidget {
                 padding: const EdgeInsets.all(AppSpacing.sm2),
                 decoration: BoxDecoration(
                   // Warm amber tint — works in both light and dark
-                  color: isDark ? AppColors.warningAlpha12 : AppColors.warningAlpha10,
+                  color: isDark
+                      ? AppColors.warningAlpha12
+                      : AppColors.warningAlpha10,
                   borderRadius: AppRadius.smallRadius,
                   border: Border.all(
-                    color: isDark ? AppColors.warningAlpha40 : AppColors.warningAlpha30,
+                    color: isDark
+                        ? AppColors.warningAlpha40
+                        : AppColors.warningAlpha30,
                   ),
                 ),
                 child: Row(

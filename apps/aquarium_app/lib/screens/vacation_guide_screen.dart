@@ -17,7 +17,11 @@ class VacationGuideScreen extends StatelessWidget {
             padding: AppCardPadding.standard,
             child: Row(
               children: [
-                Icon(Icons.flight, size: AppIconSizes.lg, color: context.textSecondary),
+                Icon(
+                  Icons.flight,
+                  size: AppIconSizes.lg,
+                  color: context.textSecondary,
+                ),
                 const SizedBox(width: AppSpacing.sm2),
                 Expanded(
                   child: Text(
@@ -196,9 +200,7 @@ class VacationGuideScreen extends StatelessWidget {
                   text:
                       'Write clear instructions - feeding only, no maintenance',
                 ),
-                _BulletPoint(
-                  text: 'Show them where NOT to stick their hands',
-                ),
+                _BulletPoint(text: 'Show them where NOT to stick their hands'),
                 _BulletPoint(text: 'Leave your contact info'),
                 _BulletPoint(
                   text: 'Leave emergency contact (local fish store, etc.)',
@@ -265,10 +267,7 @@ class VacationGuideScreen extends StatelessWidget {
                 _NumberedStep(num: 2, text: 'Check temperature'),
                 _NumberedStep(num: 3, text: 'Test water parameters'),
                 _NumberedStep(num: 4, text: 'Do a water change (25-30%)'),
-                _NumberedStep(
-                  num: 5,
-                  text: 'Resume normal feeding gradually',
-                ),
+                _NumberedStep(num: 5, text: 'Resume normal feeding gradually'),
                 _NumberedStep(num: 6, text: 'Check equipment is working'),
                 _NumberedStep(
                   num: 7,

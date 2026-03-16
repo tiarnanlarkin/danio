@@ -11,15 +11,15 @@ class SkeletonPlaceholders {
 
   /// Placeholder livestock for skeleton display
   static Livestock get livestock => Livestock(
-        id: 'skeleton-livestock',
-        tankId: 'skeleton-tank',
-        commonName: 'Neon Tetra Fish',
-        scientificName: 'Paracheirodon innesi',
-        count: 10,
-        dateAdded: _now,
-        createdAt: _now,
-        updatedAt: _now,
-      );
+    id: 'skeleton-livestock',
+    tankId: 'skeleton-tank',
+    commonName: 'Neon Tetra Fish',
+    scientificName: 'Paracheirodon innesi',
+    count: 10,
+    dateAdded: _now,
+    createdAt: _now,
+    updatedAt: _now,
+  );
 
   /// List of placeholder livestock items
   static List<Livestock> get livestockList =>
@@ -27,17 +27,17 @@ class SkeletonPlaceholders {
 
   /// Placeholder equipment for skeleton display
   static Equipment get equipment => Equipment(
-        id: 'skeleton-equipment',
-        tankId: 'skeleton-tank',
-        type: EquipmentType.filter,
-        name: 'Fluval 307 Canister',
-        brand: 'Fluval',
-        maintenanceIntervalDays: 30,
-        lastServiced: _now.subtract(const Duration(days: 15)),
-        installedDate: _now.subtract(const Duration(days: 90)),
-        createdAt: _now,
-        updatedAt: _now,
-      );
+    id: 'skeleton-equipment',
+    tankId: 'skeleton-tank',
+    type: EquipmentType.filter,
+    name: 'Fluval 307 Canister',
+    brand: 'Fluval',
+    maintenanceIntervalDays: 30,
+    lastServiced: _now.subtract(const Duration(days: 15)),
+    installedDate: _now.subtract(const Duration(days: 90)),
+    createdAt: _now,
+    updatedAt: _now,
+  );
 
   /// List of placeholder equipment items
   static List<Equipment> get equipmentList =>
@@ -45,14 +45,14 @@ class SkeletonPlaceholders {
 
   /// Placeholder log entry for skeleton display
   static LogEntry get logEntry => LogEntry(
-        id: 'skeleton-log',
-        tankId: 'skeleton-tank',
-        type: LogType.waterTest,
-        timestamp: _now,
-        title: 'Water parameters looking good',
-        notes: 'Everything is stable today',
-        createdAt: _now,
-      );
+    id: 'skeleton-log',
+    tankId: 'skeleton-tank',
+    type: LogType.waterTest,
+    timestamp: _now,
+    title: 'Water parameters looking good',
+    notes: 'Everything is stable today',
+    createdAt: _now,
+  );
 
   /// List of placeholder log entries
   static List<LogEntry> get logsList => List.generate(5, (i) => logEntry);

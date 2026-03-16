@@ -173,9 +173,7 @@ class NotebookCard extends StatelessWidget {
           ],
           // Subtle paper texture border
           border: Border.all(
-            color: isDark
-                ? AppOverlays.white5
-                : const Color(0xFFE8E4DC),
+            color: isDark ? AppOverlays.white5 : const Color(0xFFE8E4DC),
             width: 1,
           ),
         ),
@@ -187,7 +185,10 @@ class NotebookCard extends StatelessWidget {
                 child: CustomPaint(painter: _NotebookLinesPainter()),
               ),
             // Content
-            Padding(padding: padding ?? const EdgeInsets.all(AppSpacing.md), child: child),
+            Padding(
+              padding: padding ?? const EdgeInsets.all(AppSpacing.md),
+              child: child,
+            ),
           ],
         ),
       ),
@@ -329,14 +330,8 @@ class _ShelfBracket extends StatelessWidget {
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: isDark
-              ? [
-                  const Color(0xFF3D2E22),
-                  AppColors.successAlpha100,
-                ]
-              : [
-                  const Color(0xFFC49A6C),
-                  AppColors.successAlpha100,
-                ],
+              ? [const Color(0xFF3D2E22), AppColors.successAlpha100]
+              : [const Color(0xFFC49A6C), AppColors.successAlpha100],
         ),
         borderRadius: const BorderRadius.vertical(bottom: Radius.circular(8)),
       ),
@@ -425,9 +420,7 @@ class WindowDecoration extends StatelessWidget {
             : AppOverlays.lightBlueGrey80,
         borderRadius: AppRadius.smallRadius,
         border: Border.all(
-          color: isDark
-              ? AppOverlays.white10
-              : const Color(0xFFD4D0C8),
+          color: isDark ? AppOverlays.white10 : const Color(0xFFD4D0C8),
           width: 6,
         ),
       ),
@@ -452,9 +445,7 @@ class WindowDecoration extends StatelessWidget {
           // Window divider
           Container(
             height: 6,
-            color: isDark
-                ? AppOverlays.white10
-                : const Color(0xFFD4D0C8),
+            color: isDark ? AppOverlays.white10 : const Color(0xFFD4D0C8),
           ),
           // Bottom pane
           Expanded(

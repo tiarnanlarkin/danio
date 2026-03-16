@@ -24,14 +24,22 @@ class WaterTargets {
     this.ghMax,
     this.khMin,
     this.khMax,
-  })  : assert(tempMin == null || tempMax == null || tempMin <= tempMax,
-             'tempMin must be <= tempMax'),
-        assert(phMin == null || phMax == null || phMin <= phMax,
-             'phMin must be <= phMax'),
-        assert(ghMin == null || ghMax == null || ghMin <= ghMax,
-             'ghMin must be <= ghMax'),
-        assert(khMin == null || khMax == null || khMin <= khMax,
-             'khMin must be <= khMax');
+  }) : assert(
+         tempMin == null || tempMax == null || tempMin <= tempMax,
+         'tempMin must be <= tempMax',
+       ),
+       assert(
+         phMin == null || phMax == null || phMin <= phMax,
+         'phMin must be <= phMax',
+       ),
+       assert(
+         ghMin == null || ghMax == null || ghMin <= ghMax,
+         'ghMin must be <= ghMax',
+       ),
+       assert(
+         khMin == null || khMax == null || khMin <= khMax,
+         'khMin must be <= khMax',
+       );
 
   /// Default freshwater tropical targets
   factory WaterTargets.freshwaterTropical() => const WaterTargets(

@@ -15,7 +15,7 @@ import 'mascot/mascot_widgets.dart';
 ///   onAction: () => _createTank(),
 /// )
 /// ```
-/// 
+///
 /// With mascot:
 /// ```dart
 /// EmptyState.withMascot(
@@ -35,10 +35,10 @@ class EmptyState extends StatefulWidget {
   final VoidCallback? onAction;
   final Widget? illustration;
   final List<String>? tips;
-  
+
   /// Optional mascot message to display
   final String? mascotMessage;
-  
+
   /// Optional mascot mood (defaults to encouraging)
   final MascotMood? mascotMood;
 
@@ -54,7 +54,7 @@ class EmptyState extends StatefulWidget {
     this.mascotMessage,
     this.mascotMood,
   });
-  
+
   /// Create an empty state with Finn the mascot
   factory EmptyState.withMascot({
     Key? key,
@@ -85,8 +85,7 @@ class EmptyState extends StatefulWidget {
   State<EmptyState> createState() => _EmptyStateState();
 }
 
-class _EmptyStateState extends State<EmptyState>
-    with TickerProviderStateMixin {
+class _EmptyStateState extends State<EmptyState> with TickerProviderStateMixin {
   late AnimationController _controller;
   late AnimationController _floatController;
   late Animation<double> _fadeAnimation;
@@ -111,15 +110,13 @@ class _EmptyStateState extends State<EmptyState>
     );
     _floatController.repeat(reverse: true);
 
-    _fadeAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(parent: _controller, curve: AppCurves.standardAccelerate));
+    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _controller, curve: AppCurves.standardAccelerate),
+    );
 
-    _scaleAnimation = Tween<double>(
-      begin: 0.8,
-      end: 1.0,
-    ).animate(CurvedAnimation(parent: _controller, curve: AppCurves.standardDecelerate));
+    _scaleAnimation = Tween<double>(begin: 0.8, end: 1.0).animate(
+      CurvedAnimation(parent: _controller, curve: AppCurves.standardDecelerate),
+    );
 
     _controller.forward();
   }
@@ -150,39 +147,41 @@ class _EmptyStateState extends State<EmptyState>
                   AnimatedBuilder(
                     animation: _floatAnimation,
                     builder: (context, child) {
-                      final reduceMotion = MediaQuery.of(context).disableAnimations;
+                      final reduceMotion = MediaQuery.of(
+                        context,
+                      ).disableAnimations;
                       return Transform.translate(
-                        offset: Offset(0, reduceMotion ? 0 : _floatAnimation.value),
+                        offset: Offset(
+                          0,
+                          reduceMotion ? 0 : _floatAnimation.value,
+                        ),
                         child: child,
                       );
                     },
                     child: Container(
-                    width: 120,
-                    height: 120,
-                    decoration: BoxDecoration(
-                      gradient: const LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        colors: [
-                          AppOverlays.primary10,
-                          AppOverlays.primary5,
+                      width: 120,
+                      height: 120,
+                      decoration: BoxDecoration(
+                        gradient: const LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [AppOverlays.primary10, AppOverlays.primary5],
+                        ),
+                        shape: BoxShape.circle,
+                        boxShadow: const [
+                          BoxShadow(
+                            color: AppOverlays.primary10,
+                            blurRadius: 20,
+                            offset: Offset(0, 10),
+                          ),
                         ],
                       ),
-                      shape: BoxShape.circle,
-                      boxShadow: const [
-                        BoxShadow(
-                          color: AppOverlays.primary10,
-                          blurRadius: 20,
-                          offset: Offset(0, 10),
-                        ),
-                      ],
+                      child: Icon(
+                        widget.icon,
+                        size: 64,
+                        color: AppColors.primary,
+                      ),
                     ),
-                    child: Icon(
-                      widget.icon,
-                      size: 64,
-                      color: AppColors.primary,
-                    ),
-                  ),
                   ),
 
                 const SizedBox(height: AppSpacing.lg),
@@ -215,10 +214,7 @@ class _EmptyStateState extends State<EmptyState>
                     decoration: BoxDecoration(
                       color: AppOverlays.info5,
                       borderRadius: AppRadius.mediumRadius,
-                      border: Border.all(
-                        color: AppOverlays.accent20,
-                        width: 1,
-                      ),
+                      border: Border.all(color: AppOverlays.accent20, width: 1),
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -278,7 +274,7 @@ class _EmptyStateState extends State<EmptyState>
                     size: MascotSize.medium,
                   ),
                 ],
-                
+
                 // Action button
                 if (widget.actionLabel != null && widget.onAction != null) ...[
                   const SizedBox(height: AppSpacing.lg),

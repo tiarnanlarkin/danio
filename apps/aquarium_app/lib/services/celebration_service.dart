@@ -17,7 +17,7 @@ class CelebrationState {
   final String? subtitle;
   final CelebrationLevel level;
   final ConfettiController? confettiController;
-  
+
   const CelebrationState({
     this.isActive = false,
     this.title,
@@ -25,7 +25,7 @@ class CelebrationState {
     this.level = CelebrationLevel.standard,
     this.confettiController,
   });
-  
+
   CelebrationState copyWith({
     bool? isActive,
     String? title,
@@ -47,50 +47,51 @@ class CelebrationState {
 enum CelebrationLevel {
   /// Quick confetti burst
   standard,
-  
+
   /// Achievement unlocked - confetti + overlay
   achievement,
-  
+
   /// Level up - special effects
   levelUp,
-  
+
   /// Milestone - big celebration
   milestone,
 }
 
 /// Provider for celebration state
-final celebrationProvider = StateNotifierProvider<CelebrationNotifier, CelebrationState>(
-  (ref) => CelebrationNotifier(ref),
-);
+final celebrationProvider =
+    StateNotifierProvider<CelebrationNotifier, CelebrationState>(
+      (ref) => CelebrationNotifier(ref),
+    );
 
 /// Notifier for managing celebrations
 class CelebrationNotifier extends StateNotifier<CelebrationState> {
   CelebrationNotifier(this._ref) : super(const CelebrationState());
-  
+
   final Ref _ref;
   ConfettiController? _controller;
-  
+
   /// Trigger a standard confetti burst
   /// With reduced motion: skips confetti, shows simple success indicator
   void confetti({Duration duration = const Duration(seconds: 2)}) {
     final reducedMotion = _ref.read(reducedMotionProvider);
-    
+
     if (reducedMotion.disableDecorativeAnimations) {
       // Skip confetti animation entirely for reduced motion
       return;
     }
-    
+
     _disposeController();
     _controller = ConfettiController(duration: duration);
-    
+
     state = CelebrationState(
       isActive: true,
       level: CelebrationLevel.standard,
       confettiController: _controller,
     );
-    
-    _controller!.play();
-    
+
+    _controller?.play();
+
     // Auto-dismiss after duration
     Future.delayed(duration + const Duration(milliseconds: 500), () {
       if (mounted) {
@@ -98,19 +99,19 @@ class CelebrationNotifier extends StateNotifier<CelebrationState> {
       }
     });
   }
-  
+
   /// Trigger an achievement celebration with title overlay
   /// With reduced motion: simplified overlay, no confetti
   void achievement(String title, {String? subtitle}) {
     final reducedMotion = _ref.read(reducedMotionProvider);
-    
+
     _disposeController();
-    
+
     // Skip confetti for reduced motion, but still show title
     if (!reducedMotion.disableDecorativeAnimations) {
       _controller = ConfettiController(duration: const Duration(seconds: 3));
     }
-    
+
     state = CelebrationState(
       isActive: true,
       title: title,
@@ -118,27 +119,27 @@ class CelebrationNotifier extends StateNotifier<CelebrationState> {
       level: CelebrationLevel.achievement,
       confettiController: _controller,
     );
-    
+
     _controller?.play();
-    
+
     // Auto-dismiss after animation (shorter for reduced motion)
     final dismissDelay = reducedMotion.isEnabled
         ? const Duration(seconds: 2)
         : const Duration(seconds: 4);
-    
+
     Future.delayed(dismissDelay, () {
       if (mounted) {
         dismiss();
       }
     });
   }
-  
+
   /// Trigger a level up celebration (basic confetti version)
   /// For the enhanced overlay, use showLevelUpOverlay() with a BuildContext
   void levelUp(int level, {String? levelTitle}) {
     _disposeController();
     _controller = ConfettiController(duration: const Duration(seconds: 4));
-    
+
     state = CelebrationState(
       isActive: true,
       title: 'Level $level!',
@@ -146,9 +147,9 @@ class CelebrationNotifier extends StateNotifier<CelebrationState> {
       level: CelebrationLevel.levelUp,
       confettiController: _controller,
     );
-    
-    _controller!.play();
-    
+
+    _controller?.play();
+
     // Auto-dismiss after animation
     Future.delayed(const Duration(seconds: 5), () {
       if (mounted) {
@@ -156,26 +157,26 @@ class CelebrationNotifier extends StateNotifier<CelebrationState> {
       }
     });
   }
-  
+
   /// Show enhanced level up overlay with full-screen animation
   /// This is the preferred method when a BuildContext is available
-  void showLevelUpOverlay(BuildContext context, int level, {String? levelTitle}) {
+  void showLevelUpOverlay(
+    BuildContext context,
+    int level, {
+    String? levelTitle,
+  }) {
     // Dismiss any existing celebration
     dismiss();
-    
+
     // Show the enhanced level up overlay
-    LevelUpOverlay.show(
-      context,
-      newLevel: level,
-      levelTitle: levelTitle,
-    );
+    LevelUpOverlay.show(context, newLevel: level, levelTitle: levelTitle);
   }
-  
+
   /// Trigger a milestone celebration (big achievement)
   void milestone(String title, {String? subtitle}) {
     _disposeController();
     _controller = ConfettiController(duration: const Duration(seconds: 5));
-    
+
     state = CelebrationState(
       isActive: true,
       title: title,
@@ -183,9 +184,9 @@ class CelebrationNotifier extends StateNotifier<CelebrationState> {
       level: CelebrationLevel.milestone,
       confettiController: _controller,
     );
-    
-    _controller!.play();
-    
+
+    _controller?.play();
+
     // Auto-dismiss after animation
     Future.delayed(const Duration(seconds: 6), () {
       if (mounted) {
@@ -193,18 +194,18 @@ class CelebrationNotifier extends StateNotifier<CelebrationState> {
       }
     });
   }
-  
+
   /// Dismiss active celebration
   void dismiss() {
     _disposeController();
     state = const CelebrationState();
   }
-  
+
   void _disposeController() {
     _controller?.dispose();
     _controller = null;
   }
-  
+
   @override
   void dispose() {
     _disposeController();
@@ -216,19 +217,21 @@ class CelebrationNotifier extends StateNotifier<CelebrationState> {
 /// Wrap your MaterialApp's home with this widget
 class CelebrationOverlayWrapper extends ConsumerStatefulWidget {
   final Widget child;
-  
+
   const CelebrationOverlayWrapper({super.key, required this.child});
-  
+
   @override
-  ConsumerState<CelebrationOverlayWrapper> createState() => _CelebrationOverlayWrapperState();
+  ConsumerState<CelebrationOverlayWrapper> createState() =>
+      _CelebrationOverlayWrapperState();
 }
 
-class _CelebrationOverlayWrapperState extends ConsumerState<CelebrationOverlayWrapper>
+class _CelebrationOverlayWrapperState
+    extends ConsumerState<CelebrationOverlayWrapper>
     with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _scaleAnimation;
   late Animation<double> _fadeAnimation;
-  
+
   @override
   void initState() {
     super.initState();
@@ -236,18 +239,18 @@ class _CelebrationOverlayWrapperState extends ConsumerState<CelebrationOverlayWr
       vsync: this,
       duration: const Duration(milliseconds: 600),
     );
-    
+
     _scaleAnimation = CurvedAnimation(
       parent: _animationController,
       curve: Curves.elasticOut,
     );
-    
+
     _fadeAnimation = CurvedAnimation(
       parent: _animationController,
       curve: Curves.easeIn,
     );
   }
-  
+
   @override
   void dispose() {
     _animationController.dispose();
@@ -276,18 +279,18 @@ class _CelebrationOverlayWrapperState extends ConsumerState<CelebrationOverlayWr
         });
       }
     });
-    
+
     return Stack(
       children: [
         widget.child,
-        
+
         // Celebration overlay
         if (celebration.isActive && celebration.confettiController != null)
           _buildCelebrationOverlay(celebration),
       ],
     );
   }
-  
+
   Widget _buildCelebrationOverlay(CelebrationState celebration) {
     // Determine colors based on celebration level
     final colors = switch (celebration.level) {
@@ -296,7 +299,7 @@ class _CelebrationOverlayWrapperState extends ConsumerState<CelebrationOverlayWr
       CelebrationLevel.levelUp => ConfettiColors.levelUp,
       CelebrationLevel.milestone => ConfettiColors.rainbow,
     };
-    
+
     // Determine blast type based on celebration level
     final blastType = switch (celebration.level) {
       CelebrationLevel.standard => ConfettiBlastType.explosive,
@@ -304,9 +307,9 @@ class _CelebrationOverlayWrapperState extends ConsumerState<CelebrationOverlayWr
       CelebrationLevel.levelUp => ConfettiBlastType.fountain,
       CelebrationLevel.milestone => ConfettiBlastType.corners,
     };
-    
+
     final hasOverlay = celebration.level != CelebrationLevel.standard;
-    
+
     return Positioned.fill(
       child: IgnorePointer(
         ignoring: !hasOverlay,
@@ -318,23 +321,23 @@ class _CelebrationOverlayWrapperState extends ConsumerState<CelebrationOverlayWr
                 onTap: () => ref.read(celebrationProvider.notifier).dismiss(),
                 child: FadeTransition(
                   opacity: _fadeAnimation,
-                  child: Container(
-                    color: Colors.black54,
-                  ),
+                  child: Container(color: Colors.black54),
                 ),
               ),
-            
+
             // Confetti overlay
             ConfettiOverlay(
               controller: celebration.confettiController,
               blastType: blastType,
               colors: colors,
-              numberOfParticles: celebration.level == CelebrationLevel.milestone ? 40 : 25,
-              particleShape: celebration.level == CelebrationLevel.levelUp 
-                  ? ConfettiParticleShape.stars 
+              numberOfParticles: celebration.level == CelebrationLevel.milestone
+                  ? 40
+                  : 25,
+              particleShape: celebration.level == CelebrationLevel.levelUp
+                  ? ConfettiParticleShape.stars
                   : ConfettiParticleShape.stars,
             ),
-            
+
             // Text overlay for achievements/level ups
             if (hasOverlay && celebration.title != null)
               Center(
@@ -351,22 +354,28 @@ class _CelebrationOverlayWrapperState extends ConsumerState<CelebrationOverlayWr
       ),
     );
   }
-  
+
   Widget _buildCelebrationCard(CelebrationState celebration) {
     final gradientColors = switch (celebration.level) {
-      CelebrationLevel.levelUp => [const Color(0xFF6366F1), const Color(0xFF8B5CF6)],
-      CelebrationLevel.achievement => [const Color(0xFFFFB300), const Color(0xFFFFD700)],
+      CelebrationLevel.levelUp => [
+        const Color(0xFF6366F1),
+        const Color(0xFF8B5CF6),
+      ],
+      CelebrationLevel.achievement => [
+        const Color(0xFFFFB300),
+        const Color(0xFFFFD700),
+      ],
       CelebrationLevel.milestone => [AppColors.primary, AppColors.secondary],
       CelebrationLevel.standard => [AppColors.primary, AppColors.primaryLight],
     };
-    
+
     final emoji = switch (celebration.level) {
       CelebrationLevel.levelUp => '⬆️',
       CelebrationLevel.achievement => '🏆',
       CelebrationLevel.milestone => '🎉',
       CelebrationLevel.standard => '✨',
     };
-    
+
     return GestureDetector(
       onTap: () => ref.read(celebrationProvider.notifier).dismiss(),
       child: Container(
@@ -392,7 +401,9 @@ class _CelebrationOverlayWrapperState extends ConsumerState<CelebrationOverlayWr
           children: [
             Text(
               emoji,
-              style: Theme.of(context).textTheme.headlineMedium!.copyWith(fontSize: 64),
+              style: Theme.of(
+                context,
+              ).textTheme.headlineMedium!.copyWith(fontSize: 64),
             ),
             const SizedBox(height: AppSpacing.md),
             Text(
@@ -416,9 +427,9 @@ class _CelebrationOverlayWrapperState extends ConsumerState<CelebrationOverlayWr
             const SizedBox(height: AppSpacing.lg),
             Text(
               'Tap to dismiss',
-              style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                color: AppColors.whiteAlpha70,
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.bodySmall!.copyWith(color: AppColors.whiteAlpha70),
             ),
           ],
         ),
@@ -431,20 +442,25 @@ class _CelebrationOverlayWrapperState extends ConsumerState<CelebrationOverlayWr
 extension CelebrationExtension on WidgetRef {
   /// Quick access to trigger confetti
   void celebrate() => read(celebrationProvider.notifier).confetti();
-  
+
   /// Quick access to trigger achievement celebration
   void celebrateAchievement(String title, {String? subtitle}) =>
       read(celebrationProvider.notifier).achievement(title, subtitle: subtitle);
-  
+
   /// Quick access to trigger level up celebration (basic)
   void celebrateLevelUp(int level, {String? levelTitle}) =>
       read(celebrationProvider.notifier).levelUp(level, levelTitle: levelTitle);
-  
+
   /// Quick access to trigger enhanced level up overlay
   /// Requires BuildContext for the full-screen overlay
-  void showLevelUpOverlay(BuildContext context, int level, {String? levelTitle}) =>
-      read(celebrationProvider.notifier).showLevelUpOverlay(context, level, levelTitle: levelTitle);
-  
+  void showLevelUpOverlay(
+    BuildContext context,
+    int level, {
+    String? levelTitle,
+  }) => read(
+    celebrationProvider.notifier,
+  ).showLevelUpOverlay(context, level, levelTitle: levelTitle);
+
   /// Quick access to trigger milestone celebration
   void celebrateMilestone(String title, {String? subtitle}) =>
       read(celebrationProvider.notifier).milestone(title, subtitle: subtitle);

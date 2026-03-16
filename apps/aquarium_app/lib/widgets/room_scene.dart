@@ -39,6 +39,7 @@ class LivingRoomScene extends ConsumerWidget {
   final VoidCallback? onJournalTap;
   final VoidCallback? onCalendarTap;
   final bool isNewUser;
+
   /// Whether to use animated Rive fish instead of static drawn fish
   final bool useRiveFish;
 
@@ -97,7 +98,9 @@ class LivingRoomScene extends ConsumerWidget {
               // Only sparkles for special themes remain here.
 
               // Stars/sparkles for whimsical themes
-              if (theme.name == 'Whimsical' || theme.name == 'Midnight' || theme.name == 'Aurora') ...[
+              if (theme.name == 'Whimsical' ||
+                  theme.name == 'Midnight' ||
+                  theme.name == 'Aurora') ...[
                 Positioned(
                   top: h * 0.08,
                   left: w * 0.15,
@@ -160,15 +163,17 @@ class LivingRoomScene extends ConsumerWidget {
               // Tank bottom edge = h*0.24 + h*0.44 = h*0.68; right edge = w - w*0.06 = w*0.94
               // Use small offsets (6dp) so the badge hugs the corner tightly.
               Positioned(
-                bottom: h - (h * 0.68) + 6, // 6dp above tank bottom edge (inside glass border)
-                right: w * 0.06 + 6,        // 6dp inside tank right edge
+                bottom:
+                    h -
+                    (h * 0.68) +
+                    6, // 6dp above tank bottom edge (inside glass border)
+                right: w * 0.06 + 6, // 6dp inside tank right edge
                 child: TankGlassBadge(
                   tankName: tankName,
                   tankVolume: tankVolume,
                   theme: theme,
                 ),
               ),
-
 
               // === LAYER 6: Interactive objects ===
               // REMOVED: scattered interactive objects replaced by quick action menu (separate sprint).
@@ -334,11 +339,7 @@ class _SparklePainter extends CustomPainter {
     canvas.drawPath(path, paint);
 
     // Inner glow
-    canvas.drawCircle(
-      center,
-      r * 0.3,
-      Paint()..color = AppOverlays.white50,
-    );
+    canvas.drawCircle(center, r * 0.3, Paint()..color = AppOverlays.white50);
   }
 
   @override
@@ -401,12 +402,12 @@ class _CozyRoomPainter extends CustomPainter {
   late final Color _waterMidAlpha13 = theme.waterMid.withAlpha(13);
 
   // Warm lighting constants (not theme-dependent)
-  static const _lampAmber38 = Color(0x26FFB347);  // #FFB347 at alpha 38
-  static const _lampAmber20 = Color(0x14FFB347);  // #FFB347 at alpha 20
-  static const _lampBright = Color(0xFFFFCC66);    // Lamp indicator
-  static const _warmHoney25 = Color(0x19F5D68B);  // #F5D68B at alpha 25
-  static const _tankGlow15 = Color(0x0FFFD68B);   // #FFD68B at alpha 15
-  static const _tankGlow20 = Color(0x14FFD68B);   // #FFD68B at alpha 20
+  static const _lampAmber38 = Color(0x26FFB347); // #FFB347 at alpha 38
+  static const _lampAmber20 = Color(0x14FFB347); // #FFB347 at alpha 20
+  static const _lampBright = Color(0xFFFFCC66); // Lamp indicator
+  static const _warmHoney25 = Color(0x19F5D68B); // #F5D68B at alpha 25
+  static const _tankGlow15 = Color(0x0FFFD68B); // #FFD68B at alpha 15
+  static const _tankGlow20 = Color(0x14FFD68B); // #FFD68B at alpha 20
 
   // Determine if this is a dark/night theme
   bool get _isDarkTheme {
@@ -415,7 +416,7 @@ class _CozyRoomPainter extends CustomPainter {
   }
 
   // Cozy room uses warm base colors regardless of theme
-  Color get _wallColor => _isDarkTheme 
+  Color get _wallColor => _isDarkTheme
       ? const Color(0xFF3D3830) // Warm charcoal-brown
       : const Color(0xFFF2E6D9); // Warmer golden cream
 
@@ -447,7 +448,7 @@ class _CozyRoomPainter extends CustomPainter {
       ],
       stops: const [0.0, 0.6, 1.0],
     );
-    
+
     canvas.drawRect(
       Rect.fromLTWH(0, 0, w, h),
       Paint()..shader = wallGradient.createShader(Rect.fromLTWH(0, 0, w, h)),
@@ -457,7 +458,7 @@ class _CozyRoomPainter extends CustomPainter {
     final texturePaint = Paint()
       ..color = (_isDarkTheme ? AppColors.whiteAlpha05 : AppColors.blackAlpha05)
       ..strokeWidth = 1.5;
-    
+
     for (var x = 0.0; x < w; x += 25) {
       canvas.drawLine(Offset(x, 0), Offset(x, h * 0.62), texturePaint);
     }
@@ -466,11 +467,8 @@ class _CozyRoomPainter extends CustomPainter {
     final panelTop = h * 0.45;
     final panelPaint = Paint()
       ..color = Color.lerp(_wallAccent, _floorColor, 0.25)!;
-    canvas.drawRect(
-      Rect.fromLTWH(0, panelTop, w, h * 0.17),
-      panelPaint,
-    );
-    
+    canvas.drawRect(Rect.fromLTWH(0, panelTop, w, h * 0.17), panelPaint);
+
     // Panel trim line
     canvas.drawLine(
       Offset(0, panelTop),
@@ -485,29 +483,31 @@ class _CozyRoomPainter extends CustomPainter {
     final floorGradient = LinearGradient(
       begin: Alignment.topCenter,
       end: Alignment.bottomCenter,
-      colors: [
-        _floorColor,
-        Color.lerp(_floorColor, Colors.brown, 0.2)!,
-      ],
+      colors: [_floorColor, Color.lerp(_floorColor, Colors.brown, 0.2)!],
     );
-    
+
     canvas.drawRect(
       Rect.fromLTWH(0, floorTop, w, h - floorTop),
-      Paint()..shader = floorGradient.createShader(Rect.fromLTWH(0, floorTop, w, h)),
+      Paint()
+        ..shader = floorGradient.createShader(Rect.fromLTWH(0, floorTop, w, h)),
     );
 
     // Floor boards (VISIBLE horizontal lines)
     final floorLinePaint = Paint()
-      ..color = (_isDarkTheme ? AppColors.blackAlpha15 : AppColors.woodBrownAlpha15)
+      ..color = (_isDarkTheme
+          ? AppColors.blackAlpha15
+          : AppColors.woodBrownAlpha15)
       ..strokeWidth = 1.5;
-    
+
     for (var y = floorTop + 15; y < h; y += 22) {
       canvas.drawLine(Offset(0, y), Offset(w, y), floorLinePaint);
     }
-    
+
     // Vertical floor board joints
     final jointPaint = Paint()
-      ..color = (_isDarkTheme ? AppColors.blackAlpha08 : AppColors.woodBrownAlpha08)
+      ..color = (_isDarkTheme
+          ? AppColors.blackAlpha08
+          : AppColors.woodBrownAlpha08)
       ..strokeWidth = 1;
     for (var x = 0.0; x < w; x += 80) {
       canvas.drawLine(Offset(x, floorTop), Offset(x, h), jointPaint);
@@ -515,10 +515,7 @@ class _CozyRoomPainter extends CustomPainter {
 
     // === BASEBOARD / TRIM (VISIBLE) ===
     final baseboardRect = Rect.fromLTWH(0, floorTop - 6, w, 10);
-    canvas.drawRect(
-      baseboardRect,
-      Paint()..color = _trimColor,
-    );
+    canvas.drawRect(baseboardRect, Paint()..color = _trimColor);
     // Baseboard highlight
     canvas.drawLine(
       Offset(0, floorTop - 6),
@@ -541,22 +538,23 @@ class _CozyRoomPainter extends CustomPainter {
     _drawShelf(canvas, w, h);
     _drawPicture(canvas, w, h);
   }
-  
+
   void _drawRug(Canvas canvas, double w, double h, double floorTop) {
     final rugRect = RRect.fromRectAndRadius(
       Rect.fromLTWH(w * 0.05, floorTop + 8, w * 0.9, h * 0.12),
-      const Radius.circular(12),  // softened from 8
+      const Radius.circular(12), // softened from 8
     );
-    
+
     // Double-border pattern: outer ring = rust-copper fill band, centre = rugBase
     // Step 1: Fill whole rug with border band colour (#D88C6E / dark equivalent)
     canvas.drawRRect(
       rugRect,
-      Paint()..color = _isDarkTheme 
-          ? const Color(0xFF7A4A34)   // dark rust-copper band
-          : const Color(0xFFD88C6E),  // rust-copper band
+      Paint()
+        ..color = _isDarkTheme
+            ? const Color(0xFF7A4A34) // dark rust-copper band
+            : const Color(0xFFD88C6E), // rust-copper band
     );
-    
+
     // Step 2: Fill inner field with rugBase (covers centre, leaving border ring visible)
     final innerRect = RRect.fromRectAndRadius(
       Rect.fromLTWH(w * 0.05 + 8, floorTop + 16, w * 0.9 - 16, h * 0.12 - 16),
@@ -564,72 +562,82 @@ class _CozyRoomPainter extends CustomPainter {
     );
     canvas.drawRRect(
       innerRect,
-      Paint()..color = _isDarkTheme
-          ? const Color(0xFF8B4F3A)   // dark rust (rugBaseDark)
-          : const Color(0xFFC4725A),  // persian rust (rugBase)
+      Paint()
+        ..color = _isDarkTheme
+            ? const Color(0xFF8B4F3A) // dark rust (rugBaseDark)
+            : const Color(0xFFC4725A), // persian rust (rugBase)
     );
-    
+
     // Outer border
     canvas.drawRRect(
       rugRect,
       Paint()
         ..color = _isDarkTheme
-            ? const Color(0xFF6B3828)   // dark burgundy
-            : const Color(0xFF964B38)   // deep burgundy
+            ? const Color(0xFF6B3828) // dark burgundy
+            : const Color(0xFF964B38) // deep burgundy
         ..style = PaintingStyle.stroke
         ..strokeWidth = 2,
     );
-    
+
     // Inner border
     canvas.drawRRect(
       innerRect,
       Paint()
         ..color = _isDarkTheme
-            ? const Color(0xFF7A5A42)   // muted terracotta
-            : const Color(0xFFD88C6E)   // warm terracotta
+            ? const Color(0xFF7A5A42) // muted terracotta
+            : const Color(0xFFD88C6E) // warm terracotta
         ..style = PaintingStyle.stroke
         ..strokeWidth = 1.5,
     );
   }
-  
+
   void _drawPicture(Canvas canvas, double w, double h) {
     // Small framed picture on wall (left side, above tank)
     final frameLeft = w * 0.02;
     final frameTop = h * 0.22;
     final frameWidth = w * 0.14;
     final frameHeight = h * 0.10;
-    
+
     // Frame
     final frameRect = RRect.fromRectAndRadius(
       Rect.fromLTWH(frameLeft, frameTop, frameWidth, frameHeight),
       const Radius.circular(2),
     );
-    canvas.drawRRect(
-      frameRect,
-      Paint()..color = _trimColor,
-    );
-    
+    canvas.drawRRect(frameRect, Paint()..color = _trimColor);
+
     // Picture content — mini landscape painting
     final pictureInset = 3.0;
     final pictureRect = Rect.fromLTWH(
-      frameLeft + pictureInset, frameTop + pictureInset,
-      frameWidth - pictureInset * 2, frameHeight - pictureInset * 2,
+      frameLeft + pictureInset,
+      frameTop + pictureInset,
+      frameWidth - pictureInset * 2,
+      frameHeight - pictureInset * 2,
     );
     // Sky band (top half)
     canvas.drawRect(
-      Rect.fromLTWH(pictureRect.left, pictureRect.top,
-          pictureRect.width, pictureRect.height / 2),
-      Paint()..color = _isDarkTheme
-          ? const Color(0x806A90A0)   // muted sky
-          : const Color(0x998BB8C8),  // sky blue-grey
+      Rect.fromLTWH(
+        pictureRect.left,
+        pictureRect.top,
+        pictureRect.width,
+        pictureRect.height / 2,
+      ),
+      Paint()
+        ..color = _isDarkTheme
+            ? const Color(0x806A90A0) // muted sky
+            : const Color(0x998BB8C8), // sky blue-grey
     );
     // Ground band (bottom half)
     canvas.drawRect(
-      Rect.fromLTWH(pictureRect.left, pictureRect.top + pictureRect.height / 2,
-          pictureRect.width, pictureRect.height / 2),
-      Paint()..color = _isDarkTheme
-          ? const Color(0x804A7A50)   // dark sage
-          : const Color(0x996B9B6B),  // sage green
+      Rect.fromLTWH(
+        pictureRect.left,
+        pictureRect.top + pictureRect.height / 2,
+        pictureRect.width,
+        pictureRect.height / 2,
+      ),
+      Paint()
+        ..color = _isDarkTheme
+            ? const Color(0x804A7A50) // dark sage
+            : const Color(0x996B9B6B), // sage green
     );
   }
 
@@ -642,26 +650,29 @@ class _CozyRoomPainter extends CustomPainter {
 
     // Window light glow (outside light coming in)
     final windowGlow = Paint()
-      ..shader = RadialGradient(
-        center: Alignment.center,
-        radius: 1.0,
-        colors: _isDarkTheme
-            ? [
-                AppColors.whiteAlpha30, // Moonlight blue
-                Colors.transparent,
-              ]
-            : [
-                AppColors.whiteAlpha40, // Warm sunlight
-                AppColors.whiteAlpha20,
-                Colors.transparent,
-              ],
-      ).createShader(Rect.fromLTWH(
-        windowLeft - windowWidth * 0.3,
-        windowTop - windowHeight * 0.2,
-        windowWidth * 1.6,
-        windowHeight * 2,
-      ));
-    
+      ..shader =
+          RadialGradient(
+            center: Alignment.center,
+            radius: 1.0,
+            colors: _isDarkTheme
+                ? [
+                    AppColors.whiteAlpha30, // Moonlight blue
+                    Colors.transparent,
+                  ]
+                : [
+                    AppColors.whiteAlpha40, // Warm sunlight
+                    AppColors.whiteAlpha20,
+                    Colors.transparent,
+                  ],
+          ).createShader(
+            Rect.fromLTWH(
+              windowLeft - windowWidth * 0.3,
+              windowTop - windowHeight * 0.2,
+              windowWidth * 1.6,
+              windowHeight * 2,
+            ),
+          );
+
     canvas.drawOval(
       Rect.fromLTWH(
         windowLeft - windowWidth * 0.2,
@@ -677,7 +688,7 @@ class _CozyRoomPainter extends CustomPainter {
       Rect.fromLTWH(windowLeft, windowTop, windowWidth, windowHeight),
       const Radius.circular(4),
     );
-    
+
     // Window glass (sky/outside)
     final skyGradient = LinearGradient(
       begin: Alignment.topCenter,
@@ -701,7 +712,8 @@ class _CozyRoomPainter extends CustomPainter {
     if (_isDarkTheme) {
       canvas.drawRRect(
         windowRect,
-        Paint()..color = const Color(0x26FFE4B5),  // warm interior glow at 15% alpha
+        Paint()
+          ..color = const Color(0x26FFE4B5), // warm interior glow at 15% alpha
       );
     }
 
@@ -709,20 +721,16 @@ class _CozyRoomPainter extends CustomPainter {
     canvas.drawRRect(
       windowRect,
       Paint()
-        ..color = _isDarkTheme
-            ? _textSecAlpha76
-            : AppColors.whiteAlpha50
+        ..color = _isDarkTheme ? _textSecAlpha76 : AppColors.whiteAlpha50
         ..style = PaintingStyle.stroke
         ..strokeWidth = 3,
     );
 
     // Window cross bars
     final crossPaint = Paint()
-      ..color = _isDarkTheme
-          ? _textSecAlpha64
-          : AppColors.whiteAlpha40
+      ..color = _isDarkTheme ? _textSecAlpha64 : AppColors.whiteAlpha40
       ..strokeWidth = 2;
-    
+
     // Vertical bar
     canvas.drawLine(
       Offset(windowLeft + windowWidth / 2, windowTop),
@@ -737,8 +745,8 @@ class _CozyRoomPainter extends CustomPainter {
     );
 
     // === CURTAINS ===
-    final curtainColor = _isDarkTheme 
-        ? const Color(0x807A6050) 
+    final curtainColor = _isDarkTheme
+        ? const Color(0x807A6050)
         : const Color(0x99B88A68);
     final curtainPaint = Paint()..color = curtainColor;
 
@@ -785,9 +793,7 @@ class _CozyRoomPainter extends CustomPainter {
       Offset(windowLeft - 20, windowTop - 8),
       Offset(windowLeft + windowWidth + 20, windowTop - 8),
       Paint()
-        ..color = _isDarkTheme
-            ? _textSecAlpha76
-            : AppColors.whiteAlpha60
+        ..color = _isDarkTheme ? _textSecAlpha76 : AppColors.whiteAlpha60
         ..strokeWidth = 4
         ..strokeCap = StrokeCap.round,
     );
@@ -811,13 +817,9 @@ class _CozyRoomPainter extends CustomPainter {
         ..shader = RadialGradient(
           center: Alignment.center,
           radius: 0.6,
-          colors: [
-            _lampAmber38,
-            _lampAmber20,
-            Colors.transparent,
-          ],
+          colors: [_lampAmber38, _lampAmber20, Colors.transparent],
         ).createShader(Rect.fromLTWH(0, h * 0.2, w * 0.5, h * 0.5));
-      
+
       canvas.drawOval(
         Rect.fromCenter(
           center: Offset(w * 0.12, h * 0.45),
@@ -828,25 +830,17 @@ class _CozyRoomPainter extends CustomPainter {
       );
 
       // Small lamp icon hint
-      final lampPaint = Paint()
-        ..color = _lampBright;
-      canvas.drawCircle(
-        Offset(w * 0.08, h * 0.38),
-        8,
-        lampPaint,
-      );
+      final lampPaint = Paint()..color = _lampBright;
+      canvas.drawCircle(Offset(w * 0.08, h * 0.38), 8, lampPaint);
     } else {
       // Subtle warm ambient light for day themes
       final ambientGlow = Paint()
         ..shader = RadialGradient(
           center: Alignment.topRight,
           radius: 1.2,
-          colors: [
-            _warmHoney25,
-            Colors.transparent,
-          ],
+          colors: [_warmHoney25, Colors.transparent],
         ).createShader(Rect.fromLTWH(0, 0, w, h));
-      
+
       canvas.drawRect(Rect.fromLTWH(0, 0, w, h), ambientGlow);
     }
 
@@ -861,7 +855,7 @@ class _CozyRoomPainter extends CustomPainter {
           Colors.transparent,
         ],
       ).createShader(Rect.fromLTWH(w * 0.15, h * 0.25, w * 0.7, h * 0.4));
-    
+
     canvas.drawOval(
       Rect.fromCenter(
         center: Offset(w * 0.5, h * 0.42),
@@ -876,12 +870,9 @@ class _CozyRoomPainter extends CustomPainter {
       ..shader = RadialGradient(
         center: Alignment.center,
         radius: 0.5,
-        colors: [
-          _isDarkTheme ? _tankGlow20 : _tankGlow15,
-          Colors.transparent,
-        ],
+        colors: [_isDarkTheme ? _tankGlow20 : _tankGlow15, Colors.transparent],
       ).createShader(Rect.fromLTWH(w * 0.15, h * 0.48, w * 0.7, h * 0.15));
-    
+
     canvas.drawOval(
       Rect.fromCenter(
         center: Offset(w * 0.5, h * 0.56),
@@ -896,10 +887,8 @@ class _CozyRoomPainter extends CustomPainter {
     // Floating shelf on top right (above window area, decorative)
     final shelfY = h * 0.10;
     final shelfPaint = Paint()
-      ..color = _isDarkTheme
-          ? _textSecAlpha51
-          : AppOverlays.darkWood30;
-    
+      ..color = _isDarkTheme ? _textSecAlpha51 : AppOverlays.darkWood30;
+
     // Shelf surface
     canvas.drawRRect(
       RRect.fromRectAndRadius(
@@ -930,17 +919,51 @@ class _CozyRoomPainter extends CustomPainter {
 
     // Candle 1
     final c1x = w * 0.76;
-    canvas.drawRect(Rect.fromLTWH(c1x, candleBaseY - 10, 3.5, 10), Paint()..color = candleBodyColor);
-    canvas.drawLine(Offset(c1x + 1.75, candleBaseY - 10), Offset(c1x + 1.75, candleBaseY - 12), Paint()..color = candleWickColor..strokeWidth = 1);
-    canvas.drawCircle(Offset(c1x + 1.75, candleBaseY - 13), 2.5, Paint()..color = candleFlameColor);
-    canvas.drawCircle(Offset(c1x + 1.75, candleBaseY - 13), 8, Paint()..color = candleGlowColor);
+    canvas.drawRect(
+      Rect.fromLTWH(c1x, candleBaseY - 10, 3.5, 10),
+      Paint()..color = candleBodyColor,
+    );
+    canvas.drawLine(
+      Offset(c1x + 1.75, candleBaseY - 10),
+      Offset(c1x + 1.75, candleBaseY - 12),
+      Paint()
+        ..color = candleWickColor
+        ..strokeWidth = 1,
+    );
+    canvas.drawCircle(
+      Offset(c1x + 1.75, candleBaseY - 13),
+      2.5,
+      Paint()..color = candleFlameColor,
+    );
+    canvas.drawCircle(
+      Offset(c1x + 1.75, candleBaseY - 13),
+      8,
+      Paint()..color = candleGlowColor,
+    );
 
     // Candle 2
     final c2x = w * 0.82;
-    canvas.drawRect(Rect.fromLTWH(c2x, candleBaseY - 12, 4, 12), Paint()..color = candleBodyColor);
-    canvas.drawLine(Offset(c2x + 2, candleBaseY - 12), Offset(c2x + 2, candleBaseY - 14), Paint()..color = candleWickColor..strokeWidth = 1);
-    canvas.drawCircle(Offset(c2x + 2, candleBaseY - 15), 3, Paint()..color = candleFlameColor);
-    canvas.drawCircle(Offset(c2x + 2, candleBaseY - 15), 9, Paint()..color = candleGlowColor);
+    canvas.drawRect(
+      Rect.fromLTWH(c2x, candleBaseY - 12, 4, 12),
+      Paint()..color = candleBodyColor,
+    );
+    canvas.drawLine(
+      Offset(c2x + 2, candleBaseY - 12),
+      Offset(c2x + 2, candleBaseY - 14),
+      Paint()
+        ..color = candleWickColor
+        ..strokeWidth = 1,
+    );
+    canvas.drawCircle(
+      Offset(c2x + 2, candleBaseY - 15),
+      3,
+      Paint()..color = candleFlameColor,
+    );
+    canvas.drawCircle(
+      Offset(c2x + 2, candleBaseY - 15),
+      9,
+      Paint()..color = candleGlowColor,
+    );
   }
 
   @override
@@ -961,9 +984,7 @@ class _RoomPlant extends StatelessWidget {
     return SizedBox(
       width: height * 0.5,
       height: height,
-      child: CustomPaint(
-        painter: _RoomPlantPainter(theme: theme),
-      ),
+      child: CustomPaint(painter: _RoomPlantPainter(theme: theme)),
     );
   }
 }
@@ -988,7 +1009,7 @@ class _RoomPlantPainter extends CustomPainter {
       ..lineTo(w * 0.75, h * 0.75)
       ..close();
     canvas.drawPath(potPath, potPaint);
-    
+
     // Pot rim
     canvas.drawRRect(
       RRect.fromRectAndRadius(
@@ -1000,13 +1021,13 @@ class _RoomPlantPainter extends CustomPainter {
 
     // Plant leaves
     final leafPaint = Paint()..color = _leafColor;
-    
+
     // Multiple leaves going up
     for (var i = 0; i < 5; i++) {
       final angle = -0.4 + i * 0.2;
       final leafH = h * (0.5 + (i % 2) * 0.15);
       final startY = h * 0.72;
-      
+
       final leaf = Path()
         ..moveTo(w * 0.5, startY)
         ..quadraticBezierTo(
@@ -1021,7 +1042,7 @@ class _RoomPlantPainter extends CustomPainter {
           w * 0.5,
           startY,
         );
-      
+
       canvas.drawPath(leaf, leafPaint);
     }
   }
@@ -1044,9 +1065,7 @@ class _ShelfPlant extends StatelessWidget {
     return SizedBox(
       width: size,
       height: size,
-      child: CustomPaint(
-        painter: _ShelfPlantPainter(theme: theme),
-      ),
+      child: CustomPaint(painter: _ShelfPlantPainter(theme: theme)),
     );
   }
 }
@@ -1123,8 +1142,8 @@ class _StandPainter extends CustomPainter {
     final h = size.height;
 
     // Dark charcoal metal frame per §6.4 — NOT wood coloured
-    const woodColor = Color(0xFF2A2A2A);      // standPrimary charcoal
-    const woodHighlight = Color(0xFF404040);  // standHighlight
+    const woodColor = Color(0xFF2A2A2A); // standPrimary charcoal
+    const woodHighlight = Color(0xFF404040); // standHighlight
 
     // Stand top surface
     final topRect = RRect.fromRectAndRadius(
@@ -1132,7 +1151,7 @@ class _StandPainter extends CustomPainter {
       const Radius.circular(3),
     );
     canvas.drawRRect(topRect, Paint()..color = woodColor);
-    
+
     // Highlight on top
     canvas.drawRRect(
       RRect.fromRectAndRadius(
@@ -1144,7 +1163,7 @@ class _StandPainter extends CustomPainter {
 
     // Stand legs
     final legPaint = Paint()..color = woodColor;
-    
+
     // Left leg
     canvas.drawRRect(
       RRect.fromRectAndRadius(
@@ -1153,7 +1172,7 @@ class _StandPainter extends CustomPainter {
       ),
       legPaint,
     );
-    
+
     // Right leg
     canvas.drawRRect(
       RRect.fromRectAndRadius(
@@ -1184,7 +1203,6 @@ class _StandPainter extends CustomPainter {
   @override
   bool shouldRepaint(covariant _StandPainter old) => old.theme != theme;
 }
-
 
 // === THEMED AQUARIUM ===
 
@@ -1241,10 +1259,18 @@ class _ThemedAquarium extends StatelessWidget {
                     end: Alignment.bottomCenter,
                     stops: [0.0, 0.25, 0.65, 1.0],
                     colors: [
-                      Color(0xEB9ED8EC), // waterSurface — icy top (kWaterOpacity 0.92)
-                      Color(0xEB6BBDD8), // waterMidUpper — clear mid (kWaterOpacity 0.92)
-                      Color(0xEB4A9DB5), // waterMidLower — deeper (kWaterOpacity 0.92)
-                      Color(0xEB2D7A94), // waterDepth — dark bottom (kWaterOpacity 0.92)
+                      Color(
+                        0xEB9ED8EC,
+                      ), // waterSurface — icy top (kWaterOpacity 0.92)
+                      Color(
+                        0xEB6BBDD8,
+                      ), // waterMidUpper — clear mid (kWaterOpacity 0.92)
+                      Color(
+                        0xEB4A9DB5,
+                      ), // waterMidLower — deeper (kWaterOpacity 0.92)
+                      Color(
+                        0xEB2D7A94,
+                      ), // waterDepth — dark bottom (kWaterOpacity 0.92)
                     ],
                   ),
                 ),
@@ -1520,7 +1546,9 @@ class _ThemedAquarium extends StatelessWidget {
                   borderRadius: AppRadius.xsRadius,
                   boxShadow: [
                     BoxShadow(
-                      color: const Color(0x33FFD080), // subtle warm glow, 20% alpha
+                      color: const Color(
+                        0x33FFD080,
+                      ), // subtle warm glow, 20% alpha
                       blurRadius: 12,
                       spreadRadius: 2,
                       offset: const Offset(0, 8),
@@ -1716,9 +1744,10 @@ class _AnimatedSwimmingFishState extends State<_AnimatedSwimmingFish>
     );
 
     // Swim horizontally across tank
-    _swimAnimation = Tween<double>(begin: -0.1, end: 1.1).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.linear),
-    );
+    _swimAnimation = Tween<double>(
+      begin: -0.1,
+      end: 1.1,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.linear));
 
     // Gentle vertical bobbing
     _bobAnimation = Tween<double>(begin: -1.0, end: 1.0).animate(
@@ -1778,17 +1807,10 @@ class _AnimatedSwimmingFishState extends State<_AnimatedSwimmingFish>
           top: clampedTop,
           child: Transform.scale(
             scaleX: _facingRight ? 1 : -1,
-            child: _SoftFish(
-              size: widget.size,
-              color: widget.color,
-            ),
+            child: _SoftFish(size: widget.size, color: widget.color),
           ),
         );
       },
     );
   }
 }
-
-
-
-

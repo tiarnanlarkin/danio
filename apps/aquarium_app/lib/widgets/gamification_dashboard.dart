@@ -17,23 +17,25 @@ class GamificationDashboard extends ConsumerWidget {
   /// Callback when tapping the dashboard
   final VoidCallback? onTap;
 
-  const GamificationDashboard({
-    super.key,
-    this.showAsCard = true,
-    this.onTap,
-  });
+  const GamificationDashboard({super.key, this.showAsCard = true, this.onTap});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // Select only the fields this dashboard actually displays from
     // the profile — avoids rebuilds when unrelated profile data changes.
-    final dashData = ref.watch(userProfileProvider.select((a) => a.whenData((p) => p == null
-        ? null
-        : (
-            currentStreak: p.currentStreak,
-            totalXp: p.totalXp,
-            dailyXpGoal: p.dailyXpGoal,
-          ))));
+    final dashData = ref.watch(
+      userProfileProvider.select(
+        (a) => a.whenData(
+          (p) => p == null
+              ? null
+              : (
+                  currentStreak: p.currentStreak,
+                  totalXp: p.totalXp,
+                  dailyXpGoal: p.dailyXpGoal,
+                ),
+        ),
+      ),
+    );
 
     return dashData.when(
       loading: () => _buildLoadingState(context),
@@ -44,7 +46,10 @@ class GamificationDashboard extends ConsumerWidget {
         // Each stat row is its own ConsumerWidget so that gems, hearts,
         // and daily-goal changes only rebuild their own row.
         final content = Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: AppSpacing.sm4),
+          padding: const EdgeInsets.symmetric(
+            horizontal: 12,
+            vertical: AppSpacing.sm4,
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -83,9 +88,7 @@ class GamificationDashboard extends ConsumerWidget {
           return Card(
             margin: EdgeInsets.zero,
             elevation: AppElevation.level1,
-            shape: RoundedRectangleBorder(
-              borderRadius: AppRadius.mediumRadius,
-            ),
+            shape: RoundedRectangleBorder(borderRadius: AppRadius.mediumRadius),
             child: InkWell(
               onTap: onTap,
               borderRadius: AppRadius.mediumRadius,
@@ -94,10 +97,7 @@ class GamificationDashboard extends ConsumerWidget {
           );
         }
 
-        return GestureDetector(
-          onTap: onTap,
-          child: content,
-        );
+        return GestureDetector(onTap: onTap, child: content);
       },
     );
   }
@@ -111,20 +111,33 @@ class GamificationDashboard extends ConsumerWidget {
         padding: const EdgeInsets.all(AppSpacing.md),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: List.generate(4, (i) => Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(width: 32, height: 16, decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.surfaceContainerHigh,
-                borderRadius: AppRadius.xsRadius,
-              )),
-              const SizedBox(height: AppSpacing.xs2),
-              Container(width: 48, height: 10, decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.surfaceContainerHighest,
-                borderRadius: AppRadius.xsRadius,
-              )),
-            ],
-          )),
+          children: List.generate(
+            4,
+            (i) => Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  width: 32,
+                  height: 16,
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.surfaceContainerHigh,
+                    borderRadius: AppRadius.xsRadius,
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.xs2),
+                Container(
+                  width: 48,
+                  height: 10,
+                  decoration: BoxDecoration(
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.surfaceContainerHighest,
+                    borderRadius: AppRadius.xsRadius,
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );
@@ -134,9 +147,7 @@ class GamificationDashboard extends ConsumerWidget {
     return Card(
       margin: EdgeInsets.zero,
       elevation: AppElevation.level1,
-      shape: RoundedRectangleBorder(
-        borderRadius: AppRadius.mediumRadius,
-      ),
+      shape: RoundedRectangleBorder(borderRadius: AppRadius.mediumRadius),
       child: const Padding(
         padding: EdgeInsets.all(AppSpacing.md),
         child: Row(
@@ -177,23 +188,29 @@ class _GemsTodayHeartsRow extends ConsumerWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Expanded(child: _StatItem(
-          icon: '💎',
-          value: _formatNumber(gems),
-          label: 'gems',
-          color: DanioColors.tealWater,
-        )),
-        Expanded(child: _StatItem(
-          icon: '⚡',
-          value: _formatNumber(todayXp),
-          label: 'today',
-          color: DanioColors.emeraldGreen,
-        )),
-        Expanded(child: _HeartsDisplay(
-          current: heartsState.currentHearts,
-          max: heartsState.maxHearts,
-          timeUntilRefill: heartsState.timeUntilNextRefill,
-        )),
+        Expanded(
+          child: _StatItem(
+            icon: '💎',
+            value: _formatNumber(gems),
+            label: 'gems',
+            color: DanioColors.tealWater,
+          ),
+        ),
+        Expanded(
+          child: _StatItem(
+            icon: '⚡',
+            value: _formatNumber(todayXp),
+            label: 'today',
+            color: DanioColors.emeraldGreen,
+          ),
+        ),
+        Expanded(
+          child: _HeartsDisplay(
+            current: heartsState.currentHearts,
+            max: heartsState.maxHearts,
+            timeUntilRefill: heartsState.timeUntilNextRefill,
+          ),
+        ),
       ],
     );
   }
@@ -215,7 +232,9 @@ class _DailyGoalProgressRow extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final dailyGoal = ref.watch(todaysDailyGoalProvider);
     final todayXp = dailyGoal?.earnedXp ?? 0;
-    final progress = dailyXpGoal > 0 ? (todayXp / dailyXpGoal).clamp(0.0, 1.0) : 0.0;
+    final progress = dailyXpGoal > 0
+        ? (todayXp / dailyXpGoal).clamp(0.0, 1.0)
+        : 0.0;
 
     return _DailyGoalProgress(
       current: todayXp,
@@ -293,43 +312,45 @@ class _HeartsDisplay extends StatelessWidget {
       children: [
         Text('❤️', style: Theme.of(context).textTheme.titleLarge!),
         const SizedBox(width: AppSpacing.xs),
-        Flexible(child: Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  '$current',
-                  style: AppTypography.titleMedium.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: current > 0 ? AppColors.error : context.textHint,
+        Flexible(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    '$current',
+                    style: AppTypography.titleMedium.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: current > 0 ? AppColors.error : context.textHint,
+                    ),
                   ),
-                ),
+                  Text(
+                    '/$max',
+                    style: AppTypography.bodySmall.copyWith(
+                      color: context.textSecondary,
+                    ),
+                  ),
+                ],
+              ),
+              if (timeUntilRefill != null && current < max)
                 Text(
-                  '/$max',
-                  style: AppTypography.bodySmall.copyWith(
+                  _formatDuration(timeUntilRefill!),
+                  style: AppTypography.labelSmall.copyWith(
+                    color: context.textHint,
+                  ),
+                )
+              else
+                Text(
+                  'hearts',
+                  style: AppTypography.labelSmall.copyWith(
                     color: context.textSecondary,
                   ),
                 ),
-              ],
-            ),
-            if (timeUntilRefill != null && current < max)
-              Text(
-                _formatDuration(timeUntilRefill!),
-                style: AppTypography.labelSmall.copyWith(
-                  color: context.textHint,
-                ),
-              )
-            else
-              Text(
-                'hearts',
-                style: AppTypography.labelSmall.copyWith(
-                  color: context.textSecondary,
-                ),
-              ),
-          ],
-        )),
+            ],
+          ),
+        ),
       ],
     );
   }
@@ -376,14 +397,19 @@ class _DailyGoalProgress extends StatelessWidget {
             Text(
               'Daily Goal: $current/$goal XP',
               style: AppTypography.labelMedium.copyWith(
-                color: isComplete ? AppColors.success : Theme.of(context).colorScheme.onSurface,
+                color: isComplete
+                    ? AppColors.success
+                    : Theme.of(context).colorScheme.onSurface,
                 fontWeight: isComplete ? FontWeight.bold : FontWeight.normal,
               ),
             ),
             const Spacer(),
             if (isComplete)
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: AppSpacing.xxs),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 8,
+                  vertical: AppSpacing.xxs,
+                ),
                 decoration: BoxDecoration(
                   color: AppOverlays.success20,
                   borderRadius: AppRadius.smallRadius,
@@ -448,16 +474,21 @@ class MiniGamificationDisplay extends ConsumerWidget {
     return streakAsync.when(
       loading: () => const SizedBox.shrink(),
       error: (_, __) => Padding(
-                    padding: const EdgeInsets.all(AppSpacing.sm),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(Icons.info_outline, size: 14, color: AppColors.warning),
-                        const SizedBox(width: AppSpacing.xs),
-                        Text('Unable to load', style: Theme.of(context).textTheme.bodySmall?.copyWith(color: AppColors.warning)),
-                      ],
-                    ),
-                  ),
+        padding: const EdgeInsets.all(AppSpacing.sm),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(Icons.info_outline, size: 14, color: AppColors.warning),
+            const SizedBox(width: AppSpacing.xs),
+            Text(
+              'Unable to load',
+              style: Theme.of(
+                context,
+              ).textTheme.bodySmall?.copyWith(color: AppColors.warning),
+            ),
+          ],
+        ),
+      ),
       data: (currentStreak) {
         if (currentStreak == null) return const SizedBox.shrink();
 
@@ -498,7 +529,7 @@ class _MiniStat extends StatelessWidget {
           Text(
             value.toString(),
             style: AppTypography.labelSmall.copyWith(
-              color: Colors.white,
+              color: context.textPrimary,
               fontWeight: FontWeight.bold,
             ),
           ),

@@ -40,16 +40,10 @@ class HobbyDesk extends StatelessWidget {
         gradient: LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
-          colors: [
-            AppOverlays.burlyWood30,
-            AppOverlays.tan40,
-          ],
+          colors: [AppOverlays.burlyWood30, AppOverlays.tan40],
         ),
         borderRadius: AppRadius.mediumRadius,
-        border: Border.all(
-          color: AppOverlays.darkGold50,
-          width: 2,
-        ),
+        border: Border.all(color: AppOverlays.darkGold50, width: 2),
       ),
       child: Column(
         children: [
@@ -242,11 +236,7 @@ class ItemDetailPopup extends StatelessWidget {
                 if (onClose != null)
                   GestureDetector(
                     onTap: onClose,
-                    child: Icon(
-                      Icons.close,
-                      size: 18,
-                      color: context.textHint,
-                    ),
+                    child: Icon(Icons.close, size: 18, color: context.textHint),
                   ),
               ],
             ),
@@ -337,10 +327,7 @@ class MiniTankScene extends StatelessWidget {
                   ],
                 ),
                 borderRadius: AppRadius.xsRadius,
-                border: Border.all(
-                  color: AppOverlays.white50,
-                  width: 2,
-                ),
+                border: Border.all(color: AppOverlays.white50, width: 2),
                 boxShadow: [
                   BoxShadow(
                     color: AppOverlays.primary20,
@@ -476,9 +463,7 @@ class MiniTankScene extends StatelessWidget {
             ),
             Text(
               '${volumeLitres.toStringAsFixed(0)}L',
-              style: AppTypography.bodySmall.copyWith(
-                color: context.textHint,
-              ),
+              style: AppTypography.bodySmall.copyWith(color: context.textHint),
             ),
           ],
         ),

@@ -147,11 +147,7 @@ void main() async {
     );
   });
 
-  runApp(
-    ErrorBoundary(
-      child: const ProviderScope(child: DanioApp()),
-    ),
-  );
+  runApp(ErrorBoundary(child: const ProviderScope(child: DanioApp())));
 }
 
 class DanioApp extends ConsumerWidget {
@@ -159,7 +155,9 @@ class DanioApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final themeMode = ref.watch(settingsProvider.select((s) => s.flutterThemeMode));
+    final themeMode = ref.watch(
+      settingsProvider.select((s) => s.flutterThemeMode),
+    );
 
     return MaterialApp(
       scrollBehavior: const DanioScrollBehavior(),

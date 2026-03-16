@@ -11,7 +11,7 @@ class WaterVialPainter extends CustomPainter {
   final double? nitrateValue;
   final double? nitriteValue;
   final double animationValue; // 0.0–1.0 (fill-in animation)
-  final double bubbleAnim;    // 0.0–1.0 (looping, drives bubble rise)
+  final double bubbleAnim; // 0.0–1.0 (looping, drives bubble rise)
 
   WaterVialPainter({
     this.phValue,
@@ -33,12 +33,24 @@ class WaterVialPainter extends CustomPainter {
 
     final params = [
       _VialData('pH', phValue, _phColor(phValue), _phLevel(phValue)),
-      _VialData('NH₃', ammoniaValue, _ammoniaColor(ammoniaValue),
-          _ammoniaLevel(ammoniaValue)),
-      _VialData('NO₃', nitrateValue, _nitrateColor(nitrateValue),
-          _nitrateLevel(nitrateValue)),
-      _VialData('NO₂', nitriteValue, _nitriteColor(nitriteValue),
-          _nitriteLevel(nitriteValue)),
+      _VialData(
+        'NH₃',
+        ammoniaValue,
+        _ammoniaColor(ammoniaValue),
+        _ammoniaLevel(ammoniaValue),
+      ),
+      _VialData(
+        'NO₃',
+        nitrateValue,
+        _nitrateColor(nitrateValue),
+        _nitrateLevel(nitrateValue),
+      ),
+      _VialData(
+        'NO₂',
+        nitriteValue,
+        _nitriteColor(nitriteValue),
+        _nitriteLevel(nitriteValue),
+      ),
     ];
 
     for (var i = 0; i < params.length; i++) {
@@ -47,18 +59,12 @@ class WaterVialPainter extends CustomPainter {
       // Stagger fill animation per tube
       final staggerOffset = i * 0.15;
       final localAnim =
-          ((animationValue - staggerOffset) / (1.0 - staggerOffset))
-              .clamp(0.0, 1.0);
+          ((animationValue - staggerOffset) / (1.0 - staggerOffset)).clamp(
+            0.0,
+            1.0,
+          );
 
-      _drawVial(
-        canvas,
-        cx,
-        vialTop,
-        vialWidth,
-        vialHeight,
-        param,
-        localAnim,
-      );
+      _drawVial(canvas, cx, vialTop, vialWidth, vialHeight, param, localAnim);
     }
   }
 
@@ -95,10 +101,7 @@ class WaterVialPainter extends CustomPainter {
       topLeft: const Radius.circular(2),
       bottomLeft: const Radius.circular(2),
     );
-    canvas.drawRRect(
-      highlightRect,
-      Paint()..color = const Color(0x20FFFFFF),
-    );
+    canvas.drawRRect(highlightRect, Paint()..color = const Color(0x20FFFFFF));
 
     // Liquid fill
     if (param.level > 0) {
@@ -118,10 +121,7 @@ class WaterVialPainter extends CustomPainter {
 
       canvas.save();
       canvas.clipRRect(rect);
-      canvas.drawRRect(
-        fillRect,
-        Paint()..color = param.color.withAlpha(200),
-      );
+      canvas.drawRRect(fillRect, Paint()..color = param.color.withAlpha(200));
 
       // Animated rising bubbles (2–3 per tube, staggered offsets)
       final rng = math.Random(param.label.hashCode);

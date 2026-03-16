@@ -39,8 +39,11 @@ class _TankSettingsScreenState extends ConsumerState<TankSettingsScreen> {
     final tankAsync = ref.watch(tankProvider(widget.tankId));
 
     return tankAsync.when(
-      loading: () =>
-          const Scaffold(body: Center(child: CircularProgressIndicator(color: AppColors.primary))),
+      loading: () => const Scaffold(
+        body: Center(
+          child: CircularProgressIndicator(color: AppColors.primary),
+        ),
+      ),
       error: (err, _) => Scaffold(
         appBar: AppBar(title: const Text('Tank Settings')),
         body: const Center(child: Text('Couldn\'t load tank settings')),
@@ -113,240 +116,222 @@ class _TankSettingsScreenState extends ConsumerState<TankSettingsScreen> {
 
   List<Widget> _buildItems(Tank tank) {
     return [
-                Text('Basics', style: AppTypography.headlineSmall),
-                const SizedBox(height: AppSpacing.sm2),
-                TextFormField(
-                  initialValue: _name,
-                  decoration: const InputDecoration(labelText: 'Tank name'),
-                  textCapitalization: TextCapitalization.words,
-                  onChanged: (v) => _name = v,
-                  validator: (v) {
-                    if (v == null || v.trim().isEmpty) {
-                      return 'Please enter a name';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: AppSpacing.sm2),
-                DropdownButtonFormField<TankType>(
-                  value: _type,
-                  items: const [
-                    DropdownMenuItem(
-                      value: TankType.freshwater,
-                      child: Text('Freshwater'),
-                    ),
-                    DropdownMenuItem(
-                      value: TankType.marine,
-                      child: Text('Marine (arriving soon)'),
-                    ),
-                  ],
-                  onChanged: (v) {
-                    if (v == null) return;
-                    // Keep MVP simple: prevent switching to marine for now.
-                    if (v == TankType.marine) {
-                      AppFeedback.showInfo(context, 'Marine tanks are on the way — stay tuned!');
-                      return;
-                    }
-                    setState(() => _type = v);
-                  },
-                  decoration: const InputDecoration(labelText: 'Tank type'),
-                ),
+      Text('Basics', style: AppTypography.headlineSmall),
+      const SizedBox(height: AppSpacing.sm2),
+      TextFormField(
+        initialValue: _name,
+        decoration: const InputDecoration(labelText: 'Tank name'),
+        textCapitalization: TextCapitalization.words,
+        onChanged: (v) => _name = v,
+        validator: (v) {
+          if (v == null || v.trim().isEmpty) {
+            return 'Please enter a name';
+          }
+          return null;
+        },
+      ),
+      const SizedBox(height: AppSpacing.sm2),
+      DropdownButtonFormField<TankType>(
+        value: _type,
+        items: const [
+          DropdownMenuItem(
+            value: TankType.freshwater,
+            child: Text('Freshwater'),
+          ),
+          DropdownMenuItem(
+            value: TankType.marine,
+            child: Text('Marine (arriving soon)'),
+          ),
+        ],
+        onChanged: (v) {
+          if (v == null) return;
+          // Keep MVP simple: prevent switching to marine for now.
+          if (v == TankType.marine) {
+            AppFeedback.showInfo(
+              context,
+              'Marine tanks are on the way — stay tuned!',
+            );
+            return;
+          }
+          setState(() => _type = v);
+        },
+        decoration: const InputDecoration(labelText: 'Tank type'),
+      ),
 
-                const SizedBox(height: AppSpacing.lg),
-                Text('Size', style: AppTypography.headlineSmall),
-                const SizedBox(height: AppSpacing.sm2),
-                TextFormField(
-                  initialValue: _volumeLitres > 0
-                      ? _volumeLitres.toString()
-                      : '',
-                  decoration: const InputDecoration(
-                    labelText: 'Volume',
-                    suffixText: 'L',
-                  ),
-                  keyboardType: const TextInputType.numberWithOptions(
-                    decimal: true,
-                  ),
-                  inputFormatters: [
-                    FilteringTextInputFormatter.allow(RegExp(r'[\d.]')),
-                  ],
-                  onChanged: (v) => _volumeLitres = double.tryParse(v) ?? 0,
-                  validator: (v) {
-                    final parsed = double.tryParse((v ?? '').trim());
-                    if (parsed == null || parsed <= 0) {
-                      return 'Enter a valid volume';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: AppSpacing.sm2),
-                Row(
-                  children: [
-                    Expanded(
-                      child: TextFormField(
-                        initialValue: _lengthCm?.toString() ?? '',
-                        decoration: const InputDecoration(
-                          labelText: 'Length',
-                          suffixText: 'cm',
-                        ),
-                        keyboardType: const TextInputType.numberWithOptions(
-                          decimal: true,
-                        ),
-                        inputFormatters: [
-                          FilteringTextInputFormatter.allow(RegExp(r'[\d.]')),
-                        ],
-                        onChanged: (v) => _lengthCm = double.tryParse(v),
-                      ),
-                    ),
-                    const SizedBox(width: AppSpacing.sm2),
-                    Expanded(
-                      child: TextFormField(
-                        initialValue: _widthCm?.toString() ?? '',
-                        decoration: const InputDecoration(
-                          labelText: 'Width',
-                          suffixText: 'cm',
-                        ),
-                        keyboardType: const TextInputType.numberWithOptions(
-                          decimal: true,
-                        ),
-                        inputFormatters: [
-                          FilteringTextInputFormatter.allow(RegExp(r'[\d.]')),
-                        ],
-                        onChanged: (v) => _widthCm = double.tryParse(v),
-                      ),
-                    ),
-                    const SizedBox(width: AppSpacing.sm2),
-                    Expanded(
-                      child: TextFormField(
-                        initialValue: _heightCm?.toString() ?? '',
-                        decoration: const InputDecoration(
-                          labelText: 'Height',
-                          suffixText: 'cm',
-                        ),
-                        keyboardType: const TextInputType.numberWithOptions(
-                          decimal: true,
-                        ),
-                        inputFormatters: [
-                          FilteringTextInputFormatter.allow(RegExp(r'[\d.]')),
-                        ],
-                        onChanged: (v) => _heightCm = double.tryParse(v),
-                      ),
-                    ),
-                  ],
-                ),
+      const SizedBox(height: AppSpacing.lg),
+      Text('Size', style: AppTypography.headlineSmall),
+      const SizedBox(height: AppSpacing.sm2),
+      TextFormField(
+        initialValue: _volumeLitres > 0 ? _volumeLitres.toString() : '',
+        decoration: const InputDecoration(labelText: 'Volume', suffixText: 'L'),
+        keyboardType: const TextInputType.numberWithOptions(decimal: true),
+        inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[\d.]'))],
+        onChanged: (v) => _volumeLitres = double.tryParse(v) ?? 0,
+        validator: (v) {
+          final parsed = double.tryParse((v ?? '').trim());
+          if (parsed == null || parsed <= 0) {
+            return 'Enter a valid volume';
+          }
+          return null;
+        },
+      ),
+      const SizedBox(height: AppSpacing.sm2),
+      Row(
+        children: [
+          Expanded(
+            child: TextFormField(
+              initialValue: _lengthCm?.toString() ?? '',
+              decoration: const InputDecoration(
+                labelText: 'Length',
+                suffixText: 'cm',
+              ),
+              keyboardType: const TextInputType.numberWithOptions(
+                decimal: true,
+              ),
+              inputFormatters: [
+                FilteringTextInputFormatter.allow(RegExp(r'[\d.]')),
+              ],
+              onChanged: (v) => _lengthCm = double.tryParse(v),
+            ),
+          ),
+          const SizedBox(width: AppSpacing.sm2),
+          Expanded(
+            child: TextFormField(
+              initialValue: _widthCm?.toString() ?? '',
+              decoration: const InputDecoration(
+                labelText: 'Width',
+                suffixText: 'cm',
+              ),
+              keyboardType: const TextInputType.numberWithOptions(
+                decimal: true,
+              ),
+              inputFormatters: [
+                FilteringTextInputFormatter.allow(RegExp(r'[\d.]')),
+              ],
+              onChanged: (v) => _widthCm = double.tryParse(v),
+            ),
+          ),
+          const SizedBox(width: AppSpacing.sm2),
+          Expanded(
+            child: TextFormField(
+              initialValue: _heightCm?.toString() ?? '',
+              decoration: const InputDecoration(
+                labelText: 'Height',
+                suffixText: 'cm',
+              ),
+              keyboardType: const TextInputType.numberWithOptions(
+                decimal: true,
+              ),
+              inputFormatters: [
+                FilteringTextInputFormatter.allow(RegExp(r'[\d.]')),
+              ],
+              onChanged: (v) => _heightCm = double.tryParse(v),
+            ),
+          ),
+        ],
+      ),
 
-                const SizedBox(height: AppSpacing.lg),
-                Text('Water profile', style: AppTypography.headlineSmall),
-                const SizedBox(height: AppSpacing.sm),
-                Text(
-                  'This sets target ranges used by Alerts and Charts.',
-                  style: AppTypography.bodySmall,
-                ),
-                const SizedBox(height: AppSpacing.sm2),
-                if (_type == TankType.freshwater)
-                  Column(
-                    children: [
-                      RadioListTile<String>(
-                        value: 'tropical',
-                        groupValue: _waterType,
-                        onChanged: (v) => setState(() => _waterType = v!),
-                        title: const Text('Tropical'),
-                        subtitle: const Text('24-28°C • most community fish'),
-                      ),
-                      RadioListTile<String>(
-                        value: 'coldwater',
-                        groupValue: _waterType,
-                        onChanged: (v) => setState(() => _waterType = v!),
-                        title: const Text('Coldwater'),
-                        subtitle: const Text('15-22°C • goldfish etc.'),
-                      ),
-                    ],
-                  )
-                else
-                  const Text('Marine targets not available yet.'),
+      const SizedBox(height: AppSpacing.lg),
+      Text('Water profile', style: AppTypography.headlineSmall),
+      const SizedBox(height: AppSpacing.sm),
+      Text(
+        'This sets target ranges used by Alerts and Charts.',
+        style: AppTypography.bodySmall,
+      ),
+      const SizedBox(height: AppSpacing.sm2),
+      if (_type == TankType.freshwater)
+        Column(
+          children: [
+            RadioListTile<String>(
+              value: 'tropical',
+              groupValue: _waterType,
+              onChanged: (v) => setState(() => _waterType = v!),
+              title: const Text('Tropical'),
+              subtitle: const Text('24-28°C • most community fish'),
+            ),
+            RadioListTile<String>(
+              value: 'coldwater',
+              groupValue: _waterType,
+              onChanged: (v) => setState(() => _waterType = v!),
+              title: const Text('Coldwater'),
+              subtitle: const Text('15-22°C • goldfish etc.'),
+            ),
+          ],
+        )
+      else
+        const Text('Marine targets not available yet.'),
 
-                const SizedBox(height: AppSpacing.lg),
-                Text('Start date', style: AppTypography.headlineSmall),
-                const SizedBox(height: AppSpacing.sm2),
-                InkWell(
-                  onTap: () async {
-                    final picked = await showDatePicker(
-                      context: context,
-                      initialDate: _startDate,
-                      firstDate: DateTime(2020),
-                      lastDate: DateTime.now(),
-                    );
-                    if (picked != null && mounted) setState(() => _startDate = picked);
-                  },
-                  borderRadius: AppRadius.mediumRadius,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 14,
-                    ),
-                    decoration: BoxDecoration(
-                      color: context.surfaceVariant,
-                      borderRadius: AppRadius.mediumRadius,
-                    ),
-                    child: Row(
-                      children: [
-                        Icon(
-                          Icons.calendar_today,
-                          color: context.textSecondary,
-                        ),
-                        const SizedBox(width: AppSpacing.sm2),
-                        Text(
-                          DateFormat('MMM d, yyyy').format(_startDate),
-                          style: AppTypography.bodyLarge,
-                        ),
-                        const Spacer(),
-                        Icon(
-                          Icons.edit,
-                          color: context.textHint,
-                          size: 18,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
+      const SizedBox(height: AppSpacing.lg),
+      Text('Start date', style: AppTypography.headlineSmall),
+      const SizedBox(height: AppSpacing.sm2),
+      InkWell(
+        onTap: () async {
+          final picked = await showDatePicker(
+            context: context,
+            initialDate: _startDate,
+            firstDate: DateTime(2020),
+            lastDate: DateTime.now(),
+          );
+          if (picked != null && mounted) setState(() => _startDate = picked);
+        },
+        borderRadius: AppRadius.mediumRadius,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          decoration: BoxDecoration(
+            color: context.surfaceVariant,
+            borderRadius: AppRadius.mediumRadius,
+          ),
+          child: Row(
+            children: [
+              Icon(Icons.calendar_today, color: context.textSecondary),
+              const SizedBox(width: AppSpacing.sm2),
+              Text(
+                DateFormat('MMM d, yyyy').format(_startDate),
+                style: AppTypography.bodyLarge,
+              ),
+              const Spacer(),
+              Icon(Icons.edit, color: context.textHint, size: 18),
+            ],
+          ),
+        ),
+      ),
 
-                const SizedBox(height: AppSpacing.lg),
-                Text('Notes', style: AppTypography.headlineSmall),
-                const SizedBox(height: AppSpacing.sm2),
-                TextFormField(
-                  initialValue: _notes,
-                  decoration: const InputDecoration(
-                    labelText: 'Notes',
-                    hintText: 'Anything you want to remember about this tank...',
-                  ),
-                  maxLines: 4,
-                  onChanged: (v) => _notes = v,
-                ),
+      const SizedBox(height: AppSpacing.lg),
+      Text('Notes', style: AppTypography.headlineSmall),
+      const SizedBox(height: AppSpacing.sm2),
+      TextFormField(
+        initialValue: _notes,
+        decoration: const InputDecoration(
+          labelText: 'Notes',
+          hintText: 'Anything you want to remember about this tank...',
+        ),
+        maxLines: 4,
+        onChanged: (v) => _notes = v,
+      ),
 
-                const SizedBox(height: AppSpacing.xl),
-                const Divider(),
-                const SizedBox(height: AppSpacing.sm2),
-                Text(
-                  'Danger zone',
-                  style: AppTypography.headlineSmall.copyWith(
-                    color: AppColors.error,
-                  ),
-                ),
-                const SizedBox(height: AppSpacing.sm),
-                Text(
-                  'Deleting a tank removes all livestock, equipment, logs, and tasks for it.',
-                  style: AppTypography.bodySmall,
-                ),
-                const SizedBox(height: AppSpacing.sm2),
-                OutlinedButton.icon(
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: AppColors.error,
-                    side: const BorderSide(color: AppColors.error),
-                  ),
-                  onPressed: _isSaving ? null : _confirmDelete,
-                  icon: const Icon(Icons.delete_outline),
-                  label: const Text('Delete tank'),
-                ),
-                const SizedBox(height: AppSpacing.lg),
+      const SizedBox(height: AppSpacing.xl),
+      const Divider(),
+      const SizedBox(height: AppSpacing.sm2),
+      Text(
+        'Danger zone',
+        style: AppTypography.headlineSmall.copyWith(color: AppColors.error),
+      ),
+      const SizedBox(height: AppSpacing.sm),
+      Text(
+        'Deleting a tank removes all livestock, equipment, logs, and tasks for it.',
+        style: AppTypography.bodySmall,
+      ),
+      const SizedBox(height: AppSpacing.sm2),
+      OutlinedButton.icon(
+        style: OutlinedButton.styleFrom(
+          foregroundColor: AppColors.error,
+          side: const BorderSide(color: AppColors.error),
+        ),
+        onPressed: _isSaving ? null : _confirmDelete,
+        icon: const Icon(Icons.delete_outline),
+        label: const Text('Delete tank'),
+      ),
+      const SizedBox(height: AppSpacing.lg),
     ];
   }
 
@@ -404,7 +389,9 @@ class _TankSettingsScreenState extends ConsumerState<TankSettingsScreen> {
       context: context,
       builder: (ctx) => AlertDialog(
         title: const Text('Delete Tank?'),
-        content: const Text('This will remove all livestock, equipment, logs, and tasks. You\'ll have 5 seconds to undo.'),
+        content: const Text(
+          'This will remove all livestock, equipment, logs, and tasks. You\'ll have 5 seconds to undo.',
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
@@ -434,7 +421,9 @@ class _TankSettingsScreenState extends ConsumerState<TankSettingsScreen> {
 
     // Navigate back: pop TankSettings and TankDetail only (2 screens)
     if (mounted) {
-      Navigator.of(context)..pop()..pop();
+      Navigator.of(context)
+        ..pop()
+        ..pop();
 
       // Show SnackBar with Undo option
       ScaffoldMessenger.of(context).showSnackBar(

@@ -107,12 +107,18 @@ class StudyRoomScene extends StatelessWidget {
               Positioned(
                 top: h * 0.1,
                 right: w * 0.1,
-                child: _FloatingElement(icon: Icons.auto_stories, size: AppIconSizes.md),
+                child: _FloatingElement(
+                  icon: Icons.auto_stories,
+                  size: AppIconSizes.md,
+                ),
               ),
               Positioned(
                 top: h * 0.25,
                 left: w * 0.08,
-                child: _FloatingElement(icon: Icons.star, size: AppIconSizes.xs),
+                child: _FloatingElement(
+                  icon: Icons.star,
+                  size: AppIconSizes.xs,
+                ),
               ),
               Positioned(
                 bottom: h * 0.3,
@@ -449,10 +455,7 @@ class _DeskPainter extends CustomPainter {
         size.height * 0.42,
       )
       ..close();
-    canvas.drawPath(
-      bookRight,
-      Paint()..color = StudyColors.creamAlpha90,
-    );
+    canvas.drawPath(bookRight, Paint()..color = StudyColors.creamAlpha90);
 
     // Text lines on book
     final linePaint = Paint()
@@ -496,7 +499,10 @@ class _GlassBadge extends StatelessWidget {
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: AppSpacing.sm3),
+          padding: const EdgeInsets.symmetric(
+            horizontal: 16,
+            vertical: AppSpacing.sm3,
+          ),
           decoration: BoxDecoration(
             color: StudyColors.glassCard,
             borderRadius: AppRadius.largeRadius,
@@ -547,7 +553,10 @@ class _StreakBadge extends StatelessWidget {
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm3, vertical: AppSpacing.xs2),
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.sm3,
+            vertical: AppSpacing.xs2,
+          ),
           decoration: BoxDecoration(
             color: const Color(0x33000000),
             borderRadius: AppRadius.mediumRadius,

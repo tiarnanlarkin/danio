@@ -25,7 +25,11 @@ class LeaderboardScreen extends ConsumerWidget {
                   color: AppColors.xpAlpha20,
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(Icons.emoji_events_outlined, size: 56, color: AppColors.primary),
+                child: const Icon(
+                  Icons.emoji_events_outlined,
+                  size: 56,
+                  color: AppColors.primary,
+                ),
               ),
               const SizedBox(height: AppSpacing.lg),
               Container(
@@ -58,7 +62,9 @@ class LeaderboardScreen extends ConsumerWidget {
                 'leagues, and rankings are coming in a future update.',
                 textAlign: TextAlign.center,
                 style: theme.textTheme.bodyMedium?.copyWith(
-                  color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+                  color: Theme.of(
+                    context,
+                  ).colorScheme.onSurface.withOpacity(0.6),
                   height: 1.5,
                 ),
               ),
@@ -66,12 +72,20 @@ class LeaderboardScreen extends ConsumerWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.construction, size: 16, color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6)),
+                  Icon(
+                    Icons.construction,
+                    size: 16,
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.onSurface.withOpacity(0.6),
+                  ),
                   const SizedBox(width: AppSpacing.sm),
                   Text(
                     'Something great is brewing! 🫧',
                     style: theme.textTheme.bodySmall?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.onSurface.withOpacity(0.6),
                       fontStyle: FontStyle.italic,
                     ),
                   ),

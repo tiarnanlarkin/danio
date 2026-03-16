@@ -34,7 +34,8 @@ class SyncDebugDialog extends ConsumerWidget {
                 value: _formatDateTime(syncState.lastSyncTime!),
                 icon: Icons.sync,
               ),
-            if (syncState.lastSyncTime != null) const SizedBox(height: AppSpacing.sm2),
+            if (syncState.lastSyncTime != null)
+              const SizedBox(height: AppSpacing.sm2),
 
             // Conflicts resolved
             _InfoRow(
@@ -51,7 +52,9 @@ class SyncDebugDialog extends ConsumerWidget {
               const SizedBox(height: AppSpacing.sm),
               Text(
                 'Recent Conflicts:',
-                style: Theme.of(context).textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.bold),
+                style: Theme.of(
+                  context,
+                ).textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: AppSpacing.sm),
               ...syncState.recentConflicts.map(
@@ -69,7 +72,9 @@ class SyncDebugDialog extends ConsumerWidget {
                       Expanded(
                         child: Text(
                           conflict,
-                          style: Theme.of(context).textTheme.bodySmall!.copyWith(),
+                          style: Theme.of(
+                            context,
+                          ).textTheme.bodySmall!.copyWith(),
                         ),
                       ),
                     ],
@@ -85,7 +90,9 @@ class SyncDebugDialog extends ConsumerWidget {
               const SizedBox(height: AppSpacing.sm),
               Text(
                 'Queued Actions:',
-                style: Theme.of(context).textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.bold),
+                style: Theme.of(
+                  context,
+                ).textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: AppSpacing.sm),
               ...syncState.queuedActions.map(
@@ -101,13 +108,14 @@ class SyncDebugDialog extends ConsumerWidget {
                           children: [
                             Text(
                               SyncService.getActionDescription(action),
-                              style: Theme.of(context).textTheme.bodySmall!.copyWith(),
+                              style: Theme.of(
+                                context,
+                              ).textTheme.bodySmall!.copyWith(),
                             ),
                             Text(
                               _formatDateTime(action.timestamp),
-                              style: Theme.of(context).textTheme.labelSmall!.copyWith(
-                                color: context.textSecondary,
-                              ),
+                              style: Theme.of(context).textTheme.labelSmall!
+                                  .copyWith(color: context.textSecondary),
                             ),
                           ],
                         ),
@@ -136,9 +144,9 @@ class SyncDebugDialog extends ConsumerWidget {
                     Expanded(
                       child: Text(
                         syncState.lastError!,
-                        style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                          color: AppColors.error,
-                        ),
+                        style: Theme.of(
+                          context,
+                        ).textTheme.bodySmall!.copyWith(color: AppColors.error),
                       ),
                     ),
                   ],
@@ -230,7 +238,9 @@ class _InfoRow extends StatelessWidget {
         Expanded(
           child: Text(
             label,
-            style: Theme.of(context).textTheme.bodyLarge!.copyWith( fontWeight: FontWeight.w500),
+            style: Theme.of(
+              context,
+            ).textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.w500),
           ),
         ),
         Text(

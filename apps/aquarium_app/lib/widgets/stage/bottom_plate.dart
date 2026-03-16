@@ -90,10 +90,13 @@ class BottomPlateState extends State<BottomPlate>
       stiffness: 300.0,
       ratio: 0.8,
     );
-    final simulation = SpringSimulation(spring, _dragExtent, target, -velocity / 1000);
-    _animation = _controller.drive(
-      Tween(begin: _dragExtent, end: target),
+    final simulation = SpringSimulation(
+      spring,
+      _dragExtent,
+      target,
+      -velocity / 1000,
     );
+    _animation = _controller.drive(Tween(begin: _dragExtent, end: target));
     _controller.animateWith(simulation);
 
     if (target == 1.0) {
@@ -110,8 +113,7 @@ class BottomPlateState extends State<BottomPlate>
     final bottomPad = MediaQuery.of(context).padding.bottom;
     final maxDragDistance =
         screenHeight * widget.maxHeightFraction - widget.peekHeight;
-    final currentHeight =
-        widget.peekHeight + maxDragDistance * _dragExtent;
+    final currentHeight = widget.peekHeight + maxDragDistance * _dragExtent;
 
     return Positioned(
       bottom: widget.bottomOffset,
@@ -119,112 +121,117 @@ class BottomPlateState extends State<BottomPlate>
       right: 0,
       height: currentHeight + bottomPad,
       child: Semantics(
-        label: '${widget.label} panel, ${isOpen ? "expanded" : "collapsed"}. Drag to ${isOpen ? "collapse" : "expand"}',
+        label:
+            '${widget.label} panel, ${isOpen ? "expanded" : "collapsed"}. Drag to ${isOpen ? "collapse" : "expand"}',
         child: GestureDetector(
           behavior: HitTestBehavior.opaque,
           onVerticalDragUpdate: (d) => _onDragUpdate(d, maxDragDistance),
           onVerticalDragEnd: _onDragEnd,
           child: Container(
-          decoration: BoxDecoration(
-            // Fade the panel body in as the user drags up.
-            // At _dragExtent == 0 (fully collapsed), background is transparent —
-            // only the coloured tab peek strip is visible.
-            color: bg.withAlpha((_dragExtent * 255).round().clamp(0, 255)),
-            borderRadius: const BorderRadius.vertical(
-              top: Radius.circular(24),
-            ),
-            // Shadow only fades in as the panel opens — no white halo at rest.
-            boxShadow: _dragExtent > 0.01
-                ? [
-                    BoxShadow(
-                      color: AppOverlays.black15
-                          .withAlpha((_dragExtent * 38).round().clamp(0, 38)),
-                      blurRadius: 20,
-                      offset: const Offset(0, -4),
-                    ),
-                  ]
-                : null,
-          ),
-          child: Stack(
-            children: [
-              // Texture background — only shown when panel is open/dragging.
-              // At _dragExtent == 0 (fully collapsed), hide completely so only
-              // the coloured tab accent strip is visible (no white/grey halo).
-              if (widget.backgroundPainter != null && _dragExtent > 0)
-                Positioned.fill(
-                  child: ClipRRect(
-                    borderRadius: const BorderRadius.vertical(
-                      top: Radius.circular(24),
-                    ),
-                    child: Opacity(
-                      opacity: 0.08 * _dragExtent.clamp(0.0, 1.0),
-                      child: widget.backgroundPainter!,
-                    ),
-                  ),
-                ),
-
-              // Content
-              Column(
-                children: [
-                  // Drag handle peek strip — always centred
-                  SizedBox(
-                    height: widget.peekHeight,
-                    child: Center(
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 4),
-                        decoration: widget.tabColor != null
-                            ? BoxDecoration(
-                                color: widget.tabColor,
-                                borderRadius: const BorderRadius.vertical(
-                                  top: Radius.circular(12),
-                                ),
-                              )
-                            : null,
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            // Pill handle
-                            Container(
-                              width: 20,
-                              height: 3,
-                              margin: const EdgeInsets.only(right: 8),
-                              decoration: BoxDecoration(
-                                color: widget.tabColor != null
-                                    ? Colors.white.withValues(alpha: 0.5)
-                                    : AppOverlays.black20,
-                                borderRadius: AppRadius.pillRadius,
-                              ),
-                            ),
-                            Text(
-                              '${widget.emoji} ${widget.label}',
-                              style: AppTypography.labelMedium.copyWith(
-                                color: widget.tabColor != null
-                                    ? Colors.white
-                                    : context.textSecondary,
-                                fontWeight: widget.tabColor != null
-                                    ? FontWeight.w600
-                                    : FontWeight.w400,
-                              ),
-                            ),
-                          ],
+            decoration: BoxDecoration(
+              // Fade the panel body in as the user drags up.
+              // At _dragExtent == 0 (fully collapsed), background is transparent —
+              // only the coloured tab peek strip is visible.
+              color: bg.withAlpha((_dragExtent * 255).round().clamp(0, 255)),
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(24),
+              ),
+              // Shadow only fades in as the panel opens — no white halo at rest.
+              boxShadow: _dragExtent > 0.01
+                  ? [
+                      BoxShadow(
+                        color: AppOverlays.black15.withAlpha(
+                          (_dragExtent * 38).round().clamp(0, 38),
                         ),
+                        blurRadius: 20,
+                        offset: const Offset(0, -4),
+                      ),
+                    ]
+                  : null,
+            ),
+            child: Stack(
+              children: [
+                // Texture background — only shown when panel is open/dragging.
+                // At _dragExtent == 0 (fully collapsed), hide completely so only
+                // the coloured tab accent strip is visible (no white/grey halo).
+                if (widget.backgroundPainter != null && _dragExtent > 0)
+                  Positioned.fill(
+                    child: ClipRRect(
+                      borderRadius: const BorderRadius.vertical(
+                        top: Radius.circular(24),
+                      ),
+                      child: Opacity(
+                        opacity: 0.08 * _dragExtent.clamp(0.0, 1.0),
+                        child: widget.backgroundPainter!,
                       ),
                     ),
                   ),
-                  // Expandable content
-                  Expanded(
-                    child: _dragExtent > 0.05
-                        ? Opacity(
-                            opacity: _dragExtent.clamp(0.0, 1.0),
-                            child: widget.child,
-                          )
-                        : const SizedBox.shrink(),
-                  ),
-                ],
-              ),
-            ],
+
+                // Content
+                Column(
+                  children: [
+                    // Drag handle peek strip — always centred
+                    SizedBox(
+                      height: widget.peekHeight,
+                      child: Center(
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 24,
+                            vertical: 4,
+                          ),
+                          decoration: widget.tabColor != null
+                              ? BoxDecoration(
+                                  color: widget.tabColor,
+                                  borderRadius: const BorderRadius.vertical(
+                                    top: Radius.circular(12),
+                                  ),
+                                )
+                              : null,
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              // Pill handle
+                              Container(
+                                width: 20,
+                                height: 3,
+                                margin: const EdgeInsets.only(right: 8),
+                                decoration: BoxDecoration(
+                                  color: widget.tabColor != null
+                                      ? Colors.white.withValues(alpha: 0.5)
+                                      : AppOverlays.black20,
+                                  borderRadius: AppRadius.pillRadius,
+                                ),
+                              ),
+                              Text(
+                                '${widget.emoji} ${widget.label}',
+                                style: AppTypography.labelMedium.copyWith(
+                                  color: widget.tabColor != null
+                                      ? Colors.white
+                                      : context.textSecondary,
+                                  fontWeight: widget.tabColor != null
+                                      ? FontWeight.w600
+                                      : FontWeight.w400,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    // Expandable content
+                    Expanded(
+                      child: _dragExtent > 0.05
+                          ? Opacity(
+                              opacity: _dragExtent.clamp(0.0, 1.0),
+                              child: widget.child,
+                            )
+                          : const SizedBox.shrink(),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
-        ),
         ),
       ),
     );

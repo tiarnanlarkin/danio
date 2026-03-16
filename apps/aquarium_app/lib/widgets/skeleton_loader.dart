@@ -53,7 +53,11 @@ class _ShimmerLoadingState extends State<ShimmerLoading>
             return LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
-              colors: [context.borderColor, context.surfaceColor, context.borderColor],
+              colors: [
+                context.borderColor,
+                context.surfaceColor,
+                context.borderColor,
+              ],
               stops: [
                 _animation.value - 0.3,
                 _animation.value,
@@ -106,7 +110,11 @@ class SkeletonCard extends StatelessWidget {
       child: Container(
         height: height ?? 100,
         margin:
-            padding ?? const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.sm),
+            padding ??
+            const EdgeInsets.symmetric(
+              horizontal: AppSpacing.md,
+              vertical: AppSpacing.sm,
+            ),
         padding: const EdgeInsets.all(AppSpacing.md),
         decoration: BoxDecoration(
           color: Theme.of(context).brightness == Brightness.dark
@@ -238,7 +246,9 @@ class SkeletonChart extends StatelessWidget {
                   7,
                   (index) => Expanded(
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xs),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: AppSpacing.xs,
+                      ),
                       child: SkeletonBox(
                         height: 60 + (index * 20).toDouble(),
                         borderRadius: AppRadius.xsRadius,
@@ -263,7 +273,10 @@ class SkeletonStoryCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return ShimmerLoading(
       child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.sm),
+        margin: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.md,
+          vertical: AppSpacing.sm,
+        ),
         height: 120,
         decoration: BoxDecoration(
           color: Theme.of(context).brightness == Brightness.dark

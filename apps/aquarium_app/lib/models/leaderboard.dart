@@ -81,7 +81,10 @@ enum League {
   String toJson() => name;
 
   static League fromJson(String value) {
-    return League.values.firstWhere((e) => e.name == value, orElse: () => League.bronze);
+    return League.values.firstWhere(
+      (e) => e.name == value,
+      orElse: () => League.bronze,
+    );
   }
 }
 

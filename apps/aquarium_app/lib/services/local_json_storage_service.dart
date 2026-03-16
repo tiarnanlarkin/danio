@@ -544,7 +544,11 @@ class LocalJsonStorageService implements StorageService {
 
   // --- Logs ---
   @override
-  Future<List<LogEntry>> getLogsForTank(String tankId, {int? limit, DateTime? after}) async {
+  Future<List<LogEntry>> getLogsForTank(
+    String tankId, {
+    int? limit,
+    DateTime? after,
+  }) async {
     await _ensureLoaded();
     var logs = _logs.values.where((l) => l.tankId == tankId).toList();
     if (after != null) {

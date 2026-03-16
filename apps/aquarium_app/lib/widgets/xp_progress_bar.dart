@@ -42,10 +42,9 @@ class _XpProgressBarState extends ConsumerState<XpProgressBar>
       vsync: this,
     );
 
-    _progressAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(parent: _controller, curve: AppCurves.emphasized));
+    _progressAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _controller, curve: AppCurves.emphasized),
+    );
   }
 
   @override
@@ -66,19 +65,27 @@ class _XpProgressBarState extends ConsumerState<XpProgressBar>
   Widget build(BuildContext context) {
     // Select only the four fields this widget uses — avoids rebuilds when
     // unrelated profile data (streak, gems, completedLessons, etc.) changes.
-    final xpData = ref.watch(userProfileProvider.select((a) => a.whenData((p) => p == null
-        ? null
-        : (
-            levelProgress: p.levelProgress,
-            currentLevel: p.currentLevel,
-            xpToNextLevel: p.xpToNextLevel,
-            totalXp: p.totalXp,
-          ))));
+    final xpData = ref.watch(
+      userProfileProvider.select(
+        (a) => a.whenData(
+          (p) => p == null
+              ? null
+              : (
+                  levelProgress: p.levelProgress,
+                  currentLevel: p.currentLevel,
+                  xpToNextLevel: p.xpToNextLevel,
+                  totalXp: p.totalXp,
+                ),
+        ),
+      ),
+    );
 
     // Listen for level progress changes and animate — avoids calling setState
     // from addPostFrameCallback inside build().
     ref.listen(
-      userProfileProvider.select((a) => a.whenData((p) => p?.levelProgress ?? 0.0)),
+      userProfileProvider.select(
+        (a) => a.whenData((p) => p?.levelProgress ?? 0.0),
+      ),
       (prev, next) {
         final progress = next.valueOrNull ?? 0.0;
         _updateProgress(progress);
@@ -88,16 +95,21 @@ class _XpProgressBarState extends ConsumerState<XpProgressBar>
     return xpData.when(
       loading: () => const SizedBox.shrink(),
       error: (_, __) => Padding(
-                    padding: const EdgeInsets.all(AppSpacing.sm),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(Icons.info_outline, size: 14, color: AppColors.warning),
-                        const SizedBox(width: AppSpacing.xs),
-                        Text('Unable to load', style: Theme.of(context).textTheme.bodySmall?.copyWith(color: AppColors.warning)),
-                      ],
-                    ),
-                  ),
+        padding: const EdgeInsets.all(AppSpacing.sm),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(Icons.info_outline, size: 14, color: AppColors.warning),
+            const SizedBox(width: AppSpacing.xs),
+            Text(
+              'Unable to load',
+              style: Theme.of(
+                context,
+              ).textTheme.bodySmall?.copyWith(color: AppColors.warning),
+            ),
+          ],
+        ),
+      ),
       data: (data) {
         if (data == null) return const SizedBox.shrink();
 
@@ -296,28 +308,39 @@ class XpProgressCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // Select only XP/level fields to avoid rebuilds from unrelated changes.
-    final xpCardData = ref.watch(userProfileProvider.select((a) => a.whenData((p) => p == null
-        ? null
-        : (
-            currentLevel: p.currentLevel,
-            levelTitle: p.levelTitle,
-            totalXp: p.totalXp,
-            xpToNextLevel: p.xpToNextLevel,
-          ))));
+    final xpCardData = ref.watch(
+      userProfileProvider.select(
+        (a) => a.whenData(
+          (p) => p == null
+              ? null
+              : (
+                  currentLevel: p.currentLevel,
+                  levelTitle: p.levelTitle,
+                  totalXp: p.totalXp,
+                  xpToNextLevel: p.xpToNextLevel,
+                ),
+        ),
+      ),
+    );
 
     return xpCardData.when(
       loading: () => const SizedBox.shrink(),
       error: (_, __) => Padding(
-                    padding: const EdgeInsets.all(AppSpacing.sm),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(Icons.info_outline, size: 14, color: AppColors.warning),
-                        const SizedBox(width: AppSpacing.xs),
-                        Text('Unable to load', style: Theme.of(context).textTheme.bodySmall?.copyWith(color: AppColors.warning)),
-                      ],
-                    ),
-                  ),
+        padding: const EdgeInsets.all(AppSpacing.sm),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(Icons.info_outline, size: 14, color: AppColors.warning),
+            const SizedBox(width: AppSpacing.xs),
+            Text(
+              'Unable to load',
+              style: Theme.of(
+                context,
+              ).textTheme.bodySmall?.copyWith(color: AppColors.warning),
+            ),
+          ],
+        ),
+      ),
       data: (data) {
         if (data == null) return const SizedBox.shrink();
 
@@ -326,16 +349,10 @@ class XpProgressCard extends ConsumerWidget {
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
-              colors: [
-                AppColors.warningAlpha15,
-                AppColors.secondaryAlpha10,
-              ],
+              colors: [AppColors.warningAlpha15, AppColors.secondaryAlpha10],
             ),
             borderRadius: AppRadius.mediumRadius,
-            border: Border.all(
-              color: AppColors.warningAlpha30,
-              width: 1.5,
-            ),
+            border: Border.all(color: AppColors.warningAlpha30, width: 1.5),
           ),
           child: Material(
             color: Colors.transparent,

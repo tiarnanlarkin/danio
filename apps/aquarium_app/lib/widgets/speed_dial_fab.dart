@@ -70,14 +70,9 @@ class _SpeedDialFABState extends State<SpeedDialFAB>
                 child: GestureDetector(
                   onTap: _close,
                   child: BackdropFilter(
-                    filter: ImageFilter.blur(
-                      sigmaX: 8 * t,
-                      sigmaY: 8 * t,
-                    ),
+                    filter: ImageFilter.blur(sigmaX: 8 * t, sigmaY: 8 * t),
                     child: Container(
-                      color: Color.fromARGB(
-                        (140 * t).round(), 20, 20, 30,
-                      ),
+                      color: Color.fromARGB((140 * t).round(), 20, 20, 30),
                     ),
                   ),
                 ),
@@ -152,11 +147,11 @@ class _SpeedDialFABState extends State<SpeedDialFAB>
 
   /// Diagonal staggered positions for 5 buttons.
   static const List<Offset> _positions = [
-    Offset(110, 110),  // Stats
-    Offset(16,  200),  // Water Change
-    Offset(200, 280),  // Feed
-    Offset(16,  360),  // Quick Test
-    Offset(110, 440),  // Add Tank
+    Offset(110, 110), // Stats
+    Offset(16, 200), // Water Change
+    Offset(200, 280), // Feed
+    Offset(16, 360), // Quick Test
+    Offset(110, 440), // Add Tank
   ];
 
   List<Widget> _buildActionPills(double t) {
@@ -169,8 +164,10 @@ class _SpeedDialFABState extends State<SpeedDialFAB>
 
       final staggerStart = i / count * 0.5;
       final staggerEnd = staggerStart + 0.5;
-      final staggerT = ((t - staggerStart) / (staggerEnd - staggerStart))
-          .clamp(0.0, 1.0);
+      final staggerT = ((t - staggerStart) / (staggerEnd - staggerStart)).clamp(
+        0.0,
+        1.0,
+      );
       final curve = Curves.easeOutBack.transform(staggerT);
 
       pills.add(
@@ -209,7 +206,8 @@ class _PillButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final bg = action.backgroundColor ?? context.cardColor;
     final fg = action.foregroundColor ?? context.textPrimary;
-    final isColored = action.backgroundColor != null &&
+    final isColored =
+        action.backgroundColor != null &&
         action.backgroundColor != context.cardColor;
 
     return Semantics(
@@ -227,8 +225,9 @@ class _PillButton extends StatelessWidget {
             borderRadius: AppRadius.largeRadius,
             boxShadow: [
               BoxShadow(
-                color: (isColored ? bg : AppColors.blackAlpha40)
-                    .withAlpha(isColored ? 80 : 40),
+                color: (isColored ? bg : AppColors.blackAlpha40).withAlpha(
+                  isColored ? 80 : 40,
+                ),
                 blurRadius: 8,
                 offset: const Offset(0, 3),
               ),

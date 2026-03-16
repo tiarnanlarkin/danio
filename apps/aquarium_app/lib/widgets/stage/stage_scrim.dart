@@ -65,13 +65,8 @@ class _StageScrimState extends ConsumerState<StageScrim>
           onTap: () => ref.read(stageProvider.notifier).closeAll(),
           child: ClipRect(
             child: BackdropFilter(
-              filter: ImageFilter.blur(
-                sigmaX: value * 6,
-                sigmaY: value * 6,
-              ),
-              child: Container(
-                color: Color.fromRGBO(0, 0, 0, value * 0.25),
-              ),
+              filter: ImageFilter.blur(sigmaX: value * 6, sigmaY: value * 6),
+              child: Container(color: Color.fromRGBO(0, 0, 0, value * 0.25)),
             ),
           ),
         );

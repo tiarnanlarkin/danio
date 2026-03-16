@@ -49,7 +49,7 @@ class PracticeHubScreen extends ConsumerWidget {
   }
 
   int _getPracticeHubItemCount(int dueCards, int totalCards) {
-    // Hero card (1) + spacer + stats row + spacer + 
+    // Hero card (1) + spacer + stats row + spacer +
     // section header + spacer + 3 practice cards + 2 spacers +
     // section header + spacer + 3 progress cards + 2 spacers = 19 items
     return 19;
@@ -74,7 +74,10 @@ class PracticeHubScreen extends ConsumerWidget {
             icon: Icons.replay,
             color: AppColors.error,
             onTap: () {
-              NavigationThrottle.push(context, const SpacedRepetitionPracticeScreen());
+              NavigationThrottle.push(
+                context,
+                const SpacedRepetitionPracticeScreen(),
+              );
             },
           );
         } else if (totalCards > 0) {
@@ -85,7 +88,10 @@ class PracticeHubScreen extends ConsumerWidget {
             icon: Icons.auto_stories,
             color: AppColors.primary,
             onTap: () {
-              NavigationThrottle.push(context, const SpacedRepetitionPracticeScreen());
+              NavigationThrottle.push(
+                context,
+                const SpacedRepetitionPracticeScreen(),
+              );
             },
           );
         } else {
@@ -114,7 +120,9 @@ class PracticeHubScreen extends ConsumerWidget {
             _StatItem(
               label: 'Mastered',
               value: '${srState.stats.masteredCards}',
-              color: srState.stats.masteredCards > 0 ? AppColors.success : context.textSecondary,
+              color: srState.stats.masteredCards > 0
+                  ? AppColors.success
+                  : context.textSecondary,
             ),
             _StatItem(
               label: 'Total Cards',
@@ -137,7 +145,10 @@ class PracticeHubScreen extends ConsumerWidget {
           icon: Icons.psychology,
           iconColor: AppColors.primary,
           onTap: () {
-            NavigationThrottle.push(context, const SpacedRepetitionPracticeScreen());
+            NavigationThrottle.push(
+              context,
+              const SpacedRepetitionPracticeScreen(),
+            );
           },
         );
       case 7:
@@ -181,7 +192,9 @@ class PracticeHubScreen extends ConsumerWidget {
             value: streak > 0
                 ? '${streak == 1 ? '1 day' : '$streak days'} 🔥'
                 : '0 days',
-            icon: streak > 0 ? Icons.local_fire_department : Icons.local_fire_department_outlined,
+            icon: streak > 0
+                ? Icons.local_fire_department
+                : Icons.local_fire_department_outlined,
             color: streak > 0 ? AppColors.warning : context.textSecondary,
           );
         }
@@ -245,8 +258,7 @@ class PracticeHubScreen extends ConsumerWidget {
                   ],
                 ),
               ),
-              if (onTap != null)
-                Icon(Icons.arrow_forward_ios, color: color),
+              if (onTap != null) Icon(Icons.arrow_forward_ios, color: color),
             ],
           ),
         ),
@@ -254,7 +266,10 @@ class PracticeHubScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildStatsRow(BuildContext context, {required List<_StatItem> stats}) {
+  Widget _buildStatsRow(
+    BuildContext context, {
+    required List<_StatItem> stats,
+  }) {
     return Row(
       children: stats.map((stat) {
         return Expanded(
@@ -334,7 +349,6 @@ class PracticeHubScreen extends ConsumerWidget {
       ),
     );
   }
-
 }
 
 class _StatItem {
@@ -342,9 +356,5 @@ class _StatItem {
   final String value;
   final Color color;
 
-  _StatItem({
-    required this.label,
-    required this.value,
-    required this.color,
-  });
+  _StatItem({required this.label, required this.value, required this.color});
 }

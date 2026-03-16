@@ -1312,7 +1312,12 @@ const List<SpeciesInfo> _allSpecies = [
     swimLevel: 'All',
     description:
         'Impressive dorsal fin on males. Largest of the common mollies. Thrives with some salt added. Stunning display fish.',
-    compatibleWith: ['Other Mollies', 'Platies', 'Swordtails', 'Larger community fish'],
+    compatibleWith: [
+      'Other Mollies',
+      'Platies',
+      'Swordtails',
+      'Larger community fish',
+    ],
     avoidWith: ['Soft-water fish', 'Very small tanks'],
   ),
   SpeciesInfo(
@@ -1560,7 +1565,12 @@ const List<SpeciesInfo> _allSpecies = [
     swimLevel: 'Middle',
     description:
         'Stunning two-tone coloration: blue front half, orange-red rear half. Males more colorful. Active schoolers needing swimming space.',
-    compatibleWith: ['Other Rainbowfish', 'Larger Tetras', 'Corydoras', 'Barbs'],
+    compatibleWith: [
+      'Other Rainbowfish',
+      'Larger Tetras',
+      'Corydoras',
+      'Barbs',
+    ],
     avoidWith: ['Aggressive fish', 'Very small fish', 'Small tanks'],
   ),
   SpeciesInfo(
@@ -1582,7 +1592,12 @@ const List<SpeciesInfo> _allSpecies = [
     swimLevel: 'Middle',
     description:
         'Smaller rainbowfish with brilliant neon blue body and red fins. Perfect for medium community tanks. Very active swimmers.',
-    compatibleWith: ['Tetras', 'Rasboras', 'Corydoras', 'Peaceful community fish'],
+    compatibleWith: [
+      'Tetras',
+      'Rasboras',
+      'Corydoras',
+      'Peaceful community fish',
+    ],
     avoidWith: ['Aggressive fish', 'Slow-moving fish'],
   ),
   SpeciesInfo(
@@ -1604,7 +1619,12 @@ const List<SpeciesInfo> _allSpecies = [
     swimLevel: 'Middle',
     description:
         'Delicate fish with spectacular elongated finnage on males. Needs peaceful tankmates and gentle current. Stunning display fish.',
-    compatibleWith: ['Small peaceful fish', 'Rasboras', 'Small tetras', 'Shrimp'],
+    compatibleWith: [
+      'Small peaceful fish',
+      'Rasboras',
+      'Small tetras',
+      'Shrimp',
+    ],
     avoidWith: ['Aggressive fish', 'Fin nippers', 'Strong current'],
   ),
   SpeciesInfo(
@@ -1626,14 +1646,17 @@ const List<SpeciesInfo> _allSpecies = [
     swimLevel: 'Top',
     description:
         'Transparent body with yellow fins and blue iridescence. Prefers hard, alkaline water. Males have extended fin rays.',
-    compatibleWith: ['Other Rainbowfish', 'Livebearers', 'Peaceful community fish'],
+    compatibleWith: [
+      'Other Rainbowfish',
+      'Livebearers',
+      'Peaceful community fish',
+    ],
     avoidWith: ['Aggressive fish', 'Soft-water species'],
   ),
 
   // ============================================
   // PHASE 2 EXPANSION - Beginner Cichlids
   // ============================================
-
   SpeciesInfo(
     commonName: 'Apistogramma Agassizii',
     scientificName: 'Apistogramma agassizii',
@@ -1675,7 +1698,12 @@ const List<SpeciesInfo> _allSpecies = [
     swimLevel: 'Middle',
     description:
         'Named for keyhole-shaped marking on side. One of the most peaceful cichlids. Shy and needs hiding spots. Great community cichlid.',
-    compatibleWith: ['Tetras', 'Corydoras', 'Rasboras', 'Peaceful community fish'],
+    compatibleWith: [
+      'Tetras',
+      'Corydoras',
+      'Rasboras',
+      'Peaceful community fish',
+    ],
     avoidWith: ['Aggressive fish', 'Very boisterous tankmates'],
   ),
   SpeciesInfo(
@@ -1736,12 +1764,17 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 20,
     minSchoolSize: 1,
     temperament: 'Semi-aggressive',
-    diet: 'Omnivore with herbivore tendencies - pellets, flakes, vegetables, algae',
+    diet:
+        'Omnivore with herbivore tendencies - pellets, flakes, vegetables, algae',
     adultSizeCm: 12,
     swimLevel: 'Middle',
     description:
         'Golden-orange body with blue highlights when breeding. One of the more peaceful Central American cichlids. Good algae grazer.',
-    compatibleWith: ['Similar-sized cichlids', 'Robust community fish', 'Catfish'],
+    compatibleWith: [
+      'Similar-sized cichlids',
+      'Robust community fish',
+      'Catfish',
+    ],
     avoidWith: ['Very small fish', 'Timid fish'],
   ),
   SpeciesInfo(
@@ -1763,7 +1796,12 @@ const List<SpeciesInfo> _allSpecies = [
     swimLevel: 'Middle',
     description:
         'Called "Poor Man\'s Discus" for similar shape. More tolerant of water conditions than discus. Gold and green varieties available.',
-    compatibleWith: ['Similar-sized cichlids', 'Large tetras', 'Plecos', 'Catfish'],
+    compatibleWith: [
+      'Similar-sized cichlids',
+      'Large tetras',
+      'Plecos',
+      'Catfish',
+    ],
     avoidWith: ['Very small fish', 'Aggressive cichlids'],
   ),
   SpeciesInfo(
@@ -1785,7 +1823,11 @@ const List<SpeciesInfo> _allSpecies = [
     swimLevel: 'Middle',
     description:
         'Black and white marbled pattern, each fish unique. Elegant variety of the classic angelfish. Same care as standard angels.',
-    compatibleWith: ['Larger Tetras', 'Corydoras', 'Peaceful medium-sized fish'],
+    compatibleWith: [
+      'Larger Tetras',
+      'Corydoras',
+      'Peaceful medium-sized fish',
+    ],
     avoidWith: ['Neon Tetras', 'Small fish', 'Fin nippers'],
   ),
   SpeciesInfo(
@@ -1807,7 +1849,11 @@ const List<SpeciesInfo> _allSpecies = [
     swimLevel: 'Middle',
     description:
         'Orange, black and white coloring reminiscent of koi fish. Popular and striking variety. Color develops with age.',
-    compatibleWith: ['Larger Tetras', 'Corydoras', 'Peaceful medium-sized fish'],
+    compatibleWith: [
+      'Larger Tetras',
+      'Corydoras',
+      'Peaceful medium-sized fish',
+    ],
     avoidWith: ['Neon Tetras', 'Small fish', 'Fin nippers'],
   ),
   SpeciesInfo(
@@ -1829,7 +1875,11 @@ const List<SpeciesInfo> _allSpecies = [
     swimLevel: 'Middle',
     description:
         'Extra-bold black vertical stripes on silver body. Classic wild-type pattern enhanced through breeding. Striking appearance.',
-    compatibleWith: ['Larger Tetras', 'Corydoras', 'Peaceful medium-sized fish'],
+    compatibleWith: [
+      'Larger Tetras',
+      'Corydoras',
+      'Peaceful medium-sized fish',
+    ],
     avoidWith: ['Neon Tetras', 'Small fish', 'Fin nippers'],
   ),
   SpeciesInfo(
@@ -1851,7 +1901,11 @@ const List<SpeciesInfo> _allSpecies = [
     swimLevel: 'Middle',
     description:
         'Solid bright blue coloration. Stunning variety requiring pristine water conditions. One of the most sought-after discus.',
-    compatibleWith: ['Cardinal Tetras', 'Sterbai Corydoras', 'Rummy Nose Tetras'],
+    compatibleWith: [
+      'Cardinal Tetras',
+      'Sterbai Corydoras',
+      'Rummy Nose Tetras',
+    ],
     avoidWith: ['Aggressive fish', 'Coldwater species'],
   ),
   SpeciesInfo(
@@ -1873,14 +1927,17 @@ const List<SpeciesInfo> _allSpecies = [
     swimLevel: 'Middle',
     description:
         'Red body with turquoise stripes and markings. Classic discus pattern. Demanding but magnificent when conditions are right.',
-    compatibleWith: ['Cardinal Tetras', 'Sterbai Corydoras', 'Rummy Nose Tetras'],
+    compatibleWith: [
+      'Cardinal Tetras',
+      'Sterbai Corydoras',
+      'Rummy Nose Tetras',
+    ],
     avoidWith: ['Aggressive fish', 'Coldwater species'],
   ),
 
   // ============================================
   // PHASE 2 EXPANSION - Catfish & Loaches
   // ============================================
-
   SpeciesInfo(
     commonName: 'Albino Bristlenose Pleco',
     scientificName: 'Ancistrus sp. albino',
@@ -1900,7 +1957,12 @@ const List<SpeciesInfo> _allSpecies = [
     swimLevel: 'Bottom',
     description:
         'Yellow-white color morph lacking melanin. Same great algae-eating as standard bristlenose. Striking appearance against dark substrate.',
-    compatibleWith: ['Most community fish', 'Tetras', 'Cichlids', 'Livebearers'],
+    compatibleWith: [
+      'Most community fish',
+      'Tetras',
+      'Cichlids',
+      'Livebearers',
+    ],
     avoidWith: ['Other territorial plecos in small tanks'],
   ),
   SpeciesInfo(
@@ -1922,7 +1984,12 @@ const List<SpeciesInfo> _allSpecies = [
     swimLevel: 'Bottom',
     description:
         'Vibrant orange-red coloration through selective breeding. Highly sought-after variety. Same easy care as standard bristlenose.',
-    compatibleWith: ['Most community fish', 'Tetras', 'Cichlids', 'Livebearers'],
+    compatibleWith: [
+      'Most community fish',
+      'Tetras',
+      'Cichlids',
+      'Livebearers',
+    ],
     avoidWith: ['Other territorial plecos in small tanks'],
   ),
   SpeciesInfo(
@@ -1944,7 +2011,12 @@ const List<SpeciesInfo> _allSpecies = [
     swimLevel: 'Bottom',
     description:
         'Mottled dark and light pattern. One of the hardiest Corydoras, tolerating cooler water. Great for beginners and unheated tanks.',
-    compatibleWith: ['Most community fish', 'Tetras', 'White Clouds', 'Peaceful fish'],
+    compatibleWith: [
+      'Most community fish',
+      'Tetras',
+      'White Clouds',
+      'Peaceful fish',
+    ],
     avoidWith: ['Aggressive bottom dwellers', 'Very warm water species'],
   ),
   SpeciesInfo(
@@ -1973,7 +2045,6 @@ const List<SpeciesInfo> _allSpecies = [
   // ============================================
   // PHASE 2 EXPANSION - Livebearers
   // ============================================
-
   SpeciesInfo(
     commonName: 'Cobra Endler',
     scientificName: 'Poecilia wingei var. cobra',
@@ -2059,7 +2130,12 @@ const List<SpeciesInfo> _allSpecies = [
     swimLevel: 'Top',
     description:
         'Rosette or snakeskin-like pattern. Popular show variety. Males have elaborate patterns extending to fins.',
-    compatibleWith: ['Platies', 'Mollies', 'Corydoras', 'Peaceful community fish'],
+    compatibleWith: [
+      'Platies',
+      'Mollies',
+      'Corydoras',
+      'Peaceful community fish',
+    ],
     avoidWith: ['Fin nippers', 'Aggressive fish'],
   ),
   SpeciesInfo(
@@ -2081,7 +2157,12 @@ const List<SpeciesInfo> _allSpecies = [
     swimLevel: 'Top',
     description:
         'Selectively bred for large flowing tails and vibrant colors. Many tail shapes available. Iconic aquarium fish.',
-    compatibleWith: ['Platies', 'Mollies', 'Corydoras', 'Peaceful community fish'],
+    compatibleWith: [
+      'Platies',
+      'Mollies',
+      'Corydoras',
+      'Peaceful community fish',
+    ],
     avoidWith: ['Fin nippers', 'Aggressive fish', 'Fast aggressive feeders'],
   ),
   SpeciesInfo(
@@ -2103,7 +2184,12 @@ const List<SpeciesInfo> _allSpecies = [
     swimLevel: 'Top',
     description:
         'Dark rear half contrasting with lighter front. Like wearing a tuxedo. Available in many color combinations.',
-    compatibleWith: ['Platies', 'Mollies', 'Corydoras', 'Peaceful community fish'],
+    compatibleWith: [
+      'Platies',
+      'Mollies',
+      'Corydoras',
+      'Peaceful community fish',
+    ],
     avoidWith: ['Fin nippers', 'Aggressive fish'],
   ),
   SpeciesInfo(
@@ -2147,7 +2233,12 @@ const List<SpeciesInfo> _allSpecies = [
     swimLevel: 'Top',
     description:
         'Deep solid blue coloration covering entire body and fins. Highly prized show variety. Stunning metallic sheen.',
-    compatibleWith: ['Platies', 'Mollies', 'Corydoras', 'Peaceful community fish'],
+    compatibleWith: [
+      'Platies',
+      'Mollies',
+      'Corydoras',
+      'Peaceful community fish',
+    ],
     avoidWith: ['Fin nippers', 'Aggressive fish'],
   ),
   SpeciesInfo(
@@ -2198,7 +2289,6 @@ const List<SpeciesInfo> _allSpecies = [
   // ============================================
   // PHASE 2 EXPANSION - Rasboras & Danios
   // ============================================
-
   SpeciesInfo(
     commonName: 'Galaxy Rasbora',
     scientificName: 'Danio margaritatus',
@@ -2328,14 +2418,18 @@ const List<SpeciesInfo> _allSpecies = [
     swimLevel: 'Top',
     description:
         'Gold color morph of White Cloud. Same hardy coldwater care. Beautiful in groups with standard White Clouds.',
-    compatibleWith: ['White Clouds', 'Other coldwater fish', 'Danios', 'Corydoras'],
+    compatibleWith: [
+      'White Clouds',
+      'Other coldwater fish',
+      'Danios',
+      'Corydoras',
+    ],
     avoidWith: ['Tropical fish requiring warm water', 'Large aggressive fish'],
   ),
 
   // ============================================
   // PHASE 2 EXPANSION - Additional Popular Species
   // ============================================
-
   SpeciesInfo(
     commonName: 'Green Neon Tetra',
     scientificName: 'Paracheirodon simulans',
@@ -2355,7 +2449,12 @@ const List<SpeciesInfo> _allSpecies = [
     swimLevel: 'Middle',
     description:
         'Similar to neon tetra but with more blue-green iridescence. Requires softer, more acidic water. Stunning in blackwater setups.',
-    compatibleWith: ['Cardinal Tetra', 'Corydoras', 'Rasboras', 'Small Gourami'],
+    compatibleWith: [
+      'Cardinal Tetra',
+      'Corydoras',
+      'Rasboras',
+      'Small Gourami',
+    ],
     avoidWith: ['Hard water species', 'Large fish'],
   ),
   SpeciesInfo(
@@ -2399,7 +2498,12 @@ const List<SpeciesInfo> _allSpecies = [
     swimLevel: 'Middle',
     description:
         'Large, iridescent tetra with flowing fins. Males have extended fin rays. Needs space and soft, slightly acidic water for best color.',
-    compatibleWith: ['Medium community fish', 'Rainbowfish', 'Corydoras', 'Gouramis'],
+    compatibleWith: [
+      'Medium community fish',
+      'Rainbowfish',
+      'Corydoras',
+      'Gouramis',
+    ],
     avoidWith: ['Fin nippers', 'Very small fish'],
   ),
   SpeciesInfo(
@@ -2443,7 +2547,12 @@ const List<SpeciesInfo> _allSpecies = [
     swimLevel: 'Middle',
     description:
         'Brilliant silver scales that sparkle like diamonds. Long flowing fins on mature males. Underrated beauty.',
-    compatibleWith: ['Other Tetras', 'Corydoras', 'Rasboras', 'Peaceful community fish'],
+    compatibleWith: [
+      'Other Tetras',
+      'Corydoras',
+      'Rasboras',
+      'Peaceful community fish',
+    ],
     avoidWith: ['Fin nippers', 'Aggressive fish'],
   ),
   SpeciesInfo(
@@ -2509,7 +2618,12 @@ const List<SpeciesInfo> _allSpecies = [
     swimLevel: 'Middle',
     description:
         'Rosy-pink body, more intense in males during breeding. Peaceful barb tolerating cooler water. Hardy and adaptable.',
-    compatibleWith: ['Other Barbs', 'Danios', 'Corydoras', 'Medium community fish'],
+    compatibleWith: [
+      'Other Barbs',
+      'Danios',
+      'Corydoras',
+      'Medium community fish',
+    ],
     avoidWith: ['Long-finned fish', 'Very small fish'],
   ),
   SpeciesInfo(
@@ -2531,7 +2645,12 @@ const List<SpeciesInfo> _allSpecies = [
     swimLevel: 'Middle',
     description:
         'Bright gold coloration. Hardy, peaceful barb suitable for subtropical/cooler tanks. Less nippy than Tiger Barb.',
-    compatibleWith: ['Other peaceful Barbs', 'Danios', 'White Clouds', 'Corydoras'],
+    compatibleWith: [
+      'Other peaceful Barbs',
+      'Danios',
+      'White Clouds',
+      'Corydoras',
+    ],
     avoidWith: ['Very long-finned fish'],
   ),
   SpeciesInfo(
@@ -2553,7 +2672,12 @@ const List<SpeciesInfo> _allSpecies = [
     swimLevel: 'Middle',
     description:
         'Also called Roseline Shark. Striking red and black lateral lines. Needs cool, well-oxygenated water with flow. Active swimmer.',
-    compatibleWith: ['Other active fish', 'Larger Barbs', 'Rainbowfish', 'Corydoras'],
+    compatibleWith: [
+      'Other active fish',
+      'Larger Barbs',
+      'Rainbowfish',
+      'Corydoras',
+    ],
     avoidWith: ['Slow-moving fish', 'Very small fish', 'Warm water species'],
   ),
   SpeciesInfo(
@@ -2780,7 +2904,6 @@ const List<SpeciesInfo> _allSpecies = [
   // ============================================
   // PHASE 2 EXPANSION - Additional Missing Species
   // ============================================
-
   SpeciesInfo(
     commonName: 'Turquoise Rainbowfish',
     scientificName: 'Melanotaenia lacustris',
@@ -2800,7 +2923,12 @@ const List<SpeciesInfo> _allSpecies = [
     swimLevel: 'Middle',
     description:
         'Stunning turquoise-blue coloration. Endemic to Lake Kutubu. Males more colorful with deeper body. Needs swimming space.',
-    compatibleWith: ['Other Rainbowfish', 'Barbs', 'Larger Tetras', 'Corydoras'],
+    compatibleWith: [
+      'Other Rainbowfish',
+      'Barbs',
+      'Larger Tetras',
+      'Corydoras',
+    ],
     avoidWith: ['Aggressive fish', 'Very small fish'],
   ),
   SpeciesInfo(
@@ -2817,13 +2945,19 @@ const List<SpeciesInfo> _allSpecies = [
     maxGh: 20,
     minSchoolSize: 1,
     temperament: 'Semi-aggressive',
-    diet: 'Omnivore - algae, algae wafers, vegetables, will eat slime coat of fish',
+    diet:
+        'Omnivore - algae, algae wafers, vegetables, will eat slime coat of fish',
     adultSizeCm: 25,
     swimLevel: 'Bottom',
     description:
         'Good algae eater when young but becomes territorial and aggressive with age. May harass slow-moving fish. Not ideal for community tanks long-term.',
     compatibleWith: ['Fast-moving fish', 'Robust community fish'],
-    avoidWith: ['Slow-moving fish', 'Discus', 'Angelfish', 'Other bottom dwellers'],
+    avoidWith: [
+      'Slow-moving fish',
+      'Discus',
+      'Angelfish',
+      'Other bottom dwellers',
+    ],
   ),
   SpeciesInfo(
     commonName: 'Bloodfin Tetra',
@@ -2867,7 +3001,12 @@ const List<SpeciesInfo> _allSpecies = [
     description:
         'Hardy, larger tetra with red fins. Notorious plant eater - not suitable for planted tanks. Very tolerant of water conditions.',
     compatibleWith: ['Other robust Tetras', 'Barbs', 'Cichlids'],
-    avoidWith: ['Live plants', 'Planted tanks', 'Long-finned fish', 'Small delicate fish'],
+    avoidWith: [
+      'Live plants',
+      'Planted tanks',
+      'Long-finned fish',
+      'Small delicate fish',
+    ],
   ),
   SpeciesInfo(
     commonName: 'Scarlet Badis',
@@ -2977,6 +3116,12 @@ const List<SpeciesInfo> _allSpecies = [
     description:
         'Neotenic salamander that remains aquatic. Requires cold water - CANNOT tolerate tropical temperatures. No tankmates recommended as they eat anything that fits in mouth. ⚠️ Legal restrictions apply in some regions. Check local laws before purchasing.',
     compatibleWith: ['Other similar-sized Axolotls (with caution)'],
-    avoidWith: ['All fish species', 'Tropical fish', 'Small fish', 'Fish with spines', 'Warm water'],
+    avoidWith: [
+      'All fish species',
+      'Tropical fish',
+      'Small fish',
+      'Fish with spines',
+      'Warm water',
+    ],
   ),
 ];

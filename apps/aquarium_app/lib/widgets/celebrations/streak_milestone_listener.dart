@@ -103,11 +103,17 @@ class _StreakCelebrationOverlayState extends State<_StreakCelebrationOverlay>
   }
 
   String get _message {
-    if (widget.streakDays >= 100) return 'Legendary! ${widget.streakDays}-day streak!';
-    if (widget.streakDays >= 50) return 'Incredible! ${widget.streakDays}-day streak!';
+    if (widget.streakDays >= 100) {
+      return 'Legendary! ${widget.streakDays}-day streak!';
+    }
+    if (widget.streakDays >= 50) {
+      return 'Incredible! ${widget.streakDays}-day streak!';
+    }
     if (widget.streakDays >= 30) return 'A whole month! Unstoppable!';
     if (widget.streakDays >= 14) return '2-week warrior! Keep going!';
-    if (widget.streakDays >= 7) return '${widget.streakDays}-day streak! You\'re on fire!';
+    if (widget.streakDays >= 7) {
+      return '${widget.streakDays}-day streak! You\'re on fire!';
+    }
     return '${widget.streakDays}-day streak! Nice start!';
   }
 
@@ -129,10 +135,7 @@ class _StreakCelebrationOverlayState extends State<_StreakCelebrationOverlay>
       TweenSequenceItem(tween: Tween(begin: 0.3, end: 1.1), weight: 15),
       TweenSequenceItem(tween: Tween(begin: 1.1, end: 1.0), weight: 10),
       TweenSequenceItem(tween: Tween(begin: 1.0, end: 1.0), weight: 75),
-    ]).animate(CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeOut,
-    ));
+    ]).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
 
     _controller.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
@@ -157,10 +160,7 @@ class _StreakCelebrationOverlayState extends State<_StreakCelebrationOverlay>
           animation: _scale,
           builder: (context, child) {
             return Center(
-              child: Transform.scale(
-                scale: _scale.value,
-                child: child,
-              ),
+              child: Transform.scale(scale: _scale.value, child: child),
             );
           },
           child: Container(
@@ -170,9 +170,7 @@ class _StreakCelebrationOverlayState extends State<_StreakCelebrationOverlay>
               vertical: AppSpacing.lg2,
             ),
             decoration: BoxDecoration(
-              color: Theme.of(context)
-                  .scaffoldBackgroundColor
-                  .withAlpha(240),
+              color: Theme.of(context).scaffoldBackgroundColor.withAlpha(240),
               borderRadius: AppRadius.largeRadius,
               boxShadow: [
                 BoxShadow(

@@ -1,6 +1,7 @@
 /// Achievement Notification Widget - Popup with confetti when unlocking
 /// Shows achievement details with celebration animation
 library;
+
 import 'package:danio/theme/app_theme.dart';
 
 import 'package:flutter/material.dart';
@@ -189,10 +190,7 @@ class _AchievementNotificationWidgetState
                             gradient: LinearGradient(
                               begin: Alignment.topLeft,
                               end: Alignment.bottomRight,
-                              colors: [
-                                rarityColor,
-                                rarityColor.withAlpha(178),
-                              ],
+                              colors: [rarityColor, rarityColor.withAlpha(178)],
                             ),
                             borderRadius: const BorderRadius.vertical(
                               top: Radius.circular(24),
@@ -202,11 +200,12 @@ class _AchievementNotificationWidgetState
                             children: [
                               Text(
                                 '🎉 ACHIEVEMENT UNLOCKED! 🎉',
-                                style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  letterSpacing: 1.2,
-                                ),
+                                style: Theme.of(context).textTheme.titleMedium!
+                                    .copyWith(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      letterSpacing: 1.2,
+                                    ),
                                 textAlign: TextAlign.center,
                               ),
                               const SizedBox(height: AppSpacing.md),
@@ -227,7 +226,10 @@ class _AchievementNotificationWidgetState
                                 child: Center(
                                   child: Text(
                                     widget.achievement.icon,
-                                    style: Theme.of(context).textTheme.headlineMedium!.copyWith(fontSize: 60),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headlineMedium!
+                                        .copyWith(fontSize: 60),
                                   ),
                                 ),
                               ),
@@ -253,11 +255,12 @@ class _AchievementNotificationWidgetState
                                 child: Text(
                                   widget.achievement.rarity.displayName
                                       .toUpperCase(),
-                                  style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                    letterSpacing: 1.2,
-                                  ),
+                                  style: Theme.of(context).textTheme.bodySmall!
+                                      .copyWith(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                        letterSpacing: 1.2,
+                                      ),
                                 ),
                               ),
 
@@ -266,9 +269,10 @@ class _AchievementNotificationWidgetState
                               // Achievement name
                               Text(
                                 widget.achievement.name,
-                                style: Theme.of(context).textTheme.headlineSmall!.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                ),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headlineSmall!
+                                    .copyWith(fontWeight: FontWeight.bold),
                                 textAlign: TextAlign.center,
                               ),
 
@@ -277,9 +281,12 @@ class _AchievementNotificationWidgetState
                               // Description
                               Text(
                                 widget.achievement.description,
-                                style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                                  color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
-                                ),
+                                style: Theme.of(context).textTheme.titleMedium!
+                                    .copyWith(
+                                      color: Theme.of(
+                                        context,
+                                      ).colorScheme.onSurface.withOpacity(0.7),
+                                    ),
                                 textAlign: TextAlign.center,
                               ),
 
@@ -306,10 +313,13 @@ class _AchievementNotificationWidgetState
                                     const SizedBox(width: AppSpacing.sm2),
                                     Text(
                                       '+${widget.xpAwarded} XP',
-                                      style: Theme.of(context).textTheme.headlineSmall!.copyWith(
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.amber,
-                                      ),
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .headlineSmall!
+                                          .copyWith(
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.amber,
+                                          ),
                                     ),
                                   ],
                                 ),
@@ -322,7 +332,11 @@ class _AchievementNotificationWidgetState
                                 onPressed: widget.onDismiss,
                                 child: Text(
                                   'Tap anywhere to continue',
-                                  style: TextStyle(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6)),
+                                  style: TextStyle(
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.onSurface.withOpacity(0.6),
+                                  ),
                                 ),
                               ),
                             ],

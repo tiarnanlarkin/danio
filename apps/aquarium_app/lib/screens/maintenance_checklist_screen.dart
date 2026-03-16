@@ -153,42 +153,56 @@ class _MaintenanceChecklistScreenState
         builder: (context) {
           // Build flat list of items for ListView.builder
           final items = <_ChecklistItem>[];
-          
+
           // Progress summary card
-          items.add(_ChecklistItem.progressCard(
-            weeklyProgress: weeklyProgress,
-            monthlyProgress: monthlyProgress,
-            weeklyComplete: _weeklyComplete,
-            weeklyTotal: _weeklyItems.length,
-            monthlyComplete: _monthlyComplete,
-            monthlyTotal: _monthlyItems.length,
-          ));
+          items.add(
+            _ChecklistItem.progressCard(
+              weeklyProgress: weeklyProgress,
+              monthlyProgress: monthlyProgress,
+              weeklyComplete: _weeklyComplete,
+              weeklyTotal: _weeklyItems.length,
+              monthlyComplete: _monthlyComplete,
+              monthlyTotal: _monthlyItems.length,
+            ),
+          );
           items.add(_ChecklistItem.spacer(AppSpacing.lg));
-          
+
           // Weekly section
-          items.add(_ChecklistItem.sectionHeader(
-            title: 'Weekly Tasks',
-            isComplete: _weeklyComplete == _weeklyItems.length,
-          ));
+          items.add(
+            _ChecklistItem.sectionHeader(
+              title: 'Weekly Tasks',
+              isComplete: _weeklyComplete == _weeklyItems.length,
+            ),
+          );
           items.add(_ChecklistItem.spacer(12));
-          items.addAll(_weeklyItems.map((item) => _ChecklistItem.weeklyTask(
-            item: item,
-            checked: _weeklyChecks[item.id] ?? false,
-            onTap: () => _toggleWeekly(item.id),
-          )));
+          items.addAll(
+            _weeklyItems.map(
+              (item) => _ChecklistItem.weeklyTask(
+                item: item,
+                checked: _weeklyChecks[item.id] ?? false,
+                onTap: () => _toggleWeekly(item.id),
+              ),
+            ),
+          );
           items.add(_ChecklistItem.spacer(AppSpacing.lg));
-          
+
           // Monthly section
-          items.add(_ChecklistItem.sectionHeader(
-            title: 'Monthly Tasks',
-            isComplete: _monthlyComplete == _monthlyItems.length,
-          ));
+          items.add(
+            _ChecklistItem.sectionHeader(
+              title: 'Monthly Tasks',
+              isComplete: _monthlyComplete == _monthlyItems.length,
+            ),
+          );
           items.add(_ChecklistItem.spacer(12));
-          items.addAll(_monthlyItems.map((item) => _ChecklistItem.monthlyTask(
-            item: item,
-            checked: _monthlyChecks[item.id] ?? false,
-            onTap: () => _toggleMonthly(item.id),
-          )));
+          items.addAll(
+            _monthlyItems.map(
+              (item) => _ChecklistItem.monthlyTask(
+                item: item,
+                checked: _monthlyChecks[item.id] ?? false,
+                onTap: () => _toggleMonthly(item.id),
+              ),
+            ),
+          );
           items.add(_ChecklistItem.spacer(AppSpacing.xxl));
 
           return ListView.builder(
@@ -196,7 +210,7 @@ class _MaintenanceChecklistScreenState
             itemCount: items.length,
             itemBuilder: (context, index) {
               final item = items[index];
-              
+
               if (item.isProgressCard) {
                 return AppCard(
                   padding: AppCardPadding.standard,
@@ -208,14 +222,16 @@ class _MaintenanceChecklistScreenState
                             child: _ProgressCircle(
                               label: 'Weekly',
                               progress: item.weeklyProgress!,
-                              count: '${item.weeklyComplete}/${item.weeklyTotal}',
+                              count:
+                                  '${item.weeklyComplete}/${item.weeklyTotal}',
                             ),
                           ),
                           Expanded(
                             child: _ProgressCircle(
                               label: 'Monthly',
                               progress: item.monthlyProgress!,
-                              count: '${item.monthlyComplete}/${item.monthlyTotal}',
+                              count:
+                                  '${item.monthlyComplete}/${item.monthlyTotal}',
                             ),
                           ),
                         ],
@@ -231,7 +247,10 @@ class _MaintenanceChecklistScreenState
               } else if (item.isSectionHeader) {
                 return Row(
                   children: [
-                    Text(item.sectionTitle!, style: AppTypography.headlineSmall),
+                    Text(
+                      item.sectionTitle!,
+                      style: AppTypography.headlineSmall,
+                    ),
                     const Spacer(),
                     if (item.sectionComplete!)
                       Container(
@@ -273,7 +292,9 @@ class _MaintenanceChecklistScreenState
       context: context,
       builder: (ctx) => AlertDialog(
         title: const Text('Reset Checklist?'),
-        content: const Text('This will uncheck all completed items so you can start fresh.'),
+        content: const Text(
+          'This will uncheck all completed items so you can start fresh.',
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
@@ -301,7 +322,7 @@ class _ChecklistItem {
   final bool isProgressCard;
   final bool isSectionHeader;
   final bool isSpacer;
-  
+
   // Progress card fields
   final double? weeklyProgress;
   final double? monthlyProgress;
@@ -309,14 +330,14 @@ class _ChecklistItem {
   final int? weeklyTotal;
   final int? monthlyComplete;
   final int? monthlyTotal;
-  
+
   // Section header fields
   final String? sectionTitle;
   final bool? sectionComplete;
-  
+
   // Spacer fields
   final double? spacerHeight;
-  
+
   // Task fields
   final _CheckItem? taskItem;
   final bool? taskChecked;
@@ -347,26 +368,24 @@ class _ChecklistItem {
     required int weeklyTotal,
     required int monthlyComplete,
     required int monthlyTotal,
-  }) =>
-      _ChecklistItem._(
-        isProgressCard: true,
-        weeklyProgress: weeklyProgress,
-        monthlyProgress: monthlyProgress,
-        weeklyComplete: weeklyComplete,
-        weeklyTotal: weeklyTotal,
-        monthlyComplete: monthlyComplete,
-        monthlyTotal: monthlyTotal,
-      );
+  }) => _ChecklistItem._(
+    isProgressCard: true,
+    weeklyProgress: weeklyProgress,
+    monthlyProgress: monthlyProgress,
+    weeklyComplete: weeklyComplete,
+    weeklyTotal: weeklyTotal,
+    monthlyComplete: monthlyComplete,
+    monthlyTotal: monthlyTotal,
+  );
 
   factory _ChecklistItem.sectionHeader({
     required String title,
     required bool isComplete,
-  }) =>
-      _ChecklistItem._(
-        isSectionHeader: true,
-        sectionTitle: title,
-        sectionComplete: isComplete,
-      );
+  }) => _ChecklistItem._(
+    isSectionHeader: true,
+    sectionTitle: title,
+    sectionComplete: isComplete,
+  );
 
   factory _ChecklistItem.spacer(double height) =>
       _ChecklistItem._(isSpacer: true, spacerHeight: height);
@@ -376,22 +395,14 @@ class _ChecklistItem {
     required bool checked,
     required VoidCallback onTap,
   }) =>
-      _ChecklistItem._(
-        taskItem: item,
-        taskChecked: checked,
-        taskOnTap: onTap,
-      );
+      _ChecklistItem._(taskItem: item, taskChecked: checked, taskOnTap: onTap);
 
   factory _ChecklistItem.monthlyTask({
     required _CheckItem item,
     required bool checked,
     required VoidCallback onTap,
   }) =>
-      _ChecklistItem._(
-        taskItem: item,
-        taskChecked: checked,
-        taskOnTap: onTap,
-      );
+      _ChecklistItem._(taskItem: item, taskChecked: checked, taskOnTap: onTap);
 }
 
 class _CheckItem {

@@ -257,7 +257,11 @@ class _CycleArrow extends StatelessWidget {
       child: Center(
         child: Column(
           children: [
-            Icon(Icons.arrow_downward, color: context.textHint, size: AppIconSizes.md),
+            Icon(
+              Icons.arrow_downward,
+              color: context.textHint,
+              size: AppIconSizes.md,
+            ),
             Text('Bacteria convert', style: AppTypography.bodySmall),
           ],
         ),
@@ -382,7 +386,11 @@ class _CheckItem extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
         children: [
-          Icon(Icons.check_circle, color: AppColors.success, size: AppIconSizes.sm),
+          Icon(
+            Icons.check_circle,
+            color: AppColors.success,
+            size: AppIconSizes.sm,
+          ),
           const SizedBox(width: AppSpacing.sm2),
           Text(text, style: AppTypography.bodyMedium),
         ],

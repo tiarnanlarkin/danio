@@ -69,7 +69,7 @@ class MockLeaderboard {
     // Shuffle usernames and use them in order to avoid infinite loop
     final availableNames = List<String>.from(_usernames)..shuffle(_random);
     int nameIndex = 0;
-    
+
     for (var i = 0; i < 49; i++) {
       // Pick username - cycle through shuffled list if needed
       String username;
@@ -78,7 +78,8 @@ class MockLeaderboard {
         nameIndex++;
       } else {
         // Ran out of unique names - add number suffix
-        username = '${availableNames[i % availableNames.length]}${i ~/ availableNames.length + 1}';
+        username =
+            '${availableNames[i % availableNames.length]}${i ~/ availableNames.length + 1}';
       }
 
       // Generate XP based on position

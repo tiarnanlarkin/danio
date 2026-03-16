@@ -119,7 +119,10 @@ class _MultipleChoiceWidgetState extends State<MultipleChoiceWidget>
   }
 
   void _shuffleOptions() {
-    _shuffledIndices = List<int>.generate(widget.exercise.options.length, (i) => i);
+    _shuffledIndices = List<int>.generate(
+      widget.exercise.options.length,
+      (i) => i,
+    );
     _shuffledIndices.shuffle(math.Random());
   }
 
@@ -146,7 +149,13 @@ class _MultipleChoiceWidgetState extends State<MultipleChoiceWidget>
         final isSelected = widget.selectedAnswer == originalIndex;
         final isCorrect = originalIndex == widget.exercise.correctIndex;
 
-        return _buildOption(context, originalIndex, option, isSelected, isCorrect);
+        return _buildOption(
+          context,
+          originalIndex,
+          option,
+          isSelected,
+          isCorrect,
+        );
       }).toList(),
     );
   }
@@ -183,7 +192,8 @@ class _MultipleChoiceWidgetState extends State<MultipleChoiceWidget>
         scale: isSelected && !widget.isAnswered ? 0.98 : 1.0,
         duration: AppDurations.short,
         child: Semantics(
-          label: 'Answer option ${index + 1}: $option${isSelected ? ', selected' : ''}${widget.isAnswered && isCorrect ? ', correct' : ''}${widget.isAnswered && isSelected && !isCorrect ? ', incorrect' : ''}',
+          label:
+              'Answer option ${index + 1}: $option${isSelected ? ', selected' : ''}${widget.isAnswered && isCorrect ? ', correct' : ''}${widget.isAnswered && isSelected && !isCorrect ? ', incorrect' : ''}',
           button: true,
           enabled: !widget.isAnswered,
           selected: isSelected,
@@ -196,72 +206,72 @@ class _MultipleChoiceWidgetState extends State<MultipleChoiceWidget>
                   },
             borderRadius: AppRadius.mediumRadius,
             child: AnimatedContainer(
-            duration: AppDurations.medium4,
-            curve: AppCurves.standard,
-            padding: const EdgeInsets.all(AppSpacing.md),
-            decoration: BoxDecoration(
-              color: bgColor ?? context.surfaceColor,
-              borderRadius: AppRadius.mediumRadius,
-              border: Border.all(
-                color: borderColor ?? context.surfaceVariant,
-                width: borderColor != null ? 2 : 1,
-              ),
-              boxShadow: isSelected && !widget.isAnswered
-                  ? [
-                      BoxShadow(
-                        color: AppOverlays.primary20,
-                        blurRadius: 8,
-                        offset: const Offset(0, 4),
-                      ),
-                    ]
-                  : null,
-            ),
-            child: Row(
-              children: [
-                AnimatedContainer(
-                  duration: AppDurations.medium4,
-                  width: 40,
-                  height: 40,
-                  decoration: BoxDecoration(
-                    color: isSelected && !widget.isAnswered
-                        ? AppColors.primary
-                        : context.surfaceVariant,
-                    shape: BoxShape.circle,
-                  ),
-                  child: Center(
-                    child: icon != null
-                        ? Icon(
-                            icon,
-                            size: AppIconSizes.md,
-                            color: isCorrect
-                                ? AppColors.success
-                                : AppColors.error,
-                          )
-                        : Text(
-                            String.fromCharCode(65 + index), // A, B, C, D...
-                            style: AppTypography.labelLarge.copyWith(
-                              color: isSelected && !widget.isAnswered
-                                  ? Colors.white
-                                  : context.textSecondary,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                  ),
+              duration: AppDurations.medium4,
+              curve: AppCurves.standard,
+              padding: const EdgeInsets.all(AppSpacing.md),
+              decoration: BoxDecoration(
+                color: bgColor ?? context.surfaceColor,
+                borderRadius: AppRadius.mediumRadius,
+                border: Border.all(
+                  color: borderColor ?? context.surfaceVariant,
+                  width: borderColor != null ? 2 : 1,
                 ),
-                const SizedBox(width: AppSpacing.md),
-                Expanded(
-                  child: Text(
-                    option,
-                    style: AppTypography.bodyLarge.copyWith(
-                      fontWeight: isSelected
-                          ? FontWeight.w600
-                          : FontWeight.normal,
+                boxShadow: isSelected && !widget.isAnswered
+                    ? [
+                        BoxShadow(
+                          color: AppOverlays.primary20,
+                          blurRadius: 8,
+                          offset: const Offset(0, 4),
+                        ),
+                      ]
+                    : null,
+              ),
+              child: Row(
+                children: [
+                  AnimatedContainer(
+                    duration: AppDurations.medium4,
+                    width: 40,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      color: isSelected && !widget.isAnswered
+                          ? AppColors.primary
+                          : context.surfaceVariant,
+                      shape: BoxShape.circle,
+                    ),
+                    child: Center(
+                      child: icon != null
+                          ? Icon(
+                              icon,
+                              size: AppIconSizes.md,
+                              color: isCorrect
+                                  ? AppColors.success
+                                  : AppColors.error,
+                            )
+                          : Text(
+                              String.fromCharCode(65 + index), // A, B, C, D...
+                              style: AppTypography.labelLarge.copyWith(
+                                color: isSelected && !widget.isAnswered
+                                    ? Colors.white
+                                    : context.textSecondary,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                     ),
                   ),
-                ),
-              ],
+                  const SizedBox(width: AppSpacing.md),
+                  Expanded(
+                    child: Text(
+                      option,
+                      style: AppTypography.bodyLarge.copyWith(
+                        fontWeight: isSelected
+                            ? FontWeight.w600
+                            : FontWeight.normal,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
           ),
         ),
       ),
@@ -395,7 +405,10 @@ class _FillBlankWidgetState extends State<FillBlankWidget> {
 
     return Container(
       constraints: const BoxConstraints(minWidth: 80, maxWidth: 200),
-      margin: const EdgeInsets.symmetric(horizontal: AppSpacing.xs, vertical: AppSpacing.xs),
+      margin: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.xs,
+        vertical: AppSpacing.xs,
+      ),
       child: TextField(
         controller: _controllers[index],
         enabled: !widget.isAnswered,
@@ -409,9 +422,7 @@ class _FillBlankWidgetState extends State<FillBlankWidget> {
         decoration: InputDecoration(
           filled: true,
           fillColor: widget.isAnswered
-              ? (thisBlankCorrect
-                    ? AppOverlays.success10
-                    : AppOverlays.error10)
+              ? (thisBlankCorrect ? AppOverlays.success10 : AppOverlays.error10)
               : AppOverlays.primary10,
           border: OutlineInputBorder(
             borderRadius: AppRadius.smallRadius,
@@ -424,10 +435,7 @@ class _FillBlankWidgetState extends State<FillBlankWidget> {
           ),
           enabledBorder: OutlineInputBorder(
             borderRadius: AppRadius.smallRadius,
-            borderSide: BorderSide(
-              color: AppOverlays.primary50,
-              width: 2,
-            ),
+            borderSide: BorderSide(color: AppOverlays.primary50, width: 2),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: AppRadius.smallRadius,
@@ -498,14 +506,18 @@ class _FillBlankWidgetState extends State<FillBlankWidget> {
 
     return Container(
       constraints: const BoxConstraints(minWidth: 80),
-      margin: const EdgeInsets.symmetric(horizontal: AppSpacing.xs, vertical: AppSpacing.xs),
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.sm),
+      margin: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.xs,
+        vertical: AppSpacing.xs,
+      ),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.md,
+        vertical: AppSpacing.sm,
+      ),
       decoration: BoxDecoration(
         color: selectedWord != null
             ? (widget.isAnswered
-                  ? (isCorrect
-                        ? AppOverlays.success10
-                        : AppOverlays.error10)
+                  ? (isCorrect ? AppOverlays.success10 : AppOverlays.error10)
                   : AppOverlays.primary10)
             : context.surfaceVariant,
         borderRadius: AppRadius.smallRadius,
@@ -629,7 +641,8 @@ class TrueFalseWidget extends StatelessWidget {
       scale: isSelected && !isAnswered ? 0.98 : 1.0,
       duration: AppDurations.short,
       child: Semantics(
-        label: '$label${isSelected ? ', selected' : ''}${isAnswered && isCorrect ? ', correct' : ''}${isAnswered && isSelected && !isCorrect ? ', incorrect' : ''}',
+        label:
+            '$label${isSelected ? ', selected' : ''}${isAnswered && isCorrect ? ', correct' : ''}${isAnswered && isSelected && !isCorrect ? ', incorrect' : ''}',
         button: true,
         enabled: !isAnswered,
         selected: isSelected,
@@ -637,41 +650,44 @@ class TrueFalseWidget extends StatelessWidget {
           onTap: isAnswered ? null : () => onAnswer(value),
           borderRadius: AppRadius.mediumRadius,
           child: AnimatedContainer(
-          duration: AppDurations.medium4,
-          padding: const EdgeInsets.symmetric(vertical: AppSpacing.lg, horizontal: AppSpacing.lg2),
-          decoration: BoxDecoration(
-            color: bgColor ?? context.surfaceColor,
-            borderRadius: AppRadius.mediumRadius,
-            border: Border.all(
-              color: borderColor ?? context.surfaceVariant,
-              width: borderColor != null ? 2 : 1,
+            duration: AppDurations.medium4,
+            padding: const EdgeInsets.symmetric(
+              vertical: AppSpacing.lg,
+              horizontal: AppSpacing.lg2,
             ),
-            boxShadow: isSelected && !isAnswered
-                ? [
-                    BoxShadow(
-                      color: AppOverlays.primary20,
-                      blurRadius: 12,
-                      offset: const Offset(0, 4),
-                    ),
-                  ]
-                : null,
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(icon, size: AppIconSizes.lg, color: iconColor),
-              const SizedBox(width: AppSpacing.sm2),
-              Text(
-                label,
-                style: AppTypography.headlineSmall.copyWith(
-                  color: isSelected || (isAnswered && isCorrect)
-                      ? iconColor
-                      : context.textPrimary,
-                  fontWeight: FontWeight.bold,
-                ),
+            decoration: BoxDecoration(
+              color: bgColor ?? context.surfaceColor,
+              borderRadius: AppRadius.mediumRadius,
+              border: Border.all(
+                color: borderColor ?? context.surfaceVariant,
+                width: borderColor != null ? 2 : 1,
               ),
-            ],
-          ),
+              boxShadow: isSelected && !isAnswered
+                  ? [
+                      BoxShadow(
+                        color: AppOverlays.primary20,
+                        blurRadius: 12,
+                        offset: const Offset(0, 4),
+                      ),
+                    ]
+                  : null,
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(icon, size: AppIconSizes.lg, color: iconColor),
+                const SizedBox(width: AppSpacing.sm2),
+                Text(
+                  label,
+                  style: AppTypography.headlineSmall.copyWith(
+                    color: isSelected || (isAnswered && isCorrect)
+                        ? iconColor
+                        : context.textPrimary,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -806,9 +822,7 @@ class _MatchingWidgetState extends State<MatchingWidget> {
     Color? borderColor;
 
     if (widget.isAnswered && isPaired) {
-      bgColor = isCorrect
-          ? AppOverlays.success10
-          : AppOverlays.error10;
+      bgColor = isCorrect ? AppOverlays.success10 : AppOverlays.error10;
       borderColor = isCorrect ? AppColors.success : AppColors.error;
     } else if (isSelected) {
       bgColor = AppOverlays.primary10;
@@ -821,7 +835,8 @@ class _MatchingWidgetState extends State<MatchingWidget> {
     return Padding(
       padding: const EdgeInsets.only(bottom: AppSpacing.sm2),
       child: Semantics(
-        label: 'Match item: $text${isSelected ? ', selected' : ''}${isPaired ? ', paired' : ''}${widget.isAnswered && isPaired ? (isCorrect ? ', correct' : ', incorrect') : ''}',
+        label:
+            'Match item: $text${isSelected ? ', selected' : ''}${isPaired ? ', paired' : ''}${widget.isAnswered && isPaired ? (isCorrect ? ', correct' : ', incorrect') : ''}',
         button: true,
         enabled: true,
         selected: isSelected || isPaired,
@@ -829,41 +844,41 @@ class _MatchingWidgetState extends State<MatchingWidget> {
           onTap: () => _onLeftTap(index),
           borderRadius: AppRadius.mediumRadius,
           child: AnimatedContainer(
-          duration: AppDurations.medium2,
-          padding: const EdgeInsets.all(AppSpacing.md),
-          decoration: BoxDecoration(
-            color: bgColor ?? context.surfaceColor,
-            borderRadius: AppRadius.mediumRadius,
-            border: Border.all(
-              color: borderColor ?? context.surfaceVariant,
-              width: borderColor != null ? 2 : 1,
+            duration: AppDurations.medium2,
+            padding: const EdgeInsets.all(AppSpacing.md),
+            decoration: BoxDecoration(
+              color: bgColor ?? context.surfaceColor,
+              borderRadius: AppRadius.mediumRadius,
+              border: Border.all(
+                color: borderColor ?? context.surfaceVariant,
+                width: borderColor != null ? 2 : 1,
+              ),
             ),
-          ),
-          child: Row(
-            children: [
-              if (isPaired)
-                Icon(
-                  widget.isAnswered
-                      ? (isCorrect ? Icons.check_circle : Icons.cancel)
-                      : Icons.link,
-                  size: AppIconSizes.sm,
-                  color: widget.isAnswered
-                      ? (isCorrect ? AppColors.success : AppColors.error)
-                      : AppColors.accent,
-                ),
-              if (isPaired) const SizedBox(width: AppSpacing.sm),
-              Expanded(
-                child: Text(
-                  text,
-                  style: AppTypography.bodyMedium.copyWith(
-                    fontWeight: isSelected
-                        ? FontWeight.bold
-                        : FontWeight.normal,
+            child: Row(
+              children: [
+                if (isPaired)
+                  Icon(
+                    widget.isAnswered
+                        ? (isCorrect ? Icons.check_circle : Icons.cancel)
+                        : Icons.link,
+                    size: AppIconSizes.sm,
+                    color: widget.isAnswered
+                        ? (isCorrect ? AppColors.success : AppColors.error)
+                        : AppColors.accent,
+                  ),
+                if (isPaired) const SizedBox(width: AppSpacing.sm),
+                Expanded(
+                  child: Text(
+                    text,
+                    style: AppTypography.bodyMedium.copyWith(
+                      fontWeight: isSelected
+                          ? FontWeight.bold
+                          : FontWeight.normal,
+                    ),
                   ),
                 ),
-              ),
-            ],
-          ),
+              ],
+            ),
           ),
         ),
       ),
@@ -886,9 +901,7 @@ class _MatchingWidgetState extends State<MatchingWidget> {
     Color? borderColor;
 
     if (widget.isAnswered && isPaired) {
-      bgColor = isCorrect
-          ? AppOverlays.success10
-          : AppOverlays.error10;
+      bgColor = isCorrect ? AppOverlays.success10 : AppOverlays.error10;
       borderColor = isCorrect ? AppColors.success : AppColors.error;
     } else if (isPaired) {
       bgColor = AppOverlays.accent10;
@@ -898,7 +911,8 @@ class _MatchingWidgetState extends State<MatchingWidget> {
     return Padding(
       padding: const EdgeInsets.only(bottom: AppSpacing.sm2),
       child: Semantics(
-        label: 'Match target: $text${isPaired ? ', paired' : ''}${widget.isAnswered && isPaired ? (isCorrect ? ', correct' : ', incorrect') : ''}',
+        label:
+            'Match target: $text${isPaired ? ', paired' : ''}${widget.isAnswered && isPaired ? (isCorrect ? ', correct' : ', incorrect') : ''}',
         button: true,
         enabled: true,
         selected: isPaired,
@@ -906,32 +920,32 @@ class _MatchingWidgetState extends State<MatchingWidget> {
           onTap: () => _onRightTap(index),
           borderRadius: AppRadius.mediumRadius,
           child: AnimatedContainer(
-          duration: AppDurations.medium2,
-          padding: const EdgeInsets.all(AppSpacing.md),
-          decoration: BoxDecoration(
-            color: bgColor ?? context.surfaceColor,
-            borderRadius: AppRadius.mediumRadius,
-            border: Border.all(
-              color: borderColor ?? context.surfaceVariant,
-              width: borderColor != null ? 2 : 1,
+            duration: AppDurations.medium2,
+            padding: const EdgeInsets.all(AppSpacing.md),
+            decoration: BoxDecoration(
+              color: bgColor ?? context.surfaceColor,
+              borderRadius: AppRadius.mediumRadius,
+              border: Border.all(
+                color: borderColor ?? context.surfaceVariant,
+                width: borderColor != null ? 2 : 1,
+              ),
             ),
-          ),
-          child: Row(
-            children: [
-              Expanded(child: Text(text, style: AppTypography.bodyMedium)),
-              if (isPaired) const SizedBox(width: AppSpacing.sm),
-              if (isPaired)
-                Icon(
-                  widget.isAnswered
-                      ? (isCorrect ? Icons.check_circle : Icons.cancel)
-                      : Icons.link,
-                  size: AppIconSizes.sm,
-                  color: widget.isAnswered
-                      ? (isCorrect ? AppColors.success : AppColors.error)
-                      : AppColors.accent,
-                ),
-            ],
-          ),
+            child: Row(
+              children: [
+                Expanded(child: Text(text, style: AppTypography.bodyMedium)),
+                if (isPaired) const SizedBox(width: AppSpacing.sm),
+                if (isPaired)
+                  Icon(
+                    widget.isAnswered
+                        ? (isCorrect ? Icons.check_circle : Icons.cancel)
+                        : Icons.link,
+                    size: AppIconSizes.sm,
+                    color: widget.isAnswered
+                        ? (isCorrect ? AppColors.success : AppColors.error)
+                        : AppColors.accent,
+                  ),
+              ],
+            ),
           ),
         ),
       ),
@@ -1051,9 +1065,7 @@ class _OrderingWidgetState extends State<OrderingWidget> {
     Color? borderColor;
 
     if (widget.isAnswered) {
-      bgColor = isCorrectPosition
-          ? AppOverlays.success10
-          : AppOverlays.error10;
+      bgColor = isCorrectPosition ? AppOverlays.success10 : AppOverlays.error10;
       borderColor = isCorrectPosition ? AppColors.success : AppColors.error;
     }
 

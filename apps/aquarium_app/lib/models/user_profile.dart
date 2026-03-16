@@ -84,9 +84,12 @@ class UserProfile {
   final String? learningStylePreference;
 
   // Achievement tracking
-  final List<String> weekendActivityDates; // 'YYYY-MM-DD' dates of weekend activity
-  final List<String> fullHeartDates; // 'YYYY-MM-DD' dates where hearts were full at session end
-  final int perfectScoreCount; // Number of 100% quiz scores (for Perfectionist achievement)
+  final List<String>
+  weekendActivityDates; // 'YYYY-MM-DD' dates of weekend activity
+  final List<String>
+  fullHeartDates; // 'YYYY-MM-DD' dates where hearts were full at session end
+  final int
+  perfectScoreCount; // Number of 100% quiz scores (for Perfectionist achievement)
 
   final DateTime createdAt;
   final DateTime updatedAt;
@@ -219,11 +222,19 @@ class UserProfile {
 
     // Normalize to midnight to avoid time-of-day issues
     final nowNormalized = DateTime(now.year, now.month, now.day);
-    final grantedNormalized = DateTime(granted.year, granted.month, granted.day);
+    final grantedNormalized = DateTime(
+      granted.year,
+      granted.month,
+      granted.day,
+    );
 
     // Get the Monday of current week (normalize first, then subtract)
-    final currentMonday = nowNormalized.subtract(Duration(days: nowNormalized.weekday - 1));
-    final grantedMonday = grantedNormalized.subtract(Duration(days: grantedNormalized.weekday - 1));
+    final currentMonday = nowNormalized.subtract(
+      Duration(days: nowNormalized.weekday - 1),
+    );
+    final grantedMonday = grantedNormalized.subtract(
+      Duration(days: grantedNormalized.weekday - 1),
+    );
 
     // Different weeks = reset (compare normalized dates)
     return currentMonday.isAfter(grantedMonday);
@@ -241,8 +252,12 @@ class UserProfile {
     final usedNormalized = DateTime(used.year, used.month, used.day);
 
     // Get the Monday of current week (normalize first, then subtract)
-    final currentMonday = nowNormalized.subtract(Duration(days: nowNormalized.weekday - 1));
-    final usedMonday = usedNormalized.subtract(Duration(days: usedNormalized.weekday - 1));
+    final currentMonday = nowNormalized.subtract(
+      Duration(days: nowNormalized.weekday - 1),
+    );
+    final usedMonday = usedNormalized.subtract(
+      Duration(days: usedNormalized.weekday - 1),
+    );
 
     // Same week = used this week (compare normalized dates)
     return currentMonday.year == usedMonday.year &&
@@ -333,7 +348,8 @@ class UserProfile {
       morningReminderTime: morningReminderTime ?? this.morningReminderTime,
       eveningReminderTime: eveningReminderTime ?? this.eveningReminderTime,
       nightReminderTime: nightReminderTime ?? this.nightReminderTime,
-      learningStylePreference: learningStylePreference ?? this.learningStylePreference,
+      learningStylePreference:
+          learningStylePreference ?? this.learningStylePreference,
       weekendActivityDates: weekendActivityDates ?? this.weekendActivityDates,
       fullHeartDates: fullHeartDates ?? this.fullHeartDates,
       perfectScoreCount: perfectScoreCount ?? this.perfectScoreCount,

@@ -166,13 +166,17 @@ class _TankVolumeCalculatorScreenState
                 padding: AppCardPadding.spacious,
                 child: Column(
                   children: [
-                    Icon(Icons.calculate_outlined,
-                        color: context.textHint, size: AppIconSizes.lg),
+                    Icon(
+                      Icons.calculate_outlined,
+                      color: context.textHint,
+                      size: AppIconSizes.lg,
+                    ),
                     const SizedBox(height: AppSpacing.sm),
                     Text(
                       'Enter dimensions above to calculate',
-                      style: AppTypography.bodyMedium
-                          .copyWith(color: context.textHint),
+                      style: AppTypography.bodyMedium.copyWith(
+                        color: context.textHint,
+                      ),
                       textAlign: TextAlign.center,
                     ),
                   ],
@@ -183,43 +187,43 @@ class _TankVolumeCalculatorScreenState
                 backgroundColor: AppOverlays.primary10,
                 padding: AppCardPadding.spacious,
                 child: Column(
-                    children: [
-                      Text('Estimated Volume', style: AppTypography.bodyMedium),
-                      const SizedBox(height: AppSpacing.sm),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            '${_volume!.toStringAsFixed(1)} L',
-                            style: AppTypography.headlineLarge.copyWith(
-                              color: AppColors.primary,
-                            ),
+                  children: [
+                    Text('Estimated Volume', style: AppTypography.bodyMedium),
+                    const SizedBox(height: AppSpacing.sm),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          '${_volume!.toStringAsFixed(1)} L',
+                          style: AppTypography.headlineLarge.copyWith(
+                            color: AppColors.primary,
                           ),
-                        ],
-                      ),
-                      const SizedBox(height: AppSpacing.sm),
-                      Text(
-                        '${(_volume! / 3.785).toStringAsFixed(1)} US gal  •  ${(_volume! / 4.546).toStringAsFixed(1)} UK gal',
-                        style: AppTypography.bodySmall,
-                      ),
-                      const SizedBox(height: AppSpacing.md),
-                      const Divider(),
-                      const SizedBox(height: AppSpacing.md),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          _QuickStat(
-                            label: 'Usable (~90%)',
-                            value: '${(_volume! * 0.9).toStringAsFixed(0)} L',
-                          ),
-                          _QuickStat(
-                            label: 'Weight (full)',
-                            value: '${_volume!.toStringAsFixed(0)} kg',
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: AppSpacing.sm),
+                    Text(
+                      '${(_volume! / 3.785).toStringAsFixed(1)} US gal  •  ${(_volume! / 4.546).toStringAsFixed(1)} UK gal',
+                      style: AppTypography.bodySmall,
+                    ),
+                    const SizedBox(height: AppSpacing.md),
+                    const Divider(),
+                    const SizedBox(height: AppSpacing.md),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        _QuickStat(
+                          label: 'Usable (~90%)',
+                          value: '${(_volume! * 0.9).toStringAsFixed(0)} L',
+                        ),
+                        _QuickStat(
+                          label: 'Weight (full)',
+                          value: '${_volume!.toStringAsFixed(0)} kg',
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ],
 

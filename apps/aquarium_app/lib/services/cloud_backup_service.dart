@@ -57,11 +57,9 @@ class CloudBackupService {
 
     // 6. Upload to Supabase Storage
     final path = '$userId/backup.enc';
-    await SupabaseService.instance.storage.from(_bucketName).uploadBinary(
-          path,
-          blob,
-          fileOptions: const FileOptions(upsert: true),
-        );
+    await SupabaseService.instance.storage
+        .from(_bucketName)
+        .uploadBinary(path, blob, fileOptions: const FileOptions(upsert: true));
 
     debugPrint('[CloudBackup] Uploaded ${blob.length} bytes → $path');
   }
