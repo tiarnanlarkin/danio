@@ -43,6 +43,7 @@ class _XpCelebrationScreenState extends State<XpCelebrationScreen>
 
   late final List<_ConfettiParticle> _particles;
   final _random = Random();
+  bool _sequenceStarted = false;
 
   @override
   void initState() {
@@ -65,10 +66,7 @@ class _XpCelebrationScreenState extends State<XpCelebrationScreen>
     _badgeScale = TweenSequence<double>([
       TweenSequenceItem(tween: Tween(begin: 0.0, end: 1.15), weight: 60),
       TweenSequenceItem(tween: Tween(begin: 1.15, end: 1.0), weight: 40),
-    ]).animate(CurvedAnimation(
-      parent: _badgeController,
-      curve: AppCurves.emphasized,
-    ));
+    ]).animate(_badgeController);
 
     // Progress bar (600ms ease-out)
     _progressController = AnimationController(
@@ -117,6 +115,8 @@ class _XpCelebrationScreenState extends State<XpCelebrationScreen>
   }
 
   void _startSequence() {
+    if (_sequenceStarted) return;
+    _sequenceStarted = true;
     final reduceMotion = MediaQuery.of(context).disableAnimations;
     if (reduceMotion) {
       _confettiController.value = 1.0;
