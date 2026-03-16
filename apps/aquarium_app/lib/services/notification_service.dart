@@ -10,6 +10,13 @@ const int _morningNotificationId = 1000;
 const int _eveningNotificationId = 1001;
 const int _nightNotificationId = 1002;
 
+// Notification IDs for onboarding sequence (Dionysus Day 1-3)
+const int _onboardingWelcomeId = 4000;
+const int _onboardingCareReminderId = 4001;
+const int _onboardingDiscoveryHookId = 4002;
+const int _onboardingStreakNudgeId = 4003;
+const int _onboardingAchievementId = 4004;
+
 /// Service for managing local notifications for task reminders and streak reminders.
 class NotificationService {
   static final NotificationService _instance = NotificationService._internal();
@@ -616,5 +623,191 @@ class NotificationService {
   Future<void> cancelWaterChangeReminder({int tankIndex = 0}) async {
     if (!_initialized) await initialize();
     await _plugin.cancel(_waterChangeNotificationId + tankIndex);
+  }
+
+  // ==================== ONBOARDING SEQUENCE (Dionysus Day 1-3) ====================
+
+  /// Schedule the Day 1-3 onboarding notification sequence.
+  ///
+  /// Called once when the user completes onboarding. Schedules 4 time-based
+  /// notifications across the first 3 days. The 5th notification (achievement
+  /// celebration) is event-driven — see [showOnboardingAchievement].
+  Future<void> scheduleOnboardingSequence() async {
+    if (!_initialized) await initialize();
+
+    final now = DateTime.now();
+    final scheduleMode = await _resolveScheduleMode();
+
+    // --- Day 1: Welcome (1 hour after onboarding) ---
+    final welcomeTime = tz.TZDateTime.from(
+      now.add(const Duration(hours: 1)),
+      tz.local,
+    );
+    await _plugin.zonedSchedule(
+      _onboardingWelcomeId,
+      'Welcome to Danio 🐠',
+      'Your fishkeeping journey starts here. Let\'s meet your fish.',
+      welcomeTime,
+      const NotificationDetails(
+        android: AndroidNotificationDetails(
+          'onboarding',
+          'Onboarding',
+          channelDescription: 'Welcome messages and early guidance',
+          importance: Importance.high,
+          priority: Priority.high,
+          icon: '@mipmap/ic_launcher',
+        ),
+        iOS: DarwinNotificationDetails(
+          presentAlert: true,
+          presentBadge: true,
+          presentSound: true,
+        ),
+      ),
+      androidScheduleMode: scheduleMode,
+      uiLocalNotificationDateInterpretation:
+          UILocalNotificationDateInterpretation.absoluteTime,
+      payload: 'home',
+    );
+
+    // --- Day 1: First Care Reminder (6 hours after onboarding) ---
+    final careTime = tz.TZDateTime.from(
+      now.add(const Duration(hours: 6)),
+      tz.local,
+    );
+    await _plugin.zonedSchedule(
+      _onboardingCareReminderId,
+      'Time to check in on your tank',
+      'A quick look goes a long way. Tap to log today\'s care.',
+      careTime,
+      const NotificationDetails(
+        android: AndroidNotificationDetails(
+          'onboarding',
+          'Onboarding',
+          channelDescription: 'Welcome messages and early guidance',
+          importance: Importance.high,
+          priority: Priority.high,
+          icon: '@mipmap/ic_launcher',
+        ),
+        iOS: DarwinNotificationDetails(
+          presentAlert: true,
+          presentBadge: true,
+          presentSound: true,
+        ),
+      ),
+      androidScheduleMode: scheduleMode,
+      uiLocalNotificationDateInterpretation:
+          UILocalNotificationDateInterpretation.absoluteTime,
+      payload: 'care',
+    );
+
+    // --- Day 2: Discovery Hook (next day at 9 AM) ---
+    final tomorrow = DateTime(now.year, now.month, now.day + 1, 9, 0);
+    final discoveryTime = tz.TZDateTime.from(tomorrow, tz.local);
+    await _plugin.zonedSchedule(
+      _onboardingDiscoveryHookId,
+      'Did you know? 🐟',
+      'Most aquarium fish can recognise their owner\'s face. Your fish know you — time to learn about them.',
+      discoveryTime,
+      const NotificationDetails(
+        android: AndroidNotificationDetails(
+          'onboarding',
+          'Onboarding',
+          channelDescription: 'Welcome messages and early guidance',
+          importance: Importance.high,
+          priority: Priority.high,
+          icon: '@mipmap/ic_launcher',
+        ),
+        iOS: DarwinNotificationDetails(
+          presentAlert: true,
+          presentBadge: true,
+          presentSound: true,
+        ),
+      ),
+      androidScheduleMode: scheduleMode,
+      uiLocalNotificationDateInterpretation:
+          UILocalNotificationDateInterpretation.absoluteTime,
+      payload: 'learn',
+    );
+
+    // --- Day 3: Streak Nudge (day after next at 9 AM) ---
+    // Cancel this via cancelOnboardingStreakNudge() if the user completes a
+    // lesson on Day 2.
+    final dayAfterTomorrow = DateTime(now.year, now.month, now.day + 2, 9, 0);
+    final streakNudgeTime = tz.TZDateTime.from(dayAfterTomorrow, tz.local);
+    await _plugin.zonedSchedule(
+      _onboardingStreakNudgeId,
+      'Day 3 — you\'re building a habit 💪',
+      'Two days in and counting. Today\'s lesson takes just 3 minutes.',
+      streakNudgeTime,
+      const NotificationDetails(
+        android: AndroidNotificationDetails(
+          'streak_reminders',
+          'Streak Reminders',
+          channelDescription:
+              'Daily reminders to maintain your learning streak',
+          importance: Importance.high,
+          priority: Priority.high,
+          icon: '@mipmap/ic_launcher',
+        ),
+        iOS: DarwinNotificationDetails(
+          presentAlert: true,
+          presentBadge: true,
+          presentSound: true,
+        ),
+      ),
+      androidScheduleMode: scheduleMode,
+      uiLocalNotificationDateInterpretation:
+          UILocalNotificationDateInterpretation.absoluteTime,
+      payload: 'learn',
+    );
+  }
+
+  /// Cancel the Day 3 streak nudge notification.
+  ///
+  /// Call this when the user completes a lesson on Day 2 so they don't receive
+  /// the "you're building a habit" nudge unnecessarily.
+  Future<void> cancelOnboardingStreakNudge() async {
+    if (!_initialized) await initialize();
+    await _plugin.cancel(_onboardingStreakNudgeId);
+  }
+
+  /// Show the Day 3 achievement celebration notification immediately.
+  ///
+  /// Call this when [lessonsCompleted] reaches 3 — it's event-driven, not
+  /// time-scheduled.
+  Future<void> showOnboardingAchievement() async {
+    if (!_initialized) await initialize();
+
+    await _plugin.show(
+      _onboardingAchievementId,
+      'Getting Consistent! 🏆',
+      '3 lessons done. You\'re already ahead of most fishkeepers.',
+      const NotificationDetails(
+        android: AndroidNotificationDetails(
+          'achievements',
+          'Achievements',
+          channelDescription: 'Notifications for unlocked achievements',
+          importance: Importance.max,
+          priority: Priority.high,
+          icon: '@mipmap/ic_launcher',
+        ),
+        iOS: DarwinNotificationDetails(
+          presentAlert: true,
+          presentBadge: true,
+          presentSound: true,
+        ),
+      ),
+      payload: 'learn',
+    );
+  }
+
+  /// Cancel all onboarding sequence notifications.
+  Future<void> cancelOnboardingSequence() async {
+    if (!_initialized) await initialize();
+    await _plugin.cancel(_onboardingWelcomeId);
+    await _plugin.cancel(_onboardingCareReminderId);
+    await _plugin.cancel(_onboardingDiscoveryHookId);
+    await _plugin.cancel(_onboardingStreakNudgeId);
+    await _plugin.cancel(_onboardingAchievementId);
   }
 }

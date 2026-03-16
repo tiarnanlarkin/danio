@@ -1400,6 +1400,21 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
         debugPrint('Notification scheduling failed: $e');
       }
 
+      // Dionysus Day 3: Show achievement celebration when 3rd lesson is completed
+      try {
+        final currentProfile = ref.read(userProfileProvider).value;
+        if (currentProfile != null) {
+          final totalCompleted = currentProfile.completedLessons.length + 1;
+          if (totalCompleted == 3) {
+            final notificationService = NotificationService();
+            await notificationService.showOnboardingAchievement();
+          }
+        }
+      } catch (e) {
+        // Non-critical — don't fail lesson completion
+        debugPrint('Onboarding achievement notification failed: $e');
+      }
+
       // Check for achievements using the full achievement checker.
       // P0-002 FIX: Fire-and-forget — do NOT await the achievement check.
       // Awaiting it caused the _dependents.isEmpty assertion (framework.dart:6271)

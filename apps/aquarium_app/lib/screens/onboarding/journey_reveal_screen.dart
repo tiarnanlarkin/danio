@@ -63,6 +63,16 @@ class JourneyRevealScreen extends ConsumerWidget {
     HapticFeedback.mediumImpact();
     final service = await OnboardingService.getInstance();
     await service.completeOnboarding();
+
+    // Schedule Dionysus Day 1-3 onboarding notification sequence
+    try {
+      final notificationService = NotificationService();
+      await notificationService.scheduleOnboardingSequence();
+    } catch (e) {
+      // Non-critical — don't block onboarding completion
+      debugPrint('Onboarding notification scheduling failed: $e');
+    }
+
     ref.invalidate(onboardingCompletedProvider);
     if (context.mounted) {
       Navigator.of(context).popUntil((route) => route.isFirst);
