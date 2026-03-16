@@ -133,13 +133,17 @@ class BottomPlateState extends State<BottomPlate>
             borderRadius: const BorderRadius.vertical(
               top: Radius.circular(24),
             ),
-            boxShadow: const [
-              BoxShadow(
-                color: AppOverlays.black15,
-                blurRadius: 20,
-                offset: Offset(0, -4),
-              ),
-            ],
+            // Shadow only fades in as the panel opens — no white halo at rest.
+            boxShadow: _dragExtent > 0.01
+                ? [
+                    BoxShadow(
+                      color: AppOverlays.black15
+                          .withAlpha((_dragExtent * 38).round().clamp(0, 38)),
+                      blurRadius: 20,
+                      offset: const Offset(0, -4),
+                    ),
+                  ]
+                : null,
           ),
           child: Stack(
             children: [
