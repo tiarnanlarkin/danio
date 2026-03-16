@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../models/user_profile.dart';
 import '../../providers/onboarding_provider.dart';
 import '../../providers/user_profile_provider.dart';
+import '../../services/notification_service.dart';
 import '../../services/onboarding_service.dart';
 import '../../theme/app_theme.dart';
 
@@ -157,6 +159,16 @@ class JourneyRevealScreen extends ConsumerWidget {
                     ),
                   ),
 
+                  const SizedBox(height: AppSpacing.lg),
+
+                  // Notification permission prompt
+                  const Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: AppSpacing.lg,
+                    ),
+                    child: _NotificationPermissionCard(),
+                  ),
+
                   const Spacer(),
 
                   // CTA button
@@ -227,6 +239,112 @@ class JourneyRevealScreen extends ConsumerWidget {
         ),
       ),
     ),
+    );
+  }
+}
+
+/// Inline notification permission prompt shown during onboarding.
+/// Respects a SharedPreferences flag so the user is never asked twice.
+class _NotificationPermissionCard extends StatefulWidget {
+  const _NotificationPermissionCard();
+
+  @override
+  State<_NotificationPermissionCard> createState() =>
+      _NotificationPermissionCardState();
+}
+
+class _NotificationPermissionCardState
+    extends State<_NotificationPermissionCard> {
+  static const _prefKey = 'notification_permission_requested';
+  bool _alreadyRequested = true; // hide by default until check completes
+  bool _responded = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkAlreadyRequested();
+  }
+
+  Future<void> _checkAlreadyRequested() async {
+    final prefs = await SharedPreferences.getInstance();
+    if (!mounted) return;
+    setState(() {
+      _alreadyRequested = prefs.getBool(_prefKey) ?? false;
+    });
+  }
+
+  Future<void> _handleAllow() async {
+    setState(() => _responded = true);
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_prefKey, true);
+    try {
+      await NotificationService().requestPermissions();
+    } catch (_) {
+      // Best-effort — never block onboarding
+    }
+  }
+
+  Future<void> _handleSkip() async {
+    setState(() => _responded = true);
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_prefKey, true);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (_alreadyRequested || _responded) return const SizedBox.shrink();
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(AppSpacing.md),
+      decoration: BoxDecoration(
+        color: AppColors.whiteAlpha15,
+        borderRadius: AppRadius.mediumRadius,
+        border: Border.all(color: AppColors.whiteAlpha20),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            'Get reminded about water changes and streak goals 💧',
+            style: AppTypography.bodyLarge.copyWith(
+              color: Colors.white,
+              fontWeight: FontWeight.w600,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: AppSpacing.md),
+          Row(
+            children: [
+              Expanded(
+                child: TextButton(
+                  onPressed: _handleSkip,
+                  child: Text(
+                    'Maybe Later',
+                    style: AppTypography.bodyMedium.copyWith(
+                      color: AppColors.whiteAlpha85,
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(width: AppSpacing.sm),
+              Expanded(
+                child: ElevatedButton(
+                  onPressed: _handleAllow,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: DanioColors.tealWater,
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: AppRadius.mediumRadius,
+                    ),
+                  ),
+                  child: const Text('Allow Notifications'),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }

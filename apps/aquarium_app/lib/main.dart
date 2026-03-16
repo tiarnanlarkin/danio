@@ -236,6 +236,8 @@ class _AppRouterState extends ConsumerState<_AppRouter>
 
       // Schedule review notifications if cards are due
       _scheduleReviewNotifications();
+      // Refresh streak nudge notifications based on today's progress
+      _scheduleStreakNotifications();
     }
   }
 
@@ -254,6 +256,30 @@ class _AppRouterState extends ConsumerState<_AppRouter>
     } catch (e) {
       // Silently fail - don't break app flow
       debugPrint('Failed to schedule review notifications: $e');
+    }
+  }
+
+  /// Schedule streak nudge notifications based on current profile.
+  /// Cancels existing streak notifications before re-scheduling to
+  /// avoid duplicates. Silently skips if permission was not granted.
+  Future<void> _scheduleStreakNotifications() async {
+    try {
+      final profile = ref.read(userProfileProvider).value;
+      if (profile == null) return;
+
+      final notificationService = NotificationService();
+      final now = DateTime.now();
+      final todayKey =
+          '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}';
+      final todayXp = profile.dailyXpHistory[todayKey] ?? 0;
+
+      await notificationService.scheduleAllStreakNotifications(
+        currentStreak: profile.currentStreak,
+        dailyXpGoal: profile.dailyXpGoal,
+        todayXp: todayXp,
+      );
+    } catch (e) {
+      debugPrint('Failed to schedule streak notifications: $e');
     }
   }
 
@@ -305,7 +331,10 @@ class _AppRouterState extends ConsumerState<_AppRouter>
     if (!_hasScheduledNotifications) {
       _hasScheduledNotifications = true;
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted) _scheduleReviewNotifications();
+        if (mounted) {
+          _scheduleReviewNotifications();
+          _scheduleStreakNotifications();
+        }
       });
     }
 
