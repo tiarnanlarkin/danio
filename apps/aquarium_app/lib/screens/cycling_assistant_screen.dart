@@ -25,9 +25,7 @@ class CyclingAssistantScreen extends ConsumerWidget {
     final logsAsync = ref.watch(allLogsProvider(tankId));
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Nitrogen Cycle Assistant'),
-      ),
+      appBar: AppBar(title: const Text('Nitrogen Cycle Assistant')),
       body: tankAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (e, _) => AppErrorState(
@@ -49,7 +47,8 @@ class CyclingAssistantScreen extends ConsumerWidget {
             loading: () => const Center(child: CircularProgressIndicator()),
             error: (e, _) => AppErrorState(
               title: 'Couldn\'t load logs',
-              message: 'Something went wrong loading your water test data.',
+              message:
+                  'We hit a snag loading your water test data. Give it another try!',
               onRetry: () => ref.invalidate(allLogsProvider(tankId)),
             ),
             data: (logs) => _CyclingAssistantBody(tank: tank, logs: logs),
@@ -68,10 +67,11 @@ class _CyclingAssistantBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final waterTests = logs
-        .where((l) => l.type == LogType.waterTest && l.waterTest != null)
-        .toList()
-      ..sort((a, b) => a.timestamp.compareTo(b.timestamp));
+    final waterTests =
+        logs
+            .where((l) => l.type == LogType.waterTest && l.waterTest != null)
+            .toList()
+          ..sort((a, b) => a.timestamp.compareTo(b.timestamp));
 
     final phase = _determinePhase(waterTests);
     final tankAgeDays = DateTime.now().difference(tank.startDate).inDays;
@@ -80,9 +80,10 @@ class _CyclingAssistantBody extends StatelessWidget {
       padding: const EdgeInsets.all(AppSpacing.md),
       children: [
         // Phase indicator
-        _PhaseHeader(phase: phase, tankAgeDays: tankAgeDays)
-            .animate()
-            .fadeIn(duration: 400.ms),
+        _PhaseHeader(
+          phase: phase,
+          tankAgeDays: tankAgeDays,
+        ).animate().fadeIn(duration: 400.ms),
 
         const SizedBox(height: AppSpacing.lg),
 
@@ -96,23 +97,24 @@ class _CyclingAssistantBody extends StatelessWidget {
 
         // Parameter chart - ammonia, nitrite, nitrate over time
         if (waterTests.length >= 2)
-          _ParameterTimeline(waterTests: waterTests)
-              .animate()
-              .fadeIn(delay: 300.ms, duration: 400.ms),
+          _ParameterTimeline(
+            waterTests: waterTests,
+          ).animate().fadeIn(delay: 300.ms, duration: 400.ms),
 
         if (waterTests.length >= 2) const SizedBox(height: AppSpacing.lg),
 
         // Educational content for current phase
-        _PhaseEducation(phase: phase)
-            .animate()
-            .fadeIn(delay: 400.ms, duration: 400.ms),
+        _PhaseEducation(
+          phase: phase,
+        ).animate().fadeIn(delay: 400.ms, duration: 400.ms),
 
         const SizedBox(height: AppSpacing.lg),
 
         // Action items
-        _ActionItems(phase: phase, waterTests: waterTests)
-            .animate()
-            .fadeIn(delay: 500.ms, duration: 400.ms),
+        _ActionItems(
+          phase: phase,
+          waterTests: waterTests,
+        ).animate().fadeIn(delay: 500.ms, duration: 400.ms),
 
         // Celebration for cycled tanks
         if (phase == _CyclePhase.cycled)
@@ -208,7 +210,10 @@ class _PhaseHeader extends StatelessWidget {
       backgroundColor: color.withAlpha(20),
       child: Row(
         children: [
-          Text(emoji, style: Theme.of(context).textTheme.headlineMedium!.copyWith()),
+          Text(
+            emoji,
+            style: Theme.of(context).textTheme.headlineMedium!.copyWith(),
+          ),
           const SizedBox(width: AppSpacing.md),
           Expanded(
             child: Column(
@@ -258,10 +263,7 @@ class _CycleDiagram extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'Your Cycling Progress',
-            style: AppTypography.labelLarge,
-          ),
+          Text('Your Cycling Progress', style: AppTypography.labelLarge),
           const SizedBox(height: AppSpacing.md),
 
           // Progress bar with phase markers
@@ -277,7 +279,13 @@ class _CycleDiagram extends StatelessWidget {
   }
 
   Widget _buildProgressBar(BuildContext context, int phaseIndex) {
-    final phases = ['Start', 'NH3 \u{2191}', 'NO2 \u{2191}', 'Clearing', 'Cycled!'];
+    final phases = [
+      'Start',
+      'NH3 \u{2191}',
+      'NO2 \u{2191}',
+      'Clearing',
+      'Cycled!',
+    ];
     final progress = phaseIndex / 4.0;
 
     return Column(
@@ -322,7 +330,9 @@ class _CycleDiagram extends StatelessWidget {
                   Text(
                     phases[i],
                     style: AppTypography.bodySmall.copyWith(
-                      fontWeight: isCurrent ? FontWeight.bold : FontWeight.normal,
+                      fontWeight: isCurrent
+                          ? FontWeight.bold
+                          : FontWeight.normal,
                     ),
                     textAlign: TextAlign.center,
                   ),
@@ -443,9 +453,7 @@ class _ParameterTimeline extends StatelessWidget {
             height: 120,
             child: CustomPaint(
               size: Size.infinite,
-              painter: _MiniChartPainter(
-                tests: recent,
-              ),
+              painter: _MiniChartPainter(tests: recent),
             ),
           ),
           const SizedBox(height: AppSpacing.sm),
@@ -504,7 +512,9 @@ class _MiniChartPainter extends CustomPainter {
     // Collect data
     final ammonia = tests.map((t) => t.waterTest?.ammonia ?? 0.0).toList();
     final nitrite = tests.map((t) => t.waterTest?.nitrite ?? 0.0).toList();
-    final nitrate = tests.map((t) => (t.waterTest?.nitrate ?? 0.0) / 10).toList(); // Scale down
+    final nitrate = tests
+        .map((t) => (t.waterTest?.nitrate ?? 0.0) / 10)
+        .toList(); // Scale down
 
     final maxVal = [
       ...ammonia,
@@ -554,21 +564,24 @@ class _PhaseEducation extends StatelessWidget {
     switch (phase) {
       case _CyclePhase.notStarted:
         title = 'How the Nitrogen Cycle Works';
-        content = 'Fish produce ammonia (NH3) from waste and breathing. '
+        content =
+            'Fish produce ammonia (NH3) from waste and breathing. '
             'In nature, bacteria convert this toxic ammonia into less harmful substances. '
             'Your filter needs to grow these bacteria - that is what "cycling" means.\n\n'
             'To start: add fish food or pure ammonia to feed the bacteria.';
         icon = Icons.school;
       case _CyclePhase.phase1:
         title = 'What is Happening Now';
-        content = 'Ammonia is building up in your tank. This is normal and expected!\n\n'
+        content =
+            'Ammonia is building up in your tank. This is normal and expected!\n\n'
             'Nitrosomonas bacteria are starting to colonise your filter media. '
             'These bacteria eat ammonia and convert it to nitrite (NO2).\n\n'
             'DO NOT add fish during this phase - ammonia is toxic to them.';
         icon = Icons.science;
       case _CyclePhase.phase2:
         title = 'Progress: Nitrite Phase';
-        content = 'Your ammonia-eating bacteria are working! Ammonia should be dropping '
+        content =
+            'Your ammonia-eating bacteria are working! Ammonia should be dropping '
             'while nitrite rises.\n\n'
             'Now Nitrospira bacteria are growing - these convert nitrite to '
             'the much less harmful nitrate (NO3).\n\n'
@@ -576,14 +589,16 @@ class _PhaseEducation extends StatelessWidget {
         icon = Icons.autorenew;
       case _CyclePhase.phase3:
         title = 'Nearly There!';
-        content = 'Both ammonia and nitrite are dropping towards zero. '
+        content =
+            'Both ammonia and nitrite are dropping towards zero. '
             'Nitrate is rising, which means your biological filter is working!\n\n'
             'Keep testing every 1-2 days. When ammonia AND nitrite are both '
             'at 0 ppm for 3+ consecutive tests, your tank is cycled.';
         icon = Icons.trending_up;
       case _CyclePhase.cycled:
         title = 'Your Tank is Cycled!';
-        content = 'Congratulations! Your biological filter can now process:\n'
+        content =
+            'Congratulations! Your biological filter can now process:\n'
             'Ammonia (NH3) \u{2192} Nitrite (NO2) \u{2192} Nitrate (NO3)\n\n'
             'You can now add fish - but go slowly! Add 2-3 small fish at a time '
             'and wait 1-2 weeks between additions to let the bacteria adjust.\n\n'
@@ -718,35 +733,40 @@ class _ActionItems extends StatelessWidget {
         children: [
           Row(
             children: [
-              const Icon(Icons.checklist, color: AppColors.primary, size: AppIconSizes.sm),
+              const Icon(
+                Icons.checklist,
+                color: AppColors.primary,
+                size: AppIconSizes.sm,
+              ),
               const SizedBox(width: AppSpacing.sm),
               Text('What To Do Now', style: AppTypography.labelLarge),
             ],
           ),
           const SizedBox(height: AppSpacing.sm2),
-          ...actions.map((a) => Padding(
-                padding: const EdgeInsets.symmetric(vertical: 4),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Icon(
-                      a.done ? Icons.check_circle : Icons.circle_outlined,
-                      color: a.done ? AppColors.success : context.textHint,
-                      size: 20,
-                    ),
-                    const SizedBox(width: AppSpacing.sm),
-                    Expanded(
-                      child: Text(
-                        a.text,
-                        style: AppTypography.bodyMedium.copyWith(
-                          decoration:
-                              a.done ? TextDecoration.lineThrough : null,
-                        ),
+          ...actions.map(
+            (a) => Padding(
+              padding: const EdgeInsets.symmetric(vertical: 4),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Icon(
+                    a.done ? Icons.check_circle : Icons.circle_outlined,
+                    color: a.done ? AppColors.success : context.textHint,
+                    size: 20,
+                  ),
+                  const SizedBox(width: AppSpacing.sm),
+                  Expanded(
+                    child: Text(
+                      a.text,
+                      style: AppTypography.bodyMedium.copyWith(
+                        decoration: a.done ? TextDecoration.lineThrough : null,
                       ),
                     ),
-                  ],
-                ),
-              )),
+                  ),
+                ],
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -784,7 +804,9 @@ class _CycledCelebration extends StatelessWidget {
         children: [
           Text(
             '\u{1F389}\u{1F420}\u{1F389}',
-            style: Theme.of(context).textTheme.headlineMedium!.copyWith(fontSize: 48),
+            style: Theme.of(
+              context,
+            ).textTheme.headlineMedium!.copyWith(fontSize: 48),
           ),
           const SizedBox(height: AppSpacing.md),
           Text(

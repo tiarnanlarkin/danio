@@ -61,7 +61,8 @@ class _LivestockValueScreenState extends ConsumerState<LivestockValueScreen> {
         loading: () => const Center(child: BubbleLoader()),
         error: (e, _) => AppErrorState(
           title: 'Couldn\'t load values',
-          message: 'Something went wrong loading your livestock data.',
+          message:
+              'We hit a snag loading your livestock data. Give it another try!',
           onRetry: () => ref.invalidate(livestockProvider(widget.tankId)),
         ),
         data: (livestock) {
@@ -72,10 +73,14 @@ class _LivestockValueScreenState extends ConsumerState<LivestockValueScreen> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(Icons.set_meal, size: AppIconSizes.xxl, color: context.textHint),
+                    Icon(
+                      Icons.set_meal,
+                      size: AppIconSizes.xxl,
+                      color: context.textHint,
+                    ),
                     const SizedBox(height: AppSpacing.md),
                     Text(
-                      'No Livestock Yet',
+                      'No livestock yet',
                       style: AppTypography.headlineSmall,
                     ),
                     const SizedBox(height: AppSpacing.sm),
@@ -160,7 +165,10 @@ class _LivestockValueScreenState extends ConsumerState<LivestockValueScreen> {
 
               // Section title
               if (index == 4) {
-                return Text('Livestock Prices', style: AppTypography.headlineSmall);
+                return Text(
+                  'Livestock Prices',
+                  style: AppTypography.headlineSmall,
+                );
               }
 
               // Spacing
@@ -273,7 +281,8 @@ class _LivestockValueScreenState extends ConsumerState<LivestockValueScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: const [
                       _TipRow(
-                        text: 'Check local fish store prices for common species',
+                        text:
+                            'Check local fish store prices for common species',
                       ),
                       _TipRow(
                         text: 'Online retailers often have different pricing',

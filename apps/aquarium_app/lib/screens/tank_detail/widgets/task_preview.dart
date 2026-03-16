@@ -20,7 +20,7 @@ class TaskPreview extends StatelessWidget {
           padding: AppCardPadding.spacious,
           child: Center(
             child: Text(
-              'All clear -- no tasks scheduled',
+              'All clear — no tasks scheduled!',
               style: AppTypography.bodyMedium,
             ),
           ),
@@ -37,13 +37,19 @@ class TaskPreview extends StatelessWidget {
               .asMap()
               .entries
               .map(
-                (entry) => TaskTile(
-                  task: entry.value,
-                  onComplete: () => onComplete(entry.value),
-                )
-                    .animate()
-                    .fadeIn(delay: (50 * entry.key).ms, duration: 300.ms)
-                    .slideX(begin: 0.1, end: 0, delay: (50 * entry.key).ms, duration: 300.ms),
+                (entry) =>
+                    TaskTile(
+                          task: entry.value,
+                          onComplete: () => onComplete(entry.value),
+                        )
+                        .animate()
+                        .fadeIn(delay: (50 * entry.key).ms, duration: 300.ms)
+                        .slideX(
+                          begin: 0.1,
+                          end: 0,
+                          delay: (50 * entry.key).ms,
+                          duration: 300.ms,
+                        ),
               )
               .toList(),
         ),

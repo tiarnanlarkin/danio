@@ -97,78 +97,92 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
     });
   }
 
-  static Widget _buildSkeletonScreen(BuildContext context, {ScrollController? controller}) {
+  static Widget _buildSkeletonScreen(
+    BuildContext context, {
+    ScrollController? controller,
+  }) {
     return Semantics(
       liveRegion: true,
       label: 'Loading learning content',
       child: Skeletonizer(
-      child: CustomScrollView(
-        slivers: [
-          // Skeleton header
-          SliverToBoxAdapter(
-            child: Container(
-              height: 320,
-              color: AppOverlays.primary10,
+        child: CustomScrollView(
+          slivers: [
+            // Skeleton header
+            SliverToBoxAdapter(
+              child: Container(height: 320, color: AppOverlays.primary10),
             ),
-          ),
-          // Skeleton learning paths header
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(AppSpacing.md, AppSpacing.md, AppSpacing.md, AppSpacing.sm2),
-              child: Semantics(
-                header: true,
-                child: Text('Learning Paths', style: AppTypography.headlineSmall),
-              ),
-            ),
-          ),
-          // Skeleton learning path cards
-          SliverList(
-            delegate: SliverChildBuilderDelegate(
-              (context, index) => Padding(
-                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.sm),
-                child: Card(
-                  margin: EdgeInsets.zero,
-                  child: ListTile(
-                    leading: Container(
-                      width: 48,
-                      height: 48,
-                      decoration: BoxDecoration(
-                        color: AppOverlays.primary10,
-                        borderRadius: AppRadius.mediumRadius,
-                      ),
-                      child: Center(
-                        child: Text('🐟', style: Theme.of(context).textTheme.headlineSmall!),
-                      ),
-                    ),
-                    title: const Text('Loading learning path'),
-                    subtitle: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const SizedBox(height: AppSpacing.xs),
-                        const Text('Description of this learning path'),
-                        const SizedBox(height: AppSpacing.sm),
-                        ClipRRect(
-                          borderRadius: AppRadius.xsRadius,
-                          child: LinearProgressIndicator(
-                            value: 0.5,
-                            backgroundColor: context.surfaceVariant,
-                            valueColor: const AlwaysStoppedAnimation<Color>(
-                              AppColors.primary,
-                            ),
-                            minHeight: 6,
-                          ),
-                        ),
-                      ],
-                    ),
+            // Skeleton learning paths header
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(
+                  AppSpacing.md,
+                  AppSpacing.md,
+                  AppSpacing.md,
+                  AppSpacing.sm2,
+                ),
+                child: Semantics(
+                  header: true,
+                  child: Text(
+                    'Learning Paths',
+                    style: AppTypography.headlineSmall,
                   ),
                 ),
               ),
-              childCount: 4,
             ),
-          ),
-        ],
+            // Skeleton learning path cards
+            SliverList(
+              delegate: SliverChildBuilderDelegate(
+                (context, index) => Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.md,
+                    vertical: AppSpacing.sm,
+                  ),
+                  child: Card(
+                    margin: EdgeInsets.zero,
+                    child: ListTile(
+                      leading: Container(
+                        width: 48,
+                        height: 48,
+                        decoration: BoxDecoration(
+                          color: AppOverlays.primary10,
+                          borderRadius: AppRadius.mediumRadius,
+                        ),
+                        child: Center(
+                          child: Text(
+                            '🐟',
+                            style: Theme.of(context).textTheme.headlineSmall!,
+                          ),
+                        ),
+                      ),
+                      title: const Text('Loading learning path'),
+                      subtitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const SizedBox(height: AppSpacing.xs),
+                          const Text('Description of this learning path'),
+                          const SizedBox(height: AppSpacing.sm),
+                          ClipRRect(
+                            borderRadius: AppRadius.xsRadius,
+                            child: LinearProgressIndicator(
+                              value: 0.5,
+                              backgroundColor: context.surfaceVariant,
+                              valueColor: const AlwaysStoppedAnimation<Color>(
+                                AppColors.primary,
+                              ),
+                              minHeight: 6,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                childCount: 4,
+              ),
+            ),
+          ],
+        ),
       ),
-    ),
     );
   }
 
@@ -212,10 +226,12 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
 
     return Scaffold(
       body: profileAsync.when(
-        loading: () => _buildSkeletonScreen(context, controller: _scrollController),
+        loading: () =>
+            _buildSkeletonScreen(context, controller: _scrollController),
         error: (e, _) => AppErrorState(
           title: 'Oops! Something went wrong',
-          message: 'We could not load your learning paths. Check your connection and try again.',
+          message:
+              'We could not load your learning paths. Check your connection and try again.',
           onRetry: () => ref.invalidate(userProfileProvider),
         ),
         data: (profile) {
@@ -238,206 +254,233 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
             child: CustomScrollView(
               controller: _scrollController,
               slivers: [
-              // === Study Room Scene Header ===
-              SliverToBoxAdapter(
-                child: SizedBox(
-                  height: 320,
-                  child: Stack(
-                    children: [
-                      // Study room illustration
-                      StudyRoomScene(
-                        totalXp: statsXp,
-                        levelTitle: statsLevel,
-                        currentStreak: profile?.currentStreak ?? 0,
-                        completedLessons: completedLessons,
-                        totalLessons: totalLessons,
-                        isNewUser: !(profile?.hasSeenTutorial ?? false),
-                        onMicroscopeTap: () => _navigateToWaterChemistry(context),
-                        onGlobeTap: () => _showRandomFishFact(context),
-                      ),
-                      // Title is shown inside StudyRoomScene XP badge
+                // === Study Room Scene Header ===
+                SliverToBoxAdapter(
+                  child: SizedBox(
+                    height: 320,
+                    child: Stack(
+                      children: [
+                        // Study room illustration
+                        StudyRoomScene(
+                          totalXp: statsXp,
+                          levelTitle: statsLevel,
+                          currentStreak: profile?.currentStreak ?? 0,
+                          completedLessons: completedLessons,
+                          totalLessons: totalLessons,
+                          isNewUser: !(profile?.hasSeenTutorial ?? false),
+                          onMicroscopeTap: () =>
+                              _navigateToWaterChemistry(context),
+                          onGlobeTap: () => _showRandomFishFact(context),
+                        ),
 
-                    ],
+                        // Title is shown inside StudyRoomScene XP badge
+                      ],
+                    ),
                   ),
                 ),
-              ),
 
-              // === Content below the scene ===
-              if (profile == null)
-                SliverFillRemaining(
-                  hasScrollBody: false,
-                  child: Padding(
-                    padding: const EdgeInsets.all(AppSpacing.xl),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.person_add,
-                          size: AppIconSizes.xxl,
-                          color: context.textSecondary,
-                        ),
-                        const SizedBox(height: AppSpacing.md),
-                        Text(
-                          'Complete your profile setup to start learning!',
-                          textAlign: TextAlign.center,
-                          style: Theme.of(context).textTheme.titleLarge!,
-                        ),
-                        const SizedBox(height: AppSpacing.lg),
-                        ElevatedButton.icon(
-                          onPressed: () {
-                            NavigationThrottle.push(context, const ProfileCreationScreen());
-                          },
-                          icon: const Icon(Icons.arrow_forward),
-                          label: const Text('Create Profile'),
-                          style: ElevatedButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 32,
-                              vertical: 16,
+                // === Content below the scene ===
+                if (profile == null)
+                  SliverFillRemaining(
+                    hasScrollBody: false,
+                    child: Padding(
+                      padding: const EdgeInsets.all(AppSpacing.xl),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.person_add,
+                            size: AppIconSizes.xxl,
+                            color: context.textSecondary,
+                          ),
+                          const SizedBox(height: AppSpacing.md),
+                          Text(
+                            'Complete your profile setup to start learning!',
+                            textAlign: TextAlign.center,
+                            style: Theme.of(context).textTheme.titleLarge!,
+                          ),
+                          const SizedBox(height: AppSpacing.lg),
+                          ElevatedButton.icon(
+                            onPressed: () {
+                              NavigationThrottle.push(
+                                context,
+                                const ProfileCreationScreen(),
+                              );
+                            },
+                            icon: const Icon(Icons.arrow_forward),
+                            label: const Text('Create Profile'),
+                            style: ElevatedButton.styleFrom(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 32,
+                                vertical: 16,
+                              ),
                             ),
                           ),
-                        ),
-                        const SizedBox(height: AppSpacing.xl),
-                        // Getting started hints to fill empty space
-                        Text(
-                          '\u2728 What you\'ll unlock',
-                          style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                            color: context.textSecondary,
+                          const SizedBox(height: AppSpacing.xl),
+                          // Getting started hints to fill empty space
+                          Text(
+                            '\u2728 What you\'ll unlock',
+                            style: Theme.of(context).textTheme.titleSmall!
+                                .copyWith(color: context.textSecondary),
                           ),
-                        ),
-                        const SizedBox(height: AppSpacing.sm),
-                        Text(
-                          '\ud83c\udf93 44 bite-sized lessons\n'
-                          '\ud83e\udde0 Spaced repetition flashcards\n'
-                          '\ud83c\udfc6 55+ achievements to earn\n'
-                          '\ud83e\udd16 AI fish identification',
-                          textAlign: TextAlign.center,
-                          style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                            color: context.textSecondary,
-                            height: 1.8,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                )
-              else ...[
-                // Placement challenge card (intermediate/expert users only)
-                const SliverToBoxAdapter(
-                  child: PlacementChallengeCard(),
-                ),
-
-                // Learning streak badge
-                if (profile.lessonProgress.isNotEmpty)
-                  SliverToBoxAdapter(
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(AppSpacing.md, AppSpacing.sm, AppSpacing.md, 0),
-                      child: LearningStreakBadge(lessonProgress: profile.lessonProgress),
-                    ),
-                  ),
-
-                // Spaced repetition review banner (due cards)
-                SliverToBoxAdapter(child: _ReviewCardsBanner()),
-
-                // Daily streak reminder
-                if (profile.currentStreak > 0)
-                  SliverToBoxAdapter(child: _StreakCard(profile: profile)),
-
-                // Practice card
-                SliverToBoxAdapter(child: _PracticeCard(profile: profile)),
-
-                // Learning paths header with overall progress
-                SliverToBoxAdapter(
-                  key: _firstPathKey,
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(AppSpacing.md, AppSpacing.md, AppSpacing.md, AppSpacing.xs),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Semantics(
-                          header: true,
-                          child: Text(
-                            'Learning Paths',
-                            style: AppTypography.headlineSmall,
-                          ),
-                        ),
-                        const SizedBox(height: AppSpacing.sm),
-                        Builder(
-                          builder: (context) {
-                            final completedPaths = metadata.where((meta) {
-                              final done = meta.lessonIds
-                                  .where((id) => profile.completedLessons.contains(id))
-                                  .length;
-                              return done == meta.lessonIds.length && meta.lessonIds.isNotEmpty;
-                            }).length;
-                            final totalPaths = metadata.length;
-                            final progress = totalPaths > 0 ? completedPaths / totalPaths : 0.0;
-                            return Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  '$completedPaths of $totalPaths paths complete',
-                                  style: AppTypography.bodySmall.copyWith(
-                                    color: context.textSecondary,
-                                  ),
+                          const SizedBox(height: AppSpacing.sm),
+                          Text(
+                            '\ud83c\udf93 44 bite-sized lessons\n'
+                            '\ud83e\udde0 Spaced repetition flashcards\n'
+                            '\ud83c\udfc6 55+ achievements to earn\n'
+                            '\ud83e\udd16 AI fish identification',
+                            textAlign: TextAlign.center,
+                            style: Theme.of(context).textTheme.bodyMedium!
+                                .copyWith(
+                                  color: context.textSecondary,
+                                  height: 1.8,
                                 ),
-                                const SizedBox(height: AppSpacing.xs),
-                                ClipRRect(
-                                  borderRadius: AppRadius.xsRadius,
-                                  child: LinearProgressIndicator(
-                                    value: progress,
-                                    backgroundColor: context.surfaceVariant,
-                                    valueColor: const AlwaysStoppedAnimation<Color>(
-                                      AppColors.primary,
-                                    ),
-                                    minHeight: 6,
-                                  ),
-                                ),
-                              ],
-                            );
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-
-                // Learning path cards (using lightweight metadata)
-                SliverList(
-                  delegate: SliverChildBuilderDelegate((context, index) {
-                    final meta = metadata[index];
-                    final completedInPath = meta.lessonIds
-                        .where((id) => profile.completedLessons.contains(id))
-                        .length;
-                    final reduceMotion = MediaQuery.of(context).disableAnimations;
-
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 8,
+                          ),
+                        ],
                       ),
-                      child: _LazyLearningPathCard(
-                        metadata: meta,
-                        completedLessons: completedInPath,
-                        totalLessons: meta.lessonIds.length,
-                        userCompletedLessons: profile.completedLessons,
-                      )
-                          .animate(autoPlay: !reduceMotion)
-                          .fadeIn(
-                            duration: reduceMotion ? 0.ms : 300.ms,
-                            delay: reduceMotion ? 0.ms : (index * 50).ms,
-                          )
-                          .slideY(
-                            begin: reduceMotion ? 0 : 0.2,
-                            end: 0,
-                            duration: reduceMotion ? 0.ms : 300.ms,
-                            delay: reduceMotion ? 0.ms : (index * 50).ms,
-                          ),
-                    );
-                  }, childCount: metadata.length),
-                ),
+                    ),
+                  )
+                else ...[
+                  // Placement challenge card (intermediate/expert users only)
+                  const SliverToBoxAdapter(child: PlacementChallengeCard()),
 
-                const SliverToBoxAdapter(child: SizedBox(height: kScrollEndPadding)),
-              ],
+                  // Learning streak badge
+                  if (profile.lessonProgress.isNotEmpty)
+                    SliverToBoxAdapter(
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(
+                          AppSpacing.md,
+                          AppSpacing.sm,
+                          AppSpacing.md,
+                          0,
+                        ),
+                        child: LearningStreakBadge(
+                          lessonProgress: profile.lessonProgress,
+                        ),
+                      ),
+                    ),
+
+                  // Spaced repetition review banner (due cards)
+                  SliverToBoxAdapter(child: _ReviewCardsBanner()),
+
+                  // Daily streak reminder
+                  if (profile.currentStreak > 0)
+                    SliverToBoxAdapter(child: _StreakCard(profile: profile)),
+
+                  // Practice card
+                  SliverToBoxAdapter(child: _PracticeCard(profile: profile)),
+
+                  // Learning paths header with overall progress
+                  SliverToBoxAdapter(
+                    key: _firstPathKey,
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(
+                        AppSpacing.md,
+                        AppSpacing.md,
+                        AppSpacing.md,
+                        AppSpacing.xs,
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Semantics(
+                            header: true,
+                            child: Text(
+                              'Learning Paths',
+                              style: AppTypography.headlineSmall,
+                            ),
+                          ),
+                          const SizedBox(height: AppSpacing.sm),
+                          Builder(
+                            builder: (context) {
+                              final completedPaths = metadata.where((meta) {
+                                final done = meta.lessonIds
+                                    .where(
+                                      (id) =>
+                                          profile.completedLessons.contains(id),
+                                    )
+                                    .length;
+                                return done == meta.lessonIds.length &&
+                                    meta.lessonIds.isNotEmpty;
+                              }).length;
+                              final totalPaths = metadata.length;
+                              final progress = totalPaths > 0
+                                  ? completedPaths / totalPaths
+                                  : 0.0;
+                              return Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    '$completedPaths of $totalPaths paths complete',
+                                    style: AppTypography.bodySmall.copyWith(
+                                      color: context.textSecondary,
+                                    ),
+                                  ),
+                                  const SizedBox(height: AppSpacing.xs),
+                                  ClipRRect(
+                                    borderRadius: AppRadius.xsRadius,
+                                    child: LinearProgressIndicator(
+                                      value: progress,
+                                      backgroundColor: context.surfaceVariant,
+                                      valueColor:
+                                          const AlwaysStoppedAnimation<Color>(
+                                            AppColors.primary,
+                                          ),
+                                      minHeight: 6,
+                                    ),
+                                  ),
+                                ],
+                              );
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+
+                  // Learning path cards (using lightweight metadata)
+                  SliverList(
+                    delegate: SliverChildBuilderDelegate((context, index) {
+                      final meta = metadata[index];
+                      final completedInPath = meta.lessonIds
+                          .where((id) => profile.completedLessons.contains(id))
+                          .length;
+                      final reduceMotion = MediaQuery.of(
+                        context,
+                      ).disableAnimations;
+
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 8,
+                        ),
+                        child:
+                            _LazyLearningPathCard(
+                                  metadata: meta,
+                                  completedLessons: completedInPath,
+                                  totalLessons: meta.lessonIds.length,
+                                  userCompletedLessons:
+                                      profile.completedLessons,
+                                )
+                                .animate(autoPlay: !reduceMotion)
+                                .fadeIn(
+                                  duration: reduceMotion ? 0.ms : 300.ms,
+                                  delay: reduceMotion ? 0.ms : (index * 50).ms,
+                                )
+                                .slideY(
+                                  begin: reduceMotion ? 0 : 0.2,
+                                  end: 0,
+                                  duration: reduceMotion ? 0.ms : 300.ms,
+                                  delay: reduceMotion ? 0.ms : (index * 50).ms,
+                                ),
+                      );
+                    }, childCount: metadata.length),
+                  ),
+
+                  const SliverToBoxAdapter(
+                    child: SizedBox(height: kScrollEndPadding),
+                  ),
+                ],
               ],
             ),
           );
@@ -448,9 +491,9 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
 
   /// Navigate to water chemistry/parameter guide
   void _navigateToWaterChemistry(BuildContext context) {
-    Navigator.of(context).push(
-      MaterialPageRoute(builder: (_) => const ParameterGuideScreen()),
-    );
+    Navigator.of(
+      context,
+    ).push(MaterialPageRoute(builder: (_) => const ParameterGuideScreen()));
   }
 
   /// Show a random fish fact in a dialog
@@ -458,7 +501,9 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
     final species = SpeciesDatabase.species;
     if (species.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Fish facts are still loading — check back shortly!')),
+        const SnackBar(
+          content: Text('Fish facts are still loading — check back shortly!'),
+        ),
       );
       return;
     }
@@ -487,10 +532,7 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
             const Expanded(child: Text('Fish Fact!')),
           ],
         ),
-        content: Text(
-          fact,
-          style: AppTypography.bodyLarge,
-        ),
+        content: Text(fact, style: AppTypography.bodyLarge),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(),
@@ -522,7 +564,12 @@ class _ReviewCardsBanner extends ConsumerWidget {
     if (dueCount == 0) return const SizedBox.shrink();
 
     return Container(
-      margin: const EdgeInsets.fromLTRB(AppSpacing.md, AppSpacing.md, AppSpacing.md, 0),
+      margin: const EdgeInsets.fromLTRB(
+        AppSpacing.md,
+        AppSpacing.md,
+        AppSpacing.md,
+        0,
+      ),
       child: InkWell(
         onTap: () {
           Navigator.of(context).push(
@@ -569,7 +616,10 @@ class _ReviewCardsBanner extends ConsumerWidget {
                   children: [
                     Row(
                       children: [
-                        Text('🔔 ', style: Theme.of(context).textTheme.titleLarge!),
+                        Text(
+                          '🔔 ',
+                          style: Theme.of(context).textTheme.titleLarge!,
+                        ),
                         Text(
                           'Time to Review!',
                           style: AppTypography.headlineSmall.copyWith(
@@ -625,7 +675,12 @@ class _PracticeCard extends ConsumerWidget {
     if (weakCount == 0) return const SizedBox.shrink();
 
     return Container(
-      margin: const EdgeInsets.fromLTRB(AppSpacing.md, AppSpacing.md, AppSpacing.md, 0),
+      margin: const EdgeInsets.fromLTRB(
+        AppSpacing.md,
+        AppSpacing.md,
+        AppSpacing.md,
+        0,
+      ),
       child: InkWell(
         onTap: () {
           Navigator.of(
@@ -739,7 +794,12 @@ class _StreakCard extends StatelessWidget {
     final usedFreezeThisWeek = profile.streakFreezeUsedThisWeek;
 
     return Container(
-      margin: const EdgeInsets.fromLTRB(AppSpacing.md, AppSpacing.sm, AppSpacing.md, 0),
+      margin: const EdgeInsets.fromLTRB(
+        AppSpacing.md,
+        AppSpacing.sm,
+        AppSpacing.md,
+        0,
+      ),
       padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
         color: AppOverlays.orange10,
@@ -864,10 +924,12 @@ class _LazyLearningPathCardState extends ConsumerState<_LazyLearningPathCard> {
   @override
   Widget build(BuildContext context) {
     final meta = widget.metadata;
-    final progress =
-        widget.totalLessons > 0 ? widget.completedLessons / widget.totalLessons : 0.0;
+    final progress = widget.totalLessons > 0
+        ? widget.completedLessons / widget.totalLessons
+        : 0.0;
     final isComplete =
-        widget.completedLessons == widget.totalLessons && widget.totalLessons > 0;
+        widget.completedLessons == widget.totalLessons &&
+        widget.totalLessons > 0;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final isComingSoon = _comingSoonPathIds.contains(meta.id);
 
@@ -879,159 +941,178 @@ class _LazyLearningPathCardState extends ConsumerState<_LazyLearningPathCard> {
     return Opacity(
       opacity: isComingSoon ? 0.6 : 1.0,
       child: Container(
-      decoration: BoxDecoration(
-        color: context.cardColor,
-        borderRadius: BorderRadius.circular(AppRadius.lg),
-        boxShadow: [
-          BoxShadow(
-            color: isDark ? AppColors.blackAlpha30 : AppColors.blackAlpha05,
-            blurRadius: 12,
-            offset: const Offset(0, 4),
-          ),
-          if (isComplete)
+        decoration: BoxDecoration(
+          color: context.cardColor,
+          borderRadius: BorderRadius.circular(AppRadius.lg),
+          boxShadow: [
             BoxShadow(
-              color: isDark ? AppColors.successAlpha20 : AppColors.successAlpha10,
-              blurRadius: 16,
-              offset: const Offset(0, 6),
+              color: isDark ? AppColors.blackAlpha30 : AppColors.blackAlpha05,
+              blurRadius: 12,
+              offset: const Offset(0, 4),
             ),
-        ],
-      ),
-      child: Theme(
-        data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
-        child: isComingSoon
-            ? _buildComingSoonTile(context, meta, isDark)
-            : ExpansionTile(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(AppRadius.lg),
-          ),
-          collapsedShape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(AppRadius.lg),
-          ),
-          onExpansionChanged: (expanded) {
-            if (expanded && loadedPath == null && !isLoading) {
-              // Lazy-load the full path content when user expands
-              ref.read(lessonProvider.notifier).loadPath(meta.id);
-            }
-          },
-          leading: Container(
-            width: 52,
-            height: 52,
-            decoration: BoxDecoration(
-              gradient: isComplete
-                  ? LinearGradient(
-                      colors: [
-                        AppColors.successAlpha20,
-                        AppColors.successAlpha10,
-                      ],
-                    )
-                  : LinearGradient(
-                      colors: [
-                        AppColors.primaryAlpha15,
-                        AppColors.primaryAlpha10,
-                      ],
-                    ),
-              borderRadius: AppRadius.mediumRadius,
-              border: Border.all(
-                color: isComplete
-                    ? AppColors.successAlpha30
-                    : AppColors.primaryAlpha15,
-                width: 1,
+            if (isComplete)
+              BoxShadow(
+                color: isDark
+                    ? AppColors.successAlpha20
+                    : AppColors.successAlpha10,
+                blurRadius: 16,
+                offset: const Offset(0, 6),
               ),
-            ),
-            child: Center(
-              child: Text(meta.emoji, style: Theme.of(context).textTheme.headlineSmall!.copyWith()),
-            ),
-          ),
-          title: Text(
-            meta.title,
-            style: AppTypography.labelLarge.copyWith(
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          subtitle: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(height: AppSpacing.xs),
-              Text(
-                meta.description,
-                style: AppTypography.bodySmall.copyWith(
-                  color: context.textSecondary,
-                ),
-                maxLines: 3,
-                overflow: TextOverflow.ellipsis,
-              ),
-              const SizedBox(height: AppSpacing.sm),
-              Row(
-                children: [
-                  Expanded(
-                    child: Container(
-                      height: 8,
-                      decoration: BoxDecoration(
-                        color: isDark
-                            ? AppColors.whiteAlpha10
-                            : AppColors.primaryAlpha15,
-                        borderRadius: AppRadius.xsRadius,
-                      ),
-                      child: FractionallySizedBox(
-                        alignment: Alignment.centerLeft,
-                        widthFactor: progress,
-                        child: Container(
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              colors: isComplete
-                                  ? [AppColors.success, AppColors.successAlpha80]
-                                  : [AppColors.primary, AppColors.secondary],
-                            ),
-                            borderRadius: AppRadius.xsRadius,
-                            boxShadow: progress > 0
-                                ? [
-                                    BoxShadow(
-                                      color: isComplete
-                                          ? AppColors.successAlpha40
-                                          : AppColors.primaryAlpha40,
-                                      blurRadius: 4,
-                                      offset: const Offset(0, 1),
-                                    ),
-                                  ]
-                                : null,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: AppSpacing.sm2),
-                  Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: 3),
-                    decoration: BoxDecoration(
-                      color: isDark
-                          ? AppColors.whiteAlpha10
-                          : context.surfaceVariant,
-                      borderRadius: AppRadius.md2Radius,
-                    ),
-                    child: Text(
-                      '${widget.completedLessons}/${widget.totalLessons}',
-                      style: AppTypography.labelSmall.copyWith(
-                        color: isDark
-                            ? context.textSecondary
-                            : context.textSecondary,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-          children: _buildExpandedContent(loadedPath, isLoading),
+          ],
         ),
-      ),
+        child: Theme(
+          data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+          child: isComingSoon
+              ? _buildComingSoonTile(context, meta, isDark)
+              : ExpansionTile(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(AppRadius.lg),
+                  ),
+                  collapsedShape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(AppRadius.lg),
+                  ),
+                  onExpansionChanged: (expanded) {
+                    if (expanded && loadedPath == null && !isLoading) {
+                      // Lazy-load the full path content when user expands
+                      ref.read(lessonProvider.notifier).loadPath(meta.id);
+                    }
+                  },
+                  leading: Container(
+                    width: 52,
+                    height: 52,
+                    decoration: BoxDecoration(
+                      gradient: isComplete
+                          ? LinearGradient(
+                              colors: [
+                                AppColors.successAlpha20,
+                                AppColors.successAlpha10,
+                              ],
+                            )
+                          : LinearGradient(
+                              colors: [
+                                AppColors.primaryAlpha15,
+                                AppColors.primaryAlpha10,
+                              ],
+                            ),
+                      borderRadius: AppRadius.mediumRadius,
+                      border: Border.all(
+                        color: isComplete
+                            ? AppColors.successAlpha30
+                            : AppColors.primaryAlpha15,
+                        width: 1,
+                      ),
+                    ),
+                    child: Center(
+                      child: Text(
+                        meta.emoji,
+                        style: Theme.of(
+                          context,
+                        ).textTheme.headlineSmall!.copyWith(),
+                      ),
+                    ),
+                  ),
+                  title: Text(
+                    meta.title,
+                    style: AppTypography.labelLarge.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(height: AppSpacing.xs),
+                      Text(
+                        meta.description,
+                        style: AppTypography.bodySmall.copyWith(
+                          color: context.textSecondary,
+                        ),
+                        maxLines: 3,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(height: AppSpacing.sm),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Container(
+                              height: 8,
+                              decoration: BoxDecoration(
+                                color: isDark
+                                    ? AppColors.whiteAlpha10
+                                    : AppColors.primaryAlpha15,
+                                borderRadius: AppRadius.xsRadius,
+                              ),
+                              child: FractionallySizedBox(
+                                alignment: Alignment.centerLeft,
+                                widthFactor: progress,
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                      colors: isComplete
+                                          ? [
+                                              AppColors.success,
+                                              AppColors.successAlpha80,
+                                            ]
+                                          : [
+                                              AppColors.primary,
+                                              AppColors.secondary,
+                                            ],
+                                    ),
+                                    borderRadius: AppRadius.xsRadius,
+                                    boxShadow: progress > 0
+                                        ? [
+                                            BoxShadow(
+                                              color: isComplete
+                                                  ? AppColors.successAlpha40
+                                                  : AppColors.primaryAlpha40,
+                                              blurRadius: 4,
+                                              offset: const Offset(0, 1),
+                                            ),
+                                          ]
+                                        : null,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: AppSpacing.sm2),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: AppSpacing.sm,
+                              vertical: 3,
+                            ),
+                            decoration: BoxDecoration(
+                              color: isDark
+                                  ? AppColors.whiteAlpha10
+                                  : context.surfaceVariant,
+                              borderRadius: AppRadius.md2Radius,
+                            ),
+                            child: Text(
+                              '${widget.completedLessons}/${widget.totalLessons}',
+                              style: AppTypography.labelSmall.copyWith(
+                                color: isDark
+                                    ? context.textSecondary
+                                    : context.textSecondary,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  children: _buildExpandedContent(loadedPath, isLoading),
+                ),
+        ),
       ),
     );
   }
 
   /// Builds a non-expandable tile for "Coming Soon" paths with a badge.
-  Widget _buildComingSoonTile(BuildContext context, PathMetadata meta, bool isDark) {
+  Widget _buildComingSoonTile(
+    BuildContext context,
+    PathMetadata meta,
+    bool isDark,
+  ) {
     return ListTile(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(AppRadius.lg),
@@ -1042,19 +1123,16 @@ class _LazyLearningPathCardState extends ConsumerState<_LazyLearningPathCard> {
         height: 52,
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [
-              AppColors.primaryAlpha15,
-              AppColors.primaryAlpha10,
-            ],
+            colors: [AppColors.primaryAlpha15, AppColors.primaryAlpha10],
           ),
           borderRadius: AppRadius.mediumRadius,
-          border: Border.all(
-            color: AppColors.primaryAlpha15,
-            width: 1,
-          ),
+          border: Border.all(color: AppColors.primaryAlpha15, width: 1),
         ),
         child: Center(
-          child: Text(meta.emoji, style: Theme.of(context).textTheme.headlineSmall!),
+          child: Text(
+            meta.emoji,
+            style: Theme.of(context).textTheme.headlineSmall!,
+          ),
         ),
       ),
       title: Row(
@@ -1090,9 +1168,7 @@ class _LazyLearningPathCardState extends ConsumerState<_LazyLearningPathCard> {
         padding: const EdgeInsets.only(top: 4),
         child: Text(
           meta.description,
-          style: AppTypography.bodySmall.copyWith(
-            color: context.textSecondary,
-          ),
+          style: AppTypography.bodySmall.copyWith(color: context.textSecondary),
           maxLines: 2,
           overflow: TextOverflow.ellipsis,
         ),
@@ -1103,13 +1179,16 @@ class _LazyLearningPathCardState extends ConsumerState<_LazyLearningPathCard> {
           builder: (ctx) => AlertDialog(
             title: Row(
               children: [
-                Text('${meta.emoji} ', style: Theme.of(context).textTheme.headlineSmall!),
+                Text(
+                  '${meta.emoji} ',
+                  style: Theme.of(context).textTheme.headlineSmall!,
+                ),
                 const Expanded(child: Text('Coming Soon!')),
               ],
             ),
             content: Text(
-              'The "${meta.title}" path is coming soon — stay tuned! '
-              'We\'re working on quality content for this topic.',
+              'The "${meta.title}" path is coming soon — we\'re crafting something great! '
+              'Stay tuned 🐟',
               style: AppTypography.bodyLarge,
             ),
             actions: [
@@ -1145,124 +1224,133 @@ class _LazyLearningPathCardState extends ConsumerState<_LazyLearningPathCard> {
       const Divider(height: 1),
       ...path.lessons.map((lesson) {
         final isStub = _stubLessonIds.contains(lesson.id);
-        final isCompleted =
-            widget.userCompletedLessons.contains(lesson.id);
-        final isUnlocked = !isStub && lesson.isUnlocked(widget.userCompletedLessons);
+        final isCompleted = widget.userCompletedLessons.contains(lesson.id);
+        final isUnlocked =
+            !isStub && lesson.isUnlocked(widget.userCompletedLessons);
 
         return Opacity(
           opacity: isStub ? 0.55 : 1.0,
           child: ListTile(
-          leading: Hero(
-            tag: 'lesson-${lesson.id}',
-            child: Material(
-              type: MaterialType.transparency,
-              child: Container(
-                width: 32,
-                height: 32,
-                decoration: BoxDecoration(
-                  color: isStub
-                      ? DanioColors.amberGold.withValues(alpha: 0.15)
-                      : isCompleted
-                          ? AppOverlays.success20
-                          : isUnlocked
-                              ? AppOverlays.primary10
-                              : context.surfaceVariant,
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(
-                  isStub
-                      ? Icons.construction
-                      : isCompleted
-                          ? Icons.check
-                          : isUnlocked
-                              ? Icons.play_arrow
-                              : Icons.lock,
-                  size: 18,
-                  color: isStub
-                      ? DanioColors.amberGold
-                      : isCompleted
-                          ? AppColors.success
-                          : isUnlocked
-                              ? AppColors.primary
-                              : context.textHint,
-                ),
-              ),
-            ),
-          ),
-          title: Row(
-            children: [
-              Expanded(
-                child: Text(
-                  lesson.title,
-                  style: AppTypography.bodyMedium.copyWith(
-                    color: isStub ? context.textHint : (isUnlocked ? null : context.textHint),
-                  ),
-                ),
-              ),
-              if (isStub)
-                Container(
-                  margin: const EdgeInsets.only(left: 6),
-                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+            leading: Hero(
+              tag: 'lesson-${lesson.id}',
+              child: Material(
+                type: MaterialType.transparency,
+                child: Container(
+                  width: 32,
+                  height: 32,
                   decoration: BoxDecoration(
-                    color: DanioColors.amberGold.withValues(alpha: 0.15),
-                    borderRadius: AppRadius.xsRadius,
-                    border: Border.all(
-                      color: DanioColors.amberGold.withValues(alpha: 0.4),
-                    ),
+                    color: isStub
+                        ? DanioColors.amberGold.withValues(alpha: 0.15)
+                        : isCompleted
+                        ? AppOverlays.success20
+                        : isUnlocked
+                        ? AppOverlays.primary10
+                        : context.surfaceVariant,
+                    shape: BoxShape.circle,
                   ),
+                  child: Icon(
+                    isStub
+                        ? Icons.construction
+                        : isCompleted
+                        ? Icons.check
+                        : isUnlocked
+                        ? Icons.play_arrow
+                        : Icons.lock,
+                    size: 18,
+                    color: isStub
+                        ? DanioColors.amberGold
+                        : isCompleted
+                        ? AppColors.success
+                        : isUnlocked
+                        ? AppColors.primary
+                        : context.textHint,
+                  ),
+                ),
+              ),
+            ),
+            title: Row(
+              children: [
+                Expanded(
                   child: Text(
-                    'Coming Soon 🚧',
-                    style: AppTypography.labelSmall.copyWith(
-                      color: DanioColors.amberGold,
-                      fontWeight: FontWeight.w600,
-                      fontSize: 10,
+                    lesson.title,
+                    style: AppTypography.bodyMedium.copyWith(
+                      color: isStub
+                          ? context.textHint
+                          : (isUnlocked ? null : context.textHint),
                     ),
                   ),
                 ),
-            ],
-          ),
-          subtitle: Text(
-            isStub
-                ? 'Content in development'
-                : '${lesson.estimatedMinutes} min • ${lesson.xpReward} XP',
-            style: AppTypography.bodySmall.copyWith(
-              color: context.textSecondary,
-            ),
-          ),
-          trailing: isCompleted && !isStub
-              ? Text(
-                  '+${lesson.xpReward} XP',
-                  style: AppTypography.bodySmall.copyWith(
-                    color: AppColors.primary,
-                  ),
-                )
-              : null,
-          enabled: isUnlocked && !isStub,
-          onTap: isStub
-              ? () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('This lesson is coming soon — stay tuned! 🚧'),
-                      duration: Duration(seconds: 2),
+                if (isStub)
+                  Container(
+                    margin: const EdgeInsets.only(left: 6),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 6,
+                      vertical: 2,
                     ),
-                  );
-                }
-              : isUnlocked
-                  ? () {
-                      NavigationThrottle.push(context, LessonScreen(
-                            lesson: lesson,
-                            pathTitle: path.title,
-                          ));
-                    }
-                  : () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Complete the previous lesson to unlock this one 🔒'),
-                          duration: Duration(seconds: 2),
+                    decoration: BoxDecoration(
+                      color: DanioColors.amberGold.withValues(alpha: 0.15),
+                      borderRadius: AppRadius.xsRadius,
+                      border: Border.all(
+                        color: DanioColors.amberGold.withValues(alpha: 0.4),
+                      ),
+                    ),
+                    child: Text(
+                      'Coming Soon 🚧',
+                      style: AppTypography.labelSmall.copyWith(
+                        color: DanioColors.amberGold,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 10,
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+            subtitle: Text(
+              isStub
+                  ? 'Coming soon!'
+                  : '${lesson.estimatedMinutes} min • ${lesson.xpReward} XP',
+              style: AppTypography.bodySmall.copyWith(
+                color: context.textSecondary,
+              ),
+            ),
+            trailing: isCompleted && !isStub
+                ? Text(
+                    '+${lesson.xpReward} XP',
+                    style: AppTypography.bodySmall.copyWith(
+                      color: AppColors.primary,
+                    ),
+                  )
+                : null,
+            enabled: isUnlocked && !isStub,
+            onTap: isStub
+                ? () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text(
+                          'This lesson is coming soon — stay tuned! 🚧',
                         ),
-                      );
-                    },
-        ),
+                        duration: Duration(seconds: 2),
+                      ),
+                    );
+                  }
+                : isUnlocked
+                ? () {
+                    NavigationThrottle.push(
+                      context,
+                      LessonScreen(lesson: lesson, pathTitle: path.title),
+                    );
+                  }
+                : () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text(
+                          'Complete the previous lesson to unlock this one 🔒',
+                        ),
+                        duration: Duration(seconds: 2),
+                      ),
+                    );
+                  },
+          ),
         );
       }),
     ];

@@ -17,10 +17,7 @@ import '../placement_result_screen.dart';
 class EnhancedPlacementTestScreen extends ConsumerStatefulWidget {
   final String source;
 
-  const EnhancedPlacementTestScreen({
-    super.key,
-    this.source = 'onboarding',
-  });
+  const EnhancedPlacementTestScreen({super.key, this.source = 'onboarding'});
 
   @override
   ConsumerState<EnhancedPlacementTestScreen> createState() =>
@@ -52,9 +49,7 @@ class _EnhancedPlacementTestScreenState
   @override
   void initState() {
     super.initState();
-    _confettiController = ConfettiController(
-      duration: AppDurations.long3,
-    );
+    _confettiController = ConfettiController(duration: AppDurations.long3);
     _celebrationController = AnimationController(
       vsync: this,
       duration: AppDurations.long2,
@@ -160,10 +155,8 @@ class _EnhancedPlacementTestScreenState
 
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) => PlacementResultScreen(
-          result: result,
-          source: widget.source,
-        ),
+        builder: (context) =>
+            PlacementResultScreen(result: result, source: widget.source),
       ),
     );
   }
@@ -172,11 +165,11 @@ class _EnhancedPlacementTestScreenState
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Skip Placement Test?'),
+        title: const Text('Ready to see your results?'),
         content: const Text(
-          'You\'ve answered enough questions to get personalized recommendations. '
-          'Do you want to skip to your results?\n\n'
-          'You can also continue and answer all questions for a more accurate assessment.',
+          'You\'ve answered enough questions for personalised recommendations! '
+          'Want to skip ahead?\n\n'
+          'Or keep going for an even more accurate assessment.',
         ),
         actions: [
           TextButton(
@@ -314,7 +307,9 @@ class _EnhancedPlacementTestScreenState
               LinearProgressIndicator(
                 value: value,
                 minHeight: 8,
-                backgroundColor: Theme.of(context).brightness == Brightness.dark ? context.surfaceVariant : context.surfaceVariant,
+                backgroundColor: Theme.of(context).brightness == Brightness.dark
+                    ? context.surfaceVariant
+                    : context.surfaceVariant,
                 valueColor: const AlwaysStoppedAnimation<Color>(
                   AppColors.accent,
                 ),
@@ -347,7 +342,11 @@ class _EnhancedPlacementTestScreenState
               children: [
                 Row(
                   children: [
-                    const Icon(Icons.quiz, size: AppIconSizes.xs, color: AppColors.accent),
+                    const Icon(
+                      Icons.quiz,
+                      size: AppIconSizes.xs,
+                      color: AppColors.accent,
+                    ),
                     const SizedBox(width: AppSpacing.xs),
                     Text(
                       '${(_progress * 100).round()}% Complete',
@@ -407,11 +406,11 @@ class _EnhancedPlacementTestScreenState
           avatar: const Icon(Icons.category, size: 18),
           label: Text(
             _getPathName(_currentQuestion.pathId),
-            style: Theme.of(context).textTheme.bodySmall!.copyWith(fontWeight: FontWeight.w600),
+            style: Theme.of(
+              context,
+            ).textTheme.bodySmall!.copyWith(fontWeight: FontWeight.w600),
           ),
-          backgroundColor: _getPathColor(
-            _currentQuestion.pathId,
-          ).withAlpha(26),
+          backgroundColor: _getPathColor(_currentQuestion.pathId).withAlpha(26),
           side: BorderSide(color: _getPathColor(_currentQuestion.pathId)),
           visualDensity: VisualDensity.compact,
         ),
@@ -480,7 +479,11 @@ class _EnhancedPlacementTestScreenState
               color: backgroundColor,
               borderRadius: AppRadius.mediumRadius,
               border: Border.all(
-                color: borderColor ?? (Theme.of(context).brightness == Brightness.dark ? AppColors.borderDark : context.borderColor),
+                color:
+                    borderColor ??
+                    (Theme.of(context).brightness == Brightness.dark
+                        ? AppColors.borderDark
+                        : context.borderColor),
                 width: isSelected || showResult ? 2 : 1,
               ),
               boxShadow: isSelected && !showResult
@@ -504,7 +507,11 @@ class _EnhancedPlacementTestScreenState
                     shape: BoxShape.circle,
                     color: showResult && isCorrect
                         ? AppColors.success
-                        : (isSelected ? AppColors.accent : Theme.of(context).brightness == Brightness.dark ? context.surfaceVariant : context.surfaceVariant),
+                        : (isSelected
+                              ? AppColors.accent
+                              : Theme.of(context).brightness == Brightness.dark
+                              ? context.surfaceVariant
+                              : context.surfaceVariant),
                   ),
                   child: Center(
                     child: Text(
@@ -596,7 +603,9 @@ class _EnhancedPlacementTestScreenState
                 ),
                 child: Text(
                   _currentQuestion.explanation!,
-                  style: Theme.of(context).textTheme.bodyLarge!.copyWith(height: 1.5),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodyLarge!.copyWith(height: 1.5),
                 ),
               ),
             ],
@@ -673,7 +682,9 @@ class _EnhancedPlacementTestScreenState
   }
 
   Color _getPathColor(String pathId) {
-    final index = LessonProvider.allPathMetadata.indexWhere((p) => p.id == pathId);
+    final index = LessonProvider.allPathMetadata.indexWhere(
+      (p) => p.id == pathId,
+    );
     final colors = [
       AppColors.primary,
       AppColors.secondary,

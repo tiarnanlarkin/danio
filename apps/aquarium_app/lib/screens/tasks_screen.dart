@@ -30,7 +30,7 @@ class TasksScreen extends ConsumerWidget {
       body: tasksAsync.when(
         loading: () => const Center(child: BubbleLoader()),
         error: (err, _) => AppErrorState(
-          title: 'Failed to load tasks',
+          title: 'Couldn\'t load your tasks',
           onRetry: () => ref.invalidate(tasksProvider(tankId)),
         ),
         data: (tasks) {
@@ -59,43 +59,51 @@ class TasksScreen extends ConsumerWidget {
 
           // Build flat list of items for ListView.builder
           final items = <_TaskListItem>[];
-          
+
           if (overdue.isNotEmpty) {
-            items.add(_TaskListItem.header(
-              title: 'Overdue',
-              color: AppColors.warning,
-              count: overdue.length,
-            ));
+            items.add(
+              _TaskListItem.header(
+                title: 'Overdue',
+                color: AppColors.warning,
+                count: overdue.length,
+              ),
+            );
             items.addAll(overdue.map((t) => _TaskListItem.task(t)));
             items.add(_TaskListItem.spacer());
           }
-          
+
           if (dueToday.isNotEmpty) {
-            items.add(_TaskListItem.header(
-              title: 'Due Today',
-              color: context.textSecondary,
-              count: dueToday.length,
-            ));
+            items.add(
+              _TaskListItem.header(
+                title: 'Due Today',
+                color: context.textSecondary,
+                count: dueToday.length,
+              ),
+            );
             items.addAll(dueToday.map((t) => _TaskListItem.task(t)));
             items.add(_TaskListItem.spacer());
           }
-          
+
           if (upcoming.isNotEmpty) {
-            items.add(_TaskListItem.header(
-              title: 'Upcoming',
-              color: context.textSecondary,
-              count: upcoming.length,
-            ));
+            items.add(
+              _TaskListItem.header(
+                title: 'Upcoming',
+                color: context.textSecondary,
+                count: upcoming.length,
+              ),
+            );
             items.addAll(upcoming.map((t) => _TaskListItem.task(t)));
             items.add(_TaskListItem.spacer());
           }
-          
+
           if (disabled.isNotEmpty) {
-            items.add(_TaskListItem.header(
-              title: 'Disabled',
-              color: context.textHint,
-              count: disabled.length,
-            ));
+            items.add(
+              _TaskListItem.header(
+                title: 'Disabled',
+                color: context.textHint,
+                count: disabled.length,
+              ),
+            );
             items.addAll(disabled.map((t) => _TaskListItem.task(t)));
           }
 
@@ -104,7 +112,7 @@ class TasksScreen extends ConsumerWidget {
             itemCount: items.length,
             itemBuilder: (context, index) {
               final item = items[index];
-              
+
               if (item.isHeader) {
                 return _SectionHeader(
                   title: item.headerTitle!,
@@ -192,7 +200,10 @@ class TasksScreen extends ConsumerWidget {
     final isBoostActive = ref.read(xpBoostActiveProvider);
     await ref
         .read(userProfileProvider.notifier)
-        .recordActivity(xp: XpRewards.taskComplete, xpBoostActive: isBoostActive);
+        .recordActivity(
+          xp: XpRewards.taskComplete,
+          xpBoostActive: isBoostActive,
+        );
 
     ref.invalidate(tasksProvider(tankId));
     ref.invalidate(equipmentProvider(tankId));
@@ -280,7 +291,11 @@ class TasksScreen extends ConsumerWidget {
               } catch (e) {
                 if (context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Couldn\'t delete task. Please try again.')),
+                    const SnackBar(
+                      content: Text(
+                        'Couldn\'t delete that task. Give it another go!',
+                      ),
+                    ),
                   );
                 }
               }
@@ -325,19 +340,16 @@ class _TaskListItem {
     required String title,
     required Color color,
     required int count,
-  }) =>
-      _TaskListItem._(
-        isHeader: true,
-        headerTitle: title,
-        headerColor: color,
-        headerCount: count,
-      );
+  }) => _TaskListItem._(
+    isHeader: true,
+    headerTitle: title,
+    headerColor: color,
+    headerCount: count,
+  );
 
-  factory _TaskListItem.task(Task task) =>
-      _TaskListItem._(task: task);
+  factory _TaskListItem.task(Task task) => _TaskListItem._(task: task);
 
-  factory _TaskListItem.spacer() =>
-      _TaskListItem._(isSpacer: true);
+  factory _TaskListItem.spacer() => _TaskListItem._(isSpacer: true);
 }
 
 class _TaskHistoryDialog extends ConsumerWidget {
@@ -357,12 +369,14 @@ class _TaskHistoryDialog extends ConsumerWidget {
         child: logsAsync.when(
           loading: () => const Padding(
             padding: EdgeInsets.all(AppSpacing.sm2),
-            child: Center(child: CircularProgressIndicator(color: AppColors.primary)),
+            child: Center(
+              child: CircularProgressIndicator(color: AppColors.primary),
+            ),
           ),
           error: (err, _) => AppErrorState(
             compact: true,
             title: 'Couldn\'t load history',
-            message: 'Please close and try again.',
+            message: 'Close this and give it another go!',
             onRetry: () => ref.invalidate(allLogsProvider(tankId)),
           ),
           data: (logs) {
@@ -377,7 +391,7 @@ class _TaskHistoryDialog extends ConsumerWidget {
 
             if (completions.isEmpty) {
               return Text(
-                'No completions logged yet.\n\nTip: when you complete the task, it will appear here and in Recent Activity.',
+                'No completions yet.\n\nTip: when you complete a task, it\'ll show up here and in Recent Activity!',
                 style: AppTypography.bodyMedium,
               );
             }
@@ -459,7 +473,10 @@ class _SectionHeader extends StatelessWidget {
           Text(title, style: AppTypography.labelLarge),
           const SizedBox(width: AppSpacing.sm),
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: AppSpacing.xxs),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 8,
+              vertical: AppSpacing.xxs,
+            ),
             decoration: BoxDecoration(
               color: color.withAlpha(51),
               borderRadius: AppRadius.mediumRadius,
@@ -705,10 +722,7 @@ class _AddTaskSheetState extends State<_AddTaskSheet> {
                 ),
                 child: Row(
                   children: [
-                    Icon(
-                      Icons.calendar_today,
-                      color: context.textSecondary,
-                    ),
+                    Icon(Icons.calendar_today, color: context.textSecondary),
                     const SizedBox(width: AppSpacing.sm2),
                     Text(
                       _dueDate != null

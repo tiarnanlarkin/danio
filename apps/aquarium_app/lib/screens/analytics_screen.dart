@@ -66,8 +66,8 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
             body = _buildSkeletonLoader();
           } else if (snapshot.hasError) {
             body = AppErrorState(
-              title: 'Unable to load analytics data',
-              message: 'Please check your connection and try again.',
+              title: 'Couldn\'t load your analytics',
+              message: 'Check your connection and give it another go!',
               onRetry: _refreshAnalytics,
             );
           } else {
@@ -75,7 +75,8 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
             if (summary == null) {
               body = const AppErrorState(
                 title: 'No analytics data available',
-                message: 'Complete some lessons to see your progress analytics.',
+                message:
+                    'Complete some lessons to see your progress analytics.',
               );
             } else {
               body = SingleChildScrollView(
@@ -205,7 +206,9 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
         children: [
           Text(
             'Time Range',
-            style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
+            style: Theme.of(
+              context,
+            ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: AppSpacing.sm2),
           Wrap(
@@ -245,7 +248,9 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
         children: [
           Text(
             'Overview',
-            style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+            style: Theme.of(
+              context,
+            ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: AppSpacing.md),
           Row(
@@ -343,7 +348,9 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
                 child: Text(
                   label,
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurface.withAlpha(153),
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.onSurface.withAlpha(153),
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -365,7 +372,9 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
             const SizedBox(height: AppSpacing.xs),
             Text(
               subtitle,
-              style: Theme.of(context).textTheme.labelSmall?.copyWith(color: Theme.of(context).colorScheme.onSurface.withAlpha(153)),
+              style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                color: Theme.of(context).colorScheme.onSurface.withAlpha(153),
+              ),
             ),
           ],
         ],
@@ -389,87 +398,90 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
         children: [
           Text(
             'XP Over Time',
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+            style: Theme.of(
+              context,
+            ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: AppSpacing.lg),
           Semantics(
-            label: 'Line chart: XP earned over time. ${data.length} data points.',
+            label:
+                'Line chart: XP earned over time. ${data.length} data points.',
             excludeSemantics: true,
             child: SizedBox(
-            height: 200,
-            child: LineChart(
-              LineChartData(
-                gridData: FlGridData(
-                  show: true,
-                  drawVerticalLine: false,
-                  horizontalInterval: maxXP > 0 ? maxXP / 4 : 25,
-                ),
-                titlesData: FlTitlesData(
-                  leftTitles: AxisTitles(
-                    sideTitles: SideTitles(
-                      showTitles: true,
-                      reservedSize: 40,
-                      getTitlesWidget: (value, meta) {
-                        return Text(
-                          value.toInt().toString(),
-                          style: const TextStyle(fontSize: 10),
-                        );
-                      },
-                    ),
+              height: 200,
+              child: LineChart(
+                LineChartData(
+                  gridData: FlGridData(
+                    show: true,
+                    drawVerticalLine: false,
+                    horizontalInterval: maxXP > 0 ? maxXP / 4 : 25,
                   ),
-                  bottomTitles: AxisTitles(
-                    sideTitles: SideTitles(
-                      showTitles: true,
-                      interval: data.length > 14 ? data.length / 7 : 1,
-                      getTitlesWidget: (value, meta) {
-                        final index = value.toInt();
-                        if (index >= 0 && index < data.length) {
-                          final date = data[index].date;
-                          return Padding(
-                            padding: const EdgeInsets.only(top: 8),
-                            child: Text(
-                              DateFormat('M/d').format(date),
-                              style: const TextStyle(fontSize: 10),
-                            ),
+                  titlesData: FlTitlesData(
+                    leftTitles: AxisTitles(
+                      sideTitles: SideTitles(
+                        showTitles: true,
+                        reservedSize: 40,
+                        getTitlesWidget: (value, meta) {
+                          return Text(
+                            value.toInt().toString(),
+                            style: const TextStyle(fontSize: 10),
                           );
-                        }
-                        return const Text('');
-                      },
+                        },
+                      ),
+                    ),
+                    bottomTitles: AxisTitles(
+                      sideTitles: SideTitles(
+                        showTitles: true,
+                        interval: data.length > 14 ? data.length / 7 : 1,
+                        getTitlesWidget: (value, meta) {
+                          final index = value.toInt();
+                          if (index >= 0 && index < data.length) {
+                            final date = data[index].date;
+                            return Padding(
+                              padding: const EdgeInsets.only(top: 8),
+                              child: Text(
+                                DateFormat('M/d').format(date),
+                                style: const TextStyle(fontSize: 10),
+                              ),
+                            );
+                          }
+                          return const Text('');
+                        },
+                      ),
+                    ),
+                    rightTitles: const AxisTitles(
+                      sideTitles: SideTitles(showTitles: false),
+                    ),
+                    topTitles: const AxisTitles(
+                      sideTitles: SideTitles(showTitles: false),
                     ),
                   ),
-                  rightTitles: const AxisTitles(
-                    sideTitles: SideTitles(showTitles: false),
-                  ),
-                  topTitles: const AxisTitles(
-                    sideTitles: SideTitles(showTitles: false),
-                  ),
+                  borderData: FlBorderData(show: false),
+                  lineBarsData: [
+                    LineChartBarData(
+                      spots: data
+                          .asMap()
+                          .entries
+                          .map(
+                            (e) =>
+                                FlSpot(e.key.toDouble(), e.value.xp.toDouble()),
+                          )
+                          .toList(),
+                      isCurved: true,
+                      color: AppColors.info,
+                      barWidth: 3,
+                      dotData: const FlDotData(show: false),
+                      belowBarData: BarAreaData(
+                        show: true,
+                        color: AppOverlays.blue10,
+                      ),
+                    ),
+                  ],
+                  minY: 0,
+                  maxY: maxXP > 0 ? maxXP * 1.2 : 100,
                 ),
-                borderData: FlBorderData(show: false),
-                lineBarsData: [
-                  LineChartBarData(
-                    spots: data
-                        .asMap()
-                        .entries
-                        .map(
-                          (e) =>
-                              FlSpot(e.key.toDouble(), e.value.xp.toDouble()),
-                        )
-                        .toList(),
-                    isCurved: true,
-                    color: AppColors.info,
-                    barWidth: 3,
-                    dotData: const FlDotData(show: false),
-                    belowBarData: BarAreaData(
-                      show: true,
-                      color: AppOverlays.blue10,
-                    ),
-                  ),
-                ],
-                minY: 0,
-                maxY: maxXP > 0 ? maxXP * 1.2 : 100,
               ),
             ),
-          ),
           ), // Semantics
         ],
       ),
@@ -495,92 +507,96 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
         children: [
           Text(
             'Last 7 Days',
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+            style: Theme.of(
+              context,
+            ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: AppSpacing.lg),
           Semantics(
             label: 'Bar chart: XP earned over last 7 days.',
             excludeSemantics: true,
             child: SizedBox(
-            height: 200,
-            child: BarChart(
-              BarChartData(
-                alignment: BarChartAlignment.spaceAround,
-                maxY: maxXP > 0 ? maxXP * 1.2 : 100,
-                barTouchData: BarTouchData(
-                  touchTooltipData: BarTouchTooltipData(
-                    getTooltipItem: (group, groupIndex, rod, rodIndex) {
-                      return BarTooltipItem(
-                        '${rod.toY.toInt()} XP',
-                        const TextStyle(color: Colors.white),
-                      );
-                    },
-                  ),
-                ),
-                titlesData: FlTitlesData(
-                  leftTitles: AxisTitles(
-                    sideTitles: SideTitles(
-                      showTitles: true,
-                      reservedSize: 40,
-                      getTitlesWidget: (value, meta) {
-                        return Text(
-                          value.toInt().toString(),
-                          style: const TextStyle(fontSize: 10),
+              height: 200,
+              child: BarChart(
+                BarChartData(
+                  alignment: BarChartAlignment.spaceAround,
+                  maxY: maxXP > 0 ? maxXP * 1.2 : 100,
+                  barTouchData: BarTouchData(
+                    touchTooltipData: BarTouchTooltipData(
+                      getTooltipItem: (group, groupIndex, rod, rodIndex) {
+                        return BarTooltipItem(
+                          '${rod.toY.toInt()} XP',
+                          const TextStyle(color: Colors.white),
                         );
                       },
                     ),
                   ),
-                  bottomTitles: AxisTitles(
-                    sideTitles: SideTitles(
-                      showTitles: true,
-                      getTitlesWidget: (value, meta) {
-                        final index = value.toInt();
-                        if (index >= 0 && index < last7Days.length) {
-                          final date = last7Days[index].date;
-                          return Padding(
-                            padding: const EdgeInsets.only(top: 8),
-                            child: Text(
-                              DateFormat('E').format(date)[0],
-                              style: const TextStyle(fontSize: 12),
-                            ),
+                  titlesData: FlTitlesData(
+                    leftTitles: AxisTitles(
+                      sideTitles: SideTitles(
+                        showTitles: true,
+                        reservedSize: 40,
+                        getTitlesWidget: (value, meta) {
+                          return Text(
+                            value.toInt().toString(),
+                            style: const TextStyle(fontSize: 10),
                           );
-                        }
-                        return const Text('');
-                      },
+                        },
+                      ),
+                    ),
+                    bottomTitles: AxisTitles(
+                      sideTitles: SideTitles(
+                        showTitles: true,
+                        getTitlesWidget: (value, meta) {
+                          final index = value.toInt();
+                          if (index >= 0 && index < last7Days.length) {
+                            final date = last7Days[index].date;
+                            return Padding(
+                              padding: const EdgeInsets.only(top: 8),
+                              child: Text(
+                                DateFormat('E').format(date)[0],
+                                style: const TextStyle(fontSize: 12),
+                              ),
+                            );
+                          }
+                          return const Text('');
+                        },
+                      ),
+                    ),
+                    rightTitles: const AxisTitles(
+                      sideTitles: SideTitles(showTitles: false),
+                    ),
+                    topTitles: const AxisTitles(
+                      sideTitles: SideTitles(showTitles: false),
                     ),
                   ),
-                  rightTitles: const AxisTitles(
-                    sideTitles: SideTitles(showTitles: false),
+                  gridData: FlGridData(
+                    show: true,
+                    drawVerticalLine: false,
+                    horizontalInterval: maxXP > 0 ? maxXP / 4 : 25,
                   ),
-                  topTitles: const AxisTitles(
-                    sideTitles: SideTitles(showTitles: false),
-                  ),
-                ),
-                gridData: FlGridData(
-                  show: true,
-                  drawVerticalLine: false,
-                  horizontalInterval: maxXP > 0 ? maxXP / 4 : 25,
-                ),
-                borderData: FlBorderData(show: false),
-                barGroups: last7Days.asMap().entries.map((entry) {
-                  final isToday = entry.value.date.day == DateTime.now().day;
-                  return BarChartGroupData(
-                    x: entry.key,
-                    barRods: [
-                      BarChartRodData(
-                        toY: entry.value.xp.toDouble(),
-                        color: isToday ? DanioColors.amberGold : AppColors.primaryLight,
-                        width: 20,
-                        borderRadius: const BorderRadius.vertical(
-                          top: Radius.circular(4),
+                  borderData: FlBorderData(show: false),
+                  barGroups: last7Days.asMap().entries.map((entry) {
+                    final isToday = entry.value.date.day == DateTime.now().day;
+                    return BarChartGroupData(
+                      x: entry.key,
+                      barRods: [
+                        BarChartRodData(
+                          toY: entry.value.xp.toDouble(),
+                          color: isToday
+                              ? DanioColors.amberGold
+                              : AppColors.primaryLight,
+                          width: 20,
+                          borderRadius: const BorderRadius.vertical(
+                            top: Radius.circular(4),
+                          ),
                         ),
-                      ),
-                    ],
-                  );
-                }).toList(),
+                      ],
+                    );
+                  }).toList(),
+                ),
               ),
             ),
-          ),
           ), // Semantics
         ],
       ),
@@ -601,50 +617,56 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
         children: [
           Text(
             'Topic Mastery',
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+            style: Theme.of(
+              context,
+            ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: AppSpacing.lg),
           Semantics(
-            label: 'Radar chart: topic mastery across ${topics.length} subjects.',
+            label:
+                'Radar chart: topic mastery across ${topics.length} subjects.',
             excludeSemantics: true,
             child: SizedBox(
-            height: 300,
-            child: RadarChart(
-              RadarChartData(
-                radarShape: RadarShape.polygon,
-                tickCount: 5,
-                ticksTextStyle: Theme.of(context).textTheme.labelSmall?.copyWith(
-                  color: Colors.transparent,
-                ),
-                radarBorderData: BorderSide(color: AppColors.textSecondaryAlpha30, width: 1),
-                gridBorderData: BorderSide(
-                  color: AppColors.textSecondaryAlpha30,
-                  width: 0.5,
-                ),
-                tickBorderData: const BorderSide(color: Colors.transparent),
-                getTitle: (index, angle) {
-                  if (index >= topics.length) {
-                    return const RadarChartTitle(text: '');
-                  }
-                  return RadarChartTitle(
-                    text: topics[index].topicName.split(' ').first,
-                    angle: angle,
-                  );
-                },
-                dataSets: [
-                  RadarDataSet(
-                    fillColor: AppOverlays.blue20,
-                    borderColor: AppColors.info,
-                    dataEntries: topics
-                        .map(
-                          (t) => RadarEntry(value: t.masteryPercentage * 100),
-                        )
-                        .toList(),
+              height: 300,
+              child: RadarChart(
+                RadarChartData(
+                  radarShape: RadarShape.polygon,
+                  tickCount: 5,
+                  ticksTextStyle: Theme.of(
+                    context,
+                  ).textTheme.labelSmall?.copyWith(color: Colors.transparent),
+                  radarBorderData: BorderSide(
+                    color: AppColors.textSecondaryAlpha30,
+                    width: 1,
                   ),
-                ],
+                  gridBorderData: BorderSide(
+                    color: AppColors.textSecondaryAlpha30,
+                    width: 0.5,
+                  ),
+                  tickBorderData: const BorderSide(color: Colors.transparent),
+                  getTitle: (index, angle) {
+                    if (index >= topics.length) {
+                      return const RadarChartTitle(text: '');
+                    }
+                    return RadarChartTitle(
+                      text: topics[index].topicName.split(' ').first,
+                      angle: angle,
+                    );
+                  },
+                  dataSets: [
+                    RadarDataSet(
+                      fillColor: AppOverlays.blue20,
+                      borderColor: AppColors.info,
+                      dataEntries: topics
+                          .map(
+                            (t) => RadarEntry(value: t.masteryPercentage * 100),
+                          )
+                          .toList(),
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
           ), // Semantics
         ],
       ),
@@ -666,7 +688,9 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
         children: [
           Text(
             'Activity Calendar',
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+            style: Theme.of(
+              context,
+            ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: AppSpacing.md),
           SizedBox(
@@ -696,7 +720,9 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
 
                 Color color;
                 if (dayData.xp == 0) {
-                  color = Theme.of(context).brightness == Brightness.dark ? context.surfaceVariant : context.borderColor;
+                  color = Theme.of(context).brightness == Brightness.dark
+                      ? context.surfaceVariant
+                      : context.borderColor;
                 } else if (dayData.xp < 25) {
                   color = const Color(0xFFA5D6A7);
                 } else if (dayData.xp < 50) {
@@ -726,7 +752,11 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
             children: [
               Text('Less', style: Theme.of(context).textTheme.labelSmall),
               const SizedBox(width: AppSpacing.xs),
-              _buildLegendBox(Theme.of(context).brightness == Brightness.dark ? context.surfaceVariant : context.borderColor),
+              _buildLegendBox(
+                Theme.of(context).brightness == Brightness.dark
+                    ? context.surfaceVariant
+                    : context.borderColor,
+              ),
               _buildLegendBox(const Color(0xFFA5D6A7)),
               _buildLegendBox(const Color(0xFF66BB6A)),
               _buildLegendBox(DanioColors.emeraldGreen),
@@ -763,7 +793,9 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
         children: [
           Text(
             'Insights & Recommendations',
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+            style: Theme.of(
+              context,
+            ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: AppSpacing.md),
           ...summary.insights.map((insight) => _buildInsightCard(insight)),
@@ -802,7 +834,10 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
           children: [
             Row(
               children: [
-                Text(insight.type.emoji, style: Theme.of(context).textTheme.headlineSmall),
+                Text(
+                  insight.type.emoji,
+                  style: Theme.of(context).textTheme.headlineSmall,
+                ),
                 const SizedBox(width: AppSpacing.sm2),
                 Expanded(
                   child: Text(
@@ -820,7 +855,9 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
               const SizedBox(height: AppSpacing.sm),
               Text(
                 insight.detailedMessage!,
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Theme.of(context).colorScheme.onSurface.withAlpha(178)),
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: Theme.of(context).colorScheme.onSurface.withAlpha(178),
+                ),
               ),
             ],
             if (insight.recommendation != null) ...[
@@ -834,12 +871,18 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
                 ),
                 child: Row(
                   children: [
-                    Icon(Icons.lightbulb_outline, color: color, size: AppIconSizes.sm),
+                    Icon(
+                      Icons.lightbulb_outline,
+                      color: color,
+                      size: AppIconSizes.sm,
+                    ),
                     const SizedBox(width: AppSpacing.sm),
                     Expanded(
                       child: Text(
                         insight.recommendation!,
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: color),
+                        style: Theme.of(
+                          context,
+                        ).textTheme.bodyMedium?.copyWith(color: color),
                       ),
                     ),
                   ],
@@ -863,7 +906,9 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
         children: [
           Text(
             'Topic Breakdown',
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+            style: Theme.of(
+              context,
+            ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: AppSpacing.md),
           ...summary.topicPerformance.map((topic) => _buildTopicCard(topic)),
@@ -891,7 +936,10 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
                     ),
                   ),
                 ),
-                Text(topic.trend.emoji, style: Theme.of(context).textTheme.titleLarge),
+                Text(
+                  topic.trend.emoji,
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
               ],
             ),
             const SizedBox(height: AppSpacing.sm2),
@@ -903,12 +951,19 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
                     children: [
                       Text(
                         'Progress',
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Theme.of(context).colorScheme.onSurface.withAlpha(153)),
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: Theme.of(
+                            context,
+                          ).colorScheme.onSurface.withAlpha(153),
+                        ),
                       ),
                       const SizedBox(height: AppSpacing.xs),
                       LinearProgressIndicator(
                         value: topic.masteryPercentage,
-                        backgroundColor: Theme.of(context).brightness == Brightness.dark ? context.surfaceVariant : context.borderColor,
+                        backgroundColor:
+                            Theme.of(context).brightness == Brightness.dark
+                            ? context.surfaceVariant
+                            : context.borderColor,
                         color: topic.isStrong
                             ? DanioColors.emeraldGreen
                             : topic.needsWork
@@ -930,15 +985,20 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
                     children: [
                       Text(
                         '${topic.totalXP} XP',
-                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: DanioColors.amberGold,
-                        ),
+                        style: Theme.of(context).textTheme.titleMedium
+                            ?.copyWith(
+                              fontWeight: FontWeight.bold,
+                              color: DanioColors.amberGold,
+                            ),
                         overflow: TextOverflow.ellipsis,
                       ),
                       Text(
                         '${topic.timeSpentMinutes} min',
-                        style: Theme.of(context).textTheme.labelSmall?.copyWith(color: Theme.of(context).colorScheme.onSurface.withAlpha(153)),
+                        style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                          color: Theme.of(
+                            context,
+                          ).colorScheme.onSurface.withAlpha(153),
+                        ),
                         overflow: TextOverflow.ellipsis,
                       ),
                     ],
@@ -963,7 +1023,9 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
         children: [
           Text(
             'Predictions & Goals',
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+            style: Theme.of(
+              context,
+            ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: AppSpacing.md),
           ...summary.predictions.map(
@@ -985,7 +1047,11 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
           children: [
             Row(
               children: [
-                const Icon(Icons.auto_graph, color: AppColors.info, size: AppIconSizes.md),
+                const Icon(
+                  Icons.auto_graph,
+                  color: AppColors.info,
+                  size: AppIconSizes.md,
+                ),
                 const SizedBox(width: AppSpacing.sm2),
                 Expanded(
                   child: Text(
@@ -1011,14 +1077,20 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
                   ),
                   child: Text(
                     prediction.confidenceLabel,
-                    style: Theme.of(context).textTheme.labelSmall?.copyWith(color: Colors.white),
+                    style: Theme.of(
+                      context,
+                    ).textTheme.labelSmall?.copyWith(color: Colors.white),
                   ),
                 ),
                 if (prediction.estimatedDate != null) ...[
                   const SizedBox(width: AppSpacing.sm),
                   Text(
                     'ETA: ${DateFormat('MMM d').format(prediction.estimatedDate!)}',
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Theme.of(context).colorScheme.onSurface.withAlpha(178)),
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.onSurface.withAlpha(178),
+                    ),
                   ),
                 ],
               ],
@@ -1027,7 +1099,9 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
               const SizedBox(height: AppSpacing.sm2),
               Text(
                 prediction.recommendation!,
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Theme.of(context).colorScheme.onSurface.withAlpha(178)),
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: Theme.of(context).colorScheme.onSurface.withAlpha(178),
+                ),
               ),
             ],
           ],
@@ -1173,5 +1247,4 @@ Generated: ${DateFormat('MMM d, yyyy').format(DateTime.now())}
 
     await Share.share(report, subject: 'My Danio Learning Progress');
   }
-
 }

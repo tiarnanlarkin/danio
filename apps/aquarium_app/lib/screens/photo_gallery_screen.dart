@@ -29,8 +29,8 @@ class PhotoGalleryScreen extends ConsumerWidget {
       body: logsAsync.when(
         loading: () => const Center(child: BubbleLoader()),
         error: (e, _) => AppErrorState(
-          title: 'Failed to load photos',
-          message: 'Please check your connection and try again.',
+          title: 'Couldn\'t load your photos',
+          message: 'Check your connection and give it another go!',
           onRetry: () => ref.invalidate(allLogsProvider(tankId)),
         ),
         data: (logs) {
@@ -69,7 +69,7 @@ class PhotoGalleryScreen extends ConsumerWidget {
 
           // Build list of slivers for each month group
           final months = grouped.keys.toList();
-          
+
           return CustomScrollView(
             slivers: [
               // Top padding
@@ -77,12 +77,14 @@ class PhotoGalleryScreen extends ConsumerWidget {
                 padding: EdgeInsets.only(top: 16),
                 sliver: SliverToBoxAdapter(child: SizedBox.shrink()),
               ),
-              
+
               // For each month, add header + grid
               for (int i = 0; i < months.length; i++) ...[
                 // Month header
                 SliverPadding(
-                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.md,
+                  ),
                   sliver: SliverToBoxAdapter(
                     child: Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8),
@@ -99,16 +101,19 @@ class PhotoGalleryScreen extends ConsumerWidget {
                     ),
                   ),
                 ),
-                
+
                 // Photo grid (lazy loaded via SliverGrid.builder)
                 SliverPadding(
-                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.md,
+                  ),
                   sliver: SliverGrid.builder(
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 3,
-                      crossAxisSpacing: 4,
-                      mainAxisSpacing: 4,
-                    ),
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 3,
+                          crossAxisSpacing: 4,
+                          mainAxisSpacing: 4,
+                        ),
                     itemCount: grouped[months[i]]!.length,
                     itemBuilder: (ctx, j) {
                       final monthPhotos = grouped[months[i]]!;
@@ -119,14 +124,14 @@ class PhotoGalleryScreen extends ConsumerWidget {
                     },
                   ),
                 ),
-                
+
                 // Spacing after each month
                 const SliverPadding(
                   padding: EdgeInsets.only(bottom: AppSpacing.md),
                   sliver: SliverToBoxAdapter(child: SizedBox.shrink()),
                 ),
               ],
-              
+
               // Bottom padding
               const SliverPadding(
                 padding: EdgeInsets.only(bottom: 16),
@@ -144,7 +149,10 @@ class PhotoGalleryScreen extends ConsumerWidget {
     List<_PhotoEntry> photos,
     int initialIndex,
   ) {
-    NavigationThrottle.push(context, _PhotoViewerScreen(photos: photos, initialIndex: initialIndex));
+    NavigationThrottle.push(
+      context,
+      _PhotoViewerScreen(photos: photos, initialIndex: initialIndex),
+    );
   }
 }
 
@@ -163,7 +171,7 @@ class _EmptyGallery extends StatelessWidget {
               color: context.textHint,
             ),
             const SizedBox(height: AppSpacing.md),
-            Text('No Photos Yet', style: AppTypography.headlineSmall),
+            Text('No photos yet 📸', style: AppTypography.headlineSmall),
             const SizedBox(height: AppSpacing.sm),
             Text(
               'Photos attached to log entries will appear here. Document your tank\'s journey!',

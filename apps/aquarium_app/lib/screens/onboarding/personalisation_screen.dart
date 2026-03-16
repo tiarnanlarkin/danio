@@ -69,7 +69,9 @@ class _PersonalisationScreenState extends ConsumerState<PersonalisationScreen> {
       final existingProfile = ref.read(userProfileProvider).value;
 
       if (existingProfile == null) {
-        await ref.read(userProfileProvider.notifier).createProfile(
+        await ref
+            .read(userProfileProvider.notifier)
+            .createProfile(
               name: _nameController.text.isEmpty
                   ? null
                   : _nameController.text.trim(),
@@ -79,7 +81,9 @@ class _PersonalisationScreenState extends ConsumerState<PersonalisationScreen> {
             );
       } else {
         // Profile exists (force-quit recovery) — update with new values
-        await ref.read(userProfileProvider.notifier).updateProfile(
+        await ref
+            .read(userProfileProvider.notifier)
+            .updateProfile(
               experienceLevel: _selectedExperience,
               goals: [goal],
               name: _nameController.text.isEmpty
@@ -105,7 +109,7 @@ class _PersonalisationScreenState extends ConsumerState<PersonalisationScreen> {
       if (!mounted) return;
       setState(() {
         _isSubmitting = false;
-        _errorMessage = 'Something went wrong. Please try again.';
+        _errorMessage = 'Oops! We hit a snag. Give it another try.';
       });
     }
   }
@@ -141,10 +145,7 @@ class _PersonalisationScreenState extends ConsumerState<PersonalisationScreen> {
                 decoration: const BoxDecoration(
                   shape: BoxShape.circle,
                   gradient: RadialGradient(
-                    colors: [
-                      AppColors.whiteAlpha15,
-                      Colors.transparent,
-                    ],
+                    colors: [AppColors.whiteAlpha15, Colors.transparent],
                   ),
                 ),
               ),
@@ -243,45 +244,45 @@ class _PersonalisationScreenState extends ConsumerState<PersonalisationScreen> {
                             label: 'Your name, optional',
                             textField: true,
                             child: TextField(
-                            controller: _nameController,
-                            style: AppTypography.bodyLarge.copyWith(
-                              color: Colors.white,
+                              controller: _nameController,
+                              style: AppTypography.bodyLarge.copyWith(
+                                color: Colors.white,
+                              ),
+                              decoration: InputDecoration(
+                                hintText: 'e.g. Tiarnan',
+                                hintStyle: AppTypography.bodyLarge.copyWith(
+                                  color: AppColors.whiteAlpha40,
+                                ),
+                                filled: true,
+                                fillColor: AppColors.whiteAlpha10,
+                                border: OutlineInputBorder(
+                                  borderRadius: AppRadius.mediumRadius,
+                                  borderSide: const BorderSide(
+                                    color: AppColors.whiteAlpha25,
+                                  ),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: AppRadius.mediumRadius,
+                                  borderSide: const BorderSide(
+                                    color: AppColors.whiteAlpha25,
+                                  ),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: AppRadius.mediumRadius,
+                                  borderSide: const BorderSide(
+                                    color: AppColors.primaryLight,
+                                    width: 2,
+                                  ),
+                                ),
+                                contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: AppSpacing.md,
+                                  vertical: AppSpacing.md,
+                                ),
+                              ),
+                              textCapitalization: TextCapitalization.words,
+                              textInputAction: TextInputAction.done,
+                              onChanged: (_) => setState(() {}),
                             ),
-                            decoration: InputDecoration(
-                              hintText: 'e.g. Tiarnan',
-                              hintStyle: AppTypography.bodyLarge.copyWith(
-                                color: AppColors.whiteAlpha40,
-                              ),
-                              filled: true,
-                              fillColor: AppColors.whiteAlpha10,
-                              border: OutlineInputBorder(
-                                borderRadius: AppRadius.mediumRadius,
-                                borderSide: const BorderSide(
-                                  color: AppColors.whiteAlpha25,
-                                ),
-                              ),
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius: AppRadius.mediumRadius,
-                                borderSide: const BorderSide(
-                                  color: AppColors.whiteAlpha25,
-                                ),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderRadius: AppRadius.mediumRadius,
-                                borderSide: const BorderSide(
-                                  color: AppColors.primaryLight,
-                                  width: 2,
-                                ),
-                              ),
-                              contentPadding: const EdgeInsets.symmetric(
-                                horizontal: AppSpacing.md,
-                                vertical: AppSpacing.md,
-                              ),
-                            ),
-                            textCapitalization: TextCapitalization.words,
-                            textInputAction: TextInputAction.done,
-                            onChanged: (_) => setState(() {}),
-                          ),
                           ),
 
                           const SizedBox(height: AppSpacing.xl),
@@ -325,9 +326,7 @@ class _PersonalisationScreenState extends ConsumerState<PersonalisationScreen> {
         header: true,
         child: Text(
           text,
-          style: AppTypography.titleMedium.copyWith(
-            color: Colors.white,
-          ),
+          style: AppTypography.titleMedium.copyWith(color: Colors.white),
         ),
       ),
     );
@@ -411,8 +410,7 @@ class _PersonalisationScreenState extends ConsumerState<PersonalisationScreen> {
                   label,
                   style: AppTypography.bodyLarge.copyWith(
                     color: Colors.white,
-                    fontWeight:
-                        isSelected ? FontWeight.w700 : FontWeight.w400,
+                    fontWeight: isSelected ? FontWeight.w700 : FontWeight.w400,
                   ),
                 ),
               ),
@@ -438,7 +436,9 @@ class _PersonalisationScreenState extends ConsumerState<PersonalisationScreen> {
       button: true,
       enabled: _canSubmit,
       label: _isSubmitting ? 'Setting up your profile' : "Let's get started",
-      hint: _canSubmit ? 'Continue to your personalised journey' : 'Select experience level and tank status first',
+      hint: _canSubmit
+          ? 'Continue to your personalised journey'
+          : 'Select experience level and tank status first',
       child: SizedBox(
         width: double.infinity,
         child: AnimatedOpacity(
@@ -491,9 +491,10 @@ class _PrimaryButtonState extends State<_PrimaryButton>
       duration: AppDurations.short,
       vsync: this,
     );
-    _scaleAnimation = Tween<double>(begin: 1.0, end: 0.95).animate(
-      CurvedAnimation(parent: _controller, curve: AppCurves.standard),
-    );
+    _scaleAnimation = Tween<double>(
+      begin: 1.0,
+      end: 0.95,
+    ).animate(CurvedAnimation(parent: _controller, curve: AppCurves.standard));
   }
 
   @override
@@ -512,8 +513,7 @@ class _PrimaryButtonState extends State<_PrimaryButton>
               widget.onTap!();
             }
           : null,
-      onTapCancel:
-          widget.onTap != null ? () => _controller.reverse() : null,
+      onTapCancel: widget.onTap != null ? () => _controller.reverse() : null,
       child: AnimatedBuilder(
         animation: _scaleAnimation,
         builder: (context, child) {

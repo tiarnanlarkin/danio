@@ -32,51 +32,51 @@ class JournalScreen extends ConsumerWidget {
         duration: const Duration(milliseconds: 300),
         switchInCurve: Curves.easeOutCubic,
         child: logsAsync.when(
-        loading: () => const Center(child: BubbleLoader()),
-        error: (e, _) => AppErrorState(
-          title: 'Couldn\'t load your journal',
-          message: 'Please check your connection and try again.',
-          onRetry: () => ref.invalidate(allLogsProvider(tankId)),
+          loading: () => const Center(child: BubbleLoader()),
+          error: (e, _) => AppErrorState(
+            title: 'Couldn\'t load your journal',
+            message: 'Please check your connection and try again.',
+            onRetry: () => ref.invalidate(allLogsProvider(tankId)),
+          ),
+          data: (logs) {
+            // Get observation logs as journal entries
+            final journalEntries =
+                logs.where((l) => l.type == LogType.observation).toList()
+                  ..sort((a, b) => b.timestamp.compareTo(a.timestamp));
+
+            if (journalEntries.isEmpty) {
+              return _EmptyJournal(onAdd: () => _addJournalEntry(context, ref));
+            }
+
+            // Group by month
+            final grouped = <String, List<LogEntry>>{};
+            for (final entry in journalEntries) {
+              final month = DateFormat('MMMM yyyy').format(entry.timestamp);
+              grouped.putIfAbsent(month, () => []).add(entry);
+            }
+
+            return ListView.builder(
+              padding: const EdgeInsets.all(AppSpacing.md),
+              itemCount: grouped.length,
+              itemBuilder: (ctx, i) {
+                final month = grouped.keys.elementAt(i);
+                final entries = grouped[month]!;
+
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      child: Text(month, style: AppTypography.headlineSmall),
+                    ),
+                    ...entries.map((e) => _JournalEntryCard(entry: e)),
+                    const SizedBox(height: AppSpacing.md),
+                  ],
+                );
+              },
+            );
+          },
         ),
-        data: (logs) {
-          // Get observation logs as journal entries
-          final journalEntries =
-              logs.where((l) => l.type == LogType.observation).toList()
-                ..sort((a, b) => b.timestamp.compareTo(a.timestamp));
-
-          if (journalEntries.isEmpty) {
-            return _EmptyJournal(onAdd: () => _addJournalEntry(context, ref));
-          }
-
-          // Group by month
-          final grouped = <String, List<LogEntry>>{};
-          for (final entry in journalEntries) {
-            final month = DateFormat('MMMM yyyy').format(entry.timestamp);
-            grouped.putIfAbsent(month, () => []).add(entry);
-          }
-
-          return ListView.builder(
-            padding: const EdgeInsets.all(AppSpacing.md),
-            itemCount: grouped.length,
-            itemBuilder: (ctx, i) {
-              final month = grouped.keys.elementAt(i);
-              final entries = grouped[month]!;
-
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8),
-                    child: Text(month, style: AppTypography.headlineSmall),
-                  ),
-                  ...entries.map((e) => _JournalEntryCard(entry: e)),
-                  const SizedBox(height: AppSpacing.md),
-                ],
-              );
-            },
-          );
-        },
-      ),
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => _addJournalEntry(context, ref),
@@ -128,12 +128,16 @@ class _EmptyJournal extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.book_outlined, size: AppIconSizes.xxl, color: context.textHint),
+            Icon(
+              Icons.book_outlined,
+              size: AppIconSizes.xxl,
+              color: context.textHint,
+            ),
             const SizedBox(height: AppSpacing.md),
             Text('Your story starts here!', style: AppTypography.headlineSmall),
             const SizedBox(height: AppSpacing.sm),
             Text(
-              'Every great tank has a story. Start writing yours -- observations, milestones, and little victories.',
+              'Every great tank has a story. Start writing yours — observations, milestones, and little victories.',
               style: AppTypography.bodyMedium,
               textAlign: TextAlign.center,
             ),
@@ -201,7 +205,11 @@ class _JournalEntryCard extends StatelessWidget {
               const SizedBox(height: AppSpacing.sm2),
               Row(
                 children: [
-                  Icon(Icons.image, size: AppIconSizes.xs, color: context.textSecondary),
+                  Icon(
+                    Icons.image,
+                    size: AppIconSizes.xs,
+                    color: context.textSecondary,
+                  ),
                   const SizedBox(width: AppSpacing.xs),
                   Text(
                     '${entry.photoUrls!.length} photo(s) attached',

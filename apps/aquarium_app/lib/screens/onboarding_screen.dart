@@ -21,7 +21,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen>
     with SingleTickerProviderStateMixin {
   final PageController _pageController = PageController();
   int _currentPage = 0;
-  
+
   late AnimationController _contentController;
   late Animation<double> _contentFade;
   late Animation<Offset> _contentSlide;
@@ -46,28 +46,37 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen>
       title: 'Watch Your Tanks Thrive',
       description:
           'Smart tasks keep your tanks healthy. Complete tasks, view history, and watch your parameters over time.',
-      gradientColors: [DanioColors.tealWater, DanioColors.tealWater.withValues(alpha: 0.7)],
+      gradientColors: [
+        DanioColors.tealWater,
+        DanioColors.tealWater.withValues(alpha: 0.7),
+      ],
     ),
   ];
 
   @override
   void initState() {
     super.initState();
-    
+
     _contentController = AnimationController(
       duration: const Duration(milliseconds: 600),
       vsync: this,
     );
-    
+
     _contentFade = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _contentController, curve: AppCurves.standardDecelerate),
+      CurvedAnimation(
+        parent: _contentController,
+        curve: AppCurves.standardDecelerate,
+      ),
     );
-    
-    _contentSlide = Tween<Offset>(
-      begin: const Offset(0, 0.1),
-      end: Offset.zero,
-    ).animate(CurvedAnimation(parent: _contentController, curve: AppCurves.standardDecelerate));
-    
+
+    _contentSlide = Tween<Offset>(begin: const Offset(0, 0.1), end: Offset.zero)
+        .animate(
+          CurvedAnimation(
+            parent: _contentController,
+            curve: AppCurves.standardDecelerate,
+          ),
+        );
+
     _contentController.forward();
 
     // Fix: If a profile already exists (force-quit recovery), skip intro slides
@@ -100,7 +109,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen>
   @override
   Widget build(BuildContext context) {
     final page = _pages[_currentPage];
-    
+
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.light,
       child: Scaffold(
@@ -121,7 +130,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen>
                 ),
               ),
             ),
-            
+
             // Static decorative orbs (no animation to prevent ANR)
             Positioned(
               top: -100,
@@ -132,10 +141,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen>
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   gradient: RadialGradient(
-                    colors: [
-                      AppColors.whiteAlpha15,
-                      Colors.transparent,
-                    ],
+                    colors: [AppColors.whiteAlpha15, Colors.transparent],
                   ),
                 ),
               ),
@@ -149,15 +155,12 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen>
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   gradient: RadialGradient(
-                    colors: [
-                      AppColors.whiteAlpha10,
-                      Colors.transparent,
-                    ],
+                    colors: [AppColors.whiteAlpha10, Colors.transparent],
                   ),
                 ),
               ),
             ),
-            
+
             // Main content
             SafeArea(
               child: Column(
@@ -172,15 +175,22 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen>
                         Semantics(
                           button: true,
                           label: 'Quick Start',
-                          hint: 'Skip personalisation and start with default beginner profile',
+                          hint:
+                              'Skip personalisation and start with default beginner profile',
                           child: TextButton.icon(
                             onPressed: () => _quickStart(context, ref),
                             style: TextButton.styleFrom(
                               foregroundColor: Colors.white,
                               backgroundColor: AppColors.whiteAlpha15,
-                              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                                vertical: 8,
+                              ),
                             ),
-                            icon: const Icon(Icons.flash_on, size: AppIconSizes.sm),
+                            icon: const Icon(
+                              Icons.flash_on,
+                              size: AppIconSizes.sm,
+                            ),
                             label: const Text('Quick Start'),
                           ),
                         ),
@@ -200,7 +210,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen>
                       ],
                     ),
                   ),
-                  
+
                   // Page content
                   Expanded(
                     child: PageView.builder(
@@ -212,7 +222,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen>
                       },
                     ),
                   ),
-                  
+
                   // Bottom section with dots and button
                   _buildBottomSection(),
                 ],
@@ -254,18 +264,14 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen>
                           width: 1.5,
                         ),
                       ),
-                      child: Icon(
-                        page.icon,
-                        size: 80,
-                        color: Colors.white,
-                      ),
+                      child: Icon(page.icon, size: 80, color: Colors.white),
                     ),
                   ),
                 ),
               ),
-              
+
               const SizedBox(height: AppSpacing.xxl),
-              
+
               // Title
               Semantics(
                 header: true,
@@ -279,9 +285,9 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen>
                   textAlign: TextAlign.center,
                 ),
               ),
-              
+
               const SizedBox(height: AppSpacing.md),
-              
+
               // Description
               Text(
                 page.description,
@@ -347,9 +353,9 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen>
               ),
             ),
           ),
-          
+
           const SizedBox(height: AppSpacing.xl),
-          
+
           // Navigation buttons
           Row(
             children: [
@@ -380,15 +386,17 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen>
                 )
               else
                 const Spacer(),
-              
+
               const SizedBox(width: AppSpacing.md),
-              
+
               // Next / Get Started
               Expanded(
                 flex: 2,
                 child: Semantics(
                   button: true,
-                  label: _currentPage == _pages.length - 1 ? 'Get Started' : 'Continue',
+                  label: _currentPage == _pages.length - 1
+                      ? 'Get Started'
+                      : 'Continue',
                   hint: _currentPage == _pages.length - 1
                       ? 'Begin setting up your profile'
                       : 'Go to the next step',
@@ -403,7 +411,9 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen>
                             );
                           },
                     child: Text(
-                      _currentPage == _pages.length - 1 ? 'Get Started' : 'Continue',
+                      _currentPage == _pages.length - 1
+                          ? 'Get Started'
+                          : 'Continue',
                       style: Theme.of(context).textTheme.titleMedium!.copyWith(
                         color: Colors.white,
                         fontWeight: FontWeight.w700,
@@ -424,9 +434,9 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen>
     if (mounted) {
       // Push PersonalisationScreen — it will call completeOnboarding() via
       // JourneyRevealScreen._letsGo() at the end of the new flow.
-      Navigator.of(context).push(
-        MaterialPageRoute(builder: (_) => const PersonalisationScreen()),
-      );
+      Navigator.of(
+        context,
+      ).push(MaterialPageRoute(builder: (_) => const PersonalisationScreen()));
     }
   }
 
@@ -435,11 +445,13 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen>
   Future<void> _quickStart(BuildContext context, WidgetRef ref) async {
     try {
       HapticFeedback.mediumImpact();
-      await ref.read(userProfileProvider.notifier).createProfile(
-        experienceLevel: ExperienceLevel.beginner,
-        primaryTankType: TankType.freshwater,
-        goals: [UserGoal.keepFishAlive],
-      );
+      await ref
+          .read(userProfileProvider.notifier)
+          .createProfile(
+            experienceLevel: ExperienceLevel.beginner,
+            primaryTankType: TankType.freshwater,
+            goals: [UserGoal.keepFishAlive],
+          );
       final service = await OnboardingService.getInstance();
       await service.completeOnboarding();
       ref.invalidate(onboardingCompletedProvider);
@@ -450,7 +462,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen>
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text("Couldn't get started. Please try again."),
+            content: Text("Couldn't get started. Give it another go!"),
           ),
         );
       }
@@ -494,9 +506,7 @@ class _GlassButton extends StatelessWidget {
               decoration: BoxDecoration(
                 color: AppColors.whiteAlpha15,
                 borderRadius: AppRadius.mediumRadius,
-                border: Border.all(
-                  color: AppColors.whiteAlpha25,
-                ),
+                border: Border.all(color: AppColors.whiteAlpha25),
               ),
               child: Center(child: child),
             ),
@@ -517,7 +527,7 @@ class _PrimaryButton extends StatefulWidget {
   State<_PrimaryButton> createState() => _PrimaryButtonState();
 }
 
-class _PrimaryButtonState extends State<_PrimaryButton> 
+class _PrimaryButtonState extends State<_PrimaryButton>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _scaleAnimation;
@@ -529,9 +539,10 @@ class _PrimaryButtonState extends State<_PrimaryButton>
       duration: AppDurations.short,
       vsync: this,
     );
-    _scaleAnimation = Tween<double>(begin: 1.0, end: 0.95).animate(
-      CurvedAnimation(parent: _controller, curve: AppCurves.standard),
-    );
+    _scaleAnimation = Tween<double>(
+      begin: 1.0,
+      end: 0.95,
+    ).animate(CurvedAnimation(parent: _controller, curve: AppCurves.standard));
   }
 
   @override

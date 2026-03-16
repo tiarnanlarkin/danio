@@ -59,137 +59,76 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
 
   List<Widget> _buildItems(AsyncValue<List<dynamic>> tanksAsync) {
     return [
-          AppCard(
-            backgroundColor: AppOverlays.info10,
-            padding: AppCardPadding.standard,
-            child: Row(
-              children: [
-                Icon(Icons.backup, size: AppIconSizes.lg, color: context.textSecondary),
-                const SizedBox(width: AppSpacing.sm2),
-                Expanded(
-                  child: Text(
-                    'Export your tank data and photos as a ZIP file to back up or transfer to another device.',
-                    style: AppTypography.bodyMedium,
-                  ),
-                ),
-              ],
+      AppCard(
+        backgroundColor: AppOverlays.info10,
+        padding: AppCardPadding.standard,
+        child: Row(
+          children: [
+            Icon(
+              Icons.backup,
+              size: AppIconSizes.lg,
+              color: context.textSecondary,
             ),
-          ),
-
-          const SizedBox(height: AppSpacing.lg),
-
-          Text('Export Data', style: AppTypography.headlineSmall),
-          const SizedBox(height: AppSpacing.sm2),
-
-          tanksAsync.when(
-            loading: () => const Center(child: BubbleLoader()),
-            error: (e, _) => AppErrorState(
-              message: "Couldn't load your tanks. Tap to try again.",
-              onRetry: () => ref.invalidate(tanksProvider),
-            ),
-            data: (tanks) => Card(
-              child: Padding(
-                padding: const EdgeInsets.all(AppSpacing.md),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Icon(Icons.inventory_2, color: AppColors.primary),
-                        const SizedBox(width: AppSpacing.sm),
-                        Text(
-                          '${tanks.length} tank${tanks.length == 1 ? '' : 's'} to export',
-                          style: AppTypography.labelLarge,
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: AppSpacing.sm),
-                    ...tanks
-                        .take(5)
-                        .map(
-                          (t) => Padding(
-                            padding: const EdgeInsets.only(left: 32, top: 4),
-                            child: Text(
-                              '• ${t.name}',
-                              style: AppTypography.bodySmall,
-                            ),
-                          ),
-                        ),
-                    if (tanks.length > 5)
-                      Padding(
-                        padding: const EdgeInsets.only(left: 32, top: 4),
-                        child: Text(
-                          '... and ${tanks.length - 5} more',
-                          style: AppTypography.bodySmall,
-                        ),
-                      ),
-
-                    if (_isExporting) ...[
-                      const SizedBox(height: AppSpacing.md),
-                      LinearProgressIndicator(value: _progressValue),
-                      const SizedBox(height: AppSpacing.sm),
-                      Text(
-                        _progressStatus,
-                        style: AppTypography.bodySmall.copyWith(
-                          color: context.textSecondary,
-                        ),
-                      ),
-                    ],
-
-                    const SizedBox(height: AppSpacing.md),
-                    SizedBox(
-                      width: double.infinity,
-                      child: FilledButton.icon(
-                        onPressed: (_isExporting || tanks.isEmpty)
-                            ? null
-                            : () => _exportData(tanks),
-                        icon: _isExporting
-                            ? const SizedBox(
-                                width: 16,
-                                height: 16,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                ),
-                              )
-                            : const Icon(Icons.file_download),
-                        label: Text(
-                          _isExporting ? 'Exporting...' : 'Export Backup (ZIP)',
-                        ),
-                      ),
-                    ),
-                    if (_lastBackup != null) ...[
-                      const SizedBox(height: AppSpacing.sm),
-                      Center(
-                        child: Text(
-                          '✓ Last backup: $_lastBackup',
-                          style: AppTypography.bodySmall.copyWith(
-                            color: AppColors.success,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ],
-                ),
+            const SizedBox(width: AppSpacing.sm2),
+            Expanded(
+              child: Text(
+                'Export your tank data and photos as a ZIP file to back up or transfer to another device.',
+                style: AppTypography.bodyMedium,
               ),
             ),
-          ),
+          ],
+        ),
+      ),
 
-          const SizedBox(height: AppSpacing.lg),
+      const SizedBox(height: AppSpacing.lg),
 
-          Text('Import Data', style: AppTypography.headlineSmall),
-          const SizedBox(height: AppSpacing.sm2),
+      Text('Export Data', style: AppTypography.headlineSmall),
+      const SizedBox(height: AppSpacing.sm2),
 
-          AppCard(
-            padding: AppCardPadding.standard,
+      tanksAsync.when(
+        loading: () => const Center(child: BubbleLoader()),
+        error: (e, _) => AppErrorState(
+          message: "Couldn't load your tanks. Tap to try again.",
+          onRetry: () => ref.invalidate(tanksProvider),
+        ),
+        data: (tanks) => Card(
+          child: Padding(
+            padding: const EdgeInsets.all(AppSpacing.md),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  'Restore a backup by selecting a ZIP file exported from this app.',
-                  style: AppTypography.bodyMedium,
+                Row(
+                  children: [
+                    Icon(Icons.inventory_2, color: AppColors.primary),
+                    const SizedBox(width: AppSpacing.sm),
+                    Text(
+                      '${tanks.length} tank${tanks.length == 1 ? '' : 's'} to export',
+                      style: AppTypography.labelLarge,
+                    ),
+                  ],
                 ),
+                const SizedBox(height: AppSpacing.sm),
+                ...tanks
+                    .take(5)
+                    .map(
+                      (t) => Padding(
+                        padding: const EdgeInsets.only(left: 32, top: 4),
+                        child: Text(
+                          '• ${t.name}',
+                          style: AppTypography.bodySmall,
+                        ),
+                      ),
+                    ),
+                if (tanks.length > 5)
+                  Padding(
+                    padding: const EdgeInsets.only(left: 32, top: 4),
+                    child: Text(
+                      '... and ${tanks.length - 5} more',
+                      style: AppTypography.bodySmall,
+                    ),
+                  ),
 
-                if (_isImporting) ...[
+                if (_isExporting) ...[
                   const SizedBox(height: AppSpacing.md),
                   LinearProgressIndicator(value: _progressValue),
                   const SizedBox(height: AppSpacing.sm),
@@ -201,105 +140,168 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
                   ),
                 ],
 
-                const SizedBox(height: AppSpacing.sm2),
+                const SizedBox(height: AppSpacing.md),
                 SizedBox(
                   width: double.infinity,
                   child: FilledButton.icon(
-                    onPressed: _isImporting ? null : _importData,
-                    icon: _isImporting
+                    onPressed: (_isExporting || tanks.isEmpty)
+                        ? null
+                        : () => _exportData(tanks),
+                    icon: _isExporting
                         ? const SizedBox(
                             width: 16,
                             height: 16,
                             child: CircularProgressIndicator(strokeWidth: 2),
                           )
-                        : const Icon(Icons.file_upload),
+                        : const Icon(Icons.file_download),
                     label: Text(
-                      _isImporting ? 'Importing...' : 'Select Backup File',
+                      _isExporting ? 'Exporting...' : 'Export Backup (ZIP)',
                     ),
                   ),
                 ),
-              ],
-            ),
-          ),
-
-          const SizedBox(height: AppSpacing.lg),
-
-          Text('What Gets Exported', style: AppTypography.headlineSmall),
-          const SizedBox(height: AppSpacing.sm2),
-
-          AppCard(
-            padding: AppCardPadding.standard,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _ExportItem(
-                  icon: Icons.water,
-                  text: 'All tanks and settings',
-                  included: true,
-                ),
-                _ExportItem(
-                  icon: Icons.set_meal,
-                  text: 'Livestock inventories',
-                  included: true,
-                ),
-                _ExportItem(
-                  icon: Icons.science,
-                  text: 'Water test logs',
-                  included: true,
-                ),
-                _ExportItem(
-                  icon: Icons.eco,
-                  text: 'Plant inventories',
-                  included: true,
-                ),
-                _ExportItem(
-                  icon: Icons.book,
-                  text: 'Journal entries',
-                  included: true,
-                ),
-                const Divider(),
-                _ExportItem(
-                  icon: Icons.photo,
-                  text: 'All photos (bundled in ZIP)',
-                  included: true,
-                ),
-                _ExportItem(
-                  icon: Icons.settings,
-                  text: 'App preferences',
-                  included: false,
-                ),
-              ],
-            ),
-          ),
-
-          const SizedBox(height: AppSpacing.lg),
-
-          AppCard(
-            backgroundColor: AppOverlays.warning10,
-            padding: AppCardPadding.standard,
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Icon(Icons.warning, color: AppColors.warning),
-                const SizedBox(width: AppSpacing.sm2),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('Import Warning', style: AppTypography.labelLarge),
-                      const SizedBox(height: AppSpacing.xs),
-                      Text(
-                        'Importing data will ADD to your existing tanks - it won\'t overwrite or delete anything.',
-                        style: AppTypography.bodySmall,
+                if (_lastBackup != null) ...[
+                  const SizedBox(height: AppSpacing.sm),
+                  Center(
+                    child: Text(
+                      '✓ Last backup: $_lastBackup',
+                      style: AppTypography.bodySmall.copyWith(
+                        color: AppColors.success,
                       ),
-                    ],
+                    ),
                   ),
-                ),
+                ],
               ],
             ),
           ),
+        ),
+      ),
 
-          const SizedBox(height: AppSpacing.xxl),
+      const SizedBox(height: AppSpacing.lg),
+
+      Text('Import Data', style: AppTypography.headlineSmall),
+      const SizedBox(height: AppSpacing.sm2),
+
+      AppCard(
+        padding: AppCardPadding.standard,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Restore a backup by selecting a ZIP file exported from this app.',
+              style: AppTypography.bodyMedium,
+            ),
+
+            if (_isImporting) ...[
+              const SizedBox(height: AppSpacing.md),
+              LinearProgressIndicator(value: _progressValue),
+              const SizedBox(height: AppSpacing.sm),
+              Text(
+                _progressStatus,
+                style: AppTypography.bodySmall.copyWith(
+                  color: context.textSecondary,
+                ),
+              ),
+            ],
+
+            const SizedBox(height: AppSpacing.sm2),
+            SizedBox(
+              width: double.infinity,
+              child: FilledButton.icon(
+                onPressed: _isImporting ? null : _importData,
+                icon: _isImporting
+                    ? const SizedBox(
+                        width: 16,
+                        height: 16,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : const Icon(Icons.file_upload),
+                label: Text(
+                  _isImporting ? 'Importing...' : 'Select Backup File',
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+
+      const SizedBox(height: AppSpacing.lg),
+
+      Text('What Gets Exported', style: AppTypography.headlineSmall),
+      const SizedBox(height: AppSpacing.sm2),
+
+      AppCard(
+        padding: AppCardPadding.standard,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _ExportItem(
+              icon: Icons.water,
+              text: 'All tanks and settings',
+              included: true,
+            ),
+            _ExportItem(
+              icon: Icons.set_meal,
+              text: 'Livestock inventories',
+              included: true,
+            ),
+            _ExportItem(
+              icon: Icons.science,
+              text: 'Water test logs',
+              included: true,
+            ),
+            _ExportItem(
+              icon: Icons.eco,
+              text: 'Plant inventories',
+              included: true,
+            ),
+            _ExportItem(
+              icon: Icons.book,
+              text: 'Journal entries',
+              included: true,
+            ),
+            const Divider(),
+            _ExportItem(
+              icon: Icons.photo,
+              text: 'All photos (bundled in ZIP)',
+              included: true,
+            ),
+            _ExportItem(
+              icon: Icons.settings,
+              text: 'App preferences',
+              included: false,
+            ),
+          ],
+        ),
+      ),
+
+      const SizedBox(height: AppSpacing.lg),
+
+      AppCard(
+        backgroundColor: AppOverlays.warning10,
+        padding: AppCardPadding.standard,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Icon(Icons.warning, color: AppColors.warning),
+            const SizedBox(width: AppSpacing.sm2),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('Import Warning', style: AppTypography.labelLarge),
+                  const SizedBox(height: AppSpacing.xs),
+                  Text(
+                    'Importing data will ADD to your existing tanks - it won\'t overwrite or delete anything.',
+                    style: AppTypography.bodySmall,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+
+      const SizedBox(height: AppSpacing.xxl),
     ];
   }
 
@@ -395,7 +397,10 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
       }
     } catch (e) {
       if (mounted) {
-        AppFeedback.showError(context, 'Export failed. Please try again.');
+        AppFeedback.showError(
+          context,
+          'Export didn\'t work. Give it another go!',
+        );
       }
     } finally {
       if (mounted) {
@@ -494,12 +499,18 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
             'Imported $imported tank${imported == 1 ? '' : 's'} with all data successfully!',
           );
         } else {
-          AppFeedback.showWarning(context, 'No tanks found in this backup file.');
+          AppFeedback.showWarning(
+            context,
+            'No tanks found in this backup file.',
+          );
         }
       }
     } catch (e) {
       if (mounted) {
-        AppFeedback.showError(context, 'Import failed. The file may be invalid or corrupted.');
+        AppFeedback.showError(
+          context,
+          'Import failed. The file may be invalid or corrupted.',
+        );
       }
     } finally {
       if (mounted) {

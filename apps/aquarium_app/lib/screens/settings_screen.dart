@@ -88,452 +88,507 @@ class SettingsScreen extends ConsumerWidget {
   /// Returns lazy widget builders — each item only instantiated when visible.
   List<WidgetBuilder> _buildSections(BuildContext context, WidgetRef ref) {
     return [
-          // Account & Cloud Sync
-          (_) => const _SectionHeader(title: 'Account'),
-          (_) => NavListTile(
-            icon: Icons.account_circle,
-            title: 'Account & Sync',
-            subtitle: 'Sign in, backup, multi-device sync',
-            onTap: () => NavigationThrottle.push(context, const AccountScreen()),
+      // Account & Cloud Sync
+      (_) => const _SectionHeader(title: 'Account'),
+      (_) => NavListTile(
+        icon: Icons.account_circle,
+        title: 'Account & Sync',
+        subtitle: 'Sign in, backup, multi-device sync',
+        onTap: () => NavigationThrottle.push(context, const AccountScreen()),
+      ),
+
+      // Learning System (Duolingo-style)
+      (_) => const _SectionHeader(title: 'Learn'),
+      // _LearnCard is a ConsumerWidget — watches its own providers,
+      // so learningStatsProvider/userProfileProvider changes only rebuild the card.
+      (_) => const _LearnCard(),
+
+      // Daily Goal Settings
+      (_) => NavListTile(
+        icon: Icons.flag,
+        title: 'Daily Goal',
+        subtitle: 'Set your daily XP target',
+        onTap: () => _showDailyGoalPicker(context, ref),
+      ),
+
+      // House Navigation (Rooms)
+      (_) => const _SectionHeader(title: 'Explore'),
+      (_) => const RoomNavigation(),
+
+      // Appearance
+      (_) => const _SectionHeader(title: 'Appearance'),
+      (_) => const _ThemeModeTile(),
+      (_) => NavListTile(
+        icon: Icons.color_lens_outlined,
+        title: 'Room Themes',
+        subtitle: 'Customize your living room style',
+        onTap: () =>
+            NavigationThrottle.push(context, const ThemeGalleryScreen()),
+      ),
+      (_) => NavListTile(
+        icon: Icons.tune,
+        title: 'Difficulty Settings',
+        subtitle: 'Adjust app complexity level',
+        onTap: () => NavigationThrottle.push(
+          context,
+          const _DifficultySettingsWrapper(),
+        ),
+      ),
+      (_) => const _AmbientLightingToggle(),
+
+      (_) => const Divider(),
+
+      // Accessibility
+      (_) => const _SectionHeader(title: 'Accessibility'),
+      (_) => const _ReducedMotionToggle(),
+      (_) => const _HapticFeedbackToggle(),
+
+      (_) => const Divider(),
+
+      // Notifications
+      (_) => const _SectionHeader(title: 'Notifications'),
+      (_) => NavListTile(
+        icon: Icons.notifications_active,
+        title: 'Streak Reminders',
+        subtitle: 'Daily notifications to maintain your streak',
+        onTap: () => NavigationThrottle.push(
+          context,
+          const NotificationSettingsScreen(),
+        ),
+      ),
+      (_) => const _NotificationsToggle(),
+
+      (_) => const Divider(),
+
+      // Tools
+      (_) => const _SectionHeader(title: 'Tools'),
+      (_) => NavListTile(
+        icon: Icons.notifications_active,
+        title: 'Reminders',
+        subtitle: 'Schedule maintenance tasks',
+        onTap: () => NavigationThrottle.push(context, const RemindersScreen()),
+      ),
+      (_) => NavListTile(
+        icon: Icons.favorite,
+        title: 'Fish Wishlist',
+        subtitle: 'Track fish you want to keep',
+        onTap: () => NavigationThrottle.push(
+          context,
+          const WishlistScreen(category: WishlistCategory.fish),
+        ),
+      ),
+      (_) => NavListTile(
+        icon: Icons.compare,
+        title: 'Compare Tanks',
+        subtitle: 'Side-by-side tank comparison',
+        onTap: () =>
+            NavigationThrottle.push(context, const TankComparisonScreen()),
+      ),
+      (_) => NavListTile(
+        icon: Icons.calculate_outlined,
+        title: 'Water Change Calculator',
+        subtitle: 'Calculate how much water to change',
+        onTap: () => NavigationThrottle.push(
+          context,
+          const WaterChangeCalculatorScreen(),
+        ),
+      ),
+      (_) => NavListTile(
+        icon: Icons.bubble_chart,
+        title: 'CO2 Calculator',
+        subtitle: 'Calculate CO2 from pH and KH',
+        onTap: () =>
+            NavigationThrottle.push(context, const Co2CalculatorScreen()),
+      ),
+      (_) => NavListTile(
+        icon: Icons.science_outlined,
+        title: 'Dosing Calculator',
+        subtitle: 'Calculate fertilizer & medication doses',
+        onTap: () =>
+            NavigationThrottle.push(context, const DosingCalculatorScreen()),
+      ),
+      (_) => NavListTile(
+        icon: Icons.straighten,
+        title: 'Unit Converter',
+        subtitle: 'Volume, temperature, length, hardness',
+        onTap: () =>
+            NavigationThrottle.push(context, const UnitConverterScreen()),
+      ),
+      (_) => NavListTile(
+        icon: Icons.view_in_ar,
+        title: 'Tank Volume Calculator',
+        subtitle: 'Calculate volume for any tank shape',
+        onTap: () => NavigationThrottle.push(
+          context,
+          const TankVolumeCalculatorScreen(),
+        ),
+      ),
+      (_) => NavListTile(
+        icon: Icons.account_balance_wallet,
+        title: 'Cost Tracker',
+        subtitle: 'Track aquarium expenses',
+        onTap: () =>
+            NavigationThrottle.push(context, const CostTrackerScreen()),
+      ),
+      (_) => NavListTile(
+        icon: Icons.compare_arrows,
+        title: 'Compatibility Checker',
+        subtitle: 'Check if fish work together',
+        onTap: () => NavigationThrottle.push(
+          context,
+          const CompatibilityCheckerScreen(),
+        ),
+      ),
+      (_) => NavListTile(
+        icon: Icons.lightbulb,
+        title: 'Lighting Schedule',
+        subtitle: 'Optimize light duration for your setup',
+        onTap: () =>
+            NavigationThrottle.push(context, const LightingScheduleScreen()),
+      ),
+      (_) => NavListTile(
+        icon: Icons.bar_chart,
+        title: 'Stocking Calculator',
+        subtitle: 'Check if your tank is overstocked',
+        onTap: () =>
+            NavigationThrottle.push(context, const StockingCalculatorScreen()),
+      ),
+
+      (_) => const Divider(),
+
+      // Shop Street
+      (_) => const _SectionHeader(title: 'Shop'),
+      (_) => NavListTile(
+        icon: Icons.storefront,
+        title: 'Shop Street',
+        subtitle: 'Find aquarium supplies online',
+        onTap: () => NavigationThrottle.push(context, const ShopStreetScreen()),
+      ),
+
+      (_) => const Divider(),
+
+      // About section
+      (_) => const _SectionHeader(title: 'About'),
+      (_) => AppListTile(
+        leading: const Icon(Icons.water_drop),
+        title: 'Danio',
+        subtitle: 'Version 0.1.0',
+      ),
+      (_) => AppListTile(
+        leading: const Icon(Icons.info_outline),
+        title: 'About',
+        onTap: () => _showAboutDialog(context),
+      ),
+
+      (_) => const Divider(),
+
+      // Privacy
+      (_) => const _SectionHeader(title: 'Privacy'),
+      (_) => const _AnalyticsConsentToggle(),
+
+      (_) => const Divider(),
+
+      // Data section
+      (_) => const _SectionHeader(title: 'Data'),
+      (_) => AppListTile(
+        leading: const Icon(Icons.upload_outlined),
+        title: 'Export All Data',
+        subtitle: 'Share your aquarium data as JSON',
+        onTap: () => _exportData(context),
+      ),
+      (_) => AppListTile(
+        leading: const Icon(Icons.download_outlined),
+        title: 'Import Data',
+        subtitle: 'Restore from a backup file',
+        onTap: () => _importData(context),
+      ),
+      (_) => AppListTile(
+        leading: const Icon(Icons.photo_library_outlined),
+        title: 'Photo Storage',
+        subtitle: 'View where photos are stored',
+        onTap: () => _showPhotoStorageInfo(context),
+      ),
+
+      (_) => const Divider(),
+
+      // Guides & Education section (expandable)
+      (_) => const _SectionHeader(title: 'Guides & Education'),
+
+      // Essential - Quick start and emergency
+      (_) => ExpansionTile(
+        leading: const Icon(Icons.star, color: AppColors.primary),
+        title: const Text('Essential Guides'),
+        subtitle: const Text('Start here - critical knowledge'),
+        children: [
+          NavListTile(
+            icon: Icons.rocket_launch,
+            title: 'Quick Start Guide',
+            subtitle: 'Setting up your first aquarium',
+            onTap: () =>
+                NavigationThrottle.push(context, const QuickStartGuideScreen()),
           ),
-
-          // Learning System (Duolingo-style)
-          (_) => const _SectionHeader(title: 'Learn'),
-          // _LearnCard is a ConsumerWidget — watches its own providers,
-          // so learningStatsProvider/userProfileProvider changes only rebuild the card.
-          (_) => const _LearnCard(),
-
-          // Daily Goal Settings
-          (_) => NavListTile(
-            icon: Icons.flag,
-            title: 'Daily Goal',
-            subtitle: 'Set your daily XP target',
-            onTap: () => _showDailyGoalPicker(context, ref),
+          NavListTile(
+            icon: Icons.emergency,
+            iconColor: AppColors.error,
+            title: 'Emergency Guide',
+            subtitle: 'Urgent problems & immediate actions',
+            onTap: () =>
+                NavigationThrottle.push(context, const EmergencyGuideScreen()),
           ),
-
-          // House Navigation (Rooms)
-          (_) => const _SectionHeader(title: 'Explore'),
-          (_) => const RoomNavigation(),
-
-          // Appearance
-          (_) => const _SectionHeader(title: 'Appearance'),
-          (_) => const _ThemeModeTile(),
-          (_) => NavListTile(
-            icon: Icons.color_lens_outlined,
-            title: 'Room Themes',
-            subtitle: 'Customize your living room style',
-            onTap: () => NavigationThrottle.push(context, const ThemeGalleryScreen()),
+          NavListTile(
+            icon: Icons.autorenew,
+            title: 'Nitrogen Cycle Guide',
+            subtitle: 'Learn how to cycle your tank',
+            onTap: () => NavigationThrottle.push(
+              context,
+              const NitrogenCycleGuideScreen(),
+            ),
           ),
-          (_) => NavListTile(
-            icon: Icons.tune,
-            title: 'Difficulty Settings',
-            subtitle: 'Adjust app complexity level',
-            onTap: () => NavigationThrottle.push(context, const _DifficultySettingsWrapper()),
+        ],
+      ),
+
+      // Water & Parameters
+      (_) => ExpansionTile(
+        leading: Icon(Icons.water_drop, color: context.textSecondary),
+        title: const Text('Water & Parameters'),
+        subtitle: const Text('Water quality and chemistry'),
+        children: [
+          NavListTile(
+            icon: Icons.analytics_outlined,
+            title: 'Water Parameters Guide',
+            subtitle: 'Ideal ranges for common fish',
+            onTap: () =>
+                NavigationThrottle.push(context, const ParameterGuideScreen()),
           ),
-          (_) => const _AmbientLightingToggle(),
-
-          (_) => const Divider(),
-
-          // Accessibility
-          (_) => const _SectionHeader(title: 'Accessibility'),
-          (_) => const _ReducedMotionToggle(),
-          (_) => const _HapticFeedbackToggle(),
-
-          (_) => const Divider(),
-
-          // Notifications
-          (_) => const _SectionHeader(title: 'Notifications'),
-          (_) => NavListTile(
-            icon: Icons.notifications_active,
-            title: 'Streak Reminders',
-            subtitle: 'Daily notifications to maintain your streak',
-            onTap: () => NavigationThrottle.push(context, const NotificationSettingsScreen()),
+          NavListTile(
+            icon: Icons.grass,
+            title: 'Algae Guide',
+            subtitle: 'Identify and control common algae',
+            onTap: () =>
+                NavigationThrottle.push(context, const AlgaeGuideScreen()),
           ),
-          (_) => const _NotificationsToggle(),
+        ],
+      ),
 
-          (_) => const Divider(),
-
-          // Tools
-          (_) => const _SectionHeader(title: 'Tools'),
-          (_) => NavListTile(
-            icon: Icons.notifications_active,
-            title: 'Reminders',
-            subtitle: 'Schedule maintenance tasks',
-            onTap: () => NavigationThrottle.push(context, const RemindersScreen()),
+      // Fish Care
+      (_) => ExpansionTile(
+        leading: const Icon(Icons.set_meal, color: AppColors.success),
+        title: const Text('Fish Care'),
+        subtitle: const Text('Feeding, health, and wellbeing'),
+        children: [
+          NavListTile(
+            icon: Icons.restaurant,
+            title: 'Feeding Guide',
+            subtitle: 'How much, how often, what types',
+            onTap: () =>
+                NavigationThrottle.push(context, const FeedingGuideScreen()),
           ),
-          (_) => NavListTile(
+          NavListTile(
+            icon: Icons.healing,
+            title: 'Fish Disease Guide',
+            subtitle: 'Identify and treat common diseases',
+            onTap: () =>
+                NavigationThrottle.push(context, const DiseaseGuideScreen()),
+          ),
+          NavListTile(
+            icon: Icons.sync_alt,
+            title: 'Acclimation Guide',
+            subtitle: 'How to safely add new fish',
+            onTap: () => NavigationThrottle.push(
+              context,
+              const AcclimationGuideScreen(),
+            ),
+          ),
+          NavListTile(
+            icon: Icons.local_hospital,
+            title: 'Quarantine Guide',
+            subtitle: 'Setup, protocol, medications',
+            onTap: () =>
+                NavigationThrottle.push(context, const QuarantineGuideScreen()),
+          ),
+          NavListTile(
             icon: Icons.favorite,
-            title: 'Fish Wishlist',
-            subtitle: 'Track fish you want to keep',
-            onTap: () => NavigationThrottle.push(context, const WishlistScreen(category: WishlistCategory.fish)),
+            title: 'Breeding Guide',
+            subtitle: 'Methods, conditioning, raising fry',
+            onTap: () =>
+                NavigationThrottle.push(context, const BreedingGuideScreen()),
           ),
-          (_) => NavListTile(
-            icon: Icons.compare,
-            title: 'Compare Tanks',
-            subtitle: 'Side-by-side tank comparison',
-            onTap: () => NavigationThrottle.push(context, const TankComparisonScreen()),
-          ),
-          (_) => NavListTile(
-            icon: Icons.calculate_outlined,
-            title: 'Water Change Calculator',
-            subtitle: 'Calculate how much water to change',
-            onTap: () => NavigationThrottle.push(context, const WaterChangeCalculatorScreen()),
-          ),
-          (_) => NavListTile(
-            icon: Icons.bubble_chart,
-            title: 'CO2 Calculator',
-            subtitle: 'Calculate CO2 from pH and KH',
-            onTap: () => NavigationThrottle.push(context, const Co2CalculatorScreen()),
-          ),
-          (_) => NavListTile(
-            icon: Icons.science_outlined,
-            title: 'Dosing Calculator',
-            subtitle: 'Calculate fertilizer & medication doses',
-            onTap: () => NavigationThrottle.push(context, const DosingCalculatorScreen()),
-          ),
-          (_) => NavListTile(
-            icon: Icons.straighten,
-            title: 'Unit Converter',
-            subtitle: 'Volume, temperature, length, hardness',
-            onTap: () => NavigationThrottle.push(context, const UnitConverterScreen()),
-          ),
-          (_) => NavListTile(
-            icon: Icons.view_in_ar,
-            title: 'Tank Volume Calculator',
-            subtitle: 'Calculate volume for any tank shape',
-            onTap: () => NavigationThrottle.push(context, const TankVolumeCalculatorScreen()),
-          ),
-          (_) => NavListTile(
-            icon: Icons.account_balance_wallet,
-            title: 'Cost Tracker',
-            subtitle: 'Track aquarium expenses',
-            onTap: () => NavigationThrottle.push(context, const CostTrackerScreen()),
-          ),
-          (_) => NavListTile(
-            icon: Icons.compare_arrows,
-            title: 'Compatibility Checker',
-            subtitle: 'Check if fish work together',
-            onTap: () => NavigationThrottle.push(context, const CompatibilityCheckerScreen()),
-          ),
-          (_) => NavListTile(
-            icon: Icons.lightbulb,
-            title: 'Lighting Schedule',
-            subtitle: 'Optimize light duration for your setup',
-            onTap: () => NavigationThrottle.push(context, const LightingScheduleScreen()),
-          ),
-          (_) => NavListTile(
-            icon: Icons.bar_chart,
-            title: 'Stocking Calculator',
-            subtitle: 'Check if your tank is overstocked',
-            onTap: () => NavigationThrottle.push(context, const StockingCalculatorScreen()),
-          ),
+        ],
+      ),
 
-          (_) => const Divider(),
-
-          // Shop Street
-          (_) => const _SectionHeader(title: 'Shop'),
-          (_) => NavListTile(
-            icon: Icons.storefront,
-            title: 'Shop Street',
-            subtitle: 'Find aquarium supplies online',
-            onTap: () => NavigationThrottle.push(context, const ShopStreetScreen()),
+      // Tank Setup & Design
+      (_) => ExpansionTile(
+        leading: const Icon(Icons.landscape, color: AppColors.warning),
+        title: const Text('Tank Setup & Design'),
+        subtitle: const Text('Equipment, substrate, hardscape'),
+        children: [
+          NavListTile(
+            icon: Icons.build,
+            title: 'Equipment Guide',
+            subtitle: 'Filters, heaters, lights, CO2, testing',
+            onTap: () =>
+                NavigationThrottle.push(context, const EquipmentGuideScreen()),
           ),
-
-          (_) => const Divider(),
-
-          // About section
-          (_) => const _SectionHeader(title: 'About'),
-          (_) => AppListTile(
-            leading: const Icon(Icons.water_drop),
-            title: 'Danio',
-            subtitle: 'Version 0.1.0',
+          NavListTile(
+            icon: Icons.layers,
+            title: 'Substrate Guide',
+            subtitle: 'Types, recommendations, layering',
+            onTap: () =>
+                NavigationThrottle.push(context, const SubstrateGuideScreen()),
           ),
-          (_) => AppListTile(
-            leading: const Icon(Icons.info_outline),
-            title: 'About',
-            onTap: () => _showAboutDialog(context),
+          NavListTile(
+            icon: Icons.terrain,
+            title: 'Hardscape Guide',
+            subtitle: 'Rocks, driftwood, aquascaping tips',
+            onTap: () =>
+                NavigationThrottle.push(context, const HardscapeGuideScreen()),
           ),
+        ],
+      ),
 
-          (_) => const Divider(),
-
-          // Privacy
-          (_) => const _SectionHeader(title: 'Privacy'),
-          (_) => const _AnalyticsConsentToggle(),
-
-          (_) => const Divider(),
-
-          // Data section
-          (_) => const _SectionHeader(title: 'Data'),
-          (_) => AppListTile(
-            leading: const Icon(Icons.upload_outlined),
-            title: 'Export All Data',
-            subtitle: 'Share your aquarium data as JSON',
-            onTap: () => _exportData(context),
+      // Planning & Travel
+      (_) => ExpansionTile(
+        leading: const Icon(Icons.flight_takeoff),
+        title: const Text('Planning & Travel'),
+        subtitle: const Text('Vacation prep and maintenance'),
+        children: [
+          NavListTile(
+            icon: Icons.flight,
+            title: 'Vacation Planning',
+            subtitle: 'Prepare your tank for time away',
+            onTap: () =>
+                NavigationThrottle.push(context, const VacationGuideScreen()),
           ),
-          (_) => AppListTile(
-            leading: const Icon(Icons.download_outlined),
-            title: 'Import Data',
-            subtitle: 'Restore from a backup file',
-            onTap: () => _importData(context),
-          ),
-          (_) => AppListTile(
-            leading: const Icon(Icons.photo_library_outlined),
-            title: 'Photo Storage',
-            subtitle: 'View where photos are stored',
-            onTap: () => _showPhotoStorageInfo(context),
-          ),
+        ],
+      ),
 
-          (_) => const Divider(),
+      // Reference Materials
+      (_) => ExpansionTile(
+        leading: const Icon(Icons.library_books),
+        title: const Text('Reference'),
+        subtitle: const Text('Databases, glossary, FAQ'),
+        children: [
+          NavListTile(
+            icon: Icons.set_meal,
+            title: 'Fish Database',
+            subtitle: '45+ species with care info',
+            onTap: () =>
+                NavigationThrottle.push(context, const SpeciesBrowserScreen()),
+          ),
+          NavListTile(
+            icon: Icons.eco,
+            title: 'Plant Database',
+            subtitle: '20+ aquarium plants with care info',
+            onTap: () =>
+                NavigationThrottle.push(context, const PlantBrowserScreen()),
+          ),
+          NavListTile(
+            icon: Icons.menu_book,
+            title: 'Glossary',
+            subtitle: '50+ aquarium terms explained',
+            onTap: () =>
+                NavigationThrottle.push(context, const GlossaryScreen()),
+          ),
+          NavListTile(
+            icon: Icons.quiz,
+            title: 'FAQ',
+            subtitle: 'Frequently asked questions',
+            onTap: () => NavigationThrottle.push(context, const FaqScreen()),
+          ),
+          NavListTile(
+            icon: Icons.build_circle,
+            title: 'Troubleshooting',
+            subtitle: 'Common problems & solutions',
+            onTap: () =>
+                NavigationThrottle.push(context, const TroubleshootingScreen()),
+          ),
+        ],
+      ),
 
-          // Guides & Education section (expandable)
-          (_) => const _SectionHeader(title: 'Guides & Education'),
+      (_) => const Divider(),
 
-          // Essential - Quick start and emergency
-          (_) => ExpansionTile(
-            leading: const Icon(Icons.star, color: AppColors.primary),
-            title: const Text('Essential Guides'),
-            subtitle: const Text('Start here - critical knowledge'),
-            children: [
-              NavListTile(
-                icon: Icons.rocket_launch,
-                title: 'Quick Start Guide',
-                subtitle: 'Setting up your first aquarium',
-                onTap: () => NavigationThrottle.push(context, const QuickStartGuideScreen()),
-              ),
-              NavListTile(
-                icon: Icons.emergency,
-                iconColor: AppColors.error,
-                title: 'Emergency Guide',
-                subtitle: 'Urgent problems & immediate actions',
-                onTap: () => NavigationThrottle.push(context, const EmergencyGuideScreen()),
-              ),
-              NavListTile(
-                icon: Icons.autorenew,
-                title: 'Nitrogen Cycle Guide',
-                subtitle: 'Learn how to cycle your tank',
-                onTap: () => NavigationThrottle.push(context, const NitrogenCycleGuideScreen()),
-              ),
-            ],
-          ),
+      // Help & Support section (app-related)
+      (_) => const _SectionHeader(title: 'Help & Support'),
+      (_) => AppListTile(
+        leading: const Icon(Icons.replay_outlined),
+        title: 'Replay Onboarding',
+        subtitle: 'See the intro screens again',
+        onTap: () => _replayOnboarding(context, ref),
+      ),
+      (_) => AppListTile(
+        leading: const Icon(Icons.auto_awesome),
+        title: 'Add Sample Tank',
+        subtitle: 'Explore the app with demo data',
+        onTap: () async {
+          try {
+            final actions = ref.read(tankActionsProvider);
+            final demoTank = await actions.addDemoTank();
+            if (context.mounted) {
+              AppFeedback.showSuccess(context, 'Sample tank added!');
+              NavigationThrottle.push(
+                context,
+                TankDetailScreen(tankId: demoTank.id),
+              );
+            }
+          } catch (e) {
+            if (context.mounted) {
+              AppFeedback.showError(
+                context,
+                'Couldn\'t add sample tank. Give it another go!',
+              );
+            }
+          }
+        },
+      ),
+      (_) => NavListTile(
+        icon: Icons.backup,
+        title: 'Backup & Restore',
+        subtitle: 'Export or import your tank data',
+        onTap: () =>
+            NavigationThrottle.push(context, const BackupRestoreScreen()),
+      ),
+      (_) => NavListTile(
+        icon: Icons.info_outline,
+        title: 'About',
+        subtitle: 'Version info and features',
+        onTap: () => NavigationThrottle.push(context, const AboutScreen()),
+      ),
 
-          // Water & Parameters
-          (_) => ExpansionTile(
-            leading: Icon(Icons.water_drop, color: context.textSecondary),
-            title: const Text('Water & Parameters'),
-            subtitle: const Text('Water quality and chemistry'),
-            children: [
-              NavListTile(
-                icon: Icons.analytics_outlined,
-                title: 'Water Parameters Guide',
-                subtitle: 'Ideal ranges for common fish',
-                onTap: () => NavigationThrottle.push(context, const ParameterGuideScreen()),
-              ),
-              NavListTile(
-                icon: Icons.grass,
-                title: 'Algae Guide',
-                subtitle: 'Identify and control common algae',
-                onTap: () => NavigationThrottle.push(context, const AlgaeGuideScreen()),
-              ),
-            ],
-          ),
+      (_) => const Divider(),
 
-          // Fish Care
-          (_) => ExpansionTile(
-            leading: const Icon(Icons.set_meal, color: AppColors.success),
-            title: const Text('Fish Care'),
-            subtitle: const Text('Feeding, health, and wellbeing'),
-            children: [
-              NavListTile(
-                icon: Icons.restaurant,
-                title: 'Feeding Guide',
-                subtitle: 'How much, how often, what types',
-                onTap: () => NavigationThrottle.push(context, const FeedingGuideScreen()),
-              ),
-              NavListTile(
-                icon: Icons.healing,
-                title: 'Fish Disease Guide',
-                subtitle: 'Identify and treat common diseases',
-                onTap: () => NavigationThrottle.push(context, const DiseaseGuideScreen()),
-              ),
-              NavListTile(
-                icon: Icons.sync_alt,
-                title: 'Acclimation Guide',
-                subtitle: 'How to safely add new fish',
-                onTap: () => NavigationThrottle.push(context, const AcclimationGuideScreen()),
-              ),
-              NavListTile(
-                icon: Icons.local_hospital,
-                title: 'Quarantine Guide',
-                subtitle: 'Setup, protocol, medications',
-                onTap: () => NavigationThrottle.push(context, const QuarantineGuideScreen()),
-              ),
-              NavListTile(
-                icon: Icons.favorite,
-                title: 'Breeding Guide',
-                subtitle: 'Methods, conditioning, raising fry',
-                onTap: () => NavigationThrottle.push(context, const BreedingGuideScreen()),
-              ),
-            ],
+      // Danger zone
+      (_) => const _SectionHeader(title: 'Danger Zone', color: AppColors.error),
+      (_) => AppListTile(
+        leading: const Icon(
+          Icons.delete_forever_outlined,
+          color: AppColors.error,
+        ),
+        title: 'Clear All Data',
+        subtitle: 'Delete all tanks, logs, and settings',
+        isDestructive: true,
+        onTap: () => _confirmClearData(context, ref),
+      ),
+      (_) => AppListTile(
+        leading: const Icon(
+          Icons.person_remove_outlined,
+          color: AppColors.error,
+        ),
+        title: 'Delete My Data',
+        subtitle: 'Erase all data & exercise your privacy rights',
+        isDestructive: true,
+        onTap: () => _confirmDeleteMyData(context, ref),
+      ),
+      // Debug crash button (only in debug mode)
+      if (kDebugMode)
+        (_) => AppListTile(
+          leading: const Icon(
+            Icons.bug_report_outlined,
+            color: AppColors.warning,
           ),
-
-          // Tank Setup & Design
-          (_) => ExpansionTile(
-            leading: const Icon(Icons.landscape, color: AppColors.warning),
-            title: const Text('Tank Setup & Design'),
-            subtitle: const Text('Equipment, substrate, hardscape'),
-            children: [
-              NavListTile(
-                icon: Icons.build,
-                title: 'Equipment Guide',
-                subtitle: 'Filters, heaters, lights, CO2, testing',
-                onTap: () => NavigationThrottle.push(context, const EquipmentGuideScreen()),
-              ),
-              NavListTile(
-                icon: Icons.layers,
-                title: 'Substrate Guide',
-                subtitle: 'Types, recommendations, layering',
-                onTap: () => NavigationThrottle.push(context, const SubstrateGuideScreen()),
-              ),
-              NavListTile(
-                icon: Icons.terrain,
-                title: 'Hardscape Guide',
-                subtitle: 'Rocks, driftwood, aquascaping tips',
-                onTap: () => NavigationThrottle.push(context, const HardscapeGuideScreen()),
-              ),
-            ],
-          ),
-
-          // Planning & Travel
-          (_) => ExpansionTile(
-            leading: const Icon(Icons.flight_takeoff),
-            title: const Text('Planning & Travel'),
-            subtitle: const Text('Vacation prep and maintenance'),
-            children: [
-              NavListTile(
-                icon: Icons.flight,
-                title: 'Vacation Planning',
-                subtitle: 'Prepare your tank for time away',
-                onTap: () => NavigationThrottle.push(context, const VacationGuideScreen()),
-              ),
-            ],
-          ),
-
-          // Reference Materials
-          (_) => ExpansionTile(
-            leading: const Icon(Icons.library_books),
-            title: const Text('Reference'),
-            subtitle: const Text('Databases, glossary, FAQ'),
-            children: [
-              NavListTile(
-                icon: Icons.set_meal,
-                title: 'Fish Database',
-                subtitle: '45+ species with care info',
-                onTap: () => NavigationThrottle.push(context, const SpeciesBrowserScreen()),
-              ),
-              NavListTile(
-                icon: Icons.eco,
-                title: 'Plant Database',
-                subtitle: '20+ aquarium plants with care info',
-                onTap: () => NavigationThrottle.push(context, const PlantBrowserScreen()),
-              ),
-              NavListTile(
-                icon: Icons.menu_book,
-                title: 'Glossary',
-                subtitle: '50+ aquarium terms explained',
-                onTap: () => NavigationThrottle.push(context, const GlossaryScreen()),
-              ),
-              NavListTile(
-                icon: Icons.quiz,
-                title: 'FAQ',
-                subtitle: 'Frequently asked questions',
-                onTap: () => NavigationThrottle.push(context, const FaqScreen()),
-              ),
-              NavListTile(
-                icon: Icons.build_circle,
-                title: 'Troubleshooting',
-                subtitle: 'Common problems & solutions',
-                onTap: () => NavigationThrottle.push(context, const TroubleshootingScreen()),
-              ),
-            ],
-          ),
-
-          (_) => const Divider(),
-
-          // Help & Support section (app-related)
-          (_) => const _SectionHeader(title: 'Help & Support'),
-          (_) => AppListTile(
-            leading: const Icon(Icons.replay_outlined),
-            title: 'Replay Onboarding',
-            subtitle: 'See the intro screens again',
-            onTap: () => _replayOnboarding(context, ref),
-          ),
-          (_) => AppListTile(
-            leading: const Icon(Icons.auto_awesome),
-            title: 'Add Sample Tank',
-            subtitle: 'Explore the app with demo data',
-            onTap: () async {
-              try {
-                final actions = ref.read(tankActionsProvider);
-                final demoTank = await actions.addDemoTank();
-                if (context.mounted) {
-                  AppFeedback.showSuccess(context, 'Sample tank added!');
-                  NavigationThrottle.push(context, TankDetailScreen(tankId: demoTank.id));
-                }
-              } catch (e) {
-                if (context.mounted) {
-                  AppFeedback.showError(context, 'Couldn\'t add sample tank. Please try again.');
-                }
-              }
-            },
-          ),
-          (_) => NavListTile(
-            icon: Icons.backup,
-            title: 'Backup & Restore',
-            subtitle: 'Export or import your tank data',
-            onTap: () => NavigationThrottle.push(context, const BackupRestoreScreen()),
-          ),
-          (_) => NavListTile(
-            icon: Icons.info_outline,
-            title: 'About',
-            subtitle: 'Version info and features',
-            onTap: () => NavigationThrottle.push(context, const AboutScreen()),
-          ),
-
-          (_) => const Divider(),
-
-          // Danger zone
-          (_) => const _SectionHeader(title: 'Danger Zone', color: AppColors.error),
-          (_) => AppListTile(
-            leading: const Icon(
-              Icons.delete_forever_outlined,
-              color: AppColors.error,
-            ),
-            title: 'Clear All Data',
-            subtitle: 'Delete all tanks, logs, and settings',
-            isDestructive: true,
-            onTap: () => _confirmClearData(context, ref),
-          ),
-          (_) => AppListTile(
-            leading: const Icon(
-              Icons.person_remove_outlined,
-              color: AppColors.error,
-            ),
-            title: 'Delete My Data',
-            subtitle: 'Erase all data & exercise your privacy rights',
-            isDestructive: true,
-            onTap: () => _confirmDeleteMyData(context, ref),
-          ),
-          // Debug crash button (only in debug mode)
-          if (kDebugMode)
-            (_) => AppListTile(
-              leading: const Icon(
-                Icons.bug_report_outlined,
-                color: AppColors.warning,
-              ),
-              title: 'Test Error Boundary',
-              subtitle: 'Trigger a crash to test error handling',
-              onTap: () => _triggerTestCrash(),
-            ),
+          title: 'Test Error Boundary',
+          subtitle: 'Trigger a crash to test error handling',
+          onTap: () => _triggerTestCrash(),
+        ),
     ];
   }
 
@@ -652,7 +707,10 @@ class SettingsScreen extends ConsumerWidget {
         if (context.mounted) {
           AppFeedback.dismiss(context);
           dismissLoadingInFinally = false;
-          AppFeedback.showInfo(context, 'Nothing to export yet -- start logging to build your data!');
+          AppFeedback.showInfo(
+            context,
+            'Nothing to export yet — start logging to build your data!',
+          );
         }
         return;
       }
@@ -664,7 +722,10 @@ class SettingsScreen extends ConsumerWidget {
       if (context.mounted) {
         AppFeedback.dismiss(context);
         dismissLoadingInFinally = false;
-        AppFeedback.showError(context, 'Export failed. Please try again.');
+        AppFeedback.showError(
+          context,
+          'Export didn\'t work. Give it another go!',
+        );
       }
     } finally {
       if (context.mounted && dismissLoadingInFinally) {
@@ -750,7 +811,10 @@ class SettingsScreen extends ConsumerWidget {
       if (context.mounted) {
         AppFeedback.dismiss(context);
         dismissLoadingInFinally = false;
-        AppFeedback.showError(context, 'Import failed. The file may be invalid or corrupted.');
+        AppFeedback.showError(
+          context,
+          'Import failed. The file may be invalid or corrupted.',
+        );
       }
     } finally {
       if (context.mounted && dismissLoadingInFinally) {
@@ -807,8 +871,10 @@ class SettingsScreen extends ConsumerWidget {
       // Invalidate provider so _AppRouter re-evaluates and shows onboarding.
       // Use rootNavigator to escape the tab's inner Navigator.
       ref.invalidate(onboardingCompletedProvider);
-      Navigator.of(context, rootNavigator: true)
-          .popUntil((route) => route.isFirst);
+      Navigator.of(
+        context,
+        rootNavigator: true,
+      ).popUntil((route) => route.isFirst);
     }
   }
 
@@ -885,8 +951,10 @@ class SettingsScreen extends ConsumerWidget {
         // Invalidate provider so _AppRouter re-evaluates and shows onboarding.
         // Use rootNavigator to escape the tab's inner Navigator.
         ref.invalidate(onboardingCompletedProvider);
-        Navigator.of(context, rootNavigator: true)
-            .popUntil((route) => route.isFirst);
+        Navigator.of(
+          context,
+          rootNavigator: true,
+        ).popUntil((route) => route.isFirst);
       }
     } catch (e) {
       if (context.mounted) {
@@ -903,19 +971,21 @@ class SettingsScreen extends ConsumerWidget {
       context: context,
       builder: (ctx) => AlertDialog(
         title: const Text('Delete My Data'),
-        content: const Column(
+        content: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
+            const Text(
               'This will permanently delete all your local data '
               '(tanks, progress, achievements). This cannot be undone.',
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.md),
             Text(
               'For server-side data deletion requests, email '
               'privacy@tiarnanlarkin.com',
-              style: TextStyle(fontSize: 13, fontStyle: FontStyle.italic),
+              style: AppTypography.bodySmall.copyWith(
+                fontStyle: FontStyle.italic,
+              ),
             ),
           ],
         ),
@@ -955,8 +1025,10 @@ class SettingsScreen extends ConsumerWidget {
 
       if (context.mounted) {
         ref.invalidate(onboardingCompletedProvider);
-        Navigator.of(context, rootNavigator: true)
-            .popUntil((route) => route.isFirst);
+        Navigator.of(
+          context,
+          rootNavigator: true,
+        ).popUntil((route) => route.isFirst);
       }
     } catch (e) {
       if (context.mounted) {
@@ -1090,7 +1162,10 @@ Future<void> _testNotification(BuildContext context) async {
     }
   } catch (e) {
     if (context.mounted) {
-      AppFeedback.showError(context, 'Couldn\'t send test notification. Please try again.');
+      AppFeedback.showError(
+        context,
+        'Couldn\'t send test notification. Give it another go!',
+      );
     }
   }
 }
@@ -1209,10 +1284,7 @@ class _SectionHeader extends StatelessWidget {
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
-                colors: [
-                  AppColors.primary,
-                  AppColors.primaryAlpha50,
-                ],
+                colors: [AppColors.primary, AppColors.primaryAlpha50],
               ),
               borderRadius: BorderRadius.circular(2),
             ),
@@ -1265,12 +1337,16 @@ class _LearnCard extends ConsumerWidget {
               borderRadius: BorderRadius.circular(AppRadius.lg),
               boxShadow: [
                 BoxShadow(
-                  color: isDark ? AppColors.primaryAlpha40 : AppColors.primaryAlpha25,
+                  color: isDark
+                      ? AppColors.primaryAlpha40
+                      : AppColors.primaryAlpha25,
                   blurRadius: 20,
                   offset: const Offset(0, 8),
                 ),
                 BoxShadow(
-                  color: isDark ? AppColors.blackAlpha30 : AppColors.blackAlpha10,
+                  color: isDark
+                      ? AppColors.blackAlpha30
+                      : AppColors.blackAlpha10,
                   blurRadius: 8,
                   offset: const Offset(0, 2),
                 ),
@@ -1285,7 +1361,11 @@ class _LearnCard extends ConsumerWidget {
                     color: AppOverlays.white20,
                     borderRadius: AppRadius.mediumRadius,
                   ),
-                  child: const Icon(Icons.school, color: Colors.white, size: 28),
+                  child: const Icon(
+                    Icons.school,
+                    color: Colors.white,
+                    size: 28,
+                  ),
                 ),
                 const SizedBox(width: AppSpacing.md),
                 Expanded(
@@ -1383,7 +1463,10 @@ class _GoalOptionState extends State<_GoalOption> {
               height: 32,
               child: CircularProgressIndicator(strokeWidth: 2),
             )
-          : Text(widget.icon, style: Theme.of(context).textTheme.headlineMedium!.copyWith()),
+          : Text(
+              widget.icon,
+              style: Theme.of(context).textTheme.headlineMedium!.copyWith(),
+            ),
       title: Text('${widget.goal} XP/day'),
       subtitle: Text('${widget.label} • ${widget.description}'),
       trailing: isSelected
@@ -1460,7 +1543,7 @@ class _ReducedMotionToggle extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final reducedMotion = ref.watch(reducedMotionProvider);
-    
+
     return Column(
       children: [
         SwitchListTile(
@@ -1470,30 +1553,35 @@ class _ReducedMotionToggle extends ConsumerWidget {
             reducedMotion.systemPreference
                 ? 'System setting detected - animations simplified'
                 : reducedMotion.userOverride == true
-                    ? 'Manually enabled - animations simplified'
-                    : 'Minimize animations for comfort',
+                ? 'Manually enabled - animations simplified'
+                : 'Minimize animations for comfort',
           ),
           value: reducedMotion.isEnabled,
           onChanged: (value) async {
             if (value == reducedMotion.systemPreference) {
               // Setting to match system - clear override
-              await ref.read(reducedMotionProvider.notifier).setUserPreference(null);
+              await ref
+                  .read(reducedMotionProvider.notifier)
+                  .setUserPreference(null);
             } else {
               // Manual override
-              await ref.read(reducedMotionProvider.notifier).setUserPreference(value);
+              await ref
+                  .read(reducedMotionProvider.notifier)
+                  .setUserPreference(value);
             }
-            
+
             if (context.mounted) {
               AppFeedback.showInfo(
                 context,
-                value 
+                value
                     ? 'Reduced motion enabled - animations simplified'
                     : 'Reduced motion disabled - full animations',
               );
             }
           },
         ),
-        if (reducedMotion.systemPreference && reducedMotion.userOverride == false)
+        if (reducedMotion.systemPreference &&
+            reducedMotion.userOverride == false)
           Padding(
             padding: const EdgeInsets.fromLTRB(72, 0, 16, 12),
             child: Text(
@@ -1542,7 +1630,12 @@ class _AnalyticsConsentToggleState extends State<_AnalyticsConsentToggle> {
   Future<void> _load() async {
     final prefs = await SharedPreferences.getInstance();
     final consent = prefs.getBool(kGdprAnalyticsConsentKey) ?? false;
-    if (mounted) setState(() { _enabled = consent; _loaded = true; });
+    if (mounted) {
+      setState(() {
+        _enabled = consent;
+        _loaded = true;
+      });
+    }
   }
 
   Future<void> _toggle(bool value) async {

@@ -169,7 +169,10 @@ class DailyTips {
       title: 'Drip Acclimation',
       content:
           'For sensitive fish, drip acclimation is better than float-and-dump. Use airline tubing with a loose knot to slowly mix tank water into the bag over an hour.',
-      targetExperience: [ExperienceLevel.beginner, ExperienceLevel.intermediate],
+      targetExperience: [
+        ExperienceLevel.beginner,
+        ExperienceLevel.intermediate,
+      ],
     ),
     DailyTip(
       id: 'tip_sand_substrate',
@@ -204,15 +207,21 @@ class DailyTips {
       id: 'tip_count_fish',
       title: 'Count Your Fish Daily',
       content:
-          'A quick headcount during feeding catches problems early. A missing fish could be hiding sick, or worse -- decomposing and spiking ammonia.',
-      targetExperience: [ExperienceLevel.beginner, ExperienceLevel.intermediate],
+          'A quick headcount during feeding catches problems early. A missing fish could be hiding sick, or worse — decomposing and spiking ammonia.',
+      targetExperience: [
+        ExperienceLevel.beginner,
+        ExperienceLevel.intermediate,
+      ],
     ),
     DailyTip(
       id: 'tip_api_shake',
       title: 'Shake That Bottle!',
       content:
           'API Nitrate Test Bottle #2 needs 30 seconds of vigorous shaking. Seriously -- bang it on a table. Skipping this gives false low readings.',
-      targetExperience: [ExperienceLevel.beginner, ExperienceLevel.intermediate],
+      targetExperience: [
+        ExperienceLevel.beginner,
+        ExperienceLevel.intermediate,
+      ],
       relatedLessonId: 'nc_testing',
     ),
     DailyTip(
@@ -242,7 +251,10 @@ class DailyTips {
       title: 'Less is More (Fish)',
       content:
           'An understocked tank is easier to maintain, healthier for fish, and honestly looks better. Resist the urge to add "just one more" fish!',
-      targetExperience: [ExperienceLevel.beginner, ExperienceLevel.intermediate],
+      targetExperience: [
+        ExperienceLevel.beginner,
+        ExperienceLevel.intermediate,
+      ],
     ),
   ];
 

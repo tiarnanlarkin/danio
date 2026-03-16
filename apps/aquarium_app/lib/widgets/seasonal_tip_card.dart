@@ -33,10 +33,7 @@ class _SeasonalTipCardState extends State<SeasonalTipCard>
     _slideAnimation = Tween<Offset>(
       begin: const Offset(0, -0.3),
       end: Offset.zero,
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeOut,
-    ));
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
     _checkDismissed();
   }
 
@@ -95,21 +92,18 @@ class _SeasonalTipCardState extends State<SeasonalTipCard>
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
-              colors: [
-                tip.color.withAlpha(30),
-                tip.color.withAlpha(15),
-              ],
+              colors: [tip.color.withAlpha(30), tip.color.withAlpha(15)],
             ),
             borderRadius: AppRadius.mediumRadius,
-            border: Border.all(
-              color: tip.color.withAlpha(60),
-              width: 1,
-            ),
+            border: Border.all(color: tip.color.withAlpha(60), width: 1),
           ),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(tip.emoji, style: Theme.of(context).textTheme.headlineMedium!),
+              Text(
+                tip.emoji,
+                style: Theme.of(context).textTheme.headlineMedium!,
+              ),
               const SizedBox(width: AppSpacing.sm2),
               Expanded(
                 child: Column(
@@ -135,11 +129,7 @@ class _SeasonalTipCardState extends State<SeasonalTipCard>
                 onTap: _dismiss,
                 child: Padding(
                   padding: const EdgeInsets.all(AppSpacing.xs),
-                  child: Icon(
-                    Icons.close,
-                    size: 18,
-                    color: context.textHint,
-                  ),
+                  child: Icon(Icons.close, size: 18, color: context.textHint),
                 ),
               ),
             ],
@@ -186,7 +176,7 @@ class _SeasonalTipCardState extends State<SeasonalTipCard>
         emoji: '\u2744\uFE0F',
         title: 'Winter Tip',
         message:
-            'Check your heater is working well -- consistent temperature is crucial in cold months.',
+            'Check your heater is working well — consistent temperature is crucial in cold months.',
         color: AppColors.info,
       );
     }

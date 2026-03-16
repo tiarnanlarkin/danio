@@ -32,7 +32,7 @@ class LatestSnapshotCard extends StatelessWidget {
               Text('Latest Water Snapshot', style: AppTypography.headlineSmall),
               const SizedBox(height: AppSpacing.sm),
               Text(
-                'No water tests logged yet.',
+                'No water tests yet — your first one unlocks insights!',
                 style: AppTypography.bodyMedium,
               ),
             ],
@@ -226,7 +226,10 @@ class ParamPill extends StatelessWidget {
     final c = _statusColor(context);
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: AppSpacing.sm3),
+      padding: const EdgeInsets.symmetric(
+        horizontal: 12,
+        vertical: AppSpacing.sm3,
+      ),
       decoration: BoxDecoration(
         color: c.withAlpha(36),
         borderRadius: AppRadius.mediumRadius,

@@ -95,32 +95,32 @@ _ParamStatus _khStatus(double? v) {
 }
 
 Color _statusColor(_ParamStatus s) => switch (s) {
-      _ParamStatus.perfect => _kGreen,
-      _ParamStatus.watch => _kAmber,
-      _ParamStatus.danger => _kRed,
-      _ParamStatus.unknown => _kGrey,
-    };
+  _ParamStatus.perfect => _kGreen,
+  _ParamStatus.watch => _kAmber,
+  _ParamStatus.danger => _kRed,
+  _ParamStatus.unknown => _kGrey,
+};
 
 Color _statusBg(_ParamStatus s) => switch (s) {
-      _ParamStatus.perfect => _kGreenBg,
-      _ParamStatus.watch => _kAmberBg,
-      _ParamStatus.danger => _kRedBg,
-      _ParamStatus.unknown => _kGreyBg,
-    };
+  _ParamStatus.perfect => _kGreenBg,
+  _ParamStatus.watch => _kAmberBg,
+  _ParamStatus.danger => _kRedBg,
+  _ParamStatus.unknown => _kGreyBg,
+};
 
 Color _statusBorder(_ParamStatus s) => switch (s) {
-      _ParamStatus.perfect => _kGreenBorder,
-      _ParamStatus.watch => _kAmberBorder,
-      _ParamStatus.danger => _kRedBorder,
-      _ParamStatus.unknown => _kGreyBorder,
-    };
+  _ParamStatus.perfect => _kGreenBorder,
+  _ParamStatus.watch => _kAmberBorder,
+  _ParamStatus.danger => _kRedBorder,
+  _ParamStatus.unknown => _kGreyBorder,
+};
 
 String _statusLabel(_ParamStatus s) => switch (s) {
-      _ParamStatus.perfect => 'Perfect',
-      _ParamStatus.watch => 'Watch',
-      _ParamStatus.danger => 'Danger',
-      _ParamStatus.unknown => 'No data',
-    };
+  _ParamStatus.perfect => 'Perfect',
+  _ParamStatus.watch => 'Watch',
+  _ParamStatus.danger => 'Danger',
+  _ParamStatus.unknown => 'No Data',
+};
 
 // ── Overall health ────────────────────────────────────────────────────────────
 
@@ -129,31 +129,33 @@ enum _HealthStatus { excellent, good, needsAttention, noData }
 _HealthStatus _computeHealth(List<_ParamStatus> statuses) {
   final known = statuses.where((s) => s != _ParamStatus.unknown).toList();
   if (known.isEmpty) return _HealthStatus.noData;
-  if (known.any((s) => s == _ParamStatus.danger)) return _HealthStatus.needsAttention;
+  if (known.any((s) => s == _ParamStatus.danger)) {
+    return _HealthStatus.needsAttention;
+  }
   if (known.any((s) => s == _ParamStatus.watch)) return _HealthStatus.good;
   return _HealthStatus.excellent;
 }
 
 String _healthLabel(_HealthStatus h) => switch (h) {
-      _HealthStatus.excellent => 'Excellent',
-      _HealthStatus.good => 'Good',
-      _HealthStatus.needsAttention => 'Needs Attention',
-      _HealthStatus.noData => 'No Data',
-    };
+  _HealthStatus.excellent => 'Excellent',
+  _HealthStatus.good => 'Good',
+  _HealthStatus.needsAttention => 'Needs Attention',
+  _HealthStatus.noData => 'No Data',
+};
 
 Color _healthColor(_HealthStatus h) => switch (h) {
-      _HealthStatus.excellent => _kGreen,
-      _HealthStatus.good => _kAmber,
-      _HealthStatus.needsAttention => _kRed,
-      _HealthStatus.noData => _kGrey,
-    };
+  _HealthStatus.excellent => _kGreen,
+  _HealthStatus.good => _kAmber,
+  _HealthStatus.needsAttention => _kRed,
+  _HealthStatus.noData => _kGrey,
+};
 
 double _healthScore(_HealthStatus h) => switch (h) {
-      _HealthStatus.excellent => 1.0,
-      _HealthStatus.good => 0.65,
-      _HealthStatus.needsAttention => 0.3,
-      _HealthStatus.noData => 0.0,
-    };
+  _HealthStatus.excellent => 1.0,
+  _HealthStatus.good => 0.65,
+  _HealthStatus.needsAttention => 0.3,
+  _HealthStatus.noData => 0.0,
+};
 
 // ── Panel Content ─────────────────────────────────────────────────────────────
 
@@ -210,7 +212,9 @@ class _WaterPanelContentState extends ConsumerState<WaterPanelContent>
   @override
   Widget build(BuildContext context) {
     final latestTestAsync = ref.watch(latestWaterTestProvider(widget.tankId));
-    final latestEntryAsync = ref.watch(latestWaterTestEntryProvider(widget.tankId));
+    final latestEntryAsync = ref.watch(
+      latestWaterTestEntryProvider(widget.tankId),
+    );
     final logsAsync = ref.watch(logsProvider(widget.tankId));
 
     final test = latestTestAsync.value;
@@ -276,7 +280,8 @@ class _WaterPanelContentState extends ConsumerState<WaterPanelContent>
     ];
 
     final health = _computeHealth(params.map((p) => p.status).toList());
-    final allPerfect = health == _HealthStatus.excellent &&
+    final allPerfect =
+        health == _HealthStatus.excellent &&
         params.any((p) => p.status != _ParamStatus.unknown);
 
     // Build 7-day sparkline data per param
@@ -288,7 +293,11 @@ class _WaterPanelContentState extends ConsumerState<WaterPanelContent>
       child: SingleChildScrollView(
         physics: const ClampingScrollPhysics(),
         padding: const EdgeInsets.fromLTRB(
-            AppSpacing.md, AppSpacing.md, AppSpacing.md, AppSpacing.lg),
+          AppSpacing.md,
+          AppSpacing.md,
+          AppSpacing.md,
+          AppSpacing.lg,
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -302,23 +311,24 @@ class _WaterPanelContentState extends ConsumerState<WaterPanelContent>
                 padding: const EdgeInsets.only(bottom: AppSpacing.sm),
                 child: Row(
                   children: [
-                    Icon(Icons.access_time_rounded,
-                        size: 13, color: _kCharcoal.withAlpha(100)),
+                    Icon(
+                      Icons.access_time_rounded,
+                      size: 13,
+                      color: _kCharcoal.withAlpha(100),
+                    ),
                     const SizedBox(width: AppSpacing.xs),
                     Text(
                       'Last tested: ${_formatTimestamp(lastEntry.timestamp)}',
-                      style: AppTypography.bodySmall
-                          .copyWith(color: _kCharcoal.withAlpha(120)),
+                      style: AppTypography.bodySmall.copyWith(
+                        color: _kCharcoal.withAlpha(120),
+                      ),
                     ),
                   ],
                 ),
               ),
 
             // ── Health score ring ────────────────────────────────────────
-            _HealthScoreCard(
-              health: health,
-              ringAnim: _ringAnim,
-            ),
+            _HealthScoreCard(health: health, ringAnim: _ringAnim),
             const SizedBox(height: AppSpacing.md),
 
             // ── Perfect! celebration badge ───────────────────────────────
@@ -333,10 +343,7 @@ class _WaterPanelContentState extends ConsumerState<WaterPanelContent>
 
             // ── Sparklines (pH + Nitrate trend) ─────────────────────────
             if (sparkPh.length >= 2 || sparkNO3.length >= 2) ...[
-              _SparklineSection(
-                phData: sparkPh,
-                nitData: sparkNO3,
-              ),
+              _SparklineSection(phData: sparkPh, nitData: sparkNO3),
               const SizedBox(height: AppSpacing.md),
             ],
 
@@ -368,11 +375,13 @@ class _WaterPanelContentState extends ConsumerState<WaterPanelContent>
           _ => null,
         };
         if (v == null) return false;
-        final ld =
-            DateTime(l.timestamp.year, l.timestamp.month, l.timestamp.day);
+        final ld = DateTime(
+          l.timestamp.year,
+          l.timestamp.month,
+          l.timestamp.day,
+        );
         return ld == day;
-      }).toList()
-        ..sort((a, b) => b.timestamp.compareTo(a.timestamp));
+      }).toList()..sort((a, b) => b.timestamp.compareTo(a.timestamp));
       if (dayLogs.isNotEmpty) {
         final wt = dayLogs.first.waterTest!;
         final v = switch (param) {
@@ -409,7 +418,11 @@ class _Header extends StatelessWidget {
             color: Color(0xFF3BBFB0),
             shape: BoxShape.circle,
           ),
-          child: const Icon(Icons.water_drop_rounded, color: Colors.white, size: 20),
+          child: const Icon(
+            Icons.water_drop_rounded,
+            color: Colors.white,
+            size: 20,
+          ),
         ),
         const SizedBox(width: AppSpacing.sm),
         Text(
@@ -427,10 +440,7 @@ class _HealthScoreCard extends StatelessWidget {
   final _HealthStatus health;
   final AnimationController ringAnim;
 
-  const _HealthScoreCard({
-    required this.health,
-    required this.ringAnim,
-  });
+  const _HealthScoreCard({required this.health, required this.ringAnim});
 
   @override
   Widget build(BuildContext context) {
@@ -508,10 +518,10 @@ class _HealthScoreCard extends StatelessWidget {
                   health == _HealthStatus.noData
                       ? 'Log a water test to get started'
                       : health == _HealthStatus.excellent
-                          ? 'All parameters in range 🎉'
-                          : health == _HealthStatus.good
-                              ? 'Some parameters need watching'
-                              : 'Action required — check parameters',
+                      ? 'All parameters in range 🎉'
+                      : health == _HealthStatus.good
+                      ? 'Some parameters need watching'
+                      : 'Action required — check parameters',
                   style: AppTypography.bodySmall.copyWith(
                     color: _kCharcoal.withAlpha(140),
                   ),
@@ -534,7 +544,9 @@ class _PerfectBadge extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacing.md, vertical: AppSpacing.sm),
+        horizontal: AppSpacing.md,
+        vertical: AppSpacing.sm,
+      ),
       decoration: BoxDecoration(
         color: _kGreen,
         borderRadius: AppRadius.largeRadius,
@@ -637,10 +649,7 @@ class _ParamCard extends StatelessWidget {
               Container(
                 width: 8,
                 height: 8,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: color,
-                ),
+                decoration: BoxDecoration(shape: BoxShape.circle, color: color),
               ),
               const SizedBox(width: AppSpacing.xs),
               Expanded(
@@ -677,7 +686,9 @@ class _ParamCard extends StatelessWidget {
           // Status chip
           Container(
             padding: const EdgeInsets.symmetric(
-                horizontal: AppSpacing.xs2, vertical: 2),
+              horizontal: AppSpacing.xs2,
+              vertical: 2,
+            ),
             decoration: BoxDecoration(
               color: bg,
               borderRadius: AppRadius.pillRadius,
@@ -737,15 +748,20 @@ class _SparklineSection extends StatelessWidget {
           if (phData.length >= 2) ...[
             Row(
               children: [
-                Text('pH  ',
-                    style: AppTypography.labelSmall
-                        .copyWith(color: _kCharcoal.withAlpha(120))),
+                Text(
+                  'pH  ',
+                  style: AppTypography.labelSmall.copyWith(
+                    color: _kCharcoal.withAlpha(120),
+                  ),
+                ),
                 Expanded(
                   child: SizedBox(
                     height: 36,
                     child: CustomPaint(
                       painter: _SparklinePainter(
-                          data: phData, color: const Color(0xFF3BBFB0)),
+                        data: phData,
+                        color: const Color(0xFF3BBFB0),
+                      ),
                     ),
                   ),
                 ),
@@ -757,15 +773,17 @@ class _SparklineSection extends StatelessWidget {
           if (nitData.length >= 2) ...[
             Row(
               children: [
-                Text('NO₃ ',
-                    style: AppTypography.labelSmall
-                        .copyWith(color: _kCharcoal.withAlpha(120))),
+                Text(
+                  'NO₃ ',
+                  style: AppTypography.labelSmall.copyWith(
+                    color: _kCharcoal.withAlpha(120),
+                  ),
+                ),
                 Expanded(
                   child: SizedBox(
                     height: 36,
                     child: CustomPaint(
-                      painter: _SparklinePainter(
-                          data: nitData, color: _kRed),
+                      painter: _SparklinePainter(data: nitData, color: _kRed),
                     ),
                   ),
                 ),
@@ -792,23 +810,16 @@ class _LogButton extends ConsumerWidget {
       height: 52,
       child: ElevatedButton.icon(
         onPressed: () {
-          ref
-              .read(stageProvider.notifier)
-              .close(StagePanel.waterQuality);
+          ref.read(stageProvider.notifier).close(StagePanel.waterQuality);
           Navigator.of(context).push(
             MaterialPageRoute(
-              builder: (_) => AddLogScreen(
-                tankId: tankId,
-                initialType: LogType.waterTest,
-              ),
+              builder: (_) =>
+                  AddLogScreen(tankId: tankId, initialType: LogType.waterTest),
             ),
           );
         },
         icon: const Icon(Icons.science_rounded, size: 20),
-        label: Text(
-          'Log Water Test',
-          style: AppTypography.labelLarge,
-        ),
+        label: Text('Log Water Test', style: AppTypography.labelLarge),
         style: ElevatedButton.styleFrom(
           backgroundColor: _kAmber,
           foregroundColor: Colors.white,
@@ -892,8 +903,7 @@ class _SparklinePainter extends CustomPainter {
         (size.height * (v - minV) / safeRange).clamp(4.0, size.height - 4.0);
 
     // Fill
-    final fillPath = Path()
-      ..moveTo(xOf(0), size.height);
+    final fillPath = Path()..moveTo(xOf(0), size.height);
     for (var i = 0; i < data.length; i++) {
       fillPath.lineTo(xOf(i), yOf(data[i]));
     }
@@ -912,8 +922,7 @@ class _SparklinePainter extends CustomPainter {
     );
 
     // Line
-    final linePath = Path()
-      ..moveTo(xOf(0), yOf(data[0]));
+    final linePath = Path()..moveTo(xOf(0), yOf(data[0]));
     for (var i = 1; i < data.length; i++) {
       final x0 = xOf(i - 1);
       final y0 = yOf(data[i - 1]);
@@ -935,9 +944,15 @@ class _SparklinePainter extends CustomPainter {
     // Dots
     for (var i = 0; i < data.length; i++) {
       canvas.drawCircle(
-          Offset(xOf(i), yOf(data[i])), 3.0, Paint()..color = color);
+        Offset(xOf(i), yOf(data[i])),
+        3.0,
+        Paint()..color = color,
+      );
       canvas.drawCircle(
-          Offset(xOf(i), yOf(data[i])), 1.5, Paint()..color = Colors.white);
+        Offset(xOf(i), yOf(data[i])),
+        1.5,
+        Paint()..color = Colors.white,
+      );
     }
   }
 

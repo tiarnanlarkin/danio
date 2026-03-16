@@ -4,19 +4,19 @@ import 'dart:math';
 enum MascotMood {
   /// Default happy state - friendly and welcoming
   happy,
-  
+
   /// Thinking/contemplative - for tips and suggestions
   thinking,
-  
+
   /// Celebrating - for achievements and milestones
   celebrating,
-  
+
   /// Encouraging - for empty states and motivation
   encouraging,
-  
+
   /// Curious - for questions and exploration
   curious,
-  
+
   /// Waving - for greetings and welcomes
   waving,
 }
@@ -40,7 +40,7 @@ extension MascotMoodExtension on MascotMood {
         return '👋';
     }
   }
-  
+
   /// Get the fish emoji for the mascot
   String get fishEmoji => '🐠';
 }
@@ -53,19 +53,19 @@ enum MascotContext {
   noLogs,
   noEquipment,
   noPlants,
-  
+
   // Onboarding
   welcome,
   experienceQuestion,
   tankTypeQuestion,
   goalsQuestion,
   onboardingComplete,
-  
+
   // Achievements
   achievementUnlocked,
   streakMilestone,
   levelUp,
-  
+
   // General
   dailyGreeting,
   encouragement,
@@ -77,7 +77,7 @@ enum MascotContext {
 /// Static helper class for mascot messages and behavior
 class MascotHelper {
   static final _random = Random();
-  
+
   /// Get appropriate mood for a given context
   static MascotMood getMoodForContext(MascotContext context) {
     switch (context) {
@@ -109,37 +109,41 @@ class MascotHelper {
         return MascotMood.waving;
     }
   }
-  
+
   /// Get a message for a specific context
   /// Returns a random message from the available options
   static String getMessage(MascotContext context) {
     final messages = _messagesForContext[context] ?? ['Hello!'];
     return messages[_random.nextInt(messages.length)];
   }
-  
+
   /// Get all messages for a context (useful for cycling)
   static List<String> getMessages(MascotContext context) {
     return _messagesForContext[context] ?? ['Hello!'];
   }
-  
+
   /// Get a random tip for aquarium care
   static String getRandomTip() {
     return _aquariumTips[_random.nextInt(_aquariumTips.length)];
   }
-  
+
   /// Get a random encouragement message
   static String getRandomEncouragement() {
-    return _encouragementMessages[_random.nextInt(_encouragementMessages.length)];
+    return _encouragementMessages[_random.nextInt(
+      _encouragementMessages.length,
+    )];
   }
-  
+
   /// Get a random congratulations message
   static String getRandomCongratulations() {
-    return _congratulationsMessages[_random.nextInt(_congratulationsMessages.length)];
+    return _congratulationsMessages[_random.nextInt(
+      _congratulationsMessages.length,
+    )];
   }
-  
+
   /// Get mascot name
   static String get name => 'your fish guide';
-  
+
   // Message database
   static const Map<MascotContext, List<String>> _messagesForContext = {
     // Empty states
@@ -173,7 +177,7 @@ class MascotHelper {
       "Ready to add some greenery?",
       "Live plants help your fish thrive!",
     ],
-    
+
     // Onboarding
     MascotContext.welcome: [
       "Hi there! I'm your aquarium guide! 🐠",
@@ -183,7 +187,7 @@ class MascotHelper {
     MascotContext.experienceQuestion: [
       "Tell me about your fishkeeping experience!",
       "How long have you been keeping fish?",
-      "Let's personalize your journey!",
+      "Let's personalise your journey!",
     ],
     MascotContext.tankTypeQuestion: [
       "What kind of underwater world do you have?",
@@ -200,7 +204,7 @@ class MascotHelper {
       "Welcome aboard! Your journey begins now!",
       "Awesome! I can't wait to help you succeed!",
     ],
-    
+
     // Achievements
     MascotContext.achievementUnlocked: [
       "You did it! Amazing work! 🏆",
@@ -217,7 +221,7 @@ class MascotHelper {
       "New level reached! Look at you go!",
       "You're making waves! Level up!",
     ],
-    
+
     // General
     MascotContext.dailyGreeting: [
       "Great to see you! How are your fish today?",
@@ -250,7 +254,7 @@ class MascotHelper {
       "You're back! Let's catch up on your tanks!",
     ],
   };
-  
+
   static const List<String> _aquariumTips = [
     "Test your water parameters at least once a week!",
     "Never change more than 25% of water at once.",
@@ -268,7 +272,7 @@ class MascotHelper {
     "Don't chase perfect parameters - stability matters more!",
     "Clean your filter media in old tank water, not tap water!",
   ];
-  
+
   static const List<String> _encouragementMessages = [
     "You've got this! 💪",
     "Every fish keeper started somewhere!",
@@ -279,7 +283,7 @@ class MascotHelper {
     "Mistakes are just learning opportunities!",
     "Your fish appreciate all your effort!",
   ];
-  
+
   static const List<String> _congratulationsMessages = [
     "Fantastic job! 🎉",
     "You're crushing it!",

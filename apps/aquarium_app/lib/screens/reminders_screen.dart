@@ -225,7 +225,10 @@ class _RemindersScreenState extends ConsumerState<RemindersScreen> {
                 if (upcoming.isNotEmpty) {
                   // Upcoming header
                   if (index == currentIndex) {
-                    return _SectionHeader(title: 'Upcoming', count: upcoming.length);
+                    return _SectionHeader(
+                      title: 'Upcoming',
+                      count: upcoming.length,
+                    );
                   }
                   currentIndex++;
 
@@ -337,7 +340,7 @@ class _EmptyState extends StatelessWidget {
           children: [
             Icon(Icons.notifications_none, size: AppIconSizes.xxl, color: context.textHint),
             const SizedBox(height: AppSpacing.md),
-            Text('No Reminders Yet', style: AppTypography.headlineSmall),
+            Text('No reminders yet ⏰', style: AppTypography.headlineSmall),
             const SizedBox(height: AppSpacing.sm),
             Text(
               'Set up reminders for water changes, filter cleaning, feeding, and more.',
@@ -377,7 +380,10 @@ class _SectionHeader extends StatelessWidget {
           ),
           const SizedBox(width: AppSpacing.sm),
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: 2),
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.sm,
+              vertical: 2,
+            ),
             decoration: BoxDecoration(
               color: (color ?? AppColors.primary).withAlpha(26),
               borderRadius: AppRadius.mediumRadius,
@@ -508,7 +514,9 @@ class _ReminderTile extends StatelessWidget {
             ],
           ),
           trailing: IconButton(
-            tooltip: isOverdue ? 'Mark overdue reminder as done' : 'Mark reminder as done',
+            tooltip: isOverdue
+                ? 'Mark overdue reminder as done'
+                : 'Mark reminder as done',
             icon: Icon(
               Icons.check_circle_outline,
               color: isOverdue ? AppColors.error : AppColors.success,
@@ -678,7 +686,9 @@ class _AddReminderSheetState extends State<_AddReminderSheet> {
                         firstDate: DateTime.now(),
                         lastDate: DateTime.now().add(const Duration(days: 365)),
                       );
-                      if (picked != null && mounted) setState(() => _dueDate = picked);
+                      if (picked != null && mounted) {
+                        setState(() => _dueDate = picked);
+                      }
                     },
                   ),
                 ),
@@ -692,7 +702,9 @@ class _AddReminderSheetState extends State<_AddReminderSheet> {
                         context: context,
                         initialTime: _dueTime,
                       );
-                      if (picked != null && mounted) setState(() => _dueTime = picked);
+                      if (picked != null && mounted) {
+                        setState(() => _dueTime = picked);
+                      }
                     },
                   ),
                 ),
@@ -739,11 +751,17 @@ class _AddReminderSheetState extends State<_AddReminderSheet> {
                 onPressed: () {
                   final title = _titleController.text.trim();
                   if (title.isEmpty) {
-                    AppFeedback.showWarning(context, 'Please enter a reminder title');
+                    AppFeedback.showWarning(
+                      context,
+                      'Please enter a reminder title',
+                    );
                     return;
                   }
                   if (title.length > 100) {
-                    AppFeedback.showWarning(context, 'Title must be 100 characters or fewer');
+                    AppFeedback.showWarning(
+                      context,
+                      'Title must be 100 characters or fewer',
+                    );
                     return;
                   }
 
@@ -805,7 +823,10 @@ class _PresetChip extends StatelessWidget {
       onTap: onTap,
       borderRadius: AppRadius.largeRadius,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm2, vertical: AppSpacing.sm),
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.sm2,
+          vertical: AppSpacing.sm,
+        ),
         decoration: BoxDecoration(
           color: AppOverlays.primary10,
           borderRadius: AppRadius.largeRadius,

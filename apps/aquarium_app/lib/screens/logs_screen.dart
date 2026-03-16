@@ -50,98 +50,110 @@ class _LogsScreenState extends ConsumerState<LogsScreen> {
         duration: const Duration(milliseconds: 300),
         switchInCurve: Curves.easeOutCubic,
         child: logsAsync.when(
-        loading: () => _buildSkeletonList(),
-        error: (err, _) => AppErrorState(
-          title: 'Failed to load logs',
-          onRetry: () => ref.invalidate(allLogsProvider(widget.tankId)),
-        ),
-        data: (logs) {
-          final filtered = logs.where(_matchesFilters).toList();
+          loading: () => _buildSkeletonList(),
+          error: (err, _) => AppErrorState(
+            title: 'Couldn\'t load your logs',
+            onRetry: () => ref.invalidate(allLogsProvider(widget.tankId)),
+          ),
+          data: (logs) {
+            final filtered = logs.where(_matchesFilters).toList();
 
-          final hasAnyFilters = _typeFilters.isNotEmpty || _dateRange != null;
+            final hasAnyFilters = _typeFilters.isNotEmpty || _dateRange != null;
 
-          if (filtered.isEmpty) {
-            if (logs.isEmpty) {
-              return EmptyState.withMascot(
-                icon: Icons.list_alt,
-                title: 'Start your tank\'s story! 📖',
-                message:
-                    'Start logging water tests, maintenance, and events to track your tank\'s history',
-                mascotContext: MascotContext.noLogs,
-                actionLabel: 'Add Log Entry',
-                onAction: () => NavigationThrottle.push(context, AddLogScreen(tankId: widget.tankId)),
-              );
-            } else {
-              // Has logs but filtered out
-              return EmptyState(
-                icon: Icons.filter_list_off,
-                title: 'No matching logs',
-                message: 'Try adjusting or clearing your filters',
-                actionLabel: 'Clear Filters',
-                onAction: _clearFilters,
-              );
+            if (filtered.isEmpty) {
+              if (logs.isEmpty) {
+                return EmptyState.withMascot(
+                  icon: Icons.list_alt,
+                  title: 'Start your tank\'s story! 📖',
+                  message:
+                      'Start logging water tests, maintenance, and events to track your tank\'s history',
+                  mascotContext: MascotContext.noLogs,
+                  actionLabel: 'Add Log Entry',
+                  onAction: () => NavigationThrottle.push(
+                    context,
+                    AddLogScreen(tankId: widget.tankId),
+                  ),
+                );
+              } else {
+                // Has logs but filtered out
+                return EmptyState(
+                  icon: Icons.filter_list_off,
+                  title: 'No matching logs',
+                  message: 'Try adjusting or clearing your filters',
+                  actionLabel: 'Clear Filters',
+                  onAction: _clearFilters,
+                );
+              }
             }
-          }
 
-          return RefreshIndicator(
-            color: AppColors.primary,
-            onRefresh: () async {
-              ref.invalidate(allLogsProvider(widget.tankId));
-              // Wait for new data to load
-              await Future.delayed(AppDurations.long2);
-            },
-            child: Column(
-              children: [
-                _FiltersSummaryBar(
-                  typeFilters: _typeFilters,
-                  dateRange: _dateRange,
-                  onClear: hasAnyFilters ? _clearFilters : null,
-                  onEdit: () => _openFilters(context),
-                ),
-                Expanded(
-                  child: ListView.separated(
-                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
-                  itemCount: filtered.length,
-                  separatorBuilder: (_, __) => const SizedBox(height: AppSpacing.sm),
-                  itemBuilder: (context, index) {
-                    final log = filtered[index];
-                    return Card(
-                      margin: EdgeInsets.zero,
-                      child: ListTile(
-                        leading: CircleAvatar(
-                          backgroundColor: _getLogColor(
-                            log.type,
-                          ).withAlpha(51),
-                          child: Icon(
-                            _getLogIcon(log.type),
-                            color: _getLogColor(log.type),
-                            size: AppIconSizes.sm,
-                          ),
-                        ),
-                        title: Text(_titleFor(log)),
-                        subtitle: Text(
-                          DateFormat(
-                            'MMM d, yyyy  •  h:mm a',
-                          ).format(log.timestamp),
-                        ),
-                        trailing: const Icon(Icons.chevron_right),
-                        onTap: () => NavigationThrottle.push(context, LogDetailScreen(
-                              tankId: widget.tankId,
-                              logId: log.id,
-                            )),
-                      ),
-                    )
-                        .animate()
-                        .fadeIn(delay: (50 * index).ms, duration: 300.ms)
-                        .slideX(begin: 0.1, end: 0, delay: (50 * index).ms, duration: 300.ms);
-                  },
-                ),
+            return RefreshIndicator(
+              color: AppColors.primary,
+              onRefresh: () async {
+                ref.invalidate(allLogsProvider(widget.tankId));
+                // Wait for new data to load
+                await Future.delayed(AppDurations.long2);
+              },
+              child: Column(
+                children: [
+                  _FiltersSummaryBar(
+                    typeFilters: _typeFilters,
+                    dateRange: _dateRange,
+                    onClear: hasAnyFilters ? _clearFilters : null,
+                    onEdit: () => _openFilters(context),
+                  ),
+                  Expanded(
+                    child: ListView.separated(
+                      padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+                      itemCount: filtered.length,
+                      separatorBuilder: (_, __) =>
+                          const SizedBox(height: AppSpacing.sm),
+                      itemBuilder: (context, index) {
+                        final log = filtered[index];
+                        return Card(
+                              margin: EdgeInsets.zero,
+                              child: ListTile(
+                                leading: CircleAvatar(
+                                  backgroundColor: _getLogColor(
+                                    log.type,
+                                  ).withAlpha(51),
+                                  child: Icon(
+                                    _getLogIcon(log.type),
+                                    color: _getLogColor(log.type),
+                                    size: AppIconSizes.sm,
+                                  ),
+                                ),
+                                title: Text(_titleFor(log)),
+                                subtitle: Text(
+                                  DateFormat(
+                                    'MMM d, yyyy  •  h:mm a',
+                                  ).format(log.timestamp),
+                                ),
+                                trailing: const Icon(Icons.chevron_right),
+                                onTap: () => NavigationThrottle.push(
+                                  context,
+                                  LogDetailScreen(
+                                    tankId: widget.tankId,
+                                    logId: log.id,
+                                  ),
+                                ),
+                              ),
+                            )
+                            .animate()
+                            .fadeIn(delay: (50 * index).ms, duration: 300.ms)
+                            .slideX(
+                              begin: 0.1,
+                              end: 0,
+                              delay: (50 * index).ms,
+                              duration: 300.ms,
+                            );
+                      },
+                    ),
+                  ),
+                ],
               ),
-            ],
-            ),
-          );
-        },
-      ),
+            );
+          },
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         tooltip: 'Add a new log entry',
@@ -211,8 +223,7 @@ class _LogsScreenState extends ConsumerState<LogsScreen> {
                   margin: EdgeInsets.zero,
                   child: ListTile(
                     leading: CircleAvatar(
-                      backgroundColor:
-                          _getLogColor(log.type).withAlpha(51),
+                      backgroundColor: _getLogColor(log.type).withAlpha(51),
                       child: Icon(
                         _getLogIcon(log.type),
                         color: _getLogColor(log.type),
@@ -221,8 +232,9 @@ class _LogsScreenState extends ConsumerState<LogsScreen> {
                     ),
                     title: Text(_titleFor(log)),
                     subtitle: Text(
-                      DateFormat('MMM d, yyyy  •  h:mm a')
-                          .format(log.timestamp),
+                      DateFormat(
+                        'MMM d, yyyy  •  h:mm a',
+                      ).format(log.timestamp),
                     ),
                     trailing: const Icon(Icons.chevron_right),
                   ),
@@ -398,7 +410,10 @@ class _LogsScreenState extends ConsumerState<LogsScreen> {
   }
 
   void _openAdd(BuildContext context, LogType type) {
-    NavigationThrottle.push(context, AddLogScreen(tankId: widget.tankId, initialType: type));
+    NavigationThrottle.push(
+      context,
+      AddLogScreen(tankId: widget.tankId, initialType: type),
+    );
   }
 
   static String _typeName(LogType type) {
@@ -567,7 +582,10 @@ class _Chip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm3, vertical: AppSpacing.xs2),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.sm3,
+        vertical: AppSpacing.xs2,
+      ),
       decoration: BoxDecoration(
         color: context.surfaceVariant,
         borderRadius: AppRadius.pillRadius,

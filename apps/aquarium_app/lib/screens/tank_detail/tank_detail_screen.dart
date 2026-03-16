@@ -95,7 +95,10 @@ class TankDetailScreen extends ConsumerWidget {
                 leading: Icon(Icons.schedule, color: AppColors.textHint),
                 title: Text('Loading task...'),
                 subtitle: Text('Due soon'),
-                trailing: Icon(Icons.check_circle_outline, color: AppColors.success),
+                trailing: Icon(
+                  Icons.check_circle_outline,
+                  color: AppColors.success,
+                ),
               ),
             ),
           ),
@@ -116,10 +119,16 @@ class TankDetailScreen extends ConsumerWidget {
               return ListTile(
                 leading: CircleAvatar(
                   backgroundColor: AppOverlays.primary20,
-                  child: const Icon(Icons.science, color: AppColors.primary, size: AppIconSizes.sm),
+                  child: const Icon(
+                    Icons.science,
+                    color: AppColors.primary,
+                    size: AppIconSizes.sm,
+                  ),
                 ),
                 title: Text(log.title ?? 'Loading activity...'),
-                subtitle: Text(DateFormat('MMM d, h:mm a').format(log.timestamp)),
+                subtitle: Text(
+                  DateFormat('MMM d, h:mm a').format(log.timestamp),
+                ),
               );
             }).toList(),
           ),
@@ -265,7 +274,11 @@ class TankDetailScreen extends ConsumerWidget {
     }
   }
 
-  Future<void> _deleteTank(BuildContext context, WidgetRef ref, Tank tank) async {
+  Future<void> _deleteTank(
+    BuildContext context,
+    WidgetRef ref,
+    Tank tank,
+  ) async {
     // P0-4 FIX: Show confirmation dialog before soft-deleting
     final confirmed = await showDialog<bool>(
       context: context,
@@ -328,12 +341,18 @@ class TankDetailScreen extends ConsumerWidget {
               SnackBar(
                 content: Row(
                   children: [
-                    const Icon(Icons.check_circle, color: Colors.white, size: 20),
+                    const Icon(
+                      Icons.check_circle,
+                      color: Colors.white,
+                      size: 20,
+                    ),
                     const SizedBox(width: AppSpacing.sm2),
                     Expanded(
                       child: Text(
                         '${tank.name} restored',
-                        style: AppTypography.bodyMedium.copyWith(color: Colors.white),
+                        style: AppTypography.bodyMedium.copyWith(
+                          color: Colors.white,
+                        ),
                       ),
                     ),
                   ],
@@ -341,7 +360,9 @@ class TankDetailScreen extends ConsumerWidget {
                 backgroundColor: AppColors.success,
                 behavior: SnackBarBehavior.floating,
                 duration: const Duration(seconds: 2),
-                shape: RoundedRectangleBorder(borderRadius: AppRadius.mediumRadius),
+                shape: RoundedRectangleBorder(
+                  borderRadius: AppRadius.mediumRadius,
+                ),
                 margin: const EdgeInsets.all(AppSpacing.md),
               ),
             );
@@ -361,14 +382,15 @@ class TankDetailScreen extends ConsumerWidget {
     final tasksAsync = ref.watch(tasksProvider(tankId));
 
     return tankAsync.when(
-      loading: () =>
-          const Scaffold(body: Center(child: BubbleLoader.large(message: 'Loading tank...'))),
+      loading: () => const Scaffold(
+        body: Center(child: BubbleLoader.large(message: 'Loading tank...')),
+      ),
       error: (err, stack) => Scaffold(
         appBar: AppBar(title: const Text('Tank')),
         body: Center(
           child: AppErrorState(
             title: 'Couldn\'t load this tank',
-            message: 'Please try again.',
+            message: 'Give it another try!',
             onRetry: () => ref.invalidate(tankProvider(tankId)),
           ),
         ),
@@ -381,13 +403,19 @@ class TankDetailScreen extends ConsumerWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.water_drop_outlined, size: 64, color: context.textHint),
+                  Icon(
+                    Icons.water_drop_outlined,
+                    size: 64,
+                    color: context.textHint,
+                  ),
                   const SizedBox(height: AppSpacing.md),
                   Text('Tank not found', style: AppTypography.headlineSmall),
                   const SizedBox(height: AppSpacing.sm),
                   Text(
                     'This tank may have been deleted.',
-                    style: AppTypography.bodyMedium.copyWith(color: context.textSecondary),
+                    style: AppTypography.bodyMedium.copyWith(
+                      color: context.textSecondary,
+                    ),
                   ),
                   const SizedBox(height: AppSpacing.lg),
                   ElevatedButton(
@@ -412,530 +440,726 @@ class TankDetailScreen extends ConsumerWidget {
             },
             child: CustomScrollView(
               slivers: [
-              // Header
-              SliverAppBar(
-                expandedHeight: 180,
-                pinned: true,
-                flexibleSpace: FlexibleSpaceBar(
-                  title: Text(
-                    tank.name,
-                    style: const TextStyle(color: Colors.white),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  background: Hero(
-                    tag: 'tank-card-${tank.id}',
-                    child: Container(
-                      decoration: const BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                          colors: [AppColors.primary, AppColors.secondary],
-                        ),
-                      ),
-                      child: Stack(
-                        children: [
-                          Positioned(
-                            right: -20,
-                            bottom: -20,
-                            child: Icon(
-                              Icons.water,
-                              size: 150,
-                              color: AppOverlays.white10,
-                            ),
-                          ),
-                        ],
-                      ),
+                // Header
+                SliverAppBar(
+                  expandedHeight: 180,
+                  pinned: true,
+                  flexibleSpace: FlexibleSpaceBar(
+                    title: Text(
+                      tank.name,
+                      style: const TextStyle(color: Colors.white),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
-                  ),
-                ),
-                actions: [
-                  IconButton(
-                    icon: const Icon(Icons.checklist, color: Colors.white),
-                    tooltip: 'Checklist',
-                    onPressed: () => NavigationThrottle.push(context, MaintenanceChecklistScreen(
-                          tankId: tankId,
-                          tankName: tank.name,
-                        )),
-                  ),
-                  IconButton(
-                    icon: const Icon(
-                      Icons.photo_library_outlined,
-                      color: Colors.white,
-                    ),
-                    tooltip: 'Gallery',
-                    onPressed: () => NavigationThrottle.push(context, PhotoGalleryScreen(
-                          tankId: tankId,
-                          tankName: tank.name,
-                        )),
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.book_outlined, color: Colors.white),
-                    tooltip: 'Journal',
-                    onPressed: () => NavigationThrottle.push(context, JournalScreen(tankId: tankId)),
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.show_chart, color: Colors.white),
-                    tooltip: 'Charts',
-                    onPressed: () => NavigationThrottle.push(context, ChartsScreen(tankId: tankId)),
-                  ),
-                  PopupMenuButton<String>(
-                    icon: const Icon(Icons.more_vert, color: Colors.white),
-                    onSelected: (value) {
-                      switch (value) {
-                        case 'settings':
-                          NavigationThrottle.push(context, TankSettingsScreen(tankId: tankId));
-                        case 'compare':
-                          NavigationThrottle.push(context, const TankComparisonScreen());
-                        case 'costs':
-                          NavigationThrottle.push(context, const CostTrackerScreen());
-                        case 'value':
-                          NavigationThrottle.push(context, LivestockValueScreen(
-                                tankId: tankId,
-                                tankName: tank.name,
-                              ));
-                        case 'delete':
-                          _deleteTank(context, ref, tank);
-                      }
-                    },
-                    itemBuilder: (_) => [
-                      const PopupMenuItem(
-                        value: 'compare',
-                        child: ListTile(
-                          leading: Icon(Icons.compare_arrows),
-                          title: Text('Compare Tanks'),
-                          contentPadding: EdgeInsets.zero,
-                        ),
-                      ),
-                      const PopupMenuItem(
-                        value: 'costs',
-                        child: ListTile(
-                          leading: Icon(Icons.receipt_long),
-                          title: Text('Cost Tracker'),
-                          contentPadding: EdgeInsets.zero,
-                        ),
-                      ),
-                      const PopupMenuItem(
-                        value: 'value',
-                        child: ListTile(
-                          leading: Icon(Icons.attach_money),
-                          title: Text('Estimate Value'),
-                          contentPadding: EdgeInsets.zero,
-                        ),
-                      ),
-                      const PopupMenuItem(
-                        value: 'settings',
-                        child: ListTile(
-                          leading: Icon(Icons.settings),
-                          title: Text('Tank Settings'),
-                          contentPadding: EdgeInsets.zero,
-                        ),
-                      ),
-                      const PopupMenuItem(
-                        value: 'delete',
-                        child: ListTile(
-                          leading: Icon(
-                            Icons.delete_outline,
-                            color: AppColors.error,
+                    background: Hero(
+                      tag: 'tank-card-${tank.id}',
+                      child: Container(
+                        decoration: const BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [AppColors.primary, AppColors.secondary],
                           ),
-                          title: Text(
-                            'Delete Tank',
-                            style: TextStyle(color: AppColors.error),
-                          ),
-                          contentPadding: EdgeInsets.zero,
                         ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-
-              // Demo tank banner
-              if (tank.isDemoTank)
-                SliverToBoxAdapter(
-                  child: GestureDetector(
-                    onTap: () => NavigationThrottle.push(context, const CreateTankScreen()),
-                    child: Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.sm2),
-                      color: DanioColors.amberText.withValues(alpha: 0.15),
-                      child: Row(
-                        children: [
-                          const Text('🐠', style: TextStyle(fontSize: 18)),
-                          const SizedBox(width: AppSpacing.sm),
-                          Expanded(
-                            child: Text(
-                              'Demo Tank — Tap here to create your own',
-                              style: AppTypography.labelMedium.copyWith(
-                                color: DanioColors.amberText,
-                                fontWeight: FontWeight.w600,
+                        child: Stack(
+                          children: [
+                            Positioned(
+                              right: -20,
+                              bottom: -20,
+                              child: Icon(
+                                Icons.water,
+                                size: 150,
+                                color: AppOverlays.white10,
                               ),
                             ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  actions: [
+                    IconButton(
+                      icon: const Icon(Icons.checklist, color: Colors.white),
+                      tooltip: 'Checklist',
+                      onPressed: () => NavigationThrottle.push(
+                        context,
+                        MaintenanceChecklistScreen(
+                          tankId: tankId,
+                          tankName: tank.name,
+                        ),
+                      ),
+                    ),
+                    IconButton(
+                      icon: const Icon(
+                        Icons.photo_library_outlined,
+                        color: Colors.white,
+                      ),
+                      tooltip: 'Gallery',
+                      onPressed: () => NavigationThrottle.push(
+                        context,
+                        PhotoGalleryScreen(tankId: tankId, tankName: tank.name),
+                      ),
+                    ),
+                    IconButton(
+                      icon: const Icon(
+                        Icons.book_outlined,
+                        color: Colors.white,
+                      ),
+                      tooltip: 'Journal',
+                      onPressed: () => NavigationThrottle.push(
+                        context,
+                        JournalScreen(tankId: tankId),
+                      ),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.show_chart, color: Colors.white),
+                      tooltip: 'Charts',
+                      onPressed: () => NavigationThrottle.push(
+                        context,
+                        ChartsScreen(tankId: tankId),
+                      ),
+                    ),
+                    PopupMenuButton<String>(
+                      icon: const Icon(Icons.more_vert, color: Colors.white),
+                      onSelected: (value) {
+                        switch (value) {
+                          case 'settings':
+                            NavigationThrottle.push(
+                              context,
+                              TankSettingsScreen(tankId: tankId),
+                            );
+                          case 'compare':
+                            NavigationThrottle.push(
+                              context,
+                              const TankComparisonScreen(),
+                            );
+                          case 'costs':
+                            NavigationThrottle.push(
+                              context,
+                              const CostTrackerScreen(),
+                            );
+                          case 'value':
+                            NavigationThrottle.push(
+                              context,
+                              LivestockValueScreen(
+                                tankId: tankId,
+                                tankName: tank.name,
+                              ),
+                            );
+                          case 'delete':
+                            _deleteTank(context, ref, tank);
+                        }
+                      },
+                      itemBuilder: (_) => [
+                        const PopupMenuItem(
+                          value: 'compare',
+                          child: ListTile(
+                            leading: Icon(Icons.compare_arrows),
+                            title: Text('Compare Tanks'),
+                            contentPadding: EdgeInsets.zero,
                           ),
-                          Icon(Icons.arrow_forward_ios, size: 14, color: DanioColors.amberText),
+                        ),
+                        const PopupMenuItem(
+                          value: 'costs',
+                          child: ListTile(
+                            leading: Icon(Icons.receipt_long),
+                            title: Text('Cost Tracker'),
+                            contentPadding: EdgeInsets.zero,
+                          ),
+                        ),
+                        const PopupMenuItem(
+                          value: 'value',
+                          child: ListTile(
+                            leading: Icon(Icons.attach_money),
+                            title: Text('Estimate Value'),
+                            contentPadding: EdgeInsets.zero,
+                          ),
+                        ),
+                        const PopupMenuItem(
+                          value: 'settings',
+                          child: ListTile(
+                            leading: Icon(Icons.settings),
+                            title: Text('Tank Settings'),
+                            contentPadding: EdgeInsets.zero,
+                          ),
+                        ),
+                        const PopupMenuItem(
+                          value: 'delete',
+                          child: ListTile(
+                            leading: Icon(
+                              Icons.delete_outline,
+                              color: AppColors.error,
+                            ),
+                            title: Text(
+                              'Delete Tank',
+                              style: TextStyle(color: AppColors.error),
+                            ),
+                            contentPadding: EdgeInsets.zero,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+
+                // Demo tank banner
+                if (tank.isDemoTank)
+                  SliverToBoxAdapter(
+                    child: GestureDetector(
+                      onTap: () => NavigationThrottle.push(
+                        context,
+                        const CreateTankScreen(),
+                      ),
+                      child: Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: AppSpacing.md,
+                          vertical: AppSpacing.sm2,
+                        ),
+                        color: DanioColors.amberText.withValues(alpha: 0.15),
+                        child: Row(
+                          children: [
+                            const Text('🐠', style: TextStyle(fontSize: 18)),
+                            const SizedBox(width: AppSpacing.sm),
+                            Expanded(
+                              child: Text(
+                                'Demo Tank — Tap here to create your own',
+                                style: AppTypography.labelMedium.copyWith(
+                                  color: DanioColors.amberText,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ),
+                            Icon(
+                              Icons.arrow_forward_ios,
+                              size: 14,
+                              color: DanioColors.amberText,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+
+                // Quick stats
+                SliverToBoxAdapter(
+                  child:
+                      Padding(
+                            padding: const EdgeInsets.all(AppSpacing.md),
+                            child: QuickStats(
+                              tank: tank,
+                              logsAsync: logsAllAsync,
+                              livestockAsync: livestockAsync,
+                              equipmentAsync: equipmentAsync,
+                            ),
+                          )
+                          .animate()
+                          .fadeIn(duration: 300.ms)
+                          .slideY(begin: 0.1, end: 0, duration: 300.ms),
+                ),
+
+                // Tank Health Score
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.md,
+                    ),
+                    child: logsAllAsync.when(
+                      loading: () =>
+                          const DashboardLoadingCard(title: 'Health'),
+                      error: (e, _) => Center(
+                        child: Text(
+                          'Couldn\'t load health data — try refreshing!',
+                          style: AppTypography.bodyMedium.copyWith(
+                            color: context.textHint,
+                          ),
+                        ),
+                      ),
+                      data: (logs) => TankHealthCard(tank: tank, logs: logs),
+                    ),
+                  ),
+                ),
+                const SliverToBoxAdapter(
+                  child: SizedBox(height: AppSpacing.sm),
+                ),
+                // Action buttons
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.md,
+                    ),
+                    child:
+                        Row(
+                              children: [
+                                Expanded(
+                                  child: ActionButton(
+                                    icon: Icons.science_outlined,
+                                    label: 'Log Test',
+                                    color: AppColors.primary,
+                                    onTap: () => _navigateToAddLog(
+                                      context,
+                                      LogType.waterTest,
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(width: AppSpacing.sm2),
+                                Expanded(
+                                  child: ActionButton(
+                                    icon: Icons.water_drop_outlined,
+                                    label: 'Water Change',
+                                    color: AppColors.accent, // Teal water
+                                    onTap: () => _navigateToAddLog(
+                                      context,
+                                      LogType.waterChange,
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(width: AppSpacing.sm2),
+                                Expanded(
+                                  child: ActionButton(
+                                    icon: Icons.note_add_outlined,
+                                    label: 'Add Note',
+                                    color: AppColors.accent,
+                                    onTap: () => _navigateToAddLog(
+                                      context,
+                                      LogType.observation,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            )
+                            .animate()
+                            .fadeIn(duration: 300.ms, delay: 100.ms)
+                            .slideY(
+                              begin: 0.15,
+                              end: 0,
+                              duration: 300.ms,
+                              delay: 100.ms,
+                            ),
+                  ),
+                ),
+
+                const SliverToBoxAdapter(
+                  child: SizedBox(height: AppSpacing.md),
+                ),
+
+                // Dashboard: latest snapshot
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.md,
+                    ),
+                    child: logsAllAsync.when(
+                      loading: () => const DashboardLoadingCard(
+                        title: 'Latest Water Snapshot',
+                      ),
+                      error: (_, __) => Padding(
+                        padding: const EdgeInsets.all(AppSpacing.sm),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              Icons.info_outline,
+                              size: 14,
+                              color: AppColors.warning,
+                            ),
+                            const SizedBox(width: AppSpacing.xs),
+                            Text(
+                              'Unable to load',
+                              style: Theme.of(context).textTheme.bodySmall
+                                  ?.copyWith(color: AppColors.warning),
+                            ),
+                          ],
+                        ),
+                      ),
+                      data: (logs) =>
+                          LatestSnapshotCard(tank: tank, logs: logs),
+                    ),
+                  ),
+                ),
+
+                const SliverToBoxAdapter(
+                  child: SizedBox(height: AppSpacing.sm2),
+                ),
+
+                // Dashboard: trends
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.md,
+                    ),
+                    child: logsAllAsync.when(
+                      loading: () =>
+                          const DashboardLoadingCard(title: 'Trends'),
+                      error: (_, __) => Padding(
+                        padding: const EdgeInsets.all(AppSpacing.sm),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              Icons.info_outline,
+                              size: 14,
+                              color: AppColors.warning,
+                            ),
+                            const SizedBox(width: AppSpacing.xs),
+                            Text(
+                              'Unable to load',
+                              style: Theme.of(context).textTheme.bodySmall
+                                  ?.copyWith(color: AppColors.warning),
+                            ),
+                          ],
+                        ),
+                      ),
+                      data: (logs) => TrendsRow(
+                        tank: tank,
+                        logs: logs,
+                        onOpenCharts: (param) => NavigationThrottle.push(
+                          context,
+                          ChartsScreen(tankId: tankId, initialParam: param),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+
+                const SliverToBoxAdapter(
+                  child: SizedBox(height: AppSpacing.sm2),
+                ),
+
+                // Dashboard: alerts
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.md,
+                    ),
+                    child: logsAllAsync.when(
+                      loading: () =>
+                          const DashboardLoadingCard(title: 'Alerts'),
+                      error: (_, __) => Padding(
+                        padding: const EdgeInsets.all(AppSpacing.sm),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              Icons.info_outline,
+                              size: 14,
+                              color: AppColors.warning,
+                            ),
+                            const SizedBox(width: AppSpacing.xs),
+                            Text(
+                              'Unable to load',
+                              style: Theme.of(context).textTheme.bodySmall
+                                  ?.copyWith(color: AppColors.warning),
+                            ),
+                          ],
+                        ),
+                      ),
+                      data: (logs) => AlertsCard(tank: tank, logs: logs),
+                    ),
+                  ),
+                ),
+
+                const SliverToBoxAdapter(
+                  child: SizedBox(height: AppSpacing.lg),
+                ),
+
+                // Cycling status (for tanks < 90 days old)
+                SliverToBoxAdapter(
+                  child: logsAllAsync.when(
+                    loading: () => const SizedBox.shrink(),
+                    error: (_, __) => Padding(
+                      padding: const EdgeInsets.all(AppSpacing.sm),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            Icons.info_outline,
+                            size: 14,
+                            color: AppColors.warning,
+                          ),
+                          const SizedBox(width: AppSpacing.xs),
+                          Text(
+                            'Unable to load',
+                            style: Theme.of(context).textTheme.bodySmall
+                                ?.copyWith(color: AppColors.warning),
+                          ),
                         ],
                       ),
                     ),
-                  ),
-                ),
-
-              // Quick stats
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.all(AppSpacing.md),
-                  child: QuickStats(tank: tank, logsAsync: logsAllAsync, livestockAsync: livestockAsync, equipmentAsync: equipmentAsync),
-                ).animate().fadeIn(duration: 300.ms).slideY(begin: 0.1, end: 0, duration: 300.ms),
-              ),
-
-              // Tank Health Score
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
-                  child: logsAllAsync.when(
-                    loading: () => const DashboardLoadingCard(title: 'Health'),
-                    error: (e, _) => Center(
-                      child: Text(
-                        'Something went wrong',
-                        style: AppTypography.bodyMedium.copyWith(color: context.textHint),
+                    data: (logs) => Padding(
+                      padding: const EdgeInsets.fromLTRB(
+                        AppSpacing.md,
+                        0,
+                        AppSpacing.md,
+                        AppSpacing.md,
+                      ),
+                      child: GestureDetector(
+                        onTap: () => NavigationThrottle.push(
+                          context,
+                          CyclingAssistantScreen(tankId: tank.id),
+                        ),
+                        child: CyclingStatusCard(tank: tank, logs: logs),
                       ),
                     ),
-                    data: (logs) => TankHealthCard(tank: tank, logs: logs),
                   ),
                 ),
-              ),
-              const SliverToBoxAdapter(child: SizedBox(height: AppSpacing.sm)),
-              // Action buttons
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: ActionButton(
-                          icon: Icons.science_outlined,
-                          label: 'Log Test',
-                          color: AppColors.primary,
-                          onTap: () =>
-                              _navigateToAddLog(context, LogType.waterTest),
-                        ),
-                      ),
-                      const SizedBox(width: AppSpacing.sm2),
-                      Expanded(
-                        child: ActionButton(
-                          icon: Icons.water_drop_outlined,
-                          label: 'Water Change',
-                          color: AppColors.accent, // Teal water
-                          onTap: () =>
-                              _navigateToAddLog(context, LogType.waterChange),
-                        ),
-                      ),
-                      const SizedBox(width: AppSpacing.sm2),
-                      Expanded(
-                        child: ActionButton(
-                          icon: Icons.note_add_outlined,
-                          label: 'Add Note',
-                          color: AppColors.accent,
-                          onTap: () =>
-                              _navigateToAddLog(context, LogType.observation),
-                        ),
-                      ),
-                    ],
-                  ).animate().fadeIn(duration: 300.ms, delay: 100.ms).slideY(begin: 0.15, end: 0, duration: 300.ms, delay: 100.ms),
-                ),
-              ),
 
-              const SliverToBoxAdapter(child: SizedBox(height: AppSpacing.md)),
-
-              // Dashboard: latest snapshot
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
-                  child: logsAllAsync.when(
-                    loading: () => const DashboardLoadingCard(
-                      title: 'Latest Water Snapshot',
+                // Danio Daily briefing
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(
+                      AppSpacing.md,
+                      0,
+                      AppSpacing.md,
+                      AppSpacing.md,
                     ),
-                    error: (_, __) => Padding(
-                    padding: const EdgeInsets.all(AppSpacing.sm),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(Icons.info_outline, size: 14, color: AppColors.warning),
-                        const SizedBox(width: AppSpacing.xs),
-                        Text('Unable to load', style: Theme.of(context).textTheme.bodySmall?.copyWith(color: AppColors.warning)),
-                      ],
-                    ),
-                  ),
-                    data: (logs) => LatestSnapshotCard(tank: tank, logs: logs),
+                    child: const DanioDailyCard(),
                   ),
                 ),
-              ),
 
-              const SliverToBoxAdapter(child: SizedBox(height: AppSpacing.sm2)),
-
-              // Dashboard: trends
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
-                  child: logsAllAsync.when(
-                    loading: () => const DashboardLoadingCard(title: 'Trends'),
-                    error: (_, __) => Padding(
-                    padding: const EdgeInsets.all(AppSpacing.sm),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(Icons.info_outline, size: 14, color: AppColors.warning),
-                        const SizedBox(width: AppSpacing.xs),
-                        Text('Unable to load', style: Theme.of(context).textTheme.bodySmall?.copyWith(color: AppColors.warning)),
-                      ],
-                    ),
-                  ),
-                    data: (logs) => TrendsRow(
-                      tank: tank,
-                      logs: logs,
-                      onOpenCharts: (param) => NavigationThrottle.push(context, ChartsScreen(tankId: tankId, initialParam: param)),
-                    ),
-                  ),
-                ),
-              ),
-
-              const SliverToBoxAdapter(child: SizedBox(height: AppSpacing.sm2)),
-
-              // Dashboard: alerts
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
-                  child: logsAllAsync.when(
-                    loading: () => const DashboardLoadingCard(title: 'Alerts'),
-                    error: (_, __) => Padding(
-                    padding: const EdgeInsets.all(AppSpacing.sm),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(Icons.info_outline, size: 14, color: AppColors.warning),
-                        const SizedBox(width: AppSpacing.xs),
-                        Text('Unable to load', style: Theme.of(context).textTheme.bodySmall?.copyWith(color: AppColors.warning)),
-                      ],
-                    ),
-                  ),
-                    data: (logs) => AlertsCard(tank: tank, logs: logs),
-                  ),
-                ),
-              ),
-
-              const SliverToBoxAdapter(child: SizedBox(height: AppSpacing.lg)),
-
-              // Cycling status (for tanks < 90 days old)
-              SliverToBoxAdapter(
-                child: logsAllAsync.when(
-                  loading: () => const SizedBox.shrink(),
-                  error: (_, __) => Padding(
-                    padding: const EdgeInsets.all(AppSpacing.sm),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(Icons.info_outline, size: 14, color: AppColors.warning),
-                        const SizedBox(width: AppSpacing.xs),
-                        Text('Unable to load', style: Theme.of(context).textTheme.bodySmall?.copyWith(color: AppColors.warning)),
-                      ],
-                    ),
-                  ),
-                  data: (logs) => Padding(
-                    padding: const EdgeInsets.fromLTRB(AppSpacing.md, 0, AppSpacing.md, AppSpacing.md),
-                    child: GestureDetector(
-                      onTap: () => NavigationThrottle.push(context, CyclingAssistantScreen(tankId: tank.id)),
-                      child: CyclingStatusCard(tank: tank, logs: logs),
-                    ),
-                  ),
-                ),
-              ),
-
-              // Danio Daily briefing
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(AppSpacing.md, 0, AppSpacing.md, AppSpacing.md),
-                  child: const DanioDailyCard(),
-                ),
-              ),
-
-              // Sections
-              SliverToBoxAdapter(
-                child: SectionHeader(
-                  title: 'Tasks',
-                  trailing: tasksAsync.when(
-                    loading: () => null,
-                    error: (_, __) => null,
-                    data: (tasks) {
-                      final pending = tasks
-                          .where(
-                            (t) => t.isEnabled && (t.isOverdue || t.isDueToday),
-                          )
-                          .length;
-                      if (pending == 0) return null;
-                      return Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 8,
-                          vertical: 2,
-                        ),
-                        decoration: BoxDecoration(
-                          color: AppColors.warning,
-                          borderRadius: AppRadius.mediumRadius,
-                        ),
-                        child: Text(
-                          '$pending',
-                          style: AppTypography.bodySmall.copyWith(
-                            color: Colors.white,
+                // Sections
+                SliverToBoxAdapter(
+                  child: SectionHeader(
+                    title: 'Tasks',
+                    trailing: tasksAsync.when(
+                      loading: () => null,
+                      error: (_, __) => null,
+                      data: (tasks) {
+                        final pending = tasks
+                            .where(
+                              (t) =>
+                                  t.isEnabled && (t.isOverdue || t.isDueToday),
+                            )
+                            .length;
+                        if (pending == 0) return null;
+                        return Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 2,
                           ),
-                        ),
+                          decoration: BoxDecoration(
+                            color: AppColors.warning,
+                            borderRadius: AppRadius.mediumRadius,
+                          ),
+                          child: Text(
+                            '$pending',
+                            style: AppTypography.bodySmall.copyWith(
+                              color: Colors.white,
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                    onViewAll: () => NavigationThrottle.push(
+                      context,
+                      TasksScreen(tankId: tankId),
+                    ),
+                  ),
+                ),
+
+                SliverToBoxAdapter(
+                  child: tasksAsync.when(
+                    loading: () => _buildTaskSkeletonPreview(),
+                    error: (_, __) => Padding(
+                      padding: const EdgeInsets.all(AppSpacing.sm),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            Icons.info_outline,
+                            size: 14,
+                            color: AppColors.warning,
+                          ),
+                          const SizedBox(width: AppSpacing.xs),
+                          Text(
+                            'Unable to load',
+                            style: Theme.of(context).textTheme.bodySmall
+                                ?.copyWith(color: AppColors.warning),
+                          ),
+                        ],
+                      ),
+                    ),
+                    data: (tasks) => TaskPreview(
+                      tasks: tasks.take(3).toList(),
+                      onComplete: (t) => _completeTask(context, ref, t, tankId),
+                    ),
+                  ),
+                ),
+
+                const SliverToBoxAdapter(
+                  child: SizedBox(height: AppSpacing.md),
+                ),
+
+                // Recent logs
+                SliverToBoxAdapter(
+                  child: SectionHeader(
+                    title: 'Recent Activity',
+                    onViewAll: () => NavigationThrottle.push(
+                      context,
+                      LogsScreen(tankId: tankId),
+                    ),
+                  ),
+                ),
+
+                SliverToBoxAdapter(
+                  child: logsRecentAsync.when(
+                    loading: () => _buildLogsSkeletonList(),
+                    error: (_, __) => Padding(
+                      padding: const EdgeInsets.all(AppSpacing.sm),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            Icons.info_outline,
+                            size: 14,
+                            color: AppColors.warning,
+                          ),
+                          const SizedBox(width: AppSpacing.xs),
+                          Text(
+                            'Unable to load',
+                            style: Theme.of(context).textTheme.bodySmall
+                                ?.copyWith(color: AppColors.warning),
+                          ),
+                        ],
+                      ),
+                    ),
+                    data: (logs) => LogsList(
+                      logs: logs.take(5).toList(),
+                      onTap: (log) => NavigationThrottle.push(
+                        context,
+                        LogDetailScreen(tankId: tankId, logId: log.id),
+                      ),
+                    ),
+                  ),
+                ),
+
+                const SliverToBoxAdapter(
+                  child: SizedBox(height: AppSpacing.md),
+                ),
+
+                // Livestock
+                SliverToBoxAdapter(
+                  child: SectionHeader(
+                    title: 'Livestock',
+                    trailing: livestockAsync.when(
+                      loading: () => null,
+                      error: (_, __) => null,
+                      data: (livestock) => Text(
+                        '${livestock.fold<int>(0, (sum, l) => sum + l.count)} fish',
+                        style: AppTypography.bodySmall,
+                      ),
+                    ),
+                    onViewAll: () => NavigationThrottle.push(
+                      context,
+                      LivestockScreen(tankId: tankId),
+                    ),
+                  ),
+                ),
+
+                SliverToBoxAdapter(
+                  child: livestockAsync.when(
+                    loading: () => _buildLivestockSkeletonPreview(),
+                    error: (_, __) => Padding(
+                      padding: const EdgeInsets.all(AppSpacing.sm),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            Icons.info_outline,
+                            size: 14,
+                            color: AppColors.warning,
+                          ),
+                          const SizedBox(width: AppSpacing.xs),
+                          Text(
+                            'Unable to load',
+                            style: Theme.of(context).textTheme.bodySmall
+                                ?.copyWith(color: AppColors.warning),
+                          ),
+                        ],
+                      ),
+                    ),
+                    data: (livestock) => LivestockPreview(livestock: livestock),
+                  ),
+                ),
+
+                // Stocking level indicator
+                SliverToBoxAdapter(
+                  child: livestockAsync.when(
+                    loading: () => const SizedBox.shrink(),
+                    error: (_, __) => Padding(
+                      padding: const EdgeInsets.all(AppSpacing.sm),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            Icons.info_outline,
+                            size: 14,
+                            color: AppColors.warning,
+                          ),
+                          const SizedBox(width: AppSpacing.xs),
+                          Text(
+                            'Unable to load',
+                            style: Theme.of(context).textTheme.bodySmall
+                                ?.copyWith(color: AppColors.warning),
+                          ),
+                        ],
+                      ),
+                    ),
+                    data: (livestock) {
+                      if (livestock.isEmpty) return const SizedBox.shrink();
+                      final result = StockingCalculator.calculate(
+                        tank: tank,
+                        livestock: livestock,
                       );
+                      return StockingIndicator(result: result);
                     },
                   ),
-                  onViewAll: () => NavigationThrottle.push(context, TasksScreen(tankId: tankId)),
                 ),
-              ),
 
-              SliverToBoxAdapter(
-                child: tasksAsync.when(
-                  loading: () => _buildTaskSkeletonPreview(),
-                  error: (_, __) => Padding(
-                    padding: const EdgeInsets.all(AppSpacing.sm),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(Icons.info_outline, size: 14, color: AppColors.warning),
-                        const SizedBox(width: AppSpacing.xs),
-                        Text('Unable to load', style: Theme.of(context).textTheme.bodySmall?.copyWith(color: AppColors.warning)),
-                      ],
+                const SliverToBoxAdapter(
+                  child: SizedBox(height: AppSpacing.md),
+                ),
+
+                // Equipment
+                SliverToBoxAdapter(
+                  child: SectionHeader(
+                    title: 'Equipment',
+                    onViewAll: () => NavigationThrottle.push(
+                      context,
+                      EquipmentScreen(tankId: tankId),
                     ),
                   ),
-                  data: (tasks) => TaskPreview(
-                    tasks: tasks.take(3).toList(),
-                    onComplete: (t) => _completeTask(context, ref, t, tankId),
-                  ),
                 ),
-              ),
 
-              const SliverToBoxAdapter(child: SizedBox(height: AppSpacing.md)),
-
-              // Recent logs
-              SliverToBoxAdapter(
-                child: SectionHeader(
-                  title: 'Recent Activity',
-                  onViewAll: () => NavigationThrottle.push(context, LogsScreen(tankId: tankId)),
-                ),
-              ),
-
-              SliverToBoxAdapter(
-                child: logsRecentAsync.when(
-                  loading: () => _buildLogsSkeletonList(),
-                  error: (_, __) => Padding(
-                    padding: const EdgeInsets.all(AppSpacing.sm),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(Icons.info_outline, size: 14, color: AppColors.warning),
-                        const SizedBox(width: AppSpacing.xs),
-                        Text('Unable to load', style: Theme.of(context).textTheme.bodySmall?.copyWith(color: AppColors.warning)),
-                      ],
+                SliverToBoxAdapter(
+                  child: equipmentAsync.when(
+                    loading: () => _buildEquipmentSkeletonPreview(),
+                    error: (_, __) => Padding(
+                      padding: const EdgeInsets.all(AppSpacing.sm),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            Icons.info_outline,
+                            size: 14,
+                            color: AppColors.warning,
+                          ),
+                          const SizedBox(width: AppSpacing.xs),
+                          Text(
+                            'Unable to load',
+                            style: Theme.of(context).textTheme.bodySmall
+                                ?.copyWith(color: AppColors.warning),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                  data: (logs) => LogsList(
-                    logs: logs.take(5).toList(),
-                    onTap: (log) => NavigationThrottle.push(context, LogDetailScreen(tankId: tankId, logId: log.id)),
+                    data: (equipment) => EquipmentPreview(equipment: equipment),
                   ),
                 ),
-              ),
 
-              const SliverToBoxAdapter(child: SizedBox(height: AppSpacing.md)),
-
-              // Livestock
-              SliverToBoxAdapter(
-                child: SectionHeader(
-                  title: 'Livestock',
-                  trailing: livestockAsync.when(
-                    loading: () => null,
-                    error: (_, __) => null,
-                    data: (livestock) => Text(
-                      '${livestock.fold<int>(0, (sum, l) => sum + l.count)} fish',
-                      style: AppTypography.bodySmall,
-                    ),
-                  ),
-                  onViewAll: () => NavigationThrottle.push(context, LivestockScreen(tankId: tankId)),
+                const SliverToBoxAdapter(
+                  child: SizedBox(height: kScrollEndPadding),
                 ),
-              ),
-
-              SliverToBoxAdapter(
-                child: livestockAsync.when(
-                  loading: () => _buildLivestockSkeletonPreview(),
-                  error: (_, __) => Padding(
-                    padding: const EdgeInsets.all(AppSpacing.sm),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(Icons.info_outline, size: 14, color: AppColors.warning),
-                        const SizedBox(width: AppSpacing.xs),
-                        Text('Unable to load', style: Theme.of(context).textTheme.bodySmall?.copyWith(color: AppColors.warning)),
-                      ],
-                    ),
-                  ),
-                  data: (livestock) => LivestockPreview(livestock: livestock),
-                ),
-              ),
-
-              // Stocking level indicator
-              SliverToBoxAdapter(
-                child: livestockAsync.when(
-                  loading: () => const SizedBox.shrink(),
-                  error: (_, __) => Padding(
-                    padding: const EdgeInsets.all(AppSpacing.sm),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(Icons.info_outline, size: 14, color: AppColors.warning),
-                        const SizedBox(width: AppSpacing.xs),
-                        Text('Unable to load', style: Theme.of(context).textTheme.bodySmall?.copyWith(color: AppColors.warning)),
-                      ],
-                    ),
-                  ),
-                  data: (livestock) {
-                    if (livestock.isEmpty) return const SizedBox.shrink();
-                    final result = StockingCalculator.calculate(
-                      tank: tank,
-                      livestock: livestock,
-                    );
-                    return StockingIndicator(result: result);
-                  },
-                ),
-              ),
-
-              const SliverToBoxAdapter(child: SizedBox(height: AppSpacing.md)),
-
-              // Equipment
-              SliverToBoxAdapter(
-                child: SectionHeader(
-                  title: 'Equipment',
-                  onViewAll: () => NavigationThrottle.push(context, EquipmentScreen(tankId: tankId)),
-                ),
-              ),
-
-              SliverToBoxAdapter(
-                child: equipmentAsync.when(
-                  loading: () => _buildEquipmentSkeletonPreview(),
-                  error: (_, __) => Padding(
-                    padding: const EdgeInsets.all(AppSpacing.sm),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(Icons.info_outline, size: 14, color: AppColors.warning),
-                        const SizedBox(width: AppSpacing.xs),
-                        Text('Unable to load', style: Theme.of(context).textTheme.bodySmall?.copyWith(color: AppColors.warning)),
-                      ],
-                    ),
-                  ),
-                  data: (equipment) => EquipmentPreview(equipment: equipment),
-                ),
-              ),
-
-              const SliverToBoxAdapter(child: SizedBox(height: kScrollEndPadding)),
               ],
             ),
           ),
@@ -978,6 +1202,9 @@ class TankDetailScreen extends ConsumerWidget {
   }
 
   void _navigateToAddLog(BuildContext context, LogType type) {
-    NavigationThrottle.push(context, AddLogScreen(tankId: tankId, initialType: type));
+    NavigationThrottle.push(
+      context,
+      AddLogScreen(tankId: tankId, initialType: type),
+    );
   }
 }

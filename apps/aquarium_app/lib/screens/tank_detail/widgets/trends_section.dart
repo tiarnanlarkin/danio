@@ -34,7 +34,7 @@ class TrendsRow extends StatelessWidget {
               Text('Trends', style: AppTypography.headlineSmall),
               const SizedBox(height: AppSpacing.sm),
               Text(
-                'No trend data yet - log a few water tests.',
+                'No trends yet — log a few water tests to see patterns!',
                 style: AppTypography.bodyMedium,
               ),
             ],
@@ -77,7 +77,8 @@ class TrendsRow extends StatelessWidget {
               child: ListView.separated(
                 scrollDirection: Axis.horizontal,
                 itemCount: params.length,
-                separatorBuilder: (_, __) => const SizedBox(width: AppSpacing.sm3),
+                separatorBuilder: (_, __) =>
+                    const SizedBox(width: AppSpacing.sm3),
                 itemBuilder: (context, index) {
                   final p = params[index];
                   return SparklineCard(
@@ -239,10 +240,7 @@ class MiniSparkline extends StatelessWidget {
             color: color,
             barWidth: 2,
             dotData: const FlDotData(show: false),
-            belowBarData: BarAreaData(
-              show: true,
-              color: color.withAlpha(26),
-            ),
+            belowBarData: BarAreaData(show: true, color: color.withAlpha(26)),
           ),
         ],
         lineTouchData: const LineTouchData(enabled: false),

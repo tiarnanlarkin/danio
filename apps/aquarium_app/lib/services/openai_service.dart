@@ -61,14 +61,13 @@ class OpenAIUserMessages {
   static const rateLimited =
       "You've used your AI assists for this hour — try again in a bit! 🐟";
   static const timeout =
-      'The request took too long. Please check your connection and try again.';
+      'That took a bit too long. Check your connection and give it another go!';
   static const offline =
       'This feature needs an internet connection. '
       'Your fish data is safe offline! 🐠';
   static const serverError =
-      'Our AI service is temporarily unavailable. Please try again in a few minutes.';
-  static const unexpectedError =
-      'Something went wrong. Please try again.';
+      'Our AI service is taking a quick break. Try again in a moment!';
+  static const unexpectedError = 'Oops! We hit a snag. Give it another try.';
 }
 
 /// Thin wrapper around the OpenAI HTTP API.
@@ -114,10 +113,7 @@ class OpenAIService {
     };
     if (maxTokens != null) body['max_tokens'] = maxTokens;
 
-    final response = await _postWithRetry(
-      '$_baseUrl/chat/completions',
-      body,
-    );
+    final response = await _postWithRetry('$_baseUrl/chat/completions', body);
 
     final data = jsonDecode(response.body) as Map<String, dynamic>;
     final choices = data['choices'] as List;
@@ -151,9 +147,10 @@ class OpenAIService {
     };
     if (maxTokens != null) body['max_tokens'] = maxTokens;
 
-    final request = http.Request('POST', Uri.parse('$_baseUrl/chat/completions'))
-      ..headers.addAll(_headers)
-      ..body = jsonEncode(body);
+    final request =
+        http.Request('POST', Uri.parse('$_baseUrl/chat/completions'))
+          ..headers.addAll(_headers)
+          ..body = jsonEncode(body);
 
     final streamedResponse = await _client.send(request);
     if (streamedResponse.statusCode != 200) {
@@ -164,9 +161,10 @@ class OpenAIService {
       );
     }
 
-    await for (final chunk in streamedResponse.stream
-        .transform(utf8.decoder)
-        .transform(const LineSplitter())) {
+    await for (final chunk
+        in streamedResponse.stream
+            .transform(utf8.decoder)
+            .transform(const LineSplitter())) {
       if (!chunk.startsWith('data: ')) continue;
       final jsonStr = chunk.substring(6).trim();
       if (jsonStr == '[DONE]') break;
@@ -284,19 +282,15 @@ class OpenAIService {
     while (true) {
       attempt++;
       try {
-        final response = await _client.post(
-          Uri.parse(url),
-          headers: _headers,
-          body: jsonEncode(body),
-        ).timeout(_requestTimeout);
+        final response = await _client
+            .post(Uri.parse(url), headers: _headers, body: jsonEncode(body))
+            .timeout(_requestTimeout);
 
         if (response.statusCode == 200) return response;
 
         if (response.statusCode == 429 && attempt < _maxRetries) {
           // Rate limited — exponential backoff.
-          final delay = Duration(
-            seconds: math.min(attempt * 2, 16),
-          );
+          final delay = Duration(seconds: math.min(attempt * 2, 16));
           debugPrint('OpenAI rate limited, retrying in ${delay.inSeconds}s');
           await Future<void>.delayed(delay);
           continue;
@@ -305,7 +299,9 @@ class OpenAIService {
         if (response.statusCode >= 500 && attempt < _maxRetries) {
           // Transient server error — retry once with backoff.
           final delay = Duration(seconds: math.min(attempt * 2, 16));
-          debugPrint('OpenAI server error ${response.statusCode}, retrying in ${delay.inSeconds}s');
+          debugPrint(
+            'OpenAI server error ${response.statusCode}, retrying in ${delay.inSeconds}s',
+          );
           await Future<void>.delayed(delay);
           continue;
         }

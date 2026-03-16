@@ -39,18 +39,19 @@ class AuthService {
     final auth = _auth;
     if (auth == null) return const AuthResult.unavailable();
     try {
-      final response = await auth.signUp(
-        email: email,
-        password: password,
-      );
+      final response = await auth.signUp(email: email, password: password);
       if (response.user != null) {
         return AuthResult.success(response.user!);
       }
-      return const AuthResult.error('Something went wrong during sign-up. Please try again.');
+      return const AuthResult.error(
+        'Hmm, sign-up didn\'t go through. Give it another try!',
+      );
     } on AuthException catch (e) {
       return AuthResult.error(e.message);
     } catch (e) {
-      return const AuthResult.error('Something went wrong. Please check your connection and try again.');
+      return const AuthResult.error(
+        'We couldn\'t connect. Check your internet and try again!',
+      );
     }
   }
 
@@ -70,11 +71,15 @@ class AuthService {
       if (response.user != null) {
         return AuthResult.success(response.user!);
       }
-      return const AuthResult.error('Something went wrong during sign-in. Please try again.');
+      return const AuthResult.error(
+        'Hmm, sign-in didn\'t go through. Give it another try!',
+      );
     } on AuthException catch (e) {
       return AuthResult.error(e.message);
     } catch (e) {
-      return const AuthResult.error('Something went wrong. Please check your connection and try again.');
+      return const AuthResult.error(
+        'We couldn\'t connect. Check your internet and try again!',
+      );
     }
   }
 
@@ -101,7 +106,9 @@ class AuthService {
     } on AuthException catch (e) {
       return AuthResult.error(e.message);
     } catch (e) {
-      return const AuthResult.error('Something went wrong. Please check your connection and try again.');
+      return const AuthResult.error(
+        'We couldn\'t connect. Check your internet and try again!',
+      );
     }
   }
 
@@ -120,7 +127,9 @@ class AuthService {
     } on AuthException catch (e) {
       return AuthResult.error(e.message);
     } catch (e) {
-      return const AuthResult.error('Something went wrong. Please check your connection and try again.');
+      return const AuthResult.error(
+        'We couldn\'t connect. Check your internet and try again!',
+      );
     }
   }
 
@@ -155,35 +164,32 @@ class AuthResult {
   final User? user;
   final String? errorMessage;
 
-  const AuthResult({
-    required this.status,
-    this.user,
-    this.errorMessage,
-  });
+  const AuthResult({required this.status, this.user, this.errorMessage});
 
   const AuthResult.success(User this.user)
-      : status = AuthResultStatus.success,
-        errorMessage = null;
+    : status = AuthResultStatus.success,
+      errorMessage = null;
 
   const AuthResult.error(String this.errorMessage)
-      : status = AuthResultStatus.error,
-        user = null;
+    : status = AuthResultStatus.error,
+      user = null;
 
   const AuthResult.unavailable()
-      : status = AuthResultStatus.unavailable,
-        user = null,
-        errorMessage = 'Cloud services are not available. '
-            'The app works fully offline.';
+    : status = AuthResultStatus.unavailable,
+      user = null,
+      errorMessage =
+          'Cloud services are not available. '
+          'The app works fully offline.';
 
   const AuthResult.pendingRedirect()
-      : status = AuthResultStatus.pendingRedirect,
-        user = null,
-        errorMessage = null;
+    : status = AuthResultStatus.pendingRedirect,
+      user = null,
+      errorMessage = null;
 
   const AuthResult.passwordResetSent()
-      : status = AuthResultStatus.passwordResetSent,
-        user = null,
-        errorMessage = null;
+    : status = AuthResultStatus.passwordResetSent,
+      user = null,
+      errorMessage = null;
 
   bool get isSuccess => status == AuthResultStatus.success;
   bool get isError => status == AuthResultStatus.error;

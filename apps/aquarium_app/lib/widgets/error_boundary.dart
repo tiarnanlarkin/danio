@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
 
 /// Error boundary widget that catches errors and displays a friendly fallback UI
-/// 
+///
 /// Usage:
 /// ```dart
 /// ErrorBoundary(
@@ -33,7 +33,7 @@ class _ErrorBoundaryState extends State<ErrorBoundary> {
   @override
   void initState() {
     super.initState();
-    
+
     // Capture errors in this widget's subtree — chain with previous handler
     final previousHandler = FlutterError.onError;
     FlutterError.onError = (details) {
@@ -41,7 +41,9 @@ class _ErrorBoundaryState extends State<ErrorBoundary> {
 
       // Always log — critical for diagnosing production errors
       FlutterError.presentError(details);
-      debugPrint('🚨 ErrorBoundary caught: ${details.exception}\n${details.stack}');
+      debugPrint(
+        '🚨 ErrorBoundary caught: ${details.exception}\n${details.stack}',
+      );
 
       // Defer setState to avoid calling it during a build phase
       // (FlutterError.onError can fire mid-build, and setState during
@@ -64,7 +66,7 @@ class _ErrorBoundaryState extends State<ErrorBoundary> {
   @override
   Widget build(BuildContext context) {
     if (_error != null) {
-      return widget.errorBuilder?.call(_error!) ?? 
+      return widget.errorBuilder?.call(_error!) ??
           _DefaultErrorScreen(
             error: _error!,
             onRetry: () {
@@ -74,7 +76,7 @@ class _ErrorBoundaryState extends State<ErrorBoundary> {
             },
           );
     }
-    
+
     return widget.child;
   }
 }
@@ -84,10 +86,7 @@ class _DefaultErrorScreen extends StatefulWidget {
   final FlutterErrorDetails error;
   final VoidCallback onRetry;
 
-  const _DefaultErrorScreen({
-    required this.error,
-    required this.onRetry,
-  });
+  const _DefaultErrorScreen({required this.error, required this.onRetry});
 
   @override
   State<_DefaultErrorScreen> createState() => _DefaultErrorScreenState();
@@ -99,13 +98,15 @@ class _DefaultErrorScreenState extends State<_DefaultErrorScreen> {
     final error = widget.error;
     final onRetry = widget.onRetry;
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData.light(),
       darkTheme: ThemeData.dark(),
       home: Scaffold(
-        backgroundColor: isDark ? const Color(0xFF1A2634) : const Color(0xFFF5F1EB),
+        backgroundColor: isDark
+            ? const Color(0xFF1A2634)
+            : const Color(0xFFF5F1EB),
         body: SafeArea(
           child: Padding(
             padding: EdgeInsets.all(AppSpacing.xl),
@@ -126,32 +127,32 @@ class _DefaultErrorScreenState extends State<_DefaultErrorScreen> {
                     color: AppColors.error,
                   ),
                 ),
-                
+
                 const SizedBox(height: AppSpacing.xl),
-                
+
                 // Title
                 Text(
                   'Oops! Something went wrong',
                   style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                     fontWeight: FontWeight.bold,
-                    color: isDark ? Colors.white : context.textPrimary,
+                    color: context.textPrimary,
                   ),
                   textAlign: TextAlign.center,
                 ),
-                
+
                 const SizedBox(height: AppSpacing.md),
-                
+
                 // Message
                 Text(
                   'Don\'t worry, your data is safe. Try restarting the app or contact support if this keeps happening.',
-                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    color: isDark ? Colors.white70 : context.textSecondary,
-                  ),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodyLarge?.copyWith(color: context.textSecondary),
                   textAlign: TextAlign.center,
                 ),
-                
+
                 const SizedBox(height: AppSpacing.xl),
-                
+
                 // Retry button
                 SizedBox(
                   width: double.infinity,
@@ -173,9 +174,9 @@ class _DefaultErrorScreenState extends State<_DefaultErrorScreen> {
                     ),
                   ),
                 ),
-                
+
                 const SizedBox(height: AppSpacing.md),
-                
+
                 // Show error details in debug mode
                 if (kDebugMode) ...[
                   const SizedBox(height: AppSpacing.md),
@@ -188,9 +189,8 @@ class _DefaultErrorScreenState extends State<_DefaultErrorScreen> {
                           content: SingleChildScrollView(
                             child: Text(
                               error.toString(),
-                              style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                                fontFamily: 'monospace',
-                              ),
+                              style: Theme.of(context).textTheme.bodySmall!
+                                  .copyWith(fontFamily: 'monospace'),
                             ),
                           ),
                           actions: [
@@ -222,28 +222,26 @@ class GlobalErrorHandler {
     // Catch Flutter framework errors
     FlutterError.onError = (details) {
       onError?.call(details.exception, details.stack ?? StackTrace.current);
-      
+
       // Log to console in debug mode
       if (kDebugMode) {
         FlutterError.presentError(details);
       }
-      
+
       // In production, you would send to crash reporting service
-      
     };
-    
+
     // Catch errors outside of Flutter framework
     PlatformDispatcher.instance.onError = (error, stack) {
       onError?.call(error, stack);
-      
+
       // Log to console in debug mode
       if (kDebugMode) {
         debugPrint('Uncaught error: $error\n$stack');
       }
-      
+
       // In production, send to crash reporting
-      
-      
+
       return true; // Mark as handled
     };
   }
@@ -252,13 +250,13 @@ class GlobalErrorHandler {
 /// Mixin for widgets that need error handling
 mixin ErrorHandlerMixin<T extends StatefulWidget> on State<T> {
   String? _errorMessage;
-  
+
   /// Show error message to user
   void showError(String message) {
     setState(() {
       _errorMessage = message;
     });
-    
+
     // Auto-dismiss after 5 seconds
     Future.delayed(const Duration(seconds: 5), () {
       if (mounted) {
@@ -268,14 +266,14 @@ mixin ErrorHandlerMixin<T extends StatefulWidget> on State<T> {
       }
     });
   }
-  
+
   /// Clear error message
   void clearError() {
     setState(() {
       _errorMessage = null;
     });
   }
-  
+
   /// Execute async operation with error handling
   Future<void> handleAsync(
     Future<void> Function() operation, {
@@ -286,15 +284,15 @@ mixin ErrorHandlerMixin<T extends StatefulWidget> on State<T> {
       clearError();
       await operation();
     } catch (e) {
-      showError(errorMessage ?? 'Something went wrong: ${e.toString()}');
+      showError(errorMessage ?? 'Oops! We hit a snag. Give it another try.');
       onError?.call();
     }
   }
-  
+
   /// Build error banner if error exists
   Widget buildErrorBanner() {
     if (_errorMessage == null) return const SizedBox.shrink();
-    
+
     return Container(
       padding: EdgeInsets.all(AppSpacing.md),
       color: AppColors.error,

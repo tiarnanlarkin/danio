@@ -63,8 +63,8 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
       body: logsAsync.when(
         loading: () => const Center(child: BubbleLoader()),
         error: (err, _) => AppErrorState(
-          title: 'Could not load charts',
-          message: 'There was a problem loading your tank data. Try again.',
+          title: 'Couldn\'t load your charts',
+          message: 'We hit a snag loading your tank data. Give it another try!',
           onRetry: () => ref.invalidate(allLogsProvider(widget.tankId)),
         ),
         data: (logs) {
@@ -83,7 +83,11 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(Icons.show_chart, size: AppIconSizes.xxl, color: context.textHint),
+                    Icon(
+                      Icons.show_chart,
+                      size: AppIconSizes.xxl,
+                      color: context.textHint,
+                    ),
                     const SizedBox(height: AppSpacing.md),
                     Text(
                       'Charts unlock with your first test!',
@@ -93,14 +97,19 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
                     const SizedBox(height: AppSpacing.sm),
                     Text(
                       'Log a water test and watch your trends come alive',
-                      style: AppTypography.bodyMedium.copyWith(color: context.textSecondary),
+                      style: AppTypography.bodyMedium.copyWith(
+                        color: context.textSecondary,
+                      ),
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: AppSpacing.lg),
                     FilledButton.icon(
                       onPressed: () => Navigator.of(context).push(
                         MaterialPageRoute(
-                          builder: (_) => AddLogScreen(tankId: widget.tankId, initialType: LogType.waterTest),
+                          builder: (_) => AddLogScreen(
+                            tankId: widget.tankId,
+                            initialType: LogType.waterTest,
+                          ),
                         ),
                       ),
                       icon: const Icon(Icons.add),
@@ -374,7 +383,7 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
             radius: 4,
             color: color,
             strokeWidth: 2,
-            strokeColor: Colors.white,
+            strokeColor: context.cardColor,
           ),
         ),
         belowBarData: BarAreaData(show: true, color: color.withAlpha(26)),
@@ -509,7 +518,10 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
   ) async {
     final logs = logsAsync.value;
     if (logs == null || logs.isEmpty) {
-      AppFeedback.showInfo(context, 'Nothing to export yet -- log some water tests first!');
+      AppFeedback.showInfo(
+        context,
+        'Nothing to export yet — log some water tests first!',
+      );
       return;
     }
 
@@ -566,7 +578,10 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
       if (context.mounted) {
         AppFeedback.dismiss(context);
         dismissLoadingInFinally = false;
-        AppFeedback.showError(context, 'Export failed. Please try again.');
+        AppFeedback.showError(
+          context,
+          'Export didn\'t work. Give it another go!',
+        );
       }
     } finally {
       if (context.mounted && dismissLoadingInFinally) {
@@ -610,7 +625,7 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
                 radius: 3,
                 color: color,
                 strokeWidth: 1,
-                strokeColor: Colors.white,
+                strokeColor: context.cardColor,
               ),
             ),
             belowBarData: BarAreaData(show: false),
@@ -620,7 +635,9 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
     }
 
     if (bars.isEmpty) {
-      return const Center(child: Text('Log your first water test to see data here 💧'));
+      return const Center(
+        child: Text('Log your first water test to see data here 💧'),
+      );
     }
 
     return LineChart(
@@ -889,11 +906,12 @@ class _ChartControlChip extends StatelessWidget {
       onTap: onTap,
       borderRadius: AppRadius.largeRadius,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: AppSpacing.xs2),
+        padding: const EdgeInsets.symmetric(
+          horizontal: 12,
+          vertical: AppSpacing.xs2,
+        ),
         decoration: BoxDecoration(
-          color: isActive
-              ? AppOverlays.primary10
-              : context.surfaceVariant,
+          color: isActive ? AppOverlays.primary10 : context.surfaceVariant,
           borderRadius: AppRadius.largeRadius,
           border: isActive
               ? Border.all(color: AppColors.primary, width: 1.5)
@@ -984,7 +1002,7 @@ class _SummaryCard extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.all(AppSpacing.md),
           child: Text(
-            'No readings for this parameter yet',
+            'No readings yet — log a water test to see data here!',
             style: AppTypography.bodyMedium,
           ),
         ),

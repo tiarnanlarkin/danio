@@ -181,10 +181,18 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
           context: context,
           builder: (ctx) => AlertDialog(
             title: const Text('Discard changes?'),
-            content: const Text('You have unsaved data. Are you sure you want to go back?'),
+            content: const Text(
+              'You have unsaved data. Are you sure you want to go back?',
+            ),
             actions: [
-              TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Cancel')),
-              TextButton(onPressed: () => Navigator.pop(ctx, true), child: const Text('Discard')),
+              TextButton(
+                onPressed: () => Navigator.pop(ctx, false),
+                child: const Text('Cancel'),
+              ),
+              TextButton(
+                onPressed: () => Navigator.pop(ctx, true),
+                child: const Text('Discard'),
+              ),
             ],
           ),
         );
@@ -193,141 +201,150 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
         }
       },
       child: GestureDetector(
-      onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
-      child: Scaffold(
-      appBar: AppBar(
-        title: Text(widget.existingLog != null ? 'Edit Log' : _getTitle()),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 8),
-            child: AppButton(
-              label: 'Save',
-              onPressed: _isSaving ? null : _save,
-              isLoading: _isSaving,
-              size: AppButtonSize.small,
-              variant: AppButtonVariant.primary,
-            ),
-          ),
-        ],
-      ),
-      body: FocusTraversalGroup(
-        policy: OrderedTraversalPolicy(),
-        child: Form(
-          key: _formKey,
-          child: SingleChildScrollView(
-          padding: const EdgeInsets.all(AppSpacing.md),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Type selector
-              _TypeSelector(
-                selected: _type,
-                onChanged: (type) => setState(() => _type = type),
-              ),
-
-              const SizedBox(height: AppSpacing.lg),
-
-              // Type-specific form
-              if (_type == LogType.waterTest) _buildWaterTestForm(),
-              if (_type == LogType.waterChange) _buildWaterChangeForm(),
-              if (_type == LogType.observation) _buildObservationForm(),
-              if (_type == LogType.medication) _buildMedicationForm(),
-
-              const SizedBox(height: AppSpacing.lg),
-
-            // Photos
-            Text('Photos (optional)', style: AppTypography.headlineSmall),
-            const SizedBox(height: AppSpacing.sm),
-            Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    'Attach up to 5 photos to this log.',
-                    style: AppTypography.bodySmall,
-                  ),
+        onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+        child: Scaffold(
+          appBar: AppBar(
+            title: Text(widget.existingLog != null ? 'Edit Log' : _getTitle()),
+            actions: [
+              Padding(
+                padding: const EdgeInsets.only(right: 8),
+                child: AppButton(
+                  label: 'Save',
+                  onPressed: _isSaving ? null : _save,
+                  isLoading: _isSaving,
+                  size: AppButtonSize.small,
+                  variant: AppButtonVariant.primary,
                 ),
-                TextButton.icon(
-                  onPressed: (_isSaving || _isPickingImages)
-                      ? null
-                      : _pickImages,
-                  icon: _isPickingImages
-                      ? const SizedBox(
-                          width: 14,
-                          height: 14,
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        )
-                      : const Icon(
-                          Icons.add_photo_alternate_outlined,
-                          size: 18,
-                        ),
-                  label: const Text('Add'),
-                ),
-              ],
-            ),
-            if (_photoPaths.isNotEmpty) ...[
-              const SizedBox(height: AppSpacing.sm),
-              _PhotoGrid(
-                paths: _photoPaths,
-                onRemove: (path) => setState(() => _photoPaths.remove(path)),
               ),
             ],
-
-            const SizedBox(height: AppSpacing.lg),
-
-            // Timestamp
-            Text('Date & Time', style: AppTypography.headlineSmall),
-            const SizedBox(height: AppSpacing.sm),
-            InkWell(
-              onTap: _pickDateTime,
-              borderRadius: AppRadius.mediumRadius,
-              child: Container(
+          ),
+          body: FocusTraversalGroup(
+            policy: OrderedTraversalPolicy(),
+            child: Form(
+              key: _formKey,
+              child: SingleChildScrollView(
                 padding: const EdgeInsets.all(AppSpacing.md),
-                decoration: BoxDecoration(
-                  color: context.surfaceVariant,
-                  borderRadius: AppRadius.mediumRadius,
-                ),
-                child: Row(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Icon(
-                      Icons.calendar_today,
-                      color: context.textSecondary,
+                    // Type selector
+                    _TypeSelector(
+                      selected: _type,
+                      onChanged: (type) => setState(() => _type = type),
                     ),
-                    const SizedBox(width: AppSpacing.sm2),
+
+                    const SizedBox(height: AppSpacing.lg),
+
+                    // Type-specific form
+                    if (_type == LogType.waterTest) _buildWaterTestForm(),
+                    if (_type == LogType.waterChange) _buildWaterChangeForm(),
+                    if (_type == LogType.observation) _buildObservationForm(),
+                    if (_type == LogType.medication) _buildMedicationForm(),
+
+                    const SizedBox(height: AppSpacing.lg),
+
+                    // Photos
                     Text(
-                      '${_timestamp.day}/${_timestamp.month}/${_timestamp.year} at ${_timestamp.hour}:${_timestamp.minute.toString().padLeft(2, '0')}',
-                      style: AppTypography.bodyLarge,
+                      'Photos (optional)',
+                      style: AppTypography.headlineSmall,
                     ),
-                    const Spacer(),
-                    TextButton(
-                      onPressed: () =>
-                          setState(() => _timestamp = DateTime.now()),
-                      child: const Text('Now'),
+                    const SizedBox(height: AppSpacing.sm),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            'Attach up to 5 photos to this log.',
+                            style: AppTypography.bodySmall,
+                          ),
+                        ),
+                        TextButton.icon(
+                          onPressed: (_isSaving || _isPickingImages)
+                              ? null
+                              : _pickImages,
+                          icon: _isPickingImages
+                              ? const SizedBox(
+                                  width: 14,
+                                  height: 14,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                  ),
+                                )
+                              : const Icon(
+                                  Icons.add_photo_alternate_outlined,
+                                  size: 18,
+                                ),
+                          label: const Text('Add'),
+                        ),
+                      ],
+                    ),
+                    if (_photoPaths.isNotEmpty) ...[
+                      const SizedBox(height: AppSpacing.sm),
+                      _PhotoGrid(
+                        paths: _photoPaths,
+                        onRemove: (path) =>
+                            setState(() => _photoPaths.remove(path)),
+                      ),
+                    ],
+
+                    const SizedBox(height: AppSpacing.lg),
+
+                    // Timestamp
+                    Text('Date & Time', style: AppTypography.headlineSmall),
+                    const SizedBox(height: AppSpacing.sm),
+                    InkWell(
+                      onTap: _pickDateTime,
+                      borderRadius: AppRadius.mediumRadius,
+                      child: Container(
+                        padding: const EdgeInsets.all(AppSpacing.md),
+                        decoration: BoxDecoration(
+                          color: context.surfaceVariant,
+                          borderRadius: AppRadius.mediumRadius,
+                        ),
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.calendar_today,
+                              color: context.textSecondary,
+                            ),
+                            const SizedBox(width: AppSpacing.sm2),
+                            Text(
+                              '${_timestamp.day}/${_timestamp.month}/${_timestamp.year} at ${_timestamp.hour}:${_timestamp.minute.toString().padLeft(2, '0')}',
+                              style: AppTypography.bodyLarge,
+                            ),
+                            const Spacer(),
+                            TextButton(
+                              onPressed: () =>
+                                  setState(() => _timestamp = DateTime.now()),
+                              child: const Text('Now'),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+
+                    const SizedBox(height: AppSpacing.lg),
+
+                    // Notes (always shown)
+                    Text(
+                      'Notes (optional)',
+                      style: AppTypography.headlineSmall,
+                    ),
+                    const SizedBox(height: AppSpacing.sm),
+                    TextFormField(
+                      initialValue: _notes,
+                      decoration: const InputDecoration(
+                        hintText: 'Any observations or notes...',
+                      ),
+                      maxLines: 3,
+                      onChanged: (v) => _notes = v,
                     ),
                   ],
                 ),
               ),
             ),
-
-            const SizedBox(height: AppSpacing.lg),
-
-            // Notes (always shown)
-            Text('Notes (optional)', style: AppTypography.headlineSmall),
-            const SizedBox(height: AppSpacing.sm),
-            TextFormField(
-              initialValue: _notes,
-              decoration: const InputDecoration(
-                hintText: 'Any observations or notes...',
-              ),
-              maxLines: 3,
-              onChanged: (v) => _notes = v,
-            ),
-          ],
-        ),
+          ),
         ),
       ),
-          ),
-    ),
-    ),
     );
   }
 
@@ -428,7 +445,11 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
             ),
             child: Row(
               children: [
-                Icon(Icons.history, size: AppIconSizes.xs, color: context.textSecondary),
+                Icon(
+                  Icons.history,
+                  size: AppIconSizes.xs,
+                  color: context.textSecondary,
+                ),
                 const SizedBox(width: AppSpacing.sm),
                 Expanded(
                   child: Text(
@@ -586,14 +607,26 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
         // Each _WaterParamField manages its own TextFormField state,
         // so typing in one field doesn't rebuild the others.
         else ...[
-          _WaterParamRow(fields: [
-            _WaterParamField(label: 'Temperature', unit: '°C', value: _temperature,
-              onChanged: (v) => setState(() => _temperature = v),
-              idealRange: 'Ideal: 24–27°C', maxValue: 50),
-            _WaterParamField(label: 'pH', value: _ph,
-              onChanged: (v) => setState(() => _ph = v),
-              decimal: true, idealRange: 'Ideal: 6.5–7.5', maxValue: 14),
-          ]),
+          _WaterParamRow(
+            fields: [
+              _WaterParamField(
+                label: 'Temperature',
+                unit: '°C',
+                value: _temperature,
+                onChanged: (v) => setState(() => _temperature = v),
+                idealRange: 'Ideal: 24–27°C',
+                maxValue: 50,
+              ),
+              _WaterParamField(
+                label: 'pH',
+                value: _ph,
+                onChanged: (v) => setState(() => _ph = v),
+                decimal: true,
+                idealRange: 'Ideal: 6.5–7.5',
+                maxValue: 14,
+              ),
+            ],
+          ),
 
           const SizedBox(height: AppSpacing.md),
           const Divider(),
@@ -601,24 +634,46 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
 
           Text('Nitrogen Cycle', style: AppTypography.labelLarge),
           const SizedBox(height: AppSpacing.sm2),
-          _WaterParamRow(fields: [
-            _WaterParamField(label: 'Ammonia (NH₃)', unit: 'ppm', value: _ammonia,
-              onChanged: (v) => setState(() => _ammonia = v),
-              warningThreshold: 0.25, dangerThreshold: 0.5,
-              idealRange: 'Ideal: 0 ppm', maxValue: 20),
-            _WaterParamField(label: 'Nitrite (NO₂)', unit: 'ppm', value: _nitrite,
-              onChanged: (v) => setState(() => _nitrite = v),
-              warningThreshold: 0.25, dangerThreshold: 0.5,
-              idealRange: 'Ideal: 0 ppm', maxValue: 20),
-          ]),
+          _WaterParamRow(
+            fields: [
+              _WaterParamField(
+                label: 'Ammonia (NH₃)',
+                unit: 'ppm',
+                value: _ammonia,
+                onChanged: (v) => setState(() => _ammonia = v),
+                warningThreshold: 0.25,
+                dangerThreshold: 0.5,
+                idealRange: 'Ideal: 0 ppm',
+                maxValue: 20,
+              ),
+              _WaterParamField(
+                label: 'Nitrite (NO₂)',
+                unit: 'ppm',
+                value: _nitrite,
+                onChanged: (v) => setState(() => _nitrite = v),
+                warningThreshold: 0.25,
+                dangerThreshold: 0.5,
+                idealRange: 'Ideal: 0 ppm',
+                maxValue: 20,
+              ),
+            ],
+          ),
           const SizedBox(height: AppSpacing.sm2),
-          _WaterParamRow(fields: [
-            _WaterParamField(label: 'Nitrate (NO₃)', unit: 'ppm', value: _nitrate,
-              onChanged: (v) => setState(() => _nitrate = v),
-              warningThreshold: 20, dangerThreshold: 40,
-              idealRange: 'Ideal: <20 ppm', maxValue: 500),
-            null, // spacer
-          ]),
+          _WaterParamRow(
+            fields: [
+              _WaterParamField(
+                label: 'Nitrate (NO₃)',
+                unit: 'ppm',
+                value: _nitrate,
+                onChanged: (v) => setState(() => _nitrate = v),
+                warningThreshold: 20,
+                dangerThreshold: 40,
+                idealRange: 'Ideal: <20 ppm',
+                maxValue: 500,
+              ),
+              null, // spacer
+            ],
+          ),
 
           const SizedBox(height: AppSpacing.md),
           const Divider(),
@@ -626,14 +681,24 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
 
           Text('Hardness', style: AppTypography.labelLarge),
           const SizedBox(height: AppSpacing.sm2),
-          _WaterParamRow(fields: [
-            _WaterParamField(label: 'GH', unit: 'dGH', value: _gh,
-              onChanged: (v) => setState(() => _gh = v),
-              idealRange: 'Ideal: 4–8 dGH'),
-            _WaterParamField(label: 'KH', unit: 'dKH', value: _kh,
-              onChanged: (v) => setState(() => _kh = v),
-              idealRange: 'Ideal: 3–8 dKH'),
-          ]),
+          _WaterParamRow(
+            fields: [
+              _WaterParamField(
+                label: 'GH',
+                unit: 'dGH',
+                value: _gh,
+                onChanged: (v) => setState(() => _gh = v),
+                idealRange: 'Ideal: 4–8 dGH',
+              ),
+              _WaterParamField(
+                label: 'KH',
+                unit: 'dKH',
+                value: _kh,
+                onChanged: (v) => setState(() => _kh = v),
+                idealRange: 'Ideal: 3–8 dKH',
+              ),
+            ],
+          ),
 
           const SizedBox(height: AppSpacing.md),
           const Divider(),
@@ -641,12 +706,19 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
 
           Text('Other', style: AppTypography.labelLarge),
           const SizedBox(height: AppSpacing.sm2),
-          _WaterParamRow(fields: [
-            _WaterParamField(label: 'Phosphate (PO₄)', unit: 'ppm', value: _phosphate,
-              onChanged: (v) => setState(() => _phosphate = v),
-              decimal: true, idealRange: 'Ideal: 0–1 ppm'),
-            null, // spacer
-          ]),
+          _WaterParamRow(
+            fields: [
+              _WaterParamField(
+                label: 'Phosphate (PO₄)',
+                unit: 'ppm',
+                value: _phosphate,
+                onChanged: (v) => setState(() => _phosphate = v),
+                decimal: true,
+                idealRange: 'Ideal: 0–1 ppm',
+              ),
+              null, // spacer
+            ],
+          ),
         ],
       ],
     );
@@ -799,7 +871,10 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
       }
     } catch (e) {
       if (mounted) {
-        AppFeedback.showError(context, 'Couldn\'t add photos. Please try again.');
+        AppFeedback.showError(
+          context,
+          'Couldn\'t add photos. Give it another go!',
+        );
       }
     } finally {
       if (mounted) setState(() => _isPickingImages = false);
@@ -903,10 +978,9 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
 
       final isBoostActive = ref.read(xpBoostActiveProvider);
       final effectiveXp = isBoostActive ? xp * 2 : xp;
-      await ref.read(userProfileProvider.notifier).recordActivity(
-        xp: xp,
-        xpBoostActive: isBoostActive,
-      );
+      await ref
+          .read(userProfileProvider.notifier)
+          .recordActivity(xp: xp, xpBoostActive: isBoostActive);
 
       // Show XP animation if XP was awarded
       if (effectiveXp > 0 && mounted) {
@@ -948,7 +1022,10 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
           rootOverlay.insert(celebrationEntry);
         }
         Navigator.pop(context);
-        AppFeedback.showSuccess(context, '${log.typeName} logged! +$effectiveXp XP');
+        AppFeedback.showSuccess(
+          context,
+          '${log.typeName} logged! +$effectiveXp XP',
+        );
       }
     } catch (e) {
       if (mounted) {
@@ -1113,9 +1190,7 @@ class _WaterParamRow extends StatelessWidget {
       children: [
         for (int i = 0; i < fields.length; i++) ...[
           if (i > 0) const SizedBox(width: AppSpacing.sm2),
-          Expanded(
-            child: fields[i] ?? const SizedBox(),
-          ),
+          Expanded(child: fields[i] ?? const SizedBox()),
         ],
       ],
     );
@@ -1172,14 +1247,18 @@ class _ParameterField extends StatelessWidget {
                 : null,
           ),
           keyboardType: TextInputType.numberWithOptions(decimal: decimal),
-          inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[\d.]'))],
+          inputFormatters: [
+            FilteringTextInputFormatter.allow(RegExp(r'[\d.]')),
+          ],
           onChanged: (v) => onChanged(double.tryParse(v)),
           validator: (v) {
             if (v != null && v.isNotEmpty) {
               final n = double.tryParse(v);
               if (n == null) return 'Enter a valid number';
               if (n < 0) return 'Must be ≥ 0';
-              if (maxValue != null && n > maxValue!) return 'Max: $maxValue ${unit ?? ''}';
+              if (maxValue != null && n > maxValue!) {
+                return 'Max: $maxValue ${unit ?? ''}';
+              }
             }
             return null;
           },
@@ -1189,9 +1268,7 @@ class _ParameterField extends StatelessWidget {
             padding: const EdgeInsets.only(top: 4, left: 12),
             child: Text(
               idealRange!,
-              style: AppTypography.bodySmall.copyWith(
-                color: context.textHint,
-              ),
+              style: AppTypography.bodySmall.copyWith(color: context.textHint),
             ),
           ),
       ],
@@ -1243,7 +1320,11 @@ class _PhotoGrid extends StatelessWidget {
                     color: AppOverlays.black60,
                     borderRadius: AppRadius.pillRadius,
                   ),
-                  child: const Icon(Icons.close, size: AppIconSizes.xs, color: Colors.white),
+                  child: const Icon(
+                    Icons.close,
+                    size: AppIconSizes.xs,
+                    color: Colors.white,
+                  ),
                 ),
               ),
             ),
@@ -1341,9 +1422,7 @@ class _CompactParamField extends StatelessWidget {
             padding: const EdgeInsets.only(top: AppSpacing.xxs),
             child: Text(
               idealRange!,
-              style: AppTypography.bodySmall.copyWith(
-                color: context.textHint,
-              ),
+              style: AppTypography.bodySmall.copyWith(color: context.textHint),
             ),
           ),
       ],

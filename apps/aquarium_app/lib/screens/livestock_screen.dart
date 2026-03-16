@@ -73,7 +73,9 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
               onPressed: _toggleSelectMode,
               child: Text(
                 'Cancel',
-                style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.onSurface,
+                ),
               ),
             )
           else
@@ -131,217 +133,247 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
               children: [
                 Expanded(
                   child: CustomScrollView(
-                  slivers: [
-                    // Header padding
-                    const SliverPadding(
-                      padding: EdgeInsets.only(top: 16, left: 16, right: 16),
-                      sliver: SliverToBoxAdapter(child: SizedBox.shrink()),
-                    ),
-                    
-                    // Summary card (when not in select mode)
-                    if (!_isSelectMode)
-                      SliverPadding(
-                        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
-                        sliver: SliverToBoxAdapter(
-                          child: AppCard(
-                            padding: AppCardPadding.standard,
-                            child: Column(
-                              children: [
-                                Row(
-                                  children: [
-                                    Icon(
-                                      Icons.set_meal,
-                                      color: AppColors.primary,
-                                      size: 32,
-                                    ),
-                                    const SizedBox(width: AppSpacing.md),
-                                    Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          '$totalCount total',
-                                          style: AppTypography.headlineMedium,
+                    slivers: [
+                      // Header padding
+                      const SliverPadding(
+                        padding: EdgeInsets.only(top: 16, left: 16, right: 16),
+                        sliver: SliverToBoxAdapter(child: SizedBox.shrink()),
+                      ),
+
+                      // Summary card (when not in select mode)
+                      if (!_isSelectMode)
+                        SliverPadding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: AppSpacing.md,
+                          ),
+                          sliver: SliverToBoxAdapter(
+                            child: AppCard(
+                              padding: AppCardPadding.standard,
+                              child: Column(
+                                children: [
+                                  Row(
+                                    children: [
+                                      Icon(
+                                        Icons.set_meal,
+                                        color: AppColors.primary,
+                                        size: 32,
+                                      ),
+                                      const SizedBox(width: AppSpacing.md),
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            '$totalCount total',
+                                            style: AppTypography.headlineMedium,
+                                          ),
+                                          Text(
+                                            '${livestock.length} species',
+                                            style: AppTypography.bodyMedium,
+                                          ),
+                                        ],
+                                      ),
+                                      const Spacer(),
+                                      FilledButton.icon(
+                                        onPressed: () =>
+                                            _quickFeed(context, ref),
+                                        icon: const Icon(
+                                          Icons.restaurant,
+                                          size: 18,
                                         ),
-                                        Text(
-                                          '${livestock.length} species',
-                                          style: AppTypography.bodyMedium,
-                                        ),
-                                      ],
-                                    ),
-                                    const Spacer(),
-                                    FilledButton.icon(
-                                      onPressed: () => _quickFeed(context, ref),
-                                      icon: const Icon(Icons.restaurant, size: 18),
-                                      label: const Text('Feed'),
-                                      style: FilledButton.styleFrom(
-                                        backgroundColor: AppColors.primary,
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: AppSpacing.md,
-                                          vertical: AppSpacing.sm,
+                                        label: const Text('Feed'),
+                                        style: FilledButton.styleFrom(
+                                          backgroundColor: AppColors.primary,
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: AppSpacing.md,
+                                            vertical: AppSpacing.sm,
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                  ],
-                                ),
-                                // Last fed info
-                                _LastFedInfo(tankId: widget.tankId),
-                              ],
+                                    ],
+                                  ),
+                                  // Last fed info
+                                  _LastFedInfo(tankId: widget.tankId),
+                                ],
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                    if (!_isSelectMode)
-                      const SliverPadding(
-                        padding: EdgeInsets.only(top: AppSpacing.md),
-                        sliver: SliverToBoxAdapter(child: SizedBox.shrink()),
-                      ),
+                      if (!_isSelectMode)
+                        const SliverPadding(
+                          padding: EdgeInsets.only(top: AppSpacing.md),
+                          sliver: SliverToBoxAdapter(child: SizedBox.shrink()),
+                        ),
 
-                    // Selection info banner (when in select mode)
-                    if (_isSelectMode)
-                      SliverPadding(
-                        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
-                        sliver: SliverToBoxAdapter(
-                          child: AppCard(
-                            backgroundColor: AppOverlays.primary10,
-                            padding: AppCardPadding.standard,
-                            child: Row(
-                              children: [
-                                Icon(Icons.checklist, color: AppColors.primary),
-                                const SizedBox(width: AppSpacing.sm2),
-                                Text(
-                                  '${_selectedLivestockIds.length} selected',
-                                  style: AppTypography.labelLarge.copyWith(
+                      // Selection info banner (when in select mode)
+                      if (_isSelectMode)
+                        SliverPadding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: AppSpacing.md,
+                          ),
+                          sliver: SliverToBoxAdapter(
+                            child: AppCard(
+                              backgroundColor: AppOverlays.primary10,
+                              padding: AppCardPadding.standard,
+                              child: Row(
+                                children: [
+                                  Icon(
+                                    Icons.checklist,
                                     color: AppColors.primary,
                                   ),
-                                ),
-                                const Spacer(),
-                                if (_selectedLivestockIds.length < livestock.length)
-                                  TextButton(
-                                    onPressed: () {
-                                      setState(() {
-                                        _selectedLivestockIds.addAll(
-                                          livestock.map((l) => l.id),
-                                        );
-                                      });
-                                    },
-                                    child: const Text('Select All'),
-                                  )
-                                else
-                                  TextButton(
-                                    onPressed: () {
-                                      setState(() {
-                                        _selectedLivestockIds.clear();
-                                      });
-                                    },
-                                    child: const Text('Clear'),
+                                  const SizedBox(width: AppSpacing.sm2),
+                                  Text(
+                                    '${_selectedLivestockIds.length} selected',
+                                    style: AppTypography.labelLarge.copyWith(
+                                      color: AppColors.primary,
+                                    ),
                                   ),
-                              ],
+                                  const Spacer(),
+                                  if (_selectedLivestockIds.length <
+                                      livestock.length)
+                                    TextButton(
+                                      onPressed: () {
+                                        setState(() {
+                                          _selectedLivestockIds.addAll(
+                                            livestock.map((l) => l.id),
+                                          );
+                                        });
+                                      },
+                                      child: const Text('Select All'),
+                                    )
+                                  else
+                                    TextButton(
+                                      onPressed: () {
+                                        setState(() {
+                                          _selectedLivestockIds.clear();
+                                        });
+                                      },
+                                      child: const Text('Clear'),
+                                    ),
+                                ],
+                              ),
                             ),
                           ),
                         ),
+                      if (_isSelectMode)
+                        const SliverPadding(
+                          padding: EdgeInsets.only(top: AppSpacing.md),
+                          sliver: SliverToBoxAdapter(child: SizedBox.shrink()),
+                        ),
+
+                      // Livestock list with lazy loading (SliverList.builder)
+                      SliverPadding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: AppSpacing.md,
+                        ),
+                        sliver: SliverList.builder(
+                          itemCount: livestock.length,
+                          itemBuilder: (context, index) {
+                            final l = livestock[index];
+                            final reduceMotion = MediaQuery.of(
+                              context,
+                            ).disableAnimations;
+
+                            return _LivestockCard(
+                                  key: ValueKey(l.id),
+                                  livestock: l,
+                                  tank: tank,
+                                  allLivestock: livestock,
+                                  isSelectMode: _isSelectMode,
+                                  isSelected: _selectedLivestockIds.contains(
+                                    l.id,
+                                  ),
+                                  onTap: _isSelectMode
+                                      ? () => _toggleLivestockSelection(l.id)
+                                      : () => NavigationThrottle.push(
+                                          context,
+                                          LivestockDetailScreen(
+                                            tankId: widget.tankId,
+                                            livestock: l,
+                                          ),
+                                        ),
+                                  onEdit: () =>
+                                      _showEditDialog(context, ref, l),
+                                  onDelete: () =>
+                                      _confirmDelete(context, ref, l),
+                                )
+                                .animate(autoPlay: !reduceMotion)
+                                .fadeIn(
+                                  duration: reduceMotion ? 0.ms : 300.ms,
+                                  delay: reduceMotion ? 0.ms : (index * 50).ms,
+                                )
+                                .slideY(
+                                  begin: reduceMotion ? 0 : 0.2,
+                                  end: 0,
+                                  duration: reduceMotion ? 0.ms : 300.ms,
+                                  delay: reduceMotion ? 0.ms : (index * 50).ms,
+                                );
+                          },
+                        ),
                       ),
-                    if (_isSelectMode)
+
+                      // Bottom padding
                       const SliverPadding(
-                        padding: EdgeInsets.only(top: AppSpacing.md),
+                        padding: EdgeInsets.only(bottom: 16),
                         sliver: SliverToBoxAdapter(child: SizedBox.shrink()),
                       ),
-
-                    // Livestock list with lazy loading (SliverList.builder)
-                    SliverPadding(
-                      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
-                      sliver: SliverList.builder(
-                        itemCount: livestock.length,
-                        itemBuilder: (context, index) {
-                          final l = livestock[index];
-                          final reduceMotion = MediaQuery.of(context).disableAnimations;
-
-                          
-                          return _LivestockCard(
-                            key: ValueKey(l.id),
-                            livestock: l,
-                            tank: tank,
-                            allLivestock: livestock,
-                            isSelectMode: _isSelectMode,
-                            isSelected: _selectedLivestockIds.contains(l.id),
-                            onTap: _isSelectMode
-                                ? () => _toggleLivestockSelection(l.id)
-                                : () => NavigationThrottle.push(context, LivestockDetailScreen(
-                                        tankId: widget.tankId,
-                                        livestock: l,
-                                      )),
-                            onEdit: () => _showEditDialog(context, ref, l),
-                            onDelete: () => _confirmDelete(context, ref, l),
-                          )
-                              .animate(autoPlay: !reduceMotion)
-                              .fadeIn(
-                                duration: reduceMotion ? 0.ms : 300.ms,
-                                delay: reduceMotion ? 0.ms : (index * 50).ms,
-                              )
-                              .slideY(
-                                begin: reduceMotion ? 0 : 0.2,
-                                end: 0,
-                                duration: reduceMotion ? 0.ms : 300.ms,
-                                delay: reduceMotion ? 0.ms : (index * 50).ms,
-                              );
-                        },
-                      ),
-                    ),
-                    
-                    // Bottom padding
-                    const SliverPadding(
-                      padding: EdgeInsets.only(bottom: 16),
-                      sliver: SliverToBoxAdapter(child: SizedBox.shrink()),
-                    ),
-                  ],
-                ),
-              ),
-
-              // Bulk action buttons
-              if (_isSelectMode && _selectedLivestockIds.isNotEmpty)
-                Container(
-                  padding: const EdgeInsets.all(AppSpacing.md),
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.surface,
-                    boxShadow: [
-                      BoxShadow(
-                        color: AppOverlays.black10,
-                        blurRadius: 8,
-                        offset: const Offset(0, -2),
-                      ),
-                    ],
-                  ),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: ElevatedButton.icon(
-                          onPressed: () =>
-                              _bulkMoveLivestock(context, ref, livestock),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.primary,
-                            foregroundColor: Colors.white,
-                            padding: const EdgeInsets.symmetric(vertical: 16),
-                          ),
-                          icon: const Icon(Icons.move_down, size: AppIconSizes.sm),
-                          label: const Text('Move to Tank'),
-                        ),
-                      ),
-                      const SizedBox(width: AppSpacing.sm2),
-                      Expanded(
-                        child: ElevatedButton.icon(
-                          onPressed: () => _bulkDelete(context, ref, livestock),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.error,
-                            foregroundColor: Colors.white,
-                            padding: const EdgeInsets.symmetric(vertical: 16),
-                          ),
-                          icon: const Icon(Icons.delete_outline, size: AppIconSizes.sm),
-                          label: const Text('Delete'),
-                        ),
-                      ),
                     ],
                   ),
                 ),
-            ],
+
+                // Bulk action buttons
+                if (_isSelectMode && _selectedLivestockIds.isNotEmpty)
+                  Container(
+                    padding: const EdgeInsets.all(AppSpacing.md),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.surface,
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppOverlays.black10,
+                          blurRadius: 8,
+                          offset: const Offset(0, -2),
+                        ),
+                      ],
+                    ),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: ElevatedButton.icon(
+                            onPressed: () =>
+                                _bulkMoveLivestock(context, ref, livestock),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: AppColors.primary,
+                              foregroundColor: Colors.white,
+                              padding: const EdgeInsets.symmetric(vertical: 16),
+                            ),
+                            icon: const Icon(
+                              Icons.move_down,
+                              size: AppIconSizes.sm,
+                            ),
+                            label: const Text('Move to Tank'),
+                          ),
+                        ),
+                        const SizedBox(width: AppSpacing.sm2),
+                        Expanded(
+                          child: ElevatedButton.icon(
+                            onPressed: () =>
+                                _bulkDelete(context, ref, livestock),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: AppColors.error,
+                              foregroundColor: Colors.white,
+                              padding: const EdgeInsets.symmetric(vertical: 16),
+                            ),
+                            icon: const Icon(
+                              Icons.delete_outline,
+                              size: AppIconSizes.sm,
+                            ),
+                            label: const Text('Delete'),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+              ],
             ),
           );
         },
@@ -363,7 +395,7 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
   ) async {
     final tanksAsync = await ref.read(tanksProvider.future);
     if (!context.mounted) return;
-    
+
     final availableTanks = tanksAsync
         .where((t) => t.id != widget.tankId)
         .toList();
@@ -520,11 +552,15 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
 
       // Award XP for feeding
       final isBoostActive = ref.read(xpBoostActiveProvider);
-      await ref.read(userProfileProvider.notifier).recordActivity(
-        xp: XpRewards.journalEntry,
-        xpBoostActive: isBoostActive,
-      );
-      final effectiveXp = isBoostActive ? XpRewards.journalEntry * 2 : XpRewards.journalEntry;
+      await ref
+          .read(userProfileProvider.notifier)
+          .recordActivity(
+            xp: XpRewards.journalEntry,
+            xpBoostActive: isBoostActive,
+          );
+      final effectiveXp = isBoostActive
+          ? XpRewards.journalEntry * 2
+          : XpRewards.journalEntry;
       if (context.mounted) {
         AppHaptics.success();
         ref.showXpAnimation(effectiveXp);
@@ -532,7 +568,10 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
       }
     } catch (e) {
       if (context.mounted) {
-        AppFeedback.showError(context, 'Couldn\'t log feeding. Please try again.');
+        AppFeedback.showError(
+          context,
+          'Couldn\'t log that feeding. Give it another go!',
+        );
       }
     }
   }
@@ -541,45 +580,49 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
     final placeholders = SkeletonPlaceholders.livestockList;
     return IgnorePointer(
       child: Skeletonizer(
-      child: ListView.builder(
-        padding: const EdgeInsets.all(AppSpacing.md),
-        itemCount: placeholders.length + 2, // +2 for summary card and spacing
-        itemBuilder: (context, index) {
-          if (index == 0) {
-            // Skeleton summary card
-            return AppCard(
-              padding: AppCardPadding.standard,
-              child: Row(
-                children: [
-                  Icon(Icons.set_meal, color: AppColors.primary, size: AppIconSizes.lg),
-                  const SizedBox(width: AppSpacing.md),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('50 total', style: AppTypography.headlineMedium),
-                      Text('5 species', style: AppTypography.bodyMedium),
-                    ],
-                  ),
-                ],
-              ),
-            );
-          } else if (index == 1) {
-            return const SizedBox(height: AppSpacing.md);
-          } else {
-            // Skeleton livestock cards
-            final livestock = placeholders[index - 2];
-            return _LivestockCard(
-              livestock: livestock,
-              tank: null,
-              allLivestock: placeholders,
-              onTap: () {},
-              onEdit: () {},
-              onDelete: () {},
-            );
-          }
-        },
-      ),
-    ), // end Skeletonizer
+        child: ListView.builder(
+          padding: const EdgeInsets.all(AppSpacing.md),
+          itemCount: placeholders.length + 2, // +2 for summary card and spacing
+          itemBuilder: (context, index) {
+            if (index == 0) {
+              // Skeleton summary card
+              return AppCard(
+                padding: AppCardPadding.standard,
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.set_meal,
+                      color: AppColors.primary,
+                      size: AppIconSizes.lg,
+                    ),
+                    const SizedBox(width: AppSpacing.md),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('50 total', style: AppTypography.headlineMedium),
+                        Text('5 species', style: AppTypography.bodyMedium),
+                      ],
+                    ),
+                  ],
+                ),
+              );
+            } else if (index == 1) {
+              return const SizedBox(height: AppSpacing.md);
+            } else {
+              // Skeleton livestock cards
+              final livestock = placeholders[index - 2];
+              return _LivestockCard(
+                livestock: livestock,
+                tank: null,
+                allLivestock: placeholders,
+                onTap: () {},
+                onEdit: () {},
+                onDelete: () {},
+              );
+            }
+          },
+        ),
+      ), // end Skeletonizer
     ); // end IgnorePointer
   }
 
@@ -610,10 +653,8 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
       context: context,
       showDragHandle: true,
       isScrollControlled: true,
-      builder: (_) => _AddLivestockSheet(
-        tankId: widget.tankId,
-        existing: livestock,
-      ),
+      builder: (_) =>
+          _AddLivestockSheet(tankId: widget.tankId, existing: livestock),
     );
   }
 
@@ -746,7 +787,10 @@ class _LivestockCard extends StatelessWidget {
                             ? (_, __) {}
                             : null,
                         child: livestock.imageUrl == null
-                            ? const Icon(Icons.set_meal, color: AppColors.primary)
+                            ? const Icon(
+                                Icons.set_meal,
+                                color: AppColors.primary,
+                              )
                             : null,
                       ),
                     ),
@@ -846,10 +890,7 @@ class _AddLivestockSheet extends ConsumerStatefulWidget {
   final String tankId;
   final Livestock? existing;
 
-  const _AddLivestockSheet({
-    required this.tankId,
-    this.existing,
-  });
+  const _AddLivestockSheet({required this.tankId, this.existing});
 
   @override
   ConsumerState<_AddLivestockSheet> createState() => _AddLivestockSheetState();
@@ -936,139 +977,139 @@ class _AddLivestockSheetState extends ConsumerState<_AddLivestockSheet> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-            Text(
-              widget.existing != null ? 'Edit Livestock' : 'Add Livestock',
-              style: AppTypography.headlineMedium,
-            ),
-            const SizedBox(height: AppSpacing.md),
-
-            // Name with autocomplete
-            TextFormField(
-              controller: _nameController,
-              decoration: InputDecoration(
-                labelText: 'Common Name *',
-                hintText: 'e.g., Neon Tetra',
-                suffixIcon: _selectedSpecies != null
-                    ? Icon(
-                        Icons.check_circle,
-                        color: AppColors.success,
-                        size: AppIconSizes.sm,
-                      )
-                    : null,
+              Text(
+                widget.existing != null ? 'Edit Livestock' : 'Add Livestock',
+                style: AppTypography.headlineMedium,
               ),
-              textCapitalization: TextCapitalization.words,
-              autofocus: true,
-            ),
+              const SizedBox(height: AppSpacing.md),
 
-            // Suggestions
-            if (_suggestions.isNotEmpty)
-              Container(
-                margin: const EdgeInsets.only(top: 4),
-                decoration: BoxDecoration(
-                  color: context.surfaceVariant,
-                  borderRadius: AppRadius.smallRadius,
-                  border: Border.all(color: context.surfaceVariant),
+              // Name with autocomplete
+              TextFormField(
+                controller: _nameController,
+                decoration: InputDecoration(
+                  labelText: 'Common Name *',
+                  hintText: 'e.g., Neon Tetra',
+                  suffixIcon: _selectedSpecies != null
+                      ? Icon(
+                          Icons.check_circle,
+                          color: AppColors.success,
+                          size: AppIconSizes.sm,
+                        )
+                      : null,
                 ),
-                child: Column(
-                  children: _suggestions
-                      .map(
-                        (species) => ListTile(
-                          dense: true,
-                          title: Text(species.commonName),
-                          subtitle: Text(
-                            '${species.scientificName} • ${species.temperament}',
-                            style: AppTypography.bodySmall,
-                          ),
-                          trailing: Text(
-                            species.careLevel,
-                            style: AppTypography.bodySmall.copyWith(
-                              color: _careLevelColor(species.careLevel),
+                textCapitalization: TextCapitalization.words,
+                autofocus: true,
+              ),
+
+              // Suggestions
+              if (_suggestions.isNotEmpty)
+                Container(
+                  margin: const EdgeInsets.only(top: 4),
+                  decoration: BoxDecoration(
+                    color: context.surfaceVariant,
+                    borderRadius: AppRadius.smallRadius,
+                    border: Border.all(color: context.surfaceVariant),
+                  ),
+                  child: Column(
+                    children: _suggestions
+                        .map(
+                          (species) => ListTile(
+                            dense: true,
+                            title: Text(species.commonName),
+                            subtitle: Text(
+                              '${species.scientificName} • ${species.temperament}',
+                              style: AppTypography.bodySmall,
                             ),
+                            trailing: Text(
+                              species.careLevel,
+                              style: AppTypography.bodySmall.copyWith(
+                                color: _careLevelColor(species.careLevel),
+                              ),
+                            ),
+                            onTap: () => _selectSpecies(species),
                           ),
-                          onTap: () => _selectSpecies(species),
+                        )
+                        .toList(),
+                  ),
+                ),
+
+              // Species info tip
+              if (_selectedSpecies != null) ...[
+                const SizedBox(height: AppSpacing.sm),
+                Container(
+                  padding: const EdgeInsets.all(AppSpacing.sm2),
+                  decoration: BoxDecoration(
+                    color: AppColors.primaryAlpha05,
+                    borderRadius: AppRadius.smallRadius,
+                    border: Border.all(color: AppOverlays.primary20),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          const Icon(
+                            Icons.info_outline,
+                            size: AppIconSizes.xs,
+                            color: AppColors.primary,
+                          ),
+                          const SizedBox(width: AppSpacing.xs2),
+                          Text('Species Info', style: AppTypography.labelLarge),
+                        ],
+                      ),
+                      const SizedBox(height: AppSpacing.xs2),
+                      Text(
+                        '${_selectedSpecies!.temperament} • ${_selectedSpecies!.adultSizeCm.toStringAsFixed(0)}cm adult • ${_selectedSpecies!.careLevel}',
+                        style: AppTypography.bodySmall,
+                      ),
+                      if (_selectedSpecies!.minSchoolSize > 1)
+                        Text(
+                          'Schooling fish — keep ${_selectedSpecies!.minSchoolSize}+ together',
+                          style: AppTypography.bodySmall.copyWith(
+                            color: context.textSecondary,
+                          ),
                         ),
-                      )
-                      .toList(),
+                    ],
+                  ),
+                ),
+              ],
+
+              const SizedBox(height: AppSpacing.sm2),
+              TextFormField(
+                controller: _scientificController,
+                decoration: const InputDecoration(
+                  labelText: 'Scientific Name (optional)',
+                  hintText: 'e.g., Paracheirodon innesi',
                 ),
               ),
-
-            // Species info tip
-            if (_selectedSpecies != null) ...[
-              const SizedBox(height: AppSpacing.sm),
-              Container(
-                padding: const EdgeInsets.all(AppSpacing.sm2),
-                decoration: BoxDecoration(
-                  color: AppColors.primaryAlpha05,
-                  borderRadius: AppRadius.smallRadius,
-                  border: Border.all(color: AppOverlays.primary20),
+              const SizedBox(height: AppSpacing.sm2),
+              TextFormField(
+                controller: _countController,
+                decoration: InputDecoration(
+                  labelText: 'Count *',
+                  hintText:
+                      _selectedSpecies != null &&
+                          _selectedSpecies!.minSchoolSize > 1
+                      ? 'Recommended: ${_selectedSpecies!.minSchoolSize}+'
+                      : 'How many?',
                 ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        const Icon(
-                          Icons.info_outline,
-                          size: AppIconSizes.xs,
-                          color: AppColors.primary,
-                        ),
-                        const SizedBox(width: AppSpacing.xs2),
-                        Text('Species Info', style: AppTypography.labelLarge),
-                      ],
-                    ),
-                    const SizedBox(height: AppSpacing.xs2),
-                    Text(
-                      '${_selectedSpecies!.temperament} • ${_selectedSpecies!.adultSizeCm.toStringAsFixed(0)}cm adult • ${_selectedSpecies!.careLevel}',
-                      style: AppTypography.bodySmall,
-                    ),
-                    if (_selectedSpecies!.minSchoolSize > 1)
-                      Text(
-                        'Schooling fish -- keep ${_selectedSpecies!.minSchoolSize}+ together',
-                        style: AppTypography.bodySmall.copyWith(
-                          color: context.textSecondary,
-                        ),
-                      ),
-                  ],
-                ),
+                keyboardType: TextInputType.number,
+                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+              ),
+              const SizedBox(height: AppSpacing.lg),
+              ElevatedButton(
+                onPressed: _isSaving ? null : _save,
+                child: _isSaving
+                    ? const SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : Text(widget.existing != null ? 'Save' : 'Add'),
               ),
             ],
-
-            const SizedBox(height: AppSpacing.sm2),
-            TextFormField(
-              controller: _scientificController,
-              decoration: const InputDecoration(
-                labelText: 'Scientific Name (optional)',
-                hintText: 'e.g., Paracheirodon innesi',
-              ),
-            ),
-            const SizedBox(height: AppSpacing.sm2),
-            TextFormField(
-              controller: _countController,
-              decoration: InputDecoration(
-                labelText: 'Count *',
-                hintText:
-                    _selectedSpecies != null &&
-                        _selectedSpecies!.minSchoolSize > 1
-                    ? 'Recommended: ${_selectedSpecies!.minSchoolSize}+'
-                    : 'How many?',
-              ),
-              keyboardType: TextInputType.number,
-              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-            ),
-            const SizedBox(height: AppSpacing.lg),
-            ElevatedButton(
-              onPressed: _isSaving ? null : _save,
-              child: _isSaving
-                  ? const SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    )
-                  : Text(widget.existing != null ? 'Save' : 'Add'),
-            ),
-          ],
+          ),
         ),
-      ),
       ),
     );
   }
@@ -1144,7 +1185,7 @@ class _AddLivestockSheetState extends ConsumerState<_AddLivestockSheet> {
         await ref
             .read(userProfileProvider.notifier)
             .recordActivity(xp: XpRewards.addLivestock);
-        
+
         // Show XP animation + haptic feedback
         if (mounted) {
           AppHaptics.success();
@@ -1175,10 +1216,12 @@ class _BulkAddLivestockSheet extends ConsumerStatefulWidget {
   const _BulkAddLivestockSheet({required this.tankId});
 
   @override
-  ConsumerState<_BulkAddLivestockSheet> createState() => _BulkAddLivestockSheetState();
+  ConsumerState<_BulkAddLivestockSheet> createState() =>
+      _BulkAddLivestockSheetState();
 }
 
-class _BulkAddLivestockSheetState extends ConsumerState<_BulkAddLivestockSheet> {
+class _BulkAddLivestockSheetState
+    extends ConsumerState<_BulkAddLivestockSheet> {
   final _controller = TextEditingController();
   bool _isSaving = false;
   List<_BulkLivestockItem> _items = const [];
@@ -1327,9 +1370,7 @@ class _BulkAddLivestockSheetState extends ConsumerState<_BulkAddLivestockSheet> 
       ref.invalidate(allLogsProvider(widget.tankId));
 
       final totalXp = _items.length * XpRewards.addLivestock;
-      await ref
-          .read(userProfileProvider.notifier)
-          .recordActivity(xp: totalXp);
+      await ref.read(userProfileProvider.notifier).recordActivity(xp: totalXp);
 
       // Show XP animation
       if (mounted && totalXp > 0) {
@@ -1434,8 +1475,6 @@ class _ParseResult {
   const _ParseResult({required this.items, this.error});
 }
 
-
-
 /// Health status chip widget
 class _HealthChip extends StatelessWidget {
   final HealthStatus status;
@@ -1450,7 +1489,10 @@ class _HealthChip extends StatelessWidget {
     };
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: AppSpacing.xxs),
+      padding: const EdgeInsets.symmetric(
+        horizontal: 8,
+        vertical: AppSpacing.xxs,
+      ),
       decoration: BoxDecoration(
         color: color.withAlpha(30),
         borderRadius: AppRadius.md2Radius,
@@ -1485,16 +1527,21 @@ class _LastFedInfo extends ConsumerWidget {
     return logsAsync.when(
       loading: () => const SizedBox.shrink(),
       error: (_, __) => Padding(
-                    padding: const EdgeInsets.all(AppSpacing.sm),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(Icons.info_outline, size: 14, color: AppColors.warning),
-                        const SizedBox(width: AppSpacing.xs),
-                        Text('Unable to load', style: Theme.of(context).textTheme.bodySmall?.copyWith(color: AppColors.warning)),
-                      ],
-                    ),
-                  ),
+        padding: const EdgeInsets.all(AppSpacing.sm),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(Icons.info_outline, size: 14, color: AppColors.warning),
+            const SizedBox(width: AppSpacing.xs),
+            Text(
+              'Unable to load',
+              style: Theme.of(
+                context,
+              ).textTheme.bodySmall?.copyWith(color: AppColors.warning),
+            ),
+          ],
+        ),
+      ),
       data: (logs) {
         final lastFeeding = logs
             .where((l) => l.type == LogType.feeding)
@@ -1503,7 +1550,7 @@ class _LastFedInfo extends ConsumerWidget {
           return Padding(
             padding: const EdgeInsets.only(top: AppSpacing.sm),
             child: Text(
-              'No feedings logged yet',
+              'No feedings logged yet — time to feed your fish! 🐟',
               style: AppTypography.bodySmall.copyWith(
                 color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
               ),
@@ -1524,12 +1571,18 @@ class _LastFedInfo extends ConsumerWidget {
           padding: const EdgeInsets.only(top: AppSpacing.sm),
           child: Row(
             children: [
-              Icon(Icons.restaurant, size: 14, color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5)),
+              Icon(
+                Icons.restaurant,
+                size: 14,
+                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
+              ),
               const SizedBox(width: AppSpacing.xs),
               Text(
                 'Last fed: $timeAgo',
                 style: AppTypography.bodySmall.copyWith(
-                  color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+                  color: Theme.of(
+                    context,
+                  ).colorScheme.onSurface.withOpacity(0.6),
                 ),
               ),
             ],

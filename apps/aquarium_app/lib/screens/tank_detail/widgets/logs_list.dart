@@ -21,7 +21,7 @@ class LogsList extends StatelessWidget {
           padding: AppCardPadding.spacious,
           child: CompactEmptyState(
             icon: Icons.history,
-            message: 'No activity logged yet',
+            message: 'No activity yet — start logging to track your journey!',
           ),
         ),
       );
@@ -39,7 +39,12 @@ class LogsList extends StatelessWidget {
                 (entry) => LogTile(log: entry.value, onTap: onTap)
                     .animate()
                     .fadeIn(delay: (50 * entry.key).ms, duration: 300.ms)
-                    .slideX(begin: 0.1, end: 0, delay: (50 * entry.key).ms, duration: 300.ms),
+                    .slideX(
+                      begin: 0.1,
+                      end: 0,
+                      delay: (50 * entry.key).ms,
+                      duration: 300.ms,
+                    ),
               )
               .toList(),
         ),

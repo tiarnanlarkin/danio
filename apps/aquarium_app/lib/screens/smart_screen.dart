@@ -68,7 +68,8 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
         messages: [
           const ChatMessage(
             role: 'system',
-            content: 'You are Danio AI, a friendly and knowledgeable aquarium '
+            content:
+                'You are Danio AI, a friendly and knowledgeable aquarium '
                 'expert. Answer questions about fishkeeping, water chemistry, '
                 'fish compatibility, diseases, plants, equipment, and tank '
                 'maintenance. Be concise (2-4 sentences) and practical. '
@@ -79,10 +80,13 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
         maxTokens: 300,
       );
       rateLimiter.recordRequest(AIFeature.askDanio);
-      ref.read(aiHistoryProvider.notifier).add(
-        type: 'ask_danio',
-        summary: 'Asked: ${question.length > 40 ? '${question.substring(0, 40)}...' : question}',
-      );
+      ref
+          .read(aiHistoryProvider.notifier)
+          .add(
+            type: 'ask_danio',
+            summary:
+                'Asked: ${question.length > 40 ? '${question.substring(0, 40)}...' : question}',
+          );
       if (!mounted) return;
       setState(() => _askResponse = result.text);
     } on TimeoutException {
@@ -90,10 +94,13 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
       setState(() => _askResponse = OpenAIUserMessages.timeout);
     } catch (e) {
       if (!mounted) return;
-      final isAuthError = e is OpenAIException && (e.statusCode == 401 || e.statusCode == 403);
-      setState(() => _askResponse = isAuthError
-          ? 'Your API key appears to be invalid or expired. Please check your key in Smart Settings.'
-          : "Sorry, I couldn't answer that right now. Please check your connection and try again.");
+      final isAuthError =
+          e is OpenAIException && (e.statusCode == 401 || e.statusCode == 403);
+      setState(
+        () => _askResponse = isAuthError
+            ? 'Your API key appears to be invalid or expired. Please check your key in Smart Settings.'
+            : "Sorry, I couldn't answer that right now. Please check your connection and try again.",
+      );
     } finally {
       if (mounted) setState(() => _askLoading = false);
     }
@@ -108,197 +115,216 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
     final anomalies = ref.watch(anomalyHistoryProvider);
     final activeAnomalies = anomalies.where((a) => !a.dismissed).toList();
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('🧠 Smart'),
-        centerTitle: true,
-      ),
-      body: ListView(
-        // BUG-04: bottom padding so Anomaly History card isn't clipped by bottom nav
-        padding: const EdgeInsets.only(
-          left: AppSpacing.md,
-          right: AppSpacing.md,
-          top: AppSpacing.md,
-          bottom: kBottomNavigationBarHeight + 16,
-        ),
-        children: [
-          // API status
-          if (!openai.isConfigured)
-            _OfflineBanner(onSettingsTap: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(builder: (_) => const SettingsScreen()),
-              );
-            })
-          else
-            _UsageChip(callCount: openai.apiCallsThisMonth),
+    return GestureDetector(
+      onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+      child: Scaffold(
+        appBar: AppBar(title: const Text('🧠 Smart'), centerTitle: true),
+        body: ListView(
+          // BUG-04: bottom padding so Anomaly History card isn't clipped by bottom nav
+          padding: const EdgeInsets.only(
+            left: AppSpacing.md,
+            right: AppSpacing.md,
+            top: AppSpacing.md,
+            bottom: kBottomNavigationBarHeight + 16,
+          ),
+          children: [
+            // API status
+            if (!openai.isConfigured)
+              _OfflineBanner(
+                onSettingsTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(builder: (_) => const SettingsScreen()),
+                  );
+                },
+              )
+            else
+              _UsageChip(callCount: openai.apiCallsThisMonth),
 
-          const SizedBox(height: AppSpacing.md),
-
-          // Feature cards — gated behind API key (CA-004)
-          _FeatureCard(
-            icon: Icons.camera_alt,
-            title: 'Fish & Plant ID',
-            subtitle: openai.isConfigured
-                ? 'Snap a photo to identify species'
-                : 'Enable AI in Settings to use this',
-            color: AppColors.primary,
-            onTap: openai.isConfigured
-                ? () => Navigator.of(context).push(
-                    MaterialPageRoute(builder: (_) => const FishIdScreen()),
-                  )
-                : null,
-          ).animate(delay: 0.ms).fadeIn().slideX(begin: 0.05),
-
-          _FeatureCard(
-            icon: Icons.healing,
-            title: 'Symptom Checker',
-            subtitle: openai.isConfigured
-                ? 'Describe symptoms, get instant advice'
-                : 'Enable AI in Settings to use this',
-            color: AppColors.error,
-            onTap: openai.isConfigured
-                ? () => Navigator.of(context).push(
-                    MaterialPageRoute(builder: (_) => const SymptomTriageScreen()),
-                  )
-                : null,
-          ).animate(delay: 50.ms).fadeIn().slideX(begin: 0.05),
-
-          _FeatureCard(
-            icon: Icons.calendar_month,
-            title: 'Weekly Care Plan',
-            subtitle: openai.isConfigured
-                ? 'Your personalised maintenance schedule'
-                : 'Enable AI in Settings to use this',
-            color: AppColors.primary, // BUG-11: was textSecondary (gray), now warm amber to match siblings
-            onTap: openai.isConfigured
-                ? () => Navigator.of(context).push(
-                    MaterialPageRoute(builder: (_) => const WeeklyPlanScreen()),
-                  )
-                : null,
-          ).animate(delay: 100.ms).fadeIn().slideX(begin: 0.05),
-          // Compatibility Checker (AI version when key configured)
-          if (openai.isConfigured) ...[const SizedBox(height: AppSpacing.sm), const CompatibilityCheckerWidget()],
-
-          // Offline Compatibility Checker — always available (uses local species data)
-          if (!openai.isConfigured) ...[
-            const SizedBox(height: AppSpacing.sm),
-            _FeatureCard(
-              icon: Icons.compare_arrows,
-              title: 'Compatibility Checker',
-              subtitle: 'Check if your fish are compatible — works offline!',
-              color: AppColors.success,
-              onTap: () => Navigator.of(context).push(
-                MaterialPageRoute(builder: (_) => const CompatibilityCheckerScreen()),
-              ),
-            ).animate(delay: 150.ms).fadeIn().slideX(begin: 0.05),
-          ],
-
-          // Ask Danio - quick question
-          if (openai.isConfigured) ...[
             const SizedBox(height: AppSpacing.md),
-            Card(
-              shape: RoundedRectangleBorder(
-                borderRadius: AppRadius.md2Radius,
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(AppSpacing.md),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Icon(Icons.chat_bubble_outline,
-                            color: AppColors.primary, size: 20),
-                        const SizedBox(width: AppSpacing.sm),
-                        Text(
-                          'Ask Danio',
-                          style: theme.textTheme.titleSmall?.copyWith(
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: AppSpacing.sm),
-                    TextField(
-                      controller: _askController,
-                      decoration: InputDecoration(
-                        hintText: 'e.g. "Can neon tetras live with bettas?"',
-                        border: const OutlineInputBorder(),
-                        isDense: true,
-                        suffixIcon: _askLoading
-                            ? const Padding(
-                                padding: EdgeInsets.all(AppSpacing.sm2),
-                                child: SizedBox(
-                                  width: 24, height: 24,
-                                  child: BubbleLoader(),
-                                ),
-                              )
-                            : IconButton(
-                                tooltip: 'Send question',
-                                icon: const Icon(Icons.send),
-                                onPressed: _askDanio,
-                              ),
+
+            // Feature cards — gated behind API key (CA-004)
+            _FeatureCard(
+              icon: Icons.camera_alt,
+              title: 'Fish & Plant ID',
+              subtitle: openai.isConfigured
+                  ? 'Snap a photo to identify species'
+                  : 'Enable AI in Settings to use this',
+              color: AppColors.primary,
+              onTap: openai.isConfigured
+                  ? () => Navigator.of(context).push(
+                      MaterialPageRoute(builder: (_) => const FishIdScreen()),
+                    )
+                  : null,
+            ).animate(delay: 0.ms).fadeIn().slideX(begin: 0.05),
+
+            _FeatureCard(
+              icon: Icons.healing,
+              title: 'Symptom Checker',
+              subtitle: openai.isConfigured
+                  ? 'Describe symptoms, get instant advice'
+                  : 'Enable AI in Settings to use this',
+              color: AppColors.error,
+              onTap: openai.isConfigured
+                  ? () => Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => const SymptomTriageScreen(),
                       ),
-                      textInputAction: TextInputAction.send,
-                      onSubmitted: (_) => _askDanio(),
-                      maxLines: 2,
-                      minLines: 1,
-                    ),
-                    if (_askResponse != null) ...[
+                    )
+                  : null,
+            ).animate(delay: 50.ms).fadeIn().slideX(begin: 0.05),
+
+            _FeatureCard(
+              icon: Icons.calendar_month,
+              title: 'Weekly Care Plan',
+              subtitle: openai.isConfigured
+                  ? 'Your personalised maintenance schedule'
+                  : 'Enable AI in Settings to use this',
+              color: AppColors
+                  .primary, // BUG-11: was textSecondary (gray), now warm amber to match siblings
+              onTap: openai.isConfigured
+                  ? () => Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => const WeeklyPlanScreen(),
+                      ),
+                    )
+                  : null,
+            ).animate(delay: 100.ms).fadeIn().slideX(begin: 0.05),
+            // Compatibility Checker (AI version when key configured)
+            if (openai.isConfigured) ...[
+              const SizedBox(height: AppSpacing.sm),
+              const CompatibilityCheckerWidget(),
+            ],
+
+            // Offline Compatibility Checker — always available (uses local species data)
+            if (!openai.isConfigured) ...[
+              const SizedBox(height: AppSpacing.sm),
+              _FeatureCard(
+                icon: Icons.compare_arrows,
+                title: 'Compatibility Checker',
+                subtitle: 'Check if your fish are compatible — works offline!',
+                color: AppColors.success,
+                onTap: () => Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => const CompatibilityCheckerScreen(),
+                  ),
+                ),
+              ).animate(delay: 150.ms).fadeIn().slideX(begin: 0.05),
+            ],
+
+            // Ask Danio - quick question
+            if (openai.isConfigured) ...[
+              const SizedBox(height: AppSpacing.md),
+              Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: AppRadius.md2Radius,
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(AppSpacing.md),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.chat_bubble_outline,
+                            color: AppColors.primary,
+                            size: 20,
+                          ),
+                          const SizedBox(width: AppSpacing.sm),
+                          Text(
+                            'Ask Danio',
+                            style: theme.textTheme.titleSmall?.copyWith(
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      ),
                       const SizedBox(height: AppSpacing.sm),
-                      Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.all(AppSpacing.sm),
-                        decoration: BoxDecoration(
-                          color: AppColors.primaryAlpha05,
-                          borderRadius: AppRadius.smallRadius,
+                      TextField(
+                        controller: _askController,
+                        decoration: InputDecoration(
+                          hintText: 'e.g. "Can neon tetras live with bettas?"',
+                          border: const OutlineInputBorder(),
+                          isDense: true,
+                          suffixIcon: _askLoading
+                              ? const Padding(
+                                  padding: EdgeInsets.all(AppSpacing.sm2),
+                                  child: SizedBox(
+                                    width: 24,
+                                    height: 24,
+                                    child: BubbleLoader(),
+                                  ),
+                                )
+                              : IconButton(
+                                  tooltip: 'Send question',
+                                  icon: const Icon(Icons.send),
+                                  onPressed: _askDanio,
+                                ),
                         ),
-                        child: Semantics(
-                          liveRegion: true,
-                          child: SelectableText(
-                            _askResponse!,
-                            style: theme.textTheme.bodyMedium?.copyWith(
-                              height: 1.4,
+                        textInputAction: TextInputAction.send,
+                        onSubmitted: (_) => _askDanio(),
+                        maxLines: 2,
+                        minLines: 1,
+                      ),
+                      if (_askResponse != null) ...[
+                        const SizedBox(height: AppSpacing.sm),
+                        Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.all(AppSpacing.sm),
+                          decoration: BoxDecoration(
+                            color: AppColors.primaryAlpha05,
+                            borderRadius: AppRadius.smallRadius,
+                          ),
+                          child: Semantics(
+                            liveRegion: true,
+                            child: SelectableText(
+                              _askResponse!,
+                              style: theme.textTheme.bodyMedium?.copyWith(
+                                height: 1.4,
+                              ),
                             ),
                           ),
                         ),
-                      ),
+                      ],
                     ],
-                  ],
+                  ),
                 ),
-              ),
-            ).animate(delay: 200.ms).fadeIn().slideX(begin: 0.05),
-          ],
+              ).animate(delay: 200.ms).fadeIn().slideX(begin: 0.05),
+            ],
 
-          const SizedBox(height: AppSpacing.sm),
-
-          _FeatureCard(
-            icon: Icons.warning_amber,
-            title: 'Anomaly History',
-            subtitle: '${activeAnomalies.length} active anomal${activeAnomalies.length == 1 ? "y" : "ies"}',
-            color: AppColors.warning,
-            onTap: () => _showAnomalyHistory(context, ref),
-          ).animate(delay: 150.ms).fadeIn().slideX(begin: 0.05),
-
-          const SizedBox(height: AppSpacing.lg),
-
-          // Recent AI interactions
-          if (history.isNotEmpty) ...[
-            Semantics(
-              header: true,
-              child: Text(
-                'Recent AI Activity',
-                style: theme.textTheme.titleSmall?.copyWith(
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ),
             const SizedBox(height: AppSpacing.sm),
-            ...history.take(10).map((interaction) => _InteractionTile(
-              interaction: interaction,
-            )),
+
+            _FeatureCard(
+              icon: Icons.warning_amber,
+              title: 'Anomaly History',
+              subtitle:
+                  '${activeAnomalies.length} active anomal${activeAnomalies.length == 1 ? "y" : "ies"}',
+              color: AppColors.warning,
+              onTap: () => _showAnomalyHistory(context, ref),
+            ).animate(delay: 150.ms).fadeIn().slideX(begin: 0.05),
+
+            const SizedBox(height: AppSpacing.lg),
+
+            // Recent AI interactions
+            if (history.isNotEmpty) ...[
+              Semantics(
+                header: true,
+                child: Text(
+                  'Recent AI Activity',
+                  style: theme.textTheme.titleSmall?.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+              const SizedBox(height: AppSpacing.sm),
+              ...history
+                  .take(10)
+                  .map(
+                    (interaction) => _InteractionTile(interaction: interaction),
+                  ),
+            ],
           ],
-        ],
+        ),
       ),
     );
   }
@@ -319,18 +345,34 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
             return Column(
               children: [
                 const SizedBox(height: AppSpacing.sm),
-                Text('Anomaly History',
-                  style: AppTypography.titleLarge.copyWith(fontWeight: FontWeight.bold)),
+                Text(
+                  'Anomaly History',
+                  style: AppTypography.titleLarge.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
                 const Spacer(),
-                Icon(Icons.monitor_heart_outlined, size: 56, color: context.textHint),
+                Icon(
+                  Icons.monitor_heart_outlined,
+                  size: 56,
+                  color: context.textHint,
+                ),
                 const SizedBox(height: AppSpacing.md),
-                Text('No anomalies detected yet.',
-                  style: AppTypography.bodyLarge.copyWith(color: context.textSecondary),
-                  textAlign: TextAlign.center),
+                Text(
+                  'No anomalies detected — looking good! 🐟',
+                  style: AppTypography.bodyLarge.copyWith(
+                    color: context.textSecondary,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
                 const SizedBox(height: AppSpacing.sm),
-                Text('Anomaly detection runs automatically\nwhen you log water parameters.',
-                  style: AppTypography.bodySmall.copyWith(color: context.textHint),
-                  textAlign: TextAlign.center),
+                Text(
+                  'Anomaly detection runs automatically\nwhen you log water parameters.',
+                  style: AppTypography.bodySmall.copyWith(
+                    color: context.textHint,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
                 const SizedBox(height: AppSpacing.lg),
                 ElevatedButton.icon(
                   onPressed: () {
@@ -347,8 +389,11 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
           return ListView.builder(
             controller: scrollController,
             padding: const EdgeInsets.only(
-              left: AppSpacing.md, right: AppSpacing.md,
-              bottom: AppSpacing.md, top: 0),
+              left: AppSpacing.md,
+              right: AppSpacing.md,
+              bottom: AppSpacing.md,
+              top: 0,
+            ),
             itemCount: anomalies.length + 2,
             itemBuilder: (ctx, i) {
               if (i == 0) {
@@ -368,7 +413,11 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
               final a = anomalies[i - 2];
               return ListTile(
                 leading: _severityIcon(a.severity),
-                title: Text(a.description, maxLines: 2, overflow: TextOverflow.ellipsis),
+                title: Text(
+                  a.description,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
                 subtitle: Text(
                   '${a.parameter} · ${_formatTime(a.detectedAt)}'
                   '${a.dismissed ? " · dismissed" : ""}',
@@ -423,9 +472,7 @@ class _OfflineBanner extends StatelessWidget {
             ],
           ),
           borderRadius: AppRadius.mediumRadius,
-          border: Border.all(
-            color: AppColors.primaryAlpha15,
-          ),
+          border: Border.all(color: AppColors.primaryAlpha15),
         ),
         child: Column(
           children: [
@@ -494,9 +541,9 @@ class _UsageChip extends StatelessWidget {
         const SizedBox(width: AppSpacing.xs),
         Text(
           '$callCount AI call${callCount == 1 ? "" : "s"} this month',
-          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-            color: context.textSecondary,
-          ),
+          style: Theme.of(
+            context,
+          ).textTheme.bodySmall?.copyWith(color: context.textSecondary),
         ),
       ],
     );
@@ -524,9 +571,7 @@ class _FeatureCard extends StatelessWidget {
 
     return Card(
       margin: const EdgeInsets.only(bottom: AppSpacing.sm),
-      shape: RoundedRectangleBorder(
-        borderRadius: AppRadius.md2Radius,
-      ),
+      shape: RoundedRectangleBorder(borderRadius: AppRadius.md2Radius),
       child: InkWell(
         onTap: onTap,
         borderRadius: AppRadius.md2Radius,

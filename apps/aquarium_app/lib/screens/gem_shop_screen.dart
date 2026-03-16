@@ -36,12 +36,12 @@ class GemShopColors {
     0xFF5FD9CF,
   ); // Turquoise - matches gemPrimary
   static const cosmeticsColor = Color(0xFFFFD700); // Gold
-  
+
   // Pre-computed overlays for performance
-  static const gemPrimary20 = Color(0x335FD9CF);  // 20%
-  static const gemPrimary30 = Color(0x4D5FD9CF);  // 30%
-  static const gemPrimary50 = Color(0x805FD9CF);  // 50%
-  static const gemGlow20 = Color(0x3395E1D3);     // 20%
+  static const gemPrimary20 = Color(0x335FD9CF); // 20%
+  static const gemPrimary30 = Color(0x4D5FD9CF); // 30%
+  static const gemPrimary50 = Color(0x805FD9CF); // 50%
+  static const gemGlow20 = Color(0x3395E1D3); // 20%
   static const powerUpColor80 = Color(0xCCFF7B7B); // 80%
   static const textSecondary30 = Color(0x4DC5C5D5); // 30%
 }
@@ -107,9 +107,13 @@ class _GemShopScreenState extends ConsumerState<GemShopScreen>
           actions: [
             // Inventory button
             IconButton(
-              icon: const Icon(Icons.inventory_2, color: GemShopColors.goldAccent),
+              icon: const Icon(
+                Icons.inventory_2,
+                color: GemShopColors.goldAccent,
+              ),
               tooltip: 'My Inventory',
-              onPressed: () => NavigationThrottle.push(context, const InventoryScreen()),
+              onPressed: () =>
+                  NavigationThrottle.push(context, const InventoryScreen()),
             ),
             // Gem balance display
             _GemBalanceChip(balance: gemBalance),
@@ -210,7 +214,10 @@ class _GemShopScreenState extends ConsumerState<GemShopScreen>
           SnackBar(
             content: Row(
               children: [
-                Text(item.emoji, style: Theme.of(context).textTheme.headlineSmall!),
+                Text(
+                  item.emoji,
+                  style: Theme.of(context).textTheme.headlineSmall!,
+                ),
                 const SizedBox(width: AppSpacing.sm2),
                 Expanded(
                   child: Text(
@@ -228,7 +235,10 @@ class _GemShopScreenState extends ConsumerState<GemShopScreen>
         // Show error message
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(result.errorMessage ?? 'Couldn\'t complete this purchase. Please try again.'),
+            content: Text(
+              result.errorMessage ??
+                  'Couldn\'t complete this purchase. Give it another go!',
+            ),
             backgroundColor: AppColors.error,
           ),
         );
@@ -239,7 +249,7 @@ class _GemShopScreenState extends ConsumerState<GemShopScreen>
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: const Text('Something went wrong, please try again'),
+          content: const Text('Oops! We hit a snag. Give it another go!'),
           backgroundColor: AppColors.error,
           duration: const Duration(seconds: 4),
           action: SnackBarAction(
@@ -272,7 +282,10 @@ class _GemShopScreenState extends ConsumerState<GemShopScreen>
               ),
               title: Row(
                 children: [
-                  Text(item.emoji, style: Theme.of(context).textTheme.headlineMedium!),
+                  Text(
+                    item.emoji,
+                    style: Theme.of(context).textTheme.headlineMedium!,
+                  ),
                   const SizedBox(width: AppSpacing.sm2),
                   Expanded(
                     child: Text(
@@ -307,23 +320,26 @@ class _GemShopScreenState extends ConsumerState<GemShopScreen>
                       children: [
                         Text(
                           'Cost:',
-                          style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                            color: GemShopColors.textSecondary,
-                          ),
+                          style: Theme.of(context).textTheme.titleMedium!
+                              .copyWith(color: GemShopColors.textSecondary),
                         ),
                         Row(
                           children: [
                             Text(
                               '${item.gemCost}',
-                              style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                                color: canAfford
-                                    ? GemShopColors.gemPrimary
-                                    : GemShopColors.powerUpColor,
-                                fontWeight: FontWeight.bold,
-                              ),
+                              style: Theme.of(context).textTheme.titleLarge!
+                                  .copyWith(
+                                    color: canAfford
+                                        ? GemShopColors.gemPrimary
+                                        : GemShopColors.powerUpColor,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                             ),
                             const SizedBox(width: AppSpacing.xs),
-                            Text('💎', style: Theme.of(context).textTheme.titleLarge!),
+                            Text(
+                              '💎',
+                              style: Theme.of(context).textTheme.titleLarge!,
+                            ),
                           ],
                         ),
                       ],
@@ -423,8 +439,8 @@ class _ShopItemGrid extends ConsumerWidget {
     if (items.isEmpty) {
       return EmptyState.withMascot(
         icon: Icons.shopping_bag_outlined,
-        title: 'Nothing in stock right now',
-        message: 'Check back later for new items in this category!',
+        title: 'Nothing in stock right now 🛍️',
+        message: 'Check back soon — new goodies are on the way!',
         mascotContext: MascotContext.encouragement,
       );
     }
@@ -504,146 +520,155 @@ class _ShopItemCard extends ConsumerWidget {
                   ),
                 ),
                 child: Stack(
-                children: [
-                  // Content
-                  Padding(
-                    padding: const EdgeInsets.all(AppSpacing.md),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // Emoji icon
-                        Center(
-                          child: Text(
-                            item.emoji,
-                            style: Theme.of(context).textTheme.headlineMedium!.copyWith(),
-                          ),
-                        ),
-                        const SizedBox(height: AppSpacing.sm2),
-                        // Name
-                        Text(
-                          item.name,
-                          style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                            color: GemShopColors.textPrimary,
-                            fontWeight: FontWeight.bold,
-                          ),
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        const SizedBox(height: AppSpacing.sm),
-                        // Description
-                        Expanded(
-                          child: Text(
-                            item.description,
-                            style: Theme.of(context).textTheme.labelSmall!.copyWith(
-                              color: GemShopColors.textSecondary,
+                  children: [
+                    // Content
+                    Padding(
+                      padding: const EdgeInsets.all(AppSpacing.md),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Emoji icon
+                          Center(
+                            child: Text(
+                              item.emoji,
+                              style: Theme.of(
+                                context,
+                              ).textTheme.headlineMedium!.copyWith(),
                             ),
-                            maxLines: 3,
+                          ),
+                          const SizedBox(height: AppSpacing.sm2),
+                          // Name
+                          Text(
+                            item.name,
+                            style: Theme.of(context).textTheme.bodyMedium!
+                                .copyWith(
+                                  color: GemShopColors.textPrimary,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                            maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                           ),
+                          const SizedBox(height: AppSpacing.sm),
+                          // Description
+                          Expanded(
+                            child: Text(
+                              item.description,
+                              style: Theme.of(context).textTheme.labelSmall!
+                                  .copyWith(color: GemShopColors.textSecondary),
+                              maxLines: 3,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                          const SizedBox(height: AppSpacing.sm),
+                          // Price
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 6,
+                            ),
+                            decoration: BoxDecoration(
+                              color: categoryColor.withAlpha(51),
+                              borderRadius: AppRadius.mediumRadius,
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  '${item.gemCost}',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .titleMedium!
+                                      .copyWith(
+                                        color: categoryColor,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                ),
+                                const SizedBox(width: AppSpacing.xs),
+                                Text(
+                                  '💎',
+                                  style: Theme.of(context).textTheme.bodyLarge!,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    // Dim overlay for items the user cannot afford
+                    // P2-008: previously used Positioned.fill with a centered
+                    // lock icon which covered the description text. Now we
+                    // use a light dim + a small corner badge so text stays
+                    // readable.
+                    if (!owned && !canAfford) ...[
+                      Positioned.fill(
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: AppColors.blackAlpha25,
+                            borderRadius: AppRadius.largeRadius,
+                          ),
                         ),
-                        const SizedBox(height: AppSpacing.sm),
-                        // Price
-                        Container(
+                      ),
+                      Positioned(
+                        top: 8,
+                        right: 8,
+                        child: Container(
+                          padding: const EdgeInsets.all(6),
+                          decoration: BoxDecoration(
+                            color: AppColors.blackAlpha60,
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Icon(
+                            Icons.lock_outline,
+                            color: Colors.white70,
+                            size: 16,
+                          ),
+                        ),
+                      ),
+                    ],
+                    // Owned indicator
+                    if (owned)
+                      Positioned(
+                        top: 8,
+                        right: 8,
+                        child: Container(
                           padding: const EdgeInsets.symmetric(
-                            horizontal: 12,
-                            vertical: 6,
+                            horizontal: 8,
+                            vertical: 4,
                           ),
                           decoration: BoxDecoration(
-                            color: categoryColor.withAlpha(51),
-                            borderRadius: AppRadius.mediumRadius,
+                            color: categoryColor,
+                            borderRadius: AppRadius.smallRadius,
                           ),
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Text(
-                                '${item.gemCost}',
-                                style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                                  color: categoryColor,
-                                  fontWeight: FontWeight.bold,
-                                ),
+                              const Icon(
+                                Icons.check_circle,
+                                size: 14,
+                                color: Colors.white,
                               ),
-                              const SizedBox(width: AppSpacing.xs),
-                              Text('💎', style: Theme.of(context).textTheme.bodyLarge!),
+                              if (item.isConsumable && quantity > 0) ...[
+                                const SizedBox(width: AppSpacing.xs),
+                                Text(
+                                  'x$quantity',
+                                  style: Theme.of(context).textTheme.bodySmall!
+                                      .copyWith(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                ),
+                              ],
                             ],
                           ),
                         ),
-                      ],
-                    ),
-                  ),
-                  // Dim overlay for items the user cannot afford
-                  // P2-008: previously used Positioned.fill with a centered
-                  // lock icon which covered the description text. Now we
-                  // use a light dim + a small corner badge so text stays
-                  // readable.
-                  if (!owned && !canAfford) ...[
-                    Positioned.fill(
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: Colors.black.withAlpha(60),
-                          borderRadius: AppRadius.largeRadius,
-                        ),
                       ),
-                    ),
-                    Positioned(
-                      top: 8,
-                      right: 8,
-                      child: Container(
-                        padding: const EdgeInsets.all(6),
-                        decoration: BoxDecoration(
-                          color: Colors.black.withAlpha(160),
-                          shape: BoxShape.circle,
-                        ),
-                        child: const Icon(
-                          Icons.lock_outline,
-                          color: Colors.white70,
-                          size: 16,
-                        ),
-                      ),
-                    ),
                   ],
-                  // Owned indicator
-                  if (owned)
-                    Positioned(
-                      top: 8,
-                      right: 8,
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 8,
-                          vertical: 4,
-                        ),
-                        decoration: BoxDecoration(
-                          color: categoryColor,
-                          borderRadius: AppRadius.smallRadius,
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            const Icon(
-                              Icons.check_circle,
-                              size: 14,
-                              color: Colors.white,
-                            ),
-                            if (item.isConsumable && quantity > 0) ...[
-                              const SizedBox(width: AppSpacing.xs),
-                              Text(
-                                'x$quantity',
-                                style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ],
-                          ],
-                        ),
-                      ),
-                    ),
-                ],
+                ),
               ),
             ),
           ),
         ),
       ),
-    ),
     );
   }
 }
@@ -663,16 +688,10 @@ class _GemBalanceChip extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
           gradient: const LinearGradient(
-            colors: [
-              GemShopColors.gemPrimary30,
-              GemShopColors.gemGlow20,
-            ],
+            colors: [GemShopColors.gemPrimary30, GemShopColors.gemGlow20],
           ),
           borderRadius: AppRadius.largeRadius,
-          border: Border.all(
-            color: GemShopColors.gemPrimary50,
-            width: 2,
-          ),
+          border: Border.all(color: GemShopColors.gemPrimary50, width: 2),
           boxShadow: const [
             BoxShadow(
               color: GemShopColors.gemPrimary30,

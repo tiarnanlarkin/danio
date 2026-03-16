@@ -11,7 +11,6 @@ import '../../providers/tank_provider.dart';
 import '../../theme/app_theme.dart';
 import '../../services/onboarding_service.dart';
 
-
 class EnhancedTutorialWalkthroughScreen extends ConsumerStatefulWidget {
   const EnhancedTutorialWalkthroughScreen({super.key});
 
@@ -78,12 +77,18 @@ class _EnhancedTutorialWalkthroughScreenState
     );
 
     _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _animationController, curve: AppCurves.standardAccelerate),
+      CurvedAnimation(
+        parent: _animationController,
+        curve: AppCurves.standardAccelerate,
+      ),
     );
 
     _slideAnimation =
         Tween<Offset>(begin: const Offset(0, 0.3), end: Offset.zero).animate(
-          CurvedAnimation(parent: _animationController, curve: AppCurves.standardDecelerate),
+          CurvedAnimation(
+            parent: _animationController,
+            curve: AppCurves.standardDecelerate,
+          ),
         );
 
     _animationController.forward();
@@ -189,7 +194,9 @@ class _EnhancedTutorialWalkthroughScreenState
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: const Text('Couldn\'t create your tank. Please try again.'),
+          content: const Text(
+            'Couldn\'t create your tank. Give it another go!',
+          ),
           backgroundColor: AppColors.error,
         ),
       );
@@ -274,7 +281,9 @@ class _EnhancedTutorialWalkthroughScreenState
           LinearProgressIndicator(
             value: value,
             minHeight: 6,
-            backgroundColor: Theme.of(context).brightness == Brightness.dark ? context.surfaceVariant : context.surfaceVariant,
+            backgroundColor: Theme.of(context).brightness == Brightness.dark
+                ? context.surfaceVariant
+                : context.surfaceVariant,
             valueColor: AlwaysStoppedAnimation(
               _currentStep < _steps.length
                   ? _steps[_currentStep].color
@@ -288,13 +297,15 @@ class _EnhancedTutorialWalkthroughScreenState
               children: [
                 Text(
                   'Step ${_currentStep + 1} of ${_steps.length + 1}',
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    fontWeight: FontWeight.w500,
-                  ),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w500),
                 ),
                 Text(
                   '${((value) * 100).round()}%',
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(color: context.textHint),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodySmall?.copyWith(color: context.textHint),
                 ),
               ],
             ),
@@ -323,7 +334,9 @@ class _EnhancedTutorialWalkthroughScreenState
                   scale: value,
                   child: Text(
                     step.emoji,
-                    style: Theme.of(context).textTheme.headlineMedium!.copyWith(fontSize: 100),
+                    style: Theme.of(
+                      context,
+                    ).textTheme.headlineMedium!.copyWith(fontSize: 100),
                   ),
                 ),
               ),
@@ -588,7 +601,9 @@ class _EnhancedTutorialWalkthroughScreenState
             children: [
               Icon(
                 _useDemoData ? Icons.check_circle : Icons.science_outlined,
-                color: _useDemoData ? AppColors.accent : Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
+                color: _useDemoData
+                    ? AppColors.accent
+                    : Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
                 size: 32,
               ),
               const SizedBox(width: AppSpacing.md),
@@ -606,7 +621,11 @@ class _EnhancedTutorialWalkthroughScreenState
                     const SizedBox(height: AppSpacing.xs),
                     Text(
                       'Start with a pre-configured 60L community tank to explore features',
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6)),
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.onSurface.withOpacity(0.6),
+                      ),
                     ),
                   ],
                 ),
@@ -628,10 +647,7 @@ class _EnhancedTutorialWalkthroughScreenState
       padding: const EdgeInsets.all(AppSpacing.lg2),
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [
-            AppOverlays.primary10,
-            AppOverlays.accent10,
-          ],
+          colors: [AppOverlays.primary10, AppOverlays.accent10],
         ),
         borderRadius: AppRadius.mediumRadius,
         border: Border.all(color: AppColors.accentAlpha30),
@@ -675,7 +691,11 @@ class _EnhancedTutorialWalkthroughScreenState
                 Expanded(
                   child: Text(
                     'Perfect for exploring features before setting up your real tank!',
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7)),
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.onSurface.withOpacity(0.7),
+                    ),
                   ),
                 ),
               ],
@@ -689,9 +709,18 @@ class _EnhancedTutorialWalkthroughScreenState
   Widget _buildPreviewRow(IconData icon, String text) {
     return Row(
       children: [
-        Icon(icon, size: 18, color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6)),
+        Icon(
+          icon,
+          size: 18,
+          color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+        ),
         const SizedBox(width: AppSpacing.sm),
-        Text(text, style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.8))),
+        Text(
+          text,
+          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+            color: Theme.of(context).colorScheme.onSurface.withOpacity(0.8),
+          ),
+        ),
       ],
     );
   }
@@ -796,10 +825,16 @@ class _TankTypeCard extends StatelessWidget {
           decoration: BoxDecoration(
             color: isSelected
                 ? AppOverlays.primary10
-                : Theme.of(context).brightness == Brightness.dark ? AppColors.surfaceDark : context.surfaceVariant,
+                : Theme.of(context).brightness == Brightness.dark
+                ? AppColors.surfaceDark
+                : context.surfaceVariant,
             borderRadius: AppRadius.mediumRadius,
             border: Border.all(
-              color: isSelected ? AppColors.primary : Theme.of(context).brightness == Brightness.dark ? AppColors.borderDark : context.borderColor,
+              color: isSelected
+                  ? AppColors.primary
+                  : Theme.of(context).brightness == Brightness.dark
+                  ? AppColors.borderDark
+                  : context.borderColor,
               width: isSelected ? 2 : 1,
             ),
           ),
@@ -808,21 +843,29 @@ class _TankTypeCard extends StatelessWidget {
               Icon(
                 icon,
                 size: 32,
-                color: isSelected ? AppColors.primary : Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+                color: isSelected
+                    ? AppColors.primary
+                    : Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
               ),
               const SizedBox(height: AppSpacing.sm),
               Text(
                 label,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   fontWeight: FontWeight.w600,
-                  color: isSelected ? AppColors.primary : Theme.of(context).colorScheme.onSurface.withOpacity(0.8),
+                  color: isSelected
+                      ? AppColors.primary
+                      : Theme.of(
+                          context,
+                        ).colorScheme.onSurface.withOpacity(0.8),
                 ),
               ),
               if (isDisabled) ...[
                 const SizedBox(height: AppSpacing.xs),
                 Text(
                   'Arriving soon',
-                  style: Theme.of(context).textTheme.labelSmall?.copyWith(color: context.textHint),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.labelSmall?.copyWith(color: context.textHint),
                 ),
               ],
             ],
@@ -859,16 +902,25 @@ class _WaterTypeCard extends StatelessWidget {
         decoration: BoxDecoration(
           color: isSelected
               ? AppOverlays.accent10
-              : Theme.of(context).brightness == Brightness.dark ? AppColors.surfaceDark : context.surfaceVariant,
+              : Theme.of(context).brightness == Brightness.dark
+              ? AppColors.surfaceDark
+              : context.surfaceVariant,
           borderRadius: AppRadius.mediumRadius,
           border: Border.all(
-            color: isSelected ? AppColors.accent : Theme.of(context).brightness == Brightness.dark ? AppColors.borderDark : context.borderColor,
+            color: isSelected
+                ? AppColors.accent
+                : Theme.of(context).brightness == Brightness.dark
+                ? AppColors.borderDark
+                : context.borderColor,
             width: isSelected ? 2 : 1,
           ),
         ),
         child: Row(
           children: [
-            Text(icon, style: Theme.of(context).textTheme.headlineMedium!.copyWith()),
+            Text(
+              icon,
+              style: Theme.of(context).textTheme.headlineMedium!.copyWith(),
+            ),
             const SizedBox(width: AppSpacing.md),
             Expanded(
               child: Column(
@@ -878,12 +930,20 @@ class _WaterTypeCard extends StatelessWidget {
                     label,
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.w600,
-                      color: isSelected ? AppColors.accent : Theme.of(context).colorScheme.onSurface.withOpacity(0.8),
+                      color: isSelected
+                          ? AppColors.accent
+                          : Theme.of(
+                              context,
+                            ).colorScheme.onSurface.withOpacity(0.8),
                     ),
                   ),
                   Text(
                     subtitle,
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6)),
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.onSurface.withOpacity(0.6),
+                    ),
                   ),
                 ],
               ),
@@ -891,7 +951,10 @@ class _WaterTypeCard extends StatelessWidget {
             if (isSelected)
               const Icon(Icons.check_circle, color: AppColors.accent)
             else
-              Icon(Icons.circle_outlined, color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6)),
+              Icon(
+                Icons.circle_outlined,
+                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+              ),
           ],
         ),
       ),
@@ -951,9 +1014,7 @@ class _SuccessDialogState extends State<_SuccessDialog>
         ScaleTransition(
           scale: _scaleAnimation,
           child: AlertDialog(
-            shape: RoundedRectangleBorder(
-              borderRadius: AppRadius.largeRadius,
-            ),
+            shape: RoundedRectangleBorder(borderRadius: AppRadius.largeRadius),
             content: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -965,7 +1026,9 @@ class _SuccessDialogState extends State<_SuccessDialog>
                 const SizedBox(height: AppSpacing.md),
                 Text(
                   'Tank Created!',
-                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
+                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: AppSpacing.sm),
@@ -977,7 +1040,9 @@ class _SuccessDialogState extends State<_SuccessDialog>
                 const SizedBox(height: AppSpacing.md),
                 Text(
                   'Let\'s start your aquarium journey! 🐠',
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: context.textHint),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodyMedium?.copyWith(color: context.textHint),
                   textAlign: TextAlign.center,
                 ),
               ],

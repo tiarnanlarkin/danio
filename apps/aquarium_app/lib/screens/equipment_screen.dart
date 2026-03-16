@@ -134,7 +134,8 @@ class EquipmentScreen extends ConsumerWidget {
             return EmptyState.withMascot(
               icon: Icons.settings,
               title: 'Time to gear up! ⚙️',
-              message: 'Track your filters, heaters, and lights - we\'ll remind you when they need attention',
+              message:
+                  'Track your filters, heaters, and lights - we\'ll remind you when they need attention',
               mascotContext: MascotContext.noEquipment,
               actionLabel: 'Add Equipment',
               onAction: () => _showAddDialog(context, ref),
@@ -156,7 +157,11 @@ class EquipmentScreen extends ConsumerWidget {
             },
             child: ListView.builder(
               padding: const EdgeInsets.all(AppSpacing.md),
-              itemCount: equipment.length + (overdue > 0 ? 2 : 0), // +2 for warning card and spacing if overdue
+              itemCount:
+                  equipment.length +
+                  (overdue > 0
+                      ? 2
+                      : 0), // +2 for warning card and spacing if overdue
               itemBuilder: (context, index) {
                 // Summary card
                 if (overdue > 0 && index == 0) {
@@ -196,15 +201,21 @@ class EquipmentScreen extends ConsumerWidget {
                   final equipmentIndex = overdue > 0 ? index - 2 : index;
                   final e = equipment[equipmentIndex];
                   return _EquipmentCard(
-                    equipment: e,
-                    onEdit: () => _showEditDialog(context, ref, e),
-                    onService: () => _markServiced(context, ref, e),
-                    onHistory: () => _showEquipmentHistoryDialog(context, e),
-                    onDelete: () => _confirmDelete(context, ref, e),
-                  )
+                        equipment: e,
+                        onEdit: () => _showEditDialog(context, ref, e),
+                        onService: () => _markServiced(context, ref, e),
+                        onHistory: () =>
+                            _showEquipmentHistoryDialog(context, e),
+                        onDelete: () => _confirmDelete(context, ref, e),
+                      )
                       .animate()
                       .fadeIn(delay: (50 * equipmentIndex).ms, duration: 300.ms)
-                      .slideX(begin: 0.1, end: 0, delay: (50 * equipmentIndex).ms, duration: 300.ms);
+                      .slideX(
+                        begin: 0.1,
+                        end: 0,
+                        delay: (50 * equipmentIndex).ms,
+                        duration: 300.ms,
+                      );
                 }
               },
             ),
@@ -336,7 +347,11 @@ class EquipmentScreen extends ConsumerWidget {
               } catch (e) {
                 if (context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Couldn\'t remove equipment. Please try again.')),
+                    const SnackBar(
+                      content: Text(
+                        'Couldn\'t remove that equipment. Give it another go!',
+                      ),
+                    ),
                   );
                 }
               }
@@ -380,7 +395,9 @@ class _EquipmentHistoryDialog extends ConsumerWidget {
         child: logsAsync.when(
           loading: () => const Padding(
             padding: EdgeInsets.all(AppSpacing.sm2),
-            child: Center(child: CircularProgressIndicator(color: AppColors.primary)),
+            child: Center(
+              child: CircularProgressIndicator(color: AppColors.primary),
+            ),
           ),
           error: (err, _) => AppErrorState(
             compact: true,
@@ -398,7 +415,7 @@ class _EquipmentHistoryDialog extends ConsumerWidget {
 
             if (maintenance.isEmpty) {
               return Text(
-                'No maintenance logs yet.\n\nTip: use "Mark Serviced" and it will show up here and in Recent Activity.',
+                'No maintenance logs yet.\n\nTip: tap "Mark Serviced" and it\'ll show up here and in Recent Activity!',
                 style: AppTypography.bodyMedium,
               );
             }
@@ -624,72 +641,72 @@ class _AddEquipmentSheetState extends State<_AddEquipmentSheet> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-            Text(
-              widget.existing != null ? 'Edit Equipment' : 'Add Equipment',
-              style: AppTypography.headlineMedium,
-            ),
-            const SizedBox(height: AppSpacing.md),
-
-            // Type selector
-            Text('Type', style: AppTypography.labelLarge),
-            const SizedBox(height: AppSpacing.sm),
-            Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: EquipmentType.values.map((type) {
-                final isSelected = _type == type;
-                return ChoiceChip(
-                  label: Text(_getTypeName(type)),
-                  selected: isSelected,
-                  onSelected: (_) => setState(() => _type = type),
-                );
-              }).toList(),
-            ),
-
-            const SizedBox(height: AppSpacing.md),
-            TextFormField(
-              controller: _nameController,
-              decoration: const InputDecoration(
-                labelText: 'Name *',
-                hintText: 'e.g., Fluval 307',
+              Text(
+                widget.existing != null ? 'Edit Equipment' : 'Add Equipment',
+                style: AppTypography.headlineMedium,
               ),
-              textCapitalization: TextCapitalization.words,
-            ),
-            const SizedBox(height: AppSpacing.sm2),
-            TextFormField(
-              controller: _brandController,
-              decoration: const InputDecoration(
-                labelText: 'Brand (optional)',
-                hintText: 'e.g., Fluval',
-              ),
-              textCapitalization: TextCapitalization.words,
-            ),
-            const SizedBox(height: AppSpacing.sm2),
-            TextFormField(
-              controller: _intervalController,
-              decoration: const InputDecoration(
-                labelText: 'Maintenance interval (days)',
-                hintText: 'e.g., 30',
-                suffixText: 'days',
-              ),
-              keyboardType: TextInputType.number,
-              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-            ),
+              const SizedBox(height: AppSpacing.md),
 
-            const SizedBox(height: AppSpacing.lg),
-            ElevatedButton(
-              onPressed: _isSaving ? null : _save,
-              child: _isSaving
-                  ? const SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    )
-                  : Text(widget.existing != null ? 'Save' : 'Add'),
-            ),
-          ],
+              // Type selector
+              Text('Type', style: AppTypography.labelLarge),
+              const SizedBox(height: AppSpacing.sm),
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: EquipmentType.values.map((type) {
+                  final isSelected = _type == type;
+                  return ChoiceChip(
+                    label: Text(_getTypeName(type)),
+                    selected: isSelected,
+                    onSelected: (_) => setState(() => _type = type),
+                  );
+                }).toList(),
+              ),
+
+              const SizedBox(height: AppSpacing.md),
+              TextFormField(
+                controller: _nameController,
+                decoration: const InputDecoration(
+                  labelText: 'Name *',
+                  hintText: 'e.g., Fluval 307',
+                ),
+                textCapitalization: TextCapitalization.words,
+              ),
+              const SizedBox(height: AppSpacing.sm2),
+              TextFormField(
+                controller: _brandController,
+                decoration: const InputDecoration(
+                  labelText: 'Brand (optional)',
+                  hintText: 'e.g., Fluval',
+                ),
+                textCapitalization: TextCapitalization.words,
+              ),
+              const SizedBox(height: AppSpacing.sm2),
+              TextFormField(
+                controller: _intervalController,
+                decoration: const InputDecoration(
+                  labelText: 'Maintenance interval (days)',
+                  hintText: 'e.g., 30',
+                  suffixText: 'days',
+                ),
+                keyboardType: TextInputType.number,
+                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+              ),
+
+              const SizedBox(height: AppSpacing.lg),
+              ElevatedButton(
+                onPressed: _isSaving ? null : _save,
+                child: _isSaving
+                    ? const SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : Text(widget.existing != null ? 'Save' : 'Add'),
+              ),
+            ],
+          ),
         ),
-      ),
       ),
     );
   }
@@ -757,11 +774,16 @@ class _AddEquipmentSheetState extends State<_AddEquipmentSheet> {
       // Award XP for adding new equipment (not editing)
       if (widget.existing == null) {
         final isBoostActive = widget.ref.read(xpBoostActiveProvider);
-        final effectiveXp = isBoostActive ? XpRewards.addEquipment * 2 : XpRewards.addEquipment;
+        final effectiveXp = isBoostActive
+            ? XpRewards.addEquipment * 2
+            : XpRewards.addEquipment;
         await widget.ref
             .read(userProfileProvider.notifier)
-            .recordActivity(xp: XpRewards.addEquipment, xpBoostActive: isBoostActive);
-        
+            .recordActivity(
+              xp: XpRewards.addEquipment,
+              xpBoostActive: isBoostActive,
+            );
+
         // Show XP animation
         if (mounted) {
           AppHaptics.success();
@@ -775,7 +797,10 @@ class _AddEquipmentSheetState extends State<_AddEquipmentSheet> {
       if (mounted) Navigator.pop(context);
     } catch (e) {
       if (mounted) {
-        AppFeedback.showError(context, 'Oops, something went wrong. Try again!');
+        AppFeedback.showError(
+          context,
+          'Oops, something went wrong. Try again!',
+        );
       }
     } finally {
       if (mounted) setState(() => _isSaving = false);

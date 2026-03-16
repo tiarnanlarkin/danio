@@ -20,8 +20,8 @@ class NotificationSettingsScreen extends ConsumerWidget {
       body: profileAsync.when(
         loading: () => const Center(child: BubbleLoader()),
         error: (e, _) => AppErrorState(
-          title: 'Could not load settings',
-          message: 'Please try again.',
+          title: 'Couldn\'t load your settings',
+          message: 'Give it another try!',
           onRetry: () => ref.invalidate(userProfileProvider),
         ),
         data: (profile) {
@@ -31,7 +31,9 @@ class NotificationSettingsScreen extends ConsumerWidget {
 
           // Build item list based on whether reminders are enabled
           final baseItems = 3; // Header, divider, main toggle
-          final additionalItems = profile.streakRemindersEnabled ? 10 : 0; // Divider, section header, 3 time settings, divider, info, test button, spacing
+          final additionalItems = profile.streakRemindersEnabled
+              ? 10
+              : 0; // Divider, section header, 3 time settings, divider, info, test button, spacing
           final totalItems = baseItems + additionalItems;
 
           return ListView.builder(
@@ -263,7 +265,9 @@ class NotificationSettingsScreen extends ConsumerWidget {
               // Test notification button
               if (enabledIndex == 7) {
                 return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.md,
+                  ),
                   child: OutlinedButton.icon(
                     icon: const Icon(Icons.send),
                     label: const Text('Send Test Notification'),
@@ -319,7 +323,10 @@ class NotificationSettingsScreen extends ConsumerWidget {
 
     final time = await showTimePicker(
       context: context,
-      initialTime: TimeOfDay(hour: hour.clamp(0, 23), minute: minute.clamp(0, 59)),
+      initialTime: TimeOfDay(
+        hour: hour.clamp(0, 23),
+        minute: minute.clamp(0, 59),
+      ),
       builder: (context, child) {
         return Theme(
           data: Theme.of(context).copyWith(
@@ -380,15 +387,20 @@ class NotificationSettingsScreen extends ConsumerWidget {
 
     final morningTime = TimeOfDay(
       hour: (int.tryParse(morningParts[0]) ?? 9).clamp(0, 23),
-      minute: (int.tryParse(morningParts.length > 1 ? morningParts[1] : '') ?? 0).clamp(0, 59),
+      minute:
+          (int.tryParse(morningParts.length > 1 ? morningParts[1] : '') ?? 0)
+              .clamp(0, 59),
     );
     final eveningTime = TimeOfDay(
       hour: (int.tryParse(eveningParts[0]) ?? 19).clamp(0, 23),
-      minute: (int.tryParse(eveningParts.length > 1 ? eveningParts[1] : '') ?? 0).clamp(0, 59),
+      minute:
+          (int.tryParse(eveningParts.length > 1 ? eveningParts[1] : '') ?? 0)
+              .clamp(0, 59),
     );
     final nightTime = TimeOfDay(
       hour: (int.tryParse(nightParts[0]) ?? 23).clamp(0, 23),
-      minute: (int.tryParse(nightParts.length > 1 ? nightParts[1] : '') ?? 0).clamp(0, 59),
+      minute: (int.tryParse(nightParts.length > 1 ? nightParts[1] : '') ?? 0)
+          .clamp(0, 59),
     );
 
     // Get today's XP

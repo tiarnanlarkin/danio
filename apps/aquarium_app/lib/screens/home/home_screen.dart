@@ -93,7 +93,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('🏠 This is your Living Room — manage your aquariums here'),
+            content: Text(
+              '🏠 This is your Living Room — manage your aquariums here',
+            ),
             duration: Duration(seconds: 4),
             behavior: SnackBarBehavior.floating,
           ),
@@ -109,7 +111,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('💡 Swipe from the edges to see your tank\'s temperature and water quality panels!'),
+          content: Text(
+            '💡 Swipe from the edges to see your tank\'s temperature and water quality panels!',
+          ),
           duration: Duration(seconds: 4),
           behavior: SnackBarBehavior.floating,
         ),
@@ -226,7 +230,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Icon(Icons.water, size: AppIconSizes.xl, color: AppColors.primary),
+                  const Icon(
+                    Icons.water,
+                    size: AppIconSizes.xl,
+                    color: AppColors.primary,
+                  ),
                   const SizedBox(height: AppSpacing.sm),
                   const FunLoadingMessage(),
                 ],
@@ -255,16 +263,18 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         color: AppOverlays.primary15,
                         borderRadius: AppRadius.smallRadius,
                       ),
-                      child: const Icon(Icons.set_meal_rounded,
-                          color: AppColors.primary, size: AppIconSizes.sm),
+                      child: const Icon(
+                        Icons.set_meal_rounded,
+                        color: AppColors.primary,
+                        size: AppIconSizes.sm,
+                      ),
                     ),
                     const SizedBox(width: AppSpacing.sm2),
                     Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Community Tank',
-                            style: AppTypography.labelLarge),
+                        Text('Community Tank', style: AppTypography.labelLarge),
                         Text('200L', style: AppTypography.bodySmall),
                       ],
                     ),
@@ -303,7 +313,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     if (tanksAsync.hasError && !tanksAsync.hasValue) {
       return AppErrorState(
         title: 'Couldn\'t load your tanks',
-        message: 'Check your connection and give it another go',
+        message: 'Check your connection and give it another go!',
         onRetry: () => ref.invalidate(tanksProvider),
       );
     }
@@ -311,9 +321,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final tanksData = tanksAsync.valueOrNull ?? [];
 
     // Wrap in a closure so the existing data-branch code is unchanged below.
-    return Builder(builder: (context) {
-      final tanks = tanksData;
-      if (!mounted) return _buildSkeletonRoom();
+    return Builder(
+      builder: (context) {
+        final tanks = tanksData;
+        if (!mounted) return _buildSkeletonRoom();
         _maybeShowFirstTankPrompt(context, tanks);
         if (tanks.isEmpty) {
           return EmptyRoomScene(
@@ -336,10 +347,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
               // Wait for the provider to resolve with data
               try {
-                await ref.read(tanksProvider.future).timeout(
-                  const Duration(seconds: 3),
-                  onTimeout: () => [demoTank], // fallback
-                );
+                await ref
+                    .read(tanksProvider.future)
+                    .timeout(
+                      const Duration(seconds: 3),
+                      onTimeout: () => [demoTank], // fallback
+                    );
               } catch (_) {
                 // Don't block navigation on provider errors
               }
@@ -365,14 +378,17 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     tankVolume: currentTank.volumeLitres,
                     theme: theme,
                     isNewUser: _isNewUser(ref),
-                    useRiveFish: false, // Disable broken Rive fish, use static drawn fish
-                    onTankTap: () => _navigateToTankDetail(context, currentTank),
+                    useRiveFish:
+                        false, // Disable broken Rive fish, use static drawn fish
+                    onTankTap: () =>
+                        _navigateToTankDetail(context, currentTank),
                     onTestKitTap: () => _showWaterParams(context),
                     onFoodTap: () => _showFeedingInfo(context),
                     onPlantTap: () => _showPlantInfo(context),
                     onStatsTap: () => _showStatsInfo(context),
                     onThemeTap: () => _showThemePicker(context, ref),
-                    onJournalTap: () => _navigateToJournal(context, currentTank.id),
+                    onJournalTap: () =>
+                        _navigateToJournal(context, currentTank.id),
                     onCalendarTap: () => _navigateToSchedule(context),
                   ),
                 ),
@@ -384,7 +400,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             Positioned.fill(
               child: Consumer(
                 builder: (context, ref, _) {
-                  final hasOpen = ref.watch(stageProvider.select((s) => s.openPanels.isNotEmpty));
+                  final hasOpen = ref.watch(
+                    stageProvider.select((s) => s.openPanels.isNotEmpty),
+                  );
                   return IgnorePointer(
                     ignoring: !hasOpen,
                     child: const StageScrim(),
@@ -429,32 +447,36 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             // of screen height, so midpoint ≈ 46% from top). Using a fraction-
             // based top offset so it scales across device sizes.
             // 48dp touch target, 20dp visual.
-            Builder(builder: (context) {
-              final screenH = MediaQuery.of(context).size.height;
-              // Tank top ≈ 24% of scene height, tank bottom ≈ 68%.
-              // Place handle at tank vertical centre (46%) minus half handle height (40dp).
-              final topOffset = screenH * 0.38;
-              return Stack(children: [
-                Positioned(
-                  left: 0,
-                  top: topOffset,
-                  child: const StageHandleStrip(
-                    panel: StagePanel.temp,
-                    isLeft: true,
-                    icon: Icons.thermostat_rounded,
-                  ),
-                ),
-                Positioned(
-                  right: 0,
-                  top: topOffset,
-                  child: const StageHandleStrip(
-                    panel: StagePanel.waterQuality,
-                    isLeft: false,
-                    icon: Icons.science_rounded,
-                  ),
-                ),
-              ]);
-            }),
+            Builder(
+              builder: (context) {
+                final screenH = MediaQuery.of(context).size.height;
+                // Tank top ≈ 24% of scene height, tank bottom ≈ 68%.
+                // Place handle at tank vertical centre (46%) minus half handle height (40dp).
+                final topOffset = screenH * 0.38;
+                return Stack(
+                  children: [
+                    Positioned(
+                      left: 0,
+                      top: topOffset,
+                      child: const StageHandleStrip(
+                        panel: StagePanel.temp,
+                        isLeft: true,
+                        icon: Icons.thermostat_rounded,
+                      ),
+                    ),
+                    Positioned(
+                      right: 0,
+                      top: topOffset,
+                      child: const StageHandleStrip(
+                        panel: StagePanel.waterQuality,
+                        isLeft: false,
+                        icon: Icons.science_rounded,
+                      ),
+                    ),
+                  ],
+                );
+              },
+            ),
 
             // Top bar overlay
             Positioned(
@@ -498,16 +520,20 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       ),
                     ),
                     IconButton(
-                      icon: const Icon(Icons.settings_outlined, color: Colors.white),
+                      icon: const Icon(
+                        Icons.settings_outlined,
+                        color: Colors.white,
+                      ),
                       tooltip: 'Tank Settings',
-                      onPressed: () => NavigationThrottle.push(context, TankSettingsScreen(tankId: currentTank.id)),
+                      onPressed: () => NavigationThrottle.push(
+                        context,
+                        TankSettingsScreen(tankId: currentTank.id),
+                      ),
                     ),
                   ],
                 ),
               ),
             ),
-
-
 
             // Streak & hearts warning — standalone ConsumerWidget with its own
             // rebuild scope; only heartsStateProvider + streak selector fire here.
@@ -538,7 +564,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               label: 'Tanks',
               emoji: '🐠',
               tabColor: const Color(0xFF4A9DB5),
-              backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
+              backgroundColor: Theme.of(
+                context,
+              ).colorScheme.surfaceContainerHighest,
               backgroundPainter: CustomPaint(
                 painter: SaffianoPainter(),
                 size: Size.infinite,
@@ -551,7 +579,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     TankSwitcher(
                       tanks: tanks,
                       currentIndex: _currentTankIndex,
-                      onChanged: (index) => setState(() => _currentTankIndex = index),
+                      onChanged: (index) =>
+                          setState(() => _currentTankIndex = index),
                       onAddTank: () => _navigateToCreateTank(context),
                       onLongPress: tanks.length > 1 ? _toggleSelectMode : null,
                     )
@@ -615,9 +644,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 
-
-
-  Widget _buildTankTile(BuildContext context, int index, Tank tank, List<Tank> tanks) {
+  Widget _buildTankTile(
+    BuildContext context,
+    int index,
+    Tank tank,
+    List<Tank> tanks,
+  ) {
     final isSelected = index == _currentTankIndex;
     return ListTile(
       dense: true,
@@ -637,7 +669,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       ),
       subtitle: Text(
         '${tank.volumeLitres.toStringAsFixed(0)}L',
-        style: TextStyle(color: context.textSecondary.withAlpha(128), fontSize: 12),
+        style: TextStyle(
+          color: context.textSecondary.withAlpha(128),
+          fontSize: 12,
+        ),
       ),
       onTap: () => setState(() => _currentTankIndex = index),
     );
@@ -667,44 +702,47 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               child: GestureDetector(
                 onTap: () => setState(() => _showWelcomeBanner = false),
                 child: AnimatedOpacity(
-                opacity: _showWelcomeBanner ? 1.0 : 0.0,
-                duration: AppDurations.long2,
-                child: Material(
-                  color: Colors.transparent,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: AppSpacing.lg,
-                      vertical: AppSpacing.md,
-                    ),
-                    decoration: BoxDecoration(
-                      color: AppColors.primary,
-                      borderRadius: AppRadius.mediumRadius,
-                      boxShadow: [
-                        BoxShadow(
-                          color: AppColors.primary.withAlpha(60),
-                          blurRadius: 12,
-                          offset: const Offset(0, 4),
-                        ),
-                      ],
-                    ),
-                    child: Row(
-                      children: [
-                        const Text('\u{1F420}', style: TextStyle(fontSize: 28)),
-                        const SizedBox(width: AppSpacing.sm2),
-                        Expanded(
-                          child: Text(
-                            'Welcome! Your aquarium journey starts now',
-                            style: AppTypography.labelLarge.copyWith(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w600,
+                  opacity: _showWelcomeBanner ? 1.0 : 0.0,
+                  duration: AppDurations.long2,
+                  child: Material(
+                    color: Colors.transparent,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: AppSpacing.lg,
+                        vertical: AppSpacing.md,
+                      ),
+                      decoration: BoxDecoration(
+                        color: AppColors.primary,
+                        borderRadius: AppRadius.mediumRadius,
+                        boxShadow: [
+                          BoxShadow(
+                            color: AppColors.primary.withAlpha(60),
+                            blurRadius: 12,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      child: Row(
+                        children: [
+                          const Text(
+                            '\u{1F420}',
+                            style: TextStyle(fontSize: 28),
+                          ),
+                          const SizedBox(width: AppSpacing.sm2),
+                          Expanded(
+                            child: Text(
+                              'Welcome! Your aquarium journey starts now',
+                              style: AppTypography.labelLarge.copyWith(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w600,
+                              ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
               ),
             ),
 
@@ -723,9 +761,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   ),
                   decoration: BoxDecoration(
                     color: AppColors.warning.withAlpha(38),
-                    border: Border.all(
-                      color: AppColors.warning.withAlpha(76),
-                    ),
+                    border: Border.all(color: AppColors.warning.withAlpha(76)),
                     borderRadius: AppRadius.mediumRadius,
                     boxShadow: [
                       BoxShadow(
@@ -821,10 +857,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     // Invalidate first to guarantee a fresh fetch now that the animation is done.
     if (!mounted) return;
     ref.invalidate(tanksProvider);
-    final tanksAfter = await ref.read(tanksProvider.future).timeout(
-      const Duration(seconds: 3),
-      onTimeout: () => [],
-    );
+    final tanksAfter = await ref
+        .read(tanksProvider.future)
+        .timeout(const Duration(seconds: 3), onTimeout: () => []);
     if (tanksAfter.length > tanksBefore.length) {
       // Find the newly created tank (the one not in the before-list).
       final beforeIds = tanksBefore.map((t) => t.id).toSet();
@@ -859,33 +894,36 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     // point, and the overlapping rebuild causes a _cancelActivePointers crash
     // on a deactivated element.  MaterialPageRoute has no such race — the same
     // fix was already applied to _navigateToCreateFirstTank.
-    Navigator.of(context).push(
-      MaterialPageRoute(builder: (_) => const CreateTankScreen()),
-    ).whenComplete(() async {
-      if (mounted) {
-        setState(() => _isNavigatingToCreate = false);
-        final tanksBefore = ref.read(tanksProvider).valueOrNull ?? [];
-        ref.invalidate(tanksProvider); // Re-fetch after pop animation completes
-        // Update _currentTankIndex to the newly created tank
-        final tanksAfter = await ref.read(tanksProvider.future).timeout(
-          const Duration(seconds: 3),
-          onTimeout: () => [],
-        );
-        if (mounted && tanksAfter.length > tanksBefore.length) {
-          final beforeIds = tanksBefore.map((t) => t.id).toSet();
-          final newIndex = tanksAfter.indexWhere((t) => !beforeIds.contains(t.id));
-          if (newIndex >= 0) {
-            setState(() => _currentTankIndex = newIndex);
+    Navigator.of(context)
+        .push(MaterialPageRoute(builder: (_) => const CreateTankScreen()))
+        .whenComplete(() async {
+          if (mounted) {
+            setState(() => _isNavigatingToCreate = false);
+            final tanksBefore = ref.read(tanksProvider).valueOrNull ?? [];
+            ref.invalidate(
+              tanksProvider,
+            ); // Re-fetch after pop animation completes
+            // Update _currentTankIndex to the newly created tank
+            final tanksAfter = await ref
+                .read(tanksProvider.future)
+                .timeout(const Duration(seconds: 3), onTimeout: () => []);
+            if (mounted && tanksAfter.length > tanksBefore.length) {
+              final beforeIds = tanksBefore.map((t) => t.id).toSet();
+              final newIndex = tanksAfter.indexWhere(
+                (t) => !beforeIds.contains(t.id),
+              );
+              if (newIndex >= 0) {
+                setState(() => _currentTankIndex = newIndex);
+              }
+            }
           }
-        }
-      }
-    });
+        });
   }
 
   void _navigateToTankDetail(BuildContext context, Tank tank) {
-    Navigator.of(context).push(
-      TankDetailRoute(page: TankDetailScreen(tankId: tank.id)),
-    );
+    Navigator.of(
+      context,
+    ).push(TankDetailRoute(page: TankDetailScreen(tankId: tank.id)));
   }
 
   void _navigateToQuickTest(BuildContext context, Tank tank) {
@@ -906,33 +944,53 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       ),
       builder: (ctx) => Padding(
         padding: EdgeInsets.only(
-          left: 20, right: 20, top: 16,
+          left: 20,
+          right: 20,
+          top: 16,
           bottom: MediaQuery.of(ctx).viewInsets.bottom + 16,
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Semantics(header: true, child: Text('Quick Water Test', style: AppTypography.headlineSmall)),
+            Semantics(
+              header: true,
+              child: Text(
+                'Quick Water Test',
+                style: AppTypography.headlineSmall,
+              ),
+            ),
             const SizedBox(height: AppSpacing.md),
             Row(
               children: [
-                Expanded(child: TextField(
-                  controller: phC,
-                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                  decoration: const InputDecoration(labelText: 'pH'),
-                )),
+                Expanded(
+                  child: TextField(
+                    controller: phC,
+                    keyboardType: const TextInputType.numberWithOptions(
+                      decimal: true,
+                    ),
+                    decoration: const InputDecoration(labelText: 'pH'),
+                  ),
+                ),
                 const SizedBox(width: AppSpacing.sm),
-                Expanded(child: TextField(
-                  controller: tempC,
-                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                  decoration: const InputDecoration(labelText: 'Temp (°C)'),
-                )),
+                Expanded(
+                  child: TextField(
+                    controller: tempC,
+                    keyboardType: const TextInputType.numberWithOptions(
+                      decimal: true,
+                    ),
+                    decoration: const InputDecoration(labelText: 'Temp (°C)'),
+                  ),
+                ),
                 const SizedBox(width: AppSpacing.sm),
-                Expanded(child: TextField(
-                  controller: ammoniaC,
-                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                  decoration: const InputDecoration(labelText: 'NH3'),
-                )),
+                Expanded(
+                  child: TextField(
+                    controller: ammoniaC,
+                    keyboardType: const TextInputType.numberWithOptions(
+                      decimal: true,
+                    ),
+                    decoration: const InputDecoration(labelText: 'NH3'),
+                  ),
+                ),
               ],
             ),
             const SizedBox(height: AppSpacing.md),
@@ -956,7 +1014,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     timestamp: now,
                     createdAt: now,
                     title: 'Quick test',
-                    waterTest: WaterTestResults(ph: ph, temperature: temp, ammonia: ammonia),
+                    waterTest: WaterTestResults(
+                      ph: ph,
+                      temperature: temp,
+                      ammonia: ammonia,
+                    ),
                   );
                   final storage = ref.read(storageServiceProvider);
                   await storage.saveLog(log);
@@ -985,25 +1047,22 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   void _navigateToJournal(BuildContext context, String tankId) {
-    Navigator.of(context).push(
-      RoomSlideRoute(page: JournalScreen(tankId: tankId)),
-    );
+    Navigator.of(
+      context,
+    ).push(RoomSlideRoute(page: JournalScreen(tankId: tankId)));
   }
 
   void _navigateToSchedule(BuildContext context) {
-    Navigator.of(context).push(
-      RoomSlideRoute(page: const RemindersScreen()),
-    );
+    Navigator.of(context).push(RoomSlideRoute(page: const RemindersScreen()));
   }
 
   /// Check if user is new to show more prominent animations
   bool _isNewUser(WidgetRef ref) {
-    final hasSeenTutorial = ref.watch(userProfileProvider.select(
-      (p) => p.value?.hasSeenTutorial ?? false,
-    ));
+    final hasSeenTutorial = ref.watch(
+      userProfileProvider.select((p) => p.value?.hasSeenTutorial ?? false),
+    );
     return !hasSeenTutorial;
   }
-
 
   void _showTankToolbox(BuildContext context) {
     showModalBottomSheet(
@@ -1012,7 +1071,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       builder: (ctx) => Container(
         decoration: BoxDecoration(
           color: Theme.of(context).scaffoldBackgroundColor,
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(AppRadius.lg)),
+          borderRadius: const BorderRadius.vertical(
+            top: Radius.circular(AppRadius.lg),
+          ),
         ),
         padding: const EdgeInsets.all(AppSpacing.md),
         child: Column(
@@ -1021,7 +1082,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           children: [
             Center(
               child: Container(
-                width: 40, height: 4,
+                width: 40,
+                height: 4,
                 decoration: BoxDecoration(
                   color: context.borderColor,
                   borderRadius: BorderRadius.circular(2),
@@ -1029,12 +1091,25 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               ),
             ),
             const SizedBox(height: AppSpacing.md),
-            Semantics(header: true, child: Text('Tank Toolbox 🔧', style: AppTypography.headlineSmall)),
+            Semantics(
+              header: true,
+              child: Text(
+                'Tank Toolbox 🔧',
+                style: AppTypography.headlineSmall,
+              ),
+            ),
             const SizedBox(height: AppSpacing.sm2),
             ListTile(
               leading: const Icon(Icons.notifications_outlined),
               title: const Text('Reminders'),
-              onTap: () { Navigator.pop(ctx); NavigationThrottle.push(context, const RemindersScreen(), route: RoomSlideRoute(page: const RemindersScreen())); },
+              onTap: () {
+                Navigator.pop(ctx);
+                NavigationThrottle.push(
+                  context,
+                  const RemindersScreen(),
+                  route: RoomSlideRoute(page: const RemindersScreen()),
+                );
+              },
             ),
             ListTile(
               leading: const Icon(Icons.book_outlined),
@@ -1044,7 +1119,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 tanksAsync.whenData((tanks) {
                   if (tanks.isNotEmpty) {
                     Navigator.pop(ctx);
-                    _navigateToJournal(context, tanks[_currentTankIndex % tanks.length].id);
+                    _navigateToJournal(
+                      context,
+                      tanks[_currentTankIndex % tanks.length].id,
+                    );
                   }
                 });
               },
@@ -1062,7 +1140,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               title: const Text('Species Search'),
               onTap: () {
                 Navigator.pop(ctx);
-                NavigationThrottle.push(context, const SearchScreen(), route: RoomSlideRoute(page: const SearchScreen()));
+                NavigationThrottle.push(
+                  context,
+                  const SearchScreen(),
+                  route: RoomSlideRoute(page: const SearchScreen()),
+                );
               },
             ),
             SizedBox(height: MediaQuery.of(context).padding.bottom + 8),
@@ -1097,14 +1179,18 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final logsAsync = ref.read(logsProvider(tankId));
     final logs = logsAsync.valueOrNull ?? [];
 
-    final waterTests = logs.where((l) => l.type == LogType.waterTest && l.waterTest != null).toList();
+    final waterTests = logs
+        .where((l) => l.type == LogType.waterTest && l.waterTest != null)
+        .toList();
     final latestTest = waterTests.isNotEmpty ? waterTests.first : null;
     final temp = latestTest?.waterTest?.temperature;
 
     final feedings = logs.where((l) => l.type == LogType.feeding).toList();
     final latestFeeding = feedings.isNotEmpty ? feedings.first : null;
 
-    final waterChanges = logs.where((l) => l.type == LogType.waterChange).toList();
+    final waterChanges = logs
+        .where((l) => l.type == LogType.waterChange)
+        .toList();
     final latestChange = waterChanges.isNotEmpty ? waterChanges.first : null;
 
     _showItemSheet(
@@ -1115,15 +1201,21 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       rows: [
         ItemDetailRow(
           label: 'Temperature',
-          value: temp != null ? '${temp.toStringAsFixed(1)} °C' : 'Not recorded yet',
+          value: temp != null
+              ? '${temp.toStringAsFixed(1)} °C'
+              : 'Not recorded yet',
         ),
         ItemDetailRow(
           label: 'Last fed',
-          value: latestFeeding != null ? _timeAgo(latestFeeding.timestamp) : 'Not logged yet',
+          value: latestFeeding != null
+              ? _timeAgo(latestFeeding.timestamp)
+              : 'Not logged yet',
         ),
         ItemDetailRow(
           label: 'Water change',
-          value: latestChange != null ? _timeAgo(latestChange.timestamp) : 'Log your first change!',
+          value: latestChange != null
+              ? _timeAgo(latestChange.timestamp)
+              : 'Log your first change!',
         ),
       ],
     );
@@ -1136,7 +1228,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final logsAsync = ref.read(logsProvider(tankId));
     final logs = logsAsync.valueOrNull ?? [];
 
-    final waterTests = logs.where((l) => l.type == LogType.waterTest && l.waterTest != null).toList();
+    final waterTests = logs
+        .where((l) => l.type == LogType.waterTest && l.waterTest != null)
+        .toList();
     final latestTest = waterTests.isNotEmpty ? waterTests.first : null;
     final wt = latestTest?.waterTest;
 
@@ -1160,7 +1254,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 children: [
                   const Text('\u{1F9EA}', style: TextStyle(fontSize: 40)),
                   const SizedBox(height: AppSpacing.sm),
-                  Semantics(header: true, child: Text('Water Parameters', style: AppTypography.headlineSmall)),
+                  Semantics(
+                    header: true,
+                    child: Text(
+                      'Water Parameters',
+                      style: AppTypography.headlineSmall,
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -1176,7 +1276,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('\u{2705} Ideal Ranges (Freshwater)',
+                  Text(
+                    '\u{2705} Ideal Ranges (Freshwater)',
                     style: AppTypography.labelMedium.copyWith(
                       color: AppColors.accent,
                       fontWeight: FontWeight.w600,
@@ -1185,7 +1286,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   const SizedBox(height: AppSpacing.xs),
                   Text(
                     'pH 6.5-7.5  |  Ammonia 0 ppm  |  Nitrite 0 ppm  |  Nitrate <40 ppm',
-                    style: AppTypography.bodySmall.copyWith(color: context.textSecondary),
+                    style: AppTypography.bodySmall.copyWith(
+                      color: context.textSecondary,
+                    ),
                   ),
                 ],
               ),
@@ -1197,10 +1300,16 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   padding: const EdgeInsets.symmetric(vertical: AppSpacing.lg),
                   child: Column(
                     children: [
-                      Text('No test results yet', style: AppTypography.bodyMedium),
+                      Text(
+                        'No test results yet 🧪',
+                        style: AppTypography.bodyMedium,
+                      ),
                       const SizedBox(height: AppSpacing.xs),
-                      Text('Log your first water test to see results here!',
-                        style: AppTypography.bodySmall.copyWith(color: context.textSecondary),
+                      Text(
+                        'Log your first water test to see results here!',
+                        style: AppTypography.bodySmall.copyWith(
+                          color: context.textSecondary,
+                        ),
                         textAlign: TextAlign.center,
                       ),
                     ],
@@ -1208,23 +1317,53 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 ),
               ),
             ] else ...[
-              _buildParamRow('pH', wt.ph?.toStringAsFixed(1) ?? '--', '6.5 - 7.5'),
-              _buildParamRow('Ammonia', wt.ammonia != null ? '${wt.ammonia!.toStringAsFixed(2)} ppm' : '--', '0 ppm'),
-              _buildParamRow('Nitrite', wt.nitrite != null ? '${wt.nitrite!.toStringAsFixed(2)} ppm' : '--', '0 ppm'),
-              _buildParamRow('Nitrate', wt.nitrate != null ? '${wt.nitrate!.toStringAsFixed(1)} ppm' : '--', '<40 ppm'),
+              _buildParamRow(
+                'pH',
+                wt.ph?.toStringAsFixed(1) ?? '--',
+                '6.5 - 7.5',
+              ),
+              _buildParamRow(
+                'Ammonia',
+                wt.ammonia != null
+                    ? '${wt.ammonia!.toStringAsFixed(2)} ppm'
+                    : '--',
+                '0 ppm',
+              ),
+              _buildParamRow(
+                'Nitrite',
+                wt.nitrite != null
+                    ? '${wt.nitrite!.toStringAsFixed(2)} ppm'
+                    : '--',
+                '0 ppm',
+              ),
+              _buildParamRow(
+                'Nitrate',
+                wt.nitrate != null
+                    ? '${wt.nitrate!.toStringAsFixed(1)} ppm'
+                    : '--',
+                '<40 ppm',
+              ),
               const Divider(height: AppSpacing.lg),
-              Text('Last tested: ${_timeAgo(latestTest!.timestamp)}',
-                style: AppTypography.bodySmall.copyWith(color: context.textSecondary),
+              Text(
+                'Last tested: ${_timeAgo(latestTest!.timestamp)}',
+                style: AppTypography.bodySmall.copyWith(
+                  color: context.textSecondary,
+                ),
               ),
             ],
             const SizedBox(height: AppSpacing.md),
-            Text('\u{1F41F} What this means for your fish',
-              style: AppTypography.labelMedium.copyWith(fontWeight: FontWeight.w600),
+            Text(
+              '\u{1F41F} What this means for your fish',
+              style: AppTypography.labelMedium.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
             ),
             const SizedBox(height: AppSpacing.xs),
             Text(
               'Stable water parameters are the single most important factor in fish health. Test weekly and after any changes to your tank.',
-              style: AppTypography.bodySmall.copyWith(color: context.textSecondary),
+              style: AppTypography.bodySmall.copyWith(
+                color: context.textSecondary,
+              ),
             ),
             const SizedBox(height: AppSpacing.md),
             SizedBox(
@@ -1232,7 +1371,19 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               child: ElevatedButton.icon(
                 onPressed: () {
                   Navigator.pop(ctx);
-                  NavigationThrottle.push(context, AddLogScreen(tankId: tankId, initialType: LogType.waterTest), route: RoomSlideRoute(page: AddLogScreen(tankId: tankId, initialType: LogType.waterTest)));
+                  NavigationThrottle.push(
+                    context,
+                    AddLogScreen(
+                      tankId: tankId,
+                      initialType: LogType.waterTest,
+                    ),
+                    route: RoomSlideRoute(
+                      page: AddLogScreen(
+                        tankId: tankId,
+                        initialType: LogType.waterTest,
+                      ),
+                    ),
+                  );
                 },
                 icon: const Icon(Icons.science, size: 18),
                 label: const Text('Log Water Test'),
@@ -1254,7 +1405,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           Text(value, style: AppTypography.labelLarge),
           if (ideal.isNotEmpty) ...[
             const SizedBox(width: AppSpacing.sm),
-            Text('(ideal: $ideal)',
+            Text(
+              '(ideal: $ideal)',
               style: AppTypography.bodySmall.copyWith(color: context.textHint),
             ),
           ],
@@ -1262,7 +1414,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       ),
     );
   }
-
 
   void _showFeedingInfo(BuildContext context) {
     final tankId = _getCurrentTankId();
@@ -1275,10 +1426,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final latestFeeding = feedings.isNotEmpty ? feedings.first : null;
 
     final today = DateTime.now();
-    final feedingsToday = feedings.where((l) =>
-        l.timestamp.year == today.year &&
-        l.timestamp.month == today.month &&
-        l.timestamp.day == today.day).length;
+    final feedingsToday = feedings
+        .where(
+          (l) =>
+              l.timestamp.year == today.year &&
+              l.timestamp.month == today.month &&
+              l.timestamp.day == today.day,
+        )
+        .length;
 
     showModalBottomSheet(
       context: context,
@@ -1300,7 +1455,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 children: [
                   const Text('\u{1F3A3}', style: TextStyle(fontSize: 40)),
                   const SizedBox(height: AppSpacing.sm),
-                  Semantics(header: true, child: Text('Feeding', style: AppTypography.headlineSmall)),
+                  Semantics(
+                    header: true,
+                    child: Text('Feeding', style: AppTypography.headlineSmall),
+                  ),
                 ],
               ),
             ),
@@ -1316,7 +1474,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('\u{1F4CB} Feeding Guidelines',
+                  Text(
+                    '\u{1F4CB} Feeding Guidelines',
                     style: AppTypography.labelMedium.copyWith(
                       color: AppColors.secondary,
                       fontWeight: FontWeight.w600,
@@ -1325,26 +1484,39 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   const SizedBox(height: AppSpacing.xs),
                   Text(
                     'Feed 2-3 times daily  |  Only what they eat in 2 min  |  Variety is key',
-                    style: AppTypography.bodySmall.copyWith(color: context.textSecondary),
+                    style: AppTypography.bodySmall.copyWith(
+                      color: context.textSecondary,
+                    ),
                   ),
                 ],
               ),
             ),
             const SizedBox(height: AppSpacing.md),
-            _buildParamRow('Fed today', '$feedingsToday time${feedingsToday == 1 ? '' : 's'}', '2-3x'),
+            _buildParamRow(
+              'Fed today',
+              '$feedingsToday time${feedingsToday == 1 ? '' : 's'}',
+              '2-3x',
+            ),
             _buildParamRow(
               'Last fed',
-              latestFeeding != null ? _timeAgo(latestFeeding.timestamp) : 'Not yet',
+              latestFeeding != null
+                  ? _timeAgo(latestFeeding.timestamp)
+                  : 'Not yet',
               '',
             ),
             const SizedBox(height: AppSpacing.md),
-            Text('\u{1F41F} What this means for your fish',
-              style: AppTypography.labelMedium.copyWith(fontWeight: FontWeight.w600),
+            Text(
+              '\u{1F41F} What this means for your fish',
+              style: AppTypography.labelMedium.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
             ),
             const SizedBox(height: AppSpacing.xs),
             Text(
               'Overfeeding is the #1 cause of water quality issues. Feed small amounts your fish can finish in 2 minutes.',
-              style: AppTypography.bodySmall.copyWith(color: context.textSecondary),
+              style: AppTypography.bodySmall.copyWith(
+                color: context.textSecondary,
+              ),
             ),
             const SizedBox(height: AppSpacing.md),
             SizedBox(
@@ -1352,7 +1524,16 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               child: ElevatedButton.icon(
                 onPressed: () {
                   Navigator.pop(ctx);
-                  NavigationThrottle.push(context, AddLogScreen(tankId: tankId, initialType: LogType.feeding), route: RoomSlideRoute(page: AddLogScreen(tankId: tankId, initialType: LogType.feeding)));
+                  NavigationThrottle.push(
+                    context,
+                    AddLogScreen(tankId: tankId, initialType: LogType.feeding),
+                    route: RoomSlideRoute(
+                      page: AddLogScreen(
+                        tankId: tankId,
+                        initialType: LogType.feeding,
+                      ),
+                    ),
+                  );
                 },
                 icon: const Icon(Icons.restaurant, size: 18),
                 label: const Text('Log Feeding'),
@@ -1364,7 +1545,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       ),
     );
   }
-
 
   void _showPlantInfo(BuildContext context) {
     showModalBottomSheet(
@@ -1387,7 +1567,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 children: [
                   const Text('\u{1FAB4}', style: TextStyle(fontSize: 40)),
                   const SizedBox(height: AppSpacing.sm),
-                  Semantics(header: true, child: Text('Tank Plants', style: AppTypography.headlineSmall)),
+                  Semantics(
+                    header: true,
+                    child: Text(
+                      'Tank Plants',
+                      style: AppTypography.headlineSmall,
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -1398,12 +1584,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               decoration: BoxDecoration(
                 color: DanioColors.emeraldGreen.withAlpha(20),
                 borderRadius: AppRadius.mediumRadius,
-                border: Border.all(color: DanioColors.emeraldGreen.withAlpha(60)),
+                border: Border.all(
+                  color: DanioColors.emeraldGreen.withAlpha(60),
+                ),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('\u{2728} Plant Care Tips',
+                  Text(
+                    '\u{2728} Plant Care Tips',
                     style: AppTypography.labelMedium.copyWith(
                       color: DanioColors.emeraldGreen,
                       fontWeight: FontWeight.w600,
@@ -1412,23 +1601,30 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   const SizedBox(height: AppSpacing.xs),
                   Text(
                     '8-10 hrs light daily  |  Trim dead leaves  |  Root tabs for heavy feeders',
-                    style: AppTypography.bodySmall.copyWith(color: context.textSecondary),
+                    style: AppTypography.bodySmall.copyWith(
+                      color: context.textSecondary,
+                    ),
                   ),
                 ],
               ),
             ),
             const SizedBox(height: AppSpacing.md),
-            Text('\u{1F41F} What this means for your fish',
-              style: AppTypography.labelMedium.copyWith(fontWeight: FontWeight.w600),
+            Text(
+              '\u{1F41F} What this means for your fish',
+              style: AppTypography.labelMedium.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
             ),
             const SizedBox(height: AppSpacing.xs),
             Text(
               'Live plants absorb nitrates, produce oxygen, and provide shelter. They are one of the best things you can add to any tank.',
-              style: AppTypography.bodySmall.copyWith(color: context.textSecondary),
+              style: AppTypography.bodySmall.copyWith(
+                color: context.textSecondary,
+              ),
             ),
             const SizedBox(height: AppSpacing.md),
             Text(
-              '\u{1F4A1} Pro tip: Use old tank water to water your houseplants -- packed with nutrients!',
+              '\u{1F4A1} Pro tip: Use old tank water to water your houseplants — packed with nutrients!',
               style: AppTypography.bodySmall.copyWith(
                 color: context.textSecondary,
                 fontStyle: FontStyle.italic,
@@ -1440,7 +1636,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       ),
     );
   }
-
 
   void _showThemePicker(BuildContext context, WidgetRef ref) {
     showModalBottomSheet(
@@ -1461,7 +1656,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               children: [
                 const Icon(Icons.palette, size: AppIconSizes.md),
                 const SizedBox(width: AppSpacing.sm2),
-                Semantics(header: true, child: Text('Room Theme', style: AppTypography.headlineSmall)),
+                Semantics(
+                  header: true,
+                  child: Text('Room Theme', style: AppTypography.headlineSmall),
+                ),
               ],
             ),
             const SizedBox(height: AppSpacing.lg2),
@@ -1521,16 +1719,16 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                           const SizedBox(height: AppSpacing.sm),
                           Text(
                             theme.name,
-                            style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                              color: theme.textPrimary,
-                              fontWeight: FontWeight.w600,
-                            ),
+                            style: Theme.of(context).textTheme.bodySmall!
+                                .copyWith(
+                                  color: theme.textPrimary,
+                                  fontWeight: FontWeight.w600,
+                                ),
                           ),
                           Text(
                             theme.description,
-                            style: Theme.of(context).textTheme.labelSmall!.copyWith(
-                              color: theme.textSecondary,
-                            ),
+                            style: Theme.of(context).textTheme.labelSmall!
+                                .copyWith(color: theme.textSecondary),
                             textAlign: TextAlign.center,
                             maxLines: 2,
                           ),
@@ -1594,7 +1792,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               children: [
                 const Icon(Icons.insights, color: AppColors.primary),
                 const SizedBox(width: AppSpacing.sm2),
-                Semantics(header: true, child: Text('Your Progress', style: AppTypography.headlineSmall)),
+                Semantics(
+                  header: true,
+                  child: Text(
+                    'Your Progress',
+                    style: AppTypography.headlineSmall,
+                  ),
+                ),
                 const Spacer(),
                 Semantics(
                   label: 'Close progress',
@@ -1663,7 +1867,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               children: [
                 const Icon(Icons.flag, color: AppColors.primary),
                 const SizedBox(width: AppSpacing.sm2),
-                Semantics(header: true, child: Text('Daily Goal', style: AppTypography.headlineSmall)),
+                Semantics(
+                  header: true,
+                  child: Text('Daily Goal', style: AppTypography.headlineSmall),
+                ),
                 const Spacer(),
                 Semantics(
                   label: 'Close daily goal',
@@ -1694,7 +1901,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   void _showStreakCalendar(BuildContext context) {
-    NavigationThrottle.push(context, const StreakCalendarScreen(), route: RoomSlideRoute(page: const StreakCalendarScreen()));
+    NavigationThrottle.push(
+      context,
+      const StreakCalendarScreen(),
+      route: RoomSlideRoute(page: const StreakCalendarScreen()),
+    );
   }
 
   Future<void> _bulkDelete(BuildContext context, List<Tank> allTanks) async {
@@ -1762,7 +1973,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       if (mounted) {
         messenger.showSnackBar(
           const SnackBar(
-            content: Text('Couldn\'t delete those tanks, try again in a moment'),
+            content: Text(
+              'Couldn\'t delete those tanks, try again in a moment',
+            ),
           ),
         );
       }
@@ -1784,11 +1997,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       setState(() {
         _selectedTankIds.clear();
       });
-      
+
       NavigationThrottle.push(context, const BackupRestoreScreen());
     }
   }
-
 }
 
 /// Standalone widget for the streak / hearts overlay.
@@ -1841,9 +2053,9 @@ class _StreakHeartsOverlayState extends ConsumerState<_StreakHeartsOverlay> {
               color: DanioColors.amberGold.withAlpha(230),
               text: '\u{1F525} $streak day streak!',
               textStyle: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  ),
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
               onDismiss: () => setState(() => _streakDismissed = true),
             ),
 
@@ -1859,9 +2071,9 @@ class _StreakHeartsOverlayState extends ConsumerState<_StreakHeartsOverlay> {
                   ? '\u{1F494} No hearts left - wait for refill!'
                   : '\u{26A0}\u{FE0F} You\'re on your last heart - be careful!',
               textStyle: Theme.of(context).textTheme.bodySmall!.copyWith(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w500,
-                  ),
+                color: Colors.white,
+                fontWeight: FontWeight.w500,
+              ),
               onDismiss: () => setState(() => _heartsDismissed = true),
             ),
           ],
@@ -1891,27 +2103,25 @@ class _WcStreakBannerState extends ConsumerState<_WcStreakBanner> {
     final logsAsync = ref.watch(allLogsProvider(tanks.first.id));
 
     // Listen for water-change streak changes to reset dismissal — fires AFTER build
-    ref.listen(
-      allLogsProvider(tanks.first.id),
-      (prev, next) {
-        final prevStreak = prev?.whenOrNull(
-          data: (logs) => TankHealthService.calculateWaterChangeStreak(logs),
-        );
-        final nextStreak = next.whenOrNull(
-          data: (logs) => TankHealthService.calculateWaterChangeStreak(logs),
-        );
-        if (prevStreak != null && nextStreak != null && prevStreak != nextStreak) {
-          setState(() => _dismissed = false);
-        }
-      },
-    );
+    ref.listen(allLogsProvider(tanks.first.id), (prev, next) {
+      final prevStreak = prev?.whenOrNull(
+        data: (logs) => TankHealthService.calculateWaterChangeStreak(logs),
+      );
+      final nextStreak = next.whenOrNull(
+        data: (logs) => TankHealthService.calculateWaterChangeStreak(logs),
+      );
+      if (prevStreak != null &&
+          nextStreak != null &&
+          prevStreak != nextStreak) {
+        setState(() => _dismissed = false);
+      }
+    });
 
     return logsAsync.when(
       loading: () => const SizedBox.shrink(),
       error: (_, __) => const SizedBox.shrink(),
       data: (logs) {
-        final wcStreak =
-            TankHealthService.calculateWaterChangeStreak(logs);
+        final wcStreak = TankHealthService.calculateWaterChangeStreak(logs);
         if (wcStreak == 0 || _dismissed) return const SizedBox.shrink();
         return Padding(
           padding: const EdgeInsets.only(top: AppSpacing.xs),
@@ -1919,11 +2129,10 @@ class _WcStreakBannerState extends ConsumerState<_WcStreakBanner> {
             color: DanioColors.tealWater.withAlpha(230),
             text:
                 '\u{1F4A7} Water change streak: $wcStreak week${wcStreak == 1 ? "" : "s"}',
-            textStyle:
-                Theme.of(context).textTheme.bodyMedium!.copyWith(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
+            textStyle: Theme.of(context).textTheme.bodyMedium!.copyWith(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
             onDismiss: () => setState(() => _dismissed = true),
           ),
         );
@@ -1959,9 +2168,7 @@ class _DismissibleBanner extends StatelessWidget {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Flexible(
-              child: Text(text, style: textStyle),
-            ),
+            Flexible(child: Text(text, style: textStyle)),
             Semantics(
               label: 'Dismiss banner',
               button: true,
@@ -2069,9 +2276,9 @@ class _DailyNudgeBanner extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final todayKey = DateTime.now().toIso8601String().split('T')[0];
-    final todayXp = ref.watch(userProfileProvider.select(
-      (p) => p.value?.dailyXpHistory[todayKey] ?? 0,
-    ));
+    final todayXp = ref.watch(
+      userProfileProvider.select((p) => p.value?.dailyXpHistory[todayKey] ?? 0),
+    );
     if (todayXp > 0) return const SizedBox.shrink();
 
     // P0-5 FIX: Push daily nudge below the streak/hearts overlay area
@@ -2100,10 +2307,7 @@ class _DailyNudgeBanner extends ConsumerWidget {
           ),
           child: Row(
             children: [
-              Text(
-                '\u{1F3AF}',
-                style: Theme.of(context).textTheme.titleLarge!,
-              ),
+              Text('\u{1F3AF}', style: Theme.of(context).textTheme.titleLarge!),
               const SizedBox(width: AppSpacing.sm),
               Expanded(
                 child: Text(

@@ -41,13 +41,13 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
     return GestureDetector(
       onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
       child: Scaffold(
-      appBar: AppBar(title: const Text('Account')),
-      body: !SupabaseService.isInitialised
-          ? _buildOfflineOnlyMessage(theme)
-          : auth.isSignedIn
-              ? _buildSignedInView(context, auth, theme)
-              : _buildSignedOutView(context, auth, theme),
-    ),
+        appBar: AppBar(title: const Text('Account')),
+        body: !SupabaseService.isInitialised
+            ? _buildOfflineOnlyMessage(theme)
+            : auth.isSignedIn
+            ? _buildSignedInView(context, auth, theme)
+            : _buildSignedOutView(context, auth, theme),
+      ),
     );
   }
 
@@ -62,12 +62,13 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.cloud_off, size: AppIconSizes.xxl, color: theme.colorScheme.outline),
-            const SizedBox(height: AppSpacing.md),
-            Text(
-              'Cloud Not Configured',
-              style: theme.textTheme.headlineSmall,
+            Icon(
+              Icons.cloud_off,
+              size: AppIconSizes.xxl,
+              color: theme.colorScheme.outline,
             ),
+            const SizedBox(height: AppSpacing.md),
+            Text('Cloud Not Configured', style: theme.textTheme.headlineSmall),
             const SizedBox(height: AppSpacing.sm),
             Text(
               'The app is running in offline-only mode. '
@@ -153,9 +154,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                 suffixIcon: IconButton(
                   tooltip: 'Toggle password visibility',
                   icon: Icon(
-                    _obscurePassword
-                        ? Icons.visibility_off
-                        : Icons.visibility,
+                    _obscurePassword ? Icons.visibility_off : Icons.visibility,
                   ),
                   onPressed: () =>
                       setState(() => _obscurePassword = !_obscurePassword),
@@ -258,9 +257,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                   radius: kAvatarSizeLg,
                   backgroundColor: theme.colorScheme.primaryContainer,
                   child: Text(
-                    (auth.displayName.isNotEmpty
-                            ? auth.displayName[0]
-                            : '?')
+                    (auth.displayName.isNotEmpty ? auth.displayName[0] : '?')
                         .toUpperCase(),
                     style: theme.textTheme.headlineMedium?.copyWith(
                       color: theme.colorScheme.onPrimaryContainer,
@@ -345,15 +342,15 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
   void _forgotPassword() {
     final email = _emailController.text.trim();
     if (email.isEmpty || !email.contains('@')) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Enter your email first')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Pop your email in first!')));
       return;
     }
     ref.read(authProvider.notifier).resetPassword(email);
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Password reset email sent!')),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(const SnackBar(content: Text('Password reset email sent!')));
   }
 
   Future<void> _createBackup(BuildContext context) async {
@@ -370,7 +367,11 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
     } catch (e) {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Backup failed. Check your connection and try again.')),
+          const SnackBar(
+            content: Text(
+              'Backup didn\'t go through. Check your connection and try again!',
+            ),
+          ),
         );
       }
     }
@@ -400,9 +401,9 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
     if (confirm != true || !context.mounted) return;
 
     try {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Restoring backup...')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Restoring backup...')));
       await CloudBackupService.instance.downloadAndRestoreBackup();
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -412,7 +413,11 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
     } catch (e) {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Restore failed. Check your connection and try again.')),
+          const SnackBar(
+            content: Text(
+              'Restore didn\'t go through. Check your connection and try again!',
+            ),
+          ),
         );
       }
     }
@@ -488,10 +493,9 @@ class _SyncStatusCard extends ConsumerWidget {
         subtitle: const Text('Multi-device sync'),
         trailing: syncStatus == CloudSyncStatus.error
             ? IconButton(
-              tooltip: 'Edit profile',
+                tooltip: 'Edit profile',
                 icon: const Icon(Icons.refresh),
-                onPressed: () =>
-                    ref.read(cloudSyncServiceProvider).syncNow(),
+                onPressed: () => ref.read(cloudSyncServiceProvider).syncNow(),
               )
             : null,
       ),

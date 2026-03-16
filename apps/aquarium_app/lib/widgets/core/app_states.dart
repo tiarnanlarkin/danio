@@ -7,25 +7,25 @@ import 'bubble_loader.dart';
 enum EmptyStateVariant {
   /// No data/items
   noData,
-  
+
   /// Search returned no results
   noResults,
-  
+
   /// No network connection
   offline,
-  
+
   /// Feature not available
   unavailable,
-  
+
   /// First-time/onboarding state
   getStarted,
 }
 
 /// A polished empty state widget with illustration placeholder and action button.
-/// 
+///
 /// Use when there's no content to display. Provides visual interest and
 /// guides users toward taking action.
-/// 
+///
 /// Example:
 /// ```dart
 /// AppEmptyState(
@@ -39,34 +39,34 @@ enum EmptyStateVariant {
 class AppEmptyState extends StatelessWidget {
   /// Main icon (will be styled as illustration)
   final IconData icon;
-  
+
   /// Title text
   final String title;
-  
+
   /// Description/message
   final String? message;
-  
+
   /// Primary action button label
   final String? actionLabel;
-  
+
   /// Primary action callback
   final VoidCallback? onAction;
-  
+
   /// Secondary action label
   final String? secondaryActionLabel;
-  
+
   /// Secondary action callback
   final VoidCallback? onSecondaryAction;
-  
+
   /// Icon color (defaults to primary)
   final Color? iconColor;
-  
+
   /// Background color for icon container
   final Color? iconBackgroundColor;
-  
+
   /// Whether to use compact layout
   final bool compact;
-  
+
   /// Custom illustration widget (replaces icon)
   final Widget? illustration;
 
@@ -112,8 +112,8 @@ class AppEmptyState extends StatelessWidget {
       key: key,
       icon: Icons.search_off,
       title: 'No results found',
-      message: query != null 
-          ? 'No matches for "$query"' 
+      message: query != null
+          ? 'No matches for "$query"'
           : 'Try adjusting your search or filters.',
       actionLabel: onClearSearch != null ? 'Clear Search' : null,
       onAction: onClearSearch,
@@ -121,10 +121,7 @@ class AppEmptyState extends StatelessWidget {
   }
 
   /// Create an empty state for offline scenarios
-  factory AppEmptyState.offline({
-    Key? key,
-    VoidCallback? onRetry,
-  }) {
+  factory AppEmptyState.offline({Key? key, VoidCallback? onRetry}) {
     return AppEmptyState(
       key: key,
       icon: Icons.wifi_off,
@@ -146,7 +143,8 @@ class AppEmptyState extends StatelessWidget {
       key: key,
       icon: Icons.error_outline,
       title: 'Oops! Something went wrong',
-      message: message ?? 'That was not supposed to happen. Give it another try!',
+      message:
+          message ?? 'That was not supposed to happen. Give it another try!',
       actionLabel: 'Try Again',
       onAction: onRetry,
       iconColor: AppColors.error,
@@ -156,7 +154,7 @@ class AppEmptyState extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final effectiveIconColor = iconColor ?? AppColors.primary;
-    
+
     return Center(
       child: Padding(
         padding: EdgeInsets.all(compact ? AppSpacing.md : AppSpacing.xl),
@@ -164,31 +162,35 @@ class AppEmptyState extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             // Illustration
-            illustration ?? Container(
-              width: compact ? 80 : 120,
-              height: compact ? 80 : 120,
-              decoration: BoxDecoration(
-                color: iconBackgroundColor ?? effectiveIconColor.withAlpha(26),
-                shape: BoxShape.circle,
-              ),
-              child: Icon(
-                icon,
-                size: compact ? 40 : 56,
-                color: effectiveIconColor,
-              ),
-            ),
-            
+            illustration ??
+                Container(
+                  width: compact ? 80 : 120,
+                  height: compact ? 80 : 120,
+                  decoration: BoxDecoration(
+                    color:
+                        iconBackgroundColor ?? effectiveIconColor.withAlpha(26),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(
+                    icon,
+                    size: compact ? 40 : 56,
+                    color: effectiveIconColor,
+                  ),
+                ),
+
             SizedBox(height: compact ? AppSpacing.md : AppSpacing.lg),
-            
+
             // Title
             Text(
               title,
-              style: (compact ? AppTypography.titleSmall : AppTypography.titleMedium).copyWith(
-                color: context.textPrimary,
-              ),
+              style:
+                  (compact
+                          ? AppTypography.titleSmall
+                          : AppTypography.titleMedium)
+                      .copyWith(color: context.textPrimary),
               textAlign: TextAlign.center,
             ),
-            
+
             // Message
             if (message != null) ...[
               const SizedBox(height: AppSpacing.sm),
@@ -200,7 +202,7 @@ class AppEmptyState extends StatelessWidget {
                 textAlign: TextAlign.center,
               ),
             ],
-            
+
             // Actions
             if (actionLabel != null) ...[
               SizedBox(height: compact ? AppSpacing.md : AppSpacing.lg),
@@ -220,7 +222,7 @@ class AppEmptyState extends StatelessWidget {
                 child: Text(actionLabel!),
               ),
             ],
-            
+
             if (secondaryActionLabel != null) ...[
               const SizedBox(height: AppSpacing.sm),
               TextButton(
@@ -239,13 +241,13 @@ class AppEmptyState extends StatelessWidget {
 enum LoadingIndicatorVariant {
   /// Circular spinner
   circular,
-  
+
   /// Linear progress bar
   linear,
-  
+
   /// Pulsing dots
   dots,
-  
+
   /// Custom (use child)
   custom,
 }
@@ -254,19 +256,19 @@ enum LoadingIndicatorVariant {
 class AppLoadingState extends StatelessWidget {
   /// Loading indicator variant
   final LoadingIndicatorVariant variant;
-  
+
   /// Optional message to display
   final String? message;
-  
+
   /// Whether to use compact layout
   final bool compact;
-  
+
   /// Custom loading widget (for variant.custom)
   final Widget? child;
-  
+
   /// Progress value (0.0 - 1.0) for determinate progress
   final double? progress;
-  
+
   /// Whether to center in available space
   final bool center;
 
@@ -281,34 +283,29 @@ class AppLoadingState extends StatelessWidget {
   });
 
   /// Simple centered spinner
-  const AppLoadingState.spinner({
-    Key? key,
-    String? message,
-  }) : this(
-    key: key,
-    variant: LoadingIndicatorVariant.circular,
-    message: message,
-  );
+  const AppLoadingState.spinner({Key? key, String? message})
+    : this(
+        key: key,
+        variant: LoadingIndicatorVariant.circular,
+        message: message,
+      );
 
   /// Linear progress bar
-  const AppLoadingState.linear({
-    Key? key,
-    String? message,
-    double? progress,
-  }) : this(
-    key: key,
-    variant: LoadingIndicatorVariant.linear,
-    message: message,
-    progress: progress,
-  );
+  const AppLoadingState.linear({Key? key, String? message, double? progress})
+    : this(
+        key: key,
+        variant: LoadingIndicatorVariant.linear,
+        message: message,
+        progress: progress,
+      );
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
-    
+
     Widget indicator;
-    
+
     switch (variant) {
       case LoadingIndicatorVariant.circular:
         // Use themed bubble loader instead of standard spinner
@@ -327,7 +324,7 @@ class AppLoadingState extends StatelessWidget {
                 bubbleCount: compact ? 3 : 5,
               );
         break;
-        
+
       case LoadingIndicatorVariant.linear:
         indicator = SizedBox(
           width: 200,
@@ -338,11 +335,11 @@ class AppLoadingState extends StatelessWidget {
           ),
         );
         break;
-        
+
       case LoadingIndicatorVariant.dots:
         indicator = _LoadingDots();
         break;
-        
+
       case LoadingIndicatorVariant.custom:
         indicator = child ?? SizedBox.shrink();
         break;
@@ -389,10 +386,8 @@ class _LoadingDotsState extends State<_LoadingDots>
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      duration: kQuizRevealDelay,
-      vsync: this,
-    )..repeat();
+    _controller = AnimationController(duration: kQuizRevealDelay, vsync: this)
+      ..repeat();
   }
 
   @override
@@ -412,7 +407,7 @@ class _LoadingDotsState extends State<_LoadingDots>
             final delay = index * 0.2;
             final value = ((_controller.value + delay) % 1.0);
             final scale = 0.5 + (value < 0.5 ? value : 1 - value);
-            
+
             return Transform.scale(
               scale: scale,
               child: Container(
@@ -436,32 +431,32 @@ class _LoadingDotsState extends State<_LoadingDots>
 class AppErrorState extends StatelessWidget {
   /// Error icon
   final IconData icon;
-  
+
   /// Error title
   final String title;
-  
+
   /// Error message/details
   final String? message;
-  
+
   /// Retry button label
   final String retryLabel;
-  
+
   /// Retry callback
   final VoidCallback? onRetry;
-  
+
   /// Whether to show "Report Issue" link
   final bool showReportLink;
-  
+
   /// Report issue callback
   final VoidCallback? onReport;
-  
+
   /// Whether to use compact layout
   final bool compact;
 
   const AppErrorState({
     super.key,
     this.icon = Icons.error_outline,
-    this.title = 'Something went wrong',
+    this.title = 'Oops! Something went wrong',
     this.message,
     this.retryLabel = 'Try Again',
     this.onRetry,
@@ -471,15 +466,13 @@ class AppErrorState extends StatelessWidget {
   });
 
   /// Network error state
-  factory AppErrorState.network({
-    Key? key,
-    VoidCallback? onRetry,
-  }) {
+  factory AppErrorState.network({Key? key, VoidCallback? onRetry}) {
     return AppErrorState(
       key: key,
       icon: Icons.wifi_off,
       title: 'No Connection',
-      message: 'Looks like you are offline. Check your connection and we will try again!',
+      message:
+          'Looks like you are offline. Check your connection and we will try again!',
       onRetry: onRetry,
     );
   }
@@ -522,17 +515,19 @@ class AppErrorState extends StatelessWidget {
                 color: AppColors.error,
               ),
             ),
-            
+
             SizedBox(height: compact ? AppSpacing.md : AppSpacing.lg),
-            
+
             Text(
               title,
-              style: (compact ? AppTypography.titleSmall : AppTypography.titleMedium).copyWith(
-                color: context.textPrimary,
-              ),
+              style:
+                  (compact
+                          ? AppTypography.titleSmall
+                          : AppTypography.titleMedium)
+                      .copyWith(color: context.textPrimary),
               textAlign: TextAlign.center,
             ),
-            
+
             if (message != null) ...[
               const SizedBox(height: AppSpacing.sm),
               Text(
@@ -543,7 +538,7 @@ class AppErrorState extends StatelessWidget {
                 textAlign: TextAlign.center,
               ),
             ],
-            
+
             if (onRetry != null) ...[
               SizedBox(height: compact ? AppSpacing.md : AppSpacing.lg),
               ElevatedButton.icon(
@@ -560,13 +555,10 @@ class AppErrorState extends StatelessWidget {
                 ),
               ),
             ],
-            
+
             if (showReportLink && onReport != null) ...[
               const SizedBox(height: AppSpacing.sm),
-              TextButton(
-                onPressed: onReport,
-                child: Text('Report Issue'),
-              ),
+              TextButton(onPressed: onReport, child: Text('Report Issue')),
             ],
           ],
         ),
@@ -579,19 +571,19 @@ class AppErrorState extends StatelessWidget {
 class AsyncContentBuilder<T> extends StatelessWidget {
   /// Future or stream to watch
   final AsyncSnapshot<T> snapshot;
-  
+
   /// Builder for success state
   final Widget Function(BuildContext context, T data) builder;
-  
+
   /// Custom loading widget
   final Widget? loading;
-  
+
   /// Custom error widget builder
   final Widget Function(BuildContext context, Object? error)? errorBuilder;
-  
+
   /// Loading message
   final String? loadingMessage;
-  
+
   /// Retry callback for errors
   final VoidCallback? onRetry;
 

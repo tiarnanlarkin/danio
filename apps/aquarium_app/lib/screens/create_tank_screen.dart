@@ -51,7 +51,8 @@ class _CreateTankScreenState extends ConsumerState<CreateTankScreen> {
     super.dispose();
   }
 
-  bool get _hasUnsavedData => _name.isNotEmpty || _volumeLitres > 0 || _currentPage > 0;
+  bool get _hasUnsavedData =>
+      _name.isNotEmpty || _volumeLitres > 0 || _currentPage > 0;
 
   @override
   Widget build(BuildContext context) {
@@ -63,10 +64,18 @@ class _CreateTankScreenState extends ConsumerState<CreateTankScreen> {
           context: context,
           builder: (ctx) => AlertDialog(
             title: const Text('Discard new tank?'),
-            content: const Text('You have unsaved changes. Are you sure you want to go back?'),
+            content: const Text(
+              'You have unsaved changes. Are you sure you want to go back?',
+            ),
             actions: [
-              TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Cancel')),
-              TextButton(onPressed: () => Navigator.pop(ctx, true), child: const Text('Discard')),
+              TextButton(
+                onPressed: () => Navigator.pop(ctx, false),
+                child: const Text('Cancel'),
+              ),
+              TextButton(
+                onPressed: () => Navigator.pop(ctx, true),
+                child: const Text('Discard'),
+              ),
             ],
           ),
         );
@@ -75,134 +84,143 @@ class _CreateTankScreenState extends ConsumerState<CreateTankScreen> {
         }
       },
       child: GestureDetector(
-      onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
-      child: Scaffold(
-      appBar: AppBar(
-        title: const Text('New Tank'),
-        leading: Semantics(
-          label: A11yLabels.closeButton('new tank form'),
-          button: true,
-          child: IconButton(
-            icon: const Icon(Icons.close),
-            tooltip: 'Close and discard new tank',
-            onPressed: () {
-              if (_hasUnsavedData) {
-                // Let PopScope handle confirmation
-                Navigator.maybePop(context);
-              } else {
-                Navigator.pop(context);
-              }
-            },
+        onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+        child: Scaffold(
+          appBar: AppBar(
+            title: const Text('New Tank'),
+            leading: Semantics(
+              label: A11yLabels.closeButton('new tank form'),
+              button: true,
+              child: IconButton(
+                icon: const Icon(Icons.close),
+                tooltip: 'Close and discard new tank',
+                onPressed: () {
+                  if (_hasUnsavedData) {
+                    // Let PopScope handle confirmation
+                    Navigator.maybePop(context);
+                  } else {
+                    Navigator.pop(context);
+                  }
+                },
+              ),
+            ),
           ),
-        ),
-      ),
-      body: FocusTraversalGroup(
-        policy: OrderedTraversalPolicy(),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            children: [
-              // Progress indicator
-              Semantics(
-                label: A11yLabels.progress(
-                  _currentPage + 1,
-                  3,
-                  'Tank creation',
-                ),
-                child: LinearProgressIndicator(
-                  value: (_currentPage + 1) / 3,
-                  backgroundColor: context.surfaceVariant,
-                  valueColor: const AlwaysStoppedAnimation(AppColors.primary),
-                ),
-              ),
-
-              // Page content
-              Expanded(
-                child: PageView(
-                  controller: _pageController,
-                  physics: const NeverScrollableScrollPhysics(),
-                  onPageChanged: (page) => setState(() => _currentPage = page),
-                  children: [
-                    _BasicInfoPage(
-                      name: _name,
-                      type: _type,
-                      onNameChanged: (v) => setState(() => _name = v),
-                      onTypeChanged: (v) => setState(() => _type = v),
+          body: FocusTraversalGroup(
+            policy: OrderedTraversalPolicy(),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                children: [
+                  // Progress indicator
+                  Semantics(
+                    label: A11yLabels.progress(
+                      _currentPage + 1,
+                      3,
+                      'Tank creation',
                     ),
-                    _SizePage(
-                      volumeLitres: _volumeLitres,
-                      lengthCm: _lengthCm,
-                      widthCm: _widthCm,
-                      heightCm: _heightCm,
-                      onVolumeChanged: (v) => setState(() => _volumeLitres = v),
-                      onLengthChanged: (v) => setState(() => _lengthCm = v),
-                      onWidthChanged: (v) => setState(() => _widthCm = v),
-                      onHeightChanged: (v) => setState(() => _heightCm = v),
-                    ),
-                    _WaterTypePage(
-                      waterType: _waterType,
-                      startDate: _startDate,
-                      onWaterTypeChanged: (v) {
-                        setState(() {
-                          _waterType = v;
-                          _targets = v == 'tropical'
-                              ? WaterTargets.freshwaterTropical()
-                              : WaterTargets.freshwaterColdwater();
-                        });
-                      },
-                      onStartDateChanged: (v) => setState(() => _startDate = v),
-                    ),
-                  ],
-                ),
-              ),
-
-              // Navigation buttons — SafeArea ensures buttons stay above gesture nav zone.
-              SafeArea(
-                top: false,
-                child: Padding(
-                padding: const EdgeInsets.all(AppSpacing.md),
-                child: Row(
-                  children: [
-                    if (_currentPage > 0)
-                      AppButton(
-                        label: 'Back',
-                        onPressed: _previousPage,
-                        variant: AppButtonVariant.secondary,
-                        semanticsLabel: A11yLabels.button('Go back to previous step'),
+                    child: LinearProgressIndicator(
+                      value: (_currentPage + 1) / 3,
+                      backgroundColor: context.surfaceVariant,
+                      valueColor: const AlwaysStoppedAnimation(
+                        AppColors.primary,
                       ),
-                    const Spacer(),
-                    if (_currentPage < 2)
-                      AppButton(
-                        label: 'Next',
-                        onPressed: _canProceed() ? _nextPage : null,
-                        variant: AppButtonVariant.primary,
-                        trailingIcon: Icons.arrow_forward,
-                        semanticsLabel: A11yLabels.button('Continue to next step'),
-                      )
-                    else
-                      AppButton(
-                        label: 'Create Tank',
-                        onPressed: _canProceed() && !_isCreating
-                            ? _createTank
-                            : null,
-                        variant: AppButtonVariant.primary,
-                        isLoading: _isCreating,
-                        leadingIcon: Icons.add,
-                        semanticsLabel: A11yLabels.button(
-                          'Create tank',
-                          _name.isNotEmpty ? _name : null,
+                    ),
+                  ),
+
+                  // Page content
+                  Expanded(
+                    child: PageView(
+                      controller: _pageController,
+                      physics: const NeverScrollableScrollPhysics(),
+                      onPageChanged: (page) =>
+                          setState(() => _currentPage = page),
+                      children: [
+                        _BasicInfoPage(
+                          name: _name,
+                          type: _type,
+                          onNameChanged: (v) => setState(() => _name = v),
+                          onTypeChanged: (v) => setState(() => _type = v),
                         ),
+                        _SizePage(
+                          volumeLitres: _volumeLitres,
+                          lengthCm: _lengthCm,
+                          widthCm: _widthCm,
+                          heightCm: _heightCm,
+                          onVolumeChanged: (v) =>
+                              setState(() => _volumeLitres = v),
+                          onLengthChanged: (v) => setState(() => _lengthCm = v),
+                          onWidthChanged: (v) => setState(() => _widthCm = v),
+                          onHeightChanged: (v) => setState(() => _heightCm = v),
+                        ),
+                        _WaterTypePage(
+                          waterType: _waterType,
+                          startDate: _startDate,
+                          onWaterTypeChanged: (v) {
+                            setState(() {
+                              _waterType = v;
+                              _targets = v == 'tropical'
+                                  ? WaterTargets.freshwaterTropical()
+                                  : WaterTargets.freshwaterColdwater();
+                            });
+                          },
+                          onStartDateChanged: (v) =>
+                              setState(() => _startDate = v),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  // Navigation buttons — SafeArea ensures buttons stay above gesture nav zone.
+                  SafeArea(
+                    top: false,
+                    child: Padding(
+                      padding: const EdgeInsets.all(AppSpacing.md),
+                      child: Row(
+                        children: [
+                          if (_currentPage > 0)
+                            AppButton(
+                              label: 'Back',
+                              onPressed: _previousPage,
+                              variant: AppButtonVariant.secondary,
+                              semanticsLabel: A11yLabels.button(
+                                'Go back to previous step',
+                              ),
+                            ),
+                          const Spacer(),
+                          if (_currentPage < 2)
+                            AppButton(
+                              label: 'Next',
+                              onPressed: _canProceed() ? _nextPage : null,
+                              variant: AppButtonVariant.primary,
+                              trailingIcon: Icons.arrow_forward,
+                              semanticsLabel: A11yLabels.button(
+                                'Continue to next step',
+                              ),
+                            )
+                          else
+                            AppButton(
+                              label: 'Create Tank',
+                              onPressed: _canProceed() && !_isCreating
+                                  ? _createTank
+                                  : null,
+                              variant: AppButtonVariant.primary,
+                              isLoading: _isCreating,
+                              leadingIcon: Icons.add,
+                              semanticsLabel: A11yLabels.button(
+                                'Create tank',
+                                _name.isNotEmpty ? _name : null,
+                              ),
+                            ),
+                        ],
                       ),
-                  ],
-                ),
+                    ),
+                  ), // SafeArea
+                ],
               ),
-              ), // SafeArea
-            ],
+            ),
           ),
         ),
       ),
-    ),
-    ),
     );
   }
 
@@ -269,10 +287,15 @@ class _CreateTankScreenState extends ConsumerState<CreateTankScreen> {
 
       // Award XP for creating a new tank (with boost if active)
       final isBoostActive = ref.read(xpBoostActiveProvider);
-      final effectiveXp = isBoostActive ? XpRewards.createTank * 2 : XpRewards.createTank;
+      final effectiveXp = isBoostActive
+          ? XpRewards.createTank * 2
+          : XpRewards.createTank;
       await ref
           .read(userProfileProvider.notifier)
-          .recordActivity(xp: XpRewards.createTank, xpBoostActive: isBoostActive);
+          .recordActivity(
+            xp: XpRewards.createTank,
+            xpBoostActive: isBoostActive,
+          );
 
       // Show XP animation
       if (mounted) {
@@ -313,7 +336,9 @@ class _CreateTankScreenState extends ConsumerState<CreateTankScreen> {
               children: [
                 const Icon(Icons.check_circle, color: Colors.white, size: 20),
                 const SizedBox(width: 8),
-                Expanded(child: Text('$tankName created! +${XpRewards.createTank} XP')),
+                Expanded(
+                  child: Text('$tankName created! +${XpRewards.createTank} XP'),
+                ),
               ],
             ),
             backgroundColor: AppColors.success,
@@ -327,16 +352,22 @@ class _CreateTankScreenState extends ConsumerState<CreateTankScreen> {
         // Celebrate first tank creation!
         final tanks = ref.read(tanksProvider).value ?? [];
         if (tanks.length <= 1) {
-          ref.read(celebrationProvider.notifier).milestone(
-            'Your First Tank! 🎉',
-            subtitle: 'Welcome to the hobby - your aquarium adventure has officially begun!',
-          );
+          ref
+              .read(celebrationProvider.notifier)
+              .milestone(
+                'Your First Tank! 🎉',
+                subtitle:
+                    'Welcome to the hobby - your aquarium adventure has officially begun!',
+              );
         } else if (tanks.length == 2) {
           // Plant Danio Pro seed for multi-tank users
-          ref.read(celebrationProvider.notifier).achievement(
-            'Multi-Tank Aquarist! \u{1F30A}',
-            subtitle: 'Danio Pro will unlock advanced multi-tank features -- stay tuned!',
-          );
+          ref
+              .read(celebrationProvider.notifier)
+              .achievement(
+                'Multi-Tank Aquarist! \u{1F30A}',
+                subtitle:
+                    'Danio Pro will unlock advanced multi-tank features — stay tuned!',
+              );
         }
       }
     } catch (e) {
@@ -402,7 +433,9 @@ class _BasicInfoPage extends StatelessWidget {
                 ),
                 textCapitalization: TextCapitalization.words,
                 onChanged: onNameChanged,
-                validator: (v) => (v == null || v.trim().isEmpty) ? 'Please enter a tank name' : null,
+                validator: (v) => (v == null || v.trim().isEmpty)
+                    ? 'Please enter a tank name'
+                    : null,
               ),
             ),
           ),
@@ -619,8 +652,11 @@ class _SizePageState extends State<_SizePage> {
     // Update text field when volume changes externally (e.g., from presets)
     try {
       final currentText = _volumeController.text;
-      final newText = widget.volumeLitres > 0 ? _formatVolume(widget.volumeLitres) : '';
-      if (currentText != newText && double.tryParse(currentText) != widget.volumeLitres) {
+      final newText = widget.volumeLitres > 0
+          ? _formatVolume(widget.volumeLitres)
+          : '';
+      if (currentText != newText &&
+          double.tryParse(currentText) != widget.volumeLitres) {
         _volumeController.text = newText;
       }
     } catch (_) {
@@ -679,7 +715,9 @@ class _SizePageState extends State<_SizePage> {
                 validator: (v) {
                   if (v == null || v.isEmpty) return 'Please enter a volume';
                   final n = double.tryParse(v);
-                  if (n == null || n <= 0) return 'Please enter a volume greater than 0';
+                  if (n == null || n <= 0) {
+                    return 'Please enter a volume greater than 0';
+                  }
                   if (n > 10000) return 'Maximum 10,000 litres';
                   return null;
                 },
@@ -723,7 +761,8 @@ class _SizePageState extends State<_SizePage> {
                       inputFormatters: [
                         FilteringTextInputFormatter.allow(RegExp(r'[\d.]')),
                       ],
-                      onChanged: (v) => widget.onLengthChanged(double.tryParse(v)),
+                      onChanged: (v) =>
+                          widget.onLengthChanged(double.tryParse(v)),
                     ),
                   ),
                 ),
@@ -747,7 +786,8 @@ class _SizePageState extends State<_SizePage> {
                       inputFormatters: [
                         FilteringTextInputFormatter.allow(RegExp(r'[\d.]')),
                       ],
-                      onChanged: (v) => widget.onWidthChanged(double.tryParse(v)),
+                      onChanged: (v) =>
+                          widget.onWidthChanged(double.tryParse(v)),
                     ),
                   ),
                 ),
@@ -771,7 +811,8 @@ class _SizePageState extends State<_SizePage> {
                       inputFormatters: [
                         FilteringTextInputFormatter.allow(RegExp(r'[\d.]')),
                       ],
-                      onChanged: (v) => widget.onHeightChanged(double.tryParse(v)),
+                      onChanged: (v) =>
+                          widget.onHeightChanged(double.tryParse(v)),
                     ),
                   ),
                 ),
@@ -787,11 +828,26 @@ class _SizePageState extends State<_SizePage> {
             spacing: 8,
             runSpacing: 8,
             children: [
-              _SizePreset(label: '20L', onTap: () => widget.onVolumeChanged(20)),
-              _SizePreset(label: '60L', onTap: () => widget.onVolumeChanged(60)),
-              _SizePreset(label: '120L', onTap: () => widget.onVolumeChanged(120)),
-              _SizePreset(label: '200L', onTap: () => widget.onVolumeChanged(200)),
-              _SizePreset(label: '300L', onTap: () => widget.onVolumeChanged(300)),
+              _SizePreset(
+                label: '20L',
+                onTap: () => widget.onVolumeChanged(20),
+              ),
+              _SizePreset(
+                label: '60L',
+                onTap: () => widget.onVolumeChanged(60),
+              ),
+              _SizePreset(
+                label: '120L',
+                onTap: () => widget.onVolumeChanged(120),
+              ),
+              _SizePreset(
+                label: '200L',
+                onTap: () => widget.onVolumeChanged(200),
+              ),
+              _SizePreset(
+                label: '300L',
+                onTap: () => widget.onVolumeChanged(300),
+              ),
             ],
           ),
         ],
@@ -1010,9 +1066,7 @@ class _WaterTypeOption extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.all(AppSpacing.md),
           decoration: BoxDecoration(
-            color: isSelected
-                ? AppOverlays.primary10
-                : context.surfaceVariant,
+            color: isSelected ? AppOverlays.primary10 : context.surfaceVariant,
             borderRadius: AppRadius.mediumRadius,
             border: Border.all(
               color: isSelected ? AppColors.primary : Colors.transparent,
@@ -1022,7 +1076,10 @@ class _WaterTypeOption extends StatelessWidget {
           child: Row(
             children: [
               ExcludeSemantics(
-                child: Text(icon, style: Theme.of(context).textTheme.headlineMedium!.copyWith()),
+                child: Text(
+                  icon,
+                  style: Theme.of(context).textTheme.headlineMedium!.copyWith(),
+                ),
               ),
               const SizedBox(width: AppSpacing.md),
               Expanded(

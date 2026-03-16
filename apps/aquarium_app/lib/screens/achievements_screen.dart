@@ -1,6 +1,7 @@
 /// Achievements Screen - Trophy Case Gallery
 /// Displays all achievements with filtering, sorting, and progress tracking
 library;
+
 import 'package:danio/theme/app_theme.dart';
 
 import 'package:flutter_animate/flutter_animate.dart';
@@ -50,7 +51,9 @@ class _AchievementsScreenState extends ConsumerState<AchievementsScreen> {
     );
 
     // Calculate stats (exclude hidden achievements from totals)
-    final visibleAchievements = AchievementDefinitions.all.where((a) => !a.isHidden).toList();
+    final visibleAchievements = AchievementDefinitions.all
+        .where((a) => !a.isHidden)
+        .toList();
     final totalAchievements = visibleAchievements.length;
     final unlockedCount = visibleAchievements.where((a) {
       final progress = progressMap[a.id];
@@ -94,7 +97,8 @@ class _AchievementsScreenState extends ConsumerState<AchievementsScreen> {
         children: [
           // Progress header
           Semantics(
-            label: '$unlockedCount of $totalAchievements achievements unlocked, ${(completionPercent * 100).toStringAsFixed(1)} percent complete',
+            label:
+                '$unlockedCount of $totalAchievements achievements unlocked, ${(completionPercent * 100).toStringAsFixed(1)} percent complete',
             child: Container(
               padding: const EdgeInsets.all(AppSpacing.md),
               decoration: BoxDecoration(
@@ -133,7 +137,8 @@ class _AchievementsScreenState extends ConsumerState<AchievementsScreen> {
                   ),
                   const SizedBox(height: AppSpacing.sm),
                   Semantics(
-                    label: 'Achievement progress: ${(completionPercent * 100).toStringAsFixed(0)} percent',
+                    label:
+                        'Achievement progress: ${(completionPercent * 100).toStringAsFixed(0)} percent',
                     value: '${(completionPercent * 100).toStringAsFixed(0)}%',
                     child: ClipRRect(
                       borderRadius: AppRadius.smallRadius,
@@ -142,14 +147,14 @@ class _AchievementsScreenState extends ConsumerState<AchievementsScreen> {
                         duration: AppDurations.long3,
                         curve: Curves.easeOutCubic,
                         builder: (context, value, _) => LinearProgressIndicator(
-                        value: value,
-                        minHeight: 12,
-                        backgroundColor: AppOverlays.white30,
-                        valueColor: AlwaysStoppedAnimation<Color>(
-                          Theme.of(context).colorScheme.primary,
+                          value: value,
+                          minHeight: 12,
+                          backgroundColor: AppOverlays.white30,
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                            Theme.of(context).colorScheme.primary,
+                          ),
                         ),
                       ),
-                        ),
                     ),
                   ),
                 ],
@@ -250,22 +255,30 @@ class _AchievementsScreenState extends ConsumerState<AchievementsScreen> {
                           Icon(
                             Icons.emoji_events_outlined,
                             size: AppIconSizes.xxl,
-                            color: Theme.of(context).colorScheme.onSurface.withOpacity(0.4),
+                            color: Theme.of(
+                              context,
+                            ).colorScheme.onSurface.withOpacity(0.4),
                           ),
                           const SizedBox(height: AppSpacing.md),
                           Text(
                             'No achievements unlocked yet!',
-                            style: Theme.of(
-                              context,
-                            ).textTheme.titleMedium?.copyWith(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6)),
+                            style: Theme.of(context).textTheme.titleMedium
+                                ?.copyWith(
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.onSurface.withOpacity(0.6),
+                                ),
                             textAlign: TextAlign.center,
                           ),
                           const SizedBox(height: AppSpacing.sm),
                           Text(
-                            'Complete lessons, log water tests, and care for your tank to earn your first badge.',
-                            style: Theme.of(
-                              context,
-                            ).textTheme.bodyMedium?.copyWith(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.45)),
+                            'Complete lessons, log water tests, and care for your tank to earn your first badge!',
+                            style: Theme.of(context).textTheme.bodyMedium
+                                ?.copyWith(
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.onSurface.withOpacity(0.45),
+                                ),
                             textAlign: TextAlign.center,
                           ),
                           const SizedBox(height: AppSpacing.lg),
@@ -284,7 +297,10 @@ class _AchievementsScreenState extends ConsumerState<AchievementsScreen> {
                     },
                     color: AppColors.primary,
                     child: _buildAchievementsList(
-                      context, filteredAchievements, progressMap),
+                      context,
+                      filteredAchievements,
+                      progressMap,
+                    ),
                   ),
           ),
         ],
@@ -338,9 +354,9 @@ class _AchievementsScreenState extends ConsumerState<AchievementsScreen> {
               padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
               child: Text(
                 '🎉 Recently Unlocked',
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
+                style: Theme.of(
+                  context,
+                ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
               ),
             ),
           ),
@@ -357,59 +373,69 @@ class _AchievementsScreenState extends ConsumerState<AchievementsScreen> {
                   final progress = entry.value;
                   final reduceMotion = MediaQuery.of(context).disableAnimations;
                   return Semantics(
-                    button: true,
-                    label: '${achievement.name}, ${achievement.description}, Unlocked',
-                    child: Container(
-                      width: 160,
-                      margin: EdgeInsets.only(
-                        right: index < recentlyUnlocked.length - 1 ? 12 : 0,
-                      ),
-                      child: ShimmerGlow(
-                        glowColor: AppColors.primary,
-                        child: Card(
-                          color: AppColors.primaryAlpha08,
-                          child: InkWell(
-                            borderRadius: AppRadius.mediumRadius,
-                            onTap: () => _showAchievementDetail(
-                              context, achievement, progress),
-                            child: Padding(
-                              padding: const EdgeInsets.all(AppSpacing.sm2),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  ExcludeSemantics(
-                                    child: Text(
-                                      achievement.icon,
-                                      style: Theme.of(context).textTheme.headlineMedium!.copyWith(),
-                                    ),
-                                  ),
-                                  const SizedBox(height: AppSpacing.sm),
-                                  ExcludeSemantics(
-                                    child: Text(
-                                      achievement.name,
-                                      style: AppTypography.labelSmall.copyWith(
-                                        fontWeight: FontWeight.w600,
+                        button: true,
+                        label:
+                            '${achievement.name}, ${achievement.description}, Unlocked',
+                        child: Container(
+                          width: 160,
+                          margin: EdgeInsets.only(
+                            right: index < recentlyUnlocked.length - 1 ? 12 : 0,
+                          ),
+                          child: ShimmerGlow(
+                            glowColor: AppColors.primary,
+                            child: Card(
+                              color: AppColors.primaryAlpha08,
+                              child: InkWell(
+                                borderRadius: AppRadius.mediumRadius,
+                                onTap: () => _showAchievementDetail(
+                                  context,
+                                  achievement,
+                                  progress,
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(AppSpacing.sm2),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      ExcludeSemantics(
+                                        child: Text(
+                                          achievement.icon,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .headlineMedium!
+                                              .copyWith(),
+                                        ),
                                       ),
-                                      textAlign: TextAlign.center,
-                                      maxLines: 2,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
+                                      const SizedBox(height: AppSpacing.sm),
+                                      ExcludeSemantics(
+                                        child: Text(
+                                          achievement.name,
+                                          style: AppTypography.labelSmall
+                                              .copyWith(
+                                                fontWeight: FontWeight.w600,
+                                              ),
+                                          textAlign: TextAlign.center,
+                                          maxLines: 2,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                ],
+                                ),
                               ),
                             ),
                           ),
                         ),
-                      ),
-                    ),
-                  )
+                      )
                       .animate(autoPlay: !reduceMotion)
                       .fadeIn(
                         duration: reduceMotion ? 0.ms : 300.ms,
                         delay: reduceMotion ? 0.ms : (index * 80).ms,
                       )
                       .scale(
-                        begin: reduceMotion ? const Offset(1, 1) : const Offset(0.9, 0.9),
+                        begin: reduceMotion
+                            ? const Offset(1, 1)
+                            : const Offset(0.9, 0.9),
                         end: const Offset(1, 1),
                         duration: reduceMotion ? 0.ms : 300.ms,
                         delay: reduceMotion ? 0.ms : (index * 80).ms,
@@ -431,43 +457,48 @@ class _AchievementsScreenState extends ConsumerState<AchievementsScreen> {
               crossAxisSpacing: 12,
               mainAxisSpacing: 12,
             ),
-            delegate: SliverChildBuilderDelegate(
-              (context, index) {
-                final achievement = sortedAchievements[index];
-                final progress = progressMap[achievement.id] ??
-                    AchievementProgress(achievementId: achievement.id);
+            delegate: SliverChildBuilderDelegate((context, index) {
+              final achievement = sortedAchievements[index];
+              final progress =
+                  progressMap[achievement.id] ??
+                  AchievementProgress(achievementId: achievement.id);
 
-                final isUnlocked = progress.isUnlocked;
-                final progressLabel = (achievement.targetCount ?? 0) > 1 && !isUnlocked
-                    ? ', ${progress.currentCount} of ${achievement.targetCount}'
-                    : '';
-                final reduceMotion = MediaQuery.of(context).disableAnimations;
-                return Semantics(
-                  button: true,
-                  label: '${achievement.name}, ${achievement.description}, ${isUnlocked ? "Unlocked" : "Locked"}$progressLabel',
-                  child: RepaintBoundary(
-                    child: AchievementCard(
-                      achievement: achievement,
-                      progress: progress,
-                      onTap: () => _showAchievementDetail(
-                        context, achievement, progress),
+              final isUnlocked = progress.isUnlocked;
+              final progressLabel =
+                  (achievement.targetCount ?? 0) > 1 && !isUnlocked
+                  ? ', ${progress.currentCount} of ${achievement.targetCount}'
+                  : '';
+              final reduceMotion = MediaQuery.of(context).disableAnimations;
+              return Semantics(
+                    button: true,
+                    label:
+                        '${achievement.name}, ${achievement.description}, ${isUnlocked ? "Unlocked" : "Locked"}$progressLabel',
+                    child: RepaintBoundary(
+                      child: AchievementCard(
+                        achievement: achievement,
+                        progress: progress,
+                        onTap: () => _showAchievementDetail(
+                          context,
+                          achievement,
+                          progress,
+                        ),
+                      ),
                     ),
-                  ),
-                )
-                    .animate(autoPlay: !reduceMotion)
-                    .fadeIn(
-                      duration: reduceMotion ? 0.ms : 250.ms,
-                      delay: reduceMotion ? 0.ms : (index * 40).ms,
-                    )
-                    .scale(
-                      begin: reduceMotion ? const Offset(1, 1) : const Offset(0.95, 0.95),
-                      end: const Offset(1, 1),
-                      duration: reduceMotion ? 0.ms : 250.ms,
-                      delay: reduceMotion ? 0.ms : (index * 40).ms,
-                    );
-              },
-              childCount: sortedAchievements.length,
-            ),
+                  )
+                  .animate(autoPlay: !reduceMotion)
+                  .fadeIn(
+                    duration: reduceMotion ? 0.ms : 250.ms,
+                    delay: reduceMotion ? 0.ms : (index * 40).ms,
+                  )
+                  .scale(
+                    begin: reduceMotion
+                        ? const Offset(1, 1)
+                        : const Offset(0.95, 0.95),
+                    end: const Offset(1, 1),
+                    duration: reduceMotion ? 0.ms : 250.ms,
+                    delay: reduceMotion ? 0.ms : (index * 40).ms,
+                  );
+            }, childCount: sortedAchievements.length),
           ),
         ),
       ],

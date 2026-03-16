@@ -75,7 +75,7 @@ class _ProfileCreationScreenState extends ConsumerState<ProfileCreationScreen> {
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: const Text('Something went wrong. Please try again.'),
+          content: const Text('Oops! We hit a snag. Give it another try.'),
           backgroundColor: AppColors.error,
         ),
       );
@@ -138,7 +138,9 @@ class _ProfileCreationScreenState extends ConsumerState<ProfileCreationScreen> {
       Navigator.of(context).pop();
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: const Text('Couldn\'t set up your profile. Please try again.'),
+          content: const Text(
+            'Couldn\'t set up your profile. Give it another go!',
+          ),
           backgroundColor: AppColors.error,
         ),
       );
@@ -185,10 +187,10 @@ class _ProfileCreationScreenState extends ConsumerState<ProfileCreationScreen> {
                 ),
                 const SizedBox(height: AppSpacing.sm),
                 Text(
-                  'Let\'s personalize your learning experience',
-                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    color: context.textSecondary,
-                  ),
+                  'Let\'s personalise your learning experience',
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodyLarge?.copyWith(color: context.textSecondary),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: AppSpacing.xl),
@@ -213,9 +215,7 @@ class _ProfileCreationScreenState extends ConsumerState<ProfileCreationScreen> {
                 FocusTraversalOrder(
                   order: const NumericFocusOrder(5.0),
                   child: Semantics(
-                    label: A11yLabels.button(
-                      'Continue to next step',
-                    ),
+                    label: A11yLabels.button('Continue to next step'),
                     button: true,
                     enabled: !_isSubmitting && _canSubmit,
                     child: FilledButton(
@@ -309,7 +309,9 @@ class _ProfileCreationScreenState extends ConsumerState<ProfileCreationScreen> {
                 const SizedBox(width: AppSpacing.xs),
                 Text(
                   '*',
-                  style: Theme.of(context).textTheme.titleMedium!.copyWith(color: AppColors.error),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.titleMedium!.copyWith(color: AppColors.error),
                 ),
               ],
             ),
@@ -341,7 +343,11 @@ class _ProfileCreationScreenState extends ConsumerState<ProfileCreationScreen> {
               color: isSelected ? AppOverlays.accent10 : null,
               borderRadius: AppRadius.mediumRadius,
               border: Border.all(
-                color: isSelected ? AppColors.accent : Theme.of(context).brightness == Brightness.dark ? AppColors.borderDark : context.borderColor,
+                color: isSelected
+                    ? AppColors.accent
+                    : Theme.of(context).brightness == Brightness.dark
+                    ? AppColors.borderDark
+                    : context.borderColor,
                 width: 2,
               ),
             ),
@@ -361,18 +367,16 @@ class _ProfileCreationScreenState extends ConsumerState<ProfileCreationScreen> {
                       ExcludeSemantics(
                         child: Text(
                           level.displayName,
-                          style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                            fontWeight: FontWeight.w600,
-                          ),
+                          style: Theme.of(context).textTheme.titleMedium!
+                              .copyWith(fontWeight: FontWeight.w600),
                         ),
                       ),
                       const SizedBox(height: AppSpacing.xs),
                       ExcludeSemantics(
                         child: Text(
                           level.description,
-                          style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                            color: context.textSecondary,
-                          ),
+                          style: Theme.of(context).textTheme.bodyMedium!
+                              .copyWith(color: context.textSecondary),
                         ),
                       ),
                     ],
@@ -409,7 +413,9 @@ class _ProfileCreationScreenState extends ConsumerState<ProfileCreationScreen> {
                 const SizedBox(width: AppSpacing.xs),
                 Text(
                   '*',
-                  style: Theme.of(context).textTheme.titleMedium!.copyWith(color: AppColors.error),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.titleMedium!.copyWith(color: AppColors.error),
                 ),
               ],
             ),
@@ -448,7 +454,11 @@ class _ProfileCreationScreenState extends ConsumerState<ProfileCreationScreen> {
             color: isSelected ? AppOverlays.primary10 : null,
             borderRadius: AppRadius.mediumRadius,
             border: Border.all(
-              color: isSelected ? AppColors.primary : Theme.of(context).brightness == Brightness.dark ? AppColors.borderDark : context.borderColor,
+              color: isSelected
+                  ? AppColors.primary
+                  : Theme.of(context).brightness == Brightness.dark
+                  ? AppColors.borderDark
+                  : context.borderColor,
               width: 2,
             ),
           ),
@@ -457,15 +467,20 @@ class _ProfileCreationScreenState extends ConsumerState<ProfileCreationScreen> {
             mainAxisSize: MainAxisSize.min,
             children: [
               ExcludeSemantics(
-                child: Text(type.emoji, style: Theme.of(context).textTheme.headlineMedium!.copyWith(fontSize: 40)),
+                child: Text(
+                  type.emoji,
+                  style: Theme.of(
+                    context,
+                  ).textTheme.headlineMedium!.copyWith(fontSize: 40),
+                ),
               ),
               const SizedBox(height: AppSpacing.xs2),
               ExcludeSemantics(
                 child: Text(
                   type.displayName,
-                  style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.w600),
                   textAlign: TextAlign.center,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -521,7 +536,9 @@ class _ProfileCreationScreenState extends ConsumerState<ProfileCreationScreen> {
                 const SizedBox(width: AppSpacing.xs),
                 Text(
                   '*',
-                  style: Theme.of(context).textTheme.titleMedium!.copyWith(color: AppColors.error),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.titleMedium!.copyWith(color: AppColors.error),
                 ),
               ],
             ),
@@ -568,7 +585,11 @@ class _ProfileCreationScreenState extends ConsumerState<ProfileCreationScreen> {
         selectedColor: AppColors.accentAlpha20,
         checkmarkColor: AppColors.accent,
         side: BorderSide(
-          color: isSelected ? AppColors.accent : Theme.of(context).brightness == Brightness.dark ? AppColors.borderDark : context.borderColor,
+          color: isSelected
+              ? AppColors.accent
+              : Theme.of(context).brightness == Brightness.dark
+              ? AppColors.borderDark
+              : context.borderColor,
         ),
       ),
     );
