@@ -53,10 +53,7 @@ class _PaywallStubScreenState extends State<PaywallStubScreen>
       vsync: this,
       duration: const Duration(milliseconds: 300),
     );
-    _fishBounceAnim = TweenSequence<double>([
-      TweenSequenceItem(tween: Tween(begin: 1.0, end: 1.05), weight: 50),
-      TweenSequenceItem(tween: Tween(begin: 1.05, end: 1.0), weight: 50),
-    ]).animate(
+    _fishBounceAnim = Tween<double>(begin: 1.0, end: 1.05).animate(
       CurvedAnimation(parent: _fishBounceController, curve: Curves.easeInOut),
     );
 

@@ -74,13 +74,12 @@ class _MicroLessonScreenState extends State<MicroLessonScreen>
       vsync: this,
       duration: const Duration(milliseconds: 300),
     );
-    _correctBounceScale = TweenSequence<double>([
-      TweenSequenceItem(tween: Tween(begin: 1.0, end: 1.1), weight: 40),
-      TweenSequenceItem(tween: Tween(begin: 1.1, end: 1.0), weight: 60),
-    ]).animate(CurvedAnimation(
-      parent: _correctBounceController!,
-      curve: AppCurves.elastic,
-    ));
+    _correctBounceScale = Tween<double>(begin: 1.0, end: 1.1).animate(
+      CurvedAnimation(
+        parent: _correctBounceController!,
+        curve: Curves.easeOutBack,
+      ),
+    );
   }
 
   @override
