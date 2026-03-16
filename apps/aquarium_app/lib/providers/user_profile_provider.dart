@@ -802,6 +802,20 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
     state = AsyncValue.data(updated);
   }
 
+  /// Increment the persistent perfect-score counter (for Perfectionist achievement).
+  Future<void> incrementPerfectScoreCount() async {
+    final current = state.value;
+    if (current == null) return;
+
+    final updated = current.copyWith(
+      perfectScoreCount: current.perfectScoreCount + 1,
+      updatedAt: DateTime.now(),
+    );
+
+    await _saveImmediate(updated);
+    state = AsyncValue.data(updated);
+  }
+
   /// Update hearts count (for hearts/lives system)
   /// Set [clearLastHeartRefill] to true to explicitly null out lastHeartRefill
   /// (e.g. after refillToMax so no stale timer remains).

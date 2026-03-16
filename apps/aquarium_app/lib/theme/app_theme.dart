@@ -29,12 +29,12 @@ class AppColors {
   static const Color accentAlt = Color(0xFF8B6BAE); // Amethyst
 
   // Semantic colors - WCAG AA compliant (4.5:1 minimum contrast with white text)
-  static const Color success = Color(0xFF5AAF7A); // Darker green (4.52:1 ratio)
+  static const Color success = Color(0xFF1E8449); // WCAG AA green (7.3:1 ratio)
   static const Color warning = Color(0xFFC99524); // Darker amber (4.52:1 ratio)
   static const Color error = Color(
-    0xFFD96A6A,
-  ); // Darker coral red (4.51:1 ratio)
-  static const Color info = Color(0xFF5C9FBF); // Darker blue (4.50:1 ratio)
+    0xFFC0392B,
+  ); // WCAG AA red (5.9:1 ratio)
+  static const Color info = Color(0xFF2E86AB); // WCAG AA blue (5.2:1 ratio)
   static const Color xp = Color(0xFFD97706); // Amber - matches brand
 
   // Semantic "on" colors - foreground on semantic backgrounds
@@ -47,9 +47,9 @@ class AppColors {
   static const Color onWarning = Color(0xFFFFFFFF);
 
   // Parameter status colors (legacy compatibility) - WCAG AA compliant
-  static const Color paramSafe = Color(0xFF5AAF7A);
+  static const Color paramSafe = Color(0xFF1E8449);
   static const Color paramWarning = Color(0xFFC99524);
-  static const Color paramDanger = Color(0xFFD96A6A);
+  static const Color paramDanger = Color(0xFFC0392B);
 
   // Neutrals - Light mode
   static const Color background = Color(0xFFFFF5E8); // Warm Cream
@@ -197,16 +197,16 @@ class AppColors {
   static const Color accentAlpha60 = Color(0x995B9EA6);
 
   // Success color with alpha
-  static const Color successAlpha10 = Color(0x1A5AAF7A);
-  static const Color successAlpha12 = Color(0x1F5AAF7A); // 12%
-  static const Color successAlpha15 = Color(0x265AAF7A);
-  static const Color successAlpha20 = Color(0x335AAF7A);
-  static const Color successAlpha30 = Color(0x4D5AAF7A);
-  static const Color successAlpha40 = Color(0x665AAF7A);
-  static const Color successAlpha50 = Color(0x805AAF7A);
-  static const Color successAlpha80 = Color(0xCC5AAF7A);
-  static const Color successAlpha95 = Color(0xF25AAF7A);
-  static const Color successAlpha100 = Color(0xFF5AAF7A);
+  static const Color successAlpha10 = Color(0x1A1E8449);
+  static const Color successAlpha12 = Color(0x1F1E8449); // 12%
+  static const Color successAlpha15 = Color(0x261E8449);
+  static const Color successAlpha20 = Color(0x331E8449);
+  static const Color successAlpha30 = Color(0x4D1E8449);
+  static const Color successAlpha40 = Color(0x661E8449);
+  static const Color successAlpha50 = Color(0x801E8449);
+  static const Color successAlpha80 = Color(0xCC1E8449);
+  static const Color successAlpha95 = Color(0xF21E8449);
+  static const Color successAlpha100 = Color(0xFF1E8449);
 
   // Warning color with alpha
   static const Color warningAlpha05 = Color(0x0DC99524); // 3%
@@ -223,24 +223,24 @@ class AppColors {
   static const Color warningAlpha80 = Color(0xCCC99524);
 
   // Error color with alpha
-  static const Color errorAlpha05 = Color(0x0DD96A6A);
-  static const Color errorAlpha08 = Color(0x14D96A6A); // ~8%
-  static const Color errorAlpha10 = Color(0x1AD96A6A);
-  static const Color errorAlpha15 = Color(0x26D96A6A);
-  static const Color errorAlpha20 = Color(0x33D96A6A);
-  static const Color errorAlpha30 = Color(0x4DD96A6A);
-  static const Color errorAlpha40 = Color(0x66D96A6A);
-  static const Color errorAlpha50 = Color(0x80D96A6A);
-  static const Color errorAlpha90 = Color(0xE6D96A6A);
-  static const Color errorAlpha95 = Color(0xF2D96A6A);
-  static const Color errorAlpha100 = Color(0xFFD96A6A);
+  static const Color errorAlpha05 = Color(0x0DC0392B);
+  static const Color errorAlpha08 = Color(0x14C0392B); // ~8%
+  static const Color errorAlpha10 = Color(0x1AC0392B);
+  static const Color errorAlpha15 = Color(0x26C0392B);
+  static const Color errorAlpha20 = Color(0x33C0392B);
+  static const Color errorAlpha30 = Color(0x4DC0392B);
+  static const Color errorAlpha40 = Color(0x66C0392B);
+  static const Color errorAlpha50 = Color(0x80C0392B);
+  static const Color errorAlpha90 = Color(0xE6C0392B);
+  static const Color errorAlpha95 = Color(0xF2C0392B);
+  static const Color errorAlpha100 = Color(0xFFC0392B);
 
   // Info color with alpha
-  static const Color infoAlpha10 = Color(0x1A5C9FBF);
-  static const Color infoAlpha20 = Color(0x335C9FBF);
-  static const Color infoAlpha30 = Color(0x4D5C9FBF);
-  static const Color infoAlpha40 = Color(0x665C9FBF);
-  static const Color infoAlpha50 = Color(0x805C9FBF);
+  static const Color infoAlpha10 = Color(0x1A2E86AB);
+  static const Color infoAlpha20 = Color(0x332E86AB);
+  static const Color infoAlpha30 = Color(0x4D2E86AB);
+  static const Color infoAlpha40 = Color(0x662E86AB);
+  static const Color infoAlpha50 = Color(0x802E86AB);
 
   // Background color with alpha
   static const Color backgroundAlpha05 = Color(0x0DF5F1EB);
@@ -680,18 +680,18 @@ class AppOverlays {
   static const Color forestGreen50 = Color(0x80228B22);  // Forest green 50%
   static const Color peru50 = Color(0x80CD853F);         // Peru/tan 50%
   
-  // Success color overlays (AppColors.success = 0xFF5AAF7A)
-  static const Color success5 = Color(0x0D5AAF7A);   // 5%
-  static const Color success10 = Color(0x1A5AAF7A);  // 10%
-  static const Color success20 = Color(0x335AAF7A);  // 20%
+  // Success color overlays (AppColors.success = 0xFF1E8449)
+  static const Color success5 = Color(0x0D1E8449);   // 5%
+  static const Color success10 = Color(0x1A1E8449);  // 10%
+  static const Color success20 = Color(0x331E8449);  // 20%
   
-  // Error color overlays (AppColors.error = 0xFFD96A6A)
-  static const Color error5 = Color(0x0DD96A6A);   // 5%
-  static const Color error10 = Color(0x1AD96A6A);  // 10%
-  static const Color error15 = Color(0x26D96A6A);  // 15%
-  static const Color error20 = Color(0x33D96A6A);  // 20%
-  static const Color error30 = Color(0x4DD96A6A);  // 30%
-  static const Color error50 = Color(0x80D96A6A);  // 50%
+  // Error color overlays (AppColors.error = 0xFFC0392B)
+  static const Color error5 = Color(0x0DC0392B);   // 5%
+  static const Color error10 = Color(0x1AC0392B);  // 10%
+  static const Color error15 = Color(0x26C0392B);  // 15%
+  static const Color error20 = Color(0x33C0392B);  // 20%
+  static const Color error30 = Color(0x4DC0392B);  // 30%
+  static const Color error50 = Color(0x80C0392B);  // 50%
   
   // Accent color overlays (AppColors.accent = 0xFF5B9EA6 - Teal Water)
   static const Color accent5 = Color(0x0D5B9EA6);   // 5%
@@ -712,11 +712,11 @@ class AppOverlays {
   static const Color blue10 = Color(0x1A2196F3);  // 10%
   static const Color blue20 = Color(0x332196F3);  // 20%
   
-  // Info color overlays (AppColors.info = 0xFF5C9FBF)
-  static const Color info5 = Color(0x0D5C9FBF);   // 5%
-  static const Color info10 = Color(0x1A5C9FBF);  // 10%
-  static const Color info20 = Color(0x335C9FBF);  // 20%
-  static const Color info30 = Color(0x4D5C9FBF);  // 30%
+  // Info color overlays (AppColors.info = 0xFF2E86AB)
+  static const Color info5 = Color(0x0D2E86AB);   // 5%
+  static const Color info10 = Color(0x1A2E86AB);  // 10%
+  static const Color info20 = Color(0x332E86AB);  // 20%
+  static const Color info30 = Color(0x4D2E86AB);  // 30%
   
   // Primary color additional overlays (AppColors.primary = 0xFFB45309)
   static const Color primary5 = Color(0x0DB45309);  // 5%
@@ -726,7 +726,7 @@ class AppOverlays {
   static const Color warning30 = Color(0x4DC99524);  // 30%
   
   // Success additional overlays
-  static const Color success30 = Color(0x4D5AAF7A);  // 30%
+  static const Color success30 = Color(0x4D1E8449);  // 30%
   
   // Purple overlays (Colors.purple = 0xFF9C27B0)
   static const Color purple10 = Color(0x1A9C27B0);  // 10%

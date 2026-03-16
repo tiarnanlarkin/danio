@@ -52,28 +52,36 @@ class SettingsHubScreen extends ConsumerWidget {
       _buildSectionHeader('Shop & Rewards'),
       const SizedBox(height: AppSpacing.sm),
 
-      PrimaryActionTile(
-        icon: Icons.storefront,
-        title: 'Shop Street',
-        subtitle: 'Discover local aquarium shops',
-        iconColor: AppColors.success,
-        trailing: const Icon(Icons.chevron_right),
-        onTap: () {
-          NavigationThrottle.push(context, const ShopStreetScreen());
-        },
+      Semantics(
+        button: true,
+        label: 'Shop Street, Discover local aquarium shops',
+        child: PrimaryActionTile(
+          icon: Icons.storefront,
+          title: 'Shop Street',
+          subtitle: 'Discover local aquarium shops',
+          iconColor: AppColors.success,
+          trailing: const Icon(Icons.chevron_right),
+          onTap: () {
+            NavigationThrottle.push(context, const ShopStreetScreen());
+          },
+        ),
       ),
 
       const SizedBox(height: AppSpacing.sm),
 
-      PrimaryActionTile(
-        icon: Icons.emoji_events,
-        title: 'Achievements',
-        subtitle: 'Badges & achievements',
-        iconColor: AppColors.warning,
-        trailing: const Icon(Icons.chevron_right),
-        onTap: () {
-          NavigationThrottle.push(context, const AchievementsScreen());
-        },
+      Semantics(
+        button: true,
+        label: 'Achievements, Badges and achievements',
+        child: PrimaryActionTile(
+          icon: Icons.emoji_events,
+          title: 'Achievements',
+          subtitle: 'Badges & achievements',
+          iconColor: AppColors.warning,
+          trailing: const Icon(Icons.chevron_right),
+          onTap: () {
+            NavigationThrottle.push(context, const AchievementsScreen());
+          },
+        ),
       ),
 
       const SizedBox(height: AppSpacing.lg),
@@ -82,28 +90,36 @@ class SettingsHubScreen extends ConsumerWidget {
       _buildSectionHeader('Tank Tools'),
       const SizedBox(height: AppSpacing.sm),
 
-      PrimaryActionTile(
-        icon: Icons.build,
-        title: 'Workshop',
-        subtitle: 'Calculators, guides & planners',
-        iconColor: AppColors.primary, // BUG-10: was textSecondary (gray), now warm amber
-        trailing: const Icon(Icons.chevron_right),
-        onTap: () {
-          NavigationThrottle.push(context, const WorkshopScreen());
-        },
+      Semantics(
+        button: true,
+        label: 'Workshop, Calculators, guides and planners',
+        child: PrimaryActionTile(
+          icon: Icons.build,
+          title: 'Workshop',
+          subtitle: 'Calculators, guides & planners',
+          iconColor: AppColors.primary, // BUG-10: was textSecondary (gray), now warm amber
+          trailing: const Icon(Icons.chevron_right),
+          onTap: () {
+            NavigationThrottle.push(context, const WorkshopScreen());
+          },
+        ),
       ),
 
       const SizedBox(height: AppSpacing.sm),
 
-      PrimaryActionTile(
-        icon: Icons.analytics,
-        title: 'Analytics',
-        subtitle: 'Progress charts & statistics',
-        iconColor: AppColors.primary,
-        trailing: const Icon(Icons.chevron_right),
-        onTap: () {
-          NavigationThrottle.push(context, const AnalyticsScreen());
-        },
+      Semantics(
+        button: true,
+        label: 'Analytics, Progress charts and statistics',
+        child: PrimaryActionTile(
+          icon: Icons.analytics,
+          title: 'Analytics',
+          subtitle: 'Progress charts & statistics',
+          iconColor: AppColors.primary,
+          trailing: const Icon(Icons.chevron_right),
+          onTap: () {
+            NavigationThrottle.push(context, const AnalyticsScreen());
+          },
+        ),
       ),
 
       const SizedBox(height: AppSpacing.lg),
@@ -112,45 +128,57 @@ class SettingsHubScreen extends ConsumerWidget {
       _buildSectionHeader('App Settings'),
       const SizedBox(height: AppSpacing.sm),
 
-      PrimaryActionTile(
-        icon: Icons.tune,
-        title: 'Preferences',
-        subtitle: 'Theme, sounds & notifications',
-        iconColor: context.textSecondary,
-        trailing: const Icon(Icons.chevron_right),
-        onTap: () {
-          NavigationThrottle.push(context, const SettingsScreen());
-        },
-      ),
-
-      const SizedBox(height: AppSpacing.sm),
-
-      // P3-003: wrap with ConstrainedBox so the card is never less than 80 px tall
-      ConstrainedBox(
-        constraints: const BoxConstraints(minHeight: 80),
+      Semantics(
+        button: true,
+        label: 'Preferences, Theme, sounds and notifications',
         child: PrimaryActionTile(
-          icon: Icons.backup,
-          title: 'Backup & Restore',
-          subtitle: 'Back up & restore your data',
+          icon: Icons.tune,
+          title: 'Preferences',
+          subtitle: 'Theme, sounds & notifications',
           iconColor: context.textSecondary,
           trailing: const Icon(Icons.chevron_right),
           onTap: () {
-            NavigationThrottle.push(context, const BackupRestoreScreen());
+            NavigationThrottle.push(context, const SettingsScreen());
           },
         ),
       ),
 
       const SizedBox(height: AppSpacing.sm),
 
-      PrimaryActionTile(
-        icon: Icons.info,
-        title: 'About',
-        subtitle: 'Version, privacy & support',
-        iconColor: context.textSecondary,
-        trailing: const Icon(Icons.chevron_right),
-        onTap: () {
-          NavigationThrottle.push(context, const AboutScreen());
-        },
+      // P3-003: wrap with ConstrainedBox so the card is never less than 80 px tall
+      Semantics(
+        button: true,
+        label: 'Backup and Restore, Back up and restore your data',
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(minHeight: 80),
+          child: PrimaryActionTile(
+            icon: Icons.backup,
+            title: 'Backup & Restore',
+            subtitle: 'Back up & restore your data',
+            iconColor: context.textSecondary,
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () {
+              NavigationThrottle.push(context, const BackupRestoreScreen());
+            },
+          ),
+        ),
+      ),
+
+      const SizedBox(height: AppSpacing.sm),
+
+      Semantics(
+        button: true,
+        label: 'About, Version, privacy and support',
+        child: PrimaryActionTile(
+          icon: Icons.info,
+          title: 'About',
+          subtitle: 'Version, privacy & support',
+          iconColor: context.textSecondary,
+          trailing: const Icon(Icons.chevron_right),
+          onTap: () {
+            NavigationThrottle.push(context, const AboutScreen());
+          },
+        ),
       ),
 
       const SizedBox(height: AppSpacing.xl),
@@ -169,7 +197,13 @@ class SettingsHubScreen extends ConsumerWidget {
   }
 
   Widget _buildProfileCard(BuildContext context, profile) {
-    return CozyCard(
+    final name = profile?.name ?? 'Aquarist';
+    final level = profile?.currentLevel ?? 1;
+    final xp = profile?.totalXp ?? 0;
+    final streak = profile?.currentStreak ?? 0;
+    return Semantics(
+      label: '$name, Level $level, $xp XP, $streak day streak',
+      child: CozyCard(
       child: Row(
         children: [
           // Avatar
@@ -229,6 +263,7 @@ class SettingsHubScreen extends ConsumerWidget {
           ),
         ],
       ),
+    ),
     );
   }
 

@@ -15,9 +15,9 @@ const _kTealLight = Color(0xFF9ED8EC);
 const _kAmberGold = Color(0xFFD97706);
 const _kCharcoal = Color(0xFF2D3436);
 const _kCream = Color(0xFFFFF8F0);
-const _kGreen = Color(0xFF5AAF7A);
+const _kGreen = Color(0xFF1E8449);
 const _kAmberWarn = Color(0xFFC99524);
-const _kRedWarn = Color(0xFFD96A6A);
+const _kRedWarn = Color(0xFFC0392B);
 
 // ── Panel content ─────────────────────────────────────────────────────────────
 

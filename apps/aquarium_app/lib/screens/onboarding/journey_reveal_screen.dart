@@ -115,13 +115,16 @@ class JourneyRevealScreen extends ConsumerWidget {
                     padding: const EdgeInsets.symmetric(
                       horizontal: AppSpacing.xl,
                     ),
-                    child: Text(
-                      _headline(),
-                      style: AppTypography.headlineLarge.copyWith(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w800,
+                    child: Semantics(
+                      header: true,
+                      child: Text(
+                        _headline(),
+                        style: AppTypography.headlineLarge.copyWith(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w800,
+                        ),
+                        textAlign: TextAlign.center,
                       ),
-                      textAlign: TextAlign.center,
                     ),
                   ),
 
@@ -164,8 +167,13 @@ class JourneyRevealScreen extends ConsumerWidget {
                       AppSpacing.lg,
                       AppSpacing.xxl,
                     ),
-                    child: _LetsGoButton(
-                      onTap: () => _letsGo(context, ref),
+                    child: Semantics(
+                      button: true,
+                      label: "Let's go",
+                      hint: 'Complete onboarding and start using Danio',
+                      child: _LetsGoButton(
+                        onTap: () => _letsGo(context, ref),
+                      ),
                     ),
                   ),
                 ],
@@ -178,7 +186,9 @@ class JourneyRevealScreen extends ConsumerWidget {
   }
 
   Widget _buildFeaturePill(_FeaturePill feature) {
-    return Padding(
+    return Semantics(
+      label: feature.label,
+      child: Padding(
       padding: const EdgeInsets.only(bottom: AppSpacing.sm2),
       child: Container(
         width: double.infinity,
@@ -216,6 +226,7 @@ class JourneyRevealScreen extends ConsumerWidget {
           ],
         ),
       ),
+    ),
     );
   }
 }

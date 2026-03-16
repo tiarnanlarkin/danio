@@ -383,6 +383,7 @@ class AchievementChecker {
     required int lessonScore,
     required int todayLessonsCompleted,
     required List<String> completedLessonIds,
+    DateTime? previousLastActivityDate, // PS-12: For comeback achievement
   }) async {
     final userProfileAsync = ref.read(userProfileProvider);
     final stats = AchievementStats(
@@ -390,6 +391,7 @@ class AchievementChecker {
       currentStreak: currentStreak,
       totalXp: totalXp,
       perfectScores: perfectScores,
+      lastActivityDate: previousLastActivityDate, // PS-12: Pass previous activity date
       lastLessonCompletedAt: lessonCompletedAt,
       lastLessonDuration: lessonDuration,
       lastLessonScore: lessonScore,

@@ -62,6 +62,8 @@ import '../widgets/room_navigation.dart';
 import '../utils/accessibility_utils.dart';
 import '../models/adaptive_difficulty.dart';
 import '../utils/navigation_throttle.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'onboarding/consent_screen.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -251,6 +253,12 @@ class SettingsScreen extends ConsumerWidget {
             title: 'About',
             onTap: () => _showAboutDialog(context),
           ),
+
+          (_) => const Divider(),
+
+          // Privacy
+          (_) => const _SectionHeader(title: 'Privacy'),
+          (_) => const _AnalyticsConsentToggle(),
 
           (_) => const Divider(),
 
@@ -1428,6 +1436,51 @@ class _ReducedMotionToggle extends ConsumerWidget {
             ),
           ),
       ],
+    );
+  }
+}
+
+/// Toggle for analytics consent — lets users change their GDPR choice.
+class _AnalyticsConsentToggle extends StatefulWidget {
+  const _AnalyticsConsentToggle();
+
+  @override
+  State<_AnalyticsConsentToggle> createState() =>
+      _AnalyticsConsentToggleState();
+}
+
+class _AnalyticsConsentToggleState extends State<_AnalyticsConsentToggle> {
+  bool _enabled = false;
+  bool _loaded = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _load();
+  }
+
+  Future<void> _load() async {
+    final prefs = await SharedPreferences.getInstance();
+    final consent = prefs.getBool(kGdprAnalyticsConsentKey) ?? false;
+    if (mounted) setState(() { _enabled = consent; _loaded = true; });
+  }
+
+  Future<void> _toggle(bool value) async {
+    setState(() => _enabled = value);
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(kGdprAnalyticsConsentKey, value);
+    await applyAnalyticsConsent(value);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (!_loaded) return const SizedBox.shrink();
+    return SwitchListTile(
+      secondary: const Icon(Icons.analytics_outlined),
+      title: const Text('Analytics & Crash Reports'),
+      subtitle: const Text('Send anonymous usage data to help improve Danio'),
+      value: _enabled,
+      onChanged: _toggle,
     );
   }
 }

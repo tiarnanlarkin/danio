@@ -49,10 +49,12 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
   bool _isCompletingLesson = false;
   bool _isExitingDueToHearts = false;
   int? _levelBeforeLesson;
+  DateTime? _lessonStartTime; // PS-11: Track actual lesson start time
 
   @override
   void initState() {
     super.initState();
+    _lessonStartTime = DateTime.now(); // PS-11: Record when user starts the lesson
     // Capture current level for level-up detection
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
@@ -1283,6 +1285,9 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
             .awardQuizGems(isPerfect: isPerfect);
       }
 
+      // PS-12 FIX: Capture lastActivityDate BEFORE completeLesson updates it
+      final previousLastActivityDate = ref.read(userProfileProvider).value?.lastActivityDate;
+
       // Record completion and XP (also awards lesson gems automatically)
       await ref
           .read(userProfileProvider.notifier)
@@ -1339,6 +1344,17 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
         final quizLen = lessonQuiz?.questions.length;
         final isPerfect = quizLen != null && _correctAnswers == quizLen;
 
+        // PS-10 FIX: Increment persistent perfect-score counter
+        if (isPerfect) {
+          // ignore: unawaited_futures
+          ref.read(userProfileProvider.notifier).incrementPerfectScoreCount();
+        }
+
+        // PS-11 FIX: Use actual elapsed time, not estimated reading time
+        final actualElapsedSeconds = _lessonStartTime != null
+            ? DateTime.now().difference(_lessonStartTime!).inSeconds
+            : widget.lesson.estimatedMinutes * 60;
+
         // Calculate today's lessons completed
         final todayKey = DateTime.now().toIso8601String().split('T')[0];
         final todayLessons = profile.completedLessons
@@ -1351,6 +1367,11 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
             .length +
             1; // +1 for this lesson
 
+        // PS-10 FIX: Use persistent perfectScoreCount instead of broken achievements count
+        final updatedPerfectScores = isPerfect
+            ? profile.perfectScoreCount + 1
+            : profile.perfectScoreCount;
+
         // Fire-and-forget: don't block the XP animation on achievement checks.
         // ignore: unawaited_futures
         () async {
@@ -1359,16 +1380,9 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
               lessonsCompleted: profile.completedLessons.length + 1,
               currentStreak: profile.currentStreak,
               totalXp: profile.totalXp, // profile already has lesson XP applied
-              perfectScores: isPerfect
-                  ? (profile.achievements
-                          .where((a) => a == 'perfectionist')
-                          .length +
-                      1)
-                  : profile.achievements
-                      .where((a) => a == 'perfectionist')
-                      .length,
+              perfectScores: updatedPerfectScores,
               lessonCompletedAt: DateTime.now(),
-              lessonDuration: widget.lesson.estimatedMinutes * 60,
+              lessonDuration: actualElapsedSeconds, // PS-11 FIX: actual time
               lessonScore: quizLen != null
                   ? (_correctAnswers * 100 ~/ quizLen)
                   : 100,
@@ -1377,6 +1391,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
                 ...profile.completedLessons,
                 widget.lesson.id,
               ],
+              previousLastActivityDate: previousLastActivityDate, // PS-12 FIX
             );
           } catch (e) {
             debugPrint('Achievement check failed: $e');

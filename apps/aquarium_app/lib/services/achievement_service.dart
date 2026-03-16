@@ -337,11 +337,15 @@ class AchievementService {
 
       case 'completionist':
         // Unlock when all other non-hidden achievements are unlocked
-        final otherAchievements = AchievementDefinitions.all
-            .where((a) => a.id != 'completionist' && !a.isHidden)
+        final visibleOther = AchievementDefinitions.all
+            .where((a) => a.id != 'completionist' && !a.isHidden);
+        final otherAchievements = visibleOther.length;
+        // Only count unlocked achievements that are visible and not completionist itself
+        final visibleOtherIds = visibleOther.map((a) => a.id).toSet();
+        final unlockedCount = userProfile.achievements
+            .where((id) => visibleOtherIds.contains(id))
             .length;
-        final unlockedCount = userProfile.achievements.length;
-        shouldUnlock = unlockedCount >= otherAchievements;
+        shouldUnlock = otherAchievements > 0 && unlockedCount >= otherAchievements;
         break;
 
       case 'midnight_scholar':

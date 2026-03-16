@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'providers/onboarding_provider.dart';
 import 'providers/settings_provider.dart';
 import 'providers/user_profile_provider.dart';
@@ -11,6 +12,7 @@ import 'providers/spaced_repetition_provider.dart';
 import 'screens/tab_navigator.dart';
 import 'screens/onboarding_screen.dart';
 import 'screens/onboarding/personalisation_screen.dart';
+import 'screens/onboarding/consent_screen.dart';
 import 'screens/learn_screen.dart';
 import 'screens/spaced_repetition_practice_screen.dart';
 import 'screens/achievements_screen.dart';
@@ -91,6 +93,15 @@ void main() async {
       debugPrint('✅ Firebase initialized successfully');
     } catch (e) {
       debugPrint('⚠️ Firebase init failed (app will run without it): $e');
+    }
+
+    // ── Apply persisted GDPR analytics consent ──
+    if (firebaseInitialized) {
+      final prefs = await SharedPreferences.getInstance();
+      final consent = prefs.getBool(kGdprAnalyticsConsentKey);
+      // null means user hasn't decided yet — keep collection disabled
+      // (AndroidManifest defaults are already false).
+      await applyAnalyticsConsent(consent == true);
     }
 
     // ── Upgrade error handlers to Crashlytics now that Firebase is ready ──
@@ -189,10 +200,25 @@ class _AppRouterState extends ConsumerState<_AppRouter>
     with WidgetsBindingObserver {
   bool _hasScheduledNotifications = false;
 
+  /// `null` means "still loading", `true`/`false` means decided.
+  bool? _gdprConsentDecided;
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    _checkGdprConsent();
+  }
+
+  Future<void> _checkGdprConsent() async {
+    final prefs = await SharedPreferences.getInstance();
+    final consent = prefs.getBool(kGdprAnalyticsConsentKey);
+    if (mounted) {
+      setState(() {
+        // consent is null when user hasn't decided → show consent screen
+        _gdprConsentDecided = consent != null;
+      });
+    }
   }
 
   @override
@@ -233,6 +259,19 @@ class _AppRouterState extends ConsumerState<_AppRouter>
 
   @override
   Widget build(BuildContext context) {
+    // ── 0. GDPR consent gate ────────────────────────────────────────────
+    if (_gdprConsentDecided == null) {
+      return _buildSplash(context);
+    }
+    if (_gdprConsentDecided == false) {
+      return ConsentScreen(
+        key: const ValueKey('consent'),
+        onConsentGiven: () {
+          if (mounted) setState(() => _gdprConsentDecided = true);
+        },
+      );
+    }
+
     // ── 1. Onboarding state (reactive via provider) ──────────────────────
     final onboardingAsync = ref.watch(onboardingCompletedProvider);
 

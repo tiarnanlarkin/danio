@@ -86,6 +86,7 @@ class UserProfile {
   // Achievement tracking
   final List<String> weekendActivityDates; // 'YYYY-MM-DD' dates of weekend activity
   final List<String> fullHeartDates; // 'YYYY-MM-DD' dates where hearts were full at session end
+  final int perfectScoreCount; // Number of 100% quiz scores (for Perfectionist achievement)
 
   final DateTime createdAt;
   final DateTime updatedAt;
@@ -129,6 +130,7 @@ class UserProfile {
     this.learningStylePreference,
     this.weekendActivityDates = const [],
     this.fullHeartDates = const [],
+    this.perfectScoreCount = 0,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -285,6 +287,7 @@ class UserProfile {
     String? learningStylePreference,
     List<String>? weekendActivityDates,
     List<String>? fullHeartDates,
+    int? perfectScoreCount,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) {
@@ -331,6 +334,7 @@ class UserProfile {
       learningStylePreference: learningStylePreference ?? this.learningStylePreference,
       weekendActivityDates: weekendActivityDates ?? this.weekendActivityDates,
       fullHeartDates: fullHeartDates ?? this.fullHeartDates,
+      perfectScoreCount: perfectScoreCount ?? this.perfectScoreCount,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );
@@ -377,6 +381,7 @@ class UserProfile {
     'learningStylePreference': learningStylePreference,
     'weekendActivityDates': weekendActivityDates,
     'fullHeartDates': fullHeartDates,
+    'perfectScoreCount': perfectScoreCount,
     'createdAt': createdAt.toIso8601String(),
     'updatedAt': updatedAt.toIso8601String(),
   };
@@ -487,6 +492,7 @@ class UserProfile {
               ?.map((e) => e as String)
               .toList() ??
           [],
+      perfectScoreCount: json['perfectScoreCount'] as int? ?? 0,
       createdAt: DateTime.parse(json['createdAt'] as String),
       updatedAt: DateTime.parse(json['updatedAt'] as String),
     );

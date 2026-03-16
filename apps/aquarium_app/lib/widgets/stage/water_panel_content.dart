@@ -13,19 +13,19 @@ import 'stage_provider.dart';
 // ── Colour constants ──────────────────────────────────────────────────────────
 const _kCream = Color(0xFFFFF5E8);
 const _kCharcoal = Color(0xFF2D3436);
-const _kGreen = Color(0xFF5AAF7A);
+const _kGreen = Color(0xFF1E8449);
 const _kAmber = Color(0xFFC99524);
-const _kRed = Color(0xFFD96A6A);
+const _kRed = Color(0xFFC0392B);
 const _kGrey = Color(0xFF9E9E9E);
 
-const _kGreenBg = Color(0x1F5AAF7A); // ~12%
+const _kGreenBg = Color(0x1F1E8449); // ~12%
 const _kAmberBg = Color(0x1FC99524);
-const _kRedBg = Color(0x1FD96A6A);
+const _kRedBg = Color(0x1FC0392B);
 const _kGreyBg = Color(0x1F9E9E9E);
 
-const _kGreenBorder = Color(0x665AAF7A); // ~40%
+const _kGreenBorder = Color(0x661E8449); // ~40%
 const _kAmberBorder = Color(0x66C99524);
-const _kRedBorder = Color(0x66D96A6A);
+const _kRedBorder = Color(0x66C0392B);
 const _kGreyBorder = Color(0x669E9E9E);
 
 // ── Parameter status enum ─────────────────────────────────────────────────────

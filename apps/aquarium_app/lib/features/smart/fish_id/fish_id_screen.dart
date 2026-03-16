@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../services/api_rate_limiter.dart';
 import '../../../services/openai_service.dart';
@@ -84,8 +85,52 @@ Return ONLY valid JSON with these fields (no markdown, no explanation):
     }
   }
 
+  /// Key for persisting the OpenAI data disclosure acceptance.
+  static const _openaiDisclosureKey = 'openai_disclosure_accepted';
+
+  /// Shows a one-time disclosure about OpenAI data handling.
+  /// Returns `true` if the user accepts, `false` if they cancel.
+  Future<bool> _ensureOpenAIDisclosure() async {
+    final prefs = await SharedPreferences.getInstance();
+    if (prefs.getBool(_openaiDisclosureKey) == true) return true;
+
+    if (!mounted) return false;
+    final accepted = await showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (ctx) => AlertDialog(
+        title: const Text('OpenAI Data Disclosure'),
+        content: const Text(
+          'Photos you submit are sent to OpenAI\'s servers in the '
+          'United States for identification. OpenAI may retain them '
+          'for up to 30 days.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: const Text('Cancel'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: const Text('I Understand'),
+          ),
+        ],
+      ),
+    );
+
+    if (accepted == true) {
+      await prefs.setBool(_openaiDisclosureKey, true);
+      return true;
+    }
+    return false;
+  }
+
   Future<void> _identify() async {
     if (_selectedImage == null) return;
+
+    // Ensure the user has accepted the OpenAI disclosure before proceeding.
+    final accepted = await _ensureOpenAIDisclosure();
+    if (!accepted) return;
 
     final openai = ref.read(openAIServiceProvider);
     if (!openai.isConfigured) {

@@ -1,4 +1,5 @@
 import 'package:danio/theme/app_theme.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../services/sync_service.dart';
@@ -25,11 +26,13 @@ class SyncIndicator extends ConsumerWidget {
 
     return GestureDetector(
       onTap: () {
-        // Show detailed sync status dialog
-        showDialog(
-          context: context,
-          builder: (context) => const SyncDebugDialog(),
-        );
+        if (kDebugMode) {
+          // Show detailed sync status dialog (debug only)
+          showDialog(
+            context: context,
+            builder: (context) => const SyncDebugDialog(),
+          );
+        }
       },
       child: AnimatedContainer(
         duration: AppDurations.medium4,

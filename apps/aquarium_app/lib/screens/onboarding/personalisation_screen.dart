@@ -162,12 +162,15 @@ class _PersonalisationScreenState extends ConsumerState<PersonalisationScreen> {
                         children: [
                           const SizedBox(height: AppSpacing.lg),
                           // Heading
-                          Text(
-                            'Tell me about you!',
-                            style: AppTypography.headlineLarge.copyWith(
-                              color: Colors.white,
+                          Semantics(
+                            header: true,
+                            child: Text(
+                              'Tell me about you!',
+                              style: AppTypography.headlineLarge.copyWith(
+                                color: Colors.white,
+                              ),
+                              textAlign: TextAlign.center,
                             ),
-                            textAlign: TextAlign.center,
                           ),
                           const SizedBox(height: AppSpacing.sm),
                           // Subheading
@@ -236,7 +239,10 @@ class _PersonalisationScreenState extends ConsumerState<PersonalisationScreen> {
                             ),
                           ),
                           const SizedBox(height: AppSpacing.sm2),
-                          TextField(
+                          Semantics(
+                            label: 'Your name, optional',
+                            textField: true,
+                            child: TextField(
                             controller: _nameController,
                             style: AppTypography.bodyLarge.copyWith(
                               color: Colors.white,
@@ -276,6 +282,7 @@ class _PersonalisationScreenState extends ConsumerState<PersonalisationScreen> {
                             textInputAction: TextInputAction.done,
                             onChanged: (_) => setState(() {}),
                           ),
+                          ),
 
                           const SizedBox(height: AppSpacing.xl),
 
@@ -314,10 +321,13 @@ class _PersonalisationScreenState extends ConsumerState<PersonalisationScreen> {
   Widget _buildSectionLabel(String text) {
     return Align(
       alignment: Alignment.centerLeft,
-      child: Text(
-        text,
-        style: AppTypography.titleMedium.copyWith(
-          color: Colors.white,
+      child: Semantics(
+        header: true,
+        child: Text(
+          text,
+          style: AppTypography.titleMedium.copyWith(
+            color: Colors.white,
+          ),
         ),
       ),
     );
@@ -424,29 +434,35 @@ class _PersonalisationScreenState extends ConsumerState<PersonalisationScreen> {
   }
 
   Widget _buildSubmitButton() {
-    return SizedBox(
-      width: double.infinity,
-      child: AnimatedOpacity(
-        opacity: _canSubmit ? 1.0 : 0.5,
-        duration: AppDurations.medium2,
-        child: _PrimaryButton(
-          onTap: _canSubmit ? _submit : null,
-          child: _isSubmitting
-              ? const SizedBox(
-                  width: 24,
-                  height: 24,
-                  child: CircularProgressIndicator(
-                    color: Colors.white,
-                    strokeWidth: 2.5,
+    return Semantics(
+      button: true,
+      enabled: _canSubmit,
+      label: _isSubmitting ? 'Setting up your profile' : "Let's get started",
+      hint: _canSubmit ? 'Continue to your personalised journey' : 'Select experience level and tank status first',
+      child: SizedBox(
+        width: double.infinity,
+        child: AnimatedOpacity(
+          opacity: _canSubmit ? 1.0 : 0.5,
+          duration: AppDurations.medium2,
+          child: _PrimaryButton(
+            onTap: _canSubmit ? _submit : null,
+            child: _isSubmitting
+                ? const SizedBox(
+                    width: 24,
+                    height: 24,
+                    child: CircularProgressIndicator(
+                      color: Colors.white,
+                      strokeWidth: 2.5,
+                    ),
+                  )
+                : Text(
+                    "Let's get started →",
+                    style: AppTypography.titleMedium.copyWith(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
-                )
-              : Text(
-                  "Let's get started →",
-                  style: AppTypography.titleMedium.copyWith(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
+          ),
         ),
       ),
     );

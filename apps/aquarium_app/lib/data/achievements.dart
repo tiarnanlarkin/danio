@@ -345,6 +345,7 @@ class AchievementDefinitions {
     rarity: AchievementRarity.silver,
     category: AchievementCategory.special,
     targetCount: 10,
+    isHidden: true, // Hidden: friends feature behind CA-002
   );
 
   static const teachersPet = Achievement(
