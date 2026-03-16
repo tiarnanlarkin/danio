@@ -173,7 +173,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
             // Page 0: Welcome
             WelcomeScreen(
               onNext: _nextPage,
-              onLogin: null,
+              onLogin: _quickStart,
             ),
 
             // Page 1: Experience Level

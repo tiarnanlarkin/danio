@@ -193,7 +193,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
                 FadeTransition(
                   opacity: _bodyOpacity,
                   child: Text(
-                    'Danio learns what's in your tank and tells you exactly what they need.',
+                    "Danio learns what's in your tank and tells you exactly what they need.",
                     style: GoogleFonts.nunito(
                       fontSize: 16,
                       fontWeight: FontWeight.w400,
