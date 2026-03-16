@@ -138,8 +138,8 @@ class _WelcomeScreenState extends State<WelcomeScreen>
           ),
 
           // Gradient scrim over lower portion
-          ExcludeSemantics(
-            child: Positioned.fill(
+          Positioned.fill(
+            child: ExcludeSemantics(
               child: DecoratedBox(
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
