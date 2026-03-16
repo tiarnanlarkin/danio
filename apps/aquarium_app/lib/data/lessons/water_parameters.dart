@@ -175,7 +175,7 @@ final waterParametersPath = LearningPath(
           const LessonSection(
             type: LessonSectionType.keyPoint,
             content:
-                'Most tropical fish do well in GH 4-12 dGH. Livebearers (guppies, mollies) prefer harder water (10-20 dGH). Soft water fish (tetras, discus) prefer 2-8 dGH.',
+                'Most tropical fish do well in GH 4-12 dGH. Livebearers (guppies, mollies) prefer harder water (10-16 dGH). Soft water fish (tetras, discus) prefer 2-8 dGH.',
           ),
           const LessonSection(
             type: LessonSectionType.heading,
@@ -225,7 +225,7 @@ final waterParametersPath = LearningPath(
               ],
               correctIndex: 2,
               explanation:
-                  'Livebearers come from hard water environments and thrive at GH 10-20 dGH.',
+                  'Livebearers come from hard water environments and thrive at GH 10-16 dGH.',
             ),
           ],
         ),

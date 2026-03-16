@@ -97,7 +97,7 @@ final nitrogenCyclePath = LearningPath(
               ],
               correctIndex: 2,
               explanation:
-                  'Ammonia is colorless and odorless at typical aquarium levels. Only a test kit can detect it.',
+                  'Ammonia is colorless at typical aquarium levels — you can\'t see it. While it does have a faint smell, you can\'t reliably detect dangerous levels by nose alone. Only a test kit gives accurate readings.',
             ),
             const QuizQuestion(
               id: 'nc_intro_q3',
@@ -139,7 +139,7 @@ final nitrogenCyclePath = LearningPath(
           const LessonSection(
             type: LessonSectionType.warning,
             content:
-                'Ammonia is highly toxic. Even 0.25 ppm can stress fish. Above 1 ppm is often fatal.',
+                'Ammonia is highly toxic. Even 0.5 ppm can stress fish; levels above 2 ppm are dangerous for most species.',
           ),
           const LessonSection(
             type: LessonSectionType.heading,

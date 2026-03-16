@@ -214,7 +214,7 @@ class PlacementTestContent {
       ],
       correctIndex: 1,
       explanation:
-          'Goldfish thrive in cooler water (65-72°F) while most tropical fish need 75-80°F. Mixing them stresses both species.',
+          'Goldfish thrive in cooler water (65-72°F) while most tropical fish need 75-82°F. Mixing them stresses both species.',
       difficulty: QuestionDifficulty.intermediate,
     ),
 

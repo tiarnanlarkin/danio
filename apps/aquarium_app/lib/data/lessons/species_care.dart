@@ -36,7 +36,7 @@ final speciesCarePath = LearningPath(
           const LessonSection(
             type: LessonSectionType.keyPoint,
             content:
-                'Minimum 10 gallons (40 litres), heated to 78-82°F (25.6-27.8°C), filtered water. No bowls!',
+                'Minimum 5 gallons (19 litres), 10 gallons is ideal, heated to 78-82°F (25.6-27.8°C), filtered water. No bowls!',
           ),
           const LessonSection(
             type: LessonSectionType.warning,
@@ -64,7 +64,7 @@ final speciesCarePath = LearningPath(
           const LessonSection(
             type: LessonSectionType.keyPoint,
             content:
-                '20 gallons for the first goldfish, +10 gallons per additional fish. Fancy goldfish need less space than commons/comets.',
+                '20 gallons for the first fancy goldfish, +10 gallons per additional fish. Commons and comets are pond fish that grow to 12"+ and should not be kept in typical home aquariums.',
           ),
         ],
         quiz: Quiz(

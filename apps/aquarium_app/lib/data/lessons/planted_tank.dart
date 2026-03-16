@@ -365,7 +365,7 @@ final plantedTankPath = LearningPath(
           const LessonSection(
             type: LessonSectionType.text,
             content:
-                'Plants use CO2, light, and nutrients for photosynthesis. Atmospheric CO2 dissolves into water naturally, but only at 2-5 ppm - not much. Most demanding plants want 20-30 ppm for optimal growth.',
+                'Plants use CO2, light, and nutrients for photosynthesis. Atmospheric CO2 dissolves into water naturally, but only at 3-5 ppm - not much. Most demanding plants want 20-30 ppm for optimal growth.',
           ),
           const LessonSection(
             type: LessonSectionType.keyPoint,
