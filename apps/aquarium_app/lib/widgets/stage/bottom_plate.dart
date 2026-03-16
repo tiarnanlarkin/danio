@@ -147,15 +147,17 @@ class BottomPlateState extends State<BottomPlate>
           ),
           child: Stack(
             children: [
-              // Texture background
-              if (widget.backgroundPainter != null)
+              // Texture background — only shown when panel is open/dragging.
+              // At _dragExtent == 0 (fully collapsed), hide completely so only
+              // the coloured tab accent strip is visible (no white/grey halo).
+              if (widget.backgroundPainter != null && _dragExtent > 0)
                 Positioned.fill(
                   child: ClipRRect(
                     borderRadius: const BorderRadius.vertical(
                       top: Radius.circular(24),
                     ),
                     child: Opacity(
-                      opacity: 0.08,
+                      opacity: 0.08 * _dragExtent.clamp(0.0, 1.0),
                       child: widget.backgroundPainter!,
                     ),
                   ),

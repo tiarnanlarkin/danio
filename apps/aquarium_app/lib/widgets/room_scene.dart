@@ -15,6 +15,10 @@ import 'stage/stage_provider.dart';
 import 'stage/tank_glass_badge.dart';
 import 'stage/swiss_army_panel.dart';
 
+/// Water fill opacity — 0.92 lets the room background bleed through slightly.
+/// Adjust this constant to tune the water transparency across all gradient stops.
+const double kWaterOpacity = 0.92;
+
 /// Themeable room scene - supports multiple visual styles
 /// Includes day/night ambient lighting overlay based on real time.
 class LivingRoomScene extends ConsumerWidget {
@@ -1227,7 +1231,8 @@ class _ThemedAquarium extends StatelessWidget {
         child: Stack(
           children: [
             // Water gradient — crystal clear teal, fixed palette (design system §2.3)
-            // MUST use Positioned.fill so the gradient fills the entire tank
+            // MUST use Positioned.fill so the gradient fills the entire tank.
+            // Alpha 0xEB = 235 = round(kWaterOpacity * 255) = 92% — lets room bg bleed through.
             Positioned.fill(
               child: Container(
                 decoration: const BoxDecoration(
@@ -1236,10 +1241,10 @@ class _ThemedAquarium extends StatelessWidget {
                     end: Alignment.bottomCenter,
                     stops: [0.0, 0.25, 0.65, 1.0],
                     colors: [
-                      Color(0xEB9ED8EC), // waterSurface — icy top (~92% opacity)
-                      Color(0xEB6BBDD8), // waterMidUpper — clear mid (~92% opacity)
-                      Color(0xEB4A9DB5), // waterMidLower — deeper (~92% opacity)
-                      Color(0xEB2D7A94), // waterDepth — dark bottom (~92% opacity)
+                      Color(0xEB9ED8EC), // waterSurface — icy top (kWaterOpacity 0.92)
+                      Color(0xEB6BBDD8), // waterMidUpper — clear mid (kWaterOpacity 0.92)
+                      Color(0xEB4A9DB5), // waterMidLower — deeper (kWaterOpacity 0.92)
+                      Color(0xEB2D7A94), // waterDepth — dark bottom (kWaterOpacity 0.92)
                     ],
                   ),
                 ),
