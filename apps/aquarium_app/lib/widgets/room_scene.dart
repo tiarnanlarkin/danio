@@ -1113,8 +1113,6 @@ class _StandPainter extends CustomPainter {
 
   _StandPainter({required this.theme});
 
-  bool get _isDarkTheme => theme.background1.computeLuminance() < 0.3;
-
   @override
   void paint(Canvas canvas, Size size) {
     final w = size.width;
