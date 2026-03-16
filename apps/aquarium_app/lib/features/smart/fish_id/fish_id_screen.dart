@@ -130,7 +130,7 @@ Return ONLY valid JSON with these fields (no markdown, no explanation):
 
     // Ensure the user has accepted the OpenAI disclosure before proceeding.
     final accepted = await _ensureOpenAIDisclosure();
-    if (!accepted) return;
+    if (!accepted || !mounted) return;
 
     final openai = ref.read(openAIServiceProvider);
     if (!openai.isConfigured) {
