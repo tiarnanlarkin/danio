@@ -1082,6 +1082,27 @@ const _kDanioPageTransitionsTheme = PageTransitionsTheme(
 );
 
 class AppTheme {
+  /// Nunito + Lora typography pairing (Apollo design brief)
+  /// Nunito: headers, buttons, labels, UI text (warm, rounded)
+  /// Lora: body text, lesson content (serif, credible)
+  static TextTheme get _textTheme => TextTheme(
+    displayLarge: GoogleFonts.nunito(fontSize: 32, fontWeight: FontWeight.w800),
+    displayMedium: GoogleFonts.nunito(fontSize: 28, fontWeight: FontWeight.w700),
+    displaySmall: GoogleFonts.nunito(fontSize: 24, fontWeight: FontWeight.w700),
+    headlineLarge: GoogleFonts.nunito(fontSize: 22, fontWeight: FontWeight.w700),
+    headlineMedium: GoogleFonts.nunito(fontSize: 20, fontWeight: FontWeight.w600),
+    headlineSmall: GoogleFonts.nunito(fontSize: 18, fontWeight: FontWeight.w600),
+    titleLarge: GoogleFonts.nunito(fontSize: 18, fontWeight: FontWeight.w700),
+    titleMedium: GoogleFonts.nunito(fontSize: 16, fontWeight: FontWeight.w600),
+    titleSmall: GoogleFonts.nunito(fontSize: 14, fontWeight: FontWeight.w600),
+    bodyLarge: GoogleFonts.lora(fontSize: 16, fontWeight: FontWeight.w400),
+    bodyMedium: GoogleFonts.lora(fontSize: 14, fontWeight: FontWeight.w400),
+    bodySmall: GoogleFonts.lora(fontSize: 12, fontWeight: FontWeight.w400),
+    labelLarge: GoogleFonts.nunito(fontSize: 14, fontWeight: FontWeight.w700),
+    labelMedium: GoogleFonts.nunito(fontSize: 12, fontWeight: FontWeight.w600),
+    labelSmall: GoogleFonts.nunito(fontSize: 11, fontWeight: FontWeight.w500),
+  );
+
   static ThemeData get light {
     return ThemeData(
       useMaterial3: true,
@@ -1312,8 +1333,8 @@ class AppTheme {
       // Page transitions (consistent slide+fade for all routes)
       pageTransitionsTheme: _kDanioPageTransitionsTheme,
 
-      // Text theme
-      textTheme: GoogleFonts.nunitoTextTheme(),
+      // Text theme — Nunito + Lora pairing
+      textTheme: _textTheme,
     );
   }
 
@@ -1473,7 +1494,8 @@ class AppTheme {
         selectionHandleColor: AppColors.primaryLight,
       ),
 
-      textTheme: GoogleFonts.nunitoTextTheme().apply(
+      // Text theme — Nunito + Lora pairing (dark mode colours applied)
+      textTheme: _textTheme.apply(
         bodyColor: AppColors.textPrimaryDark,
         displayColor: AppColors.textPrimaryDark,
       ),
