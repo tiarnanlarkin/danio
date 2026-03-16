@@ -1,0 +1,465 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:google_fonts/google_fonts.dart';
+
+import '../../data/species_database.dart';
+import '../../models/user_profile.dart';
+import '../../theme/app_theme.dart';
+
+/// Screen 10 — Warm App Entry
+///
+/// Personalised first-launch home screen shown briefly (~2.5s) as a warm
+/// transition before the real app loads. Auto-calls [onReady] after 2.5s
+/// or on tap anywhere.
+class WarmEntryScreen extends StatefulWidget {
+  final SpeciesInfo selectedFish;
+  final ExperienceLevel experienceLevel;
+  final String tankStatus; // 'planning' | 'cycling' | 'active'
+  final String? userName;
+  final VoidCallback onReady;
+
+  const WarmEntryScreen({
+    super.key,
+    required this.selectedFish,
+    required this.experienceLevel,
+    required this.tankStatus,
+    this.userName,
+    required this.onReady,
+  });
+
+  @override
+  State<WarmEntryScreen> createState() => _WarmEntryScreenState();
+}
+
+class _WarmEntryScreenState extends State<WarmEntryScreen>
+    with TickerProviderStateMixin {
+  static const Color _amber = Color(0xFFF5A623);
+  static const Color _warmCream = Color(0xFFFFF8F0);
+
+  late final AnimationController _fishCardController;
+  late final Animation<double> _fishCardOpacity;
+  late final Animation<Offset> _fishCardSlide;
+
+  late final AnimationController _lessonCardController;
+  late final Animation<double> _lessonCardOpacity;
+
+  late final AnimationController _xpBarController;
+  late final Animation<double> _xpFill;
+
+  late final AnimationController _streakFlickerController;
+  late final Animation<double> _streakScale;
+
+  bool _hasCalledReady = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    final disableAnimations =
+        WidgetsBinding.instance.platformDispatcher.accessibilityFeatures
+            .disableAnimations;
+
+    // Fish card: slides up 20px + fades in over 400ms
+    _fishCardController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 400),
+    );
+    _fishCardOpacity = CurvedAnimation(
+      parent: _fishCardController,
+      curve: Curves.easeOut,
+    );
+    _fishCardSlide = Tween<Offset>(
+      begin: const Offset(0, 0.05),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(
+      parent: _fishCardController,
+      curve: Curves.easeOut,
+    ));
+
+    // Lesson card: appears 200ms after fish card
+    _lessonCardController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 400),
+    );
+    _lessonCardOpacity = CurvedAnimation(
+      parent: _lessonCardController,
+      curve: Curves.easeOut,
+    );
+
+    // XP bar fills 0→10% over 500ms
+    _xpBarController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 500),
+    );
+    _xpFill = Tween<double>(begin: 0.0, end: 0.1).animate(
+      CurvedAnimation(parent: _xpBarController, curve: Curves.easeOut),
+    );
+
+    // Streak flame flicker (scale pulse)
+    _streakFlickerController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 150),
+    );
+    _streakScale = TweenSequence<double>([
+      TweenSequenceItem(tween: Tween(begin: 1.0, end: 1.3), weight: 50),
+      TweenSequenceItem(tween: Tween(begin: 1.3, end: 1.0), weight: 50),
+    ]).animate(_streakFlickerController);
+
+    if (!disableAnimations) {
+      // Stagger animations
+      _fishCardController.forward();
+      Future.delayed(const Duration(milliseconds: 200), () {
+        if (mounted) _lessonCardController.forward();
+      });
+      Future.delayed(const Duration(milliseconds: 400), () {
+        if (mounted) _xpBarController.forward();
+      });
+      Future.delayed(const Duration(milliseconds: 600), () {
+        if (mounted) _streakFlickerController.forward();
+      });
+    } else {
+      _fishCardController.value = 1.0;
+      _lessonCardController.value = 1.0;
+      _xpBarController.value = 1.0;
+      _streakFlickerController.value = 1.0;
+    }
+
+    // Auto-advance after 2.5 seconds
+    Future.delayed(const Duration(milliseconds: 2500), _callReady);
+  }
+
+  void _callReady() {
+    if (!_hasCalledReady && mounted) {
+      _hasCalledReady = true;
+      widget.onReady();
+    }
+  }
+
+  @override
+  void dispose() {
+    _fishCardController.dispose();
+    _lessonCardController.dispose();
+    _xpBarController.dispose();
+    _streakFlickerController.dispose();
+    super.dispose();
+  }
+
+  String get _greeting {
+    final name = widget.userName;
+    switch (widget.tankStatus) {
+      case 'planning':
+        return "Let's get your tank ready 🏠";
+      case 'cycling':
+        return 'Your tank is almost there 🔧';
+      case 'active':
+      default:
+        if (name != null && name.isNotEmpty) {
+          return 'Welcome to your tank, $name 🐟';
+        }
+        return 'Welcome to your tank 🐟';
+    }
+  }
+
+  String get _lessonTitle {
+    if (widget.experienceLevel == ExperienceLevel.expert ||
+        widget.experienceLevel == ExperienceLevel.intermediate) {
+      return "Up next: Reading your fish's behaviour";
+    }
+    return 'Up next: Understanding the nitrogen cycle';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: _warmCream,
+      body: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: () {
+          HapticFeedback.lightImpact();
+          _callReady();
+        },
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(height: 40),
+                // Personalised greeting
+                Semantics(
+                  header: true,
+                  child: Text(
+                    _greeting,
+                    style: GoogleFonts.lora(
+                      fontSize: 22,
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.textPrimary,
+                      height: 1.3,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 28),
+                // Fish care card
+                SlideTransition(
+                  position: _fishCardSlide,
+                  child: FadeTransition(
+                    opacity: _fishCardOpacity,
+                    child: _buildFishCareCard(),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                // Lesson card
+                FadeTransition(
+                  opacity: _lessonCardOpacity,
+                  child: _buildLessonCard(),
+                ),
+                const SizedBox(height: 24),
+                // XP progress bar
+                _buildXpBar(),
+                const SizedBox(height: 16),
+                // Streak counter
+                _buildStreakCounter(),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildFishCareCard() {
+    final fish = widget.selectedFish;
+    return Semantics(
+      label:
+          '${fish.commonName}, care level ${fish.careLevel}, pH ${fish.minPh} to ${fish.maxPh}',
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: AppShadows.soft,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                const Text('🐟', style: TextStyle(fontSize: 32)),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        fish.commonName,
+                        style: GoogleFonts.nunito(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w800,
+                          color: AppColors.textPrimary,
+                        ),
+                      ),
+                      Text(
+                        'Your fish',
+                        style: GoogleFonts.nunito(
+                          fontSize: 13,
+                          color: AppColors.textSecondary,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            Row(
+              children: [
+                _buildInfoChip(
+                  icon: Icons.star_rounded,
+                  label: fish.careLevel,
+                ),
+                const SizedBox(width: 12),
+                _buildInfoChip(
+                  icon: Icons.water_drop_rounded,
+                  label: 'pH ${fish.minPh}–${fish.maxPh}',
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildInfoChip({required IconData icon, required String label}) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      decoration: BoxDecoration(
+        color: _warmCream,
+        borderRadius: BorderRadius.circular(AppRadius.pill),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 16, color: _amber),
+          const SizedBox(width: 6),
+          Text(
+            label,
+            style: GoogleFonts.nunito(
+              fontSize: 13,
+              fontWeight: FontWeight.w600,
+              color: AppColors.textPrimary,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildLessonCard() {
+    return Semantics(
+      label: _lessonTitle,
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: AppColors.border, width: 1),
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                color: _amber.withAlpha(30),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: const Icon(
+                Icons.menu_book_rounded,
+                color: _amber,
+                size: 22,
+              ),
+            ),
+            const SizedBox(width: 14),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Your first lesson',
+                    style: GoogleFonts.nunito(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.textSecondary,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    _lessonTitle,
+                    style: GoogleFonts.nunito(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.textPrimary,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const Icon(
+              Icons.chevron_right_rounded,
+              color: AppColors.textHint,
+              size: 22,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildXpBar() {
+    return Semantics(
+      label: 'Level 1, 10 XP, progress 10 percent',
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Level 1 · 10 XP',
+                style: GoogleFonts.nunito(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w700,
+                  color: AppColors.textPrimary,
+                ),
+              ),
+              Text(
+                '10%',
+                style: GoogleFonts.nunito(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.textSecondary,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          AnimatedBuilder(
+            animation: _xpFill,
+            builder: (context, _) {
+              return Container(
+                height: 10,
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: AppColors.surfaceVariant,
+                  borderRadius: BorderRadius.circular(5),
+                ),
+                child: FractionallySizedBox(
+                  alignment: Alignment.centerLeft,
+                  widthFactor: _xpFill.value,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: _amber,
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildStreakCounter() {
+    return Semantics(
+      label: 'Day 1 streak',
+      child: Row(
+        children: [
+          AnimatedBuilder(
+            animation: _streakScale,
+            builder: (context, child) {
+              return Transform.scale(
+                scale: _streakScale.value,
+                child: child,
+              );
+            },
+            child: const Text('🔥', style: TextStyle(fontSize: 24)),
+          ),
+          const SizedBox(width: 10),
+          Text(
+            'Day 1 streak',
+            style: GoogleFonts.nunito(
+              fontSize: 15,
+              fontWeight: FontWeight.w700,
+              color: AppColors.textPrimary,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
