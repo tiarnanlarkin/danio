@@ -146,6 +146,8 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
     List<UserGoal>? goals,
     int? dailyXpGoal,
     List<InventoryItem>? inventory,
+    String? tankStatus,
+    String? firstFishSpeciesId,
     bool? dailyTipsEnabled,
     bool? streakRemindersEnabled,
     bool? hasSeenTutorial,
@@ -164,6 +166,8 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
       goals: goals ?? current.goals,
       dailyXpGoal: dailyXpGoal ?? current.dailyXpGoal,
       inventory: inventory ?? current.inventory,
+      tankStatus: tankStatus ?? current.tankStatus,
+      firstFishSpeciesId: firstFishSpeciesId ?? current.firstFishSpeciesId,
       dailyTipsEnabled: dailyTipsEnabled ?? current.dailyTipsEnabled,
       streakRemindersEnabled:
           streakRemindersEnabled ?? current.streakRemindersEnabled,

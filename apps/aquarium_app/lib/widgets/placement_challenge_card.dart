@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/user_profile.dart';
 import '../providers/user_profile_provider.dart';
-import '../screens/onboarding/enhanced_placement_test_screen.dart';
+// enhanced_placement_test_screen.dart removed — no longer in use
 import '../theme/app_theme.dart';
 
 class PlacementChallengeCard extends ConsumerWidget {
@@ -111,13 +111,8 @@ class PlacementChallengeCard extends ConsumerWidget {
                   Expanded(
                     child: FilledButton(
                       onPressed: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (_) => const EnhancedPlacementTestScreen(
-                              source: 'learn_tab',
-                            ),
-                          ),
-                        );
+                        // Placement test screen removed — no-op for now
+                        // TODO: Replace with new assessment flow if needed
                       },
                       style: FilledButton.styleFrom(
                         backgroundColor: AppColors.accent,

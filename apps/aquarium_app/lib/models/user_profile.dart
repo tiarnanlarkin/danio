@@ -72,6 +72,10 @@ class UserProfile {
   // Shop & Inventory
   final List<InventoryItem> inventory; // Purchased shop items
 
+  // Onboarding data
+  final String? tankStatus; // 'planning' | 'cycling' | 'active'
+  final String? firstFishSpeciesId; // commonName from SpeciesDatabase
+
   // Preferences
   final bool dailyTipsEnabled;
   final bool streakRemindersEnabled;
@@ -124,6 +128,8 @@ class UserProfile {
     this.weeklyXP = 0,
     this.weekStartDate,
     this.inventory = const [],
+    this.tankStatus,
+    this.firstFishSpeciesId,
     this.dailyTipsEnabled = true,
     this.streakRemindersEnabled = true,
     this.hasSeenTutorial = false,
@@ -295,6 +301,8 @@ class UserProfile {
     int? weeklyXP,
     DateTime? weekStartDate,
     List<InventoryItem>? inventory,
+    String? tankStatus,
+    String? firstFishSpeciesId,
     bool? dailyTipsEnabled,
     bool? streakRemindersEnabled,
     bool? hasSeenTutorial,
@@ -341,6 +349,8 @@ class UserProfile {
       weeklyXP: weeklyXP ?? this.weeklyXP,
       weekStartDate: weekStartDate ?? this.weekStartDate,
       inventory: inventory ?? this.inventory,
+      tankStatus: tankStatus ?? this.tankStatus,
+      firstFishSpeciesId: firstFishSpeciesId ?? this.firstFishSpeciesId,
       dailyTipsEnabled: dailyTipsEnabled ?? this.dailyTipsEnabled,
       streakRemindersEnabled:
           streakRemindersEnabled ?? this.streakRemindersEnabled,
@@ -390,6 +400,8 @@ class UserProfile {
     'weeklyXP': weeklyXP,
     'weekStartDate': weekStartDate?.toIso8601String(),
     'inventory': inventory.map((item) => item.toJson()).toList(),
+    'tankStatus': tankStatus,
+    'firstFishSpeciesId': firstFishSpeciesId,
     'dailyTipsEnabled': dailyTipsEnabled,
     'streakRemindersEnabled': streakRemindersEnabled,
     'hasSeenTutorial': hasSeenTutorial,
@@ -493,6 +505,8 @@ class UserProfile {
               ?.map((e) => InventoryItem.fromJson(e as Map<String, dynamic>))
               .toList() ??
           [],
+      tankStatus: json['tankStatus'] as String?,
+      firstFishSpeciesId: json['firstFishSpeciesId'] as String?,
       dailyTipsEnabled: json['dailyTipsEnabled'] as bool? ?? true,
       streakRemindersEnabled: json['streakRemindersEnabled'] as bool? ?? true,
       hasSeenTutorial: json['hasSeenTutorial'] as bool? ?? false,

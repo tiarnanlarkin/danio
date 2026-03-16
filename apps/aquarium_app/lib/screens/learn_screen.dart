@@ -17,7 +17,7 @@ import 'lesson_screen.dart';
 import 'parameter_guide_screen.dart';
 import 'practice_screen.dart';
 import 'spaced_repetition_practice_screen.dart';
-import 'onboarding/profile_creation_screen.dart';
+import 'onboarding_screen.dart';
 import '../utils/app_constants.dart';
 import '../widgets/learning_streak_badge.dart';
 import '../widgets/placement_challenge_card.dart';
@@ -304,7 +304,7 @@ class _LearnScreenState extends ConsumerState<LearnScreen> {
                             onPressed: () {
                               NavigationThrottle.push(
                                 context,
-                                const ProfileCreationScreen(),
+                                const OnboardingScreen(),
                               );
                             },
                             icon: const Icon(Icons.arrow_forward),

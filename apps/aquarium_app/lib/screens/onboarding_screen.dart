@@ -1,15 +1,30 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../theme/app_theme.dart';
+import '../data/species_database.dart';
 import '../models/user_profile.dart';
 import '../models/tank.dart';
 import '../providers/onboarding_provider.dart';
 import '../providers/user_profile_provider.dart';
 import '../services/onboarding_service.dart';
-import 'onboarding/personalisation_screen.dart';
+import '../services/notification_service.dart';
+import '../theme/app_theme.dart';
+import 'onboarding/welcome_screen.dart';
+import 'onboarding/experience_level_screen.dart';
+import 'onboarding/tank_status_screen.dart';
+import 'onboarding/micro_lesson_screen.dart';
+import 'onboarding/xp_celebration_screen.dart';
+import 'onboarding/fish_select_screen.dart';
+import 'onboarding/aha_moment_screen.dart';
+import 'onboarding/paywall_stub_screen.dart';
+import 'onboarding/push_permission_screen.dart';
+import 'onboarding/warm_entry_screen.dart';
 
+/// Orchestrates the 10-screen onboarding flow.
+///
+/// Uses a [PageView] with [NeverScrollableScrollPhysics] so navigation is
+/// purely programmatic (no swiping). State collected across screens is held
+/// in this widget and passed down to each child.
 class OnboardingScreen extends ConsumerStatefulWidget {
   const OnboardingScreen({super.key});
 
@@ -17,449 +32,126 @@ class OnboardingScreen extends ConsumerStatefulWidget {
   ConsumerState<OnboardingScreen> createState() => _OnboardingScreenState();
 }
 
-class _OnboardingScreenState extends ConsumerState<OnboardingScreen>
-    with SingleTickerProviderStateMixin {
+class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   final PageController _pageController = PageController();
-  int _currentPage = 0;
 
-  late AnimationController _contentController;
-  late Animation<double> _contentFade;
-  late Animation<Offset> _contentSlide;
+  // State collected across screens
+  ExperienceLevel? _experienceLevel;
+  String? _tankStatus; // 'planning' | 'cycling' | 'active'
+  SpeciesInfo? _selectedFish;
+  String? _userName;
 
-  final List<_OnboardingPage> _pages = [
-    _OnboardingPage(
-      icon: Icons.water_drop_rounded,
-      title: 'Why Danio?',
-      description:
-          'The smartest way to keep fish happy and healthy.\n\n\u{1F393} Learn fishkeeping the fun way \u2014 lessons, quizzes, streaks\n\u{1F916} AI that identifies fish and diagnoses problems\n\u{1F3C6} 55+ achievements \u2014 from First Fish to Master Aquarist',
-      gradientColors: [AppColors.primaryDark, AppColors.primary],
-    ),
-    _OnboardingPage(
-      icon: Icons.set_meal_rounded,
-      title: 'Manage Your Collection',
-      description:
-          'Add fish, plants, and equipment. Set maintenance schedules and get reminders when things need attention.',
-      gradientColors: [DanioColors.coralAccent, DanioColors.topaz],
-    ),
-    _OnboardingPage(
-      icon: Icons.auto_graph_rounded,
-      title: 'Watch Your Tanks Thrive',
-      description:
-          'Smart tasks keep your tanks healthy. Complete tasks, view history, and watch your parameters over time.',
-      gradientColors: [
-        DanioColors.tealWater,
-        DanioColors.tealWater.withValues(alpha: 0.7),
-      ],
-    ),
-  ];
-
-  @override
-  void initState() {
-    super.initState();
-
-    _contentController = AnimationController(
-      duration: const Duration(milliseconds: 600),
-      vsync: this,
-    );
-
-    _contentFade = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(
-        parent: _contentController,
-        curve: AppCurves.standardDecelerate,
-      ),
-    );
-
-    _contentSlide = Tween<Offset>(begin: const Offset(0, 0.1), end: Offset.zero)
-        .animate(
-          CurvedAnimation(
-            parent: _contentController,
-            curve: AppCurves.standardDecelerate,
-          ),
-        );
-
-    _contentController.forward();
-
-    // Fix: If a profile already exists (force-quit recovery), skip intro slides
-    // and go directly to PersonalisationScreen.
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted) return;
-      final profile = ref.read(userProfileProvider).value;
-      if (profile != null) {
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (_) => const PersonalisationScreen()),
-        );
-      }
-    });
-  }
+  static const _totalPages = 10;
 
   @override
   void dispose() {
     _pageController.dispose();
-    _contentController.dispose();
     super.dispose();
   }
 
-  void _onPageChanged(int index) {
-    setState(() => _currentPage = index);
-    HapticFeedback.selectionClick();
-    _contentController.reset();
-    _contentController.forward();
+  void _nextPage() {
+    final nextIndex = (_pageController.page?.round() ?? 0) + 1;
+    if (nextIndex < _totalPages) {
+      _pageController.animateToPage(
+        nextIndex,
+        duration: const Duration(milliseconds: 350),
+        curve: Curves.easeInOut,
+      );
+    }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final page = _pages[_currentPage];
-
-    return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: SystemUiOverlayStyle.light,
-      child: Scaffold(
-        body: Stack(
-          children: [
-            // Static gradient background (animated caused ANR)
-            AnimatedContainer(
-              duration: AppDurations.long2,
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    page.gradientColors[0],
-                    page.gradientColors[1],
-                    page.gradientColors[0].withAlpha(204),
-                  ],
-                ),
-              ),
-            ),
-
-            // Static decorative orbs (no animation to prevent ANR)
-            Positioned(
-              top: -100,
-              left: -50,
-              child: Container(
-                width: 250,
-                height: 250,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  gradient: RadialGradient(
-                    colors: [AppColors.whiteAlpha15, Colors.transparent],
-                  ),
-                ),
-              ),
-            ),
-            Positioned(
-              bottom: 100,
-              right: -80,
-              child: Container(
-                width: 200,
-                height: 200,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  gradient: RadialGradient(
-                    colors: [AppColors.whiteAlpha10, Colors.transparent],
-                  ),
-                ),
-              ),
-            ),
-
-            // Main content
-            SafeArea(
-              child: Column(
-                children: [
-                  // Top bar with skip and quick start
-                  Padding(
-                    padding: const EdgeInsets.all(AppSpacing.sm),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        // Quick Start - prominent button
-                        Semantics(
-                          button: true,
-                          label: 'Quick Start',
-                          hint:
-                              'Skip personalisation and start with default beginner profile',
-                          child: TextButton.icon(
-                            onPressed: () => _quickStart(context, ref),
-                            style: TextButton.styleFrom(
-                              foregroundColor: Colors.white,
-                              backgroundColor: AppColors.whiteAlpha15,
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 16,
-                                vertical: 8,
-                              ),
-                            ),
-                            icon: const Icon(
-                              Icons.flash_on,
-                              size: AppIconSizes.sm,
-                            ),
-                            label: const Text('Quick Start'),
-                          ),
-                        ),
-                        // Skip - goes to profile creation
-                        Semantics(
-                          button: true,
-                          label: 'Skip Intro',
-                          hint: 'Skip to profile creation',
-                          child: TextButton(
-                            onPressed: _completeOnboarding,
-                            style: TextButton.styleFrom(
-                              foregroundColor: AppColors.whiteAlpha80,
-                            ),
-                            child: const Text('Skip Intro'),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  // Page content
-                  Expanded(
-                    child: PageView.builder(
-                      controller: _pageController,
-                      itemCount: _pages.length,
-                      onPageChanged: _onPageChanged,
-                      itemBuilder: (context, index) {
-                        return _buildPageContent(_pages[index]);
-                      },
-                    ),
-                  ),
-
-                  // Bottom section with dots and button
-                  _buildBottomSection(),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
+  // ── Notification permission handler ──────────────────────────────────
+  Future<void> _handleNotificationAllow() async {
+    try {
+      final notificationService = NotificationService();
+      await notificationService.requestPermissions();
+    } catch (_) {}
+    _nextPage();
   }
 
-  Widget _buildPageContent(_OnboardingPage page) {
-    return FadeTransition(
-      opacity: _contentFade,
-      child: SlideTransition(
-        position: _contentSlide,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 40),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              // Glass icon container
-              Semantics(
-                image: true,
-                label: '${page.title} illustration',
-                excludeSemantics: true,
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(40),
-                  child: BackdropFilter(
-                    filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                    child: Container(
-                      width: 160,
-                      height: 160,
-                      decoration: BoxDecoration(
-                        color: AppColors.whiteAlpha15,
-                        borderRadius: BorderRadius.circular(40),
-                        border: Border.all(
-                          color: AppColors.whiteAlpha30,
-                          width: 1.5,
-                        ),
-                      ),
-                      child: Icon(page.icon, size: 80, color: Colors.white),
-                    ),
-                  ),
-                ),
-              ),
-
-              const SizedBox(height: AppSpacing.xxl),
-
-              // Title
-              Semantics(
-                header: true,
-                child: Text(
-                  page.title,
-                  style: AppTypography.headlineLarge.copyWith(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w700,
-                    letterSpacing: -0.5,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-
-              const SizedBox(height: AppSpacing.md),
-
-              // Description
-              Text(
-                page.description,
-                style: AppTypography.bodyLarge.copyWith(
-                  color: AppColors.whiteAlpha85,
-                  height: 1.5,
-                ),
-                textAlign: TextAlign.center,
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
+  // ── Derive a goal from collected state ───────────────────────────────
+  UserGoal _deriveGoal() {
+    if (_tankStatus == 'planning') return UserGoal.learnTheScience;
+    if (_experienceLevel == ExperienceLevel.expert) {
+      return UserGoal.masterTheHobby;
+    }
+    return UserGoal.keepFishAlive;
   }
 
-  Widget _buildBottomSection() {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(24, 16, 24, 32),
-      child: Column(
-        children: [
-          // Premium pill dots
-          Semantics(
-            label: 'Step ${_currentPage + 1} of ${_pages.length}',
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: List.generate(
-                _pages.length,
-                (index) => Semantics(
-                  button: true,
-                  label: 'Go to step ${index + 1}',
-                  selected: _currentPage == index,
-                  child: GestureDetector(
-                    onTap: () {
-                      _pageController.animateToPage(
-                        index,
-                        duration: AppDurations.long1,
-                        curve: AppCurves.standard,
-                      );
-                    },
-                    child: AnimatedContainer(
-                      duration: AppDurations.medium4,
-                      margin: const EdgeInsets.symmetric(horizontal: 5),
-                      width: _currentPage == index ? 32 : 10,
-                      height: 10,
-                      decoration: BoxDecoration(
-                        color: _currentPage == index
-                            ? Colors.white
-                            : AppColors.whiteAlpha40,
-                        borderRadius: AppRadius.xsRadius,
-                        boxShadow: _currentPage == index
-                            ? [
-                                BoxShadow(
-                                  color: AppColors.whiteAlpha50,
-                                  blurRadius: 8,
-                                ),
-                              ]
-                            : null,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-
-          const SizedBox(height: AppSpacing.xl),
-
-          // Navigation buttons
-          Row(
-            children: [
-              // Back button
-              if (_currentPage > 0)
-                Expanded(
-                  child: Semantics(
-                    button: true,
-                    label: 'Back',
-                    hint: 'Go to previous step',
-                    child: _GlassButton(
-                      onTap: () {
-                        HapticFeedback.lightImpact();
-                        _pageController.previousPage(
-                          duration: AppDurations.long1,
-                          curve: AppCurves.standard,
-                        );
-                      },
-                      child: const Text(
-                        'Back',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                  ),
-                )
-              else
-                const Spacer(),
-
-              const SizedBox(width: AppSpacing.md),
-
-              // Next / Get Started
-              Expanded(
-                flex: 2,
-                child: Semantics(
-                  button: true,
-                  label: _currentPage == _pages.length - 1
-                      ? 'Get Started'
-                      : 'Continue',
-                  hint: _currentPage == _pages.length - 1
-                      ? 'Begin setting up your profile'
-                      : 'Go to the next step',
-                  child: _PrimaryButton(
-                    onTap: _currentPage == _pages.length - 1
-                        ? _completeOnboarding
-                        : () {
-                            HapticFeedback.lightImpact();
-                            _pageController.nextPage(
-                              duration: AppDurations.long1,
-                              curve: AppCurves.standard,
-                            );
-                          },
-                    child: Text(
-                      _currentPage == _pages.length - 1
-                          ? 'Get Started'
-                          : 'Continue',
-                      style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
+  // ── Complete onboarding ──────────────────────────────────────────────
   Future<void> _completeOnboarding() async {
-    HapticFeedback.mediumImpact();
-    if (mounted) {
-      // Push PersonalisationScreen — it will call completeOnboarding() via
-      // JourneyRevealScreen._letsGo() at the end of the new flow.
-      Navigator.of(
-        context,
-      ).push(MaterialPageRoute(builder: (_) => const PersonalisationScreen()));
+    try {
+      // 1. Create or update profile with all collected data
+      final existingProfile = ref.read(userProfileProvider).value;
+      if (existingProfile == null) {
+        await ref.read(userProfileProvider.notifier).createProfile(
+          experienceLevel: _experienceLevel!,
+          primaryTankType: TankType.freshwater,
+          goals: [_deriveGoal()],
+        );
+        // Persist the new onboarding fields
+        await ref.read(userProfileProvider.notifier).updateProfile(
+          tankStatus: _tankStatus,
+          firstFishSpeciesId: _selectedFish?.commonName,
+        );
+      } else {
+        await ref.read(userProfileProvider.notifier).updateProfile(
+          experienceLevel: _experienceLevel,
+          goals: [_deriveGoal()],
+          tankStatus: _tankStatus,
+          firstFishSpeciesId: _selectedFish?.commonName,
+        );
+      }
+
+      // 2. Add 10 XP from micro-lesson
+      try {
+        await ref.read(userProfileProvider.notifier).addXp(10);
+      } catch (_) {}
+
+      // 3. Schedule onboarding notifications
+      try {
+        final notificationService = NotificationService();
+        await notificationService.scheduleOnboardingSequence();
+      } catch (_) {}
+
+      // 4. Complete onboarding via service + invalidate provider
+      final service = await OnboardingService.getInstance();
+      await service.completeOnboarding();
+      ref.invalidate(onboardingCompletedProvider);
+
+      // 5. Pop to root — AppRouter sees onboardingCompleted=true → TabNavigator
+      if (mounted) {
+        Navigator.of(context).popUntil((route) => route.isFirst);
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("Something went wrong. Give it another go!"),
+          ),
+        );
+      }
     }
   }
 
   /// Quick Start — create a default beginner profile and complete onboarding
   /// without going through the personalisation flow.
-  Future<void> _quickStart(BuildContext context, WidgetRef ref) async {
+  Future<void> _quickStart() async {
     try {
       HapticFeedback.mediumImpact();
-      await ref
-          .read(userProfileProvider.notifier)
-          .createProfile(
-            experienceLevel: ExperienceLevel.beginner,
-            primaryTankType: TankType.freshwater,
-            goals: [UserGoal.keepFishAlive],
-          );
+      await ref.read(userProfileProvider.notifier).createProfile(
+        experienceLevel: ExperienceLevel.beginner,
+        primaryTankType: TankType.freshwater,
+        goals: [UserGoal.keepFishAlive],
+      );
       final service = await OnboardingService.getInstance();
       await service.completeOnboarding();
       ref.invalidate(onboardingCompletedProvider);
-      if (context.mounted) {
+      if (mounted) {
         Navigator.of(context).popUntil((route) => route.isFirst);
       }
     } catch (e) {
-      if (context.mounted) {
+      if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text("Couldn't get started. Give it another go!"),
@@ -468,131 +160,109 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen>
       }
     }
   }
-}
-
-class _OnboardingPage {
-  final IconData icon;
-  final String title;
-  final String description;
-  final List<Color> gradientColors;
-
-  const _OnboardingPage({
-    required this.icon,
-    required this.title,
-    required this.description,
-    required this.gradientColors,
-  });
-}
-
-class _GlassButton extends StatelessWidget {
-  final VoidCallback onTap;
-  final Widget child;
-
-  const _GlassButton({required this.onTap, required this.child});
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: AppRadius.mediumRadius,
-        child: ClipRRect(
-          borderRadius: AppRadius.mediumRadius,
-          child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-            child: Container(
-              padding: const EdgeInsets.symmetric(vertical: 16),
-              decoration: BoxDecoration(
-                color: AppColors.whiteAlpha15,
-                borderRadius: AppRadius.mediumRadius,
-                border: Border.all(color: AppColors.whiteAlpha25),
-              ),
-              child: Center(child: child),
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle.dark,
+      child: Scaffold(
+        body: PageView(
+          controller: _pageController,
+          physics: const NeverScrollableScrollPhysics(),
+          children: [
+            // Page 0: Welcome
+            WelcomeScreen(
+              onNext: _nextPage,
+              onLogin: null,
             ),
-          ),
+
+            // Page 1: Experience Level
+            ExperienceLevelScreen(
+              onSelected: (level) {
+                setState(() => _experienceLevel = level);
+                _nextPage();
+              },
+            ),
+
+            // Page 2: Tank Status
+            TankStatusScreen(
+              onSelected: (status) {
+                setState(() => _tankStatus = status);
+                _nextPage();
+              },
+            ),
+
+            // Page 3: Micro Lesson
+            // experienceLevel may be null if user somehow reaches here without
+            // selecting — default to beginner.
+            MicroLessonScreen(
+              experienceLevel: _experienceLevel ?? ExperienceLevel.beginner,
+              onComplete: _nextPage,
+            ),
+
+            // Page 4: XP Celebration
+            XpCelebrationScreen(onNext: _nextPage),
+
+            // Page 5: Fish Select
+            FishSelectScreen(
+              tankStatus: _tankStatus ?? 'planning',
+              onFishSelected: (fish) {
+                setState(() => _selectedFish = fish);
+                _nextPage();
+              },
+            ),
+
+            // Page 6: Aha Moment
+            // Uses a Builder to defer construction until state is available.
+            Builder(builder: (context) {
+              if (_selectedFish == null ||
+                  _experienceLevel == null ||
+                  _tankStatus == null) {
+                return const SizedBox.shrink();
+              }
+              return AhaMomentScreen(
+                selectedFish: _selectedFish!,
+                experienceLevel: _experienceLevel!,
+                tankStatus: _tankStatus!,
+                onComplete: _nextPage,
+              );
+            }),
+
+            // Page 7: Paywall Stub
+            Builder(builder: (context) {
+              if (_selectedFish == null) {
+                return const SizedBox.shrink();
+              }
+              return PaywallStubScreen(
+                selectedFish: _selectedFish!,
+                onComplete: _nextPage,
+                onSkip: _nextPage,
+              );
+            }),
+
+            // Page 8: Push Permission
+            PushPermissionScreen(
+              onAllow: _handleNotificationAllow,
+              onSkip: _nextPage,
+            ),
+
+            // Page 9: Warm Entry
+            Builder(builder: (context) {
+              if (_selectedFish == null ||
+                  _experienceLevel == null ||
+                  _tankStatus == null) {
+                return const SizedBox.shrink();
+              }
+              return WarmEntryScreen(
+                selectedFish: _selectedFish!,
+                experienceLevel: _experienceLevel!,
+                tankStatus: _tankStatus!,
+                userName: _userName,
+                onReady: _completeOnboarding,
+              );
+            }),
+          ],
         ),
-      ),
-    );
-  }
-}
-
-class _PrimaryButton extends StatefulWidget {
-  final VoidCallback onTap;
-  final Widget child;
-
-  const _PrimaryButton({required this.onTap, required this.child});
-
-  @override
-  State<_PrimaryButton> createState() => _PrimaryButtonState();
-}
-
-class _PrimaryButtonState extends State<_PrimaryButton>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation<double> _scaleAnimation;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-      duration: AppDurations.short,
-      vsync: this,
-    );
-    _scaleAnimation = Tween<double>(
-      begin: 1.0,
-      end: 0.95,
-    ).animate(CurvedAnimation(parent: _controller, curve: AppCurves.standard));
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTapDown: (_) => _controller.forward(),
-      onTapUp: (_) {
-        _controller.reverse();
-        widget.onTap();
-      },
-      onTapCancel: () => _controller.reverse(),
-      child: AnimatedBuilder(
-        animation: _scaleAnimation,
-        builder: (context, child) {
-          return Transform.scale(
-            scale: _scaleAnimation.value,
-            child: Container(
-              padding: const EdgeInsets.symmetric(vertical: 18),
-              decoration: BoxDecoration(
-                // BUG-01 fix: amber background so white text is visible
-                color: AppColors.primary,
-                borderRadius: AppRadius.mediumRadius,
-                boxShadow: [
-                  BoxShadow(
-                    color: AppColors.blackAlpha15,
-                    blurRadius: 20,
-                    offset: const Offset(0, 8),
-                  ),
-                  BoxShadow(
-                    color: AppColors.whiteAlpha80,
-                    blurRadius: 1,
-                    offset: const Offset(0, -1),
-                  ),
-                ],
-              ),
-              child: Center(
-                child: DefaultTextStyle(
-                  style: const TextStyle(color: Colors.white),
-                  child: widget.child,
-                ),
-              ),
-            ),
-          );
-        },
       ),
     );
   }

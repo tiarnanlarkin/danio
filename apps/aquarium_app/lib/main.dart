@@ -11,7 +11,6 @@ import 'providers/user_profile_provider.dart';
 import 'providers/spaced_repetition_provider.dart';
 import 'screens/tab_navigator.dart';
 import 'screens/onboarding_screen.dart';
-import 'screens/onboarding/personalisation_screen.dart';
 import 'screens/onboarding/consent_screen.dart';
 import 'screens/learn_screen.dart';
 import 'screens/spaced_repetition_practice_screen.dart';
@@ -321,7 +320,10 @@ class _AppRouterState extends ConsumerState<_AppRouter>
     final profileExists = profileAsync.value != null;
 
     if (!profileExists) {
-      return const PersonalisationScreen();
+      // New onboarding flow always creates a profile before completing.
+      // This fallback handles legacy cases where onboarding was marked
+      // complete without a profile — restart onboarding to collect data.
+      return const OnboardingScreen();
     }
 
     // ── 3. Everything ready — show main app ──────────────────────────────
