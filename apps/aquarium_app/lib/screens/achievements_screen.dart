@@ -438,8 +438,8 @@ class _AchievementsScreenState extends ConsumerState<AchievementsScreen> {
                     AchievementProgress(achievementId: achievement.id);
 
                 final isUnlocked = progress.isUnlocked;
-                final progressLabel = achievement.requiredCount > 1 && !isUnlocked
-                    ? ', ${progress.currentCount} of ${achievement.requiredCount}'
+                final progressLabel = (achievement.targetCount ?? 0) > 1 && !isUnlocked
+                    ? ', ${progress.currentCount} of ${achievement.targetCount}'
                     : '';
                 final reduceMotion = MediaQuery.of(context).disableAnimations;
                 return Semantics(
