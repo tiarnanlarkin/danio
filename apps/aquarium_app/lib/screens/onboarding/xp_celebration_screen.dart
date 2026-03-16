@@ -63,10 +63,12 @@ class _XpCelebrationScreenState extends State<XpCelebrationScreen>
       vsync: this,
       duration: const Duration(milliseconds: 400),
     );
-    _badgeScale = TweenSequence<double>([
-      TweenSequenceItem(tween: Tween(begin: 0.0, end: 1.15), weight: 60),
-      TweenSequenceItem(tween: Tween(begin: 1.15, end: 1.0), weight: 40),
-    ]).animate(_badgeController);
+    _badgeScale = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _badgeController,
+        curve: Curves.easeOutBack, // Overshoots to ~1.15 then settles — same spring feel
+      ),
+    );
 
     // Progress bar (600ms ease-out)
     _progressController = AnimationController(
