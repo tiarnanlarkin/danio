@@ -332,8 +332,17 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
             }
           }
 
+          // Update weekly XP for streak/activity bonus
+          final activityXpTotal = effectiveXp + bonusXp;
+          final weeklyUpdate = activityXpTotal > 0
+              ? _updatedWeeklyXP(c, activityXpTotal)
+              : (weeklyXP: c.weeklyXP, weekStartDate: c.weekStartDate, league: c.league);
+
           final updated = c.copyWith(
-            totalXp: c.totalXp + effectiveXp + bonusXp,
+            totalXp: c.totalXp + activityXpTotal,
+            weeklyXP: weeklyUpdate.weeklyXP,
+            weekStartDate: weeklyUpdate.weekStartDate,
+            league: weeklyUpdate.league,
             currentStreak: newStreak,
             longestStreak: longestStreak,
             lastActivityDate: now,
@@ -485,6 +494,28 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
     return League.bronze;
   }
 
+  /// Calculate updated weekly XP fields for a given XP amount.
+  /// Returns (weeklyXP, weekStartDate, league) to merge into copyWith.
+  /// All XP paths MUST call this so weeklyXP stays in sync with totalXp.
+  ({int weeklyXP, DateTime? weekStartDate, League league}) _updatedWeeklyXP(
+    UserProfile current,
+    int xpAmount,
+  ) {
+    final currentWeek = WeekPeriod.current();
+    final weekStart = current.weekStartDate;
+    int weeklyXP = current.weeklyXP;
+    DateTime? newWeekStart = weekStart;
+
+    if (weekStart == null || !_isSameWeek(weekStart, currentWeek.start)) {
+      weeklyXP = 0;
+      newWeekStart = currentWeek.start;
+    }
+
+    weeklyXP += xpAmount;
+    final league = _calculateLeagueFromXP(weeklyXP);
+    return (weeklyXP: weeklyXP, weekStartDate: newWeekStart, league: league);
+  }
+
   /// Mark a lesson as completed
   Future<void> completeLesson(String lessonId, int xpReward) async {
     try {
@@ -518,10 +549,18 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
       // Track previous level for level-up detection
       final previousLevel = current.currentLevel;
 
+      // Update weekly XP
+      final weeklyUpdate = xpReward > 0
+          ? _updatedWeeklyXP(current, xpReward)
+          : (weeklyXP: current.weeklyXP, weekStartDate: current.weekStartDate, league: current.league);
+
       final updated = current.copyWith(
         completedLessons: [...current.completedLessons, lessonId],
         lessonProgress: updatedProgress,
         totalXp: current.totalXp + xpReward,
+        weeklyXP: weeklyUpdate.weeklyXP,
+        weekStartDate: weeklyUpdate.weekStartDate,
+        league: weeklyUpdate.league,
         dailyXpHistory: updatedHistory,
         updatedAt: now,
       );
@@ -637,6 +676,11 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
     final updatedHistory = Map<String, int>.from(current.dailyXpHistory);
     updatedHistory[todayKey] = (updatedHistory[todayKey] ?? 0) + xpToAward;
 
+    // Update weekly XP
+    final weeklyUpdate = xpToAward > 0
+        ? _updatedWeeklyXP(current, xpToAward)
+        : (weeklyXP: current.weeklyXP, weekStartDate: current.weekStartDate, league: current.league);
+
     final updated = current.copyWith(
       hasCompletedPlacementTest: true,
       placementResultId: resultId,
@@ -644,6 +688,9 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
       completedLessons: updatedCompletedLessons,
       lessonProgress: updatedProgress,
       totalXp: current.totalXp + xpToAward,
+      weeklyXP: weeklyUpdate.weeklyXP,
+      weekStartDate: weeklyUpdate.weekStartDate,
+      league: weeklyUpdate.league,
       dailyXpHistory: updatedHistory,
       updatedAt: now,
     );
@@ -684,9 +731,18 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
     updatedHistory[todayKey] = (updatedHistory[todayKey] ?? 0) + xpReward;
 
     final now = DateTime.now();
+
+    // Update weekly XP
+    final weeklyUpdate = xpReward > 0
+        ? _updatedWeeklyXP(current, xpReward)
+        : (weeklyXP: current.weeklyXP, weekStartDate: current.weekStartDate, league: current.league);
+
     final updated = current.copyWith(
       lessonProgress: updatedProgress,
       totalXp: current.totalXp + xpReward,
+      weeklyXP: weeklyUpdate.weeklyXP,
+      weekStartDate: weeklyUpdate.weekStartDate,
+      league: weeklyUpdate.league,
       dailyXpHistory: updatedHistory,
       updatedAt: now,
     );
@@ -762,9 +818,17 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
     final newAchievement = AchievementDefinitions.getById(achievementId);
     final bonusXp = newAchievement?.rarity.xpReward ?? 0;
 
+    // Update weekly XP
+    final weeklyUpdate = bonusXp > 0
+        ? _updatedWeeklyXP(current, bonusXp)
+        : (weeklyXP: current.weeklyXP, weekStartDate: current.weekStartDate, league: current.league);
+
     final updated = current.copyWith(
       achievements: [...current.achievements, achievementId],
       totalXp: current.totalXp + bonusXp,
+      weeklyXP: weeklyUpdate.weeklyXP,
+      weekStartDate: weeklyUpdate.weekStartDate,
+      league: weeklyUpdate.league,
       updatedAt: DateTime.now(),
     );
 
@@ -792,9 +856,17 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
     final current = state.value;
     if (current == null) return;
 
+    // Update weekly XP
+    final weeklyUpdate = xpToAdd > 0
+        ? _updatedWeeklyXP(current, xpToAdd)
+        : (weeklyXP: current.weeklyXP, weekStartDate: current.weekStartDate, league: current.league);
+
     final updated = current.copyWith(
       achievements: achievements,
       totalXp: current.totalXp + xpToAdd,
+      weeklyXP: weeklyUpdate.weeklyXP,
+      weekStartDate: weeklyUpdate.weekStartDate,
+      league: weeklyUpdate.league,
       updatedAt: DateTime.now(),
     );
 

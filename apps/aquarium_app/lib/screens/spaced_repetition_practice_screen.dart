@@ -11,6 +11,7 @@ import '../widgets/core/bubble_loader.dart';
 import '../providers/spaced_repetition_provider.dart';
 import '../providers/user_profile_provider.dart';
 import '../providers/inventory_provider.dart';
+import '../providers/achievement_provider.dart';
 import '../services/review_queue_service.dart';
 import '../theme/app_theme.dart';
 import '../utils/concept_display_names.dart';
@@ -1059,6 +1060,13 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
 
   Future<void> _completeSession() async {
     await ref.read(spacedRepetitionProvider.notifier).completeSession();
+
+    // Check achievements after review session completes
+    final srState = ref.read(spacedRepetitionProvider);
+    await ref.read(achievementProvider.notifier).checkAfterReview(
+      reviewsCompleted: srState.stats.totalReviews,
+      reviewStreak: srState.stats.currentStreak,
+    );
 
     if (mounted) {
       // Show completion dialog

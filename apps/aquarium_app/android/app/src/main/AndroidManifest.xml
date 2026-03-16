@@ -15,6 +15,9 @@
          reminder time by up to 15 minutes, defeating the purpose for time-sensitive
          tank care tasks. See NotificationService.scheduleReviewReminder(). -->
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"/>
+    <!-- SDK 33+ alternative — granted automatically for apps targeting API 33+.
+         Declared alongside SCHEDULE_EXACT_ALARM for forward-compatibility. -->
+    <uses-permission android:name="android.permission.USE_EXACT_ALARM"/>
     
     <!-- Camera and media permissions (camera used for Fish ID feature) -->
     <uses-permission android:name="android.permission.CAMERA"/>

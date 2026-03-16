@@ -144,6 +144,8 @@ class UserProfile {
     1000: 'Expert',
     1500: 'Master',
     2500: 'Guru',
+    5000: 'Sage',
+    10000: 'Grandmaster',
   };
 
   String get levelTitle {

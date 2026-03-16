@@ -814,7 +814,30 @@ class _StreakCard extends StatelessWidget {
 }
 
 /// Path IDs with mostly stub/empty content — gated as "Coming Soon".
-const _comingSoonPathIds = {'fish_health', 'species_care', 'advanced_topics'};
+const _comingSoonPathIds = {'advanced_topics'};
+
+/// Individual stub lessons with placeholder content — gated as "Coming Soon"
+/// within paths that also contain real, complete lessons.
+const _stubLessonIds = <String>{
+  // Fish Health stubs (fh_prevention is real content — keep accessible)
+  'fh_ich',
+  'fh_fin_rot',
+  'fh_fungal',
+  'fh_parasites',
+  'fh_hospital_tank',
+  // Species Care stubs (sc_betta, sc_goldfish are real — keep accessible)
+  'sc_tetras',
+  'sc_cichlids',
+  'sc_shrimp',
+  'sc_snails',
+  // Advanced Topics — all stubs (path-level gated too, but listed for completeness)
+  'at_breeding_livebearers',
+  'at_breeding_egg_layers',
+  'at_aquascaping',
+  'at_biotope',
+  'at_troubleshooting',
+  'at_water_chem',
+};
 
 /// Lazy-loading learning path card.
 /// Shows metadata (emoji, title, description, progress) immediately.
@@ -1121,11 +1144,14 @@ class _LazyLearningPathCardState extends ConsumerState<_LazyLearningPathCard> {
     return [
       const Divider(height: 1),
       ...path.lessons.map((lesson) {
+        final isStub = _stubLessonIds.contains(lesson.id);
         final isCompleted =
             widget.userCompletedLessons.contains(lesson.id);
-        final isUnlocked = lesson.isUnlocked(widget.userCompletedLessons);
+        final isUnlocked = !isStub && lesson.isUnlocked(widget.userCompletedLessons);
 
-        return ListTile(
+        return Opacity(
+          opacity: isStub ? 0.55 : 1.0,
+          child: ListTile(
           leading: Hero(
             tag: 'lesson-${lesson.id}',
             child: Material(
@@ -1134,42 +1160,76 @@ class _LazyLearningPathCardState extends ConsumerState<_LazyLearningPathCard> {
                 width: 32,
                 height: 32,
                 decoration: BoxDecoration(
-                  color: isCompleted
-                      ? AppOverlays.success20
-                      : isUnlocked
-                          ? AppOverlays.primary10
-                          : context.surfaceVariant,
+                  color: isStub
+                      ? DanioColors.amberGold.withValues(alpha: 0.15)
+                      : isCompleted
+                          ? AppOverlays.success20
+                          : isUnlocked
+                              ? AppOverlays.primary10
+                              : context.surfaceVariant,
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
-                  isCompleted
-                      ? Icons.check
-                      : isUnlocked
-                          ? Icons.play_arrow
-                          : Icons.lock,
+                  isStub
+                      ? Icons.construction
+                      : isCompleted
+                          ? Icons.check
+                          : isUnlocked
+                              ? Icons.play_arrow
+                              : Icons.lock,
                   size: 18,
-                  color: isCompleted
-                      ? AppColors.success
-                      : isUnlocked
-                          ? AppColors.primary
-                          : context.textHint,
+                  color: isStub
+                      ? DanioColors.amberGold
+                      : isCompleted
+                          ? AppColors.success
+                          : isUnlocked
+                              ? AppColors.primary
+                              : context.textHint,
                 ),
               ),
             ),
           ),
-          title: Text(
-            lesson.title,
-            style: AppTypography.bodyMedium.copyWith(
-              color: isUnlocked ? null : context.textHint,
-            ),
+          title: Row(
+            children: [
+              Expanded(
+                child: Text(
+                  lesson.title,
+                  style: AppTypography.bodyMedium.copyWith(
+                    color: isStub ? context.textHint : (isUnlocked ? null : context.textHint),
+                  ),
+                ),
+              ),
+              if (isStub)
+                Container(
+                  margin: const EdgeInsets.only(left: 6),
+                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                  decoration: BoxDecoration(
+                    color: DanioColors.amberGold.withValues(alpha: 0.15),
+                    borderRadius: AppRadius.xsRadius,
+                    border: Border.all(
+                      color: DanioColors.amberGold.withValues(alpha: 0.4),
+                    ),
+                  ),
+                  child: Text(
+                    'Coming Soon 🚧',
+                    style: AppTypography.labelSmall.copyWith(
+                      color: DanioColors.amberGold,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 10,
+                    ),
+                  ),
+                ),
+            ],
           ),
           subtitle: Text(
-            '${lesson.estimatedMinutes} min • ${lesson.xpReward} XP',
+            isStub
+                ? 'Content in development'
+                : '${lesson.estimatedMinutes} min • ${lesson.xpReward} XP',
             style: AppTypography.bodySmall.copyWith(
               color: context.textSecondary,
             ),
           ),
-          trailing: isCompleted
+          trailing: isCompleted && !isStub
               ? Text(
                   '+${lesson.xpReward} XP',
                   style: AppTypography.bodySmall.copyWith(
@@ -1177,22 +1237,32 @@ class _LazyLearningPathCardState extends ConsumerState<_LazyLearningPathCard> {
                   ),
                 )
               : null,
-          enabled: isUnlocked,
-          onTap: isUnlocked
+          enabled: isUnlocked && !isStub,
+          onTap: isStub
               ? () {
-                  NavigationThrottle.push(context, LessonScreen(
-                        lesson: lesson,
-                        pathTitle: path.title,
-                      ));
-                }
-              : () {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
-                      content: Text('Complete the previous lesson to unlock this one 🔒'),
+                      content: Text('This lesson is coming soon — stay tuned! 🚧'),
                       duration: Duration(seconds: 2),
                     ),
                   );
-                },
+                }
+              : isUnlocked
+                  ? () {
+                      NavigationThrottle.push(context, LessonScreen(
+                            lesson: lesson,
+                            pathTitle: path.title,
+                          ));
+                    }
+                  : () {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Complete the previous lesson to unlock this one 🔒'),
+                          duration: Duration(seconds: 2),
+                        ),
+                      );
+                    },
+        ),
         );
       }),
     ];

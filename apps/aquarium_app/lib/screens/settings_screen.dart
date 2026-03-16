@@ -513,6 +513,16 @@ class SettingsScreen extends ConsumerWidget {
             isDestructive: true,
             onTap: () => _confirmClearData(context, ref),
           ),
+          (_) => AppListTile(
+            leading: const Icon(
+              Icons.person_remove_outlined,
+              color: AppColors.error,
+            ),
+            title: 'Delete My Data',
+            subtitle: 'Erase all data & exercise your privacy rights',
+            isDestructive: true,
+            onTap: () => _confirmDeleteMyData(context, ref),
+          ),
           // Debug crash button (only in debug mode)
           if (kDebugMode)
             (_) => AppListTile(
@@ -881,6 +891,76 @@ class SettingsScreen extends ConsumerWidget {
     } catch (e) {
       if (context.mounted) {
         AppFeedback.showError(context, 'Couldn\'t clear data. Try again!');
+      }
+    }
+  }
+
+  /// GDPR "Delete My Data" — clears all local data (SharedPreferences, JSON
+  /// files, photos) and navigates back to onboarding. Also surfaces the email
+  /// address for server-side deletion requests.
+  Future<void> _confirmDeleteMyData(BuildContext context, WidgetRef ref) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Delete My Data'),
+        content: const Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'This will permanently delete all your local data '
+              '(tanks, progress, achievements). This cannot be undone.',
+            ),
+            SizedBox(height: 16),
+            Text(
+              'For server-side data deletion requests, email '
+              'privacy@tiarnanlarkin.com',
+              style: TextStyle(fontSize: 13, fontStyle: FontStyle.italic),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: Text(
+              'Delete Everything',
+              style: TextStyle(color: AppColors.error),
+            ),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed != true || !context.mounted) return;
+
+    try {
+      // 1. Clear all SharedPreferences
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.clear();
+
+      // 2. Delete local JSON data files and photos
+      final dir = await getApplicationDocumentsDirectory();
+      final dataFile = File('${dir.path}/aquarium_data.json');
+      if (await dataFile.exists()) await dataFile.delete();
+      final photoDir = Directory('${dir.path}/photos');
+      if (await photoDir.exists()) await photoDir.delete(recursive: true);
+
+      // 3. Reset onboarding state
+      final service = await OnboardingService.getInstance();
+      await service.resetOnboarding();
+
+      if (context.mounted) {
+        ref.invalidate(onboardingCompletedProvider);
+        Navigator.of(context, rootNavigator: true)
+            .popUntil((route) => route.isFirst);
+      }
+    } catch (e) {
+      if (context.mounted) {
+        AppFeedback.showError(context, 'Couldn\'t delete data. Try again!');
       }
     }
   }

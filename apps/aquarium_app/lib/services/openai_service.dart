@@ -232,8 +232,8 @@ class OpenAIService {
   void _assertConfigured() {
     if (!isConfigured) {
       throw const OpenAIException(
-        'OpenAI API key not configured. '
-        'Please set up your API key in Smart Settings.',
+        'AI features unavailable — no API key provided. '
+        'Build with --dart-define=OPENAI_API_KEY=sk-... to enable.',
       );
     }
   }
