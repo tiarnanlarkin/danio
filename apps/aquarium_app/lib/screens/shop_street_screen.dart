@@ -572,7 +572,7 @@ class _BudgetCard extends StatelessWidget {
                       const Spacer(),
                       Icon(
                         Icons.edit,
-                        color: AppColors.textSecondaryDarkAlpha50,
+                        color: AppColors.textSecondaryDark.withValues(alpha: 0.5),
                         size: 18,
                       ),
                     ],
@@ -791,12 +791,12 @@ class _ShopTile extends StatelessWidget {
                 '⭐ ${shop.rating!.toStringAsFixed(1)}',
                 style: Theme.of(
                   context,
-                ).textTheme.bodySmall?.copyWith(color: AppColors.primaryLightLight),
+                ).textTheme.bodySmall?.copyWith(color: AppColors.primaryLight),
               ),
             IconButton(
               tooltip: 'Close',
               icon: const Icon(Icons.close, size: 18),
-              color: AppColors.textSecondaryDarkAlpha50,
+              color: AppColors.textSecondaryDark.withValues(alpha: 0.5),
               onPressed: onDelete,
             ),
           ],

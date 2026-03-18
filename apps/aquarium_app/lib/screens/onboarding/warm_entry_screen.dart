@@ -52,14 +52,15 @@ class _WarmEntryScreenState extends State<WarmEntryScreen>
   late final Animation<double> _streakScale;
 
   bool _hasCalledReady = false;
-  final _nameController = TextEditingController(
-    text: widget.userName ?? '',
-  );
+  late final TextEditingController _nameController;
   bool _nameSubmitted = false; // Whether name step is done (skip or submit)
 
   @override
   void initState() {
     super.initState();
+    _nameController = TextEditingController(
+      text: widget.userName ?? '',
+    );
 
     final disableAnimations =
         WidgetsBinding.instance.platformDispatcher.accessibilityFeatures
