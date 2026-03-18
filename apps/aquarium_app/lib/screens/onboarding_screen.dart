@@ -26,6 +26,22 @@ import 'onboarding/warm_entry_screen.dart';
 /// Uses a [PageView] with [NeverScrollableScrollPhysics] so navigation is
 /// purely programmatic (no swiping). State collected across screens is held
 /// in this widget and passed down to each child.
+///
+/// Current flow:
+///   Welcome → Experience Level → Tank Status → Micro Lesson → XP Celebration
+///   → Fish Select → Aha Moment → Paywall Stub → Push Permission → Warm Entry
+///   → (creates profile + tank) → Home
+///
+/// Intentionally skipped (with rationale):
+///   - Placement quiz: The placement test system exists (PlacementChallengeCard
+///     on LearnScreen) but is designed as a post-onboarding feature for
+///     intermediate/expert users, not part of the initial 10-screen flow.
+///     New users start at the beginning of all learning paths regardless.
+///   - Tutorial: hasSeenTutorial is set to false after onboarding. The
+///     "tutorial" concept is distributed — first-visit tooltips on each
+///     tab, the micro-lesson on Page 3, and the stage panel hint on home.
+///     A dedicated tutorial overlay would add friction to an already
+///     long flow.
 class OnboardingScreen extends ConsumerStatefulWidget {
   const OnboardingScreen({super.key});
 
@@ -89,6 +105,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
           experienceLevel: _experienceLevel!,
           primaryTankType: TankType.freshwater,
           goals: [_deriveGoal()],
+          name: _userName, // Persist name from onboarding if provided
         );
         // Persist the new onboarding fields
         await ref.read(userProfileProvider.notifier).updateProfile(
@@ -101,6 +118,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
           goals: [_deriveGoal()],
           tankStatus: _tankStatus,
           firstFishSpeciesId: _selectedFish?.commonName,
+          name: _userName, // Persist name from onboarding if provided
         );
       }
 
@@ -279,6 +297,9 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                 experienceLevel: _experienceLevel!,
                 tankStatus: _tankStatus!,
                 userName: _userName,
+                onNameChanged: (name) {
+                  setState(() => _userName = name);
+                },
                 onReady: _completeOnboarding,
               );
             }),

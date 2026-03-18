@@ -16,6 +16,7 @@ class WarmEntryScreen extends StatefulWidget {
   final ExperienceLevel experienceLevel;
   final String tankStatus; // 'planning' | 'cycling' | 'active'
   final String? userName;
+  final ValueChanged<String>? onNameChanged; // Callback to persist name
   final VoidCallback onReady;
 
   const WarmEntryScreen({
@@ -24,6 +25,7 @@ class WarmEntryScreen extends StatefulWidget {
     required this.experienceLevel,
     required this.tankStatus,
     this.userName,
+    this.onNameChanged,
     required this.onReady,
   });
 
@@ -50,6 +52,10 @@ class _WarmEntryScreenState extends State<WarmEntryScreen>
   late final Animation<double> _streakScale;
 
   bool _hasCalledReady = false;
+  final _nameController = TextEditingController(
+    text: widget.userName ?? '',
+  );
+  bool _nameSubmitted = false; // Whether name step is done (skip or submit)
 
   @override
   void initState() {
@@ -106,26 +112,14 @@ class _WarmEntryScreenState extends State<WarmEntryScreen>
     ]).animate(_streakFlickerController);
 
     if (!disableAnimations) {
-      // Stagger animations
-      _fishCardController.forward();
-      Future.delayed(const Duration(milliseconds: 200), () {
-        if (mounted) _lessonCardController.forward();
-      });
-      Future.delayed(const Duration(milliseconds: 400), () {
-        if (mounted) _xpBarController.forward();
-      });
-      Future.delayed(const Duration(milliseconds: 600), () {
-        if (mounted) _streakFlickerController.forward();
-      });
+      // Animations are deferred to _submitName() so they start after
+      // the user enters/skips their name.
     } else {
       _fishCardController.value = 1.0;
       _lessonCardController.value = 1.0;
       _xpBarController.value = 1.0;
       _streakFlickerController.value = 1.0;
     }
-
-    // Auto-advance after 2.5 seconds
-    Future.delayed(const Duration(milliseconds: 2500), _callReady);
   }
 
   void _callReady() {
@@ -135,12 +129,34 @@ class _WarmEntryScreenState extends State<WarmEntryScreen>
     }
   }
 
+  void _submitName() {
+    final name = _nameController.text.trim();
+    if (name.isNotEmpty && widget.onNameChanged != null) {
+      widget.onNameChanged!(name);
+    }
+    setState(() => _nameSubmitted = true);
+    // Start the warm entry animations now
+    _fishCardController.forward();
+    Future.delayed(const Duration(milliseconds: 200), () {
+      if (mounted) _lessonCardController.forward();
+    });
+    Future.delayed(const Duration(milliseconds: 400), () {
+      if (mounted) _xpBarController.forward();
+    });
+    Future.delayed(const Duration(milliseconds: 600), () {
+      if (mounted) _streakFlickerController.forward();
+    });
+    // Auto-advance after 2.5 seconds from name submission
+    Future.delayed(const Duration(milliseconds: 2500), _callReady);
+  }
+
   @override
   void dispose() {
     _fishCardController.dispose();
     _lessonCardController.dispose();
     _xpBarController.dispose();
     _streakFlickerController.dispose();
+    _nameController.dispose();
     super.dispose();
   }
 
@@ -198,7 +214,78 @@ class _WarmEntryScreenState extends State<WarmEntryScreen>
                     ),
                   ),
                 ),
-                const SizedBox(height: 28),
+                const SizedBox(height: 20),
+                // Name input (shown before the warm entry cards)
+                if (!_nameSubmitted) ...[
+                  Text(
+                    'What should we call you?',
+                    style: GoogleFonts.nunito(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.textSecondary,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Semantics(
+                          label: 'Enter your name',
+                          child: TextField(
+                            controller: _nameController,
+                            textCapitalization: TextCapitalization.words,
+                            textInputAction: TextInputAction.done,
+                            autofocus: true,
+                            onSubmitted: (_) => _submitName(),
+                            decoration: InputDecoration(
+                              hintText: 'Your name (optional)',
+                              hintStyle: GoogleFonts.nunito(
+                                fontSize: 14,
+                                color: AppColors.textHint,
+                              ),
+                              filled: true,
+                              fillColor: Colors.white,
+                              contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                                vertical: 14,
+                              ),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide.none,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      TextButton(
+                        onPressed: _submitName,
+                        child: Text(
+                          'Next →',
+                          style: GoogleFonts.nunito(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w700,
+                            color: _amber,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: TextButton(
+                      onPressed: _submitName,
+                      child: Text(
+                        'Skip',
+                        style: GoogleFonts.nunito(
+                          fontSize: 13,
+                          color: AppColors.textHint,
+                        ),
+                      ),
+                    ),
+                  ),
+                ] else ...[
                 // Fish care card
                 SlideTransition(
                   position: _fishCardSlide,
@@ -219,6 +306,7 @@ class _WarmEntryScreenState extends State<WarmEntryScreen>
                 const SizedBox(height: 16),
                 // Streak counter
                 _buildStreakCounter(),
+                ], // end of _nameSubmitted else branch
               ],
             ),
           ),
