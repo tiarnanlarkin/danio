@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import '../widgets/core/bubble_loader.dart';
@@ -1256,7 +1257,7 @@ class _BulkAddLivestockSheetState
         left: 16,
         right: 16,
         top: 16,
-        bottom: MediaQuery.of(context).viewInsets.bottom + 16,
+        bottom: max(MediaQuery.of(context).viewInsets.bottom, MediaQuery.of(context).viewPadding.bottom) + 16,
       ),
       child: SingleChildScrollView(
         child: Column(
