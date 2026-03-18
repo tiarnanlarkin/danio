@@ -861,6 +861,41 @@ const List<SpeciesInfo> _allSpecies = [
     avoidWith: ['Tropical fish requiring warm water', 'Large aggressive fish'],
   ),
 
+  // Common Goldfish
+  SpeciesInfo(
+    commonName: 'Common Goldfish',
+    scientificName: 'Carassius auratus',
+    family: 'Cyprinidae',
+    careLevel: 'Beginner',
+    minTankLitres: 120,
+    minTempC: 18,
+    maxTempC: 24,
+    minPh: 6.5,
+    maxPh: 7.5,
+    minGh: 4,
+    maxGh: 12,
+    minSchoolSize: 1,
+    temperament: 'Peaceful',
+    diet:
+        'Omnivore - quality pellets, flakes, blanched vegetables (peas, spinach), bloodworms, brine shrimp',
+    adultSizeCm: 25,
+    swimLevel: 'Mid',
+    description:
+        'The most misunderstood aquarium fish. Despite the "goldfish bowl" myth, common goldfish need a minimum 120L tank with strong filtration. They produce more waste than tropical fish of the same size and can live 10-15 years (up to 40 in ideal conditions). Hardy, coldwater, and surprisingly intelligent - they can learn to recognise their owner.',
+    compatibleWith: [
+      'Other goldfish',
+      'Weather Loach',
+      'White Cloud Mountain Minnow',
+      'Bristlenose Pleco',
+    ],
+    avoidWith: [
+      'Tropical fish',
+      'Bettas',
+      'Small shrimp',
+      'Fancy goldfish (may get outcompeted for food)',
+    ],
+  ),
+
   // Endlers
   SpeciesInfo(
     commonName: 'Endler Livebearer',

@@ -360,46 +360,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   // ── Build ─────────────────────────────────────────────────────────────
 
-  Widget _buildSkeletonRoom() {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    return Skeletonizer(
-      child: Stack(
-        fit: StackFit.expand,
-        children: [
-          Positioned.fill(
-            child: Container(
-              decoration: BoxDecoration(
-                color: isDark ? AppColors.backgroundDark : null,
-                gradient: isDark ? null : LinearGradient(
-                  begin: Alignment.topCenter, end: Alignment.bottomCenter,
-                  colors: [AppOverlays.surfaceVariant50, context.surfaceVariant],
-                ),
-              ),
-            ),
-          ),
-          Center(
-            child: Container(
-              width: 200, height: 150,
-              decoration: BoxDecoration(
-                color: AppOverlays.primary10,
-                borderRadius: AppRadius.mediumRadius,
-                border: Border.all(color: AppOverlays.primary30),
-              ),
-              child: const Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.water, size: AppIconSizes.xl, color: AppColors.primary),
-                  SizedBox(height: AppSpacing.sm),
-                  FunLoadingMessage(),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
   Widget _buildLivingRoomScreen() {
     final theme = ref.watch(currentRoomThemeProvider);
     final tanksAsync = ref.watch(tanksProvider);
@@ -586,23 +546,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         ],
       );
     });
-  }
-
-  Widget _buildTankTile(BuildContext context, int index, Tank tank) {
-    final isSelected = index == _currentTankIndex;
-    return ListTile(
-      dense: true, selected: isSelected,
-      selectedTileColor: context.textPrimary.withAlpha(25),
-      leading: Icon(Icons.set_meal_rounded, color: isSelected ? context.textPrimary : context.textSecondary, size: 20),
-      title: Text(tank.name, style: TextStyle(
-        color: isSelected ? context.textPrimary : context.textSecondary,
-        fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-      )),
-      subtitle: Text('${tank.volumeLitres.toStringAsFixed(0)}L', style: TextStyle(
-        color: context.textSecondary.withAlpha(128), fontSize: 12,
-      )),
-      onTap: () => setState(() => _currentTankIndex = index),
-    );
   }
 
   @override
