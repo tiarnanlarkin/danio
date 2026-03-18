@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/user_profile_provider.dart';
@@ -9,6 +10,7 @@ import 'about_screen.dart';
 import 'achievements_screen.dart';
 import 'analytics_screen.dart';
 import 'backup_restore_screen.dart';
+import 'debug_menu_screen.dart';
 import 'settings_screen.dart';
 // friends_screen.dart — hidden until feature ships (CA-002)
 // leaderboard_screen.dart — hidden until feature ships (CA-003)
@@ -23,11 +25,42 @@ const String appVersion = String.fromEnvironment(
 /// Settings Hub - Consolidates all secondary features
 /// This is Tab 3 in the new navigation structure
 /// Includes: Profile, Friends, Leaderboard, Shop, Tools, Settings
-class SettingsHubScreen extends ConsumerWidget {
+class SettingsHubScreen extends ConsumerStatefulWidget {
   const SettingsHubScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<SettingsHubScreen> createState() => _SettingsHubScreenState();
+}
+
+class _SettingsHubScreenState extends ConsumerState<SettingsHubScreen> {
+  // ── Debug menu tap gate ──────────────────────────────────────────────────
+  int _versionTapCount = 0;
+  DateTime? _firstVersionTap;
+
+  void _handleVersionTap() {
+    if (!kDebugMode) return;
+
+    final now = DateTime.now();
+    if (_firstVersionTap == null ||
+        now.difference(_firstVersionTap!).inSeconds > 3) {
+      _versionTapCount = 1;
+      _firstVersionTap = now;
+    } else {
+      _versionTapCount++;
+    }
+
+    if (_versionTapCount >= 5) {
+      _versionTapCount = 0;
+      _firstVersionTap = null;
+      Navigator.of(context).push(
+        MaterialPageRoute(builder: (_) => const DebugMenuScreen()),
+      );
+    }
+  }
+  // ── End debug menu tap gate ──────────────────────────────────────────────
+
+  @override
+  Widget build(BuildContext context) {
     final profile = ref.watch(userProfileProvider).value;
     final items = _buildListItems(context, profile);
 
@@ -184,11 +217,14 @@ class SettingsHubScreen extends ConsumerWidget {
 
       const SizedBox(height: AppSpacing.xl),
 
-      // === App Version Footer ===
+      // === App Version Footer (debug: tap 5x for debug menu) ===
       Center(
-        child: Text(
-          'Danio v$appVersion',
-          style: AppTypography.bodySmall.copyWith(color: context.textSecondary),
+        child: GestureDetector(
+          onTap: _handleVersionTap,
+          child: Text(
+            'Danio v$appVersion',
+            style: AppTypography.bodySmall.copyWith(color: context.textSecondary),
+          ),
         ),
       ),
       const SizedBox(height: AppSpacing.sm),
