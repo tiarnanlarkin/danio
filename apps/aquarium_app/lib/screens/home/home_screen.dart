@@ -56,7 +56,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   int _currentTankIndex = 0;
   bool _dailyNudgeDismissed = false;
   bool _isSelectMode = false;
-  bool _firstTankPromptShown = false;
   bool _isNavigatingToCreate = false;
   bool _showWelcomeBanner = false;
   bool _showComebackBanner = false;
@@ -191,9 +190,17 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         prefsKey = 'seen_day7_milestone';
       } else if (daysSinceSignup >= 30 && daysSinceSignup <= 31 && currentStreak >= 1 &&
           (prefs.getBool('seen_day30_committed') ?? false) == false) {
-        // Day30CommittedCard requires user stats — show without detailed stats for now
-        // TODO: Fetch actual stats from profile provider
-        milestoneCard = null; // Skip until stats are available
+        final totalXp = (decoded['totalXp'] as int?) ?? 0;
+        final lessonsCompleted = (decoded['completedLessons'] as List?)?.length ?? 0;
+        // speciesViewed isn't tracked in the profile yet — use 0
+        // TODO(sprint4): Track speciesViewed in UserProfile, wire it here
+        const speciesViewed = 0;
+        milestoneCard = Day30CommittedCard(
+          lessonsCompleted: lessonsCompleted,
+          xpEarned: totalXp,
+          speciesViewed: speciesViewed,
+          onUpgrade: () => Navigator.of(context).pop(),
+        );
         prefsKey = 'seen_day30_committed';
       }
 
@@ -257,32 +264,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     });
   }
 
-  void _navigateToCreateFirstTank(BuildContext context) async {
-    if (_isNavigatingToCreate) return;
-    _isNavigatingToCreate = true;
-    final navigator = Navigator.of(context);
-    final tanksBefore = ref.read(tanksProvider).valueOrNull ?? [];
-
-    await navigator.push(MaterialPageRoute(builder: (_) => const CreateTankScreen()));
-    _isNavigatingToCreate = false;
-    if (!mounted) return;
-    ref.invalidate(tanksProvider);
-    final tanksAfter = await ref.read(tanksProvider.future)
-        .timeout(const Duration(seconds: 3), onTimeout: () => []);
-    if (tanksAfter.length > tanksBefore.length) {
-      final beforeIds = tanksBefore.map((t) => t.id).toSet();
-      final newTank = tanksAfter.firstWhere(
-        (t) => !beforeIds.contains(t.id), orElse: () => tanksAfter.first,
-      );
-      if (mounted) {
-        final newIndex = tanksAfter.indexOf(newTank);
-        if (newIndex >= 0) setState(() => _currentTankIndex = newIndex);
-        ref.read(currentTabProvider.notifier).state = 2;
-        navigator.push(TankDetailRoute(page: TankDetailScreen(tankId: newTank.id)));
-      }
-    }
-  }
-
   void _navigateToTankDetail(BuildContext context, Tank tank) {
     Navigator.of(context).push(TankDetailRoute(page: TankDetailScreen(tankId: tank.id)));
   }
@@ -291,23 +272,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     Navigator.of(context).push(
       ModalScaleRoute(page: AddLogScreen(tankId: tank.id, initialType: LogType.waterChange)),
     );
-  }
-
-  void _maybeShowFirstTankPrompt(BuildContext _, List<Tank> tanks) {
-    if (!mounted) return;
-    return; // DISABLED — users tap "+ Add Your Tank" manually
-    // ignore: dead_code
-    if (_firstTankPromptShown || tanks.isNotEmpty) return;
-    final currentTab = ref.read(currentTabProvider);
-    if (currentTab != 2) return;
-    _firstTankPromptShown = true;
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted) return;
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (!mounted) return;
-        _navigateToCreateFirstTank(context);
-      });
-    });
   }
 
   Future<void> _bulkDelete(BuildContext context, List<Tank> allTanks) async {
@@ -377,7 +341,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     return Builder(builder: (context) {
       final tanks = tanksData;
       if (!mounted) return const SkeletonRoom();
-      _maybeShowFirstTankPrompt(context, tanks);
 
       if (tanks.isEmpty) {
         return EmptyRoomScene(
