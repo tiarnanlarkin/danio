@@ -4,7 +4,9 @@ import '../../models/models.dart';
 import '../../providers/tank_provider.dart';
 import '../../providers/storage_provider.dart';
 import '../../providers/user_profile_provider.dart';
+import '../../providers/room_theme_provider.dart';
 import '../../theme/app_theme.dart';
+import '../../theme/room_themes.dart';
 import '../../utils/app_page_routes.dart';
 import '../../utils/navigation_throttle.dart';
 import '../add_log_screen.dart';
@@ -15,8 +17,9 @@ import '../search_screen.dart';
 import '../tank_settings_screen.dart';
 import '../../widgets/daily_goal_progress.dart';
 import '../../widgets/streak_calendar.dart';
-import '../../widgets/xp_source_row.dart'; // Check if this exists
-import 'xp_source_row.dart';
+import '../../widgets/gamification_dashboard.dart';
+import '../../widgets/hobby_desk.dart';
+import 'widgets/xp_source_row.dart';
 
 /// Helper to format a DateTime as a friendly relative string.
 String timeAgo(DateTime dt) {

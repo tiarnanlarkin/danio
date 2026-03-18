@@ -7,6 +7,8 @@ import '../providers/storage_provider.dart';
 import '../providers/tank_provider.dart';
 import '../theme/app_theme.dart';
 import '../widgets/core/app_states.dart';
+import '../widgets/empty_state.dart';
+import '../widgets/mascot/mascot_widgets.dart';
 
 class JournalScreen extends ConsumerWidget {
   final String tankId;
@@ -45,7 +47,14 @@ class JournalScreen extends ConsumerWidget {
                   ..sort((a, b) => b.timestamp.compareTo(a.timestamp));
 
             if (journalEntries.isEmpty) {
-              return _EmptyJournal(onAdd: () => _addJournalEntry(context, ref));
+              return EmptyState.withMascot(
+                icon: Icons.book_outlined,
+                title: 'Your story starts here!',
+                message: 'Every great tank has a story. Start writing yours — observations, milestones, and little victories.',
+                mascotContext: MascotContext.encouragement,
+                actionLabel: 'Write First Entry',
+                onAction: () => _addJournalEntry(context, ref),
+              );
             }
 
             // Group by month
@@ -110,45 +119,6 @@ class JournalScreen extends ConsumerWidget {
 
           if (ctx.mounted) Navigator.pop(ctx);
         },
-      ),
-    );
-  }
-}
-
-class _EmptyJournal extends StatelessWidget {
-  final VoidCallback onAdd;
-
-  const _EmptyJournal({required this.onAdd});
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.xl),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              Icons.book_outlined,
-              size: AppIconSizes.xxl,
-              color: context.textHint,
-            ),
-            const SizedBox(height: AppSpacing.md),
-            Text('Your story starts here!', style: AppTypography.headlineSmall),
-            const SizedBox(height: AppSpacing.sm),
-            Text(
-              'Every great tank has a story. Start writing yours — observations, milestones, and little victories.',
-              style: AppTypography.bodyMedium,
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: AppSpacing.lg),
-            FilledButton.icon(
-              onPressed: onAdd,
-              icon: const Icon(Icons.edit),
-              label: const Text('Write First Entry'),
-            ),
-          ],
-        ),
       ),
     );
   }

@@ -265,7 +265,9 @@ class _PracticeScreenState extends ConsumerState<PracticeScreen> {
       strengthColor = AppColors.error;
     }
 
-    return InkWell(
+    return Semantics(
+      button: true,
+      child: InkWell(
       onTap: () {
         Navigator.of(context).push(
           MaterialPageRoute(
@@ -406,10 +408,9 @@ class _PracticeScreenState extends ConsumerState<PracticeScreen> {
           ],
         ),
       ),
+      ),
     );
-  }
-
-  String _getTimeSinceReview(LessonProgress progress) {
+  }(LessonProgress progress) {
     final referenceDate = progress.lastReviewDate ?? progress.completedDate;
     final daysSince = DateTime.now().difference(referenceDate).inDays;
 

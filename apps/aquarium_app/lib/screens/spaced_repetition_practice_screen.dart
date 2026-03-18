@@ -319,7 +319,9 @@ class _SpacedRepetitionPracticeScreenState
     required Color color,
     bool enabled = true,
   }) {
-    return InkWell(
+    return Semantics(
+      button: enabled && count > 0,
+      child: InkWell(
       onTap: enabled && count > 0 ? () => _startSession(mode) : null,
       borderRadius: AppRadius.mediumRadius,
       child: Container(
@@ -391,6 +393,7 @@ class _SpacedRepetitionPracticeScreenState
             ),
           ],
         ),
+      ),
       ),
     );
   }

@@ -225,7 +225,9 @@ class PracticeHubScreen extends ConsumerWidget {
     required Color color,
     required VoidCallback? onTap,
   }) {
-    return Card(
+    return Semantics(
+      button: onTap != null,
+      child: Card(
       elevation: AppElevation.level2,
       child: InkWell(
         onTap: onTap,
@@ -262,6 +264,7 @@ class PracticeHubScreen extends ConsumerWidget {
             ],
           ),
         ),
+      ),
       ),
     );
   }
