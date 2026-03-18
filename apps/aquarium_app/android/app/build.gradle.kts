@@ -18,7 +18,7 @@ if (keystorePropertiesFile.exists()) {
 android {
     namespace = "com.tiarnanlarkin.danio"
     compileSdk = flutter.compileSdkVersion
-    ndkVersion = "28.2.13676358" // Override to use available NDK
+    ndkVersion = "28.2.13676358" // Match plugin-required Windows NDK for local testing
 
     compileOptions {
         isCoreLibraryDesugaringEnabled = true
@@ -36,6 +36,7 @@ android {
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
+        testInstrumentationRunner = "pl.leancode.patrol.PatrolJUnitRunner"
     }
 
     signingConfigs {
@@ -58,6 +59,15 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+        }
+    }
+
+    packaging {
+        jniLibs {
+            // Windows/Flutter release bundling has been intermittently failing
+            // while stripping native debug symbols. Keeping symbols avoids the
+            // broken strip path and still produces a valid release bundle.
+            keepDebugSymbols += "**/*.so"
         }
     }
 }
