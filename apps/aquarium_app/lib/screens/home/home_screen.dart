@@ -76,7 +76,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   bool _showWelcomeBanner = false;
   bool _showComebackBanner = false;
   String? _cachedUserName;
-  String? _cachedFishName;
+  String? _cachedFishSpeciesName;
   final Set<String> _selectedTankIds = {};
 
   @override
@@ -137,7 +137,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           final decoded = jsonDecode(profileJson);
           userName = decoded['name'] as String?;
           _cachedUserName = userName;
-        } catch (_) {}
+        } catch (e) {
+          debugPrint('Failed to parse user profile JSON: $e');
+        }
       }
       setState(() => _showWelcomeBanner = true);
       await prefs.setBool('has_seen_welcome_banner', true);
@@ -162,7 +164,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       final hadStreak = (decoded['currentStreak'] as int?) ?? 0;
       final lastActivityStr = decoded['lastActivityDate'] as String?;
       // Personalisation: cache fish name and user name for banner text
-      _cachedFishName = decoded['firstFishSpeciesId'] as String?;
+      _cachedFishSpeciesName = decoded['firstFishSpeciesId'] as String?;
       _cachedUserName ??= decoded['name'] as String?;
       if (hadStreak <= 0 || lastActivityStr == null) return;
 
@@ -873,8 +875,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       const SizedBox(width: AppSpacing.sm2),
                       Expanded(
                         child: Text(
-                          _cachedFishName != null
-                              ? 'Welcome back, ${_cachedUserName ?? ""}${_cachedUserName != null ? "! " : ""}How\'s your $_cachedFishName doing? 🌿'
+                          _cachedFishSpeciesName != null
+                              ? 'Welcome back, ${_cachedUserName ?? ""}${_cachedUserName != null ? "! " : ""}How\'s your $_cachedFishSpeciesName doing? 🌿'
                               : _cachedUserName != null
                                   ? 'Welcome back, $_cachedUserName! Your fish missed you 🌿'
                                   : 'Welcome back! Your fish missed you 🌿',

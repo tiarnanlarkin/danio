@@ -151,6 +151,14 @@ class _WarmEntryScreenState extends State<WarmEntryScreen>
   }
 
   @override
+  void didUpdateWidget(covariant WarmEntryScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.userName != widget.userName) {
+      _nameController.text = widget.userName ?? '';
+    }
+  }
+
+  @override
   void dispose() {
     _fishCardController.dispose();
     _lessonCardController.dispose();
@@ -258,14 +266,18 @@ class _WarmEntryScreenState extends State<WarmEntryScreen>
                         ),
                       ),
                       const SizedBox(width: 12),
-                      TextButton(
+                      FilledButton(
                         onPressed: _submitName,
+                        style: FilledButton.styleFrom(
+                          backgroundColor: _amber,
+                          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                        ),
                         child: Text(
                           'Next →',
                           style: GoogleFonts.nunito(
                             fontSize: 15,
                             fontWeight: FontWeight.w700,
-                            color: _amber,
+                            color: Colors.white,
                           ),
                         ),
                       ),
