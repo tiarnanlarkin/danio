@@ -38,6 +38,7 @@ import '../services/notification_service.dart';
 import '../providers/onboarding_provider.dart';
 import '../services/onboarding_service.dart';
 import '../theme/app_theme.dart';
+import 'debug_menu_screen.dart';
 import '../utils/app_feedback.dart';
 import 'shop_street_screen.dart';
 import 'theme_gallery_screen.dart';
@@ -257,6 +258,9 @@ class SettingsScreen extends ConsumerWidget {
         leading: const Icon(Icons.water_drop),
         title: 'Danio',
         subtitle: 'Version 0.1.0',
+        onTap: kDebugMode
+            ? () => _handleVersionTap(context)
+            : null,
       ),
       (_) => AppListTile(
         leading: const Icon(Icons.info_outline),
@@ -648,6 +652,28 @@ class SettingsScreen extends ConsumerWidget {
         ),
       ),
     );
+  }
+
+  // ── Debug menu tap gate ──────────────────────────────────────────────────
+  static DateTime? _lastVersionTap;
+  static int _versionTapCount = 0;
+
+  void _handleVersionTap(BuildContext context) {
+    if (!kDebugMode) return;
+    final now = DateTime.now();
+    if (_lastVersionTap != null &&
+        now.difference(_lastVersionTap!).inSeconds > 3) {
+      _versionTapCount = 0;
+    }
+    _lastVersionTap = now;
+    _versionTapCount++;
+    if (_versionTapCount >= 5) {
+      _versionTapCount = 0;
+      _lastVersionTap = null;
+      Navigator.of(context).push(
+        MaterialPageRoute(builder: (_) => const DebugMenuScreen()),
+      );
+    }
   }
 
   void _showAboutDialog(BuildContext context) {
