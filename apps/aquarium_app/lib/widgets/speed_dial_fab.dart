@@ -62,7 +62,14 @@ class _SpeedDialFABState extends State<SpeedDialFAB>
       animation: _controller,
       builder: (context, child) {
         final t = _controller.value;
+        // fit: passthrough avoids the Stack assertion that requires bounded
+        // constraints (StackFit.expand).  When SpeedDialFAB is placed inside
+        // IgnorePointer > Opacity inside a Positioned that returns from a
+        // build() method, parent data timing can leave the Stack with
+        // unconstrained max dimensions on the very first frame.  passthrough
+        // computes size identically (constraints.biggest) but skips the check.
         return Stack(
+          fit: StackFit.passthrough,
           children: [
             // ── Blur scrim ──────────────────────────────────────────
             if (t > 0)

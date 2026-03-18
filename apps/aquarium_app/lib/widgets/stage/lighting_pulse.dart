@@ -66,7 +66,11 @@ class _LightingPulseWrapperState extends ConsumerState<LightingPulseWrapper>
     _wasWaterOpen = waterOpen;
 
     return ExcludeSemantics(
+      // fit: passthrough — defensive; avoids the bounded-constraints assertion
+      // when the wrapper sits inside RepaintBoundary > Positioned.fill and the
+      // parent data has not yet propagated on the very first frame.
       child: Stack(
+        fit: StackFit.passthrough,
         children: [
           widget.child, // room scene — never repaints for the pulse
           IgnorePointer(
@@ -89,6 +93,7 @@ class _LightingPulseWrapperState extends ConsumerState<LightingPulseWrapper>
                 final coolAlpha = (coolValue * 15).round().clamp(0, 255);
 
                 return Stack(
+                  fit: StackFit.passthrough,
                   children: [
                     if (warmAlpha > 0)
                       Positioned.fill(
