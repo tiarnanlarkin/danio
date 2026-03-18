@@ -75,6 +75,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   bool _isNavigatingToCreate = false;
   bool _showWelcomeBanner = false;
   bool _showComebackBanner = false;
+  String? _cachedUserName;
+  String? _cachedFishName;
   final Set<String> _selectedTankIds = {};
 
   @override
@@ -127,6 +129,16 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final prefs = await SharedPreferences.getInstance();
     final hasSeen = prefs.getBool('has_seen_welcome_banner') ?? false;
     if (!hasSeen && mounted) {
+      // Personalisation: read user name for welcome message
+      final profileJson = prefs.getString('user_profile');
+      String? userName;
+      if (profileJson != null) {
+        try {
+          final decoded = jsonDecode(profileJson);
+          userName = decoded['name'] as String?;
+          _cachedUserName = userName;
+        } catch (_) {}
+      }
       setState(() => _showWelcomeBanner = true);
       await prefs.setBool('has_seen_welcome_banner', true);
       Future.delayed(const Duration(seconds: 4), () {
@@ -149,6 +161,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
       final hadStreak = (decoded['currentStreak'] as int?) ?? 0;
       final lastActivityStr = decoded['lastActivityDate'] as String?;
+      // Personalisation: cache fish name and user name for banner text
+      _cachedFishName = decoded['firstFishSpeciesId'] as String?;
+      _cachedUserName ??= decoded['name'] as String?;
       if (hadStreak <= 0 || lastActivityStr == null) return;
 
       final lastActivity = DateTime.tryParse(lastActivityStr);
@@ -810,7 +825,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                           const SizedBox(width: AppSpacing.sm2),
                           Expanded(
                             child: Text(
-                              'Welcome! Your aquarium journey starts now',
+                              _cachedUserName != null
+                                  ? 'Welcome, $_cachedUserName! Your aquarium journey starts now'
+                                  : 'Welcome! Your aquarium journey starts now',
                               style: AppTypography.labelLarge.copyWith(
                                 color: Colors.white,
                                 fontWeight: FontWeight.w600,
@@ -856,7 +873,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       const SizedBox(width: AppSpacing.sm2),
                       Expanded(
                         child: Text(
-                          'Welcome back! Your fish missed you 🌿',
+                          _cachedFishName != null
+                              ? 'Welcome back, ${_cachedUserName ?? ""}${_cachedUserName != null ? "! " : ""}How\'s your $_cachedFishName doing? 🌿'
+                              : _cachedUserName != null
+                                  ? 'Welcome back, $_cachedUserName! Your fish missed you 🌿'
+                                  : 'Welcome back! Your fish missed you 🌿',
                           style: AppTypography.labelLarge.copyWith(
                             color: context.textPrimary,
                           ),
@@ -2358,6 +2379,9 @@ class _DailyNudgeBanner extends ConsumerWidget {
     final todayXp = ref.watch(
       userProfileProvider.select((p) => p.value?.dailyXpHistory[todayKey] ?? 0),
     );
+    final fishName = ref.watch(
+      userProfileProvider.select((p) => p.value?.firstFishSpeciesId),
+    );
     if (todayXp > 0) return const SizedBox.shrink();
 
     // P0-5 FIX: Push daily nudge below the streak/hearts overlay area
@@ -2390,7 +2414,9 @@ class _DailyNudgeBanner extends ConsumerWidget {
               const SizedBox(width: AppSpacing.sm),
               Expanded(
                 child: Text(
-                  "Start a quick lesson to earn XP today!",
+                  fishName != null
+                      ? "Learn something new for $fishName today!"
+                      : "Start a quick lesson to earn XP today!",
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     color: AppColors.onPrimary,
                     fontWeight: FontWeight.w500,

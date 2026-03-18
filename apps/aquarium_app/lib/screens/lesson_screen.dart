@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/learning.dart';
 import '../providers/lesson_provider.dart';
 import '../providers/user_profile_provider.dart';
+import '../models/user_profile.dart' show ExperienceLevel;
 import '../providers/spaced_repetition_provider.dart';
 import '../providers/achievement_provider.dart';
 import '../services/achievement_service.dart';
@@ -50,6 +51,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
   bool _isExitingDueToHearts = false;
   int? _levelBeforeLesson;
   DateTime? _lessonStartTime; // PS-11: Track actual lesson start time
+  bool _showHint = false; // Personalisation: beginner hints
 
   @override
   void initState() {
@@ -597,6 +599,11 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
     }
     final question = quiz.questions[_currentQuizQuestion];
 
+    // Personalisation: show hint for beginner users (not in practice mode)
+    final profile = ref.read(userProfileProvider).value;
+    final isBeginner = profile?.experienceLevel == ExperienceLevel.beginner;
+    final hintExtraItems = (isBeginner && !_answered && !_showHint) ? 1 : 0;
+
     return Column(
       children: [
         // Progress
@@ -643,10 +650,12 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 20),
             itemCount:
                 3 +
+                hintExtraItems +
                 question.options.length +
                 (_answered && question.explanation != null
                     ? 2
-                    : 0), // spacing + question + spacing + options + (spacing + explanation if answered)
+                    : 0) + // spacing + question + spacing + options + (spacing + explanation if answered)
+                (_showHint && !_answered ? 1 : 0), // hint text
             itemBuilder: (context, index) {
               // Spacing at top
               if (index == 0) {
@@ -666,9 +675,53 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
                 return const SizedBox(height: AppSpacing.lg);
               }
 
-              // Answer options
-              if (index >= 3 && index < 3 + question.options.length) {
-                final optionIndex = index - 3;
+              // Hint button (beginners only, before options)
+              final hintButtonIndex = 3;
+              final hintTextIndex = hintButtonIndex + 1;
+              if (hintExtraItems > 0 && index == hintButtonIndex) {
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: AppSpacing.md),
+                  child: Align(
+                    alignment: Alignment.centerRight,
+                    child: ActionChip(
+                      avatar: const Icon(Icons.lightbulb_outline, size: 16),
+                      label: const Text('Need a hint?'),
+                      onPressed: () => setState(() => _showHint = true),
+                    ),
+                  ),
+                );
+              }
+              if (_showHint && !_answered && index == hintTextIndex && hintExtraItems > 0) {
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: AppSpacing.md),
+                  child: Container(
+                    padding: const EdgeInsets.all(AppSpacing.md),
+                    decoration: BoxDecoration(
+                      color: AppOverlays.info10,
+                      borderRadius: AppRadius.mediumRadius,
+                      border: Border.all(color: AppOverlays.info30),
+                    ),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Icon(Icons.lightbulb, color: AppColors.info, size: 20),
+                        const SizedBox(width: AppSpacing.sm),
+                        Expanded(
+                          child: Text(
+                            'Look for keywords in the question — the correct answer often relates directly to the lesson content you just read.',
+                            style: AppTypography.bodySmall.copyWith(color: context.textSecondary),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              }
+
+              // Answer options — offset by hint items
+              final optionsOffset = 3 + hintExtraItems + (_showHint && !_answered ? 1 : 0);
+              if (index >= optionsOffset && index < optionsOffset + question.options.length) {
+                final optionIndex = index - optionsOffset;
                 final option = question.options[optionIndex];
                 final isSelected = _selectedAnswer == optionIndex;
                 final isCorrect = optionIndex == question.correctIndex;
@@ -756,6 +809,8 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
               }
 
               // Explanation (after answering)
+              // When answered, hint items are gone (hintExtraItems=0, showHint gated on !_answered)
+              // so optionsOffset is always 3 in this branch.
               if (_answered && question.explanation != null) {
                 // Spacing before explanation
                 if (index == 3 + question.options.length) {
@@ -890,6 +945,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
                             _currentQuizQuestion++;
                             _selectedAnswer = null;
                             _answered = false;
+                            _showHint = false; // Reset hint for next question
                           });
                         } else {
                           setState(() => _quizComplete = true);
