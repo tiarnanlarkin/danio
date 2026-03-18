@@ -175,6 +175,7 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
       final updatedStats = ReviewStats.fromCards(
         updatedCards,
         reviewsToday: state.stats.reviewsToday,
+        totalReviews: state.stats.totalReviews,
         streak: state.stats.currentStreak,
       );
 
@@ -284,6 +285,7 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
       final updatedStats = ReviewStats.fromCards(
         updatedCards,
         reviewsToday: state.stats.reviewsToday,
+        totalReviews: state.stats.totalReviews,
         streak: state.stats.currentStreak,
       );
 
@@ -582,6 +584,7 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
       final updatedStats = ReviewStats.fromCards(
         state.cards,
         reviewsToday: state.stats.reviewsToday,
+        totalReviews: state.stats.totalReviews,
         streak: newStreak,
       );
       state = state.copyWith(stats: updatedStats);
@@ -710,6 +713,7 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
       final updatedStats = ReviewStats.fromCards(
         updatedCards,
         reviewsToday: state.stats.reviewsToday,
+        totalReviews: state.stats.totalReviews,
         streak: state.stats.currentStreak,
       );
 

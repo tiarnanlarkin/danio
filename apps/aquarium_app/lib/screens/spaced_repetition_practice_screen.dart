@@ -1075,7 +1075,7 @@ class _ReviewSessionScreenState extends ConsumerState<ReviewSessionScreen> {
     await ref
         .read(achievementCheckerProvider)
         .checkAfterReview(
-          reviewsCompleted: srState.stats.reviewsToday,
+          reviewsCompleted: srState.stats.totalReviews,
           reviewStreak: srState.stats.currentStreak,
         );
 
