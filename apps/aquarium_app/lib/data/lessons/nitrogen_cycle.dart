@@ -258,7 +258,7 @@ final nitrogenCyclePath = LearningPath(
         const LessonSection(
           type: LessonSectionType.bulletList,
           content:
-              '• A test kit (API Master Test Kit recommended)\n• Ammonia source (pure ammonia or fish food)\n• Patience (4-6 weeks)\n• A running filter',
+              '• A test kit (API Master Test Kit recommended)\n• Ammonia source (pure ammonia or fish food)\n• Patience (2-6 weeks)\n• A running filter',
         ),
         const LessonSection(
           type: LessonSectionType.heading,

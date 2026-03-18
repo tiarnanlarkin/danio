@@ -14,28 +14,19 @@ import 'inventory_screen.dart';
 import '../widgets/mascot/mascot_widgets.dart';
 import '../utils/navigation_throttle.dart';
 
-/// Gem Shop colors - jewel/treasure theme (WCAG AA compliant)
+/// Gem Shop room theme — jewel/treasure gradient backgrounds and
+/// category-specific accent colours that don't exist in the shared palette.
+/// Text, glass, and achievement colours use AppColors / AppAchievementColors.
 class GemShopColors {
+  // Room gradient backgrounds (unique to Gem Shop)
   static const background1 = Color(0xFF1A1A2E); // Deep navy
   static const background2 = Color(0xFF16213E); // Dark blue
   static const background3 = Color(0xFF0F1A2E); // Darker blue
-  static const gemPrimary = Color(
-    0xFF5FD9CF,
-  ); // Turquoise (gem color) - Lightened for better contrast
+
+  // Gem-specific accents (no shared equivalent)
+  static const gemPrimary = Color(0xFF5FD9CF); // Turquoise
   static const gemGlow = Color(0xFF95E1D3); // Light turquoise
-  static const goldAccent = Color(0xFFFFD700); // Gold
-  static const silverAccent = Color(0xFFC0C0C0); // Silver
-  static const glassCard = Color(0x15FFFFFF);
-  static const glassBorder = Color(0x30FFFFFF);
-  static const textPrimary = Color(0xFFF5F5F5); // High contrast white
-  static const textSecondary = Color(
-    0xFFCDBFAE,
-  ); // Warm beige for brand consistency
-  static const powerUpColor = Color(0xFFFF7B7B); // Red - Lightened slightly
-  static const extrasColor = Color(
-    0xFF5FD9CF,
-  ); // Turquoise - matches gemPrimary
-  static const cosmeticsColor = Color(0xFFFFD700); // Gold
+  static const powerUpColor = Color(0xFFFF7B7B); // Red — decorative only — not for text
 
   // Pre-computed overlays for performance
   static const gemPrimary20 = Color(0x335FD9CF); // 20%
@@ -43,7 +34,6 @@ class GemShopColors {
   static const gemPrimary50 = Color(0x805FD9CF); // 50%
   static const gemGlow20 = Color(0x3395E1D3); // 20%
   static const powerUpColor80 = Color(0xCCFF7B7B); // 80%
-  static const textSecondary30 = Color(0x4DC5C5D5); // 30%
 }
 
 /// Main Gem Shop Screen
@@ -100,7 +90,7 @@ class _GemShopScreenState extends ConsumerState<GemShopScreen>
           title: Text(
             '💎 Gem Shop',
             style: Theme.of(context).textTheme.headlineSmall!.copyWith(
-              color: GemShopColors.textPrimary,
+              color: AppColors.textPrimaryDark,
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -109,7 +99,7 @@ class _GemShopScreenState extends ConsumerState<GemShopScreen>
             IconButton(
               icon: const Icon(
                 Icons.inventory_2,
-                color: GemShopColors.goldAccent,
+                color: AppAchievementColors.gold,
               ),
               tooltip: 'My Inventory',
               onPressed: () =>
@@ -123,7 +113,7 @@ class _GemShopScreenState extends ConsumerState<GemShopScreen>
             controller: _tabController,
             indicatorColor: GemShopColors.gemPrimary,
             labelColor: GemShopColors.gemPrimary,
-            unselectedLabelColor: GemShopColors.textSecondary,
+            unselectedLabelColor: AppColors.textSecondaryDark,
             tabs: const [
               Tab(
                 icon: Icon(Icons.flash_on, semanticLabel: 'Power-ups category'),
@@ -175,7 +165,7 @@ class _GemShopScreenState extends ConsumerState<GemShopScreen>
                 shouldLoop: false,
                 colors: const [
                   GemShopColors.gemPrimary,
-                  GemShopColors.goldAccent,
+                  AppAchievementColors.gold,
                   GemShopColors.powerUpColor,
                   AppColors.success,
                   AppColors.primary,
@@ -278,7 +268,7 @@ class _GemShopScreenState extends ConsumerState<GemShopScreen>
               backgroundColor: GemShopColors.background2,
               shape: RoundedRectangleBorder(
                 borderRadius: AppRadius.largeRadius,
-                side: const BorderSide(color: GemShopColors.glassBorder),
+                side: const BorderSide(color: AppColors.whiteAlpha20),
               ),
               title: Row(
                 children: [
@@ -291,7 +281,7 @@ class _GemShopScreenState extends ConsumerState<GemShopScreen>
                     child: Text(
                       item.name,
                       style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                        color: GemShopColors.textPrimary,
+                        color: AppColors.textPrimaryDark,
                       ),
                     ),
                   ),
@@ -304,16 +294,16 @@ class _GemShopScreenState extends ConsumerState<GemShopScreen>
                   Text(
                     item.description,
                     style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                      color: GemShopColors.textSecondary,
+                      color: AppColors.textSecondaryDark,
                     ),
                   ),
                   const SizedBox(height: AppSpacing.lg2),
                   Container(
                     padding: const EdgeInsets.all(AppSpacing.md),
                     decoration: BoxDecoration(
-                      color: GemShopColors.glassCard,
+                      color: AppColors.whiteAlpha08,
                       borderRadius: AppRadius.mediumRadius,
-                      border: Border.all(color: GemShopColors.glassBorder),
+                      border: Border.all(color: AppColors.whiteAlpha20),
                     ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -321,7 +311,7 @@ class _GemShopScreenState extends ConsumerState<GemShopScreen>
                         Text(
                           'Cost:',
                           style: Theme.of(context).textTheme.titleMedium!
-                              .copyWith(color: GemShopColors.textSecondary),
+                              .copyWith(color: AppColors.textSecondaryDark),
                         ),
                         Row(
                           children: [
@@ -352,13 +342,13 @@ class _GemShopScreenState extends ConsumerState<GemShopScreen>
                       Text(
                         'Your balance:',
                         style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                          color: GemShopColors.textSecondary,
+                          color: AppColors.textSecondaryDark,
                         ),
                       ),
                       Text(
                         '$gemBalance 💎',
                         style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                          color: GemShopColors.textPrimary,
+                          color: AppColors.textPrimaryDark,
                         ),
                       ),
                     ],
@@ -384,7 +374,7 @@ class _GemShopScreenState extends ConsumerState<GemShopScreen>
                       : () => Navigator.pop(ctx, false),
                   child: const Text(
                     'Cancel',
-                    style: TextStyle(color: GemShopColors.textSecondary),
+                    style: TextStyle(color: AppColors.textSecondaryDark),
                   ),
                 ),
                 ElevatedButton(
@@ -393,7 +383,7 @@ class _GemShopScreenState extends ConsumerState<GemShopScreen>
                       : null,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: GemShopColors.gemPrimary,
-                    disabledBackgroundColor: GemShopColors.textSecondary30,
+                    disabledBackgroundColor: AppColors.textSecondaryDark30,
                     shape: RoundedRectangleBorder(
                       borderRadius: AppRadius.mediumRadius,
                     ),
@@ -474,9 +464,9 @@ class _ShopItemCard extends ConsumerWidget {
       case ShopItemCategory.powerUps:
         return GemShopColors.powerUpColor;
       case ShopItemCategory.extras:
-        return GemShopColors.extrasColor;
+        return GemShopColors.gemPrimary;
       case ShopItemCategory.cosmetics:
-        return GemShopColors.cosmeticsColor;
+        return AppAchievementColors.gold;
     }
   }
 
@@ -510,12 +500,12 @@ class _ShopItemCard extends ConsumerWidget {
               filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
               child: Container(
                 decoration: BoxDecoration(
-                  color: GemShopColors.glassCard,
+                  color: AppColors.whiteAlpha08,
                   borderRadius: AppRadius.largeRadius,
                   border: Border.all(
                     color: owned
                         ? categoryColor.withAlpha(128)
-                        : GemShopColors.glassBorder,
+                        : AppColors.whiteAlpha20,
                     width: owned ? 2 : 1,
                   ),
                 ),
@@ -542,7 +532,7 @@ class _ShopItemCard extends ConsumerWidget {
                             item.name,
                             style: Theme.of(context).textTheme.bodyMedium!
                                 .copyWith(
-                                  color: GemShopColors.textPrimary,
+                                  color: AppColors.textPrimaryDark,
                                   fontWeight: FontWeight.bold,
                                 ),
                             maxLines: 2,
@@ -554,7 +544,7 @@ class _ShopItemCard extends ConsumerWidget {
                             child: Text(
                               item.description,
                               style: Theme.of(context).textTheme.labelSmall!
-                                  .copyWith(color: GemShopColors.textSecondary),
+                                  .copyWith(color: AppColors.textSecondaryDark),
                               maxLines: 3,
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -708,7 +698,7 @@ class _GemBalanceChip extends StatelessWidget {
             Text(
               '$balance',
               style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                color: GemShopColors.textPrimary,
+                color: AppColors.textPrimaryDark,
                 fontWeight: FontWeight.bold,
               ),
             ),

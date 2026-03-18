@@ -203,6 +203,7 @@ class _FishSelectScreenState extends State<FishSelectScreen>
                         ),
                         suffixIcon: _isSearching
                             ? IconButton(
+                                tooltip: 'Clear search',
                                 icon: const Icon(Icons.close_rounded),
                                 onPressed: () {
                                   _searchController.clear();

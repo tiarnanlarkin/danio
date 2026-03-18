@@ -56,18 +56,24 @@ class ConsentScreen extends StatelessWidget {
           child: Column(
             children: [
               const Spacer(),
-              Icon(
-                Icons.privacy_tip_outlined,
-                size: 64,
-                color: AppColors.primary,
+              Semantics(
+                label: 'Privacy icon',
+                child: Icon(
+                  Icons.privacy_tip_outlined,
+                  size: 64,
+                  color: AppColors.primary,
+                ),
               ),
               const SizedBox(height: AppSpacing.lg),
-              Text(
-                'Your Privacy Matters',
+              Semantics(
+                header: true,
+                child: Text(
+                  'Your Privacy Matters',
                 style: theme.textTheme.headlineSmall?.copyWith(
                   fontWeight: FontWeight.bold,
                 ),
                 textAlign: TextAlign.center,
+              ),
               ),
               const SizedBox(height: AppSpacing.md),
               Text(

@@ -387,7 +387,7 @@ class _AddEditItemSheetState extends State<_AddEditItemSheet> {
     return Container(
       margin: const EdgeInsets.all(AppSpacing.md),
       padding: EdgeInsets.only(
-        bottom: MediaQuery.of(context).viewInsets.bottom,
+        bottom: max(MediaQuery.of(context).viewInsets.bottom, MediaQuery.of(context).viewPadding.bottom),
       ),
       decoration: BoxDecoration(
         color: Theme.of(context).scaffoldBackgroundColor,

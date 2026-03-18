@@ -194,13 +194,6 @@ class SettingsScreen extends ConsumerWidget {
         ),
       ),
       (_) => NavListTile(
-        icon: Icons.bubble_chart,
-        title: 'CO2 Calculator',
-        subtitle: 'Calculate CO2 from pH and KH',
-        onTap: () =>
-            NavigationThrottle.push(context, const Co2CalculatorScreen()),
-      ),
-      (_) => NavListTile(
         icon: Icons.science_outlined,
         title: 'Dosing Calculator',
         subtitle: 'Calculate fertilizer & medication doses',
@@ -222,13 +215,6 @@ class SettingsScreen extends ConsumerWidget {
           context,
           const TankVolumeCalculatorScreen(),
         ),
-      ),
-      (_) => NavListTile(
-        icon: Icons.account_balance_wallet,
-        title: 'Cost Tracker',
-        subtitle: 'Track aquarium expenses',
-        onTap: () =>
-            NavigationThrottle.push(context, const CostTrackerScreen()),
       ),
       (_) => NavListTile(
         icon: Icons.compare_arrows,

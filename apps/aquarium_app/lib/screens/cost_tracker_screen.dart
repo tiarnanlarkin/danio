@@ -617,7 +617,7 @@ class _AddExpenseSheetState extends State<_AddExpenseSheet> {
         16,
         16,
         16,
-        16 + MediaQuery.of(context).viewInsets.bottom,
+        16 + max(MediaQuery.of(context).viewInsets.bottom, MediaQuery.of(context).viewPadding.bottom),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,

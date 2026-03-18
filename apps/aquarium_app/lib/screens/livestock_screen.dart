@@ -970,7 +970,7 @@ class _AddLivestockSheetState extends ConsumerState<_AddLivestockSheet> {
           left: 16,
           right: 16,
           top: 16,
-          bottom: MediaQuery.of(context).viewInsets.bottom + 16,
+          bottom: max(MediaQuery.of(context).viewInsets.bottom, MediaQuery.of(context).viewPadding.bottom) + 16,
         ),
         child: SingleChildScrollView(
           child: Column(
