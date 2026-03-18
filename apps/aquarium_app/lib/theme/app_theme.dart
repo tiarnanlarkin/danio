@@ -53,7 +53,7 @@ class AppColors {
 
   // Text colors - Light mode
   static const Color textPrimary = Color(0xFF2D3436); // Near black
-  static const Color textSecondary = Color(0xFF636E72); // Medium gray
+  static const Color textSecondary = Color(0xFF5A6266); // Medium gray (WCAG AA: 5.5:1 on white)
   static const Color textSecondaryAlpha10 = Color(0x1A636E72); // 10%
   static const Color textSecondaryAlpha30 = Color(0x4C636E72); // 30%
   static const Color textHint = Color(

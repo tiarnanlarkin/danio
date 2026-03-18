@@ -21,7 +21,10 @@ class WelcomeBanner extends StatelessWidget {
       top: MediaQuery.of(context).padding.top + AppSpacing.md,
       left: AppSpacing.md,
       right: AppSpacing.md,
-      child: GestureDetector(
+      child: Semantics(
+        label: 'Dismiss welcome banner',
+        button: true,
+        child: GestureDetector(
         onTap: onDismiss,
         child: AnimatedOpacity(
           opacity: visible ? 1.0 : 0.0,
@@ -66,6 +69,7 @@ class WelcomeBanner extends StatelessWidget {
               ),
             ),
           ),
+        ),
         ),
       ),
     );

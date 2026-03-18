@@ -795,48 +795,52 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               left: AppSpacing.md,
               right: AppSpacing.md,
               // P1 FIX: Allow manual dismiss of welcome banner
-              child: GestureDetector(
-                onTap: () => setState(() => _showWelcomeBanner = false),
-                child: AnimatedOpacity(
-                  opacity: _showWelcomeBanner ? 1.0 : 0.0,
-                  duration: AppDurations.long2,
-                  child: Material(
-                    color: Colors.transparent,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: AppSpacing.lg,
-                        vertical: AppSpacing.md,
-                      ),
-                      decoration: BoxDecoration(
-                        color: AppColors.primary,
-                        borderRadius: AppRadius.mediumRadius,
-                        boxShadow: [
-                          BoxShadow(
-                            color: AppColors.primary.withAlpha(60),
-                            blurRadius: 12,
-                            offset: const Offset(0, 4),
-                          ),
-                        ],
-                      ),
-                      child: Row(
-                        children: [
-                          const Text(
-                            '\u{1F420}',
-                            style: TextStyle(fontSize: 28),
-                          ),
-                          const SizedBox(width: AppSpacing.sm2),
-                          Expanded(
-                            child: Text(
-                              _cachedUserName != null
-                                  ? 'Welcome, $_cachedUserName! Your aquarium journey starts now'
-                                  : 'Welcome! Your aquarium journey starts now',
-                              style: AppTypography.labelLarge.copyWith(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w600,
+              child: Semantics(
+                label: 'Dismiss welcome banner',
+                button: true,
+                child: GestureDetector(
+                  onTap: () => setState(() => _showWelcomeBanner = false),
+                  child: AnimatedOpacity(
+                    opacity: _showWelcomeBanner ? 1.0 : 0.0,
+                    duration: AppDurations.long2,
+                    child: Material(
+                      color: Colors.transparent,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: AppSpacing.lg,
+                          vertical: AppSpacing.md,
+                        ),
+                        decoration: BoxDecoration(
+                          color: AppColors.primary,
+                          borderRadius: AppRadius.mediumRadius,
+                          boxShadow: [
+                            BoxShadow(
+                              color: AppColors.primary.withAlpha(60),
+                              blurRadius: 12,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
+                        ),
+                        child: Row(
+                          children: [
+                            const Text(
+                              '\u{1F420}',
+                              style: TextStyle(fontSize: 28),
+                            ),
+                            const SizedBox(width: AppSpacing.sm2),
+                            Expanded(
+                              child: Text(
+                                _cachedUserName != null
+                                    ? 'Welcome, $_cachedUserName! Your aquarium journey starts now'
+                                    : 'Welcome! Your aquarium journey starts now',
+                                style: AppTypography.labelLarge.copyWith(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w600,
+                                ),
                               ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -2392,7 +2396,10 @@ class _DailyNudgeBanner extends ConsumerWidget {
       top: MediaQuery.of(context).padding.top + 100,
       left: 16,
       right: 16,
-      child: GestureDetector(
+      child: Semantics(
+        label: 'Dismiss daily nudge',
+        button: true,
+        child: GestureDetector(
         onTap: onDismiss,
         child: Container(
           padding: const EdgeInsets.symmetric(
@@ -2438,6 +2445,7 @@ class _DailyNudgeBanner extends ConsumerWidget {
               ),
             ],
           ),
+        ),
         ),
       ),
     );
