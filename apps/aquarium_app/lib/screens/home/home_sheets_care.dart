@@ -3,6 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../models/models.dart';
 import '../../providers/tank_provider.dart';
 import '../../theme/app_theme.dart';
+import '../../utils/app_page_routes.dart';
+import '../../utils/navigation_throttle.dart';
+import '../add_log_screen.dart';
 import 'home_sheets_helpers.dart' show timeAgo, buildParamRow;
 
 /// Feeding info bottom sheet with guidelines and recent feed count.
@@ -96,6 +99,11 @@ void showFeedingInfo(BuildContext context, WidgetRef ref, String? tankId) {
             child: ElevatedButton.icon(
               onPressed: () {
                 Navigator.pop(ctx);
+                NavigationThrottle.push(
+                  context,
+                  AddLogScreen(tankId: tankId, initialType: LogType.feeding),
+                  route: RoomSlideRoute(page: AddLogScreen(tankId: tankId, initialType: LogType.feeding)),
+                );
               },
               icon: const Icon(Icons.restaurant, size: 18),
               label: const Text('Log Feeding'),
