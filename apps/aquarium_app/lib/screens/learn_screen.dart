@@ -570,7 +570,9 @@ class _ReviewCardsBanner extends ConsumerWidget {
         AppSpacing.md,
         0,
       ),
-      child: InkWell(
+      child: Semantics(
+        button: true,
+        child: InkWell(
         onTap: () {
           Navigator.of(context).push(
             MaterialPageRoute(
@@ -654,6 +656,7 @@ class _ReviewCardsBanner extends ConsumerWidget {
             ],
           ),
         ),
+        ),
       ),
     );
   }
@@ -681,7 +684,9 @@ class _PracticeCard extends ConsumerWidget {
         AppSpacing.md,
         0,
       ),
-      child: InkWell(
+      child: Semantics(
+        button: true,
+        child: InkWell(
         onTap: () {
           Navigator.of(
             context,
@@ -776,6 +781,7 @@ class _PracticeCard extends ConsumerWidget {
               ),
             ],
           ),
+        ),
         ),
       ),
     );
@@ -1157,7 +1163,7 @@ class _LazyLearningPathCardState extends ConsumerState<_LazyLearningPathCard> {
             child: Text(
               'Coming Soon 🚧',
               style: AppTypography.labelSmall.copyWith(
-                color: DanioColors.amberGold,
+                color: DanioColors.amberGoldText, // WCAG AA text variant
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -1297,7 +1303,7 @@ class _LazyLearningPathCardState extends ConsumerState<_LazyLearningPathCard> {
                     child: Text(
                       'Coming Soon 🚧',
                       style: AppTypography.labelSmall.copyWith(
-                        color: DanioColors.amberGold,
+                        color: DanioColors.amberGoldText, // WCAG AA text variant
                         fontWeight: FontWeight.w600,
                         fontSize: 10,
                       ),

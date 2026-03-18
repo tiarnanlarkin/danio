@@ -251,8 +251,8 @@ class _GlassCardState extends State<GlassCard>
       borderRadius: radius,
       border: Border.all(
         color: isDark
-            ? const Color(0xFF5B9EA6).withAlpha(64)
-            : const Color(0xFF5B9EA6).withAlpha(38),
+            ? const Color(0xFF5B9EA6).withAlpha(64) // decorative only — not for text
+            : const Color(0xFF5B9EA6).withAlpha(38), // decorative only — not for text
         width: 1,
       ),
       boxShadow: [

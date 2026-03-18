@@ -45,6 +45,18 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
     });
   }
 
+  /// Darkens a decorative colour to meet WCAG AA (4.5:1) for text on light bg.
+  /// Only adjusts if luminance suggests insufficient contrast with white.
+  static Color _ensureTextContrast(Color color) {
+    final luminance = color.computeLuminance();
+    // White luminance = 1.0. WCAG AA = 4.5:1 → min luminance ≈ 0.143
+    if (luminance > 0.18) {
+      // Blend toward black until contrast is sufficient
+      return Color.from(alpha: color.a, red: (color.r * 0.6).clamp(0, 1), green: (color.g * 0.6).clamp(0, 1), blue: (color.b * 0.6).clamp(0, 1));
+    }
+    return color;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -363,7 +375,7 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
             value,
             style: Theme.of(context).textTheme.titleLarge?.copyWith(
               fontWeight: FontWeight.bold,
-              color: color,
+              color: _ensureTextContrast(color),
             ),
             overflow: TextOverflow.ellipsis,
             maxLines: 1,
@@ -844,7 +856,7 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
                     insight.message,
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.bold,
-                      color: color,
+                      color: _ensureTextContrast(color),
                     ),
                   ),
                 ),

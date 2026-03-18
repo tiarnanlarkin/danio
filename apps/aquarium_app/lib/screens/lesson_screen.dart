@@ -204,7 +204,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
                             ? '+${widget.lesson.xpReward ~/ 2} XP'
                             : 'up to +${widget.lesson.xpReward + (widget.lesson.quiz?.bonusXp ?? 0)} XP',
                         style: AppTypography.labelMedium.copyWith(
-                          color: AppColors.accent,
+                          color: AppColors.accentText, // WCAG AA text variant
                         ),
                       ),
                     ],
@@ -747,7 +747,10 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
 
                 return Padding(
                   padding: const EdgeInsets.only(bottom: 12),
-                  child: InkWell(
+                  child: Semantics(
+                    button: true,
+                    selected: _selectedAnswer == optionIndex,
+                    child: InkWell(
                     onTap: _answered
                         ? null
                         : () => setState(() => _selectedAnswer = optionIndex),
@@ -804,6 +807,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
                         ],
                       ),
                     ),
+                  ),
                   ),
                 );
               }

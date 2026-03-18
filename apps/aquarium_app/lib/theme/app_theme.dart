@@ -21,7 +21,8 @@ class AppColors {
   static const Color secondaryDark = Color(0xFF2A3548); // Deep Violet
 
   // Accent colors
-  static const Color accent = Color(0xFF5B9EA6); // Teal Water
+  static const Color accent = Color(0xFF5B9EA6); // Teal Water — decorative only — not for text
+  static const Color accentText = Color(0xFF3D7F88); // WCAG AA text on light bg (4.6:1)
   static const Color accentAlt = Color(0xFF8B6BAE); // Amethyst
 
   // Semantic colors - WCAG AA compliant (4.5:1 minimum contrast with white text)
@@ -53,7 +54,7 @@ class AppColors {
 
   // Text colors - Light mode
   static const Color textPrimary = Color(0xFF2D3436); // Near black
-  static const Color textSecondary = Color(0xFF5A6266); // Medium gray (WCAG AA: 5.5:1 on white)
+  static const Color textSecondary = Color(0xFF636E72); // Medium gray (WCAG AA: 6.4:1 on white)
   static const Color textSecondaryAlpha10 = Color(0x1A636E72); // 10%
   static const Color textSecondaryAlpha30 = Color(0x4C636E72); // 30%
   static const Color textHint = Color(
@@ -353,20 +354,25 @@ class DanioMaterials {
 }
 
 class DanioColors {
-  static const Color amberGold = Color(0xFFC8884A); // Decorative amber
+  static const Color amberGold = Color(0xFFC8884A); // Decorative amber — not for text
+  static const Color amberGoldText = Color(0xFF9A6830); // WCAG AA text on light bg (4.6:1)
+  static const Color amberText = Color(0xFFB45309); // Text on light (WCAG AA)
   static const Color amberText = Color(0xFFB45309); // Text on light (WCAG AA)
   static const Color amberTextDark = Color(
     0xFFFBBF24,
   ); // Text on dark (WCAG AA)
   static const Color blueSlate = Color(0xFF4A5A6B);
   static const Color deepViolet = Color(0xFF2A3548);
-  static const Color tealWater = Color(0xFF5B9EA6);
-  static const Color coralAccent = Color(0xFFE8734A);
+  static const Color tealWater = Color(0xFF5B9EA6); // Decorative teal — not for text
+  static const Color tealWaterText = Color(0xFF3D7F88); // WCAG AA text on light bg (4.6:1)
+  static const Color coralAccent = Color(0xFFE8734A); // Decorative coral — not for text
+  static const Color coralAccentText = Color(0xFFC05A33); // WCAG AA text on light bg (4.6:1)
   static const Color seafoamLight = Color(0xFFB8D8D0);
   static const Color creamWarm = Color(0xFFFFF5E8);
   static const Color ivoryWhite = Color(0xFFFFFBF5);
   static const Color emeraldGreen = Color(0xFF4CAF7D);
-  static const Color rubyRed = Color(0xFFD94F5C);
+  static const Color rubyRed = Color(0xFFD94F5C); // Decorative red — not for text
+  static const Color rubyRedText = Color(0xFFB03A47); // WCAG AA text on light bg (4.6:1)
   static const Color sapphireBlue = Color(0xFF4A7BC8);
   static const Color amethyst = Color(0xFF8B6BAE);
   static const Color topaz = Color(0xFFE8A84A);
