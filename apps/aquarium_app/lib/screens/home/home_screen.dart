@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:skeletonizer/skeletonizer.dart';
 import '../../models/models.dart';
 import '../../providers/tank_provider.dart';
 import '../../providers/room_theme_provider.dart';
@@ -11,7 +10,6 @@ import '../../theme/app_theme.dart';
 import '../../widgets/core/app_states.dart';
 import '../../widgets/hearts_widgets.dart';
 import '../../widgets/gamification_dashboard.dart';
-import '../../widgets/fun_loading_messages.dart';
 import '../../widgets/stage/stage_provider.dart';
 import '../../widgets/stage/stage_scrim.dart';
 import '../../widgets/stage/swiss_army_panel.dart';
@@ -43,6 +41,8 @@ import 'widgets/comeback_banner.dart';
 import 'widgets/daily_nudge.dart';
 import 'widgets/streak_hearts_overlay.dart';
 import 'widgets/room_control_fab.dart';
+import 'widgets/skeleton_room.dart';
+import 'widgets/tank_list_tile.dart';
 
 /// HomeScreen - The Living Room in the House Navigator.
 class HomeScreen extends ConsumerStatefulWidget {
@@ -403,8 +403,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   Widget _buildLivingRoomScreen() {
     final theme = ref.watch(currentRoomThemeProvider);
     final tanksAsync = ref.watch(tanksProvider);
-    if (!mounted) return _buildSkeletonRoom();
-    if (tanksAsync.isLoading && !tanksAsync.hasValue) return _buildSkeletonRoom();
+    if (!mounted) return const SkeletonRoom();
+    if (tanksAsync.isLoading && !tanksAsync.hasValue) return const SkeletonRoom();
     if (tanksAsync.hasError && !tanksAsync.hasValue) {
       return AppErrorState(
         title: 'Couldn\'t load your tanks',
@@ -416,7 +416,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final tanksData = tanksAsync.valueOrNull ?? [];
     return Builder(builder: (context) {
       final tanks = tanksData;
-      if (!mounted) return _buildSkeletonRoom();
+      if (!mounted) return const SkeletonRoom();
       _maybeShowFirstTankPrompt(context, tanks);
 
       if (tanks.isEmpty) {
@@ -552,7 +552,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     onExportSelected: () => _bulkExport(context, tanks),
                   ),
                 const SizedBox(height: 8),
-                ...tanks.asMap().entries.map((e) => _buildTankTile(context, e.key, e.value)),
+                ...tanks.asMap().entries.map((e) => TankListTile(
+                  name: e.value.name,
+                  volumeLitres: e.value.volumeLitres,
+                  isSelected: e.key == _currentTankIndex,
+                  onTap: () => setState(() => _currentTankIndex = e.key),
+                )),
               ],
             ),
           ),

@@ -458,7 +458,10 @@ class _OfflineBanner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return Semantics(
+      button: true,
+      label: 'AI Features settings. Coming in Danio Pro',
+      child: GestureDetector(
       onTap: onSettingsTap,
       child: Container(
         padding: const EdgeInsets.all(AppSpacing.lg),
@@ -523,6 +526,7 @@ class _OfflineBanner extends StatelessWidget {
             ),
           ],
         ),
+      ),
       ),
     );
   }
