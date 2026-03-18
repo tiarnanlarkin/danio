@@ -11,7 +11,6 @@
 /// NEW APPROACH: Use lazy-loaded chunks in lib/data/lessons/
 /// - Each learning path is a separate file (20-40KB each)
 /// - Use LessonProvider for lazy loading (lib/providers/lesson_provider.dart)
-/// - Skeleton states available (lib/widgets/lesson_skeleton.dart)
 ///
 /// This file remains for backward compatibility. Gradually migrate to:
 /// - ref.watch(lessonProvider) for Riverpod screens
