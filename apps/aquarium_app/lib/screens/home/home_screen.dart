@@ -41,6 +41,7 @@ import 'widgets/empty_room_scene.dart';
 import 'widgets/today_board.dart';
 import '../backup_restore_screen.dart';
 import '../tab_navigator.dart';
+import '../onboarding/returning_user_flows.dart';
 import '../../widgets/stage/stage_provider.dart';
 import '../../widgets/stage/stage_scrim.dart';
 import '../../widgets/stage/swiss_army_panel.dart';
@@ -81,6 +82,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     super.initState();
     _checkWelcomeBanner();
     _checkComebackBanner();
+    _checkReturningUserFlow();
     _showFirstVisitTooltip();
   }
 
@@ -167,6 +169,83 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     } catch (e) {
       // Non-critical — don't surface comeback banner on error
       debugPrint('Comeback banner check failed: $e');
+    }
+  }
+
+  /// Show returning user milestone widgets (Day 2, Day 7, Day 30).
+  /// Checks profile age and streak to show the right card at the right time.
+  Future<void> _checkReturningUserFlow() async {
+    if (!mounted) return;
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final profileJson = prefs.getString('user_profile');
+      if (profileJson == null) return;
+
+      final decoded = jsonDecode(profileJson);
+      if (decoded is! Map<String, dynamic>) return;
+
+      final createdAtStr = decoded['createdAt'] as String?;
+      if (createdAtStr == null) return;
+      final createdAt = DateTime.tryParse(createdAtStr);
+      if (createdAt == null) return;
+
+      final currentStreak = (decoded['currentStreak'] as int?) ?? 0;
+      final daysSinceSignup = DateTime.now().difference(createdAt).inDays;
+      final fishName = decoded['firstFishSpeciesId'] as String?;
+
+      Widget? milestoneCard;
+      String? prefsKey;
+
+      // Day 2: show on day 1-2 with a streak
+      if (daysSinceSignup >= 1 &&
+          daysSinceSignup <= 2 &&
+          currentStreak >= 1 &&
+          (prefs.getBool('seen_day2_prompt') ?? false) == false) {
+        milestoneCard = Day2StreakPrompt(
+          fishName: fishName,
+          onContinue: () => Navigator.of(context).pop(),
+          onDismiss: () => Navigator.of(context).pop(),
+        );
+        prefsKey = 'seen_day2_prompt';
+      }
+      // Day 7: show on day 7-8 with a streak of 5+
+      else if (daysSinceSignup >= 7 &&
+          daysSinceSignup <= 8 &&
+          currentStreak >= 5 &&
+          (prefs.getBool('seen_day7_milestone') ?? false) == false) {
+        milestoneCard = Day7MilestoneCard(
+          streak: currentStreak,
+          onClose: () => Navigator.of(context).pop(),
+        );
+        prefsKey = 'seen_day7_milestone';
+      }
+      // Day 30: show on day 30-31 with any streak
+      else if (daysSinceSignup >= 30 &&
+          daysSinceSignup <= 31 &&
+          currentStreak >= 1 &&
+          (prefs.getBool('seen_day30_committed') ?? false) == false) {
+        milestoneCard = Day30CommittedCard(
+          streak: currentStreak,
+          onClose: () => Navigator.of(context).pop(),
+        );
+        prefsKey = 'seen_day30_committed';
+      }
+
+      if (milestoneCard != null && mounted) {
+        await showDialog(
+          context: context,
+          barrierDismissible: true,
+          builder: (_) => Dialog(
+            backgroundColor: Colors.transparent,
+            child: milestoneCard,
+          ),
+        );
+        if (prefsKey != null) {
+          await prefs.setBool(prefsKey, true);
+        }
+      }
+    } catch (e) {
+      debugPrint('Returning user flow check failed: $e');
     }
   }
 
