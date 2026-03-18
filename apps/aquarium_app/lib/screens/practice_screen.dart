@@ -410,7 +410,9 @@ class _PracticeScreenState extends ConsumerState<PracticeScreen> {
       ),
       ),
     );
-  }(LessonProgress progress) {
+  }
+
+  String _getTimeSinceReview(LessonProgress progress) {
     final referenceDate = progress.lastReviewDate ?? progress.completedDate;
     final daysSince = DateTime.now().difference(referenceDate).inDays;
 

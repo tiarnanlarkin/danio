@@ -384,7 +384,7 @@ class _AchievementsScreenState extends ConsumerState<AchievementsScreen> {
                           child: ShimmerGlow(
                             glowColor: AppColors.primary,
                             child: Semantics(
-                              label: '${achievement.name} achievement${progress.isComplete ? ', completed' : ''}',
+                              label: '${achievement.name} achievement${progress.isUnlocked ? ', completed' : ''}',
                               button: true,
                               child: Card(
                               color: AppColors.primaryAlpha08,

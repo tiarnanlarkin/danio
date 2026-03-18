@@ -540,7 +540,10 @@ class _ThemeCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return Semantics(
+      button: true,
+      label: '${theme.name} theme${isSelected ? ", selected" : ""}${isLocked ? ", locked" : ""}',
+      child: GestureDetector(
       onTap: onTap,
       child: AnimatedContainer(
         duration: AppDurations.medium2,
@@ -681,6 +684,7 @@ class _ThemeCard extends StatelessWidget {
             ],
           ),
         ),
+      ),
       ),
     );
   }

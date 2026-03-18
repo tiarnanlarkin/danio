@@ -213,7 +213,10 @@ class _PhotoThumbnail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return Semantics(
+      button: true,
+      label: 'Photo from ${DateFormat("d MMM yyyy").format(photo.date)}',
+      child: GestureDetector(
       onTap: onTap,
       child: Container(
         decoration: BoxDecoration(
@@ -251,6 +254,7 @@ class _PhotoThumbnail extends StatelessWidget {
             ],
           ),
         ),
+      ),
       ),
     );
   }

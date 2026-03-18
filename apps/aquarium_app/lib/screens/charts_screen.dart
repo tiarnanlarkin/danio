@@ -877,7 +877,10 @@ class _ChartControlChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
+    return Semantics(
+      button: true,
+      selected: isActive,
+      child: InkWell(
       onTap: onTap,
       borderRadius: AppRadius.largeRadius,
       child: Container(
@@ -910,6 +913,7 @@ class _ChartControlChip extends StatelessWidget {
             ),
           ],
         ),
+      ),
       ),
     );
   }

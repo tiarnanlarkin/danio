@@ -330,7 +330,10 @@ class _ToolCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return Semantics(
+      button: true,
+      label: title,
+      child: GestureDetector(
       onTap: onTap,
       child: ClipRRect(
         borderRadius: AppRadius.largeRadius,
@@ -373,6 +376,7 @@ class _ToolCard extends StatelessWidget {
             ),
           ),
         ),
+      ),
       ),
     );
   }
