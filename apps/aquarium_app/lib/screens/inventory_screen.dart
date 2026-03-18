@@ -10,29 +10,26 @@ import '../widgets/empty_state.dart';
 import '../widgets/core/app_states.dart';
 import '../widgets/mascot/mascot_widgets.dart';
 
-/// Inventory colors - warm treasure chest theme
-/// Adapts slightly for dark mode to maintain readability
+/// Inventory room theme — treasure-chest gradient backgrounds and
+/// category-specific colours that don't exist in the shared palette.
+/// Text, glass, and common colours use AppColors.
 class InventoryColors {
   InventoryColors._();
 
-  // Light/default theme colors
+  // Room gradient backgrounds (unique to Inventory)
   static const background1 = Color(0xFF2D1B4E); // Deep purple
   static const background2 = Color(0xFF1F1337); // Darker purple
   static const background3 = Color(0xFF150D26); // Deepest purple
-  static const goldAccent = Color(0xFFE8A84A); // Gold
-  static const consumableColor = Color(0xFF4CAF50); // Green for consumables
-  static const activeColor = Color(0xFF2196F3); // Blue for active items
-  static const activeColorAlpha20 = Color(0x332196F3); // 20%
-  static const permanentColor = Color(0xFFE91E63); // Pink for permanent items
-  static const glassCard = Color(0x15FFFFFF);
-  static const glassBorder = Color(0x30FFFFFF);
-  static const textPrimary = Color(0xFFF5F5F5);
-  static const textSecondary = Color(0xFFCDBFAE);
 
-  // Dark mode adjustments - lighter/desaturated gradients for readability
-  static const background1Dark = Color(0xFF3A2660); // Lighter purple
-  static const background2Dark = Color(0xFF2A1C48); // Lighter mid
-  static const background3Dark = Color(0xFF1E1435); // Lighter base
+  // Category accents (no shared equivalent)
+  static const consumableColor = Color(0xFF4CAF50); // Green — decorative only — not for text
+  static const activeColor = Color(0xFF2196F3); // Blue — decorative only — not for text
+  static const permanentColor = Color(0xFFE91E63); // Pink — decorative only — not for text
+
+  // Dark mode gradient adjustments
+  static const background1Dark = Color(0xFF3A2660);
+  static const background2Dark = Color(0xFF2A1C48);
+  static const background3Dark = Color(0xFF1E1435);
 
   /// Returns gradient colors adapted to current brightness
   static List<Color> gradientColors(BuildContext context) {
@@ -90,7 +87,7 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen>
           title: Text(
             '🎒 My Items',
             style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-              color: InventoryColors.textPrimary,
+              color: AppColors.textPrimaryDark,
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -104,9 +101,9 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen>
           ],
           bottom: TabBar(
             controller: _tabController,
-            indicatorColor: InventoryColors.goldAccent,
-            labelColor: InventoryColors.goldAccent,
-            unselectedLabelColor: InventoryColors.textSecondary,
+            indicatorColor: DanioColors.topaz,
+            labelColor: DanioColors.topaz,
+            unselectedLabelColor: AppColors.textSecondaryDark,
             tabs: const [
               Tab(
                 icon: Icon(Icons.flash_on, semanticLabel: 'Consumables'),
@@ -125,7 +122,7 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen>
         ),
         body: inventoryAsync.when(
           loading: () => const Center(
-            child: CircularProgressIndicator(color: InventoryColors.goldAccent),
+            child: CircularProgressIndicator(color: DanioColors.topaz),
           ),
           error: (e, _) => AppErrorState(
             title: 'Couldn\'t load your inventory',
@@ -258,7 +255,7 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen>
                   : InventoryColors.background2,
               shape: RoundedRectangleBorder(
                 borderRadius: AppRadius.largeRadius,
-                side: const BorderSide(color: InventoryColors.glassBorder),
+                side: const BorderSide(color: AppColors.whiteAlpha20),
               ),
               title: Row(
                 children: [
@@ -271,7 +268,7 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen>
                     child: Text(
                       'Use ${shopItem.name}?',
                       style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        color: InventoryColors.textPrimary,
+                        color: AppColors.textPrimaryDark,
                       ),
                     ),
                   ),
@@ -284,14 +281,14 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen>
                   Text(
                     shopItem.description,
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: InventoryColors.textSecondary,
+                      color: AppColors.textSecondaryDark,
                     ),
                   ),
                   const SizedBox(height: AppSpacing.md),
                   Container(
                     padding: const EdgeInsets.all(AppSpacing.sm2),
                     decoration: BoxDecoration(
-                      color: InventoryColors.glassCard,
+                      color: AppColors.whiteAlpha08,
                       borderRadius: AppRadius.mediumRadius,
                     ),
                     child: Row(
@@ -300,14 +297,14 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen>
                         const Text(
                           'You have:',
                           style: TextStyle(
-                            color: InventoryColors.textSecondary,
+                            color: AppColors.textSecondaryDark,
                           ),
                         ),
                         Text(
                           'x${item.quantity}',
                           style: Theme.of(context).textTheme.titleLarge
                               ?.copyWith(
-                                color: InventoryColors.goldAccent,
+                                color: DanioColors.topaz,
                                 fontWeight: FontWeight.bold,
                               ),
                         ),
@@ -321,7 +318,7 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen>
                   onPressed: () => Navigator.pop(ctx, false),
                   child: const Text(
                     'Cancel',
-                    style: TextStyle(color: InventoryColors.textSecondary),
+                    style: TextStyle(color: AppColors.textSecondaryDark),
                   ),
                 ),
                 ElevatedButton(
@@ -435,7 +432,7 @@ class _InventoryItemCard extends StatelessWidget {
         filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
         child: Container(
           decoration: BoxDecoration(
-            color: InventoryColors.glassCard,
+            color: AppColors.whiteAlpha08,
             borderRadius: AppRadius.largeRadius,
             border: Border.all(color: accentColor.withAlpha(128), width: 2),
           ),
@@ -480,7 +477,7 @@ class _InventoryItemCard extends StatelessWidget {
                 Text(
                   shopItem.name,
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: InventoryColors.textPrimary,
+                    color: AppColors.textPrimaryDark,
                     fontWeight: FontWeight.bold,
                   ),
                   maxLines: 1,
@@ -494,7 +491,7 @@ class _InventoryItemCard extends StatelessWidget {
                       : Text(
                           shopItem.description,
                           style: Theme.of(context).textTheme.labelSmall
-                              ?.copyWith(color: InventoryColors.textSecondary),
+                              ?.copyWith(color: AppColors.textSecondaryDark),
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                         ),
@@ -554,7 +551,7 @@ class _ExpiryTimer extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
-        color: InventoryColors.activeColorAlpha20,
+        color: AppColors.infoAlpha20,
         borderRadius: AppRadius.smallRadius,
       ),
       child: Row(
@@ -606,7 +603,7 @@ class _HeartsChip extends StatelessWidget {
           Text(
             '$currentHearts/$maxHearts',
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: InventoryColors.textPrimary,
+              color: AppColors.textPrimaryDark,
               fontWeight: FontWeight.bold,
             ),
           ),

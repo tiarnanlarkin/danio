@@ -75,7 +75,7 @@ class ShopStreetScreen extends ConsumerWidget {
               SliverAppBar(
                 title: const Text('🏪 Shop Street'),
                 backgroundColor: Colors.transparent,
-                foregroundColor: ShopColors.textPrimary,
+                foregroundColor: AppColors.textPrimaryDark,
                 elevation: 0,
                 pinned: true,
               ),
@@ -373,13 +373,13 @@ class _ShopHeader extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(AppSpacing.sm2),
             decoration: BoxDecoration(
-              color: ShopColors.glassCard,
+              color: AppColors.whiteAlpha12,
               borderRadius: AppRadius.mediumRadius,
-              border: Border.all(color: ShopColors.glassBorder),
+              border: Border.all(color: AppColors.whiteAlpha20),
             ),
             child: const Icon(
               Icons.storefront,
-              color: ShopColors.accent,
+              color: AppColors.primaryLight,
               size: 28,
             ),
           ),
@@ -391,7 +391,7 @@ class _ShopHeader extends StatelessWidget {
                 builder: (context) => Text(
                   '🏪 Shop Street',
                   style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                    color: ShopColors.textPrimary,
+                    color: AppColors.textPrimaryDark,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -401,7 +401,7 @@ class _ShopHeader extends StatelessWidget {
                 builder: (context) => Text(
                   'Wishlists & shopping',
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: ShopColors.textSecondary,
+                    color: AppColors.textSecondaryDark,
                   ),
                 ),
               ),
@@ -447,9 +447,9 @@ class _ShopSection extends StatelessWidget {
             child: Container(
               padding: const EdgeInsets.all(AppSpacing.lg2),
               decoration: BoxDecoration(
-                color: ShopColors.glassCard,
+                color: AppColors.whiteAlpha12,
                 borderRadius: AppRadius.largeRadius,
-                border: Border.all(color: ShopColors.glassBorder),
+                border: Border.all(color: AppColors.whiteAlpha20),
               ),
               child: Row(
                 children: [
@@ -472,7 +472,7 @@ class _ShopSection extends StatelessWidget {
                           title,
                           style: Theme.of(context).textTheme.titleMedium
                               ?.copyWith(
-                                color: ShopColors.textPrimary,
+                                color: AppColors.textPrimaryDark,
                                 fontWeight: FontWeight.w600,
                               ),
                         ),
@@ -480,7 +480,7 @@ class _ShopSection extends StatelessWidget {
                         Text(
                           subtitle,
                           style: Theme.of(context).textTheme.bodySmall
-                              ?.copyWith(color: ShopColors.textSecondary),
+                              ?.copyWith(color: AppColors.textSecondaryDark),
                         ),
                       ],
                     ),
@@ -492,16 +492,16 @@ class _ShopSection extends StatelessWidget {
                     ),
                     decoration: BoxDecoration(
                       color: itemCount > 0
-                          ? ShopColors.accentAlpha20
-                          : ShopColors.glassCard,
+                          ? AppColors.primaryLightAlpha20
+                          : AppColors.whiteAlpha12,
                       borderRadius: AppRadius.mediumRadius,
                     ),
                     child: Text(
                       '$itemCount',
                       style: TextStyle(
                         color: itemCount > 0
-                            ? ShopColors.accent
-                            : ShopColors.textSecondary,
+                            ? AppColors.primaryLight
+                            : AppColors.textSecondaryDark,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -509,7 +509,7 @@ class _ShopSection extends StatelessWidget {
                   const SizedBox(width: AppSpacing.sm),
                   const Icon(
                     Icons.chevron_right,
-                    color: ShopColors.textSecondary,
+                    color: AppColors.textSecondaryDark,
                   ),
                 ],
               ),
@@ -535,8 +535,8 @@ class _BudgetCard extends StatelessWidget {
       child: InkWell(
         onTap: onEdit,
         borderRadius: AppRadius.largeRadius,
-        splashColor: ShopColors.accent.withAlpha(30),
-        highlightColor: ShopColors.accent.withAlpha(15),
+        splashColor: AppColors.primaryLight.withAlpha(30),
+        highlightColor: AppColors.primaryLight.withAlpha(15),
         child: ClipRRect(
           borderRadius: AppRadius.largeRadius,
           child: BackdropFilter(
@@ -544,9 +544,9 @@ class _BudgetCard extends StatelessWidget {
             child: Container(
               padding: const EdgeInsets.all(AppSpacing.lg2),
               decoration: BoxDecoration(
-                color: ShopColors.glassCard,
+                color: AppColors.whiteAlpha12,
                 borderRadius: AppRadius.largeRadius,
-                border: Border.all(color: ShopColors.glassBorder),
+                border: Border.all(color: AppColors.whiteAlpha20),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -555,7 +555,7 @@ class _BudgetCard extends StatelessWidget {
                     children: [
                       const Icon(
                         Icons.account_balance_wallet,
-                        color: ShopColors.accent,
+                        color: AppColors.primaryLight,
                       ),
                       const SizedBox(width: AppSpacing.sm2),
                       Builder(
@@ -563,7 +563,7 @@ class _BudgetCard extends StatelessWidget {
                           'Monthly Budget',
                           style: Theme.of(context).textTheme.titleMedium
                               ?.copyWith(
-                                color: ShopColors.textPrimary,
+                                color: AppColors.textPrimaryDark,
                                 fontWeight: FontWeight.w600,
                               ),
                         ),
@@ -571,7 +571,7 @@ class _BudgetCard extends StatelessWidget {
                       const Spacer(),
                       Icon(
                         Icons.edit,
-                        color: ShopColors.textSecondaryAlpha50,
+                        color: AppColors.textSecondaryDarkAlpha50,
                         size: 18,
                       ),
                     ],
@@ -587,7 +587,7 @@ class _BudgetCard extends StatelessWidget {
                             '£${budget.spentThisMonth.toStringAsFixed(2)}',
                             style: Theme.of(context).textTheme.headlineMedium
                                 ?.copyWith(
-                                  color: ShopColors.accent,
+                                  color: AppColors.primaryLight,
                                   fontWeight: FontWeight.bold,
                                 ),
                           ),
@@ -595,7 +595,7 @@ class _BudgetCard extends StatelessWidget {
                             builder: (context) => Text(
                               'spent this month',
                               style: Theme.of(context).textTheme.bodySmall
-                                  ?.copyWith(color: ShopColors.textSecondary),
+                                  ?.copyWith(color: AppColors.textSecondaryDark),
                             ),
                           ),
                         ],
@@ -607,7 +607,7 @@ class _BudgetCard extends StatelessWidget {
                             '£${budget.remaining.toStringAsFixed(2)}',
                             style: Theme.of(context).textTheme.titleLarge
                                 ?.copyWith(
-                                  color: ShopColors.textPrimary,
+                                  color: AppColors.textPrimaryDark,
                                   fontWeight: FontWeight.w500,
                                 ),
                           ),
@@ -615,7 +615,7 @@ class _BudgetCard extends StatelessWidget {
                             builder: (context) => Text(
                               'remaining',
                               style: Theme.of(context).textTheme.bodySmall
-                                  ?.copyWith(color: ShopColors.textSecondary),
+                                  ?.copyWith(color: AppColors.textSecondaryDark),
                             ),
                           ),
                         ],
@@ -630,11 +630,11 @@ class _BudgetCard extends StatelessWidget {
                       // P2-005: background3 is opaque deep-green which made the
                       // empty track look "nearly full". Use a transparent white
                       // track so only the accent fill is visible.
-                      backgroundColor: ShopColors.glassBorder,
+                      backgroundColor: AppColors.whiteAlpha20,
                       valueColor: AlwaysStoppedAnimation<Color>(
                         budget.percentUsed > 0.9
                             ? AppColors.error
-                            : ShopColors.accent,
+                            : AppColors.primaryLight,
                       ),
                       minHeight: 8,
                     ),
@@ -671,22 +671,22 @@ class _LocalShopsCard extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.all(AppSpacing.lg2),
           decoration: BoxDecoration(
-            color: ShopColors.glassCard,
+            color: AppColors.whiteAlpha12,
             borderRadius: AppRadius.largeRadius,
-            border: Border.all(color: ShopColors.glassBorder),
+            border: Border.all(color: AppColors.whiteAlpha20),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
                 children: [
-                  const Icon(Icons.location_on, color: ShopColors.awning),
+                  const Icon(Icons.location_on, color: DanioColors.coralAccent),
                   const SizedBox(width: AppSpacing.sm2),
                   Builder(
                     builder: (context) => Text(
                       'Local Fish Shops',
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        color: ShopColors.textPrimary,
+                        color: AppColors.textPrimaryDark,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -700,7 +700,7 @@ class _LocalShopsCard extends StatelessWidget {
                   child: Center(
                     child: Text(
                       'No shops added yet',
-                      style: TextStyle(color: ShopColors.textSecondaryAlpha70),
+                      style: TextStyle(color: AppColors.textSecondaryDarkAlpha70),
                     ),
                   ),
                 )
@@ -719,7 +719,7 @@ class _LocalShopsCard extends StatelessWidget {
                   icon: const Icon(Icons.add, size: 18),
                   label: const Text('Add a shop'),
                   style: TextButton.styleFrom(
-                    foregroundColor: ShopColors.accent,
+                    foregroundColor: AppColors.primaryLight,
                   ),
                 ),
               ),
@@ -760,7 +760,7 @@ class _ShopTile extends StatelessWidget {
               ),
               child: const Icon(
                 Icons.store,
-                color: ShopColors.textSecondary,
+                color: AppColors.textSecondaryDark,
                 size: AppIconSizes.sm,
               ),
             ),
@@ -772,7 +772,7 @@ class _ShopTile extends StatelessWidget {
                   Text(
                     shop.name,
                     style: const TextStyle(
-                      color: ShopColors.textPrimary,
+                      color: AppColors.textPrimaryDark,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -780,7 +780,7 @@ class _ShopTile extends StatelessWidget {
                     Text(
                       '${shop.distanceMiles!.toStringAsFixed(1)} miles',
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: ShopColors.textSecondary,
+                        color: AppColors.textSecondaryDark,
                       ),
                     ),
                 ],
@@ -791,12 +791,12 @@ class _ShopTile extends StatelessWidget {
                 '⭐ ${shop.rating!.toStringAsFixed(1)}',
                 style: Theme.of(
                   context,
-                ).textTheme.bodySmall?.copyWith(color: ShopColors.accentLight),
+                ).textTheme.bodySmall?.copyWith(color: AppColors.primaryLightLight),
               ),
             IconButton(
               tooltip: 'Close',
               icon: const Icon(Icons.close, size: 18),
-              color: ShopColors.textSecondaryAlpha50,
+              color: AppColors.textSecondaryDarkAlpha50,
               onPressed: onDelete,
             ),
           ],

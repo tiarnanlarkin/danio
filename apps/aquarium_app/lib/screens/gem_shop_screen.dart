@@ -383,7 +383,7 @@ class _GemShopScreenState extends ConsumerState<GemShopScreen>
                       : null,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: GemShopColors.gemPrimary,
-                    disabledBackgroundColor: AppColors.textSecondaryDark30,
+                    disabledBackgroundColor: AppColors.blackAlpha30,
                     shape: RoundedRectangleBorder(
                       borderRadius: AppRadius.mediumRadius,
                     ),
