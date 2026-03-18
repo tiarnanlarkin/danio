@@ -264,7 +264,10 @@ class _TankSettingsScreenState extends ConsumerState<TankSettingsScreen> {
       const SizedBox(height: AppSpacing.lg),
       Text('Start date', style: AppTypography.headlineSmall),
       const SizedBox(height: AppSpacing.sm2),
-      InkWell(
+      Semantics(
+        button: true,
+        label: 'Start date. Currently ${DateFormat('MMM d, yyyy').format(_startDate)}',
+        child: InkWell(
         onTap: () async {
           final picked = await showDatePicker(
             context: context,
@@ -293,6 +296,7 @@ class _TankSettingsScreenState extends ConsumerState<TankSettingsScreen> {
               Icon(Icons.edit, color: context.textHint, size: 18),
             ],
           ),
+        ),
         ),
       ),
 

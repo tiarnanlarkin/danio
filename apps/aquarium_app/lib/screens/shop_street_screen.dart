@@ -5,6 +5,7 @@ import 'dart:ui';
 import '../models/wishlist.dart';
 import '../providers/wishlist_provider.dart';
 import '../theme/app_theme.dart';
+import '../widgets/empty_state.dart';
 import '../utils/app_constants.dart';
 import 'gem_shop_screen.dart';
 import 'wishlist_screen.dart';
@@ -695,14 +696,11 @@ class _LocalShopsCard extends StatelessWidget {
               ),
               const SizedBox(height: AppSpacing.md),
               if (shops.isEmpty)
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  child: Center(
-                    child: Text(
-                      'No shops added yet',
-                      style: TextStyle(color: AppColors.textSecondaryDarkAlpha70),
-                    ),
-                  ),
+                CompactEmptyState(
+                  icon: Icons.storefront,
+                  message: 'No shops added yet',
+                  actionLabel: 'Add a shop',
+                  onAction: onAddShop,
                 )
               else
                 ...shops.map(
@@ -712,6 +710,7 @@ class _LocalShopsCard extends StatelessWidget {
                     onDelete: () => onDeleteShop(shop),
                   ),
                 ),
+              if (shops.isNotEmpty) ...[
               const SizedBox(height: AppSpacing.sm2),
               Center(
                 child: TextButton.icon(
@@ -723,6 +722,7 @@ class _LocalShopsCard extends StatelessWidget {
                   ),
                 ),
               ),
+              ],
             ],
           ),
         ),

@@ -185,7 +185,9 @@ class SparklineCard extends StatelessWidget {
       if (v != null) values.add(v);
     }
 
-    return InkWell(
+    return Semantics(
+      button: true,
+      child: InkWell(
       onTap: onTap,
       borderRadius: AppRadius.mediumRadius,
       child: Container(
@@ -208,6 +210,7 @@ class SparklineCard extends StatelessWidget {
             ),
           ],
         ),
+      ),
       ),
     );
   }

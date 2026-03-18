@@ -605,7 +605,10 @@ class TankDetailScreen extends ConsumerWidget {
                 // Demo tank banner
                 if (tank.isDemoTank)
                   SliverToBoxAdapter(
-                    child: GestureDetector(
+                    child: Semantics(
+                      label: 'Demo tank banner. Tap to create your own tank',
+                      button: true,
+                      child: GestureDetector(
                       onTap: () => NavigationThrottle.push(
                         context,
                         const CreateTankScreen(),
@@ -637,6 +640,7 @@ class TankDetailScreen extends ConsumerWidget {
                             ),
                           ],
                         ),
+                      ),
                       ),
                     ),
                   ),
@@ -893,12 +897,16 @@ class TankDetailScreen extends ConsumerWidget {
                         AppSpacing.md,
                         AppSpacing.md,
                       ),
-                      child: GestureDetector(
+                      child: Semantics(
+                        label: 'Cycling status. Tap for cycling assistant',
+                        button: true,
+                        child: GestureDetector(
                         onTap: () => NavigationThrottle.push(
                           context,
                           CyclingAssistantScreen(tankId: tank.id),
                         ),
                         child: CyclingStatusCard(tank: tank, logs: logs),
+                        ),
                       ),
                     ),
                   ),

@@ -14,7 +14,6 @@ import '../analytics_screen.dart';
 import '../journal_screen.dart';
 import '../reminders_screen.dart';
 import '../search_screen.dart';
-import '../tank_settings_screen.dart';
 import '../../widgets/daily_goal_progress.dart';
 import '../../widgets/streak_calendar.dart';
 import '../../widgets/gamification_dashboard.dart';

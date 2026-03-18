@@ -8,7 +8,6 @@ import '../../providers/tank_provider.dart';
 import '../../providers/room_theme_provider.dart';
 import '../../providers/user_profile_provider.dart';
 import '../../theme/app_theme.dart';
-import '../../widgets/core/bubble_loader.dart';
 import '../../widgets/core/app_states.dart';
 import '../../widgets/hearts_widgets.dart';
 import '../../widgets/gamification_dashboard.dart';
@@ -188,11 +187,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         prefsKey = 'seen_day2_prompt';
       } else if (daysSinceSignup >= 7 && daysSinceSignup <= 8 && currentStreak >= 5 &&
           (prefs.getBool('seen_day7_milestone') ?? false) == false) {
-        milestoneCard = Day7MilestoneCard(streak: currentStreak, onClose: () => Navigator.of(context).pop());
+        milestoneCard = Day7MilestoneCard(onFeatureTap: () => Navigator.of(context).pop());
         prefsKey = 'seen_day7_milestone';
       } else if (daysSinceSignup >= 30 && daysSinceSignup <= 31 && currentStreak >= 1 &&
           (prefs.getBool('seen_day30_committed') ?? false) == false) {
-        milestoneCard = Day30CommittedCard(streak: currentStreak, onClose: () => Navigator.of(context).pop());
+        // Day30CommittedCard requires user stats — show without detailed stats for now
+        // TODO: Fetch actual stats from profile provider
+        milestoneCard = null; // Skip until stats are available
         prefsKey = 'seen_day30_committed';
       }
 
@@ -232,12 +233,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   bool _isNewUser(WidgetRef ref) {
     return !ref.watch(userProfileProvider.select((p) => p.value?.hasSeenTutorial ?? false));
-  }
-
-  String? _getCurrentTankId() {
-    final tanks = ref.read(tanksProvider).valueOrNull;
-    if (tanks == null || tanks.isEmpty) return null;
-    return tanks[_currentTankIndex % tanks.length].id;
   }
 
   // ── Navigation ────────────────────────────────────────────────────────

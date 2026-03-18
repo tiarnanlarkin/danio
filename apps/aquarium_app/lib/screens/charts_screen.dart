@@ -11,6 +11,8 @@ import 'package:share_plus/share_plus.dart';
 import '../models/models.dart';
 import '../providers/tank_provider.dart';
 import '../theme/app_theme.dart';
+import '../widgets/empty_state.dart';
+import '../widgets/mascot/mascot_widgets.dart';
 import '../widgets/core/app_states.dart';
 import '../utils/app_feedback.dart';
 import 'add_log_screen.dart';
@@ -77,45 +79,18 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
                 ..sort((a, b) => a.timestamp.compareTo(b.timestamp));
 
           if (waterTests.isEmpty) {
-            return Center(
-              child: Padding(
-                padding: const EdgeInsets.all(AppSpacing.xl),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(
-                      Icons.show_chart,
-                      size: AppIconSizes.xxl,
-                      color: context.textHint,
-                    ),
-                    const SizedBox(height: AppSpacing.md),
-                    Text(
-                      'Charts unlock with your first test!',
-                      style: AppTypography.headlineSmall,
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: AppSpacing.sm),
-                    Text(
-                      'Log a water test and watch your trends come alive',
-                      style: AppTypography.bodyMedium.copyWith(
-                        color: context.textSecondary,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: AppSpacing.lg),
-                    FilledButton.icon(
-                      onPressed: () => Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (_) => AddLogScreen(
-                            tankId: widget.tankId,
-                            initialType: LogType.waterTest,
-                          ),
-                        ),
-                      ),
-                      icon: const Icon(Icons.add),
-                      label: const Text('Log Your First Water Test'),
-                    ),
-                  ],
+            return EmptyState.withMascot(
+              icon: Icons.show_chart,
+              title: 'Charts unlock with your first test!',
+              message: 'Log a water test and watch your trends come alive',
+              mascotContext: MascotContext.encouragement,
+              actionLabel: 'Log Your First Water Test',
+              onAction: () => Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) => AddLogScreen(
+                    tankId: widget.tankId,
+                    initialType: LogType.waterTest,
+                  ),
                 ),
               ),
             );
@@ -1000,10 +975,10 @@ class _SummaryCard extends StatelessWidget {
     if (values.isEmpty) {
       return Card(
         child: Padding(
-          padding: const EdgeInsets.all(AppSpacing.md),
-          child: Text(
-            'No readings yet — log a water test to see data here!',
-            style: AppTypography.bodyMedium,
+          padding: const EdgeInsets.all(AppSpacing.sm2),
+          child: CompactEmptyState(
+            icon: Icons.bar_chart,
+            message: 'No readings yet — log a water test to see data here!',
           ),
         ),
       );
