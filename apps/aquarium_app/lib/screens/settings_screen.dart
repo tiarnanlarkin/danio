@@ -1303,7 +1303,10 @@ class _LearnCard extends ConsumerWidget {
       child: Material(
         color: Colors.transparent,
         borderRadius: BorderRadius.circular(AppRadius.lg),
-        child: InkWell(
+        child: Semantics(
+          button: true,
+          label: 'Learn Fishkeeping. Tap to open lessons',
+          child: InkWell(
           onTap: () => NavigationThrottle.push(context, const LearnScreen()),
           borderRadius: BorderRadius.circular(AppRadius.lg),
           child: Container(
@@ -1405,6 +1408,7 @@ class _LearnCard extends ConsumerWidget {
                 const Icon(Icons.chevron_right, color: Colors.white70),
               ],
             ),
+          ),
           ),
         ),
       ),

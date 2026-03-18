@@ -239,7 +239,10 @@ class _FaqItemState extends State<_FaqItem> {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
+    return Semantics(
+      button: true,
+      label: '${widget.question}${_expanded ? ", expanded" : ""}',
+      child: Card(
       margin: const EdgeInsets.only(bottom: 8),
       child: InkWell(
         onTap: () => setState(() => _expanded = !_expanded),
@@ -270,6 +273,7 @@ class _FaqItemState extends State<_FaqItem> {
             ],
           ),
         ),
+      ),
       ),
     );
   }

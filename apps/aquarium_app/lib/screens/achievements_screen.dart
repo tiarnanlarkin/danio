@@ -383,7 +383,10 @@ class _AchievementsScreenState extends ConsumerState<AchievementsScreen> {
                           ),
                           child: ShimmerGlow(
                             glowColor: AppColors.primary,
-                            child: Card(
+                            child: Semantics(
+                              label: '${achievement.name} achievement${progress.isComplete ? ', completed' : ''}',
+                              button: true,
+                              child: Card(
                               color: AppColors.primaryAlpha08,
                               child: InkWell(
                                 borderRadius: AppRadius.mediumRadius,
@@ -425,6 +428,7 @@ class _AchievementsScreenState extends ConsumerState<AchievementsScreen> {
                               ),
                             ),
                           ),
+                        ),
                         ),
                       )
                       .animate(autoPlay: !reduceMotion)

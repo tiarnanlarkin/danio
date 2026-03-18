@@ -249,7 +249,9 @@ class _WishlistItemCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
+    return Semantics(
+      button: true,
+      child: Card(
       margin: const EdgeInsets.only(bottom: 12),
       child: InkWell(
         onTap: onTap,
@@ -319,6 +321,7 @@ class _WishlistItemCard extends StatelessWidget {
             ],
           ),
         ),
+      ),
       ),
     );
   }
