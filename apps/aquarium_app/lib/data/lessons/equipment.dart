@@ -159,7 +159,7 @@ final equipmentPath = LearningPath(
             ],
             correctIndex: 1,
             explanation:
-                'Sponge filters use air bubbles rising to create water flow through the sponge. No electricity, no motor - just bubbles!',
+                'Sponge filters use an air pump (separate device) to push bubbles through the sponge, creating water flow. The filter itself has no motor — just the sponge and an airline.',
           ),
           const QuizQuestion(
             id: 'eq_filt_q4',
@@ -223,12 +223,12 @@ final equipmentPath = LearningPath(
         const LessonSection(
           type: LessonSectionType.text,
           content:
-              'The standard rule: 1-3 watts per litre for modern tanks in typical room temperatures, up to 5W/L for larger tanks or cold rooms. A 60-litre tank typically needs 60-180W. Undersizing means the heater runs constantly (shorter lifespan).',
+              'The standard rule: 1-2 watts per litre for modern tanks in typical indoor temperatures. A 60-litre tank typically needs 60-120W. Undersizing means the heater runs constantly (shorter lifespan). Add 0.5-1W/L for tanks in cold rooms or garages.',
         ),
         const LessonSection(
           type: LessonSectionType.tip,
           content:
-              'Two smaller heaters beat one large! A 60L tank with two 150W heaters is safer than one 300W. If one fails, the other provides backup. Plus, more even heating.',
+              'Two smaller heaters beat one large! A 60L tank with two 75W heaters is safer than one 150W. If one fails, the other provides backup. Plus, more even heating.',
         ),
         const LessonSection(
           type: LessonSectionType.heading,
@@ -290,13 +290,13 @@ final equipmentPath = LearningPath(
             question: 'How many watts per litre do you typically need?',
             options: [
               '0.5 watts',
-              '1-3 watts (up to 5W/L for cold rooms)',
+              '1-2 watts per litre',
               '10+ watts',
               'Watts don\'t matter',
             ],
             correctIndex: 1,
             explanation:
-                '1-3 watts per litre is standard for modern tanks in typical room temperatures, up to 5W/L for larger tanks or cold rooms.',
+                '1-2 watts per litre is standard for modern tanks in typical indoor temperatures. Add 0.5-1W/L extra for cold rooms.',
           ),
           const QuizQuestion(
             id: 'eq_heat_q2',

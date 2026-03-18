@@ -378,7 +378,7 @@ class _AhaMomentScreenState extends State<AhaMomentScreen>
                     // CTA
                     Semantics(
                       button: true,
-                      label: 'See the full care guide',
+                      label: 'Start your journey',
                       child: SizedBox(
                         width: double.infinity,
                         child: ElevatedButton(
@@ -397,7 +397,7 @@ class _AhaMomentScreenState extends State<AhaMomentScreen>
                           child: Text(
                             _ctaTapped
                                 ? '...'
-                                : 'See the full care guide →',
+                                : 'Start your journey →',
                             style: GoogleFonts.nunito(
                               fontSize: 16,
                               fontWeight: FontWeight.w700,

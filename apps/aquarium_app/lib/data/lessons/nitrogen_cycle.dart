@@ -139,7 +139,7 @@ final nitrogenCyclePath = LearningPath(
         const LessonSection(
           type: LessonSectionType.warning,
           content:
-              'Ammonia is highly toxic. Even 0.5 ppm can stress fish; levels above 2 ppm are dangerous for most species.',
+              'Ammonia is highly toxic. Even 0.25 ppm can damage fish gills; levels above 1 ppm are dangerous for most species.',
         ),
         const LessonSection(
           type: LessonSectionType.heading,
@@ -521,7 +521,7 @@ final nitrogenCyclePath = LearningPath(
         const LessonSection(
           type: LessonSectionType.warning,
           content:
-              'Time is critical! Ammonia above 1 ppm or nitrite above 2 ppm can kill fish within hours. Act immediately.',
+              'Time is critical! Ammonia above 0.25 ppm stresses fish, and above 1 ppm can kill within hours. Nitrite above 0.5 ppm requires immediate action. Act fast — do a large water change and add a water conditioner like Seachem Prime.',
         ),
         const LessonSection(
           type: LessonSectionType.heading,

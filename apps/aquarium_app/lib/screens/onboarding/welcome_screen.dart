@@ -248,14 +248,14 @@ class _WelcomeScreenState extends State<WelcomeScreen>
                   opacity: _buttonOpacity,
                   child: Semantics(
                     button: true,
-                    label: 'I already have an account',
+                    label: 'Skip for now',
                     child: GestureDetector(
                       onTap: () {
                         HapticFeedback.selectionClick();
                         widget.onLogin?.call();
                       },
                       child: Text(
-                        'I already have an account',
+                        'Skip for now',
                         style: GoogleFonts.nunito(
                           fontSize: 14,
                           fontWeight: FontWeight.w600,
