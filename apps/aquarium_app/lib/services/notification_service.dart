@@ -17,6 +17,12 @@ const int _onboardingDiscoveryHookId = 4002;
 const int _onboardingStreakNudgeId = 4003;
 const int _onboardingAchievementId = 4004;
 
+// Notification IDs for weekly onboarding cadence (Day 7, 14, 21, 28)
+const int _weeklyTipDay7Id = 4010;
+const int _progressNudgeDay14Id = 4011;
+const int _discoveryHookDay21Id = 4012;
+const int _milestoneApproachDay28Id = 4013;
+
 /// Service for managing local notifications for task reminders and streak reminders.
 class NotificationService {
   static final NotificationService _instance = NotificationService._internal();
@@ -760,6 +766,9 @@ class NotificationService {
           UILocalNotificationDateInterpretation.absoluteTime,
       payload: 'learn',
     );
+
+    // --- Day 7-28: Weekly cadence to bridge the Day 4-30 gap ---
+    await scheduleWeeklyOnboardingCadence(scheduleMode);
   }
 
   /// Cancel the Day 3 streak nudge notification.
@@ -809,5 +818,109 @@ class NotificationService {
     await _plugin.cancel(_onboardingDiscoveryHookId);
     await _plugin.cancel(_onboardingStreakNudgeId);
     await _plugin.cancel(_onboardingAchievementId);
+    await _plugin.cancel(_weeklyTipDay7Id);
+    await _plugin.cancel(_progressNudgeDay14Id);
+    await _plugin.cancel(_discoveryHookDay21Id);
+    await _plugin.cancel(_milestoneApproachDay28Id);
+  }
+
+  // ==================== WEEKLY ONBOARDING CADENCE (Day 7-28) ====================
+
+  /// Random fishkeeping tips for the Day 7 weekly notification.
+  static const _weeklyTips = [
+    'Overfeeding is the #1 mistake new fishkeepers make. Feed only what they can eat in 2 minutes.',
+    'A water change of 25% per week keeps your tank healthy. More is not always better!',
+    'Most aquarium fish need 8-10 hours of light daily. Too much light causes algae blooms.',
+    'Let your tank cycle for 4-6 weeks before adding fish. Patience saves lives.',
+    'Dechlorinate your tap water before adding it to the tank — chlorine is toxic to fish.',
+    'A heater with a thermostat is essential for tropical fish. Temperature swings cause stress.',
+    'Test your water weekly: pH, ammonia, nitrite, and nitrate are the big four.',
+    'Live plants absorb nitrates and provide hiding spots. They\'re great for any tank.',
+  ];
+
+  /// Schedule weekly notifications for Day 7, 14, 21, and 28 to bridge
+  /// the gap between Day 3 onboarding sequence and Day 30 milestone.
+  Future<void> scheduleWeeklyOnboardingCadence(
+    AndroidScheduleMode scheduleMode,
+  ) async {
+    if (!_initialized) await initialize();
+
+    final now = DateTime.now();
+    final details = const NotificationDetails(
+      android: AndroidNotificationDetails(
+        'onboarding',
+        'Onboarding',
+        channelDescription: 'Welcome messages and early guidance',
+        importance: Importance.high,
+        priority: Priority.high,
+        icon: '@mipmap/ic_launcher',
+      ),
+      iOS: DarwinNotificationDetails(
+        presentAlert: true,
+        presentBadge: true,
+        presentSound: true,
+      ),
+    );
+
+    // --- Day 7: Weekly fishkeeping tip ---
+    final day7 = DateTime(now.year, now.month, now.day + 7, 9, 0);
+    final day7Tz = tz.TZDateTime.from(day7, tz.local);
+    final tip = _weeklyTips[DateTime.now().millisecondsSinceEpoch % _weeklyTips.length];
+    await _plugin.zonedSchedule(
+      _weeklyTipDay7Id,
+      '🐠 Your weekly fishkeeping tip',
+      tip,
+      day7Tz,
+      details,
+      androidScheduleMode: scheduleMode,
+      uiLocalNotificationDateInterpretation:
+          UILocalNotificationDateInterpretation.absoluteTime,
+      payload: 'learn',
+    );
+
+    // --- Day 14: Progress nudge ---
+    final day14 = DateTime(now.year, now.month, now.day + 14, 9, 0);
+    final day14Tz = tz.TZDateTime.from(day14, tz.local);
+    await _plugin.zonedSchedule(
+      _progressNudgeDay14Id,
+      'Two weeks in — great progress! 📊',
+      'Have you logged any water tests this week? Regular testing keeps your fish healthy.',
+      day14Tz,
+      details,
+      androidScheduleMode: scheduleMode,
+      uiLocalNotificationDateInterpretation:
+          UILocalNotificationDateInterpretation.absoluteTime,
+      payload: 'care',
+    );
+
+    // --- Day 21: Discovery hook ---
+    final day21 = DateTime(now.year, now.month, now.day + 21, 9, 0);
+    final day21Tz = tz.TZDateTime.from(day21, tz.local);
+    await _plugin.zonedSchedule(
+      _discoveryHookDay21Id,
+      'Discover something new 🧠',
+      'There are 44 bite-sized lessons waiting for you. Even 3 minutes a day builds expertise!',
+      day21Tz,
+      details,
+      androidScheduleMode: scheduleMode,
+      uiLocalNotificationDateInterpretation:
+          UILocalNotificationDateInterpretation.absoluteTime,
+      payload: 'learn',
+    );
+
+    // --- Day 28: Milestone approach ---
+    final day28 = DateTime(now.year, now.month, now.day + 28, 9, 0);
+    final day28Tz = tz.TZDateTime.from(day28, tz.local);
+    await _plugin.zonedSchedule(
+      _milestoneApproachDay28Id,
+      'Almost a month! 🎉',
+      'Your fish are thriving — and so are you. You\'re becoming a real aquarist!',
+      day28Tz,
+      details,
+      androidScheduleMode: scheduleMode,
+      uiLocalNotificationDateInterpretation:
+          UILocalNotificationDateInterpretation.absoluteTime,
+      payload: 'learn',
+    );
   }
 }
