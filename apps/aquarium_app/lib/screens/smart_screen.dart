@@ -12,6 +12,7 @@ import '../features/smart/weekly_plan/weekly_plan_screen.dart';
 import '../services/api_rate_limiter.dart';
 import '../services/openai_service.dart';
 import '../theme/app_theme.dart';
+import '../utils/navigation_throttle.dart';
 import '../widgets/compatibility_checker_widget.dart';
 import '../widgets/core/bubble_loader.dart';
 import '../widgets/offline_indicator.dart';
@@ -203,10 +204,9 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
                 title: 'Compatibility Checker',
                 subtitle: 'Check if your fish are compatible — works offline!',
                 color: AppColors.success,
-                onTap: () => Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (_) => const CompatibilityCheckerScreen(),
-                  ),
+                onTap: () => NavigationThrottle.push(
+                  context,
+                  const CompatibilityCheckerScreen(),
                 ),
               ).animate(delay: 150.ms).fadeIn().slideX(begin: 0.05),
             ],
