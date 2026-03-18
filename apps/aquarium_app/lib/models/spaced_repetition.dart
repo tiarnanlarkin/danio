@@ -503,6 +503,7 @@ class ReviewStats {
   final double averageStrength;
   final Map<MasteryLevel, int> cardsByMastery;
   final int reviewsToday;
+  final int totalReviews;
   final int currentStreak;
 
   const ReviewStats({
@@ -513,6 +514,7 @@ class ReviewStats {
     required this.averageStrength,
     required this.cardsByMastery,
     required this.reviewsToday,
+    this.totalReviews = 0,
     required this.currentStreak,
   });
 
@@ -520,6 +522,7 @@ class ReviewStats {
   factory ReviewStats.fromCards(
     List<ReviewCard> cards, {
     int reviewsToday = 0,
+    int totalReviews = 0,
     int streak = 0,
   }) {
     if (cards.isEmpty) {
@@ -531,6 +534,7 @@ class ReviewStats {
         averageStrength: 0.0,
         cardsByMastery: {},
         reviewsToday: reviewsToday,
+        totalReviews: totalReviews,
         currentStreak: streak,
       );
     }
@@ -556,6 +560,7 @@ class ReviewStats {
       averageStrength: avgStrength,
       cardsByMastery: byMastery,
       reviewsToday: reviewsToday,
+      totalReviews: totalReviews,
       currentStreak: streak,
     );
   }

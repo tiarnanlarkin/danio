@@ -5,6 +5,7 @@ import '../data/species_database.dart';
 import '../models/user_profile.dart';
 import '../models/tank.dart';
 import '../providers/onboarding_provider.dart';
+import '../providers/tank_provider.dart';
 import '../providers/user_profile_provider.dart';
 import '../services/onboarding_service.dart';
 import '../services/notification_service.dart';
@@ -107,6 +108,26 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       try {
         await ref.read(userProfileProvider.notifier).addXp(10);
       } catch (_) {}
+
+      // 2b. Create a default tank based on user's tank status
+      try {
+        final tankNotifier = ref.read(tankActionsProvider);
+        final tank = await tankNotifier.createTank(
+          name: _tankStatus == 'cycling'
+              ? 'Cycling Tank'
+              : _tankStatus == 'active'
+                  ? 'My Tank'
+                  : 'New Tank',
+          type: TankType.freshwater,
+          volumeLitres: 60,
+          notes: _selectedFish != null
+              ? 'Started with ${_selectedFish!.commonName}'
+              : null,
+        );
+        debugPrint('[Onboarding] Created default tank: ${tank.name} (${tank.id})');
+      } catch (e) {
+        debugPrint('[Onboarding] Tank creation failed: $e');
+      }
 
       // 3. Schedule onboarding notifications
       try {

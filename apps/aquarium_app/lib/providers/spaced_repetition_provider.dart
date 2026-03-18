@@ -88,11 +88,13 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
       // Load stats data
       final statsJson = prefs.getString(_statsKey);
       int reviewsToday = 0;
+      int totalReviews = 0;
       int streak = 0;
 
       if (statsJson != null) {
         final statsData = jsonDecode(statsJson);
         reviewsToday = statsData['reviewsToday'] ?? 0;
+        totalReviews = statsData['totalReviews'] ?? 0;
         streak = statsData['streak'] ?? 0;
 
         // Reset reviews today if it's a new day
@@ -109,6 +111,7 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
       final stats = ReviewStats.fromCards(
         cards,
         reviewsToday: reviewsToday,
+        totalReviews: totalReviews,
         streak: streak,
       );
 
@@ -142,6 +145,7 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
       // Save stats
       final statsData = {
         'reviewsToday': state.stats.reviewsToday,
+        'totalReviews': state.stats.totalReviews,
         'streak': state.stats.currentStreak,
         'lastReviewDate': DateTime.now().toIso8601String(),
       };
@@ -344,6 +348,7 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
 
       // Update reviews today count
       final reviewsToday = state.stats.reviewsToday + 1;
+      final totalReviews = state.stats.totalReviews + 1;
 
       // Update streak
       final streak = _calculateStreak();
@@ -351,6 +356,7 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
       final updatedStats = ReviewStats.fromCards(
         updatedCards,
         reviewsToday: reviewsToday,
+        totalReviews: totalReviews,
         streak: streak,
       );
 
