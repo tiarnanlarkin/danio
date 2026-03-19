@@ -374,7 +374,7 @@ const List<SpeciesInfo> _allSpecies = [
     scientificName: 'Betta splendens',
     family: 'Osphronemidae',
     careLevel: 'Beginner',
-    minTankLitres: 40,
+    minTankLitres: 19,
     minTempC: 24,
     maxTempC: 28,
     minPh: 6.5,
@@ -500,6 +500,35 @@ const List<SpeciesInfo> _allSpecies = [
   ),
 
   // Plecos
+  SpeciesInfo(
+    commonName: 'Common Pleco',
+    scientificName: 'Hypostomus plecostomus',
+    family: 'Loricariidae',
+    careLevel: 'Advanced',
+    minTankLitres: 300,
+    minTempC: 22,
+    maxTempC: 28,
+    minPh: 6.5,
+    maxPh: 7.5,
+    minGh: 5,
+    maxGh: 20,
+    minSchoolSize: 1,
+    temperament: 'Peaceful (becomes territorial as adult)',
+    diet:
+        'Herbivore - algae wafers, vegetables, driftwood (essential for digestion)',
+    adultSizeCm: 60,
+    swimLevel: 'Bottom',
+    description:
+        '⚠️ BEGINNER WARNING: Often sold as small algae cleaners (5-10cm), these fish grow to 60cm and produce enormous waste. They need tanks of 300L+ as adults and quickly outgrow most setups. Choose a Bristlenose Pleco instead - same job, stays small. Needs driftwood for digestion. Nocturnal.',
+    compatibleWith: [
+      'Large community fish',
+    ],
+    avoidWith: [
+      'Small fish (may eat them when large)',
+      'Other plecos',
+      'Small tanks (will outgrow rapidly)',
+    ],
+  ),
   SpeciesInfo(
     commonName: 'Bristlenose Pleco',
     scientificName: 'Ancistrus sp.',

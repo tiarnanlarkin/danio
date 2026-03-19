@@ -132,7 +132,7 @@ class LessonContent {
               ],
               correctIndex: 2,
               explanation:
-                  'Ammonia is colorless and odorless at typical aquarium levels. Only a test kit can detect it.',
+                  'Ammonia is invisible but detectable by smell at high concentrations. Even at lower levels that you can\'t smell, it\'s harmful to fish. Always use a test kit — your nose isn\'t reliable enough.',
             ),
             const QuizQuestion(
               id: 'nc_intro_q3',
@@ -183,7 +183,7 @@ class LessonContent {
           const LessonSection(
             type: LessonSectionType.text,
             content:
-                'After 1-2 weeks, bacteria called Nitrosomonas start consuming ammonia. But they produce nitrite as a byproduct - which is also toxic to fish!',
+                'After 1-2 weeks, beneficial bacteria start consuming ammonia. Different bacteria groups handle this in home aquaria (including Nitrosomonas and Nitrospira). But they produce nitrite as a byproduct - which is also toxic to fish!',
           ),
           const LessonSection(
             type: LessonSectionType.keyPoint,
@@ -1015,7 +1015,7 @@ class LessonContent {
           const LessonSection(
             type: LessonSectionType.keyPoint,
             content:
-                'Most tropical fish do well in GH 4-12 dGH. Livebearers (guppies, mollies) prefer harder water (10-20 dGH). Soft water fish (tetras, discus) prefer 2-8 dGH.',
+                'Most tropical fish do well in GH 4-12 dGH. Livebearers (guppies, mollies) prefer harder water (10-16 dGH). Soft water fish (tetras, discus) prefer 2-8 dGH.',
           ),
           const LessonSection(
             type: LessonSectionType.heading,
@@ -1065,7 +1065,7 @@ class LessonContent {
               ],
               correctIndex: 2,
               explanation:
-                  'Livebearers come from hard water environments and thrive at GH 10-20 dGH.',
+                  'Livebearers come from hard water environments and thrive at GH 10-16 dGH.',
             ),
           ],
         ),
@@ -2423,6 +2423,389 @@ class LessonContent {
           ],
         ),
       ),
+
+      // Lesson 2.46: Choosing Your First Tank
+      Lesson(
+        id: 'ff_tank_selection',
+        pathId: 'first_fish',
+        title: 'Choosing Your First Tank',
+        description: 'Pre-purchase guidance for beginners',
+        orderIndex: 6,
+        xpReward: 50,
+        estimatedMinutes: 7,
+        sections: [
+          const LessonSection(
+            type: LessonSectionType.heading,
+            content: 'Bigger Is Better (Within Reason)',
+          ),
+          const LessonSection(
+            type: LessonSectionType.text,
+            content:
+                'The single most impactful decision you\'ll make is tank size. Larger tanks are more stable — a small mistake in a 200-litre tank barely registers, but the same mistake in a 20-litre tank can be fatal. Water parameters fluctuate much more slowly in bigger volumes.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.keyPoint,
+            content:
+                'The sweet spot for beginners is 60–120 litres. It\'s large enough to be stable, small enough to be affordable and manageable.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.heading,
+            content: 'Glass vs Acrylic',
+          ),
+          const LessonSection(
+            type: LessonSectionType.bulletList,
+            content:
+                '• **Glass** — Cheaper, scratch-resistant, doesn\'t yellow over time. Heavier. The standard choice.\n• **Acrylic** — Lighter, clearer, moulded into interesting shapes. Scratches easily and costs more.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.tip,
+            content:
+                'For your first tank, glass is almost always the right call. It\'s forgiving, affordable, and you\'ll spend less time worrying about scratches from cleaning.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.heading,
+            content: 'The Stand',
+          ),
+          const LessonSection(
+            type: LessonSectionType.text,
+            content:
+                'A 60-litre tank filled with water, substrate, and decor weighs around 80 kg. Your furniture is not designed for that. You need a proper aquarium stand rated for the weight, or a very sturdy, level surface.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.warning,
+            content:
+                'An uneven surface creates stress points on the glass that can cause cracks over time. Always use a spirit level when setting up.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.heading,
+            content: 'Where to Put It',
+          ),
+          const LessonSection(
+            type: LessonSectionType.bulletList,
+            content:
+                '• **Away from windows** — Sunlight causes algae explosions and temperature swings\n• **Away from radiators/heaters** — Temperature stability is critical\n• **Near a power socket** — You\'ll need one for the filter, heater, and light\n• **Where you can enjoy it** — You\'ll look at this tank every day!',
+          ),
+          const LessonSection(
+            type: LessonSectionType.heading,
+            content: 'Budget Expectations',
+          ),
+          const LessonSection(
+            type: LessonSectionType.text,
+            content:
+                'A realistic starter setup (60L tank, filter, heater, thermometer, substrate, decor, water conditioner, test kit) runs roughly £150–£300. The fish themselves are often the cheapest part. Don\'t blow your budget on the tank and skimp on the filter — a good filter is the heart of your aquarium.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.funFact,
+            content:
+                'The nitrogen cycle lesson earlier? That\'s exactly why you shouldn\'t rush. Buy your tank first, set it up, cycle it, THEN buy fish. Patience literally saves lives.',
+          ),
+        ],
+        quiz: Quiz(
+          id: 'ff_tank_selection_quiz',
+          lessonId: 'ff_tank_selection',
+          questions: [
+            const QuizQuestion(
+              id: 'ff_tank_q1',
+              question: 'What is the recommended tank size range for beginners?',
+              options: [
+                '5–15 litres',
+                '20–40 litres',
+                '60–120 litres',
+                '200+ litres',
+              ],
+              correctIndex: 2,
+              explanation:
+                  '60–120 litres is the sweet spot — stable enough to be forgiving, small enough to be affordable.',
+            ),
+            const QuizQuestion(
+              id: 'ff_tank_q2',
+              question: 'Why should you avoid placing a tank near a window?',
+              options: [
+                'It makes the tank too dark',
+                'Sunlight causes algae blooms and temperature swings',
+                'Fish get stressed by seeing outside',
+                'The glass can crack from UV light',
+              ],
+              correctIndex: 1,
+              explanation:
+                  'Direct sunlight fuels rapid algae growth and causes daily temperature fluctuations that stress fish.',
+            ),
+            const QuizQuestion(
+              id: 'ff_tank_q3',
+              question: 'Why is glass usually recommended over acrylic for beginners?',
+              options: [
+                'Glass is clearer',
+                'Glass is lighter',
+                'Glass is cheaper and scratch-resistant',
+                'Glass holds more water',
+              ],
+              correctIndex: 2,
+              explanation:
+                  'Glass tanks cost less and resist scratches from cleaning tools — ideal for your first setup.',
+            ),
+          ],
+        ),
+      ),
+
+      // Lesson 2.47: Stocking Your Tank
+      Lesson(
+        id: 'ff_stocking',
+        pathId: 'first_fish',
+        title: 'Stocking Your Tank',
+        description: 'How many fish, and which ones get along?',
+        orderIndex: 7,
+        xpReward: 50,
+        estimatedMinutes: 8,
+        sections: [
+          const LessonSection(
+            type: LessonSectionType.heading,
+            content: 'The Inch-Per-Gallon Myth',
+          ),
+          const LessonSection(
+            type: LessonSectionType.text,
+            content:
+                'You\'ve probably heard the rule: "one inch of fish per gallon." It\'s everywhere, and it\'s wrong. A 30-centimetre Oscar in a 30-litre tank? That\'s a disaster waiting to happen. This rule ignores fish body shape, activity level, bioload (waste production), and social needs.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.keyPoint,
+            content:
+                'Better approach: research the adult size, bioload, and social needs of each species, then stock gradually while testing water. There is no universal formula.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.heading,
+            content: 'Cycling First, Always',
+          ),
+          const LessonSection(
+            type: LessonSectionType.text,
+            content:
+                'This cannot be overstated: do not add fish to an uncycled tank. Without established bacteria, ammonia from fish waste builds up and kills them. Cycle your tank with a fishless method (ammonia source + time) or with just 2–3 hardy fish for 4–6 weeks before adding more.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.warning,
+            content:
+                'Adding too many fish at once to a new tank is the #1 cause of "New Tank Syndrome" deaths. Start small, be patient.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.heading,
+            content: 'Introducing Fish Gradually',
+          ),
+          const LessonSection(
+            type: LessonSectionType.bulletList,
+            content:
+                '• **Week 1–2:** Add 2–3 small hardy fish only (e.g. zebra danios)\n• **Week 3–4:** Test water — if ammonia/nitrite are 0, add 2–3 more\n• **Week 5+:** Continue adding slowly, testing between each batch\n• **Rule of thumb:** Never add more than 25% of your planned stock at once',
+          ),
+          const LessonSection(
+            type: LessonSectionType.heading,
+            content: 'Compatibility Basics',
+          ),
+          const LessonSection(
+            type: LessonSectionType.bulletList,
+            content:
+                '• Match **temperament** — peaceful with peaceful, semi-aggressive with semi-aggressive\n• Match **temperature needs** — tropical (24–26°C) vs coldwater (18–22°C)\n• Match **water parameters** — soft/acidic vs hard/alkaline species\n• Consider **swimming zones** — top, middle, and bottom dwellers reduce competition',
+          ),
+          const LessonSection(
+            type: LessonSectionType.tip,
+            content:
+                'A good community mix: a school of top-dwellers (e.g. ember tetras), a school of mid-dwellers (e.g. harlequin rasboras), and bottom-dwellers (e.g. corydoras catfish). Three layers of activity, minimal conflict.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.heading,
+            content: 'Warning Signs of Overstocking',
+          ),
+          const LessonSection(
+            type: LessonSectionType.bulletList,
+            content:
+                '• Constantly high nitrates (above 40 ppm even after water changes)\n• Aggressive behaviour from normally peaceful fish\n• Excessive algae growth\n• Cloudy water that won\'t clear\n• Fish hovering at the surface gasping (low oxygen from overcrowding)',
+          ),
+          const LessonSection(
+            type: LessonSectionType.keyPoint,
+            content:
+                'If you notice these signs, reduce feeding immediately, increase water change frequency, and consider rehoming some fish. It\'s better to have fewer happy fish than too many stressed ones.',
+          ),
+        ],
+        quiz: Quiz(
+          id: 'ff_stocking_quiz',
+          lessonId: 'ff_stocking',
+          questions: [
+            const QuizQuestion(
+              id: 'ff_stock_q1',
+              question: 'Why is the "one inch per gallon" rule unreliable?',
+              options: [
+                'It recommends too few fish',
+                'It ignores bioload, body shape, and social needs',
+                'It only works for saltwater tanks',
+                'Fish don\'t grow in aquariums',
+              ],
+              correctIndex: 1,
+              explanation:
+                  'This oversimplified rule ignores that a slim tetra and a chunky cichlid of the same length produce very different waste loads.',
+            ),
+            const QuizQuestion(
+              id: 'ff_stock_q2',
+              question: 'What is the recommended maximum percentage of stock to add at once?',
+              options: [
+                '10%',
+                '25%',
+                '50%',
+                '100%',
+              ],
+              correctIndex: 1,
+              explanation:
+                  'Never add more than 25% of your planned total at once. This gives the biofilter time to adjust to the increased waste.',
+            ),
+            const QuizQuestion(
+              id: 'ff_stock_q3',
+              question: 'Which is a warning sign of overstocking?',
+              options: [
+                'Fish swimming at different speeds',
+                'Water crystal clear with no algae',
+                'Constantly high nitrates above 40 ppm',
+                'Fish hiding during the day',
+              ],
+              correctIndex: 2,
+              explanation:
+                  'Nitrates that won\'t stay below 40 ppm even with regular water changes are a clear indicator of too much waste production for your filtration.',
+            ),
+          ],
+        ),
+      ),
+
+      // Lesson 2.48: Practical Maintenance Skills
+      Lesson(
+        id: 'ff_practical_skills',
+        pathId: 'first_fish',
+        title: 'Essential Maintenance Skills',
+        description: 'Gravel vacuuming, siphons, substrate rinsing, water changes',
+        orderIndex: 8,
+        xpReward: 50,
+        estimatedMinutes: 9,
+        sections: [
+          const LessonSection(
+            type: LessonSectionType.heading,
+            content: 'The Weekly Water Change',
+          ),
+          const LessonSection(
+            type: LessonSectionType.text,
+            content:
+                'A weekly 25–30% water change is the single most important maintenance task. It removes accumulated nitrates, replenishes minerals, and keeps your water clean. It sounds simple, but doing it correctly makes all the difference.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.heading,
+            content: 'Step-by-Step Water Change',
+          ),
+          const LessonSection(
+            type: LessonSectionType.bulletList,
+            content:
+                '• **Step 1:** Turn off the heater and filter\n• **Step 2:** Treat new water with dechlorinator — always prepare water FIRST\n• **Step 3:** Match the temperature to within 1°C of tank water\n• **Step 4:** Use a gravel vacuum to siphon out 25–30% of the water\n• **Step 5:** Clean the substrate as you go (push the vacuum into the gravel and watch debris get pulled out)\n• **Step 6:** Slowly pour in the treated new water\n• **Step 7:** Turn the heater and filter back on',
+          ),
+          const LessonSection(
+            type: LessonSectionType.warning,
+            content:
+                'Never use hot tap water to speed things up. UK hot water passes through a copper boiler which adds dissolved copper — toxic to invertebrates and harmful to fish. Use cold water and a kettle if needed.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.heading,
+            content: 'How to Start a Siphon',
+          ),
+          const LessonSection(
+            type: LessonSectionType.text,
+            content:
+                'The gravel vacuum uses a siphon to pull water out. To start it: submerge the entire tube and hose in the tank, put your thumb over the hose end, lift it into your bucket, and release. Gravity does the rest. Some vacuums have a squeeze bulb that makes this even easier.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.tip,
+            content:
+                'Place the bucket below the tank level. The greater the height difference, the stronger the siphon. If the siphon stops, just repeat the priming step.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.heading,
+            content: 'Gravel Vacuuming Technique',
+          ),
+          const LessonSection(
+            type: LessonSectionType.text,
+            content:
+                'Push the vacuum tube into the substrate and watch dirty water and debris flow out. When the water runs clear, move to the next section. Don\'t vacuum the entire substrate every week — rotate through sections so you don\'t disturb too much beneficial bacteria at once.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.keyPoint,
+            content:
+                'Don\'t dig too deep. The top 2–3 cm of gravel is where waste accumulates. Deeper layers house most of your beneficial bacteria.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.heading,
+            content: 'Rinsing Substrate Before Setup',
+          ),
+          const LessonSection(
+            type: LessonSectionType.text,
+            content:
+                'Brand new gravel or sand is covered in dust that will turn your tank cloudy. Before adding it to the tank, rinse it: put a small amount in a bucket, fill with water, stir, pour off the cloudy water, and repeat until the water runs clear. This can take 5–10 rinses for dusty substrates.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.warning,
+            content:
+                'Never use soap or detergent to rinse substrate or any aquarium item. Even trace amounts are toxic to fish. Water only, always.',
+          ),
+          const LessonSection(
+            type: LessonSectionType.heading,
+            content: 'Equipment Maintenance',
+          ),
+          const LessonSection(
+            type: LessonSectionType.bulletList,
+            content:
+                '• **Filter media:** Rinse in OLD tank water during water changes, never tap water (chlorine kills bacteria)\n• **Filter pad:** Replace when water flow is noticeably reduced (monthly-ish)\n• **Heater:** Check temperature daily, replace every 2–3 years\n• **Glass:** Wipe algae with an aquarium-safe scraper, not kitchen sponges',
+          ),
+          const LessonSection(
+            type: LessonSectionType.funFact,
+            content:
+                'The bacteria that live in your filter media do 90% of the work keeping your water safe. Treat them well — they\'re your tank\'s most important residents!',
+          ),
+        ],
+        quiz: Quiz(
+          id: 'ff_practical_skills_quiz',
+          lessonId: 'ff_practical_skills',
+          questions: [
+            const QuizQuestion(
+              id: 'ff_skills_q1',
+              question: 'How much water should you change per week?',
+              options: [
+                '10%',
+                '25–30%',
+                '50%',
+                '100%',
+              ],
+              correctIndex: 1,
+              explanation:
+                  '25–30% weekly is the sweet spot — enough to remove nitrates without disrupting the bacterial colony or causing parameter swings.',
+            ),
+            const QuizQuestion(
+              id: 'ff_skills_q2',
+              question: 'Why should you rinse filter media in old tank water instead of tap water?',
+              options: [
+                'It removes more debris',
+                'Tap water is too cold',
+                'Chlorine in tap water kills beneficial bacteria',
+                'Old water has more nutrients',
+              ],
+              correctIndex: 2,
+              explanation:
+                  'Chlorine and chloramine in tap water kill the beneficial bacteria living on your filter media. Old tank water is chlorine-free.',
+            ),
+            const QuizQuestion(
+              id: 'ff_skills_q3',
+              question: 'Why shouldn\'t you use hot tap water for water changes?',
+              options: [
+                'It\'s too hot for fish',
+                'It dissolves copper from the boiler, which is toxic',
+                'It causes temperature shock',
+                'It removes oxygen from the water',
+              ],
+              correctIndex: 1,
+              explanation:
+                  'UK hot water passes through copper pipes and boilers, leaching dissolved copper that is toxic to invertebrates and harmful to fish.',
+            ),
+          ],
+        ),
+      ),
     ],
   );
 
@@ -2472,7 +2855,7 @@ class LessonContent {
           const LessonSection(
             type: LessonSectionType.warning,
             content:
-                'Never replace all the water at once. Massive changes shock fish and can crash your cycle. 50% max in emergencies.',
+                'Never replace all the water at once. Massive changes shock fish and can crash your cycle. Stick to 25-30% for routine changes. In emergencies (ammonia spike, disease treatment), larger changes of 50-75% are safe - just match temperature and dechlorinate.',
           ),
         ],
         quiz: Quiz(
@@ -3607,7 +3990,7 @@ class LessonContent {
           const LessonSection(
             type: LessonSectionType.text,
             content:
-                'Plants use CO2, light, and nutrients for photosynthesis. Atmospheric CO2 dissolves into water naturally, but only at 2-5 ppm - not much. Most demanding plants want 20-30 ppm for optimal growth.',
+                'Plants use CO2, light, and nutrients for photosynthesis. Atmospheric CO2 dissolves into water naturally, but only at 3-5 ppm - not much. Most demanding plants want 20-30 ppm for optimal growth.',
           ),
           const LessonSection(
             type: LessonSectionType.keyPoint,
@@ -3640,7 +4023,7 @@ class LessonContent {
           const LessonSection(
             type: LessonSectionType.warning,
             content:
-                'Excel can melt certain plants (Vallisneria, some mosses) and is toxic to shrimp at high doses. Start with half-dose and watch your plants.',
+                'Excel is lethal to shrimp and other invertebrates even at recommended doses. If you keep shrimp, snails, or crayfish, do NOT use Excel — consider pressurized CO2 or non-algaecide alternatives instead. It can also melt certain plants (Vallisneria, some mosses).',
           ),
           const LessonSection(
             type: LessonSectionType.heading,
@@ -3649,7 +4032,7 @@ class LessonContent {
           const LessonSection(
             type: LessonSectionType.text,
             content:
-                'Yeast + sugar in a bottle produces CO2 via fermentation. Cheap but inconsistent - production varies daily, and it can crash overnight killing fish (CO2 becomes toxic at high levels).',
+                'Yeast + sugar in a bottle produces CO2 via fermentation. Cheap but inconsistent - production varies daily, and can crash overnight. A sudden CO2 spike drops pH rapidly (potentially lethal), while a CO2 dump when production surges can suffocate fish. Not recommended for tanks under 40 litres where swings hit harder.',
           ),
           const LessonSection(
             type: LessonSectionType.heading,
@@ -3726,7 +4109,7 @@ class LessonContent {
               ],
               correctIndex: 1,
               explanation:
-                  'DIY CO2 is unpredictable - production varies daily and can spike or crash overnight, potentially killing fish.',
+                  'DIY CO2 is unpredictable - production varies daily and can spike or crash overnight. A CO2 dump drops pH rapidly (potentially lethal), making it risky especially in smaller tanks.',
             ),
             const QuizQuestion(
               id: 'plant_co2_q4',
@@ -4483,7 +4866,7 @@ class LessonContent {
           const LessonSection(
             type: LessonSectionType.keyPoint,
             content:
-                '90% of fish disease is caused by stress. Eliminate stress sources and most problems disappear!',
+                'Stress is the single biggest trigger for fish disease. Poor water quality, overcrowding, aggressive tankmates, and sudden parameter changes all weaken your fish\'s immune system. Eliminate stress sources and most problems disappear!',
           ),
           const LessonSection(
             type: LessonSectionType.heading,
@@ -4665,7 +5048,7 @@ class LessonContent {
           const LessonSection(
             type: LessonSectionType.keyPoint,
             content:
-                'Minimum 5 gallons, heated to 24-28°C (75-82°F), filtered water. No bowls!',
+                'Minimum 19 litres (5 gallons), heated to 24-28°C (75-82°F), filtered water. No bowls!',
           ),
           const LessonSection(
             type: LessonSectionType.warning,
@@ -4693,7 +5076,7 @@ class LessonContent {
           const LessonSection(
             type: LessonSectionType.keyPoint,
             content:
-                '20 gallons for the first goldfish, +10 gallons per additional fish. Fancy goldfish need less space than commons/comets.',
+                '20 gallons for the first goldfish, +10 gallons per additional fish. Fancy goldfish need more space than commons/comets - they\'re less agile and produce more waste.',
           ),
         ],
         quiz: Quiz(
