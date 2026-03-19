@@ -86,6 +86,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     } catch (e) {
       logError('Onboarding: notification permission request failed: $e', tag: 'OnboardingScreen');
     }
+    if (!mounted) return;
     _nextPage();
   }
 
@@ -213,6 +214,29 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       value: SystemUiOverlayStyle.dark,
       child: PopScope(
         canPop: false,
+        onPopInvokedWithResult: (didPop, result) async {
+          if (didPop) return;
+          final shouldExit = await showDialog<bool>(
+            context: context,
+            builder: (ctx) => AlertDialog(
+              title: const Text('Exit onboarding?'),
+              content: const Text('Your progress won\'t be saved.'),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(ctx).pop(false),
+                  child: const Text('Cancel'),
+                ),
+                TextButton(
+                  onPressed: () => Navigator.of(ctx).pop(true),
+                  child: const Text('Exit'),
+                ),
+              ],
+            ),
+          );
+          if (shouldExit == true && mounted) {
+            Navigator.of(context).pop();
+          }
+        },
         child: Scaffold(
           body: PageView(
           controller: _pageController,

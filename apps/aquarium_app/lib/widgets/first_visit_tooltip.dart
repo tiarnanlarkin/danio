@@ -140,10 +140,16 @@ class FirstVisitTooltipState extends ConsumerState<FirstVisitTooltip>
                   ),
                 ),
                 const SizedBox(width: AppSpacing.sm),
-                Icon(
-                  Icons.close,
-                  size: 18,
-                  color: context.textSecondary,
+                GestureDetector(
+                  onTap: _dismiss,
+                  child: Container(
+                    padding: const EdgeInsets.all(12),
+                    child: Icon(
+                      Icons.close,
+                      size: 18,
+                      color: context.textSecondary,
+                    ),
+                  ),
                 ),
               ],
             ),

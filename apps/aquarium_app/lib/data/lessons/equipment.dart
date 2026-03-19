@@ -223,7 +223,7 @@ final equipmentPath = LearningPath(
         const LessonSection(
           type: LessonSectionType.text,
           content:
-              'The standard rule: 1-2 watts per litre for modern tanks in typical indoor temperatures. A 60-litre tank typically needs 60-120W. Undersizing means the heater runs constantly (shorter lifespan). Add 0.5-1W/L for tanks in cold rooms or garages.',
+              'The standard rule: 1-2 watts per litre for standard setups in typical indoor temperatures. A 60-litre tank typically needs 60-120W. Undersizing means the heater runs constantly (shorter lifespan). Go up to 2.5 watts per litre for tanks in cold rooms or garages.',
         ),
         const LessonSection(
           type: LessonSectionType.tip,
@@ -296,7 +296,7 @@ final equipmentPath = LearningPath(
             ],
             correctIndex: 1,
             explanation:
-                '1-2 watts per litre is standard for modern tanks in typical indoor temperatures. Add 0.5-1W/L extra for cold rooms.',
+                '1-2 watts per litre is standard for most setups. Go up to 2.5 for colder rooms.',
           ),
           const QuizQuestion(
             id: 'eq_heat_q2',

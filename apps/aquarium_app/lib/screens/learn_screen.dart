@@ -596,6 +596,8 @@ class _ReviewCardsBanner extends ConsumerWidget {
       ),
       child: Semantics(
         button: true,
+        label:
+            'Time to Review! You have $dueCount card${dueCount == 1 ? '' : 's'} ready to review. Tap to start practicing.',
         child: InkWell(
         onTap: () {
           Navigator.of(context).push(
@@ -710,6 +712,8 @@ class _PracticeCard extends ConsumerWidget {
       ),
       child: Semantics(
         button: true,
+        label:
+            'Practice Mode. $weakCount lesson${weakCount == 1 ? '' : 's'} need review. Review before you forget!',
         child: InkWell(
         onTap: () {
           Navigator.of(

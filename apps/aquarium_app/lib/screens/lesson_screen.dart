@@ -768,6 +768,8 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
                   padding: const EdgeInsets.only(bottom: 12),
                   child: Semantics(
                     button: true,
+                    label:
+                        'Option ${String.fromCharCode(65 + optionIndex)}: $option',
                     selected: _selectedAnswer == optionIndex,
                     child: InkWell(
                     onTap: _answered

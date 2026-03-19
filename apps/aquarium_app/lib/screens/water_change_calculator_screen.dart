@@ -61,6 +61,42 @@ class _WaterChangeCalculatorScreenState
       return;
     }
 
+    if (tankVolume > 5000) {
+      setState(() {
+        _changePercent = null;
+        _changeVolume = null;
+        _recommendation = 'Tank volume seems too large. Please check your input.';
+      });
+      return;
+    }
+
+    if (currentNitrate < 0 || currentNitrate > 500) {
+      setState(() {
+        _changePercent = null;
+        _changeVolume = null;
+        _recommendation = 'Current nitrate must be between 0 and 500 ppm';
+      });
+      return;
+    }
+
+    if (targetNitrate < 0 || targetNitrate > 500) {
+      setState(() {
+        _changePercent = null;
+        _changeVolume = null;
+        _recommendation = 'Target nitrate must be between 0 and 500 ppm';
+      });
+      return;
+    }
+
+    if (tapNitrate < 0 || tapNitrate > 500) {
+      setState(() {
+        _changePercent = null;
+        _changeVolume = null;
+        _recommendation = 'Tap water nitrate must be between 0 and 500 ppm';
+      });
+      return;
+    }
+
     if (currentNitrate <= targetNitrate) {
       setState(() {
         _changePercent = 0;

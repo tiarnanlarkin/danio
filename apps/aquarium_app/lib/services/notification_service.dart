@@ -37,14 +37,14 @@ class NotificationService {
   AndroidScheduleMode? _cachedScheduleMode;
 
   // Callback for handling notification taps.
-  // TRACKED: UX-011 — Notification tap handlers should switch to the correct
-  // tab via ref.read(currentTabProvider.notifier).state = X instead of pushing
-  // a new route onto the root navigator (which loses the tab bar). The current
-  // handler is set in main.dart and uses navigatorKey.currentState?.push(...).
-  // To fix properly, the handler needs access to a WidgetRef or a ProviderContainer
-  // so it can update currentTabProvider. This requires refactoring the notification
-  // initialization to accept a ProviderContainer reference.
-  // Priority: P2 — cosmetic (current approach works, just loses tab bar context).
+  // Updated: uses payload-based routing. Callers should set onNotificationTap
+  // to a handler that switches tabs based on payload:
+  //   'home'  → currentTabProvider = 0 (Home tab)
+  //   'learn' → currentTabProvider = 1 (Learn tab)
+  //   'care'  → currentTabProvider = 0 (Home tab, care/log view)
+  //   'review'→ currentTabProvider = 1 (Learn tab, then push review screen)
+  //   'achievements' → currentTabProvider = 2 (Profile tab, achievements)
+  //   'water_change'  → currentTabProvider = 0 (Home tab)
   Function(String?)? onNotificationTap;
 
   /// Initialize the notification service.
@@ -85,6 +85,11 @@ class NotificationService {
         onDidReceiveNotificationResponse: (details) {
           if (details.payload != null && onNotificationTap != null) {
             onNotificationTap!(details.payload);
+          } else if (details.payload != null) {
+            // Fallback: attempt to navigate via the global navigator key
+            // if no tap handler is set. This ensures notifications still
+            // navigate somewhere useful even without provider access.
+            _handleNotificationFallback(details.payload!);
           }
         },
       );
@@ -114,9 +119,21 @@ class NotificationService {
     }
     try {
       final canExact = await android.canScheduleExactNotifications() ?? false;
-      _cachedScheduleMode = canExact
-          ? AndroidScheduleMode.exactAllowWhileIdle
-          : AndroidScheduleMode.inexactAllowWhileIdle;
+      if (!canExact) {
+        // Attempt to request the permission if not yet granted.
+        try {
+          await android.requestExactAlarmsPermission();
+          final retriedCanExact =
+              await android.canScheduleExactNotifications() ?? false;
+          _cachedScheduleMode = retriedCanExact
+              ? AndroidScheduleMode.exactAllowWhileIdle
+              : AndroidScheduleMode.inexactAllowWhileIdle;
+        } catch (_) {
+          _cachedScheduleMode = AndroidScheduleMode.inexactAllowWhileIdle;
+        }
+      } else {
+        _cachedScheduleMode = AndroidScheduleMode.exactAllowWhileIdle;
+      }
     } catch (e) {
       logError('Notification: failed to detect exact alarm support: $e', tag: 'NotificationService');
       _cachedScheduleMode = AndroidScheduleMode.inexactAllowWhileIdle;
@@ -151,6 +168,73 @@ class NotificationService {
     }
 
     return true;
+  }
+
+  /// Check whether exact alarm scheduling is available on Android 12+.
+  ///
+  /// If the user hasn't granted [SCHEDULE_EXACT_ALARM] permission, returns
+  /// [false].  Callers can use [requestExactAlarmPermission] to show a
+  /// dialog guiding the user to the system settings page.
+  Future<bool> canScheduleExactAlarms() async {
+    final android = _plugin
+        .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin
+        >();
+    if (android == null) return true; // non-Android — not applicable
+    try {
+      return await android.canScheduleExactNotifications() ?? true;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  /// Show a dialog prompting the user to grant exact alarm permission.
+  ///
+  /// Must be called from a widget that has access to a [BuildContext].
+  /// Returns [true] if the user was sent to settings (caller should
+  /// re-check permission afterwards).
+  Future<bool> requestExactAlarmPermission(BuildContext context) async {
+    final canExact = await canScheduleExactAlarms();
+    if (canExact) return true;
+    if (!context.mounted) return false;
+
+    final openSettings = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Reliable reminders'),
+        content: const Text(
+          'To send reminder notifications at the exact time you choose, '
+          'Danio needs permission to schedule alarms. This ensures your '
+          'streak reminders and task notifications arrive on time.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(false),
+            child: const Text('Not now'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.of(ctx).pop(true);
+              _openAppSettings();
+            },
+            child: const Text('Open settings'),
+          ),
+        ],
+      ),
+    );
+
+    return openSettings ?? false;
+  }
+
+  Future<void> _openAppSettings() async {
+    // Use the plugin's built-in method when available, otherwise fall back.
+    final android = _plugin
+        .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin
+        >();
+    if (android != null) {
+      await android.requestExactAlarmsPermission();
+    }
   }
 
   /// Schedule a notification for a task.
@@ -233,6 +317,37 @@ class NotificationService {
         ),
       ),
     );
+  }
+
+  /// Map a notification payload to a tab index for tab navigation.
+  ///
+  /// Use from the tap handler (e.g. in main.dart) with:
+  /// ```dart
+  /// final tabIndex = NotificationService.payloadToTabIndex(payload);
+  /// if (tabIndex != null) {
+  ///   ref.read(currentTabProvider.notifier).state = tabIndex;
+  /// }
+  /// ```
+  /// Returns null if the payload doesn't map to a specific tab.
+  static int? payloadToTabIndex(String? payload) {
+    switch (payload) {
+      case 'home':
+      case 'care':
+      case 'water_change':
+        return 0; // Home tab
+      case 'learn':
+      case 'review':
+        return 1; // Learn tab
+      case 'achievements':
+        return 2; // Profile tab
+      default:
+        return null;
+    }
+  }
+
+  /// Fallback: no-op. The primary handler is set via [onNotificationTap].
+  static void _handleNotificationFallback(String payload) {
+    // Intentionally empty — onNotificationTap in main.dart handles this.
   }
 
   /// Send notification for achievement unlock

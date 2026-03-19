@@ -115,7 +115,7 @@ final waterParametersPath = LearningPath(
         const LessonSection(
           type: LessonSectionType.text,
           content:
-              'For tropical tanks, a reliable heater is essential. Get one rated for your tank size (usually 3-5 watts per litre). Always use a separate thermometer to verify - built-in heater dials are often inaccurate.',
+              'For tropical tanks, a reliable heater is essential. Aim for 1-2 watts per litre for standard setups, or up to 2.5 for colder rooms. Always use a separate thermometer to verify — built-in heater dials are often inaccurate.',
         ),
         const LessonSection(
           type: LessonSectionType.tip,
