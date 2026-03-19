@@ -2,6 +2,7 @@ import 'dart:ui' show PlatformDispatcher;
 import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
+import 'package:danio/utils/logger.dart';
 
 /// Error boundary widget that catches errors and displays a friendly fallback UI
 ///
@@ -41,9 +42,7 @@ class _ErrorBoundaryState extends State<ErrorBoundary> {
 
       // Always log — critical for diagnosing production errors
       FlutterError.presentError(details);
-      debugPrint(
-        '🚨 ErrorBoundary caught: ${details.exception}\n${details.stack}',
-      );
+      appLog('🚨 ErrorBoundary caught: ${details.exception}\n${details.stack}', tag: 'ErrorBoundary');
 
       // Defer setState to avoid calling it during a build phase
       // (FlutterError.onError can fire mid-build, and setState during

@@ -1,10 +1,10 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:flutter/foundation.dart';
 import 'package:archive/archive_io.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
+import 'package:danio/utils/logger.dart';
 
 /// Service for creating and restoring backups with photos bundled.
 ///
@@ -120,7 +120,7 @@ class BackupService {
           await jsonTempFile.delete();
         }
       } catch (e) {
-        debugPrint('Error cleaning up temp file: $e');
+        logError('Error cleaning up temp file: $e', tag: 'BackupService');
       }
     }
   }

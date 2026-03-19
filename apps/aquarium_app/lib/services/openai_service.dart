@@ -2,9 +2,9 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:math' as math;
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
+import 'package:danio/utils/logger.dart';
 
 /// OpenAI API key - passed via dart-define at build time.
 /// Usage: flutter run --dart-define=OPENAI_API_KEY=sk-...
@@ -178,7 +178,7 @@ class OpenAIService {
         }
       } catch (e) {
         // Skip malformed chunks
-        debugPrint('OpenAI: skipping malformed SSE chunk: $e');
+        logError('OpenAI: skipping malformed SSE chunk: $e', tag: 'OpenaiService');
       }
     }
   }
@@ -292,7 +292,7 @@ class OpenAIService {
         if (response.statusCode == 429 && attempt < _maxRetries) {
           // Rate limited — exponential backoff.
           final delay = Duration(seconds: math.min(attempt * 2, 16));
-          debugPrint('OpenAI rate limited, retrying in ${delay.inSeconds}s');
+          appLog('OpenAI rate limited, retrying in ${delay.inSeconds}s', tag: 'OpenaiService');
           await Future<void>.delayed(delay);
           continue;
         }
@@ -300,9 +300,7 @@ class OpenAIService {
         if (response.statusCode >= 500 && attempt < _maxRetries) {
           // Transient server error — retry once with backoff.
           final delay = Duration(seconds: math.min(attempt * 2, 16));
-          debugPrint(
-            'OpenAI server error ${response.statusCode}, retrying in ${delay.inSeconds}s',
-          );
+          appLog('OpenAI server error ${response.statusCode}, retrying in ${delay.inSeconds}s', tag: 'OpenaiService');
           await Future<void>.delayed(delay);
           continue;
         }

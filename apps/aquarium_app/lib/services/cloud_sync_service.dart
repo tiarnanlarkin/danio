@@ -2,15 +2,15 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import '../providers/user_profile_provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../features/auth/auth_provider.dart';
 import '../models/models.dart';
 import 'local_json_storage_service.dart';
 import 'supabase_service.dart';
+import 'package:danio/utils/logger.dart';
 
 // ---------------------------------------------------------------------------
 // Sync status
@@ -165,7 +165,7 @@ class CloudSyncService {
       _channels.add(channel);
     }
 
-    debugPrint('[CloudSync] Listening on ${kSyncTables.length} tables');
+    appLog('[CloudSync] Listening on ${kSyncTables.length} tables', tag: 'CloudSyncService');
   }
 
   /// Stop all realtime subscriptions.
@@ -182,7 +182,7 @@ class CloudSyncService {
   // ---------------------------------------------------------------------------
 
   void _handleRemoteChange(String table, PostgresChangePayload payload) {
-    debugPrint('[CloudSync] Remote change on $table: ${payload.eventType}');
+    appLog('[CloudSync] Remote change on $table: ${payload.eventType}', tag: 'CloudSyncService');
 
     // For water_parameters, always append (never overwrite local history)
     if (table == 'water_parameters') {
@@ -210,7 +210,7 @@ class CloudSyncService {
     final newRecord = payload.newRecord;
     if (newRecord.isEmpty) return;
 
-    debugPrint('[CloudSync] Appending water parameter from cloud');
+    appLog('[CloudSync] Appending water parameter from cloud', tag: 'CloudSyncService');
 
     // Merge into local water parameter history: append if not already present
     final storage = LocalJsonStorageService();
@@ -238,12 +238,10 @@ class CloudSyncService {
               now,
         );
         await storage.saveLog(log);
-        debugPrint(
-          '[CloudSync] Appended water parameter $recordId for tank $tankId',
-        );
+        appLog('[CloudSync] Appended water parameter $recordId for tank $tankId', tag: 'CloudSyncService');
       }
     } catch (e) {
-      debugPrint('[CloudSync] Failed to merge water parameter: $e');
+      logError('[CloudSync] Failed to merge water parameter: $e', tag: 'CloudSyncService');
     }
   }
 
@@ -260,7 +258,7 @@ class CloudSyncService {
         gh: (record['gh'] as num?)?.toDouble(),
       );
     } catch (e) {
-      debugPrint('CloudSync: failed to parse water test record: $e');
+      logError('CloudSync: failed to parse water test record: $e', tag: 'CloudSyncService');
       return null;
     }
   }
@@ -283,10 +281,8 @@ class CloudSyncService {
     if (remoteUpdatedAt != null) {
       final gap = DateTime.now().difference(remoteUpdatedAt);
       if (gap.inHours > 24) {
-        debugPrint(
-          '[CloudSync] WARNING: >24h divergence on $table '
-          'record ${record['id']}',
-        );
+        appLog('[CloudSync] WARNING: >24h divergence on $table '
+          'record ${record['id']}', tag: 'CloudSyncService');
         // Show conflict notification via a global key snackbar
         _showConflictNotification(table, record['id'] as String? ?? 'unknown');
       }
@@ -294,16 +290,14 @@ class CloudSyncService {
 
     // Per-table merge into LocalJsonStorageService using last-write-wins
     await _mergeIntoLocalStorage(table, record, remoteUpdatedAt);
-    debugPrint('[CloudSync] Merged remote $table record: ${record['id']}');
+    appLog('[CloudSync] Merged remote $table record: ${record['id']}', tag: 'CloudSyncService');
   }
 
   /// Show a conflict notification via the sync conflict provider.
   /// UI widgets can watch [syncConflictProvider] to show snackbars.
   void _showConflictNotification(String table, String recordId) {
-    debugPrint(
-      '[CloudSync] ⚠️ CONFLICT: $table/$recordId has >24h divergence. '
-      'Remote data may differ from local. Latest version kept.',
-    );
+    appLog('[CloudSync] ⚠️ CONFLICT: $table/$recordId has >24h divergence. '
+      'Remote data may differ from local. Latest version kept.', tag: 'CloudSyncService');
 
     // Post to a conflict notification provider that the UI can listen to
     _ref.read(_syncConflictProvider.notifier).state = SyncConflict(
@@ -352,7 +346,7 @@ class CloudSyncService {
         // water_parameters handled separately in _handleWaterParameterChange
       }
     } catch (e) {
-      debugPrint('[CloudSync] Failed to merge $table/$recordId: $e');
+      logError('[CloudSync] Failed to merge $table/$recordId: $e', tag: 'CloudSyncService');
     }
   }
 
@@ -537,9 +531,9 @@ class CloudSyncService {
           await storage.deleteLog(recordId);
           break;
       }
-      debugPrint('[CloudSync] Soft-deleted $table/$recordId locally');
+      appLog('[CloudSync] Soft-deleted $table/$recordId locally', tag: 'CloudSyncService');
     } catch (e) {
-      debugPrint('[CloudSync] Failed to delete $table/$recordId: $e');
+      logError('[CloudSync] Failed to delete $table/$recordId: $e', tag: 'CloudSyncService');
     }
   }
 
@@ -568,9 +562,9 @@ class CloudSyncService {
 
       _ref.read(cloudSyncStatusProvider.notifier).state =
           CloudSyncStatus.synced;
-      debugPrint('[CloudSync] Full sync completed');
+      appLog('[CloudSync] Full sync completed', tag: 'CloudSyncService');
     } catch (e) {
-      debugPrint('[CloudSync] Sync error: $e');
+      logError('[CloudSync] Sync error: $e', tag: 'CloudSyncService');
       _ref.read(cloudSyncStatusProvider.notifier).state = CloudSyncStatus.error;
     } finally {
       _isRunning = false;
@@ -594,7 +588,7 @@ class CloudSyncService {
         await _mergeRemoteRecord(table, record, remoteUpdatedAt);
       }
     } catch (e) {
-      debugPrint('[CloudSync] Failed to pull $table: $e');
+      logError('[CloudSync] Failed to pull $table: $e', tag: 'CloudSyncService');
     }
   }
 
@@ -614,20 +608,20 @@ class CloudSyncService {
 
   /// Queue a change for later sync (when offline).
   Future<void> queueOfflineChange(OfflineQueueEntry entry) async {
-    final prefs = await SharedPreferences.getInstance();
+    final prefs = await _ref.read(sharedPreferencesProvider.future);
     final existing = prefs.getStringList(_queueKey) ?? [];
     existing.add(json.encode(entry.toJson()));
     await prefs.setStringList(_queueKey, existing);
-    debugPrint('[CloudSync] Queued offline change: ${entry.table}/${entry.id}');
+    appLog('[CloudSync] Queued offline change: ${entry.table}/${entry.id}', tag: 'CloudSyncService');
   }
 
   /// Flush all queued offline changes to Supabase.
   Future<void> _flushOfflineQueue() async {
-    final prefs = await SharedPreferences.getInstance();
+    final prefs = await _ref.read(sharedPreferencesProvider.future);
     final queue = prefs.getStringList(_queueKey) ?? [];
     if (queue.isEmpty) return;
 
-    debugPrint('[CloudSync] Flushing ${queue.length} offline changes');
+    appLog('[CloudSync] Flushing ${queue.length} offline changes', tag: 'CloudSyncService');
     final failed = <String>[];
 
     for (final entryJson in queue) {
@@ -637,7 +631,7 @@ class CloudSyncService {
         );
         await _pushEntry(entry);
       } catch (e) {
-        debugPrint('[CloudSync] Failed to flush entry: $e');
+        logError('[CloudSync] Failed to flush entry: $e', tag: 'CloudSyncService');
         failed.add(entryJson);
       }
     }
@@ -645,7 +639,7 @@ class CloudSyncService {
     // Keep failed entries for retry
     await prefs.setStringList(_queueKey, failed);
     if (failed.isNotEmpty) {
-      debugPrint('[CloudSync] ${failed.length} entries remain in queue');
+      appLog('[CloudSync] ${failed.length} entries remain in queue', tag: 'CloudSyncService');
     }
   }
 
@@ -716,7 +710,7 @@ class CloudSyncService {
       final result = await Connectivity().checkConnectivity();
       return !result.contains(ConnectivityResult.none);
     } catch (e) {
-      debugPrint('CloudSync: connectivity check failed: $e');
+      logError('CloudSync: connectivity check failed: $e', tag: 'CloudSyncService');
       return false;
     }
   }

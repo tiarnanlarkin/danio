@@ -6,6 +6,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:rive/rive.dart' hide LinearGradient;
+import 'package:danio/utils/logger.dart';
 
 /// Animated water wave effect using Rive
 ///
@@ -80,7 +81,7 @@ class _RiveWaterEffectState extends State<RiveWaterEffect> {
         });
       }
     } catch (e) {
-      debugPrint('Error loading Rive water effect: $e');
+      logError('Error loading Rive water effect: $e', tag: 'RiveWaterEffect');
     }
   }
 

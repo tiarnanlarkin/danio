@@ -19,6 +19,7 @@ import '../data/lesson_content_lazy.dart';
 import '../widgets/skeleton_loader.dart';
 import '../widgets/core/app_states.dart';
 import '../widgets/core/app_card.dart';
+import 'package:danio/utils/logger.dart';
 
 class AnalyticsScreen extends ConsumerStatefulWidget {
   const AnalyticsScreen({super.key});
@@ -1189,7 +1190,7 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
         XFile(file.path),
       ], subject: 'Danio Analytics Export');
     } catch (e) {
-      debugPrint('Export failed: $e');
+      logError('Export failed: $e', tag: 'AnalyticsScreen');
     }
   }
 
@@ -1238,7 +1239,7 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
         XFile(file.path),
       ], subject: 'Danio Analytics Export (CSV)');
     } catch (e) {
-      debugPrint('CSV Export failed: $e');
+      logError('CSV Export failed: $e', tag: 'AnalyticsScreen');
     }
   }
 

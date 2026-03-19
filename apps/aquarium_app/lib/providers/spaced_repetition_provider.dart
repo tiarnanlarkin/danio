@@ -3,7 +3,7 @@
 library;
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'user_profile_provider.dart';
 import 'dart:convert';
 import '../models/spaced_repetition.dart';
 import '../models/achievements.dart';
@@ -11,6 +11,7 @@ import '../services/review_queue_service.dart';
 import '../services/notification_service.dart';
 import 'achievement_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:danio/utils/logger.dart';
 
 // Provider for spaced repetition state
 final spacedRepetitionProvider =
@@ -74,7 +75,7 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
     state = state.copyWith(isLoading: true, clearError: true);
 
     try {
-      final prefs = await SharedPreferences.getInstance();
+      final prefs = await ref.read(sharedPreferencesProvider.future);
 
       // Load cards
       final cardsJson = prefs.getString(_storageKey);
@@ -136,7 +137,7 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
   /// Save cards to storage
   Future<void> _saveData() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
+      final prefs = await ref.read(sharedPreferencesProvider.future);
 
       // Save cards
       final cardsJson = jsonEncode(state.cards.map((c) => c.toJson()).toList());
@@ -319,7 +320,7 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
           : (obj as dynamic).question;
       return value is String ? value : null;
     } catch (e) {
-      debugPrint('Spaced repetition: failed to extract card value: $e');
+      logError('Spaced repetition: failed to extract card value: $e', tag: 'SpacedRepetitionProvider');
       return null;
     }
   }
@@ -472,7 +473,7 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
       await _updateReviewStreak();
 
       // Load and update session count
-      final prefs = await SharedPreferences.getInstance();
+      final prefs = await ref.read(sharedPreferencesProvider.future);
       final sessionCountJson = prefs.getString(_sessionsKey);
       int sessionCount = 1;
 
@@ -536,7 +537,7 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
   /// Update review streak after completing a session
   Future<void> _updateReviewStreak() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
+      final prefs = await ref.read(sharedPreferencesProvider.future);
       final now = DateTime.now();
 
       // Load streak data
@@ -737,7 +738,7 @@ class SpacedRepetitionNotifier extends StateNotifier<SpacedRepetitionState> {
   Future<void> resetAll() async {
     state = SpacedRepetitionState(stats: ReviewStats.fromCards([]));
 
-    final prefs = await SharedPreferences.getInstance();
+    final prefs = await ref.read(sharedPreferencesProvider.future);
     await prefs.remove(_storageKey);
     await prefs.remove(_statsKey);
   }

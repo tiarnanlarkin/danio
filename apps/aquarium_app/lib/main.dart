@@ -26,6 +26,7 @@ import 'theme/app_theme.dart';
 import 'utils/performance_monitor.dart';
 import 'widgets/performance_overlay.dart';
 import 'widgets/error_boundary.dart';
+import 'package:danio/utils/logger.dart';
 
 // Global navigator key for notification navigation
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
@@ -104,9 +105,9 @@ void main() async {
     try {
       await Firebase.initializeApp();
       firebaseInitialized = true;
-      if (kDebugMode) debugPrint('✅ Firebase initialized successfully');
+      appLog(kDebugMode, tag: 'Main');
     } catch (e) {
-      if (kDebugMode) debugPrint('⚠️ Firebase init failed (app will run without it): $e');
+      logError(kDebugMode, tag: 'Main');
     }
 
     // ── Apply persisted GDPR analytics consent ──
@@ -302,7 +303,7 @@ class _AppRouterState extends ConsumerState<_AppRouter>
       );
     } catch (e) {
       // Silently fail - don't break app flow
-      if (kDebugMode) debugPrint('Failed to schedule review notifications: $e');
+      logError(kDebugMode, tag: 'Main');
     }
   }
 
@@ -326,7 +327,7 @@ class _AppRouterState extends ConsumerState<_AppRouter>
         todayXp: todayXp,
       );
     } catch (e) {
-      if (kDebugMode) debugPrint('Failed to schedule streak notifications: $e');
+      logError(kDebugMode, tag: 'Main');
     }
   }
 

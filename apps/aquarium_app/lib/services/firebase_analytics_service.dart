@@ -1,6 +1,6 @@
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/foundation.dart';
+import 'package:danio/utils/logger.dart';
 
 /// Centralised Firebase Analytics event logging.
 ///
@@ -16,7 +16,7 @@ class FirebaseAnalyticsService {
       Firebase.app();
       return true;
     } catch (e) {
-      debugPrint('FirebaseAnalytics: Firebase not initialised: $e');
+      logError('FirebaseAnalytics: Firebase not initialised: $e', tag: 'FirebaseAnalyticsService');
       return false;
     }
   }
@@ -55,7 +55,7 @@ class FirebaseAnalyticsService {
       await _analytics?.logEvent(name: name, parameters: params);
     } catch (e) {
       // Never crash the app because of analytics
-      debugPrint('⚠️ Analytics event "$name" failed: $e');
+      logError('⚠️ Analytics event "$name" failed: $e', tag: 'FirebaseAnalyticsService');
     }
   }
 }

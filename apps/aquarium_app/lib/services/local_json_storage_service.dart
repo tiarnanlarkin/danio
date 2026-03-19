@@ -1,13 +1,13 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:flutter/foundation.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:synchronized/synchronized.dart';
 
 import '../models/models.dart';
 import 'storage_service.dart';
+import 'package:danio/utils/logger.dart';
 
 /// Custom exception for storage corruption/parse failures
 class StorageCorruptionException implements Exception {
@@ -127,7 +127,7 @@ class LocalJsonStorageService implements StorageService {
 
       // File doesn't exist - this is a fresh install
       if (!await file.exists()) {
-        debugPrint('📦 Storage: No data file found, starting fresh');
+        appLog('📦 Storage: No data file found, starting fresh', tag: 'LocalJsonStorageService');
         _state = StorageState.loaded;
         return;
       }
@@ -135,7 +135,7 @@ class LocalJsonStorageService implements StorageService {
       // File exists but is empty - treat as fresh start
       final raw = await file.readAsString();
       if (raw.trim().isEmpty) {
-        debugPrint('📦 Storage: Empty data file, starting fresh');
+        appLog('📦 Storage: Empty data file, starting fresh', tag: 'LocalJsonStorageService');
         _state = StorageState.loaded;
         return;
       }
@@ -157,17 +157,17 @@ class LocalJsonStorageService implements StorageService {
 
         try {
           await file.copy(corruptedPath);
-          debugPrint('💾 Corrupted file backed up to: $corruptedPath');
+          logError('💾 Corrupted file backed up to: $corruptedPath', tag: 'LocalJsonStorageService');
         } catch (backupError) {
-          debugPrint('⚠️  Failed to backup corrupted file: $backupError');
+          logError('⚠️  Failed to backup corrupted file: $backupError', tag: 'LocalJsonStorageService');
         }
 
         // Log detailed error for debugging
-        debugPrint('❌ STORAGE ERROR: JSON Parsing Failed');
-        debugPrint('   Error: $parseError');
-        debugPrint('   File: ${file.path}');
-        debugPrint('   Backup: $corruptedPath');
-        debugPrint('   Timestamp: ${DateTime.now().toIso8601String()}');
+        logError('❌ STORAGE ERROR: JSON Parsing Failed', tag: 'LocalJsonStorageService');
+        logError('   Error: $parseError', tag: 'LocalJsonStorageService');
+        logError('   File: ${file.path}', tag: 'LocalJsonStorageService');
+        appLog('   Backup: $corruptedPath', tag: 'LocalJsonStorageService');
+        appLog('   Timestamp: ${DateTime.now().toIso8601String()}', tag: 'LocalJsonStorageService');
 
         // Store error state
         final error = StorageCorruptionException(
@@ -193,9 +193,7 @@ class LocalJsonStorageService implements StorageService {
         _parseAndLoadEntities(json);
 
         _state = StorageState.loaded;
-        debugPrint(
-          '✅ Storage loaded successfully: ${_tanks.length} tanks, ${_livestock.length} livestock, ${_equipment.length} equipment',
-        );
+        appLog('✅ Storage loaded successfully: ${_tanks.length} tanks, ${_livestock.length} livestock, ${_equipment.length} equipment', tag: 'LocalJsonStorageService');
       } catch (entityError) {
         // Error during entity parsing (malformed data structure)
         final timestamp = DateTime.now().millisecondsSinceEpoch;
@@ -203,16 +201,16 @@ class LocalJsonStorageService implements StorageService {
 
         try {
           await file.copy(corruptedPath);
-          debugPrint('💾 Corrupted file backed up to: $corruptedPath');
+          logError('💾 Corrupted file backed up to: $corruptedPath', tag: 'LocalJsonStorageService');
         } catch (backupError) {
-          debugPrint('⚠️  Failed to backup corrupted file: $backupError');
+          logError('⚠️  Failed to backup corrupted file: $backupError', tag: 'LocalJsonStorageService');
         }
 
-        debugPrint('❌ STORAGE ERROR: Entity Parsing Failed');
-        debugPrint('   Error: $entityError');
-        debugPrint('   File: ${file.path}');
-        debugPrint('   Backup: $corruptedPath');
-        debugPrint('   Timestamp: ${DateTime.now().toIso8601String()}');
+        logError('❌ STORAGE ERROR: Entity Parsing Failed', tag: 'LocalJsonStorageService');
+        logError('   Error: $entityError', tag: 'LocalJsonStorageService');
+        logError('   File: ${file.path}', tag: 'LocalJsonStorageService');
+        logError('   Backup: $corruptedPath', tag: 'LocalJsonStorageService');
+        appLog('   Timestamp: ${DateTime.now().toIso8601String()}', tag: 'LocalJsonStorageService');
 
         // Store error state
         final error = StorageCorruptionException(
@@ -237,9 +235,9 @@ class LocalJsonStorageService implements StorageService {
       rethrow;
     } catch (e, stackTrace) {
       // Unexpected errors (file I/O, permissions, etc.)
-      debugPrint('⚠️  STORAGE ERROR: Unexpected error during load');
-      debugPrint('   Error: $e');
-      debugPrint('   Stack: $stackTrace');
+      logError('⚠️  STORAGE ERROR: Unexpected error during load', stackTrace: stackTrace, tag: 'LocalJsonStorageService');
+      logError('   Error: $e', stackTrace: stackTrace, tag: 'LocalJsonStorageService');
+      logError('   Stack: $stackTrace', stackTrace: stackTrace, tag: 'LocalJsonStorageService');
 
       // Store error but allow service to continue with empty data
       _lastError = StorageError(
@@ -251,7 +249,7 @@ class LocalJsonStorageService implements StorageService {
 
       // Mark as loaded with empty data (soft fail for I/O errors)
       _state = StorageState.loaded;
-      debugPrint('⚠️  Continuing with empty data due to I/O error');
+      appLog('⚠️  Continuing with empty data due to I/O error', tag: 'LocalJsonStorageService');
     }
   }
 
@@ -275,7 +273,7 @@ class LocalJsonStorageService implements StorageService {
         _tanks[entry.key] = _tankFromJson(entry.value);
       } catch (e) {
         errors.add('Tank ${entry.key}: $e');
-        debugPrint('⚠️  Skipping corrupted tank: ${entry.key} - $e');
+        logError('⚠️  Skipping corrupted tank: ${entry.key} - $e', tag: 'LocalJsonStorageService');
       }
     }
 
@@ -287,7 +285,7 @@ class LocalJsonStorageService implements StorageService {
         _livestock[entry.key] = _livestockFromJson(entry.value);
       } catch (e) {
         errors.add('Livestock ${entry.key}: $e');
-        debugPrint('⚠️  Skipping corrupted livestock: ${entry.key} - $e');
+        logError('⚠️  Skipping corrupted livestock: ${entry.key} - $e', tag: 'LocalJsonStorageService');
       }
     }
 
@@ -299,7 +297,7 @@ class LocalJsonStorageService implements StorageService {
         _equipment[entry.key] = _equipmentFromJson(entry.value);
       } catch (e) {
         errors.add('Equipment ${entry.key}: $e');
-        debugPrint('⚠️  Skipping corrupted equipment: ${entry.key} - $e');
+        logError('⚠️  Skipping corrupted equipment: ${entry.key} - $e', tag: 'LocalJsonStorageService');
       }
     }
 
@@ -311,7 +309,7 @@ class LocalJsonStorageService implements StorageService {
         _logs[entry.key] = _logFromJson(entry.value);
       } catch (e) {
         errors.add('Log ${entry.key}: $e');
-        debugPrint('⚠️  Skipping corrupted log: ${entry.key} - $e');
+        logError('⚠️  Skipping corrupted log: ${entry.key} - $e', tag: 'LocalJsonStorageService');
       }
     }
 
@@ -323,7 +321,7 @@ class LocalJsonStorageService implements StorageService {
         _tasks[entry.key] = _taskFromJson(entry.value);
       } catch (e) {
         errors.add('Task ${entry.key}: $e');
-        debugPrint('⚠️  Skipping corrupted task: ${entry.key} - $e');
+        logError('⚠️  Skipping corrupted task: ${entry.key} - $e', tag: 'LocalJsonStorageService');
       }
     }
 
@@ -335,7 +333,7 @@ class LocalJsonStorageService implements StorageService {
     }
 
     if (errors.isNotEmpty) {
-      debugPrint('⚠️  Loaded with ${errors.length} corrupted entities skipped');
+      appLog('⚠️  Loaded with ${errors.length} corrupted entities skipped', tag: 'LocalJsonStorageService');
     }
   }
 
@@ -364,7 +362,7 @@ class LocalJsonStorageService implements StorageService {
       try {
         await file.copy(bak.path);
       } catch (e) {
-        debugPrint('Storage: backup creation failed before save: $e');
+        logError('Storage: backup creation failed before save: $e', tag: 'LocalJsonStorageService');
         // Best-effort backup — don't block the save
       }
     }
@@ -372,9 +370,7 @@ class LocalJsonStorageService implements StorageService {
     await tmp.rename(file.path);
 
     // Log successful saves (can be removed in production)
-    debugPrint(
-      '💾 Storage persisted: ${_tanks.length} tanks, ${_livestock.length} livestock',
-    );
+    appLog('💾 Storage persisted: ${_tanks.length} tanks, ${_livestock.length} livestock', tag: 'LocalJsonStorageService');
   }
 
   /// Recovery method: Clear all data and start fresh
@@ -398,16 +394,14 @@ class LocalJsonStorageService implements StorageService {
       _lastError = null;
       _loadFuture = null;
 
-      debugPrint(
-        '🗑️  All storage data cleared, service reset to healthy state',
-      );
+      appLog('🗑️  All storage data cleared, service reset to healthy state', tag: 'LocalJsonStorageService');
     });
   }
 
   /// Recovery method: Attempt to reload data from disk
   /// Useful if corruption was temporary or file was manually fixed
   Future<void> retryLoad() async {
-    debugPrint('🔄 Attempting to reload storage data...');
+    appLog('🔄 Attempting to reload storage data...', tag: 'LocalJsonStorageService');
 
     // Reset state
     _state = StorageState.idle;
@@ -424,9 +418,9 @@ class LocalJsonStorageService implements StorageService {
     // Attempt reload
     try {
       await _ensureLoaded();
-      debugPrint('✅ Reload successful');
+      appLog('✅ Reload successful', tag: 'LocalJsonStorageService');
     } catch (e) {
-      debugPrint('❌ Reload failed: $e');
+      logError('❌ Reload failed: $e', tag: 'LocalJsonStorageService');
       rethrow;
     }
   }
@@ -434,19 +428,19 @@ class LocalJsonStorageService implements StorageService {
   /// Recovery method: Delete corrupted file and start fresh
   /// This preserves the backup but allows the app to continue
   Future<void> recoverFromCorruption() async {
-    debugPrint('🔧 Recovering from storage corruption...');
+    appLog('🔧 Recovering from storage corruption...', tag: 'LocalJsonStorageService');
 
     // Delete the main data file
     final file = await _dataFile();
     if (await file.exists()) {
       await file.delete();
-      debugPrint('🗑️  Deleted corrupted data file');
+      appLog('🗑️  Deleted corrupted data file', tag: 'LocalJsonStorageService');
     }
 
     // Clear all data and reset state
     await clearAllData();
 
-    debugPrint('✅ Recovery complete - starting with fresh data');
+    appLog('✅ Recovery complete - starting with fresh data', tag: 'LocalJsonStorageService');
   }
 
   // --- Tanks ---

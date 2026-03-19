@@ -21,6 +21,7 @@ import '../theme/app_theme.dart';
 import '../widgets/celebrations/water_change_celebration.dart';
 import '../utils/app_feedback.dart';
 import '../widgets/core/app_button.dart';
+import 'package:danio/utils/logger.dart';
 
 const _uuid = Uuid();
 
@@ -167,7 +168,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
       }
     } catch (e) {
       // Silently fail - pre-fill is optional
-      debugPrint('Could not pre-fill last values: $e');
+      logError('Could not pre-fill last values: $e', tag: 'AddLogScreen');
     }
   }
 
@@ -958,7 +959,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
             daysSinceLastChange: 0, // Just did a water change
           );
         } catch (e) {
-          debugPrint('Failed to schedule water change reminder: $e');
+          logError('Failed to schedule water change reminder: $e', tag: 'AddLogScreen');
         }
       }
 
@@ -1009,7 +1010,7 @@ class _AddLogScreenState extends ConsumerState<AddLogScreen> {
           await achievementChecker.checkAllAchievements(stats: stats);
         } catch (e) {
           // Don't fail the log save if achievement check fails
-          debugPrint('Achievement check failed: $e');
+          logError('Achievement check failed: $e', tag: 'AddLogScreen');
         }
       }
 

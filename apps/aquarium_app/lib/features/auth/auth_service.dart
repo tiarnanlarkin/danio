@@ -1,7 +1,7 @@
-import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../services/supabase_service.dart';
+import 'package:danio/utils/logger.dart';
 
 /// Authentication service wrapping Supabase Auth.
 ///
@@ -142,7 +142,7 @@ class AuthService {
     try {
       await _auth?.signOut();
     } catch (e) {
-      debugPrint('[AuthService] Sign-out error: $e');
+      logError('[AuthService] Sign-out error: $e', tag: 'AuthService');
     }
   }
 }

@@ -1,11 +1,11 @@
 import 'dart:async';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
 import '../models/models.dart';
 import '../services/storage_service.dart';
 import '../services/sample_data.dart';
 import 'storage_provider.dart';
+import 'package:danio/utils/logger.dart';
 
 const _uuid = Uuid();
 
@@ -347,7 +347,7 @@ class TankActions {
           final moved = livestock.copyWith(tankId: toTankId);
           await storage.saveLivestock(moved);
         } on StateError {
-          debugPrint('bulkMoveLivestock: skipping missing livestock $id');
+          appLog('bulkMoveLivestock: skipping missing livestock $id', tag: 'TankProvider');
           continue;
         }
       }

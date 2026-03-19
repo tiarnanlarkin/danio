@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:danio/utils/logger.dart';
 
 /// Theme mode preference
 enum AppThemeMode { system, light, dark }
@@ -84,59 +85,48 @@ class SettingsNotifier extends StateNotifier<AppSettings> {
     } catch (e) {
       // If loading fails, keep default settings
       // Don't crash the app - user can still use it with defaults
-      debugPrint('Failed to load app settings: $e');
+      logError('Failed to load app settings: $e', tag: 'SettingsProvider');
+    }
+  }
+
+  Future<void> _persist(String key, dynamic value) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      if (value is int) {
+        await prefs.setInt(key, value);
+      } else if (value is bool) {
+        await prefs.setBool(key, value);
+      } else if (value is String) {
+        await prefs.setString(key, value);
+      }
+    } catch (e) {
+      logError('Failed to persist setting "$key": $e', tag: 'SettingsProvider');
     }
   }
 
   Future<void> setThemeMode(AppThemeMode mode) async {
     state = state.copyWith(themeMode: mode);
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.setInt(_themeModeKey, mode.index);
-    } catch (e) {
-      debugPrint('Failed to save theme mode setting: $e');
-      // Setting is applied in-memory, just won't persist
-    }
+    await _persist(_themeModeKey, mode.index);
   }
 
   Future<void> setUseMetric(bool useMetric) async {
     state = state.copyWith(useMetric: useMetric);
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.setBool(_useMetricKey, useMetric);
-    } catch (e) {
-      debugPrint('Failed to save metric preference: $e');
-    }
+    await _persist(_useMetricKey, useMetric);
   }
 
   Future<void> setNotificationsEnabled(bool enabled) async {
     state = state.copyWith(notificationsEnabled: enabled);
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.setBool(_notificationsKey, enabled);
-    } catch (e) {
-      debugPrint('Failed to save notification preference: $e');
-    }
+    await _persist(_notificationsKey, enabled);
   }
 
   Future<void> setAmbientLightingEnabled(bool enabled) async {
     state = state.copyWith(ambientLightingEnabled: enabled);
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.setBool(_ambientLightingKey, enabled);
-    } catch (e) {
-      debugPrint('Failed to save ambient lighting preference: $e');
-    }
+    await _persist(_ambientLightingKey, enabled);
   }
 
   Future<void> setHapticFeedbackEnabled(bool enabled) async {
     state = state.copyWith(hapticFeedbackEnabled: enabled);
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.setBool(_hapticFeedbackKey, enabled);
-    } catch (e) {
-      debugPrint('Failed to save haptic feedback preference: $e');
-    }
+    await _persist(_hapticFeedbackKey, enabled);
   }
 }
 

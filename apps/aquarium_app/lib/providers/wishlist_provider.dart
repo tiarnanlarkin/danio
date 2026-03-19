@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/wishlist.dart';
+import 'package:danio/utils/logger.dart';
 
 /// Keys for SharedPreferences storage
 const _wishlistKey = 'wishlist_items';
@@ -187,8 +188,8 @@ class BudgetNotifier extends StateNotifier<ShopBudget> {
         now.year != state.lastReset.year) {
       // New month - reset spending
       state = state.copyWith(spentThisMonth: 0, lastReset: now);
-      _saveToStorage().catchError((_) {
-        // Silently fail for auto-reset - not critical
+      _saveToStorage().catchError((e) {
+        logError(e, tag: 'WishlistProvider');
       });
     }
   }

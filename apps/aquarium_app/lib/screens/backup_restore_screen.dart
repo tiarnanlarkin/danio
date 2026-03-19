@@ -18,6 +18,7 @@ import '../services/shared_preferences_backup.dart';
 import '../theme/app_theme.dart';
 import '../utils/app_feedback.dart';
 import '../widgets/core/app_card.dart';
+import 'package:danio/utils/logger.dart';
 
 const _uuid = Uuid();
 
@@ -406,7 +407,7 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
       try {
         await File(zipPath).delete();
       } catch (e) {
-        debugPrint('Backup cleanup failed: $e');
+        logError('Backup cleanup failed: $e', tag: 'BackupRestoreScreen');
       }
 
       if (!mounted) return;
@@ -517,7 +518,7 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
         try {
           await SharedPreferencesBackup.restoreFromJson(prefsData);
         } catch (e) {
-          debugPrint('SharedPreferences restore warning: $e');
+          logError('SharedPreferences restore warning: $e', tag: 'BackupRestoreScreen');
         }
       }
 
@@ -582,7 +583,7 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
         await storage.saveTank(tank);
         imported++;
       } catch (e) {
-        debugPrint('Failed to import tank: $e');
+        logError('Failed to import tank: $e', tag: 'BackupRestoreScreen');
         continue;
       }
     }
@@ -606,7 +607,7 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
 
         await storage.saveLivestock(livestock);
       } catch (e) {
-        debugPrint('Failed to import livestock: $e');
+        logError('Failed to import livestock: $e', tag: 'BackupRestoreScreen');
         continue;
       }
     }
@@ -630,7 +631,7 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
 
         await storage.saveEquipment(equipment);
       } catch (e) {
-        debugPrint('Failed to import equipment: $e');
+        logError('Failed to import equipment: $e', tag: 'BackupRestoreScreen');
         continue;
       }
     }
@@ -653,7 +654,7 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
 
         await storage.saveLog(log);
       } catch (e) {
-        debugPrint('Failed to import log: $e');
+        logError('Failed to import log: $e', tag: 'BackupRestoreScreen');
         continue;
       }
     }
@@ -677,7 +678,7 @@ class _BackupRestoreScreenState extends ConsumerState<BackupRestoreScreen> {
 
         await storage.saveTask(task);
       } catch (e) {
-        debugPrint('Failed to import task: $e');
+        logError('Failed to import task: $e', tag: 'BackupRestoreScreen');
         continue;
       }
     }

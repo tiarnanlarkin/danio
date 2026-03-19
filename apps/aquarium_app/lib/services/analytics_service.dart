@@ -1,5 +1,4 @@
 import 'package:collection/collection.dart';
-import 'package:flutter/foundation.dart';
 
 /// Analytics service for aggregating stats, calculating trends, and generating insights
 /// Provides comprehensive progress analysis with AI-like recommendations
@@ -7,6 +6,7 @@ import '../models/analytics.dart';
 import '../models/user_profile.dart';
 import '../models/learning.dart';
 import '../models/leaderboard.dart';
+import 'package:danio/utils/logger.dart';
 
 /// Parameter bundle for [AnalyticsService.generateSummary] — must be a plain
 /// Dart class (no closures/native handles) so it can cross isolate boundaries.
@@ -280,7 +280,7 @@ class AnalyticsService {
         hourOfDay[simulatedHour] = (hourOfDay[simulatedHour] ?? 0) + xp;
         dayOfWeek[date.weekday] = (dayOfWeek[date.weekday] ?? 0) + xp;
       } catch (e) {
-        debugPrint('Analytics: skipped invalid date in hourly distribution: $e');
+        logError('Analytics: skipped invalid date in hourly distribution: $e', tag: 'AnalyticsService');
       }
     }
 

@@ -3,8 +3,8 @@
 
 library;
 
-import 'package:flutter/foundation.dart';
 import 'user_profile.dart';
+import 'package:danio/utils/logger.dart';
 
 /// Difficulty level for stories
 enum StoryDifficulty { beginner, intermediate, advanced }
@@ -98,7 +98,7 @@ class Story {
     try {
       return scenes.firstWhere((s) => s.id == sceneId);
     } catch (e) {
-      debugPrint('Story scene lookup failed for sceneId "$sceneId": $e');
+      logError('Story scene lookup failed for sceneId "$sceneId": $e', tag: 'Story');
       return null;
     }
   }

@@ -2,12 +2,12 @@ import 'dart:convert';
 
 import 'package:crypto/crypto.dart';
 import 'package:encrypt/encrypt.dart' as encrypt_pkg;
-import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' show FileOptions;
 
 import '../models/models.dart';
 import 'local_json_storage_service.dart';
 import 'supabase_service.dart';
+import 'package:danio/utils/logger.dart';
 
 /// Encrypted backup service - serialises all local data to JSON, encrypts with
 /// AES-256 using a key derived from the user's UID + a salt, and uploads to
@@ -60,7 +60,7 @@ class CloudBackupService {
         .from(_bucketName)
         .uploadBinary(path, blob, fileOptions: const FileOptions(upsert: true));
 
-    debugPrint('[CloudBackup] Uploaded ${blob.length} bytes → $path');
+    appLog('[CloudBackup] Uploaded ${blob.length} bytes → $path', tag: 'CloudBackupService');
   }
 
   // ---------------------------------------------------------------------------
@@ -104,7 +104,7 @@ class CloudBackupService {
     // 5. Merge into local storage (local wins)
     await _importData(LocalJsonStorageService(), data);
 
-    debugPrint('[CloudBackup] Restored backup from $path');
+    appLog('[CloudBackup] Restored backup from $path', tag: 'CloudBackupService');
   }
 
   // ---------------------------------------------------------------------------

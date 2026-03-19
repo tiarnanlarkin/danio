@@ -20,6 +20,7 @@ import 'onboarding/aha_moment_screen.dart';
 import 'onboarding/paywall_stub_screen.dart';
 import 'onboarding/push_permission_screen.dart';
 import 'onboarding/warm_entry_screen.dart';
+import 'package:danio/utils/logger.dart';
 
 /// Orchestrates the 10-screen onboarding flow.
 ///
@@ -83,7 +84,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       final notificationService = NotificationService();
       await notificationService.requestPermissions();
     } catch (e) {
-      debugPrint('Onboarding: notification permission request failed: $e');
+      logError('Onboarding: notification permission request failed: $e', tag: 'OnboardingScreen');
     }
     _nextPage();
   }
@@ -128,7 +129,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       try {
         await ref.read(userProfileProvider.notifier).addXp(10);
       } catch (e) {
-        debugPrint('Onboarding: failed to award welcome XP: $e');
+        logError('Onboarding: failed to award welcome XP: $e', tag: 'OnboardingScreen');
       }
 
       // 2b. Create a default tank based on user's tank status
@@ -146,9 +147,9 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
               ? 'Started with ${_selectedFish!.commonName}'
               : null,
         );
-        debugPrint('[Onboarding] Created default tank: ${tank.name} (${tank.id})');
+        appLog('[Onboarding] Created default tank: ${tank.name} (${tank.id})', tag: 'OnboardingScreen');
       } catch (e) {
-        debugPrint('[Onboarding] Tank creation failed: $e');
+        logError('[Onboarding] Tank creation failed: $e', tag: 'OnboardingScreen');
       }
 
       // 3. Schedule onboarding notifications
@@ -156,7 +157,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
         final notificationService = NotificationService();
         await notificationService.scheduleOnboardingSequence();
       } catch (e) {
-        debugPrint('Onboarding: failed to schedule onboarding notifications: $e');
+        logError('Onboarding: failed to schedule onboarding notifications: $e', tag: 'OnboardingScreen');
       }
 
       // 4. Complete onboarding via service + invalidate provider

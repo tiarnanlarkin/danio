@@ -9,6 +9,7 @@
 import '../../theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:rive/rive.dart';
+import 'package:danio/utils/logger.dart';
 
 /// Types of Rive fish available
 enum RiveFishType { puffer, joystick, emotional }
@@ -99,7 +100,7 @@ class _RiveFishState extends State<RiveFish> {
         });
       }
     } catch (e) {
-      debugPrint('Error loading Rive fish: $e');
+      logError('Error loading Rive fish: $e', tag: 'RiveFish');
     }
   }
 

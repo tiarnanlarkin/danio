@@ -21,6 +21,7 @@ import 'gems_provider.dart';
 import 'spaced_repetition_provider.dart'; // For creating review cards
 import '../services/offline_aware_service.dart';
 import '../utils/debouncer.dart';
+import 'package:danio/utils/logger.dart';
 
 /// Shared provider for SharedPreferences. All providers and services should
 /// use this instead of calling SharedPreferences.getInstance() directly, so
@@ -66,7 +67,7 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
     _pendingSave = null;
     _trimXpHistory(toSave);
     // Fire-and-forget but at least SharedPreferences queues the write
-    SharedPreferences.getInstance().then((prefs) async {
+    ref.read(sharedPreferencesProvider.future).then((prefs) async {
       try {
         await prefs.setString(_key, jsonEncode(toSave.toJson()));
       } catch (e) {
@@ -79,7 +80,7 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
 
   Future<void> _load() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
+      final prefs = await ref.read(sharedPreferencesProvider.future);
       final json = prefs.getString(_key);
 
       if (json != null) {
@@ -101,7 +102,7 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
       _pendingSave = null;
       // Cap dailyXpHistory to last 365 days before persisting
       _trimXpHistory(toSave);
-      final prefs = await SharedPreferences.getInstance();
+      final prefs = await ref.read(sharedPreferencesProvider.future);
       await prefs.setString(_key, jsonEncode(toSave.toJson()));
     });
   }
@@ -113,7 +114,7 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
     _saveDebouncer.cancel();
     // Cap dailyXpHistory to last 365 days before persisting
     _trimXpHistory(profile);
-    final prefs = await SharedPreferences.getInstance();
+    final prefs = await ref.read(sharedPreferencesProvider.future);
     await prefs.setString(_key, jsonEncode(profile.toJson()));
   }
 
@@ -663,9 +664,7 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile?>> {
           );
     } catch (e) {
       // Don't fail lesson completion if card creation fails
-      debugPrint(
-        'Warning: Failed to create review cards for lesson $lessonId: $e',
-      );
+      logError('Warning: Failed to create review cards for lesson $lessonId: $e', tag: 'UserProfileProvider');
     }
   }
 

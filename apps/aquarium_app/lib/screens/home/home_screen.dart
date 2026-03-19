@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../models/models.dart';
 import '../../providers/tank_provider.dart';
@@ -78,7 +77,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   // ── Lifecycle checks ──────────────────────────────────────────────────
 
   Future<void> _checkTooltipFlags() async {
-    final prefs = await SharedPreferences.getInstance();
+    final prefs = await ref.read(sharedPreferencesProvider.future);
     final seenTank = prefs.getBool('tooltip_seen_tank') ?? false;
     final seenHearts = prefs.getBool('tooltip_seen_hearts') ?? false;
     final seenStageHandles = prefs.getBool('tooltip_seen_stage_handles') ?? false;
@@ -104,7 +103,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   Future<void> _checkWelcomeBanner() async {
-    final prefs = await SharedPreferences.getInstance();
+    final prefs = await ref.read(sharedPreferencesProvider.future);
     final hasSeen = prefs.getBool('has_seen_welcome_banner') ?? false;
     if (!hasSeen && mounted) {
       final profile = await _waitForProfile();
@@ -146,7 +145,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   Future<void> _checkReturningUserFlow() async {
     if (!mounted) return;
     try {
-      final prefs = await SharedPreferences.getInstance();
+      final prefs = await ref.read(sharedPreferencesProvider.future);
       final profile = await _waitForProfile();
       if (profile == null) return;
 

@@ -1,5 +1,5 @@
-import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:danio/utils/logger.dart';
 
 /// Singleton wrapper around Supabase client.
 ///
@@ -63,10 +63,8 @@ class SupabaseService {
 
     // Skip if credentials are still placeholders
     if (_supabaseUrl.isEmpty || _supabaseAnonKey.isEmpty) {
-      debugPrint(
-        '[SupabaseService] Placeholder credentials detected - '
-        'running in offline-only mode.',
-      );
+      appLog('[SupabaseService] Placeholder credentials detected - '
+        'running in offline-only mode.', tag: 'SupabaseService');
       return false;
     }
 
@@ -79,10 +77,10 @@ class SupabaseService {
         ),
       );
       _instance = SupabaseService._();
-      debugPrint('[SupabaseService] Initialised successfully.');
+      appLog('[SupabaseService] Initialised successfully.', tag: 'SupabaseService');
       return true;
     } catch (e, st) {
-      debugPrint('[SupabaseService] Initialisation failed: $e\n$st');
+      logError('[SupabaseService] Initialisation failed: $e\n$st', stackTrace: st, tag: 'SupabaseService');
       return false;
     }
   }

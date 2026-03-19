@@ -1,5 +1,5 @@
-import 'package:flutter/foundation.dart';
 import '../models/shop_item.dart';
+import 'package:danio/utils/logger.dart';
 
 /// All shop items available in the gem shop
 /// Duolingo-inspired virtual currency economy
@@ -305,7 +305,7 @@ class ShopCatalog {
     try {
       return allItems.firstWhere((item) => item.id == id);
     } catch (e) {
-      debugPrint('Shop item lookup failed for id "$id": $e');
+      logError('Shop item lookup failed for id "$id": $e', tag: 'ShopCatalog');
       return null;
     }
   }

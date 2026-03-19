@@ -2,8 +2,8 @@
 /// Organized by category: Learning, Streaks, XP, Special, Engagement
 library;
 
-import 'package:flutter/foundation.dart';
 import '../models/achievements.dart';
+import 'package:danio/utils/logger.dart';
 
 /// All available achievements in the app
 class AchievementDefinitions {
@@ -699,7 +699,7 @@ class AchievementDefinitions {
     try {
       return all.firstWhere((a) => a.id == id);
     } catch (e) {
-      debugPrint('Achievement lookup failed for id "$id": $e');
+      logError('Achievement lookup failed for id "$id": $e', tag: 'Achievements');
       return null;
     }
   }

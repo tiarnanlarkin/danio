@@ -19,7 +19,8 @@ import '../utils/app_constants.dart';
 import '../utils/app_feedback.dart';
 import '../utils/haptic_feedback.dart';
 import 'package:in_app_review/in_app_review.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import '../providers/user_profile_provider.dart';
+import 'package:danio/utils/logger.dart';
 
 /// Screen for viewing a single lesson and taking quizzes
 class LessonScreen extends ConsumerStatefulWidget {
@@ -82,7 +83,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
   /// Show a one-time explanation of the hearts system on the user's first lesson.
   Future<void> _maybeExplainHearts() async {
     if (widget.isPracticeMode) return;
-    final prefs = await SharedPreferences.getInstance();
+    final prefs = await ref.read(sharedPreferencesProvider.future);
     final explained = prefs.getBool('hearts_explained') ?? false;
     if (explained) return;
     await prefs.setBool('hearts_explained', true);
@@ -1408,7 +1409,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
           try {
             await ref.read(userProfileProvider.notifier).addXp(practiceXp);
           } catch (e) {
-            debugPrint('Error awarding practice XP: $e');
+            logError('Error awarding practice XP: $e', tag: 'LessonScreen');
           }
         }
 
@@ -1473,7 +1474,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
             );
       } catch (e) {
         // Don't fail lesson completion if card seeding fails
-        debugPrint('Spaced repetition seeding failed: $e');
+        logError('Spaced repetition seeding failed: $e', tag: 'LessonScreen');
       }
 
       // Note: recordActivity() is already called internally by completeLesson().
@@ -1492,7 +1493,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
         }
       } catch (e) {
         // Don't fail lesson completion if notification scheduling fails
-        debugPrint('Notification scheduling failed: $e');
+        logError('Notification scheduling failed: $e', tag: 'LessonScreen');
       }
 
       // Dionysus Day 3: Show achievement celebration when 3rd lesson is completed
@@ -1507,7 +1508,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
         }
       } catch (e) {
         // Non-critical — don't fail lesson completion
-        debugPrint('Onboarding achievement notification failed: $e');
+        logError('Onboarding achievement notification failed: $e', tag: 'LessonScreen');
       }
 
       // Check for achievements using the full achievement checker.
@@ -1577,7 +1578,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
               previousLastActivityDate: previousLastActivityDate, // PS-12 FIX
             );
           } catch (e) {
-            debugPrint('Achievement check failed: $e');
+            logError('Achievement check failed: $e', tag: 'LessonScreen');
           }
         }();
       }
@@ -1594,7 +1595,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
         // ignore: unawaited_futures
         () async {
           try {
-            final prefs = await SharedPreferences.getInstance();
+            final prefs = await ref.read(sharedPreferencesProvider.future);
             final alreadyRequested = prefs.getBool('review_requested') ?? false;
             if (!alreadyRequested) {
               final inAppReview = InAppReview.instance;
@@ -1604,7 +1605,7 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
               }
             }
           } catch (e) {
-            debugPrint('In-app review failed: $e');
+            logError('In-app review failed: $e', tag: 'LessonScreen');
           }
         }();
       }
@@ -1616,8 +1617,8 @@ class _LessonScreenState extends ConsumerState<LessonScreen> {
         _showXpAnimation(totalXp);
       }
     } catch (e, st) {
-      debugPrint('Lesson completion error: $e');
-      debugPrint('Stack trace: $st');
+      logError('Lesson completion error: $e', stackTrace: st, tag: 'LessonScreen');
+      logError('Stack trace: $st', stackTrace: st, tag: 'LessonScreen');
       if (mounted) {
         AppFeedback.showError(
           context,

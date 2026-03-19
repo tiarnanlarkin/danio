@@ -1,8 +1,8 @@
 import 'dart:async';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:danio/utils/logger.dart';
 
 /// Per-feature rate limiter for AI API calls.
 ///
@@ -86,7 +86,7 @@ class ApiRateLimiter {
         }
       }
     } catch (e) {
-      debugPrint('RateLimiter: failed to load state, starting fresh: $e');
+      logError('RateLimiter: failed to load state, starting fresh: $e', tag: 'ApiRateLimiter');
       // Non-critical — start with empty state.
     }
   }
@@ -100,7 +100,7 @@ class ApiRateLimiter {
         stamps.map((t) => t.toIso8601String()).toList(),
       );
     } catch (e) {
-      debugPrint('RateLimiter: failed to save state: $e');
+      logError('RateLimiter: failed to save state: $e', tag: 'ApiRateLimiter');
     }
   }
 }

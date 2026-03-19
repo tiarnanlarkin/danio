@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'user_profile_provider.dart';
+import 'package:danio/utils/logger.dart';
 
 /// Reduced motion state and configuration
 class ReducedMotionState {
@@ -45,7 +46,7 @@ class ReducedMotionState {
 
 /// Notifier for managing reduced motion settings
 class ReducedMotionNotifier extends StateNotifier<ReducedMotionState> {
-  ReducedMotionNotifier()
+  ReducedMotionNotifier(this.ref)
     : super(
         const ReducedMotionState(isEnabled: false, systemPreference: false),
       ) {
@@ -65,7 +66,7 @@ class ReducedMotionNotifier extends StateNotifier<ReducedMotionState> {
   /// Load user's manual override from storage
   Future<void> _loadUserPreference() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
+      final prefs = await ref.read(sharedPreferencesProvider.future);
 
       // Check if user has set a manual override
       if (prefs.containsKey(_userOverrideKey)) {
@@ -76,7 +77,7 @@ class ReducedMotionNotifier extends StateNotifier<ReducedMotionState> {
         );
       }
     } catch (e) {
-      debugPrint('Failed to load reduced motion preference: $e');
+      logError('Failed to load reduced motion preference: $e', tag: 'ReducedMotionProvider');
     }
   }
 
@@ -93,7 +94,7 @@ class ReducedMotionNotifier extends StateNotifier<ReducedMotionState> {
         isEnabled: state.userOverride ?? systemPreference,
       );
     } catch (e) {
-      debugPrint('Failed to check system animation setting: $e');
+      logError('Failed to check system animation setting: $e', tag: 'ReducedMotionProvider');
       // Fall back to user preference or default
     }
   }
@@ -116,7 +117,7 @@ class ReducedMotionNotifier extends StateNotifier<ReducedMotionState> {
   /// Set user's manual override preference
   Future<void> setUserPreference(bool? enabled) async {
     try {
-      final prefs = await SharedPreferences.getInstance();
+      final prefs = await ref.read(sharedPreferencesProvider.future);
 
       if (enabled == null) {
         // Clear override - follow system
@@ -131,7 +132,7 @@ class ReducedMotionNotifier extends StateNotifier<ReducedMotionState> {
         state = state.copyWith(userOverride: enabled, isEnabled: enabled);
       }
     } catch (e) {
-      debugPrint('Failed to save reduced motion preference: $e');
+      logError('Failed to save reduced motion preference: $e', tag: 'ReducedMotionProvider');
     }
   }
 
@@ -144,7 +145,7 @@ class ReducedMotionNotifier extends StateNotifier<ReducedMotionState> {
 /// Provider for reduced motion state
 final reducedMotionProvider =
     StateNotifierProvider<ReducedMotionNotifier, ReducedMotionState>(
-      (ref) => ReducedMotionNotifier(),
+      (ref) => ReducedMotionNotifier(this.ref),
     );
 
 /// Extension to get reduced motion state easily in widgets

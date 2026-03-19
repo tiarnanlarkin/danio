@@ -17,6 +17,7 @@ import '../main.dart'; // For navigatorKey
 import '../utils/debouncer.dart';
 import 'user_profile_provider.dart';
 import 'gems_provider.dart';
+import 'package:danio/utils/logger.dart';
 
 /// Import sharedPreferencesProvider for shared access
 // (exported from user_profile_provider.dart via import above)
@@ -60,8 +61,8 @@ class AchievementProgressNotifier
       }
     } catch (e, st) {
       // Log error but start with empty map to not block app
-      debugPrint('Error loading achievement progress: $e');
-      debugPrint('Stack trace: $st');
+      logError('Error loading achievement progress: $e', stackTrace: st, tag: 'AchievementProvider');
+      logError('Stack trace: $st', stackTrace: st, tag: 'AchievementProvider');
       state = {};
       // Don't rethrow - gracefully recover with empty state
       // This prevents app crash on startup if preferences are corrupted
@@ -80,7 +81,7 @@ class AchievementProgressNotifier
 
         await prefs.setString(_key, jsonEncode(toSave));
       } catch (e) {
-        debugPrint('Failed to save achievement progress: $e');
+        logError('Failed to save achievement progress: $e', tag: 'AchievementProvider');
       }
     });
   }
@@ -96,11 +97,9 @@ class AchievementProgressNotifier
       await _save();
     } catch (e, st) {
       // Log the error with full context
-      debugPrint(
-        'ACHIEVEMENT ERROR: Failed to update progress for $achievementId',
-      );
-      debugPrint('Error: $e');
-      debugPrint('Stack trace: $st');
+      logError('ACHIEVEMENT ERROR: Failed to update progress for $achievementId', stackTrace: st, tag: 'AchievementProvider');
+      logError('Error: $e', stackTrace: st, tag: 'AchievementProvider');
+      logError('Stack trace: $st', stackTrace: st, tag: 'AchievementProvider');
       rethrow; // Never fail silently
     }
   }
@@ -113,10 +112,10 @@ class AchievementProgressNotifier
       await _save();
     } catch (e, st) {
       // Log the error with full context
-      debugPrint('ACHIEVEMENT ERROR: Failed to update multiple achievements');
-      debugPrint('Achievement IDs: ${updates.keys.join(", ")}');
-      debugPrint('Error: $e');
-      debugPrint('Stack trace: $st');
+      logError('ACHIEVEMENT ERROR: Failed to update multiple achievements', stackTrace: st, tag: 'AchievementProvider');
+      logError('Achievement IDs: ${updates.keys.join(", ")}', stackTrace: st, tag: 'AchievementProvider');
+      logError('Error: $e', stackTrace: st, tag: 'AchievementProvider');
+      logError('Stack trace: $st', stackTrace: st, tag: 'AchievementProvider');
       rethrow; // Never fail silently
     }
   }
@@ -368,9 +367,7 @@ class AchievementChecker {
                 gemsAwarded: gemReward,
               );
             } catch (e) {
-              debugPrint(
-                'Warning: Failed to send achievement notification: $e',
-              );
+              logError('Warning: Failed to send achievement notification: $e', tag: 'AchievementProvider');
             }
           }
         }
@@ -379,9 +376,9 @@ class AchievementChecker {
       return results;
     } catch (e, st) {
       // Log comprehensive error information
-      debugPrint('ACHIEVEMENT ERROR: Failed to check achievements');
-      debugPrint('Error: $e');
-      debugPrint('Stack trace: $st');
+      logError('ACHIEVEMENT ERROR: Failed to check achievements', stackTrace: st, tag: 'AchievementProvider');
+      logError('Error: $e', stackTrace: st, tag: 'AchievementProvider');
+      logError('Stack trace: $st', stackTrace: st, tag: 'AchievementProvider');
       rethrow; // Never fail silently
     }
   }

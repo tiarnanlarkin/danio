@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
 
@@ -9,6 +8,7 @@ import '../../../services/api_rate_limiter.dart';
 import '../../../services/openai_service.dart';
 import '../models/smart_models.dart';
 import '../smart_providers.dart';
+import 'package:danio/utils/logger.dart';
 
 const _uuid = Uuid();
 
@@ -182,10 +182,10 @@ class AnomalyDetectorService {
           anomalies[i] = anomalies[i].copyWith(aiExplanation: result.text);
         }
       } on TimeoutException {
-        debugPrint('Anomaly AI explanation timed out');
+        appLog('Anomaly AI explanation timed out', tag: 'AnomalyDetectorService');
         // Continue without AI explanation - rules-based results are still valid.
       } catch (e) {
-        debugPrint('Anomaly AI explanation failed: $e');
+        logError('Anomaly AI explanation failed: $e', tag: 'AnomalyDetectorService');
         // Continue without AI explanation - rules-based results are still valid.
       }
     }

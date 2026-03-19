@@ -26,6 +26,7 @@ import '../widgets/core/app_states.dart';
 import '../widgets/mascot/mascot_widgets.dart';
 import 'livestock_detail_screen.dart';
 import '../utils/navigation_throttle.dart';
+import 'package:danio/utils/logger.dart';
 
 const _uuid = Uuid();
 
@@ -691,7 +692,7 @@ class _LivestockScreenState extends ConsumerState<LivestockScreen> {
           ref.invalidate(logsProvider(widget.tankId));
           ref.invalidate(allLogsProvider(widget.tankId));
         } catch (e) {
-          debugPrint('Failed to create livestock-removal log: $e');
+          logError('Failed to create livestock-removal log: $e', tag: 'LivestockScreen');
         }
       },
     );

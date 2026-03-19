@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../theme/app_theme.dart';
+import 'package:danio/utils/logger.dart';
 
 class TermsOfServiceScreen extends StatelessWidget {
   const TermsOfServiceScreen({super.key});
@@ -231,7 +232,7 @@ class TermsOfServiceScreen extends StatelessWidget {
       }
     } catch (e) {
       // If URL launching fails, user can still read the summary above
-      debugPrint('Could not launch terms URL: $e');
+      logError('Could not launch terms URL: $e', tag: 'TermsOfServiceScreen');
     }
   }
 

@@ -1,11 +1,11 @@
 import 'dart:convert';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'user_profile_provider.dart';
 import 'package:uuid/uuid.dart';
 
 import 'models/smart_models.dart';
+import 'package:danio/utils/logger.dart';
 
 const _uuid = Uuid();
 
@@ -13,14 +13,15 @@ const _uuid = Uuid();
 
 /// Stores the last 10 AI interactions locally.
 class AIHistoryNotifier extends StateNotifier<List<AIInteraction>> {
+  final Ref ref;
   static const _key = 'ai_interaction_history';
 
-  AIHistoryNotifier() : super([]) {
+  AIHistoryNotifier(this.ref) : super([]) {
     _load();
   }
 
   Future<void> _load() async {
-    final prefs = await SharedPreferences.getInstance();
+    final prefs = await ref.read(sharedPreferencesProvider.future);
     final raw = prefs.getStringList(_key) ?? [];
     state = raw
         .map((s) {
@@ -29,7 +30,7 @@ class AIHistoryNotifier extends StateNotifier<List<AIInteraction>> {
               jsonDecode(s) as Map<String, dynamic>,
             );
           } catch (e) {
-            debugPrint('Smart: failed to parse AI interaction: $e');
+            logError('Smart: failed to parse AI interaction: $e', tag: 'SmartProviders');
             return null;
           }
         })
@@ -47,7 +48,7 @@ class AIHistoryNotifier extends StateNotifier<List<AIInteraction>> {
     final updated = [interaction, ...state].take(10).toList();
     state = updated;
 
-    final prefs = await SharedPreferences.getInstance();
+    final prefs = await ref.read(sharedPreferencesProvider.future);
     await prefs.setStringList(
       _key,
       updated.map((i) => jsonEncode(i.toJson())).toList(),
@@ -57,28 +58,29 @@ class AIHistoryNotifier extends StateNotifier<List<AIInteraction>> {
 
 final aiHistoryProvider =
     StateNotifierProvider<AIHistoryNotifier, List<AIInteraction>>(
-      (ref) => AIHistoryNotifier(),
+      (ref) => AIHistoryNotifier(ref),
     );
 
 // ── Anomaly History ─────────────────────────────────────────────────────
 
 /// Stores anomaly history locally.
 class AnomalyHistoryNotifier extends StateNotifier<List<Anomaly>> {
+  final Ref ref;
   static const _key = 'anomaly_history';
 
-  AnomalyHistoryNotifier() : super([]) {
+  AnomalyHistoryNotifier(this.ref) : super([]) {
     _load();
   }
 
   Future<void> _load() async {
-    final prefs = await SharedPreferences.getInstance();
+    final prefs = await ref.read(sharedPreferencesProvider.future);
     final raw = prefs.getStringList(_key) ?? [];
     state = raw
         .map((s) {
           try {
             return Anomaly.fromJson(jsonDecode(s) as Map<String, dynamic>);
           } catch (e) {
-            debugPrint('Smart: failed to parse anomaly: $e');
+            logError('Smart: failed to parse anomaly: $e', tag: 'SmartProviders');
             return null;
           }
         })
@@ -104,7 +106,7 @@ class AnomalyHistoryNotifier extends StateNotifier<List<Anomaly>> {
       state.where((a) => a.tankId == tankId && !a.dismissed).toList();
 
   Future<void> _save() async {
-    final prefs = await SharedPreferences.getInstance();
+    final prefs = await ref.read(sharedPreferencesProvider.future);
     await prefs.setStringList(
       _key,
       state.map((a) => jsonEncode(a.toJson())).toList(),
@@ -114,27 +116,28 @@ class AnomalyHistoryNotifier extends StateNotifier<List<Anomaly>> {
 
 final anomalyHistoryProvider =
     StateNotifierProvider<AnomalyHistoryNotifier, List<Anomaly>>(
-      (ref) => AnomalyHistoryNotifier(),
+      (ref) => AnomalyHistoryNotifier(ref),
     );
 
 // ── Weekly Plan Cache ───────────────────────────────────────────────────
 
 /// Cached weekly plan - stored in shared prefs.
 class WeeklyPlanNotifier extends StateNotifier<WeeklyPlan?> {
+  final Ref ref;
   static const _key = 'weekly_plan_cache';
 
-  WeeklyPlanNotifier() : super(null) {
+  WeeklyPlanNotifier(this.ref) : super(null) {
     _load();
   }
 
   Future<void> _load() async {
-    final prefs = await SharedPreferences.getInstance();
+    final prefs = await ref.read(sharedPreferencesProvider.future);
     final raw = prefs.getString(_key);
     if (raw != null) {
       try {
         state = WeeklyPlan.fromJson(jsonDecode(raw) as Map<String, dynamic>);
       } catch (e) {
-        debugPrint('Smart: failed to parse weekly plan: $e');
+        logError('Smart: failed to parse weekly plan: $e', tag: 'SmartProviders');
         // Corrupted - ignore
       }
     }
@@ -142,7 +145,7 @@ class WeeklyPlanNotifier extends StateNotifier<WeeklyPlan?> {
 
   Future<void> save(WeeklyPlan plan) async {
     state = plan;
-    final prefs = await SharedPreferences.getInstance();
+    final prefs = await ref.read(sharedPreferencesProvider.future);
     await prefs.setString(_key, jsonEncode(plan.toJson()));
   }
 
@@ -153,5 +156,5 @@ class WeeklyPlanNotifier extends StateNotifier<WeeklyPlan?> {
 
 final weeklyPlanProvider =
     StateNotifierProvider<WeeklyPlanNotifier, WeeklyPlan?>(
-      (ref) => WeeklyPlanNotifier(),
+      (ref) => WeeklyPlanNotifier(ref),
     );

@@ -1,6 +1,6 @@
-import 'package:flutter/foundation.dart';
 import 'package:in_app_review/in_app_review.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:danio/utils/logger.dart';
 
 /// Systematic in-app review prompt service.
 ///
@@ -55,7 +55,7 @@ class RateService {
       await prefs.setBool(_prefKey, true);
       return true;
     } catch (e) {
-      debugPrint('In-app review failed: $e');
+      logError('In-app review failed: $e', tag: 'RateService');
       return false;
     }
   }
