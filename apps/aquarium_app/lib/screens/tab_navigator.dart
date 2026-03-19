@@ -136,9 +136,14 @@ class _TabNavigatorState extends ConsumerState<TabNavigator>
                 // === Main Tab Content ===
                 // Each tab has its own Navigator to preserve state
                 // Wrapped in FadeTransition for smooth tab switching
+                // Bottom padding ensures content doesn't hide behind NavigationBar (80dp).
                 FadeTransition(
                   opacity: _fadeAnimation,
-                  child: IndexedStack(
+                  child: Padding(
+                    padding: EdgeInsets.only(
+                      bottom: 80 + MediaQuery.of(context).padding.bottom,
+                    ),
+                    child: IndexedStack(
                     index: currentTab,
                     children: [
                       // Tab 0: Learn
@@ -192,6 +197,7 @@ class _TabNavigatorState extends ConsumerState<TabNavigator>
                         },
                       ),
                     ],
+                  ),
                   ),
                 ),
 

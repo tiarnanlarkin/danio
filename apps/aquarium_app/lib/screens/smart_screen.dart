@@ -126,7 +126,7 @@ class _SmartScreenState extends ConsumerState<SmartScreen> {
             left: AppSpacing.md,
             right: AppSpacing.md,
             top: AppSpacing.md,
-            bottom: kBottomNavigationBarHeight + 16,
+            bottom: AppSpacing.md,
           ),
           children: [
             // API status
